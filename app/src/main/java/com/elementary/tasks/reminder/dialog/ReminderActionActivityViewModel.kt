@@ -1,15 +1,19 @@
 package com.elementary.tasks.reminder.dialog
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -22,19 +26,24 @@ import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ReminderViewModel(
+class ReminderActionActivityViewModel(
   private val id: String,
+  private val isTest: Boolean,
   private val reminderRepository: ReminderRepository,
   dispatcherProvider: DispatcherProvider,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val notifier: Notifier,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
-  private val snoozeReminderUseCase: SnoozeReminderUseCase
+  private val snoozeReminderUseCase: SnoozeReminderUseCase,
+  private val jobScheduler: JobScheduler,
+  private val dateTimeManager: DateTimeManager,
+  private val prefs: Prefs,
+  private val getReminderActionScreenStateUseCase: CreateReminderActionScreenStateUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
 
-  private val _state = mutableLiveDataOf<Reminder>()
-  val reminder = _state.toLiveData()
+  private val _state = mutableLiveDataOf<ReminderActionScreenState>()
+  val state = _state.toLiveData()
 
   private val _redirectEvent = mutableLiveEventOf<Redirect>()
   val redirectEvent = _redirectEvent.toLiveData()
@@ -45,12 +54,93 @@ class ReminderViewModel(
   private val _showFavoriteNotification = mutableLiveEventOf<FavoriteNotificationData>()
   val showFavoriteNotification = _showFavoriteNotification.toLiveData()
 
+  private var currentState: ReminderActionScreenState? = null
+
   init {
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
       Logger.i(TAG, "Loaded reminder: ${reminder.uuId}")
+      val screenState = getReminderActionScreenStateUseCase(reminder)
+      currentState = screenState
       withContext(dispatcherProvider.main()) {
-        _state.value = reminder
+        _state.value = screenState
+      }
+    }
+  }
+
+  override fun onDestroy(owner: LifecycleOwner) {
+    super.onDestroy(owner)
+    if (isTest) {
+      Logger.d(TAG, "Test reminder finished, deleting reminder id=$id")
+      viewModelScope.launch(dispatcherProvider.io()) {
+        reminderRepository.delete(id)
+      }
+    }
+  }
+
+  /**
+   * Handles action click events from the UI.
+   *
+   * Dispatches the appropriate action based on the ReminderAction type.
+   *
+   * @param action The action that was clicked
+   */
+  fun onActionClick(action: com.elementary.tasks.reminder.actions.ReminderAction) {
+    Logger.i(TAG, "Action clicked: $action for reminder id=$id")
+    when (action) {
+      com.elementary.tasks.reminder.actions.ReminderAction.Open -> onActionButtonClick()
+      com.elementary.tasks.reminder.actions.ReminderAction.Complete -> onOkClicked()
+      com.elementary.tasks.reminder.actions.ReminderAction.Snooze -> onSnoozeClicked(10)
+      com.elementary.tasks.reminder.actions.ReminderAction.SnoozeCustom -> {
+        // TODO: Show custom snooze dialog
+        onSnoozeClicked(30)
+      }
+      com.elementary.tasks.reminder.actions.ReminderAction.Edit -> editReminder()
+      com.elementary.tasks.reminder.actions.ReminderAction.Dismiss -> onCancelClicked()
+      com.elementary.tasks.reminder.actions.ReminderAction.MakeCall -> onActionButtonClick()
+      com.elementary.tasks.reminder.actions.ReminderAction.SendSms -> onActionButtonClick()
+      com.elementary.tasks.reminder.actions.ReminderAction.SendEmail -> onActionButtonClick()
+      com.elementary.tasks.reminder.actions.ReminderAction.OpenApp -> onActionButtonClick()
+      com.elementary.tasks.reminder.actions.ReminderAction.OpenUrl -> onActionButtonClick()
+      com.elementary.tasks.reminder.actions.ReminderAction.MoveToArchive -> {
+        // TODO: Implement archive action
+        onOkClicked()
+      }
+      com.elementary.tasks.reminder.actions.ReminderAction.Delete -> {
+        // TODO: Implement delete action
+        onCancelClicked()
+      }
+    }
+  }
+
+  /**
+   * Handles todo item click events from the UI.
+   *
+   * Toggles the completion state of the todo item.
+   *
+   * @param itemId The ID of the todo item that was clicked
+   */
+  fun onTodoItemClick(itemId: String) {
+    Logger.i(TAG, "Todo item clicked: $itemId for reminder id=$id")
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val reminder = reminderRepository.getById(id) ?: return@launch
+      // Find and toggle the task
+      val updatedTasks = reminder.shoppings.map { task ->
+        if (task.uuId == itemId) {
+          task.copy(isChecked = !task.isChecked)
+        } else {
+          task
+        }
+      }
+      // Save the reminder with updated tasks
+      val updatedReminder = reminder.copy(shoppings = updatedTasks)
+      saveReminder(updatedReminder)
+
+      // Refresh the screen state
+      val screenState = getReminderActionScreenStateUseCase(updatedReminder)
+      currentState = screenState
+      withContext(dispatcherProvider.main()) {
+        _state.value = screenState
       }
     }
   }

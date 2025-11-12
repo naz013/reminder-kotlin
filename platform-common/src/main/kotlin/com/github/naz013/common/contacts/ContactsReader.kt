@@ -152,7 +152,7 @@ class ContactsReader(private val context: Context) {
       ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI,
       Uri.encode(eMail)
     )
-    var name = "?"
+    var name: String? = null
     val contentResolver = context.contentResolver
     val contactLookup = contentResolver.query(
       /* uri = */ uri,
@@ -164,7 +164,7 @@ class ContactsReader(private val context: Context) {
     contactLookup.use { look ->
       if (look != null && look.count > 0) {
         look.moveToNext()
-        name = look.readString(ContactsContract.Data.DISPLAY_NAME) ?: "?"
+        name = look.readString(ContactsContract.Data.DISPLAY_NAME)
       }
     }
     return name

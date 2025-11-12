@@ -915,4 +915,12 @@
     <string name="delete_all_archived_reminders">Delete all archived reminders</string>
     <string name="yes_delete_all">Yes, delete all</string>
     <string name="reset_calendar">Reset</string>
+    <string name="action_complete">Complete</string>
+    <string name="action_snooze">Snooze</string>
+    <string name="action_dismiss">Dismiss</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_open">Open</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_send_email">Send email</string>
+    <string name="action_snooze_custom">Snooze for ...</string>
 </resources>

@@ -15,7 +15,7 @@ import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.common.TextProvider
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
+import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.github.naz013.logging.Logger
 
 class ReminderHandlerSilent(
@@ -36,7 +36,7 @@ class ReminderHandlerSilent(
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     builder.setSmallIcon(R.drawable.ic_fluent_alert)
 
-    val notificationIntent = ReminderDialog29Activity.getLaunchIntent(
+    val notificationIntent = ReminderActionActivity.getLaunchIntent(
       contextProvider.context,
       reminder.uuId
     )
