@@ -221,6 +221,7 @@ dependencies {
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)
   implementation(libs.koin.androidx.workmanager)
+  implementation(libs.koin.androidx.compose)
 
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.android)

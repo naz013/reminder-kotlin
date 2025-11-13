@@ -273,7 +273,7 @@
             android:name=".notes.preview.ImagePreviewActivity"
             android:exported="false" />
         <activity
-            android:name=".reminder.dialog.ReminderDialog29Activity"
+            android:name=".reminder.dialog.ReminderActionActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
