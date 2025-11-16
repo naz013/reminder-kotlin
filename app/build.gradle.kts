@@ -304,7 +304,8 @@ dependencies {
   implementation(libs.compose.ui.ui)
 
   debugImplementation(libs.compose.ui.test.manifest)
-  debugImplementation(libs.compose.ui.tooling.preview)
+  implementation(libs.compose.ui.tooling.preview)
+  debugImplementation(libs.compose.ui.tooling)
 
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)
