@@ -112,8 +112,8 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val reminderModule = module {
-  factory { DeleteReminderUseCase(get(), get(), get(), get()) }
-  factory { DeleteAllReminderUseCase(get(), get(), get(), get()) }
+  factory { DeleteReminderUseCase(get(), get(), get(), get(), get(), get()) }
+  factory { DeleteAllReminderUseCase(get(), get(), get(), get(), get(), get()) }
   factory { MoveReminderToArchiveUseCase(get(), get()) }
   factory { SaveReminderUseCase(get(), get(), get()) }
   factory { ScheduleReminderUploadUseCase(get()) }
@@ -375,7 +375,7 @@ val reminderModule = module {
   factory { ResumeReminderUseCase(get(), get(), get()) }
 
   factory { SnoozeReminderUseCase(get(), get(), get(), get(), get()) }
-  factory { CompleteReminderUseCase(get(), get(), get(), get()) }
+  factory { CompleteReminderUseCase(get(), get(), get(), get(), get()) }
   factory { SkipReminderUseCase(get(), get(), get()) }
 
   factory { ToggleReminderStateUseCase(get(), get()) }

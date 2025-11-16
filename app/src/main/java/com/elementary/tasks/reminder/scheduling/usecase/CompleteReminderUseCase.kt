@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
+import com.elementary.tasks.calendar.history.AddReminderToHistoryUseCase
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
@@ -13,11 +14,13 @@ class CompleteReminderUseCase(
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
   private val dateTimeManager: DateTimeManager,
   private val activateReminderUseCase: ActivateReminderUseCase,
+  private val addReminderToHistoryUseCase: AddReminderToHistoryUseCase,
 ) {
 
   suspend operator fun invoke(reminder: Reminder): Reminder {
     reminder.delay = 0
     val strategy = strategyResolver.resolve(reminder)
+    addReminderToHistoryUseCase(reminder)
     return if (strategy.canSkip(reminder)) {
       val fromDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
         ?: dateTimeManager.getCurrentDateTime()

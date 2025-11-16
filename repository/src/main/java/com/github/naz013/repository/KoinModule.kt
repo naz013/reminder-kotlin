@@ -2,6 +2,7 @@ package com.github.naz013.repository
 
 import com.github.naz013.repository.impl.BirthdayRepositoryImpl
 import com.github.naz013.repository.impl.CalendarEventRepositoryImpl
+import com.github.naz013.repository.impl.EventHistoryRepositoryImpl
 import com.github.naz013.repository.impl.EventOccurrenceRepositoryImpl
 import com.github.naz013.repository.impl.GoogleTaskListRepositoryImpl
 import com.github.naz013.repository.impl.GoogleTaskRepositoryImpl
@@ -62,4 +63,5 @@ val repositoryModule = module {
   factory { ReminderRepositoryImpl(get<AppDb>().reminderDao(), get()) as ReminderRepository }
   factory { RemoteFileMetadataRepositoryImpl(get<AppDb>().remoteFileMetadataDao(), get()) as RemoteFileMetadataRepository }
   factory { EventOccurrenceRepositoryImpl(get<AppDb>().eventOccurrenceDao(), get()) as EventOccurrenceRepository }
+  factory { EventHistoryRepositoryImpl(get<AppDb>().eventHistoryDao(), get()) as EventHistoryRepository }
 }
