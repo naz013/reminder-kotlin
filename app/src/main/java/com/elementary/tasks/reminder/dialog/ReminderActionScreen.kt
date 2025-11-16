@@ -662,11 +662,11 @@ private fun AppHeaderContent(
       contentAlignment = Alignment.Center
     ) {
       if (appIcon != null) {
-        Icon(
+        Image(
           bitmap = appIcon.asImageBitmap(),
           contentDescription = appName,
           modifier = Modifier.size(32.dp),
-          tint = MaterialTheme.colorScheme.onSecondaryContainer
+          contentScale = ContentScale.Fit
         )
       } else {
         Icon(

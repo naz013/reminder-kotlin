@@ -130,7 +130,7 @@ class ContactsReader(private val context: Context) {
     val contentResolver = context.contentResolver
     val contactLookup = contentResolver.query(
       /* uri = */ uri,
-      /* projection = */ arrayOf(ContactsContract.PhoneLookup._ID),
+      /* projection = */ arrayOf(ContactsContract.CommonDataKinds.Email.CONTACT_ID),
       /* selection = */ null,
       /* selectionArgs = */ null,
       /* sortOrder = */ null
@@ -138,7 +138,7 @@ class ContactsReader(private val context: Context) {
     contactLookup.use { look ->
       if (look != null && look.count > 0) {
         look.moveToNext()
-        contactId = look.readLong(ContactsContract.PhoneLookup._ID) ?: 0
+        contactId = look.readLong(ContactsContract.CommonDataKinds.Email.CONTACT_ID) ?: 0
       }
     }
     return contactId
