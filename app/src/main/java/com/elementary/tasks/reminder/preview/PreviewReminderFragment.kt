@@ -200,7 +200,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
 
   private fun removeReminder() {
     if (!viewModel.canDelete) {
-      dialogues.askConfirmation(requireContext(), getString(R.string.move_to_trash)) {
+      dialogues.askConfirmation(requireContext(), getString(R.string.move_to_the_archive)) {
         if (it) viewModel.moveToTrash()
       }
     } else {

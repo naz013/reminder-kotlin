@@ -6,6 +6,8 @@ import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.EventHistoryRepository
+import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.sync.DataType
 
@@ -13,7 +15,9 @@ class DeleteAllReminderUseCase(
   private val reminderRepository: ReminderRepository,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
-  private val deactivateReminderUseCase: DeactivateReminderUseCase
+  private val deactivateReminderUseCase: DeactivateReminderUseCase,
+  private val eventOccurrenceRepository: EventOccurrenceRepository,
+  private val eventHistoryRepository: EventHistoryRepository
 ) {
 
   suspend operator fun invoke(reminders: List<Reminder>) {
@@ -27,6 +31,8 @@ class DeleteAllReminderUseCase(
     )
     for (id in ids) {
       googleCalendarUtils.deleteEvents(id)
+      eventHistoryRepository.deleteByEventId(id)
+      eventOccurrenceRepository.deleteByEventId(id)
     }
     Logger.i(TAG, "Deleted all reminders, count = ${ids.size}")
   }
