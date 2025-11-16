@@ -25,6 +25,7 @@ class GetReminderActionsUseCase {
         ReminderAction.SendEmail -> type.hasEmailAction()
         ReminderAction.OpenApp -> type.hasApplicationAction()
         ReminderAction.OpenUrl -> type.hasLinkAction()
+        ReminderAction.ShowNotification -> true
       }
     }.also {
       Logger.i(TAG, "Available actions for reminder ${reminder.uuId}: $it")

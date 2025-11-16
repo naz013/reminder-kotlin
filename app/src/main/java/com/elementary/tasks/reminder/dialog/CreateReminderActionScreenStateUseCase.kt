@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.dialog
 
+import com.elementary.tasks.reminder.actions.ActionCategory
 import com.elementary.tasks.reminder.actions.GetReminderActionsUseCase
 import com.elementary.tasks.reminder.actions.ReminderAction
 import com.github.naz013.common.PackageManagerWrapper
@@ -23,19 +24,26 @@ class CreateReminderActionScreenStateUseCase(
     if (availableActions.isEmpty()) {
       throw IllegalStateException("No available actions for reminder ${reminder.uuId}")
     }
-    Logger.i(TAG, "Creating action screen state for reminder ${reminder.uuId} with actions: $availableActions")
+    val orderedAction = availableActions.sortedBy { action ->
+      when (action.category) {
+        ActionCategory.Action -> 0
+        ActionCategory.Main -> 1
+        ActionCategory.Secondary -> 2
+      }
+    }
+    Logger.i(TAG, "Creating action screen state for reminder ${reminder.uuId} with actions: $orderedAction")
     return ReminderActionScreenState(
       id = reminder.uuId,
       header = getHeader(reminder),
       todoList = getTodoList(reminder),
-      mainAction = availableActions.first().let {
+      mainAction = orderedAction.first().let {
         ReminderActionScreenActionItem(
           action = it,
           text = textProvider.getString(it.titleRes),
           iconRes = it.iconRes
         )
       },
-      secondaryActions = availableActions.drop(1).map {
+      secondaryActions = orderedAction.drop(1).map {
         ReminderActionScreenActionItem(
           action = it,
           text = textProvider.getString(it.titleRes),
@@ -122,6 +130,7 @@ class CreateReminderActionScreenStateUseCase(
       ReminderAction.SendEmail,
       ReminderAction.OpenApp,
       ReminderAction.OpenUrl,
+      ReminderAction.ShowNotification
     )
   }
 }

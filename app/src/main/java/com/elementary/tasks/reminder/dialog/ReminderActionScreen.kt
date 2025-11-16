@@ -23,30 +23,49 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.elementary.tasks.reminder.actions.ReminderAction
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.PrimaryIconButton
+import com.github.naz013.ui.common.compose.foundation.SplitButton
+import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
+import com.github.naz013.ui.common.compose.foundation.component.BottomSheetItem
+import com.github.naz013.ui.common.compose.foundation.component.BottomSheetList
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 /**
@@ -63,6 +82,7 @@ import org.koin.androidx.compose.koinViewModel
  * @param viewModel The ViewModel providing state and handling actions
  * @param modifier Optional modifier for the root container
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReminderActionScreen(
   viewModel: ReminderActionActivityViewModel = koinViewModel(),
@@ -70,6 +90,17 @@ fun ReminderActionScreen(
 ) {
   val snackbarHostState = remember { SnackbarHostState() }
   val state by viewModel.state.observeAsState()
+
+  var showSnoozeBottomSheet by remember { mutableStateOf(false) }
+  val snoozeSheetState = rememberModalBottomSheetState()
+  val scope = rememberCoroutineScope()
+
+  val showSnoozeDialog by viewModel.showSnoozeDialog.observeAsState()
+
+  // Observe showSnoozeDialog event and display bottom sheet
+  showSnoozeDialog?.getContentIfNotHandled()?.let {
+    showSnoozeBottomSheet = true
+  }
 
   Scaffold(
     snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
@@ -123,6 +154,124 @@ fun ReminderActionScreen(
         )
       }
     }
+
+    // Snooze Bottom Sheet
+    if (showSnoozeBottomSheet) {
+      AppModalBottomSheet(
+        onDismissRequest = { showSnoozeBottomSheet = false },
+        sheetState = snoozeSheetState,
+        dragHandle = null
+      ) {
+        SnoozeDialogContent(
+          onDismiss = {
+            scope.launch {
+              snoozeSheetState.hide()
+              showSnoozeBottomSheet = false
+            }
+          },
+          onSnooze = {
+            viewModel.onCustomSnooze(it)
+            scope.launch {
+              snoozeSheetState.hide()
+              showSnoozeBottomSheet = false
+            }
+          }
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun SnoozeDialogContent(
+  onDismiss: () -> Unit,
+  onSnooze: (Int) -> Unit
+) {
+  Column(
+    modifier = Modifier.padding(16.dp)
+  ) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      PrimaryIconButton(
+        icon = AppIcons.Clear,
+        contentDescription = stringResource(R.string.cancel),
+        onClick = onDismiss,
+        color = MaterialTheme.colorScheme.errorContainer,
+        iconColor = MaterialTheme.colorScheme.onErrorContainer,
+        enabled = true
+      )
+      Spacer(modifier = Modifier.width(8.dp))
+      Text(
+        text = stringResource(R.string.action_snooze_custom),
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.weight(1f),
+        textAlign = TextAlign.Center,
+        maxLines = 2,
+      )
+      Spacer(modifier = Modifier.width(8.dp))
+      PrimaryIconButton(
+        icon = AppIcons.Ok,
+        contentDescription = stringResource(R.string.action_snooze),
+        onClick = {
+
+        },
+        enabled = false,
+        color = Color.Transparent,
+        iconColor = Color.Transparent,
+        disabledColor = Color.Transparent,
+        disabledIconColor = Color.Transparent
+      )
+    }
+
+    HorizontalDivider(
+      modifier = Modifier.padding(vertical = 8.dp),
+      color = MaterialTheme.colorScheme.outlineVariant
+    )
+
+    BottomSheetList(
+      items = listOf(
+        BottomSheetItem(
+          id = 5,
+          title = stringResource(R.string.x_minutes, "5")
+        ),
+        BottomSheetItem(
+          id = 10,
+          title = stringResource(R.string.x_minutes, "10")
+        ),
+        BottomSheetItem(
+          id = 15,
+          title = stringResource(R.string.x_minutes, "15")
+        ),
+        BottomSheetItem(
+          id = 30,
+          title = stringResource(R.string.x_minutes, "30")
+        ),
+        BottomSheetItem(
+          id = 60,
+          title = stringResource(R.string.x_hours, "1")
+        ),
+        BottomSheetItem(
+          id = 120,
+          title = stringResource(R.string.x_hours, "2")
+        ),
+        BottomSheetItem(
+          id = 180,
+          title = stringResource(R.string.x_hours, "3")
+        ),
+        BottomSheetItem(
+          id = 1440,
+          title = stringResource(R.string.x_days, "1")
+        )
+      ),
+      onItemClick = { minutes ->
+        onSnooze(minutes)
+      },
+      modifier = Modifier.padding(bottom = 16.dp)
+    )
   }
 }
 
@@ -150,6 +299,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
         is ReminderActionScreenHeader.SimpleWithSummary -> {
           SimpleHeaderContent(text = header.text)
         }
+
         is ReminderActionScreenHeader.MakeCall -> {
           ContactHeaderContent(
             text = header.text,
@@ -159,6 +309,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             icon = R.drawable.ic_fluent_phone
           )
         }
+
         is ReminderActionScreenHeader.SendSms -> {
           ContactHeaderContent(
             text = header.text,
@@ -168,6 +319,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             icon = R.drawable.ic_fluent_send
           )
         }
+
         is ReminderActionScreenHeader.SendEmail -> {
           EmailHeaderContent(
             text = header.text,
@@ -177,6 +329,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             contactPhoto = header.contactPhoto
           )
         }
+
         is ReminderActionScreenHeader.OpenApplication -> {
           AppHeaderContent(
             text = header.text,
@@ -184,6 +337,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             appIcon = header.appIcon?.toBitmap()
           )
         }
+
         is ReminderActionScreenHeader.OpenLink -> {
           LinkHeaderContent(
             text = header.text,
@@ -584,17 +738,13 @@ private fun ActionsSection(
   secondaryActions: List<ReminderActionScreenActionItem>,
   onActionClick: (ReminderAction) -> Unit
 ) {
-  Column(
-    modifier = Modifier.fillMaxWidth(),
-    verticalArrangement = Arrangement.spacedBy(12.dp)
-  ) {
-    // Main action button
+  if (secondaryActions.isEmpty()) {
     Button(
       onClick = { onActionClick(mainAction.action) },
       modifier = Modifier
         .fillMaxWidth()
         .height(56.dp),
-      shape = RoundedCornerShape(12.dp),
+      shape = ButtonDefaults.shape,
       colors = ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.primary
       )
@@ -611,40 +761,181 @@ private fun ActionsSection(
         fontWeight = FontWeight.SemiBold
       )
     }
-
-    // Secondary action buttons
-    if (secondaryActions.isNotEmpty()) {
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-      ) {
-        secondaryActions.forEach { action ->
-          OutlinedButton(
-            onClick = { onActionClick(action.action) },
-            modifier = Modifier
-              .weight(1f)
-              .height(48.dp),
-            shape = RoundedCornerShape(12.dp)
-          ) {
-            Column(
-              horizontalAlignment = Alignment.CenterHorizontally,
-              verticalArrangement = Arrangement.Center
-            ) {
-              Icon(
-                painter = painterResource(id = action.iconRes),
-                contentDescription = null,
-                modifier = Modifier.size(20.dp)
-              )
-              Text(
-                text = action.text,
-                style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-              )
-            }
+  } else {
+    var expanded by remember { mutableStateOf(false) }
+    Box(
+      modifier = Modifier.fillMaxWidth(),
+    ) {
+      SplitButton(
+        onLeftClick = { onActionClick(mainAction.action) },
+        onRightClick = { expanded = true },
+        leftContent = {
+          Icon(
+            painter = painterResource(id = mainAction.iconRes),
+            contentDescription = mainAction.text
+          )
+          Text(
+            text = mainAction.text,
+            modifier = Modifier.padding(start = 8.dp)
+          )
+        },
+        rightContent = {
+          Box {
+            Icon(
+              painter = painterResource(id = R.drawable.ic_fluent_more_hor),
+              contentDescription = stringResource(com.elementary.tasks.R.string.more_options)
+            )
+            PopupMenu(
+              expanded = expanded,
+              onDismissRequest = { expanded = false },
+              items = secondaryActions.mapIndexed { index, item ->
+                PopupMenuItem(
+                  id = index,
+                  title = item.text,
+                  iconRes = item.iconRes
+                )
+              },
+              onItemClick = { itemId ->
+                val actionItem = secondaryActions.getOrNull(itemId)
+                actionItem?.let {
+                  onActionClick(it.action)
+                }
+              }
+            )
           }
-        }
-      }
+        },
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(56.dp),
+        cornerRadius = 28.dp
+      )
+    }
+  }
+}
+
+/**
+ * Preview for ActionsSection showing different action button layouts.
+ *
+ * Displays the main action button with various secondary action combinations
+ * to visualize button layout and spacing.
+ */
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun ActionsSectionPreview() {
+  AppTheme {
+    Surface(
+      modifier = Modifier.padding(16.dp),
+      color = MaterialTheme.colorScheme.background
+    ) {
+      ActionsSection(
+        mainAction = ReminderActionScreenActionItem(
+          action = ReminderAction.Complete,
+          text = "Mark as Complete",
+          iconRes = R.drawable.ic_fluent_checkmark
+        ),
+        secondaryActions = listOf(
+          ReminderActionScreenActionItem(
+            action = ReminderAction.Snooze,
+            text = "Snooze",
+            iconRes = R.drawable.ic_fluent_alert_snooze
+          ),
+          ReminderActionScreenActionItem(
+            action = ReminderAction.Edit,
+            text = "Edit",
+            iconRes = R.drawable.ic_fluent_edit
+          ),
+          ReminderActionScreenActionItem(
+            action = ReminderAction.Dismiss,
+            text = "Dismiss",
+            iconRes = R.drawable.ic_fluent_dismiss
+          )
+        ),
+        onActionClick = { }
+      )
+    }
+  }
+}
+
+/**
+ * Preview for ActionsSection with only main action (no secondary actions).
+ *
+ * Shows the layout when there are no secondary actions available.
+ */
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun ActionsSectionWithoutSecondaryPreview() {
+  AppTheme {
+    Surface(
+      modifier = Modifier.padding(16.dp),
+      color = MaterialTheme.colorScheme.background
+    ) {
+      ActionsSection(
+        mainAction = ReminderActionScreenActionItem(
+          action = ReminderAction.MakeCall,
+          text = "Make Call",
+          iconRes = R.drawable.ic_fluent_phone
+        ),
+        secondaryActions = emptyList(),
+        onActionClick = { }
+      )
+    }
+  }
+}
+
+/**
+ * Preview for ActionsSection with two secondary actions.
+ *
+ * Shows a common layout with the main action and two secondary buttons.
+ */
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun ActionsSectionTwoSecondaryPreview() {
+  AppTheme {
+    Surface(
+      modifier = Modifier.padding(16.dp),
+      color = MaterialTheme.colorScheme.background
+    ) {
+      ActionsSection(
+        mainAction = ReminderActionScreenActionItem(
+          action = ReminderAction.SendEmail,
+          text = "Send Email",
+          iconRes = R.drawable.ic_fluent_send
+        ),
+        secondaryActions = listOf(
+          ReminderActionScreenActionItem(
+            action = ReminderAction.Edit,
+            text = "Edit",
+            iconRes = R.drawable.ic_fluent_edit
+          ),
+          ReminderActionScreenActionItem(
+            action = ReminderAction.Dismiss,
+            text = "Cancel",
+            iconRes = R.drawable.ic_fluent_dismiss
+          )
+        ),
+        onActionClick = { }
+      )
+    }
+  }
+}
+
+/**
+ * Preview for SnoozeDialogContent showing snooze time options.
+ *
+ * Displays the snooze dialog content with various time options
+ * including minutes, hours, and days to visualize the layout.
+ */
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun SnoozeDialogContentPreview() {
+  AppTheme {
+    Surface(
+      color = MaterialTheme.colorScheme.background
+    ) {
+      SnoozeDialogContent(
+        onDismiss = { },
+        onSnooze = { }
+      )
     }
   }
 }

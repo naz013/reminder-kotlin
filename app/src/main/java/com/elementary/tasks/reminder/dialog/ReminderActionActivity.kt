@@ -69,9 +69,6 @@ class ReminderActionActivity : ComposeActivity() {
     viewModel.showToast.observeEvent(this) {
       Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
     }
-    viewModel.showFavoriteNotification.observeEvent(this) {
-//      showFavouriteNotification(it.text, it.notificationId)
-    }
     lifecycle.addObserver(viewModel)
   }
 

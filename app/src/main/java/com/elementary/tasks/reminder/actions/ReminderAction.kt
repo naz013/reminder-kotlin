@@ -24,6 +24,7 @@ enum class ReminderAction(
 
   MoveToArchive(R.string.move_to_archive, R.drawable.ic_fluent_archive, ActionCategory.Secondary),
   Delete(R.string.action_delete, R.drawable.ic_fluent_delete, ActionCategory.Secondary),
+  ShowNotification(R.string.keep_notification, R.drawable.ic_fluent_heart, ActionCategory.Secondary);
 }
 
 enum class ActionCategory {

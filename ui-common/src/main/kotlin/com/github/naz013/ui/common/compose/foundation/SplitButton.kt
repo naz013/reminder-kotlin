@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
@@ -25,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,7 +47,7 @@ import androidx.compose.ui.unit.dp
  * @param rightContent The composable content to display on the right side of the button
  * @param modifier Modifier to be applied to the split button container
  * @param enabled Controls the enabled state of the entire button. When false, both sides are disabled
- * @param shape The shape of the button's container
+ * @param cornerRadius The corner radius for the button's rounded corners
  * @param containerColor The background color of the button
  * @param contentColor The color for content inside the button
  * @param disabledContainerColor The background color when the button is disabled
@@ -65,13 +67,13 @@ fun SplitButton(
   rightContent: @Composable RowScope.() -> Unit,
   modifier: Modifier = Modifier,
   enabled: Boolean = true,
-  shape: Shape = ButtonDefaults.shape,
+  cornerRadius: Dp = 16.dp,
   containerColor: Color = MaterialTheme.colorScheme.primary,
   contentColor: Color = MaterialTheme.colorScheme.onPrimary,
   disabledContainerColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
   disabledContentColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
   border: BorderStroke? = null,
-  dividerColor: Color = contentColor.copy(alpha = 0.2f),
+  dividerColor: Color = Color.Transparent,
   dividerThickness: Dp = 1.dp,
   leftInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
   rightInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -81,27 +83,25 @@ fun SplitButton(
   val currentContentColor = if (enabled) contentColor else disabledContentColor
 
   Surface(
-    modifier = modifier.defaultMinSize(
-      minWidth = ButtonDefaults.MinWidth,
-      minHeight = ButtonDefaults.MinHeight
-    ),
-    shape = shape,
-    color = currentContainerColor,
-    contentColor = currentContentColor,
-    border = border
+    modifier = modifier,
   ) {
     Row(
-      modifier = Modifier,
+      modifier = Modifier.fillMaxSize(),
       horizontalArrangement = Arrangement.Start,
       verticalAlignment = Alignment.CenterVertically
     ) {
       // Left button section
       Surface(
         onClick = onLeftClick,
-        modifier = Modifier.weight(1f),
+        modifier = Modifier.weight(1f).fillMaxHeight(),
         enabled = enabled,
-        shape = shape,
-        color = Color.Transparent,
+        shape = RoundedCornerShape(
+          topStart = cornerRadius,
+          topEnd = 0.dp,
+          bottomStart = cornerRadius,
+          bottomEnd = 0.dp
+        ),
+        color = currentContainerColor,
         contentColor = currentContentColor,
         interactionSource = leftInteractionSource
       ) {
@@ -116,7 +116,7 @@ fun SplitButton(
       // Divider
       HorizontalDivider(
         modifier = Modifier
-          .height(ButtonDefaults.MinHeight - 16.dp)
+          .fillMaxHeight()
           .width(dividerThickness),
         thickness = dividerThickness,
         color = dividerColor
@@ -125,10 +125,15 @@ fun SplitButton(
       // Right button section
       Surface(
         onClick = onRightClick,
-        modifier = Modifier,
+        modifier = Modifier.fillMaxHeight(),
         enabled = enabled,
-        shape = shape,
-        color = Color.Transparent,
+        shape = RoundedCornerShape(
+          topStart = 0.dp,
+          topEnd = cornerRadius,
+          bottomStart = 0.dp,
+          bottomEnd = cornerRadius
+        ),
+        color = currentContainerColor,
         contentColor = currentContentColor,
         interactionSource = rightInteractionSource
       ) {
@@ -156,7 +161,7 @@ fun SplitButton(
  * @param rightIcon Icon to display on the right side of the button
  * @param modifier Modifier to be applied to the split button container
  * @param enabled Controls the enabled state of the entire button. When false, both sides are disabled
- * @param shape The shape of the button's container
+ * @param cornerRadius The corner radius for the button's rounded corners
  * @param containerColor The background color of the button
  * @param contentColor The color for content inside the button
  * @param disabledContainerColor The background color when the button is disabled
@@ -179,13 +184,13 @@ fun SplitButton(
   rightIcon: ImageVector,
   modifier: Modifier = Modifier,
   enabled: Boolean = true,
-  shape: Shape = ButtonDefaults.shape,
+  cornerRadius: Dp = 16.dp,
   containerColor: Color = MaterialTheme.colorScheme.primary,
   contentColor: Color = MaterialTheme.colorScheme.onPrimary,
   disabledContainerColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
   disabledContentColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
   border: BorderStroke? = null,
-  dividerColor: Color = contentColor.copy(alpha = 0.2f),
+  dividerColor: Color = Color.Transparent,
   dividerThickness: Dp = 1.dp,
   leftIconContentDescription: String? = null,
   rightIconContentDescription: String? = null,
@@ -216,7 +221,7 @@ fun SplitButton(
     },
     modifier = modifier,
     enabled = enabled,
-    shape = shape,
+    cornerRadius = cornerRadius,
     containerColor = containerColor,
     contentColor = contentColor,
     disabledContainerColor = disabledContainerColor,
@@ -243,7 +248,7 @@ fun SplitButton(
  * @param rightIcon Icon painter to display on the right side of the button
  * @param modifier Modifier to be applied to the split button container
  * @param enabled Controls the enabled state of the entire button. When false, both sides are disabled
- * @param shape The shape of the button's container
+ * @param cornerRadius The corner radius for the button's container
  * @param containerColor The background color of the button
  * @param contentColor The color for content inside the button
  * @param disabledContainerColor The background color when the button is disabled
@@ -266,13 +271,13 @@ fun SplitButton(
   rightIcon: Painter,
   modifier: Modifier = Modifier,
   enabled: Boolean = true,
-  shape: Shape = ButtonDefaults.shape,
+  cornerRadius: Dp = 16.dp,
   containerColor: Color = MaterialTheme.colorScheme.primary,
   contentColor: Color = MaterialTheme.colorScheme.onPrimary,
   disabledContainerColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
   disabledContentColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
   border: BorderStroke? = null,
-  dividerColor: Color = contentColor.copy(alpha = 0.2f),
+  dividerColor: Color = Color.Transparent,
   dividerThickness: Dp = 1.dp,
   leftIconContentDescription: String? = null,
   rightIconContentDescription: String? = null,
@@ -303,7 +308,7 @@ fun SplitButton(
     },
     modifier = modifier,
     enabled = enabled,
-    shape = shape,
+    cornerRadius = cornerRadius,
     containerColor = containerColor,
     contentColor = contentColor,
     disabledContainerColor = disabledContainerColor,
@@ -329,7 +334,7 @@ fun SplitButton(
  * @param rightContent The composable content to display on the right side of the button
  * @param modifier Modifier to be applied to the split button container
  * @param enabled Controls the enabled state of the entire button. When false, both sides are disabled
- * @param shape The shape of the button's container
+ * @param cornerRadius The corner radius for the button's rounded corners
  * @param contentColor The color for content inside the button
  * @param disabledContentColor The content color when the button is disabled
  * @param borderColor The color of the button's border
@@ -349,13 +354,13 @@ fun OutlinedSplitButton(
   rightContent: @Composable RowScope.() -> Unit,
   modifier: Modifier = Modifier,
   enabled: Boolean = true,
-  shape: Shape = ButtonDefaults.outlinedShape,
+  cornerRadius: Dp = 16.dp,
   contentColor: Color = MaterialTheme.colorScheme.primary,
   disabledContentColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
   borderColor: Color = MaterialTheme.colorScheme.outline,
   disabledBorderColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
   borderThickness: Dp = 1.dp,
-  dividerColor: Color = contentColor.copy(alpha = 0.2f),
+  dividerColor: Color = Color.Transparent,
   dividerThickness: Dp = 1.dp,
   leftInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
   rightInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -370,7 +375,7 @@ fun OutlinedSplitButton(
     rightContent = rightContent,
     modifier = modifier,
     enabled = enabled,
-    shape = shape,
+    cornerRadius = cornerRadius,
     containerColor = Color.Transparent,
     contentColor = contentColor,
     disabledContainerColor = Color.Transparent,
@@ -397,7 +402,7 @@ fun OutlinedSplitButton(
  * @param rightIcon Icon to display on the right side of the button
  * @param modifier Modifier to be applied to the split button container
  * @param enabled Controls the enabled state of the entire button. When false, both sides are disabled
- * @param shape The shape of the button's container
+ * @param cornerRadius The corner radius for the button's rounded corners
  * @param contentColor The color for content inside the button
  * @param disabledContentColor The content color when the button is disabled
  * @param borderColor The color of the button's border
@@ -420,13 +425,13 @@ fun OutlinedSplitButton(
   rightIcon: ImageVector,
   modifier: Modifier = Modifier,
   enabled: Boolean = true,
-  shape: Shape = ButtonDefaults.outlinedShape,
+  cornerRadius: Dp = 16.dp,
   contentColor: Color = MaterialTheme.colorScheme.primary,
   disabledContentColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
   borderColor: Color = MaterialTheme.colorScheme.outline,
   disabledBorderColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
   borderThickness: Dp = 1.dp,
-  dividerColor: Color = contentColor.copy(alpha = 0.2f),
+  dividerColor: Color = Color.Transparent,
   dividerThickness: Dp = 1.dp,
   leftIconContentDescription: String? = null,
   rightIconContentDescription: String? = null,
@@ -457,7 +462,7 @@ fun OutlinedSplitButton(
     },
     modifier = modifier,
     enabled = enabled,
-    shape = shape,
+    cornerRadius = cornerRadius,
     contentColor = contentColor,
     disabledContentColor = disabledContentColor,
     borderColor = borderColor,
@@ -484,7 +489,7 @@ fun OutlinedSplitButton(
  * @param rightIcon Icon painter to display on the right side of the button
  * @param modifier Modifier to be applied to the split button container
  * @param enabled Controls the enabled state of the entire button. When false, both sides are disabled
- * @param shape The shape of the button's container
+ * @param cornerRadius The corner radius for the button's container
  * @param contentColor The color for content inside the button
  * @param disabledContentColor The content color when the button is disabled
  * @param borderColor The color of the button's border
@@ -507,13 +512,13 @@ fun OutlinedSplitButton(
   rightIcon: Painter,
   modifier: Modifier = Modifier,
   enabled: Boolean = true,
-  shape: Shape = ButtonDefaults.outlinedShape,
+  cornerRadius: Dp = 16.dp,
   contentColor: Color = MaterialTheme.colorScheme.primary,
   disabledContentColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
   borderColor: Color = MaterialTheme.colorScheme.outline,
   disabledBorderColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
   borderThickness: Dp = 1.dp,
-  dividerColor: Color = contentColor.copy(alpha = 0.2f),
+  dividerColor: Color = Color.Transparent,
   dividerThickness: Dp = 1.dp,
   leftIconContentDescription: String? = null,
   rightIconContentDescription: String? = null,
@@ -544,7 +549,7 @@ fun OutlinedSplitButton(
     },
     modifier = modifier,
     enabled = enabled,
-    shape = shape,
+    cornerRadius = cornerRadius,
     contentColor = contentColor,
     disabledContentColor = disabledContentColor,
     borderColor = borderColor,
@@ -582,7 +587,8 @@ private fun SplitButtonPreview_Filled() {
           contentDescription = "More options"
         )
       },
-      modifier = Modifier.padding(16.dp)
+      modifier = Modifier.padding(16.dp).height(56.dp),
+      cornerRadius = 28.dp
     )
   }
 }
@@ -610,7 +616,8 @@ private fun SplitButtonPreview_Outlined() {
           contentDescription = "More options"
         )
       },
-      modifier = Modifier.padding(16.dp)
+      modifier = Modifier.padding(16.dp).height(56.dp),
+      cornerRadius = 28.dp
     )
   }
 }
@@ -639,7 +646,8 @@ private fun SplitButtonPreview_Disabled() {
         )
       },
       enabled = false,
-      modifier = Modifier.padding(16.dp)
+      modifier = Modifier.padding(16.dp).height(56.dp),
+      cornerRadius = 28.dp
     )
   }
 }
@@ -662,7 +670,8 @@ private fun SplitButtonPreview_CustomColors() {
       },
       containerColor = MaterialTheme.colorScheme.tertiary,
       contentColor = MaterialTheme.colorScheme.onTertiary,
-      modifier = Modifier.padding(16.dp)
+      modifier = Modifier.padding(16.dp).height(56.dp),
+      cornerRadius = 28.dp
     )
   }
 }
@@ -679,7 +688,8 @@ private fun SplitButtonPreview_IconAndText() {
       rightIcon = Icons.Default.ArrowDropDown,
       leftIconContentDescription = "Save",
       rightIconContentDescription = "More options",
-      modifier = Modifier.padding(16.dp)
+      modifier = Modifier.padding(16.dp).height(56.dp),
+      cornerRadius = 28.dp
     )
   }
 }
@@ -696,7 +706,8 @@ private fun OutlinedSplitButtonPreview_IconAndText() {
       rightIcon = Icons.Default.ArrowDropDown,
       leftIconContentDescription = "Delete",
       rightIconContentDescription = "More options",
-      modifier = Modifier.padding(16.dp)
+      modifier = Modifier.padding(16.dp).height(56.dp),
+      cornerRadius = 28.dp
     )
   }
 }
@@ -712,7 +723,8 @@ private fun SplitButtonPreview_TextOnly() {
       leftIcon = null,
       rightIcon = Icons.Default.ArrowDropDown,
       rightIconContentDescription = "More options",
-      modifier = Modifier.padding(16.dp)
+      modifier = Modifier.padding(16.dp).height(56.dp),
+      cornerRadius = 28.dp
     )
   }
 }

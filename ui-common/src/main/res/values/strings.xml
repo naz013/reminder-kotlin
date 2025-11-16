@@ -923,4 +923,6 @@
     <string name="action_delete">Delete</string>
     <string name="action_send_email">Send email</string>
     <string name="action_snooze_custom">Snooze for ...</string>
+    <string name="more_options">More options</string>
+    <string name="keep_notification">Keep notification</string>
 </resources>
