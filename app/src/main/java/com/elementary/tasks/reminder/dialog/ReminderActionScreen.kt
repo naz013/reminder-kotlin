@@ -55,9 +55,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.elementary.tasks.reminder.actions.ReminderAction
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.DeviceScreenConfiguration
 import com.github.naz013.ui.common.compose.foundation.PrimaryIconButton
 import com.github.naz013.ui.common.compose.foundation.SplitButton
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
@@ -65,6 +67,7 @@ import com.github.naz013.ui.common.compose.foundation.component.BottomSheetItem
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetList
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -102,6 +105,8 @@ fun ReminderActionScreen(
     showSnoozeBottomSheet = true
   }
 
+  val screenConfiguration = deviceScreenConfiguration()
+
   Scaffold(
     snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
   ) { paddingValues ->
@@ -114,44 +119,36 @@ fun ReminderActionScreen(
       // Early return if state is not available yet
       val screenState = state ?: return@Surface
 
-      Column(
-        modifier = Modifier
-          .fillMaxSize()
-          .verticalScroll(rememberScrollState())
-          .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceBetween
-      ) {
-        // Main content
-        Column(
-          modifier = Modifier.weight(1f),
-          verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-          // Header section
-          ReminderHeader(header = screenState.header)
+      Logger.d("ReminderActionScreen", "Rendering screen with configuration: $screenConfiguration")
 
-          // Todo list section (if present)
-          screenState.todoList?.let { todoList ->
-            TodoListSection(
-              todoList = todoList,
-              onItemClick = { itemId ->
-                // Input validation: ignore blank ids
-                if (itemId.isBlank()) return@TodoListSection
-                viewModel.onTodoItemClick(itemId)
-              }
-            )
-          }
+      // Choose layout based on screen configuration
+      when (screenConfiguration) {
+        DeviceScreenConfiguration.MobileLandscape -> {
+          ReminderActionScreenLandscape(
+            screenState = screenState,
+            onTodoItemClick = { itemId ->
+              // Input validation: ignore blank ids
+              if (itemId.isBlank()) return@ReminderActionScreenLandscape
+              viewModel.onTodoItemClick(itemId)
+            },
+            onActionClick = { action ->
+              viewModel.onActionClick(action)
+            }
+          )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Action buttons section
-        ActionsSection(
-          mainAction = screenState.mainAction,
-          secondaryActions = screenState.secondaryActions,
-          onActionClick = { action ->
-            viewModel.onActionClick(action)
-          }
-        )
+        else -> {
+          ReminderActionScreenPortrait(
+            screenState = screenState,
+            onTodoItemClick = { itemId ->
+              // Input validation: ignore blank ids
+              if (itemId.isBlank()) return@ReminderActionScreenPortrait
+              viewModel.onTodoItemClick(itemId)
+            },
+            onActionClick = { action ->
+              viewModel.onActionClick(action)
+            }
+          )
+        }
       }
     }
 
@@ -178,6 +175,115 @@ fun ReminderActionScreen(
           }
         )
       }
+    }
+  }
+}
+
+/**
+ * Portrait layout for the reminder action screen.
+ *
+ * Displays the content in a vertical layout optimized for portrait orientation.
+ * Content is arranged with header at top, todo list in middle, and actions at bottom.
+ *
+ * @param screenState The screen state containing all display data
+ * @param onTodoItemClick Callback for todo item clicks
+ * @param onActionClick Callback for action button clicks
+ */
+@Composable
+private fun ReminderActionScreenPortrait(
+  screenState: ReminderActionScreenState,
+  onTodoItemClick: (String) -> Unit,
+  onActionClick: (ReminderAction) -> Unit
+) {
+  Column(
+    modifier = Modifier
+      .fillMaxSize()
+      .verticalScroll(rememberScrollState())
+      .padding(16.dp),
+    verticalArrangement = Arrangement.SpaceBetween
+  ) {
+    // Main content
+    Column(
+      modifier = Modifier.weight(1f),
+      verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+      // Header section
+      ReminderHeader(header = screenState.header)
+
+      // Todo list section (if present)
+      screenState.todoList?.let { todoList ->
+        TodoListSection(
+          todoList = todoList,
+          onItemClick = onTodoItemClick
+        )
+      }
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    // Action buttons section
+    ActionsSection(
+      mainAction = screenState.mainAction,
+      secondaryActions = screenState.secondaryActions,
+      onActionClick = onActionClick
+    )
+  }
+}
+
+/**
+ * Landscape layout for the reminder action screen.
+ *
+ * Displays the content in a horizontal two-column layout optimized for landscape orientation.
+ * Left column contains header and todo list, right column contains action buttons.
+ *
+ * @param screenState The screen state containing all display data
+ * @param onTodoItemClick Callback for todo item clicks
+ * @param onActionClick Callback for action button clicks
+ */
+@Composable
+private fun ReminderActionScreenLandscape(
+  screenState: ReminderActionScreenState,
+  onTodoItemClick: (String) -> Unit,
+  onActionClick: (ReminderAction) -> Unit
+) {
+  Row(
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp),
+    horizontalArrangement = Arrangement.spacedBy(16.dp)
+  ) {
+    // Left column: Content (header + todo list)
+    Column(
+      modifier = Modifier
+        .weight(1f)
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState()),
+      verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+      // Header section
+      ReminderHeader(header = screenState.header)
+
+      // Todo list section (if present)
+      screenState.todoList?.let { todoList ->
+        TodoListSection(
+          todoList = todoList,
+          onItemClick = onTodoItemClick
+        )
+      }
+    }
+
+    // Right column: Actions
+    Column(
+      modifier = Modifier
+        .width(280.dp)
+        .fillMaxSize(),
+      verticalArrangement = Arrangement.Bottom
+    ) {
+      ActionsSection(
+        mainAction = screenState.mainAction,
+        secondaryActions = screenState.secondaryActions,
+        onActionClick = onActionClick
+      )
     }
   }
 }
@@ -662,19 +768,19 @@ private fun TodoListSection(
 ) {
   Card(
     modifier = Modifier
-      .fillMaxWidth(), // Max height to allow scrolling
+      .fillMaxWidth(),
     shape = RoundedCornerShape(12.dp),
     colors = CardDefaults.cardColors(
       containerColor = MaterialTheme.colorScheme.surface
     ),
     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
   ) {
+    // Removed internal verticalScroll to avoid nested scroll causing infinite height constraints.
     Column(
       modifier = Modifier
         .fillMaxWidth()
-        .verticalScroll(rememberScrollState())
         .padding(12.dp),
-      verticalArrangement = Arrangement.spacedBy(8.dp)
+      verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
       todoList.items.forEach { item ->
         TodoItemRow(
@@ -935,6 +1041,122 @@ private fun SnoozeDialogContentPreview() {
       SnoozeDialogContent(
         onDismiss = { },
         onSnooze = { }
+      )
+    }
+  }
+}
+
+/**
+ * Preview for ReminderActionScreenPortrait layout.
+ *
+ * Shows the vertical layout optimized for portrait orientation
+ * with header, todo list, and actions arranged vertically.
+ */
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
+@Composable
+private fun ReminderActionScreenPortraitPreview() {
+  AppTheme {
+    Surface(
+      color = MaterialTheme.colorScheme.background
+    ) {
+      ReminderActionScreenPortrait(
+        screenState = ReminderActionScreenState(
+          id = "preview-1",
+          header = ReminderActionScreenHeader.SimpleWithSummary(
+            text = "Meeting with team at 3 PM"
+          ),
+          todoList = ReminderActionScreenTodoList(
+            items = listOf(
+              ReminderActionScreenTodoItem(
+                id = "1",
+                text = "Prepare presentation",
+                isCompleted = false
+              ),
+              ReminderActionScreenTodoItem(
+                id = "2",
+                text = "Review documents",
+                isCompleted = true
+              )
+            )
+          ),
+          mainAction = ReminderActionScreenActionItem(
+            action = ReminderAction.Complete,
+            text = "Complete",
+            iconRes = R.drawable.ic_fluent_checkmark
+          ),
+          secondaryActions = listOf(
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Snooze,
+              text = "Snooze",
+              iconRes = R.drawable.ic_fluent_alert_snooze
+            ),
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Edit,
+              text = "Edit",
+              iconRes = R.drawable.ic_fluent_edit
+            )
+          )
+        ),
+        onTodoItemClick = { },
+        onActionClick = { }
+      )
+    }
+  }
+}
+
+/**
+ * Preview for ReminderActionScreenLandscape layout.
+ *
+ * Shows the horizontal two-column layout optimized for landscape orientation
+ * with content on left and actions on right.
+ */
+@Preview(showBackground = true, widthDp = 800, heightDp = 400)
+@Composable
+private fun ReminderActionScreenLandscapePreview() {
+  AppTheme {
+    Surface(
+      color = MaterialTheme.colorScheme.background
+    ) {
+      ReminderActionScreenLandscape(
+        screenState = ReminderActionScreenState(
+          id = "preview-2",
+          header = ReminderActionScreenHeader.SimpleWithSummary(
+            text = "Meeting with team at 3 PM"
+          ),
+          todoList = ReminderActionScreenTodoList(
+            items = listOf(
+              ReminderActionScreenTodoItem(
+                id = "1",
+                text = "Prepare presentation",
+                isCompleted = false
+              ),
+              ReminderActionScreenTodoItem(
+                id = "2",
+                text = "Review documents",
+                isCompleted = true
+              )
+            )
+          ),
+          mainAction = ReminderActionScreenActionItem(
+            action = ReminderAction.Complete,
+            text = "Complete",
+            iconRes = R.drawable.ic_fluent_checkmark
+          ),
+          secondaryActions = listOf(
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Snooze,
+              text = "Snooze",
+              iconRes = R.drawable.ic_fluent_alert_snooze
+            ),
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Edit,
+              text = "Edit",
+              iconRes = R.drawable.ic_fluent_edit
+            )
+          )
+        ),
+        onTodoItemClick = { },
+        onActionClick = { }
       )
     }
   }

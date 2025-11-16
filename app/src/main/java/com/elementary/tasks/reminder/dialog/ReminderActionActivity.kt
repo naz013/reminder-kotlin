@@ -40,12 +40,7 @@ class ReminderActionActivity : ComposeActivity() {
   @Composable
   override fun ActivityContent() {
     val viewModel: ReminderActionActivityViewModel = koinViewModel()
-
-    DynamicScreen(
-      mobilePortrait = {
-        ReminderActionScreen(viewModel = viewModel)
-      }
-    )
+    ReminderActionScreen(viewModel = viewModel)
   }
 
   private fun getId() = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
