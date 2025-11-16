@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder
 
 import android.os.Bundle
+import com.elementary.tasks.reminder.actions.GetReminderActionsUseCase
 import com.elementary.tasks.reminder.build.BuildReminderViewModel
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
@@ -67,7 +68,8 @@ import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogViewMode
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerFactory
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
-import com.elementary.tasks.reminder.dialog.ReminderViewModel
+import com.elementary.tasks.reminder.dialog.CreateReminderActionScreenStateUseCase
+import com.elementary.tasks.reminder.dialog.ReminderActionActivityViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
@@ -82,8 +84,8 @@ import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogle
 import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
-import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
+import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
 import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
@@ -117,7 +119,19 @@ val reminderModule = module {
   factory { ScheduleReminderUploadUseCase(get()) }
 
   viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
-  viewModel { ActiveRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  viewModel {
+    ActiveRemindersViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { RemindersArchiveFragmentViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
@@ -189,7 +203,23 @@ val reminderModule = module {
     )
   }
 
-  viewModel { (id: String) -> ReminderViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String, isTest: Boolean) ->
+    ReminderActionActivityViewModel(
+      id,
+      isTest,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    )
+  }
   viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
 
   factory { UriToAttachmentFileAdapter(get()) }
@@ -325,7 +355,20 @@ val reminderModule = module {
 
   factory { BehaviorStrategyResolver(get(), get()) }
 
-  factory { ActivateReminderUseCase(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory {
+    ActivateReminderUseCase(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
   factory { DeactivateReminderUseCase(get(), get(), get(), get(), get()) }
 
   factory { PauseReminderUseCase(get(), get(), get(), get()) }
@@ -353,4 +396,8 @@ val reminderModule = module {
   factory { RecurrenceCalculator() }
 
   factory { MigrateRecurringParamsUseCase(get(), get()) }
+
+  factory { GetReminderActionsUseCase() }
+
+  factory { CreateReminderActionScreenStateUseCase(get(), get(), get(), get()) }
 }

@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.common.TextProvider
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.dialog.ReminderDialog29Activity
+import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.github.naz013.logging.Logger
 
 class ReminderHandlerQ(
@@ -50,7 +50,7 @@ class ReminderHandlerQ(
     builder.color = ThemeProvider.getPrimaryColor(contextProvider.context)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
-    val notificationIntent = ReminderDialog29Activity.getLaunchIntent(
+    val notificationIntent = ReminderActionActivity.getLaunchIntent(
       contextProvider.context,
       reminder.uuId
     )
