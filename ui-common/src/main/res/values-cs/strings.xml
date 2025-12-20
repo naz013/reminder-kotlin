@@ -893,4 +893,37 @@
     <string name="report_an_issue">Nahlásit problém</string>
     <string name="move_to_archive">Přesunout do archivu</string>
     <string name="share_send_email">Odeslat e-mail…</string>
+
+    <string name="dark_mode">Tmavý režim</string>
+    <string name="_24_hour_format">24hodinový formát</string>
+    <string name="move_to_the_archive">Přesunout do archivu</string>
+    <string name="do_nothing">Nedělat nic</string>
+    <string name="first_day_of_the_week">První den v týdnu</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Přidat připomínky do Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Vyhledat nové události v Google Calendar</string>
+    <string name="calendar_not_selected">Kalendář není vybrán</string>
+    <string name="default_reminder_snooze_time">Výchozí čas odložení připomínky</string>
+    <string name="reminder_notification_repeating">Opakování oznámení připomínky</string>
+    <string name="repeat_reminder_notification_until_dismissed">Opakovat oznámení připomínky do zamítnutí</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Neopakovat oznámení připomínky, pokud nebyla provedena žádná akce</string>
+    <string name="reminder_notification_repeat_interval">Interval opakování oznámení připomínky</string>
+    <string name="led_indication_if_available">LED indikace (pokud je k dispozici)</string>
+    <string name="led_indication_color">Barva LED indikace</string>
+    <string name="reminder_default_priority">Výchozí priorita připomínky</string>
+    <string name="birthdays_from_contacts">Narozeniny z kontaktů</string>
+    <string name="scan_contacts_automatically">Automaticky vyhledat kontakty</string>
+    <string name="delete_all_archived_reminders">Smazat všechny archivované připomínky</string>
+    <string name="yes_delete_all">Ano, smazat vše</string>
+    <string name="reset_calendar">Obnovit</string>
+    <string name="action_complete">Dokončit</string>
+    <string name="action_snooze">Odložit</string>
+    <string name="action_dismiss">Zamítnout</string>
+    <string name="action_edit">Upravit</string>
+    <string name="action_open">Otevřít</string>
+    <string name="action_delete">Smazat</string>
+    <string name="action_send_email">Odeslat e-mail</string>
+    <string name="action_snooze_custom">Odložit o…</string>
+    <string name="more_options">Více možností</string>
+    <string name="keep_notification">Ponechat oznámení</string>
 </resources>

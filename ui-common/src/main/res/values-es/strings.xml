@@ -893,4 +893,37 @@
     <string name="report_an_issue">Reportar un problema</string>
     <string name="move_to_archive">Mover al archivo</string>
     <string name="share_send_email">Enviar correo…</string>
+
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="_24_hour_format">Formato de 24 horas</string>
+    <string name="move_to_the_archive">Mover al archivo</string>
+    <string name="do_nothing">No hacer nada</string>
+    <string name="first_day_of_the_week">Primer día de la semana</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Añadir recordatorios a Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Buscar nuevos eventos en Google Calendar</string>
+    <string name="calendar_not_selected">Calendario no seleccionado</string>
+    <string name="default_reminder_snooze_time">Tiempo predeterminado de aplazamiento de recordatorio</string>
+    <string name="reminder_notification_repeating">Repetición de notificación de recordatorio</string>
+    <string name="repeat_reminder_notification_until_dismissed">Repetir notificación de recordatorio hasta descartar</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">No repetir notificación de recordatorio cuando no se realice ninguna acción</string>
+    <string name="reminder_notification_repeat_interval">Intervalo de repetición de notificación de recordatorio</string>
+    <string name="led_indication_if_available">Indicación LED (si está disponible)</string>
+    <string name="led_indication_color">Color de indicación LED</string>
+    <string name="reminder_default_priority">Prioridad predeterminada de recordatorio</string>
+    <string name="birthdays_from_contacts">Cumpleaños de contactos</string>
+    <string name="scan_contacts_automatically">Buscar contactos automáticamente</string>
+    <string name="delete_all_archived_reminders">Eliminar todos los recordatorios archivados</string>
+    <string name="yes_delete_all">Sí, eliminar todo</string>
+    <string name="reset_calendar">Restablecer</string>
+    <string name="action_complete">Completar</string>
+    <string name="action_snooze">Posponer</string>
+    <string name="action_dismiss">Descartar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_open">Abrir</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_send_email">Enviar correo</string>
+    <string name="action_snooze_custom">Posponer por…</string>
+    <string name="more_options">Más opciones</string>
+    <string name="keep_notification">Mantener notificación</string>
 </resources>

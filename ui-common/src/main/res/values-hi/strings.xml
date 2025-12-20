@@ -895,4 +895,37 @@
     <string name="share_send_email">ईमेल भेजें…</string>
 
     <string name="voice_found">मिला</string>
+
+    <string name="dark_mode">डार्क मोड</string>
+    <string name="_24_hour_format">24 घंटे का प्रारूप</string>
+    <string name="move_to_the_archive">संग्रह में ले जाएं</string>
+    <string name="do_nothing">कुछ न करें</string>
+    <string name="first_day_of_the_week">सप्ताह का पहला दिन</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Google Calendar में रिमाइंडर जोड़ें</string>
+    <string name="scan_google_calendar_for_the_new_events">Google Calendar में नए इवेंट खोजें</string>
+    <string name="calendar_not_selected">कैलेंडर चयनित नहीं है</string>
+    <string name="default_reminder_snooze_time">डिफ़ॉल्ट रिमाइंडर स्नूज़ समय</string>
+    <string name="reminder_notification_repeating">रिमाइंडर नोटिफ़िकेशन दोहराना</string>
+    <string name="repeat_reminder_notification_until_dismissed">रिमाइंडर नोटिफ़िकेशन को खारिज होने तक दोहराएं</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">कोई कार्रवाई न होने पर रिमाइंडर नोटिफ़िकेशन न दोहराएं</string>
+    <string name="reminder_notification_repeat_interval">रिमाइंडर नोटिफ़िकेशन दोहराने का अंतराल</string>
+    <string name="led_indication_if_available">LED संकेत (यदि उपलब्ध हो)</string>
+    <string name="led_indication_color">LED संकेत का रंग</string>
+    <string name="reminder_default_priority">रिमाइंडर डिफ़ॉल्ट प्राथमिकता</string>
+    <string name="birthdays_from_contacts">संपर्कों से जन्मदिन</string>
+    <string name="scan_contacts_automatically">स्वचालित रूप से संपर्क खोजें</string>
+    <string name="delete_all_archived_reminders">सभी संग्रहीत रिमाइंडर हटाएं</string>
+    <string name="yes_delete_all">हां, सभी हटाएं</string>
+    <string name="reset_calendar">रीसेट करें</string>
+    <string name="action_complete">पूर्ण करें</string>
+    <string name="action_snooze">स्नूज़ करें</string>
+    <string name="action_dismiss">खारिज करें</string>
+    <string name="action_edit">संपादित करें</string>
+    <string name="action_open">खोलें</string>
+    <string name="action_delete">हटाएं</string>
+    <string name="action_send_email">ईमेल भेजें</string>
+    <string name="action_snooze_custom">स्नूज़ करें…  के लिए</string>
+    <string name="more_options">अधिक विकल्प</string>
+    <string name="keep_notification">नोटिफ़िकेशन रखें</string>
 </resources>

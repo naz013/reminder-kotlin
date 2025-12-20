@@ -893,4 +893,37 @@
     <string name="report_an_issue">Segnala un problema</string>
     <string name="move_to_archive">Sposta nell\'archivio</string>
     <string name="share_send_email">Invia e-mail…</string>
+
+    <string name="dark_mode">Modalità scura</string>
+    <string name="_24_hour_format">Formato 24 ore</string>
+    <string name="move_to_the_archive">Sposta nell\'archivio</string>
+    <string name="do_nothing">Non fare nulla</string>
+    <string name="first_day_of_the_week">Primo giorno della settimana</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Aggiungi promemoria a Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Cerca nuovi eventi in Google Calendar</string>
+    <string name="calendar_not_selected">Calendario non selezionato</string>
+    <string name="default_reminder_snooze_time">Tempo predefinito di posticipo promemoria</string>
+    <string name="reminder_notification_repeating">Ripetizione notifica promemoria</string>
+    <string name="repeat_reminder_notification_until_dismissed">Ripeti notifica promemoria fino all\'eliminazione</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Non ripetere la notifica promemoria quando non viene eseguita alcuna azione</string>
+    <string name="reminder_notification_repeat_interval">Intervallo di ripetizione notifica promemoria</string>
+    <string name="led_indication_if_available">Indicazione LED (se disponibile)</string>
+    <string name="led_indication_color">Colore indicazione LED</string>
+    <string name="reminder_default_priority">Priorità predefinita promemoria</string>
+    <string name="birthdays_from_contacts">Compleanni dai contatti</string>
+    <string name="scan_contacts_automatically">Cerca contatti automaticamente</string>
+    <string name="delete_all_archived_reminders">Elimina tutti i promemoria archiviati</string>
+    <string name="yes_delete_all">Sì, elimina tutto</string>
+    <string name="reset_calendar">Reimposta</string>
+    <string name="action_complete">Completa</string>
+    <string name="action_snooze">Posticipa</string>
+    <string name="action_dismiss">Elimina</string>
+    <string name="action_edit">Modifica</string>
+    <string name="action_open">Apri</string>
+    <string name="action_delete">Elimina</string>
+    <string name="action_send_email">Invia e-mail</string>
+    <string name="action_snooze_custom">Posticipa di… </string>
+    <string name="more_options">Altre opzioni</string>
+    <string name="keep_notification">Mantieni notifica</string>
 </resources>

@@ -893,4 +893,37 @@
     <string name="report_an_issue">問題を報告</string>
     <string name="move_to_archive">アーカイブに移動</string>
     <string name="share_send_email">メールを送信…</string>
+
+    <string name="dark_mode">ダークモード</string>
+    <string name="_24_hour_format">24時間表示</string>
+    <string name="move_to_the_archive">アーカイブに移動</string>
+    <string name="do_nothing">何もしない</string>
+    <string name="first_day_of_the_week">週の最初の曜日</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Google Calendarにリマインダーを追加</string>
+    <string name="scan_google_calendar_for_the_new_events">Google Calendarで新しいイベントをスキャン</string>
+    <string name="calendar_not_selected">カレンダーが選択されていません</string>
+    <string name="default_reminder_snooze_time">デフォルトのリマインダースヌーズ時間</string>
+    <string name="reminder_notification_repeating">リマインダー通知の繰り返し</string>
+    <string name="repeat_reminder_notification_until_dismissed">却下されるまでリマインダー通知を繰り返す</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">アクションが実行されない場合はリマインダー通知を繰り返さない</string>
+    <string name="reminder_notification_repeat_interval">リマインダー通知の繰り返し間隔</string>
+    <string name="led_indication_if_available">LED通知(利用可能な場合)</string>
+    <string name="led_indication_color">LED通知の色</string>
+    <string name="reminder_default_priority">リマインダーのデフォルト優先度</string>
+    <string name="birthdays_from_contacts">連絡先からの誕生日</string>
+    <string name="scan_contacts_automatically">連絡先を自動的にスキャン</string>
+    <string name="delete_all_archived_reminders">アーカイブされたすべてのリマインダーを削除</string>
+    <string name="yes_delete_all">はい、すべて削除</string>
+    <string name="reset_calendar">リセット</string>
+    <string name="action_complete">完了</string>
+    <string name="action_snooze">スヌーズ</string>
+    <string name="action_dismiss">却下</string>
+    <string name="action_edit">編集</string>
+    <string name="action_open">開く</string>
+    <string name="action_delete">削除</string>
+    <string name="action_send_email">メールを送信</string>
+    <string name="action_snooze_custom">スヌーズ時間を指定…</string>
+    <string name="more_options">その他のオプション</string>
+    <string name="keep_notification">通知を保持</string>
 </resources>
