@@ -16,7 +16,6 @@ import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.Navigator
 import com.github.naz013.ui.common.compose.ComposeActivity
-import com.github.naz013.ui.common.compose.foundation.DynamicScreen
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.startActivity
 import org.koin.android.ext.android.inject
@@ -39,7 +38,9 @@ class ReminderActionActivity : ComposeActivity() {
 
   @Composable
   override fun ActivityContent() {
-    val viewModel: ReminderActionActivityViewModel = koinViewModel()
+    val viewModel: ReminderActionActivityViewModel = koinViewModel {
+      parametersOf(getId(), isTest())
+    }
     ReminderActionScreen(viewModel = viewModel)
   }
 
