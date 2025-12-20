@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
+import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.ReviewsApi
@@ -28,6 +31,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   private val reviewsApi by inject<ReviewsApi>()
   private val reminderRepository by inject<ReminderRepository>()
   private val dateTimeManager by inject<DateTimeManager>()
+  private val birthdayRepository by inject<BirthdayRepository>()
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -38,8 +42,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    binding.birthdayDialogWindow.setOnClickListener { openBirthdayScreen(true) }
-    binding.birthdayNoNumber.setOnClickListener { openBirthdayScreen() }
+    binding.birthdayDialogWindow.setOnClickListener { showBirthdayActionSelectionDialog() }
     binding.reminderDialogWindow.setOnClickListener { showReminderActionSelectionDialog() }
     binding.objectExport.setOnClickListener {
       safeNavigation(TestsFragmentDirections.actionTestsFragmentToObjectExportTestFragment())
@@ -153,8 +156,75 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
     ReminderActionActivity.mockTest(requireContext(), reminder.uuId)
   }
 
-  private fun openBirthdayScreen(hasNumber: Boolean = false) {
-    ShowBirthday29Activity.mockTest(requireContext(), hasNumber)
+  private fun showBirthdayActionSelectionDialog() {
+    var selectedItem = 0
+    dialogues.getMaterialDialog(requireContext())
+      .setTitle("Select action to test")
+      .setSingleChoiceItems(
+        arrayOf(
+          "Simple birthday",
+          "Birthday with number",
+          "Birthday without age"
+        ),
+        selectedItem,
+        { _, which ->
+          selectedItem = which
+        }
+      )
+      .setPositiveButton("Run") { dialog, _ ->
+        dialog.dismiss()
+        saveAndOpenBirthdayScreen(prepareBirthday(selectedItem))
+      }
+      .setNegativeButton("Cancel") { dialog, _ ->
+        dialog.dismiss()
+      }
+      .show()
+  }
+
+  private fun prepareBirthday(selectedItem: Int): Birthday {
+    var birthday = Birthday(syncState = SyncState.Synced)
+    when (selectedItem) {
+      0 -> {
+        birthday = Birthday(
+          name = "John Doe",
+          date = "1990-05-15",
+          number = "",
+          syncState = SyncState.Synced
+        )
+      }
+      1 -> {
+        birthday = Birthday(
+          name = "Jane Smith",
+          date = "1985-10-20",
+          number = "+1234567890",
+          syncState = SyncState.Synced
+        )
+      }
+      2 -> {
+        birthday = Birthday(
+          name = "Alice Johnson",
+          date = "2000-07-25",
+          number = "",
+          ignoreYear = true,
+          syncState = SyncState.Synced
+        )
+      }
+    }
+    return birthday
+  }
+
+  private fun saveAndOpenBirthdayScreen(birthday: Birthday) {
+    Logger.d("TestsFragment", "Saving birthday and opening action screen...")
+    lifecycleScope.launch(Dispatchers.IO) {
+      birthdayRepository.save(birthday)
+      withContext(Dispatchers.Main) {
+        openBirthdayScreen(birthday)
+      }
+    }
+  }
+
+  private fun openBirthdayScreen(birthday: Birthday) {
+    BirthdayActionActivity.mockTest(requireContext(), birthday.uuId)
   }
 
   override fun getTitle(): String = "Tests"

@@ -4,7 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.dialog.ShowBirthday29Activity
+import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.WearNotification
@@ -55,7 +55,7 @@ class BirthdayHandlerQ(
     builder.color = ThemeProvider.getPrimaryColor(contextProvider.themedContext)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
-    val notificationIntent = ShowBirthday29Activity.getLaunchIntent(
+    val notificationIntent = BirthdayActionActivity.getLaunchIntent(
       contextProvider.context,
       birthday.uuId
     )

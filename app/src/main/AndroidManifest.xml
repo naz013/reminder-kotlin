@@ -282,7 +282,7 @@
             android:exported="false"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".birthdays.dialog.ShowBirthday29Activity"
+            android:name=".birthdays.dialog.BirthdayActionActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
