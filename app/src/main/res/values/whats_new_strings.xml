@@ -3,10 +3,10 @@
     <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
     <string name="whats_new_text" translatable="false">
         \n
-        ✅ Added the new Feedback screen to gather your thoughts;\n
-        ⭐ Improved sync and backup performance;\n
-        ⭐ Updated the Cloud backup Settings screen for better usability;\n
-        ⭐ Refined the UI for a smoother experience;\n
+        ⭐ Improved Google Calendar integration;\n
+        ⭐ Updated Settings screens;\n
+        ⭐ Improved performance on the Calendar screen;\n
+        ⭐ Refined the UI of the Reminder and Birthday actions screens;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">
