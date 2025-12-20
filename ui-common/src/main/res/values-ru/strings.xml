@@ -892,4 +892,37 @@
     <string name="report_an_issue">Сообщить об ошибке</string>
     <string name="move_to_archive">Переместить в архив</string>
     <string name="share_send_email">Отправить письмо…</string>
+
+    <string name="dark_mode">Темный режим</string>
+    <string name="_24_hour_format">24-часовой формат</string>
+    <string name="move_to_the_archive">Переместить в архив</string>
+    <string name="do_nothing">Ничего не делать</string>
+    <string name="first_day_of_the_week">Первый день недели</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Добавить напоминания в Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Сканировать Google Calendar на наличие новых событий</string>
+    <string name="calendar_not_selected">Календарь не выбран</string>
+    <string name="default_reminder_snooze_time">Время отложения напоминания по умолчанию</string>
+    <string name="reminder_notification_repeating">Повтор уведомления о напоминании</string>
+    <string name="repeat_reminder_notification_until_dismissed">Повторять уведомление о напоминании до отклонения</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Не повторять уведомление о напоминании, если не выполнено никаких действий</string>
+    <string name="reminder_notification_repeat_interval">Интервал повтора уведомления о напоминании</string>
+    <string name="led_indication_if_available">Индикация LED (если доступна)</string>
+    <string name="led_indication_color">Цвет индикации LED</string>
+    <string name="reminder_default_priority">Приоритет напоминания по умолчанию</string>
+    <string name="birthdays_from_contacts">Дни рождения из контактов</string>
+    <string name="scan_contacts_automatically">Автоматически сканировать контакты</string>
+    <string name="delete_all_archived_reminders">Удалить все архивированные напоминания</string>
+    <string name="yes_delete_all">Да, удалить все</string>
+    <string name="reset_calendar">Сбросить</string>
+    <string name="action_complete">Завершить</string>
+    <string name="action_snooze">Отложить</string>
+    <string name="action_dismiss">Отклонить</string>
+    <string name="action_edit">Изменить</string>
+    <string name="action_open">Открыть</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_send_email">Отправить письмо</string>
+    <string name="action_snooze_custom">Отложить на…</string>
+    <string name="more_options">Дополнительные параметры</string>
+    <string name="keep_notification">Сохранить уведомление</string>
 </resources>

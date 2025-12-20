@@ -893,4 +893,37 @@
     <string name="report_an_issue">Problem melden</string>
     <string name="move_to_archive">In das Archiv verschieben</string>
     <string name="share_send_email">E-Mail senden…</string>
+
+    <string name="dark_mode">Dunkler Modus</string>
+    <string name="_24_hour_format">24-Stunden-Format</string>
+    <string name="move_to_the_archive">Ins Archiv verschieben</string>
+    <string name="do_nothing">Nichts tun</string>
+    <string name="first_day_of_the_week">Erster Tag der Woche</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Erinnerungen zu Google Calendar hinzufügen</string>
+    <string name="scan_google_calendar_for_the_new_events">Google Calendar nach neuen Ereignissen durchsuchen</string>
+    <string name="calendar_not_selected">Kalender nicht ausgewählt</string>
+    <string name="default_reminder_snooze_time">Standard-Schlummerzeit für Erinnerungen</string>
+    <string name="reminder_notification_repeating">Wiederholung der Erinnerungsbenachrichtigung</string>
+    <string name="repeat_reminder_notification_until_dismissed">Erinnerungsbenachrichtigung wiederholen bis zum Verwerfen</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Erinnerungsbenachrichtigung nicht wiederholen, wenn keine Aktion ausgeführt wurde</string>
+    <string name="reminder_notification_repeat_interval">Wiederholungsintervall der Erinnerungsbenachrichtigung</string>
+    <string name="led_indication_if_available">LED-Anzeige (falls verfügbar)</string>
+    <string name="led_indication_color">Farbe der LED-Anzeige</string>
+    <string name="reminder_default_priority">Standard-Priorität für Erinnerungen</string>
+    <string name="birthdays_from_contacts">Geburtstage aus Kontakten</string>
+    <string name="scan_contacts_automatically">Kontakte automatisch durchsuchen</string>
+    <string name="delete_all_archived_reminders">Alle archivierten Erinnerungen löschen</string>
+    <string name="yes_delete_all">Ja, alle löschen</string>
+    <string name="reset_calendar">Zurücksetzen</string>
+    <string name="action_complete">Abschließen</string>
+    <string name="action_snooze">Schlummern</string>
+    <string name="action_dismiss">Verwerfen</string>
+    <string name="action_edit">Bearbeiten</string>
+    <string name="action_open">Öffnen</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_send_email">E-Mail senden</string>
+    <string name="action_snooze_custom">Schlummern für…</string>
+    <string name="more_options">Weitere Optionen</string>
+    <string name="keep_notification">Benachrichtigung behalten</string>
 </resources>

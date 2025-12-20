@@ -894,4 +894,37 @@
     <string name="report_an_issue">Докладвай проблем</string>
     <string name="move_to_archive">Премести в архива</string>
     <string name="share_send_email">Изпрати имейл…</string>
+
+    <string name="dark_mode">Тъмен режим</string>
+    <string name="_24_hour_format">24-часов формат</string>
+    <string name="move_to_the_archive">Преместване в архива</string>
+    <string name="do_nothing">Не прави нищо</string>
+    <string name="first_day_of_the_week">Първи ден от седмицата</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Добавяне на напомняния към Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Сканиране на Google Calendar за нови събития</string>
+    <string name="calendar_not_selected">Календарът не е избран</string>
+    <string name="default_reminder_snooze_time">Стандартно време за отлагане на напомняне</string>
+    <string name="reminder_notification_repeating">Повтаряне на известието за напомняне</string>
+    <string name="repeat_reminder_notification_until_dismissed">Повтаряне на известието за напомняне до отхвърляне</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Не повтаряй известието за напомняне, когато не е предприето действие</string>
+    <string name="reminder_notification_repeat_interval">Интервал за повтаряне на известието за напомняне</string>
+    <string name="led_indication_if_available">LED индикация (ако е налична)</string>
+    <string name="led_indication_color">Цвят на LED индикацията</string>
+    <string name="reminder_default_priority">Стандартен приоритет на напомнянето</string>
+    <string name="birthdays_from_contacts">Рождени дни от контакти</string>
+    <string name="scan_contacts_automatically">Автоматично сканиране на контакти</string>
+    <string name="delete_all_archived_reminders">Изтриване на всички архивирани напомняния</string>
+    <string name="yes_delete_all">Да, изтрий всички</string>
+    <string name="reset_calendar">Нулиране</string>
+    <string name="action_complete">Завърши</string>
+    <string name="action_snooze">Отложи</string>
+    <string name="action_dismiss">Отхвърли</string>
+    <string name="action_edit">Редактирай</string>
+    <string name="action_open">Отвори</string>
+    <string name="action_delete">Изтрий</string>
+    <string name="action_send_email">Изпрати имейл</string>
+    <string name="action_snooze_custom">Отложи за…</string>
+    <string name="more_options">Още опции</string>
+    <string name="keep_notification">Запази известието</string>
 </resources>

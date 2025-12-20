@@ -893,4 +893,37 @@
     <string name="report_an_issue">Zgłoś problem</string>
     <string name="move_to_archive">Przenieś do archiwum</string>
     <string name="share_send_email">Wyślij e-mail…</string>
+
+    <string name="dark_mode">Tryb ciemny</string>
+    <string name="_24_hour_format">Format 24-godzinny</string>
+    <string name="move_to_the_archive">Przenieś do archiwum</string>
+    <string name="do_nothing">Nie rób nic</string>
+    <string name="first_day_of_the_week">Pierwszy dzień tygodnia</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Dodaj przypomnienia do Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Skanuj Google Calendar w poszukiwaniu nowych wydarzeń</string>
+    <string name="calendar_not_selected">Kalendarz nie został wybrany</string>
+    <string name="default_reminder_snooze_time">Domyślny czas drzemki przypomnienia</string>
+    <string name="reminder_notification_repeating">Powtarzanie powiadomienia o przypomnieniu</string>
+    <string name="repeat_reminder_notification_until_dismissed">Powtarzaj powiadomienie o przypomnieniu do odrzucenia</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Nie powtarzaj powiadomienia o przypomnieniu, gdy nie podjęto żadnych działań</string>
+    <string name="reminder_notification_repeat_interval">Interwał powtarzania powiadomienia o przypomnieniu</string>
+    <string name="led_indication_if_available">Wskaźnik LED (jeśli dostępny)</string>
+    <string name="led_indication_color">Kolor wskaźnika LED</string>
+    <string name="reminder_default_priority">Domyślny priorytet przypomnienia</string>
+    <string name="birthdays_from_contacts">Urodziny z kontaktów</string>
+    <string name="scan_contacts_automatically">Skanuj kontakty automatycznie</string>
+    <string name="delete_all_archived_reminders">Usuń wszystkie zarchiwizowane przypomnienia</string>
+    <string name="yes_delete_all">Tak, usuń wszystkie</string>
+    <string name="reset_calendar">Resetuj</string>
+    <string name="action_complete">Ukończ</string>
+    <string name="action_snooze">Drzemka</string>
+    <string name="action_dismiss">Odrzuć</string>
+    <string name="action_edit">Edytuj</string>
+    <string name="action_open">Otwórz</string>
+    <string name="action_delete">Usuń</string>
+    <string name="action_send_email">Wyślij e-mail</string>
+    <string name="action_snooze_custom">Drzemka przez…</string>
+    <string name="more_options">Więcej opcji</string>
+    <string name="keep_notification">Zachowaj powiadomienie</string>
 </resources>

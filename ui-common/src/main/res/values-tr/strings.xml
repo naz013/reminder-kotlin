@@ -894,4 +894,37 @@
     <string name="report_an_issue">Sorun bildir</string>
     <string name="move_to_archive">Arşive taşı</string>
     <string name="share_send_email">E-posta gönder…</string>
+
+    <string name="dark_mode">Karanlık mod</string>
+    <string name="_24_hour_format">24 saat formatı</string>
+    <string name="move_to_the_archive">Arşive taşı</string>
+    <string name="do_nothing">Hiçbir şey yapma</string>
+    <string name="first_day_of_the_week">Haftanın ilk günü</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Google Calendar\'a hatırlatıcılar ekle</string>
+    <string name="scan_google_calendar_for_the_new_events">Google Calendar\'da yeni etkinlikler ara</string>
+    <string name="calendar_not_selected">Takvim seçilmedi</string>
+    <string name="default_reminder_snooze_time">Varsayılan hatırlatıcı erteleme süresi</string>
+    <string name="reminder_notification_repeating">Hatırlatıcı bildirimini tekrarla</string>
+    <string name="repeat_reminder_notification_until_dismissed">Kapatılana kadar hatırlatıcı bildirimini tekrarla</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Herhangi bir işlem yapılmadığında hatırlatıcı bildirimini tekrarlama</string>
+    <string name="reminder_notification_repeat_interval">Hatırlatıcı bildirimi tekrarlama aralığı</string>
+    <string name="led_indication_if_available">LED göstergesi (varsa)</string>
+    <string name="led_indication_color">LED göstergesi rengi</string>
+    <string name="reminder_default_priority">Hatırlatıcı varsayılan önceliği</string>
+    <string name="birthdays_from_contacts">Kişilerden doğum günleri</string>
+    <string name="scan_contacts_automatically">Kişileri otomatik olarak tara</string>
+    <string name="delete_all_archived_reminders">Arşivlenmiş tüm hatırlatıcıları sil</string>
+    <string name="yes_delete_all">Evet, tümünü sil</string>
+    <string name="reset_calendar">Sıfırla</string>
+    <string name="action_complete">Tamamla</string>
+    <string name="action_snooze">Ertele</string>
+    <string name="action_dismiss">Kapat</string>
+    <string name="action_edit">Düzenle</string>
+    <string name="action_open">Aç</string>
+    <string name="action_delete">Sil</string>
+    <string name="action_send_email">E-posta gönder</string>
+    <string name="action_snooze_custom">Ertele…</string>
+    <string name="more_options">Daha fazla seçenek</string>
+    <string name="keep_notification">Bildirimi koru</string>
 </resources>
