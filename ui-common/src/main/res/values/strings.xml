@@ -892,4 +892,37 @@
     <string name="report_an_issue">Report an Issue</string>
     <string name="move_to_archive">Move to archive</string>
     <string name="share_send_email">Send email…</string>
+
+    <string name="dark_mode">Dark Mode</string>
+    <string name="_24_hour_format">24 hour format</string>
+    <string name="move_to_the_archive">Move to the Archive</string>
+    <string name="do_nothing">Do nothing</string>
+    <string name="first_day_of_the_week">First day of the week</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Add reminders to Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Scan Google Calendar for the new events</string>
+    <string name="calendar_not_selected">Calendar not selected</string>
+    <string name="default_reminder_snooze_time">Default reminder snooze time</string>
+    <string name="reminder_notification_repeating">Reminder notification repeating</string>
+    <string name="repeat_reminder_notification_until_dismissed">Repeat reminder notification until dismissed</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Do not repeat reminder notification when no action taken</string>
+    <string name="reminder_notification_repeat_interval">Reminder notification repeat interval</string>
+    <string name="led_indication_if_available">LED indication (if available)</string>
+    <string name="led_indication_color">LED indication color</string>
+    <string name="reminder_default_priority">Reminder default priority</string>
+    <string name="birthdays_from_contacts">Birthdays from contacts</string>
+    <string name="scan_contacts_automatically">Scan contacts automatically</string>
+    <string name="delete_all_archived_reminders">Delete all archived reminders</string>
+    <string name="yes_delete_all">Yes, delete all</string>
+    <string name="reset_calendar">Reset</string>
+    <string name="action_complete">Complete</string>
+    <string name="action_snooze">Snooze</string>
+    <string name="action_dismiss">Dismiss</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_open">Open</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_send_email">Send email</string>
+    <string name="action_snooze_custom">Snooze for…</string>
+    <string name="more_options">More options</string>
+    <string name="keep_notification">Keep notification</string>
 </resources>

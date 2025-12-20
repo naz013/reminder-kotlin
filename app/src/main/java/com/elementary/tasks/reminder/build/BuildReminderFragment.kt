@@ -200,7 +200,7 @@ class BuildReminderFragment :
         }
       }
     } else {
-      dialogues.askConfirmation(requireContext(), getString(R.string.move_to_trash)) {
+      dialogues.askConfirmation(requireContext(), getString(R.string.move_to_the_archive)) {
         if (it) {
           viewModel.moveToTrash()
         }

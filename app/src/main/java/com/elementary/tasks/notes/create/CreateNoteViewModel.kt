@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
@@ -26,7 +25,7 @@ import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
-import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -47,7 +46,6 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,9 +62,7 @@ class CreateNoteViewModel(
   private val id: String,
   private val imageDecoder: ImageDecoder,
   dispatcherProvider: DispatcherProvider,
-  private val eventControlFactory: EventControlFactory,
   private val noteRepository: NoteRepository,
-  private val reminderRepository: ReminderRepository,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
@@ -79,8 +75,8 @@ class CreateNoteViewModel(
   private val intentDataReader: IntentDataReader,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val saveNoteUseCase: SaveNoteUseCase,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
-  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase
+  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
+  private val activateReminderUseCase: ActivateReminderUseCase
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()
@@ -427,11 +423,7 @@ class CreateNoteViewModel(
         reminder.groupColor = group.groupColor
         reminder.groupTitle = group.groupTitle
         reminder.groupUuId = group.groupUuId
-        reminderRepository.save(reminder)
-      }
-      if (reminder.groupUuId != "") {
-        eventControlFactory.getController(reminder).enable()
-        scheduleReminderUploadUseCase(reminder.uuId)
+        activateReminderUseCase(reminder)
       }
     }
   }

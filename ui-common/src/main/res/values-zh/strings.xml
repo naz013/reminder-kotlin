@@ -894,4 +894,37 @@
     <string name="report_an_issue">报告问题</string>
     <string name="move_to_archive">移至存档</string>
     <string name="share_send_email">发送电子邮件…</string>
+
+    <string name="dark_mode">深色模式</string>
+    <string name="_24_hour_format">24小时制</string>
+    <string name="move_to_the_archive">移至归档</string>
+    <string name="do_nothing">不执行任何操作</string>
+    <string name="first_day_of_the_week">每周的第一天</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">将提醒添加到 Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">扫描 Google Calendar 中的新事件</string>
+    <string name="calendar_not_selected">未选择日历</string>
+    <string name="default_reminder_snooze_time">默认提醒延后时间</string>
+    <string name="reminder_notification_repeating">提醒通知重复</string>
+    <string name="repeat_reminder_notification_until_dismissed">重复提醒通知直到关闭</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">未采取任何操作时不重复提醒通知</string>
+    <string name="reminder_notification_repeat_interval">提醒通知重复间隔</string>
+    <string name="led_indication_if_available">LED指示灯(如果可用)</string>
+    <string name="led_indication_color">LED指示灯颜色</string>
+    <string name="reminder_default_priority">提醒默认优先级</string>
+    <string name="birthdays_from_contacts">来自联系人的生日</string>
+    <string name="scan_contacts_automatically">自动扫描联系人</string>
+    <string name="delete_all_archived_reminders">删除所有已归档的提醒</string>
+    <string name="yes_delete_all">是，全部删除</string>
+    <string name="reset_calendar">重置</string>
+    <string name="action_complete">完成</string>
+    <string name="action_snooze">延后</string>
+    <string name="action_dismiss">关闭</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_open">打开</string>
+    <string name="action_delete">删除</string>
+    <string name="action_send_email">发送邮件</string>
+    <string name="action_snooze_custom">延后…</string>
+    <string name="more_options">更多选项</string>
+    <string name="keep_notification">保留通知</string>
 </resources>

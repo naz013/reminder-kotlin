@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.github.naz013.common.Module
 import com.github.naz013.common.PackageManagerWrapper
@@ -56,6 +57,17 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     binding.privacyPolicyPrefs.setOnClickListener { openPrivacyPolicyScreen() }
     binding.termsPrefs.setOnClickListener { openTermsScreen() }
     binding.feedbackPrefs.setOnClickListener { openFeedbackScreen() }
+    binding.troubleshootingSettings.setOnClickListener { openTroubleshootingScreen() }
+  }
+
+  private fun openTroubleshootingScreen() {
+    navigate {
+      navigate(
+        R.id.fragmentTroubleshooting,
+        null,
+        NavigationAnimations.inDepthNavOptions()
+      )
+    }
   }
 
   override fun getTitle(): String = getString(R.string.other)

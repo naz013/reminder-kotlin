@@ -1,18 +1,18 @@
 package com.elementary.tasks.calendar.dayview.weekheader
 
-import com.elementary.tasks.calendar.data.CalendarDataEngine
-import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
-import com.github.naz013.common.datetime.DateTimeManager
+import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDayUseCase
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import org.threeten.bp.LocalDate
 
 class WeekFactory(
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
-  private val calendarDataEngine: CalendarDataEngine,
+  private val getOccurrencesByDayUseCase: GetOccurrencesByDayUseCase
 ) {
 
-  fun createWeek(date: LocalDate): List<WeekDay> {
+  suspend fun createWeek(date: LocalDate): List<WeekDay> {
     val startDay = StartDayOfWeekProtocol(prefs.startDay).getForCalendar()
 
     val currentDayOfWeek = date.dayOfWeek.value
@@ -23,11 +23,6 @@ class WeekFactory(
       date
     }
 
-    val reminderMode = calendarDataEngine.getReminderMode(
-      includeReminders = prefs.isRemindersInCalendarEnabled,
-      calculateFuture = prefs.isFutureEventEnabled
-    )
-
     return (0..6).toList().map {
       dt.plusDays(it.toLong())
     }.map {
@@ -36,7 +31,7 @@ class WeekFactory(
         weekday = dateTimeManager.formatCalendarWeekday(it),
         date = dateTimeManager.formatCalendarDay(it),
         isSelected = it == date,
-        hasEvents = calendarDataEngine.hasAnyByDate(date = it, reminderMode = reminderMode)
+        hasEvents = getOccurrencesByDayUseCase(it).isNotEmpty()
       )
     }
   }

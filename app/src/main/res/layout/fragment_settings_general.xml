@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_fluent_dark_theme"
-            app:prefs_primary_text="@string/theme"
+            app:prefs_primary_text="@string/dark_mode"
             app:prefs_secondary_text="@string/auto"
             app:prefs_type="none" />
 
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_builder_time"
-            app:prefs_primary_text="@string/_24_hour_time_format"
+            app:prefs_primary_text="@string/_24_hour_format"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView

@@ -74,6 +74,8 @@
             <enum name="text" value="3" />
             <enum name="none" value="4" />
         </attr>
+        <attr name="prefs_showCustomButton" format="boolean" />
+        <attr name="prefs_customButtonText" format="string" />
     </declare-styleable>
 
     <declare-styleable name="DateTimeView">

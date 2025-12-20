@@ -58,14 +58,14 @@ class ReminderResolver(
       arrayOf(
         context.getString(R.string.open),
         context.getString(R.string.edit),
-        context.getString(R.string.move_to_trash),
+        context.getString(R.string.move_to_the_archive),
         context.getString(R.string.skip_event)
       )
     } else {
       arrayOf(
         context.getString(R.string.open),
         context.getString(R.string.edit),
-        context.getString(R.string.move_to_trash)
+        context.getString(R.string.move_to_the_archive)
       )
     }
     Dialogues.showPopup(view, { item ->
@@ -82,7 +82,7 @@ class ReminderResolver(
   }
 
   private fun askConfirmation(view: View, title: String, onAction: (Boolean) -> Unit) {
-    dialogAction.invoke().askConfirmation(view.context, title, onAction)
+    dialogAction.invoke().askConfirmation(view.context, title, onAction = onAction)
   }
 
   private fun editReminder(reminder: UiReminderListData) {

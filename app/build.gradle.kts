@@ -22,8 +22,8 @@ android {
     applicationId = "com.cray.software.justreminder"
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
-    versionCode = 342
-    versionName = "9.10.2"
+    versionCode = 343
+    versionName = "9.11.0"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
@@ -221,6 +221,7 @@ dependencies {
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)
   implementation(libs.koin.androidx.workmanager)
+  implementation(libs.koin.androidx.compose)
 
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.android)
@@ -303,7 +304,8 @@ dependencies {
   implementation(libs.compose.ui.ui)
 
   debugImplementation(libs.compose.ui.test.manifest)
-  debugImplementation(libs.compose.ui.tooling.preview)
+  implementation(libs.compose.ui.tooling.preview)
+  debugImplementation(libs.compose.ui.tooling)
 
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)

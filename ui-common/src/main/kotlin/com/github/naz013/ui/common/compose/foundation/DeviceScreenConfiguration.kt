@@ -2,7 +2,9 @@ package com.github.naz013.ui.common.compose.foundation
 
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+import com.github.naz013.logging.Logger
 
 enum class DeviceScreenConfiguration {
     MobilePortrait,
@@ -14,6 +16,7 @@ enum class DeviceScreenConfiguration {
 
     companion object {
         fun fromWindowSizeClass(windowSizeClass: WindowSizeClass): DeviceScreenConfiguration {
+          Logger.d("DeviceScreenConfiguration", "fromWindowSizeClass: width=${windowSizeClass.minWidthDp}, height=${windowSizeClass.minHeightDp}")
             return when {
                 windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) &&
                         windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> DesktopNormal
@@ -23,7 +26,8 @@ enum class DeviceScreenConfiguration {
                         windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> TabletLandscape
                 windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
                         windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> TabletPortrait
-                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> MobileLandscape
+                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
+                   windowSizeClass.minHeightDp < 480 -> MobileLandscape
                 else -> MobilePortrait
             }
         }

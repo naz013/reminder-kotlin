@@ -10,7 +10,7 @@ class WeekHeaderController(
   private var endDate: LocalDate? = null
   private var week: List<WeekDay> = emptyList()
 
-  fun calculateWeek(date: LocalDate): List<WeekDay> {
+  suspend fun calculateWeek(date: LocalDate): List<WeekDay> {
     return if (isInCurrentRange(date)) {
       week.map {
         it.copy(isSelected = it.localDate == date)

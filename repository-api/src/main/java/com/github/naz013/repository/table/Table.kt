@@ -14,4 +14,6 @@ enum class Table(val tableName: String) {
   GoogleTaskList("GoogleTaskList"),
   GoogleTask("GoogleTask"),
   RemoteFileMetadata("RemoteFileMetadata"),
+  EventOccurrence("EventOccurrence"),
+  EventHistory("EventHistory"),
 }

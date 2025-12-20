@@ -51,6 +51,11 @@ class Notifier(
   private val modelDateTimeFormatter: ModelDateTimeFormatter
 ) {
 
+  fun getNotificationBuilder(channelId: String): NotificationCompat.Builder {
+    createChannels()
+    return NotificationCompat.Builder(context, channelId)
+  }
+
   fun createChannels() {
     val manager = systemServiceProvider.provideNotificationManager()
     manager?.run {

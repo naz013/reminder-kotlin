@@ -893,4 +893,37 @@
     <string name="report_an_issue">Raportați o problemă</string>
     <string name="move_to_archive">Mutați în arhivă</string>
     <string name="share_send_email">Trimiteți e‑mail…</string>
+
+    <string name="dark_mode">Mod întunecat</string>
+    <string name="_24_hour_format">Format de 24 de ore</string>
+    <string name="move_to_the_archive">Mutați în arhivă</string>
+    <string name="do_nothing">Nu face nimic</string>
+    <string name="first_day_of_the_week">Prima zi a săptămânii</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Adăugați mementouri în Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Scanați Google Calendar pentru evenimente noi</string>
+    <string name="calendar_not_selected">Calendar neselectat</string>
+    <string name="default_reminder_snooze_time">Timpul implicit de amânare a mementoului</string>
+    <string name="reminder_notification_repeating">Repetarea notificării de memento</string>
+    <string name="repeat_reminder_notification_until_dismissed">Repetați notificarea de memento până la respingere</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Nu repetați notificarea de memento când nu s-a efectuat nicio acțiune</string>
+    <string name="reminder_notification_repeat_interval">Intervalul de repetare a notificării de memento</string>
+    <string name="led_indication_if_available">Indicație LED (dacă este disponibilă)</string>
+    <string name="led_indication_color">Culoarea indicației LED</string>
+    <string name="reminder_default_priority">Prioritatea implicită a mementoului</string>
+    <string name="birthdays_from_contacts">Zile de naștere din contacte</string>
+    <string name="scan_contacts_automatically">Scanați contactele automat</string>
+    <string name="delete_all_archived_reminders">Ștergeți toate mementouri arhivate</string>
+    <string name="yes_delete_all">Da, ștergeți tot</string>
+    <string name="reset_calendar">Resetați</string>
+    <string name="action_complete">Finalizați</string>
+    <string name="action_snooze">Amânați</string>
+    <string name="action_dismiss">Respingeți</string>
+    <string name="action_edit">Editați</string>
+    <string name="action_open">Deschideți</string>
+    <string name="action_delete">Ștergeți</string>
+    <string name="action_send_email">Trimiteți e-mail</string>
+    <string name="action_snooze_custom">Amânați pentru…</string>
+    <string name="more_options">Mai multe opțiuni</string>
+    <string name="keep_notification">Păstrați notificarea</string>
 </resources>

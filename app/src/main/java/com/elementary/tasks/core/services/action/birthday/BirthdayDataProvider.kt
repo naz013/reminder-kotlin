@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.services.action.birthday
 
 import androidx.core.app.NotificationCompat
-import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.params.Prefs
@@ -31,39 +30,11 @@ class BirthdayDataProvider(
   }
 
   fun getVibrationPattern(): LongArray? {
-    return if (isBirthdayVibration()) {
-      if (isBirthdayVibrationInfinite()) {
-        longArrayOf(150, 86400000)
-      } else {
-        longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-      }
-    } else {
-      null
-    }
+    return longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
   }
 
   fun getAppName(): String {
-    return if (BuildParams.isPro) {
-      textProvider.getText(R.string.app_name_pro)
-    } else {
-      textProvider.getText(R.string.app_name)
-    }
-  }
-
-  private fun isBirthdayVibration(): Boolean {
-    return if (prefs.isBirthdayGlobalEnabled) {
-      prefs.isVibrateEnabled
-    } else {
-      prefs.isBirthdayVibrationEnabled
-    }
-  }
-
-  private fun isBirthdayVibrationInfinite(): Boolean {
-    return if (prefs.isBirthdayGlobalEnabled) {
-      prefs.isInfiniteVibrateEnabled
-    } else {
-      prefs.isBirthdayInfiniteVibrationEnabled
-    }
+    return textProvider.getAppName()
   }
 
   fun isBirthdayLed(): Boolean {

@@ -352,7 +352,7 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
       requireActivity(),
       note.colorPosition,
       getString(R.string.color),
-      currentStateHolder.theme.noteColorsForSlider(note.colorPalette)
+      themeProvider.noteColorsForSlider(note.colorPalette)
     ) {
       viewModel.saveNoteColor(note.id, it)
     }

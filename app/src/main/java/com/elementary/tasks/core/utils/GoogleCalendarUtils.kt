@@ -1,23 +1,21 @@
 package com.elementary.tasks.core.utils
 
-import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import android.text.TextUtils
 import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
+import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.CalendarEvent
+import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.readInt
 import com.github.naz013.feature.common.readLong
 import com.github.naz013.feature.common.readString
-import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.domain.CalendarEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
 import com.google.gson.annotations.SerializedName
@@ -77,13 +75,14 @@ class GoogleCalendarUtils(
           )
         }
       } catch (e: Exception) {
-        Logger.d("addEvent: ${e.message}")
+        Logger.e(TAG, "Cannot add event to calendar.", e)
       }
     }
   }
 
   suspend fun deleteEvents(id: String) {
     if (!Permissions.checkPermission(context, Permissions.WRITE_CALENDAR)) {
+      Logger.e(TAG, "No calendar permissions!")
       return
     }
     val events = calendarEventRepository.getByReminderId(id).toMutableList()
@@ -101,6 +100,7 @@ class GoogleCalendarUtils(
 
   fun deleteEvent(id: Long) {
     if (!Permissions.checkPermission(context, Permissions.WRITE_CALENDAR)) {
+      Logger.e(TAG, "No calendar permissions!")
       return
     }
     val cr = context.contentResolver
@@ -113,6 +113,7 @@ class GoogleCalendarUtils(
 
   suspend fun loadEvents(reminderId: String): List<EventItem> {
     if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
+      Logger.e(TAG, "No calendar permissions!")
       return listOf()
     }
     val list = mutableListOf<EventItem>()
@@ -129,6 +130,7 @@ class GoogleCalendarUtils(
   @RequiresPermission(Permissions.READ_CALENDAR)
   private fun getEvent(id: Long, uuId: String): EventItem? {
     if (id == 0L) {
+      Logger.e(TAG, "getEvent: event id is 0")
       return null
     }
     try {
@@ -177,36 +179,14 @@ class GoogleCalendarUtils(
         )
       }
     } catch (e: Exception) {
-      e.printStackTrace()
+      Logger.e(TAG, "Error loading event from calendar.", e)
     }
     return null
   }
 
-  /**
-   * Add event to stock Android calendar.
-   *
-   * @param summary   summary.
-   * @param startTime event start time in milliseconds.
-   */
-  fun addEventToStock(summary: String, startTime: Long) {
-    val intent = Intent(Intent.ACTION_INSERT)
-      .setData(CalendarContract.Events.CONTENT_URI)
-      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-      .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime)
-      .putExtra(
-        CalendarContract.EXTRA_EVENT_END_TIME,
-        startTime + 60 * 1000 * prefs.calendarEventDuration
-      )
-      .putExtra(CalendarContract.Events.TITLE, summary)
-      .putExtra(CalendarContract.Events.DESCRIPTION, context.getString(R.string.from_reminder))
-    try {
-      context.startActivity(intent)
-    } catch (ignored: ActivityNotFoundException) {
-    }
-  }
-
   fun getCalendarsList(): List<CalendarItem> {
     if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
+      Logger.e(TAG, "No calendar permissions!")
       return listOf()
     }
     val ids = mutableListOf<CalendarItem>()
@@ -221,7 +201,7 @@ class GoogleCalendarUtils(
     try {
       c = context.contentResolver.query(uri, projection, null, null, null)
     } catch (e: Exception) {
-      e.printStackTrace()
+      Logger.e(TAG, "Error querying calendars.", e)
     }
 
     if (c != null && c.moveToFirst()) {
@@ -235,6 +215,41 @@ class GoogleCalendarUtils(
     return ids.sortedBy { it.id }
   }
 
+  fun getCalendarById(id: Long): CalendarItem? {
+    if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
+      Logger.e(TAG, "No calendar permissions!")
+      return null
+    }
+    val uri = CalendarContract.Calendars.CONTENT_URI
+    val projection = arrayOf(
+      CalendarContract.Calendars._ID, // 0
+      CalendarContract.Calendars.ACCOUNT_NAME, // 1
+      CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, // 2
+      CalendarContract.Calendars.OWNER_ACCOUNT // 3
+    )
+    var c: Cursor? = null
+    try {
+      c = context.contentResolver.query(
+        uri,
+        projection,
+        CalendarContract.Calendars._ID + "='" + id + "'",
+        null,
+        null
+      )
+    } catch (e: Exception) {
+      Logger.e(TAG, "Error querying calendar by id.", e)
+    }
+
+    if (c != null && c.moveToFirst()) {
+      val mID = c.readLong(projection[0], 0L)
+      val title = c.readString(projection[2]) ?: ""
+      c.close()
+      return CalendarItem(title, mID)
+    }
+    c?.close()
+    return null
+  }
+
   fun getEvents(ids: List<Long>): List<EventItem> {
     if (ids.isEmpty()) return listOf()
     if (!Permissions.checkPermission(
@@ -243,6 +258,7 @@ class GoogleCalendarUtils(
         Permissions.WRITE_CALENDAR
       )
     ) {
+      Logger.e(TAG, "No calendar permissions!")
       return listOf()
     }
     val list = mutableListOf<EventItem>()
@@ -295,7 +311,8 @@ class GoogleCalendarUtils(
           c.close()
         }
       }
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+      Logger.e(TAG, "Error loading events from calendar.", e)
     }
     return list
   }
@@ -320,4 +337,8 @@ class GoogleCalendarUtils(
     @SerializedName("id")
     val id: Long
   )
+
+  companion object {
+    private const val TAG = "GoogleCalendarUtils"
+  }
 }

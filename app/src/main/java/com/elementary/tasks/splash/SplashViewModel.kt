@@ -4,9 +4,9 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.calendar.data.CalendarDataEngine
+import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
 import com.elementary.tasks.core.data.repository.NoteImageMigration
-import com.elementary.tasks.core.utils.EnableThread
+import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PresetInitProcessor
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class SplashViewModel(
   googleTasksAuthManager: GoogleTasksAuthManager,
   private val prefs: Prefs,
-  private val enableThread: EnableThread,
+  private val activateAllActiveRemindersUseCase: ActivateAllActiveRemindersUseCase,
   private val dispatcherProvider: DispatcherProvider,
   private val notifier: Notifier,
   featureManager: FeatureManager,
@@ -31,8 +31,8 @@ class SplashViewModel(
   private val groupsUtil: GroupsUtil,
   private val noteImageMigration: NoteImageMigration,
   private val presetInitProcessor: PresetInitProcessor,
-  private val calendarDataEngine: CalendarDataEngine,
-  private val appWidgetPreviewUpdater: AppWidgetPreviewUpdater
+  private val appWidgetPreviewUpdater: AppWidgetPreviewUpdater,
+  private val migrateExistingEventOccurrencesUseCase: MigrateExistingEventOccurrencesUseCase
 ) : ViewModel(), DefaultLifecycleObserver {
 
   val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
@@ -41,7 +41,6 @@ class SplashViewModel(
 
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
-    calendarDataEngine.initEngine()
     viewModelScope.launch(dispatcherProvider.default()) {
       presetInitProcessor.run()
     }
@@ -50,10 +49,13 @@ class SplashViewModel(
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)
     viewModelScope.launch(dispatcherProvider.default()) {
-      initPrefs()
       checkIfAppUpdated()
       checkDb()
       appWidgetPreviewUpdater.updateEventsWidgetPreview()
+      if (!prefs.occurrenceMigrated) {
+        prefs.occurrenceMigrated = true
+        migrateExistingEventOccurrencesUseCase()
+      }
       withUIContext {
         if (prefs.isSbNotificationEnabled) {
           notifier.sendShowReminderPermanent()
@@ -77,12 +79,7 @@ class SplashViewModel(
     val versionName = packageManagerWrapper.getVersionName()
     if (!prefs.getVersion(versionName)) {
       prefs.saveVersionBoolean(versionName)
-      enableThread.run()
+      activateAllActiveRemindersUseCase.run()
     }
-  }
-
-  private fun initPrefs() {
-    prefs.initPrefs()
-    prefs.checkPrefs()
   }
 }

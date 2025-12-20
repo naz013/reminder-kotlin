@@ -19,7 +19,7 @@ class ReminderActionReceiver : BaseBroadcast() {
       Logger.d("onReceive: $action, id=$id")
       if (action != null && id.isNotEmpty()) {
         when {
-          action.matches(ACTION_HIDE.toRegex()) -> reminderActionProcessor.cancel(id)
+          action.matches(ACTION_HIDE.toRegex()) -> reminderActionProcessor.complete(id)
           action.matches(ACTION_SNOOZE.toRegex()) -> reminderActionProcessor.snooze(id)
         }
       }

@@ -90,15 +90,22 @@ class Dialogues(
     }
   }
 
-  fun askConfirmation(context: Context, title: String, onAction: (Boolean) -> Unit) {
+  fun askConfirmation(
+    context: Context,
+    title: String,
+    message: String = context.getString(R.string.are_you_sure),
+    positiveText: String = context.getString(R.string.yes),
+    negativeText: String = context.getString(R.string.no),
+    onAction: (Boolean) -> Unit
+  ) {
     getMaterialDialog(context)
       .setTitle(title)
-      .setMessage(context.getString(R.string.are_you_sure))
-      .setPositiveButton(context.getString(R.string.yes)) { dialog, _ ->
+      .setMessage(message)
+      .setPositiveButton(positiveText) { dialog, _ ->
         dialog.dismiss()
         onAction.invoke(true)
       }
-      .setNegativeButton(context.getString(R.string.no)) { dialog, _ ->
+      .setNegativeButton(negativeText) { dialog, _ ->
         dialog.dismiss()
         onAction.invoke(false)
       }

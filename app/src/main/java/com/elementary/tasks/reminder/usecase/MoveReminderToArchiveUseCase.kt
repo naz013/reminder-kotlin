@@ -1,14 +1,12 @@
 package com.elementary.tasks.reminder.usecase
 
-import com.elementary.tasks.core.controller.EventControlFactory
-import com.github.naz013.domain.sync.SyncState
+import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderRepository
 
 class MoveReminderToArchiveUseCase(
-  private val eventControlFactory: EventControlFactory,
   private val reminderRepository: ReminderRepository,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
+  private val deactivateReminderUseCase: DeactivateReminderUseCase,
 ) {
 
   suspend operator fun invoke(id: String) {
@@ -17,11 +15,7 @@ class MoveReminderToArchiveUseCase(
       return
     }
     reminder.isRemoved = true
-    reminder.version += 1
-    eventControlFactory.getController(reminder).disable()
-    reminderRepository.save(reminder)
-    reminderRepository.updateSyncState(reminder.uuId, SyncState.WaitingForUpload)
-    scheduleReminderUploadUseCase(id)
+    deactivateReminderUseCase(reminder)
     Logger.i(TAG, "Moved reminder with id = $id to archive")
   }
 

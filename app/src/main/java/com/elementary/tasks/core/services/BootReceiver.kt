@@ -2,7 +2,7 @@ package com.elementary.tasks.core.services
 
 import android.content.Context
 import android.content.Intent
-import com.elementary.tasks.core.utils.EnableThread
+import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.github.naz013.logging.Logger
 import org.koin.core.component.get
 import org.koin.core.component.inject
@@ -14,7 +14,7 @@ class BootReceiver : BaseBroadcast() {
   override fun onReceive(context: Context, intent: Intent) {
     Logger.i("Device boot completed")
     if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-      get<EnableThread>().run()
+      get<ActivateAllActiveRemindersUseCase>().run()
       if (prefs.isBirthdayReminderEnabled) {
         jobScheduler.scheduleDailyBirthday()
       }
@@ -23,9 +23,6 @@ class BootReceiver : BaseBroadcast() {
       }
       if (prefs.isContactAutoCheckEnabled) {
         jobScheduler.scheduleBirthdaysCheck()
-      }
-      if (prefs.isAutoEventsCheckEnabled) {
-        jobScheduler.scheduleEventCheck()
       }
       jobScheduler.scheduleAutoBackup()
       if (prefs.isBirthdayPermanentEnabled) {

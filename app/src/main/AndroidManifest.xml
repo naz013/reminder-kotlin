@@ -273,7 +273,7 @@
             android:name=".notes.preview.ImagePreviewActivity"
             android:exported="false" />
         <activity
-            android:name=".reminder.dialog.ReminderDialog29Activity"
+            android:name=".reminder.dialog.ReminderActionActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
@@ -282,7 +282,7 @@
             android:exported="false"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".birthdays.dialog.ShowBirthday29Activity"
+            android:name=".birthdays.dialog.BirthdayActionActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
@@ -310,6 +310,16 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.services.alarm.REMINDER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".settings.calendar.GoogleCalendarReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PROVIDER_CHANGED"/>
+                <data android:scheme="content"/>
+                <data android:host="com.android.calendar"/>
             </intent-filter>
         </receiver>
 

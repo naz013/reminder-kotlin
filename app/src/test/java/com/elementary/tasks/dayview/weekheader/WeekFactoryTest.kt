@@ -1,13 +1,15 @@
 package com.elementary.tasks.dayview.weekheader
 
-import com.elementary.tasks.calendar.data.CalendarDataEngine
 import com.elementary.tasks.calendar.dayview.weekheader.WeekDay
 import com.elementary.tasks.calendar.dayview.weekheader.WeekFactory
+import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDayUseCase
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.datetime.DateTimePreferences
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -20,14 +22,12 @@ class WeekFactoryTest {
   private lateinit var dateTimePreferences: DateTimePreferences
   private lateinit var dateTimeManager: DateTimeManager
   private lateinit var weekFactory: WeekFactory
-  private lateinit var calendarDataEngine: CalendarDataEngine
+  private lateinit var getOccurrencesByDayUseCase: GetOccurrencesByDayUseCase
 
   @Before
   fun setUp() {
     prefs = mockk()
     every { prefs.appLanguage } returns 1
-    every { prefs.isRemindersInCalendarEnabled } returns false
-    every { prefs.isFutureEventEnabled } returns false
 
     dateTimePreferences = mockk()
     every { dateTimePreferences.locale } returns Locale.US
@@ -37,15 +37,14 @@ class WeekFactoryTest {
       dateTimePreferences = dateTimePreferences
     )
 
-    calendarDataEngine = mockk()
-    every { calendarDataEngine.getReminderMode(any(), any()) } returns CalendarDataEngine.ReminderMode.DO_NOT_INCLUDE
-    every { calendarDataEngine.hasAnyByDate(any(), any()) } returns false
+    getOccurrencesByDayUseCase = mockk()
+    coEvery { getOccurrencesByDayUseCase.invoke(any()) } returns emptyList()
 
-    weekFactory = WeekFactory(prefs, dateTimeManager, calendarDataEngine)
+    weekFactory = WeekFactory(prefs, dateTimeManager, getOccurrencesByDayUseCase)
   }
 
   @Test
-  fun testWeekBuild_whenStartDayIsSunday_andCurrentDayIsSame() {
+  fun testWeekBuild_whenStartDayIsSunday_andCurrentDayIsSame() = runTest {
     every { prefs.startDay }.returns(0)
 
     val localDate = LocalDate.of(2023, 8, 20)
@@ -67,7 +66,7 @@ class WeekFactoryTest {
   }
 
   @Test
-  fun testWeekBuild_whenStartDayIsSunday_andCurrentDayIsNotTheSame() {
+  fun testWeekBuild_whenStartDayIsSunday_andCurrentDayIsNotTheSame() = runTest {
     every { prefs.startDay }.returns(0)
 
     val localDate = LocalDate.of(2023, 8, 22)
@@ -90,7 +89,7 @@ class WeekFactoryTest {
   }
 
   @Test
-  fun testWeekBuild_whenStartDayIsMonday_andCurrentDayIsSame() {
+  fun testWeekBuild_whenStartDayIsMonday_andCurrentDayIsSame() = runTest {
     every { prefs.startDay }.returns(1)
 
     val localDate = LocalDate.of(2023, 8, 21)
@@ -112,7 +111,7 @@ class WeekFactoryTest {
   }
 
   @Test
-  fun testWeekBuild_whenStartDayIsMonday_andCurrentDayIsNotTheSame() {
+  fun testWeekBuild_whenStartDayIsMonday_andCurrentDayIsNotTheSame() = runTest {
     every { prefs.startDay }.returns(1)
 
     val startDate = LocalDate.of(2023, 8, 21)

@@ -311,18 +311,6 @@ class DateTimeManager(
     }
   }
 
-  fun generateDateTime(
-    eventTime: String,
-    repeat: Long,
-    fromTime: LocalDateTime = getCurrentDateTime()
-  ): LocalDateTime {
-    var time = fromGmtToLocal(eventTime) ?: return LocalDateTime.now()
-    while (time <= fromTime) {
-      time = time.plusMillis(repeat)
-    }
-    return time
-  }
-
   fun localDayOfWeekToOld(dayOfWeek: DayOfWeek): Int {
     // monday = 1 - sunday = 7
     return if (dayOfWeek == DayOfWeek.SUNDAY) {
@@ -330,14 +318,6 @@ class DateTimeManager(
     } else {
       dayOfWeek.value + 1
     }
-  }
-
-  fun isAfterDate(gmt1: String?, gmt2: String?): Boolean {
-    if (gmt1.isNullOrEmpty()) return false
-    if (gmt2.isNullOrEmpty()) return true
-    val dateTime1 = fromGmtToLocal(gmt1) ?: return false
-    val dateTime2 = fromGmtToLocal(gmt2) ?: return true
-    return dateTime1 > dateTime2
   }
 
   fun getBirthdayDateSearch(date: LocalDate): String {

@@ -11,8 +11,9 @@ class ReminderDateTimeCleaner {
     when {
       type.isByDate() -> {
         Logger.i(TAG, "Clean up for ${reminder.type} as BY_DATE")
-        reminder.weekdays = listOf()
-        reminder.dayOfMonth = 0
+        reminder.weekdays = emptyList()
+        reminder.dayOfMonth = -1
+        reminder.monthOfYear = -1
         reminder.after = 0L
         reminder.delay = 0
         reminder.eventCount = 0
@@ -21,10 +22,12 @@ class ReminderDateTimeCleaner {
 
       type.isTimer() -> {
         Logger.i(TAG, "Clean up for ${reminder.type} as BY_TIME")
-        reminder.weekdays = listOf()
+        reminder.weekdays = emptyList()
         reminder.delay = 0
         reminder.eventCount = 0
         reminder.recurDataObject = null
+        reminder.dayOfMonth = -1
+        reminder.monthOfYear = -1
       }
 
       type.isByWeekday() -> {
@@ -34,20 +37,23 @@ class ReminderDateTimeCleaner {
         reminder.eventCount = 0
         reminder.repeatInterval = 0
         reminder.recurDataObject = null
+        reminder.dayOfMonth = -1
+        reminder.monthOfYear = -1
       }
 
       type.isMonthly() -> {
         Logger.i(TAG, "Clean up for ${reminder.type} as BY_MONTH")
-        reminder.weekdays = listOf()
+        reminder.weekdays = emptyList()
         reminder.after = 0L
         reminder.delay = 0
         reminder.eventCount = 0
         reminder.recurDataObject = null
+        reminder.monthOfYear = -1
       }
 
       type.isYearly() -> {
         Logger.i(TAG, "Clean up for ${reminder.type} as BY_DAY_OF_YEAR")
-        reminder.weekdays = listOf()
+        reminder.weekdays = emptyList()
         reminder.after = 0L
         reminder.delay = 0
         reminder.eventCount = 0
@@ -64,15 +70,19 @@ class ReminderDateTimeCleaner {
         reminder.eventCount = 0
         reminder.repeatInterval = 0
         reminder.recurDataObject = null
+        reminder.dayOfMonth = -1
+        reminder.monthOfYear = -1
       }
 
       type.isRecur() -> {
         Logger.i(TAG, "Clean up for ${reminder.type} as ICAL")
-        reminder.weekdays = listOf()
+        reminder.weekdays = emptyList()
         reminder.after = 0L
         reminder.delay = 0
         reminder.eventCount = 0
         reminder.repeatInterval = 0
+        reminder.dayOfMonth = -1
+        reminder.monthOfYear = -1
       }
 
       type.isSubTasks() -> {

@@ -893,4 +893,37 @@
     <string name="report_an_issue">Reportar um problema</string>
     <string name="move_to_archive">Mover para o arquivo</string>
     <string name="share_send_email">Enviar e-mail…</string>
+
+    <string name="dark_mode">Modo escuro</string>
+    <string name="_24_hour_format">Formato de 24 horas</string>
+    <string name="move_to_the_archive">Mover para o arquivo</string>
+    <string name="do_nothing">Não fazer nada</string>
+    <string name="first_day_of_the_week">Primeiro dia da semana</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="add_reminders_to_google_calendar">Adicionar lembretes ao Google Calendar</string>
+    <string name="scan_google_calendar_for_the_new_events">Procurar novos eventos no Google Calendar</string>
+    <string name="calendar_not_selected">Calendário não selecionado</string>
+    <string name="default_reminder_snooze_time">Tempo padrão de adiamento de lembrete</string>
+    <string name="reminder_notification_repeating">Repetição de notificação de lembrete</string>
+    <string name="repeat_reminder_notification_until_dismissed">Repetir notificação de lembrete até dispensar</string>
+    <string name="do_not_repeat_reminder_notification_when_no_action_taken">Não repetir notificação de lembrete quando nenhuma ação for executada</string>
+    <string name="reminder_notification_repeat_interval">Intervalo de repetição de notificação de lembrete</string>
+    <string name="led_indication_if_available">Indicação LED (se disponível)</string>
+    <string name="led_indication_color">Cor da indicação LED</string>
+    <string name="reminder_default_priority">Prioridade padrão de lembrete</string>
+    <string name="birthdays_from_contacts">Aniversários dos contatos</string>
+    <string name="scan_contacts_automatically">Procurar contatos automaticamente</string>
+    <string name="delete_all_archived_reminders">Excluir todos os lembretes arquivados</string>
+    <string name="yes_delete_all">Sim, excluir todos</string>
+    <string name="reset_calendar">Redefinir</string>
+    <string name="action_complete">Concluir</string>
+    <string name="action_snooze">Adiar</string>
+    <string name="action_dismiss">Dispensar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_open">Abrir</string>
+    <string name="action_delete">Excluir</string>
+    <string name="action_send_email">Enviar e-mail</string>
+    <string name="action_snooze_custom">Adiar por…</string>
+    <string name="more_options">Mais opções</string>
+    <string name="keep_notification">Manter notificação</string>
 </resources>

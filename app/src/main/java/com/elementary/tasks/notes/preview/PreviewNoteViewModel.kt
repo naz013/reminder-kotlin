@@ -22,6 +22,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.livedata.toSingleEvent
@@ -180,9 +181,13 @@ class PreviewNoteViewModel(
         return@launch
       }
 
-      reminder.noteId = ""
-
-      saveReminderUseCase(reminder)
+      saveReminderUseCase(
+        reminder.copy(
+          noteId = "",
+          version = reminder.version + 1,
+          syncState = SyncState.WaitingForUpload
+        )
+      )
 
       loadReminders()
       postInProgress(false)

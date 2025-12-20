@@ -15,10 +15,12 @@ data class Reminder(
   @SerializedName("noteId")
   var noteId: String = "",
   @SerializedName("reminderType")
+  @Deprecated("Types are not used anymore")
   var reminderType: Int = 0,
   @SerializedName("eventState")
   var eventState: Int = 1,
   @SerializedName("groupUuId")
+  @Deprecated("We will not use groups as mandatory field in new versions")
   var groupUuId: String = "",
   @SerializedName("uuId")
   var uuId: String = UUID.randomUUID().toString(),
@@ -66,18 +68,19 @@ data class Reminder(
   @SerializedName("volume")
   var volume: Int = -1,
   @SerializedName("dayOfMonth")
-  var dayOfMonth: Int = 0,
+  var dayOfMonth: Int = -1,
   @SerializedName("monthOfYear")
-  var monthOfYear: Int = 0,
+  var monthOfYear: Int = -1,
   @SerializedName("repeatInterval")
   var repeatInterval: Long = 0,
   @SerializedName("repeatLimit")
   var repeatLimit: Int = -1,
   @SerializedName("after")
-  var after: Long = 0,
+  var after: Long = 0, // Countdown time in millis
   @SerializedName("weekdays")
-  var weekdays: List<Int> = ArrayList(),
+  var weekdays: List<Int> = ArrayList(), // 0 - Sunday, 1 - Monday ..., If == 1 then selected
   @SerializedName("type")
+  @Deprecated("Types are not used anymore")
   var type: Int = 0,
   @SerializedName("target")
   var target: String = "",
@@ -96,17 +99,18 @@ data class Reminder(
   @SerializedName("shoppings")
   var shoppings: List<ShopItem> = ArrayList(),
   @SerializedName("uniqueId")
-  var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
+  var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE), // Used for notifications and AlarmManager
   @SerializedName("isActive")
   var isActive: Boolean = true,
   @SerializedName("isRemoved")
   var isRemoved: Boolean = false,
   @SerializedName("isNotificationShown")
-  var isNotificationShown: Boolean = false,
+  var isNotificationShown: Boolean = false, // Used for Location based reminders
   @SerializedName("isLocked")
-  var isLocked: Boolean = false,
+  var isLocked: Boolean = false, // Used for Location based reminders
   // Used for Delayed events, such as Location
   @SerializedName("hasReminder")
+  @Deprecated("Reminder presence is determined by date/time fields now")
   var hasReminder: Boolean = false,
   // Used, when add event to calendar
   @SerializedName("duration")
@@ -140,8 +144,10 @@ data class Reminder(
   @Transient
   val syncState: SyncState = SyncState.Synced,
   @Transient
+  @Deprecated("We will not use groups as mandatory field in new versions")
   var groupTitle: String? = "",
   @Transient
+  @Deprecated("We will not use groups as mandatory field in new versions")
   var groupColor: Int = 0
 ) : Serializable {
 
@@ -204,7 +210,7 @@ data class Reminder(
 
   fun isLimited(): Boolean = repeatLimit > 0
 
-  fun isLimitExceed(): Boolean = (repeatLimit - eventCount - 1) < 0
+  fun isLimitExceed(): Boolean = !isLimited() || (repeatLimit - eventCount - 1) < 0
 
   fun copy(updatedAt: String?): Reminder {
     val reminder = Reminder(this, false, updatedAt)
@@ -215,12 +221,7 @@ data class Reminder(
     return reminder
   }
 
-  fun isRepeating(): Boolean {
-    val harRepeat = repeatInterval > 0L || isBase(type, BY_WEEK) || isBase(type, BY_MONTH) ||
-      isBase(type, BY_DAY_OF_YEAR)
-    return !isGpsType(type) && harRepeat
-  }
-
+  @Deprecated("Types are not used anymore")
   fun readType(): ReminderType {
     return ReminderType(type)
   }

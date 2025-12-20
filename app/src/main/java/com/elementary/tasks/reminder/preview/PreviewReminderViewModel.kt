@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.UiShareData
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
@@ -16,9 +15,10 @@ import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewData
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
+import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -34,7 +34,6 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -43,7 +42,6 @@ class PreviewReminderViewModel(
   arguments: Bundle?,
   private val reminderRepository: ReminderRepository,
   private val googleCalendarUtils: GoogleCalendarUtils,
-  private val eventControlFactory: EventControlFactory,
   dispatcherProvider: DispatcherProvider,
   private val uiReminderPreviewDataAdapter: UiReminderPreviewDataAdapter,
   private val backupTool: BackupTool,
@@ -59,7 +57,8 @@ class PreviewReminderViewModel(
   private val eventToUiReminderPreview: EventToUiReminderPreview,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
+  private val activateReminderUseCase: ActivateReminderUseCase,
+  private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _note = mutableLiveDataOf<UiNoteList>()
@@ -184,13 +183,12 @@ class PreviewReminderViewModel(
   private suspend fun toggleReminder(reminder: Reminder) {
     postInProgress(true)
     Logger.i(TAG, "Toggling reminder, id: ${reminder.uuId}")
-    if (!eventControlFactory.getController(reminder).onOff()) {
-      postInProgress(false)
-      postCommand(Commands.OUTDATED)
-    } else {
-      scheduleReminderUploadUseCase(reminder.uuId)
-      postInProgress(false)
+    val updatedReminder = toggleReminderStateUseCase(reminder)
+    postInProgress(false)
+    if (updatedReminder.first) {
       postCommand(Commands.SAVED)
+    } else {
+      postCommand(Commands.OUTDATED)
     }
     loadReminder()
   }
@@ -200,31 +198,27 @@ class PreviewReminderViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       reminderRepository.getById(id)?.also { reminder ->
         postInProgress(true)
-        runBlocking {
-          if (reminder.groupUuId == "") {
-            val group = reminderGroupRepository.defaultGroup()
-            if (group != null) {
-              reminder.groupColor = group.groupColor
-              reminder.groupTitle = group.groupTitle
-              reminder.groupUuId = group.groupUuId
-            }
+        if (reminder.groupUuId == "") {
+          val group = reminderGroupRepository.defaultGroup()
+          if (group != null) {
+            reminder.groupColor = group.groupColor
+            reminder.groupTitle = group.groupTitle
+            reminder.groupUuId = group.groupUuId
           }
-          val newItem = reminder.copy()
-          newItem.summary = reminder.summary + " - " + textProvider.getText(R.string.copy)
-
-          val date = dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
-            ?: LocalDate.now()
-          var dateTime = LocalDateTime.of(date, time)
-
-          while (dateTime < LocalDateTime.now()) {
-            dateTime = dateTime.plusDays(1)
-          }
-          newItem.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
-          newItem.startTime = dateTimeManager.getGmtFromDateTime(dateTime)
-          reminderRepository.save(newItem)
-          eventControlFactory.getController(newItem).enable()
-          scheduleReminderUploadUseCase(newItem.uuId)
         }
+        val newItem = reminder.copy()
+        newItem.summary = reminder.summary + " - " + textProvider.getText(R.string.copy)
+
+        val date = dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
+          ?: LocalDate.now()
+        var dateTime = LocalDateTime.of(date, time)
+
+        while (dateTime < LocalDateTime.now()) {
+          dateTime = dateTime.plusDays(1)
+        }
+        newItem.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
+        newItem.startTime = dateTimeManager.getGmtFromDateTime(dateTime)
+        activateReminderUseCase(newItem)
         postCommand(Commands.SAVED)
       }
     }

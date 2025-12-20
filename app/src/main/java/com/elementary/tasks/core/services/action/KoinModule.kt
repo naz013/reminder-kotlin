@@ -15,7 +15,7 @@ val actionModule = module {
   factory { ReminderDataProvider(get(), get()) }
   factory { BirthdayDataProvider(get(), get()) }
 
-  factory { ReminderHandlerFactory(get(), get(), get(), get(), get(), get(), get()) }
+  factory { ReminderHandlerFactory(get(), get(), get(), get(), get(), get(), get(), get()) }
   factory {
     BirthdayHandlerFactory(
       get(),

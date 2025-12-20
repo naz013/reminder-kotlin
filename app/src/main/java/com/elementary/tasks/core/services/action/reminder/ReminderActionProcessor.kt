@@ -32,7 +32,7 @@ class ReminderActionProcessor(
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun snooze(id: String) {
-    Logger.d("snooze: $id")
+    Logger.i(TAG, "Snoozing reminder: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
       withContext(dispatcherProvider.main()) {
@@ -41,19 +41,19 @@ class ReminderActionProcessor(
     }
   }
 
-  fun cancel(id: String) {
-    Logger.d("cancel: $id")
+  fun complete(id: String) {
+    Logger.i(TAG, "Completing reminder: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
       jobScheduler.cancelReminder(reminder.uniqueId)
       withContext(dispatcherProvider.main()) {
-        reminderHandlerFactory.createCancel().handle(reminder)
+        reminderHandlerFactory.createComplete().handle(reminder)
       }
     }
   }
 
   fun process(id: String) {
-    Logger.d("process: $id")
+    Logger.i(TAG, "Going to process reminder: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
       if (doNotDisturbManager.applyDoNotDisturb(reminder.priority)) {
@@ -64,18 +64,25 @@ class ReminderActionProcessor(
             LocalDateTime.now().minusMinutes(1)
           )
           if (delayTime > 0) {
+            Logger.i(TAG, "Delaying reminder id=${reminder.uuId} for $delayTime ms due to DND")
             jobScheduler.scheduleReminderDelay(delayTime, id, reminder.uniqueId)
           }
+        } else {
+          Logger.w(TAG, "Skipping reminder id=${reminder.uuId} due to DND settings")
         }
       } else {
         val canShowWindow = !SuperUtil.isPhoneCallActive(contextProvider.context)
         analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
         val handler = reminderHandlerFactory.createAction(canShowWindow)
-        Logger.d("process: handler=$handler")
+        Logger.d(TAG, "Processing reminder id=${reminder.uuId} with handler ${handler.javaClass.simpleName}")
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)
         }
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "ReminderActionProcessor"
   }
 }

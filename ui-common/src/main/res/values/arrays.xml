@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="app_languages" >
-        <item>@string/auto</item>
+        <item>@string/system_default</item>
         <item>English</item>
         <item>Deutsch</item>
         <item>Español</item>
