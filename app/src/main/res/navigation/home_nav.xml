@@ -548,4 +548,8 @@
         android:name="com.elementary.tasks.notes.preview.PreviewNoteFragment"
         tools:layout="@layout/fragment_note_preview"
         android:label="@string/details" />
+    <fragment
+        android:id="@+id/reminderHelpFragment"
+        android:name="com.elementary.tasks.reminder.build.help.ReminderHelpFragment"
+        android:label="ReminderHelpFragment" />
 </navigation>
