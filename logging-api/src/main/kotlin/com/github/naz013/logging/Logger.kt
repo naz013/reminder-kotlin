@@ -18,6 +18,12 @@ object Logger {
     this.firebaseLogger = firebaseLogger
   }
 
+  fun v(tag: String, message: String) {
+    if (loggingEnabled) {
+      loggerProvider?.verbose(tag, message)
+    }
+  }
+
   fun d(tag: String, message: String) {
     if (loggingEnabled && isDebug) {
       loggerProvider?.debug(tag, message)

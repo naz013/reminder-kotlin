@@ -47,6 +47,10 @@ class CloudTestApplication : Application() {
         override fun warning(tag: String, message: String, throwable: Throwable) {
           Log.w(tag, message, throwable)
         }
+
+        override fun verbose(tag: String, message: String) {
+          Log.v(tag, message)
+        }
       },
       firebaseLogger = object : FirebaseLogger {
         override fun logEvent(event: String) {

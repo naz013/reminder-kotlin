@@ -210,7 +210,7 @@ data class Reminder(
 
   fun isLimited(): Boolean = repeatLimit > 0
 
-  fun isLimitExceed(): Boolean = !isLimited() || (repeatLimit - eventCount - 1) < 0
+  fun isLimitExceed(): Boolean = isLimited() && (repeatLimit - eventCount - 1) < 0
 
   fun copy(updatedAt: String?): Reminder {
     val reminder = Reminder(this, false, updatedAt)
