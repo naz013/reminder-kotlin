@@ -3,6 +3,7 @@ package com.elementary.tasks.reminder.scheduling.behavior
 import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
+import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
 
 /**
@@ -32,6 +33,11 @@ class IntervalRepeatStrategy(
   }
 
   override fun canSkip(reminder: Reminder): Boolean {
+    Logger.v(
+      TAG,
+      "CanSkip called for reminder id=${reminder.uuId}, " +
+        "repeatInterval=${reminder.repeatInterval}, isLimitExceed=${reminder.isLimitExceed()}"
+    )
     return reminder.repeatInterval > 0 && !reminder.isLimitExceed()
   }
 
@@ -43,5 +49,9 @@ class IntervalRepeatStrategy(
   override fun canStartImmediately(reminder: Reminder): Boolean {
     // Interval repeat reminders can start immediately
     return dateTimeManager.isCurrent(reminder.eventTime)
+  }
+
+  companion object {
+    private const val TAG = "IntervalRepeatStrategy"
   }
 }

@@ -36,4 +36,9 @@ internal class LoggerProviderImpl : LoggerProvider {
     logger.warn("$tag: $message", throwable)
     Log.w(tag, message, throwable)
   }
+
+  override fun verbose(tag: String, message: String) {
+    logger.trace("$tag: $message")
+    Log.v(tag, message)
+  }
 }

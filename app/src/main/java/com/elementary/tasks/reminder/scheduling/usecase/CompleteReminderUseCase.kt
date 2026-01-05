@@ -20,6 +20,7 @@ class CompleteReminderUseCase(
   suspend operator fun invoke(reminder: Reminder): Reminder {
     reminder.delay = 0
     val strategy = strategyResolver.resolve(reminder)
+    Logger.v(TAG, "Completing reminder id=${reminder.uuId} with strategy=${strategy}")
     addReminderToHistoryUseCase(reminder)
     return if (strategy.canSkip(reminder)) {
       val fromDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
