@@ -37,7 +37,7 @@ class BirthdayHolder(
     }
   }
 
-  fun setData(item: UiBirthdayList) {
+  fun setData(item: UiBirthdayList, isHistorical: Boolean = false) {
     binding.eventText.text = item.name
     binding.eventNumber.visibleGone(item.number.isNotEmpty())
     binding.eventNumber.text = item.number
