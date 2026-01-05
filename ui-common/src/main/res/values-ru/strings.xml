@@ -4,7 +4,7 @@
     <string name="app_name">"Напоминание"</string>
     <string name="app_name_pro">"Напоминание PRO"</string>
     <string name="action_settings">"Настройки"</string>
-    <string name="copyright">2025 © Назар Сухович</string>
+    <string name="copyright">2026 © Назар Сухович</string>
     <string name="cant_access_location_services">Не удалось получить доступ к службам геолокации!</string>
     <string name="normal">Обычная</string>
     <string name="satellite">Спутник</string>
