@@ -50,17 +50,24 @@ class DayEventsAdapter(
   }
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    val item = getItem(position)
     when (holder) {
       is BirthdayHolder -> {
-        holder.setData((getItem(position) as BirthdayEventModel).model)
+        holder.setData((item as BirthdayEventModel).model, item.isHistorical)
       }
 
       is ReminderViewHolder -> {
-        holder.setData((getItem(position) as ReminderEventModel).model as UiReminderListActive)
+        holder.setData(
+          data = (item as ReminderEventModel).model as UiReminderListActive,
+          isHistorical = item.isHistorical
+        )
       }
 
       is ShoppingViewHolder -> {
-        holder.setData((getItem(position) as ReminderEventModel).model as UiReminderListActiveShop)
+        holder.setData(
+          data = (item as ReminderEventModel).model as UiReminderListActiveShop,
+          isHistorical = item.isHistorical
+        )
       }
     }
   }

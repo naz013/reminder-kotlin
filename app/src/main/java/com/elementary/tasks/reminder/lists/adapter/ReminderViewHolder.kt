@@ -15,6 +15,7 @@ import com.github.naz013.ui.common.view.inflater
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.ListItemReminderBinding
+import com.github.naz013.ui.common.R
 
 class ReminderViewHolder(
   parent: ViewGroup,
@@ -52,12 +53,12 @@ class ReminderViewHolder(
     }
   }
 
-  override fun setData(data: UiReminderListActive) {
+  override fun setData(data: UiReminderListActive, isHistorical: Boolean) {
     binding.taskText.text = data.summary
     loadDate(data)
     loadCheck(data)
     loadContact(data)
-    loadRepeatLeft(data)
+    loadRepeatLeft(data, isHistorical)
     loadGroup(data)
   }
 
@@ -69,13 +70,17 @@ class ReminderViewHolder(
     binding.reminderTypeGroup.text = "$typeLabel ($groupName, $priority)"
   }
 
-  private fun loadRepeatLeft(reminder: UiReminderListActive) {
+  private fun loadRepeatLeft(reminder: UiReminderListActive, isHistorical: Boolean) {
     binding.badgesView.visible()
     binding.repeatBadge.visible()
     binding.timeToBadge.visibleGone(reminder.isRunning)
 
     binding.repeatBadge.text = reminder.due.repeat
-    binding.timeToBadge.text = reminder.due.remaining
+    binding.timeToBadge.text = if (isHistorical) {
+      itemView.context.getString(R.string.completed)
+    } else {
+      reminder.due.remaining
+    }
   }
 
   private fun loadDate(reminder: UiReminderListActive) {
