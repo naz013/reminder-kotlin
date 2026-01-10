@@ -3,16 +3,12 @@ package com.github.naz013.ui.common.activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.WindowInsetsControllerCompat
 import com.github.naz013.common.Module
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
@@ -26,7 +22,6 @@ import com.github.naz013.ui.common.theme.ThemeProvider
 import com.google.android.material.color.DynamicColors
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.Serializable
 
 abstract class LightThemedActivity : AppCompatActivity() {
 
@@ -44,7 +39,6 @@ abstract class LightThemedActivity : AppCompatActivity() {
     }
   }
 
-  private val uiHandler = Handler(Looper.getMainLooper())
   protected val isDarkMode: Boolean
     get() {
       return themeProvider.isDark
@@ -126,38 +120,13 @@ abstract class LightThemedActivity : AppCompatActivity() {
     }
   }
 
-  protected fun loginSuccessful() = loginStateViewModel.isLogged
-
   protected fun isLogged() = intent.isLogged()
 
   protected fun intentString(key: String, def: String = "") = intent.getStringExtra(key) ?: def
 
-  protected fun intentLong(key: String, def: Long = 0) = intent.getLongExtra(key, def)
-
-  protected fun intentBoolean(key: String, def: Boolean = false) = intent.getBooleanExtra(key, def)
-
-  protected fun <T : Serializable> intentSerializable(key: String, clazz: Class<T>): T? {
-    return runCatching {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        intent.getSerializableExtra(key, clazz)
-      } else {
-        intent.getSerializableExtra(key) as? T
-      }
-    }.getOrNull()
-  }
-
   open fun requireLogin() = false
-
-  protected fun postUi(action: () -> Unit) {
-    uiHandler.post(action)
-  }
 
   protected open fun handleBackPress(): Boolean {
     return false
-  }
-
-  protected fun updateStatusBar(view: View, isLightStatusBar: Boolean) {
-    val controller = WindowInsetsControllerCompat(window, view)
-    controller.isAppearanceLightStatusBars = isLightStatusBar
   }
 }
