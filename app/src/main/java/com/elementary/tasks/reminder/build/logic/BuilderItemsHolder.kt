@@ -20,10 +20,12 @@ class BuilderItemsHolder {
   }
 
   fun update(position: Int, builderItem: BuilderItem<*>) {
+    if (position < 0 || position >= items.size) return
     items[position] = builderItem
   }
 
   fun remove(position: Int) {
+    if (position < 0 || position >= items.size) return
     items.removeAt(position)
   }
 
