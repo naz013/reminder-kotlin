@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Drzemka przez…</string>
     <string name="more_options">Więcej opcji</string>
     <string name="keep_notification">Zachowaj powiadomienie</string>
+    <string name="cd_back">Wstecz</string>
+    <string name="how_to_create_a_reminder">Jak utworzyć przypomnienie</string>
 </resources>

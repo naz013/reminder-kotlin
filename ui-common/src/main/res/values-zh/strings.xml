@@ -927,4 +927,6 @@
     <string name="action_snooze_custom">延后…</string>
     <string name="more_options">更多选项</string>
     <string name="keep_notification">保留通知</string>
+    <string name="cd_back">返回</string>
+    <string name="how_to_create_a_reminder">如何创建提醒</string>
 </resources>

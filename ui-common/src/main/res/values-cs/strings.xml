@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Odložit o…</string>
     <string name="more_options">Více možností</string>
     <string name="keep_notification">Ponechat oznámení</string>
+    <string name="cd_back">Zpět</string>
+    <string name="how_to_create_a_reminder">Jak vytvořit připomínku</string>
 </resources>

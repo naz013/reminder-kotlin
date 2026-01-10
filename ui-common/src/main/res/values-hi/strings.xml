@@ -928,4 +928,6 @@
     <string name="action_snooze_custom">स्नूज़ करें…  के लिए</string>
     <string name="more_options">अधिक विकल्प</string>
     <string name="keep_notification">नोटिफ़िकेशन रखें</string>
+    <string name="cd_back">वापस जाएं</string>
+    <string name="how_to_create_a_reminder">रिमाइंडर कैसे बनाएं</string>
 </resources>
