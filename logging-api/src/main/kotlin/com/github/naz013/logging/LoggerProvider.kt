@@ -7,4 +7,5 @@ interface LoggerProvider {
   fun error(tag: String, message: String, throwable: Throwable)
   fun warning(tag: String, message: String)
   fun warning(tag: String, message: String, throwable: Throwable)
+  fun verbose(tag: String, message: String)
 }

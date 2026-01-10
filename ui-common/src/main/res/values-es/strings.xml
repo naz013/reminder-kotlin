@@ -4,7 +4,7 @@
     <string name="app_name">"Recordatorio"</string>
     <string name="app_name_pro">"Recordatorio PRO"</string>
     <string name="action_settings">"Configuración"</string>
-    <string name="copyright">2025 © Nazar Sukhovych</string>
+    <string name="copyright">2026 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">¡No puedo acceder a los servicios de ubicación!</string>
     <string name="normal">Normal</string>
     <string name="satellite">Satélite</string>
@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Posponer por…</string>
     <string name="more_options">Más opciones</string>
     <string name="keep_notification">Mantener notificación</string>
+    <string name="cd_back">Volver</string>
+    <string name="how_to_create_a_reminder">Cómo crear un recordatorio</string>
 </resources>

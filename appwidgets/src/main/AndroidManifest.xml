@@ -94,8 +94,7 @@
 
         <receiver
             android:name="com.github.naz013.appwidgets.calendar.CalendarPreviousReceiver"
-            android:exported="false"
-            android:permission="com.nsystudio.permission.UPDATE_CALENDAR">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
             </intent-filter>
@@ -103,8 +102,7 @@
 
         <receiver
             android:name="com.github.naz013.appwidgets.calendar.CalendarNextReceiver"
-            android:exported="false"
-            android:permission="com.nsystudio.permission.UPDATE_CALENDAR">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
             </intent-filter>

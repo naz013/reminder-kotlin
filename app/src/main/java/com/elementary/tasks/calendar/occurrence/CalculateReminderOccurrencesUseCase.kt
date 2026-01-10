@@ -35,6 +35,8 @@ class CalculateReminderOccurrencesUseCase(
       Logger.i(TAG, "Reminder with id=$id uses NoReminderStrategy, skipping occurrence calculation")
       return
     }
+    Logger.v(TAG, "Clearing existing occurrences for reminder id=$id")
+    eventOccurrenceRepository.deleteByEventId(id)
     Logger.i(TAG, "Calculating occurrences for reminder id=$id using strategy=${strategy::class.simpleName}")
     val numberOfOccurrences = prefs.numberOfReminderOccurrences
     val calculator = reminderOccurrenceCalculatorFactory.createCalculator(strategy)

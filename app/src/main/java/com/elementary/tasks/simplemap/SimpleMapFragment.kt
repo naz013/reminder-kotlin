@@ -32,7 +32,7 @@ import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.android.readSerializable
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.fragment.colorOf
+import com.github.naz013.ui.common.fragment.colorOfOrNull
 import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.gone
@@ -513,9 +513,17 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
         clearMap = clearMap,
         animate = animate
       )
+      Logger.d(TAG, "Map not ready, delaying marker addition.")
       return
     }
-    val map = internalMap ?: return
+    if (!isAdded) {
+      Logger.v(TAG, "Fragment not added to activity, can't add marker now.")
+      return
+    }
+    val map = internalMap ?: run {
+      Logger.v(TAG, "Map is null, can't add marker now.")
+      return
+    }
 
     this.markerState = markerState
     mapCallback?.onLocationSelected(markerState)
@@ -528,6 +536,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     }
 
     if (clearMap) {
+      Logger.v(TAG, "Clearing map before adding marker.")
       map.clear()
     }
 
@@ -550,8 +559,12 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       center(markerState.latLng)
       radius(markerState.radius.toDouble())
       strokeWidth(markerState.strokeWidth)
-      fillColor(colorOf(markerCircle.fillColor))
-      strokeColor(colorOf(markerCircle.strokeColor))
+      colorOfOrNull(markerCircle.fillColor)?.also {
+        fillColor(it)
+      }
+      colorOfOrNull(markerCircle.strokeColor)?.also {
+        strokeColor(it)
+      }
     }
     map.addCircle(circleOptions)
 

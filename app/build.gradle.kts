@@ -22,8 +22,8 @@ android {
     applicationId = "com.cray.software.justreminder"
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
-    versionCode = 343
-    versionName = "9.11.0"
+    versionCode = 344
+    versionName = "9.12.0"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
@@ -115,6 +115,7 @@ android {
       excludes += "META-INF/license.txt"
       excludes += "META-INF/ASL2.0"
       excludes += "META-INF/LICENSE.md"
+      excludes += "META-INF/INDEX.LIST"
     }
   }
   buildTypes {

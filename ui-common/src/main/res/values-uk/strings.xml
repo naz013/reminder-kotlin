@@ -4,7 +4,7 @@
     <string name="app_name">"Нагадування"</string>
     <string name="app_name_pro">"Нагадування PRO"</string>
     <string name="action_settings">"Налаштування"</string>
-    <string name="copyright">2025 © Nazar Sukhovych</string>
+    <string name="copyright">2026 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">Я не можу отримати доступ до служб геолокації!</string>
     <string name="normal">Звичайна</string>
     <string name="satellite">Супутник</string>
@@ -927,4 +927,6 @@
     <string name="action_snooze_custom">Відкласти на…</string>
     <string name="more_options">Більше параметрів</string>
     <string name="keep_notification">Зберегти сповіщення</string>
+    <string name="cd_back">Назад</string>
+    <string name="how_to_create_a_reminder">Як створити нагадування</string>
 </resources>

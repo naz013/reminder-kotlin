@@ -4,7 +4,7 @@
     <string name="app_name">"Reminder"</string>
     <string name="app_name_pro">"Reminder PRO"</string>
     <string name="action_settings">"Nastavení"</string>
-    <string name="copyright">2025 © Nazar Sukhovych</string>
+    <string name="copyright">2026 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">Nemohu získat přístup k polohových službám!</string>
     <string name="normal">Normální</string>
     <string name="satellite">Satelit</string>
@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Odložit o…</string>
     <string name="more_options">Více možností</string>
     <string name="keep_notification">Ponechat oznámení</string>
+    <string name="cd_back">Zpět</string>
+    <string name="how_to_create_a_reminder">Jak vytvořit připomínku</string>
 </resources>

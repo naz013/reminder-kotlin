@@ -2,12 +2,14 @@ package com.elementary.tasks.calendar.data
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
+import com.elementary.tasks.calendar.history.GetHistoryByDayUseCase
 import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDayUseCase
 import com.elementary.tasks.core.data.adapter.UiReminderListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.history.EventHistoricalRecordType
 import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
@@ -26,7 +28,8 @@ class DayLiveData(
   private val reminderRepository: ReminderRepository,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
+  private val getHistoryByDayUseCase: GetHistoryByDayUseCase
 ) : LiveData<List<EventModel>>() {
 
   private val scope: CoroutineScope = CoroutineScope(Job())
@@ -45,10 +48,9 @@ class DayLiveData(
 
   private fun loadData(date: LocalDate) {
     scope.launch(dispatcherProvider.default()) {
-      val occurrences = getOccurrencesByDayUseCase(date)
       val birthdays = birthdayRepository.getAll().associateBy { it.uuId }
       val reminders = reminderRepository.getActive().associateBy { it.uuId }
-      val mappedData = occurrences.mapNotNull {
+      val occurrences = getOccurrencesByDayUseCase(date).mapNotNull {
         when (it.type) {
           OccurrenceType.Birthday -> {
             val birthday = birthdays[it.eventId] ?: return@mapNotNull null
@@ -66,6 +68,31 @@ class DayLiveData(
           else -> null
         }
       }
+      val historyRecords = getHistoryByDayUseCase(date).mapNotNull { record ->
+        when (record.type) {
+          EventHistoricalRecordType.Birthday -> {
+            val birthday = birthdays[record.eventId] ?: return@mapNotNull null
+            val dateTime = LocalDateTime.of(record.date, record.time)
+            uiBirthdayListAdapter.convert(
+              birthday = birthday,
+              nowDateTime = dateTime
+            ).toEventModel(
+              localDateTime = LocalDateTime.of(record.date, record.time),
+              isHistorical = true
+            )
+          }
+          EventHistoricalRecordType.Reminder -> {
+            val reminder = reminders[record.eventId] ?: return@mapNotNull null
+            reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(record.date, record.time))
+            uiReminderListAdapter.create(reminder).toEventModel(
+              dateTime = LocalDateTime.of(record.date, record.time),
+              isHistorical = true
+            )
+          }
+          else -> null
+        }
+      }
+      val mappedData = (occurrences + historyRecords).sortedBy { it.millis }
 
       Logger.d(TAG, "Mapped data for $date: ${mappedData.size} events")
       launch(dispatcherProvider.main()) {
@@ -74,21 +101,29 @@ class DayLiveData(
     }
   }
 
-  private fun UiReminderListData.toEventModel(dateTime: LocalDateTime): ReminderEventModel {
+  private fun UiReminderListData.toEventModel(
+    dateTime: LocalDateTime,
+    isHistorical: Boolean = false
+  ): ReminderEventModel {
     return ReminderEventModel(
       model = this,
       day = dateTime.dayOfMonth,
       monthValue = dateTime.monthValue,
-      year = dateTime.year
+      year = dateTime.year,
+      isHistorical = isHistorical
     )
   }
 
-  private fun UiBirthdayList.toEventModel(localDateTime: LocalDateTime): BirthdayEventModel {
+  private fun UiBirthdayList.toEventModel(
+    localDateTime: LocalDateTime,
+    isHistorical: Boolean = false
+  ): BirthdayEventModel {
     return BirthdayEventModel(
       model = this,
       day = localDateTime.dayOfMonth,
       monthValue = localDateTime.monthValue,
-      year = localDateTime.year
+      year = localDateTime.year,
+      isHistorical = isHistorical
     )
   }
 

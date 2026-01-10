@@ -12,6 +12,7 @@ import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
+import com.github.naz013.ui.common.R
 
 class ShoppingViewHolder(
   parent: ViewGroup,
@@ -56,12 +57,12 @@ class ShoppingViewHolder(
     }
   }
 
-  override fun setData(data: UiReminderListActiveShop) {
+  override fun setData(data: UiReminderListActiveShop, isHistorical: Boolean) {
     binding.taskText.text = data.summary
     loadCheck(data)
     loadGroup(data)
     loadShoppingDate(data)
-    loadLeft(data)
+    loadLeft(data, isHistorical)
     scheduleReminderViewHolderCommon.loadItems(
       reminder = data,
       todoListView = binding.todoList,
@@ -82,11 +83,15 @@ class ShoppingViewHolder(
     binding.reminderTypeGroup.text = "$typeLabel ($groupName, $priority)"
   }
 
-  private fun loadLeft(reminder: UiReminderListActiveShop) {
+  private fun loadLeft(reminder: UiReminderListActiveShop, isHistorical: Boolean) {
     val due = reminder.due.dateTime
     binding.badgesView.visibleGone(due != null)
     binding.timeToBadge.visibleGone(reminder.isRunning)
-    binding.timeToBadge.text = reminder.due.remaining
+    binding.timeToBadge.text = if (isHistorical) {
+      itemView.context.getString(R.string.completed)
+    } else {
+      reminder.due.remaining
+    }
   }
 
   private fun loadShoppingDate(reminder: UiReminderListActiveShop) {

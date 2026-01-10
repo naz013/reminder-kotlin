@@ -7,5 +7,5 @@ abstract class BaseUiReminderListViewHolder<B : ViewBinding, T>(
   binding: B
 ) : BaseScheduleHolder<B>(binding) {
 
-  abstract fun setData(data: T)
+  abstract fun setData(data: T, isHistorical: Boolean = false)
 }

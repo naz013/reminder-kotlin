@@ -13,6 +13,7 @@ import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.FragmentReminderBuilderBinding
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.reminder.build.adapter.BuilderAdapter
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
@@ -28,7 +29,6 @@ import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.ReviewsApi
-import com.github.naz013.ui.common.view.applyBottomInsets
 import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import com.github.naz013.ui.common.view.singleClick
 import com.github.naz013.ui.common.view.visible
@@ -119,6 +119,18 @@ class BuildReminderFragment :
           R.id.action_report_issue -> {
             Logger.i(TAG, "User wants to report an issue.")
             showReviewDialog(getString(R.string.report_an_issue))
+            true
+          }
+
+          R.id.action_help -> {
+            Logger.i(TAG, "User wants to see help.")
+            navigate {
+              navigate(
+                R.id.reminderHelpFragment,
+                null,
+                NavigationAnimations.inDepthNavOptions()
+              )
+            }
             true
           }
 

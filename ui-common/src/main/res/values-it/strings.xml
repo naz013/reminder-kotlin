@@ -4,7 +4,7 @@
     <string name="app_name">"Reminder"</string>
     <string name="app_name_pro">"Reminder PRO"</string>
     <string name="action_settings">"Impostazioni"</string>
-    <string name="copyright">2025 © Nazar Sukhovych</string>
+    <string name="copyright">2026 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">Non riesco ad accedere ai servizi di localizzazione!</string>
     <string name="normal">Normale</string>
     <string name="satellite">Satellite</string>
@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Posticipa di… </string>
     <string name="more_options">Altre opzioni</string>
     <string name="keep_notification">Mantieni notifica</string>
+    <string name="cd_back">Indietro</string>
+    <string name="how_to_create_a_reminder">Come creare un promemoria</string>
 </resources>

@@ -4,7 +4,7 @@
     <string name="app_name">"Hatırlatıcı"</string>
     <string name="app_name_pro">"Hatırlatıcı PRO"</string>
     <string name="action_settings">"Ayarlar"</string>
-    <string name="copyright">2025 © Nazar Sukhovych</string>
+    <string name="copyright">2026 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">Konum servislerine erişim sağlayamıyorum!</string>
     <string name="normal">Normal</string>
     <string name="satellite">Uydu</string>
@@ -927,4 +927,6 @@
     <string name="action_snooze_custom">Ertele…</string>
     <string name="more_options">Daha fazla seçenek</string>
     <string name="keep_notification">Bildirimi koru</string>
+    <string name="cd_back">Geri</string>
+    <string name="how_to_create_a_reminder">Hatırlatıcı nasıl oluşturulur</string>
 </resources>

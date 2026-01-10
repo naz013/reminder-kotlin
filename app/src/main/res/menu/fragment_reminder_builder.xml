@@ -22,6 +22,10 @@
         android:title="@string/configure"
         app:showAsAction="never" />
 
+    <item android:id="@+id/action_help"
+        android:title="@string/help"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_report_issue"
         android:title="@string/report_an_issue"

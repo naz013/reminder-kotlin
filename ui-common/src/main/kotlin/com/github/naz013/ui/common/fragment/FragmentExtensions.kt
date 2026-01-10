@@ -25,6 +25,10 @@ fun Fragment.startActivity(clazz: Class<*>, builder: Intent.() -> Unit = { }) {
 
 fun Fragment.colorOf(@ColorRes color: Int) = ContextCompat.getColor(requireContext(), color)
 
+fun Fragment.colorOfOrNull(@ColorRes color: Int): Int? {
+  return context?.let { ContextCompat.getColor(it, color) }
+}
+
 fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
   Toast.makeText(requireContext(), message, duration).show()
 }

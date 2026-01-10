@@ -4,7 +4,7 @@
     <string name="app_name">"Reminder"</string>
     <string name="app_name_pro">"Reminder PRO"</string>
     <string name="action_settings">"Настройки"</string>
-    <string name="copyright">2025 © Nazar Sukhovych</string>
+    <string name="copyright">2026 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">Не мога да получа достъп до услугите за местоположение!</string>
     <string name="normal">Нормален</string>
     <string name="satellite">Сателит</string>
@@ -927,4 +927,6 @@
     <string name="action_snooze_custom">Отложи за…</string>
     <string name="more_options">Още опции</string>
     <string name="keep_notification">Запази известието</string>
+    <string name="cd_back">Назад</string>
+    <string name="how_to_create_a_reminder">Как да създадете напомняне</string>
 </resources>

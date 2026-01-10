@@ -4,7 +4,7 @@
     <string name="app_name">"Lembrete"</string>
     <string name="app_name_pro">"Lembrete PRO"</string>
     <string name="action_settings">"Configurações"</string>
-    <string name="copyright">2025 © Nazar Sukhovych</string>
+    <string name="copyright">2026 © Nazar Sukhovych</string>
     <string name="cant_access_location_services">Não consigo obter acesso aos serviços de localização!</string>
     <string name="normal">Normal</string>
     <string name="satellite">Satélite</string>
@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Adiar por…</string>
     <string name="more_options">Mais opções</string>
     <string name="keep_notification">Manter notificação</string>
+    <string name="cd_back">Voltar</string>
+    <string name="how_to_create_a_reminder">Como criar um lembrete</string>
 </resources>
