@@ -18,6 +18,7 @@ class RecurrenceCalculator {
    * @param dayOfMonth The day of the month for the next occurrence
    * @param interval The interval in years to add
    * @return The calculated next occurrence date and time
+   * @throws IllegalArgumentException if dayOfMonth is negative
    */
   fun getNextYearDayDateTime(
     eventDateTime: LocalDateTime,
@@ -25,6 +26,9 @@ class RecurrenceCalculator {
     dayOfMonth: Int,
     interval: Long,
   ): LocalDateTime {
+    if (dayOfMonth < 0) {
+      throw IllegalArgumentException("dayOfMonth must be non-negative, but was $dayOfMonth")
+    }
     val interval = if (interval <= 0) 1L else interval
     val monthOfYear = monthOfYear + 1
     var nextDateTime = eventDateTime.withDayOfMonth(1).withMonth(monthOfYear).plusYears(interval)
@@ -113,6 +117,7 @@ class RecurrenceCalculator {
    * @param dayOfMonth The day of the month for the next occurrence
    * @param interval The interval in months to add
    * @return The calculated next occurrence date and time
+   * @throws IllegalArgumentException if dayOfMonth is negative
    */
   fun getNextMonthDayDateTime(
     eventDateTime: LocalDateTime,
@@ -123,7 +128,7 @@ class RecurrenceCalculator {
     var nextDateTime = eventDateTime.withDayOfMonth(1).plusMonths(interval)
     val lastDayOfNextMonth = nextDateTime.toLocalDate().lengthOfMonth()
     val targetDay = when {
-      dayOfMonth == 0 -> lastDayOfNextMonth
+      dayOfMonth <= 0 -> lastDayOfNextMonth
       dayOfMonth > lastDayOfNextMonth -> lastDayOfNextMonth
       else -> dayOfMonth
     }
