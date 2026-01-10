@@ -927,4 +927,6 @@
     <string name="action_snooze_custom">Ertele…</string>
     <string name="more_options">Daha fazla seçenek</string>
     <string name="keep_notification">Bildirimi koru</string>
+    <string name="cd_back">Geri</string>
+    <string name="how_to_create_a_reminder">Hatırlatıcı nasıl oluşturulur</string>
 </resources>

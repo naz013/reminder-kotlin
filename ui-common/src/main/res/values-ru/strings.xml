@@ -925,4 +925,6 @@
     <string name="action_snooze_custom">Отложить на…</string>
     <string name="more_options">Дополнительные параметры</string>
     <string name="keep_notification">Сохранить уведомление</string>
+    <string name="cd_back">Назад</string>
+    <string name="how_to_create_a_reminder">Как создать напоминание</string>
 </resources>

@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Posticipa di… </string>
     <string name="more_options">Altre opzioni</string>
     <string name="keep_notification">Mantieni notifica</string>
+    <string name="cd_back">Indietro</string>
+    <string name="how_to_create_a_reminder">Come creare un promemoria</string>
 </resources>

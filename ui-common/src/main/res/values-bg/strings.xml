@@ -927,4 +927,6 @@
     <string name="action_snooze_custom">Отложи за…</string>
     <string name="more_options">Още опции</string>
     <string name="keep_notification">Запази известието</string>
+    <string name="cd_back">Назад</string>
+    <string name="how_to_create_a_reminder">Как да създадете напомняне</string>
 </resources>

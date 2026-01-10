@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Amânați pentru…</string>
     <string name="more_options">Mai multe opțiuni</string>
     <string name="keep_notification">Păstrați notificarea</string>
+    <string name="cd_back">Înapoi</string>
+    <string name="how_to_create_a_reminder">Cum să creezi o reamintire</string>
 </resources>

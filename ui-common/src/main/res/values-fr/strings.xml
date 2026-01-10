@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">Reporter de…</string>
     <string name="more_options">Plus d\'options</string>
     <string name="keep_notification">Conserver la notification</string>
+    <string name="cd_back">Retour</string>
+    <string name="how_to_create_a_reminder">Comment créer un rappel</string>
 </resources>

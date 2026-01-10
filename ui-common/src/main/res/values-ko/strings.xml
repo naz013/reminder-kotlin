@@ -926,4 +926,6 @@
     <string name="action_snooze_custom">다시 알림 설정…</string>
     <string name="more_options">더보기</string>
     <string name="keep_notification">알림 유지</string>
+    <string name="cd_back">뒤로</string>
+    <string name="how_to_create_a_reminder">미리 알림 만드는 방법</string>
 </resources>
