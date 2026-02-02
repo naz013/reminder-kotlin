@@ -77,9 +77,6 @@ android {
       buildConfigField("boolean", "IS_PRO", "false")
 
       val api = props.getProperty("freeApiKey", "API_KEY")
-      val placesApiKey = props.getProperty("freePlacesApiKey", "\"API_KEY\"")
-
-      buildConfigField("String", "PLACES_API_KEY", placesApiKey)
       manifestPlaceholders["apiKey"] = api
 
       buildConfigField("String", "REVIEWS_PROJECT_ID", props.getProperty("reviewsProjectId", "\"\""))
@@ -93,9 +90,6 @@ android {
       buildConfigField("boolean", "IS_PRO", "true")
 
       val api = props.getProperty("proApiKey", "API_KEY")
-      val placesApiKey = props.getProperty("proPlacesApiKey", "\"API_KEY\"")
-
-      buildConfigField("String", "PLACES_API_KEY", placesApiKey)
       manifestPlaceholders["apiKey"] = api
 
       buildConfigField("String", "REVIEWS_PROJECT_ID", props.getProperty("reviewsProjectId", "\"\""))
