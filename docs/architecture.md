@@ -22,7 +22,6 @@ The project follows a **multi-module Clean Architecture** approach. Concerns are
 | `cloud` | Android library | Concrete implementations of `cloud-api` using the Google Drive REST SDK, Google Tasks SDK, and Dropbox Android SDK. |
 | `sync` | Kotlin library | Cloud-sync orchestration use-cases: upload, download, delete, and diff-check between local and remote file metadata. Depends on `cloud-api` and `repository-api`. |
 | `icalendar` | Android library | iCalendar (`.ics`) serialisation / deserialisation and RRULE evaluation using the lib-recur library. |
-| `domain` | Kotlin library | Domain models shared across the whole project. |
 | `analytics` | Android library | Firebase Analytics wrapper; provides a single `AnalyticsManager` abstraction over Firebase events. |
 | `logging-api` | Kotlin library | `Logger` interface with no implementation. All other modules depend on this so that log calls compile without pulling in a concrete logging library. |
 | `logging` | Android library | Logback + SLF4J + Firebase Crashlytics implementation of `logging-api`. |
