@@ -38,6 +38,7 @@ import com.github.naz013.common.platformCommonModule
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.icalendar.iCalendarModule
 import com.github.naz013.logging.initLogging
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
@@ -81,6 +82,8 @@ class ReminderApp : MultiDexApplication(), KoinComponent {
 
   override fun onCreate() {
     super.onCreate()
+    // Initialize PDFBox resource loader required for PDF text extraction.
+    PDFBoxResourceLoader.init(applicationContext)
     initLogging(
       isDebug = BuildConfig.DEBUG
     )

@@ -22,6 +22,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.SharedNote
 import com.elementary.tasks.notes.create.images.ImageDecoder
+import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
@@ -76,7 +77,8 @@ class CreateNoteViewModel(
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val saveNoteUseCase: SaveNoteUseCase,
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
-  private val activateReminderUseCase: ActivateReminderUseCase
+  private val activateReminderUseCase: ActivateReminderUseCase,
+  private val droppedContentParser: DroppedContentParser
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _dateFormatted = mutableLiveDataOf<String>()
@@ -295,28 +297,50 @@ class CreateNoteViewModel(
     }
   }
 
+  /**
+   * Processes a [ClipData] payload received from a drag-and-drop drop event.
+   *
+   * Each item in the clip data is classified by [DroppedContentParser]:
+   * - Inline text, `.txt`  `.md`  other `text*` files, and PDF documents are extracted
+   *   as text and appended (after [text]) to the note.
+   * - Image URIs are forwarded to [addMultiple] for the image pipeline.
+   * - Unsupported types result in an error toast.
+   *
+   * @param clipData the payload from [android.view.DragEvent.ACTION_DROP].
+   * @param text the current text already present in the note editor.
+   */
   fun parseDrop(clipData: ClipData, text: String) {
     Logger.i(TAG, "Parse drop called with ${clipData.itemCount} items.")
     viewModelScope.launch(dispatcherProvider.default()) {
-      var parsedText = ""
-      val uris = mutableListOf<Uri>()
-      for (i in 0 until clipData.itemCount) {
-        uris.add(clipData.getItemAt(i).uri)
-        if (!clipData.getItemAt(i).text.isNullOrEmpty()) {
-          parsedText = clipData.getItemAt(i).text.toString()
+      val result = droppedContentParser.parse(clipData)
+      Logger.i(
+        TAG,
+        "Drop parsed: ${result.textContent.size} text items, " +
+          "${result.imageUris.size} images, ${result.unsupportedCount} unsupported"
+      )
+
+      // Combine existing note text with all extracted text content.
+      val allTextParts = buildList {
+        if (text.isNotEmpty()) add(text)
+        addAll(result.textContent)
+      }
+      if (allTextParts.isNotEmpty()) {
+        val combined = allTextParts.joinToString("\n")
+        withUIContext {
+          _parsedText.postValue(combined)
         }
       }
 
-      if (parsedText.isNotEmpty()) {
+      // Route image URIs to the image pipeline.
+      if (result.imageUris.isNotEmpty()) {
+        addMultiple(result.imageUris)
+      }
+
+      // Notify the user about any file types that could not be handled.
+      if (result.unsupportedCount > 0) {
         withUIContext {
-          if (text.isEmpty()) {
-            _parsedText.postValue(parsedText)
-          } else {
-            _parsedText.postValue("$text\n$parsedText")
-          }
+          postError(textProvider.getText(R.string.unsupported_file_format))
         }
-      } else {
-        addMultiple(uris)
       }
     }
   }
