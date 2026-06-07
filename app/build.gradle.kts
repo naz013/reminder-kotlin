@@ -110,6 +110,12 @@ extensions.configure<ApplicationExtension> {
       excludes += "META-INF/ASL2.0"
       excludes += "META-INF/LICENSE.md"
       excludes += "META-INF/INDEX.LIST"
+      // pdfbox-android (Bouncy Castle) signing files
+      excludes += "META-INF/BCKEY.DSA"
+      excludes += "META-INF/BCKEY.SF"
+      excludes += "META-INF/BCKEY.RSA"
+      excludes += "META-INF/BC2048KE.DSA"
+      excludes += "META-INF/BC2048KE.SF"
     }
   }
   buildTypes {
@@ -293,6 +299,7 @@ dependencies {
 
   implementation(libs.threetenbp)
   implementation(libs.coil)
+  implementation(libs.pdfbox.android)
 
   implementation(libs.slf4j.api)
   implementation(libs.logback.android)

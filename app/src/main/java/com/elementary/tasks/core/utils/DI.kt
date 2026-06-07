@@ -30,6 +30,7 @@ import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.images.ImageDecoder
+import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.analytics.AnalyticsStateProvider
@@ -111,6 +112,7 @@ val utilModule = module {
   factory { FeatureManager(get()) }
   factory { GroupsUtil(get(), get(), get()) }
   factory { ImageDecoder(get(), get(), get()) }
+  factory { DroppedContentParser(get()) }
 
   factory { DateTimePickerProvider(get()) }
   factory { DoNotDisturbManager(get(), get()) }
