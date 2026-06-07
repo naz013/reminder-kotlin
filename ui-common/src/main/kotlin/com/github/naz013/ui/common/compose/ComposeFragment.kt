@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 
 abstract class ComposeFragment : Fragment() {
@@ -15,13 +14,7 @@ abstract class ComposeFragment : Fragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return ComposeView(requireContext()).apply {
-      setContent {
-        AppTheme {
-          FragmentContent()
-        }
-      }
-    }
+    return composeView { FragmentContent() }
   }
 
   @Composable
