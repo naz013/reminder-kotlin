@@ -31,6 +31,17 @@ extensions.configure<LibraryExtension> {
   }
 }
 
+kotlin {
+  jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
+  compilerOptions {
+    optIn.add("-Xreturn-value-checker=check")
+    optIn.add("-Xexplicit-backing-fields")
+    optIn.add("-Xname-based-destructuring=only-syntax")
+    optIn.add("-Xdata-flow-based-exhaustiveness")
+    optIn.add("-Xcollection-literals")
+  }
+}
+
 dependencies {
   implementation(project(":domain"))
   implementation(project(":logging-api"))
