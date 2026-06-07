@@ -1,12 +1,13 @@
+import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.kotlin.dsl.configure
 import java.util.Properties
 
 plugins {
   alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.compose.compiler)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
   namespace = "com.github.nsy.reviewsadmin"
   compileSdk {
     version = release(libs.versions.compileSdk.get().toInt())
@@ -68,9 +69,6 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlin {
-    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  }
   buildFeatures {
     compose = true
     buildConfig = true
@@ -87,6 +85,17 @@ android {
       excludes += "META-INF/ASL2.0"
       excludes += "META-INF/LICENSE.md"
     }
+  }
+}
+
+kotlin {
+  jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
+  compilerOptions {
+    optIn.add("-Xreturn-value-checker=check")
+    optIn.add("-Xexplicit-backing-fields")
+    optIn.add("-Xname-based-destructuring=only-syntax")
+    optIn.add("-Xdata-flow-based-exhaustiveness")
+    optIn.add("-Xcollection-literals")
   }
 }
 
