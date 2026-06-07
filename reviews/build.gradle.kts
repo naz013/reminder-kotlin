@@ -1,11 +1,13 @@
+import com.android.build.api.dsl.LibraryExtension
+import org.gradle.kotlin.dsl.configure
+
 plugins {
   alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.ktlint)
   alias(libs.plugins.compose.compiler)
 }
 
-android {
+extensions.configure<LibraryExtension> {
   namespace = "com.github.naz013.reviews"
   compileSdk = libs.versions.compileSdk
     .get()
@@ -53,11 +55,12 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlin {
-    jvmToolchain(libs.versions.kotlinTargetJvm
-      .get()
-      .toInt())
-  }
+}
+
+kotlin {
+  jvmToolchain(libs.versions.kotlinTargetJvm
+    .get()
+    .toInt())
 }
 
 dependencies {

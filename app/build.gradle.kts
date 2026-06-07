@@ -1,10 +1,10 @@
+import com.android.build.api.dsl.ApplicationExtension
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Properties
 
 plugins {
   alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.parcelize)
   alias(libs.plugins.navigation.safeargs)
   alias(libs.plugins.crashlytics.gradle)
@@ -13,10 +13,10 @@ plugins {
   alias(libs.plugins.compose.compiler)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
   namespace = "com.elementary.tasks"
   compileSdk = libs.versions.compileSdk.get().toInt()
-  setFlavorDimensions(listOf("level"))
+  flavorDimensions.add("level")
 
   defaultConfig {
     applicationId = "com.cray.software.justreminder"
@@ -146,9 +146,7 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlin {
-    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  }
+
   @Suppress("UnstableApiUsage")
   testOptions {
     unitTests {
@@ -163,13 +161,14 @@ android {
     exclude(module = "httpclient")
     exclude(group = "com.google.guava", module = "listenablefuture")
   }
-  sourceSets {
-    get("main").java.srcDirs("src/main/kotlin")
-  }
   lint {
     checkReleaseBuilds = false
     abortOnError = false
   }
+}
+
+kotlin {
+  jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
 }
 
 configurations.testImplementation {
@@ -224,7 +223,6 @@ dependencies {
   implementation(libs.material)
 
   implementation(libs.androidx.recyclerview)
-  implementation(libs.androidx.multidex)
   implementation(libs.androidx.constraintlayout)
   implementation(libs.androidx.swiperefreshlayout)
   implementation(libs.androidx.viewpager2)

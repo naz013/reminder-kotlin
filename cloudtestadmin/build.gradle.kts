@@ -1,14 +1,15 @@
+import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.kotlin.dsl.configure
 import java.util.Properties
 
 plugins {
   alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.google.services)
   alias(libs.plugins.crashlytics.gradle)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
   namespace = "com.example.cloudtestadmin"
   compileSdk {
     version = release(libs.versions.compileSdk.get().toInt())
@@ -66,9 +67,6 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlin {
-    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  }
   buildFeatures {
     compose = true
   }
@@ -85,6 +83,10 @@ android {
       excludes += "META-INF/LICENSE.md"
     }
   }
+}
+
+kotlin {
+  jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
 }
 
 dependencies {
