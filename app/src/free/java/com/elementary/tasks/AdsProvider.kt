@@ -96,6 +96,8 @@ class AdsProvider {
   }
 
   companion object {
+
+    private const val TAG = "AdsProvider"
     const val REMINDER_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1084030852"
     const val NOTE_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/4831704177"
     const val BIRTHDAY_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1262280397"
@@ -110,7 +112,7 @@ class AdsProvider {
     fun init(context: Context) {
       if (SuperUtil.isGooglePlayServicesAvailable(context)) {
         MobileAds.initialize(context) {
-          Logger.i("Ads provider initialized")
+          Logger.i(TAG, "Ads provider initialized")
         }
       } else {
         wasError = true

@@ -159,7 +159,7 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
   private fun initViewModel() {
     lifecycle.addObserver(viewModel)
     viewModel.notes.nonNullObserve(viewLifecycleOwner) { list ->
-      Logger.d("initViewModel: $list")
+      Logger.d(TAG, "initViewModel: $list")
       notesRecyclerAdapter.submitList(list)
       binding.emptyItem.visibleGone(list.isEmpty())
       binding.recyclerView.visibleGone(list.isNotEmpty())
@@ -356,5 +356,9 @@ class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
     ) {
       viewModel.saveNoteColor(note.id, it)
     }
+  }
+
+  companion object {
+    private const val TAG = "NotesFragment"
   }
 }

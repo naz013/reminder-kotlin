@@ -14,7 +14,7 @@ class ValueDialogLifecycleDispatcher(
     if (state != ValueDialogState.NONE) {
       return
     }
-    Logger.d("dispatchOnCreate to $controller")
+    Logger.d(TAG, "dispatchOnCreate to $controller")
     state = ValueDialogState.CREATED
   }
 
@@ -22,7 +22,7 @@ class ValueDialogLifecycleDispatcher(
     if (state != ValueDialogState.CREATED) {
       return
     }
-    Logger.d("dispatchOnResume to $controller")
+    Logger.d(TAG, "dispatchOnResume to $controller")
     state = ValueDialogState.RESUMED
   }
 
@@ -30,7 +30,7 @@ class ValueDialogLifecycleDispatcher(
     if (state != ValueDialogState.RESUMED) {
       return
     }
-    Logger.d("dispatchOnStop to $controller")
+    Logger.d(TAG, "dispatchOnStop to $controller")
     controller.onStop()
     state = ValueDialogState.STOPPED
   }
@@ -39,8 +39,12 @@ class ValueDialogLifecycleDispatcher(
     if (state != ValueDialogState.STOPPED) {
       return
     }
-    Logger.d("dispatchOnDestroy to $controller")
+    Logger.d(TAG, "dispatchOnDestroy to $controller")
     controller.onDestroy()
     state = ValueDialogState.DESTROYED
+  }
+
+  companion object {
+    private const val TAG = "ValueDialogLifecycleDispatcher"
   }
 }

@@ -44,7 +44,7 @@ class MemoryUtil {
         is SharedNote -> object : TypeToken<SharedNote>() {}.type
         else -> null
       } ?: return false
-      Logger.d("toStream: $type, $any")
+      Logger.d(TAG, "toStream: $type, $any")
       try {
         Gson().toJson(any, type, writer)
       } catch (e: Exception) {

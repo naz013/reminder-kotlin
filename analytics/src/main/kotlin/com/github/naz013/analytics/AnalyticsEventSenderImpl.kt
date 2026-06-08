@@ -14,10 +14,14 @@ internal class AnalyticsEventSenderImpl(
   override fun send(event: AnalyticEvent) {
     if (analyticsStateProvider.analyticsEnabled) {
       val bundle = event.getParams()
-      Logger.d("Send event name=${event.getName()}, params=$bundle")
+      Logger.d(TAG, "Send event name=${event.getName()}, params=$bundle")
       analytics.logEvent(event.getName(), bundle)
     } else {
-      Logger.d("Send event: analytics disabled")
+      Logger.d(TAG, "Send event: analytics disabled")
     }
+  }
+
+  companion object {
+    private const val TAG = "AnalyticsEventSender"
   }
 }

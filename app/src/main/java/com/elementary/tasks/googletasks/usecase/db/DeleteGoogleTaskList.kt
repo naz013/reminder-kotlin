@@ -11,9 +11,13 @@ class DeleteGoogleTaskList(
 ) {
 
   suspend operator fun invoke(googleTaskList: GoogleTaskList) {
-    Logger.i("Delete Google task list")
+    Logger.i(TAG, "Delete Google task list")
     googleTaskListRepository.delete(googleTaskList.listId)
     val googleTasks = getGoogleTasksByList(googleTaskList)
     deleteGoogleTasks(googleTasks)
+  }
+
+  companion object {
+    private const val TAG = "DeleteGoogleTaskList"
   }
 }

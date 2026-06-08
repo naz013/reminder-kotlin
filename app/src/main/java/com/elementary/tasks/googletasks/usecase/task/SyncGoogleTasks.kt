@@ -19,24 +19,28 @@ class SyncGoogleTasks(
   suspend operator fun invoke(taskList: GoogleTaskList) {
     // Get local tasks
     val local = googleTaskRepository.getAllByList(taskList.listId)
-    Logger.i("Sync tasks for list - number of local tasks = ${local.size}")
+    Logger.i(TAG, "Sync tasks for list - number of local tasks = ${local.size}")
 
     // Upload changed tasks
-    Logger.i("Sync tasks for list - upload")
+    Logger.i(TAG, "Sync tasks for list - upload")
     local.filterNot { it.uploaded }.forEach { uploadGoogleTask(it) }
 
     // Download remote tasks
     val remote = downloadGoogleTasks(taskList)
-    Logger.i("Sync tasks for list - remote tasks = ${remote.size}")
-    Logger.d("Remote tasks = $remote")
+    Logger.i(TAG, "Sync tasks for list - remote tasks = ${remote.size}")
+    Logger.d(TAG, "Remote tasks = $remote")
 
     // Save new tasks
-    Logger.i("Sync tasks for list - save remote version")
+    Logger.i(TAG, "Sync tasks for list - save remote version")
     saveGoogleTasks(remote)
 
     val remoteMap = remote.associateBy { it.taskId }
     val localDelete = local.filterNot { remoteMap.containsKey(it.taskId) }
-    Logger.i("Sync tasks for list - delete local versions = ${localDelete.size}")
+    Logger.i(TAG, "Sync tasks for list - delete local versions = ${localDelete.size}")
     deleteGoogleTasks(localDelete)
+  }
+
+  companion object {
+    private const val TAG = "SyncGoogleTasks"
   }
 }

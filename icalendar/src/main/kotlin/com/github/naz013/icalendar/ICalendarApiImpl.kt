@@ -27,7 +27,7 @@ internal class ICalendarApiImpl(
       map[it.tagType] = it
     }
 
-    Logger.d("parseObject: map = $map")
+    Logger.d(TAG, "parseObject: map = $map")
 
     return RuleMap(map)
   }
@@ -86,5 +86,9 @@ internal class ICalendarApiImpl(
 
   private fun toMillis(localDateTime: LocalDateTime): Long {
     return ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
+  }
+
+  companion object {
+    private const val TAG = "ICalendarApi"
   }
 }

@@ -125,7 +125,7 @@ class Notifier(
       if (Permissions.isNotificationsAllowed(context)) {
         getManager()?.notify(id, notification)
       } else {
-        Logger.i("Notification not allowed by user")
+        Logger.i(TAG, "Notification not allowed by user")
       }
     } else {
       getManager()?.notify(id, notification)
@@ -183,7 +183,7 @@ class Notifier(
 
   // Checked for Notification permission
   fun showReminderPermanent() {
-    Logger.d("showReminderPermanent: ")
+    Logger.d(TAG, "showReminderPermanent: ")
     val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
     val builder = NotificationCompat.Builder(context, CHANNEL_SILENT)
     builder.setAutoCancel(false)
@@ -337,6 +337,7 @@ class Notifier(
   }
 
   companion object {
+    private const val TAG = "Notifier"
     const val CHANNEL_REMINDER = "reminder.channel.events"
     const val CHANNEL_NOTES = "reminder.channel.notes"
     const val CHANNEL_SILENT = "reminder.channel.silent"

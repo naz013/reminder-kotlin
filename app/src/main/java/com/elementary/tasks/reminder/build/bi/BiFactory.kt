@@ -99,7 +99,7 @@ class BiFactory(
 
   private suspend fun <T : BuilderItem<*>> createTyped(biType: BiType, clazz: Class<T>): T? {
     val created = create(biType)
-    Logger.d("createTyped: created=$created, wanted=$clazz")
+    Logger.d(TAG, "createTyped: created=$created, wanted=$clazz")
     return created.takeIf { it::class.java == clazz } as? T
   }
 
@@ -397,5 +397,9 @@ class BiFactory(
         }
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "BiFactory"
   }
 }

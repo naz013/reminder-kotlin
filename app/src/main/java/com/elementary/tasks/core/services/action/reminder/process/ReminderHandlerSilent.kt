@@ -32,7 +32,7 @@ class ReminderHandlerSilent(
   }
 
   private fun showNotificationWithoutSound(reminder: Reminder) {
-    Logger.d("showNotificationWithoutSound: ")
+    Logger.d(TAG, "showNotificationWithoutSound: ")
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     builder.setSmallIcon(R.drawable.ic_fluent_alert)
 
@@ -108,5 +108,9 @@ class ReminderHandlerSilent(
       this.action = action
       putExtra(IntentKeys.INTENT_ID, id)
     }
+  }
+
+  companion object {
+    private const val TAG = "ReminderHandlerSilent"
   }
 }

@@ -212,7 +212,7 @@ class ReminderActionActivityViewModel(
     secondaryText: String,
     notificationId: Int
   ) {
-    Logger.d("showWearNotification: $secondaryText")
+    Logger.d(TAG, "showWearNotification: $secondaryText")
     val wearableNotificationBuilder = notifier.getNotificationBuilder(Notifier.CHANNEL_REMINDER)
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
     wearableNotificationBuilder.setContentTitle(text)
@@ -343,12 +343,6 @@ class ReminderActionActivityViewModel(
       val filePath: String?
     ): Redirect()
   }
-
-  data class FavoriteNotificationData(
-    val notificationId: Int,
-    val id: String,
-    val text: String
-  )
 
   companion object {
     private const val TAG = "ReminderViewModel"

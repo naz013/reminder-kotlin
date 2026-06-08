@@ -84,7 +84,7 @@ class RotatingNativeAdsProvider(
       .withAdListener(object : AdListener() {
         override fun onAdFailedToLoad(error: LoadAdError) {
           super.onAdFailedToLoad(error)
-          Logger.e("Failed to load native ad: ${error.message}")
+          Logger.e(TAG, "Failed to load native ad: ${error.message}")
           callback.get()?.onAdsFailure()
         }
       })

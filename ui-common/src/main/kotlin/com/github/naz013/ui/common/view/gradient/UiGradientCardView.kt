@@ -52,10 +52,14 @@ class UiGradientCardView : MaterialCardView {
           gradientHelper.applyBackground { background = it }
         }
       } catch (e: Exception) {
-        Logger.d("init: ${e.message}")
+        Logger.w(TAG, "init: ${e.message}")
       } finally {
         a.recycle()
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "UiGradientCardView"
   }
 }

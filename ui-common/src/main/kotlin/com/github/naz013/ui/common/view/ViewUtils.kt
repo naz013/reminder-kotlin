@@ -23,6 +23,8 @@ import com.github.naz013.ui.common.adjustAlpha
 
 object ViewUtils {
 
+  private const val TAG = "ViewUtils"
+
   fun registerDragAndDrop(
     activity: Activity,
     view: View,
@@ -34,7 +36,7 @@ object ViewUtils {
     view.setOnDragListener { v, event ->
       return@setOnDragListener when (event.action) {
         DragEvent.ACTION_DRAG_STARTED -> {
-          Logger.d("registerDragAndDrop: started, ${event.clipDescription}")
+          Logger.d(TAG, "registerDragAndDrop: started, ${event.clipDescription}")
           for (type in mimeTypes) {
             if (type == UriUtil.ANY_MIME || event.clipDescription.hasMimeType(type)) {
               if (markAction) {

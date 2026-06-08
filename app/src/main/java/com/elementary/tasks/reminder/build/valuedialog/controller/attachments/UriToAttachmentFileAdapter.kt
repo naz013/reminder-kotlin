@@ -11,15 +11,15 @@ class UriToAttachmentFileAdapter(
 ) {
 
   operator fun invoke(uri: Uri): AttachmentFile {
-    Logger.d("invoke: $uri")
+    Logger.d(TAG, "invoke: $uri")
     val type = getAttachmentType(uriHelper.getMimeType(uri) ?: "")
     val fileName = try {
       uriHelper.getFileName(uri) ?: "NA"
     } catch (e: Throwable) {
-      Logger.d("get fileName: $e")
+      Logger.d(TAG, "get fileName: $e")
       uri.toString()
     }
-    Logger.d("fileName: $fileName")
+    Logger.d(TAG, "fileName: $fileName")
     return AttachmentFile(
       uri = uri,
       name = fileName,
@@ -29,7 +29,7 @@ class UriToAttachmentFileAdapter(
   }
 
   private fun getAttachmentType(type: String): AttachmentType {
-    Logger.d("getAttachmentType: $type")
+    Logger.d(TAG, "getAttachmentType: $type")
     return when {
       type.contains("gif") -> AttachmentType.GIF
       type.contains("image") -> AttachmentType.IMAGE
@@ -48,5 +48,9 @@ class UriToAttachmentFileAdapter(
       AttachmentType.GIF -> R.drawable.ic_fluent_gif
       else -> R.drawable.ic_fluent_document
     }
+  }
+
+  companion object {
+    private const val TAG = "UriToAttachmentFileAdapter"
   }
 }

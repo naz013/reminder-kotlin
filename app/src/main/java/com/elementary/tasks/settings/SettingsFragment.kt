@@ -15,7 +15,6 @@ import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.github.naz013.common.Module
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.login.LoginLauncher
 import com.github.naz013.ui.common.view.gone
@@ -77,10 +76,10 @@ class SettingsFragment :
 
   private fun checkDoNotDisturb() {
     if (doNotDisturbManager.applyDoNotDisturb(0)) {
-      Logger.d("checkDoNotDisturb: active")
+      Logger.d(TAG, "checkDoNotDisturb: active")
       binding.doNoDisturbIcon.visible()
     } else {
-      Logger.d("checkDoNotDisturb: not active")
+      Logger.d(TAG, "checkDoNotDisturb: not active")
       binding.doNoDisturbIcon.gone()
     }
   }
@@ -153,7 +152,7 @@ class SettingsFragment :
 
   @SuppressLint("SetTextI18n")
   override fun onUpdateChanged(hasUpdate: Boolean, version: String) {
-    Logger.d("onUpdateChanged: $hasUpdate, $version")
+    Logger.d(TAG, "onUpdateChanged: $hasUpdate, $version")
     if (hasUpdate) {
       binding.updateBadge.visible()
       binding.updateBadge.text = getString(R.string.new_update_message, version)
@@ -164,7 +163,7 @@ class SettingsFragment :
   }
 
   override fun onSaleChanged(showDiscount: Boolean, discount: String, until: String) {
-    Logger.d("onSaleChanged: $showDiscount, $discount")
+    Logger.d(TAG, "onSaleChanged: $showDiscount, $discount")
     if (showDiscount) {
       binding.saleBadge.visible()
       binding.saleBadge.text = getString(R.string.new_sale_message, discount, until)
@@ -184,5 +183,9 @@ class SettingsFragment :
     } else {
       binding.internalMessageBadge.gone()
     }
+  }
+
+  companion object {
+    private const val TAG = "SettingsFragment"
   }
 }

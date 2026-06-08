@@ -189,7 +189,7 @@ class ModelDateTimeFormatter(
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
 
-    Logger.d("getNextMonthDayTime: dayOfMonth=$dayOfMonth, before=$beforeValue, from=$fromTime")
+    Logger.d(TAG, "getNextMonthDayTime: dayOfMonth=$dayOfMonth, before=$beforeValue, from=$fromTime")
 
     if (dayOfMonth == 0) {
       return getLastMonthDayTime(fromTime, reminder)
@@ -290,5 +290,9 @@ class ModelDateTimeFormatter(
         .plusMonths(interval)
     }
     return dateTime.withSecond(0)
+  }
+
+  companion object {
+    private const val TAG = "ModelDateTimeFormatter"
   }
 }

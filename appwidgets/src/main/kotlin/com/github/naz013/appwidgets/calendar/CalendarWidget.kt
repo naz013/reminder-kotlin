@@ -66,6 +66,8 @@ internal class CalendarWidget : AppWidgetProvider(), KoinComponent {
 
   companion object {
 
+    private const val TAG = "CalendarWidget"
+
     fun updateWidget(
       context: Context,
       appWidgetManager: AppWidgetManager,
@@ -77,7 +79,7 @@ internal class CalendarWidget : AppWidgetProvider(), KoinComponent {
       if (height != 0) {
         val rowHeight = (height - 58).toFloat() / 7f
         sp.setRowHeight(rowHeight)
-        Logger.d("CALENDAR WIDGET SIZE w=$width, h=$height, row=$rowHeight")
+        Logger.d(TAG, "CALENDAR WIDGET SIZE w=$width, h=$height, row=$rowHeight")
       }
 
       val cal = GregorianCalendar()
@@ -217,7 +219,7 @@ internal class CalendarWidget : AppWidgetProvider(), KoinComponent {
       )
       rv.setOnClickPendingIntent(R.id.btn_next, nextPendingIntent)
 
-      Logger.d("updateWidget: id = ${sp.widgetId}")
+      Logger.d(TAG, "updateWidget: id = ${sp.widgetId}")
 
       val previousIntent = context.intentForClass(CalendarPreviousReceiver::class.java)
       previousIntent.action = CalendarPreviousReceiver.ACTION_PREVIOUS

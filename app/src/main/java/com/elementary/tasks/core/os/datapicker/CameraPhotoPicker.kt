@@ -47,7 +47,7 @@ class CameraPhotoPicker private constructor(
   }
 
   override fun dispatchResult(result: Boolean) {
-    Logger.d("dispatchResult: $result, $imageUri")
+    Logger.d(TAG, "dispatchResult: $result, $imageUri")
     if (result) {
       val uri = imageUri ?: return
       resultCallback.invoke(uri)
@@ -64,5 +64,9 @@ class CameraPhotoPicker private constructor(
 
   private fun getExternalFilesDir(): File {
     return File(getActivity().externalCacheDir, "Reminder")
+  }
+
+  companion object {
+    private const val TAG = "CameraPhotoPicker"
   }
 }

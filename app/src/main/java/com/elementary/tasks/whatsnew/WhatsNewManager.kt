@@ -18,7 +18,7 @@ class WhatsNewManager(
     val versionCode = packageManagerWrapper.getVersionCode()
     val prefsVersionCode = prefs.lastVersionCode
 
-    Logger.d("onResume: versionCode=$versionCode, prefsVersionCode=$prefsVersionCode")
+    Logger.d(TAG, "onResume: versionCode=$versionCode, prefsVersionCode=$prefsVersionCode")
 
     if (prefsVersionCode < versionCode) {
       notifyListeners(true)
@@ -53,5 +53,9 @@ class WhatsNewManager(
 
   interface Listener {
     fun whatsNewVisible(isVisible: Boolean)
+  }
+
+  companion object {
+    private const val TAG = "WhatsNewManager"
   }
 }

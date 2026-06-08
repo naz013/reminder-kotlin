@@ -119,7 +119,7 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
   }
 
   private fun save() {
-    Logger.d("save: $config")
+    Logger.d(TAG, "save: $config")
     prefs.reminderCreatorParams = config
   }
 
@@ -164,5 +164,9 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
     private fun getIntent(): Intent {
       return getActivity().buildIntent(BuilderConfigureActivity::class.java)
     }
+  }
+
+  companion object {
+    private const val TAG = "BuilderConfigureActivity"
   }
 }

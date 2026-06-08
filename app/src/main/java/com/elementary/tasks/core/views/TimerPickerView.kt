@@ -89,7 +89,7 @@ class TimerPickerView : LinearLayout {
   }
 
   private fun onDigitClicked(d: Int) {
-    Logger.d("onDigitClicked: $d, $timeString")
+    Logger.d(TAG, "onDigitClicked: $d, $timeString")
     if (timeString[0] == '0') {
       timeString = timeString.substring(1, timeString.length)
       timeString += d.toString()
@@ -99,5 +99,9 @@ class TimerPickerView : LinearLayout {
 
   interface TimerListener {
     fun onTimerChange(time: Long)
+  }
+
+  companion object {
+    private const val TAG = "TimerPickerView"
   }
 }

@@ -64,7 +64,7 @@ internal class CalendarMonthFactory(
     }
     val mYear = year
 
-    Logger.d("onDataSetChanged: mMonth=$mMonth, mYear=$mYear")
+    Logger.d(TAG, "onDataSetChanged: mMonth=$mMonth, mYear=$mYear")
 
     val firstDateOfMonth = LocalDate.of(mYear, mMonth, 1)
     val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.lengthOfMonth() - 1L)
@@ -256,4 +256,8 @@ internal class CalendarMonthFactory(
     val isHasReminders: Boolean,
     val isHasBirthdays: Boolean
   )
+
+  companion object {
+    private const val TAG = "CalendarMonthFactory"
+  }
 }

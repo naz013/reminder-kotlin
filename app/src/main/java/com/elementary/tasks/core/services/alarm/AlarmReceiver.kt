@@ -21,8 +21,8 @@ class AlarmReceiver : BaseBroadcast() {
     if (context == null) return
     val action = intent?.action ?: return
 
-    Logger.d("onReceive: action = $action")
-    Logger.d("onReceive: date time = ${LocalDateTime.now()}")
+    Logger.d(TAG, "onReceive: action = $action")
+    Logger.d(TAG, "onReceive: date time = ${LocalDateTime.now()}")
 
     when (action) {
       ACTION_REMINDER -> processReminder(intent.extras)
@@ -34,7 +34,7 @@ class AlarmReceiver : BaseBroadcast() {
   private fun processReminder(extras: Bundle?) {
     val id = extras?.getString(IntentKeys.INTENT_ID) ?: return
 
-    Logger.d("processReminder: id = $id")
+    Logger.d(TAG, "processReminder: id = $id")
 
     reminderActionProcessor.process(id)
   }
@@ -42,12 +42,13 @@ class AlarmReceiver : BaseBroadcast() {
   private fun processRepeat(extras: Bundle?) {
     val id = extras?.getString(IntentKeys.INTENT_ID) ?: return
 
-    Logger.d("processRepeat: id = $id")
+    Logger.d(TAG, "processRepeat: id = $id")
 
     reminderRepeatProcessor.process(id)
   }
 
   companion object {
+    private const val TAG = "AlarmReceiver"
     const val ACTION_REMINDER = "com.elementary.tasks.core.services.alarm.REMINDER"
     const val ACTION_REMINDER_GPS =
       "com.elementary.tasks.core.services.alarm.REMINDER_START_TRACKING"

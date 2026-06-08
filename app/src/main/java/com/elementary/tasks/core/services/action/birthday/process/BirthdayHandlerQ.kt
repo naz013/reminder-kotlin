@@ -36,7 +36,7 @@ class BirthdayHandlerQ(
   }
 
   private fun showBirthdayNotification(birthday: Birthday) {
-    Logger.d("showBirthdayNotification: $birthday")
+    Logger.d(TAG, "showBirthdayNotification: $birthday")
     val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
 
     birthdayDataProvider.getVibrationPattern()?.also { builder.setVibrate(it) }
@@ -134,5 +134,9 @@ class BirthdayHandlerQ(
       this.action = action
       putExtra(IntentKeys.INTENT_ID, id)
     }
+  }
+
+  companion object {
+    private const val TAG = "BirthdayHandlerQ"
   }
 }

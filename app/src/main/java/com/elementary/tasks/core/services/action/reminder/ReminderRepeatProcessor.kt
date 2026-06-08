@@ -17,11 +17,15 @@ class ReminderRepeatProcessor(
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun process(id: String) {
-    Logger.d("process: $id")
+    Logger.d(TAG, "process: $id")
     scope.launch {
       val reminder = reminderRepository.getById(id) ?: return@launch
       reminderActionProcessor.process(reminder.uuId)
       jobScheduler.scheduleReminderRepeat(reminder)
     }
+  }
+
+  companion object {
+    private const val TAG = "ReminderRepeatProcessor"
   }
 }

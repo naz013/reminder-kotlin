@@ -21,12 +21,12 @@ class SpeechEngine(
   private var speech: SpeechRecognizer? = null
   private val listener = object : RecognitionListener {
     override fun onReadyForSpeech(bundle: Bundle?) {
-      Logger.d("SpeechEngine:onReadyForSpeech")
+      Logger.d(TAG, "onReadyForSpeech")
       callback?.onStarted()
     }
 
     override fun onBeginningOfSpeech() {
-      Logger.d("SpeechEngine:onBeginningOfSpeech")
+      Logger.d(TAG, "onBeginningOfSpeech")
       // Show a progress indicator
       callback?.onSpeechStarted()
       speechTextProcessor.saveSection()
@@ -39,13 +39,13 @@ class SpeechEngine(
     }
 
     override fun onEndOfSpeech() {
-      Logger.d("SpeechEngine:onEndOfSpeech")
+      Logger.d(TAG, "onEndOfSpeech")
       // Hide the progress indicator
       callback?.onSpeechEnded()
     }
 
     override fun onError(i: Int) {
-      Logger.d("SpeechEngine:onError error=$i")
+      Logger.d(TAG, "onError error=$i")
       releaseSpeech()
       callback?.onSpeechError(SpeechError.NoSpeechError)
     }
@@ -55,14 +55,14 @@ class SpeechEngine(
 
     override fun onPartialResults(bundle: Bundle?) {
       val results = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-      Logger.d("SpeechEngine:onPartialResults res=${results?.size}")
+      Logger.d(TAG, "onPartialResults res=${results?.size}")
       if (results != null && results.size > 0) {
         callback?.onSpeechResult(speechTextProcessor.process(results[0].toString()))
       }
     }
 
     override fun onEvent(i: Int, bundle: Bundle?) {
-      Logger.d("SpeechEngine:onEvent event=$i")
+      Logger.d(TAG, "onEvent event=$i")
     }
   }
 
@@ -90,7 +90,7 @@ class SpeechEngine(
       speech?.startListening(getIntent())
       state = State.STARTED
     } catch (e: Throwable) {
-      Logger.e("SpeechEngine:startListening error=${e.message}")
+      Logger.e(TAG, "startListening error=${e.message}")
       callback.onSpeechError(SpeechError.OperationError(0))
     }
   }
@@ -103,7 +103,7 @@ class SpeechEngine(
     try {
       releaseSpeech()
     } catch (e: Throwable) {
-      Logger.e("SpeechEngine:stopListening error=${e.message}")
+      Logger.e(TAG, "stopListening error=${e.message}")
       callback?.onSpeechError(SpeechError.OperationError(1))
     }
   }
@@ -144,5 +144,9 @@ class SpeechEngine(
     IDLE,
     STARTED,
     STOPPED
+  }
+
+  companion object {
+    private const val TAG = "SpeechEngine"
   }
 }

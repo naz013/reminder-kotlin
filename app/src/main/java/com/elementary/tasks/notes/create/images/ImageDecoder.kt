@@ -58,7 +58,7 @@ class ImageDecoder(
       return image.copy(state = UiNoteImageState.ERROR)
     }
     val type = context.contentResolver.getType(uri) ?: ""
-    Logger.d("addImageFromUri: $type")
+    Logger.d(TAG, "addImageFromUri: $type")
     if (!type.contains("image")) {
       return image.copy(state = UiNoteImageState.ERROR)
     }
@@ -70,7 +70,7 @@ class ImageDecoder(
     }.getOrNull()
 
     return if (filePath != null) {
-      Logger.d("addImageFromUri: filePath=$filePath")
+      Logger.d(TAG, "addImageFromUri: filePath=$filePath")
       image.copy(
         filePath = filePath,
         state = UiNoteImageState.READY
@@ -78,5 +78,9 @@ class ImageDecoder(
     } else {
       image.copy(state = UiNoteImageState.ERROR)
     }
+  }
+
+  companion object {
+    private const val TAG = "ImageDecoder"
   }
 }
