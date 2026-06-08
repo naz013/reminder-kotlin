@@ -35,7 +35,7 @@ class DateTimeManager(
   fun getPlaceDateTimeFromGmt(dateTime: String?): LocalDate? {
     return try {
       fromGmtToLocal(dateTime)?.toLocalDate()
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
       null
     }
   }
@@ -64,7 +64,7 @@ class DateTimeManager(
     return try {
       LocalDate.parse(date, BIRTH_DATE_FORMATTER)
     } catch (e: Throwable) {
-      Logger.e("parseBirthdayDate: failed = $date", e)
+      Logger.e(TAG, "parseBirthdayDate: failed = $date", e)
       null
     }
   }
@@ -91,7 +91,7 @@ class DateTimeManager(
     val fromTime = toLocalTime(from) ?: return LongRange(0, 0)
     val toTime = toLocalTime(to) ?: return LongRange(0, 0)
 
-    Logger.d("doNotDisturbRange: HM $fromTime, $toTime")
+    Logger.d(TAG, "doNotDisturbRange: HM $fromTime, $toTime")
     val compare = compareHm(fromTime, toTime)
     val fromMillis = toMillis(LocalDateTime.of(LocalDate.now(), fromTime))
     var toMillis = toMillis(LocalDateTime.of(LocalDate.now(), toTime))
@@ -102,7 +102,7 @@ class DateTimeManager(
     } else if (compare == 0) {
       return LongRange(0, 0)
     }
-    Logger.d("doNotDisturbRange: millis $fromMillis, $toMillis")
+    Logger.d(TAG, "doNotDisturbRange: millis $fromMillis, $toMillis")
     return if (fromMillis > toMillis) {
       LongRange(toMillis, fromMillis)
     } else {
@@ -127,7 +127,7 @@ class DateTimeManager(
     if (dateTime.isNullOrEmpty()) return null
     return try {
       gmtToLocal(dateTime, GMT_DATE_FORMATTER)
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
       null
     }
   }
@@ -137,7 +137,7 @@ class DateTimeManager(
       getCurrentDateTime()
         .atZone(ZoneId.systemDefault())
         .format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
       ""
     }
   }
@@ -186,10 +186,6 @@ class DateTimeManager(
     return dateTime.format(fullDateTime24Formatter())
   }
 
-  fun logDateTime(dateTime: String?): String {
-    return fromGmtToLocal(dateTime)?.let { logDateTime(it) } ?: ""
-  }
-
   fun getFullDateTime(millis: Long): String {
     return getFullDateTime(fromMillis(millis))
   }
@@ -219,7 +215,7 @@ class DateTimeManager(
     }
     return try {
       dateOfBirth.format(formatter)
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
       ""
     }
   }
@@ -265,10 +261,10 @@ class DateTimeManager(
   fun toLocalTime(time24: String?): LocalTime? {
     return try {
       LocalTime.parse(time24, TIME_24_FORMATTER)
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
       try {
         LocalTime.parse(time24, TIME_24_FORMATTER_SHORT)
-      } catch (t: Throwable) {
+      } catch (_: Throwable) {
         null
       }
     }
@@ -411,6 +407,8 @@ class DateTimeManager(
   private fun monthFormatter(): DateTimeFormatter = localizedDateFormatter("MMMM")
 
   companion object {
+    private const val TAG = "DateTimeManager"
+
     const val SECOND: Long = 1000
     const val MINUTE: Long = 60 * SECOND
     const val HOUR: Long = MINUTE * 60
@@ -441,7 +439,7 @@ class DateTimeManager(
           LocalDateTime.now()
             .atZone(ZoneId.systemDefault())
             .format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
           ""
         }
       }

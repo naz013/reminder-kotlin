@@ -9,7 +9,7 @@ class SpeechTextProcessor(initValue: String = "") {
   private var lastSpeechText: SpeechText? = null
 
   fun setText(text: String) {
-    Logger.d("SpeechTextProcessor:setText text=$text")
+    Logger.d(TAG, "setText text=$text")
     completedSection = if (text.isEmpty()) {
       ""
     } else {
@@ -28,11 +28,11 @@ class SpeechTextProcessor(initValue: String = "") {
 
   fun process(text: String): SpeechText {
     if (text.isEmpty() && currentSection.isEmpty()) {
-      Logger.d("SpeechTextProcessor:process text is empty and currentSection is empty")
+      Logger.d(TAG, "process text is empty and currentSection is empty")
       return SpeechText(text = completedSection, newText = null)
     }
     if (text.isEmpty()) {
-      Logger.d("SpeechTextProcessor:process text is empty")
+      Logger.d(TAG, "process text is empty")
       saveSection()
       return SpeechText(text = completedSection, newText = null)
     }
@@ -72,5 +72,9 @@ class SpeechTextProcessor(initValue: String = "") {
         lastSpeechText = it
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "SpeechTextProcessor"
   }
 }

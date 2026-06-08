@@ -65,7 +65,7 @@ class NoteController(
     }
 
     private fun updateSelection(position: Int) {
-      Logger.d("updateSelection: pos=$position, selected=${position == selectedPosition}")
+      Logger.d(TAG, "updateSelection: pos=$position, selected=${position == selectedPosition}")
       if (position == selectedPosition) {
         val prevSelected = selectedPosition
         selectedPosition = -1
@@ -151,5 +151,9 @@ class NoteController(
         return@setOnTouchListener true
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "NoteController"
   }
 }

@@ -317,7 +317,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
             ?: ""
         )
       } catch (e: Throwable) {
-        Logger.d("moveToMyLocation: ${e.message}")
+        Logger.d(TAG, "moveToMyLocation: ${e.message}")
       }
 
       if (location != null) {

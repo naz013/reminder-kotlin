@@ -112,7 +112,7 @@ class PrefsView : RelativeLayout {
         showCustomButton = a.getBoolean(R.styleable.PrefsView_prefs_showCustomButton, false)
         customButtonText = a.getString(R.styleable.PrefsView_prefs_customButtonText)
       } catch (e: Exception) {
-        Logger.d("init: ${e.message}")
+        Logger.d(TAG, "init: ${e.message}")
       } finally {
         a.recycle()
       }
@@ -407,6 +407,8 @@ class PrefsView : RelativeLayout {
   }
 
   companion object {
+
+    private const val TAG = "PrefsView"
 
     private const val CHECK = 0
     private const val SWITCH = 1

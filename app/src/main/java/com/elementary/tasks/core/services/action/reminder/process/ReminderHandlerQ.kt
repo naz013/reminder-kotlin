@@ -33,7 +33,7 @@ class ReminderHandlerQ(
   }
 
   private fun showNotificationWithSound(reminder: Reminder) {
-    Logger.d("showReminderNotification: $reminder")
+    Logger.d(TAG, "showReminderNotification: $reminder")
     val context = contextProvider.context
     val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
 
@@ -115,5 +115,9 @@ class ReminderHandlerQ(
       this.action = action
       putExtra(IntentKeys.INTENT_ID, id)
     }
+  }
+
+  companion object {
+    private const val TAG = "ReminderHandlerQ"
   }
 }

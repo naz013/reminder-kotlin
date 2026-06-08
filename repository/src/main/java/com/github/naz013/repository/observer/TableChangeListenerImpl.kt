@@ -8,6 +8,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.table.Table
 
+@Suppress("DEPRECATION")
 internal class TableChangeListenerImpl(
   private val context: Context,
   private val table: Table,
@@ -24,7 +25,7 @@ internal class TableChangeListenerImpl(
   }
 
   override fun register() {
-    Logger.i("Registering table change listener for table: ${table.tableName}")
+    Logger.i(TAG, "Registering table change listener for table: ${table.tableName}")
     LocalBroadcastManager.getInstance(context).registerReceiver(
       receiver,
       IntentFilter(TableChangeAction.ACTION)
@@ -32,7 +33,11 @@ internal class TableChangeListenerImpl(
   }
 
   override fun unregister() {
-    Logger.i("Unregistering table change listener for table: ${table.tableName}")
+    Logger.i(TAG, "Unregistering table change listener for table: ${table.tableName}")
     LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
+  }
+
+  companion object {
+    private const val TAG = "TableChangeListener"
   }
 }

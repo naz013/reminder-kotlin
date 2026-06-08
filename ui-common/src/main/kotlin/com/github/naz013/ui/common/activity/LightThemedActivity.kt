@@ -71,12 +71,12 @@ abstract class LightThemedActivity : AppCompatActivity() {
 
   private fun logId() {
     if (intent.hasExtra(IntentKeys.INTENT_ID)) {
-      Logger.d("Has ID as ${intent.getStringExtra(IntentKeys.INTENT_ID)}")
+      Logger.d(TAG, "Has ID as ${intent.getStringExtra(IntentKeys.INTENT_ID)}")
     }
   }
 
   fun invokeBackPress() {
-    Logger.i("LightThemedActivity", "Back pressed from callback")
+    Logger.i(TAG, "Back pressed from callback")
     if (!handleBackPress()) finish()
   }
 
@@ -111,7 +111,7 @@ abstract class LightThemedActivity : AppCompatActivity() {
   }
 
   protected fun hideKeyboard(token: IBinder? = null) {
-    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?
     if (token == null) {
       val currentToken = window.currentFocus?.windowToken
       currentToken?.let { imm?.hideSoftInputFromWindow(token, 0) }
@@ -128,5 +128,9 @@ abstract class LightThemedActivity : AppCompatActivity() {
 
   protected open fun handleBackPress(): Boolean {
     return false
+  }
+
+  companion object {
+    private const val TAG = "LightThemedActivity"
   }
 }

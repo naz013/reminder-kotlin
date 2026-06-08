@@ -10,6 +10,7 @@ import com.github.naz013.sync.FileCacheProvider
 import java.io.File
 import java.util.UUID
 
+@Suppress("DEPRECATION")
 internal class PostProcessOldNoteUseCase(
   private val fileCacheProvider: FileCacheProvider
 ) {

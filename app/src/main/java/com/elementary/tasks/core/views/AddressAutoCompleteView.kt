@@ -101,7 +101,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
 
   private fun performTypeValue(s: String) {
     geocoderTask.findAddresses(s) {
-      Logger.d("onAddressReceived: $it")
+      Logger.d(TAG, "onAddressReceived: $it")
       foundPlaces.clear()
       foundPlaces.addAll(it)
       mAdapter = AddressAdapter(context, android.R.layout.simple_list_item_2, it)
@@ -151,6 +151,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
   }
 
   companion object {
+    private const val TAG = "AddressAutoCompleteView"
     fun formName(address: Address): String {
       val sb = StringBuilder()
       sb.append(address.featureName)

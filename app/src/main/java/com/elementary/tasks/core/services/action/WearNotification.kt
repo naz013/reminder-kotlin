@@ -18,7 +18,7 @@ class WearNotification(
     secondaryText: String,
     groupName: String
   ) {
-    Logger.d("showWearNotification: $secondaryText")
+    Logger.d(TAG, "showWearNotification: $secondaryText")
     val wearableNotificationBuilder =
       NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
@@ -31,5 +31,9 @@ class WearNotification(
     wearableNotificationBuilder.setGroup(groupName)
     wearableNotificationBuilder.setGroupSummary(false)
     notifier.notify(id, wearableNotificationBuilder.build())
+  }
+
+  companion object {
+    private const val TAG = "WearNotification"
   }
 }

@@ -113,7 +113,7 @@ class EditBirthdayViewModel(
   }
 
   fun onDateChanged(localDate: LocalDate) {
-    Logger.d("onDateChanged: $localDate")
+    Logger.d(TAG, "onDateChanged: $localDate")
     selectedDate = localDate
     _formattedDate.postValue(uiBirthdayDateFormatter.getDateFormatted(localDate))
   }
@@ -152,7 +152,7 @@ class EditBirthdayViewModel(
         version = 0
       )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
-      Logger.i("Saving the birthday with id: ${birthday.uuId}")
+      Logger.i(TAG, "Saving the birthday with id: ${birthday.uuId}")
       saveBirthday(birthday)
     }
   }
@@ -161,7 +161,7 @@ class EditBirthdayViewModel(
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteBirthdayUseCase(id)
-      Logger.i("Deleting the birthday with id: $id")
+      Logger.i(TAG, "Deleting the birthday with id: $id")
       postInProgress(false)
       postCommand(Commands.DELETED)
     }
@@ -192,5 +192,9 @@ class EditBirthdayViewModel(
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
+  }
+
+  companion object {
+    private const val TAG = "EditBirthdayViewModel"
   }
 }

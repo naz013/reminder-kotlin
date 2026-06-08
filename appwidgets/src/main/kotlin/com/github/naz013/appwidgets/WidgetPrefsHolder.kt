@@ -14,10 +14,10 @@ internal class WidgetPrefsHolder(
   fun <T : WidgetPrefsProvider> findOrCreate(widgetId: Int, clazz: Class<T>): T {
     val key = Key(widgetId, clazz)
 
-    Logger.d("findOrCreate: key = $key")
+    Logger.d(TAG, "findOrCreate: key = $key")
 
     return if (map.containsKey(key)) {
-      Logger.d("findOrCreate: has key = $key")
+      Logger.d(TAG, "findOrCreate: has key = $key")
       map[key]!! as T
     } else {
       val provider = when (clazz) {
@@ -28,7 +28,7 @@ internal class WidgetPrefsHolder(
           CalendarWidgetPrefsProvider(context, widgetId)
         }
       }
-      Logger.d("findOrCreate: create for key = $key, provider = $provider")
+      Logger.d(TAG, "findOrCreate: create for key = $key, provider = $provider")
       map[key] = provider
       provider as T
     }
@@ -38,4 +38,8 @@ internal class WidgetPrefsHolder(
     val widgetId: Int,
     val clazz: Class<*>
   )
+
+  companion object {
+    private const val TAG = "WidgetPrefsHolder"
+  }
 }

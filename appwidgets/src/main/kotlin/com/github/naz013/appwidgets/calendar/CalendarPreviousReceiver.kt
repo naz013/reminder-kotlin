@@ -17,7 +17,7 @@ internal class CalendarPreviousReceiver : BroadcastReceiver(), KoinComponent {
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
 
   override fun onReceive(context: Context?, intent: Intent?) {
-    Logger.d("onReceive: $intent")
+    Logger.d(TAG, "onReceive: $intent")
     if (intent != null && ACTION_PREVIOUS == intent.action && context != null) {
       val widgetId = intent.getIntExtra(
         AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -45,6 +45,7 @@ internal class CalendarPreviousReceiver : BroadcastReceiver(), KoinComponent {
   }
 
   companion object {
+    private const val TAG = "CalendarPreviousReceiver"
     const val ACTION_PREVIOUS = "com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS"
   }
 }

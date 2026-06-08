@@ -81,7 +81,7 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
 
   private fun tryChangeSbPrefs() {
     val isChecked = binding.permanentNotificationPrefs.isChecked
-    Logger.d("tryChangeSbPrefs: $isChecked")
+    Logger.d(TAG, "tryChangeSbPrefs: $isChecked")
     if (!isChecked) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         permissionFlow.askPermission(Permissions.POST_NOTIFICATION) { changeSbPrefs() }
@@ -482,5 +482,9 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     } else {
       R.drawable.ic_builder_clear
     }
+  }
+
+  companion object {
+    private const val TAG = "RemindersSettingsFragment"
   }
 }

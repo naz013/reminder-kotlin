@@ -3,7 +3,6 @@ package com.elementary.tasks.core.services.action.birthday
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DateValidator
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
@@ -11,6 +10,7 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
@@ -35,7 +35,7 @@ class BirthdayActionProcessor(
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun sendSms(id: String) {
-    Logger.d("sendSms: $id")
+    Logger.d(TAG, "sendSms: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
@@ -46,7 +46,7 @@ class BirthdayActionProcessor(
   }
 
   fun makeCall(id: String) {
-    Logger.d("makeCall: $id")
+    Logger.d(TAG, "makeCall: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
@@ -57,7 +57,7 @@ class BirthdayActionProcessor(
   }
 
   fun cancel(id: String) {
-    Logger.d("cancel: $id")
+    Logger.d(TAG, "cancel: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
@@ -65,7 +65,7 @@ class BirthdayActionProcessor(
   }
 
   suspend fun process() {
-    Logger.d("process: ")
+    Logger.d(TAG, "process: ")
     jobScheduler.cancelDailyBirthday()
     jobScheduler.scheduleDailyBirthday()
     scope.launch {
@@ -101,5 +101,9 @@ class BirthdayActionProcessor(
       .withDayOfMonth(day)
       .minusDays(daysBefore.toLong())
     return dateTimeManager.getBirthdayDateSearch(date)
+  }
+
+  companion object {
+    private const val TAG = "BirthdayActionProcessor"
   }
 }

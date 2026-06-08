@@ -91,7 +91,7 @@ internal class RecyclableUiNoteWidgetAdapter(
       }
     }
 
-    Logger.d("convert: image time -> ${System.currentTimeMillis() - startMillis}")
+    Logger.d(TAG, "convert: image time -> ${System.currentTimeMillis() - startMillis}")
 
     val params = NoteDrawableParams.roundedRectParams(
       context = contextProvider.themedContext,
@@ -116,7 +116,7 @@ internal class RecyclableUiNoteWidgetAdapter(
       height = maxSize.toInt()
     )
 
-    Logger.d("convert: full drawable -> ${System.currentTimeMillis() - startMillis}")
+    Logger.d(TAG, "convert: full drawable -> ${System.currentTimeMillis() - startMillis}")
 
     return UiNoteWidget(
       id = noteWithImages.getKey(),
@@ -128,5 +128,9 @@ internal class RecyclableUiNoteWidgetAdapter(
         isDarkIcon
       )?.toBitmap()
     )
+  }
+
+  companion object {
+    private const val TAG = "RecyclableUiNoteWidgetAdapter"
   }
 }

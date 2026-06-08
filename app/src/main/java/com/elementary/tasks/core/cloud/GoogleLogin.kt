@@ -107,7 +107,7 @@ class GoogleLogin(
   }
 
   private fun processResult(resultCode: Int, data: Intent?) {
-    Logger.d("processResult: mode=$mode, res=$resultCode, data=$data")
+    Logger.d(TAG, "processResult: mode=$mode, res=$resultCode, data=$data")
     if (resultCode == RESULT_OK) {
       if (data != null) {
         handleSignInResult(data)
@@ -122,17 +122,17 @@ class GoogleLogin(
   private fun handleSignInResult(result: Intent) {
     GoogleSignIn.getSignedInAccountFromIntent(result)
       .addOnSuccessListener { googleAccount ->
-        Logger.d("Signed in as ${googleAccount.email}")
+        Logger.d(TAG, "Signed in as ${googleAccount.email}")
         finishLogin(googleAccount.account?.name ?: "")
       }
       .addOnFailureListener {
-        Logger.d("Sign in fail: ${it.message}")
+        Logger.d(TAG, "Sign in fail: ${it.message}")
         sendFail()
       }
   }
 
   private fun finishLogin(account: String) {
-    Logger.d("finishLogin: mode=$mode, $account")
+    Logger.d(TAG, "finishLogin: mode=$mode, $account")
     if (account.isEmpty()) {
       sendFail()
       return
@@ -167,4 +167,8 @@ class GoogleLogin(
   }
 
   enum class Mode { DRIVE, TASKS }
+
+  companion object {
+    private const val TAG = "GoogleLogin"
+  }
 }

@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.app.ActivityManager
-import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -22,6 +21,8 @@ import com.google.android.gms.common.GoogleApiAvailability
 import java.io.UnsupportedEncodingException
 
 object SuperUtil {
+
+  private const val TAG = "SuperUtil"
 
   fun isPhoneCallActive(context: Context): Boolean {
     val manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -54,35 +55,11 @@ object SuperUtil {
     ContextCompat.startForegroundService(context, intent)
   }
 
-  fun isHeadsetUsing(context: Context): Boolean {
-    val manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
-    return manager != null && (manager.isBluetoothA2dpOn || manager.isWiredHeadsetOn)
-  }
-
   fun getString(fragment: Fragment, id: Int): String {
     return if (fragment.isAdded) {
       fragment.getString(id)
     } else {
       ""
-    }
-  }
-
-  fun isDoNotDisturbEnabled(context: Context): Boolean {
-    val mNotificationManager = context.getSystemService(
-      Context.NOTIFICATION_SERVICE
-    ) as NotificationManager
-
-    val filter = mNotificationManager.currentInterruptionFilter
-
-    return if (
-      filter == NotificationManager.INTERRUPTION_FILTER_ALARMS ||
-      filter == NotificationManager.INTERRUPTION_FILTER_NONE
-    ) {
-      Logger.d("isDoNotDisturbEnabled: true")
-      true
-    } else {
-      Logger.d("isDoNotDisturbEnabled: false")
-      false
     }
   }
 
@@ -94,7 +71,7 @@ object SuperUtil {
   fun checkGooglePlayServicesAvailability(a: Activity): Boolean {
     val googleAPI = GoogleApiAvailability.getInstance()
     val result = googleAPI.isGooglePlayServicesAvailable(a)
-    Logger.d("checkGooglePlayServicesAvailability: $result")
+    Logger.d(TAG, "checkGooglePlayServicesAvailability: $result")
     return if (result != ConnectionResult.SUCCESS) {
       if (googleAPI.isUserResolvableError(result)) {
         googleAPI.getErrorDialog(a, result, 69)?.show()

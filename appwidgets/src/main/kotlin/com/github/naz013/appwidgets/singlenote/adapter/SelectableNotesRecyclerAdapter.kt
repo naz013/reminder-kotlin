@@ -30,7 +30,7 @@ internal class SelectableNotesRecyclerAdapter(
 
   private fun updateSelection(position: Int) {
     val item = getItem(position)
-    Logger.d("updateSelection: position=$position, isSelected=${item.isSelected}")
+    Logger.d(TAG, "updateSelection: position=$position, isSelected=${item.isSelected}")
     if (item.isSelected) {
       return
     }
@@ -39,7 +39,7 @@ internal class SelectableNotesRecyclerAdapter(
       currentList[index].isSelected = false
       notifyItemChanged(index)
     }
-    Logger.d("updateSelection: index=$index")
+    Logger.d(TAG, "updateSelection: index=$index")
     currentList[position].isSelected = true
     notifyItemChanged(position)
     onSelectionChangeListener.invoke(currentList[position].id)
@@ -55,5 +55,9 @@ internal class SelectableNotesRecyclerAdapter(
 
   override fun onBindViewHolder(holder: SelectableNoteViewHolder, position: Int) {
     holder.setData(getItem(position))
+  }
+
+  companion object {
+    private const val TAG = "SelectableNotesRecyclerAdapter"
   }
 }

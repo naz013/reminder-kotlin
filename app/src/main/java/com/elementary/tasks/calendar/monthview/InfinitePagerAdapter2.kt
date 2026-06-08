@@ -4,11 +4,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.calendar.data.MonthLiveData
 import com.elementary.tasks.core.binding.HolderBinding
-import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
-import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.databinding.FragmentMonthViewBinding
+import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.view.inflater
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDate
@@ -26,7 +26,7 @@ class InfinitePagerAdapter2(
   fun selectPosition(position: Int) {
     selectedPosition = position
     val viewHolder = findViewHolder(position)
-    Logger.d("selectPosition: $position, $viewHolder")
+    Logger.d(TAG, "selectPosition: $position, $viewHolder")
     if (viewHolder is ViewHolderDynamic) {
       onBindViewHolder(viewHolder, position)
     }
@@ -59,7 +59,7 @@ class InfinitePagerAdapter2(
 
   override fun onViewRecycled(holder: ViewHolderDynamic) {
     super.onViewRecycled(holder)
-    Logger.d("onViewRecycled: ${holder.bindingAdapterPosition}")
+    Logger.d(TAG, "onViewRecycled: ${holder.bindingAdapterPosition}")
   }
 
   override fun getItemCount(): Int {
@@ -80,13 +80,13 @@ class InfinitePagerAdapter2(
 
     init {
       monthLiveData.observeForever {
-        Logger.d("onChanged: map=${it.size}")
+        Logger.d(TAG, "onChanged: map=${it.size}")
         binding.monthView.setEventsMap(it)
       }
     }
 
     fun bind(monthPagerItem: MonthPagerItem) {
-      Logger.d("bind: $bindingAdapterPosition, $monthPagerItem")
+      Logger.d(TAG, "bind: $bindingAdapterPosition, $monthPagerItem")
 
       binding.monthView.setTodayColor(dataAccessor.getTodayColor())
       binding.monthView.setStartDayOfWeek(dataAccessor.getStartDay())
@@ -110,5 +110,9 @@ class InfinitePagerAdapter2(
   interface DataAccessor {
     fun getTodayColor(): Int
     fun getStartDay(): StartDayOfWeekProtocol
+  }
+
+  companion object {
+    private const val TAG = "InfinitePagerAdapter2"
   }
 }

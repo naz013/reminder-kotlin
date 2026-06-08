@@ -53,11 +53,15 @@ class UiCheckableImageView : AppCompatImageView {
         checkedIcon = a.getResourceId(R.styleable.UiCheckableImageView_civ_checkedIcon, 0)
         uncheckedIcon = a.getResourceId(R.styleable.UiCheckableImageView_civ_uncheckedIcon, 0)
       } catch (e: Exception) {
-        Logger.d("init: ${e.message}")
+        Logger.d(TAG, "init: ${e.message}")
       } finally {
         a.recycle()
       }
     }
     updateIconState()
+  }
+
+  companion object {
+    private const val TAG = "UiCheckableImageView"
   }
 }

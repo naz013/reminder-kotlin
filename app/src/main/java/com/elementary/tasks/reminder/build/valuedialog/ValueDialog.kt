@@ -80,7 +80,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     }
     binding.buttonsHolder.gone()
 
-    Logger.d("Value dialog created, position: ${getPosition()}")
+    Logger.d(TAG, "Value dialog created, position: ${getPosition()}")
     dataHolder.data?.also { builderItem ->
       binding.titleView.text = builderItem.title
       binding.descriptionView.text = builderItem.description

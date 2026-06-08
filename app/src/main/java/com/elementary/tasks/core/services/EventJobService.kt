@@ -26,7 +26,7 @@ class EventJobService(
   private val scheduleBackgroundWorkUseCase by inject<ScheduleBackgroundWorkUseCase>()
 
   override suspend fun doWork(): Result {
-    Logger.d("onRunJob: ${dateTimeManager.logDateTime()}, tag -> ${params.tags.toList()}")
+    Logger.d(TAG, "onRunJob: ${dateTimeManager.logDateTime()}, tag -> ${params.tags.toList()}")
     when (params.tags.first()) {
       JobScheduler.EVENT_BIRTHDAY -> birthdayAction()
       JobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
@@ -54,5 +54,9 @@ class EventJobService(
 
   private suspend fun birthdayAction() {
     birthdayActionProcessor.process()
+  }
+
+  companion object {
+    private const val TAG = "EventJobService"
   }
 }

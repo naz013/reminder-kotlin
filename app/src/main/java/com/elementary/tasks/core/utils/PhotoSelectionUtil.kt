@@ -16,11 +16,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.CameraPhotoPicker
 import com.elementary.tasks.core.os.datapicker.MultiPicturePicker
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.databinding.ViewUrlFieldBinding
 import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -110,8 +110,11 @@ class PhotoSelectionUtil(
   }
 
   private fun checkClipboard() {
-    val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-      ?: return
+    val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager?
+      ?: run {
+        Logger.w(TAG, "checkClipboard: clipboard is null")
+        return
+      }
     if (clipboard.hasPrimaryClip()) {
       val text = clipboard.primaryClip?.getItemAt(0)?.text
       if (text != null && Patterns.WEB_URL.matcher(text).matches()) {
@@ -170,7 +173,7 @@ class PhotoSelectionUtil(
             }
           }
         } catch (e: Exception) {
-          Logger.d("downloadUrl: $e")
+          Logger.d(TAG, "downloadUrl: $e")
           withUIContext {
             activity.toast(R.string.failed_to_download)
           }
@@ -187,5 +190,9 @@ class PhotoSelectionUtil(
     fun onImageSelected(uris: List<Uri>)
 
     fun onBitmapReady(bitmap: Bitmap)
+  }
+
+  companion object {
+    private const val TAG = "PhotoSelectionUtil"
   }
 }

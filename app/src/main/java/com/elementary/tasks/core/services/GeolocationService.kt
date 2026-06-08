@@ -38,7 +38,7 @@ class GeolocationService : Service() {
     super.onDestroy()
     locationTracker.removeUpdates()
     stopForeground(STOP_FOREGROUND_REMOVE)
-    Logger.d("onDestroy: ")
+    Logger.d(TAG, "onDestroy: ")
   }
 
   override fun onBind(intent: Intent?): IBinder? {
@@ -51,7 +51,7 @@ class GeolocationService : Service() {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    Logger.d("onStartCommand: ")
+    Logger.d(TAG, "onStartCommand: ")
     showDefaultNotification()
     locationTracker.startUpdates()
     return START_STICKY
@@ -99,18 +99,19 @@ class GeolocationService : Service() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       try {
         startForeground(NOTIFICATION_ID, builder.build())
-        Logger.i("GeolocationService", "Start foreground: success")
+        Logger.i(TAG, "Start foreground: success")
       } catch (e: ForegroundServiceStartNotAllowedException) {
-        Logger.i("GeolocationService", "Start foreground: not allowed")
+        Logger.i(TAG, "Start foreground: not allowed, ${e.message}")
         stopSelf()
       }
     } else {
       startForeground(NOTIFICATION_ID, builder.build())
-      Logger.i("GeolocationService", "Start foreground: success")
+      Logger.i(TAG, "Start foreground: success")
     }
   }
 
   companion object {
+    private const val TAG = "GeolocationService"
     private const val NOTIFICATION_ID = 1245
   }
 }

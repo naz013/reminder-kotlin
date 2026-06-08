@@ -2,15 +2,15 @@ package com.elementary.tasks.settings.troubleshooting
 
 import androidx.lifecycle.LifecycleOwner
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.feature.common.livedata.toSingleEvent
+import com.elementary.tasks.core.utils.FeatureManager
+import com.elementary.tasks.core.utils.io.CacheUtil
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.io.CacheUtil
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.livedata.toSingleEvent
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import java.io.File
 
@@ -50,7 +50,7 @@ class TroubleshootingViewModel(
   private fun getLogFile(): File? {
     val dir = contextProvider.context.dataDir
     val logDir = File(dir, "files/log")
-    Logger.d("getLogFile: dir = $dir, logDir = $logDir")
+    Logger.d(TAG, "getLogFile: dir = $dir, logDir = $logDir")
     if (!logDir.exists()) return null
     val files = logDir.listFiles() ?: return null
     return files.firstOrNull { it.name.endsWith(".log") }
@@ -66,7 +66,7 @@ class TroubleshootingViewModel(
   private fun checkLogs() {
     val enabled = featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) &&
       hasLogFiles()
-    Logger.d("Logging is $enabled")
+    Logger.d(TAG, "Logging is $enabled")
     _showSendLogs.postValue(enabled)
   }
 
@@ -76,7 +76,7 @@ class TroubleshootingViewModel(
 
   private fun checkBatteryOptimization() {
     val optimizationStatus = powerManager?.isIgnoringBatteryOptimizations(packageName())
-    Logger.d("Battery optimization is disabled = $optimizationStatus")
+    Logger.d(TAG, "Battery optimization is disabled = $optimizationStatus")
     _hideBatteryOptimizationCard.postValue(optimizationStatus ?: false)
   }
 
@@ -84,5 +84,9 @@ class TroubleshootingViewModel(
     val optimizationDisabled = powerManager?.isIgnoringBatteryOptimizations(packageName()) ?: false
     val logsEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS)
     _showEmptyView.postValue(optimizationDisabled && !logsEnabled)
+  }
+
+  companion object {
+    private const val TAG = "TroubleshootingViewModel"
   }
 }

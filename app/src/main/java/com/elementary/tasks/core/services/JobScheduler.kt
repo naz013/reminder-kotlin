@@ -11,12 +11,12 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
-import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
+import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
@@ -126,7 +126,7 @@ class JobScheduler(
     if (millis <= 0) {
       return false
     }
-    Logger.d("scheduleReminderRepeat: $millis, ${reminder.uuId}")
+    Logger.d(TAG, "scheduleReminderRepeat: $millis, ${reminder.uuId}")
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_REPEAT,
@@ -147,7 +147,7 @@ class JobScheduler(
     if (millis <= 0) {
       return
     }
-    Logger.d("scheduleReminderDelay: $millis, $uuId")
+    Logger.d(TAG, "scheduleReminderDelay: $millis, $uuId")
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER,
@@ -164,7 +164,7 @@ class JobScheduler(
     if (millis <= 0) {
       return false
     }
-    Logger.d("scheduleGpsDelay: $millis, ${reminder.uuId}")
+    Logger.d(TAG, "scheduleGpsDelay: $millis, ${reminder.uuId}")
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_GPS,
@@ -230,12 +230,12 @@ class JobScheduler(
   }
 
   private fun cancelReminder(uuId: String) {
-    Logger.i("cancelReminder: uuId=$uuId")
+    Logger.i(TAG, "cancelReminder: uuId=$uuId")
     WorkManager.getInstance(context).cancelAllWorkByTag(uuId)
   }
 
   fun cancelReminder(requestCode: Int) {
-    Logger.i("cancelReminder: requestCode=$requestCode")
+    Logger.i(TAG, "cancelReminder: requestCode=$requestCode")
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntentWrapper.getBroadcast(
       context = context,

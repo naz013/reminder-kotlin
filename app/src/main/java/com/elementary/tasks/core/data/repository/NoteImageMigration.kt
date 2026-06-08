@@ -14,7 +14,7 @@ class NoteImageMigration(
       runCatching { noteRepository.getImageById(it) }.getOrNull()
         ?.takeIf { it.image != null }
         ?.also { imageFile ->
-          Logger.d("migrate image: ${imageFile.noteId}")
+          Logger.d(TAG, "migrate image: ${imageFile.noteId}")
           val fileName = imageFile.fileName.takeIf { it.isNotEmpty() }
             ?: UUID.randomUUID().toString()
           imageFile.filePath =
@@ -24,5 +24,9 @@ class NoteImageMigration(
           noteRepository.save(imageFile)
         }
     }
+  }
+
+  companion object {
+    private const val TAG = "NoteImageMigration"
   }
 }

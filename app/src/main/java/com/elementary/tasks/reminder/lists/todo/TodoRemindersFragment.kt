@@ -148,7 +148,7 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
     lifecycle.addObserver(viewModel)
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
     viewModel.errorEvent.observeEvent(viewLifecycleOwner) {
-      Logger.d("initViewModel: onError -> $it")
+      Logger.d(TAG, "initViewModel: onError -> $it")
       toast(it)
     }
     viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
@@ -197,5 +197,9 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
 
   private fun reloadEmptyView(count: Int) {
     binding.emptyItem.visibleGone(count == 0)
+  }
+
+  companion object {
+    private const val TAG = "TodoRemindersFragment"
   }
 }

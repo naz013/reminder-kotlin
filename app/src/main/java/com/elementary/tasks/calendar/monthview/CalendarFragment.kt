@@ -117,7 +117,7 @@ class CalendarFragment :
         override fun onPageScrollStateChanged(state: Int) {
           super.onPageScrollStateChanged(state)
           if (state == ViewPager2.SCROLL_STATE_IDLE) {
-            Logger.d("onPageScrollStateChanged: ${binding.infiniteViewPager.currentItem}")
+            Logger.d(TAG, "onPageScrollStateChanged: ${binding.infiniteViewPager.currentItem}")
             when (binding.infiniteViewPager.currentItem) {
               0 -> {
                 // move to 4th position, current - 1
@@ -152,7 +152,7 @@ class CalendarFragment :
 
         override fun onPageSelected(position: Int) {
           super.onPageSelected(position)
-          Logger.d("onPageSelected: $position")
+          Logger.d(TAG, "onPageSelected: $position")
           if (position == 1 || position == 4) {
             updateMenuTitles(currentDate)
             infinitePagerAdapter.selectPosition(position)
@@ -200,5 +200,9 @@ class CalendarFragment :
         addBirthdayCallback = { addBirthday(date) }
       ).show()
     }
+  }
+
+  companion object {
+    private const val TAG = "CalendarFragment"
   }
 }

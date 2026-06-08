@@ -50,7 +50,7 @@ class BiToReminderAdapter(
 
     when (val validationResult = reminderValidator(reminder)) {
       is ReminderValidator.ValidationResult.Failed -> {
-        Logger.d("Reminder not valid cause = ${validationResult.error}")
+        Logger.d(TAG, "Reminder not valid cause = ${validationResult.error}")
         return BuildResult.Error("Reminder is not valid")
       }
       else -> {

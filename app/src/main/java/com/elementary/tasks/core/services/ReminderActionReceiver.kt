@@ -16,7 +16,7 @@ class ReminderActionReceiver : BaseBroadcast() {
     if (intent != null) {
       val action = intent.action
       val id = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
-      Logger.d("onReceive: $action, id=$id")
+      Logger.d(TAG, "onReceive: $action, id=$id")
       if (action != null && id.isNotEmpty()) {
         when {
           action.matches(ACTION_HIDE.toRegex()) -> reminderActionProcessor.complete(id)
@@ -27,6 +27,7 @@ class ReminderActionReceiver : BaseBroadcast() {
   }
 
   companion object {
+    private const val TAG = "ReminderActionReceiver"
     const val ACTION_HIDE = Actions.Reminder.ACTION_HIDE_SIMPLE
     const val ACTION_SNOOZE = Actions.Reminder.ACTION_SNOOZE
   }

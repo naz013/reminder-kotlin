@@ -7,6 +7,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.sync.images.PostProcessNoteV3UseCase
 import com.github.naz013.sync.images.PostProcessOldNoteUseCase
 
+@Suppress("DEPRECATION")
 internal class PostProcessDownloadedFileUseCase(
   private val postProcessNoteV3UseCase: PostProcessNoteV3UseCase,
   private val postProcessOldNoteUseCase: PostProcessOldNoteUseCase

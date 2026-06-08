@@ -105,10 +105,10 @@ class CacheUtil(
     val file = File(cacheDir, fileName)
     val fId = fileId.ifEmpty { name }
 
-    Logger.d("cacheFile: $fId, ${file.absolutePath}, $fileName")
+    Logger.d(TAG, "cacheFile: $fId, ${file.absolutePath}, $fileName")
 
     if (hasCache(fId) && file.exists()) {
-      Logger.d("cacheFile: FROM CACHE")
+      Logger.d(TAG, "cacheFile: FROM CACHE")
       return file.absolutePath
     }
 
@@ -137,5 +137,6 @@ class CacheUtil(
 
   companion object {
     private const val PREFS_NAME = "cache_prefs"
+    private const val TAG = "CacheUtil"
   }
 }

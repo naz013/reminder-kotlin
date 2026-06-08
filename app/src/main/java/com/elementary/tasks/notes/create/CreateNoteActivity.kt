@@ -206,7 +206,7 @@ class CreateNoteActivity :
     updateSpeechState(SpeechState.IDLE)
 
     binding.clickView.setOnClickListener {
-      Logger.d("onCreate: on outside touch")
+      Logger.d(TAG, "onCreate: on outside touch")
       hideKeyboard(binding.taskMessage.windowToken)
     }
     initImagesList()
@@ -314,7 +314,7 @@ class CreateNoteActivity :
     if (opacity == -1) {
       newOpacity = binding.opacityBar.valueInt
     }
-    Logger.d("newPair: $newColor, $newOpacity")
+    Logger.d(TAG, "newPair: $newColor, $newOpacity")
     return Pair(newColor, newOpacity)
   }
 
@@ -464,7 +464,7 @@ class CreateNoteActivity :
 
   private fun initViewModel() {
     viewModel.colorOpacity.nonNullObserve(this) {
-      Logger.d("observeStates: opacity $it")
+      Logger.d(TAG, "observeStates: opacity $it")
       updateDarkness(it)
       updateBackground(it)
       updateTextColors()
@@ -481,11 +481,11 @@ class CreateNoteActivity :
     viewModel.fontStyle.nonNullObserve(this) { updateFontStyle(it) }
     viewModel.fontSize.nonNullObserve(this) { updateFontSize(it) }
     viewModel.images.nonNullObserve(this) {
-      Logger.d("observeStates: images -> $it")
+      Logger.d(TAG, "observeStates: images -> $it")
       imagesGridAdapter.submitList(it)
     }
     viewModel.palette.nonNullObserve(this) {
-      Logger.d("observeStates: palette -> $it")
+      Logger.d(TAG, "observeStates: palette -> $it")
       prefs.notePalette = it
       binding.colorSlider.setColors(themeProvider.noteColorsForSlider(it))
       val pair = newPair(binding.colorSlider.selectedItem, binding.opacityBar.valueInt)
@@ -500,7 +500,7 @@ class CreateNoteActivity :
     }
     viewModel.note.nonNullObserve(this) { showNote(it) }
     viewModel.resultEvent.observeEvent(this) { commands ->
-      Logger.d("initViewModel: $commands")
+      Logger.d(TAG, "initViewModel: $commands")
       when (commands) {
         Commands.DELETED, Commands.SAVED -> {
           appWidgetUpdater.updateNotesWidget()
@@ -597,7 +597,7 @@ class CreateNoteActivity :
   }
 
   private fun showNote(uiNoteEdit: UiNoteEdit) {
-    Logger.d("editNote: $uiNoteEdit")
+    Logger.d(TAG, "editNote: $uiNoteEdit")
     binding.colorSlider.setSelection(uiNoteEdit.colorPosition)
     binding.opacityBar.valueInt = uiNoteEdit.opacity
     binding.fontSizeBar.valueInt = uiNoteEdit.fontSize
@@ -701,7 +701,7 @@ class CreateNoteActivity :
   }
 
   private fun updateBackground(pair: Pair<Int, Int>, palette: Int = palette()) {
-    Logger.d("updateBackground: $pair, $palette")
+    Logger.d(TAG, "updateBackground: $pair, $palette")
 
     val lightColorSemi = themeProvider.getNoteLightColor(pair.first, pair.second, palette)
     binding.layoutContainer.setBackgroundColor(lightColorSemi)
@@ -843,7 +843,7 @@ class CreateNoteActivity :
 
   private fun handleSendText(intent: Intent) {
     intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-      Logger.d("handleSendText: $it")
+      Logger.d(TAG, "handleSendText: $it")
       setText(it)
     }
   }

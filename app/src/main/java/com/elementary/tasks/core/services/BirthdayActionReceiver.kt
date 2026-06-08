@@ -16,7 +16,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
     if (intent != null) {
       val action = intent.action
       val id = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
-      Logger.d("onReceive: $action, id=$id")
+      Logger.d(TAG, "onReceive: $action, id=$id")
       if (action != null && id.isNotEmpty()) {
         when {
           action.matches(ACTION_CALL.toRegex()) -> birthdayActionProcessor.makeCall(id)
@@ -28,6 +28,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
   }
 
   companion object {
+    private const val TAG = "BirthdayActionReceiver"
     const val ACTION_HIDE = Actions.Birthday.ACTION_HIDE_SIMPLE
     const val ACTION_CALL = Actions.Birthday.ACTION_CALL
     const val ACTION_SMS = Actions.Birthday.ACTION_SMS
