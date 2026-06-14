@@ -14,6 +14,7 @@ import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.databinding.FragmentReminderPreviewBinding
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton

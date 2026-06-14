@@ -20,6 +20,8 @@ import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.googletasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.googletasks.list.TasksRecyclerAdapter
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
+import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent

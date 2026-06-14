@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTaskList

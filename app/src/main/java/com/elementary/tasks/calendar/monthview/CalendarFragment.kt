@@ -10,6 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.calendar.BaseCalendarFragment
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
+import com.elementary.tasks.navigation.safeNavigation
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
@@ -89,8 +90,8 @@ class CalendarFragment :
     analyticsEventSender.send(ScreenUsedEvent(Screen.CALENDAR))
   }
 
-  override fun onBackStackResume() {
-    super.onBackStackResume()
+  override fun onBackStackResumed() {
+    super.onBackStackResumed()
     infinitePagerAdapter.selectPosition(1)
     binding.infiniteViewPager.setCurrentItem(1, false)
   }

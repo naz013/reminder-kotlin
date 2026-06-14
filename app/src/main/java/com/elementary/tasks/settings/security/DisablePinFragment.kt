@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.fragment.toast
 import com.elementary.tasks.databinding.FragmentSettingsDeletePinBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.ui.common.fragment.hideKeyboard
+import com.github.naz013.ui.common.fragment.toast
 
 class DisablePinFragment : BaseSettingsFragment<FragmentSettingsDeletePinBinding>() {
 
@@ -37,7 +38,7 @@ class DisablePinFragment : BaseSettingsFragment<FragmentSettingsDeletePinBinding
 
   override fun onDestroy() {
     super.onDestroy()
-    callback?.hideKeyboard()
+    hideKeyboard()
   }
 
   override fun getTitle(): String = getString(R.string.disable_pin)

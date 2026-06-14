@@ -9,6 +9,7 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.github.naz013.common.Module
 import com.github.naz013.ui.common.activity.finishWith

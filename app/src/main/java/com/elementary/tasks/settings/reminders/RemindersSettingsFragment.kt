@@ -12,6 +12,8 @@ import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.navigate
+import com.elementary.tasks.navigation.safeNavigation
 import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager

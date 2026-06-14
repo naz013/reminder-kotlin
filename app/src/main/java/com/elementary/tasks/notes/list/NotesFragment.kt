@@ -21,6 +21,8 @@ import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.core.views.recyclerview.StaggeredSpaceItemDecoration
 import com.elementary.tasks.databinding.FragmentNotesBinding
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
+import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.ImagePreviewActivity

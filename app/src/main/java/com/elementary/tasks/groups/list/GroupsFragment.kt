@@ -12,6 +12,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent

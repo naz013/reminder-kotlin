@@ -14,6 +14,8 @@ import com.elementary.tasks.databinding.DialogAboutBinding
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.navigate
+import com.elementary.tasks.navigation.safeNavigation
 import com.github.naz013.common.Module
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions

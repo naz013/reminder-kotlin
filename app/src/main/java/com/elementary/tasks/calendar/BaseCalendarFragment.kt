@@ -7,6 +7,7 @@ import com.elementary.tasks.calendar.monthview.DayBottomSheetDialog
 import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys

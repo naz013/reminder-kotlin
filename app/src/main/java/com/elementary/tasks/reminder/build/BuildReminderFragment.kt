@@ -14,6 +14,7 @@ import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.FragmentReminderBuilderBinding
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.reminder.build.adapter.BuilderAdapter
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction

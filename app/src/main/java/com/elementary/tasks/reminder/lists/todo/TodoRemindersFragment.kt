@@ -14,6 +14,7 @@ import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderEventsList

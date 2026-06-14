@@ -13,13 +13,14 @@ ${input:changes_description:Describe the changes to review, or paste the diff/fi
 
 ## Review Criteria
 
-### Architecture Compliance (see `docs/architecture.md`)
+### Architecture Compliance (see `docs/architecture.md` and `rules and agents.md`)
 
 - [ ] No circular module dependencies introduced.
-- [ ] `domain` module remains free of Android / framework / third-party library imports.
+- [ ] `domain` module remains free of ANY external dependencies.
 - [ ] `*-api` modules contain only interfaces and data types; no implementations.
 - [ ] `usecase:*` modules depend only on `repository-api`, not `repository`.
 - [ ] Concrete DI bindings are registered only in `app` or the module's own `KoinModule.kt`.
+- [ ] Room Entities in `repository` are correctly mapped to/from Domain models before leaving the repository layer.
 
 ### Kotlin & Android Correctness
 

@@ -16,13 +16,14 @@ Affected area (module / screen / class): ${input:affected_area:Which module, scr
 ## Investigation Checklist
 
 1. **Reproduce** the bug locally or trace the code path described.
-2. **Identify the root cause** — is it in:
+2. **Consult `rules and agents.md`** to ensure the fix adheres to the project's architectural constraints.
+3. **Identify the root cause** — is it in:
    - A use case (`usecase:*`)?
    - A repository or DAO (`repository`)?
    - A ViewModel state mutation (`app`)?
    - A Compose recomposition / state issue?
    - A cloud sync or background worker?
-3. **Check for related tests** — are there existing tests that should have caught this?
+4. **Check for related tests** — are there existing tests that should have caught this?
 
 ## Fix Guidelines
 
