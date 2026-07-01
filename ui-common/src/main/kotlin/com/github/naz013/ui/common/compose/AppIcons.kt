@@ -6,6 +6,30 @@ import androidx.compose.ui.res.painterResource
 import com.github.naz013.ui.common.R
 
 object AppIcons {
-  val Ok: Painter @Composable get() = painterResource(R.drawable.ic_fluent_checkmark)
-  val Clear: Painter @Composable get() = painterResource(R.drawable.ic_fluent_dismiss)
+
+  object Fluent {
+    val Checkmark: Painter @Composable get() = painterResource(R.drawable.ic_fluent_checkmark)
+    val Dismiss: Painter @Composable get() = painterResource(R.drawable.ic_fluent_dismiss)
+    val Text: Painter @Composable get() = painterResource(R.drawable.ic_fluent_text)
+    val Cloud: Painter @Composable get() = painterResource(R.drawable.ic_fluent_cloud)
+    val Star: Painter @Composable get() = painterResource(R.drawable.ic_fluent_star)
+    val ArrowRepeatAll: Painter @Composable get() = painterResource(R.drawable.ic_fluent_arrow_repeat_all)
+    val Person: Painter @Composable get() = painterResource(R.drawable.ic_fluent_person)
+    val Settings: Painter @Composable get() = painterResource(R.drawable.ic_fluent_settings)
+    val Add: Painter @Composable get() = painterResource(R.drawable.ic_fluent_add)
+    val Calendar: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar)
+  }
+
+  object Builder {
+    val Details: Painter @Composable get() = painterResource(R.drawable.ic_builder_details)
+    val ByMonthday: Painter @Composable get() = painterResource(R.drawable.ic_builder_by_monthday)
+    val Group: Painter @Composable get() = painterResource(R.drawable.ic_builder_group)
+    val RepeatLimit: Painter @Composable get() = painterResource(R.drawable.ic_builder_repeat_limit)
+    val AddCall: Painter @Composable get() = painterResource(R.drawable.ic_builder_add_call)
+    val SendMessage: Painter @Composable get() = painterResource(R.drawable.ic_builder_send_message)
+    val EmailAddress: Painter @Composable get() = painterResource(R.drawable.ic_builder_email_address)
+    val EmailSubject: Painter @Composable get() = painterResource(R.drawable.ic_builder_email_subject)
+    val AddApp: Painter @Composable get() = painterResource(R.drawable.ic_builder_add_app)
+    val WebAddress: Painter @Composable get() = painterResource(R.drawable.ic_builder_web_address)
+  }
 }

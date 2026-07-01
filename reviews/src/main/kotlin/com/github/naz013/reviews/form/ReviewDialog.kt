@@ -218,7 +218,7 @@ fun ReviewFormContent(
       verticalAlignment = Alignment.CenterVertically
     ) {
       PrimaryIconButton(
-        icon = AppIcons.Clear,
+        icon = AppIcons.Fluent.Dismiss,
         contentDescription = stringResource(R.string.cancel),
         onClick = onDismiss,
         color = MaterialTheme.colorScheme.errorContainer,
@@ -242,7 +242,7 @@ fun ReviewFormContent(
         )
       } else {
         PrimaryIconButton(
-          icon = AppIcons.Ok,
+          icon = AppIcons.Fluent.Checkmark,
           contentDescription = stringResource(R.string.feedback_submit),
           onClick = {
             // Validate email if provided

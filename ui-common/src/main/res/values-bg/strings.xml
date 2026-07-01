@@ -929,4 +929,5 @@
     <string name="keep_notification">Запази известието</string>
     <string name="cd_back">Назад</string>
     <string name="how_to_create_a_reminder">Как да създадете напомняне</string>
+    <string name="copy_of">Копие на: %s</string>
 </resources>

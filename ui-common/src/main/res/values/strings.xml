@@ -927,4 +927,5 @@
     <string name="keep_notification">Keep notification</string>
     <string name="cd_back">Move back</string>
     <string name="how_to_create_a_reminder">How to Create a Reminder</string>
+    <string name="copy_of">"Copy of: %s"</string>
 </resources>

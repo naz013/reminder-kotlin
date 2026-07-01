@@ -928,4 +928,5 @@
     <string name="keep_notification">Manter notificação</string>
     <string name="cd_back">Voltar</string>
     <string name="how_to_create_a_reminder">Como criar um lembrete</string>
+    <string name="copy_of">Cópia de: %s</string>
 </resources>

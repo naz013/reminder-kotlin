@@ -928,4 +928,5 @@
     <string name="keep_notification">通知を保持</string>
     <string name="cd_back">戻る</string>
     <string name="how_to_create_a_reminder">リマインダーの作成方法</string>
+    <string name="copy_of">%s のコピー</string>
 </resources>

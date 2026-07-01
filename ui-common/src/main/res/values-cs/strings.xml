@@ -928,4 +928,5 @@
     <string name="keep_notification">Ponechat oznámení</string>
     <string name="cd_back">Zpět</string>
     <string name="how_to_create_a_reminder">Jak vytvořit připomínku</string>
+    <string name="copy_of">Kopie: %s</string>
 </resources>

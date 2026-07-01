@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+import java.util.UUID
 
 class PreviewReminderViewModel(
   arguments: Bundle?,
@@ -206,8 +207,10 @@ class PreviewReminderViewModel(
             reminder.groupUuId = group.groupUuId
           }
         }
-        val newItem = reminder.copy()
-        newItem.summary = reminder.summary + " - " + textProvider.getText(R.string.copy)
+        val newItem = reminder.copy().apply {
+          this.uuId = UUID.randomUUID().toString()
+        }
+        newItem.summary = textProvider.getString(R.string.copy_of, reminder.summary)
 
         val date = dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
           ?: LocalDate.now()

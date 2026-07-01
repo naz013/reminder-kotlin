@@ -76,6 +76,11 @@ internal class ReminderGroupRepositoryImpl(
     return dao.getAllIds()
   }
 
+  override suspend fun countAll(): Int {
+    Logger.d(TAG, "Count all reminder groups")
+    return dao.countAll()
+  }
+
   companion object {
     private const val TAG = "ReminderGroupRepository"
   }

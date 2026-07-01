@@ -81,6 +81,7 @@ extensions.configure<ApplicationExtension> {
       excludes += "META-INF/license.txt"
       excludes += "META-INF/ASL2.0"
       excludes += "META-INF/LICENSE.md"
+      excludes += "META-INF/INDEX.LIST"
     }
   }
 }

@@ -4,250 +4,141 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
-import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
-import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
-import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.params.PrefsConstants
-import com.elementary.tasks.core.utils.params.PrefsObserver
-import com.elementary.tasks.databinding.HomeFragmentBinding
-import com.elementary.tasks.globalsearch.ActivityNavigation
-import com.elementary.tasks.globalsearch.FragmentNavigation
-import com.elementary.tasks.globalsearch.GlobalSearchViewModel
-import com.elementary.tasks.globalsearch.NavigationAction
-import com.elementary.tasks.globalsearch.adapter.SearchAdapter
-import com.elementary.tasks.home.scheduleview.HeaderTimeType
-import com.elementary.tasks.home.scheduleview.ScheduleAdapter
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
-import com.elementary.tasks.home.scheduleview.ScheduleModel
 import com.elementary.tasks.navigation.NavigationAnimations
-import com.elementary.tasks.navigation.topfragment.BaseSearchableFragment
-import com.elementary.tasks.other.PrivacyPolicyActivity
-import com.elementary.tasks.whatsnew.WhatsNewManager
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
+import com.elementary.tasks.navigation.onBackStackResume
+import com.elementary.tasks.navigation.safeNavigation
+import com.elementary.tasks.navigation.topfragment.RootFragment
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.fragment.startActivity
-import com.github.naz013.ui.common.view.applyTopInsets
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.visible
-import com.github.naz013.ui.common.view.visibleGone
-import org.koin.android.ext.android.inject
+import com.github.naz013.feature.common.livedata.observeEvent
+import com.github.naz013.ui.common.compose.composeView
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.LocalTime
 
-class HomeFragment :
-  BaseSearchableFragment<HomeFragmentBinding>(),
-  PrefsObserver,
-  WhatsNewManager.Listener {
-
-  private val featureManager by inject<FeatureManager>()
-  private val whatsNewManager by inject<WhatsNewManager>()
-  private val searchViewModel by viewModel<GlobalSearchViewModel>()
+class HomeFragment : Fragment(), RootFragment {
 
   private val viewModel by viewModel<ScheduleHomeViewModel>()
-  private val scheduleAdapter = ScheduleAdapter(
-    onReminderClickListener = { _, id ->
-      navigate {
-        navigate(
-          R.id.previewReminderFragment,
-          Bundle().apply {
-            putString(IntentKeys.INTENT_ID, id)
-          },
-          NavigationAnimations.inDepthNavOptions()
-        )
-      }
-    },
-    onHeaderClickListener = { _, time ->
-      showEventTypeSelectionDialog(time)
-    },
-    onNoteClickListener = { _, id ->
-      navigate {
-        navigate(
-          R.id.previewNoteFragment,
-          Bundle().apply {
-            putString(IntentKeys.INTENT_ID, id)
-          },
-          NavigationAnimations.inDepthNavOptions()
-        )
-      }
-    },
-    onGoogleTaskClickListener = { _, id ->
-      navigate {
-        navigate(
-          R.id.previewGoogleTaskFragment,
-          Bundle().apply {
-            putString(IntentKeys.INTENT_ID, id)
-          },
-          NavigationAnimations.inDepthNavOptions()
-        )
-      }
-    },
-    onBirthdayClickListener = { _, id ->
-      navigate {
-        navigate(
-          R.id.previewBirthdayFragment,
-          Bundle().apply {
-            putString(IntentKeys.INTENT_ID, id)
-          },
-          NavigationAnimations.inDepthNavOptions()
-        )
-      }
-    }
-  )
 
-  private val searchAdapter = SearchAdapter(
-    onSuggestionClick = { result, text ->
-      searchableFragmentCallback?.setQuery(text)
-      searchViewModel.onSearchHistoryUpdate(result)
-    },
-    onObjectClick = { searchViewModel.onSearchResultClicked(it) }
-  )
-
-  override fun inflate(
+  override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ) = HomeFragmentBinding.inflate(inflater, container, false)
+  ): View {
+    return composeView {
+      val state by viewModel.homeScreenState.collectAsState()
+      ChronologicalHomeScreen(
+        state = state,
+        modifier = Modifier
+          .fillMaxSize()
+          .statusBarsPadding(),
+        onSettingsClick = { viewModel.onSettingsClicked() },
+        onHeaderNavigationItemClick = { viewModel.onHeaderNavigationItemClicked(it) },
+        onEventClick = { viewModel.onEventClicked(it) },
+        onEventActionClick = { viewModel.onEventActionClicked(requireContext(), it) },
+        onAddMenuItemClick = { viewModel.onEventTypeSelected(it) }
+      )
+    }
+  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding.scheduleHeaderView.applyTopInsets()
-
-    binding.searchBar.inflateMenu(R.menu.fragment_home)
-    binding.searchBar.setOnMenuItemClickListener { menuItem ->
-      when (menuItem.itemId) {
-        R.id.action_settings -> {
-          safeNavigation(HomeFragmentDirections.actionActionHomeToSettingsFragment())
-          true
+    lifecycle.addObserver(viewModel)
+    viewModel.navigationEvent.observeEvent(viewLifecycleOwner) {
+      when (it) {
+        is ScheduleHomeViewModel.NavigationEvent.OpenReminderDetails -> {
+          safeNavigation(
+            R.id.previewReminderFragment,
+            Bundle().apply { putString(IntentKeys.INTENT_ID, it.uuid) },
+            NavigationAnimations.inDepthNavOptions()
+          )
         }
-
-        else -> false
+        is ScheduleHomeViewModel.NavigationEvent.OpenBirthdayDetails -> {
+          safeNavigation(
+            R.id.previewBirthdayFragment,
+            Bundle().apply { putString(IntentKeys.INTENT_ID, it.uuid) },
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.ShowEventTypeSelection -> Unit
+        is ScheduleHomeViewModel.NavigationEvent.OpenSettings -> {
+          safeNavigation(
+            R.id.settingsFragment,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenCreateReminder -> {
+          safeNavigation(
+            R.id.buildReminderFragment,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenCreateBirthday -> {
+          safeNavigation(
+            R.id.editBirthdayFragment,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenCreateGoogleTask -> {
+          safeNavigation(
+            R.id.editGoogleTaskFragment,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenCalendar -> {
+          safeNavigation(
+            R.id.actionCalendar,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenEvents -> {
+          safeNavigation(
+            R.id.actionEvents,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenNotes -> {
+          safeNavigation(
+            R.id.actionNotes,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenGoogleTasks -> {
+          safeNavigation(
+            R.id.actionGoogle,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenGroups -> {
+          safeNavigation(
+            R.id.groupsFragment,
+            null,
+            NavigationAnimations.inDepthNavOptions()
+          )
+        }
       }
     }
+  }
 
-    binding.globalAddButton.setOnClickListener { showEventTypeSelectionDialog(null) }
-
-    updatePrivacyBanner()
-    updateLoginBanner()
-    initViewModel()
-    setUpWhatsNewBanner()
-    setupScrollFadeEffect()
-
-    initRemindersList()
-
-    whatsNewManager.addListener(this)
-    lifecycle.addObserver(whatsNewManager)
+  override fun onResume() {
+    super.onResume()
+    onBackStackResume()
   }
 
   /**
-   * Sets up fade effect for GreetingHeaderTextView when scrolling.
-   * The view gradually fades out as the user scrolls down and fades in when scrolling back up.
-   */
-  private fun setupScrollFadeEffect() {
-    binding.scheduleHeaderView.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-      val greetingView = binding.greetingHeaderTextView
-      val totalScrollRange = appBarLayout.totalScrollRange
-      val greetingHeight = greetingView.height
-
-      if (totalScrollRange > 0 && greetingHeight > 0) {
-        // Calculate alpha based on scroll position
-        // When verticalOffset is 0, we're fully expanded (alpha = 1.0)
-        // When verticalOffset reaches -greetingHeight, greeting is fully scrolled off (alpha = 0.0)
-        val scrollPercentage = -verticalOffset.toFloat() / greetingHeight.toFloat()
-        val alpha = 1.0f - scrollPercentage.coerceIn(0f, 1f)
-        greetingView.alpha = alpha
-      }
-    }
-  }
-
-  private fun showEventTypeSelectionDialog(headerTimeType: HeaderTimeType?) {
-    val items = if (viewModel.hasGoogleTasks()) {
-      arrayOf(
-        getString(R.string.add_reminder_menu),
-        getString(R.string.add_birthday),
-        getString(R.string.add_google_task)
-      )
-    } else {
-      arrayOf(
-        getString(R.string.add_reminder_menu),
-        getString(R.string.add_birthday)
-      )
-    }
-    dialogues.getMaterialDialog(requireContext())
-      .setItems(
-        items
-      ) { dialogInterface, i ->
-        dialogInterface.dismiss()
-        when (i) {
-          0 -> openReminderCreateScreen(viewModel.getDateTime(headerTimeType))
-          1 -> openBirthdayCreateScreen()
-          2 -> openGoogleTaskCreateScreen(viewModel.getTime(headerTimeType))
-        }
-      }
-      .show()
-  }
-
-  private fun openReminderCreateScreen(
-    dateTime: LocalDateTime
-  ) {
-    val deepLinkData = ReminderDatetimeTypeDeepLinkData(
-      type = Reminder.BY_DATE,
-      dateTime = dateTime
-    )
-    navigate {
-      navigate(
-        R.id.buildReminderFragment,
-        Bundle().apply {
-          putParcelable(deepLinkData.intentKey, deepLinkData)
-          putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-        },
-        NavigationAnimations.inDepthNavOptions()
-      )
-    }
-  }
-
-  private fun openGoogleTaskCreateScreen(time: LocalTime?) {
-    val deepLinkData = GoogleTaskDateTimeDeepLinkData(
-      date = LocalDate.now(),
-      time = time
-    )
-    navigate {
-      navigate(
-        R.id.editGoogleTaskFragment,
-        Bundle().apply {
-          putParcelable(deepLinkData.intentKey, deepLinkData)
-          putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-        },
-        NavigationAnimations.inDepthNavOptions()
-      )
-    }
-  }
-
-  private fun openBirthdayCreateScreen() {
-    val deepLinkData = BirthdayDateDeepLinkData(LocalDate.now())
-    navigate {
-      navigate(
-        R.id.editBirthdayFragment,
-        Bundle().apply {
-          putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-          putParcelable(deepLinkData.intentKey, deepLinkData)
-        },
-        NavigationAnimations.inDepthNavOptions()
-      )
-    }
-  }
-
-  private fun initRemindersList() {
-    binding.scheduleListView.layoutManager = LinearLayoutManager(context)
-    binding.scheduleListView.adapter = scheduleAdapter
-  }
 
   private fun setUpWhatsNewBanner() {
     binding.whatsNewOkButton.setOnClickListener {
@@ -258,34 +149,6 @@ class HomeFragment :
       analyticsEventSender.send(ScreenUsedEvent(Screen.WHATS_NEW))
       safeNavigation(HomeFragmentDirections.actionActionHomeToChangesFragment())
     }
-  }
-
-  override fun onQueryChanged(text: String) {
-    searchViewModel.onQueryChanged(text)
-  }
-
-  override fun onResume() {
-    super.onResume()
-    searchableFragmentCallback?.setSearchViewParams(
-      R.id.search_bar,
-      getString(R.string.search_everywhere),
-      searchAdapter,
-      this
-    )
-    prefs.addObserver(PrefsConstants.PRIVACY_SHOWED, this)
-    prefs.addObserver(PrefsConstants.USER_LOGGED, this)
-  }
-
-  override fun onPause() {
-    super.onPause()
-    searchableFragmentCallback?.removeSearchView()
-    prefs.removeObserver(PrefsConstants.PRIVACY_SHOWED, this)
-    prefs.removeObserver(PrefsConstants.USER_LOGGED, this)
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    whatsNewManager.removeListener(this)
   }
 
   private fun updatePrivacyBanner() {
@@ -329,12 +192,6 @@ class HomeFragment :
     searchViewModel.navigateLiveData.nonNullObserve(viewLifecycleOwner) { onNavigationAction(it) }
   }
 
-  private fun updateList(list: List<ScheduleModel>) {
-    scheduleAdapter.submitList(list)
-    binding.emptyScheduleView.visibleGone(list.isEmpty())
-    binding.scheduleListView.visibleGone(list.isNotEmpty())
-  }
-
   private fun onNavigationAction(navigationAction: NavigationAction) {
     when (navigationAction) {
       is ActivityNavigation -> {
@@ -357,20 +214,5 @@ class HomeFragment :
     }
   }
 
-  override fun invoke(p1: String) {
-    when (p1) {
-      PrefsConstants.PRIVACY_SHOWED -> {
-        updatePrivacyBanner()
-        updateLoginBanner()
-      }
-
-      PrefsConstants.USER_LOGGED -> {
-        updateLoginBanner()
-      }
-    }
-  }
-
-  override fun whatsNewVisible(isVisible: Boolean) {
-    binding.whatsNewBanner.visibleGone(isVisible)
-  }
+  */
 }

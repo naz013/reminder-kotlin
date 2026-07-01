@@ -86,6 +86,11 @@ internal class GoogleTaskRepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun countAll(): Int {
+    Logger.d(TAG, "Count all google tasks")
+    return dao.countAll(GoogleTask.TASKS_NEED_ACTION)
+  }
+
   companion object {
     private const val TAG = "GoogleTaskRepository"
   }

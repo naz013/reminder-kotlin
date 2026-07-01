@@ -127,6 +127,11 @@ internal class NoteRepositoryImpl(
     return dao.getAllIds()
   }
 
+  override suspend fun countAll(isArchived: Boolean): Int {
+    Logger.d(TAG, "Count all notes, archived: $isArchived")
+    return dao.countAll(isArchived = isArchived)
+  }
+
   companion object {
     private const val TAG = "NoteRepository"
   }

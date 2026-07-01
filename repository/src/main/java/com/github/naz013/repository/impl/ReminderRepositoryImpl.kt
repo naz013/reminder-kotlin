@@ -160,6 +160,24 @@ internal class ReminderRepositoryImpl(
     return dao.getAllIds()
   }
 
+  override suspend fun countAllTypesInRange(
+    active: Boolean,
+    removed: Boolean,
+    fromTime: String,
+    toTime: String
+  ): Int {
+    val logMessage = "Count all reminders by types in range, active: $active, " +
+      "removed: $removed, from: $fromTime, to: $toTime"
+    Logger.d(TAG, logMessage)
+    return dao.countAllTypesInRange(active, removed, fromTime, toTime)
+  }
+
+  override suspend fun countAllTypesInState(active: Boolean, removed: Boolean): Int {
+    val logMessage = "Count all reminders by types in state, active: $active, removed: $removed"
+    Logger.d(TAG, logMessage)
+    return dao.countAllTypesInState(active, removed)
+  }
+
   companion object {
     private const val TAG = "ReminderRepository"
   }

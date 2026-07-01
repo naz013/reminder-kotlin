@@ -43,4 +43,7 @@ internal interface ReminderGroupDao {
 
   @Query("SELECT groupUuId FROM ReminderGroup")
   fun getAllIds(): List<String>
+
+  @Query("SELECT COUNT(*) FROM ReminderGroup")
+  fun countAll(): Int
 }

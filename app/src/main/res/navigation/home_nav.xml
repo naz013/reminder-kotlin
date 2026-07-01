@@ -8,8 +8,7 @@
     <fragment
         android:id="@+id/actionHome"
         android:name="com.elementary.tasks.home.HomeFragment"
-        android:label="@string/events"
-        tools:layout="@layout/home_fragment">
+        android:label="@string/events">
         <action
             android:id="@+id/action_actionHome_to_settingsFragment"
             app:destination="@id/settingsFragment"
