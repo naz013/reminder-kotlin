@@ -53,8 +53,10 @@ class PhotoSelectionUtil(
     }
   }
 
+  fun hasCamera(): Boolean = Module.hasCamera(activity)
+
   fun selectImage() {
-    val hasCamera = Module.hasCamera(activity)
+    val hasCamera = hasCamera()
     val items = if (hasCamera) {
       arrayOf(
         getString(R.string.gallery),
@@ -91,13 +93,13 @@ class PhotoSelectionUtil(
     coroutineScope.cancel()
   }
 
-  private fun tryToPickFromGallery() {
+  fun tryToPickFromGallery() {
     permissionFlow.askPermission(Permissions.READ_EXTERNAL) {
       multiPicturePicker.pickPictures()
     }
   }
 
-  private fun tryToTakePhoto() {
+  fun tryToTakePhoto() {
     permissionFlow.askPermissions(
       listOf(
         Permissions.CAMERA,
@@ -109,7 +111,7 @@ class PhotoSelectionUtil(
     }
   }
 
-  private fun checkClipboard() {
+  fun checkClipboard() {
     val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager?
       ?: run {
         Logger.w(TAG, "checkClipboard: clipboard is null")

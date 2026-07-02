@@ -18,7 +18,7 @@ data class NoteEditState(
   val isFromFile: Boolean = false,
 )
 
-enum class EditTab { COLOR, FONT, REMINDER }
+enum class EditTab { COLOR, FONT, REMINDER, IMAGE }
 
 /**
  * Colors derived from [NoteEditState]'s color/opacity/palette — computed once by
@@ -33,7 +33,7 @@ data class NoteColors(
 )
 
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
-enum class NoteEditDialog { FONT_STYLE, PALETTE, DELETE, SAME_NOTE }
+enum class NoteEditDialog { PALETTE, DELETE, SAME_NOTE }
 
 /**
  * Owned by the Activity (not this state), since [com.elementary.tasks.core.speech.SpeechEngine]

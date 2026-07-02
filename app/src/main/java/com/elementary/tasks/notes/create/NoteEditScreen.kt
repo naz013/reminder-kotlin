@@ -3,20 +3,21 @@ package com.elementary.tasks.notes.create
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -51,10 +52,12 @@ fun NoteEditScreen(
   state: NoteEditState,
   speechState: SpeechUiState,
   supportsSpeech: Boolean,
+  hasCamera: Boolean,
   textFieldValue: TextFieldValue,
   onTextFieldValueChange: (TextFieldValue) -> Unit,
   boldRange: IntRange?,
   backgroundColor: Color,
+  barColor: Color,
   contentColor: Color,
   sliderColors: IntArray,
   activeDialog: NoteEditDialog?,
@@ -65,11 +68,12 @@ fun NoteEditScreen(
   val focusManager = LocalFocusManager.current
   val canDelete = state.isNoteEdited && !state.isFromFile
 
-  Box(
+  BoxWithConstraints(
     modifier = modifier
       .fillMaxSize()
       .background(backgroundColor)
   ) {
+    val barMaxWidth = maxWidth - 32.dp
     Column(modifier = Modifier.fillMaxSize()) {
       TopAppBar(
         navigationIcon = {
@@ -163,40 +167,34 @@ fun NoteEditScreen(
             .padding(top = 16.dp)
         )
 
-        // Reserve space so the floating bottom bar never overlaps the last content row.
+        // Reserve space so the floating bar never overlaps the last content row.
         Box(modifier = Modifier.height(112.dp))
       }
     }
 
-    Surface(
-      modifier = Modifier
-        .align(Alignment.BottomCenter)
-        .fillMaxWidth()
-        .wrapContentHeight(),
-      shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
-      color = backgroundColor,
-      tonalElevation = 4.dp,
-      shadowElevation = 4.dp
-    ) {
-      NoteEditBottomBar(
+    NoteEditFloatingBar(
+      items = noteEditBarItems(
         state = state,
         speechState = speechState,
         supportsSpeech = supportsSpeech,
+        hasCamera = hasCamera,
         contentColor = contentColor,
+        barColor = barColor,
         sliderColors = sliderColors,
-        actions = actions,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
-      )
-    }
+        actions = actions
+      ),
+      containerColor = barColor,
+      contentColor = contentColor,
+      modifier = Modifier
+        .align(Alignment.BottomCenter)
+        .navigationBarsPadding()
+        .imePadding()
+        .padding(bottom = 24.dp)
+        .widthIn(max = barMaxWidth)
+    )
   }
 
   when (activeDialog) {
-    NoteEditDialog.FONT_STYLE -> FontStyleDialog(
-      selected = state.fontStyle,
-      onDismiss = actions.onDialogDismiss,
-      onSelected = actions.onFontStyleSelected
-    )
-
     NoteEditDialog.PALETTE -> PaletteDialog(
       currentPalette = state.palette,
       colorsForPalette = colorsForPalette,
@@ -217,6 +215,115 @@ fun NoteEditScreen(
 
     null -> Unit
   }
+}
+
+/**
+ * Builds the floating bar's item list. New tools go here as additional entries — the bar itself
+ * ([NoteEditFloatingBar]) doesn't need to change.
+ */
+@Composable
+private fun noteEditBarItems(
+  state: NoteEditState,
+  speechState: SpeechUiState,
+  supportsSpeech: Boolean,
+  hasCamera: Boolean,
+  contentColor: Color,
+  barColor: Color,
+  sliderColors: IntArray,
+  actions: NoteEditActions
+): List<NoteEditBarItem> = buildList {
+  // Same order as the Phase 1 docked bar: mic, color, image, reminder, font.
+  if (supportsSpeech) {
+    add(
+      NoteEditBarItem(
+        id = "mic",
+        contentDescription = stringResource(R.string.acc_type_by_voice),
+        onClick = actions.onMicClick,
+        icon = { MicIcon(speechState, contentColor) }
+      )
+    )
+  }
+
+  val colorDescription = stringResource(R.string.acc_select_color)
+  add(
+    NoteEditBarItem(
+      id = "color",
+      contentDescription = colorDescription,
+      selected = state.expandedTab == EditTab.COLOR,
+      onClick = actions.onColorTabClick,
+      icon = {
+        Icon(
+          painter = painterResource(R.drawable.ic_fluent_color_background),
+          contentDescription = colorDescription,
+          tint = contentColor
+        )
+      },
+      bubbleContent = { ColorPanel(state, contentColor, sliderColors, actions) }
+    )
+  )
+
+  val imageDescription = stringResource(R.string.acc_add_image_to_reminder)
+  add(
+    NoteEditBarItem(
+      id = "image",
+      contentDescription = imageDescription,
+      selected = state.expandedTab == EditTab.IMAGE,
+      onClick = actions.onImageTabClick,
+      icon = {
+        Icon(
+          painter = painterResource(R.drawable.ic_fluent_image),
+          contentDescription = imageDescription,
+          tint = contentColor
+        )
+      },
+      bubbleContent = {
+        ImageSourcePanel(
+          hasCamera = hasCamera,
+          contentColor = contentColor,
+          onGalleryClick = actions.onImagePickFromGallery,
+          onCameraClick = actions.onImagePickFromCamera,
+          onUrlClick = actions.onImagePickFromUrl
+        )
+      }
+    )
+  )
+
+  val reminderDescription = stringResource(R.string.acc_add_reminder)
+  add(
+    NoteEditBarItem(
+      id = "reminder",
+      contentDescription = reminderDescription,
+      selected = state.expandedTab == EditTab.REMINDER,
+      showBadge = state.isReminderAttached,
+      onClick = actions.onReminderTabClick,
+      icon = {
+        Icon(
+          painter = painterResource(R.drawable.ic_fluent_alert),
+          contentDescription = reminderDescription,
+          tint = contentColor
+        )
+      },
+      bubbleContent = { ReminderPanel(state, contentColor, actions) }
+    )
+  )
+
+  val fontDescription = stringResource(R.string.acc_change_text_font_style)
+  add(
+    NoteEditBarItem(
+      id = "font",
+      contentDescription = fontDescription,
+      selected = state.expandedTab == EditTab.FONT,
+      onClick = actions.onFontTabClick,
+      icon = {
+        Icon(
+          painter = painterResource(R.drawable.ic_fluent_text),
+          contentDescription = fontDescription,
+          tint = contentColor
+        )
+      },
+      bubbleContent = { FontPanel(state, contentColor, barColor, actions) }
+    )
+  )
 }
 
 private fun boldRangeVisualTransformation(range: IntRange?): VisualTransformation =

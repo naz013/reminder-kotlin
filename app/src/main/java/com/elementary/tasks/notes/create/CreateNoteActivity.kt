@@ -167,6 +167,7 @@ class CreateNoteActivity :
       state = state,
       speechState = speechUiState,
       supportsSpeech = remember { speechEngine.supportsRecognition() },
+      hasCamera = remember { photoSelectionUtil.hasCamera() },
       textFieldValue = textFieldValue,
       onTextFieldValueChange = {
         textFieldValue = it
@@ -174,6 +175,7 @@ class CreateNoteActivity :
       },
       boldRange = boldRange,
       backgroundColor = Color(colors.background),
+      barColor = Color(colors.statusBarColor),
       contentColor = Color(colors.content),
       sliderColors = colors.sliderColors,
       activeDialog = activeDialog,
@@ -185,7 +187,19 @@ class CreateNoteActivity :
         onDeleteClick = { activeDialog = NoteEditDialog.DELETE },
         onMicClick = { tryMicClick() },
         onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
-        onImagePickClick = { photoSelectionUtil.selectImage() },
+        onImageTabClick = { viewModel.onTabClicked(EditTab.IMAGE) },
+        onImagePickFromGallery = {
+          photoSelectionUtil.tryToPickFromGallery()
+          viewModel.collapseExpandedTab()
+        },
+        onImagePickFromCamera = {
+          photoSelectionUtil.tryToTakePhoto()
+          viewModel.collapseExpandedTab()
+        },
+        onImagePickFromUrl = {
+          photoSelectionUtil.checkClipboard()
+          viewModel.collapseExpandedTab()
+        },
         onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
         onFontTabClick = { viewModel.onTabClicked(EditTab.FONT) },
         onPaletteDialogClick = { activeDialog = NoteEditDialog.PALETTE },
@@ -194,14 +208,10 @@ class CreateNoteActivity :
         onReminderAttachedChanged = { viewModel.onReminderAttachedChanged(it) },
         onDateClick = { dateDialog() },
         onTimeClick = { timeDialog() },
-        onFontStyleDialogClick = { activeDialog = NoteEditDialog.FONT_STYLE },
         onFontSizeChanged = { viewModel.onFontSizeChanged(it) },
         onImageOpen = { openImagePreview(it, state.colorIndex) },
         onImageRemove = { viewModel.removeImage(it) },
-        onFontStyleSelected = {
-          viewModel.onFontStyleChanged(it)
-          activeDialog = null
-        },
+        onFontStyleSelected = { viewModel.onFontStyleChanged(it) },
         onPaletteSelected = {
           viewModel.onPaletteChanged(it)
           activeDialog = null
