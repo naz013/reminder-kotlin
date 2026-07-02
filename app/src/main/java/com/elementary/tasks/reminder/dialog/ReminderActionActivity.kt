@@ -15,7 +15,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.Navigator
-import com.github.naz013.ui.common.compose.ComposeActivity
+import com.github.naz013.ui.common.compose.LightThemedComposeActivity
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.startActivity
 import org.koin.android.ext.android.inject
@@ -23,7 +23,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class ReminderActionActivity : ComposeActivity() {
+class ReminderActionActivity : LightThemedComposeActivity() {
 
   private val viewModel by viewModel<ReminderActionActivityViewModel> {
     parametersOf(getId(), isTest())

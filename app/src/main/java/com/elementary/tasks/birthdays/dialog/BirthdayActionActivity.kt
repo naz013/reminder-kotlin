@@ -11,14 +11,14 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.compose.ComposeActivity
+import com.github.naz013.ui.common.compose.LightThemedComposeActivity
 import com.github.naz013.ui.common.context.buildIntent
 import com.github.naz013.ui.common.context.startActivity
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class BirthdayActionActivity : ComposeActivity() {
+class BirthdayActionActivity : LightThemedComposeActivity() {
 
   private val viewModel by viewModel<BirthdayActionViewModel> { parametersOf(getId(), isTest()) }
   private val permissionFlowDelegate by lazy { PermissionFlowDelegateImpl(this) }
