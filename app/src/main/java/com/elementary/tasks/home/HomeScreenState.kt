@@ -68,7 +68,7 @@ data class HomeEvent(
 }
 
 sealed interface BannerState {
-  data class Privacy(val url: String) : BannerState
+  data object Privacy : BannerState
   data object Login : BannerState
   data object WhatsNew : BannerState
 }

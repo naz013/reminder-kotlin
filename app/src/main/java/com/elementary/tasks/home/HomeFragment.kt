@@ -16,9 +16,11 @@ import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.onBackStackResume
 import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.topfragment.RootFragment
+import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.compose.composeView
+import com.github.naz013.ui.common.fragment.startActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment(), RootFragment {
@@ -32,16 +34,28 @@ class HomeFragment : Fragment(), RootFragment {
   ): View {
     return composeView {
       val state by viewModel.homeScreenState.collectAsState()
-      ChronologicalHomeScreen(
-        state = state,
-        modifier = Modifier
-          .fillMaxSize()
-          .statusBarsPadding(),
-        onSettingsClick = { viewModel.onSettingsClicked() },
-        onHeaderNavigationItemClick = { viewModel.onHeaderNavigationItemClicked(it) },
-        onEventClick = { viewModel.onEventClicked(it) },
-        onEventActionClick = { viewModel.onEventActionClicked(requireContext(), it) },
-        onAddMenuItemClick = { viewModel.onEventTypeSelected(it) }
+      HomeScreen(
+        modifier = Modifier.fillMaxSize(),
+        bannerState = state.bannerState,
+        onPrivacyPolicyClick = { viewModel.onPrivacyPolicyClick() },
+        onPrivacyAcceptClick = { viewModel.onPrivacyAcceptClick() },
+        onLoginDismissClick = { viewModel.onLoginDismissClick() },
+        onLoginClick = { viewModel.onLoginClick() },
+        onWhatsNewDetailsClick = { viewModel.onWhatsNewDetailsClick() },
+        onWhatsNewDismissClick = { viewModel.onWhatsNewDismissClick() },
+        content = {
+          ChronologicalHomeScreen(
+            state = state,
+            modifier = Modifier
+              .fillMaxSize()
+              .statusBarsPadding(),
+            onSettingsClick = { viewModel.onSettingsClicked() },
+            onHeaderNavigationItemClick = { viewModel.onHeaderNavigationItemClicked(it) },
+            onEventClick = { viewModel.onEventClicked(it) },
+            onEventActionClick = { viewModel.onEventActionClicked(requireContext(), it) },
+            onAddMenuItemClick = { viewModel.onEventTypeSelected(it) }
+          )
+        }
       )
     }
   }
@@ -129,6 +143,15 @@ class HomeFragment : Fragment(), RootFragment {
             NavigationAnimations.inDepthNavOptions()
           )
         }
+        is ScheduleHomeViewModel.NavigationEvent.OpenPrivacy -> {
+          startActivity(PrivacyPolicyActivity::class.java)
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenCloudDrives -> {
+          safeNavigation(HomeFragmentDirections.actionActionHomeToCloudDrives())
+        }
+        is ScheduleHomeViewModel.NavigationEvent.OpenWhatsNew -> {
+          safeNavigation(HomeFragmentDirections.actionActionHomeToChangesFragment())
+        }
       }
     }
   }
@@ -139,58 +162,6 @@ class HomeFragment : Fragment(), RootFragment {
   }
 
   /**
-
-  private fun setUpWhatsNewBanner() {
-    binding.whatsNewOkButton.setOnClickListener {
-      whatsNewManager.hideWhatsNew()
-    }
-    binding.whatsNewReadMoreButton.setOnClickListener {
-      whatsNewManager.hideWhatsNew()
-      analyticsEventSender.send(ScreenUsedEvent(Screen.WHATS_NEW))
-      safeNavigation(HomeFragmentDirections.actionActionHomeToChangesFragment())
-    }
-  }
-
-  private fun updatePrivacyBanner() {
-    if (prefs.isPrivacyPolicyShowed) {
-      binding.privacyBanner.gone()
-    } else {
-      binding.privacyBanner.visible()
-      binding.privacyButton.setOnClickListener {
-        startActivity(PrivacyPolicyActivity::class.java)
-      }
-      binding.acceptButton.setOnClickListener { prefs.isPrivacyPolicyShowed = true }
-    }
-  }
-
-  private fun updateLoginBanner() {
-    if (prefs.isPrivacyPolicyShowed) {
-      if (prefs.isUserLogged ||
-        !featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)
-      ) {
-        binding.loginBanner.gone()
-      } else {
-        binding.loginBanner.visible()
-        binding.loginDismissButton.setOnClickListener { prefs.isUserLogged = true }
-        binding.loginButton.setOnClickListener {
-          prefs.isUserLogged = true
-          safeNavigation(HomeFragmentDirections.actionActionHomeToCloudDrives())
-        }
-      }
-    } else {
-      binding.loginBanner.gone()
-    }
-  }
-
-  private fun initViewModel() {
-    lifecycle.addObserver(viewModel)
-    viewModel.scheduleData.nonNullObserve(viewLifecycleOwner) { updateList(it) }
-
-    searchViewModel.searchResults.nonNullObserve(viewLifecycleOwner) {
-      searchAdapter.submitList(it)
-    }
-    searchViewModel.navigateLiveData.nonNullObserve(viewLifecycleOwner) { onNavigationAction(it) }
-  }
 
   private fun onNavigationAction(navigationAction: NavigationAction) {
     when (navigationAction) {

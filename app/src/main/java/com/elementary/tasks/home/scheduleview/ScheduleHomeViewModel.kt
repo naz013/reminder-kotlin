@@ -6,11 +6,18 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
+import com.elementary.tasks.core.utils.FeatureManager
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.eventaction.DispatchEventActionUseCase
+import com.elementary.tasks.home.BannerState
 import com.elementary.tasks.home.HeaderNavigationItem
 import com.elementary.tasks.home.HomeEvent
 import com.elementary.tasks.home.HomeScreenState
 import com.elementary.tasks.home.ListState
+import com.elementary.tasks.whatsnew.WhatsNewManager
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -31,6 +38,10 @@ class ScheduleHomeViewModel(
   private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val getNavigationItemsUseCase: GetNavigationItemsUseCase,
   private val dispatchEventActionUseCase: DispatchEventActionUseCase,
+  private val prefs: Prefs,
+  private val featureManager: FeatureManager,
+  private val whatsNewManager: WhatsNewManager,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   val homeScreenState: StateFlow<HomeScreenState> field = MutableStateFlow(HomeScreenState())
@@ -55,6 +66,58 @@ class ScheduleHomeViewModel(
       EventType.GoogleTask -> {
         navigationEvent.value = Event(NavigationEvent.OpenCreateGoogleTask)
       }
+    }
+  }
+
+  fun onPrivacyPolicyClick() {
+    Logger.i(TAG, "On privacy policy click.")
+    prefs.isPrivacyPolicyShowed = true
+    homeScreenState.update {
+      it.copy(bannerState = getBannerState())
+    }
+    navigationEvent.value = Event(NavigationEvent.OpenPrivacy)
+  }
+
+  fun onPrivacyAcceptClick() {
+    Logger.i(TAG, "On privacy accept click")
+    prefs.isPrivacyPolicyShowed = true
+    homeScreenState.update {
+      it.copy(bannerState = getBannerState())
+    }
+  }
+
+  fun onLoginDismissClick() {
+    Logger.i(TAG, "On login dismiss click")
+    prefs.isUserLogged = true
+    homeScreenState.update {
+      it.copy(bannerState = getBannerState())
+    }
+  }
+
+  fun onLoginClick() {
+    Logger.i(TAG, "On login click")
+    prefs.isUserLogged = true
+    homeScreenState.update {
+      it.copy(bannerState = getBannerState())
+    }
+    navigationEvent.value = Event(NavigationEvent.OpenCloudDrives)
+  }
+
+  fun onWhatsNewDetailsClick() {
+    Logger.i(TAG, "On whats new details click")
+    whatsNewManager.hideWhatsNew()
+    analyticsEventSender.send(ScreenUsedEvent(Screen.WHATS_NEW))
+    homeScreenState.update {
+      it.copy(bannerState = getBannerState())
+    }
+    navigationEvent.value = Event(NavigationEvent.OpenWhatsNew)
+  }
+
+  fun onWhatsNewDismissClick() {
+    Logger.i(TAG, "On whats new dismiss click")
+    whatsNewManager.hideWhatsNew()
+    homeScreenState.update {
+      it.copy(bannerState = getBannerState())
     }
   }
 
@@ -94,10 +157,10 @@ class ScheduleHomeViewModel(
   private fun loadData() {
     homeScreenState.update {
       it.copy(
-        listState = ListState.Loading,
         greeting = getGreetingTextUseCase(),
         headerNavigationItems = emptyList(),
         addMenuItems = if (googleTasksAuthManager.isAuthorized()) EventType.entries else listOf(EventType.Reminder, EventType.Birthday),
+        bannerState = getBannerState()
       )
     }
     viewModelScope.launch(dispatcherProvider.io()) {
@@ -121,6 +184,22 @@ class ScheduleHomeViewModel(
     }
   }
 
+  private fun getBannerState(): BannerState? {
+    if (!prefs.isPrivacyPolicyShowed) {
+      Logger.v(TAG, "Privacy banner is shown")
+      return BannerState.Privacy
+    }
+    if (!prefs.isUserLogged && featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)) {
+      Logger.v(TAG, "Login banner is shown")
+      return BannerState.Login
+    }
+    if (whatsNewManager.hasChanges()) {
+      Logger.v(TAG, "Whats new banner is shown")
+      return BannerState.WhatsNew
+    }
+    return null
+  }
+
   sealed interface NavigationEvent {
     data class OpenReminderDetails(val uuid: String) : NavigationEvent
     data class OpenBirthdayDetails(val uuid: String) : NavigationEvent
@@ -137,6 +216,9 @@ class ScheduleHomeViewModel(
     data object OpenNotes : NavigationEvent
     data object OpenGoogleTasks : NavigationEvent
     data object OpenGroups : NavigationEvent
+    data object OpenPrivacy : NavigationEvent
+    data object OpenCloudDrives : NavigationEvent
+    data object OpenWhatsNew : NavigationEvent
   }
 
   enum class EventType(@param:StringRes val title: Int) {
