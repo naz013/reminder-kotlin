@@ -393,6 +393,14 @@ class Prefs(
     get() = getInt(PrefsConstants.LAST_NOTE_FONT_STYLE, def = FontParams.DEFAULT_FONT_STYLE)
     set(value) = putInt(PrefsConstants.LAST_NOTE_FONT_STYLE, value)
 
+  var lastNoteTitleFontSize: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_TITLE_FONT_SIZE, def = FontParams.DEFAULT_TITLE_FONT_SIZE)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_TITLE_FONT_SIZE, value)
+
+  var lastNoteTitleFontStyle: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_TITLE_FONT_STYLE, def = FontParams.DEFAULT_FONT_STYLE)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_TITLE_FONT_STYLE, value)
+
   var isNoteColorRememberingEnabled: Boolean
     get() = getBoolean(PrefsConstants.REMEMBER_NOTE_COLOR, def = true)
     set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_COLOR, value)

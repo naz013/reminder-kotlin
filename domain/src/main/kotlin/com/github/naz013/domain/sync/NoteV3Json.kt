@@ -5,6 +5,12 @@ import com.google.gson.annotations.SerializedName
 data class NoteV3Json(
   @SerializedName("summary")
   val summary: String = "",
+  @SerializedName("title")
+  val title: String = "",
+  @SerializedName("titleFontSize")
+  val titleFontSize: Int = -1,
+  @SerializedName("titleFontStyle")
+  val titleFontStyle: Int = -1,
   @SerializedName("key")
   val key: String = "",
   @SerializedName("date")

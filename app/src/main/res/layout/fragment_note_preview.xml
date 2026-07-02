@@ -37,13 +37,27 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/noteTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/material_margin"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/material_margin"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="Title"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/noteText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/material_margin"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="@dimen/material_margin"
                 android:textSize="18sp"
+                tools:layout_marginTop="16dp"
                 tools:text="Note" />
 
             <androidx.recyclerview.widget.RecyclerView

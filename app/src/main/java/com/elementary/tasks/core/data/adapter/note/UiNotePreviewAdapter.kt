@@ -25,6 +25,11 @@ class UiNotePreviewAdapter(
     } else {
       noteWithImages.getFontSize()
     }
+    val titleTextSize = if (noteWithImages.getTitleFontSize() == -1) {
+      FontParams.DEFAULT_TITLE_FONT_SIZE
+    } else {
+      noteWithImages.getTitleFontSize()
+    }
 
     return UiNotePreview(
       id = noteWithImages.getKey(),
@@ -32,9 +37,15 @@ class UiNotePreviewAdapter(
       typeface = AssetsUtil.getTypeface(contextProvider.themedContext, noteWithImages.getStyle()),
       images = uiNoteImagesAdapter.convert(noteWithImages.images),
       text = noteWithImages.getSummary(),
+      title = noteWithImages.getTitle(),
       uniqueId = noteWithImages.note?.uniqueId ?: 1133,
       opacity = noteWithImages.getOpacity(),
       textSize = textSize.toFloat(),
+      titleTypeface = AssetsUtil.getTypeface(
+        contextProvider.themedContext,
+        noteWithImages.getTitleFontStyle()
+      ),
+      titleTextSize = titleTextSize.toFloat(),
       isArchived = noteWithImages.note?.archived ?: false
     )
   }

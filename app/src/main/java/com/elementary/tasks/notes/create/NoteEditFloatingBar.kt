@@ -91,14 +91,6 @@ private fun NoteEditBarIconSlot(
       )
     }
     if (item.selected) {
-      Box(
-        modifier = Modifier
-          .align(Alignment.BottomCenter)
-          .padding(horizontal = 10.dp, vertical = 6.dp)
-          .fillMaxWidth()
-          .height(2.dp)
-          .background(contentColor)
-      )
       item.bubbleContent?.let { bubble ->
         NoteEditCloudBubble(
           onDismissRequest = item.onClick,

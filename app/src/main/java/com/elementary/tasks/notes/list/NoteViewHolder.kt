@@ -78,7 +78,8 @@ class NoteViewHolder(
         hoverClick(view) {
           imageClickListener?.invoke(it, bindingAdapterPosition, imageId)
         }
-      }
+      },
+      titleTextView = binding.noteTitleTv
     )
 
     binding.buttonMore.setImageDrawable(uiNoteList.moreIcon)

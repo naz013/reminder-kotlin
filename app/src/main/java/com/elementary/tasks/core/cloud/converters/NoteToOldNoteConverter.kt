@@ -16,6 +16,9 @@ class NoteToOldNoteConverter {
         date = sharedNote.date,
         key = sharedNote.id,
         summary = sharedNote.text,
+        title = sharedNote.title,
+        titleFontSize = sharedNote.titleFontSize,
+        titleFontStyle = sharedNote.titleFontStyle,
         updatedAt = sharedNote.updatedAt,
         fontSize = sharedNote.fontSize,
         archived = false,
@@ -34,6 +37,9 @@ class NoteToOldNoteConverter {
   fun toSharedNote(noteWithImages: NoteWithImages): SharedNote? {
     return SharedNote(
       text = noteWithImages.note?.summary ?: "",
+      title = noteWithImages.note?.title ?: "",
+      titleFontSize = noteWithImages.note?.titleFontSize ?: -1,
+      titleFontStyle = noteWithImages.note?.titleFontStyle ?: -1,
       id = noteWithImages.note?.key ?: "",
       date = noteWithImages.note?.date ?: "",
       color = noteWithImages.note?.color ?: 0,

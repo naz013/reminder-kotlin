@@ -124,6 +124,11 @@ fun ReminderPanel(
   }
 }
 
+/**
+ * Shows and edits the font size/style of whichever text field ([NoteEditState.focusedField])
+ * last had focus — title or body. Both fields share this one panel/bar item rather than each
+ * getting their own, matching the body's existing font controls exactly.
+ */
 @Composable
 fun FontPanel(
   state: NoteEditState,
@@ -131,6 +136,10 @@ fun FontPanel(
   containerColor: Color,
   actions: NoteEditActions
 ) {
+  val isTitle = state.focusedField == NoteTextField.TITLE
+  val fontStyle = if (isTitle) state.titleFontStyle else state.fontStyle
+  val fontSize = if (isTitle) state.titleFontSize else state.fontSize
+
   Column(modifier = Modifier.padding(vertical = 8.dp)) {
     Text(
       text = stringResource(R.string.font_style),
@@ -140,7 +149,7 @@ fun FontPanel(
     var showFontPicker by remember { mutableStateOf(false) }
     Box {
       Text(
-        text = fontStyleName(state.fontStyle),
+        text = fontStyleName(fontStyle),
         color = contentColor,
         style = MaterialTheme.typography.titleMedium,
         modifier = Modifier
@@ -154,7 +163,7 @@ fun FontPanel(
           contentColor = contentColor
         ) {
           FontPickerList(
-            selected = state.fontStyle,
+            selected = fontStyle,
             contentColor = contentColor,
             onSelected = {
               actions.onFontStyleSelected(it)
@@ -171,7 +180,7 @@ fun FontPanel(
       modifier = Modifier.padding(top = 16.dp)
     )
     Slider(
-      value = state.fontSize.toFloat(),
+      value = fontSize.toFloat(),
       onValueChange = { actions.onFontSizeChanged(it.toInt()) },
       valueRange = 6f..150f,
       colors = SliderDefaults.colors(

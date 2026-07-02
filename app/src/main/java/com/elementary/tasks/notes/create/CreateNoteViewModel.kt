@@ -97,6 +97,9 @@ class CreateNoteViewModel(
   private val _textUpdate = mutableLiveDataOf<Event<TextUpdate>>()
   val textUpdate = _textUpdate.toLiveData()
 
+  private val _titleUpdate = mutableLiveDataOf<Event<String>>()
+  val titleUpdate = _titleUpdate.toLiveData()
+
   private val _noteToShare = mutableLiveDataOf<Event<Pair<String, File>>>()
   val noteToShare = _noteToShare.toLiveData()
 
@@ -136,6 +139,16 @@ class CreateNoteViewModel(
     } else {
       FontParams.DEFAULT_FONT_STYLE
     }
+    val titleFontSize = if (prefs.isNoteFontSizeRememberingEnabled) {
+      prefs.lastNoteTitleFontSize
+    } else {
+      FontParams.DEFAULT_TITLE_FONT_SIZE
+    }
+    val titleFontStyle = if (prefs.isNoteFontStyleRememberingEnabled) {
+      prefs.lastNoteTitleFontStyle
+    } else {
+      FontParams.DEFAULT_FONT_STYLE
+    }
     // A remembered opacity of 0 would make every new note's background fully invisible —
     // never a useful "remembered" default, so treat it the same as unset.
     val opacity = prefs.noteColorOpacity.takeIf { it > 0 } ?: 100
@@ -145,7 +158,9 @@ class CreateNoteViewModel(
         opacity = opacity,
         palette = prefs.notePalette,
         fontSize = fontSize,
-        fontStyle = fontStyle
+        fontStyle = fontStyle,
+        titleFontSize = titleFontSize,
+        titleFontStyle = titleFontStyle
       )
     }
   }
@@ -168,13 +183,27 @@ class CreateNoteViewModel(
   }
 
   fun onFontSizeChanged(value: Int) {
-    prefs.lastNoteFontSize = value
-    _state.update { it.copy(fontSize = value) }
+    if (_state.value.focusedField == NoteTextField.TITLE) {
+      prefs.lastNoteTitleFontSize = value
+      _state.update { it.copy(titleFontSize = value) }
+    } else {
+      prefs.lastNoteFontSize = value
+      _state.update { it.copy(fontSize = value) }
+    }
   }
 
   fun onFontStyleChanged(value: Int) {
-    prefs.lastNoteFontStyle = value
-    _state.update { it.copy(fontStyle = value) }
+    if (_state.value.focusedField == NoteTextField.TITLE) {
+      prefs.lastNoteTitleFontStyle = value
+      _state.update { it.copy(titleFontStyle = value) }
+    } else {
+      prefs.lastNoteFontStyle = value
+      _state.update { it.copy(fontStyle = value) }
+    }
+  }
+
+  fun onFieldFocused(field: NoteTextField) {
+    _state.update { it.copy(focusedField = field) }
   }
 
   fun onReminderAttachedChanged(value: Boolean) {
@@ -239,10 +268,10 @@ class CreateNoteViewModel(
     }
   }
 
-  fun shareNote(text: String) {
+  fun shareNote(text: String, title: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.io()) {
-      val note = createObject(text)
+      val note = createObject(text, title)
       val file = createSharedNoteFileUseCase(note)
       Logger.i(TAG, "Share note file path: ${file?.absolutePath}")
       withContext(dispatcherProvider.main()) {
@@ -289,11 +318,14 @@ class CreateNoteViewModel(
           palette = uiNoteEdit.colorPalette,
           fontStyle = uiNoteEdit.typeface,
           fontSize = uiNoteEdit.fontSize,
+          titleFontStyle = uiNoteEdit.titleTypeface,
+          titleFontSize = uiNoteEdit.titleFontSize,
           images = uiNoteEdit.images,
           isNoteEdited = true
         )
       }
       _textUpdate.postValue(Event(TextUpdate(text = uiNoteEdit.text)))
+      _titleUpdate.postValue(Event(uiNoteEdit.title))
 
       val noteKey = noteWithImages.note?.key
       if (!noteKey.isNullOrEmpty()) {
@@ -450,8 +482,8 @@ class CreateNoteViewModel(
     }
   }
 
-  fun saveNote(text: String, newId: Boolean = false) {
-    val noteWithImages = createObject(text)
+  fun saveNote(text: String, title: String, newId: Boolean = false) {
+    val noteWithImages = createObject(text, title)
     val hasReminder = _state.value.isReminderAttached
     var reminder: Reminder? = null
     var reminderToDelete: Reminder? = null
@@ -505,7 +537,7 @@ class CreateNoteViewModel(
     reminder.noteId = note.key
     reminder.isActive = true
     reminder.isRemoved = false
-    reminder.summary = SuperUtil.normalizeSummary(note.summary)
+    reminder.summary = SuperUtil.normalizeSummary(note.title.ifBlank { note.summary })
 
     val startTime = LocalDateTime.of(date, time)
     if (!dateTimeManager.isCurrent(startTime)) {
@@ -517,7 +549,7 @@ class CreateNoteViewModel(
     return reminder
   }
 
-  private fun createObject(text: String): NoteWithImages {
+  private fun createObject(text: String, title: String): NoteWithImages {
     val s = _state.value
     val images = s.images
 
@@ -527,10 +559,13 @@ class CreateNoteViewModel(
       note = Note(syncState = SyncState.WaitingForUpload)
     }
     note.summary = text
+    note.title = title
     note.date = dateTimeManager.getNowGmtDateTime()
     note.color = s.colorIndex
     note.style = s.fontStyle
     note.fontSize = s.fontSize
+    note.titleFontStyle = s.titleFontStyle
+    note.titleFontSize = s.titleFontSize
     note.palette = s.palette
     note.opacity = s.opacity
     note.syncState = SyncState.WaitingForUpload
