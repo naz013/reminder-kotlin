@@ -160,30 +160,4 @@ class HomeFragment : Fragment(), RootFragment {
     super.onResume()
     onBackStackResume()
   }
-
-  /**
-
-  private fun onNavigationAction(navigationAction: NavigationAction) {
-    when (navigationAction) {
-      is ActivityNavigation -> {
-        startActivity(navigationAction.clazz) {
-          putExtra(IntentKeys.INTENT_ID, navigationAction.objectId)
-        }
-      }
-
-      is FragmentNavigation -> {
-        navigate {
-          navigate(
-            navigationAction.id,
-            Bundle().apply {
-              putString(IntentKeys.INTENT_ID, navigationAction.objectId)
-            },
-            NavigationAnimations.inDepthNavOptions()
-          )
-        }
-      }
-    }
-  }
-
-  */
 }
