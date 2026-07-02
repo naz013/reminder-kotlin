@@ -66,6 +66,10 @@ class ScheduleHomeViewModel(
       EventType.GoogleTask -> {
         navigationEvent.value = Event(NavigationEvent.OpenCreateGoogleTask)
       }
+
+      EventType.Note -> {
+        navigationEvent.value = Event(NavigationEvent.OpenCreateNote)
+      }
     }
   }
 
@@ -159,7 +163,11 @@ class ScheduleHomeViewModel(
       it.copy(
         greeting = getGreetingTextUseCase(),
         headerNavigationItems = emptyList(),
-        addMenuItems = if (googleTasksAuthManager.isAuthorized()) EventType.entries else listOf(EventType.Reminder, EventType.Birthday),
+        addMenuItems = if (googleTasksAuthManager.isAuthorized()) {
+          EventType.entries
+        } else {
+          listOf(EventType.Reminder, EventType.Birthday, EventType.Note)
+        },
         bannerState = getBannerState()
       )
     }
@@ -211,6 +219,7 @@ class ScheduleHomeViewModel(
     data object OpenCreateReminder : NavigationEvent
     data object OpenCreateBirthday : NavigationEvent
     data object OpenCreateGoogleTask : NavigationEvent
+    data object OpenCreateNote : NavigationEvent
     data object OpenEvents : NavigationEvent
     data object OpenCalendar : NavigationEvent
     data object OpenNotes : NavigationEvent
@@ -224,7 +233,8 @@ class ScheduleHomeViewModel(
   enum class EventType(@param:StringRes val title: Int) {
     Reminder(R.string.add_reminder_menu),
     Birthday(R.string.add_birthday),
-    GoogleTask(R.string.add_google_task);
+    GoogleTask(R.string.add_google_task),
+    Note(R.string.add_note),
   }
 
   companion object {

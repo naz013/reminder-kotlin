@@ -289,6 +289,7 @@ dependencies {
     exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
   }
   implementation(libs.lottie)
+  implementation(libs.lottie.compose)
   implementation(libs.photoview)
   implementation(libs.sheets.core)
   implementation(libs.sheets.info)
@@ -300,6 +301,7 @@ dependencies {
 
   implementation(libs.threetenbp)
   implementation(libs.coil)
+  implementation(libs.coil.compose)
   implementation(libs.pdfbox.android)
 
   implementation(libs.slf4j.api)
