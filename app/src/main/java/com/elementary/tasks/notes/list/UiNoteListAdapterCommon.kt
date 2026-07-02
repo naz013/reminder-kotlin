@@ -19,10 +19,14 @@ class UiNoteListAdapterCommon {
     textView: TextView,
     @Px secondaryImageSize: Int,
     backgroundView: View,
-    imageClickListener: ((View, imageId: Int) -> Unit)? = null
+    imageClickListener: ((View, imageId: Int) -> Unit)? = null,
+    titleTextView: TextView? = null
   ) {
     loadImage(uiNoteList, imagesViewContainer, secondaryImageSize, imageClickListener)
     loadNote(textView, uiNoteList)
+    if (titleTextView != null) {
+      loadTitle(titleTextView, uiNoteList)
+    }
 
     backgroundView.setBackgroundColor(uiNoteList.backgroundColor)
   }
@@ -42,6 +46,18 @@ class UiNoteListAdapterCommon {
     textView.typeface = note.typeface
     textView.textSize = note.fontSize
     textView.setTextColor(note.textColor)
+  }
+
+  private fun loadTitle(titleTextView: TextView, note: UiNoteList) {
+    if (note.title.isEmpty()) {
+      titleTextView.gone()
+      return
+    }
+    titleTextView.visible()
+    titleTextView.text = note.title
+    titleTextView.typeface = note.titleTypeface
+    titleTextView.textSize = note.titleFontSize
+    titleTextView.setTextColor(note.textColor)
   }
 
   private fun setImage(imageView: ImageView, image: String?) {

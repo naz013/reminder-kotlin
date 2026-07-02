@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elementary.tasks.R
@@ -61,6 +63,8 @@ fun NoteEditScreen(
   hasCamera: Boolean,
   textFieldValue: TextFieldValue,
   onTextFieldValueChange: (TextFieldValue) -> Unit,
+  titleFieldValue: TextFieldValue,
+  onTitleFieldValueChange: (TextFieldValue) -> Unit,
   boldRange: IntRange?,
   backgroundColor: Color,
   barColor: Color,
@@ -135,20 +139,50 @@ fun NoteEditScreen(
           .padding(horizontal = 16.dp)
       ) {
         val context = LocalContext.current
+        val titleFontFamily = remember(state.titleFontStyle) {
+          AssetsUtil.getTypeface(context, state.titleFontStyle)?.let { FontFamily(it) }
+            ?: FontFamily.Default
+        }
         val fontFamily = remember(state.fontStyle) {
           AssetsUtil.getTypeface(context, state.fontStyle)?.let { FontFamily(it) }
             ?: FontFamily.Default
         }
         TextField(
+          value = titleFieldValue,
+          onValueChange = onTitleFieldValueChange,
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+            .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.TITLE) },
+          textStyle = MaterialTheme.typography.bodyLarge.copy(
+            color = contentColor,
+            fontSize = state.titleFontSize.sp,
+            fontFamily = titleFontFamily,
+            lineHeight = TextUnit.Unspecified
+          ),
+          placeholder = { Text(stringResource(R.string.title)) },
+          colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = contentColor,
+            focusedTextColor = contentColor,
+            unfocusedTextColor = contentColor
+          )
+        )
+        TextField(
           value = textFieldValue,
           onValueChange = onTextFieldValueChange,
           modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
+            .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.BODY) },
           textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = contentColor,
             fontSize = state.fontSize.sp,
-            fontFamily = fontFamily
+            fontFamily = fontFamily,
+            lineHeight = TextUnit.Unspecified
           ),
           placeholder = { Text(stringResource(R.string.note)) },
           visualTransformation = boldRangeVisualTransformation(boldRange),

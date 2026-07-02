@@ -14,9 +14,17 @@ class UiNoteEditAdapter(
     } else {
       noteWithImages.getFontSize()
     }
+    val titleTextSize = if (noteWithImages.getTitleFontSize() == -1) {
+      FontParams.DEFAULT_TITLE_FONT_SIZE
+    } else {
+      noteWithImages.getTitleFontSize()
+    }
     return UiNoteEdit(
       id = noteWithImages.getKey(),
       typeface = noteWithImages.getStyle(),
+      title = noteWithImages.getTitle(),
+      titleTypeface = noteWithImages.getTitleFontStyle(),
+      titleFontSize = titleTextSize,
       images = uiNoteImagesAdapter.convert(noteWithImages.images),
       text = noteWithImages.getSummary(),
       colorPosition = noteWithImages.getColor(),

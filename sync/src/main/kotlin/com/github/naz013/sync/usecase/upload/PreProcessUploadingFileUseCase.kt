@@ -54,6 +54,9 @@ internal class PreProcessUploadingFileUseCase(
     return NoteV3Json(
       key = note.key,
       summary = note.summary,
+      title = note.title,
+      titleFontSize = note.titleFontSize,
+      titleFontStyle = note.titleFontStyle,
       color = note.color,
       archived = note.archived,
       date = note.date,

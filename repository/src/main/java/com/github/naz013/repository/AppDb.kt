@@ -44,6 +44,7 @@ import com.github.naz013.repository.migrations.MIGRATION_17_18
 import com.github.naz013.repository.migrations.MIGRATION_18_19
 import com.github.naz013.repository.migrations.MIGRATION_19_20
 import com.github.naz013.repository.migrations.MIGRATION_1_2
+import com.github.naz013.repository.migrations.MIGRATION_20_21
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
@@ -71,7 +72,7 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     EventOccurrenceEntity::class,
     EventHistoryEntity::class
   ],
-  version = 20,
+  version = 21,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -118,7 +119,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_16_17,
             MIGRATION_17_18,
             MIGRATION_18_19,
-            MIGRATION_19_20
+            MIGRATION_19_20,
+            MIGRATION_20_21
           )
           .allowMainThreadQueries()
           .build()

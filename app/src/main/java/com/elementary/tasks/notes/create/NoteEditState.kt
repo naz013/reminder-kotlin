@@ -9,6 +9,9 @@ data class NoteEditState(
   val palette: Int = 0,
   val fontStyle: Int = FontParams.DEFAULT_FONT_STYLE,
   val fontSize: Int = FontParams.DEFAULT_FONT_SIZE,
+  val titleFontStyle: Int = FontParams.DEFAULT_FONT_STYLE,
+  val titleFontSize: Int = FontParams.DEFAULT_TITLE_FONT_SIZE,
+  val focusedField: NoteTextField = NoteTextField.BODY,
   val images: List<UiNoteImage> = emptyList(),
   val isReminderAttached: Boolean = false,
   val reminderDateFormatted: String = "",
@@ -19,6 +22,10 @@ data class NoteEditState(
 )
 
 enum class EditTab { COLOR, FONT, REMINDER, IMAGE }
+
+/** Which of the two text fields last had focus — drives which field's font size/style
+ *  [com.elementary.tasks.notes.create.FontPanel] displays and edits. */
+enum class NoteTextField { TITLE, BODY }
 
 /**
  * Colors derived from [NoteEditState]'s color/opacity/palette — computed once by

@@ -12,6 +12,12 @@ import java.util.UUID
 internal data class NoteEntity(
   @SerializedName("summary")
   val summary: String = "",
+  @SerializedName("title")
+  val title: String = "",
+  @SerializedName("titleFontSize")
+  val titleFontSize: Int = -1,
+  @SerializedName("titleFontStyle")
+  val titleFontStyle: Int = -1,
   @SerializedName("key")
   @PrimaryKey
   val key: String = UUID.randomUUID().toString(),
@@ -41,6 +47,9 @@ internal data class NoteEntity(
 
   constructor(note: Note) : this(
     summary = note.summary,
+    title = note.title,
+    titleFontSize = note.titleFontSize,
+    titleFontStyle = note.titleFontStyle,
     key = note.key,
     date = note.date,
     color = note.color,
@@ -58,6 +67,9 @@ internal data class NoteEntity(
   fun toDomain(): Note {
     return Note(
       summary = summary,
+      title = title,
+      titleFontSize = titleFontSize,
+      titleFontStyle = titleFontStyle,
       key = key,
       date = date,
       color = color,

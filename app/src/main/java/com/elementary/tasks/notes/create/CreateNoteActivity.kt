@@ -60,6 +60,7 @@ class CreateNoteActivity :
   private val speechEngine = SpeechEngine(this)
 
   private var textFieldValue by mutableStateOf(TextFieldValue())
+  private var titleFieldValue by mutableStateOf(TextFieldValue())
   private var boldRange by mutableStateOf<IntRange?>(null)
   private var speechUiState by mutableStateOf(SpeechUiState.IDLE)
   private var activeDialog by mutableStateOf<NoteEditDialog?>(null)
@@ -108,6 +109,9 @@ class CreateNoteActivity :
     savedInstanceState?.getString(STATE_TEXT)?.let {
       textFieldValue = TextFieldValue(text = it, selection = TextRange(it.length))
     }
+    savedInstanceState?.getString(STATE_TITLE)?.let {
+      titleFieldValue = TextFieldValue(text = it, selection = TextRange(it.length))
+    }
 
     initViewModel()
     loadNote()
@@ -137,6 +141,7 @@ class CreateNoteActivity :
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     outState.putString(STATE_TEXT, textFieldValue.text)
+    outState.putString(STATE_TITLE, titleFieldValue.text)
   }
 
   override fun onDestroy() {
@@ -173,6 +178,8 @@ class CreateNoteActivity :
         textFieldValue = it
         boldRange = null
       },
+      titleFieldValue = titleFieldValue,
+      onTitleFieldValueChange = { titleFieldValue = it },
       boldRange = boldRange,
       backgroundColor = Color(colors.background),
       barColor = Color(colors.statusBarColor),
@@ -183,7 +190,7 @@ class CreateNoteActivity :
       actions = NoteEditActions(
         onBackClick = { finish() },
         onSaveClick = { trySave() },
-        onShareClick = { viewModel.shareNote(getText()) },
+        onShareClick = { viewModel.shareNote(getText(), getNoteTitle()) },
         onDeleteClick = { activeDialog = NoteEditDialog.DELETE },
         onMicClick = { tryMicClick() },
         onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
@@ -208,13 +215,14 @@ class CreateNoteActivity :
         onDateClick = { dateDialog() },
         onTimeClick = { timeDialog() },
         onFontSizeChanged = { viewModel.onFontSizeChanged(it) },
+        onFieldFocused = { viewModel.onFieldFocused(it) },
         onImageOpen = { openImagePreview(it, state.colorIndex) },
         onImageRemove = { viewModel.removeImage(it) },
         onFontStyleSelected = { viewModel.onFontStyleChanged(it) },
         onPaletteSelected = { viewModel.onPaletteChanged(it) },
         onDeleteConfirmed = { viewModel.deleteNote() },
-        onSameNoteKeep = { viewModel.saveNote(getText(), newId = true) },
-        onSameNoteReplace = { viewModel.saveNote(getText()) },
+        onSameNoteKeep = { viewModel.saveNote(getText(), getNoteTitle(), newId = true) },
+        onSameNoteReplace = { viewModel.saveNote(getText(), getNoteTitle()) },
         onDialogDismiss = { activeDialog = null }
       )
     )
@@ -224,11 +232,13 @@ class CreateNoteActivity :
     if (viewModel.shouldConfirmBeforeSaving()) {
       activeDialog = NoteEditDialog.SAME_NOTE
     } else {
-      viewModel.saveNote(getText())
+      viewModel.saveNote(getText(), getNoteTitle())
     }
   }
 
   private fun getText(): String = textFieldValue.text.trim()
+
+  private fun getNoteTitle(): String = titleFieldValue.text.trim()
 
   private fun getId(): String = intentString(IntentKeys.INTENT_ID)
 
@@ -306,6 +316,10 @@ class CreateNoteActivity :
       textFieldValue = TextFieldValue(text = update.text, selection = TextRange(update.text.length))
       boldRange = update.boldRange
     }
+    viewModel.titleUpdate.observeEvent(this) { title ->
+      Logger.d(TAG, "titleUpdate: $title")
+      titleFieldValue = TextFieldValue(text = title, selection = TextRange(title.length))
+    }
     viewModel.resultEvent.observeEvent(this) { commands ->
       Logger.d(TAG, "resultEvent: $commands")
       when (commands) {
@@ -375,5 +389,6 @@ class CreateNoteActivity :
   companion object {
     private const val TAG = "CreateNoteActivity"
     private const val STATE_TEXT = "state_note_text"
+    private const val STATE_TITLE = "state_note_title"
   }
 }

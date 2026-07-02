@@ -46,6 +46,11 @@ class UiNoteListAdapter(
     } else {
       noteWithImages.getFontSize()
     }
+    val titleTextSize = if (noteWithImages.getTitleFontSize() == -1) {
+      FontParams.DEFAULT_TITLE_FONT_SIZE
+    } else {
+      noteWithImages.getTitleFontSize()
+    }
 
     return UiNoteList(
       id = noteWithImages.getKey(),
@@ -58,11 +63,17 @@ class UiNoteListAdapter(
       textColor = textColor,
       typeface = AssetsUtil.getTypeface(contextProvider.themedContext, noteWithImages.getStyle()),
       fontSize = textSize.toFloat(),
+      titleTypeface = AssetsUtil.getTypeface(
+        contextProvider.themedContext,
+        noteWithImages.getTitleFontStyle()
+      ),
+      titleFontSize = titleTextSize.toFloat(),
       formattedDateTime = dateTimeManager.fromGmtToLocal(noteWithImages.getGmtTime())?.let {
         dateTimeManager.getFullDateTime(it)
       } ?: "",
       images = uiNoteImagesAdapter.convert(noteWithImages.images),
       text = noteWithImages.getSummary(),
+      title = noteWithImages.getTitle(),
       colorPosition = noteWithImages.getColor(),
       colorPalette = noteWithImages.getPalette(),
       uniqueId = noteWithImages.note?.uniqueId ?: 1133

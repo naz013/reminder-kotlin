@@ -9,6 +9,12 @@ import java.util.UUID
 data class SharedNote(
   @SerializedName("text")
   val text: String = "",
+  @SerializedName("title")
+  val title: String = "",
+  @SerializedName("titleFontSize")
+  val titleFontSize: Int = -1,
+  @SerializedName("titleFontStyle")
+  val titleFontStyle: Int = -1,
   @SerializedName("id")
   val id: String = UUID.randomUUID().toString(),
   @SerializedName("date")

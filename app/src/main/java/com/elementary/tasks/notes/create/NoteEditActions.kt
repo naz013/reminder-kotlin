@@ -24,6 +24,7 @@ data class NoteEditActions(
   val onDateClick: () -> Unit = {},
   val onTimeClick: () -> Unit = {},
   val onFontSizeChanged: (Int) -> Unit = {},
+  val onFieldFocused: (NoteTextField) -> Unit = {},
   val onImageOpen: (Int) -> Unit = {},
   val onImageRemove: (Int) -> Unit = {},
   val onFontStyleSelected: (Int) -> Unit = {},
