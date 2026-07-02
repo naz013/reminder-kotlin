@@ -48,6 +48,8 @@ import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.isAlmostTransparent
+import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -85,7 +87,8 @@ class CreateNoteViewModel(
   private val saveNoteUseCase: SaveNoteUseCase,
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
-  private val droppedContentParser: DroppedContentParser
+  private val droppedContentParser: DroppedContentParser,
+  private val themeProvider: ThemeProvider
 ) : BaseProgressViewModel(dispatcherProvider) {
 
   private val _state = MutableStateFlow(NoteEditState())
@@ -181,6 +184,34 @@ class CreateNoteViewModel(
   fun onTabClicked(tab: EditTab) {
     _state.update { it.copy(expandedTab = if (it.expandedTab == tab) null else tab) }
   }
+
+  /**
+   * Derives the note's background/status-bar/content colors from [state]'s color index, opacity
+   * and palette. A pure function of [state] so the Activity/Compose layer never has to know about
+   * [ThemeProvider] or the contrast math itself.
+   */
+  fun colorsFor(state: NoteEditState): NoteColors {
+    val solidColor = themeProvider.getNoteLightColor(state.colorIndex, 100, state.palette)
+    val isBgDark = if (state.opacity.isAlmostTransparent()) {
+      themeProvider.isDark
+    } else {
+      solidColor.isColorDark()
+    }
+    val backgroundColor = themeProvider.getNoteLightColor(state.colorIndex, state.opacity, state.palette)
+    val contentColor = if (isBgDark) PURE_WHITE else PURE_BLACK
+    return NoteColors(
+      background = backgroundColor,
+      statusBarColor = solidColor,
+      content = contentColor,
+      sliderColors = themeProvider.noteColorsForSlider(state.palette)
+    )
+  }
+
+  fun sliderColorsForPalette(palette: Int): IntArray = themeProvider.noteColorsForSlider(palette)
+
+  /** True when saving should first confirm overwrite-vs-keep, because this came from an
+   *  imported file that already has a matching note in the database. */
+  fun shouldConfirmBeforeSaving(): Boolean = _state.value.isFromFile && hasSameInDb
 
   /** Collapses the currently expanded tab, if any. Returns true if a tab was collapsed. */
   fun collapseExpandedTab(): Boolean {
@@ -530,5 +561,7 @@ class CreateNoteViewModel(
 
   companion object {
     private const val TAG = "CreateNoteViewModel"
+    private const val PURE_WHITE = android.graphics.Color.WHITE
+    private const val PURE_BLACK = android.graphics.Color.BLACK
   }
 }

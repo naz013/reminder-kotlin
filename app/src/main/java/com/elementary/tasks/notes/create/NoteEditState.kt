@@ -20,6 +20,18 @@ data class NoteEditState(
 
 enum class EditTab { COLOR, FONT, REMINDER }
 
+/**
+ * Colors derived from [NoteEditState]'s color/opacity/palette — computed once by
+ * [CreateNoteViewModel.colorsFor] so the Activity/Compose layer never has to know about
+ * [com.github.naz013.ui.common.theme.ThemeProvider] or the contrast math itself.
+ */
+data class NoteColors(
+  val background: Int,
+  val statusBarColor: Int,
+  val content: Int,
+  val sliderColors: IntArray
+)
+
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
 enum class NoteEditDialog { FONT_STYLE, PALETTE, DELETE, SAME_NOTE }
 

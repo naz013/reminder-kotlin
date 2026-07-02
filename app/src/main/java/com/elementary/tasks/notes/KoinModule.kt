@@ -12,75 +12,30 @@ import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val noteModule = module {
-  factory { DeleteNoteUseCase(get(), get(), get()) }
-  factory { SaveNoteUseCase(get(), get(), get()) }
-  factory { ChangeNoteArchiveStateUseCase(get(), get()) }
+  factoryOf(::DeleteNoteUseCase)
+  factoryOf(::SaveNoteUseCase)
+  factoryOf(::ChangeNoteArchiveStateUseCase)
 
-  factory { CreateSharedNoteFileUseCase(get()) }
+  factoryOf(::CreateSharedNoteFileUseCase)
 
-  factory { ReminderToUiNoteAttachedReminder(get()) }
+  factoryOf(::ReminderToUiNoteAttachedReminder)
 
-  factory { NoteToOldNoteConverter() }
+  factoryOf(::NoteToOldNoteConverter)
 
-  single { ImagesSingleton(get()) }
+  singleOf(::ImagesSingleton)
 
-  factory { NoteImageRepository(get()) }
+  singleOf(::NoteImageRepository)
 
-  viewModel {
-    CreateNoteViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-    )
-  }
-  viewModel {
-    NotesViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-    )
-  }
-  viewModel {
-    ArchivedNotesViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-    )
-  }
+  viewModelOf(::CreateNoteViewModel)
+  viewModelOf(::NotesViewModel)
+  viewModelOf(::ArchivedNotesViewModel)
   viewModel { (id: String) ->
     PreviewNoteViewModel(
       id,

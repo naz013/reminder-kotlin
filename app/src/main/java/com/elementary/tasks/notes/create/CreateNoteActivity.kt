@@ -38,10 +38,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.compose.composeView
-import com.github.naz013.ui.common.context.colorOf
 import com.github.naz013.ui.common.context.startActivity
-import com.github.naz013.ui.common.isAlmostTransparent
-import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
 import org.koin.android.ext.android.inject
@@ -53,7 +50,6 @@ class CreateNoteActivity :
   LightThemedActivity(),
   PhotoSelectionUtil.UriCallback {
 
-  private val themeProvider by inject<ThemeProvider>()
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
@@ -160,28 +156,11 @@ class CreateNoteActivity :
   @Composable
   private fun NoteEditContent() {
     val state by viewModel.state.collectAsState()
-
-    val solidColor = remember(state.colorIndex, state.palette) {
-      themeProvider.getNoteLightColor(state.colorIndex, 100, state.palette)
-    }
-    val isBgDark = remember(solidColor, state.opacity) {
-      if (state.opacity.isAlmostTransparent()) isDarkMode else solidColor.isColorDark()
-    }
-    val backgroundColorInt = remember(state.colorIndex, state.opacity, state.palette) {
-      themeProvider.getNoteLightColor(state.colorIndex, state.opacity, state.palette)
-    }
-    val contentColorInt = if (isBgDark) colorOf(R.color.pureWhite) else colorOf(R.color.pureBlack)
-    val sliderColors = remember(state.palette) { themeProvider.noteColorsForSlider(state.palette) }
+    val colors = remember(state) { viewModel.colorsFor(state) }
 
     SideEffect {
-      Logger.d(
-        TAG,
-        "NoteEditContent: colorIndex=${state.colorIndex} opacity=${state.opacity} " +
-          "palette=${state.palette} solidColor=${Integer.toHexString(solidColor)} " +
-          "backgroundColorInt=${Integer.toHexString(backgroundColorInt)} isBgDark=$isBgDark"
-      )
-      window.statusBarColor = solidColor
-      window.navigationBarColor = solidColor
+      window.statusBarColor = colors.statusBarColor
+      window.navigationBarColor = colors.statusBarColor
     }
 
     NoteEditScreen(
@@ -194,11 +173,11 @@ class CreateNoteActivity :
         boldRange = null
       },
       boldRange = boldRange,
-      backgroundColor = Color(backgroundColorInt),
-      contentColor = Color(contentColorInt),
-      sliderColors = sliderColors,
+      backgroundColor = Color(colors.background),
+      contentColor = Color(colors.content),
+      sliderColors = colors.sliderColors,
       activeDialog = activeDialog,
-      colorsForPalette = { palette -> themeProvider.noteColorsForSlider(palette) },
+      colorsForPalette = viewModel::sliderColorsForPalette,
       actions = NoteEditActions(
         onBackClick = { finish() },
         onSaveClick = { trySave() },
@@ -236,7 +215,7 @@ class CreateNoteActivity :
   }
 
   private fun trySave() {
-    if (viewModel.state.value.isFromFile && viewModel.hasSameInDb) {
+    if (viewModel.shouldConfirmBeforeSaving()) {
       activeDialog = NoteEditDialog.SAME_NOTE
     } else {
       viewModel.saveNote(getText())
