@@ -202,7 +202,6 @@ class CreateNoteActivity :
         },
         onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
         onFontTabClick = { viewModel.onTabClicked(EditTab.FONT) },
-        onPaletteDialogClick = { activeDialog = NoteEditDialog.PALETTE },
         onColorSelected = { viewModel.onColorSelected(it) },
         onOpacityChanged = { viewModel.onOpacityChanged(it) },
         onReminderAttachedChanged = { viewModel.onReminderAttachedChanged(it) },
@@ -212,10 +211,7 @@ class CreateNoteActivity :
         onImageOpen = { openImagePreview(it, state.colorIndex) },
         onImageRemove = { viewModel.removeImage(it) },
         onFontStyleSelected = { viewModel.onFontStyleChanged(it) },
-        onPaletteSelected = {
-          viewModel.onPaletteChanged(it)
-          activeDialog = null
-        },
+        onPaletteSelected = { viewModel.onPaletteChanged(it) },
         onDeleteConfirmed = { viewModel.deleteNote() },
         onSameNoteKeep = { viewModel.saveNote(getText(), newId = true) },
         onSameNoteReplace = { viewModel.saveNote(getText()) },

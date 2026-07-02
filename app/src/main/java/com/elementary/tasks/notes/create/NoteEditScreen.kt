@@ -181,6 +181,7 @@ fun NoteEditScreen(
         contentColor = contentColor,
         barColor = barColor,
         sliderColors = sliderColors,
+        colorsForPalette = colorsForPalette,
         actions = actions
       ),
       containerColor = barColor,
@@ -195,13 +196,6 @@ fun NoteEditScreen(
   }
 
   when (activeDialog) {
-    NoteEditDialog.PALETTE -> PaletteDialog(
-      currentPalette = state.palette,
-      colorsForPalette = colorsForPalette,
-      onDismiss = actions.onDialogDismiss,
-      onConfirm = actions.onPaletteSelected
-    )
-
     NoteEditDialog.DELETE -> DeleteNoteDialog(
       onDismiss = actions.onDialogDismiss,
       onConfirm = actions.onDeleteConfirmed
@@ -230,6 +224,7 @@ private fun noteEditBarItems(
   contentColor: Color,
   barColor: Color,
   sliderColors: IntArray,
+  colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions
 ): List<NoteEditBarItem> = buildList {
   // Same order as the Phase 1 docked bar: mic, color, image, reminder, font.
@@ -258,7 +253,9 @@ private fun noteEditBarItems(
           tint = contentColor
         )
       },
-      bubbleContent = { ColorPanel(state, contentColor, sliderColors, actions) }
+      bubbleContent = {
+        ColorPanel(state, contentColor, barColor, sliderColors, colorsForPalette, actions)
+      }
     )
   )
 

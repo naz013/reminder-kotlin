@@ -18,7 +18,6 @@ data class NoteEditActions(
   val onImagePickFromUrl: () -> Unit = {},
   val onReminderTabClick: () -> Unit = {},
   val onFontTabClick: () -> Unit = {},
-  val onPaletteDialogClick: () -> Unit = {},
   val onColorSelected: (Int) -> Unit = {},
   val onOpacityChanged: (Int) -> Unit = {},
   val onReminderAttachedChanged: (Boolean) -> Unit = {},

@@ -33,7 +33,7 @@ data class NoteColors(
 )
 
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
-enum class NoteEditDialog { PALETTE, DELETE, SAME_NOTE }
+enum class NoteEditDialog { DELETE, SAME_NOTE }
 
 /**
  * Owned by the Activity (not this state), since [com.elementary.tasks.core.speech.SpeechEngine]

@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
@@ -218,17 +219,39 @@ private fun ImageSourceRow(text: String, contentColor: Color, onClick: () -> Uni
 fun ColorPanel(
   state: NoteEditState,
   contentColor: Color,
+  containerColor: Color,
   sliderColors: IntArray,
+  colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions
 ) {
   Column(modifier = Modifier.padding(vertical = 8.dp)) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-      IconButton(onClick = actions.onPaletteDialogClick, modifier = Modifier.size(24.dp)) {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_settings),
-          contentDescription = null,
-          tint = contentColor
-        )
+      var showPalettePicker by remember { mutableStateOf(false) }
+      Box {
+        IconButton(onClick = { showPalettePicker = true }, modifier = Modifier.size(24.dp)) {
+          Icon(
+            painter = painterResource(R.drawable.ic_fluent_settings),
+            contentDescription = null,
+            tint = contentColor
+          )
+        }
+        if (showPalettePicker) {
+          NoteEditCloudBubble(
+            onDismissRequest = { showPalettePicker = false },
+            containerColor = containerColor,
+            contentColor = contentColor
+          ) {
+            PalettePickerList(
+              selected = state.palette,
+              contentColor = contentColor,
+              colorsForPalette = colorsForPalette,
+              onSelected = {
+                actions.onPaletteSelected(it)
+                showPalettePicker = false
+              }
+            )
+          }
+        }
       }
       ColorSliderView(
         colors = sliderColors,
@@ -283,6 +306,48 @@ private fun ColorSliderView(
   )
 }
 
+/**
+ * The palette picker, hosted inside a third-level [NoteEditCloudBubble] anchored to the settings
+ * icon in [ColorPanel] — replaces the old full-screen `AlertDialog` version. Selecting a palette
+ * applies it immediately and closes the bubble, matching the font picker's behavior.
+ */
+@Composable
+private fun PalettePickerList(
+  selected: Int,
+  contentColor: Color,
+  colorsForPalette: (Int) -> IntArray,
+  onSelected: (Int) -> Unit
+) {
+  Column(modifier = Modifier.padding(vertical = 4.dp)) {
+    (0..2).forEach { palette ->
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .clickable { onSelected(palette) }
+          .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        RadioButton(
+          selected = selected == palette,
+          onClick = { onSelected(palette) },
+          colors = RadioButtonDefaults.colors(
+            selectedColor = contentColor,
+            unselectedColor = contentColor.copy(alpha = 0.6f)
+          )
+        )
+        AndroidView(
+          modifier = Modifier
+            .padding(start = 8.dp)
+            .height(36.dp)
+            .fillMaxWidth(),
+          factory = { context -> ColorSlider(context).apply { isEnabled = false } },
+          update = { it.setColors(colorsForPalette(palette)) }
+        )
+      }
+    }
+  }
+}
+
 private fun Modifier.clickableIfEnabled(enabled: Boolean, onClick: () -> Unit): Modifier =
   this.clickable(enabled = enabled, onClick = onClick)
 
@@ -323,7 +388,14 @@ private fun FontPickerList(
           .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
       ) {
-        RadioButton(selected = selected == index, onClick = { onSelected(index) })
+        RadioButton(
+          selected = selected == index,
+          onClick = { onSelected(index) },
+          colors = RadioButtonDefaults.colors(
+            selectedColor = contentColor,
+            unselectedColor = contentColor.copy(alpha = 0.6f)
+          )
+        )
         Text(
           text = name,
           color = contentColor,
