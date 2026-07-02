@@ -174,6 +174,7 @@ private fun AddButton(
         ScheduleHomeViewModel.EventType.Reminder -> R.drawable.ic_fluent_alert
         ScheduleHomeViewModel.EventType.Birthday -> R.drawable.ic_fluent_food_cake
         ScheduleHomeViewModel.EventType.GoogleTask -> R.drawable.ic_builder_google_task_list
+        ScheduleHomeViewModel.EventType.Note -> R.drawable.ic_fluent_note
       }
     )
   }

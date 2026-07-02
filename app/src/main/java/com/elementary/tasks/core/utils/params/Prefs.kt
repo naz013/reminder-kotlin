@@ -402,7 +402,7 @@ class Prefs(
     set(count) = putInt(PrefsConstants.LAST_NOTE_COLOR, count)
 
   var noteColorOpacity: Int
-    get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY)
+    get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY, def = 100)
     set(count) = putInt(PrefsConstants.NOTE_COLOR_OPACITY, count)
 
   var dropboxToken: String
