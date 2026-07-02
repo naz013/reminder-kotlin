@@ -1,0 +1,55 @@
+package com.elementary.tasks.eventaction
+
+import com.elementary.tasks.core.utils.TelephonyUtil
+import com.github.naz013.domain.Reminder
+import com.github.naz013.logging.Logger
+
+class ResolveReminderEventActionUseCase {
+
+  operator fun invoke(reminder: Reminder): ResolvedEventAction? {
+    Logger.i(TAG, "Resolving event action for reminder: $reminder")
+    return when {
+      reminder.readType().hasSmsAction() -> {
+        if (reminder.summary.isEmpty()) {
+          null
+        } else {
+          ResolvedEventAction.SendSms(
+            phoneNumber = reminder.to,
+            message = reminder.summary
+          )
+        }
+      }
+      isAppType(reminder) -> {
+        if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
+          ResolvedEventAction.OpenApp(reminder.target)
+        } else {
+          ResolvedEventAction.OpenLink(reminder.target)
+        }
+      }
+      Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> {
+        ResolvedEventAction.SendEmail(
+          email = reminder.to,
+          subject = reminder.subject,
+          body = reminder.summary,
+          attachmentPath = reminder.attachmentFile
+        )
+      }
+      else -> {
+        if (TelephonyUtil.isPhoneNumber(reminder.target)) {
+          ResolvedEventAction.MakeCall(reminder.target)
+        } else {
+          null
+        }
+      }
+    }
+  }
+
+  private fun isAppType(reminder: Reminder): Boolean {
+    return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
+      Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
+  }
+
+  companion object {
+    private const val TAG = "ResolveReminderEventActionUseCase"
+  }
+}

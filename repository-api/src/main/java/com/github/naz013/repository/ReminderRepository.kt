@@ -41,4 +41,16 @@ interface ReminderRepository {
   suspend fun updateSyncState(id: String, state: SyncState)
   suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
   suspend fun getAllIds(): List<String>
+
+  suspend fun countAllTypesInRange(
+    active: Boolean,
+    removed: Boolean,
+    fromTime: String,
+    toTime: String
+  ): Int
+
+  suspend fun countAllTypesInState(
+    active: Boolean,
+    removed: Boolean,
+  ): Int
 }

@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.databinding.FragmentSettingsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.safeNavigation
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.login.LoginLauncher
 import com.github.naz013.ui.common.view.gone

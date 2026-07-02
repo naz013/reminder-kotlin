@@ -929,4 +929,5 @@
     <string name="keep_notification">保留通知</string>
     <string name="cd_back">返回</string>
     <string name="how_to_create_a_reminder">如何创建提醒</string>
+    <string name="copy_of">%s 的副本</string>
 </resources>

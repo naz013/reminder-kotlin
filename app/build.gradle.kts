@@ -181,6 +181,7 @@ kotlin {
     optIn.add("-Xname-based-destructuring=only-syntax")
     optIn.add("-Xdata-flow-based-exhaustiveness")
     optIn.add("-Xcollection-literals")
+    freeCompilerArgs.add("-XXLanguage:+ExplicitBackingFields")
   }
 }
 

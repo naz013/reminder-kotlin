@@ -28,4 +28,6 @@ interface NoteRepository {
   suspend fun updateSyncState(id: String, state: SyncState)
   suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
   suspend fun getAllIds(): List<String>
+
+  suspend fun countAll(isArchived: Boolean = false): Int
 }

@@ -9,6 +9,7 @@ import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday

@@ -75,6 +75,11 @@ internal class BirthdayRepositoryImpl(
     return birthdaysDao.getAllIds()
   }
 
+  override suspend fun countAll(): Int {
+    Logger.d(TAG, "Counting all birthdays")
+    return birthdaysDao.countAll()
+  }
+
   companion object {
     private const val TAG = "BirthdayRepository"
   }

@@ -14,6 +14,7 @@ import com.elementary.tasks.core.utils.ui.showError
 import com.elementary.tasks.core.utils.ui.trimmedText
 import com.elementary.tasks.core.views.ContactPickerView
 import com.elementary.tasks.databinding.FragmentEditBirthdayBinding
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys

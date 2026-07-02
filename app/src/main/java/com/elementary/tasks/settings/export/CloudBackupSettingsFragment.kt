@@ -8,6 +8,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.settings.export.work.ObservableBackupWorker
 import com.elementary.tasks.settings.export.work.ObservableEraseDataWorker
 import com.elementary.tasks.settings.export.work.ObservableSyncWorker

@@ -87,4 +87,7 @@ internal interface NotesDao {
 
   @Query("SELECT `key` FROM Note")
   fun getAllIds(): List<String>
+
+  @Query("SELECT COUNT(*) FROM Note WHERE archived=:isArchived")
+  fun countAll(isArchived: Boolean = false): Int
 }

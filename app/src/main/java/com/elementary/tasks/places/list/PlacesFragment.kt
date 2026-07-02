@@ -17,6 +17,7 @@ import com.elementary.tasks.core.utils.ui.SearchMenuHandler
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.navigate
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.livedata.nonNullObserve

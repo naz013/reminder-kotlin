@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.login.BiometricProvider
-import com.github.naz013.common.Module
-import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsSecurityBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.safeNavigation
+import com.github.naz013.common.Module
+import com.github.naz013.ui.common.login.BiometricProvider
+import com.github.naz013.ui.common.view.visibleGone
 
 class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBinding>() {
 
@@ -99,8 +100,8 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
     prefs.useFingerprint = enabled
   }
 
-  override fun onBackStackResume() {
-    super.onBackStackResume()
+  override fun onBackStackResumed() {
+    super.onBackStackResumed()
     initPinPrefs()
   }
 

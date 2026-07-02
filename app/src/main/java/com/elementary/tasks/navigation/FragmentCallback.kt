@@ -1,9 +1,7 @@
 package com.elementary.tasks.navigation
 
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import androidx.fragment.app.Fragment
 
 interface FragmentCallback {
-  fun hideKeyboard()
-  fun setCurrentFragment(fragment: BaseNavigationFragment<*>)
-  fun onCreateFragment(fragment: BaseNavigationFragment<*>)
+  fun setCurrentFragment(fragment: Fragment)
 }

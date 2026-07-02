@@ -18,4 +18,6 @@ interface GoogleTaskRepository {
   suspend fun deleteAll()
   suspend fun deleteAll(ids: List<String>)
   suspend fun deleteAll(listId: String)
+
+  suspend fun countAll(): Int
 }

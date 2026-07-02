@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.home.eventsview.BaseSubEventsFragment
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.Module

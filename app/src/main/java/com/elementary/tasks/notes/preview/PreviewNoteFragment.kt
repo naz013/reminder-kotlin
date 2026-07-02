@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.tintOverflowButton
 import com.elementary.tasks.databinding.FragmentNotePreviewBinding
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseNonToolbarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.carousel.ImagesCarouselAdapter

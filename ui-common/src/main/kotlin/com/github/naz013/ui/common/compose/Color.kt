@@ -1,6 +1,7 @@
 package com.github.naz013.ui.common.compose
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 
 val primaryLight = Color(0xFF0B6B59)
 val onPrimaryLight = Color(0xFFFFFFFF)
@@ -247,3 +248,16 @@ val customColorDarkHighContrast = Color(0xFFFBFAFF)
 val onCustomColorDarkHighContrast = Color(0xFF000000)
 val customColorContainerDarkHighContrast = Color(0xFFABCDFF)
 val onCustomColorContainerDarkHighContrast = Color(0xFF000000)
+
+fun Int.toColor(): Color = Color(this)
+
+fun Color.contrastColor(): Color {
+  val y = (299 * red + 587 * green + 114 * blue) / 1000.0
+  return if (y >= 128) Color.Black else Color.White
+}
+
+fun Color.withAlpha(alpha: Float): Color = copy(alpha = alpha)
+
+fun Color.blendWithAlpha(base: Color, alpha: Float): Color {
+  return withAlpha(alpha = alpha).compositeOver(background = base)
+}

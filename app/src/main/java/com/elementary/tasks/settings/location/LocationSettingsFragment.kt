@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.ui.radius.RadiusSliderBehaviour
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.safeNavigation
 import com.github.naz013.common.Module
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.Dialogues.Companion.setFullWidthDialog
@@ -115,8 +116,8 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     showRadius()
   }
 
-  override fun onBackStackResume() {
-    super.onBackStackResume()
+  override fun onBackStackResumed() {
+    super.onBackStackResumed()
     showMarkerStyle()
     initMapStylePrefs()
   }

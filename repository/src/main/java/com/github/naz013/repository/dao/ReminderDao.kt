@@ -81,6 +81,31 @@ internal interface ReminderDao {
     toTime: String
   ): List<ReminderWithGroupEntity>
 
+  @Query(
+    """SELECT COUNT(*) FROM Reminder
+        WHERE isRemoved=:removed
+        AND isActive=:active"""
+  )
+  fun countAllTypesInState(
+    active: Boolean,
+    removed: Boolean,
+  ): Int
+
+  @Query(
+    """SELECT COUNT(*) FROM Reminder
+        WHERE isRemoved=:removed
+        AND isActive=:active
+        AND eventTime!=''
+        AND eventTime>=:fromTime
+        AND eventTime<:toTime"""
+  )
+  fun countAllTypesInRange(
+    active: Boolean,
+    removed: Boolean,
+    fromTime: String,
+    toTime: String
+  ): Int
+
   @Transaction
   @Query(
     """SELECT * FROM Reminder

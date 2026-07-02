@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a Kotlin Android application. It is primarily a **reminder / task manager** but also includes Notes, Birthday tracking, Google Tasks integration, and cloud backup to Google Drive and Dropbox. See `docs/app-overview.md` for a full feature description and `docs/architecture.md` for the module structure.
+This is a Kotlin Android application. It is primarily a **reminder / task manager** but also includes Notes, Birthday tracking, Google Tasks integration, and cloud backup to Google Drive and Dropbox. See `docs/app-overview.md` for a full feature description, `docs/architecture.md` for the module structure, and `rules and agents.md` for core architectural rules.
 
 ---
 
@@ -10,10 +10,14 @@ This is a Kotlin Android application. It is primarily a **reminder / task manage
 
 The project uses a **multi-module Clean Architecture** layout. Key rules:
 
-- `domain` — pure Kotlin data models; **zero** Android or external dependencies.
-- `*-api` modules — interfaces only (e.g. `repository-api`, `cloud-api`, `logging-api`). Never add implementations here.
-- `usecase:*` modules — only depend on `repository-api`, never on `repository` directly.
+- `domain` — pure Kotlin data models; **zero** external dependencies.
+- `*-api` modules — interfaces only (e.g. `repository-api`, `cloud-api`, `logging-api`, `navigation-api`). Never add implementations here.
+- `repository` — Room implementation of `repository-api`.
+- `cloud` — Implementations of `cloud-api` (Google Drive/Tasks, Dropbox).
+- `usecase:*` modules — pure logic; **only** depend on `repository-api`, never on `repository` directly.
+- `sync` — Orchestration via `cloud-api` and `repository-api`.
 - `app` — the only module that wires concrete Koin DI bindings.
+- `ui-common` — Shared Compose components + Material 3 tokens.
 - Never add circular dependencies between modules.
 
 ---
@@ -34,10 +38,11 @@ The project uses a **multi-module Clean Architecture** layout. Key rules:
 - Use meaningful variable names; avoid single-letter names outside lambda parameters.
 - Keep functions short and focused on a single responsibility.
 
-### Error Handling
+### Error Handling & Persistence
 
 - Wrap external API calls (cloud, Room) in `try/catch` and log errors via the `Logger` interface from `logging-api`.
 - Never swallow exceptions silently; always log or propagate.
+- **Persistence**: Room (SQLite). Mappings between Entity (repository) and Domain (domain) are mandatory.
 
 ---
 

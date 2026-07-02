@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.elementary.tasks.reminder.lists.ReminderActionResolver
 import com.elementary.tasks.reminder.lists.RemindersAdapter

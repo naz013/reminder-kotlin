@@ -302,7 +302,7 @@ private fun SnoozeDialogContent(
       verticalAlignment = Alignment.CenterVertically
     ) {
       PrimaryIconButton(
-        icon = AppIcons.Clear,
+        icon = AppIcons.Fluent.Dismiss,
         contentDescription = stringResource(R.string.cancel),
         onClick = onDismiss,
         color = MaterialTheme.colorScheme.errorContainer,
@@ -320,7 +320,7 @@ private fun SnoozeDialogContent(
       )
       Spacer(modifier = Modifier.width(8.dp))
       PrimaryIconButton(
-        icon = AppIcons.Ok,
+        icon = AppIcons.Fluent.Checkmark,
         contentDescription = stringResource(R.string.action_snooze),
         onClick = {
 

@@ -5,7 +5,7 @@ description: 'Scaffold a new feature module or add a new screen to an existing m
 
 ## Task
 
-Create or extend a feature following the multi-module Clean Architecture conventions used in this project. Read `docs/architecture.md` before proceeding.
+Create or extend a feature following the multi-module Clean Architecture conventions used in this project. Read `docs/architecture.md` and `rules and agents.md` before proceeding.
 
 ## Steps to Follow
 
@@ -22,9 +22,9 @@ Create or extend a feature following the multi-module Clean Architecture convent
    - Create a `data class` in `domain/src/main/kotlin/com/github/naz013/domain/`.
    - Keep it free of Android / Room / Gson annotations — those belong in `repository`.
 
-3. **Repository interface** (if needed):
-   - Declare a new interface in `repository-api/src/main/java/com/github/naz013/repository/`.
-   - Use `suspend` functions for single-shot operations and `Flow` for observable queries.
+3. **Repository implementation** (if needed):
+   - Implement the interface in `repository/src/main/java/com/github/naz013/repository/`.
+   - **Mandatory**: Create mappers between Room Entity and Domain model. Use the `domain` model in the API and `Entity` for Room storage.
 
 4. **Use cases** (if needed):
    - Create a class with a single `invoke` operator in the appropriate `usecase:*` module.

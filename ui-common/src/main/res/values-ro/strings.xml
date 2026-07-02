@@ -928,4 +928,5 @@
     <string name="keep_notification">Păstrați notificarea</string>
     <string name="cd_back">Înapoi</string>
     <string name="how_to_create_a_reminder">Cum să creezi o reamintire</string>
+    <string name="copy_of">Copie a: %s</string>
 </resources>
