@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.list.archived
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.notes.list.NotesScreen
 import com.elementary.tasks.notes.list.NotesViewModel
-import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -27,7 +25,6 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.composeView
-import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.android.ext.android.inject
@@ -102,11 +99,11 @@ class ArchivedNotesFragment : Fragment() {
       }
 
       is NotesViewModel.NavigationEvent.OpenImagePreview -> {
-        startActivity(ImagePreviewActivity::class.java) {
-          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          putExtra(IntentKeys.INTENT_ID, event.noteId)
-          putExtra(IntentKeys.INTENT_POSITION, event.imagePosition)
-        }
+        safeNavigation(
+          R.id.imagePreviewFragment,
+          Bundle().apply { putInt(IntentKeys.INTENT_POSITION, event.imagePosition) },
+          NavigationAnimations.bottomNavOptions(),
+        )
       }
 
       is NotesViewModel.NavigationEvent.ShareNote -> {

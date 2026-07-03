@@ -4,6 +4,7 @@ import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.list.NotesViewModel
+import com.elementary.tasks.notes.preview.ImagePreviewViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
@@ -33,6 +34,7 @@ val noteModule = module {
   singleOf(::NoteImageRepository)
 
   viewModelOf(::CreateNoteViewModel)
+  viewModel { (position: Int) -> ImagePreviewViewModel(get(), position) }
   viewModel { (isArchived: Boolean) ->
     NotesViewModel(
       get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),

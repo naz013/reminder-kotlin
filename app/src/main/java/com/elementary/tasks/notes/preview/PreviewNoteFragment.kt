@@ -29,7 +29,6 @@ import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.ComposeFragment
-import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -146,9 +145,11 @@ class PreviewNoteFragment : ComposeFragment() {
     position: Int,
   ) {
     imagesSingleton.setCurrent(images = state.images, backgroundColor = state.backgroundColor)
-    startActivity(ImagePreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_POSITION, position)
-    }
+    safeNavigation(
+      R.id.imagePreviewFragment,
+      Bundle().apply { putInt(IntentKeys.INTENT_POSITION, position) },
+      NavigationAnimations.bottomNavOptions(),
+    )
   }
 
   private fun sendNote(

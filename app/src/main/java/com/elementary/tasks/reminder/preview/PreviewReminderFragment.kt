@@ -16,7 +16,6 @@ import com.elementary.tasks.databinding.FragmentReminderPreviewBinding
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
-import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.reminder.preview.adapter.ReminderPreviewDataAdapter
 import com.github.naz013.common.datetime.DateTimeManager
@@ -24,7 +23,6 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -179,9 +177,12 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
       color = note.colorPosition,
       palette = note.colorPalette,
     )
-    startActivity(ImagePreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, note.id)
-      putExtra(IntentKeys.INTENT_POSITION, imagePosition)
+    navigate {
+      navigate(
+        R.id.imagePreviewFragment,
+        Bundle().apply { putInt(IntentKeys.INTENT_POSITION, imagePosition) },
+        NavigationAnimations.bottomNavOptions(),
+      )
     }
   }
 
