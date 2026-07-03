@@ -12,30 +12,40 @@ import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import com.github.naz013.common.Permissions
-import com.github.naz013.feature.common.readString
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
+import com.github.naz013.common.Permissions
+import com.github.naz013.feature.common.readString
 import java.util.*
 
 class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
-
   private var mDataCallback: ((List<EmailItem>) -> Unit)? = null
   private var mContext: Context? = null
   private var mData: List<EmailItem> = ArrayList()
   private var adapter: EmailAdapter? = null
   private var isLoaded = false
-  private var textWatcher = object : TextWatcher {
-    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+  private var textWatcher =
+    object : TextWatcher {
+      override fun beforeTextChanged(
+        charSequence: CharSequence,
+        i: Int,
+        i1: Int,
+        i2: Int,
+      ) {}
 
-    override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-      performTypeValue(charSequence.toString())
-    }
+      override fun onTextChanged(
+        charSequence: CharSequence,
+        i: Int,
+        i1: Int,
+        i2: Int,
+      ) {
+        performTypeValue(charSequence.toString())
+      }
 
-    override fun afterTextChanged(editable: Editable) {
+      override fun afterTextChanged(editable: Editable) {
+      }
     }
-  }
 
   constructor(context: Context) : super(context) {
     init(context)
@@ -48,7 +58,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
   constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
     context,
     attrs,
-    defStyleAttr
+    defStyleAttr,
   ) {
     init(context)
   }
@@ -79,8 +89,10 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     adapter?.filter?.filter(s)
   }
 
-  private inner class EmailAdapter(items: List<EmailItem>) : BaseAdapter(), Filterable {
-
+  private inner class EmailAdapter(
+    items: List<EmailItem>,
+  ) : BaseAdapter(),
+    Filterable {
     private var items: List<EmailItem> = ArrayList()
     private var filter: ValueFilter? = null
 
@@ -93,19 +105,17 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
       this.items = items
     }
 
-    override fun getCount(): Int {
-      return items.size
-    }
+    override fun getCount(): Int = items.size
 
-    override fun getItem(i: Int): String {
-      return items[i].email
-    }
+    override fun getItem(i: Int): String = items[i].email
 
-    override fun getItemId(i: Int): Long {
-      return 0
-    }
+    override fun getItemId(i: Int): Long = 0
 
-    override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View? {
+    override fun getView(
+      i: Int,
+      view: View?,
+      viewGroup: ViewGroup,
+    ): View? {
       val newView: View?
       val item = items[i]
       if (view == null) {
@@ -139,9 +149,10 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
         val matcher = constraint?.toString()?.trim()?.lowercase() ?: ""
         val results = FilterResults()
         if (matcher.isNotEmpty()) {
-          val filterList = mData.filter {
-            it.name.lowercase().contains(matcher) || it.email.contains(matcher)
-          }
+          val filterList =
+            mData.filter {
+              it.name.lowercase().contains(matcher) || it.email.contains(matcher)
+            }
           results.count = filterList.size
           results.values = filterList
         } else {
@@ -151,7 +162,10 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
         return results
       }
 
-      override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+      override fun publishResults(
+        constraint: CharSequence?,
+        results: FilterResults?,
+      ) {
         if (adapter != null && results != null) {
           adapter?.setItems(results.values as List<EmailItem>)
           adapter?.notifyDataSetChanged()
@@ -167,18 +181,25 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     launchDefault {
       val list = ArrayList<EmailItem>()
       val uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI
-      val projection = arrayOf(
-        ContactsContract.Contacts.DISPLAY_NAME,
-        ContactsContract.CommonDataKinds.Email.DATA
-      )
+      val projection =
+        arrayOf(
+          ContactsContract.Contacts.DISPLAY_NAME,
+          ContactsContract.CommonDataKinds.Email.DATA,
+        )
 
-      val cursor = context.contentResolver.query(
-        /* uri = */ uri,
-        /* projection = */ projection,
-        /* selection = */ null,
-        /* selectionArgs = */ null,
-        /* sortOrder = */ null
-      )
+      val cursor =
+        context.contentResolver.query(
+          // uri =
+          uri,
+          // projection =
+          projection,
+          // selection =
+          null,
+          // selectionArgs =
+          null,
+          // sortOrder =
+          null,
+        )
       if (cursor != null && cursor.moveToFirst()) {
         do {
           val name = cursor.readString(ContactsContract.Contacts.DISPLAY_NAME)
@@ -200,5 +221,8 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     var binding: ListItemEmailBinding? = null
   }
 
-  data class EmailItem(val name: String, val email: String)
+  data class EmailItem(
+    val name: String,
+    val email: String,
+  )
 }

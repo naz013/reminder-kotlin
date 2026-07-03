@@ -2,17 +2,16 @@ package com.elementary.tasks.reminder.build.bi
 
 import android.content.Context
 import com.elementary.tasks.core.utils.BuildParams
-import com.github.naz013.common.Module
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.github.naz013.common.Module
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 
 class BiFilter(
   private val locationFilter: LocationFilter,
-  private val creatorConfigFilter: CreatorConfigFilter
+  private val creatorConfigFilter: CreatorConfigFilter,
 ) {
-
   operator fun invoke(item: BuilderItem<*>): Boolean {
     val isEnabled = item.isEnabled
     val isForPro = item.isForPro
@@ -21,18 +20,18 @@ class BiFilter(
     val isLocationAllowed = locationFilter(item)
     val isCreatorConfigAllowed = creatorConfigFilter(item)
     return (isEnabled && isProEnabled && isInSdkRange && isLocationAllowed && isCreatorConfigAllowed).also {
-      Logger.d("BiFilter", "Item filtered ($it): ${item.biType}, enabled=$isEnabled, isForPro=$isForPro, isProEnabled=$isProEnabled, isInSdkRange=$isInSdkRange, isLocationAllowed=$isLocationAllowed, isCreatorConfigAllowed=$isCreatorConfigAllowed")
+      Logger.d(
+        "BiFilter",
+        "Item filtered ($it): ${item.biType}, enabled=$isEnabled, isForPro=$isForPro, isProEnabled=$isProEnabled, isInSdkRange=$isInSdkRange, isLocationAllowed=$isLocationAllowed, isCreatorConfigAllowed=$isCreatorConfigAllowed",
+      )
     }
   }
 }
 
 class CreatorConfigFilter(
-  private val prefs: Prefs
+  private val prefs: Prefs,
 ) {
-
-  operator fun invoke(item: BuilderItem<*>): Boolean {
-    return !getDisabledTypes().contains(item.biType)
-  }
+  operator fun invoke(item: BuilderItem<*>): Boolean = !getDisabledTypes().contains(item.biType)
 
   private fun getDisabledTypes(): List<BiType> {
     val config = prefs.reminderCreatorParams
@@ -53,30 +52,31 @@ class CreatorConfigFilter(
         BiType.EMAIL.takeIf { !config.isSendEmailEnabled() },
         BiType.EMAIL_SUBJECT.takeIf { !config.isSendEmailEnabled() },
         BiType.APPLICATION.takeIf { !config.isOpenAppEnabled() },
-        BiType.LINK.takeIf { !config.isOpenLinkEnabled() }
+        BiType.LINK.takeIf { !config.isOpenLinkEnabled() },
       ) + (BiGroup.ICAL.types.takeIf { !config.isICalendarEnabled() } ?: emptyList())
-      )
+    )
   }
 }
 
-class LocationFilter(context: Context) {
-
+class LocationFilter(
+  context: Context,
+) {
   private val hasLocation = Module.hasLocation(context)
 
-  operator fun invoke(item: BuilderItem<*>): Boolean {
-    return if (LOCATION_TYPES.contains(item.biType)) {
+  operator fun invoke(item: BuilderItem<*>): Boolean =
+    if (LOCATION_TYPES.contains(item.biType)) {
       hasLocation
     } else {
       true
     }
-  }
 
   companion object {
-    private val LOCATION_TYPES = listOf(
-      BiType.LEAVING_COORDINATES,
-      BiType.ARRIVING_COORDINATES,
-      BiType.LOCATION_DELAY_DATE,
-      BiType.LOCATION_DELAY_TIME
-    )
+    private val LOCATION_TYPES =
+      listOf(
+        BiType.LEAVING_COORDINATES,
+        BiType.ARRIVING_COORDINATES,
+        BiType.LOCATION_DELAY_DATE,
+        BiType.LOCATION_DELAY_TIME,
+      )
   }
 }

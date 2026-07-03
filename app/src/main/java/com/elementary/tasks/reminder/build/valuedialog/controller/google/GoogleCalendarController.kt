@@ -7,13 +7,13 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.core.Selectabl
 
 class GoogleCalendarController(
   private val googleCalendarBuilderItem: GoogleCalendarBuilderItem,
-  private val calendars: List<GoogleCalendarUtils.CalendarItem>
-) :
-  AbstractSelectableRadioController<GoogleCalendarUtils.CalendarItem,
-    GoogleCalendarController.GoogleCalendarSelectableValue>(
-    builderItem = googleCalendarBuilderItem
+  private val calendars: List<GoogleCalendarUtils.CalendarItem>,
+) : AbstractSelectableRadioController<
+    GoogleCalendarUtils.CalendarItem,
+    GoogleCalendarController.GoogleCalendarSelectableValue,
+  >(
+    builderItem = googleCalendarBuilderItem,
   ) {
-
   override fun clearValue() {
     builderItem.modifier.update(null)
   }
@@ -31,16 +31,11 @@ class GoogleCalendarController(
 
   data class GoogleCalendarSelectableValue(
     val calendarItem: GoogleCalendarUtils.CalendarItem,
-    var selectionState: Boolean
+    var selectionState: Boolean,
   ) : SelectableValue {
+    override fun getTitle(): String = calendarItem.name
 
-    override fun getTitle(): String {
-      return calendarItem.name
-    }
-
-    override fun isSelected(): Boolean {
-      return selectionState
-    }
+    override fun isSelected(): Boolean = selectionState
 
     override fun setSelected(isSelected: Boolean) {
       this.selectionState = isSelected

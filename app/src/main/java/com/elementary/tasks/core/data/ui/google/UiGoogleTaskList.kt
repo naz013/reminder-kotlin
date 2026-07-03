@@ -10,5 +10,5 @@ data class UiGoogleTaskList(
   val dueDate: String?,
   val statusIcon: Bitmap?,
   @ColorInt val taskListColor: Int?,
-  val reminderId: String?
+  val reminderId: String?,
 )

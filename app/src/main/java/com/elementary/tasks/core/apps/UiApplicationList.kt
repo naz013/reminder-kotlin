@@ -6,5 +6,5 @@ import android.graphics.drawable.Drawable
 data class UiApplicationList(
   val name: String?,
   val packageName: String?,
-  val drawable: Drawable?
+  val drawable: Drawable?,
 )

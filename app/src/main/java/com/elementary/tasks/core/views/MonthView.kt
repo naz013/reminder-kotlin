@@ -25,8 +25,9 @@ import com.github.naz013.ui.common.view.dp2px
 import org.threeten.bp.LocalDate
 import java.lang.ref.WeakReference
 
-class MonthView : View, View.OnTouchListener {
-
+class MonthView :
+  View,
+  View.OnTouchListener {
   private var mYear: Int = 0
   private var mMonth: Int = 0
   private var currentYear: Int = 0
@@ -47,7 +48,7 @@ class MonthView : View, View.OnTouchListener {
     intArrayOf(
       Color.TRANSPARENT,
       ThemeProvider.colorWithAlpha(ThemeProvider.getThemeSecondaryColor(context), 90),
-      Color.TRANSPARENT
+      Color.TRANSPARENT,
     )
   }
 
@@ -68,18 +69,19 @@ class MonthView : View, View.OnTouchListener {
   private val mLongClickHandler = Handler(Looper.getMainLooper())
   private var mDateClick: OnDateClick? = null
   private var mDateLongClick: OnDateLongClick? = null
-  private val mLongRunnable = object : Runnable {
-    override fun run() {
-      mLongClickHandler.removeCallbacks(this)
-      if (mTouchRect != null && mDateLongClick != null) {
-        mDateList?.get(mTouchPosition)?.also {
-          mDateLongClick?.onLongClick(it)
+  private val mLongRunnable =
+    object : Runnable {
+      override fun run() {
+        mLongClickHandler.removeCallbacks(this)
+        if (mTouchRect != null && mDateLongClick != null) {
+          mDateList?.get(mTouchPosition)?.also {
+            mDateLongClick?.onLongClick(it)
+          }
         }
+        cancelTouch()
+        invalidate()
       }
-      cancelTouch()
-      invalidate()
     }
-  }
 
   constructor(context: Context) : super(context) {
     init(context)
@@ -92,7 +94,7 @@ class MonthView : View, View.OnTouchListener {
   constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
     context,
     attrs,
-    defStyleAttr
+    defStyleAttr,
   ) {
     init(context)
   }
@@ -130,7 +132,9 @@ class MonthView : View, View.OnTouchListener {
     setOnTouchListener(this)
   }
 
-  fun setTodayColor(@ColorInt color: Int) {
+  fun setTodayColor(
+    @ColorInt color: Int,
+  ) {
     this.mTodayColor = ThemeProvider.themedColor(context, color)
   }
 
@@ -151,7 +155,10 @@ class MonthView : View, View.OnTouchListener {
     invalidate()
   }
 
-  fun setDate(year: Int, @IntRange(from = 1, to = 12) month: Int) {
+  fun setDate(
+    year: Int,
+    @IntRange(from = 1, to = 12) month: Int,
+  ) {
     this.eventsCursorMap = emptyMap()
     mDateList = ArrayList()
     mMonth = month
@@ -208,30 +215,35 @@ class MonthView : View, View.OnTouchListener {
       val rect = mCells!![i]
       val dateTime = mDateList!![i]
       var typeface = mNormalTypeface
-      val color = if (mYear != dateTime.year || mMonth != dateTime.monthValue) {
-        Color.GRAY
-      } else {
-        if (eventsCursorMap.containsKey(dateTime)) {
-          val events = eventsCursorMap[dateTime]
-          if (events != null) {
-            drawEvents(canvas, events, rect)
+      val color =
+        if (mYear != dateTime.year || mMonth != dateTime.monthValue) {
+          Color.GRAY
+        } else {
+          if (eventsCursorMap.containsKey(dateTime)) {
+            val events = eventsCursorMap[dateTime]
+            if (events != null) {
+              drawEvents(canvas, events, rect)
+            }
+          }
+          if (dateTime.dayOfMonth == currentDay &&
+            dateTime.monthValue == currentMonth &&
+            dateTime.year == currentYear
+          ) {
+            typeface = mBoldTypeface
+            mTodayColor
+          } else {
+            mDefaultColor
           }
         }
-        if (dateTime.dayOfMonth == currentDay &&
-          dateTime.monthValue == currentMonth &&
-          dateTime.year == currentYear
-        ) {
-          typeface = mBoldTypeface
-          mTodayColor
-        } else {
-          mDefaultColor
-        }
-      }
       drawRectText(dateTime.dayOfMonth.toString(), canvas, rect, color, i, typeface)
     }
   }
 
-  private fun drawEvents(canvas: Canvas, eventsCursor: EventsCursor, rect: Rect) {
+  private fun drawEvents(
+    canvas: Canvas,
+    eventsCursor: EventsCursor,
+    rect: Rect,
+  ) {
     val rects = circlesMap[rect] ?: return
     var index = 0
     eventsCursor.moveToStart()
@@ -253,7 +265,7 @@ class MonthView : View, View.OnTouchListener {
             cY.toFloat(),
             end.centerX().toFloat(),
             end.centerY().toFloat(),
-            circlePaint
+            circlePaint,
           )
         }
       }
@@ -267,24 +279,40 @@ class MonthView : View, View.OnTouchListener {
     getLocalVisibleRect(bounds.get())
     val cellWidth = mWidth / COLS
     val cellHeight = mHeight / ROWS
-    horizontalGradient = LinearGradient(
-      /* x0 = */ 0f,
-      /* y0 = */ 0f,
-      /* x1 = */ cellWidth.toFloat(),
-      /* y1 = */ 0f,
-      /* colors = */ gradientColors,
-      /* positions = */ null,
-      /* tile = */ Shader.TileMode.MIRROR
-    )
-    verticalGradient = LinearGradient(
-      /* x0 = */ 0f,
-      /* y0 = */ 0f,
-      /* x1 = */ 0f,
-      /* y1 = */ cellHeight.toFloat(),
-      /* colors = */ gradientColors,
-      /* positions = */ null,
-      /* tile = */ Shader.TileMode.MIRROR
-    )
+    horizontalGradient =
+      LinearGradient(
+        // x0 =
+        0f,
+        // y0 =
+        0f,
+        // x1 =
+        cellWidth.toFloat(),
+        // y1 =
+        0f,
+        // colors =
+        gradientColors,
+        // positions =
+        null,
+        // tile =
+        Shader.TileMode.MIRROR,
+      )
+    verticalGradient =
+      LinearGradient(
+        // x0 =
+        0f,
+        // y0 =
+        0f,
+        // x1 =
+        0f,
+        // y1 =
+        cellHeight.toFloat(),
+        // colors =
+        gradientColors,
+        // positions =
+        null,
+        // tile =
+        Shader.TileMode.MIRROR,
+      )
     mCells = ArrayList()
     for (i in 0 until ROWS) {
       for (j in 0 until COLS) {
@@ -320,7 +348,7 @@ class MonthView : View, View.OnTouchListener {
     r: Rect,
     color: Int,
     position: Int,
-    typeface: Typeface?
+    typeface: Typeface?,
   ) {
     paint.textSize = dp2px(16).toFloat()
     paint.textAlign = Paint.Align.CENTER
@@ -340,26 +368,39 @@ class MonthView : View, View.OnTouchListener {
     if (position == 0 || ((position - 6) % 7) != 0) {
       borderPaint.shader = verticalGradient
       canvas.drawLine(
-        /* startX = */ r.right.toFloat(),
-        /* startY = */ r.top.toFloat(),
-        /* stopX = */ r.right.toFloat(),
-        /* stopY = */ r.bottom.toFloat(),
-        /* paint = */ borderPaint
+        // startX =
+        r.right.toFloat(),
+        // startY =
+        r.top.toFloat(),
+        // stopX =
+        r.right.toFloat(),
+        // stopY =
+        r.bottom.toFloat(),
+        // paint =
+        borderPaint,
       )
     }
     if (position <= 34) {
       borderPaint.shader = horizontalGradient
       canvas.drawLine(
-        /* startX = */ r.left.toFloat(),
-        /* startY = */ r.bottom.toFloat(),
-        /* stopX = */ r.right.toFloat(),
-        /* stopY = */ r.bottom.toFloat(),
-        /* paint = */ borderPaint
+        // startX =
+        r.left.toFloat(),
+        // startY =
+        r.bottom.toFloat(),
+        // stopX =
+        r.right.toFloat(),
+        // stopY =
+        r.bottom.toFloat(),
+        // paint =
+        borderPaint,
       )
     }
   }
 
-  override fun onTouch(view: View, motionEvent: MotionEvent?): Boolean {
+  override fun onTouch(
+    view: View,
+    motionEvent: MotionEvent?,
+  ): Boolean {
     if (motionEvent == null) return true
     when (motionEvent.action) {
       MotionEvent.ACTION_DOWN -> performTouch(motionEvent)

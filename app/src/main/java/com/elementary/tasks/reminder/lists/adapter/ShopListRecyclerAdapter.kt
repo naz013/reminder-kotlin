@@ -7,12 +7,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
+import com.elementary.tasks.databinding.ListItemShopTaskBinding
 import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.ui.common.view.inflater
-import com.elementary.tasks.databinding.ListItemShopTaskBinding
 
 class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.ViewHolder>() {
-
   private var mDataList: MutableList<ShopItem> = mutableListOf()
   private var onBind: Boolean = false
   var listener: ActionListener? = null
@@ -59,11 +58,10 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
   fun getItem(position: Int) = mDataList[position]
 
   inner class ViewHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
   ) : HolderBinding<ListItemShopTaskBinding>(
-    ListItemShopTaskBinding.inflate(parent.inflater(), parent, false)
-  ) {
-
+      ListItemShopTaskBinding.inflate(parent.inflater(), parent, false),
+    ) {
     init {
       binding.clearButton.setOnClickListener {
         listener?.onItemDelete(adapterPosition)
@@ -97,9 +95,15 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
     }
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ) = ViewHolder(parent)
 
-  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: ViewHolder,
+    position: Int,
+  ) {
     onBind = true
     val item = mDataList[position]
     holder.bind(item)
@@ -109,7 +113,11 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
   override fun getItemCount() = mDataList.size
 
   interface ActionListener {
-    fun onItemCheck(position: Int, isChecked: Boolean)
+    fun onItemCheck(
+      position: Int,
+      isChecked: Boolean,
+    )
+
     fun onItemDelete(position: Int)
   }
 }

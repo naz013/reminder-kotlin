@@ -5,7 +5,6 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import java.lang.ref.WeakReference
 
 object SelectorDialogCommunicator : SelectorDialogCallback {
-
   private var callback: WeakReference<SelectorDialogCallback>? = null
 
   fun addCallback(callback: SelectorDialogCallback) {

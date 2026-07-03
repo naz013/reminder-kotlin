@@ -15,20 +15,19 @@ import com.github.naz013.common.intent.LauncherCreator
 
 class MultiPicturePicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (List<Uri>) -> Unit
+  private val resultCallback: (List<Uri>) -> Unit,
 ) : IntentPicker<Intent, ActivityResult>(
-  ActivityResultContracts.StartActivityForResult(),
-  launcherCreator
-) {
-
+    ActivityResultContracts.StartActivityForResult(),
+    launcherCreator,
+  ) {
   constructor(
     activity: ComponentActivity,
-    resultCallback: (List<Uri>) -> Unit
+    resultCallback: (List<Uri>) -> Unit,
   ) : this(ActivityLauncherCreator(activity), resultCallback)
 
   constructor(
     fragment: Fragment,
-    resultCallback: (List<Uri>) -> Unit
+    resultCallback: (List<Uri>) -> Unit,
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
   fun pickPictures() {

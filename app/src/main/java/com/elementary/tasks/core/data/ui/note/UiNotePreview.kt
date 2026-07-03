@@ -15,5 +15,5 @@ data class UiNotePreview(
   val textSize: Float,
   val titleTypeface: Typeface?,
   val titleTextSize: Float,
-  val isArchived: Boolean
+  val isArchived: Boolean,
 )

@@ -46,28 +46,32 @@ class EventsCursor {
     mPosition = 0
   }
 
-  fun addEvent(task: String, color: Int, type: Type, date: LocalDate): Int {
+  fun addEvent(
+    task: String,
+    color: Int,
+    type: Type,
+    date: LocalDate,
+  ): Int {
     val event = Event(task, color, type, date)
     events.add(event)
     return events.indexOf(event)
   }
 
-  operator fun hasNext(): Boolean {
-    return mPosition < events.size
-  }
+  operator fun hasNext(): Boolean = mPosition < events.size
 
-  fun count(): Int {
-    return events.size
-  }
+  fun count(): Int = events.size
 
-  override fun toString(): String {
-    return events.toString()
-  }
+  override fun toString(): String = events.toString()
 
   enum class Type {
     REMINDER,
-    BIRTHDAY
+    BIRTHDAY,
   }
 
-  data class Event(var task: String?, var color: Int, var type: Type?, var date: LocalDate)
+  data class Event(
+    var task: String?,
+    var color: Int,
+    var type: Type?,
+    var date: LocalDate,
+  )
 }

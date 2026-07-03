@@ -4,13 +4,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
+import com.elementary.tasks.databinding.ListItemReminderNewBinding
+import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
+import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.inflater
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.elementary.tasks.databinding.ListItemReminderNewBinding
-import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
-import com.elementary.tasks.reminder.lists.data.UiReminderList
 
 class ReminderViewHolder(
   parent: ViewGroup,
@@ -19,11 +19,10 @@ class ReminderViewHolder(
   private val common: ScheduleReminderViewHolderCommon,
   private val onItemClicked: (Int) -> Unit = { },
   private val onToggleClicked: (Int) -> Unit = { },
-  private val onMoreClicked: (View, Int) -> Unit = { _, _ -> }
+  private val onMoreClicked: (View, Int) -> Unit = { _, _ -> },
 ) : HolderBinding<ListItemReminderNewBinding>(
-  ListItemReminderNewBinding.inflate(parent.inflater(), parent, false)
-) {
-
+    ListItemReminderNewBinding.inflate(parent.inflater(), parent, false),
+  ) {
   init {
     binding.switchWrapper.visibleGone(editable)
     binding.buttonMore.visibleGone(showMore)

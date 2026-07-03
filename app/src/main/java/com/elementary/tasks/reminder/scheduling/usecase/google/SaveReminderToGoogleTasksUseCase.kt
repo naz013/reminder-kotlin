@@ -16,7 +16,6 @@ class SaveReminderToGoogleTasksUseCase(
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
 ) {
-
   suspend operator fun invoke(reminder: Reminder) {
     if (reminder.exportToTasks) {
       val due = dateTimeManager.toMillis(reminder.eventTime)

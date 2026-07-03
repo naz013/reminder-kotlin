@@ -18,22 +18,21 @@ import java.util.Locale
 
 class CameraPhotoPicker private constructor(
   launcherCreator: LauncherCreator<Uri, Boolean>,
-  private val resultCallback: (Uri) -> Unit
+  private val resultCallback: (Uri) -> Unit,
 ) : IntentPicker<Uri, Boolean>(
-  ActivityResultContracts.TakePicture(),
-  launcherCreator
-) {
-
+    ActivityResultContracts.TakePicture(),
+    launcherCreator,
+  ) {
   private var imageUri: Uri? = null
 
   constructor(
     activity: ComponentActivity,
-    resultCallback: (Uri) -> Unit
+    resultCallback: (Uri) -> Unit,
   ) : this(ActivityLauncherCreator(activity), resultCallback)
 
   constructor(
     fragment: Fragment,
-    resultCallback: (Uri) -> Unit
+    resultCallback: (Uri) -> Unit,
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
   fun takePhoto() {
@@ -62,9 +61,7 @@ class CameraPhotoPicker private constructor(
     return File(storageDir, imageFileName)
   }
 
-  private fun getExternalFilesDir(): File {
-    return File(getActivity().externalCacheDir, "Reminder")
-  }
+  private fun getExternalFilesDir(): File = File(getActivity().externalCacheDir, "Reminder")
 
   companion object {
     private const val TAG = "CameraPhotoPicker"

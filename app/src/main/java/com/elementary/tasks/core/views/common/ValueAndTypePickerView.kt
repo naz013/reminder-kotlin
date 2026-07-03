@@ -9,7 +9,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.databinding.ViewValueAndTypePickerBinding
 
 class ValueAndTypePickerView : LinearLayout {
-
   var onChangedListener: OnChangedListener? = null
   var maxValue: Long
     set(value) {
@@ -31,7 +30,7 @@ class ValueAndTypePickerView : LinearLayout {
   constructor(
     context: Context,
     attrs: AttributeSet?,
-    defStyle: Int
+    defStyle: Int,
   ) : super(context, attrs, defStyle) {
     View.inflate(context, R.layout.view_value_and_type_picker, this)
     orientation = VERTICAL
@@ -42,7 +41,10 @@ class ValueAndTypePickerView : LinearLayout {
 
     binding.selectorView.onSelectionChangedListener =
       object : VerticalWheelSelector.OnSelectionChangedListener {
-        override fun onSelectionChanged(position: Int, selectedItem: String) {
+        override fun onSelectionChanged(
+          position: Int,
+          selectedItem: String,
+        ) {
           notifyChange()
         }
       }
@@ -77,11 +79,14 @@ class ValueAndTypePickerView : LinearLayout {
   private fun notifyChange() {
     onChangedListener?.onChanged(
       binding.numberPickerView.value,
-      binding.selectorView.selectedItemPosition
+      binding.selectorView.selectedItemPosition,
     )
   }
 
   interface OnChangedListener {
-    fun onChanged(value: String, typeIndex: Int)
+    fun onChanged(
+      value: String,
+      typeIndex: Int,
+    )
   }
 }

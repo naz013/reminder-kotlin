@@ -1,26 +1,28 @@
 package com.elementary.tasks.reminder.build.adapter.viewholder
 
 import android.view.ViewGroup
+import com.elementary.tasks.databinding.ListItemReminderBuilderBinding
+import com.elementary.tasks.reminder.build.UiListBuilderItem
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.inflater
 import com.github.naz013.ui.common.view.visible
-import com.elementary.tasks.databinding.ListItemReminderBuilderBinding
-import com.elementary.tasks.reminder.build.UiListBuilderItem
 
 class BuilderViewHolder(
   parent: ViewGroup,
   private val onClickListener: BuilderViewHolderItemClickListener,
-  private val onRemoveListener: BuilderViewHolderItemClickListener
+  private val onRemoveListener: BuilderViewHolderItemClickListener,
 ) : BaseBuilderViewHolder<ListItemReminderBuilderBinding, UiListBuilderItem>(
-  viewCreator = {
-    ListItemReminderBuilderBinding.inflate(
-      /* inflater = */ parent.inflater(),
-      /* parent = */ parent,
-      /* attachToParent = */ false
-    )
-  }
-) {
-
+    viewCreator = {
+      ListItemReminderBuilderBinding.inflate(
+        // inflater =
+        parent.inflater(),
+        // parent =
+        parent,
+        // attachToParent =
+        false,
+      )
+    },
+  ) {
   override fun initClickListeners() {
     binding.clickView.setOnClickListener {
       onClickListener(bindingAdapterPosition)

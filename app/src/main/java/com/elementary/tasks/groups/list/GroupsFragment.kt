@@ -26,17 +26,19 @@ import com.github.naz013.ui.common.view.applyBottomInsetsMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
-
   private val viewModel by viewModel<GroupsViewModel>()
   private var groupsRecyclerAdapter = GroupsRecyclerAdapter()
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentGroupsBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
     binding.fab.applyBottomInsetsMargin()
@@ -67,36 +69,43 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
       activity = requireActivity(),
       current = uiGroupList.colorPosition,
       title = getString(R.string.color),
-      colors = ThemeProvider.colorsForSliderThemed(requireContext())
+      colors = ThemeProvider.colorsForSliderThemed(requireContext()),
     ) {
       viewModel.changeGroupColor(uiGroupList.id, it)
     }
   }
 
   private fun initGroupsList() {
-    groupsRecyclerAdapter.actionsListener = object : ActionsListener<UiGroupList> {
-      override fun onAction(view: View, position: Int, t: UiGroupList?, actions: ListActions) {
-        if (t == null) return
-        when (actions) {
-          ListActions.MORE -> {
-            showMore(view, t)
-          }
+    groupsRecyclerAdapter.actionsListener =
+      object : ActionsListener<UiGroupList> {
+        override fun onAction(
+          view: View,
+          position: Int,
+          t: UiGroupList?,
+          actions: ListActions,
+        ) {
+          if (t == null) return
+          when (actions) {
+            ListActions.MORE -> {
+              showMore(view, t)
+            }
 
-          ListActions.EDIT -> {
-            editGroup(t.id)
-          }
+            ListActions.EDIT -> {
+              editGroup(t.id)
+            }
 
-          else -> {
+            else -> {
+            }
           }
         }
       }
-    }
 
     if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
-        resources.getInteger(R.integer.num_of_cols),
-        StaggeredGridLayoutManager.VERTICAL
-      )
+      binding.recyclerView.layoutManager =
+        StaggeredGridLayoutManager(
+          resources.getInteger(R.integer.num_of_cols),
+          StaggeredGridLayoutManager.VERTICAL,
+        )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
@@ -112,12 +121,16 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
     refreshView()
   }
 
-  private fun showMore(view: View, t: UiGroupList) {
-    var items = arrayOf(
-      getString(R.string.change_color),
-      getString(R.string.edit),
-      getString(R.string.delete)
-    )
+  private fun showMore(
+    view: View,
+    t: UiGroupList,
+  ) {
+    var items =
+      arrayOf(
+        getString(R.string.change_color),
+        getString(R.string.edit),
+        getString(R.string.delete),
+      )
     if (groupsRecyclerAdapter.itemCount == 1) {
       items = arrayOf(getString(R.string.change_color), getString(R.string.edit))
     }
@@ -139,14 +152,15 @@ class GroupsFragment : BaseToolbarFragment<FragmentGroupsBinding>() {
   }
 
   private fun editGroup(id: String) {
-    val bundle = Bundle().apply {
-      putString(IntentKeys.INTENT_ID, id)
-    }
+    val bundle =
+      Bundle().apply {
+        putString(IntentKeys.INTENT_ID, id)
+      }
     navigate {
       navigate(
         R.id.editGroupFragment,
         bundle,
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }

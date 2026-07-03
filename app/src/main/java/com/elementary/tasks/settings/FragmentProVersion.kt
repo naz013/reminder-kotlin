@@ -13,14 +13,16 @@ import com.elementary.tasks.databinding.FragmentSettingsProPageBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class FragmentProVersion : BaseSettingsFragment<FragmentSettingsProPageBinding>() {
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsProPageBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
 
     binding.buttonBuy.setOnClickListener { openMarket() }

@@ -21,7 +21,6 @@ import com.google.android.gms.common.GoogleApiAvailability
 import java.io.UnsupportedEncodingException
 
 object SuperUtil {
-
   private const val TAG = "SuperUtil"
 
   fun isPhoneCallActive(context: Context): Boolean {
@@ -30,15 +29,17 @@ object SuperUtil {
       manager.mode == AudioManager.MODE_IN_COMMUNICATION
   }
 
-  fun normalizeSummary(summary: String): String {
-    return if (summary.length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
+  fun normalizeSummary(summary: String): String =
+    if (summary.length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
       summary.substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)
     } else {
       summary
     }
-  }
 
-  fun stopService(context: Context, clazz: Class<*>) {
+  fun stopService(
+    context: Context,
+    clazz: Class<*>,
+  ) {
     context.stopService(Intent(context, clazz))
   }
 
@@ -55,13 +56,15 @@ object SuperUtil {
     ContextCompat.startForegroundService(context, intent)
   }
 
-  fun getString(fragment: Fragment, id: Int): String {
-    return if (fragment.isAdded) {
+  fun getString(
+    fragment: Fragment,
+    id: Int,
+  ): String =
+    if (fragment.isAdded) {
       fragment.getString(id)
     } else {
       ""
     }
-  }
 
   fun isGooglePlayServicesAvailable(a: Context): Boolean {
     val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(a)
@@ -82,7 +85,10 @@ object SuperUtil {
     }
   }
 
-  private fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+  private fun isServiceRunning(
+    context: Context,
+    serviceClass: Class<*>,
+  ): Boolean {
     val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
       if (serviceClass.name == service.service.className) {
@@ -92,8 +98,8 @@ object SuperUtil {
     return false
   }
 
-  fun getAfterTime(timeString: String): Long {
-    return if (timeString.length == 6 && !timeString.matches("000000".toRegex())) {
+  fun getAfterTime(timeString: String): Long =
+    if (timeString.length == 6 && !timeString.matches("000000".toRegex())) {
       val hours = timeString.substring(0, 2)
       val minutes = timeString.substring(2, 4)
       val seconds = timeString.substring(4, 6)
@@ -107,16 +113,19 @@ object SuperUtil {
     } else {
       0
     }
-  }
 
-  fun isAppInstalled(context: Context, packageName: String): Boolean {
+  fun isAppInstalled(
+    context: Context,
+    packageName: String,
+  ): Boolean {
     val pm = context.packageManager
-    val installed: Boolean = try {
-      pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
-      true
-    } catch (e: PackageManager.NameNotFoundException) {
-      false
-    }
+    val installed: Boolean =
+      try {
+        pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+        true
+      } catch (e: PackageManager.NameNotFoundException) {
+        false
+      }
     return installed
   }
 
@@ -148,11 +157,12 @@ object SuperUtil {
     try {
       context.startActivity(goToMarket)
     } catch (e: ActivityNotFoundException) {
-      Toast.makeText(
-        context,
-        context.getString(R.string.could_not_launch_market),
-        Toast.LENGTH_SHORT
-      ).show()
+      Toast
+        .makeText(
+          context,
+          context.getString(R.string.could_not_launch_market),
+          Toast.LENGTH_SHORT,
+        ).show()
     }
   }
 }

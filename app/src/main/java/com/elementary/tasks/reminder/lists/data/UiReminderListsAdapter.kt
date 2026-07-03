@@ -2,13 +2,13 @@ package com.elementary.tasks.reminder.lists.data
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiTextElement
-import com.github.naz013.ui.common.theme.ColorProvider
-import com.github.naz013.ui.common.UnitsConverter
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.core.text.UiTextStyle
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.common.TextProvider
+import com.github.naz013.ui.common.UnitsConverter
+import com.github.naz013.ui.common.theme.ColorProvider
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
@@ -17,9 +17,8 @@ class UiReminderListsAdapter(
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
   private val unitsConverter: UnitsConverter,
-  private val colorProvider: ColorProvider
+  private val colorProvider: ColorProvider,
 ) {
-
   fun convert(data: List<Reminder>): List<UiReminderEventsList> {
     val result = mutableListOf<UiReminderEventsList>()
 
@@ -29,12 +28,13 @@ class UiReminderListsAdapter(
     var previousHeader: String? = null
 
     data.map { uiReminderListAdapter.create(it) }.forEach { current ->
-      val header = getHeaderText(
-        dueDate = current.dueDateTime,
-        isActive = current.state.isActive,
-        today = todayDate,
-        tomorrow = tomorrowDate
-      )
+      val header =
+        getHeaderText(
+          dueDate = current.dueDateTime,
+          isActive = current.state.isActive,
+          today = todayDate,
+          tomorrow = tomorrowDate,
+        )
       if (header != previousHeader) {
         result.add(createHeader(header))
       }
@@ -44,24 +44,25 @@ class UiReminderListsAdapter(
     return result
   }
 
-  private fun createHeader(text: String): UiReminderListHeader {
-    return UiReminderListHeader(
-      mainText = UiTextElement(
-        text = text,
-        textFormat = UiTextFormat(
-          fontSize = unitsConverter.spToPx(18f),
-          textStyle = UiTextStyle.BOLD,
-          textColor = colorProvider.getColorOnBackground()
-        )
-      )
+  private fun createHeader(text: String): UiReminderListHeader =
+    UiReminderListHeader(
+      mainText =
+        UiTextElement(
+          text = text,
+          textFormat =
+            UiTextFormat(
+              fontSize = unitsConverter.spToPx(18f),
+              textStyle = UiTextStyle.BOLD,
+              textColor = colorProvider.getColorOnBackground(),
+            ),
+        ),
     )
-  }
 
   private fun getHeaderText(
     dueDate: LocalDateTime?,
     isActive: Boolean,
     today: String,
-    tomorrow: String
+    tomorrow: String,
   ): String {
     val date = dueDate?.toLocalDate()
     return when {

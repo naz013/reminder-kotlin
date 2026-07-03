@@ -4,18 +4,16 @@ import android.content.Context
 import com.elementary.tasks.R
 
 class AttachmentsFormatter(
-  private val context: Context
+  private val context: Context,
 ) : Formatter<List<String>>() {
-
-  override fun format(attachments: List<String>): String {
-    return if (attachments.isEmpty()) {
+  override fun format(attachments: List<String>): String =
+    if (attachments.isEmpty()) {
       context.getString(R.string.builder_no_attachments)
     } else {
       context.resources.getQuantityString(
         R.plurals.x_attachments,
         attachments.size,
-        attachments.size
+        attachments.size,
       )
     }
-  }
 }

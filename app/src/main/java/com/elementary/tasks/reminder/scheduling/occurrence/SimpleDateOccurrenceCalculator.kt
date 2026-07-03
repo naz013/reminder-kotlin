@@ -11,7 +11,6 @@ import org.threeten.bp.LocalDateTime
  * an empty list as there are no future occurrences after the initial event.
  */
 class SimpleDateOccurrenceCalculator : ReminderOccurrenceCalculator {
-
   /**
    * Calculates occurrences for a simple one-time reminder.
    *
@@ -23,7 +22,7 @@ class SimpleDateOccurrenceCalculator : ReminderOccurrenceCalculator {
   override suspend fun calculateOccurrences(
     reminder: Reminder,
     fromDateTime: LocalDateTime,
-    numberOfOccurrences: Int
+    numberOfOccurrences: Int,
   ): List<LocalDateTime> {
     Logger.d(TAG, "calculateOccurrences: SimpleDateOccurrenceCalculator - no repeat pattern")
 

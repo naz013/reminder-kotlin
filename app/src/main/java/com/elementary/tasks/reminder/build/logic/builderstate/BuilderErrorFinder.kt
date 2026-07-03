@@ -18,12 +18,11 @@ class BuilderErrorFinder(
   private val reminderValidator: ReminderValidator,
   private val typeCalculator: TypeCalculator,
   private val dateTimeInjector: DateTimeInjector,
-  private val reminderDateTimeCleaner: ReminderDateTimeCleaner
+  private val reminderDateTimeCleaner: ReminderDateTimeCleaner,
 ) {
-
   operator fun invoke(
     reminder: Reminder,
-    items: List<BuilderItem<*>>
+    items: List<BuilderItem<*>>,
   ): BuilderError {
     val processedBuilderItems = ProcessedBuilderItems(items)
 
@@ -54,9 +53,7 @@ class BuilderErrorFinder(
     return BuilderError.Unknown
   }
 
-  private fun findError(
-    processedBuilderItems: ProcessedBuilderItems
-  ): BuilderError {
+  private fun findError(processedBuilderItems: ProcessedBuilderItems): BuilderError {
     val biTypeMap = BiTypeMap(processedBuilderItems.typeMap)
     return when {
       biTypeMap.containsAny(BiType.DAYS_OF_WEEK) -> {
@@ -95,28 +92,26 @@ class BuilderErrorFinder(
     }
   }
 
-  private fun findErrorLocation(
-    biTypeMap: BiTypeMap
-  ): BuilderError {
-    return when {
+  private fun findErrorLocation(biTypeMap: BiTypeMap): BuilderError =
+    when {
       biTypeMap.containsAll(BiType.LOCATION_DELAY_DATE, BiType.LOCATION_DELAY_TIME) -> {
         BuilderError.RequiresBiType(
           BuilderError.BiTypeCollection.Multiple.Or(
             BiType.LEAVING_COORDINATES,
-            BiType.ARRIVING_COORDINATES
-          )
+            BiType.ARRIVING_COORDINATES,
+          ),
         )
       }
 
       biTypeMap.containsAny(BiType.LOCATION_DELAY_DATE) -> {
         BuilderError.RequiresBiType(
-          BuilderError.BiTypeCollection.Single(BiType.LOCATION_DELAY_TIME)
+          BuilderError.BiTypeCollection.Single(BiType.LOCATION_DELAY_TIME),
         )
       }
 
       biTypeMap.containsAny(BiType.LOCATION_DELAY_TIME) -> {
         BuilderError.RequiresBiType(
-          BuilderError.BiTypeCollection.Single(BiType.LOCATION_DELAY_DATE)
+          BuilderError.BiTypeCollection.Single(BiType.LOCATION_DELAY_DATE),
         )
       }
 
@@ -124,20 +119,16 @@ class BuilderErrorFinder(
         BuilderError.Unknown
       }
     }
-  }
 
-  private fun findErrorWhenSummary(): BuilderError {
-    return BuilderError.RequiresBiType(
+  private fun findErrorWhenSummary(): BuilderError =
+    BuilderError.RequiresBiType(
       BuilderError.BiTypeCollection.Multiple.And(
         BiType.DATE,
-        BiType.TIME
-      )
+        BiType.TIME,
+      ),
     )
-  }
 
-  private fun findErrorICalendar(
-    biTypeMap: BiTypeMap
-  ): BuilderError {
+  private fun findErrorICalendar(biTypeMap: BiTypeMap): BuilderError {
     Logger.d(TAG, "Find ICalendar error for $biTypeMap")
     return when {
       biTypeMap.containsAll(BiType.ICAL_START_DATE, BiType.ICAL_START_TIME) -> {
@@ -145,7 +136,7 @@ class BuilderErrorFinder(
         createAndErrorForMissingICalTypes(
           biTypeMap,
           BiType.ICAL_FREQ,
-          BiType.ICAL_COUNT
+          BiType.ICAL_COUNT,
         )
       }
 
@@ -155,7 +146,7 @@ class BuilderErrorFinder(
           biTypeMap,
           BiType.ICAL_START_TIME,
           BiType.ICAL_FREQ,
-          BiType.ICAL_COUNT
+          BiType.ICAL_COUNT,
         )
       }
 
@@ -165,7 +156,7 @@ class BuilderErrorFinder(
           biTypeMap,
           BiType.ICAL_START_DATE,
           BiType.ICAL_FREQ,
-          BiType.ICAL_COUNT
+          BiType.ICAL_COUNT,
         )
       }
 
@@ -175,7 +166,7 @@ class BuilderErrorFinder(
           biTypeMap,
           BiType.ICAL_START_TIME,
           BiType.ICAL_START_DATE,
-          BiType.ICAL_COUNT
+          BiType.ICAL_COUNT,
         )
       }
 
@@ -185,7 +176,7 @@ class BuilderErrorFinder(
           biTypeMap,
           BiType.ICAL_START_TIME,
           BiType.ICAL_START_DATE,
-          BiType.ICAL_FREQ
+          BiType.ICAL_FREQ,
         )
       }
 
@@ -195,7 +186,7 @@ class BuilderErrorFinder(
         createAndErrorForMissingICalTypes(
           biTypeMap,
           BiType.ICAL_UNTIL_DATE,
-          BiType.ICAL_UNTIL_TIME
+          BiType.ICAL_UNTIL_TIME,
         )
       }
 
@@ -208,89 +199,72 @@ class BuilderErrorFinder(
 
   private fun createAndErrorForMissingICalTypes(
     biTypeMap: BiTypeMap,
-    vararg biType: BiType
+    vararg biType: BiType,
   ): BuilderError {
     val requires = biType.filter { biTypeMap.containsNone(it) }
     return if (requires.isEmpty()) {
       BuilderError.Unknown
     } else {
       BuilderError.RequiresBiType(
-        BuilderError.BiTypeCollection.Multiple.And(requires)
+        BuilderError.BiTypeCollection.Multiple.And(requires),
       )
     }
   }
 
-  private fun findErrorTime(): BuilderError {
-    return BuilderError.RequiresBiType(
+  private fun findErrorTime(): BuilderError =
+    BuilderError.RequiresBiType(
       BuilderError.BiTypeCollection.Multiple.Or(
         BiType.DATE,
         BiType.DAYS_OF_WEEK,
         BiType.DAY_OF_MONTH,
-        BiType.DAY_OF_YEAR
-      )
+        BiType.DAY_OF_YEAR,
+      ),
     )
-  }
 
-  private fun findErrorDate(
-    biTypeMap: BiTypeMap
-  ): BuilderError {
-    return if (biTypeMap.containsAny(BiType.TIME)) {
+  private fun findErrorDate(biTypeMap: BiTypeMap): BuilderError =
+    if (biTypeMap.containsAny(BiType.TIME)) {
       BuilderError.Unknown
     } else {
       BuilderError.RequiresBiType(
-        BuilderError.BiTypeCollection.Single(BiType.TIME)
+        BuilderError.BiTypeCollection.Single(BiType.TIME),
       )
     }
-  }
 
-  private fun findErrorDayOfWeek(
-    biTypeMap: BiTypeMap
-  ): BuilderError {
-    return if (biTypeMap.containsAny(BiType.TIME)) {
+  private fun findErrorDayOfWeek(biTypeMap: BiTypeMap): BuilderError =
+    if (biTypeMap.containsAny(BiType.TIME)) {
       BuilderError.Unknown
     } else {
       BuilderError.RequiresBiType(
-        BuilderError.BiTypeCollection.Single(BiType.TIME)
+        BuilderError.BiTypeCollection.Single(BiType.TIME),
       )
     }
-  }
 
-  private fun findErrorDayOfMonth(
-    biTypeMap: BiTypeMap
-  ): BuilderError {
-    return if (biTypeMap.containsAny(BiType.TIME)) {
+  private fun findErrorDayOfMonth(biTypeMap: BiTypeMap): BuilderError =
+    if (biTypeMap.containsAny(BiType.TIME)) {
       BuilderError.Unknown
     } else {
       BuilderError.RequiresBiType(
-        BuilderError.BiTypeCollection.Single(BiType.TIME)
+        BuilderError.BiTypeCollection.Single(BiType.TIME),
       )
     }
-  }
 
-  private fun findErrorDayOfYear(
-    biTypeMap: BiTypeMap
-  ): BuilderError {
-    return if (biTypeMap.containsAny(BiType.TIME)) {
+  private fun findErrorDayOfYear(biTypeMap: BiTypeMap): BuilderError =
+    if (biTypeMap.containsAny(BiType.TIME)) {
       BuilderError.Unknown
     } else {
       BuilderError.RequiresBiType(
-        BuilderError.BiTypeCollection.Single(BiType.TIME)
+        BuilderError.BiTypeCollection.Single(BiType.TIME),
       )
     }
-  }
 
-  internal class BiTypeMap(private val typeMap: Map<BiType, BuilderItem<*>>) {
-    fun containsAny(vararg biTypes: BiType): Boolean {
-      return typeMap.keys.any { it in biTypes }
-    }
+  internal class BiTypeMap(
+    private val typeMap: Map<BiType, BuilderItem<*>>,
+  ) {
+    fun containsAny(vararg biTypes: BiType): Boolean = typeMap.keys.any { it in biTypes }
 
-    fun containsAll(vararg biTypes: BiType): Boolean {
-      return biTypes.all { typeMap.containsKey(it) }
-    }
+    fun containsAll(vararg biTypes: BiType): Boolean = biTypes.all { typeMap.containsKey(it) }
 
-    fun containsNone(vararg biTypes: BiType): Boolean {
-      return typeMap.keys.none { it in biTypes }
-    }
+    fun containsNone(vararg biTypes: BiType): Boolean = typeMap.keys.none { it in biTypes }
   }
 
   companion object {

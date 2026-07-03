@@ -3,8 +3,8 @@ package com.elementary.tasks.core.apps
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
@@ -13,9 +13,8 @@ import kotlinx.coroutines.launch
 @Deprecated("After S")
 class SelectApplicationViewModel(
   dispatcherProvider: DispatcherProvider,
-  private val packageManagerWrapper: PackageManagerWrapper
+  private val packageManagerWrapper: PackageManagerWrapper,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _applications = mutableLiveDataOf<List<UiApplicationList>>()
   val applications = _applications.toLiveData()
 
@@ -48,7 +47,10 @@ class SelectApplicationViewModel(
     }
   }
 
-  private fun getPosition(name: String, mList: MutableList<UiApplicationList>): Int {
+  private fun getPosition(
+    name: String,
+    mList: MutableList<UiApplicationList>,
+  ): Int {
     if (mList.size == 0) {
       return 0
     }

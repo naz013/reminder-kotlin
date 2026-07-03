@@ -10,22 +10,21 @@ import com.elementary.tasks.core.data.ui.reminder.UiEmailTarget
 import com.elementary.tasks.core.data.ui.reminder.UiLinkTarget
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.databinding.ListItemReminderBinding
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.inflater
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.elementary.tasks.databinding.ListItemReminderBinding
-import com.github.naz013.ui.common.R
 
 class ReminderViewHolder(
   parent: ViewGroup,
   editable: Boolean,
   showMore: Boolean = true,
-  private val listener: ((View, Int, ListActions) -> Unit)? = null
+  private val listener: ((View, Int, ListActions) -> Unit)? = null,
 ) : BaseUiReminderListViewHolder<ListItemReminderBinding, UiReminderListActive>(
-  ListItemReminderBinding.inflate(parent.inflater(), parent, false)
-) {
-
+    ListItemReminderBinding.inflate(parent.inflater(), parent, false),
+  ) {
   init {
     binding.switchWrapper.visibleGone(editable)
     binding.buttonMore.visibleGone(showMore)
@@ -34,26 +33,29 @@ class ReminderViewHolder(
       listener?.invoke(
         it,
         bindingAdapterPosition,
-        ListActions.OPEN
+        ListActions.OPEN,
       )
     }
     binding.switchWrapper.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,
-        ListActions.SWITCH
+        ListActions.SWITCH,
       )
     }
     binding.buttonMore.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,
-        ListActions.MORE
+        ListActions.MORE,
       )
     }
   }
 
-  override fun setData(data: UiReminderListActive, isHistorical: Boolean) {
+  override fun setData(
+    data: UiReminderListActive,
+    isHistorical: Boolean,
+  ) {
     binding.taskText.text = data.summary
     loadDate(data)
     loadCheck(data)
@@ -70,17 +72,21 @@ class ReminderViewHolder(
     binding.reminderTypeGroup.text = "$typeLabel ($groupName, $priority)"
   }
 
-  private fun loadRepeatLeft(reminder: UiReminderListActive, isHistorical: Boolean) {
+  private fun loadRepeatLeft(
+    reminder: UiReminderListActive,
+    isHistorical: Boolean,
+  ) {
     binding.badgesView.visible()
     binding.repeatBadge.visible()
     binding.timeToBadge.visibleGone(reminder.isRunning)
 
     binding.repeatBadge.text = reminder.due.repeat
-    binding.timeToBadge.text = if (isHistorical) {
-      itemView.context.getString(R.string.completed)
-    } else {
-      reminder.due.remaining
-    }
+    binding.timeToBadge.text =
+      if (isHistorical) {
+        itemView.context.getString(R.string.completed)
+      } else {
+        reminder.due.remaining
+      }
   }
 
   private fun loadDate(reminder: UiReminderListActive) {

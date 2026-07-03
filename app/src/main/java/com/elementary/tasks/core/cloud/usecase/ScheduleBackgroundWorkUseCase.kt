@@ -19,9 +19,8 @@ class ScheduleBackgroundWorkUseCase(
   private val workManagerProvider: WorkManagerProvider,
   private val getWorkerTagUseCase: GetWorkerTagUseCase,
   private val prefs: Prefs,
-  private val cloudApiProvider: CloudApiProvider
+  private val cloudApiProvider: CloudApiProvider,
 ) {
-
   operator fun invoke(
     workType: WorkType,
     dataType: DataType? = null,
@@ -38,29 +37,31 @@ class ScheduleBackgroundWorkUseCase(
     id?.also { dataBuilder.putString(WorkerData.ITEM_ID, it) }
     ids?.also { dataBuilder.putStringArray(WorkerData.ITEM_IDS, it.toTypedArray()) }
     val tag = getWorkerTagUseCase(workType, dataType, id)
-    val builder = when (workType) {
-      WorkType.Upload -> OneTimeWorkRequest.Builder(UploadWorker::class.java)
-      WorkType.Sync -> OneTimeWorkRequest.Builder(SyncWorker::class.java)
-      WorkType.Delete -> OneTimeWorkRequest.Builder(DeleteWorker::class.java)
-      WorkType.ForceUpload -> OneTimeWorkRequest.Builder(ForceUploadWorker::class.java)
-      WorkType.ForceSync -> {
-        dataBuilder.putBoolean(WorkerData.FORCE, true)
-        OneTimeWorkRequest.Builder(SyncWorker::class.java)
+    val builder =
+      when (workType) {
+        WorkType.Upload -> OneTimeWorkRequest.Builder(UploadWorker::class.java)
+        WorkType.Sync -> OneTimeWorkRequest.Builder(SyncWorker::class.java)
+        WorkType.Delete -> OneTimeWorkRequest.Builder(DeleteWorker::class.java)
+        WorkType.ForceUpload -> OneTimeWorkRequest.Builder(ForceUploadWorker::class.java)
+        WorkType.ForceSync -> {
+          dataBuilder.putBoolean(WorkerData.FORCE, true)
+          OneTimeWorkRequest.Builder(SyncWorker::class.java)
+        }
       }
-    }
-    val work = builder
-      .setInputData(dataBuilder.build())
-      .addTag(tag)
-      .setConstraints(
-        Constraints.Builder()
-          .setRequiredNetworkType(prefs.workerNetworkType.type)
-          .build()
-      )
-      .build()
+    val work =
+      builder
+        .setInputData(dataBuilder.build())
+        .addTag(tag)
+        .setConstraints(
+          Constraints
+            .Builder()
+            .setRequiredNetworkType(prefs.workerNetworkType.type)
+            .build(),
+        ).build()
     workManagerProvider.getWorkManager().enqueue(work)
     Logger.i(
       TAG,
-      "Scheduled work: type=$workType, dataType=$dataType, id=$id, tag=$tag, network=${prefs.workerNetworkType.name}"
+      "Scheduled work: type=$workType, dataType=$dataType, id=$id, tag=$tag, network=${prefs.workerNetworkType.name}",
     )
     return tag
   }

@@ -32,9 +32,8 @@ class BirthdayActionViewModel(
   private val dateTimeManager: DateTimeManager,
   private val createBirthdayActionScreenStateUseCase: CreateBirthdayActionScreenStateUseCase,
   private val saveBirthdayUseCase: SaveBirthdayUseCase,
-  private val deleteBirthdayUseCase: DeleteBirthdayUseCase
+  private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _state = mutableLiveDataOf<BirthdayActionScreenState>()
   val state = _state.toLiveData()
 
@@ -139,8 +138,8 @@ class BirthdayActionViewModel(
       saveBirthdayUseCase(
         birthday.copy(
           updatedAt = dateTimeManager.getNowGmtDateTime(),
-          showedYear = LocalDate.now().year
-        )
+          showedYear = LocalDate.now().year,
+        ),
       )
       withContext(dispatcherProvider.main()) {
         _redirectEvent.value = Event(Redirect.Finish)
@@ -152,8 +151,14 @@ class BirthdayActionViewModel(
    * Sealed class representing navigation redirect events.
    */
   sealed class Redirect {
-    data class MakeCall(val phoneNumber: String) : Redirect()
-    data class SendSms(val phoneNumber: String) : Redirect()
+    data class MakeCall(
+      val phoneNumber: String,
+    ) : Redirect()
+
+    data class SendSms(
+      val phoneNumber: String,
+    ) : Redirect()
+
     data object Finish : Redirect()
   }
 

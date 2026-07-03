@@ -9,12 +9,11 @@ import org.threeten.bp.LocalDateTime
 
 class ICalDateTimeInjector(
   private val iCalDateTimeCalculator: ICalDateTimeCalculator,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
 ) {
-
   operator fun invoke(
     reminder: Reminder,
-    processedBuilderItems: ProcessedBuilderItems
+    processedBuilderItems: ProcessedBuilderItems,
   ): LocalDateTime? {
     val eventData = iCalDateTimeCalculator(processedBuilderItems) ?: return null
     Logger.d(TAG, "Calculated eventData = $eventData")

@@ -12,14 +12,15 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 fun <T> CoroutineScope.observeTable(
   table: Table,
   tableChangeListenerFactory: TableChangeListenerFactory,
-  queryProducer: suspend() -> T
+  queryProducer: suspend () -> T,
 ): LiveData<T> {
   val liveData = MutableLiveData<T>()
-  val listener = tableChangeListenerFactory.create(table) {
-    launch(Dispatchers.Default) {
-      liveData.postValue(queryProducer())
+  val listener =
+    tableChangeListenerFactory.create(table) {
+      launch(Dispatchers.Default) {
+        liveData.postValue(queryProducer())
+      }
     }
-  }
   launch {
     liveData.postValue(queryProducer())
     listener.register()

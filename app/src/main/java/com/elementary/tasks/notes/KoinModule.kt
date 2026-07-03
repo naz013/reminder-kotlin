@@ -17,44 +17,46 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val noteModule = module {
-  factoryOf(::DeleteNoteUseCase)
-  factoryOf(::SaveNoteUseCase)
-  factoryOf(::ChangeNoteArchiveStateUseCase)
+val noteModule =
+  module {
+    factoryOf(::DeleteNoteUseCase)
+    factoryOf(::SaveNoteUseCase)
+    factoryOf(::ChangeNoteArchiveStateUseCase)
 
-  factoryOf(::CreateSharedNoteFileUseCase)
+    factoryOf(::CreateSharedNoteFileUseCase)
 
-  factoryOf(::ReminderToUiNoteAttachedReminder)
+    factoryOf(::ReminderToUiNoteAttachedReminder)
 
-  factoryOf(::NoteToOldNoteConverter)
+    factoryOf(::NoteToOldNoteConverter)
 
-  singleOf(::ImagesSingleton)
+    singleOf(::ImagesSingleton)
 
-  singleOf(::NoteImageRepository)
+    singleOf(::NoteImageRepository)
 
-  viewModelOf(::CreateNoteViewModel)
-  viewModel { (isArchived: Boolean) ->
+    viewModelOf(::CreateNoteViewModel)
+    viewModel { (isArchived: Boolean) ->
     NotesViewModel(
       get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
       isArchived
     )
   }
-  viewModel { (id: String) ->
-    PreviewNoteViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-    )
+    viewModel { (id: String) ->
+      PreviewNoteViewModel(
+        id,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
   }
-}

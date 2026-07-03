@@ -3,9 +3,8 @@ package com.elementary.tasks.core.apps.filter
 @Deprecated("After S")
 abstract class SearchModifier<V>(
   modifier: Modifier<V>? = null,
-  callback: ((List<V>) -> Unit)? = null
+  callback: ((List<V>) -> Unit)? = null,
 ) : Modifier<V>(modifier, callback) {
-
   var searchValue: String = ""
     private set
 

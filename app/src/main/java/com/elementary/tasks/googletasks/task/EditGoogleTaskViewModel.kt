@@ -48,9 +48,8 @@ class EditGoogleTaskViewModel(
   private val getAllGoogleTaskListsUseCase: GetAllGoogleTaskListsUseCase,
   private val getGoogleTaskByIdUseCase: GetGoogleTaskByIdUseCase,
   private val appWidgetUpdater: AppWidgetUpdater,
-  private val activateReminderUseCase: ActivateReminderUseCase
+  private val activateReminderUseCase: ActivateReminderUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _dateState = mutableLiveDataOf<DateState>()
   val dateState = _dateState.toLiveData()
 
@@ -92,14 +91,15 @@ class EditGoogleTaskViewModel(
       editedTask = getGoogleTaskByIdUseCase(id)
 
       val bundleListId = arguments?.getString(IntentKeys.INTENT_LIST_ID)
-      val googleTaskList = if (bundleListId.isNullOrEmpty()) {
-        // Load default list
-        googleTaskLists.firstOrNull { it.isDefault() }
-      } else {
-        // Load list by id
-        googleTaskLists.firstOrNull { it.listId == bundleListId }
-          ?: googleTaskLists.firstOrNull { it.isDefault() }
-      }
+      val googleTaskList =
+        if (bundleListId.isNullOrEmpty()) {
+          // Load default list
+          googleTaskLists.firstOrNull { it.isDefault() }
+        } else {
+          // Load list by id
+          googleTaskLists.firstOrNull { it.listId == bundleListId }
+            ?: googleTaskLists.firstOrNull { it.isDefault() }
+        }
 
       listId = googleTaskList?.listId ?: ""
       googleTaskList?.also {
@@ -120,7 +120,7 @@ class EditGoogleTaskViewModel(
 
   fun onCreated(
     arguments: Bundle?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) {
     if (savedInstanceState == null) {
       initDefaults()
@@ -128,9 +128,7 @@ class EditGoogleTaskViewModel(
     }
   }
 
-  fun hasId(): Boolean {
-    return id.isNotEmpty()
-  }
+  fun hasId(): Boolean = id.isNotEmpty()
 
   fun onDateSet(localDate: LocalDate) {
     date = localDate
@@ -142,7 +140,10 @@ class EditGoogleTaskViewModel(
     _timeState.postValue(TimeState.SelectedTime(dateTimeManager.getTime(time)))
   }
 
-  fun save(summary: String, note: String) {
+  fun save(
+    summary: String,
+    note: String,
+  ) {
     val reminder = createReminder(summary).takeIf { isTimeSelected() }
     val item = editedTask
     if (item != null) {
@@ -205,19 +206,16 @@ class EditGoogleTaskViewModel(
 
   fun onListSelected(listId: String) {
     this.listId = listId
-    googleTaskLists.firstOrNull { it.listId == listId }
+    googleTaskLists
+      .firstOrNull { it.listId == listId }
       ?.also {
         _taskList.postValue(it)
       }
   }
 
-  fun isDateSelected(): Boolean {
-    return dateState.value is DateState.SelectedDate
-  }
+  fun isDateSelected(): Boolean = dateState.value is DateState.SelectedDate
 
-  fun isTimeSelected(): Boolean {
-    return timeState.value is TimeState.SelectedTime
-  }
+  fun isTimeSelected(): Boolean = timeState.value is TimeState.SelectedTime
 
   private fun checkDeepLink(arguments: Bundle?) {
     if (arguments?.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) == true) {
@@ -267,11 +265,14 @@ class EditGoogleTaskViewModel(
     _timeState.postValue(TimeState.NoTime)
   }
 
-  private fun moveGoogleTask(googleTask: GoogleTask, oldListId: String) {
+  private fun moveGoogleTask(
+    googleTask: GoogleTask,
+    oldListId: String,
+  ) {
     postInProgress(true)
     Logger.i(
       TAG,
-      "Moving Google Task (${googleTask.taskId}) from $oldListId to ${googleTask.listId}"
+      "Moving Google Task (${googleTask.taskId}) from $oldListId to ${googleTask.listId}",
     )
     viewModelScope.launch(dispatcherProvider.default()) {
       googleTasksApi.moveTask(googleTask, oldListId)?.let {
@@ -318,7 +319,10 @@ class EditGoogleTaskViewModel(
     }
   }
 
-  private fun newGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
+  private fun newGoogleTask(
+    googleTask: GoogleTask,
+    reminder: Reminder?,
+  ) {
     postInProgress(true)
     Logger.i(TAG, "Creating Google Task (${googleTask.taskId}), listId=${googleTask.listId}")
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -334,7 +338,10 @@ class EditGoogleTaskViewModel(
     }
   }
 
-  private fun updateGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
+  private fun updateGoogleTask(
+    googleTask: GoogleTask,
+    reminder: Reminder?,
+  ) {
     postInProgress(true)
     Logger.i(TAG, "Updating Google Task (${googleTask.taskId}), listId=${googleTask.listId}")
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -353,69 +360,72 @@ class EditGoogleTaskViewModel(
   private fun updateAndMoveGoogleTask(
     googleTask: GoogleTask,
     oldListId: String,
-    reminder: Reminder?
+    reminder: Reminder?,
   ) {
     postInProgress(true)
     Logger.i(
       TAG,
       "Updating and moving Google Task (${googleTask.taskId}) " +
-        "to ${googleTask.listId} from $oldListId"
+        "to ${googleTask.listId} from $oldListId",
     )
     viewModelScope.launch(dispatcherProvider.default()) {
-      googleTasksApi.updateTask(googleTask)?.let {
-        googleTasksApi.moveTask(it, oldListId)
-      }?.let {
-        googleTaskRepository.save(it)
-        saveReminder(reminder)
-        postInProgress(false)
-        postCommand(Commands.SAVED)
-      } ?: run {
+      googleTasksApi
+        .updateTask(googleTask)
+        ?.let {
+          googleTasksApi.moveTask(it, oldListId)
+        }?.let {
+          googleTaskRepository.save(it)
+          saveReminder(reminder)
+          postInProgress(false)
+          postCommand(Commands.SAVED)
+        } ?: run {
         postInProgress(false)
         postCommand(Commands.FAILED)
       }
     }
   }
 
-  private fun createReminder(task: String) = Reminder().apply {
-    type = Reminder.BY_DATE
-    delay = 0
-    eventCount = 0
-    useGlobal = true
-    isActive = true
-    isRemoved = false
-    summary = task.normalizeSummary()
-    startTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(date, time))
-    eventTime = startTime
-  }
+  private fun createReminder(task: String) =
+    Reminder().apply {
+      type = Reminder.BY_DATE
+      delay = 0
+      eventCount = 0
+      useGlobal = true
+      isActive = true
+      isRemoved = false
+      summary = task.normalizeSummary()
+      startTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(date, time))
+      eventTime = startTime
+    }
 
   private fun update(
     googleTask: GoogleTask,
     summary: String,
     note: String,
-    reminder: Reminder?
-  ): GoogleTask {
-    return googleTask.copy(
+    reminder: Reminder?,
+  ): GoogleTask =
+    googleTask.copy(
       listId = listId,
       status = GoogleTask.TASKS_NEED_ACTION,
       title = summary,
       notes = note,
-      dueDate = date.takeIf { isDateSelected() }
-        ?.let { dateTimeManager.toMillis(LocalDateTime.of(it, time)) } ?: 0L,
-      uuId = reminder?.uuId ?: ""
+      dueDate =
+        date
+          .takeIf { isDateSelected() }
+          ?.let { dateTimeManager.toMillis(LocalDateTime.of(it, time)) } ?: 0L,
+      uuId = reminder?.uuId ?: "",
     )
-  }
 
-  private fun String.normalizeSummary(): String {
-    return if (length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
+  private fun String.normalizeSummary(): String =
+    if (length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
       substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)
     } else {
       this
     }
-  }
 
   sealed class DateState {
     data class SelectedDate(
-      val formattedDate: String
+      val formattedDate: String,
     ) : DateState()
 
     data object NoDate : DateState()
@@ -423,7 +433,7 @@ class EditGoogleTaskViewModel(
 
   sealed class TimeState {
     data class SelectedTime(
-      val formattedTime: String
+      val formattedTime: String,
     ) : TimeState()
 
     data object NoTime : TimeState()

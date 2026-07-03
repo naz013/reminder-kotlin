@@ -17,21 +17,18 @@ import com.github.naz013.ui.common.view.applyTopInsets
 abstract class BaseToolbarFragment<B : ViewBinding> :
   BaseNavigationFragment<B>(),
   FragmentMenuController {
-
   private lateinit var containerBinding: FragmentBaseToolbarBinding
   private var menuModifier: ((Menu) -> Unit)? = null
 
   abstract fun getTitle(): String
 
   @DrawableRes
-  open fun getNavigationIcon(): Int {
-    return R.drawable.ic_builder_arrow_left
-  }
+  open fun getNavigationIcon(): Int = R.drawable.ic_builder_arrow_left
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     containerBinding = FragmentBaseToolbarBinding.inflate(inflater, container, false)
     val subView = inflate(inflater, containerBinding.fragmentContentView, savedInstanceState)
@@ -40,7 +37,10 @@ abstract class BaseToolbarFragment<B : ViewBinding> :
     return containerBinding.root
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     containerBinding.appBar.applyTopInsets()
     containerBinding.toolbar.title = getTitle()
@@ -60,7 +60,7 @@ abstract class BaseToolbarFragment<B : ViewBinding> :
   override fun addMenu(
     menuRes: Int?,
     onMenuItemListener: (MenuItem) -> Boolean,
-    menuModifier: ((Menu) -> Unit)?
+    menuModifier: ((Menu) -> Unit)?,
   ) {
     this.menuModifier = menuModifier
     containerBinding.toolbar.menu.clear()
@@ -80,7 +80,7 @@ abstract class BaseToolbarFragment<B : ViewBinding> :
 
   override fun updateMenuItem(
     itemId: Int,
-    modifier: MenuItem.() -> Unit
+    modifier: MenuItem.() -> Unit,
   ) {
     val menuItem = containerBinding.toolbar.menu.findItem(itemId) ?: return
     modifier(menuItem)

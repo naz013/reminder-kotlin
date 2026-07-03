@@ -10,7 +10,7 @@ data class TimerExclusion(
   @SerializedName("from")
   var from: String,
   @SerializedName("to")
-  var to: String
+  var to: String,
 )
 
 @Keep
@@ -18,7 +18,7 @@ data class CalendarDuration(
   @SerializedName("allDay")
   var allDay: Boolean,
   @SerializedName("millis")
-  var millis: Long
+  var millis: Long,
 )
 
 @Keep
@@ -30,5 +30,5 @@ data class OtherParams(
   @SerializedName("notifyByVoice")
   var notifyByVoice: Boolean = false,
   @SerializedName("repeatNotification")
-  var repeatNotification: Boolean = false
+  var repeatNotification: Boolean = false,
 )

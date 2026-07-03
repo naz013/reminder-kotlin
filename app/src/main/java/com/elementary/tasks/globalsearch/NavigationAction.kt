@@ -4,10 +4,10 @@ sealed class NavigationAction
 
 data class ActivityNavigation(
   val clazz: Class<*>,
-  val objectId: String
+  val objectId: String,
 ) : NavigationAction()
 
 data class FragmentNavigation(
   val id: Int,
-  val objectId: String
+  val objectId: String,
 ) : NavigationAction()

@@ -19,34 +19,35 @@ import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import org.koin.dsl.module
 
-val adapterModule = module {
-  factory { UiReminderPlaceAdapter() }
-  factory { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get(), get()) }
-  factory { UiReminderListAdapter(get(), get(), get(), get(), get()) }
-  factory { UiReminderListsAdapter(get(), get(), get()) }
+val adapterModule =
+  module {
+    factory { UiReminderPlaceAdapter() }
+    factory { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get(), get()) }
+    factory { UiReminderListAdapter(get(), get(), get(), get(), get()) }
+    factory { UiReminderListsAdapter(get(), get(), get()) }
 
-  factory { UiBirthdayListAdapter(get(), get(), get()) }
-  factory { UiBirthdayShowAdapter(get(), get()) }
-  factory { UiBirthdayEditAdapter() }
-  factory { UiBirthdayPreviewAdapter(get(), get(), get()) }
+    factory { UiBirthdayListAdapter(get(), get(), get()) }
+    factory { UiBirthdayShowAdapter(get(), get()) }
+    factory { UiBirthdayEditAdapter() }
+    factory { UiBirthdayPreviewAdapter(get(), get(), get()) }
 
-  factory { UiGoogleTaskListAdapter(get()) }
-  factory { UiGoogleTaskPreviewAdapter(get(), get()) }
+    factory { UiGoogleTaskListAdapter(get()) }
+    factory { UiGoogleTaskPreviewAdapter(get(), get()) }
 
-  factory { UiGroupListAdapter(get()) }
-  factory { UiGroupEditAdapter() }
+    factory { UiGroupListAdapter(get()) }
+    factory { UiGroupEditAdapter() }
 
-  factory { UiUsedTimeListAdapter() }
+    factory { UiUsedTimeListAdapter() }
 
-  factory { UiNoteImagesAdapter() }
-  factory { UiNoteEditAdapter(get()) }
-  factory { UiNoteListAdapter(get(), get(), get(), get()) }
-  factory { UiNoteListItemAdapter(get(), get(), get()) }
+    factory { UiNoteImagesAdapter() }
+    factory { UiNoteEditAdapter(get()) }
+    factory { UiNoteListAdapter(get(), get(), get(), get()) }
+    factory { UiNoteListItemAdapter(get(), get(), get()) }
   factory { UiNotePreviewAdapter(get(), get(), get()) }
-  factory { UiNoteNotificationAdapter(get(), get()) }
+    factory { UiNoteNotificationAdapter(get(), get()) }
 
-  factory { UiPlaceListAdapter(get(), get(), get()) }
-  factory { UiPlaceEditAdapter() }
+    factory { UiPlaceListAdapter(get(), get(), get()) }
+    factory { UiPlaceEditAdapter() }
 
-  factory { UiPresetListAdapter(get()) }
-}
+    factory { UiPresetListAdapter(get()) }
+  }

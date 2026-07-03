@@ -9,17 +9,16 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.text.applyStyles
+import com.elementary.tasks.databinding.ListItemShopItemBinding
+import com.elementary.tasks.databinding.ViewListItemBadgeBinding
 import com.github.naz013.ui.common.view.inflater
 import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
-import com.elementary.tasks.databinding.ListItemShopItemBinding
-import com.elementary.tasks.databinding.ViewListItemBadgeBinding
 
 class ScheduleReminderViewHolderCommon {
-
   fun addChips(
     container: LinearLayout,
-    tags: List<UiTextElement>
+    tags: List<UiTextElement>,
   ) {
     if (tags.isEmpty()) {
       return
@@ -44,7 +43,7 @@ class ScheduleReminderViewHolderCommon {
     reminder: UiReminderListActiveShop,
     todoListView: LinearLayout,
     isDark: Boolean,
-    @ColorInt textColor: Int
+    @ColorInt textColor: Int,
   ) {
     todoListView.visible()
     todoListView.isFocusableInTouchMode = false
@@ -52,11 +51,12 @@ class ScheduleReminderViewHolderCommon {
     todoListView.removeAllViewsInLayout()
     var count = 0
     for (list in reminder.shopList) {
-      val bind = ListItemShopItemBinding.inflate(
-        LayoutInflater.from(todoListView.context),
-        todoListView,
-        false
-      )
+      val bind =
+        ListItemShopItemBinding.inflate(
+          LayoutInflater.from(todoListView.context),
+          todoListView,
+          false,
+        )
       val checkView = bind.checkView
       val textView = bind.shopText
       if (list.isChecked) {

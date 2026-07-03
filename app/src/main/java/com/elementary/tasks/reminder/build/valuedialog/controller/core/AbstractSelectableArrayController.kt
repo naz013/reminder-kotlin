@@ -13,9 +13,8 @@ import com.elementary.tasks.reminder.build.BuilderItem
 abstract class AbstractSelectableArrayController<T, D : SelectableValue>(
   builderItem: BuilderItem<T>,
   private val multiChoice: Boolean,
-  private val numOfColumns: Int = 7
+  private val numOfColumns: Int = 7,
 ) : AbstractBindingValueController<T, BuilderItemSelectableArrayBinding>(builderItem) {
-
   private val arrayAdapter by lazy {
     ArrayAdapter(getAdapterData(), multiChoice) { updateValue(it) }
   }
@@ -26,10 +25,8 @@ abstract class AbstractSelectableArrayController<T, D : SelectableValue>(
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemSelectableArrayBinding {
-    return BuilderItemSelectableArrayBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemSelectableArrayBinding = BuilderItemSelectableArrayBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -40,12 +37,9 @@ abstract class AbstractSelectableArrayController<T, D : SelectableValue>(
   class ArrayAdapter<V : SelectableValue>(
     private val items: List<V>,
     private val isMultiChoice: Boolean,
-    private val onDataChanged: (List<V>) -> Unit
+    private val onDataChanged: (List<V>) -> Unit,
   ) : RecyclerView.Adapter<ArrayAdapter.ArrayAdapterViewHolder>() {
-
-    fun getSelected(): List<V> {
-      return items.filter { it.isSelected() }
-    }
+    fun getSelected(): List<V> = items.filter { it.isSelected() }
 
     @SuppressLint("NotifyDataSetChanged")
     fun clearSelection() {
@@ -65,20 +59,23 @@ abstract class AbstractSelectableArrayController<T, D : SelectableValue>(
       onDataChanged(getSelected())
     }
 
-    override fun getItemCount(): Int {
-      return items.size
-    }
+    override fun getItemCount(): Int = items.size
 
-    override fun onBindViewHolder(holder: ArrayAdapterViewHolder, position: Int) {
+    override fun onBindViewHolder(
+      holder: ArrayAdapterViewHolder,
+      position: Int,
+    ) {
       holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArrayAdapterViewHolder {
-      return ArrayAdapterViewHolder(
+    override fun onCreateViewHolder(
+      parent: ViewGroup,
+      viewType: Int,
+    ): ArrayAdapterViewHolder =
+      ArrayAdapterViewHolder(
         parent = parent,
-        clickListener = { onItemClicked(it) }
+        clickListener = { onItemClicked(it) },
       )
-    }
 
     private fun onItemClicked(position: Int) {
       val item = items[position]
@@ -95,21 +92,21 @@ abstract class AbstractSelectableArrayController<T, D : SelectableValue>(
       onDataChanged(getSelected())
     }
 
-    private fun getSelectedPosition(): Int {
-      return items.indexOfFirst { it.isSelected() }
-    }
+    private fun getSelectedPosition(): Int = items.indexOfFirst { it.isSelected() }
 
     class ArrayAdapterViewHolder(
       parent: ViewGroup,
       clickListener: (Int) -> Unit,
       private val binding: ListItemBuilderSelectableBinding =
         ListItemBuilderSelectableBinding.inflate(
-          /* inflater = */ LayoutInflater.from(parent.context),
-          /* parent = */ parent,
-          /* attachToParent = */ false
-        )
+          // inflater =
+          LayoutInflater.from(parent.context),
+          // parent =
+          parent,
+          // attachToParent =
+          false,
+        ),
     ) : RecyclerView.ViewHolder(binding.root) {
-
       init {
         binding.textView.setOnClickListener { clickListener(bindingAdapterPosition) }
       }
@@ -129,15 +126,11 @@ abstract class AbstractSelectableArrayController<T, D : SelectableValue>(
   open class SimpleSelectableValue<T>(
     val value: T,
     val uiValue: String,
-    var selectionState: Boolean
+    var selectionState: Boolean,
   ) : SelectableValue {
-    override fun getTitle(): String {
-      return uiValue
-    }
+    override fun getTitle(): String = uiValue
 
-    override fun isSelected(): Boolean {
-      return selectionState
-    }
+    override fun isSelected(): Boolean = selectionState
 
     override fun setSelected(isSelected: Boolean) {
       this.selectionState = isSelected

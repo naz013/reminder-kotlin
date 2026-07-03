@@ -28,9 +28,8 @@ class PreviewGoogleTaskViewModel(
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
-  private val appWidgetUpdater: AppWidgetUpdater
+  private val appWidgetUpdater: AppWidgetUpdater,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _googleTask = mutableLiveDataOf<UiGoogleTaskPreview>()
   val googleTask = _googleTask.toLiveData()
 
@@ -108,8 +107,9 @@ class PreviewGoogleTaskViewModel(
   private fun loadTask() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val googleTask = googleTaskRepository.getById(id) ?: return@launch
-      val googleTaskList = googleTaskListRepository.getById(googleTask.listId)
-        ?: googleTaskListRepository.defaultGoogleTaskList()
+      val googleTaskList =
+        googleTaskListRepository.getById(googleTask.listId)
+          ?: googleTaskListRepository.defaultGoogleTaskList()
       _googleTask.postValue(uiGoogleTaskPreviewAdapter.convert(googleTask, googleTaskList))
     }
   }

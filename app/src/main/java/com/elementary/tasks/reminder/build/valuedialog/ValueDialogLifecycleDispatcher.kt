@@ -4,9 +4,8 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControlle
 import com.github.naz013.logging.Logger
 
 class ValueDialogLifecycleDispatcher(
-  private val controller: ValueController
+  private val controller: ValueController,
 ) {
-
   var state = ValueDialogState.NONE
     private set
 

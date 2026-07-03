@@ -16,9 +16,8 @@ class BackupSettingsWorker(
   context: Context,
   workerParams: WorkerParameters,
   private val dispatcherProvider: DispatcherProvider,
-  private val syncApi: SyncApi
+  private val syncApi: SyncApi,
 ) : CoroutineWorker(context, workerParams) {
-
   override suspend fun doWork(): Result {
     withContext(dispatcherProvider.io()) {
       syncApi.upload(DataType.Settings)
@@ -30,15 +29,17 @@ class BackupSettingsWorker(
     private const val TAG = "BackupSettingsWorker"
 
     fun schedule(context: Context) {
-      val work = OneTimeWorkRequest.Builder(BackupSettingsWorker::class.java)
-        .addTag(TAG)
-        .setConstraints(
-          Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .setRequiresBatteryNotLow(true)
-            .build()
-        )
-        .build()
+      val work =
+        OneTimeWorkRequest
+          .Builder(BackupSettingsWorker::class.java)
+          .addTag(TAG)
+          .setConstraints(
+            Constraints
+              .Builder()
+              .setRequiredNetworkType(NetworkType.UNMETERED)
+              .setRequiresBatteryNotLow(true)
+              .build(),
+          ).build()
       WorkManager.getInstance(context).enqueue(work)
     }
   }

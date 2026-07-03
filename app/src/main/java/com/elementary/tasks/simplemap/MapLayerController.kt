@@ -9,9 +9,8 @@ import com.google.android.gms.maps.GoogleMap
 
 class MapLayerController(
   rootView: View,
-  private val listener: OnLayerStyleListener
+  private val listener: OnLayerStyleListener,
 ) {
-
   private val layersButton = rootView.findViewById<View>(R.id.layersCard)
   private val layersContainer = rootView.findViewById<View>(R.id.layersContainer)
 
@@ -51,9 +50,7 @@ class MapLayerController(
     hideAllCards()
   }
 
-  fun isLayerVisible(): Boolean {
-    return layersContainer.isVisible() || mapStyleContainer.isVisible()
-  }
+  fun isLayerVisible(): Boolean = layersContainer.isVisible() || mapStyleContainer.isVisible()
 
   private fun onStyleClicked(style: Int) {
     listener.onStyleChanged(style)
@@ -116,7 +113,9 @@ class MapLayerController(
 
   interface OnLayerStyleListener {
     fun onLayerChanged(type: Int)
+
     fun onStyleChanged(style: Int)
+
     fun onLayerButtonClicked()
   }
 }

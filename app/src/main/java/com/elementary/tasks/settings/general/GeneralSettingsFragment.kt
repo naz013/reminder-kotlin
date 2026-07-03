@@ -19,16 +19,18 @@ import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.color.DynamicColors
 
 class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
-
   private var mItemSelect: Int = 0
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsGeneralBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     initAppTheme()
     init24TimePrefs()
@@ -106,7 +108,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
       mItemSelect = init
       builder.setSingleChoiceItems(
         resources.getStringArray(R.array.app_languages),
-        mItemSelect
+        mItemSelect,
       ) { _, which -> mItemSelect = which }
       builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
         prefs.appLanguage = mItemSelect
@@ -129,14 +131,13 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     binding.time24hourPrefs.setDetailText(currentFormat())
   }
 
-  private fun currentFormat(): String {
-    return when (prefs.hourFormat) {
+  private fun currentFormat(): String =
+    when (prefs.hourFormat) {
       0 -> getString(R.string.system_default)
       1 -> getString(R.string.use_24_hour_format)
       2 -> getString(R.string.use_12_hour_format)
       else -> getString(R.string.default_string)
     }
-  }
 
   private fun showTimeFormatDialog() {
     withContext {
@@ -149,9 +150,9 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
         arrayOf(
           getString(R.string.system_default),
           getString(R.string.use_24_hour_format),
-          getString(R.string.use_12_hour_format)
+          getString(R.string.use_12_hour_format),
         ),
-        mItemSelect
+        mItemSelect,
       ) { _, which -> mItemSelect = which }
       builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
         prefs.hourFormat = mItemSelect
@@ -191,29 +192,26 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     }
   }
 
-  private fun themeNames(): Array<String> {
-    return arrayOf(
+  private fun themeNames(): Array<String> =
+    arrayOf(
       getString(R.string.light),
       getString(R.string.dark),
-      getString(R.string.system_default)
+      getString(R.string.system_default),
     )
-  }
 
-  private fun getTheme(index: Int): Int {
-    return when (index) {
+  private fun getTheme(index: Int): Int =
+    when (index) {
       0 -> AppCompatDelegate.MODE_NIGHT_NO
       1 -> AppCompatDelegate.MODE_NIGHT_YES
       else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     }
-  }
 
-  private fun getThemeIndex(theme: Int): Int {
-    return when (theme) {
+  private fun getThemeIndex(theme: Int): Int =
+    when (theme) {
       AppCompatDelegate.MODE_NIGHT_NO -> 0
       AppCompatDelegate.MODE_NIGHT_YES -> 1
       else -> 2
     }
-  }
 
   override fun getTitle(): String = getString(R.string.general)
 

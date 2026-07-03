@@ -3,8 +3,10 @@ package com.elementary.tasks.reminder.build.bi
 import com.elementary.tasks.reminder.build.BuilderItem
 
 class BiComparator : Comparator<BuilderItem<*>> {
-
-  override fun compare(o1: BuilderItem<*>?, o2: BuilderItem<*>?): Int {
+  override fun compare(
+    o1: BuilderItem<*>?,
+    o2: BuilderItem<*>?,
+  ): Int {
     if (o1 == null && o2 == null) return 0
     if (o1 == null) return 1
     if (o2 == null) return -1

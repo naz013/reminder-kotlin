@@ -11,14 +11,15 @@ import com.github.naz013.repository.NoteRepository
 class NoteDecomposer(
   private val biFactory: BiFactory,
   private val noteRepository: NoteRepository,
-  private val uiNoteListAdapter: UiNoteListAdapter
+  private val uiNoteListAdapter: UiNoteListAdapter,
 ) {
-
   suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
-    val note = reminder.noteId.takeIf { it.isNotEmpty() }
-      ?.let { noteRepository.getById(it) }
-      ?.let { uiNoteListAdapter.convert(it) }
-      ?.let { biFactory.createWithValue(BiType.NOTE, it, NoteBuilderItem::class.java) }
+    val note =
+      reminder.noteId
+        .takeIf { it.isNotEmpty() }
+        ?.let { noteRepository.getById(it) }
+        ?.let { uiNoteListAdapter.convert(it) }
+        ?.let { biFactory.createWithValue(BiType.NOTE, it, NoteBuilderItem::class.java) }
     return listOfNotNull(note)
   }
 }

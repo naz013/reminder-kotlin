@@ -22,89 +22,78 @@ class GetNavigationItemsUseCase(
   private val noteRepository: NoteRepository,
   private val googleTaskRepository: GoogleTaskRepository,
 ) {
-
   suspend operator fun invoke(
     scope: CoroutineScope,
-    day: LocalDateTime
-  ): List<HeaderNavigationItem> {
-    return listOfNotNull(
+    day: LocalDateTime,
+  ): List<HeaderNavigationItem> =
+    listOfNotNull(
       getCalendarItem(scope = scope),
       getEventsItem(scope = scope),
       getNoteItem(scope = scope),
       getGoogleTasksItem(scope = scope),
 //      getGroupItem(scope = scope),
     )
-  }
 
-  private suspend fun getCalendarItem(
-    scope: CoroutineScope,
-  ): HeaderNavigationItem {
+  private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
     val remindersCount = reminderRepository.countAllTypesInState(active = true, removed = false)
     val birthdaysCount = birthdayRepository.countAll()
-    return scope.async(dispatcherProvider.io()) {
-      HeaderNavigationItem(
-        titleRes = R.string.calendar,
-        iconRes = R.drawable.ic_fluent_calendar,
-        color = Color.Green,
-        navigationEvent = NavigationEvent.OpenCalendar,
-        subtitle = "${remindersCount + birthdaysCount}"
-      )
-    }.await()
+    return scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.calendar,
+          iconRes = R.drawable.ic_fluent_calendar,
+          color = Color.Green,
+          navigationEvent = NavigationEvent.OpenCalendar,
+          subtitle = "${remindersCount + birthdaysCount}",
+        )
+      }.await()
   }
 
-  private suspend fun getEventsItem(
-    scope: CoroutineScope,
-  ): HeaderNavigationItem {
-    return scope.async(dispatcherProvider.io()) {
-      HeaderNavigationItem(
-        titleRes = R.string.events,
-        iconRes = R.drawable.ic_fluent_timeline,
-        color = Color.Green,
-        navigationEvent = NavigationEvent.OpenEvents,
-        subtitle = "${reminderRepository.countAllTypesInState(active = true, removed = false)}"
-      )
-    }.await()
-  }
+  private suspend fun getEventsItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.events,
+          iconRes = R.drawable.ic_fluent_timeline,
+          color = Color.Green,
+          navigationEvent = NavigationEvent.OpenEvents,
+          subtitle = "${reminderRepository.countAllTypesInState(active = true, removed = false)}",
+        )
+      }.await()
 
-  private suspend fun getNoteItem(
-    scope: CoroutineScope,
-  ): HeaderNavigationItem {
-    return scope.async(dispatcherProvider.io()) {
-      HeaderNavigationItem(
-        titleRes = R.string.notes,
-        iconRes = R.drawable.ic_fluent_note,
-        color = Color.Green,
-        navigationEvent = NavigationEvent.OpenNotes,
-        subtitle = "${noteRepository.countAll(isArchived = false)}"
-      )
-    }.await()
-  }
+  private suspend fun getNoteItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.notes,
+          iconRes = R.drawable.ic_fluent_note,
+          color = Color.Green,
+          navigationEvent = NavigationEvent.OpenNotes,
+          subtitle = "${noteRepository.countAll(isArchived = false)}",
+        )
+      }.await()
 
-  private suspend fun getGoogleTasksItem(
-    scope: CoroutineScope,
-  ): HeaderNavigationItem {
-    return scope.async(dispatcherProvider.io()) {
-      HeaderNavigationItem(
-        titleRes = R.string.google_tasks,
-        iconRes = R.drawable.ic_builder_google_task_list,
-        color = Color.Green,
-        navigationEvent = NavigationEvent.OpenGoogleTasks,
-        subtitle = "${googleTaskRepository.countAll()}"
-      )
-    }.await()
-  }
+  private suspend fun getGoogleTasksItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.google_tasks,
+          iconRes = R.drawable.ic_builder_google_task_list,
+          color = Color.Green,
+          navigationEvent = NavigationEvent.OpenGoogleTasks,
+          subtitle = "${googleTaskRepository.countAll()}",
+        )
+      }.await()
 
-  private suspend fun getGroupItem(
-    scope: CoroutineScope,
-  ): HeaderNavigationItem {
-    return scope.async(dispatcherProvider.io()) {
-      HeaderNavigationItem(
-        titleRes = R.string.groups,
-        iconRes = R.drawable.ic_builder_group,
-        color = Color.Green,
-        navigationEvent = NavigationEvent.OpenGroups,
-        subtitle = "${reminderGroupRepository.countAll()}"
-      )
-    }.await()
-  }
+  private suspend fun getGroupItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.groups,
+          iconRes = R.drawable.ic_builder_group,
+          color = Color.Green,
+          navigationEvent = NavigationEvent.OpenGroups,
+          subtitle = "${reminderGroupRepository.countAll()}",
+        )
+      }.await()
 }

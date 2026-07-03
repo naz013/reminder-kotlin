@@ -4,5 +4,5 @@ data class UiNoteImage(
   val id: Int,
   val fileName: String,
   val filePath: String = "",
-  val state: UiNoteImageState = UiNoteImageState.READY
+  val state: UiNoteImageState = UiNoteImageState.READY,
 )

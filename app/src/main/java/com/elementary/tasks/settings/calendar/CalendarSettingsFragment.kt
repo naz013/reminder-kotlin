@@ -14,16 +14,18 @@ import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBinding>() {
-
   private val viewModel by viewModel<CalendarSettingsViewModel>()
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsCalendarBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     initFirstDayPrefs()
 
@@ -82,9 +84,7 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
     }
   }
 
-  private fun showGoogleCalendarSelectionDialog(
-    data: CalendarSettingsViewModel.ShowSelectGoogleCalendarDialog
-  ) {
+  private fun showGoogleCalendarSelectionDialog(data: CalendarSettingsViewModel.ShowSelectGoogleCalendarDialog) {
     val names = data.calendars.map { it.name }.toTypedArray()
     val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(R.string.choose_calendar)
@@ -124,7 +124,11 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
     binding.scanCalendarPrefs.isChecked = prefs.scanGoogleCalendarEvents
   }
 
-  private fun showColorPopup(current: Int, title: String, onSave: (Int) -> Unit) {
+  private fun showColorPopup(
+    current: Int,
+    title: String,
+    onSave: (Int) -> Unit,
+  ) {
     withActivity { act ->
       dialogues.showColorDialog(act, current, title, ThemeProvider.colorsForSliderThemed(act)) {
         onSave.invoke(it)
@@ -162,31 +166,28 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
   private fun initRemindersColorPrefs() {
     binding.reminderColorPrefs.setViewColor(
-      ThemeProvider.colorReminderCalendar(requireContext(), prefs.reminderColor)
+      ThemeProvider.colorReminderCalendar(requireContext(), prefs.reminderColor),
     )
   }
 
-  override fun getTitle(): String {
-    return arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.calendar)
-  }
+  override fun getTitle(): String = arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.calendar)
 
-  override fun getNavigationIcon(): Int {
-    return if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
+  override fun getNavigationIcon(): Int =
+    if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
       super.getNavigationIcon()
     } else {
       R.drawable.ic_builder_clear
     }
-  }
 
   private fun initBirthdaysColorPrefs() {
     binding.birthdayColorPrefs.setViewColor(
-      ThemeProvider.colorBirthdayCalendar(requireContext(), prefs.birthdayColor)
+      ThemeProvider.colorBirthdayCalendar(requireContext(), prefs.birthdayColor),
     )
   }
 
   private fun initTodayColorPrefs() {
     binding.todayColorPrefs.setViewColor(
-      ThemeProvider.colorTodayCalendar(requireContext(), prefs.todayColor)
+      ThemeProvider.colorTodayCalendar(requireContext(), prefs.todayColor),
     )
   }
 }

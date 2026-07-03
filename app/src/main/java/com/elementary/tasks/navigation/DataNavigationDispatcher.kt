@@ -23,9 +23,8 @@ import com.github.naz013.ui.common.context.buildIntent
 
 class DataNavigationDispatcher(
   private val context: Context,
-  private val intentDataWriter: IntentDataWriter
+  private val intentDataWriter: IntentDataWriter,
 ) : NavigationDispatcher<DataDestination> {
-
   override fun dispatch(destination: DataDestination) {
     val data = destination.data
 
@@ -39,17 +38,18 @@ class DataNavigationDispatcher(
 
     intentDataWriter.putData(IntentKeys.INTENT_ITEM, data)
 
-    context.buildIntent(clazz) {
-      getAction(data)?.also { setAction(it) }
-      getFlags(data)?.also { addFlags(it) }
-      getExtras(data)?.also { putExtras(it) }
-    }.also {
-      context.startActivity(it)
-    }
+    context
+      .buildIntent(clazz) {
+        getAction(data)?.also { setAction(it) }
+        getFlags(data)?.also { addFlags(it) }
+        getExtras(data)?.also { putExtras(it) }
+      }.also {
+        context.startActivity(it)
+      }
   }
 
-  private fun getExtras(data: Any): Bundle? {
-    return when (data) {
+  private fun getExtras(data: Any): Bundle? =
+    when (data) {
       is Birthday -> {
         Bundle().apply {
           putParcelable(
@@ -58,8 +58,8 @@ class DataNavigationDispatcher(
               Bundle().apply {
                 putBoolean(IntentKeys.INTENT_ITEM, true)
                 putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-              }
-            )
+              },
+            ),
           )
         }
       }
@@ -72,8 +72,8 @@ class DataNavigationDispatcher(
               Bundle().apply {
                 putBoolean(IntentKeys.INTENT_ITEM, true)
                 putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-              }
-            )
+              },
+            ),
           )
         }
       }
@@ -86,8 +86,8 @@ class DataNavigationDispatcher(
               Bundle().apply {
                 putBoolean(IntentKeys.INTENT_ITEM, true)
                 putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-              }
-            )
+              },
+            ),
           )
         }
       }
@@ -100,8 +100,8 @@ class DataNavigationDispatcher(
               Bundle().apply {
                 putBoolean(IntentKeys.INTENT_ITEM, true)
                 putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-              }
-            )
+              },
+            ),
           )
         }
       }
@@ -114,21 +114,17 @@ class DataNavigationDispatcher(
 
       else -> null
     }
-  }
 
-  private fun getFlags(data: Any): Int? {
-    return Intent.FLAG_ACTIVITY_NEW_TASK
-  }
+  private fun getFlags(data: Any): Int? = Intent.FLAG_ACTIVITY_NEW_TASK
 
-  private fun getAction(data: Any): String? {
-    return when (data) {
+  private fun getAction(data: Any): String? =
+    when (data) {
       is Birthday, is ReminderGroup, is Place, is Reminder -> Intent.ACTION_VIEW
       else -> null
     }
-  }
 
-  private fun getClass(data: Any): Class<*>? {
-    return when (data) {
+  private fun getClass(data: Any): Class<*>? =
+    when (data) {
       is Birthday -> BottomNavActivity::class.java
       is Reminder -> BottomNavActivity::class.java
       is ReminderGroup -> BottomNavActivity::class.java
@@ -136,5 +132,4 @@ class DataNavigationDispatcher(
       is Place -> BottomNavActivity::class.java
       else -> null
     }
-  }
 }

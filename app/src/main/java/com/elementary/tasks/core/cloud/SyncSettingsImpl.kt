@@ -6,9 +6,8 @@ import com.github.naz013.sync.SyncSettings
 import com.github.naz013.sync.settings.SettingsModel
 
 class SyncSettingsImpl(
-  private val prefs: Prefs
+  private val prefs: Prefs,
 ) : SyncSettings {
-
   override fun getSettings(): SettingsModel {
     val list = prefs.all().toMutableMap()
     if (list.containsKey(PrefsConstants.DRIVE_USER)) {

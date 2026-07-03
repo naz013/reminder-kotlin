@@ -27,7 +27,6 @@ class SettingsFragment :
   RemotePrefs.SaleObserver,
   RemotePrefs.UpdateObserver,
   RemotePrefs.MessageObserver {
-
   private val remotePrefs: RemotePrefs by inject()
   private val doNotDisturbManager by inject<DoNotDisturbManager>()
 
@@ -36,16 +35,17 @@ class SettingsFragment :
       checkDoNotDisturb()
     }
   }
-  private val loginLauncher = LoginLauncher(this) {
-    if (it) {
-      openSecurity()
+  private val loginLauncher =
+    LoginLauncher(this) {
+      if (it) {
+        openSecurity()
+      }
     }
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsBinding.inflate(inflater, container, false)
 
   override fun onResume() {
@@ -85,7 +85,10 @@ class SettingsFragment :
     }
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.saleBadge.gone()
     binding.updateBadge.gone()
@@ -124,9 +127,10 @@ class SettingsFragment :
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
     }
     binding.buyProBadge.setOnClickListener { openProPage() }
-    if (!BuildParams.isPro && !SuperUtil.isAppInstalled(
+    if (!BuildParams.isPro &&
+      !SuperUtil.isAppInstalled(
         requireContext(),
-        "com.cray.software.justreminderpro"
+        "com.cray.software.justreminderpro",
       )
     ) {
       binding.buyProBadge.visible()
@@ -152,7 +156,10 @@ class SettingsFragment :
   }
 
   @SuppressLint("SetTextI18n")
-  override fun onUpdateChanged(hasUpdate: Boolean, version: String) {
+  override fun onUpdateChanged(
+    hasUpdate: Boolean,
+    version: String,
+  ) {
     Logger.d(TAG, "onUpdateChanged: $hasUpdate, $version")
     if (hasUpdate) {
       binding.updateBadge.visible()
@@ -163,7 +170,11 @@ class SettingsFragment :
     }
   }
 
-  override fun onSaleChanged(showDiscount: Boolean, discount: String, until: String) {
+  override fun onSaleChanged(
+    showDiscount: Boolean,
+    discount: String,
+    until: String,
+  ) {
     Logger.d(TAG, "onSaleChanged: $showDiscount, $discount")
     if (showDiscount) {
       binding.saleBadge.visible()
@@ -177,7 +188,10 @@ class SettingsFragment :
     safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToFragmentProVersion())
   }
 
-  override fun onMessageChanged(showMessage: Boolean, message: String) {
+  override fun onMessageChanged(
+    showMessage: Boolean,
+    message: String,
+  ) {
     if (showMessage) {
       binding.internalMessageBadge.visible()
       binding.internalMessageBadge.text = message

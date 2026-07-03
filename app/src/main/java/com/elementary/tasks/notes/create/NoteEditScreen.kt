@@ -73,15 +73,16 @@ fun NoteEditScreen(
   activeDialog: NoteEditDialog?,
   colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   val focusManager = LocalFocusManager.current
   val canDelete = state.isNoteEdited && !state.isFromFile
 
   BoxWithConstraints(
-    modifier = modifier
-      .fillMaxSize()
-      .background(backgroundColor)
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(backgroundColor),
   ) {
     val barMaxWidth = maxWidth - 32.dp
     Column(modifier = Modifier.fillMaxSize()) {
@@ -91,7 +92,7 @@ fun NoteEditScreen(
             Icon(
               painter = painterResource(R.drawable.ic_builder_arrow_left),
               contentDescription = null,
-              tint = contentColor
+              tint = contentColor,
             )
           }
         },
@@ -101,14 +102,14 @@ fun NoteEditScreen(
             Icon(
               painter = painterResource(R.drawable.ic_fluent_checkmark),
               contentDescription = stringResource(R.string.save),
-              tint = contentColor
+              tint = contentColor,
             )
           }
           IconButton(onClick = actions.onShareClick) {
             Icon(
               painter = painterResource(R.drawable.ic_fluent_share_android),
               contentDescription = stringResource(R.string.share),
-              tint = contentColor
+              tint = contentColor,
             )
           }
           if (canDelete) {
@@ -116,95 +117,105 @@ fun NoteEditScreen(
               Icon(
                 painter = painterResource(R.drawable.ic_fluent_delete),
                 contentDescription = stringResource(R.string.delete),
-                tint = contentColor
+                tint = contentColor,
               )
             }
           }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-          containerColor = Color.Transparent,
-          navigationIconContentColor = contentColor,
-          actionIconContentColor = contentColor,
-          titleContentColor = contentColor
-        )
+        colors =
+          TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            navigationIconContentColor = contentColor,
+            actionIconContentColor = contentColor,
+            titleContentColor = contentColor,
+          ),
       )
 
       Column(
-        modifier = Modifier
-          .weight(1f)
-          .verticalScroll(rememberScrollState())
-          .pointerInput(Unit) {
-            detectTapGestures(onTap = { focusManager.clearFocus() })
-          }
-          .padding(horizontal = 16.dp)
+        modifier =
+          Modifier
+            .weight(1f)
+            .verticalScroll(rememberScrollState())
+            .pointerInput(Unit) {
+              detectTapGestures(onTap = { focusManager.clearFocus() })
+            }.padding(horizontal = 16.dp),
       ) {
         val context = LocalContext.current
-        val titleFontFamily = remember(state.titleFontStyle) {
-          AssetsUtil.getTypeface(context, state.titleFontStyle)?.let { FontFamily(it) }
-            ?: FontFamily.Default
-        }
-        val fontFamily = remember(state.fontStyle) {
-          AssetsUtil.getTypeface(context, state.fontStyle)?.let { FontFamily(it) }
-            ?: FontFamily.Default
-        }
+        val titleFontFamily =
+          remember(state.titleFontStyle) {
+            AssetsUtil.getTypeface(context, state.titleFontStyle)?.let { FontFamily(it) }
+              ?: FontFamily.Default
+          }
+        val fontFamily =
+          remember(state.fontStyle) {
+            AssetsUtil.getTypeface(context, state.fontStyle)?.let { FontFamily(it) }
+              ?: FontFamily.Default
+          }
         TextField(
           value = titleFieldValue,
           onValueChange = onTitleFieldValueChange,
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-            .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.TITLE) },
-          textStyle = MaterialTheme.typography.bodyLarge.copy(
-            color = contentColor,
-            fontSize = state.titleFontSize.sp,
-            fontFamily = titleFontFamily,
-            lineHeight = TextUnit.Unspecified
-          ),
+          modifier =
+            Modifier
+              .fillMaxWidth()
+              .padding(top = 16.dp)
+              .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.TITLE) },
+          textStyle =
+            MaterialTheme.typography.bodyLarge.copy(
+              color = contentColor,
+              fontSize = state.titleFontSize.sp,
+              fontFamily = titleFontFamily,
+              lineHeight = TextUnit.Unspecified,
+            ),
           placeholder = { Text(stringResource(R.string.title)) },
-          colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = contentColor,
-            focusedTextColor = contentColor,
-            unfocusedTextColor = contentColor
-          )
+          colors =
+            TextFieldDefaults.colors(
+              focusedContainerColor = Color.Transparent,
+              unfocusedContainerColor = Color.Transparent,
+              disabledContainerColor = Color.Transparent,
+              focusedIndicatorColor = Color.Transparent,
+              unfocusedIndicatorColor = Color.Transparent,
+              cursorColor = contentColor,
+              focusedTextColor = contentColor,
+              unfocusedTextColor = contentColor,
+            ),
         )
         TextField(
           value = textFieldValue,
           onValueChange = onTextFieldValueChange,
-          modifier = Modifier
-            .fillMaxWidth()
-            .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.BODY) },
-          textStyle = MaterialTheme.typography.bodyLarge.copy(
-            color = contentColor,
-            fontSize = state.fontSize.sp,
-            fontFamily = fontFamily,
-            lineHeight = TextUnit.Unspecified
-          ),
+          modifier =
+            Modifier
+              .fillMaxWidth()
+              .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.BODY) },
+          textStyle =
+            MaterialTheme.typography.bodyLarge.copy(
+              color = contentColor,
+              fontSize = state.fontSize.sp,
+              fontFamily = fontFamily,
+              lineHeight = TextUnit.Unspecified,
+            ),
           placeholder = { Text(stringResource(R.string.note)) },
           visualTransformation = boldRangeVisualTransformation(boldRange),
-          colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = contentColor,
-            focusedTextColor = contentColor,
-            unfocusedTextColor = contentColor
-          )
+          colors =
+            TextFieldDefaults.colors(
+              focusedContainerColor = Color.Transparent,
+              unfocusedContainerColor = Color.Transparent,
+              disabledContainerColor = Color.Transparent,
+              focusedIndicatorColor = Color.Transparent,
+              unfocusedIndicatorColor = Color.Transparent,
+              cursorColor = contentColor,
+              focusedTextColor = contentColor,
+              unfocusedTextColor = contentColor,
+            ),
         )
 
         NoteEditImageGrid(
           images = state.images,
           onImageClick = actions.onImageOpen,
           onRemoveClick = actions.onImageRemove,
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
+          modifier =
+            Modifier
+              .fillMaxWidth()
+              .padding(top = 16.dp),
         )
 
         // Reserve space so the floating bar never overlaps the last content row.
@@ -213,39 +224,43 @@ fun NoteEditScreen(
     }
 
     NoteEditFloatingBar(
-      items = noteEditBarItems(
-        state = state,
-        speechState = speechState,
-        supportsSpeech = supportsSpeech,
-        hasCamera = hasCamera,
-        contentColor = contentColor,
-        barColor = barColor,
-        sliderColors = sliderColors,
-        colorsForPalette = colorsForPalette,
-        actions = actions
-      ),
+      items =
+        noteEditBarItems(
+          state = state,
+          speechState = speechState,
+          supportsSpeech = supportsSpeech,
+          hasCamera = hasCamera,
+          contentColor = contentColor,
+          barColor = barColor,
+          sliderColors = sliderColors,
+          colorsForPalette = colorsForPalette,
+          actions = actions,
+        ),
       containerColor = barColor,
       contentColor = contentColor,
-      modifier = Modifier
-        .align(Alignment.BottomCenter)
-        .navigationBarsPadding()
-        .imePadding()
-        .padding(bottom = 24.dp)
-        .widthIn(max = barMaxWidth)
+      modifier =
+        Modifier
+          .align(Alignment.BottomCenter)
+          .navigationBarsPadding()
+          .imePadding()
+          .padding(bottom = 24.dp)
+          .widthIn(max = barMaxWidth),
     )
   }
 
   when (activeDialog) {
-    NoteEditDialog.DELETE -> DeleteNoteDialog(
-      onDismiss = actions.onDialogDismiss,
-      onConfirm = actions.onDeleteConfirmed
-    )
+    NoteEditDialog.DELETE ->
+      DeleteNoteDialog(
+        onDismiss = actions.onDialogDismiss,
+        onConfirm = actions.onDeleteConfirmed,
+      )
 
-    NoteEditDialog.SAME_NOTE -> SameNoteDialog(
-      onDismiss = actions.onDialogDismiss,
-      onKeep = actions.onSameNoteKeep,
-      onReplace = actions.onSameNoteReplace
-    )
+    NoteEditDialog.SAME_NOTE ->
+      SameNoteDialog(
+        onDismiss = actions.onDialogDismiss,
+        onKeep = actions.onSameNoteKeep,
+        onReplace = actions.onSameNoteReplace,
+      )
 
     null -> Unit
   }
@@ -265,116 +280,121 @@ private fun noteEditBarItems(
   barColor: Color,
   sliderColors: IntArray,
   colorsForPalette: (Int) -> IntArray,
-  actions: NoteEditActions
-): List<NoteEditBarItem> = buildList {
-  // Same order as the Phase 1 docked bar: mic, color, image, reminder, font.
-  if (supportsSpeech) {
+  actions: NoteEditActions,
+): List<NoteEditBarItem> =
+  buildList {
+    // Same order as the Phase 1 docked bar: mic, color, image, reminder, font.
+    if (supportsSpeech) {
+      add(
+        NoteEditBarItem(
+          id = "mic",
+          contentDescription = stringResource(R.string.acc_type_by_voice),
+          onClick = actions.onMicClick,
+          icon = { MicIcon(speechState, contentColor) },
+        ),
+      )
+    }
+
+    val colorDescription = stringResource(R.string.acc_select_color)
     add(
       NoteEditBarItem(
-        id = "mic",
-        contentDescription = stringResource(R.string.acc_type_by_voice),
-        onClick = actions.onMicClick,
-        icon = { MicIcon(speechState, contentColor) }
-      )
+        id = "color",
+        contentDescription = colorDescription,
+        selected = state.expandedTab == EditTab.COLOR,
+        onClick = actions.onColorTabClick,
+        icon = {
+          val swatch = sliderColors.getOrNull(state.colorIndex)?.let { Color(it) } ?: contentColor
+          Box(
+            modifier =
+              Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .background(swatch)
+                .border(2.dp, contentColor.copy(alpha = 0.6f), CircleShape)
+                .semantics { contentDescription = colorDescription },
+          )
+        },
+        bubbleContent = {
+          ColorPanel(state, contentColor, barColor, sliderColors, colorsForPalette, actions)
+        },
+      ),
+    )
+
+    val imageDescription = stringResource(R.string.acc_add_image_to_reminder)
+    add(
+      NoteEditBarItem(
+        id = "image",
+        contentDescription = imageDescription,
+        selected = state.expandedTab == EditTab.IMAGE,
+        onClick = actions.onImageTabClick,
+        icon = {
+          Icon(
+            painter = painterResource(R.drawable.ic_fluent_image),
+            contentDescription = imageDescription,
+            tint = contentColor,
+          )
+        },
+        bubbleContent = {
+          ImageSourcePanel(
+            hasCamera = hasCamera,
+            contentColor = contentColor,
+            onGalleryClick = actions.onImagePickFromGallery,
+            onCameraClick = actions.onImagePickFromCamera,
+            onUrlClick = actions.onImagePickFromUrl,
+          )
+        },
+      ),
+    )
+
+    val reminderDescription = stringResource(R.string.acc_add_reminder)
+    add(
+      NoteEditBarItem(
+        id = "reminder",
+        contentDescription = reminderDescription,
+        selected = state.expandedTab == EditTab.REMINDER,
+        showBadge = state.isReminderAttached,
+        onClick = actions.onReminderTabClick,
+        icon = {
+          Icon(
+            painter = painterResource(R.drawable.ic_fluent_alert),
+            contentDescription = reminderDescription,
+            tint = contentColor,
+          )
+        },
+        bubbleContent = { ReminderPanel(state, contentColor, actions) },
+      ),
+    )
+
+    val fontDescription = stringResource(R.string.acc_change_text_font_style)
+    add(
+      NoteEditBarItem(
+        id = "font",
+        contentDescription = fontDescription,
+        selected = state.expandedTab == EditTab.FONT,
+        onClick = actions.onFontTabClick,
+        icon = {
+          Icon(
+            painter = painterResource(R.drawable.ic_fluent_text),
+            contentDescription = fontDescription,
+            tint = contentColor,
+          )
+        },
+        bubbleContent = { FontPanel(state, contentColor, barColor, actions) },
+      ),
     )
   }
-
-  val colorDescription = stringResource(R.string.acc_select_color)
-  add(
-    NoteEditBarItem(
-      id = "color",
-      contentDescription = colorDescription,
-      selected = state.expandedTab == EditTab.COLOR,
-      onClick = actions.onColorTabClick,
-      icon = {
-        val swatch = sliderColors.getOrNull(state.colorIndex)?.let { Color(it) } ?: contentColor
-        Box(
-          modifier = Modifier
-            .size(24.dp)
-            .clip(CircleShape)
-            .background(swatch)
-            .border(2.dp, contentColor.copy(alpha = 0.6f), CircleShape)
-            .semantics { contentDescription = colorDescription }
-        )
-      },
-      bubbleContent = {
-        ColorPanel(state, contentColor, barColor, sliderColors, colorsForPalette, actions)
-      }
-    )
-  )
-
-  val imageDescription = stringResource(R.string.acc_add_image_to_reminder)
-  add(
-    NoteEditBarItem(
-      id = "image",
-      contentDescription = imageDescription,
-      selected = state.expandedTab == EditTab.IMAGE,
-      onClick = actions.onImageTabClick,
-      icon = {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_image),
-          contentDescription = imageDescription,
-          tint = contentColor
-        )
-      },
-      bubbleContent = {
-        ImageSourcePanel(
-          hasCamera = hasCamera,
-          contentColor = contentColor,
-          onGalleryClick = actions.onImagePickFromGallery,
-          onCameraClick = actions.onImagePickFromCamera,
-          onUrlClick = actions.onImagePickFromUrl
-        )
-      }
-    )
-  )
-
-  val reminderDescription = stringResource(R.string.acc_add_reminder)
-  add(
-    NoteEditBarItem(
-      id = "reminder",
-      contentDescription = reminderDescription,
-      selected = state.expandedTab == EditTab.REMINDER,
-      showBadge = state.isReminderAttached,
-      onClick = actions.onReminderTabClick,
-      icon = {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_alert),
-          contentDescription = reminderDescription,
-          tint = contentColor
-        )
-      },
-      bubbleContent = { ReminderPanel(state, contentColor, actions) }
-    )
-  )
-
-  val fontDescription = stringResource(R.string.acc_change_text_font_style)
-  add(
-    NoteEditBarItem(
-      id = "font",
-      contentDescription = fontDescription,
-      selected = state.expandedTab == EditTab.FONT,
-      onClick = actions.onFontTabClick,
-      icon = {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_text),
-          contentDescription = fontDescription,
-          tint = contentColor
-        )
-      },
-      bubbleContent = { FontPanel(state, contentColor, barColor, actions) }
-    )
-  )
-}
 
 private fun boldRangeVisualTransformation(range: IntRange?): VisualTransformation =
   VisualTransformation { text ->
     if (range == null || range.first < 0 || range.last >= text.length || range.first > range.last) {
       TransformedText(text, OffsetMapping.Identity)
     } else {
-      val annotated = AnnotatedString.Builder(text).apply {
-        addStyle(SpanStyle(fontWeight = FontWeight.Bold), range.first, range.last + 1)
-      }.toAnnotatedString()
+      val annotated =
+        AnnotatedString
+          .Builder(text)
+          .apply {
+            addStyle(SpanStyle(fontWeight = FontWeight.Bold), range.first, range.last + 1)
+          }.toAnnotatedString()
       TransformedText(annotated, OffsetMapping.Identity)
     }
   }

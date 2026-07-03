@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils.params
 
 object PrefsConstants {
-
   const val PREFS_NAME = "prefs_six"
 
   const val DRIVE_USER = "ggl_user"

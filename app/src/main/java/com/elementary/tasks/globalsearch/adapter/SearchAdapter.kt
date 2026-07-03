@@ -10,14 +10,13 @@ import com.elementary.tasks.globalsearch.SearchResult
 
 class SearchAdapter(
   private val onSuggestionClick: (SearchResult, String) -> Unit,
-  private val onObjectClick: (SearchResult) -> Unit
+  private val onObjectClick: (SearchResult) -> Unit,
 ) : ListAdapter<SearchResult, SearchViewHolder<*>>(
-  SearchResultDiffCallback()
-) {
-
+    SearchResultDiffCallback(),
+  ) {
   override fun onCreateViewHolder(
     parent: ViewGroup,
-    viewType: Int
+    viewType: Int,
   ): SearchViewHolder<*> {
     val clickListener: (Int, ClickAction) -> Unit = { position, action ->
       when (val item = getItem(position)) {
@@ -49,7 +48,10 @@ class SearchAdapter(
     }
   }
 
-  override fun onBindViewHolder(holder: SearchViewHolder<*>, position: Int) {
+  override fun onBindViewHolder(
+    holder: SearchViewHolder<*>,
+    position: Int,
+  ) {
     when (holder) {
       is RecentObjectSearchViewHolder -> {
         holder.bind(getItem(position) as RecentObjectSearchResult)
@@ -63,21 +65,22 @@ class SearchAdapter(
     }
   }
 
-  override fun getItemViewType(position: Int): Int {
-    return when (getItem(position)) {
+  override fun getItemViewType(position: Int): Int =
+    when (getItem(position)) {
       is RecentSearchResult -> RecentSearchViewHolder.VIEW_TYPE
       is RecentObjectSearchResult -> RecentObjectSearchViewHolder.VIEW_TYPE
       is ObjectSearchResult -> ObjectSearchViewHolder.VIEW_TYPE
     }
-  }
 }
 
 class SearchResultDiffCallback : DiffUtil.ItemCallback<SearchResult>() {
-  override fun areItemsTheSame(oldItem: SearchResult, newItem: SearchResult): Boolean {
-    return oldItem.query == newItem.query
-  }
+  override fun areItemsTheSame(
+    oldItem: SearchResult,
+    newItem: SearchResult,
+  ): Boolean = oldItem.query == newItem.query
 
-  override fun areContentsTheSame(oldItem: SearchResult, newItem: SearchResult): Boolean {
-    return oldItem == newItem
-  }
+  override fun areContentsTheSame(
+    oldItem: SearchResult,
+    newItem: SearchResult,
+  ): Boolean = oldItem == newItem
 }

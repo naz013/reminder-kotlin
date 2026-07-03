@@ -21,38 +21,41 @@ class ReminderMapViewHolder(
   prefs: Prefs,
   private val onMapClick: (View) -> Unit,
   binding: ListItemReminderPreviewMapBinding =
-    ListItemReminderPreviewMapBinding.inflate(parent.inflater(), parent, false)
+    ListItemReminderPreviewMapBinding.inflate(parent.inflater(), parent, false),
 ) : HolderBinding<ListItemReminderPreviewMapBinding>(binding) {
-
   private var mapFragment: SimpleMapFragment? = null
   private var places: List<UiReminderPlace>? = null
 
   init {
     Logger.d(TAG, "Going to show map")
 
-    val simpleMapFragment = SimpleMapFragment.newInstance(
-      SimpleMapFragment.MapParams(
-        isTouch = false,
-        isSearch = false,
-        isRadius = false,
-        isPlaces = false,
-        isStyles = false,
-        isLayers = false,
-        mapStyleParams = SimpleMapFragment.MapStyleParams(
-          mapType = prefs.mapType,
-          mapStyle = prefs.mapStyle
-        )
+    val simpleMapFragment =
+      SimpleMapFragment.newInstance(
+        SimpleMapFragment.MapParams(
+          isTouch = false,
+          isSearch = false,
+          isRadius = false,
+          isPlaces = false,
+          isStyles = false,
+          isLayers = false,
+          mapStyleParams =
+            SimpleMapFragment.MapStyleParams(
+              mapType = prefs.mapType,
+              mapStyle = prefs.mapStyle,
+            ),
+        ),
       )
-    )
 
-    simpleMapFragment.mapCallback = object : SimpleMapFragment.DefaultMapCallback() {
-      override fun onMapReady() {
-        simpleMapFragment.setOnMapClickListener { onMapClick(binding.mapContainer) }
-        places?.also { showPlaceOnMap(it) }
+    simpleMapFragment.mapCallback =
+      object : SimpleMapFragment.DefaultMapCallback() {
+        override fun onMapReady() {
+          simpleMapFragment.setOnMapClickListener { onMapClick(binding.mapContainer) }
+          places?.also { showPlaceOnMap(it) }
+        }
       }
-    }
 
-    fragmentManager.beginTransaction()
+    fragmentManager
+      .beginTransaction()
       .replace(R.id.map_container, simpleMapFragment)
       .commitAllowingStateLoss()
 
@@ -77,7 +80,7 @@ class ReminderMapViewHolder(
         markerStyle = it.marker,
         radius = it.radius,
         clear = false,
-        animate = false
+        animate = false,
       )
     }
     places.firstOrNull()?.run {

@@ -10,21 +10,27 @@ import com.elementary.tasks.R
 import com.elementary.tasks.databinding.ListItemDayViewWeekdayGridBinding
 
 class WeekAdapter(
-  private val onItemClickListener: (WeekDay) -> Unit
+  private val onItemClickListener: (WeekDay) -> Unit,
 ) : ListAdapter<WeekDay, WeekDayHolder>(
-  WeekDayDiffCallback()
-) {
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekDayHolder {
-    return WeekDayHolder(
+    WeekDayDiffCallback(),
+  ) {
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): WeekDayHolder =
+    WeekDayHolder(
       parent = parent,
       clickListener = { position ->
-        getItem(position).takeIf { !it.isSelected }
+        getItem(position)
+          .takeIf { !it.isSelected }
           ?.also { onItemClickListener(it) }
-      }
+      },
     )
-  }
 
-  override fun onBindViewHolder(holder: WeekDayHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: WeekDayHolder,
+    position: Int,
+  ) {
     holder.bind(getItem(position))
   }
 }
@@ -36,10 +42,9 @@ class WeekDayHolder(
     ListItemDayViewWeekdayGridBinding.inflate(
       LayoutInflater.from(parent.context),
       parent,
-      false
-    )
+      false,
+    ),
 ) : RecyclerView.ViewHolder(binding.root) {
-
   init {
     binding.root.setOnClickListener { clickListener(bindingAdapterPosition) }
   }
@@ -58,11 +63,13 @@ class WeekDayHolder(
 }
 
 class WeekDayDiffCallback : DiffUtil.ItemCallback<WeekDay>() {
-  override fun areItemsTheSame(oldItem: WeekDay, newItem: WeekDay): Boolean {
-    return oldItem.localDate == newItem.localDate
-  }
+  override fun areItemsTheSame(
+    oldItem: WeekDay,
+    newItem: WeekDay,
+  ): Boolean = oldItem.localDate == newItem.localDate
 
-  override fun areContentsTheSame(oldItem: WeekDay, newItem: WeekDay): Boolean {
-    return oldItem == newItem
-  }
+  override fun areContentsTheSame(
+    oldItem: WeekDay,
+    newItem: WeekDay,
+  ): Boolean = oldItem == newItem
 }

@@ -8,15 +8,12 @@ import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 
 class LedColorController(
-  builderItem: LedColorBuilderItem
+  builderItem: LedColorBuilderItem,
 ) : AbstractBindingValueController<Int, BuilderItemLedColorBinding>(builderItem) {
-
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemLedColorBinding {
-    return BuilderItemLedColorBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemLedColorBinding = BuilderItemLedColorBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -38,8 +35,8 @@ class LedColorController(
     updateValue(led)
   }
 
-  private fun chipIdFromLed(id: Int): Int {
-    return when (id) {
+  private fun chipIdFromLed(id: Int): Int =
+    when (id) {
       0 -> R.id.ledRed
       1 -> R.id.ledGreen
       2 -> R.id.ledBlue
@@ -49,10 +46,9 @@ class LedColorController(
       6 -> R.id.ledTeal
       else -> R.id.ledBlue
     }
-  }
 
-  private fun ledFromChip(id: Int): Int {
-    return when (id) {
+  private fun ledFromChip(id: Int): Int =
+    when (id) {
       R.id.ledRed -> 0
       R.id.ledGreen -> 1
       R.id.ledBlue -> 2
@@ -62,5 +58,4 @@ class LedColorController(
       R.id.ledTeal -> 6
       else -> 2
     }
-  }
 }

@@ -5,8 +5,10 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.github.naz013.logging.Logger
 
 class DispatchEventActionUseCase {
-
-  operator fun invoke(context: Context, action: ResolvedEventAction) {
+  operator fun invoke(
+    context: Context,
+    action: ResolvedEventAction,
+  ) {
     Logger.i(TAG, "Dispatching event action: $action")
     when (action) {
       is ResolvedEventAction.OpenApp -> {
@@ -27,7 +29,7 @@ class DispatchEventActionUseCase {
           email = action.email,
           subject = action.subject,
           message = action.body,
-          filePath = action.attachmentPath
+          filePath = action.attachmentPath,
         )
       }
     }

@@ -11,31 +11,35 @@ import androidx.appcompat.widget.SearchView
 class SearchMenuHandler(
   private val searchManager: SearchManager?,
   @StringRes private val hintRes: Int?,
-  filterController: (String) -> Unit
+  filterController: (String) -> Unit,
 ) {
-
   private var mSearchView: SearchView? = null
   private var mSearchMenu: MenuItem? = null
   private val searchCloseListener = {
     filterController.invoke("")
     false
   }
-  private val queryTextListener = object : SearchView.OnQueryTextListener {
-    override fun onQueryTextSubmit(query: String): Boolean {
-      filterController.invoke(query)
-      if (mSearchMenu != null) {
-        mSearchMenu?.collapseActionView()
+  private val queryTextListener =
+    object : SearchView.OnQueryTextListener {
+      override fun onQueryTextSubmit(query: String): Boolean {
+        filterController.invoke(query)
+        if (mSearchMenu != null) {
+          mSearchMenu?.collapseActionView()
+        }
+        return false
       }
-      return false
+
+      override fun onQueryTextChange(newText: String): Boolean {
+        filterController.invoke(newText)
+        return false
+      }
     }
 
-    override fun onQueryTextChange(newText: String): Boolean {
-      filterController.invoke(newText)
-      return false
-    }
-  }
-
-  fun initSearchMenu(activity: Activity, menu: Menu, @IdRes searchItemId: Int) {
+  fun initSearchMenu(
+    activity: Activity,
+    menu: Menu,
+    @IdRes searchItemId: Int,
+  ) {
     mSearchMenu = menu.findItem(searchItemId)
     mSearchMenu?.also { searchMenu ->
       mSearchView = searchMenu.actionView as SearchView?

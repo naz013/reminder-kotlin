@@ -15,15 +15,14 @@ class ScanGoogleCalendarEventsWorker(
   context: Context,
   workerParams: WorkerParameters,
   private val dispatcherProvider: DispatcherProvider,
-  private val scanGoogleCalendarForNewEventsUseCase: ScanGoogleCalendarForNewEventsUseCase
+  private val scanGoogleCalendarForNewEventsUseCase: ScanGoogleCalendarForNewEventsUseCase,
 ) : CoroutineWorker(context, workerParams) {
-
   override suspend fun doWork(): Result {
     if (
       Permissions.checkPermission(
         applicationContext,
         Permissions.READ_CALENDAR,
-        Permissions.WRITE_CALENDAR
+        Permissions.WRITE_CALENDAR,
       )
     ) {
       Logger.i(TAG, "Starting Google Calendar events scan worker.")
@@ -44,9 +43,11 @@ class ScanGoogleCalendarEventsWorker(
     private const val TAG = "ScanGoogleCalendarEventsWorker"
 
     fun schedule(context: Context) {
-      val work = OneTimeWorkRequest.Builder(ScanGoogleCalendarEventsWorker::class.java)
-        .addTag(TAG)
-        .build()
+      val work =
+        OneTimeWorkRequest
+          .Builder(ScanGoogleCalendarEventsWorker::class.java)
+          .addTag(TAG)
+          .build()
       WorkManager.getInstance(context).enqueue(work)
     }
   }

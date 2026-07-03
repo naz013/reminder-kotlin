@@ -7,9 +7,8 @@ import com.github.naz013.analytics.Event
 import com.github.naz013.analytics.ReminderFeatureUsedEvent
 
 class ReminderAnalyticsTracker(
-  private val analyticsEventSender: AnalyticsEventSender
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : AnalyticsTracker() {
-
   fun startTracking() {
     trackEvent(Event.REMINDER_USED)
   }
@@ -18,8 +17,8 @@ class ReminderAnalyticsTracker(
     analyticsEventSender.send(
       ReminderFeatureUsedEvent(
         type,
-        getTimeInSeconds(Event.REMINDER_USED)
-      )
+        getTimeInSeconds(Event.REMINDER_USED),
+      ),
     )
   }
 }

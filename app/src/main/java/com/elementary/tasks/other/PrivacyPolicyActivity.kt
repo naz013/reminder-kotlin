@@ -17,7 +17,6 @@ import com.github.naz013.ui.common.view.applyTopInsets
 import org.koin.android.ext.android.inject
 
 class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
-
   private val prefs by inject<Prefs>()
   private val url by lazy { prefs.privacyUrl }
 
@@ -31,26 +30,29 @@ class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>() {
 
     binding.webView.applyBottomInsets()
     binding.webView.settings.javaScriptEnabled = true
-    binding.webView.webViewClient = object : WebViewClient() {
-      @Deprecated("Deprecated in Java")
-      override fun onReceivedError(
-        view: WebView,
-        errorCode: Int,
-        description: String,
-        failingUrl: String
-      ) {
-      }
-
-      @Deprecated("Deprecated in Java")
-      override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
-        return if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
-          startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-          true
-        } else {
-          false
+    binding.webView.webViewClient =
+      object : WebViewClient() {
+        @Deprecated("Deprecated in Java")
+        override fun onReceivedError(
+          view: WebView,
+          errorCode: Int,
+          description: String,
+          failingUrl: String,
+        ) {
         }
+
+        @Deprecated("Deprecated in Java")
+        override fun shouldOverrideUrlLoading(
+          view: WebView,
+          url: String?,
+        ): Boolean =
+          if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            true
+          } else {
+            false
+          }
       }
-    }
     binding.webView.webChromeClient = WebChromeClient()
     binding.webView.loadUrl(url)
   }

@@ -20,12 +20,12 @@ class CalculateReminderOccurrencesUseCase(
   private val reminderOccurrenceCalculatorFactory: ReminderOccurrenceCalculatorFactory,
   private val dateTimeManager: DateTimeManager,
 ) {
-
   suspend operator fun invoke(id: String) {
-    val reminder = reminderRepository.getById(id) ?: run {
-      Logger.e(TAG, "Reminder with id=$id not found")
-      return
-    }
+    val reminder =
+      reminderRepository.getById(id) ?: run {
+        Logger.e(TAG, "Reminder with id=$id not found")
+        return
+      }
     if (reminder.places.isNotEmpty()) {
       Logger.i(TAG, "Reminder with id=$id has places, skipping occurrence calculation")
       return
@@ -40,24 +40,28 @@ class CalculateReminderOccurrencesUseCase(
     Logger.i(TAG, "Calculating occurrences for reminder id=$id using strategy=${strategy::class.simpleName}")
     val numberOfOccurrences = prefs.numberOfReminderOccurrences
     val calculator = reminderOccurrenceCalculatorFactory.createCalculator(strategy)
-    val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: run {
-      Logger.e(TAG, "Failed to convert event time for reminder id=$id")
-      return
-    }
-    val occurrences = listOf(eventDateTime) + calculator.calculateOccurrences(
-      reminder,
-      eventDateTime,
-      numberOfOccurrences
-    )
-    val eventOccurrences = occurrences.map { occurrenceDateTime ->
-      EventOccurrence(
-        id = UUID.randomUUID().toString(),
-        eventId = reminder.uuId,
-        date = occurrenceDateTime.toLocalDate(),
-        time = occurrenceDateTime.toLocalTime(),
-        type = OccurrenceType.Reminder,
-      )
-    }
+    val eventDateTime =
+      dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: run {
+        Logger.e(TAG, "Failed to convert event time for reminder id=$id")
+        return
+      }
+    val occurrences =
+      listOf(eventDateTime) +
+        calculator.calculateOccurrences(
+          reminder,
+          eventDateTime,
+          numberOfOccurrences,
+        )
+    val eventOccurrences =
+      occurrences.map { occurrenceDateTime ->
+        EventOccurrence(
+          id = UUID.randomUUID().toString(),
+          eventId = reminder.uuId,
+          date = occurrenceDateTime.toLocalDate(),
+          time = occurrenceDateTime.toLocalTime(),
+          type = OccurrenceType.Reminder,
+        )
+      }
     eventOccurrenceRepository.saveAll(eventOccurrences)
     Logger.i(TAG, "Saved ${eventOccurrences.size} occurrences for reminder id=$id")
   }

@@ -8,5 +8,5 @@ enum class Commands {
   TRASH_CLEARED,
   FAILED,
   OUTDATED,
-  DELETED
+  DELETED,
 }

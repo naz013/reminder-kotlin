@@ -12,8 +12,9 @@ import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RectShape
 import android.graphics.drawable.shapes.RoundRectShape
 
-class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder.shape) {
-
+class TextDrawable private constructor(
+  builder: Builder,
+) : ShapeDrawable(builder.shape) {
   private val textPaint: Paint
   private val borderPaint: Paint
   private val text: String?
@@ -60,13 +61,12 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
     paint.color = color
   }
 
-  private fun getDarkerShade(color: Int): Int {
-    return Color.rgb(
+  private fun getDarkerShade(color: Int): Int =
+    Color.rgb(
       (SHADE_FACTOR * Color.red(color)).toInt(),
       (SHADE_FACTOR * Color.green(color)).toInt(),
-      (SHADE_FACTOR * Color.blue(color)).toInt()
+      (SHADE_FACTOR * Color.blue(color)).toInt(),
     )
-  }
 
   override fun draw(canvas: Canvas) {
     super.draw(canvas)
@@ -86,10 +86,14 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
     val fontSize = if (this.fontSize < 0) Math.min(width, height) / 2 else this.fontSize
     textPaint.textSize = fontSize.toFloat()
     canvas.drawText(
-      /* text = */ text!!,
-      /* x = */ (width / 2).toFloat(),
-      /* y = */ height / 2 - (textPaint.descent() + textPaint.ascent()) / 2,
-      /* paint = */ textPaint
+      // text =
+      text!!,
+      // x =
+      (width / 2).toFloat(),
+      // y =
+      height / 2 - (textPaint.descent() + textPaint.ascent()) / 2,
+      // paint =
+      textPaint,
     )
 
     canvas.restoreToCount(count)
@@ -115,20 +119,16 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
   }
 
   @Deprecated("Deprecated in Java")
-  override fun getOpacity(): Int {
-    return PixelFormat.TRANSLUCENT
-  }
+  override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-  override fun getIntrinsicWidth(): Int {
-    return width
-  }
+  override fun getIntrinsicWidth(): Int = width
 
-  override fun getIntrinsicHeight(): Int {
-    return height
-  }
+  override fun getIntrinsicHeight(): Int = height
 
-  class Builder : IConfigBuilder, IShapeBuilder, IBuilder {
-
+  class Builder :
+    IConfigBuilder,
+    IShapeBuilder,
+    IBuilder {
     var text: String? = null
 
     var color: Int = 0
@@ -207,13 +207,9 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
       return this
     }
 
-    override fun beginConfig(): IConfigBuilder {
-      return this
-    }
+    override fun beginConfig(): IConfigBuilder = this
 
-    override fun endConfig(): IShapeBuilder {
-      return this
-    }
+    override fun endConfig(): IShapeBuilder = this
 
     private fun rect(): IBuilder {
       this.shape = RectShape()
@@ -227,36 +223,50 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
 
     private fun roundRect(radius: Int): IBuilder {
       this.radius = radius.toFloat()
-      val radii = floatArrayOf(
-        radius.toFloat(),
-        radius.toFloat(),
-        radius.toFloat(),
-        radius.toFloat(),
-        radius.toFloat(),
-        radius.toFloat(),
-        radius.toFloat(),
-        radius.toFloat()
-      )
+      val radii =
+        floatArrayOf(
+          radius.toFloat(),
+          radius.toFloat(),
+          radius.toFloat(),
+          radius.toFloat(),
+          radius.toFloat(),
+          radius.toFloat(),
+          radius.toFloat(),
+          radius.toFloat(),
+        )
       this.shape = RoundRectShape(radii, null, null)
       return this
     }
 
-    override fun buildRect(text: String, color: Int): TextDrawable {
+    override fun buildRect(
+      text: String,
+      color: Int,
+    ): TextDrawable {
       rect()
       return build(text, color)
     }
 
-    override fun buildRoundRect(text: String, color: Int, radius: Int): TextDrawable {
+    override fun buildRoundRect(
+      text: String,
+      color: Int,
+      radius: Int,
+    ): TextDrawable {
       roundRect(radius)
       return build(text, color)
     }
 
-    override fun buildRound(text: String, color: Int): TextDrawable {
+    override fun buildRound(
+      text: String,
+      color: Int,
+    ): TextDrawable {
       round()
       return build(text, color)
     }
 
-    override fun build(text: String, color: Int): TextDrawable {
+    override fun build(
+      text: String,
+      color: Int,
+    ): TextDrawable {
       this.color = color
       this.text = text
       return TextDrawable(this)
@@ -284,26 +294,35 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
   }
 
   interface IBuilder {
-
-    fun build(text: String, color: Int): TextDrawable
+    fun build(
+      text: String,
+      color: Int,
+    ): TextDrawable
   }
 
   interface IShapeBuilder {
-
     fun beginConfig(): IConfigBuilder
 
-    fun buildRect(text: String, color: Int): TextDrawable
+    fun buildRect(
+      text: String,
+      color: Int,
+    ): TextDrawable
 
-    fun buildRoundRect(text: String, color: Int, radius: Int): TextDrawable
+    fun buildRoundRect(
+      text: String,
+      color: Int,
+      radius: Int,
+    ): TextDrawable
 
-    fun buildRound(text: String, color: Int): TextDrawable
+    fun buildRound(
+      text: String,
+      color: Int,
+    ): TextDrawable
   }
 
   companion object {
     private val SHADE_FACTOR = 0.9f
 
-    fun builder(): IShapeBuilder {
-      return Builder()
-    }
+    fun builder(): IShapeBuilder = Builder()
   }
 }

@@ -5,5 +5,5 @@ enum class ValueDialogState {
   CREATED,
   RESUMED,
   STOPPED,
-  DESTROYED
+  DESTROYED,
 }

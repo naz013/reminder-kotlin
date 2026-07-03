@@ -10,9 +10,8 @@ class DayBottomSheetDialog(
   private val context: Context,
   private val label: String,
   private val addReminderCallback: () -> Unit,
-  private val addBirthdayCallback: () -> Unit
+  private val addBirthdayCallback: () -> Unit,
 ) {
-
   fun show() {
     InfoSheet().show(context) {
       title(label)
@@ -21,7 +20,7 @@ class DayBottomSheetDialog(
           setupAnimation {
             setAnimation(R.raw.calendar_dialog_animation)
           }
-        }
+        },
       )
       displayCloseButton(true)
       displayPositiveButton(true)

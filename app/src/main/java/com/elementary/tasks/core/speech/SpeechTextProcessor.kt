@@ -2,19 +2,21 @@ package com.elementary.tasks.core.speech
 
 import com.github.naz013.logging.Logger
 
-class SpeechTextProcessor(initValue: String = "") {
-
+class SpeechTextProcessor(
+  initValue: String = "",
+) {
   private var completedSection = initValue
   private var currentSection: String = initValue
   private var lastSpeechText: SpeechText? = null
 
   fun setText(text: String) {
     Logger.d(TAG, "setText text=$text")
-    completedSection = if (text.isEmpty()) {
-      ""
-    } else {
-      "$text "
-    }
+    completedSection =
+      if (text.isEmpty()) {
+        ""
+      } else {
+        "$text "
+      }
   }
 
   fun saveSection() {
@@ -37,32 +39,36 @@ class SpeechTextProcessor(initValue: String = "") {
       return SpeechText(text = completedSection, newText = null)
     }
 
-    val startIndex = if (currentSection.isEmpty()) {
-      completedSection.length
-    } else {
-      completedSection.length + currentSection.length
-    }
-    val result = if (completedSection.isEmpty()) {
-      text
-    } else {
-      "$completedSection $text"
-    }
-    val newText = if (currentSection.isEmpty()) {
-      text
-    } else {
-      if (currentSection.length < text.length) {
-        text.substring(currentSection.length)
+    val startIndex =
+      if (currentSection.isEmpty()) {
+        completedSection.length
       } else {
-        text
+        completedSection.length + currentSection.length
       }
-    }
+    val result =
+      if (completedSection.isEmpty()) {
+        text
+      } else {
+        "$completedSection $text"
+      }
+    val newText =
+      if (currentSection.isEmpty()) {
+        text
+      } else {
+        if (currentSection.length < text.length) {
+          text.substring(currentSection.length)
+        } else {
+          text
+        }
+      }
     val sameAsLast = text == currentSection
     currentSection = text
 
-    val newSpeechText = SpeechText(
-      text = result,
-      newText = NewText(newText, startIndex, startIndex + newText.length)
-    )
+    val newSpeechText =
+      SpeechText(
+        text = result,
+        newText = NewText(newText, startIndex, startIndex + newText.length),
+      )
     return if (sameAsLast) {
       lastSpeechText ?: newSpeechText.also {
         lastSpeechText = it

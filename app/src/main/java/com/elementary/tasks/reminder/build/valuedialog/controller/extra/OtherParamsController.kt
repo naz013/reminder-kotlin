@@ -9,15 +9,12 @@ import com.elementary.tasks.reminder.build.bi.OtherParams
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 
 class OtherParamsController(
-  builderItem: BuilderItem<OtherParams>
+  builderItem: BuilderItem<OtherParams>,
 ) : AbstractBindingValueController<OtherParams, BuilderItemOtherParamsBinding>(builderItem) {
-
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemOtherParamsBinding {
-    return BuilderItemOtherParamsBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemOtherParamsBinding = BuilderItemOtherParamsBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -50,16 +47,15 @@ class OtherParamsController(
     binding.repeatNotificationSwitch.isEnabled = enabled
   }
 
-  private fun createParams(): OtherParams {
-    return if (binding.defaultSwitch.isChecked) {
+  private fun createParams(): OtherParams =
+    if (binding.defaultSwitch.isChecked) {
       OtherParams(useGlobal = true)
     } else {
       OtherParams(
         useGlobal = false,
         vibrate = binding.vibrateSwitch.isChecked,
         notifyByVoice = binding.ttsSwitch.isChecked,
-        repeatNotification = binding.repeatNotificationSwitch.isChecked
+        repeatNotification = binding.repeatNotificationSwitch.isChecked,
       )
     }
-  }
 }

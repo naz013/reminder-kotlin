@@ -9,5 +9,5 @@ data class UiTextFormat(
   val textColor: Int? = null,
   val font: Typeface? = null,
   val textStyle: UiTextStyle = UiTextStyle.NORMAL,
-  val textDecoration: UiTextDecoration = UiTextDecoration.NONE
+  val textDecoration: UiTextDecoration = UiTextDecoration.NONE,
 )

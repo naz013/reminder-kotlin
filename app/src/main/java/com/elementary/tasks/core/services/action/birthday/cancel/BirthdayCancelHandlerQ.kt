@@ -10,15 +10,14 @@ import org.threeten.bp.LocalDate
 class BirthdayCancelHandlerQ(
   private val notifier: Notifier,
   private val dateTimeManager: DateTimeManager,
-  private val saveBirthdayUseCase: SaveBirthdayUseCase
+  private val saveBirthdayUseCase: SaveBirthdayUseCase,
 ) : ActionHandler<Birthday> {
-
   override suspend fun handle(data: Birthday) {
     saveBirthdayUseCase(
       data.copy(
         updatedAt = dateTimeManager.getNowGmtDateTime(),
-        showedYear = LocalDate.now().year
-      )
+        showedYear = LocalDate.now().year,
+      ),
     )
     notifier.cancel(data.uniqueId)
   }

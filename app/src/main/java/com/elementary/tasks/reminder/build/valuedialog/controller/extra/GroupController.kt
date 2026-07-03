@@ -6,11 +6,10 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractS
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.SelectableValue
 
 class GroupController(
-  private val groupBuilderItem: GroupBuilderItem
+  private val groupBuilderItem: GroupBuilderItem,
 ) : AbstractSelectableRadioController<UiGroupList, GroupController.GroupSelectableValue>(
-  builderItem = groupBuilderItem
-) {
-
+    builderItem = groupBuilderItem,
+  ) {
   override fun clearValue() {
     builderItem.modifier.update(groupBuilderItem.defaultGroup)
   }
@@ -28,16 +27,11 @@ class GroupController(
 
   data class GroupSelectableValue(
     val group: UiGroupList,
-    var selectionState: Boolean
+    var selectionState: Boolean,
   ) : SelectableValue {
+    override fun getTitle(): String = group.title
 
-    override fun getTitle(): String {
-      return group.title
-    }
-
-    override fun isSelected(): Boolean {
-      return selectionState
-    }
+    override fun isSelected(): Boolean = selectionState
 
     override fun setSelected(isSelected: Boolean) {
       this.selectionState = isSelected

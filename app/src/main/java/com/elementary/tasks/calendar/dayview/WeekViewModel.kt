@@ -22,7 +22,6 @@ class WeekViewModel(
   private val weekHeaderController: WeekHeaderController,
   private val dateTimeManager: DateTimeManager,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _state = mutableLiveDataOf<DayViewState>()
   val state = _state.toLiveData()
 
@@ -90,12 +89,11 @@ class WeekViewModel(
     Logger.d(TAG, "On pause.")
   }
 
-  private suspend fun stateForDate(date: LocalDate): DayViewState {
-    return DayViewState(
+  private suspend fun stateForDate(date: LocalDate): DayViewState =
+    DayViewState(
       title = dateTimeManager.formatCalendarDate(date).capitalizeFirstLetter(),
-      days = weekHeaderController.calculateWeek(date)
+      days = weekHeaderController.calculateWeek(date),
     )
-  }
 
   companion object {
     private const val TAG = "WeekViewModel"

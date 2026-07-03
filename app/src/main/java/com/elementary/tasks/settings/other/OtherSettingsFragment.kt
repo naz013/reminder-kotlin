@@ -25,7 +25,6 @@ import com.github.naz013.ui.common.fragment.toast
 import org.koin.android.ext.android.inject
 
 class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>() {
-
   private val packageManagerWrapper by inject<PackageManagerWrapper>()
   private val reviewsApi by inject<ReviewsApi>()
   private val featureManager by inject<FeatureManager>()
@@ -42,10 +41,13 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsOtherBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.aboutPrefs.setOnClickListener { showAboutDialog() }
     binding.ossPrefs.setOnClickListener { openOssScreen() }
@@ -67,7 +69,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
       navigate(
         R.id.fragmentTroubleshooting,
         null,
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
@@ -78,12 +80,13 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     reviewsApi.showFeedbackForm(
       requireContext(),
       getString(R.string.share_your_experience),
-      appSource = if (BuildParams.isPro) {
-        AppSource.PRO
-      } else {
-        AppSource.FREE
-      },
-      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS)
+      appSource =
+        if (BuildParams.isPro) {
+          AppSource.PRO
+        } else {
+          AppSource.FREE
+        },
+      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
     )
   }
 
@@ -145,19 +148,20 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     }
     if (!Permissions.checkPermission(activity, Permissions.BACKGROUND_LOCATION)) {
       mDataList.add(
-        Item(getString(R.string.background_location), Permissions.BACKGROUND_LOCATION)
+        Item(getString(R.string.background_location), Permissions.BACKGROUND_LOCATION),
       )
     }
-    if (Module.is15 && !Permissions.checkPermission(
+    if (Module.is15 &&
+      !Permissions.checkPermission(
         activity,
-        Permissions.FOREGROUND_SERVICE_LOCATION
+        Permissions.FOREGROUND_SERVICE_LOCATION,
       )
     ) {
       mDataList.add(
         Item(
           getString(R.string.foreground_service_location),
-          Permissions.FOREGROUND_SERVICE_LOCATION
-        )
+          Permissions.FOREGROUND_SERVICE_LOCATION,
+        ),
       )
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -179,7 +183,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
       shareIntent.type = "text/plain"
       shareIntent.putExtra(
         Intent.EXTRA_TEXT,
-        "https://play.google.com/store/apps/details?id=" + it.packageName
+        "https://play.google.com/store/apps/details?id=" + it.packageName,
       )
       context?.startActivity(Intent.createChooser(shareIntent, "Share..."))
     }
@@ -234,5 +238,8 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     }
   }
 
-  internal class Item(val title: String, val permission: String)
+  internal class Item(
+    val title: String,
+    val permission: String,
+  )
 }

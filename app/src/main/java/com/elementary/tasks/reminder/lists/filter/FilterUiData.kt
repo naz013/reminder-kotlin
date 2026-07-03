@@ -5,24 +5,24 @@ import org.threeten.bp.LocalDate
 data class UiFilterGroup(
   val id: String,
   val title: String,
-  val filter: UiFilter
+  val filter: UiFilter,
 )
 
 interface UiFilter
 
 data class UiReminderGroupFilter(
-  val chips: List<UiReminderGroupFilterChip>
+  val chips: List<UiReminderGroupFilterChip>,
 ) : UiFilter
 
 data class UiReminderGroupFilterChip(
   val id: String,
   val label: String,
-  val isSelected: Boolean
+  val isSelected: Boolean,
 )
 
 data class UiDateRangeFilter(
   val minDate: LocalDate,
   val maxDate: LocalDate,
   val startDate: LocalDate?,
-  val endDate: LocalDate?
+  val endDate: LocalDate?,
 ) : UiFilter

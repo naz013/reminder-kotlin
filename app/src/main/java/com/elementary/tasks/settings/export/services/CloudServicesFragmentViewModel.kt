@@ -19,9 +19,9 @@ class CloudServicesFragmentViewModel(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists,
   private val googleTaskListRepository: GoogleTaskListRepository,
-  private val googleTaskRepository: GoogleTaskRepository
-) : ViewModel(), DefaultLifecycleObserver {
-
+  private val googleTaskRepository: GoogleTaskRepository,
+) : ViewModel(),
+  DefaultLifecycleObserver {
   private val _isLoading = mutableLiveDataOf<Boolean>()
   val isLoading = _isLoading.toLiveData()
 

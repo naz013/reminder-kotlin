@@ -17,20 +17,19 @@ import com.github.naz013.feature.common.readString
 
 class ContactPicker(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private var resultCallback: (ContactData) -> Unit
+  private var resultCallback: (ContactData) -> Unit,
 ) : IntentPicker<Intent, ActivityResult>(
-  ActivityResultContracts.StartActivityForResult(),
-  launcherCreator
-) {
-
+    ActivityResultContracts.StartActivityForResult(),
+    launcherCreator,
+  ) {
   constructor(activity: ComponentActivity, resultCallback: (ContactData) -> Unit) : this(
     ActivityLauncherCreator(activity),
-    resultCallback
+    resultCallback,
   )
 
   constructor(fragment: Fragment, resultCallback: (ContactData) -> Unit) : this(
     FragmentLauncherCreator(fragment),
-    resultCallback
+    resultCallback,
   )
 
   override fun dispatchResult(result: ActivityResult) {

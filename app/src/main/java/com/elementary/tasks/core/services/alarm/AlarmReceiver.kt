@@ -6,18 +6,20 @@ import android.os.Bundle
 import com.elementary.tasks.core.services.BaseBroadcast
 import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.services.action.reminder.ReminderRepeatProcessor
-import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.SuperUtil
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDateTime
 
 class AlarmReceiver : BaseBroadcast() {
-
   private val reminderActionProcessor by inject<ReminderActionProcessor>()
   private val reminderRepeatProcessor by inject<ReminderRepeatProcessor>()
 
-  override fun onReceive(context: Context?, intent: Intent?) {
+  override fun onReceive(
+    context: Context?,
+    intent: Intent?,
+  ) {
     if (context == null) return
     val action = intent?.action ?: return
 

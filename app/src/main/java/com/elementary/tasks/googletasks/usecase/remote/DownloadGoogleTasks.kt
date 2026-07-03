@@ -5,10 +5,7 @@ import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 
 class DownloadGoogleTasks(
-  private val googleTasksApi: GoogleTasksApi
+  private val googleTasksApi: GoogleTasksApi,
 ) {
-
-  suspend operator fun invoke(googleTaskList: GoogleTaskList): List<GoogleTask> {
-    return googleTasksApi.getTasks(googleTaskList.listId)
-  }
+  suspend operator fun invoke(googleTaskList: GoogleTaskList): List<GoogleTask> = googleTasksApi.getTasks(googleTaskList.listId)
 }

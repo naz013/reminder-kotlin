@@ -8,7 +8,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
 
 object AssetsUtil {
-
   fun getFontNames(): List<String> {
     val list = mutableListOf<String>()
 
@@ -43,8 +42,11 @@ object AssetsUtil {
     return list
   }
 
-  fun getTypeface(context: Context, code: Int): Typeface? {
-    return when (code) {
+  fun getTypeface(
+    context: Context,
+    code: Int,
+  ): Typeface? =
+    when (code) {
       0 -> ResourcesCompat.getFont(context, R.font.roboto_black)
       1 -> ResourcesCompat.getFont(context, R.font.roboto_black_italic)
       2 -> ResourcesCompat.getFont(context, R.font.roboto_bold)
@@ -66,11 +68,11 @@ object AssetsUtil {
       18 -> ResourcesCompat.getFont(context, R.font.merriweathersans_lightitalic)
       19 -> ResourcesCompat.getFont(context, R.font.merriweathersans_regular)
       20 -> ResourcesCompat.getFont(context, R.font.lobster_regular)
-      else -> if (BuildParams.isPro) {
-        AssetsUtilExtended.getTypeface(context, code)
-      } else {
-        ResourcesCompat.getFont(context, R.font.roboto_regular)
-      }
+      else ->
+        if (BuildParams.isPro) {
+          AssetsUtilExtended.getTypeface(context, code)
+        } else {
+          ResourcesCompat.getFont(context, R.font.roboto_regular)
+        }
     }
-  }
 }

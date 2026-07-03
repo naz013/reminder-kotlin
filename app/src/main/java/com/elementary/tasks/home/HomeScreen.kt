@@ -29,10 +29,12 @@ import com.github.naz013.ui.common.R
 
 private const val BANNER_ANIMATION_DURATION_MS = 300
 
-private val bannerEnterTransition = fadeIn(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) +
-  slideInVertically(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight }
-private val bannerExitTransition = fadeOut(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) +
-  slideOutVertically(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight }
+private val bannerEnterTransition =
+  fadeIn(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) +
+    slideInVertically(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight }
+private val bannerExitTransition =
+  fadeOut(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) +
+    slideOutVertically(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight }
 
 @Composable
 fun HomeScreen(
@@ -142,13 +144,15 @@ private fun HomeBanner(
   onPositiveClick: () -> Unit,
 ) {
   ElevatedCard(
-    modifier = modifier
-      .padding(16.dp)
-      .fillMaxWidth(),
+    modifier =
+      modifier
+        .padding(16.dp)
+        .fillMaxWidth(),
     elevation = CardDefaults.elevatedCardElevation(defaultElevation = 12.dp),
-    colors = CardDefaults.elevatedCardColors(
-      containerColor = MaterialTheme.colorScheme.primaryContainer,
-    ),
+    colors =
+      CardDefaults.elevatedCardColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+      ),
   ) {
     Column(
       modifier = Modifier.padding(16.dp),

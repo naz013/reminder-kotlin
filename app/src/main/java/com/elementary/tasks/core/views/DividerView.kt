@@ -8,7 +8,6 @@ import android.util.TypedValue
 import android.view.View
 
 class DividerView : View {
-
   private var color = Color.GRAY
 
   constructor(context: Context) : super(context) {
@@ -22,24 +21,26 @@ class DividerView : View {
   constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
     context,
     attrs,
-    defStyle
+    defStyle,
   ) {
     init(context)
   }
 
   private fun init(context: Context) {
     val typedValue = TypedValue()
-    val themeArray = context.theme.obtainStyledAttributes(
-      typedValue.data,
-      intArrayOf(android.R.attr.textColorPrimary)
-    )
-    val color = try {
-      themeArray.getColor(0, 0)
-    } catch (e: Exception) {
-      Color.BLACK
-    } finally {
-      themeArray.recycle()
-    }
+    val themeArray =
+      context.theme.obtainStyledAttributes(
+        typedValue.data,
+        intArrayOf(android.R.attr.textColorPrimary),
+      )
+    val color =
+      try {
+        themeArray.getColor(0, 0)
+      } catch (e: Exception) {
+        Color.BLACK
+      } finally {
+        themeArray.recycle()
+      }
     val r = Color.red(color)
     val g = Color.green(color)
     val b = Color.blue(color)

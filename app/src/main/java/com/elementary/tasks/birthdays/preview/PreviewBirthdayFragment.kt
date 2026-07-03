@@ -27,30 +27,28 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBinding>() {
-
   private val viewModel by viewModel<PreviewBirthdayViewModel> { parametersOf(idFromIntent()) }
   private val adsProvider = AdsProvider()
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 
-  override fun getTitle(): String {
-    return getString(R.string.details)
-  }
+  override fun getTitle(): String = getString(R.string.details)
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentBirthdayPreviewBinding {
-    return FragmentBirthdayPreviewBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentBirthdayPreviewBinding = FragmentBirthdayPreviewBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the birthday preview screen for id: ${idFromIntent()}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.buttonCall.setOnClickListener { tryToMakeCall() }
     binding.buttonSms.setOnClickListener { tryToSendSms() }
@@ -78,7 +76,7 @@ class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBindi
 
           else -> false
         }
-      }
+      },
     )
 
     initViewModel()
@@ -91,7 +89,7 @@ class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBindi
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, idFromIntent())
         },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
@@ -100,7 +98,7 @@ class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBindi
     if (!BuildParams.isPro && AdsProvider.hasAds()) {
       adsProvider.showBanner(
         binding.adsHolder,
-        AdsProvider.BIRTHDAY_PREVIEW_BANNER_ID
+        AdsProvider.BIRTHDAY_PREVIEW_BANNER_ID,
       )
     }
   }
@@ -120,7 +118,7 @@ class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBindi
   private fun showTextIfNotNull(
     textView: TextView,
     value: String?,
-    visibilityFunc: (Boolean) -> Unit
+    visibilityFunc: (Boolean) -> Unit,
   ) {
     visibilityFunc(value != null)
     textView.text = value
@@ -140,11 +138,12 @@ class PreviewBirthdayFragment : BaseToolbarFragment<FragmentBirthdayPreviewBindi
     }
 
     if (birthday.number != null) {
-      val displayName = if (birthday.contactName != null) {
-        "${birthday.contactName} (${birthday.number})"
-      } else {
-        birthday.number
-      }
+      val displayName =
+        if (birthday.contactName != null) {
+          "${birthday.contactName} (${birthday.number})"
+        } else {
+          birthday.number
+        }
       showTextIfNotNull(binding.contactNumberBlockTextView, displayName) {
         binding.contactNumberBlockView.visibleGone(it)
       }

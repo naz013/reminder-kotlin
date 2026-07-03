@@ -10,5 +10,5 @@ data class UiReminderPreviewDetails(
   val noteId: String,
   val actionTarget: UiReminderTarget?,
   val isRunning: Boolean,
-  val status: UiReminderStatus
+  val status: UiReminderStatus,
 )

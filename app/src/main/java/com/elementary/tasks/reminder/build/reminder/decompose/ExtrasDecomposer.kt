@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
 import com.elementary.tasks.core.utils.BuildParams
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
@@ -19,101 +18,125 @@ import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
+import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.repository.GoogleTaskListRepository
 
 class ExtrasDecomposer(
   private val biFactory: BiFactory,
   private val googleTaskListRepository: GoogleTaskListRepository,
-  private val googleCalendarUtils: GoogleCalendarUtils
+  private val googleCalendarUtils: GoogleCalendarUtils,
 ) {
-
   suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
-    val summary = reminder.summary.takeIf { it.isNotBlank() }
-      ?.let { biFactory.createWithValue(BiType.SUMMARY, it, SummaryBuilderItem::class.java) }
+    val summary =
+      reminder.summary
+        .takeIf { it.isNotBlank() }
+        ?.let { biFactory.createWithValue(BiType.SUMMARY, it, SummaryBuilderItem::class.java) }
 
-    val description = reminder.description?.takeIf { it.isNotBlank() }
-      ?.let {
-        biFactory.createWithValue(
-          BiType.DESCRIPTION,
-          it,
-          DescriptionBuilderItem::class.java
-        )
+    val description =
+      reminder.description
+        ?.takeIf { it.isNotBlank() }
+        ?.let {
+          biFactory.createWithValue(
+            BiType.DESCRIPTION,
+            it,
+            DescriptionBuilderItem::class.java,
+          )
+        }
+
+    val beforeTime =
+      reminder.remindBefore
+        .takeIf { it > 0 }
+        ?.let { biFactory.createWithValue(BiType.BEFORE_TIME, it, BeforeTimeBuilderItem::class.java) }
+
+    val repeatLimit =
+      reminder.repeatLimit
+        .takeIf { it > 0 }
+        ?.let {
+          biFactory.createWithValue(BiType.REPEAT_LIMIT, it, RepeatLimitBuilderItem::class.java)
+        }
+
+    val priority =
+      reminder.priority.let {
+        biFactory.createWithValue(BiType.PRIORITY, it, PriorityBuilderItem::class.java)
       }
 
-    val beforeTime = reminder.remindBefore.takeIf { it > 0 }
-      ?.let { biFactory.createWithValue(BiType.BEFORE_TIME, it, BeforeTimeBuilderItem::class.java) }
-
-    val repeatLimit = reminder.repeatLimit.takeIf { it > 0 }
-      ?.let {
-        biFactory.createWithValue(BiType.REPEAT_LIMIT, it, RepeatLimitBuilderItem::class.java)
+    val ledColor =
+      reminder.color.takeIf { BuildParams.isPro }?.let {
+        biFactory.createWithValue(BiType.LED_COLOR, it, LedColorBuilderItem::class.java)
       }
 
-    val priority = reminder.priority.let {
-      biFactory.createWithValue(BiType.PRIORITY, it, PriorityBuilderItem::class.java)
-    }
+    val attachments =
+      reminder.attachmentFiles
+        .ifEmpty {
+          reminder.attachmentFile.takeIf { it.isNotEmpty() }?.let { listOf(it) }
+        }?.takeIf { it.isNotEmpty() }
+        ?.let {
+          biFactory.createWithValue(BiType.ATTACHMENTS, it, AttachmentsBuilderItem::class.java)
+        }
 
-    val ledColor = reminder.color.takeIf { BuildParams.isPro }?.let {
-      biFactory.createWithValue(BiType.LED_COLOR, it, LedColorBuilderItem::class.java)
-    }
+    val googleTaskList =
+      reminder.taskListId
+        .takeIf { !it.isNullOrEmpty() }
+        ?.let { googleTaskListRepository.getById(it) }
+        ?.let {
+          biFactory.createWithValue(
+            BiType.GOOGLE_TASK_LIST,
+            it,
+            GoogleTaskListBuilderItem::class.java,
+          )
+        }
 
-    val attachments = reminder.attachmentFiles.ifEmpty {
-      reminder.attachmentFile.takeIf { it.isNotEmpty() }?.let { listOf(it) }
-    }?.takeIf { it.isNotEmpty() }?.let {
-      biFactory.createWithValue(BiType.ATTACHMENTS, it, AttachmentsBuilderItem::class.java)
-    }
+    val googleCalendar =
+      reminder.calendarId
+        .takeIf { it > 0 }
+        ?.let { calendarId ->
+          googleCalendarUtils.getCalendarsList().firstOrNull { it.id == calendarId }
+        }?.let {
+          biFactory.createWithValue(BiType.GOOGLE_CALENDAR, it, GoogleCalendarBuilderItem::class.java)
+        }
 
-    val googleTaskList = reminder.taskListId.takeIf { !it.isNullOrEmpty() }
-      ?.let { googleTaskListRepository.getById(it) }
-      ?.let {
-        biFactory.createWithValue(
-          BiType.GOOGLE_TASK_LIST,
-          it,
-          GoogleTaskListBuilderItem::class.java
-        )
-      }
+    val googleCalendarDuration =
+      reminder
+        .takeIf { it.duration > 0 || it.allDay }
+        ?.let { CalendarDuration(it.allDay, it.duration) }
+        ?.let {
+          biFactory.createWithValue(
+            BiType.GOOGLE_CALENDAR_DURATION,
+            it,
+            GoogleCalendarDurationBuilderItem::class.java,
+          )
+        }
 
-    val googleCalendar = reminder.calendarId.takeIf { it > 0 }?.let { calendarId ->
-      googleCalendarUtils.getCalendarsList().firstOrNull { it.id == calendarId }
-    }?.let {
-      biFactory.createWithValue(BiType.GOOGLE_CALENDAR, it, GoogleCalendarBuilderItem::class.java)
-    }
+    val emailSubject =
+      reminder.subject
+        .takeIf { it.isNotEmpty() }
+        ?.let {
+          biFactory.createWithValue(
+            BiType.EMAIL_SUBJECT,
+            it,
+            EmailSubjectBuilderItem::class.java,
+          )
+        }
 
-    val googleCalendarDuration = reminder.takeIf { it.duration > 0 || it.allDay }
-      ?.let { CalendarDuration(it.allDay, it.duration) }
-      ?.let {
-        biFactory.createWithValue(
-          BiType.GOOGLE_CALENDAR_DURATION,
-          it,
-          GoogleCalendarDurationBuilderItem::class.java
-        )
-      }
-
-    val emailSubject = reminder.subject.takeIf { it.isNotEmpty() }
-      ?.let {
-        biFactory.createWithValue(
-          BiType.EMAIL_SUBJECT,
-          it,
-          EmailSubjectBuilderItem::class.java
-        )
-      }
-
-    val otherParams = reminder.takeIf {
-      it.vibrate || it.notifyByVoice || it.repeatNotification || it.unlock
-    }?.let {
-      OtherParams(
-        useGlobal = false,
-        notifyByVoice = it.notifyByVoice,
-        vibrate = it.vibrate,
-        repeatNotification = it.repeatNotification
-      )
-    }?.let {
-      biFactory.createWithValue(
-        BiType.OTHER_PARAMS,
-        it,
-        OtherParamsBuilderItem::class.java
-      )
-    }
+    val otherParams =
+      reminder
+        .takeIf {
+          it.vibrate || it.notifyByVoice || it.repeatNotification || it.unlock
+        }?.let {
+          OtherParams(
+            useGlobal = false,
+            notifyByVoice = it.notifyByVoice,
+            vibrate = it.vibrate,
+            repeatNotification = it.repeatNotification,
+          )
+        }?.let {
+          biFactory.createWithValue(
+            BiType.OTHER_PARAMS,
+            it,
+            OtherParamsBuilderItem::class.java,
+          )
+        }
 
     return listOfNotNull(
       summary,
@@ -127,7 +150,7 @@ class ExtrasDecomposer(
       googleCalendar,
       googleCalendarDuration,
       emailSubject,
-      otherParams
+      otherParams,
     )
   }
 }

@@ -9,15 +9,12 @@ import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 
 class RepeatIntervalController(
-  builderItem: RepeatIntervalBuilderItem
+  builderItem: RepeatIntervalBuilderItem,
 ) : AbstractBindingValueController<Long, BuilderItemRepeatIntervalBinding>(builderItem) {
-
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemRepeatIntervalBinding {
-    return BuilderItemRepeatIntervalBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemRepeatIntervalBinding = BuilderItemRepeatIntervalBinding.inflate(layoutInflater, parent, false)
 
   @SuppressLint("ClickableViewAccessibility")
   override fun onViewCreated() {

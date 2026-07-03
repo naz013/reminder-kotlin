@@ -15,9 +15,8 @@ import com.github.naz013.logging.Logger
  */
 class ToggleReminderStateUseCase(
   private val activateReminderUseCase: ActivateReminderUseCase,
-  private val deactivateReminderUseCase: DeactivateReminderUseCase
+  private val deactivateReminderUseCase: DeactivateReminderUseCase,
 ) {
-
   /**
    * Toggles the reminder state.
    *
@@ -43,4 +42,3 @@ class ToggleReminderStateUseCase(
     private const val TAG = "ToggleReminderStateUseCase"
   }
 }
-

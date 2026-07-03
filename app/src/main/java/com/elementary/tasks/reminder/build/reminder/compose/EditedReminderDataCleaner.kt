@@ -6,10 +6,9 @@ import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 
 class EditedReminderDataCleaner {
-
   operator fun invoke(
     reminder: Reminder,
-    processedBuilderItems: ProcessedBuilderItems
+    processedBuilderItems: ProcessedBuilderItems,
   ) {
     if (reminder.noteId.isNotEmpty() && !processedBuilderItems.typeMap.containsKey(BiType.NOTE)) {
       Logger.d(TAG, "Note id is not empty, cleaning data")
@@ -57,7 +56,7 @@ class EditedReminderDataCleaner {
           !processedBuilderItems.typeMap.containsKey(BiType.EMAIL) &&
           !processedBuilderItems.typeMap.containsKey(BiType.APPLICATION) &&
           !processedBuilderItems.typeMap.containsKey(BiType.LINK)
-        )
+      )
     ) {
       Logger.d(TAG, "Target is not empty, cleaning data")
       reminder.target = ""
@@ -76,7 +75,7 @@ class EditedReminderDataCleaner {
       (
         !processedBuilderItems.typeMap.containsKey(BiType.ARRIVING_COORDINATES) &&
           !processedBuilderItems.typeMap.containsKey(BiType.LEAVING_COORDINATES)
-        )
+      )
     ) {
       Logger.d(TAG, "Reminder delay was enabled, disabling it")
       reminder.hasReminder = false

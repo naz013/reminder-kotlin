@@ -11,9 +11,8 @@ class ReminderRepeatProcessor(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderRepository: ReminderRepository,
   private val jobScheduler: JobScheduler,
-  private val reminderActionProcessor: ReminderActionProcessor
+  private val reminderActionProcessor: ReminderActionProcessor,
 ) {
-
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun process(id: String) {

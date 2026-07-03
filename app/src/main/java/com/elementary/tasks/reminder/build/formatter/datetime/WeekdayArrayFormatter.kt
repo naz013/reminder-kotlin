@@ -6,9 +6,8 @@ import com.elementary.tasks.reminder.build.formatter.Formatter
 
 @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
 class WeekdayArrayFormatter(
-  private val context: Context
+  private val context: Context,
 ) : Formatter<List<Int>>() {
-
   override fun format(daysOfWeek: List<Int>): String {
     val sb = StringBuilder()
     daysOfWeek.forEachIndexed { index, i ->
@@ -24,8 +23,8 @@ class WeekdayArrayFormatter(
     }
   }
 
-  private fun getValue(dayOfWeek: Int): String {
-    return when (dayOfWeek) {
+  private fun getValue(dayOfWeek: Int): String =
+    when (dayOfWeek) {
       0 -> context.getString(R.string.sun)
       1 -> context.getString(R.string.mon)
       2 -> context.getString(R.string.tue)
@@ -35,5 +34,4 @@ class WeekdayArrayFormatter(
       6 -> context.getString(R.string.sat)
       else -> "NA"
     }
-  }
 }

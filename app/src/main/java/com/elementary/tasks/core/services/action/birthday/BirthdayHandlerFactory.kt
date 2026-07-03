@@ -23,11 +23,10 @@ class BirthdayHandlerFactory(
   private val dateTimeManager: DateTimeManager,
   private val wearNotification: WearNotification,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
-  private val saveBirthdayUseCase: SaveBirthdayUseCase
+  private val saveBirthdayUseCase: SaveBirthdayUseCase,
 ) {
-
-  fun createAction(canPlaySound: Boolean): ActionHandler<Birthday> {
-    return if (canPlaySound) {
+  fun createAction(canPlaySound: Boolean): ActionHandler<Birthday> =
+    if (canPlaySound) {
       BirthdayHandlerQ(
         birthdayDataProvider,
         contextProvider,
@@ -35,7 +34,7 @@ class BirthdayHandlerFactory(
         notifier,
         prefs,
         wearNotification,
-        modelDateTimeFormatter
+        modelDateTimeFormatter,
       )
     } else {
       BirthdayHandlerSilent(
@@ -45,16 +44,14 @@ class BirthdayHandlerFactory(
         notifier,
         prefs,
         wearNotification,
-        modelDateTimeFormatter
+        modelDateTimeFormatter,
       )
     }
-  }
 
-  fun createCancel(): ActionHandler<Birthday> {
-    return BirthdayCancelHandlerQ(
+  fun createCancel(): ActionHandler<Birthday> =
+    BirthdayCancelHandlerQ(
       notifier,
       dateTimeManager,
-      saveBirthdayUseCase
+      saveBirthdayUseCase,
     )
-  }
 }

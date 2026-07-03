@@ -24,16 +24,17 @@ import com.github.naz013.ui.common.compose.composeView
 import com.github.naz013.ui.common.login.LoginApi
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment(), RootFragment {
-
+class HomeFragment :
+  Fragment(),
+  RootFragment {
   private val viewModel by viewModel<ScheduleHomeViewModel>()
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    return composeView {
+    savedInstanceState: Bundle?,
+  ): View =
+    composeView {
       val state by viewModel.homeScreenState.collectAsState()
       HomeScreen(
         modifier = Modifier.fillMaxSize(),
@@ -47,21 +48,24 @@ class HomeFragment : Fragment(), RootFragment {
         content = {
           ChronologicalHomeScreen(
             state = state,
-            modifier = Modifier
-              .fillMaxSize()
-              .statusBarsPadding(),
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
             onSettingsClick = { viewModel.onSettingsClicked() },
             onHeaderNavigationItemClick = { viewModel.onHeaderNavigationItemClicked(it) },
             onEventClick = { viewModel.onEventClicked(it) },
             onEventActionClick = { viewModel.onEventActionClicked(requireContext(), it) },
-            onAddMenuItemClick = { viewModel.onEventTypeSelected(it) }
+            onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },
           )
-        }
+        },
       )
     }
-  }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     lifecycle.addObserver(viewModel)
     viewModel.navigationEvent.observeEvent(viewLifecycleOwner) {
@@ -70,14 +74,14 @@ class HomeFragment : Fragment(), RootFragment {
           safeNavigation(
             R.id.previewReminderFragment,
             Bundle().apply { putString(IntentKeys.INTENT_ID, it.uuid) },
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenBirthdayDetails -> {
           safeNavigation(
             R.id.previewBirthdayFragment,
             Bundle().apply { putString(IntentKeys.INTENT_ID, it.uuid) },
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.ShowEventTypeSelection -> Unit
@@ -85,69 +89,69 @@ class HomeFragment : Fragment(), RootFragment {
           safeNavigation(
             R.id.settingsFragment,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCreateReminder -> {
           safeNavigation(
             R.id.buildReminderFragment,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCreateBirthday -> {
           safeNavigation(
             R.id.editBirthdayFragment,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCreateGoogleTask -> {
           safeNavigation(
             R.id.editGoogleTaskFragment,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCalendar -> {
           safeNavigation(
             R.id.actionCalendar,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenEvents -> {
           safeNavigation(
             R.id.actionEvents,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenNotes -> {
           safeNavigation(
             R.id.actionNotes,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenGoogleTasks -> {
           safeNavigation(
             R.id.actionGoogle,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenGroups -> {
           safeNavigation(
             R.id.groupsFragment,
             null,
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenPrivacy -> {
           LoginApi.openLogged(
             requireContext(),
-            PrivacyPolicyActivity::class.java
+            PrivacyPolicyActivity::class.java,
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCloudDrives -> {
@@ -159,7 +163,7 @@ class HomeFragment : Fragment(), RootFragment {
         is ScheduleHomeViewModel.NavigationEvent.OpenCreateNote -> {
           LoginApi.openLogged(
             requireContext(),
-            CreateNoteActivity::class.java
+            CreateNoteActivity::class.java,
           )
         }
       }

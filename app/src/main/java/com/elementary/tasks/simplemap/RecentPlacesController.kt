@@ -14,9 +14,8 @@ import com.github.naz013.ui.common.view.visible
 class RecentPlacesController(
   rootView: View,
   private val placesAllowed: Boolean,
-  private val listener: OnPlaceSelectedListener
+  private val listener: OnPlaceSelectedListener,
 ) {
-
   private var placeRecyclerAdapter = RecentPlacesAdapter()
 
   private val placesButton = rootView.findViewById<View>(R.id.placesButtonCard)
@@ -38,21 +37,27 @@ class RecentPlacesController(
   fun onPlacesLoaded(places: List<UiPlaceList>) {
     if (placesAllowed && places.isNotEmpty()) {
       placesButton.visible()
-      placeRecyclerAdapter.actionsListener = object : ActionsListener<UiPlaceList> {
-        override fun onAction(view: View, position: Int, t: UiPlaceList?, actions: ListActions) {
-          when (actions) {
-            ListActions.OPEN, ListActions.MORE -> {
-              hideCard()
-              if (t != null) {
-                listener.onPlaceSelected(t)
+      placeRecyclerAdapter.actionsListener =
+        object : ActionsListener<UiPlaceList> {
+          override fun onAction(
+            view: View,
+            position: Int,
+            t: UiPlaceList?,
+            actions: ListActions,
+          ) {
+            when (actions) {
+              ListActions.OPEN, ListActions.MORE -> {
+                hideCard()
+                if (t != null) {
+                  listener.onPlaceSelected(t)
+                }
               }
-            }
 
-            else -> {
+              else -> {
+              }
             }
           }
         }
-      }
       placeRecyclerAdapter.submitList(places)
     }
   }
@@ -61,9 +66,7 @@ class RecentPlacesController(
     hideCard()
   }
 
-  fun isLayerVisible(): Boolean {
-    return placesContainer.isVisible()
-  }
+  fun isLayerVisible(): Boolean = placesContainer.isVisible()
 
   private fun toggleCard() {
     listener.onPlaceButtonClicked()
@@ -84,6 +87,7 @@ class RecentPlacesController(
 
   interface OnPlaceSelectedListener {
     fun onPlaceSelected(place: UiPlaceList)
+
     fun onPlaceButtonClicked()
   }
 }

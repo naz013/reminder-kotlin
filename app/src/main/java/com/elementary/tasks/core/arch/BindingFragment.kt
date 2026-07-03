@@ -14,7 +14,6 @@ import com.github.naz013.ui.common.Dialogues
 import org.koin.android.ext.android.inject
 
 abstract class BindingFragment<B : ViewBinding> : Fragment() {
-
   protected val dialogues by inject<Dialogues>()
   protected lateinit var permissionFlow: PermissionFlow
 
@@ -28,24 +27,25 @@ abstract class BindingFragment<B : ViewBinding> : Fragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     binding = inflate(inflater, container, savedInstanceState)
     return binding.root
   }
 
-  protected fun string(@StringRes res: Int): String {
-    return if (context != null && isAdded) {
+  protected fun string(
+    @StringRes res: Int,
+  ): String =
+    if (context != null && isAdded) {
       getString(res)
     } else {
       ""
     }
-  }
 
   abstract fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): B
 
   protected fun withActivity(action: (Activity) -> Unit) {

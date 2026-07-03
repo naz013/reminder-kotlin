@@ -16,10 +16,9 @@ class YearlyRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
-
   override fun calculateNextOccurrence(
     reminder: Reminder,
-    fromDateTime: LocalDateTime
+    fromDateTime: LocalDateTime,
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
     val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
@@ -33,15 +32,9 @@ class YearlyRepeatStrategy(
     )
   }
 
-  override fun canSkip(reminder: Reminder): Boolean {
-    return !reminder.isLimitExceed()
-  }
+  override fun canSkip(reminder: Reminder): Boolean = !reminder.isLimitExceed()
 
-  override fun canSnooze(reminder: Reminder): Boolean {
-    return true
-  }
+  override fun canSnooze(reminder: Reminder): Boolean = true
 
-  override fun canStartImmediately(reminder: Reminder): Boolean {
-    return dateTimeManager.isCurrent(reminder.eventTime)
-  }
+  override fun canStartImmediately(reminder: Reminder): Boolean = dateTimeManager.isCurrent(reminder.eventTime)
 }

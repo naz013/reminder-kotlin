@@ -21,69 +21,71 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
-
   private val viewModel by viewModel<EditPlaceViewModel> { parametersOf(idFromIntent()) }
   private var googleMap: SimpleMapFragment? = null
   private var forceExit: Boolean = false
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 
-  override fun getTitle(): String {
-    return if (viewModel.hasId()) {
+  override fun getTitle(): String =
+    if (viewModel.hasId()) {
       getString(R.string.edit_place)
     } else {
       getString(R.string.new_place)
     }
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentEditPlaceBinding {
-    return FragmentEditPlaceBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentEditPlaceBinding = FragmentEditPlaceBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the place screen for id: ${idFromIntent()}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
-    googleMap = SimpleMapFragment.newInstance(
-      SimpleMapFragment.MapParams(
-        isPlaces = false,
-        isStyles = true,
-        isRadius = true,
-        rememberMarkerRadius = false,
-        rememberMarkerStyle = false
+    googleMap =
+      SimpleMapFragment.newInstance(
+        SimpleMapFragment.MapParams(
+          isPlaces = false,
+          isStyles = true,
+          isRadius = true,
+          rememberMarkerRadius = false,
+          rememberMarkerStyle = false,
+        ),
       )
-    )
 
-    googleMap?.mapCallback = object : SimpleMapFragment.MapCallback {
-      override fun onMapReady() {
-        if (viewModel.canDelete) {
-          viewModel.getPlace()?.also {
-            showPlaceOnMap(it)
+    googleMap?.mapCallback =
+      object : SimpleMapFragment.MapCallback {
+        override fun onMapReady() {
+          if (viewModel.canDelete) {
+            viewModel.getPlace()?.also {
+              showPlaceOnMap(it)
+            }
+          }
+        }
+
+        override fun onLocationSelected(markerState: SimpleMapFragment.MarkerState) {
+          viewModel.lat = markerState.latLng.latitude
+          viewModel.lng = markerState.latLng.longitude
+          viewModel.address = markerState.address
+          viewModel.markerStyle = markerState.style
+          viewModel.markerRadius = markerState.radius
+
+          if (binding.placeName.trimmedText().isEmpty()) {
+            binding.placeName.setText(viewModel.address)
           }
         }
       }
 
-      override fun onLocationSelected(markerState: SimpleMapFragment.MarkerState) {
-        viewModel.lat = markerState.latLng.latitude
-        viewModel.lng = markerState.latLng.longitude
-        viewModel.address = markerState.address
-        viewModel.markerStyle = markerState.style
-        viewModel.markerRadius = markerState.radius
-
-        if (binding.placeName.trimmedText().isEmpty()) {
-          binding.placeName.setText(viewModel.address)
-        }
-      }
-    }
-
-    childFragmentManager.beginTransaction()
+    childFragmentManager
+      .beginTransaction()
       .replace(R.id.fragment_container, googleMap!!)
       .commit()
 
@@ -110,7 +112,7 @@ class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
       },
       menuModifier = { menu ->
         menu.getItem(1).isVisible = viewModel.canDelete
-      }
+      },
     )
 
     initViewModel()
@@ -154,28 +156,26 @@ class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
     viewModel.savePlace(
       EditPlaceViewModel.SavePlaceData(
         name = name,
-        newId = newId
-      )
+        newId = newId,
+      ),
     )
   }
 
   private fun askCopySaving() {
     if (viewModel.hasLatLng()) {
       if (viewModel.isFromFile && viewModel.hasSameInDb) {
-        dialogues.getMaterialDialog(requireContext())
+        dialogues
+          .getMaterialDialog(requireContext())
           .setMessage(R.string.same_place_message)
           .setPositiveButton(R.string.keep) { dialogInterface, _ ->
             dialogInterface.dismiss()
             savePlace(true)
-          }
-          .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+          }.setNegativeButton(R.string.replace) { dialogInterface, _ ->
             dialogInterface.dismiss()
             savePlace()
-          }
-          .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+          }.setNeutralButton(R.string.cancel) { dialogInterface, _ ->
             dialogInterface.dismiss()
-          }
-          .create()
+          }.create()
           .show()
       } else {
         savePlace()
@@ -193,7 +193,7 @@ class EditPlaceFragment : BaseToolbarFragment<FragmentEditPlaceBinding>() {
         markerStyle = place.marker,
         radius = place.radius,
         clear = true,
-        animate = true
+        animate = true,
       )
     }
   }

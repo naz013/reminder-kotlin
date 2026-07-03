@@ -23,13 +23,13 @@ class PlacesViewModel(
   dispatcherProvider: DispatcherProvider,
   private val placeRepository: PlaceRepository,
   private val uiPlaceListAdapter: UiPlaceListAdapter,
-  private val deletePlaceUseCase: DeletePlaceUseCase
+  private val deletePlaceUseCase: DeletePlaceUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val placesData = SearchableData(dispatcherProvider, viewModelScope, placeRepository)
-  val places = placesData.map { list ->
-    list.map { uiPlaceListAdapter.convert(it) }
-  }
+  val places =
+    placesData.map { list ->
+      list.map { uiPlaceListAdapter.convert(it) }
+    }
   val shareFile = mutableLiveDataOf<ShareFile<UiPlaceList>>()
 
   fun onSearchUpdate(query: String) {
@@ -58,8 +58,8 @@ class PlacesViewModel(
       shareFile.postValue(
         ShareFile(
           uiPlaceListAdapter.convert(place),
-          backupTool.placeToFile(place)
-        )
+          backupTool.placeToFile(place),
+        ),
       )
       postInProgress(false)
     }
@@ -68,15 +68,13 @@ class PlacesViewModel(
   internal class SearchableData(
     dispatcherProvider: DispatcherProvider,
     parentScope: CoroutineScope,
-    private val placeRepository: PlaceRepository
+    private val placeRepository: PlaceRepository,
   ) : SearchableLiveData<List<Place>>(parentScope + dispatcherProvider.default()) {
-
-    override suspend fun runQuery(query: String): List<Place> {
-      return if (query.isEmpty()) {
+    override suspend fun runQuery(query: String): List<Place> =
+      if (query.isEmpty()) {
         placeRepository.getAll()
       } else {
         placeRepository.searchByName(query.lowercase())
       }
-    }
   }
 }

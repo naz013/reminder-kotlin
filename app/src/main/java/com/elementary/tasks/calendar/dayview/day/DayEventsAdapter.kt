@@ -18,38 +18,45 @@ import com.elementary.tasks.reminder.lists.adapter.ShoppingViewHolder
 class DayEventsAdapter(
   private val isDark: Boolean,
   private val showMore: Boolean = true,
-  private val eventListener: ActionsListener<EventModel>? = null
+  private val eventListener: ActionsListener<EventModel>? = null,
 ) : ListAdapter<EventModel, RecyclerView.ViewHolder>(EventModelDiffCallback) {
-
   private val reminderCommon = ScheduleReminderViewHolderCommon()
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    return when (viewType) {
-      0 -> ReminderViewHolder(
-        parent,
-        editable = false,
-        showMore = showMore
-      ) { view, i, listActions ->
-        eventListener?.onAction(view, i, getItem(i), listActions)
-      }
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): RecyclerView.ViewHolder =
+    when (viewType) {
+      0 ->
+        ReminderViewHolder(
+          parent,
+          editable = false,
+          showMore = showMore,
+        ) { view, i, listActions ->
+          eventListener?.onAction(view, i, getItem(i), listActions)
+        }
 
-      1 -> ShoppingViewHolder(
-        parent = parent,
-        editable = false,
-        showMore = showMore,
-        isDark = isDark,
-        scheduleReminderViewHolderCommon = reminderCommon
-      ) { view, i, listActions ->
-        eventListener?.onAction(view, i, getItem(i), listActions)
-      }
+      1 ->
+        ShoppingViewHolder(
+          parent = parent,
+          editable = false,
+          showMore = showMore,
+          isDark = isDark,
+          scheduleReminderViewHolderCommon = reminderCommon,
+        ) { view, i, listActions ->
+          eventListener?.onAction(view, i, getItem(i), listActions)
+        }
 
-      else -> BirthdayHolder(parent, showMore) { view, i, listActions ->
-        eventListener?.onAction(view, i, getItem(i), listActions)
-      }
+      else ->
+        BirthdayHolder(parent, showMore) { view, i, listActions ->
+          eventListener?.onAction(view, i, getItem(i), listActions)
+        }
     }
-  }
 
-  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: RecyclerView.ViewHolder,
+    position: Int,
+  ) {
     val item = getItem(position)
     when (holder) {
       is BirthdayHolder -> {
@@ -59,14 +66,14 @@ class DayEventsAdapter(
       is ReminderViewHolder -> {
         holder.setData(
           data = (item as ReminderEventModel).model as UiReminderListActive,
-          isHistorical = item.isHistorical
+          isHistorical = item.isHistorical,
         )
       }
 
       is ShoppingViewHolder -> {
         holder.setData(
           data = (item as ReminderEventModel).model as UiReminderListActiveShop,
-          isHistorical = item.isHistorical
+          isHistorical = item.isHistorical,
         )
       }
     }

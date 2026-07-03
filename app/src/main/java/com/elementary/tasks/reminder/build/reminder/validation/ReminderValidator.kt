@@ -6,9 +6,8 @@ import com.github.naz013.logging.Logger
 class ReminderValidator(
   private val targetValidator: TargetValidator,
   private val subTasksValidator: SubTasksValidator,
-  private val eventTimeValidator: EventTimeValidator
+  private val eventTimeValidator: EventTimeValidator,
 ) {
-
   operator fun invoke(reminder: Reminder): ValidationResult {
     if (!targetValidator(reminder)) {
       Logger.e(TAG, "Reminder target is not valid")
@@ -29,15 +28,16 @@ class ReminderValidator(
 
   sealed class ValidationResult {
     data object Success : ValidationResult()
+
     data class Failed(
-      val error: ValidationError
+      val error: ValidationError,
     ) : ValidationResult()
   }
 
   enum class ValidationError {
     TARGET,
     SUB_TASKS,
-    EVENT_TIME
+    EVENT_TIME,
   }
 
   companion object {

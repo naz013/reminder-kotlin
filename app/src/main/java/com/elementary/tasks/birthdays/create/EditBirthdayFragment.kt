@@ -28,34 +28,33 @@ import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDate
 
 class EditBirthdayFragment : BaseToolbarFragment<FragmentEditBirthdayBinding>() {
-
   private val viewModel by viewModel<EditBirthdayViewModel> { parametersOf(idFromIntent()) }
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 
-  override fun getTitle(): String {
-    return if (viewModel.hasId()) {
+  override fun getTitle(): String =
+    if (viewModel.hasId()) {
       getString(R.string.edit_birthday)
     } else {
       getString(R.string.add_birthday)
     }
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentEditBirthdayBinding {
-    return FragmentEditBirthdayBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentEditBirthdayBinding = FragmentEditBirthdayBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the birthday screen for id: ${idFromIntent()}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.birthDate.setOnClickListener { dateDialog() }
     initContactPicker()
@@ -87,7 +86,7 @@ class EditBirthdayFragment : BaseToolbarFragment<FragmentEditBirthdayBinding>() 
       },
       menuModifier = { menu ->
         menu.getItem(1).isVisible = viewModel.isEdited && !viewModel.isFromFile
-      }
+      },
     )
 
     initViewModel()
@@ -96,20 +95,18 @@ class EditBirthdayFragment : BaseToolbarFragment<FragmentEditBirthdayBinding>() 
 
   private fun askCopySaving() {
     if (viewModel.isFromFile && viewModel.hasSameInDb) {
-      dialogues.getMaterialDialog(requireContext())
+      dialogues
+        .getMaterialDialog(requireContext())
         .setMessage(R.string.same_birthday_message)
         .setPositiveButton(R.string.keep) { dialogInterface, _ ->
           dialogInterface.dismiss()
           saveBirthday(true)
-        }
-        .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+        }.setNegativeButton(R.string.replace) { dialogInterface, _ ->
           dialogInterface.dismiss()
           saveBirthday()
-        }
-        .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+        }.setNeutralButton(R.string.cancel) { dialogInterface, _ ->
           dialogInterface.dismiss()
-        }
-        .create()
+        }.create()
         .show()
     } else {
       saveBirthday()
@@ -144,7 +141,7 @@ class EditBirthdayFragment : BaseToolbarFragment<FragmentEditBirthdayBinding>() 
     dateTimePickerProvider.showDatePicker(
       fragmentManager = childFragmentManager,
       date = viewModel.selectedDate,
-      title = getString(R.string.select_date)
+      title = getString(R.string.select_date),
     ) {
       viewModel.onDateChanged(it)
     }
@@ -152,15 +149,22 @@ class EditBirthdayFragment : BaseToolbarFragment<FragmentEditBirthdayBinding>() 
 
   private fun initContactPicker() {
     binding.pickContactView.contactPicker = ContactPicker(this) { }
-    binding.pickContactView.listener = object : ContactPickerView.OnNumberChangeListener {
-      override fun onChanged(phoneNumber: String, contactInfo: ContactPickerView.ContactInfo?) {
-        contactInfo?.also {
-          if (binding.birthName.text.toString().trim() == "") {
-            binding.birthName.setText(it.name)
+    binding.pickContactView.listener =
+      object : ContactPickerView.OnNumberChangeListener {
+        override fun onChanged(
+          phoneNumber: String,
+          contactInfo: ContactPickerView.ContactInfo?,
+        ) {
+          contactInfo?.also {
+            if (binding.birthName.text
+                .toString()
+                .trim() == ""
+            ) {
+              binding.birthName.setText(it.name)
+            }
           }
         }
       }
-    }
   }
 
   private fun initViewModel() {
@@ -174,9 +178,11 @@ class EditBirthdayFragment : BaseToolbarFragment<FragmentEditBirthdayBinding>() 
             navigate(
               resId = R.id.actionHome,
               args = null,
-              navOptions = NavOptions.Builder()
-                .setLaunchSingleTop(true)
-                .build()
+              navOptions =
+                NavOptions
+                  .Builder()
+                  .setLaunchSingleTop(true)
+                  .build(),
             )
           }
         }

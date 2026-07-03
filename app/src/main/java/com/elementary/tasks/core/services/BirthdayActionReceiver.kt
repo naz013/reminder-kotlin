@@ -9,10 +9,12 @@ import com.github.naz013.logging.Logger
 import org.koin.core.component.inject
 
 class BirthdayActionReceiver : BaseBroadcast() {
-
   private val birthdayActionProcessor by inject<BirthdayActionProcessor>()
 
-  override fun onReceive(context: Context, intent: Intent?) {
+  override fun onReceive(
+    context: Context,
+    intent: Intent?,
+  ) {
     if (intent != null) {
       val action = intent.action
       val id = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""

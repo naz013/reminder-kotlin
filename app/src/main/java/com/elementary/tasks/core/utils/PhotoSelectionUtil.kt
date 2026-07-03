@@ -32,9 +32,9 @@ import org.koin.core.component.inject
 
 class PhotoSelectionUtil(
   private val activity: ComponentActivity,
-  private val mCallback: UriCallback?
-) : DefaultLifecycleObserver, KoinComponent {
-
+  private val mCallback: UriCallback?,
+) : DefaultLifecycleObserver,
+  KoinComponent {
   private val dialogues by inject<Dialogues>()
   private val imageLoader by inject<ImageLoader>()
 
@@ -48,27 +48,29 @@ class PhotoSelectionUtil(
     super.onCreate(owner)
     permissionFlow = PermissionFlow(activity, dialogues)
     multiPicturePicker = MultiPicturePicker(activity) { mCallback?.onImageSelected(it) }
-    cameraPhotoPicker = CameraPhotoPicker(activity) {
-      mCallback?.onImageSelected(listOf(it))
-    }
+    cameraPhotoPicker =
+      CameraPhotoPicker(activity) {
+        mCallback?.onImageSelected(listOf(it))
+      }
   }
 
   fun hasCamera(): Boolean = Module.hasCamera(activity)
 
   fun selectImage() {
     val hasCamera = hasCamera()
-    val items = if (hasCamera) {
-      arrayOf(
-        getString(R.string.gallery),
-        getString(R.string.take_a_shot),
-        getString(R.string.from_url)
-      )
-    } else {
-      arrayOf(
-        getString(R.string.gallery),
-        getString(R.string.from_url)
-      )
-    }
+    val items =
+      if (hasCamera) {
+        arrayOf(
+          getString(R.string.gallery),
+          getString(R.string.take_a_shot),
+          getString(R.string.from_url),
+        )
+      } else {
+        arrayOf(
+          getString(R.string.gallery),
+          getString(R.string.from_url),
+        )
+      }
     val builder = dialogues.getMaterialDialog(activity)
     builder.setTitle(R.string.image)
     builder.setItems(items) { dialog, item ->
@@ -104,19 +106,20 @@ class PhotoSelectionUtil(
       listOf(
         Permissions.CAMERA,
         Permissions.WRITE_EXTERNAL,
-        Permissions.READ_EXTERNAL
-      )
+        Permissions.READ_EXTERNAL,
+      ),
     ) {
       cameraPhotoPicker.takePhoto()
     }
   }
 
   fun checkClipboard() {
-    val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager?
-      ?: run {
-        Logger.w(TAG, "checkClipboard: clipboard is null")
-        return
-      }
+    val clipboard =
+      activity.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager?
+        ?: run {
+          Logger.w(TAG, "checkClipboard: clipboard is null")
+          return
+        }
     if (clipboard.hasPrimaryClip()) {
       val text = clipboard.primaryClip?.getItemAt(0)?.text
       if (text != null && Patterns.WEB_URL.matcher(text).matches()) {
@@ -135,7 +138,11 @@ class PhotoSelectionUtil(
     builder.setView(view.root)
     builder.setPositiveButton(R.string.download) { dialog, _ ->
       dialog.dismiss()
-      downloadUrl(view.urlField.text.toString().trim())
+      downloadUrl(
+        view.urlField.text
+          .toString()
+          .trim(),
+      )
     }
     builder.setNegativeButton(R.string.cancel) { dialog, _ ->
       dialog.dismiss()
@@ -161,9 +168,11 @@ class PhotoSelectionUtil(
     if (Patterns.WEB_URL.matcher(url).matches()) {
       coroutineScope.launch(Dispatchers.Default) {
         try {
-          val request = ImageRequest.Builder(activity)
-            .data(url)
-            .build()
+          val request =
+            ImageRequest
+              .Builder(activity)
+              .data(url)
+              .build()
           val bitmap = imageLoader.execute(request).drawable?.toBitmap()
           if (bitmap != null) {
             withUIContext {
@@ -186,7 +195,9 @@ class PhotoSelectionUtil(
     }
   }
 
-  private fun getString(@StringRes res: Int) = activity.getString(res)
+  private fun getString(
+    @StringRes res: Int,
+  ) = activity.getString(res)
 
   interface UriCallback {
     fun onImageSelected(uris: List<Uri>)

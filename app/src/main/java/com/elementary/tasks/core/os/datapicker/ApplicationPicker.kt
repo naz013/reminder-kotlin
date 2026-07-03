@@ -16,20 +16,19 @@ import com.github.naz013.ui.common.context.intentForClass
 
 class ApplicationPicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private var resultCallback: (String) -> Unit
+  private var resultCallback: (String) -> Unit,
 ) : IntentPicker<Intent, ActivityResult>(
-  ActivityResultContracts.StartActivityForResult(),
-  launcherCreator
-) {
-
+    ActivityResultContracts.StartActivityForResult(),
+    launcherCreator,
+  ) {
   constructor(
     activity: ComponentActivity,
-    resultCallback: (String) -> Unit
+    resultCallback: (String) -> Unit,
   ) : this(ActivityLauncherCreator(activity), resultCallback)
 
   constructor(
     fragment: Fragment,
-    resultCallback: (String) -> Unit
+    resultCallback: (String) -> Unit,
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
   private fun pickApplication() {
@@ -48,7 +47,5 @@ class ApplicationPicker private constructor(
     }
   }
 
-  private fun getIntent(): Intent {
-    return getActivity().intentForClass(SelectApplicationActivity::class.java)
-  }
+  private fun getIntent(): Intent = getActivity().intentForClass(SelectApplicationActivity::class.java)
 }

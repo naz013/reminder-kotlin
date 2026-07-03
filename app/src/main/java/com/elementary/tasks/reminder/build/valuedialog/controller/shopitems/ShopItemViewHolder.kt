@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.utils.ui.onTextChanged
-import com.github.naz013.ui.common.view.transparent
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.github.naz013.ui.common.view.visibleInvisible
 import com.elementary.tasks.databinding.ListItemReminderBuilderShopItemBinding
+import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.ui.common.view.transparent
+import com.github.naz013.ui.common.view.visibleInvisible
 
 class ShopItemViewHolder(
   parent: ViewGroup,
@@ -25,10 +25,9 @@ class ShopItemViewHolder(
     ListItemReminderBuilderShopItemBinding.inflate(
       LayoutInflater.from(parent.context),
       parent,
-      false
-    )
+      false,
+    ),
 ) : RecyclerView.ViewHolder(binding.root) {
-
   private var textWatcher: (String?) -> Unit = { }
 
   init {
@@ -86,7 +85,7 @@ class ShopItemViewHolder(
     }
     binding.textInputView.setOnFocusChangeListener { _, hasFocus ->
       binding.removeButton.visibleInvisible(
-        hasFocus && binding.textInputView.trimmedText().isNotEmpty()
+        hasFocus && binding.textInputView.trimmedText().isNotEmpty(),
       )
     }
 
@@ -98,7 +97,11 @@ class ShopItemViewHolder(
     binding.removeButton.visibleInvisible(item.canRemove)
     if (item.showInput) {
       binding.textInputView.requestFocus()
-      binding.textInputView.setSelection(binding.textInputView.text.toString().length)
+      binding.textInputView.setSelection(
+        binding.textInputView.text
+          .toString()
+          .length,
+      )
       inputMethodManager.showSoftInput(binding.textInputView, InputMethodManager.SHOW_FORCED)
     }
   }

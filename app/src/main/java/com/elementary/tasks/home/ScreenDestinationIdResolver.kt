@@ -16,10 +16,9 @@ import com.github.naz013.navigation.ViewNoteScreen
 import com.github.naz013.navigation.ViewReminderScreen
 
 class ScreenDestinationIdResolver {
-
   @IdRes
-  fun resolve(destination: DeepLinkDestination): Int {
-    return when (destination) {
+  fun resolve(destination: DeepLinkDestination): Int =
+    when (destination) {
       is DayViewScreen -> R.id.dayViewFragment
       is SettingsScreen -> R.id.settingsFragment
       is EditBirthdayScreen -> R.id.editBirthdayFragment
@@ -32,5 +31,4 @@ class ScreenDestinationIdResolver {
       is EditReminderScreen -> R.id.buildReminderFragment
       is ViewNoteScreen -> R.id.previewNoteFragment
     }
-  }
 }

@@ -3,14 +3,13 @@ package com.elementary.tasks.core.fragments
 import android.os.Bundle
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
-import com.github.naz013.ui.common.theme.ThemeProvider
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.ui.common.theme.ThemeProvider
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
 import org.koin.android.ext.android.inject
 
 abstract class BaseMapFragment<B : ViewBinding> : BindingFragment<B>() {
-
   protected val themeUtil by inject<ThemeProvider>()
   protected val prefs by inject<Prefs>()
 
@@ -20,7 +19,7 @@ abstract class BaseMapFragment<B : ViewBinding> : BindingFragment<B>() {
   protected fun setStyle(
     map: GoogleMap,
     mapType: Int = internalMapType,
-    mapStyle: Int = prefs.mapStyle
+    mapStyle: Int = prefs.mapStyle,
   ) {
     internalMapType = mapType
     if (mapType == GoogleMap.MAP_TYPE_NORMAL) {
@@ -29,7 +28,7 @@ abstract class BaseMapFragment<B : ViewBinding> : BindingFragment<B>() {
       }
       val ctx = context ?: return
       map.setMapStyle(
-        MapStyleOptions.loadRawResourceStyle(ctx, themeUtil.getMapStyleJson(mapStyle))
+        MapStyleOptions.loadRawResourceStyle(ctx, themeUtil.getMapStyleJson(mapStyle)),
       )
       map.mapType = mapType
     } else {
@@ -37,7 +36,11 @@ abstract class BaseMapFragment<B : ViewBinding> : BindingFragment<B>() {
     }
   }
 
-  protected fun setMapType(map: GoogleMap, type: Int, function: (() -> Unit)?) {
+  protected fun setMapType(
+    map: GoogleMap,
+    type: Int,
+    function: (() -> Unit)?,
+  ) {
     setStyle(map, type)
     prefs.mapType = type
     function?.invoke()

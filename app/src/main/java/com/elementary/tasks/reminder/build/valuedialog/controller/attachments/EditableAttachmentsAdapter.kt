@@ -6,36 +6,40 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.elementary.tasks.databinding.ListItemBuilderAttachmentFileBinding
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
-import com.elementary.tasks.databinding.ListItemBuilderAttachmentFileBinding
 
 class EditableAttachmentsAdapter(
-  private val onFileRemoveListener: (Int) -> Unit
-) :
-  ListAdapter<AttachmentFile, EditableAttachmentsAdapter.ViewHolder>(
-    AttachmentFileDiffCallback()
+  private val onFileRemoveListener: (Int) -> Unit,
+) : ListAdapter<AttachmentFile, EditableAttachmentsAdapter.ViewHolder>(
+    AttachmentFileDiffCallback(),
   ) {
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(parent) {
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): ViewHolder =
+    ViewHolder(parent) {
       onFileRemoveListener(it)
     }
-  }
 
-  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: ViewHolder,
+    position: Int,
+  ) {
     holder.bind(getItem(position))
   }
 
   class AttachmentFileDiffCallback : DiffUtil.ItemCallback<AttachmentFile>() {
+    override fun areItemsTheSame(
+      oldItem: AttachmentFile,
+      newItem: AttachmentFile,
+    ): Boolean = oldItem.uri == newItem.uri
 
-    override fun areItemsTheSame(oldItem: AttachmentFile, newItem: AttachmentFile): Boolean {
-      return oldItem.uri == newItem.uri
-    }
-
-    override fun areContentsTheSame(oldItem: AttachmentFile, newItem: AttachmentFile): Boolean {
-      return oldItem == newItem
-    }
+    override fun areContentsTheSame(
+      oldItem: AttachmentFile,
+      newItem: AttachmentFile,
+    ): Boolean = oldItem == newItem
   }
 
   class ViewHolder(
@@ -44,11 +48,10 @@ class EditableAttachmentsAdapter(
       ListItemBuilderAttachmentFileBinding.inflate(
         LayoutInflater.from(parent.context),
         parent,
-        false
+        false,
       ),
-    private val onRemoveClickListener: (Int) -> Unit
+    private val onRemoveClickListener: (Int) -> Unit,
   ) : RecyclerView.ViewHolder(binding.root) {
-
     init {
       binding.removeButton.setOnClickListener {
         onRemoveClickListener(bindingAdapterPosition)

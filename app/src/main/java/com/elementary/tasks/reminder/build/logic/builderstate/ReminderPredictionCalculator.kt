@@ -10,9 +10,8 @@ import com.github.naz013.icalendar.ICalendarApi
 class ReminderPredictionCalculator(
   private val dateTimeManager: DateTimeManager,
   private val iCalendarApi: ICalendarApi,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
 ) {
-
   operator fun invoke(reminder: Reminder): ReminderPrediction {
     val type = reminder.readType()
 
@@ -21,24 +20,26 @@ class ReminderPredictionCalculator(
         if (reminder.places.isEmpty()) {
           return ReminderPrediction.FailedPrediction(
             icon = R.drawable.ic_fluent_location_not_found,
-            message = textProvider.getString(R.string.builder_error_no_places)
+            message = textProvider.getString(R.string.builder_error_no_places),
           )
         }
         if (reminder.hasReminder && reminder.eventTime.isNotEmpty()) {
-          val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-            ?: return ReminderPrediction.FailedPrediction(
-              icon = R.drawable.ic_fluent_error_circle,
-              message = textProvider.getString(R.string.builder_error_cannot_parse_date_time)
-            )
+          val dateTime =
+            dateTimeManager.fromGmtToLocal(reminder.eventTime)
+              ?: return ReminderPrediction.FailedPrediction(
+                icon = R.drawable.ic_fluent_error_circle,
+                message = textProvider.getString(R.string.builder_error_cannot_parse_date_time),
+              )
           ReminderPrediction.SuccessPrediction(
             icon = R.drawable.ic_builder_forecast,
-            message = textProvider.getString(R.string.builder_delayed_tracking_until) +
-              dateTimeManager.getDateTime(dateTime)
+            message =
+              textProvider.getString(R.string.builder_delayed_tracking_until) +
+                dateTimeManager.getDateTime(dateTime),
           )
         } else {
           ReminderPrediction.SuccessPrediction(
             icon = R.drawable.ic_builder_forecast,
-            message = textProvider.getString(R.string.builder_will_start_tracking_immediately)
+            message = textProvider.getString(R.string.builder_will_start_tracking_immediately),
           )
         }
       }
@@ -46,7 +47,7 @@ class ReminderPredictionCalculator(
       type.hasSubTasks() && !reminder.hasReminder -> {
         ReminderPrediction.SuccessPrediction(
           icon = R.drawable.ic_builder_forecast,
-          message = textProvider.getString(R.string.builder_permanent_reminder_with_sub_tasks)
+          message = textProvider.getString(R.string.builder_permanent_reminder_with_sub_tasks),
         )
       }
 
@@ -54,28 +55,31 @@ class ReminderPredictionCalculator(
         if (reminder.eventTime.isEmpty()) {
           ReminderPrediction.FailedPrediction(
             icon = R.drawable.ic_fluent_warning,
-            message = textProvider.getString(R.string.builder_error_no_event_time)
+            message = textProvider.getString(R.string.builder_error_no_event_time),
           )
         } else {
-          val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-            ?: return ReminderPrediction.FailedPrediction(
-              icon = R.drawable.ic_fluent_error_circle,
-              message = textProvider.getString(R.string.builder_error_cannot_parse_date_time)
-            )
+          val dateTime =
+            dateTimeManager.fromGmtToLocal(reminder.eventTime)
+              ?: return ReminderPrediction.FailedPrediction(
+                icon = R.drawable.ic_fluent_error_circle,
+                message = textProvider.getString(R.string.builder_error_cannot_parse_date_time),
+              )
 
           if (dateTime.isBefore(dateTimeManager.getCurrentDateTime())) {
             ReminderPrediction.SuccessPrediction(
               icon = R.drawable.ic_builder_forecast,
-              message = textProvider.getString(
-                R.string.builder_will_trigger_immediately_because_before_the_now_time
-              )
+              message =
+                textProvider.getString(
+                  R.string.builder_will_trigger_immediately_because_before_the_now_time,
+                ),
             )
           } else {
             ReminderPrediction.SuccessPrediction(
               icon = R.drawable.ic_builder_forecast,
-              message = textProvider.getString(R.string.builder_scheduled_at) +
-                dateTimeManager.getDateTime(dateTime) +
-                createRecurrenceMessage(reminder)
+              message =
+                textProvider.getString(R.string.builder_scheduled_at) +
+                  dateTimeManager.getDateTime(dateTime) +
+                  createRecurrenceMessage(reminder),
             )
           }
         }
@@ -85,9 +89,10 @@ class ReminderPredictionCalculator(
 
   private fun createRecurrenceMessage(reminder: Reminder): String {
     return if (reminder.readType().isICalendar()) {
-      val rules = reminder.recurDataObject?.let {
-        runCatching { iCalendarApi.parseObject(it) }.getOrNull()
-      }
+      val rules =
+        reminder.recurDataObject?.let {
+          runCatching { iCalendarApi.parseObject(it) }.getOrNull()
+        }
       if (rules == null) {
         return ""
       }
@@ -115,8 +120,10 @@ class ReminderPredictionCalculator(
       }
 
       if (nowSelected && position != -1) {
-        val afterRecurrences = recurrence.subList(position, recurrence.size)
-          .mapNotNull { it.dateTime }
+        val afterRecurrences =
+          recurrence
+            .subList(position, recurrence.size)
+            .mapNotNull { it.dateTime }
         if (afterRecurrences.isNotEmpty()) {
           textProvider.getString(R.string.and_will_be_repeated_at) +
             afterRecurrences.joinToString(",\n") { dateTimeManager.getDateTime(it) }
@@ -136,12 +143,12 @@ sealed class ReminderPrediction {
   data class SuccessPrediction(
     @DrawableRes
     val icon: Int,
-    val message: String
+    val message: String,
   ) : ReminderPrediction()
 
   data class FailedPrediction(
     @DrawableRes
     val icon: Int,
-    val message: String
+    val message: String,
   ) : ReminderPrediction()
 }

@@ -24,17 +24,19 @@ import org.koin.android.ext.android.inject
 import java.util.Locale
 
 class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBinding>() {
-
   private var mItemSelect: Int = 0
   private val themeUtil by inject<ThemeProvider>()
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsLocationBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     initMapTypePrefs()
     initMarkerStylePrefs()
@@ -82,7 +84,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
         act,
         prefs.markerStyle,
         getString(R.string.style_of_marker),
-        ThemeProvider.colorsForSlider(act)
+        ThemeProvider.colorsForSlider(act),
       ) {
         prefs.markerStyle = it
         showMarkerStyle()
@@ -92,11 +94,13 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
 
   private fun showMarkerStyle() {
     withContext {
-      val pointer = DrawableHelper.withContext(it)
-        .withDrawable(R.drawable.ic_fluent_place)
-        .withColor(themeUtil.getMarkerLightColor(prefs.markerStyle))
-        .tint()
-        .get()
+      val pointer =
+        DrawableHelper
+          .withContext(it)
+          .withDrawable(R.drawable.ic_fluent_place)
+          .withColor(themeUtil.getMarkerLightColor(prefs.markerStyle))
+          .tint()
+          .get()
       binding.markerStylePrefs.setViewDrawable(pointer)
     }
   }
@@ -132,19 +136,21 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
       val time = prefs.trackTime
 
       b.timeBar.addOnChangeListener { _, value, _ ->
-        b.timeTitle.text = String.format(
-          Locale.getDefault(),
-          getString(R.string.x_seconds),
-          value.toInt().toString()
-        )
+        b.timeTitle.text =
+          String.format(
+            Locale.getDefault(),
+            getString(R.string.x_seconds),
+            value.toInt().toString(),
+          )
       }
       b.timeBar.value = time.toFloat()
 
-      b.timeTitle.text = String.format(
-        Locale.getDefault(),
-        getString(R.string.x_seconds),
-        time.toString()
-      )
+      b.timeTitle.text =
+        String.format(
+          Locale.getDefault(),
+          getString(R.string.x_seconds),
+          time.toString(),
+        )
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
         prefs.trackTime = b.timeBar.value.toInt()
@@ -161,12 +167,13 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
       val builder = dialogues.getMaterialDialog(it)
       builder.setCancelable(true)
       builder.setTitle(getString(R.string.map_type))
-      val types = arrayOf(
-        getString(R.string.normal),
-        getString(R.string.satellite),
-        getString(R.string.terrain),
-        getString(R.string.hybrid)
-      )
+      val types =
+        arrayOf(
+          getString(R.string.normal),
+          getString(R.string.satellite),
+          getString(R.string.terrain),
+          getString(R.string.hybrid),
+        )
       val type = prefs.mapType
       mItemSelect = getPosition(type)
       builder.setSingleChoiceItems(types, mItemSelect) { _, which -> mItemSelect = which }
@@ -183,14 +190,13 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     }
   }
 
-  private fun getPosition(type: Int): Int {
-    return when (type) {
+  private fun getPosition(type: Int): Int =
+    when (type) {
       GoogleMap.MAP_TYPE_SATELLITE -> 1
       GoogleMap.MAP_TYPE_TERRAIN -> 2
       GoogleMap.MAP_TYPE_HYBRID -> 3
       else -> 0
     }
-  }
 
   private fun changeNotificationPrefs() {
     val isChecked = binding.notificationOptionPrefs.isChecked
@@ -218,10 +224,8 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
             showRadius()
           }
 
-          override fun getTitle(t: Int): String {
-            return radiusFormatter.format(t)
-          }
-        }
+          override fun getTitle(t: Int): String = radiusFormatter.format(t)
+        },
       )
     }
   }
@@ -229,25 +233,26 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
   private fun showRadiusDialog(
     activity: Activity,
     current: Int,
-    listener: OnValueSelectedListener<Int>
+    listener: OnValueSelectedListener<Int>,
   ) {
     val builder = dialogues.getMaterialDialog(activity)
     builder.setTitle(com.github.naz013.ui.common.R.string.radius)
     val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
 
-    val behaviour = RadiusSliderBehaviour(b.seekBar, current) {
-      b.titleView.text = listener.getTitle(it)
-    }
+    val behaviour =
+      RadiusSliderBehaviour(b.seekBar, current) {
+        b.titleView.text = listener.getTitle(it)
+      }
     b.titleView.text = listener.getTitle(current)
 
     builder.setView(b.root)
     builder.setPositiveButton(com.github.naz013.ui.common.R.string.ok) { _, _ ->
       listener.onSelected(
-        behaviour.getRadius()
+        behaviour.getRadius(),
       )
     }
     builder.setNegativeButton(
-      R.string.cancel
+      R.string.cancel,
     ) { dialog, _ -> dialog.dismiss() }
     val dialog = builder.create()
     dialog.show()

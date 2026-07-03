@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.build.reminder
 
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.bi.BiComparator
 import com.elementary.tasks.reminder.build.bi.BiFactory
@@ -10,6 +9,7 @@ import com.elementary.tasks.reminder.build.reminder.decompose.ExtrasDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.GroupDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.NoteDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.TypeDecomposer
+import com.github.naz013.domain.Reminder
 
 class ReminderToBiDecomposer(
   private val biFactory: BiFactory,
@@ -18,9 +18,8 @@ class ReminderToBiDecomposer(
   private val extrasDecomposer: ExtrasDecomposer,
   private val groupDecomposer: GroupDecomposer,
   private val biFilter: BiFilter,
-  private val noteDecomposer: NoteDecomposer
+  private val noteDecomposer: NoteDecomposer,
 ) {
-
   suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
     val items = mutableListOf<BuilderItem<*>>()
 
@@ -36,13 +35,14 @@ class ReminderToBiDecomposer(
     return if (builderScheme.isNullOrEmpty()) {
       items.filter { biFilter(it) }.sortedWith(BiComparator())
     } else {
-      builderScheme.map {
-        if (itemsMap.containsKey(it.type)) {
-          itemsMap[it.type] ?: biFactory.create(it.type)
-        } else {
-          biFactory.create(it.type)
-        }
-      }.filter { biFilter(it) }
+      builderScheme
+        .map {
+          if (itemsMap.containsKey(it.type)) {
+            itemsMap[it.type] ?: biFactory.create(it.type)
+          } else {
+            biFactory.create(it.type)
+          }
+        }.filter { biFilter(it) }
     }
   }
 }

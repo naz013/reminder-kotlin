@@ -17,10 +17,9 @@ class IntervalRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
-
   override fun calculateNextOccurrence(
     reminder: Reminder,
-    fromDateTime: LocalDateTime
+    fromDateTime: LocalDateTime,
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
     val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
@@ -36,7 +35,7 @@ class IntervalRepeatStrategy(
     Logger.v(
       TAG,
       "CanSkip called for reminder id=${reminder.uuId}, " +
-        "repeatInterval=${reminder.repeatInterval}, isLimitExceed=${reminder.isLimitExceed()}"
+        "repeatInterval=${reminder.repeatInterval}, isLimitExceed=${reminder.isLimitExceed()}",
     )
     return reminder.repeatInterval > 0 && !reminder.isLimitExceed()
   }

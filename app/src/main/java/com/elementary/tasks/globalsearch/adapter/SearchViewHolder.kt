@@ -7,26 +7,26 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.ui.common.view.transparent
-import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.ListItemSearchResultBinding
 import com.elementary.tasks.globalsearch.ObjectSearchResult
 import com.elementary.tasks.globalsearch.ObjectType
 import com.elementary.tasks.globalsearch.RecentObjectSearchResult
 import com.elementary.tasks.globalsearch.RecentSearchResult
 import com.elementary.tasks.globalsearch.SearchResult
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.transparent
+import com.github.naz013.ui.common.view.visible
 
 abstract class SearchViewHolder<T : SearchResult>(
   parent: ViewGroup,
   private val clickListener: (position: Int, action: ClickAction) -> Unit,
-  protected val binding: ListItemSearchResultBinding = ListItemSearchResultBinding.inflate(
-    LayoutInflater.from(parent.context),
-    parent,
-    false
-  )
+  protected val binding: ListItemSearchResultBinding =
+    ListItemSearchResultBinding.inflate(
+      LayoutInflater.from(parent.context),
+      parent,
+      false,
+    ),
 ) : RecyclerView.ViewHolder(binding.root) {
-
   init {
     binding.clickView.setOnClickListener {
       clickListener(bindingAdapterPosition, ClickAction.NORMAL)
@@ -38,7 +38,10 @@ abstract class SearchViewHolder<T : SearchResult>(
 
   abstract fun bind(result: T)
 
-  protected fun bindText(text: String, query: String) {
+  protected fun bindText(
+    text: String,
+    query: String,
+  ) {
     val spannable: Spannable = SpannableString(text)
     val startIndex = text.lowercase().indexOf(query.lowercase())
     if (startIndex != -1) {
@@ -46,7 +49,7 @@ abstract class SearchViewHolder<T : SearchResult>(
         BackgroundColorSpan(ThemeProvider.getSecondaryContainerColor(binding.root.context)),
         startIndex,
         startIndex + query.length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
       )
     }
     binding.textView.text = spannable
@@ -55,9 +58,8 @@ abstract class SearchViewHolder<T : SearchResult>(
 
 class RecentSearchViewHolder(
   parent: ViewGroup,
-  clickListener: (position: Int, action: ClickAction) -> Unit
+  clickListener: (position: Int, action: ClickAction) -> Unit,
 ) : SearchViewHolder<RecentSearchResult>(parent, clickListener) {
-
   init {
     binding.endIconView.visible()
   }
@@ -75,9 +77,8 @@ class RecentSearchViewHolder(
 
 class RecentObjectSearchViewHolder(
   parent: ViewGroup,
-  clickListener: (position: Int, action: ClickAction) -> Unit
+  clickListener: (position: Int, action: ClickAction) -> Unit,
 ) : SearchViewHolder<RecentObjectSearchResult>(parent, clickListener) {
-
   init {
     binding.endIconView.visible()
   }
@@ -95,9 +96,8 @@ class RecentObjectSearchViewHolder(
 
 class ObjectSearchViewHolder(
   parent: ViewGroup,
-  clickListener: (position: Int, action: ClickAction) -> Unit
+  clickListener: (position: Int, action: ClickAction) -> Unit,
 ) : SearchViewHolder<ObjectSearchResult>(parent, clickListener) {
-
   init {
     binding.endIconView.transparent()
   }
@@ -108,8 +108,8 @@ class ObjectSearchViewHolder(
     binding.endIconView.setImageResource(0)
   }
 
-  private fun getStartIcon(objectType: ObjectType): Int {
-    return when (objectType) {
+  private fun getStartIcon(objectType: ObjectType): Int =
+    when (objectType) {
       ObjectType.REMINDER -> R.drawable.ic_fluent_alert
       ObjectType.BIRTHDAY -> R.drawable.ic_fluent_food_cake
       ObjectType.GOOGLE_TASK -> R.drawable.ic_builder_google_task_list
@@ -117,7 +117,6 @@ class ObjectSearchViewHolder(
       ObjectType.NOTE -> R.drawable.ic_fluent_note
       ObjectType.PLACE -> R.drawable.ic_fluent_place
     }
-  }
 
   companion object {
     const val VIEW_TYPE = 3
@@ -125,5 +124,6 @@ class ObjectSearchViewHolder(
 }
 
 enum class ClickAction {
-  NORMAL, INSERT
+  NORMAL,
+  INSERT,
 }

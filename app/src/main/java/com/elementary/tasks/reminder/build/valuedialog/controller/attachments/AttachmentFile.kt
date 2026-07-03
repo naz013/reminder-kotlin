@@ -8,7 +8,7 @@ data class AttachmentFile(
   val name: String,
   @DrawableRes
   val icon: Int,
-  val type: AttachmentType
+  val type: AttachmentType,
 )
 
 enum class AttachmentType {
@@ -16,5 +16,5 @@ enum class AttachmentType {
   VIDEO,
   AUDIO,
   GIF,
-  FILE
+  FILE,
 }

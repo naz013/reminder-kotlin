@@ -10,7 +10,6 @@ import com.elementary.tasks.R
  * of fragment transitions in the app.
  */
 object NavigationAnimations {
-
   /**
    * Creates nav options for bottom navigation transitions.
    *
@@ -20,14 +19,14 @@ object NavigationAnimations {
    *
    * @return NavOptions configured with fade animations
    */
-  fun bottomNavOptions(): NavOptions {
-    return NavOptions.Builder()
+  fun bottomNavOptions(): NavOptions =
+    NavOptions
+      .Builder()
       .setEnterAnim(R.anim.fragment_fade_in)
       .setExitAnim(R.anim.fragment_fade_out)
       .setPopEnterAnim(R.anim.fragment_fade_in)
       .setPopExitAnim(R.anim.fragment_fade_out)
       .build()
-  }
 
   /**
    * Creates nav options for in-depth navigation transitions.
@@ -38,14 +37,14 @@ object NavigationAnimations {
    *
    * @return NavOptions configured with slide animations
    */
-  fun inDepthNavOptions(): NavOptions {
-    return NavOptions.Builder()
+  fun inDepthNavOptions(): NavOptions =
+    NavOptions
+      .Builder()
       .setEnterAnim(R.anim.nav_default_enter_anim)
       .setExitAnim(R.anim.nav_default_exit_anim)
       .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
       .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
       .build()
-  }
 
   /**
    * Creates nav options for modal-style navigation (bottom sheet style).
@@ -55,13 +54,12 @@ object NavigationAnimations {
    *
    * @return NavOptions configured with bottom slide animations
    */
-  fun modalNavOptions(): NavOptions {
-    return NavOptions.Builder()
+  fun modalNavOptions(): NavOptions =
+    NavOptions
+      .Builder()
       .setEnterAnim(R.anim.fragment_slide_top)
       .setExitAnim(R.anim.fragment_wait)
       .setPopEnterAnim(R.anim.fragment_wait)
       .setPopExitAnim(R.anim.fragment_slide_bottom)
       .build()
-  }
 }
-

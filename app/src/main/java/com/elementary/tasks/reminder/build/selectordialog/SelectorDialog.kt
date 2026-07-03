@@ -20,39 +20,41 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SelectorDialog : BottomSheetDialogFragment() {
-
   private val viewModel by viewModel<SelectorDialogViewModel>()
 
-  private val selectorAdapter = SelectorAdapter { _, item ->
-    dismiss()
-    SelectorDialogCommunicator.onBuilderItemAdd(item.builderItem)
-    Logger.i(TAG, "Selected builder item: $item")
-  }
-  private val presetAdapter = PresetAdapter(
-    canDelete = false,
-    onItemClickListener = {
+  private val selectorAdapter =
+    SelectorAdapter { _, item ->
       dismiss()
-      SelectorDialogCommunicator.onPresetSelected(it)
-      Logger.i(TAG, "Selected general preset: $it")
-    },
-    onItemDeleteListener = { }
-  )
-  private val recurPresetAdapter = PresetAdapter(
-    canDelete = false,
-    onItemClickListener = {
-      dismiss()
-      SelectorDialogCommunicator.onPresetSelected(it)
-      Logger.i(TAG, "Selected recur preset: $it")
-    },
-    onItemDeleteListener = { }
-  )
+      SelectorDialogCommunicator.onBuilderItemAdd(item.builderItem)
+      Logger.i(TAG, "Selected builder item: $item")
+    }
+  private val presetAdapter =
+    PresetAdapter(
+      canDelete = false,
+      onItemClickListener = {
+        dismiss()
+        SelectorDialogCommunicator.onPresetSelected(it)
+        Logger.i(TAG, "Selected general preset: $it")
+      },
+      onItemDeleteListener = { },
+    )
+  private val recurPresetAdapter =
+    PresetAdapter(
+      canDelete = false,
+      onItemClickListener = {
+        dismiss()
+        SelectorDialogCommunicator.onPresetSelected(it)
+        Logger.i(TAG, "Selected recur preset: $it")
+      },
+      onItemDeleteListener = { },
+    )
 
   private lateinit var binding: BottomSheetBuilderSelectorBinding
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View {
     binding = BottomSheetBuilderSelectorBinding.inflate(inflater, container, false)
 
@@ -62,7 +64,10 @@ class SelectorDialog : BottomSheetDialogFragment() {
     return binding.root
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.dialogCloseButton.setOnClickListener { dismiss() }
 
@@ -85,9 +90,10 @@ class SelectorDialog : BottomSheetDialogFragment() {
     viewModel.tabs.nonNullObserve(viewLifecycleOwner) { tabs ->
       binding.tabLayout.removeAllTabs()
       tabs.forEachIndexed { index, selectorTab ->
-        val tab = binding.tabLayout.newTab().apply {
-          this.text = getString(selectorTab.titleRes)
-        }
+        val tab =
+          binding.tabLayout.newTab().apply {
+            this.text = getString(selectorTab.titleRes)
+          }
         binding.tabLayout.addTab(tab, index == 0)
       }
       binding.tabLayout.visibleGone(tabs.size > 1)

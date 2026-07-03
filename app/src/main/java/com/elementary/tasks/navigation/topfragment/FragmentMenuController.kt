@@ -7,13 +7,13 @@ interface FragmentMenuController {
   fun addMenu(
     menuRes: Int?,
     onMenuItemListener: (MenuItem) -> Boolean,
-    menuModifier: ((Menu) -> Unit)? = null
+    menuModifier: ((Menu) -> Unit)? = null,
   )
 
   fun removeMenu()
 
   fun updateMenuItem(
     itemId: Int,
-    modifier: MenuItem.() -> Unit
+    modifier: MenuItem.() -> Unit,
   )
 }

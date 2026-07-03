@@ -12,7 +12,7 @@ data class HomeScreenState(
   val headerNavigationItems: List<HeaderNavigationItem> = emptyList(),
   val addMenuItems: List<ScheduleHomeViewModel.EventType> = emptyList(),
   val listState: ListState = ListState.Loading,
-  val bannerState: BannerState? = null
+  val bannerState: BannerState? = null,
 )
 
 data class HeaderNavigationItem(
@@ -25,13 +25,17 @@ data class HeaderNavigationItem(
 
 sealed interface ListState {
   data object Loading : ListState
-  data class Ready(val sections: List<TimeSection>) : ListState
+
+  data class Ready(
+    val sections: List<TimeSection>,
+  ) : ListState
+
   data object Empty : ListState
 }
 
 data class TimeSection(
   val time: String,
-  val event: HomeEvent
+  val event: HomeEvent,
 )
 
 data class HomeEvent(
@@ -51,7 +55,6 @@ data class HomeEvent(
     val icon: Int,
     val value: ResolvedEventAction,
   ) {
-
     companion object IconRes {
       val MakeCall = R.drawable.ic_fluent_phone
       val SendSms = R.drawable.ic_fluent_send
@@ -63,12 +66,14 @@ data class HomeEvent(
 
   enum class EventType {
     Reminder,
-    Birthday
+    Birthday,
   }
 }
 
 sealed interface BannerState {
   data object Privacy : BannerState
+
   data object Login : BannerState
+
   data object WhatsNew : BannerState
 }

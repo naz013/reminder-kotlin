@@ -6,29 +6,32 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentManagePresetsBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.build.preset.PresetAdapter
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ManagePresetsFragment : BaseSettingsFragment<FragmentManagePresetsBinding>() {
-
   private val viewModel by viewModel<ManagePresetsViewModel>()
-  private val presetAdapter = PresetAdapter(
-    onItemClickListener = { },
-    onItemDeleteListener = { viewModel.deletePreset(it.id) }
-  )
+  private val presetAdapter =
+    PresetAdapter(
+      onItemClickListener = { },
+      onItemDeleteListener = { viewModel.deletePreset(it.id) },
+    )
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentManagePresetsBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     initList()
     initViewModel()
@@ -55,9 +58,6 @@ class ManagePresetsFragment : BaseSettingsFragment<FragmentManagePresetsBinding>
   }
 
   companion object {
-
-    fun newInstance(): ManagePresetsFragment {
-      return ManagePresetsFragment()
-    }
+    fun newInstance(): ManagePresetsFragment = ManagePresetsFragment()
   }
 }

@@ -35,7 +35,6 @@ import com.github.naz013.ui.common.view.visibleGone
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
-
   private val viewModel by viewModel<ActiveRemindersViewModel>()
 
   private val reminderResolver by lazy {
@@ -54,7 +53,7 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, it)
             },
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
       },
@@ -65,34 +64,38 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, it)
             },
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
-      }
+      },
     )
   }
 
-  private val remindersAdapter = RemindersAdapter(
-    isEditable = true,
-    onItemClicked = { reminderResolver.resolveItemClick(it.id, it.state.isRemoved) },
-    onToggleClicked = { reminderResolver.resolveItemToggle(it.id, it.state.isGps) },
-    onMoreClicked = { view, reminder ->
-      reminderResolver.resolveItemMore(
-        view = view,
-        id = reminder.id,
-        isRemoved = reminder.state.isRemoved,
-        actions = reminder.actions
-      )
-    }
-  )
+  private val remindersAdapter =
+    RemindersAdapter(
+      isEditable = true,
+      onItemClicked = { reminderResolver.resolveItemClick(it.id, it.state.isRemoved) },
+      onToggleClicked = { reminderResolver.resolveItemToggle(it.id, it.state.isGps) },
+      onMoreClicked = { view, reminder ->
+        reminderResolver.resolveItemMore(
+          view = view,
+          id = reminder.id,
+          isRemoved = reminder.state.isRemoved,
+          actions = reminder.actions,
+        )
+      },
+    )
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentRemindersBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
     binding.fab.setOnClickListener {
@@ -132,7 +135,7 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
               Bundle().apply {
                 putString(IntentKeys.INTENT_SCREEN_TITLE, getString(R.string.action_settings))
               },
-              NavigationAnimations.modalNavOptions()
+              NavigationAnimations.modalNavOptions(),
             )
           }
         }
@@ -149,10 +152,11 @@ class RemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() {
 
   private fun showFilters(filters: Filters) {
     Logger.i(TAG, "Showing filters: ${filters.filterGroups.size}")
-    val dialog = ReminderFilterDialog.newInstance(
-      filters = filters,
-      title = getString(R.string.filter_reminders)
-    )
+    val dialog =
+      ReminderFilterDialog.newInstance(
+        filters = filters,
+        title = getString(R.string.filter_reminders),
+      )
     dialog.show(parentFragmentManager, "ReminderFilterDialog")
   }
 

@@ -12,9 +12,8 @@ class ShopItemsAdapter(
   private val onCheckClicked: (Int) -> Unit,
   private val onRemoveClicked: (Int) -> Unit,
   private val onEnterPressed: (Int) -> Unit,
-  private val onDeletePressed: (Int) -> Unit
+  private val onDeletePressed: (Int) -> Unit,
 ) : RecyclerView.Adapter<ShopItemViewHolder>() {
-
   private var items: List<ShopItem> = emptyList()
 
   @SuppressLint("NotifyDataSetChanged")
@@ -23,23 +22,26 @@ class ShopItemsAdapter(
     notifyDataSetChanged()
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-    return ShopItemViewHolder(
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): ShopItemViewHolder =
+    ShopItemViewHolder(
       parent = parent,
       inputMethodManager = inputMethodManager,
       onCheckClicked = onCheckClicked,
       onRemoveClicked = onRemoveClicked,
       onEnterPressed = onEnterPressed,
       onTextChanged = onTextChanged,
-      onDeletePressed = onDeletePressed
+      onDeletePressed = onDeletePressed,
     )
-  }
 
-  override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: ShopItemViewHolder,
+    position: Int,
+  ) {
     holder.bind(items[position])
   }
 
-  override fun getItemCount(): Int {
-    return items.size
-  }
+  override fun getItemCount(): Int = items.size
 }

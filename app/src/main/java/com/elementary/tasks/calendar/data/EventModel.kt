@@ -22,7 +22,7 @@ data class ReminderEventModel(
   override val day: Int,
   override val monthValue: Int,
   override val year: Int,
-  override val isHistorical: Boolean = false
+  override val isHistorical: Boolean = false,
 ) : EventModel() {
   override val viewType: Int = REMINDER
   override val millis: Long = model.due?.millis ?: 0L
@@ -33,7 +33,7 @@ data class BirthdayEventModel(
   override val day: Int,
   override val monthValue: Int,
   override val year: Int,
-  override val isHistorical: Boolean = false
+  override val isHistorical: Boolean = false,
 ) : EventModel() {
   override val viewType: Int = BIRTHDAY
   override val millis: Long = model.nextBirthdayDateMillis

@@ -27,7 +27,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class CloudServicesFragment : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
-
   private val featureManager by inject<FeatureManager>()
 
   private val viewModel by viewModel<CloudServicesFragmentViewModel>()
@@ -38,44 +37,52 @@ class CloudServicesFragment : BaseSettingsFragment<FragmentSettingsCloudDrivesBi
     parametersOf(this@CloudServicesFragment, googleCallback)
   }
 
-  private val googleCallback = object : GoogleLogin.LoginCallback {
-    override fun onProgress(isLoading: Boolean, mode: GoogleLogin.Mode) {
-      updateProgress(isLoading)
-    }
+  private val googleCallback =
+    object : GoogleLogin.LoginCallback {
+      override fun onProgress(
+        isLoading: Boolean,
+        mode: GoogleLogin.Mode,
+      ) {
+        updateProgress(isLoading)
+      }
 
-    override fun onResult(isLogged: Boolean, mode: GoogleLogin.Mode) {
-      Logger.i(TAG, "Google login result: isLogged=$isLogged, mode=$mode")
-      if (mode == GoogleLogin.Mode.TASKS) {
-        if (isLogged) {
-          viewModel.loadGoogleTasks()
+      override fun onResult(
+        isLogged: Boolean,
+        mode: GoogleLogin.Mode,
+      ) {
+        Logger.i(TAG, "Google login result: isLogged=$isLogged, mode=$mode")
+        if (mode == GoogleLogin.Mode.TASKS) {
+          if (isLogged) {
+            viewModel.loadGoogleTasks()
+          }
+          updateGoogleTasksStatus(isLogged)
+          if (isLogged) {
+            analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_TASK))
+          }
+        } else {
+          updateGoogleDriveStatus(isLogged)
+          if (isLogged) {
+            analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_DRIVE))
+          }
         }
-        updateGoogleTasksStatus(isLogged)
-        if (isLogged) {
-          analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_TASK))
-        }
-      } else {
-        updateGoogleDriveStatus(isLogged)
-        if (isLogged) {
-          analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_DRIVE))
-        }
+      }
+
+      override fun onFail(mode: GoogleLogin.Mode) {
+        showErrorDialog()
       }
     }
 
-    override fun onFail(mode: GoogleLogin.Mode) {
-      showErrorDialog()
-    }
-  }
-
-  private val dropboxCallback = object : DropboxLogin.LoginCallback {
-    override fun onResult(isSuccess: Boolean) {
-      if (isSuccess) {
-        analyticsEventSender.send(FeatureUsedEvent(Feature.DROPBOX))
-        binding.linkDropbox.text = getString(R.string.logout)
-      } else {
-        binding.linkDropbox.text = getString(R.string.log_in)
+  private val dropboxCallback =
+    object : DropboxLogin.LoginCallback {
+      override fun onResult(isSuccess: Boolean) {
+        if (isSuccess) {
+          analyticsEventSender.send(FeatureUsedEvent(Feature.DROPBOX))
+          binding.linkDropbox.text = getString(R.string.logout)
+        } else {
+          binding.linkDropbox.text = getString(R.string.log_in)
+        }
       }
     }
-  }
 
   private fun showErrorDialog() {
     withContext {
@@ -89,10 +96,13 @@ class CloudServicesFragment : BaseSettingsFragment<FragmentSettingsCloudDrivesBi
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsCloudDrivesBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     updateProgress(false)
     binding.progressMessageView.text = getString(R.string.please_wait)

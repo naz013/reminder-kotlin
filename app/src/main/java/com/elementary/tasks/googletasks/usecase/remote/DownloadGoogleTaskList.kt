@@ -6,12 +6,10 @@ import com.github.naz013.domain.GoogleTaskList
 
 class DownloadGoogleTaskList(
   private val googleTasksApi: GoogleTasksApi,
-  private val googleTaskListFactory: GoogleTaskListFactory
+  private val googleTaskListFactory: GoogleTaskListFactory,
 ) {
-
-  suspend operator fun invoke(taskList: GoogleTaskList): GoogleTaskList {
-    return googleTasksApi.getTaskList(taskList.listId)?.let {
+  suspend operator fun invoke(taskList: GoogleTaskList): GoogleTaskList =
+    googleTasksApi.getTaskList(taskList.listId)?.let {
       googleTaskListFactory.update(taskList, it)
     } ?: taskList
-  }
 }

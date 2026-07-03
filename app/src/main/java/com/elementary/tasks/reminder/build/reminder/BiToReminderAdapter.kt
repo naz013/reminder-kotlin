@@ -20,13 +20,12 @@ class BiToReminderAdapter(
   private val typeCalculator: TypeCalculator,
   private val dateTimeInjector: DateTimeInjector,
   private val reminderDateTimeCleaner: ReminderDateTimeCleaner,
-  private val editedReminderDataCleaner: EditedReminderDataCleaner
+  private val editedReminderDataCleaner: EditedReminderDataCleaner,
 ) {
-
   operator fun invoke(
     reminder: Reminder,
     items: List<BuilderItem<*>>,
-    isEdited: Boolean
+    isEdited: Boolean,
   ): BuildResult {
     val processedBuilderItems = ProcessedBuilderItems(items)
 
@@ -57,9 +56,10 @@ class BiToReminderAdapter(
       }
     }
 
-    reminder.builderScheme = items.mapIndexed { index, builderItem ->
-      BuilderSchemeItem(builderItem.biType, index)
-    }
+    reminder.builderScheme =
+      items.mapIndexed { index, builderItem ->
+        BuilderSchemeItem(builderItem.biType, index)
+      }
     reminder.jsonSchemaVersion = Reminder.Version.V3
 
     Logger.d(TAG, "New reminder = $reminder")
@@ -67,8 +67,13 @@ class BiToReminderAdapter(
   }
 
   sealed class BuildResult {
-    data class Success(val reminder: Reminder) : BuildResult()
-    data class Error(val error: String) : BuildResult()
+    data class Success(
+      val reminder: Reminder,
+    ) : BuildResult()
+
+    data class Error(
+      val error: String,
+    ) : BuildResult()
   }
 
   companion object {

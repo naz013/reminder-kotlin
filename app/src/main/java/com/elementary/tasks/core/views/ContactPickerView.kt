@@ -10,18 +10,20 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
-import com.github.naz013.common.contacts.ContactsReader
 import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.core.os.datapicker.ContactPicker
-import com.github.naz013.ui.common.view.gone
 import com.elementary.tasks.core.utils.ui.trimmedText
-import com.github.naz013.ui.common.view.visible
 import com.elementary.tasks.databinding.ViewContactPickerBinding
+import com.github.naz013.common.contacts.ContactsReader
+import com.github.naz013.ui.common.view.gone
+import com.github.naz013.ui.common.view.visible
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class ContactPickerView : LinearLayout, TextWatcher, KoinComponent {
-
+class ContactPickerView :
+  LinearLayout,
+  TextWatcher,
+  KoinComponent {
   private val contactsReader by inject<ContactsReader>()
 
   private var mImm: InputMethodManager? = null
@@ -49,7 +51,7 @@ class ContactPickerView : LinearLayout, TextWatcher, KoinComponent {
   constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
     context,
     attrs,
-    defStyle
+    defStyle,
   ) {
     init(context)
   }
@@ -118,7 +120,9 @@ class ContactPickerView : LinearLayout, TextWatcher, KoinComponent {
     contactInfo = ContactInfo(number, name, photo)
   }
 
-  fun showError(@StringRes messageRes: Int) {
+  fun showError(
+    @StringRes messageRes: Int,
+  ) {
     binding.numberLayout.error = context.getString(messageRes)
     binding.numberLayout.isErrorEnabled = true
   }
@@ -138,20 +142,33 @@ class ContactPickerView : LinearLayout, TextWatcher, KoinComponent {
     updateContactView()
   }
 
-  override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+  override fun beforeTextChanged(
+    s: CharSequence?,
+    start: Int,
+    count: Int,
+    after: Int,
+  ) {
   }
 
-  override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+  override fun onTextChanged(
+    s: CharSequence?,
+    start: Int,
+    before: Int,
+    count: Int,
+  ) {
     binding.numberLayout.isErrorEnabled = false
   }
 
   interface OnNumberChangeListener {
-    fun onChanged(phoneNumber: String, contactInfo: ContactInfo?)
+    fun onChanged(
+      phoneNumber: String,
+      contactInfo: ContactInfo?,
+    )
   }
 
   data class ContactInfo(
     val number: String,
     val name: String?,
-    val photo: Bitmap?
+    val photo: Bitmap?,
   )
 }
