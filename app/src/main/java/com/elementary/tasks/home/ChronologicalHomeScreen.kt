@@ -27,8 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,6 +56,7 @@ import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.dynamicParameter
 import com.github.naz013.ui.common.compose.withAlpha
@@ -204,35 +203,12 @@ private fun AddButton(
       iconColor = MaterialTheme.colorScheme.primary,
       contentDescription = stringResource(R.string.acc_add)
     )
-    DropdownMenu(
+    AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = onDismiss,
-      shape = RoundedCornerShape(16.dp),
-    ) {
-      menuItems.forEach { item ->
-        DropdownMenuItem(
-          text = {
-            Row(
-              horizontalArrangement = Arrangement.spacedBy(12.dp),
-              verticalAlignment = Alignment.CenterVertically,
-            ) {
-              item.iconRes?.let {
-                Icon(
-                  painter = painterResource(it),
-                  contentDescription = null,
-                  modifier = Modifier.size(20.dp),
-                )
-              }
-              Text(
-                text = item.title,
-                style = MaterialTheme.typography.bodyLarge,
-              )
-            }
-          },
-          onClick = { onItemClick(items[item.id]) },
-        )
-      }
-    }
+      items = menuItems,
+      onItemClick = { onItemClick(items[it]) }
+    )
   }
 }
 

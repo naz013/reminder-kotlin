@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes.list
+package com.github.naz013.ui.common.compose.foundation.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -14,14 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
-/**
- * Dropdown menu matching ChronologicalHomeScreen's AddButton menu style: rounded 16dp menu
- * shape, items laid out as an icon + bodyLarge text row.
- */
 @Composable
-fun NoteDropdownMenu(
+fun AppDropdownMenu(
   expanded: Boolean,
   onDismissRequest: () -> Unit,
   items: List<PopupMenuItem>,

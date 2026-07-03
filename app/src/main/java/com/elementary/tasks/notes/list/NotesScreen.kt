@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 private const val GRID_COLUMNS = 2
@@ -152,7 +153,8 @@ private fun NotesList(
           isArchived = isArchived,
           onClick = { onNoteClick(note.id) },
           onMenuAction = { action -> onNoteMenuAction(note, action) },
-          onImageClick = { imageId -> onImageClick(note, imageId) }
+          onImageClick = { imageId -> onImageClick(note, imageId) },
+          modifier = Modifier.animateItem()
         )
       }
     }
@@ -175,7 +177,8 @@ private fun NotesList(
           isArchived = isArchived,
           onClick = { onNoteClick(note.id) },
           onMenuAction = { action -> onNoteMenuAction(note, action) },
-          onImageClick = { imageId -> onImageClick(note, imageId) }
+          onImageClick = { imageId -> onImageClick(note, imageId) },
+          modifier = Modifier.animateItem()
         )
       }
     }
@@ -308,7 +311,7 @@ private fun SortMenuButton(
       contentDescription = stringResource(R.string.order),
       onClick = { expanded = true }
     )
-    NoteDropdownMenu(
+    AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
       items = items.mapIndexed { index, (_, title) -> PopupMenuItem(id = index, title = title) },
@@ -339,7 +342,7 @@ private fun OverflowMenuButton(
       contentDescription = stringResource(R.string.more_options),
       onClick = { expanded = true }
     )
-    NoteDropdownMenu(
+    AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
       items = actions.map { PopupMenuItem(id = it.id, title = it.title, iconRes = it.iconRes) },

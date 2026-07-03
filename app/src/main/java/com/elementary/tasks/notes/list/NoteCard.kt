@@ -40,6 +40,7 @@ import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 private const val BODY_TEXT_MAX_CHARS = 500
@@ -144,7 +145,7 @@ fun NoteCard(
           contentDescription = stringResource(R.string.more_options),
           onClick = { menuExpanded = true }
         )
-        NoteDropdownMenu(
+        AppDropdownMenu(
           expanded = menuExpanded,
           onDismissRequest = { menuExpanded = false },
           items = noteMenuItems(isArchived),
