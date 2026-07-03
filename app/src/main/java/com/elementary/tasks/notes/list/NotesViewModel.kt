@@ -64,6 +64,7 @@ class NotesViewModel(
     isArchived = isArchived
   )
   private val notesObserver = Observer<List<NoteWithImages>> { applyList(it) }
+  private var hasResumedBefore = false
 
   init {
     notesData.observeForever(notesObserver)
@@ -71,7 +72,12 @@ class NotesViewModel(
 
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)
-    notesData.refresh()
+    // The initial load is already triggered by observeForever() above; refreshing again here
+    // would cancel that in-flight query and restart it, delaying the first paint for no reason.
+    if (hasResumedBefore) {
+      notesData.refresh()
+    }
+    hasResumedBefore = true
   }
 
   override fun onCleared() {
