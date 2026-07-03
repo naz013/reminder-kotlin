@@ -1,7 +1,17 @@
 package com.elementary.tasks.notes.create
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,11 +24,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+
+private const val FLOATING_BAR_ANIMATION_DURATION_MS = 300
+private const val BAR_PRESSED_SCALE = 1.05f
+private const val BAR_PULSE_UP_DURATION_MS = 100
 
 /**
  * One entry in the floating editing bar. Deliberately generic — new tools can be added to the
@@ -47,21 +67,55 @@ fun NoteEditFloatingBar(
   contentColor: Color,
   modifier: Modifier = Modifier
 ) {
-  Surface(
+  val visibleState = remember { MutableTransitionState(false) }
+  LaunchedEffect(Unit) {
+    visibleState.targetState = true
+  }
+  var pressTick by remember { mutableStateOf(0) }
+  val barScale = remember { Animatable(1f) }
+  LaunchedEffect(pressTick) {
+    if (pressTick == 0) return@LaunchedEffect
+    barScale.animateTo(BAR_PRESSED_SCALE, animationSpec = tween(BAR_PULSE_UP_DURATION_MS))
+    barScale.animateTo(
+      1f,
+      animationSpec = spring(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessMedium
+      )
+    )
+  }
+  AnimatedVisibility(
     modifier = modifier,
-    shape = RoundedCornerShape(percent = 50),
-    color = containerColor,
-    shadowElevation = 6.dp,
-    tonalElevation = 4.dp
+    visibleState = visibleState,
+    enter = scaleIn(
+      animationSpec = spring(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessLow
+      ),
+      initialScale = 0f
+    ) + fadeIn(animationSpec = tween(FLOATING_BAR_ANIMATION_DURATION_MS / 2)),
   ) {
-    Row(
-      modifier = Modifier
-        .horizontalScroll(rememberScrollState())
-        .padding(horizontal = 6.dp, vertical = 6.dp),
-      verticalAlignment = Alignment.CenterVertically
+    Surface(
+      modifier = Modifier.scale(barScale.value),
+      shape = RoundedCornerShape(percent = 50),
+      color = containerColor,
+      shadowElevation = 4.dp,
+      tonalElevation = 4.dp
     ) {
-      items.forEach { item ->
-        NoteEditBarIconSlot(item = item, containerColor = containerColor, contentColor = contentColor)
+      Row(
+        modifier = Modifier
+          .horizontalScroll(rememberScrollState())
+          .padding(horizontal = 6.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        items.forEach { item ->
+          NoteEditBarIconSlot(
+            item = item,
+            containerColor = containerColor,
+            contentColor = contentColor,
+            onItemPressed = { pressTick++ }
+          )
+        }
       }
     }
   }
@@ -71,13 +125,25 @@ fun NoteEditFloatingBar(
 private fun NoteEditBarIconSlot(
   item: NoteEditBarItem,
   containerColor: Color,
-  contentColor: Color
+  contentColor: Color,
+  onItemPressed: () -> Unit
 ) {
+  val interactionSource = remember { MutableInteractionSource() }
+  LaunchedEffect(interactionSource) {
+    interactionSource.interactions.collect { interaction ->
+      if (interaction is PressInteraction.Press) onItemPressed()
+    }
+  }
+
   Box(
     modifier = Modifier.size(BAR_ITEM_SIZE),
     contentAlignment = Alignment.Center
   ) {
-    IconButton(onClick = item.onClick, modifier = Modifier.fillMaxWidth().height(BAR_ITEM_SIZE)) {
+    IconButton(
+      onClick = item.onClick,
+      interactionSource = interactionSource,
+      modifier = Modifier.fillMaxWidth().height(BAR_ITEM_SIZE)
+    ) {
       item.icon()
     }
     if (item.showBadge) {
