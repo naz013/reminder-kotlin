@@ -3,381 +3,147 @@ package com.elementary.tasks.notes.list
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.elementary.tasks.core.views.recyclerview.SpaceBetweenItemDecoration
-import com.elementary.tasks.core.views.recyclerview.StaggeredSpaceItemDecoration
-import com.elementary.tasks.databinding.FragmentNotesBinding
 import com.elementary.tasks.navigation.NavigationAnimations
-import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.safeNavigation
-import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
+import com.elementary.tasks.navigation.topfragment.RootFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
-import com.elementary.tasks.notes.preview.ImagesSingleton
+import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
-import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.context.startActivity
-import com.github.naz013.ui.common.fragment.dp2px
+import com.github.naz013.ui.common.compose.composeView
+import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.login.LoginApi
-import com.github.naz013.ui.common.view.ViewUtils
-import com.github.naz013.ui.common.view.applyBottomInsets
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.visible
-import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
+import org.koin.core.parameter.parametersOf
 
-class NotesFragment : BaseTopToolbarFragment<FragmentNotesBinding>() {
-  private val viewModel by viewModel<NotesViewModel>()
-  private val imagesSingleton by inject<ImagesSingleton>()
-  private val systemServiceProvider by inject<SystemServiceProvider>()
+class NotesFragment : Fragment(), RootFragment {
 
-  private val notesRecyclerAdapter = NotesRecyclerAdapter()
-  private var enableGrid = false
-  private var oldItemDecoration: RecyclerView.ItemDecoration? = null
+  private val viewModel by viewModel<NotesViewModel> { parametersOf(false) }
+  private val dialogues by inject<Dialogues>()
+  private val themeProvider by inject<ThemeProvider>()
+  private val analyticsEventSender by inject<AnalyticsEventSender>()
+  private lateinit var permissionFlow: PermissionFlow
 
-  private val searchMenuHandler =
-    SearchMenuHandler(
-      systemServiceProvider.provideSearchManager(),
-      R.string.search,
-    ) { viewModel.onSearchUpdate(it) }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    permissionFlow = PermissionFlow(this, dialogues)
+  }
 
-  override fun inflate(
+  override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ) = FragmentNotesBinding.inflate(inflater, container, false)
-
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.recyclerView.applyBottomInsets()
-    binding.fab.setOnClickListener {
-      LoginApi.openLogged(
-        requireContext(),
-        CreateNoteActivity::class.java,
+    savedInstanceState: Bundle?
+  ): View {
+    return composeView {
+      val state by viewModel.notesScreenState.collectAsState()
+      NotesScreen(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        onBackClick = { findNavController().popBackStack() },
+        onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
+        onSortOrderSelected = { viewModel.onSortOrderSelected(it) },
+        onGridToggleClick = { viewModel.onGridToggleClick() },
+        onArchiveClick = { viewModel.onArchiveClick() },
+        onSettingsClick = { viewModel.onSettingsClick() },
+        onAddClick = { viewModel.onAddClick() },
+        onNoteClick = { viewModel.onNoteClick(it) },
+        onNoteMenuAction = { note, action -> viewModel.onNoteMenuAction(note, action) },
+        onImageClick = { note, imageId -> viewModel.onImageClick(note, imageId) }
       )
     }
+  }
 
-    initProgress()
-
-    initList()
-    initViewModel()
-
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    lifecycle.addObserver(viewModel)
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
-
-    addMenu(R.menu.fragment_notes, { onMenuItemClicked(it) }) { modifyMenu(it) }
+    viewModel.navigationEvent.observeEvent(viewLifecycleOwner) { handleNavigationEvent(it) }
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { toast(it) }
   }
 
-  private fun modifyMenu(menu: Menu) {
-    menu.getItem(1)?.title =
-      if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
-
-    ViewUtils.tintMenuIcon(requireContext(), menu, 0, R.drawable.ic_fluent_search, isDark)
-    ViewUtils.tintMenuIcon(
-      context = requireContext(),
-      menu = menu,
-      index = 1,
-      resource =
-        if (enableGrid) {
-          R.drawable.ic_fluent_grid
-        } else {
-          R.drawable.ic_fluent_list
-        },
-      isDark = isDark,
-    )
-    ViewUtils.tintMenuIcon(requireContext(), menu, 2, R.drawable.ic_fluent_archive, isDark)
-    ViewUtils.tintMenuIcon(requireContext(), menu, 3, R.drawable.ic_fluent_arrow_sort, isDark)
-    searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
-  }
-
-  private fun onMenuItemClicked(menuItem: MenuItem): Boolean =
-    when (menuItem.itemId) {
-      R.id.action_order -> {
-        showDialog()
-        true
+  private fun handleNavigationEvent(event: NotesViewModel.NavigationEvent) {
+    when (event) {
+      is NotesViewModel.NavigationEvent.OpenNotePreview -> {
+        safeNavigation(
+          R.id.previewNoteFragment,
+          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          NavigationAnimations.inDepthNavOptions()
+        )
       }
 
-      R.id.action_list -> {
-        enableGrid = !enableGrid
-        prefs.isNotesGridEnabled = enableGrid
-        setListStyle()
-        invalidateOptionsMenu()
-        true
+      is NotesViewModel.NavigationEvent.OpenCreateNote -> {
+        LoginApi.openLogged(requireContext(), CreateNoteActivity::class.java)
       }
 
-      R.id.action_archive -> {
+      is NotesViewModel.NavigationEvent.OpenEditNote -> {
+        LoginApi.openLogged(requireContext(), CreateNoteActivity::class.java) {
+          putExtra(IntentKeys.INTENT_ID, event.id)
+        }
+      }
+
+      is NotesViewModel.NavigationEvent.OpenArchive -> {
         safeNavigation(NotesFragmentDirections.actionActionNotesToArchivedNotesFragment())
-        true
       }
 
-      R.id.action_settings -> {
+      is NotesViewModel.NavigationEvent.OpenSettings -> {
         safeNavigation(
           NotesFragmentDirections.actionActionNotesToNoteSettingsFragment(
-            getString(R.string.action_settings),
-          ),
+            getString(R.string.action_settings)
+          )
         )
-        true
       }
 
-      else -> false
-    }
-
-  private fun initProgress() {
-    binding.progressMessageView.setText(R.string.please_wait)
-    hideProgress()
-  }
-
-  private fun hideProgress() {
-    binding.progressView.gone()
-  }
-
-  private fun showProgress() {
-    binding.progressView.visible()
-  }
-
-  private fun initViewModel() {
-    lifecycle.addObserver(viewModel)
-    viewModel.notes.nonNullObserve(viewLifecycleOwner) { list ->
-      Logger.d(TAG, "initViewModel: $list")
-      notesRecyclerAdapter.submitList(list)
-      binding.emptyItem.visibleGone(list.isEmpty())
-      binding.recyclerView.visibleGone(list.isNotEmpty())
-    }
-    viewModel.sharedFile.nonNullObserve(viewLifecycleOwner) {
-      sendNote(it.first, it.second)
-    }
-    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) {
-      if (it) {
-        showProgress()
-      } else {
-        hideProgress()
-      }
-    }
-    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { showErrorSending() }
-  }
-
-  private fun sendNote(
-    note: NoteWithImages,
-    file: File,
-  ) {
-    if (!file.exists() || !file.canRead()) {
-      showErrorSending()
-      return
-    }
-    TelephonyUtil.sendNote(file, requireContext(), note.note?.summary)
-  }
-
-  private fun showErrorSending() {
-    toast(R.string.error_sending)
-  }
-
-  private fun setListStyle() {
-    oldItemDecoration?.run {
-      binding.recyclerView.removeItemDecoration(this)
-    }
-    binding.recyclerView.layoutManager = layoutManager()
-    oldItemDecoration =
-      getItemDecoration().also {
-        binding.recyclerView.addItemDecoration(it)
-      }
-  }
-
-  private fun getItemDecoration(): RecyclerView.ItemDecoration =
-    if (enableGrid) {
-      SpaceBetweenItemDecoration(dp2px(8))
-    } else {
-      val spanCount =
-        if (resources.getBoolean(R.bool.is_tablet)) {
-          resources.getInteger(R.integer.num_of_cols)
-        } else {
-          2
-        }
-      StaggeredSpaceItemDecoration(spanCount, dp2px(8), false)
-    }
-
-  private fun layoutManager(): RecyclerView.LayoutManager =
-    if (enableGrid) {
-      LinearLayoutManager(context)
-    } else {
-      if (resources.getBoolean(R.bool.is_tablet)) {
-        StaggeredGridLayoutManager(
-          resources.getInteger(R.integer.num_of_cols),
-          StaggeredGridLayoutManager.VERTICAL,
-        )
-      } else {
-        StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-      }
-    }
-
-  private fun initList() {
-    enableGrid = prefs.isNotesGridEnabled
-    setListStyle()
-    notesRecyclerAdapter.actionsListener =
-      object : ActionsListener<UiNoteList> {
-        override fun onAction(
-          view: View,
-          position: Int,
-          t: UiNoteList?,
-          actions: ListActions,
-        ) {
-          when (actions) {
-            ListActions.OPEN -> if (t != null) previewNote(t.id)
-            ListActions.MORE -> if (t != null) showMore(view, t)
-            else -> {
-            }
-          }
+      is NotesViewModel.NavigationEvent.OpenImagePreview -> {
+        startActivity(ImagePreviewActivity::class.java) {
+          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          putExtra(IntentKeys.INTENT_ID, event.noteId)
+          putExtra(IntentKeys.INTENT_POSITION, event.imagePosition)
         }
       }
-    notesRecyclerAdapter.imageClickListener = { note, imagePosition ->
-      imagesSingleton.setCurrent(
-        images = note.images,
-        color = note.colorPosition,
-        palette = note.colorPalette,
-      )
-      requireContext().startActivity(ImagePreviewActivity::class.java) {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        putExtra(IntentKeys.INTENT_ID, note.id)
-        putExtra(IntentKeys.INTENT_POSITION, imagePosition)
-      }
-    }
-    binding.recyclerView.adapter = notesRecyclerAdapter
-    binding.recyclerView.itemAnimator = DefaultItemAnimator()
-    ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) {
-        binding.fab.show()
-      } else {
-        binding.fab.hide()
-      }
-    }
-  }
 
-  private fun showMore(
-    view: View,
-    note: UiNoteList,
-  ) {
-    var showIn = getString(R.string.show_in_status_bar)
-    showIn = showIn.substring(0, showIn.length - 1)
-    val items =
-      arrayOf(
-        getString(R.string.open),
-        getString(R.string.share),
-        showIn,
-        getString(R.string.change_color),
-        getString(R.string.edit),
-        getString(R.string.notes_move_to_archive),
-        getString(R.string.delete),
-      )
-    Dialogues.showPopup(view, { item ->
-      when (item) {
-        0 -> previewNote(note.id)
-        1 -> viewModel.shareNote(note.id)
-        2 -> showInStatusBar(note)
-        3 -> selectColor(note)
-        4 -> {
-          LoginApi.openLogged(requireContext(), CreateNoteActivity::class.java) {
-            putExtra(IntentKeys.INTENT_ID, note.id)
-          }
+      is NotesViewModel.NavigationEvent.ShareNote -> {
+        TelephonyUtil.sendNote(event.file, requireContext(), event.summary)
+      }
+
+      is NotesViewModel.NavigationEvent.RequestNotificationPermission -> {
+        permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
+          viewModel.showNoteInNotification(event.id)
         }
-
-        5 -> viewModel.moveToArchive(note.id)
-        6 -> askConfirmation(note.id)
       }
-    }, *items)
-  }
 
-  private fun askConfirmation(id: String) {
-    withContext {
-      dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
-        if (b) viewModel.deleteNote(id)
+      is NotesViewModel.NavigationEvent.PickColor -> {
+        dialogues.showColorDialog(
+          requireActivity(),
+          event.colorPosition,
+          getString(R.string.color),
+          themeProvider.noteColorsForSlider(event.colorPalette)
+        ) { color -> viewModel.saveNoteColor(event.id, color) }
       }
-    }
-  }
 
-  private fun showDialog() {
-    val items =
-      arrayOf<CharSequence>(
-        getString(R.string.by_date_az),
-        getString(R.string.by_date_za),
-        getString(R.string.name_az),
-        getString(R.string.name_za),
-      )
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setTitle(getString(R.string.order))
-      builder.setItems(items) { dialog, which ->
-        var value = ""
-        when (which) {
-          0 -> value = NoteSortProcessor.DATE_AZ
-          1 -> value = NoteSortProcessor.DATE_ZA
-          2 -> value = NoteSortProcessor.TEXT_AZ
-          3 -> value = NoteSortProcessor.TEXT_ZA
+      is NotesViewModel.NavigationEvent.ConfirmDelete -> {
+        dialogues.askConfirmation(requireContext(), getString(R.string.delete)) { confirmed ->
+          if (confirmed) viewModel.deleteNote(event.id)
         }
-        prefs.noteOrder = value
-        viewModel.onOrderChanged()
-        dialog.dismiss()
       }
-      builder.create().show()
     }
-  }
-
-  override fun getTitle(): String = getString(R.string.notes)
-
-  private fun previewNote(id: String?) {
-    navigate {
-      navigate(
-        R.id.previewNoteFragment,
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, id)
-        },
-        NavigationAnimations.inDepthNavOptions(),
-      )
-    }
-  }
-
-  private fun showInStatusBar(note: UiNoteList) {
-    permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
-      viewModel.showNoteInNotification(note.id)
-    }
-  }
-
-  private fun selectColor(note: UiNoteList) {
-    dialogues.showColorDialog(
-      requireActivity(),
-      note.colorPosition,
-      getString(R.string.color),
-      themeProvider.noteColorsForSlider(note.colorPalette),
-    ) {
-      viewModel.saveNoteColor(note.id, it)
-    }
-  }
-
-  companion object {
-    private const val TAG = "NotesFragment"
   }
 }

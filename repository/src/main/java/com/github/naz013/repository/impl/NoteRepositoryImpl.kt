@@ -56,6 +56,11 @@ internal class NoteRepositoryImpl(
     return dao.searchByText(query, isArchived = isArchived).map { it.toDomain() }
   }
 
+  override suspend fun getNotes(isArchived: Boolean, query: String, sortOrder: String): List<NoteWithImages> {
+    Logger.d(TAG, "Get notes, archived: $isArchived, query: $query, sortOrder: $sortOrder")
+    return dao.getNotes(isArchived = isArchived, query = query, sortOrder = sortOrder).map { it.toDomain() }
+  }
+
   override suspend fun getImagesIds(): List<Int> {
     Logger.d(TAG, "Get all images ids")
     return dao.getImagesIds()
