@@ -42,7 +42,7 @@ val adapterModule =
     factory { UiNoteImagesAdapter() }
     factory { UiNoteEditAdapter(get()) }
     factory { UiNoteListAdapter(get(), get(), get(), get()) }
-    factory { UiNoteListItemAdapter(get(), get(), get()) }
+    factory { UiNoteListItemAdapter(get(), get()) }
   factory { UiNotePreviewAdapter(get(), get(), get()) }
     factory { UiNoteNotificationAdapter(get(), get()) }
 

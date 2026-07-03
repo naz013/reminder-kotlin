@@ -2,7 +2,6 @@ package com.elementary.tasks.notes.list
 
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.ui.common.isAlmostTransparent
@@ -10,7 +9,6 @@ import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 
 class UiNoteListItemAdapter(
-  private val dateTimeManager: DateTimeManager,
   private val themeProvider: ThemeProvider,
   private val uiNoteImagesAdapter: UiNoteImagesAdapter
 ) {
@@ -45,9 +43,6 @@ class UiNoteListItemAdapter(
       fontSize = fontSize.toFloat(),
       titleFontStyle = noteWithImages.getTitleFontStyle(),
       titleFontSize = titleFontSize.toFloat(),
-      formattedDateTime = dateTimeManager.fromGmtToLocal(noteWithImages.getGmtTime())?.let {
-        dateTimeManager.getFullDateTime(it)
-      } ?: "",
       images = uiNoteImagesAdapter.convert(noteWithImages.images),
       colorPosition = noteWithImages.getColor(),
       colorPalette = noteWithImages.getPalette()

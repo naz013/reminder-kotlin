@@ -13,7 +13,6 @@ data class UiNoteListItem(
   val fontSize: Float,
   val titleFontStyle: Int,
   val titleFontSize: Float,
-  val formattedDateTime: String,
   val images: List<UiNoteImage>,
   val colorPosition: Int,
   val colorPalette: Int

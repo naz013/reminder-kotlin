@@ -247,7 +247,6 @@ private fun NoteCardPreview() {
         fontSize = 14f,
         titleFontStyle = 2,
         titleFontSize = 20f,
-        formattedDateTime = "2026-07-03 10:00",
         images = emptyList(),
         colorPosition = 12,
         colorPalette = 0

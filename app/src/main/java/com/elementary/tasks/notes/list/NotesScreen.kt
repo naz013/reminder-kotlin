@@ -15,6 +15,10 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -35,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -307,7 +312,7 @@ private fun SortMenuButton(
   )
   Box {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_arrow_sort),
+      icon = sortOrderIcon(sortOrder),
       contentDescription = stringResource(R.string.order),
       onClick = { expanded = true }
     )
@@ -318,6 +323,12 @@ private fun SortMenuButton(
       onItemClick = { index -> onSortOrderSelected(items[index].first) }
     )
   }
+}
+
+private fun sortOrderIcon(sortOrder: String): ImageVector = when (sortOrder) {
+  NoteSortProcessor.DATE_AZ -> Icons.Filled.ArrowUpward
+  NoteSortProcessor.TEXT_AZ, NoteSortProcessor.TEXT_ZA -> Icons.Filled.SortByAlpha
+  else -> Icons.Filled.ArrowDownward
 }
 
 private data class OverflowAction(val id: Int, val title: String, val iconRes: Int, val onClick: () -> Unit)

@@ -2,7 +2,6 @@ package com.elementary.tasks.notes.list
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -23,13 +22,20 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.repository.NoteRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class NotesViewModel(
   dispatcherProvider: DispatcherProvider,
   private val textProvider: TextProvider,
@@ -56,40 +62,46 @@ class NotesViewModel(
   )
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
-  private val noteSortProcessor = NoteSortProcessor()
-  private val notesData = SearchableNotesData(
-    dispatcherProvider = dispatcherProvider,
-    parentScope = viewModelScope,
-    noteRepository = noteRepository,
-    isArchived = isArchived
-  )
-  private val notesObserver = Observer<List<NoteWithImages>> { applyList(it) }
+  private val searchQuery = MutableStateFlow("")
+  private val sortOrder = MutableStateFlow(prefs.noteOrder)
+  private val refreshSignal = MutableStateFlow(0)
   private var hasResumedBefore = false
 
   init {
-    notesData.observeForever(notesObserver)
+    // Search is debounced so typing doesn't re-query on every keystroke, but the very first
+    // (empty) query and clearing the field should apply immediately, not wait out the debounce.
+    // refreshSignal lets mutations/resume force a re-query without a Flow-returning DAO query.
+    viewModelScope.launch(dispatcherProvider.default()) {
+      combine(
+        searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
+        sortOrder,
+        refreshSignal
+      ) { query, order, _ -> query to order }
+        .flatMapLatest { (query, order) ->
+          flow {
+            emit(noteRepository.getNotes(isArchived = isArchived, query = query.lowercase(), sortOrder = order))
+          }
+        }
+        .collect { applyList(it) }
+    }
   }
 
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)
-    // The initial load is already triggered by observeForever() above; refreshing again here
-    // would cancel that in-flight query and restart it, delaying the first paint for no reason.
+    // The initial load already happens in init{}; only force a re-query on later resumes
+    // (e.g. returning from the note editor) to avoid redundantly re-running the first query.
     if (hasResumedBefore) {
-      notesData.refresh()
+      refresh()
     }
     hasResumedBefore = true
   }
 
-  override fun onCleared() {
-    super.onCleared()
-    notesData.removeObserver(notesObserver)
+  private fun refresh() {
+    refreshSignal.update { it + 1 }
   }
 
   private fun applyList(list: List<NoteWithImages>) {
-    val items = noteSortProcessor.apply(
-      list.map { uiNoteListItemAdapter.convert(it) },
-      notesScreenState.value.sortOrder
-    )
+    val items = list.map { uiNoteListItemAdapter.convert(it) }
     notesScreenState.update {
       it.copy(listState = if (items.isEmpty()) ListState.Empty else ListState.Ready(items))
     }
@@ -97,13 +109,13 @@ class NotesViewModel(
 
   fun onSearchQueryChange(query: String) {
     notesScreenState.update { it.copy(searchQuery = query) }
-    notesData.onNewQuery(query)
+    searchQuery.value = query
   }
 
   fun onSortOrderSelected(order: String) {
     prefs.noteOrder = order
     notesScreenState.update { it.copy(sortOrder = order) }
-    notesData.refresh()
+    sortOrder.value = order
   }
 
   fun onGridToggleClick() {
@@ -164,7 +176,7 @@ class NotesViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       changeNoteArchiveStateUseCase(id, true)
 
-      notesData.refresh()
+      refresh()
 
       postInProgress(false)
       postCommand(Commands.UPDATED)
@@ -180,7 +192,7 @@ class NotesViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       changeNoteArchiveStateUseCase(id, false)
 
-      notesData.refresh()
+      refresh()
 
       postInProgress(false)
       postCommand(Commands.UPDATED)
@@ -217,7 +229,7 @@ class NotesViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteNoteUseCase(id)
 
-      notesData.refresh()
+      refresh()
 
       postInProgress(false)
       postCommand(Commands.DELETED)
@@ -249,7 +261,7 @@ class NotesViewModel(
       note.updatedAt = DateTimeManager.gmtDateTime
       saveNoteUseCase(noteWithImages)
 
-      notesData.refresh()
+      refresh()
 
       postInProgress(false)
       postCommand(Commands.SAVED)
@@ -280,5 +292,9 @@ class NotesViewModel(
     data class RequestNotificationPermission(val id: String) : NavigationEvent
     data class PickColor(val id: String, val colorPosition: Int, val colorPalette: Int) : NavigationEvent
     data class ConfirmDelete(val id: String) : NavigationEvent
+  }
+
+  companion object {
+    private const val SEARCH_DEBOUNCE_MS = 300L
   }
 }
