@@ -64,7 +64,7 @@ fun NotesScreen(
   onGridToggleClick: () -> Unit,
   onArchiveClick: (() -> Unit)?,
   onSettingsClick: (() -> Unit)?,
-  onAddClick: () -> Unit,
+  onAddClick: (() -> Unit)?,
   onNoteClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
@@ -91,11 +91,13 @@ fun NotesScreen(
       )
     },
     floatingActionButton = {
-      FloatingActionButton(onClick = onAddClick) {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_add),
-          contentDescription = stringResource(R.string.add_note)
-        )
+      if (onAddClick != null) {
+        FloatingActionButton(onClick = onAddClick) {
+          Icon(
+            painter = painterResource(R.drawable.ic_fluent_add),
+            contentDescription = stringResource(R.string.add_note)
+          )
+        }
       }
     }
   ) { padding ->
@@ -121,6 +123,7 @@ fun NotesScreen(
         isGrid = state.isGrid,
         isArchived = state.isArchived,
         contentPadding = padding,
+        hasFab = onAddClick != null,
         onNoteClick = onNoteClick,
         onNoteMenuAction = onNoteMenuAction,
         onImageClick = onImageClick,
@@ -136,11 +139,13 @@ private fun NotesList(
   isGrid: Boolean,
   isArchived: Boolean,
   contentPadding: PaddingValues,
+  hasFab: Boolean,
   onNoteClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
   modifier: Modifier = Modifier
 ) {
+  val fabBottomPadding = if (hasFab) 88.dp else 0.dp
   if (isGrid) {
     LazyColumn(
       modifier = modifier,
@@ -148,7 +153,7 @@ private fun NotesList(
         start = 16.dp,
         end = 16.dp,
         top = contentPadding.calculateTopPadding() + 8.dp,
-        bottom = contentPadding.calculateBottomPadding() + 88.dp
+        bottom = contentPadding.calculateBottomPadding() + fabBottomPadding
       ),
       verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -171,7 +176,7 @@ private fun NotesList(
         start = 16.dp,
         end = 16.dp,
         top = contentPadding.calculateTopPadding() + 8.dp,
-        bottom = contentPadding.calculateBottomPadding() + 88.dp
+        bottom = contentPadding.calculateBottomPadding() + fabBottomPadding
       ),
       horizontalArrangement = Arrangement.spacedBy(8.dp),
       verticalItemSpacing = 8.dp

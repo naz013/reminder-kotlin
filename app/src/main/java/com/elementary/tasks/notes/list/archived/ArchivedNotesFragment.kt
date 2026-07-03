@@ -65,7 +65,7 @@ class ArchivedNotesFragment : Fragment() {
         onGridToggleClick = { viewModel.onGridToggleClick() },
         onArchiveClick = null,
         onSettingsClick = null,
-        onAddClick = { viewModel.onAddClick() },
+        onAddClick = null,
         onNoteClick = { viewModel.onNoteClick(it) },
         onNoteMenuAction = { note, action -> viewModel.onNoteMenuAction(note, action) },
         onImageClick = { note, imageId -> viewModel.onImageClick(note, imageId) }
