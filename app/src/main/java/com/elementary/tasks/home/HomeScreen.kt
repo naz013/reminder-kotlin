@@ -1,5 +1,11 @@
 package com.elementary.tasks.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -21,6 +27,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 
+private const val BANNER_ANIMATION_DURATION_MS = 300
+
+private val bannerEnterTransition = fadeIn(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) +
+  slideInVertically(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight }
+private val bannerExitTransition = fadeOut(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) +
+  slideOutVertically(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight }
+
 @Composable
 fun HomeScreen(
   modifier: Modifier = Modifier,
@@ -35,26 +48,44 @@ fun HomeScreen(
 ) {
   Box(modifier = modifier) {
     content()
-    when (bannerState) {
-      is BannerState.Privacy -> PrivacyBanner(
+    AnimatedVisibility(
+      visible = bannerState is BannerState.Privacy,
+      modifier = Modifier.align(Alignment.BottomCenter),
+      enter = bannerEnterTransition,
+      exit = bannerExitTransition,
+    ) {
+      PrivacyBanner(
         onPrivacyPolicyClick = onPrivacyPolicyClick,
         onAcceptClick = onPrivacyAcceptClick,
       )
-      is BannerState.Login -> LoginBanner(
+    }
+    AnimatedVisibility(
+      visible = bannerState is BannerState.Login,
+      modifier = Modifier.align(Alignment.BottomCenter),
+      enter = bannerEnterTransition,
+      exit = bannerExitTransition,
+    ) {
+      LoginBanner(
         onDismissClick = onLoginDismissClick,
         onLoginClick = onLoginClick,
       )
-      is BannerState.WhatsNew -> WhatsNewBanner(
+    }
+    AnimatedVisibility(
+      visible = bannerState is BannerState.WhatsNew,
+      modifier = Modifier.align(Alignment.BottomCenter),
+      enter = bannerEnterTransition,
+      exit = bannerExitTransition,
+    ) {
+      WhatsNewBanner(
         onDetailsClick = onWhatsNewDetailsClick,
         onDismissClick = onWhatsNewDismissClick,
       )
-      null -> {}
     }
   }
 }
 
 @Composable
-private fun BoxScope.PrivacyBanner(
+private fun PrivacyBanner(
   modifier: Modifier = Modifier,
   onPrivacyPolicyClick: () -> Unit,
   onAcceptClick: () -> Unit,
@@ -70,7 +101,7 @@ private fun BoxScope.PrivacyBanner(
 }
 
 @Composable
-private fun BoxScope.LoginBanner(
+private fun LoginBanner(
   modifier: Modifier = Modifier,
   onDismissClick: () -> Unit,
   onLoginClick: () -> Unit,
@@ -86,7 +117,7 @@ private fun BoxScope.LoginBanner(
 }
 
 @Composable
-private fun BoxScope.WhatsNewBanner(
+private fun WhatsNewBanner(
   modifier: Modifier = Modifier,
   onDetailsClick: () -> Unit,
   onDismissClick: () -> Unit,
@@ -102,7 +133,7 @@ private fun BoxScope.WhatsNewBanner(
 }
 
 @Composable
-private fun BoxScope.HomeBanner(
+private fun HomeBanner(
   modifier: Modifier = Modifier,
   text: String,
   negativeText: String,
@@ -112,7 +143,6 @@ private fun BoxScope.HomeBanner(
 ) {
   ElevatedCard(
     modifier = modifier
-      .align(Alignment.BottomCenter)
       .padding(16.dp)
       .fillMaxWidth(),
     elevation = CardDefaults.elevatedCardElevation(defaultElevation = 12.dp),
@@ -149,7 +179,7 @@ private fun BoxScope.HomeBanner(
 @Preview(showBackground = true, heightDp = 200)
 @Composable
 private fun PrivacyBannerPreview() {
-  Box(modifier = Modifier.fillMaxSize()) {
+  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
     PrivacyBanner(
       onPrivacyPolicyClick = {},
       onAcceptClick = {},
@@ -160,7 +190,7 @@ private fun PrivacyBannerPreview() {
 @Preview(showBackground = true, heightDp = 200)
 @Composable
 private fun LoginBannerPreview() {
-  Box(modifier = Modifier.fillMaxSize()) {
+  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
     LoginBanner(
       onDismissClick = {},
       onLoginClick = {},
@@ -171,7 +201,7 @@ private fun LoginBannerPreview() {
 @Preview(showBackground = true, heightDp = 200)
 @Composable
 private fun WhatsNewBannerPreview() {
-  Box(modifier = Modifier.fillMaxSize()) {
+  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
     WhatsNewBanner(
       onDetailsClick = {},
       onDismissClick = {},

@@ -60,6 +60,9 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
         allowLogsAttachment = false
       )
     }
+    binding.developerOptions.setOnClickListener {
+      safeNavigation(TestsFragmentDirections.actionTestsFragmentToDeveloperFragment())
+    }
   }
 
   private fun showReminderActionSelectionDialog() {
