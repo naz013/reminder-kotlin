@@ -116,6 +116,7 @@ class CreateNoteFragment :
 
     lifecycle.addObserver(photoSelectionUtil)
     lifecycle.addObserver(viewModel)
+    viewModel.saveStatusBarColor(activity?.window?.statusBarColor ?: -1)
 
     savedInstanceState?.getString(STATE_TEXT)?.let {
       textFieldValue = TextFieldValue(text = it, selection = TextRange(it.length))
@@ -154,6 +155,14 @@ class CreateNoteFragment :
   override fun onResume() {
     super.onResume()
     onBackStackResume()
+  }
+
+  override fun onPause() {
+    super.onPause()
+    viewModel.getStatusBarColor()?.also {
+      activity?.window?.statusBarColor = it
+      activity?.window?.navigationBarColor = it
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
