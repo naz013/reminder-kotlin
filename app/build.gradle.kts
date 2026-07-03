@@ -290,7 +290,6 @@ dependencies {
   }
   implementation(libs.lottie)
   implementation(libs.lottie.compose)
-  implementation(libs.photoview)
   implementation(libs.sheets.core)
   implementation(libs.sheets.info)
   implementation(libs.sheets.lottie)
@@ -302,6 +301,7 @@ dependencies {
   implementation(libs.threetenbp)
   implementation(libs.coil)
   implementation(libs.coil.compose)
+  implementation(libs.telephoto.zoomable.image.coil)
   implementation(libs.pdfbox.android)
 
   implementation(libs.slf4j.api)

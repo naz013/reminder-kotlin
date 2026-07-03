@@ -73,9 +73,9 @@ threetenabp = "1.4.9"
 colorslider = "2.0.6"
 android-calendar-ext = "1.0.4"
 lottie = "6.7.1"
-photoview = "2.3.0"
 sheets = "2.3.1"
 coil = "2.7.0"
+telephoto = "0.19.0"
 pdfbox-android = "2.0.27.0"
 
 slf4j-api = "2.0.18"
@@ -212,9 +212,9 @@ colorslider = { group = "com.github.naz013", name = "ColorSlider", version.ref =
 android-calendar-ext = { group = "com.github.naz013", name = "android-calendar-ext", version.ref = "android-calendar-ext" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
-photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photoview" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+telephoto-zoomable-image-coil = { group = "me.saket.telephoto", name = "zoomable-image-coil", version.ref = "telephoto" }
 pdfbox-android = { group = "com.tom-roush", name = "pdfbox-android", version.ref = "pdfbox-android" }
 
 sheets-core = { group = "com.maxkeppeler.sheets", name = "core", version.ref = "sheets" }

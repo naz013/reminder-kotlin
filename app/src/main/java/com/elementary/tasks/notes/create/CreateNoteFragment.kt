@@ -28,8 +28,9 @@ import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.navigation.BackPressHandler
+import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.onBackStackResume
-import com.elementary.tasks.notes.preview.ImagePreviewActivity
+import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.Permissions
@@ -40,7 +41,6 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.ComposeFragment
 import com.github.naz013.ui.common.fragment.hideKeyboard
-import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
@@ -362,9 +362,11 @@ class CreateNoteFragment :
       color = colorIndex,
       palette = viewModel.state.value.palette,
     )
-    startActivity(ImagePreviewActivity::class.java) {
-      putExtra(IntentKeys.INTENT_POSITION, position)
-    }
+    safeNavigation(
+      R.id.imagePreviewFragment,
+      Bundle().apply { putInt(IntentKeys.INTENT_POSITION, position) },
+      NavigationAnimations.bottomNavOptions(),
+    )
   }
 
   private fun dateDialog() {

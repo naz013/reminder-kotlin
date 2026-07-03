@@ -1,0 +1,93 @@
+package com.elementary.tasks.notes.preview
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.elementary.tasks.R
+import com.elementary.tasks.core.data.ui.note.UiNoteImage
+import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ImagePreviewScreen(
+  modifier: Modifier = Modifier,
+  state: ImagePreviewState,
+  colors: ImagePreviewColors,
+  onBackClick: () -> Unit,
+  onPageChanged: (Int) -> Unit,
+) {
+  val contentColor = colors.content ?: MaterialTheme.colorScheme.onSurface
+  Column(
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(colors.background ?: MaterialTheme.colorScheme.background),
+  ) {
+    TopAppBar(
+      title = {
+        if (state.images.isNotEmpty()) {
+          Text(
+            text = stringResource(R.string.x_out_of_x, state.position + 1, state.images.size),
+            color = contentColor,
+          )
+        }
+      },
+      navigationIcon = {
+        IconButton(onClick = onBackClick) {
+          Icon(
+            painter = painterResource(R.drawable.ic_builder_arrow_left),
+            contentDescription = stringResource(R.string.cd_back),
+            tint = contentColor,
+          )
+        }
+      },
+      colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+      modifier = Modifier.statusBarsPadding(),
+    )
+
+    if (state.images.isNotEmpty()) {
+      val pagerState = rememberPagerState(initialPage = state.position) { state.images.size }
+
+      LaunchedEffect(pagerState.currentPage) {
+        onPageChanged(pagerState.currentPage)
+      }
+
+      HorizontalPager(
+        state = pagerState,
+        key = { state.images[it].id },
+        modifier =
+          Modifier
+            .weight(1f)
+            .navigationBarsPadding(),
+      ) { page ->
+        ZoomableImagePage(image = state.images[page])
+      }
+    }
+  }
+}
+
+@Composable
+private fun ZoomableImagePage(image: UiNoteImage) {
+  ZoomableAsyncImage(
+    model = image.filePath,
+    contentDescription = null,
+    modifier = Modifier.fillMaxSize(),
+  )
+}
