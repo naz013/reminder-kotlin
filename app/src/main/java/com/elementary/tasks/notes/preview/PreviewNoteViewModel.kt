@@ -1,6 +1,7 @@
 package com.elementary.tasks.notes.preview
 
 import androidx.annotation.ColorInt
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
@@ -8,11 +9,9 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
-import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
-import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
 import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
@@ -24,12 +23,18 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.isAlmostTransparent
+import com.github.naz013.ui.common.isColorDark
+import com.github.naz013.ui.common.theme.ThemeProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -47,20 +52,16 @@ class PreviewNoteViewModel(
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
-  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase
+  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
+  private val themeProvider: ThemeProvider
 ) : BaseProgressViewModel(dispatcherProvider) {
+
+  private val _state = MutableStateFlow(PreviewNoteState(id = key))
+  val state: StateFlow<PreviewNoteState> = _state.asStateFlow()
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toSingleEvent()
 
-  private val _note = mutableLiveDataOf<UiNotePreview>()
-  val note = _note.toLiveData()
-
-  private val _reminders = mutableLiveDataOf<List<UiNoteAttachedReminder>>()
-  val reminders = _reminders.toLiveData()
-
-  var hasSameInDb: Boolean = false
-  var isBgDark: Boolean = false
   private var initStatusBarColor: Int = -1
   private var statusBarColorSaved: Boolean = false
 
@@ -79,6 +80,22 @@ class PreviewNoteViewModel(
     statusBarColorSaved = true
   }
 
+  /** Pure contrast math, ported from the previous Fragment implementation — kept here so the
+   *  Fragment/Compose layer never has to know about [ThemeProvider] or color math itself. */
+  fun colorsFor(state: PreviewNoteState): NotePreviewColors {
+    val isBgDark = if (state.opacity.isAlmostTransparent()) {
+      themeProvider.isDark
+    } else {
+      state.backgroundColor.isColorDark()
+    }
+    val contentColor = if (isBgDark) PURE_WHITE else PURE_BLACK
+    return NotePreviewColors(
+      background = Color(state.backgroundColor),
+      statusBarColor = state.backgroundColor,
+      content = Color(contentColor)
+    )
+  }
+
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTE_PREVIEW))
@@ -93,7 +110,22 @@ class PreviewNoteViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(key)
       if (noteWithImages != null) {
-        _note.postValue(uiNotePreviewAdapter.convert(noteWithImages))
+        val uiNotePreview = uiNotePreviewAdapter.convert(noteWithImages)
+        _state.update {
+          it.copy(
+            id = uiNotePreview.id,
+            title = uiNotePreview.title,
+            text = uiNotePreview.text,
+            titleTypeface = uiNotePreview.titleTypeface,
+            typeface = uiNotePreview.typeface,
+            titleTextSize = uiNotePreview.titleTextSize,
+            textSize = uiNotePreview.textSize,
+            images = uiNotePreview.images,
+            backgroundColor = uiNotePreview.backgroundColor,
+            opacity = uiNotePreview.opacity,
+            isArchived = uiNotePreview.isArchived
+          )
+        }
       }
       loadReminders()
     }
@@ -103,29 +135,23 @@ class PreviewNoteViewModel(
     val reminders = reminderRepository.getByNoteKey(key).map {
       reminderToUiNoteAttachedReminder(it)
     }
-    _reminders.postValue(reminders)
+    _state.update { it.copy(reminders = reminders) }
   }
 
-  fun showNoteInNotification(id: String) {
+  fun onStatusClick() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = noteRepository.getById(id) ?: return@launch
+      val noteWithImages = noteRepository.getById(key) ?: return@launch
       uiNoteNotificationAdapter.convert(noteWithImages).also {
         withUIContext { notifier.showNoteNotification(it) }
       }
     }
   }
 
-  fun toggleArchiveFlag() {
+  fun onArchiveClick() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(key)
-      if (noteWithImages == null) {
-        postInProgress(false)
-        postError(textProvider.getText(R.string.notes_failed_to_update))
-        return@launch
-      }
-
-      val note = noteWithImages.note
+      val note = noteWithImages?.note
       if (note == null) {
         postInProgress(false)
         postError(textProvider.getText(R.string.notes_failed_to_update))
@@ -141,7 +167,16 @@ class PreviewNoteViewModel(
     }
   }
 
-  fun deleteNote() {
+  fun onDeleteClick() {
+    _state.update { it.copy(activeDialog = PreviewNoteDialog.DELETE) }
+  }
+
+  fun onDialogDismiss() {
+    _state.update { it.copy(activeDialog = null) }
+  }
+
+  fun onDeleteConfirmed() {
+    _state.update { it.copy(activeDialog = null) }
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteNoteUseCase(key)
@@ -150,7 +185,7 @@ class PreviewNoteViewModel(
     }
   }
 
-  fun shareNote() {
+  fun onShareClick() {
     viewModelScope.launch(dispatcherProvider.default()) {
       postInProgress(true)
       val noteWithImages = noteRepository.getById(key)
@@ -171,7 +206,7 @@ class PreviewNoteViewModel(
     }
   }
 
-  fun detachReminder(id: String) {
+  fun onReminderDetachClick(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = reminderRepository.getById(id)
@@ -197,5 +232,7 @@ class PreviewNoteViewModel(
 
   companion object {
     private const val TAG = "PreviewNoteViewModel"
+    private const val PURE_WHITE = android.graphics.Color.WHITE
+    private const val PURE_BLACK = android.graphics.Color.BLACK
   }
 }

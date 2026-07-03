@@ -1,9 +1,9 @@
 package com.elementary.tasks.notes.create
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 
 private const val FLOATING_BAR_ANIMATION_DURATION_MS = 300
 private const val BAR_PRESSED_SCALE = 1.05f
-private const val BAR_PULSE_UP_DURATION_MS = 100
 
 /**
  * One entry in the floating editing bar. Deliberately generic — new tools can be added to the
@@ -71,19 +70,15 @@ fun NoteEditFloatingBar(
   LaunchedEffect(Unit) {
     visibleState.targetState = true
   }
-  var pressTick by remember { mutableStateOf(0) }
-  val barScale = remember { Animatable(1f) }
-  LaunchedEffect(pressTick) {
-    if (pressTick == 0) return@LaunchedEffect
-    barScale.animateTo(BAR_PRESSED_SCALE, animationSpec = tween(BAR_PULSE_UP_DURATION_MS))
-    barScale.animateTo(
-      1f,
-      animationSpec = spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessMedium
-      )
-    )
-  }
+  var pressedCount by remember { mutableStateOf(0) }
+  val barScale by animateFloatAsState(
+    targetValue = if (pressedCount > 0) BAR_PRESSED_SCALE else 1f,
+    animationSpec = spring(
+      dampingRatio = Spring.DampingRatioMediumBouncy,
+      stiffness = Spring.StiffnessMedium
+    ),
+    label = "bar_scale"
+  )
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
@@ -96,7 +91,7 @@ fun NoteEditFloatingBar(
     ) + fadeIn(animationSpec = tween(FLOATING_BAR_ANIMATION_DURATION_MS / 2)),
   ) {
     Surface(
-      modifier = Modifier.scale(barScale.value),
+      modifier = Modifier.scale(barScale),
       shape = RoundedCornerShape(percent = 50),
       color = containerColor,
       shadowElevation = 4.dp,
@@ -113,7 +108,7 @@ fun NoteEditFloatingBar(
             item = item,
             containerColor = containerColor,
             contentColor = contentColor,
-            onItemPressed = { pressTick++ }
+            onPressedChange = { pressed -> pressedCount += if (pressed) 1 else -1 }
           )
         }
       }
@@ -126,12 +121,16 @@ private fun NoteEditBarIconSlot(
   item: NoteEditBarItem,
   containerColor: Color,
   contentColor: Color,
-  onItemPressed: () -> Unit
+  onPressedChange: (Boolean) -> Unit
 ) {
   val interactionSource = remember { MutableInteractionSource() }
   LaunchedEffect(interactionSource) {
     interactionSource.interactions.collect { interaction ->
-      if (interaction is PressInteraction.Press) onItemPressed()
+      when (interaction) {
+        is PressInteraction.Press -> onPressedChange(true)
+        is PressInteraction.Release, is PressInteraction.Cancel -> onPressedChange(false)
+        else -> Unit
+      }
     }
   }
 
