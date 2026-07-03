@@ -69,3 +69,8 @@ data class EditReminderScreen(
 data class ViewNoteScreen(
   override val extras: Bundle
 ) : DeepLinkDestination()
+
+@Parcelize
+data class EditNoteScreen(
+  override val extras: Bundle
+) : DeepLinkDestination()

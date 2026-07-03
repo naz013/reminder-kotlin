@@ -233,8 +233,9 @@
         </activity>
 
         <activity
-            android:name=".notes.create.CreateNoteActivity"
+            android:name=".core.arch.CreateNoteIntentActivity"
             android:configChanges="keyboardHidden"
+            android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/add_note"
             android:windowSoftInputMode="stateUnchanged">

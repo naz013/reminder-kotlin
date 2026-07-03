@@ -557,6 +557,10 @@
         tools:layout="@layout/fragment_note_preview"
         android:label="@string/details" />
     <fragment
+        android:id="@+id/createNoteFragment"
+        android:name="com.elementary.tasks.notes.create.CreateNoteFragment"
+        android:label="@string/add_note" />
+    <fragment
         android:id="@+id/reminderHelpFragment"
         android:name="com.elementary.tasks.reminder.build.help.ReminderHelpFragment"
         android:label="ReminderHelpFragment" />

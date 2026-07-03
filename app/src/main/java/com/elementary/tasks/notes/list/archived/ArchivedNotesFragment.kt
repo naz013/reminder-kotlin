@@ -16,7 +16,6 @@ import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.safeNavigation
-import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.NotesScreen
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
@@ -30,7 +29,6 @@ import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.composeView
 import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -92,13 +90,15 @@ class ArchivedNotesFragment : Fragment() {
       }
 
       is NotesViewModel.NavigationEvent.OpenCreateNote -> {
-        LoginApi.openLogged(requireContext(), CreateNoteActivity::class.java)
+        safeNavigation(R.id.createNoteFragment, null, NavigationAnimations.inDepthNavOptions())
       }
 
       is NotesViewModel.NavigationEvent.OpenEditNote -> {
-        LoginApi.openLogged(requireContext(), CreateNoteActivity::class.java) {
-          putExtra(IntentKeys.INTENT_ID, event.id)
-        }
+        safeNavigation(
+          R.id.createNoteFragment,
+          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
       }
 
       is NotesViewModel.NavigationEvent.OpenImagePreview -> {

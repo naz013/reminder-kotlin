@@ -6,9 +6,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Patterns
 import android.view.LayoutInflater
-import androidx.activity.ComponentActivity
-import androidx.annotation.StringRes
 import androidx.core.graphics.drawable.toBitmap
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import coil.request.ImageRequest
@@ -21,7 +20,7 @@ import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.fragment.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,7 +30,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class PhotoSelectionUtil(
-  private val activity: ComponentActivity,
+  private val fragment: Fragment,
   private val mCallback: UriCallback?,
 ) : DefaultLifecycleObserver,
   KoinComponent {
@@ -46,32 +45,29 @@ class PhotoSelectionUtil(
 
   override fun onCreate(owner: LifecycleOwner) {
     super.onCreate(owner)
-    permissionFlow = PermissionFlow(activity, dialogues)
-    multiPicturePicker = MultiPicturePicker(activity) { mCallback?.onImageSelected(it) }
-    cameraPhotoPicker =
-      CameraPhotoPicker(activity) {
-        mCallback?.onImageSelected(listOf(it))
-      }
+    permissionFlow = PermissionFlow(fragment, dialogues)
+    multiPicturePicker = MultiPicturePicker(fragment) { mCallback?.onImageSelected(it) }
+    cameraPhotoPicker = CameraPhotoPicker(fragment) { mCallback?.onImageSelected(listOf(it)) }
   }
 
-  fun hasCamera(): Boolean = Module.hasCamera(activity)
+  fun hasCamera(): Boolean = Module.hasCamera(fragment.requireContext())
 
   fun selectImage() {
     val hasCamera = hasCamera()
     val items =
       if (hasCamera) {
         arrayOf(
-          getString(R.string.gallery),
-          getString(R.string.take_a_shot),
-          getString(R.string.from_url),
+          fragment.getString(R.string.gallery),
+          fragment.getString(R.string.take_a_shot),
+          fragment.getString(R.string.from_url),
         )
       } else {
         arrayOf(
-          getString(R.string.gallery),
-          getString(R.string.from_url),
+          fragment.getString(R.string.gallery),
+          fragment.getString(R.string.from_url),
         )
       }
-    val builder = dialogues.getMaterialDialog(activity)
+    val builder = dialogues.getMaterialDialog(fragment.requireContext())
     builder.setTitle(R.string.image)
     builder.setItems(items) { dialog, item ->
       dialog.dismiss()
@@ -115,7 +111,7 @@ class PhotoSelectionUtil(
 
   fun checkClipboard() {
     val clipboard =
-      activity.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager?
+      fragment.requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager?
         ?: run {
           Logger.w(TAG, "checkClipboard: clipboard is null")
           return
@@ -133,8 +129,8 @@ class PhotoSelectionUtil(
   }
 
   private fun showUrlDialog() {
-    val builder = dialogues.getMaterialDialog(activity)
-    val view = ViewUrlFieldBinding.inflate(LayoutInflater.from(activity))
+    val builder = dialogues.getMaterialDialog(fragment.requireContext())
+    val view = ViewUrlFieldBinding.inflate(LayoutInflater.from(fragment.requireContext()))
     builder.setView(view.root)
     builder.setPositiveButton(R.string.download) { dialog, _ ->
       dialog.dismiss()
@@ -151,7 +147,7 @@ class PhotoSelectionUtil(
   }
 
   private fun showClipboardDialog(text: String) {
-    val builder = dialogues.getMaterialDialog(activity)
+    val builder = dialogues.getMaterialDialog(fragment.requireContext())
     builder.setMessage(text)
     builder.setPositiveButton(R.string.download) { dialog, _ ->
       dialog.dismiss()
@@ -170,7 +166,7 @@ class PhotoSelectionUtil(
         try {
           val request =
             ImageRequest
-              .Builder(activity)
+              .Builder(fragment.requireContext())
               .data(url)
               .build()
           val bitmap = imageLoader.execute(request).drawable?.toBitmap()
@@ -180,24 +176,20 @@ class PhotoSelectionUtil(
             }
           } else {
             withUIContext {
-              activity.toast(R.string.failed_to_download)
+              fragment.toast(R.string.failed_to_download)
             }
           }
         } catch (e: Exception) {
           Logger.d(TAG, "downloadUrl: $e")
           withUIContext {
-            activity.toast(R.string.failed_to_download)
+            fragment.toast(R.string.failed_to_download)
           }
         }
       }
     } else {
-      activity.toast(R.string.wrong_url)
+      fragment.toast(R.string.wrong_url)
     }
   }
-
-  private fun getString(
-    @StringRes res: Int,
-  ) = activity.getString(res)
 
   interface UriCallback {
     fun onImageSelected(uris: List<Uri>)

@@ -3,7 +3,7 @@
 ## Overview
 
 This document describes the plan for extending the Drag and Drop (D&D) feature in the Note
-creation/editing screen (`CreateNoteActivity` + `CreateNoteViewModel`). The goal is to support
+creation/editing screen (`CreateNoteFragment` + `CreateNoteViewModel`). The goal is to support
 dropping not only images but also **plain text**, **text files** (`.txt`, `.md`, `.csv`, etc.),
 and **PDF files** into the note editor.
 
@@ -16,7 +16,7 @@ and **PDF files** into the note editor.
 | Component | Description |
 |-----------|-------------|
 | `ViewUtils.registerDragAndDrop` | Registers a drag listener on a View; handles visual highlight, permission request, and forwards `ClipData` on drop |
-| `CreateNoteActivity.onStart()` | Registers D&D on `binding.clickView` for `MIMETYPE_TEXT_PLAIN` and `UriUtil.ANY_MIME` |
+| `CreateNoteFragment.onStart()` | Registers D&D on the fragment's window decor view for `MIMETYPE_TEXT_PLAIN` and `UriUtil.ANY_MIME` |
 | `CreateNoteViewModel.parseDrop()` | Receives `ClipData`; extracts inline text or routes all URIs to `addMultiple()` |
 | `ImageDecoder` | Decodes URIs into `UiNoteImage`; **rejects** any non-`image/*` MIME type as `ERROR` |
 
