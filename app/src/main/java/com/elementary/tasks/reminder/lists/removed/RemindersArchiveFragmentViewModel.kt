@@ -43,7 +43,6 @@ class RemindersArchiveFragmentViewModel(
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteAllReminderUseCase: DeleteAllReminderUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _events = mutableLiveDataOf<List<UiReminderEventsList>>()
   val events = _events.toLiveData()
 
@@ -89,21 +88,22 @@ class RemindersArchiveFragmentViewModel(
     }
     viewModelScope.launch(dispatcherProvider.default()) {
       val currentSelected = appliedFilters.selectedFilters
-      val filters = allFilters.map { group ->
-        val appliedFilter = currentSelected[group.id]
-        when (group) {
-          is ReminderGroupFilterGroup -> {
-            ReminderGroupFilterGroup(
-              id = group.id,
-              title = group.title,
-              appliedFilter = appliedFilter as? ReminderGroupAppliedFilter,
-              filters = group.filters
-            )
-          }
+      val filters =
+        allFilters.map { group ->
+          val appliedFilter = currentSelected[group.id]
+          when (group) {
+            is ReminderGroupFilterGroup -> {
+              ReminderGroupFilterGroup(
+                id = group.id,
+                title = group.title,
+                appliedFilter = appliedFilter as? ReminderGroupAppliedFilter,
+                filters = group.filters,
+              )
+            }
 
-          else -> group
+            else -> group
+          }
         }
-      }
       withContext(dispatcherProvider.main()) {
         Logger.i(TAG, "Showing filters: ${filters.size}")
         _showFilters.value = Event(Filters(filters))
@@ -140,13 +140,14 @@ class RemindersArchiveFragmentViewModel(
   fun deleteAll() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminders = _events.value?.mapNotNull { uiReminderEventsList ->
-        reminders.find { it.uuId == uiReminderEventsList.id}
-      } ?: run {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
+      val reminders =
+        _events.value?.mapNotNull { uiReminderEventsList ->
+          reminders.find { it.uuId == uiReminderEventsList.id }
+        } ?: run {
+          postInProgress(false)
+          postCommand(Commands.FAILED)
+          return@launch
+        }
       Logger.i(TAG, "Deleting all reminders: ${reminders.size}")
       deleteAllReminderUseCase(reminders)
       loadReminders()
@@ -171,8 +172,10 @@ class RemindersArchiveFragmentViewModel(
 
   private suspend fun prepareFilters() {
     val filterGroups = mutableListOf<FilterGroup>()
-    val groupFilters = groupRepository.getAll()
-      .map { ReminderGroupFilter(it.groupUuId, it.groupTitle) }
+    val groupFilters =
+      groupRepository
+        .getAll()
+        .map { ReminderGroupFilter(it.groupUuId, it.groupTitle) }
     if (groupFilters.isNotEmpty()) {
       filterGroups.add(
         ReminderGroupFilterGroup(
@@ -180,7 +183,7 @@ class RemindersArchiveFragmentViewModel(
           title = textProvider.getString(R.string.groups),
           appliedFilter = null,
           filters = groupFilters,
-        )
+        ),
       )
     }
     allFilters = filterGroups
@@ -190,13 +193,15 @@ class RemindersArchiveFragmentViewModel(
   }
 
   private suspend fun filterReminders() {
-    val filtered = filterByGroups(
-      reminders = filterByQuery(
-        reminders = reminders,
-        query = lastQuery
-      ),
-      groupIds = (appliedFilters.selectedFilters[GROUP_FILTER_ID] as? ReminderGroupAppliedFilter)?.selectedFilterIds
-    )
+    val filtered =
+      filterByGroups(
+        reminders =
+          filterByQuery(
+            reminders = reminders,
+            query = lastQuery,
+          ),
+        groupIds = (appliedFilters.selectedFilters[GROUP_FILTER_ID] as? ReminderGroupAppliedFilter)?.selectedFilterIds,
+      )
     val uiLists = filtered.map { uiReminderListAdapter.create(it) }
     withContext(dispatcherProvider.main()) {
       _events.value = uiLists
@@ -204,24 +209,30 @@ class RemindersArchiveFragmentViewModel(
     }
   }
 
-  private fun filterByGroups(reminders: List<Reminder>, groupIds: Set<String>?): List<Reminder> {
+  private fun filterByGroups(
+    reminders: List<Reminder>,
+    groupIds: Set<String>?,
+  ): List<Reminder> {
     if (groupIds.isNullOrEmpty()) return reminders
     return reminders.filter(ReminderGroupFilterInstance(groupIds)).also {
       Logger.i(
         TAG,
-        "Filtered by groups: ${it.size} items left, was: ${reminders.size}. Groups: ${groupIds.joinToString()}"
+        "Filtered by groups: ${it.size} items left, was: ${reminders.size}. Groups: ${groupIds.joinToString()}",
       )
     }
   }
 
-  private fun filterByQuery(reminders: List<Reminder>, query: String): List<Reminder> {
+  private fun filterByQuery(
+    reminders: List<Reminder>,
+    query: String,
+  ): List<Reminder> {
     if (query.isBlank()) return reminders
     return reminders.filter(ReminderQueryFilterInstance(lastQuery)).also {
       Logger.i(
         TAG,
         "Filtered by query: ${it.size} items left, was: ${reminders.size}. Query: ${
           Logger.private(query)
-        }"
+        }",
       )
     }
   }

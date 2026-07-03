@@ -15,28 +15,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.FragmentSettingsTroubleshootingBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.feature.common.livedata.nonNullObserve
+import com.github.naz013.ui.common.view.visibleGone
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
-class FragmentSettingsTroubleshooting :
-  BaseSettingsFragment<FragmentSettingsTroubleshootingBinding>() {
-
+class FragmentSettingsTroubleshooting : BaseSettingsFragment<FragmentSettingsTroubleshootingBinding>() {
   private val viewModel by viewModel<TroubleshootingViewModel>()
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsTroubleshootingBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.disableOptimizationButton.setOnClickListener { openBatteryOptimizationSettings() }
     binding.sendLogsPrefs.setOnClickListener { viewModel.sendLogs() }
@@ -60,7 +61,7 @@ class FragmentSettingsTroubleshooting :
       email = "feedback.cray@gmail.com",
       subject = "Issue Logs",
       message = "Hi,\n\nHere is logs for my issue.\n\nIssue description: \n\nBest regards\n",
-      file = file
+      file = file,
     )
   }
 
@@ -70,10 +71,13 @@ class FragmentSettingsTroubleshooting :
     when (Build.MANUFACTURER) {
       "samsung" -> {
         val intent = Intent()
-        intent.component = ComponentName(
-          /* pkg = */ "com.samsung.android.lool",
-          /* cls = */ "com.samsung.android.sm.ui.battery.BatteryActivity"
-        )
+        intent.component =
+          ComponentName(
+            // pkg =
+            "com.samsung.android.lool",
+            // cls =
+            "com.samsung.android.sm.ui.battery.BatteryActivity",
+          )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {
@@ -83,10 +87,13 @@ class FragmentSettingsTroubleshooting :
 
       "xiaomi" -> {
         var intent = Intent()
-        intent.component = ComponentName(
-          /* pkg = */ "com.miui.securitycenter",
-          /* cls = */ "com.miui.permcenter.autostart.AutoStartManagementActivity"
-        )
+        intent.component =
+          ComponentName(
+            // pkg =
+            "com.miui.securitycenter",
+            // cls =
+            "com.miui.permcenter.autostart.AutoStartManagementActivity",
+          )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {
@@ -94,9 +101,11 @@ class FragmentSettingsTroubleshooting :
             intent = Intent()
             intent.setComponent(
               ComponentName(
-                /* pkg = */ "com.miui.powerkeeper",
-                /* cls = */ "com.miui.powerkeeper.ui.HiddenAppsConfigActivity"
-              )
+                // pkg =
+                "com.miui.powerkeeper",
+                // cls =
+                "com.miui.powerkeeper.ui.HiddenAppsConfigActivity",
+              ),
             )
             intent.putExtra("package_name", viewModel.packageName())
             intent.putExtra("package_label", getText(R.string.app_name))
@@ -109,10 +118,13 @@ class FragmentSettingsTroubleshooting :
 
       "huawei" -> {
         val intent = Intent()
-        intent.component = ComponentName(
-          /* pkg = */ "com.huawei.systemmanager",
-          /* cls = */ "com.huawei.systemmanager.optimize.process.ProtectActivity"
-        )
+        intent.component =
+          ComponentName(
+            // pkg =
+            "com.huawei.systemmanager",
+            // cls =
+            "com.huawei.systemmanager.optimize.process.ProtectActivity",
+          )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {

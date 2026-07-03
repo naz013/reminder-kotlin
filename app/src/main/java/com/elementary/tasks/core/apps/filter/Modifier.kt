@@ -7,9 +7,8 @@ import kotlinx.coroutines.Job
 @Deprecated("After S")
 abstract class Modifier<V>(
   private var modifier: Modifier<V>? = null,
-  private var callback: ((List<V>) -> Unit)? = null
+  private var callback: ((List<V>) -> Unit)? = null,
 ) {
-
   private var external: Modifier<V>? = null
   private var mJob: Job? = null
   var original: List<V> = ArrayList()
@@ -43,12 +42,13 @@ abstract class Modifier<V>(
       mod.onChanged()
     } else {
       mJob?.cancel()
-      mJob = launchDefault {
-        val list = apply(original)
-        withUIContext {
-          callback?.invoke(list)
+      mJob =
+        launchDefault {
+          val list = apply(original)
+          withUIContext {
+            callback?.invoke(list)
+          }
         }
-      }
     }
   }
 }

@@ -6,9 +6,8 @@ import com.github.naz013.repository.GoogleTaskRepository
 
 class UploadGoogleTask(
   private val googleTasksApi: GoogleTasksApi,
-  private val googleTaskRepository: GoogleTaskRepository
+  private val googleTaskRepository: GoogleTaskRepository,
 ) {
-
   suspend operator fun invoke(googleTask: GoogleTask) {
     googleTasksApi.updateTask(googleTask)?.let {
       googleTaskRepository.save(it)

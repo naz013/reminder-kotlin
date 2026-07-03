@@ -12,7 +12,6 @@ import com.github.naz013.ui.common.activity.LightThemedActivity
 import org.koin.android.ext.android.inject
 
 class CreateReminderIntentActivity : LightThemedActivity() {
-
   private val navigator by inject<Navigator>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,14 +31,15 @@ class CreateReminderIntentActivity : LightThemedActivity() {
       navigator.navigate(
         ActivityDestination(
           screen = DestinationScreen.ReminderCreate,
-          extras = Bundle().apply {
-            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-            putParcelable(deepLinkData.intentKey, deepLinkData)
-          },
+          extras =
+            Bundle().apply {
+              putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+              putParcelable(deepLinkData.intentKey, deepLinkData)
+            },
           flags = Intent.FLAG_ACTIVITY_NEW_TASK,
           isLoggedIn = true,
-          action = Intent.ACTION_VIEW
-        )
+          action = Intent.ACTION_VIEW,
+        ),
       )
     } else {
       Logger.i(TAG, "Unsupported action")

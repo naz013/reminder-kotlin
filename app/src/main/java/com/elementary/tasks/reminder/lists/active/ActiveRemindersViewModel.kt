@@ -51,7 +51,6 @@ class ActiveRemindersViewModel(
   private val skipReminderUseCase: SkipReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _events = mutableLiveDataOf<List<UiReminderEventsList>>()
   val events = _events.toLiveData()
 
@@ -95,31 +94,32 @@ class ActiveRemindersViewModel(
     }
     viewModelScope.launch(dispatcherProvider.default()) {
       val currentSelected = appliedFilters.selectedFilters
-      val filters = allFilters.map { group ->
-        val appliedFilter = currentSelected[group.id]
-        when (group) {
-          is ReminderGroupFilterGroup -> {
-            ReminderGroupFilterGroup(
-              id = group.id,
-              title = group.title,
-              appliedFilter = appliedFilter as? ReminderGroupAppliedFilter,
-              filters = group.filters
-            )
-          }
+      val filters =
+        allFilters.map { group ->
+          val appliedFilter = currentSelected[group.id]
+          when (group) {
+            is ReminderGroupFilterGroup -> {
+              ReminderGroupFilterGroup(
+                id = group.id,
+                title = group.title,
+                appliedFilter = appliedFilter as? ReminderGroupAppliedFilter,
+                filters = group.filters,
+              )
+            }
 
-          is DateRangeFilterGroup -> {
-            DateRangeFilterGroup(
-              id = group.id,
-              title = group.title,
-              appliedFilter = appliedFilter as? DateRangeAppliedFilter,
-              minDate = group.minDate,
-              maxDate = group.maxDate
-            )
-          }
+            is DateRangeFilterGroup -> {
+              DateRangeFilterGroup(
+                id = group.id,
+                title = group.title,
+                appliedFilter = appliedFilter as? DateRangeAppliedFilter,
+                minDate = group.minDate,
+                maxDate = group.maxDate,
+              )
+            }
 
-          else -> group
+            else -> group
+          }
         }
-      }
       withContext(dispatcherProvider.main()) {
         _showFilters.value = Event(Filters(filters))
       }
@@ -184,7 +184,7 @@ class ActiveRemindersViewModel(
       postInProgress(false)
       Logger.i(
         TAG,
-        "Loaded ${reminders.size} active reminders. can search: ${reminders.isNotEmpty()}"
+        "Loaded ${reminders.size} active reminders. can search: ${reminders.isNotEmpty()}",
       )
       withContext(dispatcherProvider.main()) {
         _canSearch.value = reminders.isNotEmpty()
@@ -194,8 +194,10 @@ class ActiveRemindersViewModel(
 
   private suspend fun prepareFilters() {
     val filterGroups = mutableListOf<FilterGroup>()
-    val groupFilters = groupRepository.getAll()
-      .map { ReminderGroupFilter(it.groupUuId, it.groupTitle) }
+    val groupFilters =
+      groupRepository
+        .getAll()
+        .map { ReminderGroupFilter(it.groupUuId, it.groupTitle) }
     if (groupFilters.isNotEmpty()) {
       filterGroups.add(
         ReminderGroupFilterGroup(
@@ -203,7 +205,7 @@ class ActiveRemindersViewModel(
           title = textProvider.getString(R.string.groups),
           appliedFilter = null,
           filters = groupFilters,
-        )
+        ),
       )
     }
 
@@ -224,8 +226,8 @@ class ActiveRemindersViewModel(
           title = textProvider.getString(R.string.date_range),
           appliedFilter = null,
           minDate = minDate,
-          maxDate = maxDate
-        )
+          maxDate = maxDate,
+        ),
       )
     }
 
@@ -236,17 +238,22 @@ class ActiveRemindersViewModel(
   }
 
   private suspend fun filterReminders() {
-    val filtered = filterByDateRange(
-      reminders = filterByGroups(
-        reminders = filterByQuery(
-          reminders = reminders,
-          query = lastQuery
-        ),
-        groupIds = (appliedFilters.selectedFilters[GROUP_FILTER_ID] as? ReminderGroupAppliedFilter)?.selectedFilterIds
-      ),
-      filter = appliedFilters.selectedFilters.values.filterIsInstance<DateRangeAppliedFilter>()
-        .firstOrNull()
-    )
+    val filtered =
+      filterByDateRange(
+        reminders =
+          filterByGroups(
+            reminders =
+              filterByQuery(
+                reminders = reminders,
+                query = lastQuery,
+              ),
+            groupIds = (appliedFilters.selectedFilters[GROUP_FILTER_ID] as? ReminderGroupAppliedFilter)?.selectedFilterIds,
+          ),
+        filter =
+          appliedFilters.selectedFilters.values
+            .filterIsInstance<DateRangeAppliedFilter>()
+            .firstOrNull(),
+      )
     val uiLists = uiReminderListsAdapter.convert(filtered)
     withContext(dispatcherProvider.main()) {
       _events.value = uiLists
@@ -255,41 +262,48 @@ class ActiveRemindersViewModel(
 
   private fun filterByDateRange(
     reminders: List<Reminder>,
-    filter: DateRangeAppliedFilter?
+    filter: DateRangeAppliedFilter?,
   ): List<Reminder> {
     if (filter == null) return reminders
-    return reminders.filter(
-      ReminderDateRangeFilterInstance(
-        dateTimeManager = dateTimeManager,
-        startDate = filter.startDate,
-        endDate = filter.endDate
-      )
-    ).also {
-      Logger.i(
-        TAG,
-        "Filtered by date range: ${it.size} items left, was: ${reminders.size}. Range: ${filter.startDate} - ${filter.endDate}"
-      )
-    }
+    return reminders
+      .filter(
+        ReminderDateRangeFilterInstance(
+          dateTimeManager = dateTimeManager,
+          startDate = filter.startDate,
+          endDate = filter.endDate,
+        ),
+      ).also {
+        Logger.i(
+          TAG,
+          "Filtered by date range: ${it.size} items left, was: ${reminders.size}. Range: ${filter.startDate} - ${filter.endDate}",
+        )
+      }
   }
 
-  private fun filterByGroups(reminders: List<Reminder>, groupIds: Set<String>?): List<Reminder> {
+  private fun filterByGroups(
+    reminders: List<Reminder>,
+    groupIds: Set<String>?,
+  ): List<Reminder> {
     if (groupIds.isNullOrEmpty()) return reminders
     return reminders.filter(ReminderGroupFilterInstance(groupIds)).also {
       Logger.i(
         TAG,
-        "Filtered by groups: ${it.size} items left, was: ${reminders.size}. Groups: ${groupIds.joinToString()}"
+        "Filtered by groups: ${it.size} items left, was: ${reminders.size}. Groups: ${groupIds.joinToString()}",
       )
     }
   }
 
-  private fun filterByQuery(reminders: List<Reminder>, query: String): List<Reminder> {
+  private fun filterByQuery(
+    reminders: List<Reminder>,
+    query: String,
+  ): List<Reminder> {
     if (query.isBlank()) return reminders
     return reminders.filter(ReminderQueryFilterInstance(lastQuery)).also {
       Logger.i(
         TAG,
         "Filtered by query: ${it.size} items left, was: ${reminders.size}. Query: ${
           Logger.private(query)
-        }"
+        }",
       )
     }
   }

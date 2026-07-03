@@ -5,18 +5,22 @@ import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.reminder.build.UiSelectorItem
 
 class SelectorAdapter(
-  private val onItemClickListener: (Int, UiSelectorItem) -> Unit
+  private val onItemClickListener: (Int, UiSelectorItem) -> Unit,
 ) : ListAdapter<UiSelectorItem, SelectorViewHolder>(
-  UiSelectorItemDiffCallback()
-) {
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectorViewHolder {
-    return SelectorViewHolder(parent, {
+    UiSelectorItemDiffCallback(),
+  ) {
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): SelectorViewHolder =
+    SelectorViewHolder(parent, {
       onItemClickListener(it, getItem(it))
     })
-  }
 
-  override fun onBindViewHolder(holder: SelectorViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: SelectorViewHolder,
+    position: Int,
+  ) {
     holder.bind(getItem(position))
   }
 }

@@ -2,19 +2,18 @@ package com.elementary.tasks.reminder.build.selectordialog
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
-import com.github.naz013.feature.common.livedata.toLiveData
 import com.elementary.tasks.reminder.build.UiSelectorItem
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.livedata.toSingleEvent
+import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import kotlinx.coroutines.launch
 
 class SelectorDialogViewModel(
   private val selectorDialogDataHolder: SelectorDialogDataHolder,
-  private val dispatcherProvider: DispatcherProvider
+  private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
-
   private val _showTab = mutableLiveDataOf<SelectorTab>()
   val showTab = _showTab.toSingleEvent()
 
@@ -82,9 +81,7 @@ class SelectorDialogViewModel(
     }
   }
 
-  private fun getSelectedTab(): SelectorTab {
-    return showTab.value ?: SelectorTab.BUILDER
-  }
+  private fun getSelectedTab(): SelectorTab = showTab.value ?: SelectorTab.BUILDER
 
   private fun filteredBuilderItems(): List<UiSelectorItem> {
     val query = query?.lowercase() ?: ""
@@ -92,8 +89,12 @@ class SelectorDialogViewModel(
       return selectorDialogDataHolder.selectorBuilderItems
     }
     return selectorDialogDataHolder.selectorBuilderItems.filter {
-      it.builderItem.title.lowercase().contains(query) ||
-        it.builderItem.description?.lowercase()?.contains(query) == true
+      it.builderItem.title
+        .lowercase()
+        .contains(query) ||
+        it.builderItem.description
+          ?.lowercase()
+          ?.contains(query) == true
     }
   }
 

@@ -5,8 +5,10 @@ import android.content.Intent
 import com.elementary.tasks.Actions
 
 class PermanentBirthdayReceiver : BaseBroadcast() {
-
-  override fun onReceive(context: Context, intent: Intent?) {
+  override fun onReceive(
+    context: Context,
+    intent: Intent?,
+  ) {
     if (!prefs.isBirthdayPermanentEnabled) {
       notifier.cancel(BIRTHDAY_PERM_ID)
       return
@@ -24,7 +26,6 @@ class PermanentBirthdayReceiver : BaseBroadcast() {
   }
 
   companion object {
-
     const val BIRTHDAY_PERM_ID = 356665
     const val ACTION_SHOW = Actions.Birthday.ACTION_SB_SHOW
     const val ACTION_HIDE = Actions.Birthday.ACTION_SB_HIDE

@@ -28,7 +28,6 @@ import org.threeten.bp.LocalTime
 import java.util.Locale
 
 class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsRemindersBinding>() {
-
   private val dateTimeManager by inject<DateTimeManager>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
@@ -37,10 +36,13 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsRemindersBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     initDefaultPriority()
     initCompletedPrefs()
@@ -124,11 +126,12 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
       val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
 
       b.seekBar.addOnChangeListener { _, value, _ ->
-        b.titleView.text = String.format(
-          Locale.getDefault(),
-          getString(R.string.x_minutes),
-          value.toInt().toString()
-        )
+        b.titleView.text =
+          String.format(
+            Locale.getDefault(),
+            getString(R.string.x_minutes),
+            value.toInt().toString(),
+          )
       }
       b.seekBar.stepSize = 1f
       b.seekBar.valueFrom = 0f
@@ -137,11 +140,12 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
       val repeatTime = prefs.notificationRepeatTime
       b.seekBar.value = repeatTime.toFloat()
 
-      b.titleView.text = String.format(
-        Locale.getDefault(),
-        getString(R.string.x_minutes),
-        repeatTime.toString()
-      )
+      b.titleView.text =
+        String.format(
+          Locale.getDefault(),
+          getString(R.string.x_minutes),
+          repeatTime.toString(),
+        )
       builder.setView(b.root)
       builder.setPositiveButton(R.string.ok) { _, _ ->
         prefs.notificationRepeatTime = b.seekBar.value.toInt()
@@ -167,8 +171,8 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
       String.format(
         Locale.getDefault(),
         getString(R.string.x_minutes),
-        prefs.notificationRepeatTime.toString()
-      )
+        prefs.notificationRepeatTime.toString(),
+      ),
     )
   }
 
@@ -191,12 +195,12 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
         title = getString(R.string.led_indication_color),
         okButtonTitle = getString(R.string.ok),
         cancelButtonTitle = getString(R.string.cancel),
-        items = LED.getAllNames(requireContext())
+        items = LED.getAllNames(requireContext()),
       ),
       onOk = {
         prefs.ledColor = it
         showLedColor()
-      }
+      },
     )
   }
 
@@ -232,8 +236,8 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
       String.format(
         Locale.getDefault(),
         getString(R.string.x_minutes),
-        prefs.snoozeTime.toString()
-      )
+        prefs.snoozeTime.toString(),
+      ),
     )
   }
 
@@ -287,7 +291,7 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
       navigate(
         R.id.locationSettingsFragment,
         null,
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
@@ -366,7 +370,7 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
       dateTimePickerProvider.showTimePicker(
         fragmentManager = childFragmentManager,
         time = time,
-        title = getString(R.string.from)
+        title = getString(R.string.from),
       ) {
         prefs.doNotDisturbFrom = dateTimeManager.to24HourString(it)
         showFromTime()
@@ -379,7 +383,7 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
       dateTimePickerProvider.showTimePicker(
         fragmentManager = childFragmentManager,
         time = time,
-        title = getString(R.string.to)
+        title = getString(R.string.to),
       ) {
         prefs.doNotDisturbTo = dateTimeManager.to24HourString(it)
         showToTime()
@@ -393,15 +397,15 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
 
   private fun showToTime() {
     binding.doNotDisturbToPrefs.setValueText(
-      dateTimeManager.getTime(dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now())
+      dateTimeManager.getTime(dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now()),
     )
   }
 
   private fun showFromTime() {
     binding.doNotDisturbFromPrefs.setValueText(
       dateTimeManager.getTime(
-        dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now()
-      )
+        dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now(),
+      ),
     )
   }
 
@@ -456,35 +460,30 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     prefs.moveCompleted = !isChecked
   }
 
-  private fun ignoreList(): Array<String> {
-    return arrayOf(
+  private fun ignoreList(): Array<String> =
+    arrayOf(
       getString(R.string.priority_lowest) + " " + getString(R.string.and_above),
       getString(R.string.priority_low) + " " + getString(R.string.and_above),
       getString(R.string.priority_normal) + " " + getString(R.string.and_above),
       getString(R.string.priority_high) + " " + getString(R.string.and_above),
       getString(R.string.priority_highest),
-      getString(R.string.do_not_allow)
+      getString(R.string.do_not_allow),
     )
-  }
 
-  private fun actionList(): Array<String> {
-    return arrayOf(
+  private fun actionList(): Array<String> =
+    arrayOf(
       getString(R.string.schedule_for_later),
-      getString(R.string.ignore)
+      getString(R.string.ignore),
     )
-  }
 
-  override fun getTitle(): String {
-    return arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.reminders_)
-  }
+  override fun getTitle(): String = arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.reminders_)
 
-  override fun getNavigationIcon(): Int {
-    return if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
+  override fun getNavigationIcon(): Int =
+    if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
       super.getNavigationIcon()
     } else {
       R.drawable.ic_builder_clear
     }
-  }
 
   companion object {
     private const val TAG = "RemindersSettingsFragment"

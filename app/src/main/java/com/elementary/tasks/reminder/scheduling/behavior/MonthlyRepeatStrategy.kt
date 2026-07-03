@@ -16,10 +16,9 @@ class MonthlyRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderBehaviorStrategy {
-
   override fun calculateNextOccurrence(
     reminder: Reminder,
-    fromDateTime: LocalDateTime
+    fromDateTime: LocalDateTime,
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
     val eventDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return null
@@ -28,13 +27,11 @@ class MonthlyRepeatStrategy(
       eventDateTime = eventDateTime,
       dayOfMonth = reminder.dayOfMonth,
       interval = reminder.repeatInterval,
-      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
+      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
     )
   }
 
-  override fun canSkip(reminder: Reminder): Boolean {
-    return reminder.dayOfMonth >= 0 && !reminder.isLimitExceed()
-  }
+  override fun canSkip(reminder: Reminder): Boolean = reminder.dayOfMonth >= 0 && !reminder.isLimitExceed()
 
   override fun canSnooze(reminder: Reminder): Boolean {
     // Monthly repeat reminders can be snoozed

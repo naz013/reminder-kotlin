@@ -49,7 +49,6 @@ import java.io.File
 class CreateNoteActivity :
   LightThemedActivity(),
   PhotoSelectionUtil.UriCallback {
-
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
@@ -65,41 +64,43 @@ class CreateNoteActivity :
   private var speechUiState by mutableStateOf(SpeechUiState.IDLE)
   private var activeDialog by mutableStateOf<NoteEditDialog?>(null)
 
-  private val speechEngineCallback = object : SpeechEngineCallback() {
-    override fun onStarted() {
-      super.onStarted()
-      speechUiState = SpeechUiState.STARTED
-    }
+  private val speechEngineCallback =
+    object : SpeechEngineCallback() {
+      override fun onStarted() {
+        super.onStarted()
+        speechUiState = SpeechUiState.STARTED
+      }
 
-    override fun onStopped() {
-      super.onStopped()
-      speechUiState = SpeechUiState.IDLE
-    }
+      override fun onStopped() {
+        super.onStopped()
+        speechUiState = SpeechUiState.IDLE
+      }
 
-    override fun onSpeechStarted() {
-      super.onSpeechStarted()
-      speechUiState = SpeechUiState.SPEAKING
-    }
+      override fun onSpeechStarted() {
+        super.onSpeechStarted()
+        speechUiState = SpeechUiState.SPEAKING
+      }
 
-    override fun onSpeechEnded() {
-      super.onSpeechEnded()
-      speechUiState = SpeechUiState.STOPPED
-    }
+      override fun onSpeechEnded() {
+        super.onSpeechEnded()
+        speechUiState = SpeechUiState.STOPPED
+      }
 
-    override fun onSpeechError(error: SpeechError) {
-      super.onSpeechError(error)
-      speechUiState = SpeechUiState.IDLE
-    }
+      override fun onSpeechError(error: SpeechError) {
+        super.onSpeechError(error)
+        speechUiState = SpeechUiState.IDLE
+      }
 
-    override fun onSpeechResult(speechText: SpeechText) {
-      super.onSpeechResult(speechText)
-      textFieldValue = TextFieldValue(
-        text = speechText.text,
-        selection = TextRange(speechText.text.length)
-      )
-      boldRange = speechText.newText?.let { it.startIndex..it.endIndex }
+      override fun onSpeechResult(speechText: SpeechText) {
+        super.onSpeechResult(speechText)
+        textFieldValue =
+          TextFieldValue(
+            text = speechText.text,
+            selection = TextRange(speechText.text.length),
+          )
+        boldRange = speechText.newText?.let { it.startIndex..it.endIndex }
+      }
     }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
@@ -134,7 +135,7 @@ class CreateNoteActivity :
         }
       },
       ClipDescription.MIMETYPE_TEXT_PLAIN,
-      UriUtil.ANY_MIME
+      UriUtil.ANY_MIME,
     )
   }
 
@@ -187,44 +188,45 @@ class CreateNoteActivity :
       sliderColors = colors.sliderColors,
       activeDialog = activeDialog,
       colorsForPalette = viewModel::sliderColorsForPalette,
-      actions = NoteEditActions(
-        onBackClick = { finish() },
-        onSaveClick = { trySave() },
-        onShareClick = { viewModel.shareNote(getText(), getNoteTitle()) },
-        onDeleteClick = { activeDialog = NoteEditDialog.DELETE },
-        onMicClick = { tryMicClick() },
-        onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
-        onImageTabClick = { viewModel.onTabClicked(EditTab.IMAGE) },
-        onImagePickFromGallery = {
-          photoSelectionUtil.tryToPickFromGallery()
-          viewModel.collapseExpandedTab()
-        },
-        onImagePickFromCamera = {
-          photoSelectionUtil.tryToTakePhoto()
-          viewModel.collapseExpandedTab()
-        },
-        onImagePickFromUrl = {
-          photoSelectionUtil.checkClipboard()
-          viewModel.collapseExpandedTab()
-        },
-        onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
-        onFontTabClick = { viewModel.onTabClicked(EditTab.FONT) },
-        onColorSelected = { viewModel.onColorSelected(it) },
-        onOpacityChanged = { viewModel.onOpacityChanged(it) },
-        onReminderAttachedChanged = { viewModel.onReminderAttachedChanged(it) },
-        onDateClick = { dateDialog() },
-        onTimeClick = { timeDialog() },
-        onFontSizeChanged = { viewModel.onFontSizeChanged(it) },
-        onFieldFocused = { viewModel.onFieldFocused(it) },
-        onImageOpen = { openImagePreview(it, state.colorIndex) },
-        onImageRemove = { viewModel.removeImage(it) },
-        onFontStyleSelected = { viewModel.onFontStyleChanged(it) },
-        onPaletteSelected = { viewModel.onPaletteChanged(it) },
-        onDeleteConfirmed = { viewModel.deleteNote() },
-        onSameNoteKeep = { viewModel.saveNote(getText(), getNoteTitle(), newId = true) },
-        onSameNoteReplace = { viewModel.saveNote(getText(), getNoteTitle()) },
-        onDialogDismiss = { activeDialog = null }
-      )
+      actions =
+        NoteEditActions(
+          onBackClick = { finish() },
+          onSaveClick = { trySave() },
+          onShareClick = { viewModel.shareNote(getText(), getNoteTitle()) },
+          onDeleteClick = { activeDialog = NoteEditDialog.DELETE },
+          onMicClick = { tryMicClick() },
+          onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
+          onImageTabClick = { viewModel.onTabClicked(EditTab.IMAGE) },
+          onImagePickFromGallery = {
+            photoSelectionUtil.tryToPickFromGallery()
+            viewModel.collapseExpandedTab()
+          },
+          onImagePickFromCamera = {
+            photoSelectionUtil.tryToTakePhoto()
+            viewModel.collapseExpandedTab()
+          },
+          onImagePickFromUrl = {
+            photoSelectionUtil.checkClipboard()
+            viewModel.collapseExpandedTab()
+          },
+          onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
+          onFontTabClick = { viewModel.onTabClicked(EditTab.FONT) },
+          onColorSelected = { viewModel.onColorSelected(it) },
+          onOpacityChanged = { viewModel.onOpacityChanged(it) },
+          onReminderAttachedChanged = { viewModel.onReminderAttachedChanged(it) },
+          onDateClick = { dateDialog() },
+          onTimeClick = { timeDialog() },
+          onFontSizeChanged = { viewModel.onFontSizeChanged(it) },
+          onFieldFocused = { viewModel.onFieldFocused(it) },
+          onImageOpen = { openImagePreview(it, state.colorIndex) },
+          onImageRemove = { viewModel.removeImage(it) },
+          onFontStyleSelected = { viewModel.onFontStyleChanged(it) },
+          onPaletteSelected = { viewModel.onPaletteChanged(it) },
+          onDeleteConfirmed = { viewModel.deleteNote() },
+          onSameNoteKeep = { viewModel.saveNote(getText(), getNoteTitle(), newId = true) },
+          onSameNoteReplace = { viewModel.saveNote(getText(), getNoteTitle()) },
+          onDialogDismiss = { activeDialog = null },
+        ),
     )
   }
 
@@ -338,7 +340,10 @@ class CreateNoteActivity :
     lifecycle.addObserver(viewModel)
   }
 
-  private fun sendNote(file: File, name: String) {
+  private fun sendNote(
+    file: File,
+    name: String,
+  ) {
     if (isFinishing) return
     if (!file.exists() || !file.canRead()) {
       showErrorSending()
@@ -351,11 +356,14 @@ class CreateNoteActivity :
     toast(R.string.error_sending)
   }
 
-  private fun openImagePreview(position: Int, colorIndex: Int) {
+  private fun openImagePreview(
+    position: Int,
+    colorIndex: Int,
+  ) {
     imagesSingleton.setCurrent(
       images = viewModel.state.value.images,
       color = colorIndex,
-      palette = viewModel.state.value.palette
+      palette = viewModel.state.value.palette,
     )
     startActivity(ImagePreviewActivity::class.java) {
       putExtra(IntentKeys.INTENT_POSITION, position)
@@ -366,7 +374,7 @@ class CreateNoteActivity :
     dateTimePickerProvider.showDatePicker(
       fragmentManager = supportFragmentManager,
       date = viewModel.date,
-      title = getString(R.string.select_date)
+      title = getString(R.string.select_date),
     ) { viewModel.onNewDate(it) }
   }
 
@@ -374,7 +382,7 @@ class CreateNoteActivity :
     dateTimePickerProvider.showTimePicker(
       fragmentManager = supportFragmentManager,
       time = viewModel.time,
-      title = getString(R.string.select_time)
+      title = getString(R.string.select_time),
     ) { viewModel.onNewTime(it) }
   }
 

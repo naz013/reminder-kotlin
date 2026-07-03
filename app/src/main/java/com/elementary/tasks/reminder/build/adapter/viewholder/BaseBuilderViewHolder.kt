@@ -9,9 +9,8 @@ import com.elementary.tasks.reminder.build.UiListBuilderItemState
 
 abstract class BaseBuilderViewHolder<V : ViewBinding, D : UiBuilderItem>(
   viewCreator: () -> V,
-  protected val binding: V = viewCreator()
+  protected val binding: V = viewCreator(),
 ) : RecyclerView.ViewHolder(binding.root) {
-
   abstract fun initClickListeners()
 
   init {
@@ -49,9 +48,13 @@ abstract class BaseBuilderViewHolder<V : ViewBinding, D : UiBuilderItem>(
 
   abstract fun hideError()
 
-  abstract fun setStateBadge(@DrawableRes iconRes: Int)
+  abstract fun setStateBadge(
+    @DrawableRes iconRes: Int,
+  )
 
-  abstract fun setIcon(@DrawableRes iconRes: Int)
+  abstract fun setIcon(
+    @DrawableRes iconRes: Int,
+  )
 
   open fun setValue(value: String) {}
 

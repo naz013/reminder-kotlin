@@ -9,12 +9,12 @@ import org.threeten.bp.LocalTime
 
 class TimeController(
   builderItem: BuilderItem<LocalTime>,
-  private val is24Format: Boolean
+  private val is24Format: Boolean,
 ) : AbstractBindingValueController<LocalTime, BuilderItemTimeBinding>(builderItem) {
-
-  override fun bindView(layoutInflater: LayoutInflater, parent: ViewGroup): BuilderItemTimeBinding {
-    return BuilderItemTimeBinding.inflate(layoutInflater, parent, false)
-  }
+  override fun bindView(
+    layoutInflater: LayoutInflater,
+    parent: ViewGroup,
+  ): BuilderItemTimeBinding = BuilderItemTimeBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()

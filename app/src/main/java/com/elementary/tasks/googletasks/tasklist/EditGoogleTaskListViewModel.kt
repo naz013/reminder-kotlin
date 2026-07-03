@@ -26,9 +26,8 @@ class EditGoogleTaskListViewModel(
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val getGoogleTaskListByIdUseCase: GetGoogleTaskListByIdUseCase
+  private val getGoogleTaskListByIdUseCase: GetGoogleTaskListByIdUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _googleTaskList = mutableLiveDataOf<GoogleTaskList>()
   val googleTaskList = _googleTaskList.toLiveData()
 
@@ -60,9 +59,7 @@ class EditGoogleTaskListViewModel(
     this.color = color
   }
 
-  fun hasId(): Boolean {
-    return listId.isNotEmpty()
-  }
+  fun hasId(): Boolean = listId.isNotEmpty()
 
   fun onCreated(savedInstanceState: Bundle?) {
     if (savedInstanceState != null) {
@@ -70,9 +67,7 @@ class EditGoogleTaskListViewModel(
     }
   }
 
-  fun canDelete(): Boolean {
-    return editedTaskList?.let { !it.isDefault() } ?: false
-  }
+  fun canDelete(): Boolean = editedTaskList?.let { !it.isDefault() } ?: false
 
   fun deleteGoogleTaskList() {
     val googleTaskList = editedTaskList ?: return
@@ -99,13 +94,18 @@ class EditGoogleTaskListViewModel(
     }
   }
 
-  fun save(listName: String, color: Int, isDefault: Boolean) {
+  fun save(
+    listName: String,
+    color: Int,
+    isDefault: Boolean,
+  ) {
     var isNew = false
-    val item = (editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
-      this.title = listName
-      this.color = color
-      this.updated = System.currentTimeMillis()
-    }
+    val item =
+      (editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
+        this.title = listName
+        this.color = color
+        this.updated = System.currentTimeMillis()
+      }
     if (isDefault) {
       item.def = 1
     }
@@ -121,7 +121,7 @@ class EditGoogleTaskListViewModel(
     postInProgress(true)
     Logger.i(
       TAG,
-      "Creating Google Task List (${googleTaskList.listId}), default=${googleTaskList.isDefault()}"
+      "Creating Google Task List (${googleTaskList.listId}), default=${googleTaskList.isDefault()}",
     )
     viewModelScope.launch(dispatcherProvider.default()) {
       if (googleTaskList.isDefault()) {
@@ -130,7 +130,8 @@ class EditGoogleTaskListViewModel(
           googleTaskListRepository.save(it)
         }
       }
-      googleTasksApi.saveTasksList(googleTaskList.title, googleTaskList.color)
+      googleTasksApi
+        .saveTasksList(googleTaskList.title, googleTaskList.color)
         ?.apply { this.def = googleTaskList.def }
         ?.let {
           googleTaskListRepository.save(it)

@@ -11,17 +11,19 @@ import com.github.naz013.ui.common.fragment.hideKeyboard
 import com.github.naz013.ui.common.fragment.toast
 
 class ChangePinFragment : BaseSettingsFragment<FragmentSettingsChangePinBinding>() {
-
   private var state: State = State.OLD
   private var pin: String = ""
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsChangePinBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
 
     binding.pinView.supportFinger = false
@@ -82,6 +84,8 @@ class ChangePinFragment : BaseSettingsFragment<FragmentSettingsChangePinBinding>
   override fun getTitle(): String = getString(R.string.change_pin)
 
   private enum class State {
-    OLD, INPUT, REPEAT
+    OLD,
+    INPUT,
+    REPEAT,
   }
 }

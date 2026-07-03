@@ -8,11 +8,14 @@ import com.github.naz013.logging.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 
-class HomeEventsViewModel : ViewModel(), DefaultLifecycleObserver {
-
+class HomeEventsViewModel :
+  ViewModel(),
+  DefaultLifecycleObserver {
   private val _selectedTab = MutableStateFlow<SelectedTab>(SelectedTab.Reminders)
-  val selectedTab = _selectedTab.viewModelStateIn(viewModelScope, SelectedTab.Reminders)
-    .onStart { initialStateLoad() }
+  val selectedTab =
+    _selectedTab
+      .viewModelStateIn(viewModelScope, SelectedTab.Reminders)
+      .onStart { initialStateLoad() }
 
   init {
     _selectedTab.value = SelectedTab.Reminders
@@ -31,7 +34,7 @@ class HomeEventsViewModel : ViewModel(), DefaultLifecycleObserver {
   enum class SelectedTab {
     Reminders,
     Todo,
-    Birthdays
+    Birthdays,
   }
 
   companion object {

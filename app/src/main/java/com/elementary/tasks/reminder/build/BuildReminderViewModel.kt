@@ -113,9 +113,8 @@ class BuildReminderViewModel(
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val pauseReminderUseCase: PauseReminderUseCase,
-  private val resumeReminderUseCase: ResumeReminderUseCase
+  private val resumeReminderUseCase: ResumeReminderUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _builderItems = mutableLiveDataOf<List<UiBuilderItem>>()
   val builderItems = _builderItems.toLiveData()
 
@@ -197,9 +196,11 @@ class BuildReminderViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val used = builderItemsLogic.getUsed()
 
-      val allTypes = BiType.entries.map { biFactory.create(it) }
-        .filter { biFilter(it) }
-        .sortedWith(BiComparator())
+      val allTypes =
+        BiType.entries
+          .map { biFactory.create(it) }
+          .filter { biFilter(it) }
+          .sortedWith(BiComparator())
 
       builderItemsLogic.setAllAvailable(allTypes)
       builderItemsLogic.setAll(used.filter { biFilter(it) })
@@ -324,7 +325,10 @@ class BuildReminderViewModel(
     requestedPermissionsFor = null
   }
 
-  fun onItemEditedClicked(position: Int, builderItem: BuilderItem<*>) {
+  fun onItemEditedClicked(
+    position: Int,
+    builderItem: BuilderItem<*>,
+  ) {
     Logger.i(TAG, "On builder item edit clicked, type = ${builderItem.biType}")
     val pair = position to builderItem
     val permissions = builderItem.constraints.filterIsInstance<PermissionConstraint>()
@@ -355,7 +359,10 @@ class BuildReminderViewModel(
     }
   }
 
-  fun removeItem(position: Int, builderItem: BuilderItem<*>) {
+  fun removeItem(
+    position: Int,
+    builderItem: BuilderItem<*>,
+  ) {
     Logger.i(TAG, "Remove builder item, type = ${builderItem.biType}")
     viewModelScope.launch(dispatcherProvider.default()) {
       builderItem.modifier.setDefault()
@@ -365,7 +372,10 @@ class BuildReminderViewModel(
     }
   }
 
-  fun updateValue(position: Int, builderItem: BuilderItem<*>) {
+  fun updateValue(
+    position: Int,
+    builderItem: BuilderItem<*>,
+  ) {
     Logger.i(TAG, "Update VALUE for builder item, type = ${builderItem.biType}")
     viewModelScope.launch(dispatcherProvider.default()) {
       builderItemsLogic.update(position, builderItem)
@@ -412,7 +422,9 @@ class BuildReminderViewModel(
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.DATE }
     Logger.i(TAG, "Add Date builder item")
     if (itemIndex == -1) {
-      builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.DATE }
+      builderItemsLogic
+        .getAvailable()
+        .firstOrNull { it.biType == BiType.DATE }
         ?.let { it as DateBuilderItem }
         ?.apply { modifier.update(date) }
         ?.also { builderItemsLogic.addNew(it) }
@@ -427,7 +439,9 @@ class BuildReminderViewModel(
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.TIME }
     Logger.i(TAG, "Add Time builder item")
     if (itemIndex == -1) {
-      builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.TIME }
+      builderItemsLogic
+        .getAvailable()
+        .firstOrNull { it.biType == BiType.TIME }
         ?.let { it as TimeBuilderItem }
         ?.apply { modifier.update(time) }
         ?.also { builderItemsLogic.addNew(it) }
@@ -453,7 +467,9 @@ class BuildReminderViewModel(
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.SUB_TASKS }
     Logger.i(TAG, "Add Sub tasks builder item")
     if (itemIndex == -1) {
-      builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.SUB_TASKS }
+      builderItemsLogic
+        .getAvailable()
+        .firstOrNull { it.biType == BiType.SUB_TASKS }
         ?.let { it as SubTasksBuilderItem }
         ?.also { builderItemsLogic.addNew(it) }
     } else {
@@ -469,7 +485,9 @@ class BuildReminderViewModel(
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.SUMMARY }
     Logger.i(TAG, "Add Empty Summary builder item")
     if (itemIndex == -1) {
-      builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.SUMMARY }
+      builderItemsLogic
+        .getAvailable()
+        .firstOrNull { it.biType == BiType.SUMMARY }
         ?.let { it as SummaryBuilderItem }
         ?.apply { modifier.update("") }
         ?.also { builderItemsLogic.addNew(it) }
@@ -484,7 +502,9 @@ class BuildReminderViewModel(
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.SUMMARY }
     Logger.i(TAG, "Add Summary builder item")
     if (itemIndex == -1) {
-      builderItemsLogic.getAvailable().firstOrNull { it.biType == BiType.SUMMARY }
+      builderItemsLogic
+        .getAvailable()
+        .firstOrNull { it.biType == BiType.SUMMARY }
         ?.let { it as SummaryBuilderItem }
         ?.apply { modifier.update(text) }
         ?.also { builderItemsLogic.addNew(it) }
@@ -547,16 +567,21 @@ class BuildReminderViewModel(
 
     val recurObject = preset.recurObject
 
-    val params = runCatching { iCalendarApi.parseObject(recurObject) }.getOrNull()
-      ?.getTagOrNull<RecurrenceRuleTag>(TagType.RRULE)
-      ?.params
-      ?.let { recurParamsToBiAdapter(it) }
-      ?: emptyList()
+    val params =
+      runCatching { iCalendarApi.parseObject(recurObject) }
+        .getOrNull()
+        ?.getTagOrNull<RecurrenceRuleTag>(TagType.RRULE)
+        ?.params
+        ?.let { recurParamsToBiAdapter(it) }
+        ?: emptyList()
 
     if (params.isNotEmpty()) {
-      val used = builderItemsLogic.getUsed().mapIndexed { index, builderItem ->
-        builderItem.biType to Pair(index, builderItem)
-      }.toMap()
+      val used =
+        builderItemsLogic
+          .getUsed()
+          .mapIndexed { index, builderItem ->
+            builderItem.biType to Pair(index, builderItem)
+          }.toMap()
 
       val summaryBuilderItem = used[BiType.SUMMARY]?.second
 
@@ -587,7 +612,7 @@ class BuildReminderViewModel(
     params.forEach {
       result.addAll(getTagTypeParams(runCatching { TagType.fromValue(it) }.getOrNull()))
       result.addAll(
-        getRecurParamTypeParams(runCatching { RecurParamType.fromValue(it) }.getOrNull())
+        getRecurParamTypeParams(runCatching { RecurParamType.fromValue(it) }.getOrNull()),
       )
     }
 
@@ -638,10 +663,14 @@ class BuildReminderViewModel(
 
   private fun loadPresets() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val recurPresets = recurPresetRepository.getAllByType(presetType = PresetType.RECUR)
-        .map { uiPresetListAdapter.create(it) }
-      val presets = recurPresetRepository.getAllByType(presetType = PresetType.BUILDER)
-        .map { uiPresetListAdapter.create(it) }
+      val recurPresets =
+        recurPresetRepository
+          .getAllByType(presetType = PresetType.RECUR)
+          .map { uiPresetListAdapter.create(it) }
+      val presets =
+        recurPresetRepository
+          .getAllByType(presetType = PresetType.BUILDER)
+          .map { uiPresetListAdapter.create(it) }
 
       withUIContext {
         selectorDialogDataHolder.presets = presets
@@ -651,26 +680,31 @@ class BuildReminderViewModel(
   }
 
   private suspend fun updateSelector() {
-    val usedItems = builderItemsLogic.getUsed().let {
-      uiBuilderItemsAdapter.calculateStates(it)
-    }
+    val usedItems =
+      builderItemsLogic.getUsed().let {
+        uiBuilderItemsAdapter.calculateStates(it)
+      }
 
     Logger.d(TAG, "Update selector: usedItems=${usedItems.size}")
     _builderItems.postValue(usedItems)
 
-    val errors = usedItems.asSequence().filter { it.state is UiListBuilderItemState.ErrorState }
-      .map { it.state }
-      .map { it as UiListBuilderItemState.ErrorState }
-      .map { it.errors }
-      .flatten()
-      .toSet()
+    val errors =
+      usedItems
+        .asSequence()
+        .filter { it.state is UiListBuilderItemState.ErrorState }
+        .map { it.state }
+        .map { it as UiListBuilderItemState.ErrorState }
+        .map { it.errors }
+        .flatten()
+        .toSet()
 
     Logger.d(TAG, "Update selector: errors=$errors")
 
-    val uiSelectorItems = uiSelectorItemsAdapter.calculateStates(
-      builderItemsLogic.getUsed(),
-      builderItemsLogic.getAvailable()
-    )
+    val uiSelectorItems =
+      uiSelectorItemsAdapter.calculateStates(
+        builderItemsLogic.getUsed(),
+        builderItemsLogic.getAvailable(),
+      )
 
     Logger.d(TAG, "Update selector: uiSelectorItems=${uiSelectorItems.size}")
 
@@ -683,10 +717,11 @@ class BuildReminderViewModel(
 
   private fun initBuilder() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val allTypes = BiType.entries
-        .map { biFactory.create(it) }
-        .filter { biFilter(it) }
-        .sortedWith(BiComparator())
+      val allTypes =
+        BiType.entries
+          .map { biFactory.create(it) }
+          .filter { biFilter(it) }
+          .sortedWith(BiComparator())
 
       Logger.i(TAG, "Init builder with available types: ${allTypes.size}")
 
@@ -725,8 +760,8 @@ class BuildReminderViewModel(
         _showPrediction.postValue(
           ReminderPrediction.FailedPrediction(
             icon = R.drawable.ic_fluent_error_circle,
-            message = builderErrorToTextAdapter(builderErrorFinder(reminder, builderItems))
-          )
+            message = builderErrorToTextAdapter(builderErrorFinder(reminder, builderItems)),
+          ),
         )
         _canSaveAsPreset.postValue(false)
         _canSave.postValue(false)
@@ -735,10 +770,10 @@ class BuildReminderViewModel(
     }
   }
 
-  private fun getGroupBuilderItem(): GroupBuilderItem? {
-    return builderItemsLogic.getAvailable()
+  private fun getGroupBuilderItem(): GroupBuilderItem? =
+    builderItemsLogic
+      .getAvailable()
       .firstOrNull { it.biType == BiType.GROUP } as? GroupBuilderItem
-  }
 
   private fun hasGroupBuilderItem(items: List<BuilderItem<*>>): Boolean {
     items.forEach {
@@ -751,33 +786,37 @@ class BuildReminderViewModel(
 
   private suspend fun savePreset(items: List<BuilderItem<*>>) {
     Logger.i(TAG, "Save new preset")
-    val preset = RecurPreset(
-      recurObject = "",
-      name = presetName,
-      type = PresetType.BUILDER,
-      createdAt = dateTimeManager.getCurrentDateTime(),
-      useCount = 1,
-      builderScheme = builderItemsToBuilderPresetAdapter(items),
-      description = null,
-      isDefault = false,
-      recurItemsToAdd = null,
-      syncState = SyncState.WaitingForUpload,
-      version = 1
-    )
+    val preset =
+      RecurPreset(
+        recurObject = "",
+        name = presetName,
+        type = PresetType.BUILDER,
+        createdAt = dateTimeManager.getCurrentDateTime(),
+        useCount = 1,
+        builderScheme = builderItemsToBuilderPresetAdapter(items),
+        description = null,
+        isDefault = false,
+        recurItemsToAdd = null,
+        syncState = SyncState.WaitingForUpload,
+        version = 1,
+      )
     recurPresetRepository.save(preset)
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.RecurPresets,
       id = preset.id,
-      ids = null
+      ids = null,
     )
     analyticsEventSender.send(PresetUsed(PresetAction.CREATE))
   }
 
-  private suspend fun saveAndStartReminder(reminder: Reminder, isEdit: Boolean = true) {
+  private suspend fun saveAndStartReminder(
+    reminder: Reminder,
+    isEdit: Boolean = true,
+  ) {
     Logger.i(
       TAG,
-      "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupUuId}"
+      "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupUuId}",
     )
     if (reminder.groupUuId.isEmpty()) {
       val group = reminderGroupRepository.defaultGroup()

@@ -15,7 +15,7 @@ fun Fragment.safeNavigation(
   resId: Int,
   args: Bundle? = null,
   navOptions: NavOptions? = NavigationAnimations.inDepthNavOptions(),
-  navigatorExtras: Navigator.Extras? = null
+  navigatorExtras: Navigator.Extras? = null,
 ) {
   try {
     findNavController().navigate(

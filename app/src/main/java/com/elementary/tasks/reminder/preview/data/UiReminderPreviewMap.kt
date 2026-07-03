@@ -6,7 +6,7 @@ import java.util.UUID
 
 data class UiReminderPreviewMap(
   val placesText: UiTextElement,
-  val places: List<UiReminderPlace>
+  val places: List<UiReminderPlace>,
 ) : UiReminderPreviewData() {
   override val viewType: UiReminderPreviewDataViewType = UiReminderPreviewDataViewType.MAP
   override val itemId: String = UUID.randomUUID().toString()

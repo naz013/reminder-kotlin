@@ -6,10 +6,12 @@ import android.os.Bundle
 import com.elementary.tasks.core.os.ContextSwitcher
 
 class ActivityObserver(
-  private val contextSwitcher: ContextSwitcher
+  private val contextSwitcher: ContextSwitcher,
 ) : ActivityLifecycleCallbacks {
-
-  override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+  override fun onActivityCreated(
+    activity: Activity,
+    savedInstanceState: Bundle?,
+  ) {
     contextSwitcher.switchContext(activity)
   }
 
@@ -25,7 +27,10 @@ class ActivityObserver(
   override fun onActivityStopped(activity: Activity) {
   }
 
-  override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+  override fun onActivitySaveInstanceState(
+    activity: Activity,
+    outState: Bundle,
+  ) {
   }
 
   override fun onActivityDestroyed(activity: Activity) {

@@ -8,27 +8,26 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 
 class CountdownTimeController(
-  builderItem: BuilderItem<Long>
+  builderItem: BuilderItem<Long>,
 ) : AbstractBindingValueController<Long, BuilderItemCountdownTimerBinding>(builderItem) {
-
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemCountdownTimerBinding {
-    return BuilderItemCountdownTimerBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemCountdownTimerBinding = BuilderItemCountdownTimerBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
-    binding.timerPickerView.setListener(object : TimerPickerView.TimerListener {
-      override fun onTimerChange(time: Long) {
-        if (time == 0L) {
-          updateValue(null)
-        } else {
-          updateValue(time)
+    binding.timerPickerView.setListener(
+      object : TimerPickerView.TimerListener {
+        override fun onTimerChange(time: Long) {
+          if (time == 0L) {
+            updateValue(null)
+          } else {
+            updateValue(time)
+          }
         }
-      }
-    })
+      },
+    )
   }
 
   override fun onDataChanged(data: Long?) {

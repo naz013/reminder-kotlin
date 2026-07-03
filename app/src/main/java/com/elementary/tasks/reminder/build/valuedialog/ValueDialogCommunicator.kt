@@ -4,7 +4,6 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import java.lang.ref.WeakReference
 
 object ValueDialogCommunicator : ValueDialogCallback {
-
   private var callback: WeakReference<ValueDialogCallback>? = null
 
   fun addCallback(callback: ValueDialogCallback) {
@@ -15,7 +14,10 @@ object ValueDialogCommunicator : ValueDialogCallback {
     this.callback = null
   }
 
-  override fun onValueChanged(position: Int, builderItem: BuilderItem<*>) {
+  override fun onValueChanged(
+    position: Int,
+    builderItem: BuilderItem<*>,
+  ) {
     callback?.get()?.onValueChanged(position, builderItem)
   }
 }

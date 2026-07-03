@@ -2,8 +2,8 @@ package com.elementary.tasks.core.utils.params
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.github.naz013.cloudapi.FileConfig
 import com.elementary.tasks.core.utils.io.MemoryUtil
+import com.github.naz013.cloudapi.FileConfig
 import com.google.gson.Gson
 import java.io.File
 import java.io.FileInputStream
@@ -13,53 +13,69 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 abstract class SharedPrefs(
-  protected val context: Context
+  protected val context: Context,
 ) {
-  private var prefs: SharedPreferences = context.getSharedPreferences(
-    PrefsConstants.PREFS_NAME,
-    Context.MODE_PRIVATE
-  )
+  private var prefs: SharedPreferences =
+    context.getSharedPreferences(
+      PrefsConstants.PREFS_NAME,
+      Context.MODE_PRIVATE,
+    )
 
-  fun getLongArray(stringToLoad: String): Array<Long> {
-    return try {
-      prefs.getStringSet(stringToLoad, setOf<String>())?.map {
-        try {
-          it.toLong()
-        } catch (e: Exception) {
-          0L
-        }
-      }?.toTypedArray() ?: arrayOf()
+  fun getLongArray(stringToLoad: String): Array<Long> =
+    try {
+      prefs
+        .getStringSet(stringToLoad, setOf<String>())
+        ?.map {
+          try {
+            it.toLong()
+          } catch (e: Exception) {
+            0L
+          }
+        }?.toTypedArray() ?: arrayOf()
     } catch (e: Exception) {
       arrayOf()
     }
-  }
 
-  fun putLongArray(stringToSave: String, array: Array<Long>) {
+  fun putLongArray(
+    stringToSave: String,
+    array: Array<Long>,
+  ) {
     prefs.edit().putStringSet(stringToSave, array.map { it.toString() }.toSet()).apply()
   }
 
-  fun putStringArray(stringToSave: String, array: Array<String>) {
+  fun putStringArray(
+    stringToSave: String,
+    array: Array<String>,
+  ) {
     prefs.edit().putStringSet(stringToSave, array.toSet()).apply()
   }
 
-  fun getStringArray(stringToLoad: String): Array<String> {
-    return try {
+  fun getStringArray(stringToLoad: String): Array<String> =
+    try {
       prefs.getStringSet(stringToLoad, setOf<String>())?.toTypedArray() ?: arrayOf()
     } catch (e: Exception) {
       arrayOf()
     }
-  }
 
-  fun putString(stringToSave: String, value: String) {
+  fun putString(
+    stringToSave: String,
+    value: String,
+  ) {
     prefs.edit().putString(stringToSave, value).apply()
   }
 
-  fun putInt(stringToSave: String, value: Int) {
+  fun putInt(
+    stringToSave: String,
+    value: Int,
+  ) {
     prefs.edit().putInt(stringToSave, value).apply()
   }
 
-  fun getInt(stringToLoad: String, def: Int = 0): Int {
-    return try {
+  fun getInt(
+    stringToLoad: String,
+    def: Int = 0,
+  ): Int =
+    try {
       prefs.getInt(stringToLoad, def)
     } catch (e: ClassCastException) {
       try {
@@ -68,67 +84,73 @@ abstract class SharedPrefs(
         def
       }
     }
-  }
 
-  fun putLong(stringToSave: String, value: Long) {
+  fun putLong(
+    stringToSave: String,
+    value: Long,
+  ) {
     prefs.edit().putLong(stringToSave, value).apply()
   }
 
-  fun getLong(stringToLoad: String, def: Long = 0L): Long {
-    return try {
+  fun getLong(
+    stringToLoad: String,
+    def: Long = 0L,
+  ): Long =
+    try {
       prefs.getLong(stringToLoad, def)
     } catch (e: ClassCastException) {
       java.lang.Long.parseLong(prefs.getString(stringToLoad, "$def") ?: "$def")
     }
-  }
 
-  fun putObject(key: String, obj: Any) {
+  fun putObject(
+    key: String,
+    obj: Any,
+  ) {
     putString(key, Gson().toJson(obj))
   }
 
-  fun getString(stringToLoad: String, def: String = ""): String {
-    return prefs.getString(stringToLoad, def) ?: def
-  }
+  fun getString(
+    stringToLoad: String,
+    def: String = "",
+  ): String = prefs.getString(stringToLoad, def) ?: def
 
-  fun hasKey(checkString: String): Boolean {
-    return prefs.contains(checkString)
-  }
+  fun hasKey(checkString: String): Boolean = prefs.contains(checkString)
 
   fun removeKey(checkString: String) {
     prefs.edit().remove(checkString).apply()
   }
 
-  fun putBoolean(stringToSave: String, value: Boolean) {
+  fun putBoolean(
+    stringToSave: String,
+    value: Boolean,
+  ) {
     prefs.edit().putBoolean(stringToSave, value).apply()
   }
 
-  fun getBoolean(stringToLoad: String, def: Boolean = false): Boolean {
-    return try {
+  fun getBoolean(
+    stringToLoad: String,
+    def: Boolean = false,
+  ): Boolean =
+    try {
       prefs.getBoolean(stringToLoad, def)
     } catch (e: ClassCastException) {
       java.lang.Boolean.parseBoolean(prefs.getString(stringToLoad, "false"))
     }
-  }
 
   fun saveVersionBoolean(stringToSave: String) {
     prefs.edit().putBoolean(stringToSave, true).apply()
   }
 
-  fun getVersion(stringToLoad: String): Boolean {
-    return try {
+  fun getVersion(stringToLoad: String): Boolean =
+    try {
       prefs.getBoolean(stringToLoad, false)
     } catch (e: ClassCastException) {
       java.lang.Boolean.parseBoolean(prefs.getString(stringToLoad, "false"))
     }
-  }
 
-  fun all(): Map<String, *> {
-    return prefs.all
-  }
+  fun all(): Map<String, *> = prefs.all
 
-  fun sharedPrefs(): SharedPreferences {
-    return prefs
-  }
+  fun sharedPrefs(): SharedPreferences = prefs
 
   fun savePrefsBackup() {
     val dir = MemoryUtil.prefsDir

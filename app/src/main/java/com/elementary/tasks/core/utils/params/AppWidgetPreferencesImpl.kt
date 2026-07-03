@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils.params
 import com.github.naz013.appwidgets.AppWidgetPreferences
 
 class AppWidgetPreferencesImpl(
-  private val prefs: Prefs
+  private val prefs: Prefs,
 ) : AppWidgetPreferences {
   override val isBirthdayInWidgetEnabled: Boolean
     get() = prefs.isBirthdayInWidgetEnabled

@@ -8,9 +8,8 @@ import kotlinx.coroutines.launch
 
 class ActivateAllActiveRemindersUseCase(
   private val reminderRepository: ReminderRepository,
-  private val activateReminderUseCase: ActivateReminderUseCase
+  private val activateReminderUseCase: ActivateReminderUseCase,
 ) {
-
   private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
   fun run() {

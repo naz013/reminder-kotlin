@@ -7,7 +7,7 @@ data class UiReminderPlace(
   val latitude: Double,
   val longitude: Double,
   val radius: Int,
-  val address: String
+  val address: String,
 ) {
   fun latLng(): LatLng = LatLng(latitude, longitude)
 }

@@ -29,33 +29,32 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding>() {
-
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val viewModel by viewModel<EditGoogleTaskViewModel> { parametersOf(arguments) }
 
-  override fun getTitle(): String {
-    return if (viewModel.hasId()) {
+  override fun getTitle(): String =
+    if (viewModel.hasId()) {
       getString(R.string.edit_task)
     } else {
       getString(R.string.new_task)
     }
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentGoogleTaskEditBinding {
-    return FragmentGoogleTaskEditBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentGoogleTaskEditBinding = FragmentGoogleTaskEditBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the Google Task edit screen for id: ${viewModel.id}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     initFields()
     addMenu(
@@ -88,7 +87,7 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
         menu.enableOrDisableItem(R.id.action_delete, !isInProgress)
         menu.enableOrDisableItem(R.id.action_move, !isInProgress)
         menu.enableOrDisableItem(R.id.action_add, !isInProgress)
-      }
+      },
     )
 
     initViewModel()
@@ -155,16 +154,18 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
 
   private fun selectDateAction(type: Int) {
     val builder = dialogues.getMaterialDialog(requireContext())
-    val types = if (type == 2) {
-      arrayOf(getString(R.string.no_time), getString(R.string.select_time))
-    } else {
-      arrayOf(getString(R.string.no_date), getString(R.string.select_date))
-    }
-    val adapter = ArrayAdapter(
-      requireContext(),
-      android.R.layout.simple_list_item_single_choice,
-      types
-    )
+    val types =
+      if (type == 2) {
+        arrayOf(getString(R.string.no_time), getString(R.string.select_time))
+      } else {
+        arrayOf(getString(R.string.no_date), getString(R.string.select_date))
+      }
+    val adapter =
+      ArrayAdapter(
+        requireContext(),
+        android.R.layout.simple_list_item_single_choice,
+        types,
+      )
     var selection = 0
     if (type == 1 && viewModel.isDateSelected()) {
       selection = 1
@@ -236,7 +237,8 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
         position = index
       }
     }
-    dialogues.getMaterialDialog(requireContext())
+    dialogues
+      .getMaterialDialog(requireContext())
       .setTitle(R.string.choose_list)
       .setSingleChoiceItems(names.toTypedArray(), position) { dialog, which ->
         dialog.dismiss()
@@ -245,8 +247,8 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
         } else {
           viewModel.onListSelected(list[which].listId)
         }
-      }
-      .create().show()
+      }.create()
+      .show()
   }
 
   private fun saveTask() {
@@ -261,14 +263,15 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
 
   private fun deleteDialog() {
     doIfPossible {
-      dialogues.getMaterialDialog(requireContext())
+      dialogues
+        .getMaterialDialog(requireContext())
         .setMessage(getString(R.string.delete_this_task))
         .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
           dialog.dismiss()
           deleteTask()
-        }
-        .setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-        .create().show()
+        }.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
+        .create()
+        .show()
     }
   }
 
@@ -280,7 +283,7 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
     dateTimePickerProvider.showDatePicker(
       fragmentManager = childFragmentManager,
       date = viewModel.date,
-      title = getString(R.string.select_date)
+      title = getString(R.string.select_date),
     ) { viewModel.onDateSet(it) }
   }
 
@@ -288,7 +291,7 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
     dateTimePickerProvider.showTimePicker(
       fragmentManager = childFragmentManager,
       time = viewModel.time,
-      title = getString(R.string.select_time)
+      title = getString(R.string.select_time),
     ) { viewModel.onTimeSet(it) }
   }
 
@@ -300,9 +303,7 @@ class EditGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskEditBinding
     }
   }
 
-  override fun canGoBack(): Boolean {
-    return viewModel.isInProgress.value?.not() ?: true
-  }
+  override fun canGoBack(): Boolean = viewModel.isInProgress.value?.not() ?: true
 
   companion object {
     private const val TAG = "EditGoogleTaskFragment"

@@ -15,10 +15,12 @@ class DataPostProcessorImpl(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val groupsUtil: GroupsUtil,
   private val prefs: Prefs,
-  private val activateReminderUseCase: ActivateReminderUseCase
+  private val activateReminderUseCase: ActivateReminderUseCase,
 ) : DataPostProcessor {
-
-  override suspend fun process(dataType: DataType, any: Any) {
+  override suspend fun process(
+    dataType: DataType,
+    any: Any,
+  ) {
     when (any) {
       is Reminder -> {
         postProcessReminder(any)

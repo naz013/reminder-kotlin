@@ -14,20 +14,23 @@ class MigrateExistingEventOccurrencesUseCase(
   private val reminderRepository: ReminderRepository,
   private val migrateRecurringParamsUseCase: MigrateRecurringParamsUseCase,
 ) {
-
   suspend operator fun invoke() {
     migrateRecurringParamsUseCase()
-    birthdayRepository.getAllIds()
+    birthdayRepository
+      .getAllIds()
       .also { Logger.i(TAG, "Going to migrate ${it.size} birthdays occurrences.") }
       .forEach { id ->
-      workManagerProvider.getWorkManager()
-        .enqueue(CalculateBirthdayOccurrencesWorker.prepareWork(id))
-    }
+        workManagerProvider
+          .getWorkManager()
+          .enqueue(CalculateBirthdayOccurrencesWorker.prepareWork(id))
+      }
 
-    reminderRepository.getAllIds()
+    reminderRepository
+      .getAllIds()
       .also { Logger.i(TAG, "Going to migrate ${it.size} reminders occurrences.") }
       .forEach { id ->
-        workManagerProvider.getWorkManager()
+        workManagerProvider
+          .getWorkManager()
           .enqueue(CalculateReminderOccurrencesWorker.prepareWork(id))
       }
 

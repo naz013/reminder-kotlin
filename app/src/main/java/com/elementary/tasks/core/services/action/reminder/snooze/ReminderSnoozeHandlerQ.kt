@@ -9,9 +9,8 @@ import com.github.naz013.domain.Reminder
 class ReminderSnoozeHandlerQ(
   private val notifier: Notifier,
   private val prefs: Prefs,
-  private val snoozeReminderUseCase: SnoozeReminderUseCase
+  private val snoozeReminderUseCase: SnoozeReminderUseCase,
 ) : ActionHandler<Reminder> {
-
   override suspend fun handle(data: Reminder) {
     snoozeReminderUseCase(reminder = data, timeInMinutes = prefs.snoozeTime)
     notifier.cancel(data.uniqueId)

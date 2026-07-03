@@ -13,9 +13,8 @@ class SyncGoogleTasks(
   private val uploadGoogleTask: UploadGoogleTask,
   private val downloadGoogleTasks: DownloadGoogleTasks,
   private val saveGoogleTasks: SaveGoogleTasks,
-  private val deleteGoogleTasks: DeleteGoogleTasks
+  private val deleteGoogleTasks: DeleteGoogleTasks,
 ) {
-
   suspend operator fun invoke(taskList: GoogleTaskList) {
     // Get local tasks
     val local = googleTaskRepository.getAllByList(taskList.listId)

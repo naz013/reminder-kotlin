@@ -23,7 +23,6 @@ import com.github.naz013.ui.common.view.transparent
 import com.github.naz013.ui.common.view.visible
 
 class PrefsView : RelativeLayout {
-
   private lateinit var binding: ViewPrefsBinding
 
   var isChecked: Boolean = false
@@ -67,12 +66,15 @@ class PrefsView : RelativeLayout {
   constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
     context,
     attrs,
-    defStyle
+    defStyle,
   ) {
     init(context, attrs)
   }
 
-  private fun init(context: Context, attrs: AttributeSet?) {
+  private fun init(
+    context: Context,
+    attrs: AttributeSet?,
+  ) {
     View.inflate(context, R.layout.view_prefs, this)
     descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
     binding = ViewPrefsBinding.bind(this)
@@ -80,12 +82,17 @@ class PrefsView : RelativeLayout {
     binding.progressViewPrefs.gone()
 
     if (attrs != null) {
-      val a = context.theme.obtainStyledAttributes(
-        /* set = */ attrs,
-        /* attrs = */ R.styleable.PrefsView,
-        /* defStyleAttr = */ 0,
-        /* defStyleRes = */ 0
-      )
+      val a =
+        context.theme.obtainStyledAttributes(
+          // set =
+          attrs,
+          // attrs =
+          R.styleable.PrefsView,
+          // defStyleAttr =
+          0,
+          // defStyleRes =
+          0,
+        )
       var titleText = ""
       var valueText = ""
       var divTop = false
@@ -140,7 +147,10 @@ class PrefsView : RelativeLayout {
     setVisible()
   }
 
-  fun setCustomButton(text: String?, onClickListener: OnClickListener? = null) {
+  fun setCustomButton(
+    text: String?,
+    onClickListener: OnClickListener? = null,
+  ) {
     if (viewType == NONE) {
       customButtonText = text
       if (text != null) {
@@ -208,11 +218,13 @@ class PrefsView : RelativeLayout {
 
   fun setDependentView(view: PrefsView) {
     mDependencyViews.add(view)
-    view.setOnCheckedListener(object : OnCheckedListener {
-      override fun onCheckedChange(checked: Boolean) {
-        checkDependency()
-      }
-    })
+    view.setOnCheckedListener(
+      object : OnCheckedListener {
+        override fun onCheckedChange(checked: Boolean) {
+          checkDependency()
+        }
+      },
+    )
     checkDependency()
   }
 
@@ -244,11 +256,13 @@ class PrefsView : RelativeLayout {
 
   fun setReverseDependentView(view: PrefsView) {
     mReverseDependencyViews.add(view)
-    view.setOnCheckedListener(object : OnCheckedListener {
-      override fun onCheckedChange(checked: Boolean) {
-        checkReverseDependency()
-      }
-    })
+    view.setOnCheckedListener(
+      object : OnCheckedListener {
+        override fun onCheckedChange(checked: Boolean) {
+          checkReverseDependency()
+        }
+      },
+    )
     checkReverseDependency()
   }
 
@@ -265,21 +279,22 @@ class PrefsView : RelativeLayout {
   }
 
   private fun setVisible() {
-    visibility = if (isTest) {
-      if (BuildConfig.DEBUG) {
-        View.VISIBLE
+    visibility =
+      if (isTest) {
+        if (BuildConfig.DEBUG) {
+          View.VISIBLE
+        } else {
+          View.GONE
+        }
+      } else if (isForPro) {
+        if (BuildParams.isPro) {
+          View.VISIBLE
+        } else {
+          View.GONE
+        }
       } else {
-        View.GONE
-      }
-    } else if (isForPro) {
-      if (BuildParams.isPro) {
         View.VISIBLE
-      } else {
-        View.GONE
       }
-    } else {
-      View.VISIBLE
-    }
   }
 
   private fun setView() {
@@ -329,14 +344,18 @@ class PrefsView : RelativeLayout {
     binding.prefsValue.text = text
   }
 
-  fun setViewColor(@ColorInt color: Int) {
+  fun setViewColor(
+    @ColorInt color: Int,
+  ) {
     if (color != 0) {
       // Create a circular drawable with the specified color
       binding.prefsView.setBackgroundDrawable(getCircleDrawable(color))
     }
   }
 
-  private fun getCircleDrawable(@ColorInt color: Int): Drawable {
+  private fun getCircleDrawable(
+    @ColorInt color: Int,
+  ): Drawable {
     val size = context.dp2px(24)
     val shapeDrawable = ShapeDrawable(OvalShape())
     shapeDrawable.intrinsicWidth = size
@@ -345,13 +364,17 @@ class PrefsView : RelativeLayout {
     return shapeDrawable
   }
 
-  fun setViewResource(@DrawableRes resource: Int) {
+  fun setViewResource(
+    @DrawableRes resource: Int,
+  ) {
     if (resource != 0) {
       binding.prefsView.setImageResource(resource)
     }
   }
 
-  fun setViewTintColor(@ColorInt color: Int) {
+  fun setViewTintColor(
+    @ColorInt color: Int,
+  ) {
     if (color != 0) {
       binding.prefsView.setColorFilter(color)
     }
@@ -398,16 +421,13 @@ class PrefsView : RelativeLayout {
     }
   }
 
-  private fun hasOnOff(): Boolean {
-    return mOffText != null && mOnText != null
-  }
+  private fun hasOnOff(): Boolean = mOffText != null && mOnText != null
 
   interface OnCheckedListener {
     fun onCheckedChange(checked: Boolean)
   }
 
   companion object {
-
     private const val TAG = "PrefsView"
 
     private const val CHECK = 0

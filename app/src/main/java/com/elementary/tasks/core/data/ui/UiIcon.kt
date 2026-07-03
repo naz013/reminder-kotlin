@@ -7,5 +7,5 @@ data class UiIcon(
   @DrawableRes
   val value: Int,
   @ColorInt
-  val color: Int
+  val color: Int,
 )

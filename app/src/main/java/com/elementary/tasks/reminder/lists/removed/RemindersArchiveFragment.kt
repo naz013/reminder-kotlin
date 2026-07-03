@@ -29,7 +29,6 @@ import com.github.naz013.ui.common.view.visibleGone
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RemindersArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
-
   private val viewModel by viewModel<RemindersArchiveFragmentViewModel>()
 
   private val reminderResolver by lazy {
@@ -48,33 +47,37 @@ class RemindersArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
             Bundle().apply {
               putString(IntentKeys.INTENT_ID, it)
             },
-            NavigationAnimations.inDepthNavOptions()
+            NavigationAnimations.inDepthNavOptions(),
           )
         }
-      }
+      },
     )
   }
 
-  private val remindersAdapter = RemindersAdapter(
-    isEditable = false,
-    onItemClicked = { reminderResolver.resolveItemClick(it.id, it.state.isRemoved) },
-    onMoreClicked = { view, reminder ->
-      reminderResolver.resolveItemMore(
-        view = view,
-        id = reminder.id,
-        isRemoved = reminder.state.isRemoved,
-        actions = reminder.actions
-      )
-    }
-  )
+  private val remindersAdapter =
+    RemindersAdapter(
+      isEditable = false,
+      onItemClicked = { reminderResolver.resolveItemClick(it.id, it.state.isRemoved) },
+      onMoreClicked = { view, reminder ->
+        reminderResolver.resolveItemMore(
+          view = view,
+          id = reminder.id,
+          isRemoved = reminder.state.isRemoved,
+          actions = reminder.actions,
+        )
+      },
+    )
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentTrashBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
 
@@ -115,15 +118,16 @@ class RemindersArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
         if (it) {
           viewModel.deleteAll()
         }
-      }
+      },
     )
   }
 
   private fun showFilters(filters: Filters) {
-    val dialog = ReminderFilterDialog.newInstance(
-      filters = filters,
-      title = getString(R.string.filter_reminders)
-    )
+    val dialog =
+      ReminderFilterDialog.newInstance(
+        filters = filters,
+        title = getString(R.string.filter_reminders),
+      )
     dialog.show(parentFragmentManager, "ReminderFilterDialog")
   }
 
@@ -131,11 +135,13 @@ class RemindersArchiveFragment : BaseToolbarFragment<FragmentTrashBinding>() {
     viewModel.events.nonNullObserve(viewLifecycleOwner) { showData(it) }
     viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
       when (it) {
-        Commands.DELETED -> Toast.makeText(
-          requireContext(),
-          R.string.archive_was_emptied,
-          Toast.LENGTH_SHORT
-        ).show()
+        Commands.DELETED ->
+          Toast
+            .makeText(
+              requireContext(),
+              R.string.archive_was_emptied,
+              Toast.LENGTH_SHORT,
+            ).show()
 
         else -> {
         }

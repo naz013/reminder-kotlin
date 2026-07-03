@@ -18,7 +18,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>() {
-
   protected val dateTimeManager by inject<DateTimeManager>()
 
   protected fun showActionDialog(date: LocalDate) {
@@ -27,17 +26,18 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
         context = this,
         label = dateTimeManager.formatCalendarDate(date),
         addReminderCallback = { addReminder(date) },
-        addBirthdayCallback = { addBirthday(date) }
+        addBirthdayCallback = { addBirthday(date) },
       ).show()
     }
   }
 
   protected fun addReminder(date: LocalDate) {
     if (isAdded) {
-      val deepLinkData = ReminderDatetimeTypeDeepLinkData(
-        type = Reminder.BY_DATE,
-        dateTime = LocalDateTime.of(date, LocalTime.now())
-      )
+      val deepLinkData =
+        ReminderDatetimeTypeDeepLinkData(
+          type = Reminder.BY_DATE,
+          dateTime = LocalDateTime.of(date, LocalTime.now()),
+        )
       navigate {
         navigate(
           R.id.buildReminderFragment,
@@ -45,7 +45,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
             putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
             putParcelable(deepLinkData.intentKey, deepLinkData)
           },
-          NavigationAnimations.inDepthNavOptions()
+          NavigationAnimations.inDepthNavOptions(),
         )
       }
     }
@@ -61,7 +61,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
             putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
             putParcelable(deepLinkData.intentKey, deepLinkData)
           },
-          NavigationAnimations.inDepthNavOptions()
+          NavigationAnimations.inDepthNavOptions(),
         )
       }
     }

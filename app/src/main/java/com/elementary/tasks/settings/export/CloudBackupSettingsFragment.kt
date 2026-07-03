@@ -19,7 +19,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportBinding>() {
-
   private val viewModel by viewModel<CloudBackupSettingsViewModel>()
   private val observableWorkerManager by inject<ObservableWorkerManager>()
 
@@ -43,10 +42,13 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsExportBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     onSyncEnd.invoke()
 
@@ -105,7 +107,7 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
     observableWorkerManager.observeWork(
       viewLifecycleOwner,
       ObservableSyncWorker.getWorkTag(),
-      ObservableSyncWorker.KEY_IS_IN_PROGRESS
+      ObservableSyncWorker.KEY_IS_IN_PROGRESS,
     )
   }
 
@@ -123,7 +125,7 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
     observableWorkerManager.observeWork(
       viewLifecycleOwner,
       ObservableBackupWorker.getWorkTag(),
-      ObservableBackupWorker.KEY_IS_IN_PROGRESS
+      ObservableBackupWorker.KEY_IS_IN_PROGRESS,
     )
   }
 
@@ -149,7 +151,7 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
     observableWorkerManager.observeWork(
       viewLifecycleOwner,
       ObservableEraseDataWorker.getWorkTag(),
-      ObservableEraseDataWorker.KEY_IS_IN_PROGRESS
+      ObservableEraseDataWorker.KEY_IS_IN_PROGRESS,
     )
   }
 
@@ -169,24 +171,29 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
   }
 
   private fun positionFromState(state: Int): Int {
-    val position = when (state) {
-      1 -> 1
-      6 -> 2
-      12 -> 3
-      24 -> 4
-      48 -> 5
-      else -> 0
-    }
+    val position =
+      when (state) {
+        1 -> 1
+        6 -> 2
+        12 -> 3
+        24 -> 4
+        48 -> 5
+        else -> 0
+      }
     return position
   }
 
-  private fun showIntervalDialog(title: String, current: Int, onSelect: (Int) -> Unit) {
+  private fun showIntervalDialog(
+    title: String,
+    current: Int,
+    onSelect: (Int) -> Unit,
+  ) {
     val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(title)
     var position = positionFromState(current)
     builder.setSingleChoiceItems(
       syncStates(),
-      position
+      position,
     ) { _, item -> position = item }
     builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
       dialog.dismiss()
@@ -198,8 +205,8 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
     builder.create().show()
   }
 
-  private fun stateFromPosition(position: Int): Int {
-    return when (position) {
+  private fun stateFromPosition(position: Int): Int =
+    when (position) {
       1 -> 1
       2 -> 6
       3 -> 12
@@ -207,7 +214,6 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
       5 -> 48
       else -> 0
     }
-  }
 
   override fun getTitle(): String = getString(R.string.cloud_backup)
 
@@ -219,20 +225,20 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
       prefix + getString(R.string.six_hours),
       prefix + getString(R.string.twelve_hours),
       prefix + getString(R.string.one_day),
-      prefix + getString(R.string.two_days)
+      prefix + getString(R.string.two_days),
     )
   }
 
   private fun showNetworkTypeDialog(
     currentType: Int,
-    onSelect: (Int) -> Unit
+    onSelect: (Int) -> Unit,
   ) {
     val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(getString(R.string.select_network_type))
     var selectedItem = currentType
     builder.setSingleChoiceItems(
       getNetworkTypeNames(),
-      currentType
+      currentType,
     ) { _, item -> selectedItem = item }
     builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
       dialog.dismiss()
@@ -248,15 +254,15 @@ class CloudBackupSettingsFragment : BaseSettingsFragment<FragmentSettingsExportB
     binding.connectionPrefs.setDetailText(getNetworkTypeName(prefs.workerNetworkType.ordinal))
   }
 
-  private fun getNetworkTypeName(position: Int): String {
-    return getNetworkTypeNames().getOrElse(position) { getString(R.string.network_type_any_network) }
-  }
+  private fun getNetworkTypeName(position: Int): String =
+    getNetworkTypeNames().getOrElse(position) {
+      getString(R.string.network_type_any_network)
+    }
 
-  private fun getNetworkTypeNames(): Array<String> {
-    return arrayOf(
+  private fun getNetworkTypeNames(): Array<String> =
+    arrayOf(
       getString(R.string.network_type_any_network),
       getString(R.string.network_type_wifi_only),
-      getString(R.string.network_type_cellular)
+      getString(R.string.network_type_cellular),
     )
-  }
 }

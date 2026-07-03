@@ -89,7 +89,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ReminderActionScreen(
   viewModel: ReminderActionActivityViewModel = koinViewModel(),
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   val snackbarHostState = remember { SnackbarHostState() }
   val state by viewModel.state.observeAsState()
@@ -108,13 +108,14 @@ fun ReminderActionScreen(
   val screenConfiguration = deviceScreenConfiguration()
 
   Scaffold(
-    snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
   ) { paddingValues ->
     Surface(
-      modifier = modifier
-        .fillMaxSize()
-        .padding(paddingValues),
-      color = MaterialTheme.colorScheme.background
+      modifier =
+        modifier
+          .fillMaxSize()
+          .padding(paddingValues),
+      color = MaterialTheme.colorScheme.background,
     ) {
       // Early return if state is not available yet
       val screenState = state ?: return@Surface
@@ -133,7 +134,7 @@ fun ReminderActionScreen(
             },
             onActionClick = { action ->
               viewModel.onActionClick(action)
-            }
+            },
           )
         }
         else -> {
@@ -146,7 +147,7 @@ fun ReminderActionScreen(
             },
             onActionClick = { action ->
               viewModel.onActionClick(action)
-            }
+            },
           )
         }
       }
@@ -157,7 +158,7 @@ fun ReminderActionScreen(
       AppModalBottomSheet(
         onDismissRequest = { showSnoozeBottomSheet = false },
         sheetState = snoozeSheetState,
-        dragHandle = null
+        dragHandle = null,
       ) {
         SnoozeDialogContent(
           onDismiss = {
@@ -172,7 +173,7 @@ fun ReminderActionScreen(
               snoozeSheetState.hide()
               showSnoozeBottomSheet = false
             }
-          }
+          },
         )
       }
     }
@@ -193,19 +194,20 @@ fun ReminderActionScreen(
 private fun ReminderActionScreenPortrait(
   screenState: ReminderActionScreenState,
   onTodoItemClick: (String) -> Unit,
-  onActionClick: (ReminderAction) -> Unit
+  onActionClick: (ReminderAction) -> Unit,
 ) {
   Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .verticalScroll(rememberScrollState())
-      .padding(16.dp),
-    verticalArrangement = Arrangement.SpaceBetween
+    modifier =
+      Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+        .padding(16.dp),
+    verticalArrangement = Arrangement.SpaceBetween,
   ) {
     // Main content
     Column(
       modifier = Modifier.weight(1f),
-      verticalArrangement = Arrangement.spacedBy(16.dp)
+      verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
       // Header section
       ReminderHeader(header = screenState.header)
@@ -214,7 +216,7 @@ private fun ReminderActionScreenPortrait(
       screenState.todoList?.let { todoList ->
         TodoListSection(
           todoList = todoList,
-          onItemClick = onTodoItemClick
+          onItemClick = onTodoItemClick,
         )
       }
     }
@@ -225,7 +227,7 @@ private fun ReminderActionScreenPortrait(
     ActionsSection(
       mainAction = screenState.mainAction,
       secondaryActions = screenState.secondaryActions,
-      onActionClick = onActionClick
+      onActionClick = onActionClick,
     )
   }
 }
@@ -244,21 +246,23 @@ private fun ReminderActionScreenPortrait(
 private fun ReminderActionScreenLandscape(
   screenState: ReminderActionScreenState,
   onTodoItemClick: (String) -> Unit,
-  onActionClick: (ReminderAction) -> Unit
+  onActionClick: (ReminderAction) -> Unit,
 ) {
   Row(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(16.dp),
-    horizontalArrangement = Arrangement.spacedBy(16.dp)
+    modifier =
+      Modifier
+        .fillMaxSize()
+        .padding(16.dp),
+    horizontalArrangement = Arrangement.spacedBy(16.dp),
   ) {
     // Left column: Content (header + todo list)
     Column(
-      modifier = Modifier
-        .weight(1f)
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState()),
-      verticalArrangement = Arrangement.spacedBy(16.dp)
+      modifier =
+        Modifier
+          .weight(1f)
+          .fillMaxSize()
+          .verticalScroll(rememberScrollState()),
+      verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
       // Header section
       ReminderHeader(header = screenState.header)
@@ -267,22 +271,23 @@ private fun ReminderActionScreenLandscape(
       screenState.todoList?.let { todoList ->
         TodoListSection(
           todoList = todoList,
-          onItemClick = onTodoItemClick
+          onItemClick = onTodoItemClick,
         )
       }
     }
 
     // Right column: Actions
     Column(
-      modifier = Modifier
-        .width(280.dp)
-        .fillMaxSize(),
-      verticalArrangement = Arrangement.Bottom
+      modifier =
+        Modifier
+          .width(280.dp)
+          .fillMaxSize(),
+      verticalArrangement = Arrangement.Bottom,
     ) {
       ActionsSection(
         mainAction = screenState.mainAction,
         secondaryActions = screenState.secondaryActions,
-        onActionClick = onActionClick
+        onActionClick = onActionClick,
       )
     }
   }
@@ -291,15 +296,15 @@ private fun ReminderActionScreenLandscape(
 @Composable
 private fun SnoozeDialogContent(
   onDismiss: () -> Unit,
-  onSnooze: (Int) -> Unit
+  onSnooze: (Int) -> Unit,
 ) {
   Column(
-    modifier = Modifier.padding(16.dp)
+    modifier = Modifier.padding(16.dp),
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically
+      verticalAlignment = Alignment.CenterVertically,
     ) {
       PrimaryIconButton(
         icon = AppIcons.Fluent.Dismiss,
@@ -307,7 +312,7 @@ private fun SnoozeDialogContent(
         onClick = onDismiss,
         color = MaterialTheme.colorScheme.errorContainer,
         iconColor = MaterialTheme.colorScheme.onErrorContainer,
-        enabled = true
+        enabled = true,
       )
       Spacer(modifier = Modifier.width(8.dp))
       Text(
@@ -323,60 +328,60 @@ private fun SnoozeDialogContent(
         icon = AppIcons.Fluent.Checkmark,
         contentDescription = stringResource(R.string.action_snooze),
         onClick = {
-
         },
         enabled = false,
         color = Color.Transparent,
         iconColor = Color.Transparent,
         disabledColor = Color.Transparent,
-        disabledIconColor = Color.Transparent
+        disabledIconColor = Color.Transparent,
       )
     }
 
     HorizontalDivider(
       modifier = Modifier.padding(vertical = 8.dp),
-      color = MaterialTheme.colorScheme.outlineVariant
+      color = MaterialTheme.colorScheme.outlineVariant,
     )
 
     BottomSheetList(
-      items = listOf(
-        BottomSheetItem(
-          id = 5,
-          title = stringResource(R.string.x_minutes, "5")
+      items =
+        listOf(
+          BottomSheetItem(
+            id = 5,
+            title = stringResource(R.string.x_minutes, "5"),
+          ),
+          BottomSheetItem(
+            id = 10,
+            title = stringResource(R.string.x_minutes, "10"),
+          ),
+          BottomSheetItem(
+            id = 15,
+            title = stringResource(R.string.x_minutes, "15"),
+          ),
+          BottomSheetItem(
+            id = 30,
+            title = stringResource(R.string.x_minutes, "30"),
+          ),
+          BottomSheetItem(
+            id = 60,
+            title = stringResource(R.string.x_hours, "1"),
+          ),
+          BottomSheetItem(
+            id = 120,
+            title = stringResource(R.string.x_hours, "2"),
+          ),
+          BottomSheetItem(
+            id = 180,
+            title = stringResource(R.string.x_hours, "3"),
+          ),
+          BottomSheetItem(
+            id = 1440,
+            title = stringResource(R.string.x_days, "1"),
+          ),
         ),
-        BottomSheetItem(
-          id = 10,
-          title = stringResource(R.string.x_minutes, "10")
-        ),
-        BottomSheetItem(
-          id = 15,
-          title = stringResource(R.string.x_minutes, "15")
-        ),
-        BottomSheetItem(
-          id = 30,
-          title = stringResource(R.string.x_minutes, "30")
-        ),
-        BottomSheetItem(
-          id = 60,
-          title = stringResource(R.string.x_hours, "1")
-        ),
-        BottomSheetItem(
-          id = 120,
-          title = stringResource(R.string.x_hours, "2")
-        ),
-        BottomSheetItem(
-          id = 180,
-          title = stringResource(R.string.x_hours, "3")
-        ),
-        BottomSheetItem(
-          id = 1440,
-          title = stringResource(R.string.x_days, "1")
-        )
-      ),
       onItemClick = { minutes ->
         onSnooze(minutes)
       },
-      modifier = Modifier.padding(bottom = 16.dp)
+      modifier = Modifier.padding(bottom = 16.dp),
     )
   }
 }
@@ -391,15 +396,17 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
   Card(
     modifier = Modifier.fillMaxWidth(),
     shape = RoundedCornerShape(12.dp),
-    colors = CardDefaults.cardColors(
-      containerColor = MaterialTheme.colorScheme.surfaceVariant
-    ),
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    colors =
+      CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+      ),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
   ) {
     Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(16.dp),
     ) {
       when (header) {
         is ReminderActionScreenHeader.SimpleWithSummary -> {
@@ -412,7 +419,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             contactName = header.contactName,
             contactInfo = header.phoneNumber,
             contactPhoto = header.contactPhoto,
-            icon = R.drawable.ic_fluent_phone
+            icon = R.drawable.ic_fluent_phone,
           )
         }
 
@@ -422,7 +429,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             contactName = header.contactName,
             contactInfo = header.phoneNumber,
             contactPhoto = header.contactPhoto,
-            icon = R.drawable.ic_fluent_send
+            icon = R.drawable.ic_fluent_send,
           )
         }
 
@@ -432,7 +439,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             emailAddress = header.emailAddress,
             contactName = header.contactName,
             subject = header.subject,
-            contactPhoto = header.contactPhoto
+            contactPhoto = header.contactPhoto,
           )
         }
 
@@ -440,14 +447,14 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
           AppHeaderContent(
             text = header.text,
             appName = header.appName,
-            appIcon = header.appIcon?.toBitmap()
+            appIcon = header.appIcon?.toBitmap(),
           )
         }
 
         is ReminderActionScreenHeader.OpenLink -> {
           LinkHeaderContent(
             text = header.text,
-            url = header.url
+            url = header.url,
           )
         }
       }
@@ -466,7 +473,7 @@ private fun SimpleHeaderContent(text: String) {
     text = text,
     style = MaterialTheme.typography.headlineSmall,
     fontWeight = FontWeight.Bold,
-    color = MaterialTheme.colorScheme.onSurfaceVariant
+    color = MaterialTheme.colorScheme.onSurfaceVariant,
   )
 }
 
@@ -485,36 +492,38 @@ private fun ContactHeaderContent(
   contactName: String?,
   contactInfo: String,
   contactPhoto: Bitmap?,
-  icon: Int
+  icon: Int,
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(12.dp),
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     // Contact photo or icon
     if (contactPhoto != null) {
       Image(
         bitmap = contactPhoto.asImageBitmap(),
         contentDescription = contactName ?: contactInfo,
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape),
-        contentScale = ContentScale.Crop
+        modifier =
+          Modifier
+            .size(56.dp)
+            .clip(CircleShape),
+        contentScale = ContentScale.Crop,
       )
     } else {
       Box(
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.primaryContainer),
-        contentAlignment = Alignment.Center
+        modifier =
+          Modifier
+            .size(56.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center,
       ) {
         Icon(
           painter = painterResource(id = icon),
           contentDescription = null,
           modifier = Modifier.size(28.dp),
-          tint = MaterialTheme.colorScheme.onPrimaryContainer
+          tint = MaterialTheme.colorScheme.onPrimaryContainer,
         )
       }
     }
@@ -527,7 +536,7 @@ private fun ContactHeaderContent(
         fontWeight = FontWeight.Medium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 2,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
       )
 
       if (contactName != null) {
@@ -535,14 +544,14 @@ private fun ContactHeaderContent(
           text = contactName,
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
       }
 
       Text(
         text = contactInfo,
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
       )
     }
   }
@@ -563,36 +572,38 @@ private fun EmailHeaderContent(
   emailAddress: String,
   contactName: String?,
   subject: String?,
-  contactPhoto: Bitmap?
+  contactPhoto: Bitmap?,
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(12.dp),
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     // Contact photo or email icon
     if (contactPhoto != null) {
       Image(
         bitmap = contactPhoto.asImageBitmap(),
         contentDescription = contactName ?: emailAddress,
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape),
-        contentScale = ContentScale.Crop
+        modifier =
+          Modifier
+            .size(56.dp)
+            .clip(CircleShape),
+        contentScale = ContentScale.Crop,
       )
     } else {
       Box(
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.tertiaryContainer),
-        contentAlignment = Alignment.Center
+        modifier =
+          Modifier
+            .size(56.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.tertiaryContainer),
+        contentAlignment = Alignment.Center,
       ) {
         Icon(
           painter = painterResource(id = R.drawable.ic_fluent_send),
           contentDescription = null,
           modifier = Modifier.size(28.dp),
-          tint = MaterialTheme.colorScheme.onTertiaryContainer
+          tint = MaterialTheme.colorScheme.onTertiaryContainer,
         )
       }
     }
@@ -605,7 +616,7 @@ private fun EmailHeaderContent(
         fontWeight = FontWeight.Medium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 2,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
       )
 
       if (contactName != null) {
@@ -613,14 +624,14 @@ private fun EmailHeaderContent(
           text = contactName,
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
       }
 
       Text(
         text = emailAddress,
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
       )
 
       subject?.let {
@@ -628,7 +639,7 @@ private fun EmailHeaderContent(
           text = it,
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-          fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+          fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
         )
       }
     }
@@ -646,34 +657,35 @@ private fun EmailHeaderContent(
 private fun AppHeaderContent(
   text: String,
   appName: String,
-  appIcon: Bitmap?
+  appIcon: Bitmap?,
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(12.dp),
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     // App icon
     Box(
-      modifier = Modifier
-        .size(56.dp)
-        .clip(RoundedCornerShape(12.dp))
-        .background(MaterialTheme.colorScheme.secondaryContainer),
-      contentAlignment = Alignment.Center
+      modifier =
+        Modifier
+          .size(56.dp)
+          .clip(RoundedCornerShape(12.dp))
+          .background(MaterialTheme.colorScheme.secondaryContainer),
+      contentAlignment = Alignment.Center,
     ) {
       if (appIcon != null) {
         Image(
           bitmap = appIcon.asImageBitmap(),
           contentDescription = appName,
           modifier = Modifier.size(32.dp),
-          contentScale = ContentScale.Fit
+          contentScale = ContentScale.Fit,
         )
       } else {
         Icon(
           painter = painterResource(id = R.drawable.ic_fluent_apps),
           contentDescription = appName,
           modifier = Modifier.size(32.dp),
-          tint = MaterialTheme.colorScheme.onSecondaryContainer
+          tint = MaterialTheme.colorScheme.onSecondaryContainer,
         )
       }
     }
@@ -686,14 +698,14 @@ private fun AppHeaderContent(
         fontWeight = FontWeight.Medium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 2,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
       )
 
       Text(
         text = appName,
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
       )
     }
   }
@@ -708,26 +720,27 @@ private fun AppHeaderContent(
 @Composable
 private fun LinkHeaderContent(
   text: String,
-  url: String
+  url: String,
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(12.dp),
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     // Link icon
     Box(
-      modifier = Modifier
-        .size(56.dp)
-        .clip(CircleShape)
-        .background(MaterialTheme.colorScheme.secondaryContainer),
-      contentAlignment = Alignment.Center
+      modifier =
+        Modifier
+          .size(56.dp)
+          .clip(CircleShape)
+          .background(MaterialTheme.colorScheme.secondaryContainer),
+      contentAlignment = Alignment.Center,
     ) {
       Icon(
         painter = painterResource(id = R.drawable.ic_fluent_globe),
         contentDescription = null,
         modifier = Modifier.size(28.dp),
-        tint = MaterialTheme.colorScheme.onSecondaryContainer
+        tint = MaterialTheme.colorScheme.onSecondaryContainer,
       )
     }
 
@@ -739,7 +752,7 @@ private fun LinkHeaderContent(
         fontWeight = FontWeight.Medium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 2,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
       )
 
       Text(
@@ -747,7 +760,7 @@ private fun LinkHeaderContent(
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.primary,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
       )
     }
   }
@@ -764,28 +777,31 @@ private fun LinkHeaderContent(
 @Composable
 private fun TodoListSection(
   todoList: ReminderActionScreenTodoList,
-  onItemClick: ((String) -> Unit)?
+  onItemClick: ((String) -> Unit)?,
 ) {
   Card(
-    modifier = Modifier
-      .fillMaxWidth(),
+    modifier =
+      Modifier
+        .fillMaxWidth(),
     shape = RoundedCornerShape(12.dp),
-    colors = CardDefaults.cardColors(
-      containerColor = MaterialTheme.colorScheme.surface
-    ),
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    colors =
+      CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+      ),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
   ) {
     // Removed internal verticalScroll to avoid nested scroll causing infinite height constraints.
     Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(12.dp),
-      verticalArrangement = Arrangement.spacedBy(4.dp)
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(12.dp),
+      verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
       todoList.items.forEach { item ->
         TodoItemRow(
           item = item,
-          onItemClick = onItemClick
+          onItemClick = onItemClick,
         )
       }
     }
@@ -801,32 +817,34 @@ private fun TodoListSection(
 @Composable
 private fun TodoItemRow(
   item: ReminderActionScreenTodoItem,
-  onItemClick: ((String) -> Unit)?
+  onItemClick: ((String) -> Unit)?,
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(8.dp),
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     Checkbox(
       checked = item.isCompleted,
       onCheckedChange = { onItemClick?.invoke(item.id) },
-      enabled = onItemClick != null
+      enabled = onItemClick != null,
     )
 
     Text(
       text = item.text,
       style = MaterialTheme.typography.bodyMedium,
-      color = if (item.isCompleted) {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-      } else {
-        MaterialTheme.colorScheme.onSurface
-      },
-      textDecoration = if (item.isCompleted) {
-        androidx.compose.ui.text.style.TextDecoration.LineThrough
-      } else {
-        null
-      }
+      color =
+        if (item.isCompleted) {
+          MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        } else {
+          MaterialTheme.colorScheme.onSurface
+        },
+      textDecoration =
+        if (item.isCompleted) {
+          androidx.compose.ui.text.style.TextDecoration.LineThrough
+        } else {
+          null
+        },
     )
   }
 }
@@ -842,29 +860,31 @@ private fun TodoItemRow(
 private fun ActionsSection(
   mainAction: ReminderActionScreenActionItem,
   secondaryActions: List<ReminderActionScreenActionItem>,
-  onActionClick: (ReminderAction) -> Unit
+  onActionClick: (ReminderAction) -> Unit,
 ) {
   if (secondaryActions.isEmpty()) {
     Button(
       onClick = { onActionClick(mainAction.action) },
-      modifier = Modifier
-        .fillMaxWidth()
-        .height(56.dp),
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .height(56.dp),
       shape = ButtonDefaults.shape,
-      colors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.primary
-      )
+      colors =
+        ButtonDefaults.buttonColors(
+          containerColor = MaterialTheme.colorScheme.primary,
+        ),
     ) {
       Icon(
         painter = painterResource(id = mainAction.iconRes),
         contentDescription = null,
-        modifier = Modifier.size(24.dp)
+        modifier = Modifier.size(24.dp),
       )
       Spacer(modifier = Modifier.width(8.dp))
       Text(
         text = mainAction.text,
         style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold
+        fontWeight = FontWeight.SemiBold,
       )
     }
   } else {
@@ -878,42 +898,44 @@ private fun ActionsSection(
         leftContent = {
           Icon(
             painter = painterResource(id = mainAction.iconRes),
-            contentDescription = mainAction.text
+            contentDescription = mainAction.text,
           )
           Text(
             text = mainAction.text,
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.padding(start = 8.dp),
           )
         },
         rightContent = {
           Box {
             Icon(
               painter = painterResource(id = R.drawable.ic_fluent_more_hor),
-              contentDescription = stringResource(com.elementary.tasks.R.string.more_options)
+              contentDescription = stringResource(com.elementary.tasks.R.string.more_options),
             )
             PopupMenu(
               expanded = expanded,
               onDismissRequest = { expanded = false },
-              items = secondaryActions.mapIndexed { index, item ->
-                PopupMenuItem(
-                  id = index,
-                  title = item.text,
-                  iconRes = item.iconRes
-                )
-              },
+              items =
+                secondaryActions.mapIndexed { index, item ->
+                  PopupMenuItem(
+                    id = index,
+                    title = item.text,
+                    iconRes = item.iconRes,
+                  )
+                },
               onItemClick = { itemId ->
                 val actionItem = secondaryActions.getOrNull(itemId)
                 actionItem?.let {
                   onActionClick(it.action)
                 }
-              }
+              },
             )
           }
         },
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(56.dp),
-        cornerRadius = 28.dp
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        cornerRadius = 28.dp,
       )
     }
   }
@@ -931,32 +953,34 @@ private fun ActionsSectionPreview() {
   AppTheme {
     Surface(
       modifier = Modifier.padding(16.dp),
-      color = MaterialTheme.colorScheme.background
+      color = MaterialTheme.colorScheme.background,
     ) {
       ActionsSection(
-        mainAction = ReminderActionScreenActionItem(
-          action = ReminderAction.Complete,
-          text = "Mark as Complete",
-          iconRes = R.drawable.ic_fluent_checkmark
-        ),
-        secondaryActions = listOf(
+        mainAction =
           ReminderActionScreenActionItem(
-            action = ReminderAction.Snooze,
-            text = "Snooze",
-            iconRes = R.drawable.ic_fluent_alert_snooze
+            action = ReminderAction.Complete,
+            text = "Mark as Complete",
+            iconRes = R.drawable.ic_fluent_checkmark,
           ),
-          ReminderActionScreenActionItem(
-            action = ReminderAction.Edit,
-            text = "Edit",
-            iconRes = R.drawable.ic_fluent_edit
+        secondaryActions =
+          listOf(
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Snooze,
+              text = "Snooze",
+              iconRes = R.drawable.ic_fluent_alert_snooze,
+            ),
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Edit,
+              text = "Edit",
+              iconRes = R.drawable.ic_fluent_edit,
+            ),
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Dismiss,
+              text = "Dismiss",
+              iconRes = R.drawable.ic_fluent_dismiss,
+            ),
           ),
-          ReminderActionScreenActionItem(
-            action = ReminderAction.Dismiss,
-            text = "Dismiss",
-            iconRes = R.drawable.ic_fluent_dismiss
-          )
-        ),
-        onActionClick = { }
+        onActionClick = { },
       )
     }
   }
@@ -973,16 +997,17 @@ private fun ActionsSectionWithoutSecondaryPreview() {
   AppTheme {
     Surface(
       modifier = Modifier.padding(16.dp),
-      color = MaterialTheme.colorScheme.background
+      color = MaterialTheme.colorScheme.background,
     ) {
       ActionsSection(
-        mainAction = ReminderActionScreenActionItem(
-          action = ReminderAction.MakeCall,
-          text = "Make Call",
-          iconRes = R.drawable.ic_fluent_phone
-        ),
+        mainAction =
+          ReminderActionScreenActionItem(
+            action = ReminderAction.MakeCall,
+            text = "Make Call",
+            iconRes = R.drawable.ic_fluent_phone,
+          ),
         secondaryActions = emptyList(),
-        onActionClick = { }
+        onActionClick = { },
       )
     }
   }
@@ -999,27 +1024,29 @@ private fun ActionsSectionTwoSecondaryPreview() {
   AppTheme {
     Surface(
       modifier = Modifier.padding(16.dp),
-      color = MaterialTheme.colorScheme.background
+      color = MaterialTheme.colorScheme.background,
     ) {
       ActionsSection(
-        mainAction = ReminderActionScreenActionItem(
-          action = ReminderAction.SendEmail,
-          text = "Send Email",
-          iconRes = R.drawable.ic_fluent_send
-        ),
-        secondaryActions = listOf(
+        mainAction =
           ReminderActionScreenActionItem(
-            action = ReminderAction.Edit,
-            text = "Edit",
-            iconRes = R.drawable.ic_fluent_edit
+            action = ReminderAction.SendEmail,
+            text = "Send Email",
+            iconRes = R.drawable.ic_fluent_send,
           ),
-          ReminderActionScreenActionItem(
-            action = ReminderAction.Dismiss,
-            text = "Cancel",
-            iconRes = R.drawable.ic_fluent_dismiss
-          )
-        ),
-        onActionClick = { }
+        secondaryActions =
+          listOf(
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Edit,
+              text = "Edit",
+              iconRes = R.drawable.ic_fluent_edit,
+            ),
+            ReminderActionScreenActionItem(
+              action = ReminderAction.Dismiss,
+              text = "Cancel",
+              iconRes = R.drawable.ic_fluent_dismiss,
+            ),
+          ),
+        onActionClick = { },
       )
     }
   }
@@ -1036,11 +1063,11 @@ private fun ActionsSectionTwoSecondaryPreview() {
 private fun SnoozeDialogContentPreview() {
   AppTheme {
     Surface(
-      color = MaterialTheme.colorScheme.background
+      color = MaterialTheme.colorScheme.background,
     ) {
       SnoozeDialogContent(
         onDismiss = { },
-        onSnooze = { }
+        onSnooze = { },
       )
     }
   }
@@ -1057,48 +1084,54 @@ private fun SnoozeDialogContentPreview() {
 private fun ReminderActionScreenPortraitPreview() {
   AppTheme {
     Surface(
-      color = MaterialTheme.colorScheme.background
+      color = MaterialTheme.colorScheme.background,
     ) {
       ReminderActionScreenPortrait(
-        screenState = ReminderActionScreenState(
-          id = "preview-1",
-          header = ReminderActionScreenHeader.SimpleWithSummary(
-            text = "Meeting with team at 3 PM"
-          ),
-          todoList = ReminderActionScreenTodoList(
-            items = listOf(
-              ReminderActionScreenTodoItem(
-                id = "1",
-                text = "Prepare presentation",
-                isCompleted = false
+        screenState =
+          ReminderActionScreenState(
+            id = "preview-1",
+            header =
+              ReminderActionScreenHeader.SimpleWithSummary(
+                text = "Meeting with team at 3 PM",
               ),
-              ReminderActionScreenTodoItem(
-                id = "2",
-                text = "Review documents",
-                isCompleted = true
-              )
-            )
+            todoList =
+              ReminderActionScreenTodoList(
+                items =
+                  listOf(
+                    ReminderActionScreenTodoItem(
+                      id = "1",
+                      text = "Prepare presentation",
+                      isCompleted = false,
+                    ),
+                    ReminderActionScreenTodoItem(
+                      id = "2",
+                      text = "Review documents",
+                      isCompleted = true,
+                    ),
+                  ),
+              ),
+            mainAction =
+              ReminderActionScreenActionItem(
+                action = ReminderAction.Complete,
+                text = "Complete",
+                iconRes = R.drawable.ic_fluent_checkmark,
+              ),
+            secondaryActions =
+              listOf(
+                ReminderActionScreenActionItem(
+                  action = ReminderAction.Snooze,
+                  text = "Snooze",
+                  iconRes = R.drawable.ic_fluent_alert_snooze,
+                ),
+                ReminderActionScreenActionItem(
+                  action = ReminderAction.Edit,
+                  text = "Edit",
+                  iconRes = R.drawable.ic_fluent_edit,
+                ),
+              ),
           ),
-          mainAction = ReminderActionScreenActionItem(
-            action = ReminderAction.Complete,
-            text = "Complete",
-            iconRes = R.drawable.ic_fluent_checkmark
-          ),
-          secondaryActions = listOf(
-            ReminderActionScreenActionItem(
-              action = ReminderAction.Snooze,
-              text = "Snooze",
-              iconRes = R.drawable.ic_fluent_alert_snooze
-            ),
-            ReminderActionScreenActionItem(
-              action = ReminderAction.Edit,
-              text = "Edit",
-              iconRes = R.drawable.ic_fluent_edit
-            )
-          )
-        ),
         onTodoItemClick = { },
-        onActionClick = { }
+        onActionClick = { },
       )
     }
   }
@@ -1115,48 +1148,54 @@ private fun ReminderActionScreenPortraitPreview() {
 private fun ReminderActionScreenLandscapePreview() {
   AppTheme {
     Surface(
-      color = MaterialTheme.colorScheme.background
+      color = MaterialTheme.colorScheme.background,
     ) {
       ReminderActionScreenLandscape(
-        screenState = ReminderActionScreenState(
-          id = "preview-2",
-          header = ReminderActionScreenHeader.SimpleWithSummary(
-            text = "Meeting with team at 3 PM"
-          ),
-          todoList = ReminderActionScreenTodoList(
-            items = listOf(
-              ReminderActionScreenTodoItem(
-                id = "1",
-                text = "Prepare presentation",
-                isCompleted = false
+        screenState =
+          ReminderActionScreenState(
+            id = "preview-2",
+            header =
+              ReminderActionScreenHeader.SimpleWithSummary(
+                text = "Meeting with team at 3 PM",
               ),
-              ReminderActionScreenTodoItem(
-                id = "2",
-                text = "Review documents",
-                isCompleted = true
-              )
-            )
+            todoList =
+              ReminderActionScreenTodoList(
+                items =
+                  listOf(
+                    ReminderActionScreenTodoItem(
+                      id = "1",
+                      text = "Prepare presentation",
+                      isCompleted = false,
+                    ),
+                    ReminderActionScreenTodoItem(
+                      id = "2",
+                      text = "Review documents",
+                      isCompleted = true,
+                    ),
+                  ),
+              ),
+            mainAction =
+              ReminderActionScreenActionItem(
+                action = ReminderAction.Complete,
+                text = "Complete",
+                iconRes = R.drawable.ic_fluent_checkmark,
+              ),
+            secondaryActions =
+              listOf(
+                ReminderActionScreenActionItem(
+                  action = ReminderAction.Snooze,
+                  text = "Snooze",
+                  iconRes = R.drawable.ic_fluent_alert_snooze,
+                ),
+                ReminderActionScreenActionItem(
+                  action = ReminderAction.Edit,
+                  text = "Edit",
+                  iconRes = R.drawable.ic_fluent_edit,
+                ),
+              ),
           ),
-          mainAction = ReminderActionScreenActionItem(
-            action = ReminderAction.Complete,
-            text = "Complete",
-            iconRes = R.drawable.ic_fluent_checkmark
-          ),
-          secondaryActions = listOf(
-            ReminderActionScreenActionItem(
-              action = ReminderAction.Snooze,
-              text = "Snooze",
-              iconRes = R.drawable.ic_fluent_alert_snooze
-            ),
-            ReminderActionScreenActionItem(
-              action = ReminderAction.Edit,
-              text = "Edit",
-              iconRes = R.drawable.ic_fluent_edit
-            )
-          )
-        ),
         onTodoItemClick = { },
-        onActionClick = { }
+        onActionClick = { },
       )
     }
   }

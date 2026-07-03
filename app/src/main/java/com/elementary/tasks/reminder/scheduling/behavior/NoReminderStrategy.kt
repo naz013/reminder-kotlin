@@ -7,18 +7,15 @@ import org.threeten.bp.LocalDateTime
  * Strategy for simple reminders with no date/time dependencies.
  */
 data object NoReminderStrategy : ReminderBehaviorStrategy {
-
   override fun calculateNextOccurrence(
     reminder: Reminder,
-    fromDateTime: LocalDateTime
+    fromDateTime: LocalDateTime,
   ): LocalDateTime? {
     // No next occurrence for simple reminders
     return null
   }
 
-  override fun canSkip(reminder: Reminder): Boolean {
-    return false
-  }
+  override fun canSkip(reminder: Reminder): Boolean = false
 
   override fun canSnooze(reminder: Reminder): Boolean {
     // Simple date reminders can be snoozed

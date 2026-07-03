@@ -11,5 +11,5 @@ data class UiBirthdayPreview(
   val ageFormatted: String?,
   val dateOfBirth: String?,
   val nextBirthdayDate: String?,
-  val hasBirthdayToday: Boolean
+  val hasBirthdayToday: Boolean,
 )

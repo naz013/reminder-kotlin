@@ -7,6 +7,6 @@ interface ReminderOccurrenceCalculator {
   suspend fun calculateOccurrences(
     reminder: Reminder,
     fromDateTime: LocalDateTime,
-    numberOfOccurrences: Int
+    numberOfOccurrences: Int,
   ): List<LocalDateTime>
 }

@@ -10,10 +10,13 @@ class BirthdayResolver(
   private val dialogAction: () -> Dialogues,
   private val deleteAction: (birthday: UiBirthdayList) -> Unit,
   private val birthdayEditAction: (birthday: UiBirthdayList) -> Unit,
-  private val birthdayOpenAction: (birthday: UiBirthdayList) -> Unit
+  private val birthdayOpenAction: (birthday: UiBirthdayList) -> Unit,
 ) {
-
-  fun resolveAction(view: View, birthday: UiBirthdayList, listActions: ListActions) {
+  fun resolveAction(
+    view: View,
+    birthday: UiBirthdayList,
+    listActions: ListActions,
+  ) {
     when (listActions) {
       ListActions.EDIT -> editBirthday(birthday)
       ListActions.OPEN -> openBirthday(birthday)
@@ -23,7 +26,10 @@ class BirthdayResolver(
     }
   }
 
-  private fun showMore(view: View, birthday: UiBirthdayList) {
+  private fun showMore(
+    view: View,
+    birthday: UiBirthdayList,
+  ) {
     val context = view.context
     val items = arrayOf(context.getString(R.string.edit), context.getString(R.string.delete))
     Dialogues.showPopup(view, { item ->
@@ -37,11 +43,15 @@ class BirthdayResolver(
     }, *items)
   }
 
-  private fun askConfirmation(view: View, title: String, onAction: (Boolean) -> Unit) {
+  private fun askConfirmation(
+    view: View,
+    title: String,
+    onAction: (Boolean) -> Unit,
+  ) {
     dialogAction.invoke().askConfirmation(
       context = view.context,
       title = title,
-      onAction = onAction
+      onAction = onAction,
     )
   }
 

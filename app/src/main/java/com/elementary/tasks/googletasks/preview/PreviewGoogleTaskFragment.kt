@@ -25,30 +25,28 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewBinding>() {
-
   private val viewModel by viewModel<PreviewGoogleTaskViewModel> { parametersOf(idFromIntent()) }
   private val adsProvider = AdsProvider()
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 
-  override fun getTitle(): String {
-    return getString(R.string.details)
-  }
+  override fun getTitle(): String = getString(R.string.details)
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentGoogleTaskPreviewBinding {
-    return FragmentGoogleTaskPreviewBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentGoogleTaskPreviewBinding = FragmentGoogleTaskPreviewBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the Google Task preview screen for id: ${Logger.data(idFromIntent())}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.buttonComplete.setOnClickListener { viewModel.onComplete() }
 
@@ -77,7 +75,7 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
         val isInProgress = viewModel.isInProgress.value ?: false
         menu.findItem(R.id.action_delete)?.isEnabled = !isInProgress
         menu.findItem(R.id.action_edit)?.isEnabled = !isInProgress
-      }
+      },
     )
 
     initViewModel()
@@ -87,7 +85,7 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
     if (!BuildParams.isPro && AdsProvider.hasAds()) {
       adsProvider.showBanner(
         binding.adsHolder,
-        AdsProvider.GOOGLE_TASKS_PREVIEW_BANNER_ID
+        AdsProvider.GOOGLE_TASKS_PREVIEW_BANNER_ID,
       )
     }
   }
@@ -99,12 +97,16 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, idFromIntent())
         },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
 
-  private fun showTextIfNotNull(textView: TextView, value: String?, func: (Boolean) -> Unit) {
+  private fun showTextIfNotNull(
+    textView: TextView,
+    value: String?,
+    func: (Boolean) -> Unit,
+  ) {
     textView.text = value
     func(value != null)
   }
@@ -160,9 +162,7 @@ class PreviewGoogleTaskFragment : BaseToolbarFragment<FragmentGoogleTaskPreviewB
     }
   }
 
-  override fun canGoBack(): Boolean {
-    return viewModel.isInProgress.value?.not() ?: true
-  }
+  override fun canGoBack(): Boolean = viewModel.isInProgress.value?.not() ?: true
 
   companion object {
     private const val TAG = "PreviewGoogleTaskFragment"

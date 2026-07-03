@@ -12,11 +12,14 @@ import com.elementary.tasks.reminder.build.adapter.viewholder.BuilderViewHolder
 
 class BuilderAdapter(
   private val onItemClickListener: (Int, UiBuilderItem) -> Unit,
-  private val onItemRemove: (Int, UiBuilderItem) -> Unit
+  private val onItemRemove: (Int, UiBuilderItem) -> Unit,
 ) : ListAdapter<UiBuilderItem, BaseBuilderViewHolder<*, *>>(
-  UiBuilderItemDiffCallback()
-) {
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBuilderViewHolder<*, *> {
+    UiBuilderItemDiffCallback(),
+  ) {
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): BaseBuilderViewHolder<*, *> {
     val onClick: (Int) -> Unit = {
       onItemClickListener(it, getItem(it) as UiBuilderItem)
     }
@@ -31,7 +34,10 @@ class BuilderAdapter(
     }
   }
 
-  override fun onBindViewHolder(holder: BaseBuilderViewHolder<*, *>, position: Int) {
+  override fun onBindViewHolder(
+    holder: BaseBuilderViewHolder<*, *>,
+    position: Int,
+  ) {
     when (holder) {
       is BuilderViewHolder -> {
         holder.bind(getItem(position) as UiListBuilderItem)

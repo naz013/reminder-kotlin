@@ -9,7 +9,6 @@ import java.util.Locale
 import java.util.UUID
 
 object TestObjects {
-
   const val ARG_TEST = "arg_test"
   const val ARG_TEST_HAS_NUMBER = "arg_test_has_number"
 
@@ -30,7 +29,11 @@ object TestObjects {
     )
   }
 
-  private fun createBirthDate(day: Int, month: Int, year: Int): String {
+  private fun createBirthDate(
+    day: Int,
+    month: Int,
+    year: Int,
+  ): String {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = System.currentTimeMillis()
     calendar.set(Calendar.YEAR, year)

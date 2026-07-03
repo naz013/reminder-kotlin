@@ -6,9 +6,8 @@ import com.github.naz013.repository.ReminderRepository
 
 class MigrateRecurringParamsUseCase(
   private val reminderDateTimeCleaner: ReminderDateTimeCleaner,
-  private val reminderRepository: ReminderRepository
+  private val reminderRepository: ReminderRepository,
 ) {
-
   suspend operator fun invoke() {
     val allReminders = reminderRepository.getAll()
     allReminders.forEach { reminder ->

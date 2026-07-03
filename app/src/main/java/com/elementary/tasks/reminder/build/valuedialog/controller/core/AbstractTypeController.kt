@@ -7,29 +7,29 @@ import com.elementary.tasks.databinding.BuilderItemVerticalSelectableBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 
 abstract class AbstractTypeController<T>(
-  builderItem: BuilderItem<T>
+  builderItem: BuilderItem<T>,
 ) : AbstractBindingValueController<T, BuilderItemVerticalSelectableBinding>(builderItem) {
-
   protected abstract fun convertToValue(typeIndex: Int): T?
+
   protected abstract fun getIndex(t: T?): Int
+
   protected abstract fun getSelectionItems(): List<String>
 
-  override fun isDraggable(): Boolean {
-    return false
-  }
+  override fun isDraggable(): Boolean = false
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemVerticalSelectableBinding {
-    return BuilderItemVerticalSelectableBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemVerticalSelectableBinding = BuilderItemVerticalSelectableBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
     binding.selectorView.onSelectionChangedListener =
       object : VerticalWheelSelector.OnSelectionChangedListener {
-        override fun onSelectionChanged(position: Int, selectedItem: String) {
+        override fun onSelectionChanged(
+          position: Int,
+          selectedItem: String,
+        ) {
           updateValue(convertToValue(position))
         }
       }

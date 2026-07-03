@@ -24,7 +24,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class ReminderActionActivity : ComposeActivity() {
-
   private val viewModel by viewModel<ReminderActionActivityViewModel> {
     parametersOf(getId(), isTest())
   }
@@ -38,13 +37,15 @@ class ReminderActionActivity : ComposeActivity() {
 
   @Composable
   override fun ActivityContent() {
-    val viewModel: ReminderActionActivityViewModel = koinViewModel {
-      parametersOf(getId(), isTest())
-    }
+    val viewModel: ReminderActionActivityViewModel =
+      koinViewModel {
+        parametersOf(getId(), isTest())
+      }
     ReminderActionScreen(viewModel = viewModel)
   }
 
   private fun getId() = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
+
   private fun isTest() = intent.getBooleanExtra(ARG_TEST, false)
 
   private fun initViewModel() {
@@ -74,13 +75,14 @@ class ReminderActionActivity : ComposeActivity() {
         navigator.navigate(
           ActivityDestination(
             screen = DestinationScreen.ReminderCreate,
-            extras = Bundle().apply {
-              putString(IntentKeys.INTENT_ID, event.id)
-            },
+            extras =
+              Bundle().apply {
+                putString(IntentKeys.INTENT_ID, event.id)
+              },
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
             isLoggedIn = true,
-            action = Intent.ACTION_VIEW
-          )
+            action = Intent.ACTION_VIEW,
+          ),
         )
         finish()
       }
@@ -95,7 +97,7 @@ class ReminderActionActivity : ComposeActivity() {
           email = event.email,
           subject = event.subject,
           message = event.message,
-          filePath = event.filePath
+          filePath = event.filePath,
         )
         finish()
       }
@@ -188,22 +190,26 @@ class ReminderActionActivity : ComposeActivity() {
 //  }
 
   companion object {
-
     private const val TAG = "ReminderActionActivity"
     private const val ARG_TEST = "arg_test"
 
-    fun mockTest(context: Context, id: String) {
+    fun mockTest(
+      context: Context,
+      id: String,
+    ) {
       context.startActivity(ReminderActionActivity::class.java) {
         putExtra(ARG_TEST, true)
         putExtra(IntentKeys.INTENT_ID, id)
       }
     }
 
-    fun getLaunchIntent(context: Context, id: String): Intent {
-      return context.buildIntent(ReminderActionActivity::class.java) {
+    fun getLaunchIntent(
+      context: Context,
+      id: String,
+    ): Intent =
+      context.buildIntent(ReminderActionActivity::class.java) {
         putExtra(IntentKeys.INTENT_ID, id)
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
       }
-    }
   }
 }

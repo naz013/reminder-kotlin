@@ -17,7 +17,6 @@ class TimerRepeatOccurrenceCalculator(
   private val dateTimeManager: DateTimeManager,
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderOccurrenceCalculator {
-
   /**
    * Calculates occurrences for a timer-based repeating reminder.
    *
@@ -29,7 +28,7 @@ class TimerRepeatOccurrenceCalculator(
   override suspend fun calculateOccurrences(
     reminder: Reminder,
     fromDateTime: LocalDateTime,
-    numberOfOccurrences: Int
+    numberOfOccurrences: Int,
   ): List<LocalDateTime> {
     // Validate input
     if (numberOfOccurrences <= 0) {
@@ -43,11 +42,12 @@ class TimerRepeatOccurrenceCalculator(
     }
 
     // Calculate the remaining limit
-    val remainingLimit = if (reminder.isLimited()) {
-      maxOf(reminder.repeatLimit - reminder.eventCount.toInt(), 0)
-    } else {
-      Int.MAX_VALUE
-    }
+    val remainingLimit =
+      if (reminder.isLimited()) {
+        maxOf(reminder.repeatLimit - reminder.eventCount.toInt(), 0)
+      } else {
+        Int.MAX_VALUE
+      }
 
     val maxOccurrences = minOf(numberOfOccurrences, remainingLimit)
 
@@ -63,13 +63,14 @@ class TimerRepeatOccurrenceCalculator(
     var startDateTime = fromDateTime
 
     repeat(maxOccurrences) {
-      val nextOccurrence = recurrenceCalculator.getNextTimerDateTime(
-        eventDateTime = startDateTime,
-        interval = reminder.repeatInterval,
-        excludedHours = reminder.hours,
-        excludedFromTime = fromTime,
-        excludedToTime = toTime
-      )
+      val nextOccurrence =
+        recurrenceCalculator.getNextTimerDateTime(
+          eventDateTime = startDateTime,
+          interval = reminder.repeatInterval,
+          excludedHours = reminder.hours,
+          excludedFromTime = fromTime,
+          excludedToTime = toTime,
+        )
 
       occurrences.add(nextOccurrence)
       startDateTime = nextOccurrence

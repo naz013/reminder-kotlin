@@ -1,19 +1,5 @@
 package com.elementary.tasks.reminder.build.preset
 
-import com.github.naz013.icalendar.ByDayRecurParam
-import com.github.naz013.icalendar.ByHourRecurParam
-import com.github.naz013.icalendar.ByMinuteRecurParam
-import com.github.naz013.icalendar.ByMonthDayRecurParam
-import com.github.naz013.icalendar.ByMonthRecurParam
-import com.github.naz013.icalendar.BySetPosRecurParam
-import com.github.naz013.icalendar.ByWeekNumberRecurParam
-import com.github.naz013.icalendar.ByYearDayRecurParam
-import com.github.naz013.icalendar.CountRecurParam
-import com.github.naz013.icalendar.FreqRecurParam
-import com.github.naz013.icalendar.IntervalRecurParam
-import com.github.naz013.icalendar.RecurParam
-import com.github.naz013.icalendar.UntilRecurParam
-import com.github.naz013.icalendar.WeekStartRecurParam
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.ICalBuilderItem
 import com.elementary.tasks.reminder.build.ICalByDayBuilderItem
@@ -32,20 +18,31 @@ import com.elementary.tasks.reminder.build.ICalUntilTimeBuilderItem
 import com.elementary.tasks.reminder.build.ICalWeekStartBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.icalendar.ByDayRecurParam
+import com.github.naz013.icalendar.ByHourRecurParam
+import com.github.naz013.icalendar.ByMinuteRecurParam
+import com.github.naz013.icalendar.ByMonthDayRecurParam
+import com.github.naz013.icalendar.ByMonthRecurParam
+import com.github.naz013.icalendar.BySetPosRecurParam
+import com.github.naz013.icalendar.ByWeekNumberRecurParam
+import com.github.naz013.icalendar.ByYearDayRecurParam
+import com.github.naz013.icalendar.CountRecurParam
+import com.github.naz013.icalendar.FreqRecurParam
+import com.github.naz013.icalendar.IntervalRecurParam
+import com.github.naz013.icalendar.RecurParam
+import com.github.naz013.icalendar.UntilRecurParam
+import com.github.naz013.icalendar.WeekStartRecurParam
 
 class RecurParamsToBiAdapter(
-  private val biFactory: BiFactory
+  private val biFactory: BiFactory,
 ) {
+  suspend operator fun invoke(params: List<RecurParam>): List<BuilderItem<*>> = params.map { it.toBuilderItem() }.flatten()
 
-  suspend operator fun invoke(params: List<RecurParam>): List<BuilderItem<*>> {
-    return params.map { it.toBuilderItem() }.flatten()
-  }
-
-  private suspend fun RecurParam.toBuilderItem(): List<ICalBuilderItem<*>> {
-    return when (this) {
+  private suspend fun RecurParam.toBuilderItem(): List<ICalBuilderItem<*>> =
+    when (this) {
       is CountRecurParam -> {
         listOfNotNull(
-          biFactory.createWithValue(BiType.ICAL_COUNT, value, ICalCountBuilderItem::class.java)
+          biFactory.createWithValue(BiType.ICAL_COUNT, value, ICalCountBuilderItem::class.java),
         )
       }
       is IntervalRecurParam -> {
@@ -53,13 +50,13 @@ class RecurParamsToBiAdapter(
           biFactory.createWithValue(
             BiType.ICAL_INTERVAL,
             value,
-            ICalIntervalBuilderItem::class.java
-          )
+            ICalIntervalBuilderItem::class.java,
+          ),
         )
       }
       is FreqRecurParam -> {
         listOfNotNull(
-          biFactory.createWithValue(BiType.ICAL_FREQ, value, ICalFrequencyBuilderItem::class.java)
+          biFactory.createWithValue(BiType.ICAL_FREQ, value, ICalFrequencyBuilderItem::class.java),
         )
       }
       is UntilRecurParam -> {
@@ -68,24 +65,24 @@ class RecurParamsToBiAdapter(
             biFactory.createWithValue(
               BiType.ICAL_UNTIL_DATE,
               it.toLocalDate(),
-              ICalUntilDateBuilderItem::class.java
+              ICalUntilDateBuilderItem::class.java,
             ),
             biFactory.createWithValue(
               BiType.ICAL_UNTIL_TIME,
               it.toLocalTime(),
-              ICalUntilTimeBuilderItem::class.java
-            )
+              ICalUntilTimeBuilderItem::class.java,
+            ),
           )
         } ?: emptyList()
       }
       is ByDayRecurParam -> {
         listOfNotNull(
-          biFactory.createWithValue(BiType.ICAL_BYDAY, value, ICalByDayBuilderItem::class.java)
+          biFactory.createWithValue(BiType.ICAL_BYDAY, value, ICalByDayBuilderItem::class.java),
         )
       }
       is ByMonthRecurParam -> {
         listOfNotNull(
-          biFactory.createWithValue(BiType.ICAL_BYMONTH, value, ICalByMonthBuilderItem::class.java)
+          biFactory.createWithValue(BiType.ICAL_BYMONTH, value, ICalByMonthBuilderItem::class.java),
         )
       }
       is ByMonthDayRecurParam -> {
@@ -93,13 +90,13 @@ class RecurParamsToBiAdapter(
           biFactory.createWithValue(
             BiType.ICAL_BYMONTHDAY,
             value,
-            ICalByMonthDayBuilderItem::class.java
-          )
+            ICalByMonthDayBuilderItem::class.java,
+          ),
         )
       }
       is ByHourRecurParam -> {
         listOfNotNull(
-          biFactory.createWithValue(BiType.ICAL_BYHOUR, value, ICalByHourBuilderItem::class.java)
+          biFactory.createWithValue(BiType.ICAL_BYHOUR, value, ICalByHourBuilderItem::class.java),
         )
       }
       is ByMinuteRecurParam -> {
@@ -107,8 +104,8 @@ class RecurParamsToBiAdapter(
           biFactory.createWithValue(
             BiType.ICAL_BYMINUTE,
             value,
-            ICalByMinuteBuilderItem::class.java
-          )
+            ICalByMinuteBuilderItem::class.java,
+          ),
         )
       }
       is ByYearDayRecurParam -> {
@@ -116,8 +113,8 @@ class RecurParamsToBiAdapter(
           biFactory.createWithValue(
             BiType.ICAL_BYYEARDAY,
             value,
-            ICalByYearDayBuilderItem::class.java
-          )
+            ICalByYearDayBuilderItem::class.java,
+          ),
         )
       }
       is ByWeekNumberRecurParam -> {
@@ -125,8 +122,8 @@ class RecurParamsToBiAdapter(
           biFactory.createWithValue(
             BiType.ICAL_BYWEEKNO,
             value,
-            ICalByWeekNoBuilderItem::class.java
-          )
+            ICalByWeekNoBuilderItem::class.java,
+          ),
         )
       }
       is BySetPosRecurParam -> {
@@ -134,8 +131,8 @@ class RecurParamsToBiAdapter(
           biFactory.createWithValue(
             BiType.ICAL_BYSETPOS,
             value,
-            ICalBySetPosBuilderItem::class.java
-          )
+            ICalBySetPosBuilderItem::class.java,
+          ),
         )
       }
       is WeekStartRecurParam -> {
@@ -143,10 +140,9 @@ class RecurParamsToBiAdapter(
           biFactory.createWithValue(
             BiType.ICAL_WEEKSTART,
             value,
-            ICalWeekStartBuilderItem::class.java
-          )
+            ICalWeekStartBuilderItem::class.java,
+          ),
         )
       }
     }
-  }
 }

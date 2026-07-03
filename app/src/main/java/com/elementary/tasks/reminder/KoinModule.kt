@@ -111,293 +111,294 @@ import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val reminderModule = module {
-  factory { DeleteReminderUseCase(get(), get(), get(), get(), get(), get()) }
-  factory { DeleteAllReminderUseCase(get(), get(), get(), get(), get(), get()) }
-  factory { MoveReminderToArchiveUseCase(get(), get()) }
-  factory { SaveReminderUseCase(get(), get(), get()) }
-  factory { ScheduleReminderUploadUseCase(get()) }
+val reminderModule =
+  module {
+    factory { DeleteReminderUseCase(get(), get(), get(), get(), get(), get()) }
+    factory { DeleteAllReminderUseCase(get(), get(), get(), get(), get(), get()) }
+    factory { MoveReminderToArchiveUseCase(get(), get()) }
+    factory { SaveReminderUseCase(get(), get(), get()) }
+    factory { ScheduleReminderUploadUseCase(get()) }
 
-  viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
-  viewModel {
-    ActiveRemindersViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
+    viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
+    viewModel {
+      ActiveRemindersViewModel(
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { RemindersArchiveFragmentViewModel(get(), get(), get(), get(), get(), get(), get()) }
+
+    viewModel { ManagePresetsViewModel(get(), get(), get(), get()) }
+    viewModel { SelectorDialogViewModel(get(), get()) }
+    viewModel { (arguments: Bundle?) ->
+      BuildReminderViewModel(
+        arguments,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+
+    viewModel { (arguments: Bundle?) ->
+      PreviewReminderViewModel(
+        arguments,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+
+    viewModel { (id: String, isTest: Boolean) ->
+      ReminderActionActivityViewModel(
+        id,
+        isTest,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
+
+    factory { UriToAttachmentFileAdapter(get()) }
+
+    factory { ParamToTextAdapter(get()) }
+
+    factory { BuilderItemsHolder() }
+    factory { BuilderItemsLogic(get()) }
+    factory {
+      BiFactory(
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    factory { BiFactoryICal(get(), get(), get(), get()) }
+
+    single { SelectorDialogDataHolder() }
+    single { ValueDialogDataHolder() }
+
+    factory { UiSelectorItemsAdapter(get(), get(), get()) }
+
+    factory { UiBuilderItemsAdapter(get(), get(), get(), get(), get()) }
+    factory { BiValueForUiAdapter(get()) }
+    factory { BiErrorForUiAdapter(get(), get()) }
+    factory { BiTypeForUiAdapter(get(), get()) }
+
+    factory { BuilderItemRequiresAllConstraintCalculator() }
+    factory { BuilderItemBlockedByConstraintCalculator() }
+    factory { BuilderItemMandatoryIfConstraintCalculator() }
+    factory { BuilderItemPermissionConstraintCalculator(get()) }
+    factory { BuilderItemRequiresAnyConstraintCalculator() }
+
+    factory {
+      ValueControllerFactory(
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+
+    factory { BuilderStateCalculator() }
+    factory { TypeCalculator(get()) }
+    factory { ActionCalculator() }
+
+    factory { BiToReminderAdapter(get(), get(), get(), get(), get(), get()) }
+
+    factory { BuilderErrorFinder(get(), get(), get(), get(), get()) }
+    factory { BuilderErrorToTextAdapter(get(), get()) }
+
+    factory { RecurParamsToBiAdapter(get()) }
+
+    factory { ReminderValidator(get(), get(), get()) }
+    factory { TargetValidator() }
+    factory { EventTimeValidator() }
+    factory { SubTasksValidator() }
+
+    factory { PermissionValidator(get()) }
+
+    factory { ICalDateTimeCalculator(get(), get()) }
+
+    factory { DateTimeInjector(get(), get(), get()) }
+    factory { ICalDateTimeInjector(get(), get()) }
+    factory { ReminderDateTimeCleaner() }
+    factory { EditedReminderDataCleaner() }
+
+    factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get()) }
+
+    factory { TypeDecomposer(get(), get(), get(), get(), get(), get(), get()) }
+    factory { ByDateDecomposer(get(), get()) }
+    factory { ByTimerDecomposer(get()) }
+    factory { ByWeekdaysDecomposer(get(), get()) }
+    factory { ByDayOfMonthDecomposer(get(), get()) }
+    factory { ByDayOfYearDecomposer(get(), get()) }
+    factory { ByLocationDecomposer(get(), get()) }
+    factory { ICalDecomposer(get(), get(), get()) }
+
+    factory { ActionDecomposer(get()) }
+
+    factory { ExtrasDecomposer(get(), get(), get()) }
+
+    factory { GroupDecomposer(get(), get(), get()) }
+
+    factory { NoteDecomposer(get(), get(), get()) }
+
+    factory { LocationFilter(get()) }
+    factory { CreatorConfigFilter(get()) }
+    factory { BiFilter(get(), get()) }
+
+    factory { PrimitiveProtocol() }
+    factory { BiTypeToBiValue() }
+    factory { BuilderPresetToBiAdapter(get(), get()) }
+    factory { BuilderItemsToBuilderPresetAdapter(get()) }
+    factory { BiValueToBuilderSchemeValue(get()) }
+
+    factory { ReminderPredictionCalculator(get(), get(), get()) }
+
+    factory { BuilderPresetsGenerateUseCase(get(), get(), get(), get()) }
+
+    factory { DefaultPresetsGenerateUseCase(get(), get(), get(), get()) }
+
+    factory { ShopItemsFormatter(get()) }
+
+    single { RadiusFormatterFactory(get(), get()) }
+    single { PlaceFormatterFactory(get()) }
+
+    factory { GoogleTaskToUiReminderPreviewGoogleTask(get(), get(), get(), get()) }
+    factory { NoteToUiReminderPreviewNote(get(), get(), get(), get()) }
+    factory { EventToUiReminderPreview(get(), get(), get(), get()) }
+    factory { AttachmentToUiReminderPreviewAttachment(get(), get(), get(), get()) }
+
+    factory { UiReminderPreviewDataAdapter(get(), get(), get(), get(), get(), get(), get()) }
+
+    factory { UiReminderListsAdapter(get(), get(), get(), get(), get()) }
+    factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+
+    viewModel { ReminderFilterDialogViewModel(get()) }
+
+    factory { BehaviorStrategyResolver(get(), get()) }
+
+    factory {
+      ActivateReminderUseCase(
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    factory { DeactivateReminderUseCase(get(), get(), get(), get(), get()) }
+
+    factory { PauseReminderUseCase(get(), get(), get(), get()) }
+    factory { ResumeReminderUseCase(get(), get(), get()) }
+
+    factory { SnoozeReminderUseCase(get(), get(), get(), get(), get()) }
+    factory { CompleteReminderUseCase(get(), get(), get(), get(), get()) }
+    factory { SkipReminderUseCase(get(), get(), get()) }
+
+    factory { ToggleReminderStateUseCase(get(), get()) }
+
+    factory { UpdatePermanentReminderNotificationUseCase(get(), get()) }
+
+    factory { StopLocationTrackingUseCase(get(), get(), get()) }
+    factory { StartLocationTrackingUseCase(get(), get()) }
+
+    factory { CompleteRelatedGoogleTaskUseCase(get(), get()) }
+    factory { SaveReminderToGoogleTasksUseCase(get(), get(), get()) }
+    factory { SaveReminderToGoogleCalendarUseCase(get(), get()) }
+
+    factory { ReminderOccurrenceCalculatorFactory(get(), get()) }
+
+    factory { EventDateTimeCalculator(get(), get()) }
+
+    factory { RecurrenceCalculator() }
+
+    factory { MigrateRecurringParamsUseCase(get(), get()) }
+
+    factory { GetReminderActionsUseCase() }
+
+    factory { CreateReminderActionScreenStateUseCase(get(), get(), get(), get()) }
   }
-  viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-  viewModel { RemindersArchiveFragmentViewModel(get(), get(), get(), get(), get(), get(), get()) }
-
-  viewModel { ManagePresetsViewModel(get(), get(), get(), get()) }
-  viewModel { SelectorDialogViewModel(get(), get()) }
-  viewModel { (arguments: Bundle?) ->
-    BuildReminderViewModel(
-      arguments,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-
-  viewModel { (arguments: Bundle?) ->
-    PreviewReminderViewModel(
-      arguments,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-
-  viewModel { (id: String, isTest: Boolean) ->
-    ReminderActionActivityViewModel(
-      id,
-      isTest,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-    )
-  }
-  viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
-
-  factory { UriToAttachmentFileAdapter(get()) }
-
-  factory { ParamToTextAdapter(get()) }
-
-  factory { BuilderItemsHolder() }
-  factory { BuilderItemsLogic(get()) }
-  factory {
-    BiFactory(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  factory { BiFactoryICal(get(), get(), get(), get()) }
-
-  single { SelectorDialogDataHolder() }
-  single { ValueDialogDataHolder() }
-
-  factory { UiSelectorItemsAdapter(get(), get(), get()) }
-
-  factory { UiBuilderItemsAdapter(get(), get(), get(), get(), get()) }
-  factory { BiValueForUiAdapter(get()) }
-  factory { BiErrorForUiAdapter(get(), get()) }
-  factory { BiTypeForUiAdapter(get(), get()) }
-
-  factory { BuilderItemRequiresAllConstraintCalculator() }
-  factory { BuilderItemBlockedByConstraintCalculator() }
-  factory { BuilderItemMandatoryIfConstraintCalculator() }
-  factory { BuilderItemPermissionConstraintCalculator(get()) }
-  factory { BuilderItemRequiresAnyConstraintCalculator() }
-
-  factory {
-    ValueControllerFactory(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-
-  factory { BuilderStateCalculator() }
-  factory { TypeCalculator(get()) }
-  factory { ActionCalculator() }
-
-  factory { BiToReminderAdapter(get(), get(), get(), get(), get(), get()) }
-
-  factory { BuilderErrorFinder(get(), get(), get(), get(), get()) }
-  factory { BuilderErrorToTextAdapter(get(), get()) }
-
-  factory { RecurParamsToBiAdapter(get()) }
-
-  factory { ReminderValidator(get(), get(), get()) }
-  factory { TargetValidator() }
-  factory { EventTimeValidator() }
-  factory { SubTasksValidator() }
-
-  factory { PermissionValidator(get()) }
-
-  factory { ICalDateTimeCalculator(get(), get()) }
-
-  factory { DateTimeInjector(get(), get(), get()) }
-  factory { ICalDateTimeInjector(get(), get()) }
-  factory { ReminderDateTimeCleaner() }
-  factory { EditedReminderDataCleaner() }
-
-  factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get()) }
-
-  factory { TypeDecomposer(get(), get(), get(), get(), get(), get(), get()) }
-  factory { ByDateDecomposer(get(), get()) }
-  factory { ByTimerDecomposer(get()) }
-  factory { ByWeekdaysDecomposer(get(), get()) }
-  factory { ByDayOfMonthDecomposer(get(), get()) }
-  factory { ByDayOfYearDecomposer(get(), get()) }
-  factory { ByLocationDecomposer(get(), get()) }
-  factory { ICalDecomposer(get(), get(), get()) }
-
-  factory { ActionDecomposer(get()) }
-
-  factory { ExtrasDecomposer(get(), get(), get()) }
-
-  factory { GroupDecomposer(get(), get(), get()) }
-
-  factory { NoteDecomposer(get(), get(), get()) }
-
-  factory { LocationFilter(get()) }
-  factory { CreatorConfigFilter(get()) }
-  factory { BiFilter(get(), get()) }
-
-  factory { PrimitiveProtocol() }
-  factory { BiTypeToBiValue() }
-  factory { BuilderPresetToBiAdapter(get(), get()) }
-  factory { BuilderItemsToBuilderPresetAdapter(get()) }
-  factory { BiValueToBuilderSchemeValue(get()) }
-
-  factory { ReminderPredictionCalculator(get(), get(), get()) }
-
-  factory { BuilderPresetsGenerateUseCase(get(), get(), get(), get()) }
-
-  factory { DefaultPresetsGenerateUseCase(get(), get(), get(), get()) }
-
-  factory { ShopItemsFormatter(get()) }
-
-  single { RadiusFormatterFactory(get(), get()) }
-  single { PlaceFormatterFactory(get()) }
-
-  factory { GoogleTaskToUiReminderPreviewGoogleTask(get(), get(), get(), get()) }
-  factory { NoteToUiReminderPreviewNote(get(), get(), get(), get()) }
-  factory { EventToUiReminderPreview(get(), get(), get(), get()) }
-  factory { AttachmentToUiReminderPreviewAttachment(get(), get(), get(), get()) }
-
-  factory { UiReminderPreviewDataAdapter(get(), get(), get(), get(), get(), get(), get()) }
-
-  factory { UiReminderListsAdapter(get(), get(), get(), get(), get()) }
-  factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-
-  viewModel { ReminderFilterDialogViewModel(get()) }
-
-  factory { BehaviorStrategyResolver(get(), get()) }
-
-  factory {
-    ActivateReminderUseCase(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  factory { DeactivateReminderUseCase(get(), get(), get(), get(), get()) }
-
-  factory { PauseReminderUseCase(get(), get(), get(), get()) }
-  factory { ResumeReminderUseCase(get(), get(), get()) }
-
-  factory { SnoozeReminderUseCase(get(), get(), get(), get(), get()) }
-  factory { CompleteReminderUseCase(get(), get(), get(), get(), get()) }
-  factory { SkipReminderUseCase(get(), get(), get()) }
-
-  factory { ToggleReminderStateUseCase(get(), get()) }
-
-  factory { UpdatePermanentReminderNotificationUseCase(get(), get()) }
-
-  factory { StopLocationTrackingUseCase(get(), get(), get()) }
-  factory { StartLocationTrackingUseCase(get(), get()) }
-
-  factory { CompleteRelatedGoogleTaskUseCase(get(), get()) }
-  factory { SaveReminderToGoogleTasksUseCase(get(), get(), get()) }
-  factory { SaveReminderToGoogleCalendarUseCase(get(), get()) }
-
-  factory { ReminderOccurrenceCalculatorFactory(get(), get()) }
-
-  factory { EventDateTimeCalculator(get(), get()) }
-
-  factory { RecurrenceCalculator() }
-
-  factory { MigrateRecurringParamsUseCase(get(), get()) }
-
-  factory { GetReminderActionsUseCase() }
-
-  factory { CreateReminderActionScreenStateUseCase(get(), get(), get(), get()) }
-}

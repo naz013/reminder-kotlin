@@ -12,9 +12,9 @@ import com.github.naz013.logging.Logger
 import kotlinx.coroutines.launch
 
 open class BaseProgressViewModel(
-  protected val dispatcherProvider: DispatcherProvider
-) : ViewModel(), DefaultLifecycleObserver {
-
+  protected val dispatcherProvider: DispatcherProvider,
+) : ViewModel(),
+  DefaultLifecycleObserver {
   private val _resultEvent = mutableLiveDataOf<Event<Commands>>()
   val resultEvent = _resultEvent.toLiveData()
 

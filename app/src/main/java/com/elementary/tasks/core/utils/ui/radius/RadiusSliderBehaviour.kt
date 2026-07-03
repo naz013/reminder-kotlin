@@ -6,9 +6,8 @@ import com.google.android.material.slider.Slider
 class RadiusSliderBehaviour(
   private val slider: Slider,
   initValue: Int,
-  private val onValueChanged: (value: Int) -> Unit
+  private val onValueChanged: (value: Int) -> Unit,
 ) {
-
   init {
     slider.addOnChangeListener { _, value, _ ->
       onValueChanged.invoke(value.toInt())
@@ -29,9 +28,7 @@ class RadiusSliderBehaviour(
     updateSlider(radius.toFloat())
   }
 
-  fun getRadius(): Int {
-    return slider.value.toInt()
-  }
+  fun getRadius(): Int = slider.value.toInt()
 
   private fun updateSlider(radius: Float) {
     if (slider.valueTo < radius && slider.valueTo < MAX_RADIUS) {

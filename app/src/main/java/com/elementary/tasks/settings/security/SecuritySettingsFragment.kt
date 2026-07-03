@@ -13,23 +13,26 @@ import com.github.naz013.ui.common.login.BiometricProvider
 import com.github.naz013.ui.common.view.visibleGone
 
 class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBinding>() {
-
-  private val biometricProvider = BiometricProvider(this) {
-    setFinger(!binding.fingerprintSwitchPrefs.isChecked)
-  }
+  private val biometricProvider =
+    BiometricProvider(this) {
+      setFinger(!binding.fingerprintSwitchPrefs.isChecked)
+    }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsSecurityBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.changePinPrefs.setDependentView(binding.pinSwitchPrefs)
     binding.changePinPrefs.setOnClickListener {
       safeNavigation(
-        SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment()
+        SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment(),
       )
     }
 

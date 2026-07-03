@@ -8,7 +8,7 @@ import org.threeten.bp.LocalDate
 class ReminderDateRangeFilterInstance(
   private val dateTimeManager: DateTimeManager,
   private val startDate: LocalDate?,
-  private val endDate: LocalDate?
+  private val endDate: LocalDate?,
 ) : FilterInstance<Reminder> {
   override fun filter(t: Reminder): Boolean {
     if ((startDate == null && endDate == null) || endDate?.isBefore(startDate) == true) return true
@@ -17,11 +17,7 @@ class ReminderDateRangeFilterInstance(
     return reminderDate.isAfterStartDate() && reminderDate.isBeforeEndDate()
   }
 
-  private fun LocalDate.isAfterStartDate(): Boolean {
-    return startDate == null || !this.isBefore(startDate)
-  }
+  private fun LocalDate.isAfterStartDate(): Boolean = startDate == null || !this.isBefore(startDate)
 
-  private fun LocalDate.isBeforeEndDate(): Boolean {
-    return endDate == null || !this.isAfter(endDate)
-  }
+  private fun LocalDate.isBeforeEndDate(): Boolean = endDate == null || !this.isAfter(endDate)
 }

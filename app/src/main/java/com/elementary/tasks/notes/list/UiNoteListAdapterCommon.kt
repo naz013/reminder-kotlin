@@ -12,7 +12,6 @@ import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 
 class UiNoteListAdapterCommon {
-
   fun populateNoteUi(
     uiNoteList: UiNoteList,
     imagesViewContainer: LinearLayout,
@@ -20,7 +19,7 @@ class UiNoteListAdapterCommon {
     @Px secondaryImageSize: Int,
     backgroundView: View,
     imageClickListener: ((View, imageId: Int) -> Unit)? = null,
-    titleTextView: TextView? = null
+    titleTextView: TextView? = null,
   ) {
     loadImage(uiNoteList, imagesViewContainer, secondaryImageSize, imageClickListener)
     loadNote(textView, uiNoteList)
@@ -31,7 +30,10 @@ class UiNoteListAdapterCommon {
     backgroundView.setBackgroundColor(uiNoteList.backgroundColor)
   }
 
-  private fun loadNote(textView: TextView, note: UiNoteList) {
+  private fun loadNote(
+    textView: TextView,
+    note: UiNoteList,
+  ) {
     var text = note.text
     if (text.isEmpty()) {
       textView.gone()
@@ -48,7 +50,10 @@ class UiNoteListAdapterCommon {
     textView.setTextColor(note.textColor)
   }
 
-  private fun loadTitle(titleTextView: TextView, note: UiNoteList) {
+  private fun loadTitle(
+    titleTextView: TextView,
+    note: UiNoteList,
+  ) {
     if (note.title.isEmpty()) {
       titleTextView.gone()
       return
@@ -60,7 +65,10 @@ class UiNoteListAdapterCommon {
     titleTextView.setTextColor(note.textColor)
   }
 
-  private fun setImage(imageView: ImageView, image: String?) {
+  private fun setImage(
+    imageView: ImageView,
+    image: String?,
+  ) {
     if (image == null) return
     imageView.load(image)
   }
@@ -68,7 +76,7 @@ class UiNoteListAdapterCommon {
   private fun setClick(
     imageView: ImageView,
     imageId: Int,
-    imageClickListener: ((View, imageId: Int) -> Unit)?
+    imageClickListener: ((View, imageId: Int) -> Unit)?,
   ) {
     imageClickListener?.invoke(imageView, imageId)
   }
@@ -77,7 +85,7 @@ class UiNoteListAdapterCommon {
     item: UiNoteList,
     container: LinearLayout,
     @Px secondaryImageSize: Int,
-    imageClickListener: ((View, imageId: Int) -> Unit)?
+    imageClickListener: ((View, imageId: Int) -> Unit)?,
   ) {
     val images = item.images
 

@@ -8,7 +8,6 @@ import android.webkit.WebView
 import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 
 abstract class BaseWebViewFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
-
   protected val webView: WebView
     get() = binding.webView
 
@@ -17,10 +16,13 @@ abstract class BaseWebViewFragment : BaseSettingsFragment<FragmentSettingsWebVie
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsWebViewBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     setExtraParams(binding.webView)
     binding.webView.loadUrl(url)

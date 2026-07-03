@@ -17,8 +17,8 @@ class CloudBackupSettingsViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val cloudApiProvider: CloudApiProvider,
   private val jobScheduler: JobScheduler,
-) : ViewModel(), DefaultLifecycleObserver {
-
+) : ViewModel(),
+  DefaultLifecycleObserver {
   private val _hasAnyCloudApi = mutableLiveDataOf<Boolean>()
   val hasAnyCloudApi = _hasAnyCloudApi.toLiveData()
 

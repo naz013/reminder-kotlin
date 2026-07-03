@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils.params
 import com.github.naz013.ui.common.login.AuthPreferences
 
 class AuthPreferencesImpl(
-  private val prefs: Prefs
+  private val prefs: Prefs,
 ) : AuthPreferences {
   override val shufflePinView: Boolean
     get() {

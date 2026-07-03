@@ -55,7 +55,7 @@ fun NoteEditImageGrid(
   images: List<UiNoteImage>,
   onImageClick: (Int) -> Unit,
   onRemoveClick: (Int) -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   if (images.isEmpty()) return
   BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
@@ -71,9 +71,10 @@ fun NoteEditImageGrid(
                 index = index,
                 onClick = { onImageClick(index) },
                 onRemoveClick = { onRemoveClick(index) },
-                modifier = Modifier
-                  .width(cellSize)
-                  .padding(2.dp)
+                modifier =
+                  Modifier
+                    .width(cellSize)
+                    .padding(2.dp),
               )
             }
           }
@@ -89,7 +90,7 @@ private fun NoteEditImageItem(
   index: Int,
   onClick: () -> Unit,
   onRemoveClick: () -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   val visibleState = remember { MutableTransitionState(false) }
   LaunchedEffect(Unit) {
@@ -99,19 +100,22 @@ private fun NoteEditImageItem(
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
-    enter = scaleIn(
-      animationSpec = spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessLow
-      ),
-      initialScale = 0f
-    ) + fadeIn(animationSpec = tween(IMAGE_ANIMATION_DURATION_MS)),
+    enter =
+      scaleIn(
+        animationSpec =
+          spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow,
+          ),
+        initialScale = 0f,
+      ) + fadeIn(animationSpec = tween(IMAGE_ANIMATION_DURATION_MS)),
   ) {
     Box(
-      modifier = Modifier
-        .aspectRatio(1f)
-        .clip(MaterialTheme.shapes.small)
-        .background(MaterialTheme.colorScheme.surfaceVariant)
+      modifier =
+        Modifier
+          .aspectRatio(1f)
+          .clip(MaterialTheme.shapes.small)
+          .background(MaterialTheme.colorScheme.surfaceVariant),
     ) {
       if (image.state == UiNoteImageState.LOADING) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).size(24.dp))
@@ -120,24 +124,26 @@ private fun NoteEditImageItem(
           model = image.filePath,
           contentDescription = null,
           contentScale = ContentScale.Crop,
-          modifier = Modifier
-            .fillMaxSize()
-            .clickable(onClick = onClick)
+          modifier =
+            Modifier
+              .fillMaxSize()
+              .clickable(onClick = onClick),
         )
         Surface(
-          modifier = Modifier
-            .align(Alignment.TopEnd)
-            .padding(4.dp)
-            .size(20.dp)
-            .clickable(onClick = onRemoveClick),
+          modifier =
+            Modifier
+              .align(Alignment.TopEnd)
+              .padding(4.dp)
+              .size(20.dp)
+              .clickable(onClick = onRemoveClick),
           shape = CircleShape,
-          color = MaterialTheme.colorScheme.tertiary
+          color = MaterialTheme.colorScheme.tertiary,
         ) {
           Icon(
             imageVector = Icons.Default.Close,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onTertiary,
-            modifier = Modifier.padding(3.dp)
+            modifier = Modifier.padding(3.dp),
           )
         }
       }

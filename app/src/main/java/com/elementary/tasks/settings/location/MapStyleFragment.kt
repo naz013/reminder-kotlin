@@ -10,7 +10,6 @@ import com.elementary.tasks.databinding.FragmentSettingsMapStyleBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class MapStyleFragment : BaseSettingsFragment<FragmentSettingsMapStyleBinding>() {
-
   private val selection: Int
     get() {
       return when {
@@ -28,52 +27,55 @@ class MapStyleFragment : BaseSettingsFragment<FragmentSettingsMapStyleBinding>()
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsMapStyleBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
 
     binding.styleDay.setOnCheckedChangeListener { buttonView, isChecked ->
       invoke(
         buttonView,
-        isChecked
+        isChecked,
       )
     }
     binding.styleAubergine.setOnCheckedChangeListener { buttonView, isChecked ->
       invoke(
         buttonView,
-        isChecked
+        isChecked,
       )
     }
     binding.styleAuto.setOnCheckedChangeListener { buttonView, isChecked ->
       invoke(
         buttonView,
-        isChecked
+        isChecked,
       )
     }
     binding.styleDark.setOnCheckedChangeListener { buttonView, isChecked ->
       invoke(
         buttonView,
-        isChecked
+        isChecked,
       )
     }
     binding.styleNight.setOnCheckedChangeListener { buttonView, isChecked ->
       invoke(
         buttonView,
-        isChecked
+        isChecked,
       )
     }
     binding.styleRetro.setOnCheckedChangeListener { buttonView, isChecked ->
       invoke(
         buttonView,
-        isChecked
+        isChecked,
       )
     }
     binding.styleSilver.setOnCheckedChangeListener { buttonView, isChecked ->
       invoke(
         buttonView,
-        isChecked
+        isChecked,
       )
     }
 
@@ -92,7 +94,10 @@ class MapStyleFragment : BaseSettingsFragment<FragmentSettingsMapStyleBinding>()
     }
   }
 
-  private fun invoke(v: View, isChecked: Boolean) {
+  private fun invoke(
+    v: View,
+    isChecked: Boolean,
+  ) {
     if (!isChecked) return
     buttons().forEach {
       if (v.id != it.id) {
@@ -106,22 +111,20 @@ class MapStyleFragment : BaseSettingsFragment<FragmentSettingsMapStyleBinding>()
     prefs.mapStyle = selection
   }
 
-  private fun buttons(): List<AppCompatRadioButton> {
-    return listOf(
+  private fun buttons(): List<AppCompatRadioButton> =
+    listOf(
       binding.styleDay,
       binding.styleAubergine,
       binding.styleAuto,
       binding.styleDark,
       binding.styleNight,
       binding.styleRetro,
-      binding.styleSilver
+      binding.styleSilver,
     )
-  }
 
   override fun getTitle(): String = getString(R.string.map_style)
 
   companion object {
-
     fun newInstance(): MapStyleFragment = MapStyleFragment()
   }
 }

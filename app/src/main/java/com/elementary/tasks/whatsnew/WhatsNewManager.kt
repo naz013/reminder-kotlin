@@ -5,13 +5,12 @@ import com.github.naz013.common.PackageManagerWrapper
 
 class WhatsNewManager(
   private val prefs: Prefs,
-  private val packageManagerWrapper: PackageManagerWrapper
+  private val packageManagerWrapper: PackageManagerWrapper,
 ) {
-
   fun hasChanges(): Boolean {
     val versionCode = packageManagerWrapper.getVersionCode()
     val prefsVersionCode = prefs.lastVersionCode
-    return if(prefsVersionCode < versionCode) {
+    return if (prefsVersionCode < versionCode) {
       true
     } else {
       if (prefsVersionCode != versionCode) {

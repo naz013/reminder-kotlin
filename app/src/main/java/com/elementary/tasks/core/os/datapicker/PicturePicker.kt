@@ -23,25 +23,24 @@ import org.koin.core.component.inject
 
 class PicturePicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (String) -> Unit
+  private val resultCallback: (String) -> Unit,
 ) : IntentPicker<Intent, ActivityResult>(
-  ActivityResultContracts.StartActivityForResult(),
-  launcherCreator
-),
+    ActivityResultContracts.StartActivityForResult(),
+    launcherCreator,
+  ),
   KoinComponent {
-
   private val cacheUtil by inject<CacheUtil>()
   private val dispatcherProvider by inject<DispatcherProvider>()
   private val scope = CoroutineScope(Job())
 
   constructor(
     activity: ComponentActivity,
-    resultCallback: (pathToCache: String) -> Unit
+    resultCallback: (pathToCache: String) -> Unit,
   ) : this(ActivityLauncherCreator(activity), resultCallback)
 
   constructor(
     fragment: Fragment,
-    resultCallback: (pathToCache: String) -> Unit
+    resultCallback: (pathToCache: String) -> Unit,
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
   fun pickPicture() {

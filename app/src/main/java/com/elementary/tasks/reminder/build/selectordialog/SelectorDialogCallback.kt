@@ -5,5 +5,6 @@ import com.elementary.tasks.reminder.build.BuilderItem
 
 interface SelectorDialogCallback {
   fun onBuilderItemAdd(builderItem: BuilderItem<*>)
+
   fun onPresetSelected(uiPresetList: UiPresetList)
 }

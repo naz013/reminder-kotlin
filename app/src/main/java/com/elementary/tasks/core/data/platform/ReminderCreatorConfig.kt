@@ -2,52 +2,41 @@ package com.elementary.tasks.core.data.platform
 
 import com.github.naz013.domain.Bytes
 
-data class ReminderCreatorConfig(private val value: String) {
-
+data class ReminderCreatorConfig(
+  private val value: String,
+) {
   private val bytes = Bytes(value)
 
   constructor() : this(DEFAULT_VALUE)
 
-  fun toHex(): String {
-    return bytes.toHexString()
-  }
+  fun toHex(): String = bytes.toHexString()
 
-  fun isRepeatLimitPickerEnabled(): Boolean {
-    return bytes.isBitSet(0, REPEAT_LIMIT_PICKER_BIT)
-  }
+  fun isRepeatLimitPickerEnabled(): Boolean = bytes.isBitSet(0, REPEAT_LIMIT_PICKER_BIT)
 
   fun setRepeatLimitPickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, REPEAT_LIMIT_PICKER_BIT, enabled)
   }
 
-  fun isRepeatPickerEnabled(): Boolean {
-    return bytes.isBitSet(0, REPEAT_PICKER_BIT)
-  }
+  fun isRepeatPickerEnabled(): Boolean = bytes.isBitSet(0, REPEAT_PICKER_BIT)
 
   fun setRepeatPickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, REPEAT_PICKER_BIT, enabled)
   }
 
-  fun isBeforePickerEnabled(): Boolean {
-    return bytes.isBitSet(0, BEFORE_PICKER_BIT)
-  }
+  fun isBeforePickerEnabled(): Boolean = bytes.isBitSet(0, BEFORE_PICKER_BIT)
 
   fun setBeforePickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, BEFORE_PICKER_BIT, enabled)
   }
 
-  fun isPriorityPickerEnabled(): Boolean {
-    return bytes.isBitSet(0, PRIORITY_PICKER_BIT)
-  }
+  fun isPriorityPickerEnabled(): Boolean = bytes.isBitSet(0, PRIORITY_PICKER_BIT)
 
   fun setPriorityPickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, PRIORITY_PICKER_BIT, enabled)
   }
 
   @Deprecated("Do not use it")
-  fun isMelodyPickerEnabled(): Boolean {
-    return bytes.isBitSet(0, MELODY_PICKER_BIT)
-  }
+  fun isMelodyPickerEnabled(): Boolean = bytes.isBitSet(0, MELODY_PICKER_BIT)
 
   @Deprecated("Do not use it")
   fun setMelodyPickerEnabled(enabled: Boolean) {
@@ -55,112 +44,90 @@ data class ReminderCreatorConfig(private val value: String) {
   }
 
   @Deprecated("Do not use it")
-  fun isLoudnessPickerEnabled(): Boolean {
-    return bytes.isBitSet(0, LOUDNESS_PICKER_BIT)
-  }
+  fun isLoudnessPickerEnabled(): Boolean = bytes.isBitSet(0, LOUDNESS_PICKER_BIT)
 
   @Deprecated("Do not use it")
   fun setLoudnessPickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, LOUDNESS_PICKER_BIT, enabled)
   }
 
-  fun isCalendarPickerEnabled(): Boolean {
-    return bytes.isBitSet(0, CALENDAR_PICKER_BIT)
-  }
+  fun isCalendarPickerEnabled(): Boolean = bytes.isBitSet(0, CALENDAR_PICKER_BIT)
 
   fun setCalendarPickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, CALENDAR_PICKER_BIT, enabled)
   }
 
-  fun isGoogleTasksPickerEnabled(): Boolean {
-    return bytes.isBitSet(0, TASKS_PICKER_BIT)
-  }
+  fun isGoogleTasksPickerEnabled(): Boolean = bytes.isBitSet(0, TASKS_PICKER_BIT)
 
   fun setGoogleTasksPickerEnabled(enabled: Boolean) {
     updateBitAndByte(0, TASKS_PICKER_BIT, enabled)
   }
 
-  fun isTuneExtraPickerEnabled(): Boolean {
-    return bytes.isBitSet(1, EXTRA_PICKER_BIT)
-  }
+  fun isTuneExtraPickerEnabled(): Boolean = bytes.isBitSet(1, EXTRA_PICKER_BIT)
 
   fun setTuneExtraPickerEnabled(enabled: Boolean) {
     updateBitAndByte(1, EXTRA_PICKER_BIT, enabled)
   }
 
-  fun isAttachmentPickerEnabled(): Boolean {
-    return bytes.isBitSet(1, ATTACHMENT_PICKER_BIT)
-  }
+  fun isAttachmentPickerEnabled(): Boolean = bytes.isBitSet(1, ATTACHMENT_PICKER_BIT)
 
   fun setAttachmentPickerEnabled(enabled: Boolean) {
     updateBitAndByte(1, ATTACHMENT_PICKER_BIT, enabled)
   }
 
-  fun isLedPickerEnabled(): Boolean {
-    return bytes.isBitSet(1, LED_PICKER_BIT)
-  }
+  fun isLedPickerEnabled(): Boolean = bytes.isBitSet(1, LED_PICKER_BIT)
 
   fun setLedPickerEnabled(enabled: Boolean) {
     updateBitAndByte(1, LED_PICKER_BIT, enabled)
   }
 
-  fun isICalendarEnabled(): Boolean {
-    return bytes.isBitSet(1, ICALENDAR_BIT)
-  }
+  fun isICalendarEnabled(): Boolean = bytes.isBitSet(1, ICALENDAR_BIT)
 
   fun setICalendarEnabled(enabled: Boolean) {
     updateBitAndByte(1, ICALENDAR_BIT, enabled)
   }
 
-  fun isPhoneCallEnabled(): Boolean {
-    return bytes.isBitSet(2, CALL_PHONE_BIT)
-  }
+  fun isPhoneCallEnabled(): Boolean = bytes.isBitSet(2, CALL_PHONE_BIT)
 
   fun setPhoneCallEnabled(enabled: Boolean) {
     updateBitAndByte(2, CALL_PHONE_BIT, enabled)
   }
 
-  fun isSendSmsEnabled(): Boolean {
-    return bytes.isBitSet(2, SEND_SMS_BIT)
-  }
+  fun isSendSmsEnabled(): Boolean = bytes.isBitSet(2, SEND_SMS_BIT)
 
   fun setSendSmsEnabled(enabled: Boolean) {
     updateBitAndByte(2, SEND_SMS_BIT, enabled)
   }
 
-  fun isOpenAppEnabled(): Boolean {
-    return bytes.isBitSet(2, OPEN_APP_BIT)
-  }
+  fun isOpenAppEnabled(): Boolean = bytes.isBitSet(2, OPEN_APP_BIT)
 
   fun setOpenAppEnabled(enabled: Boolean) {
     updateBitAndByte(2, OPEN_APP_BIT, enabled)
   }
 
-  fun isOpenLinkEnabled(): Boolean {
-    return bytes.isBitSet(2, OPEN_LINK_BIT)
-  }
+  fun isOpenLinkEnabled(): Boolean = bytes.isBitSet(2, OPEN_LINK_BIT)
 
   fun setOpenLinkEnabled(enabled: Boolean) {
     updateBitAndByte(2, OPEN_LINK_BIT, enabled)
   }
 
-  fun isSendEmailEnabled(): Boolean {
-    return bytes.isBitSet(2, SEND_EMAIL_BIT)
-  }
+  fun isSendEmailEnabled(): Boolean = bytes.isBitSet(2, SEND_EMAIL_BIT)
 
   fun setSendEmailEnabled(enabled: Boolean) {
     updateBitAndByte(2, SEND_EMAIL_BIT, enabled)
   }
 
-  fun isAutoAddSummary(): Boolean {
-    return bytes.isBitSet(3, AUTO_ADD_SUMMARY)
-  }
+  fun isAutoAddSummary(): Boolean = bytes.isBitSet(3, AUTO_ADD_SUMMARY)
 
   fun setAutoAddSummary(enabled: Boolean) {
     updateBitAndByte(3, AUTO_ADD_SUMMARY, enabled)
   }
 
-  private fun updateBitAndByte(byte: Int, bit: Int, enabled: Boolean) {
+  private fun updateBitAndByte(
+    byte: Int,
+    bit: Int,
+    enabled: Boolean,
+  ) {
     if (enabled) {
       bytes.setBit(byte, bit)
     } else {
@@ -168,9 +135,7 @@ data class ReminderCreatorConfig(private val value: String) {
     }
   }
 
-  override fun toString(): String {
-    return "ReminderCreatorConfig(bytes=$bytes)"
-  }
+  override fun toString(): String = "ReminderCreatorConfig(bytes=$bytes)"
 
   companion object {
     const val DEFAULT_VALUE = "FFFFFFFF"

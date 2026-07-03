@@ -5,7 +5,7 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.At
 
 data class UiReminderPreviewAttachment(
   val file: AttachmentFile,
-  val text: UiTextElement
+  val text: UiTextElement,
 ) : UiReminderPreviewData() {
   override val itemId: String = file.name + file.uri.toString()
   override val viewType: UiReminderPreviewDataViewType = UiReminderPreviewDataViewType.ATTACHMENT

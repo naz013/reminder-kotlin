@@ -16,9 +16,8 @@ import java.io.FileOutputStream
 
 class CacheUtil(
   val context: Context,
-  private val memoryUtil: MemoryUtil
+  private val memoryUtil: MemoryUtil,
 ) {
-
   private val sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
   fun cacheFile(f: File): File? {
@@ -65,38 +64,48 @@ class CacheUtil(
   @SuppressLint("Range")
   fun cacheFile(uri: Uri): String? {
     val cacheDir = context.externalCacheDir ?: context.cacheDir
-    val inputStream = try {
-      context.contentResolver.openInputStream(uri)
-    } catch (e: FileNotFoundException) {
-      null
-    } catch (e: Exception) {
-      null
-    } ?: return null
-    val fileId = try {
-      DocumentsContract.getDocumentId(uri)
-    } catch (e: Exception) {
-      ""
-    }
-
-    val cursor: Cursor? = context.contentResolver.query(
-      /* uri = */ uri,
-      /* projection = */ null,
-      /* selection = */ null,
-      /* selectionArgs = */ null,
-      /* sortOrder = */ null,
-      /* cancellationSignal = */ null
-    )
-    val name = cursor?.use {
-      if (it.moveToFirst()) {
-        try {
-          it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)) ?: ""
-        } catch (e: Exception) {
-          ""
-        }
-      } else {
+    val inputStream =
+      try {
+        context.contentResolver.openInputStream(uri)
+      } catch (e: FileNotFoundException) {
+        null
+      } catch (e: Exception) {
+        null
+      } ?: return null
+    val fileId =
+      try {
+        DocumentsContract.getDocumentId(uri)
+      } catch (e: Exception) {
         ""
       }
-    } ?: ""
+
+    val cursor: Cursor? =
+      context.contentResolver.query(
+        // uri =
+        uri,
+        // projection =
+        null,
+        // selection =
+        null,
+        // selectionArgs =
+        null,
+        // sortOrder =
+        null,
+        // cancellationSignal =
+        null,
+      )
+    val name =
+      cursor?.use {
+        if (it.moveToFirst()) {
+          try {
+            it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)) ?: ""
+          } catch (e: Exception) {
+            ""
+          }
+        } else {
+          ""
+        }
+      } ?: ""
     if (name.isEmpty() && fileId.isEmpty()) {
       return null
     }
@@ -127,9 +136,7 @@ class CacheUtil(
     }
   }
 
-  private fun hasCache(path: String): Boolean {
-    return sp.getBoolean(path, false)
-  }
+  private fun hasCache(path: String): Boolean = sp.getBoolean(path, false)
 
   private fun saveCache(path: String) {
     sp.edit().putBoolean(path, true).apply()

@@ -5,9 +5,9 @@ import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.config.RadiusConfig
 import com.elementary.tasks.core.utils.ui.ValueFormatter
+import com.elementary.tasks.core.utils.ui.radius.RadiusSliderBehaviour
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.isVisible
-import com.elementary.tasks.core.utils.ui.radius.RadiusSliderBehaviour
 import com.github.naz013.ui.common.view.visible
 import com.google.android.material.slider.Slider
 
@@ -15,9 +15,8 @@ class MarkerRadiusController(
   rootView: View,
   currentRadius: Int,
   formatter: ValueFormatter<Int>,
-  private val listener: OnRadiusChangedListener
+  private val listener: OnRadiusChangedListener,
 ) {
-
   private val radiusButton = rootView.findViewById<View>(R.id.radiusCard)
   private val radiusPickerCard = rootView.findViewById<View>(R.id.markerRadiusContainer)
   private val radiusSlider = rootView.findViewById<Slider>(R.id.markerRadiusSlider)
@@ -33,11 +32,12 @@ class MarkerRadiusController(
       selectedRadius = 0
     }
 
-    radiusSliderBehaviour = RadiusSliderBehaviour(radiusSlider, selectedRadius) {
-      radiusTextView.text = formatter.format(it)
-      selectedRadius = it
-      listener.onChanged(it)
-    }
+    radiusSliderBehaviour =
+      RadiusSliderBehaviour(radiusSlider, selectedRadius) {
+        radiusTextView.text = formatter.format(it)
+        selectedRadius = it
+        listener.onChanged(it)
+      }
     radiusTextView.text = formatter.format(selectedRadius)
     radiusButton.setOnClickListener { toggleCard() }
     hideCard()
@@ -54,9 +54,7 @@ class MarkerRadiusController(
     hideCard()
   }
 
-  fun isLayerVisible(): Boolean {
-    return radiusPickerCard.isVisible()
-  }
+  fun isLayerVisible(): Boolean = radiusPickerCard.isVisible()
 
   private fun toggleCard() {
     listener.onRadiusButtonClicked()
@@ -77,6 +75,7 @@ class MarkerRadiusController(
 
   interface OnRadiusChangedListener {
     fun onChanged(radius: Int)
+
     fun onRadiusButtonClicked()
   }
 }

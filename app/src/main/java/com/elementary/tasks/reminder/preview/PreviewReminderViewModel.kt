@@ -61,7 +61,6 @@ class PreviewReminderViewModel(
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _note = mutableLiveDataOf<UiNoteList>()
   val note = _note.toLiveData()
 
@@ -144,16 +143,23 @@ class PreviewReminderViewModel(
       val data = uiReminderPreviewDataAdapter.create(reminder, reminderGroup).toMutableList()
       _reminderData.postValue(data)
 
-      noteRepository.getById(reminder.noteId)?.let { noteToUiReminderPreviewNote(it) }
+      noteRepository
+        .getById(reminder.noteId)
+        ?.let { noteToUiReminderPreviewNote(it) }
         ?.also { data.addAll(it) }
 
-      googleTaskRepository.getByReminderId(reminder.uuId)?.let {
-        googleTaskToUiReminderPreviewGoogleTask(it, googleTaskListRepository.getById(it.listId))
-      }?.also { data.addAll(it) }
+      googleTaskRepository
+        .getByReminderId(reminder.uuId)
+        ?.let {
+          googleTaskToUiReminderPreviewGoogleTask(it, googleTaskListRepository.getById(it.listId))
+        }?.also { data.addAll(it) }
 
-      googleCalendarUtils.loadEvents(reminder.uuId).takeIf { it.isNotEmpty() }?.let {
-        eventToUiReminderPreview(it, googleCalendarUtils.getCalendarsList())
-      }?.also { data.addAll(it) }
+      googleCalendarUtils
+        .loadEvents(reminder.uuId)
+        .takeIf { it.isNotEmpty() }
+        ?.let {
+          eventToUiReminderPreview(it, googleCalendarUtils.getCalendarsList())
+        }?.also { data.addAll(it) }
 
       _reminderData.postValue(data)
     }
@@ -207,13 +213,15 @@ class PreviewReminderViewModel(
             reminder.groupUuId = group.groupUuId
           }
         }
-        val newItem = reminder.copy().apply {
-          this.uuId = UUID.randomUUID().toString()
-        }
+        val newItem =
+          reminder.copy().apply {
+            this.uuId = UUID.randomUUID().toString()
+          }
         newItem.summary = textProvider.getString(R.string.copy_of, reminder.summary)
 
-        val date = dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
-          ?: LocalDate.now()
+        val date =
+          dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
+            ?: LocalDate.now()
         var dateTime = LocalDateTime.of(date, time)
 
         while (dateTime < LocalDateTime.now()) {
@@ -249,15 +257,17 @@ class PreviewReminderViewModel(
 
   fun shareReminder() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      reminderRepository.getById(id)?.let {
-        UiShareData(
-          file = backupTool.reminderToFile(it),
-          name = it.summary
-        )
-      }?.also {
-        Logger.i(TAG, "Sharing reminder ${it.name}")
-        _sharedFile.postValue(it)
-      }
+      reminderRepository
+        .getById(id)
+        ?.let {
+          UiShareData(
+            file = backupTool.reminderToFile(it),
+            name = it.summary,
+          )
+        }?.also {
+          Logger.i(TAG, "Sharing reminder ${it.name}")
+          _sharedFile.postValue(it)
+        }
     }
   }
 

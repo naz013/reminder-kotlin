@@ -11,13 +11,11 @@ class CloudApiProviderImpl(
   private val googleDriveAuthManager: GoogleDriveAuthManager,
   private val dropboxAuthManager: DropboxAuthManager,
   private val googleDriveApi: GoogleDriveApi,
-  private val dropboxApi: DropboxApi
+  private val dropboxApi: DropboxApi,
 ) : CloudApiProvider {
-
-  override fun getAllowedCloudApis(): List<CloudFileApi> {
-    return listOfNotNull(
+  override fun getAllowedCloudApis(): List<CloudFileApi> =
+    listOfNotNull(
       googleDriveApi.takeIf { googleDriveAuthManager.isAuthorized() },
-      dropboxApi.takeIf { dropboxAuthManager.isAuthorized() }
+      dropboxApi.takeIf { dropboxAuthManager.isAuthorized() },
     )
-  }
 }

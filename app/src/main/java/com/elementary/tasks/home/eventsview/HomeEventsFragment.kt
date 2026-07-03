@@ -23,8 +23,9 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), FragmentMenuController {
-
+class HomeEventsFragment :
+  BaseTopFragment<FragmentHomeEventsBinding>(),
+  FragmentMenuController {
   private val viewModel by viewModel<HomeEventsViewModel>()
   private var menuModifier: ((Menu) -> Unit)? = null
   private lateinit var viewPagerAdapter: TabsPagerAdapter
@@ -32,12 +33,13 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentHomeEventsBinding {
-    return FragmentHomeEventsBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentHomeEventsBinding = FragmentHomeEventsBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     Logger.i(TAG, "On view created")
     binding.appBar.applyTopInsets()
@@ -46,14 +48,15 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
       requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
-    viewPagerAdapter = TabsPagerAdapter(
-      this,
-      listOf(
-        RemindersFragment(),
-        TodoRemindersFragment(),
-        BirthdaysFragment()
+    viewPagerAdapter =
+      TabsPagerAdapter(
+        this,
+        listOf(
+          RemindersFragment(),
+          TodoRemindersFragment(),
+          BirthdaysFragment(),
+        ),
       )
-    )
 
     binding.fragmentPager.apply {
       adapter = viewPagerAdapter
@@ -73,7 +76,7 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
 
         override fun onTabReselected(tab: TabLayout.Tab?) {
         }
-      }
+      },
     )
 
     initViewModel()
@@ -108,27 +111,25 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
     Logger.d(TAG, "On pause")
   }
 
-  private fun getSelectedTab(tab: TabLayout.Tab): HomeEventsViewModel.SelectedTab {
-    return when (tab.position) {
+  private fun getSelectedTab(tab: TabLayout.Tab): HomeEventsViewModel.SelectedTab =
+    when (tab.position) {
       0 -> HomeEventsViewModel.SelectedTab.Reminders
       1 -> HomeEventsViewModel.SelectedTab.Todo
       2 -> HomeEventsViewModel.SelectedTab.Birthdays
       else -> HomeEventsViewModel.SelectedTab.Reminders
     }
-  }
 
-  private fun getTabPosition(selectedTab: HomeEventsViewModel.SelectedTab): Int {
-    return when (selectedTab) {
+  private fun getTabPosition(selectedTab: HomeEventsViewModel.SelectedTab): Int =
+    when (selectedTab) {
       HomeEventsViewModel.SelectedTab.Reminders -> 0
       HomeEventsViewModel.SelectedTab.Todo -> 1
       HomeEventsViewModel.SelectedTab.Birthdays -> 2
     }
-  }
 
   override fun addMenu(
     menuRes: Int?,
     onMenuItemListener: (MenuItem) -> Boolean,
-    menuModifier: ((Menu) -> Unit)?
+    menuModifier: ((Menu) -> Unit)?,
   ) {
     this.menuModifier = menuModifier
     binding.toolbar.menu.clear()
@@ -148,7 +149,7 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
 
   override fun updateMenuItem(
     itemId: Int,
-    modifier: MenuItem.() -> Unit
+    modifier: MenuItem.() -> Unit,
   ) {
     val menuItem = binding.toolbar.menu.findItem(itemId) ?: return
     modifier(menuItem)
@@ -156,13 +157,11 @@ class HomeEventsFragment : BaseTopFragment<FragmentHomeEventsBinding>(), Fragmen
 
   private class TabsPagerAdapter(
     fragment: Fragment,
-    private val tabFragments: List<Fragment>
+    private val tabFragments: List<Fragment>,
   ) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = tabFragments.size
 
-    override fun createFragment(position: Int): Fragment {
-      return tabFragments[position]
-    }
+    override fun createFragment(position: Int): Fragment = tabFragments[position]
   }
 
   companion object {

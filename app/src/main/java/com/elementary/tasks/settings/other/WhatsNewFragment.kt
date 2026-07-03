@@ -6,23 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.databinding.FragmentSettingsWhatsNewBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.github.naz013.common.PackageManagerWrapper
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 
 class WhatsNewFragment : BaseSettingsFragment<FragmentSettingsWhatsNewBinding>() {
-
   private val packageManagerWrapper by inject<PackageManagerWrapper>()
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsWhatsNewBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     updateDateAndVersion()
   }
@@ -31,11 +33,12 @@ class WhatsNewFragment : BaseSettingsFragment<FragmentSettingsWhatsNewBinding>()
     val versionName = packageManagerWrapper.getVersionName()
     val date = StringUtils.capitalize(BuildConfig.BUILD_DATE)
 
-    binding.dateAndVersionView.text = getString(
-      R.string.whats_new_version_and_date,
-      versionName,
-      date
-    )
+    binding.dateAndVersionView.text =
+      getString(
+        R.string.whats_new_version_and_date,
+        versionName,
+        date,
+      )
   }
 
   override fun getTitle(): String = getString(R.string.whats_new)

@@ -27,7 +27,6 @@ import org.koin.android.ext.android.inject
 class BottomNavActivity :
   BindingActivity<ActivityBottomNavBinding>(),
   FragmentCallback {
-
   private val navigationObservable by inject<NavigationObservable>()
   private val navigationDispatcherFactory by inject<NavigationDispatcherFactory>()
 
@@ -36,11 +35,12 @@ class BottomNavActivity :
 
   private var currentResumedFragment: Fragment? = null
 
-  private val navigationConsumer = object : NavigationConsumer {
-    override fun consume(destination: Destination) {
-      navigationDispatcherFactory.create(destination).dispatch(destination)
+  private val navigationConsumer =
+    object : NavigationConsumer {
+      override fun consume(destination: Destination) {
+        navigationDispatcherFactory.create(destination).dispatch(destination)
+      }
     }
-  }
 
   override fun inflateBinding() = ActivityBottomNavBinding.inflate(layoutInflater)
 
@@ -57,10 +57,11 @@ class BottomNavActivity :
     this.navController = navController
 
     if (intent.action == Intent.ACTION_VIEW) {
-      val deepLinkDestination = intent.readParcelable(
-        DeepLinkDestination.KEY,
-        DeepLinkDestination::class.java
-      )
+      val deepLinkDestination =
+        intent.readParcelable(
+          DeepLinkDestination.KEY,
+          DeepLinkDestination::class.java,
+        )
       Logger.i(TAG, "Deep link destination: $deepLinkDestination")
       deepLinkDestination
         ?.let { ScreenDestinationIdResolver().resolve(deepLinkDestination) }
@@ -74,18 +75,19 @@ class BottomNavActivity :
         }
     } else if (ShortcutDestination.hasShortcut(intent.extras)) {
       val shortcut = ShortcutDestination.getShortcut(intent.extras)
-      val destinationId = when (shortcut) {
-        ShortcutDestination.Shortcut.GoogleTask -> {
-          R.id.editGoogleTaskFragment
-        }
+      val destinationId =
+        when (shortcut) {
+          ShortcutDestination.Shortcut.GoogleTask -> {
+            R.id.editGoogleTaskFragment
+          }
 
-        ShortcutDestination.Shortcut.Reminder -> {
-          R.id.buildReminderFragment
-        }
+          ShortcutDestination.Shortcut.Reminder -> {
+            R.id.buildReminderFragment
+          }
 
-        ShortcutDestination.Shortcut.Note -> TODO()
-        null -> null
-      }
+          ShortcutDestination.Shortcut.Note -> TODO()
+          null -> null
+        }
       destinationId?.also {
         NavDeepLinkBuilder(this)
           .setGraph(R.navigation.home_nav)

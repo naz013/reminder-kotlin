@@ -28,7 +28,6 @@ class MonthLiveData(
   private val birthdayRepository: BirthdayRepository,
   private val reminderRepository: ReminderRepository,
 ) : LiveData<Map<LocalDate, EventsCursor>>() {
-
   private val scope: CoroutineScope = CoroutineScope(Job())
   private var lastDate: LocalDate? = null
 
@@ -48,10 +47,11 @@ class MonthLiveData(
     val startOfTheMonth = date.withDayOfMonth(1)
     val endOfTheMonth = date.withDayOfMonth(date.lengthOfMonth())
     scope.launch(dispatcherProvider.default()) {
-      val occurrences = getOccurrencesByDateRangeUseCase(
-        startDate = startOfTheMonth,
-        endDate = endOfTheMonth
-      )
+      val occurrences =
+        getOccurrencesByDateRangeUseCase(
+          startDate = startOfTheMonth,
+          endDate = endOfTheMonth,
+        )
       val birthdays = birthdayRepository.getAll().associateBy { it.uuId }
       val reminders = reminderRepository.getActive().associateBy { it.uuId }
       val mappedData = mapData(occurrences, birthdays, reminders)
@@ -66,7 +66,7 @@ class MonthLiveData(
   private fun mapData(
     list: List<EventOccurrence>,
     birthdaysMap: Map<String, Birthday>,
-    remindersMap: Map<String, Reminder>
+    remindersMap: Map<String, Reminder>,
   ): Map<LocalDate, EventsCursor> {
     val birthdayColor = birthdayColor()
     val reminderColor = reminderColor()
@@ -81,7 +81,7 @@ class MonthLiveData(
             birthday.name,
             birthdayColor,
             EventsCursor.Type.BIRTHDAY,
-            map
+            map,
           )
         }
 
@@ -92,7 +92,7 @@ class MonthLiveData(
             reminder.summary,
             reminderColor,
             EventsCursor.Type.REMINDER,
-            map
+            map,
           )
         }
 
@@ -109,7 +109,7 @@ class MonthLiveData(
     summary: String,
     color: Int,
     type: EventsCursor.Type,
-    map: MutableMap<LocalDate, EventsCursor>
+    map: MutableMap<LocalDate, EventsCursor>,
   ) {
     if (map.containsKey(date)) {
       val eventsCursor = map[date] ?: EventsCursor()
@@ -121,13 +121,9 @@ class MonthLiveData(
     }
   }
 
-  private fun birthdayColor(): Int {
-    return ThemeProvider.colorBirthdayCalendar(context.themedContext, prefs.birthdayLedColor)
-  }
+  private fun birthdayColor(): Int = ThemeProvider.colorBirthdayCalendar(context.themedContext, prefs.birthdayLedColor)
 
-  private fun reminderColor(): Int {
-    return ThemeProvider.colorReminderCalendar(context.themedContext, prefs.reminderColor)
-  }
+  private fun reminderColor(): Int = ThemeProvider.colorReminderCalendar(context.themedContext, prefs.reminderColor)
 
   companion object {
     private const val TAG = "MonthLiveData"

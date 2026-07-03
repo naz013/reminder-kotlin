@@ -21,8 +21,9 @@ import com.tom_roush.pdfbox.text.PDFTextStripper
  *
  * @property context application context used for [android.content.ContentResolver] access.
  */
-class DroppedContentParser(private val context: Context) {
-
+class DroppedContentParser(
+  private val context: Context,
+) {
   /**
    * Aggregated result of parsing all items in a [ClipData].
    *
@@ -34,7 +35,7 @@ class DroppedContentParser(private val context: Context) {
   data class ParseResult(
     val textContent: List<String>,
     val imageUris: List<Uri>,
-    val unsupportedCount: Int
+    val unsupportedCount: Int,
   )
 
   /**
@@ -105,7 +106,7 @@ class DroppedContentParser(private val context: Context) {
     return ParseResult(
       textContent = textContent,
       imageUris = imageUris,
-      unsupportedCount = unsupportedCount
+      unsupportedCount = unsupportedCount,
     )
   }
 
@@ -132,10 +133,12 @@ class DroppedContentParser(private val context: Context) {
    * @return the inferred MIME type, or `null` when no extension is detected.
    */
   private fun inferMimeFromExtension(uri: Uri): String? {
-    val extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
-      ?.lowercase()
-      ?.takeIf { it.isNotEmpty() }
-      ?: return null
+    val extension =
+      MimeTypeMap
+        .getFileExtensionFromUrl(uri.toString())
+        ?.lowercase()
+        ?.takeIf { it.isNotEmpty() }
+        ?: return null
     return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
   }
 
@@ -145,16 +148,19 @@ class DroppedContentParser(private val context: Context) {
    * @param uri the URI of the text file to read.
    * @return the trimmed file content, or `null` if reading fails or the file is empty.
    */
-  private fun readTextFromUri(uri: Uri): String? {
-    return try {
+  private fun readTextFromUri(uri: Uri): String? =
+    try {
       context.contentResolver.openInputStream(uri)?.use { inputStream ->
-        inputStream.bufferedReader(Charsets.UTF_8).readText().trim().takeIf { it.isNotEmpty() }
+        inputStream
+          .bufferedReader(Charsets.UTF_8)
+          .readText()
+          .trim()
+          .takeIf { it.isNotEmpty() }
       }
     } catch (e: Exception) {
       Logger.e(TAG, "Failed to read text file from URI: $uri", e)
       null
     }
-  }
 
   /**
    * Extracts all text content from a PDF document at [uri] using Apache PDFBox.
@@ -162,8 +168,8 @@ class DroppedContentParser(private val context: Context) {
    * @param uri the URI of the PDF file.
    * @return the extracted and trimmed text, or `null` if extraction fails or the PDF is empty.
    */
-  private fun extractTextFromPdf(uri: Uri): String? {
-    return try {
+  private fun extractTextFromPdf(uri: Uri): String? =
+    try {
       context.contentResolver.openInputStream(uri)?.use { inputStream ->
         val document = PDDocument.load(inputStream)
         val text = PDFTextStripper().getText(document).trim()
@@ -174,7 +180,6 @@ class DroppedContentParser(private val context: Context) {
       Logger.e(TAG, "Failed to extract text from PDF URI: $uri", e)
       null
     }
-  }
 
   companion object {
     private const val TAG = "DroppedContentParser"

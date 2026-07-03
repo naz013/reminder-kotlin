@@ -20,26 +20,27 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.threeten.bp.LocalDate
 
-val calendarModule = module {
-  factory { WeekFactory(get(), get(), get()) }
-  factory { WeekHeaderController(get()) }
+val calendarModule =
+  module {
+    factory { WeekFactory(get(), get(), get()) }
+    factory { WeekHeaderController(get()) }
 
-  viewModel { (date: LocalDate) -> WeekViewModel(date, get(), get(), get()) }
-  viewModel { (date: LocalDate) -> DayViewModel(date, get(), get(), get(), get(), get(), get()) }
+    viewModel { (date: LocalDate) -> WeekViewModel(date, get(), get(), get()) }
+    viewModel { (date: LocalDate) -> DayViewModel(date, get(), get(), get(), get(), get(), get()) }
 
-  factory { MonthLiveData(get(), get(), get(), get(), get(), get()) }
-  factory { DayLiveData(get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { MonthLiveData(get(), get(), get(), get(), get(), get()) }
+    factory { DayLiveData(get(), get(), get(), get(), get(), get(), get(), get()) }
 
-  factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get()) }
-  factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get(), get()) }
-  factory { CalculateReminderOccurrencesUseCase(get(), get(), get(), get(), get(), get()) }
+    factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get()) }
+    factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get(), get()) }
+    factory { CalculateReminderOccurrencesUseCase(get(), get(), get(), get(), get(), get()) }
 
-  worker { CalculateBirthdayOccurrencesWorker(get(), get(), get(), get()) }
-  worker { CalculateReminderOccurrencesWorker(get(), get(), get(), get()) }
+    worker { CalculateBirthdayOccurrencesWorker(get(), get(), get(), get()) }
+    worker { CalculateReminderOccurrencesWorker(get(), get(), get(), get()) }
 
-  factory { GetOccurrencesByDateRangeUseCase(get()) }
-  factory { GetOccurrencesByDayUseCase(get()) }
+    factory { GetOccurrencesByDateRangeUseCase(get()) }
+    factory { GetOccurrencesByDayUseCase(get()) }
 
-  factory { AddReminderToHistoryUseCase(get(), get(), get()) }
-  factory { GetHistoryByDayUseCase(get()) }
-}
+    factory { AddReminderToHistoryUseCase(get(), get(), get()) }
+    factory { GetHistoryByDayUseCase(get()) }
+  }

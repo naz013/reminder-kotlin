@@ -8,12 +8,12 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractB
 import org.threeten.bp.LocalDate
 
 class DateController(
-  builderItem: BuilderItem<LocalDate>
+  builderItem: BuilderItem<LocalDate>,
 ) : AbstractBindingValueController<LocalDate, BuilderItemDateBinding>(builderItem) {
-
-  override fun bindView(layoutInflater: LayoutInflater, parent: ViewGroup): BuilderItemDateBinding {
-    return BuilderItemDateBinding.inflate(layoutInflater, parent, false)
-  }
+  override fun bindView(
+    layoutInflater: LayoutInflater,
+    parent: ViewGroup,
+  ): BuilderItemDateBinding = BuilderItemDateBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()

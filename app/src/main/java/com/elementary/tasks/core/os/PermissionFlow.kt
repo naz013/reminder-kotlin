@@ -9,16 +9,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.data.UiPermissionDialogData
-import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
+import com.github.naz013.ui.common.Dialogues
 import java.util.LinkedList
 
 class PermissionFlow private constructor(
   private val launcher: Launcher,
-  private val dialogues: Dialogues
+  private val dialogues: Dialogues,
 ) {
-
   private var askedPermission = ""
   private val map = mutableMapOf<String, Boolean>()
   private val queue: LinkedList<String> = LinkedList()
@@ -31,23 +30,23 @@ class PermissionFlow private constructor(
   init {
     launcher.subscribe(
       onGranted = { permissionGranted(askedPermission) },
-      onDenied = { permissionDeniedCallback?.invoke(it) }
+      onDenied = { permissionDeniedCallback?.invoke(it) },
     )
   }
 
   constructor(fragment: Fragment, dialogues: Dialogues) : this(
     FragmentLauncher(fragment),
-    dialogues
+    dialogues,
   )
 
   constructor(activity: ComponentActivity, dialogues: Dialogues) : this(
     ActivityLauncher(activity),
-    dialogues
+    dialogues,
   )
 
   fun askPermission(
     permission: String,
-    callback: (permission: String) -> Unit
+    callback: (permission: String) -> Unit,
   ) {
     if (permission == Permissions.FOREGROUND_SERVICE_LOCATION && !Module.is15) {
       callback.invoke(permission)
@@ -76,7 +75,7 @@ class PermissionFlow private constructor(
   fun askPermission(
     permission: String,
     callback: (permission: String) -> Unit,
-    deniedCallback: (permission: String) -> Unit
+    deniedCallback: (permission: String) -> Unit,
   ) {
     this.permissionDeniedCallback = deniedCallback
     askPermission(permission, callback)
@@ -84,7 +83,7 @@ class PermissionFlow private constructor(
 
   fun askPermissions(
     permissions: List<String>,
-    callback: (permissions: List<String>) -> Unit
+    callback: (permissions: List<String>) -> Unit,
   ) {
     this.map.clear()
     this.queue.clear()
@@ -99,7 +98,7 @@ class PermissionFlow private constructor(
   fun askPermissions(
     permissions: List<String>,
     callback: (permissions: List<String>) -> Unit,
-    deniedCallback: (permission: String) -> Unit
+    deniedCallback: (permission: String) -> Unit,
   ) {
     this.map.clear()
     this.queue.clear()
@@ -113,15 +112,17 @@ class PermissionFlow private constructor(
 
   private fun checkPermission(permission: String) {
     when (permission) {
-      Permissions.FOREGROUND_SERVICE_LOCATION -> if (!Module.is15) {
-        permissionGranted(permission)
-        return
-      }
+      Permissions.FOREGROUND_SERVICE_LOCATION ->
+        if (!Module.is15) {
+          permissionGranted(permission)
+          return
+        }
 
-      Permissions.POST_NOTIFICATION -> if (!Module.is13) {
-        permissionGranted(permission)
-        return
-      }
+      Permissions.POST_NOTIFICATION ->
+        if (!Module.is13) {
+          permissionGranted(permission)
+          return
+        }
 
       Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL -> {
         if (Module.is13) {
@@ -134,7 +135,7 @@ class PermissionFlow private constructor(
     when {
       ContextCompat.checkSelfPermission(
         launcher.getActivity(),
-        permission
+        permission,
       ) == PackageManager.PERMISSION_GRANTED -> {
         permissionGranted(permission)
       }
@@ -171,28 +172,30 @@ class PermissionFlow private constructor(
   }
 
   private fun explainPermission(permission: String) {
-    val dialogData = when (permission) {
-      Permissions.POST_NOTIFICATION -> if (Module.is13) {
-        UiPermissionDialogData.POST_NOTIFICATION
-      } else {
-        null
-      }
+    val dialogData =
+      when (permission) {
+        Permissions.POST_NOTIFICATION ->
+          if (Module.is13) {
+            UiPermissionDialogData.POST_NOTIFICATION
+          } else {
+            null
+          }
 
-      Permissions.READ_CONTACTS -> UiPermissionDialogData.READ_CONTACTS
-      Permissions.GET_ACCOUNTS -> UiPermissionDialogData.GET_ACCOUNTS
-      Permissions.CALL_PHONE -> UiPermissionDialogData.CALL_PHONE
-      Permissions.READ_CALENDAR -> UiPermissionDialogData.READ_CALENDAR
-      Permissions.WRITE_CALENDAR -> UiPermissionDialogData.WRITE_CALENDAR
-      Permissions.READ_EXTERNAL -> UiPermissionDialogData.READ_EXTERNAL
-      Permissions.WRITE_EXTERNAL -> UiPermissionDialogData.WRITE_EXTERNAL
-      Permissions.ACCESS_FINE_LOCATION -> UiPermissionDialogData.FINE_LOCATION
-      Permissions.ACCESS_COARSE_LOCATION -> UiPermissionDialogData.COARSE_LOCATION
-      Permissions.RECORD_AUDIO -> UiPermissionDialogData.RECORD_AUDIO
-      Permissions.BACKGROUND_LOCATION -> UiPermissionDialogData.BACKGROUND_LOCATION
-      Permissions.FOREGROUND_SERVICE -> UiPermissionDialogData.FOREGROUND_SERVICE
-      Permissions.FOREGROUND_SERVICE_LOCATION -> UiPermissionDialogData.FOREGROUND_SERVICE_LOCATION
-      else -> null
-    } ?: return
+        Permissions.READ_CONTACTS -> UiPermissionDialogData.READ_CONTACTS
+        Permissions.GET_ACCOUNTS -> UiPermissionDialogData.GET_ACCOUNTS
+        Permissions.CALL_PHONE -> UiPermissionDialogData.CALL_PHONE
+        Permissions.READ_CALENDAR -> UiPermissionDialogData.READ_CALENDAR
+        Permissions.WRITE_CALENDAR -> UiPermissionDialogData.WRITE_CALENDAR
+        Permissions.READ_EXTERNAL -> UiPermissionDialogData.READ_EXTERNAL
+        Permissions.WRITE_EXTERNAL -> UiPermissionDialogData.WRITE_EXTERNAL
+        Permissions.ACCESS_FINE_LOCATION -> UiPermissionDialogData.FINE_LOCATION
+        Permissions.ACCESS_COARSE_LOCATION -> UiPermissionDialogData.COARSE_LOCATION
+        Permissions.RECORD_AUDIO -> UiPermissionDialogData.RECORD_AUDIO
+        Permissions.BACKGROUND_LOCATION -> UiPermissionDialogData.BACKGROUND_LOCATION
+        Permissions.FOREGROUND_SERVICE -> UiPermissionDialogData.FOREGROUND_SERVICE
+        Permissions.FOREGROUND_SERVICE_LOCATION -> UiPermissionDialogData.FOREGROUND_SERVICE_LOCATION
+        else -> null
+      } ?: return
 
     showPermissionExplanation(dialogData)
   }
@@ -207,14 +210,14 @@ class PermissionFlow private constructor(
     if (launcher.getActivity().isFinishing) {
       return
     }
-    dialogues.getMaterialDialog(launcher.getActivity())
+    dialogues
+      .getMaterialDialog(launcher.getActivity())
       .setTitle(dialogData.title)
       .setMessage(dialogData.description)
       .setPositiveButton(R.string.ok) { di, _ ->
         di.dismiss()
         requestPermissionAfterRationale(dialogData.permission)
-      }
-      .create()
+      }.create()
       .show()
   }
 
@@ -223,7 +226,10 @@ class PermissionFlow private constructor(
     protected lateinit var onGranted: (String) -> Unit
     protected lateinit var onDenied: (String) -> Unit
 
-    fun subscribe(onGranted: (String) -> Unit, onDenied: (String) -> Unit) {
+    fun subscribe(
+      onGranted: (String) -> Unit,
+      onDenied: (String) -> Unit,
+    ) {
       this.onGranted = onGranted
       this.onDenied = onDenied
     }
@@ -233,21 +239,21 @@ class PermissionFlow private constructor(
     abstract fun getActivity(): Activity
   }
 
-  class ActivityLauncher(private val activity: ComponentActivity) : Launcher() {
-
-    private val permissionLauncher = activity.registerForActivityResult(
-      ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-      if (isGranted) {
-        onGranted.invoke(askedPermission)
-      } else {
-        onDenied.invoke(askedPermission)
+  class ActivityLauncher(
+    private val activity: ComponentActivity,
+  ) : Launcher() {
+    private val permissionLauncher =
+      activity.registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+      ) { isGranted: Boolean ->
+        if (isGranted) {
+          onGranted.invoke(askedPermission)
+        } else {
+          onDenied.invoke(askedPermission)
+        }
       }
-    }
 
-    override fun getActivity(): Activity {
-      return activity
-    }
+    override fun getActivity(): Activity = activity
 
     override fun launch(permission: String) {
       permissionLauncher.launch(permission)
@@ -255,22 +261,20 @@ class PermissionFlow private constructor(
   }
 
   class FragmentLauncher(
-    private val fragment: Fragment
+    private val fragment: Fragment,
   ) : Launcher() {
-
-    private val permissionLauncher = fragment.registerForActivityResult(
-      ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-      if (isGranted) {
-        onGranted.invoke(askedPermission)
-      } else {
-        onDenied.invoke(askedPermission)
+    private val permissionLauncher =
+      fragment.registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+      ) { isGranted: Boolean ->
+        if (isGranted) {
+          onGranted.invoke(askedPermission)
+        } else {
+          onDenied.invoke(askedPermission)
+        }
       }
-    }
 
-    override fun getActivity(): Activity {
-      return fragment.requireActivity()
-    }
+    override fun getActivity(): Activity = fragment.requireActivity()
 
     override fun launch(permission: String) {
       permissionLauncher.launch(permission)

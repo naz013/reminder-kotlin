@@ -4,8 +4,6 @@ import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
-import com.github.naz013.common.PackageManagerWrapper
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
@@ -64,8 +62,10 @@ import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.NoteRepository
@@ -83,39 +83,40 @@ class BiFactory(
   private val prefs: Prefs,
   private val biFactoryICal: BiFactoryICal,
   private val noteRepository: NoteRepository,
-  private val uiNoteListAdapter: UiNoteListAdapter
+  private val uiNoteListAdapter: UiNoteListAdapter,
 ) {
-
   private val context: Context = contextProvider.themedContext
 
   suspend fun <V, T : BuilderItem<V>> createWithValue(
     biType: BiType,
     value: V?,
-    clazz: Class<T>
-  ): T? {
-    return createTyped(biType, clazz)
+    clazz: Class<T>,
+  ): T? =
+    createTyped(biType, clazz)
       ?.apply { modifier.update(value) }
-  }
 
-  private suspend fun <T : BuilderItem<*>> createTyped(biType: BiType, clazz: Class<T>): T? {
+  private suspend fun <T : BuilderItem<*>> createTyped(
+    biType: BiType,
+    clazz: Class<T>,
+  ): T? {
     val created = create(biType)
     Logger.d(TAG, "createTyped: created=$created, wanted=$clazz")
     return created.takeIf { it::class.java == clazz } as? T
   }
 
-  suspend fun create(biType: BiType): BuilderItem<*> {
-    return when (biType) {
+  suspend fun create(biType: BiType): BuilderItem<*> =
+    when (biType) {
       BiType.SUMMARY -> {
         SummaryBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(R.string.builder_what_you_want_to_remind_you)
+          description = context.getString(R.string.builder_what_you_want_to_remind_you),
         )
       }
 
       BiType.DESCRIPTION -> {
         DescriptionBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(R.string.builder_write_more_details)
+          description = context.getString(R.string.builder_write_more_details),
         )
       }
 
@@ -123,7 +124,7 @@ class BiFactory(
         DateBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_provide_date),
-          dateFormatter = DateFormatter(dateTimeManager)
+          dateFormatter = DateFormatter(dateTimeManager),
         )
       }
 
@@ -131,7 +132,7 @@ class BiFactory(
         TimeBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_provide_time),
-          timeFormatter = TimeFormatter(dateTimeManager)
+          timeFormatter = TimeFormatter(dateTimeManager),
         )
       }
 
@@ -139,7 +140,7 @@ class BiFactory(
         DaysOfWeekBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_repeat_on_selected_days),
-          weekdayArrayFormatter = WeekdayArrayFormatter(context)
+          weekdayArrayFormatter = WeekdayArrayFormatter(context),
         )
       }
 
@@ -147,7 +148,7 @@ class BiFactory(
         DayOfMonthBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_repeat_on_selected_day_of_month),
-          dayOfMonthFormatter = DayOfMonthFormatter(context)
+          dayOfMonthFormatter = DayOfMonthFormatter(context),
         )
       }
 
@@ -155,7 +156,7 @@ class BiFactory(
         DayOfYearBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_repeat_on_selected_day_of_year),
-          dayOfYearFormatter = DayOfYearFormatter(dateTimeManager)
+          dayOfYearFormatter = DayOfYearFormatter(dateTimeManager),
         )
       }
 
@@ -163,17 +164,18 @@ class BiFactory(
         TimerBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_set_countdown_time),
-          timerFormatter = TimerFormatter(context)
+          timerFormatter = TimerFormatter(context),
         )
       }
 
       BiType.COUNTDOWN_TIMER_EXCLUSION -> {
         TimerExclusionBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(
-            R.string.builder_add_exclusion_when_do_not_trigger_notification
-          ),
-          timerExclusionFormatter = TimerExclusionFormatter(context, dateTimeManager)
+          description =
+            context.getString(
+              R.string.builder_add_exclusion_when_do_not_trigger_notification,
+            ),
+          timerExclusionFormatter = TimerExclusionFormatter(context, dateTimeManager),
         )
       }
 
@@ -182,18 +184,21 @@ class BiFactory(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.choose_group),
           groups = reminderGroupRepository.getAll().map { uiGroupListAdapter.convert(it) },
-          defaultGroup = reminderGroupRepository.defaultGroup()
-            ?.let { uiGroupListAdapter.convert(it) }
+          defaultGroup =
+            reminderGroupRepository
+              .defaultGroup()
+              ?.let { uiGroupListAdapter.convert(it) },
         )
       }
 
       BiType.BEFORE_TIME -> {
         BeforeTimeBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(
-            R.string.builder_set_how_much_time_before_the_event_should_show_the_notification
-          ),
-          beforeTimeFormatter = BeforeTimeFormatter(context, dateTimeManager)
+          description =
+            context.getString(
+              R.string.builder_set_how_much_time_before_the_event_should_show_the_notification,
+            ),
+          beforeTimeFormatter = BeforeTimeFormatter(context, dateTimeManager),
         )
       }
 
@@ -201,7 +206,7 @@ class BiFactory(
         RepeatTimeBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_set_how_often_the_event_should_repeat),
-          repeatTimeFormatter = RepeatTimeFormatter(context, dateTimeManager)
+          repeatTimeFormatter = RepeatTimeFormatter(context, dateTimeManager),
         )
       }
 
@@ -209,7 +214,7 @@ class BiFactory(
         RepeatIntervalBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_set_interval_for_the_repeating),
-          repeatIntervalFormatter = RepeatIntervalFormatter()
+          repeatIntervalFormatter = RepeatIntervalFormatter(),
         )
       }
 
@@ -217,7 +222,7 @@ class BiFactory(
         RepeatLimitBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_set_number_of_repetitions),
-          repeatLimitFormatter = RepeatLimitFormatter(context)
+          repeatLimitFormatter = RepeatLimitFormatter(context),
         )
       }
 
@@ -225,7 +230,7 @@ class BiFactory(
         PriorityBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_set_priority_for_the_notification),
-          priorityFormatter = PriorityFormatter(context)
+          priorityFormatter = PriorityFormatter(context),
         )
       }
 
@@ -233,7 +238,7 @@ class BiFactory(
         LedColorBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_set_led_color_for_the_notification),
-          ledColorFormatter = LedColorFormatter(context)
+          ledColorFormatter = LedColorFormatter(context),
         )
       }
 
@@ -241,72 +246,75 @@ class BiFactory(
         AttachmentsBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_add_attachments_to_the_reminder),
-          attachmentsFormatter = AttachmentsFormatter(context)
+          attachmentsFormatter = AttachmentsFormatter(context),
         )
       }
 
       BiType.PHONE_CALL -> {
         PhoneCallBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(R.string.builder_make_a_phone_call_to_the_number)
+          description = context.getString(R.string.builder_make_a_phone_call_to_the_number),
         )
       }
 
       BiType.SMS -> {
         SmsBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(R.string.builder_send_sms_to_the_number)
+          description = context.getString(R.string.builder_send_sms_to_the_number),
         )
       }
 
       BiType.GOOGLE_TASK_LIST -> {
         GoogleTaskListBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(
-            R.string.builder_select_google_task_list_where_the_reminder_should_be_added
-          ),
+          description =
+            context.getString(
+              R.string.builder_select_google_task_list_where_the_reminder_should_be_added,
+            ),
           taskLists = googleTaskListRepository.getAll(),
-          googleTasksAuthManager = googleTasksAuthManager
+          googleTasksAuthManager = googleTasksAuthManager,
         )
       }
 
       BiType.GOOGLE_CALENDAR -> {
         GoogleCalendarBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(
-            R.string.builder_select_google_calendar_where_the_reminder_should_be_added
-          )
+          description =
+            context.getString(
+              R.string.builder_select_google_calendar_where_the_reminder_should_be_added,
+            ),
         )
       }
 
       BiType.GOOGLE_CALENDAR_DURATION -> {
         GoogleCalendarDurationBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(
-            R.string.builder_set_duration_for_the_event_in_the_google_calendar
-          ),
-          calendarDurationFormatter = CalendarDurationFormatter(context, dateTimeManager)
+          description =
+            context.getString(
+              R.string.builder_set_duration_for_the_event_in_the_google_calendar,
+            ),
+          calendarDurationFormatter = CalendarDurationFormatter(context, dateTimeManager),
         )
       }
 
       BiType.EMAIL -> {
         EmailBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(R.string.builder_set_email_action_to_the_reminder)
+          description = context.getString(R.string.builder_set_email_action_to_the_reminder),
         )
       }
 
       BiType.EMAIL_SUBJECT -> {
         EmailSubjectBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(R.string.builder_set_subject_for_the_email)
+          description = context.getString(R.string.builder_set_subject_for_the_email),
         )
       }
 
       BiType.LINK -> {
         WebAddressBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(R.string.builder_set_open_link_action_to_the_reminder)
+          description = context.getString(R.string.builder_set_open_link_action_to_the_reminder),
         )
       }
 
@@ -314,17 +322,18 @@ class BiFactory(
         ApplicationBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_set_application_action_to_the_reminder),
-          applicationFormatter = ApplicationFormatter(packageManagerWrapper)
+          applicationFormatter = ApplicationFormatter(packageManagerWrapper),
         )
       }
 
       BiType.OTHER_PARAMS -> {
         OtherParamsBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
-          description = context.getString(
-            R.string.builder_customize_additional_parameters_for_a_reminder
-          ),
-          otherParamsFormatter = OtherParamsFormatter(context)
+          description =
+            context.getString(
+              R.string.builder_customize_additional_parameters_for_a_reminder,
+            ),
+          otherParamsFormatter = OtherParamsFormatter(context),
         )
       }
 
@@ -332,7 +341,7 @@ class BiFactory(
         SubTasksBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_add_list_of_subtasks_to_the_reminder),
-          shopItemsFormatter = ShopItemsFormatter(context)
+          shopItemsFormatter = ShopItemsFormatter(context),
         )
       }
 
@@ -340,12 +349,13 @@ class BiFactory(
         ArrivingCoordinatesBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_arriving_destination_description),
-          placeFormatter = PlaceFormatter(
-            DefaultRadiusFormatter(
-              context = context,
-              useMetric = prefs.useMetric
-            )
-          )
+          placeFormatter =
+            PlaceFormatter(
+              DefaultRadiusFormatter(
+                context = context,
+                useMetric = prefs.useMetric,
+              ),
+            ),
         )
       }
 
@@ -353,12 +363,13 @@ class BiFactory(
         LeavingCoordinatesBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_leaving_place_description),
-          placeFormatter = PlaceFormatter(
-            DefaultRadiusFormatter(
-              context = context,
-              useMetric = prefs.useMetric
-            )
-          )
+          placeFormatter =
+            PlaceFormatter(
+              DefaultRadiusFormatter(
+                context = context,
+                useMetric = prefs.useMetric,
+              ),
+            ),
         )
       }
 
@@ -366,7 +377,7 @@ class BiFactory(
         LocationDelayDateBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_delay_date_description),
-          dateFormatter = DateFormatter(dateTimeManager)
+          dateFormatter = DateFormatter(dateTimeManager),
         )
       }
 
@@ -374,7 +385,7 @@ class BiFactory(
         LocationDelayTimeBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_delay_time_description),
-          timeFormatter = TimeFormatter(dateTimeManager)
+          timeFormatter = TimeFormatter(dateTimeManager),
         )
       }
 
@@ -383,9 +394,10 @@ class BiFactory(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_attach_note_to_the_reminder),
           noteFormatter = NoteFormatter(),
-          notes = noteRepository.getAll(isArchived = false).map {
-            uiNoteListAdapter.convert(it)
-          }
+          notes =
+            noteRepository.getAll(isArchived = false).map {
+              uiNoteListAdapter.convert(it)
+            },
         )
       }
 
@@ -397,7 +409,6 @@ class BiFactory(
         }
       }
     }
-  }
 
   companion object {
     private const val TAG = "BiFactory"

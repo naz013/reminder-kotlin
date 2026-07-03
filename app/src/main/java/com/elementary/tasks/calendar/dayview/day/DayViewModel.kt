@@ -24,9 +24,8 @@ class DayViewModel(
   private val reminderRepository: ReminderRepository,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
-  private val skipReminderUseCase: SkipReminderUseCase
+  private val skipReminderUseCase: SkipReminderUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   val events: LiveData<List<EventModel>> = dayLiveData
 
   override fun onResume(owner: LifecycleOwner) {

@@ -14,9 +14,9 @@ interface PermissionFlowDelegate {
 }
 
 class PermissionFlowDelegateImpl(
-  private val activity: FragmentActivity
-) : PermissionFlowDelegate, KoinComponent {
-
+  private val activity: FragmentActivity,
+) : PermissionFlowDelegate,
+  KoinComponent {
   private val dialogues by inject<Dialogues>()
   private var _permissionFlow: PermissionFlow? = null
 
@@ -27,12 +27,13 @@ class PermissionFlowDelegateImpl(
       }
     }
 
-  private val lifecycleObserver = object : DefaultLifecycleObserver {
-    override fun onCreate(owner: LifecycleOwner) {
-      super.onCreate(owner)
-      _permissionFlow = createPermissionFlow()
+  private val lifecycleObserver =
+    object : DefaultLifecycleObserver {
+      override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        _permissionFlow = createPermissionFlow()
+      }
     }
-  }
 
   init {
     activity.lifecycle.addObserver(lifecycleObserver)
@@ -42,7 +43,5 @@ class PermissionFlowDelegateImpl(
     permissionFlow.block()
   }
 
-  private fun createPermissionFlow(): PermissionFlow {
-    return PermissionFlow(activity, dialogues)
-  }
+  private fun createPermissionFlow(): PermissionFlow = PermissionFlow(activity, dialogues)
 }

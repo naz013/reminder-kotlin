@@ -22,14 +22,11 @@ import com.github.naz013.ui.common.compose.composeView
 import com.github.naz013.ui.common.fragment.toast
 
 class DeveloperFragment : BaseSettingsFragment<DeveloperFragment.ComposeBinding>() {
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): ComposeBinding {
-    return ComposeBinding(composeView { DeveloperScreen(onResetBannersClick = ::resetBannerStates) })
-  }
+    savedInstanceState: Bundle?,
+  ): ComposeBinding = ComposeBinding(composeView { DeveloperScreen(onResetBannersClick = ::resetBannerStates) })
 
   private fun resetBannerStates() {
     prefs.isPrivacyPolicyShowed = false
@@ -40,7 +37,9 @@ class DeveloperFragment : BaseSettingsFragment<DeveloperFragment.ComposeBinding>
 
   override fun getTitle(): String = "Developer"
 
-  class ComposeBinding(private val view: ComposeView) : ViewBinding {
+  class ComposeBinding(
+    private val view: ComposeView,
+  ) : ViewBinding {
     override fun getRoot(): View = view
   }
 }
@@ -48,9 +47,10 @@ class DeveloperFragment : BaseSettingsFragment<DeveloperFragment.ComposeBinding>
 @Composable
 private fun DeveloperScreen(onResetBannersClick: () -> Unit) {
   Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .verticalScroll(rememberScrollState())
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .verticalScroll(rememberScrollState()),
   ) {
     DeveloperOption(
       title = "Reset banners state on Home Screen",
@@ -68,9 +68,10 @@ private fun DeveloperOption(
   onClick: () -> Unit,
 ) {
   ListItem(
-    modifier = Modifier
-      .fillMaxWidth()
-      .clickable(onClick = onClick),
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .clickable(onClick = onClick),
     headlineContent = { Text(text = title) },
     supportingContent = { Text(text = subtitle) },
   )

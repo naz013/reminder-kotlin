@@ -23,9 +23,8 @@ class GoogleLogin(
   private val googleTasksApi: GoogleTasksApi,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val loginCallback: LoginCallback,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {
-
   var isGoogleDriveLogged = false
     private set
     get() {
@@ -39,9 +38,10 @@ class GoogleLogin(
     }
 
   private var mode = Mode.DRIVE
-  private val resultLauncher = fragment.registerForActivityResult(
-    ActivityResultContracts.StartActivityForResult()
-  ) { processResult(it.resultCode, it.data) }
+  private val resultLauncher =
+    fragment.registerForActivityResult(
+      ActivityResultContracts.StartActivityForResult(),
+    ) { processResult(it.resultCode, it.data) }
 
   fun logOutDrive() {
     mode = Mode.DRIVE
@@ -83,10 +83,12 @@ class GoogleLogin(
     val firstScope = scopes.first()
     val restScopes = scopes.drop(1).toTypedArray()
 
-    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-      .requestScopes(firstScope, *restScopes)
-      .requestEmail()
-      .build()
+    val signInOptions =
+      GoogleSignInOptions
+        .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestScopes(firstScope, *restScopes)
+        .requestEmail()
+        .build()
     return GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
   }
 
@@ -95,10 +97,12 @@ class GoogleLogin(
     val firstScope = scopes.first()
     val restScopes = scopes.drop(1).toTypedArray()
 
-    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-      .requestScopes(firstScope, *restScopes)
-      .requestEmail()
-      .build()
+    val signInOptions =
+      GoogleSignInOptions
+        .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestScopes(firstScope, *restScopes)
+        .requestEmail()
+        .build()
     return GoogleSignIn.getClient(fragment.requireContext(), signInOptions)
   }
 
@@ -106,7 +110,10 @@ class GoogleLogin(
     loginCallback.onFail(mode)
   }
 
-  private fun processResult(resultCode: Int, data: Intent?) {
+  private fun processResult(
+    resultCode: Int,
+    data: Intent?,
+  ) {
     Logger.d(TAG, "processResult: mode=$mode, res=$resultCode, data=$data")
     if (resultCode == RESULT_OK) {
       if (data != null) {
@@ -120,12 +127,12 @@ class GoogleLogin(
   }
 
   private fun handleSignInResult(result: Intent) {
-    GoogleSignIn.getSignedInAccountFromIntent(result)
+    GoogleSignIn
+      .getSignedInAccountFromIntent(result)
       .addOnSuccessListener { googleAccount ->
         Logger.d(TAG, "Signed in as ${googleAccount.email}")
         finishLogin(googleAccount.account?.name ?: "")
-      }
-      .addOnFailureListener {
+      }.addOnFailureListener {
         Logger.d(TAG, "Sign in fail: ${it.message}")
         sendFail()
       }
@@ -159,9 +166,15 @@ class GoogleLogin(
   }
 
   interface LoginCallback {
-    fun onProgress(isLoading: Boolean, mode: Mode)
+    fun onProgress(
+      isLoading: Boolean,
+      mode: Mode,
+    )
 
-    fun onResult(isLogged: Boolean, mode: Mode)
+    fun onResult(
+      isLogged: Boolean,
+      mode: Mode,
+    )
 
     fun onFail(mode: Mode)
   }

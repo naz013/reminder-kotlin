@@ -13,14 +13,16 @@ import com.github.naz013.ui.common.databinding.DialogWithSeekAndTitleBinding
 import java.util.Locale
 
 class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>() {
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsNotesBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     initNoteColorRememberPrefs()
     initColorOpacityPrefs()
@@ -69,22 +71,19 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
       String.format(
         Locale.getDefault(),
         "%d%%",
-        prefs.noteColorOpacity
-      )
+        prefs.noteColorOpacity,
+      ),
     )
   }
 
-  override fun getTitle(): String {
-    return arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.notes)
-  }
+  override fun getTitle(): String = arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.notes)
 
-  override fun getNavigationIcon(): Int {
-    return if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
+  override fun getNavigationIcon(): Int =
+    if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
       super.getNavigationIcon()
     } else {
       R.drawable.ic_builder_clear
     }
-  }
 
   private fun showOpacityPickerDialog() {
     withActivity {

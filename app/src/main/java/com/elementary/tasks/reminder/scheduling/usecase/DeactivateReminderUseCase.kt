@@ -23,16 +23,16 @@ class DeactivateReminderUseCase(
   private val completeRelatedGoogleTaskUseCase: CompleteRelatedGoogleTaskUseCase,
   private val pauseReminderUseCase: PauseReminderUseCase,
   private val updatePermanentReminderNotificationUseCase: UpdatePermanentReminderNotificationUseCase,
-  private val eventOccurrenceRepository: EventOccurrenceRepository
+  private val eventOccurrenceRepository: EventOccurrenceRepository,
 ) {
-
   suspend operator fun invoke(reminder: Reminder): Reminder {
     Logger.d(TAG, "Deactivating reminder id=${reminder.uuId}")
-    val reminder = reminder.copy(
-      isActive = false,
-      syncState = SyncState.WaitingForUpload,
-      version = reminder.version + 1,
-    )
+    val reminder =
+      reminder.copy(
+        isActive = false,
+        syncState = SyncState.WaitingForUpload,
+        version = reminder.version + 1,
+      )
     saveReminderUseCase(reminder)
     pauseReminderUseCase(reminder)
     updatePermanentReminderNotificationUseCase()

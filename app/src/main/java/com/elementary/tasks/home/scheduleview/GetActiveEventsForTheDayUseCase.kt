@@ -46,10 +46,9 @@ class GetActiveEventsForTheDayUseCase(
   private val prefs: Prefs,
   private val resolveReminderEventActionUseCase: ResolveReminderEventActionUseCase,
 ) {
-
   suspend operator fun invoke(
     scope: CoroutineScope,
-    day: LocalDateTime
+    day: LocalDateTime,
   ): List<HomeEvent> {
     val reminders = loadReminders(day)
     val birthdays = loadBirthdays(day)
@@ -58,12 +57,13 @@ class GetActiveEventsForTheDayUseCase(
 
   private suspend fun loadReminders(day: LocalDateTime): List<HomeEvent> {
     val groupsMap = reminderGroupRepository.getAll().associateBy { it.groupUuId }
-    val reminders = reminderRepository.getAllTypesInRange(
-      active = true,
-      removed = false,
-      fromTime = dateTimeManager.getDayStart(day),
-      toTime = dateTimeManager.getDayEnd(day),
-    )
+    val reminders =
+      reminderRepository.getAllTypesInRange(
+        active = true,
+        removed = false,
+        fromTime = dateTimeManager.getDayStart(day),
+        toTime = dateTimeManager.getDayEnd(day),
+      )
     return reminders.mapNotNull { toHomeEvent(it, groupsMap[it.groupUuId]) }
   }
 
@@ -74,15 +74,18 @@ class GetActiveEventsForTheDayUseCase(
 
   private fun toHomeEvent(
     reminder: Reminder,
-    group: ReminderGroup?
+    group: ReminderGroup?,
   ): HomeEvent? {
     val type = UiReminderType(reminder.type)
     val due = uiReminderCommonAdapter.getDue(reminder, type)
     val dueDateTime = due.localDateTime ?: return null
 
-    val color = group?.groupColor?.let {
-      ThemeProvider.themedColor(contextProvider.themedContext, it)
-    }?.toColor() ?: Color.Black
+    val color =
+      group
+        ?.groupColor
+        ?.let {
+          ThemeProvider.themedColor(contextProvider.themedContext, it)
+        }?.toColor() ?: Color.Black
 
     return HomeEvent(
       id = reminder.uuId,
@@ -100,7 +103,7 @@ class GetActiveEventsForTheDayUseCase(
 
   private fun createMainText(
     type: UiReminderType,
-    reminder: Reminder
+    reminder: Reminder,
   ): String {
     val summary = reminder.summary
     return summary.ifEmpty {
@@ -109,10 +112,8 @@ class GetActiveEventsForTheDayUseCase(
     }
   }
 
-  private fun getTextFromType(
-    type: UiReminderType
-  ): String {
-    return when {
+  private fun getTextFromType(type: UiReminderType): String =
+    when {
       type.isSubTasks() -> textProvider.getText(R.string.builder_sub_tasks)
       type.isApp() -> textProvider.getText(R.string.open_app)
       type.isLink() -> textProvider.getText(R.string.open_link)
@@ -125,24 +126,22 @@ class GetActiveEventsForTheDayUseCase(
       type.isTimer() -> textProvider.getText(R.string.timer)
       else -> textProvider.getText(R.string.schedule_empty_summary)
     }
-  }
 
   private fun createSecondaryText(
     type: UiReminderType,
-    reminder: Reminder
-  ): String? {
-    return if (type.isSubTasks()) {
+    reminder: Reminder,
+  ): String? =
+    if (type.isSubTasks()) {
       formatSubTasks(reminder)
     } else {
       getTargetFromType(type, reminder)
     }
-  }
 
   private fun getTargetFromType(
     type: UiReminderType,
-    reminder: Reminder
-  ): String? {
-    return when (val target = uiReminderCommonAdapter.getTarget(reminder, type)) {
+    reminder: Reminder,
+  ): String? =
+    when (val target = uiReminderCommonAdapter.getTarget(reminder, type)) {
       is UiSmsTarget -> target.target
       is UiCallTarget -> target.target
       is UiAppTarget -> target.name ?: target.target
@@ -153,42 +152,41 @@ class GetActiveEventsForTheDayUseCase(
 
       else -> null
     }
-  }
 
   private fun getActionFromType(
     type: UiReminderType,
-    reminder: Reminder
+    reminder: Reminder,
   ): HomeEvent.EventAction? {
     val resolvedEventAction = resolveReminderEventActionUseCase(reminder) ?: return null
     return when (resolvedEventAction) {
       is ResolvedEventAction.SendSms -> {
         HomeEvent.EventAction(
           icon = HomeEvent.EventAction.SendSms,
-          value = resolvedEventAction
+          value = resolvedEventAction,
         )
       }
       is ResolvedEventAction.MakeCall -> {
         HomeEvent.EventAction(
           icon = HomeEvent.EventAction.MakeCall,
-          value = resolvedEventAction
+          value = resolvedEventAction,
         )
       }
       is ResolvedEventAction.SendEmail -> {
         HomeEvent.EventAction(
           icon = HomeEvent.EventAction.SendEmail,
-          value = resolvedEventAction
+          value = resolvedEventAction,
         )
       }
       is ResolvedEventAction.OpenApp -> {
         HomeEvent.EventAction(
           icon = HomeEvent.EventAction.OpenApp,
-          value = resolvedEventAction
+          value = resolvedEventAction,
         )
       }
       is ResolvedEventAction.OpenLink -> {
         HomeEvent.EventAction(
           icon = HomeEvent.EventAction.OpenLink,
-          value = resolvedEventAction
+          value = resolvedEventAction,
         )
       }
     }
@@ -205,23 +203,27 @@ class GetActiveEventsForTheDayUseCase(
 
   private fun toHomeEvent(
     birthday: Birthday,
-    nowDateTime: LocalDateTime = dateTimeManager.getCurrentDateTime()
+    nowDateTime: LocalDateTime = dateTimeManager.getCurrentDateTime(),
   ): HomeEvent {
     val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
     val birthdayDate = dateTimeManager.parseBirthdayDate(birthday.date) ?: LocalDate.now()
-    val futureBirthdayDateTime = modelDateTimeFormatter.getFutureBirthdayDate(
-      birthdayTime = birthTime,
-      birthdayDate = birthdayDate,
-      nowDateTime = nowDateTime,
-      birthday = birthday
-    )
-    val remainingTime = modelDateTimeFormatter.getBirthdayRemaining(
-      futureBirthdayDateTime = futureBirthdayDateTime,
-      ignoreYear = birthday.ignoreYear,
-      nowDateTime = nowDateTime
-    )
-    val color = ThemeProvider.colorBirthdayCalendar(contextProvider.context, prefs.birthdayColor)
-      .toColor()
+    val futureBirthdayDateTime =
+      modelDateTimeFormatter.getFutureBirthdayDate(
+        birthdayTime = birthTime,
+        birthdayDate = birthdayDate,
+        nowDateTime = nowDateTime,
+        birthday = birthday,
+      )
+    val remainingTime =
+      modelDateTimeFormatter.getBirthdayRemaining(
+        futureBirthdayDateTime = futureBirthdayDateTime,
+        ignoreYear = birthday.ignoreYear,
+        nowDateTime = nowDateTime,
+      )
+    val color =
+      ThemeProvider
+        .colorBirthdayCalendar(contextProvider.context, prefs.birthdayColor)
+        .toColor()
     return HomeEvent(
       id = birthday.uuId,
       text = birthday.name,
@@ -236,10 +238,11 @@ class GetActiveEventsForTheDayUseCase(
     )
   }
 
-  private fun getBirthdayAction(birthday: Birthday): HomeEvent.EventAction? {
-    return ResolvedEventAction.MakeCall(birthday.number).takeIf { birthday.number.isNotBlank() }
+  private fun getBirthdayAction(birthday: Birthday): HomeEvent.EventAction? =
+    ResolvedEventAction
+      .MakeCall(birthday.number)
+      .takeIf { birthday.number.isNotBlank() }
       ?.let { HomeEvent.EventAction(HomeEvent.EventAction.MakeCall, it) }
-  }
 
   companion object {
     private const val TAG = "GetActiveEventsForTheDayUseCase"

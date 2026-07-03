@@ -17,7 +17,6 @@ import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDate
 
 class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
-
   private lateinit var pagerAdapter: InfiniteDayViewPagerAdapter
   private var isUpdatingProgrammatically = false
 
@@ -25,19 +24,21 @@ class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
 
   private val weekAdapter = WeekAdapter { viewModel.selectDate(it.localDate) }
 
-  private fun getDate(): LocalDate {
-    return arguments?.let {
+  private fun getDate(): LocalDate =
+    arguments?.let {
       dateTimeManager.fromMillis(WeekViewFragmentArgs.fromBundle(it).date).toLocalDate()
     } ?: LocalDate.now()
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentDayViewBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     Logger.d(TAG, "On view created")
     binding.weekGridView.adapter = weekAdapter
@@ -81,29 +82,34 @@ class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
     binding.pager.setCurrentItem(viewModel.lastPosition, false)
 
     // Listen for page changes
-    binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-      override fun onPageSelected(position: Int) {
-        super.onPageSelected(position)
+    binding.pager.registerOnPageChangeCallback(
+      object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+          super.onPageSelected(position)
 
-        // Skip if we're updating programmatically
-        if (isUpdatingProgrammatically) {
-          Logger.d(TAG, "Skipping page selected - programmatic update")
-          return
+          // Skip if we're updating programmatically
+          if (isUpdatingProgrammatically) {
+            Logger.d(TAG, "Skipping page selected - programmatic update")
+            return
+          }
+
+          // Calculate the date for this position
+          val newDate = pagerAdapter.getDateForPosition(position)
+          Logger.d(TAG, "Page selected: $position, date: $newDate")
+
+          viewModel.onDateSelected(newDate)
+          viewModel.updateLastPosition(position)
         }
-
-        // Calculate the date for this position
-        val newDate = pagerAdapter.getDateForPosition(position)
-        Logger.d(TAG, "Page selected: $position, date: $newDate")
-
-        viewModel.onDateSelected(newDate)
-        viewModel.updateLastPosition(position)
-      }
-    })
+      },
+    )
   }
 
   override fun getTitle(): String = viewModel.state.value?.title ?: ""
 
-  private fun updateDate(targetDate: LocalDate, smooth: Boolean) {
+  private fun updateDate(
+    targetDate: LocalDate,
+    smooth: Boolean,
+  ) {
     Logger.d(TAG, "Update date: $targetDate, smooth: $smooth")
 
     // Calculate the position for this date

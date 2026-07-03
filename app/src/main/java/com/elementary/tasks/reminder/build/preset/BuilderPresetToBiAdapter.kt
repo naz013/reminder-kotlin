@@ -106,16 +106,11 @@ import com.github.naz013.domain.reminder.BiType.TIME
 
 class BuilderPresetToBiAdapter(
   private val biFactory: BiFactory,
-  private val biTypeToBiValue: BiTypeToBiValue
+  private val biTypeToBiValue: BiTypeToBiValue,
 ) {
+  suspend operator fun invoke(preset: RecurPreset): List<BuilderItem<*>> = preset.builderScheme.mapNotNull { tryToBuilderItem(it) }
 
-  suspend operator fun invoke(preset: RecurPreset): List<BuilderItem<*>> {
-    return preset.builderScheme.mapNotNull { tryToBuilderItem(it) }
-  }
-
-  private suspend fun tryToBuilderItem(scheme: PresetBuilderScheme): BuilderItem<*>? {
-    return runCatching { toBuilderItem(scheme) }.getOrNull()
-  }
+  private suspend fun tryToBuilderItem(scheme: PresetBuilderScheme): BuilderItem<*>? = runCatching { toBuilderItem(scheme) }.getOrNull()
 
   private suspend fun toBuilderItem(scheme: PresetBuilderScheme): BuilderItem<*>? {
     val type = scheme.type
@@ -174,13 +169,13 @@ class BuilderPresetToBiAdapter(
 
   private suspend inline fun <reified V, reified T : BuilderItem<V>> create(
     scheme: PresetBuilderScheme,
-    clazz: Class<T>
+    clazz: Class<T>,
   ): T? {
     val type = scheme.type
     return biFactory.createWithValue(
       biType = type,
       value = biTypeToBiValue(type, scheme.value),
-      clazz = clazz
+      clazz = clazz,
     )
   }
 }

@@ -19,9 +19,8 @@ class DropboxLogin(
   private val dropboxApi: DropboxApi,
   private val dropboxAuthManager: DropboxAuthManager,
   private val callback: LoginCallback,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {
-
   fun login() {
     var isIn = isAppInstalled(MARKET_APP_JUSTREMINDER_PRO)
     if (BuildParams.isPro) isIn = isAppInstalled(MARKET_APP_JUSTREMINDER)
@@ -70,17 +69,16 @@ class DropboxLogin(
     }
   }
 
-  private fun checkDialog(): Dialog {
-    return AlertDialog.Builder(activity)
+  private fun checkDialog(): Dialog =
+    AlertDialog
+      .Builder(activity)
       .setMessage(activity.getString(R.string.other_version_detected))
       .setPositiveButton(activity.getString(R.string.open)) { _, _ -> openApp() }
       .setNegativeButton(activity.getString(R.string.delete)) { _, _ -> deleteApp() }
       .setNeutralButton(activity.getString(R.string.cancel)) { dialogInterface, _ ->
         dialogInterface.dismiss()
-      }
-      .setCancelable(true)
+      }.setCancelable(true)
       .create()
-  }
 
   private fun deleteApp() {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -95,11 +93,12 @@ class DropboxLogin(
   private fun openApp() {
     val i: Intent?
     val manager = activity.packageManager
-    i = if (BuildParams.isPro) {
-      manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER)
-    } else {
-      manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER_PRO)
-    }
+    i =
+      if (BuildParams.isPro) {
+        manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER)
+      } else {
+        manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER_PRO)
+      }
     i?.addCategory(Intent.CATEGORY_LAUNCHER)
     activity.startActivity(i)
   }

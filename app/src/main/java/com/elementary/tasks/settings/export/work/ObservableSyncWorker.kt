@@ -27,11 +27,10 @@ class ObservableSyncWorker(
   context: Context,
   workerParams: WorkerParameters,
   private val dispatcherProvider: DispatcherProvider,
-  private val syncApi: SyncApi
+  private val syncApi: SyncApi,
 ) : CoroutineWorker(context, workerParams) {
-
-  override suspend fun doWork(): Result {
-    return try {
+  override suspend fun doWork(): Result =
+    try {
       Logger.i(TAG, "Starting observable sync")
       setProgress(createProgressData(true))
 
@@ -47,7 +46,6 @@ class ObservableSyncWorker(
       setProgress(createProgressData(false))
       Result.failure()
     }
-  }
 
   /**
    * Creates progress data for WorkManager progress updates.
@@ -55,29 +53,32 @@ class ObservableSyncWorker(
    * @param isInProgress Whether the backup is currently in progress
    * @return Data object containing progress state
    */
-  private fun createProgressData(isInProgress: Boolean): Data {
-    return Data.Builder()
+  private fun createProgressData(isInProgress: Boolean): Data =
+    Data
+      .Builder()
       .putBoolean(KEY_IS_IN_PROGRESS, isInProgress)
       .build()
-  }
 
   companion object {
     private const val TAG = "ObservableSyncWorker"
     const val KEY_IS_IN_PROGRESS = "is_in_progress"
+
     /**
      * Schedules the observable sync work with WorkManager.
      *
      * @param context Application context
      */
     fun schedule(context: Context) {
-      val work = OneTimeWorkRequest.Builder(ObservableSyncWorker::class.java)
-        .addTag(TAG)
-        .setConstraints(
-          Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        )
-        .build()
+      val work =
+        OneTimeWorkRequest
+          .Builder(ObservableSyncWorker::class.java)
+          .addTag(TAG)
+          .setConstraints(
+            Constraints
+              .Builder()
+              .setRequiredNetworkType(NetworkType.CONNECTED)
+              .build(),
+          ).build()
       WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, work)
     }
 

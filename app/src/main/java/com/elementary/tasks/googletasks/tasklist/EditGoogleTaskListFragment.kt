@@ -26,32 +26,31 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEditBinding>() {
-
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val viewModel by viewModel<EditGoogleTaskListViewModel> { parametersOf(arguments) }
 
-  override fun getTitle(): String {
-    return if (viewModel.hasId()) {
+  override fun getTitle(): String =
+    if (viewModel.hasId()) {
       getString(R.string.edit_task_list)
     } else {
       getString(R.string.new_tasks_list)
     }
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentGoogleTaskListEditBinding {
-    return FragmentGoogleTaskListEditBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentGoogleTaskListEditBinding = FragmentGoogleTaskListEditBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the Google Task List edit screen for id: ${viewModel.listId}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     onProgressChanged(false)
 
@@ -61,7 +60,7 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
         R.color.pureWhite
       } else {
         R.color.pureBlack
-      }
+      },
     )
     binding.colorSlider.setListener { position, _ ->
       viewModel.onColorChanged(position)
@@ -90,7 +89,7 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
         val isInProgress = viewModel.isInProgress.value ?: false
         menu.enableOrDisableItem(R.id.action_delete, !isInProgress)
         menu.enableOrDisableItem(R.id.action_add, !isInProgress)
-      }
+      },
     )
 
     initViewModel()
@@ -148,19 +147,20 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
     viewModel.save(
       listName = listName,
       color = binding.colorSlider.selectedItem,
-      isDefault = binding.defaultCheck.isChecked
+      isDefault = binding.defaultCheck.isChecked,
     )
   }
 
   private fun deleteDialog() {
-    dialogues.getMaterialDialog(requireContext())
+    dialogues
+      .getMaterialDialog(requireContext())
       .setMessage(getString(R.string.delete_this_list))
       .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
         dialog.dismiss()
         viewModel.deleteGoogleTaskList()
-      }
-      .setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-      .create().show()
+      }.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
+      .create()
+      .show()
   }
 
   private fun doIfPossible(f: () -> Unit) {

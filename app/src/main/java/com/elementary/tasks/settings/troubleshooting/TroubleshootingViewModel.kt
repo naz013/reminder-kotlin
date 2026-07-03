@@ -20,9 +20,8 @@ class TroubleshootingViewModel(
   private val packageManagerWrapper: PackageManagerWrapper,
   private val featureManager: FeatureManager,
   private val contextProvider: ContextProvider,
-  private val cacheUtil: CacheUtil
+  private val cacheUtil: CacheUtil,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val powerManager = systemServiceProvider.providePowerManager()
 
   private val _hideBatteryOptimizationCard = mutableLiveDataOf<Boolean>()
@@ -37,9 +36,7 @@ class TroubleshootingViewModel(
   private val _sendLogFile = mutableLiveDataOf<File>()
   val sendLogFile = _sendLogFile.toSingleEvent()
 
-  fun packageName(): String {
-    return packageManagerWrapper.getPackageName()
-  }
+  fun packageName(): String = packageManagerWrapper.getPackageName()
 
   fun sendLogs() {
     val logFile = getLogFile() ?: return
@@ -64,15 +61,14 @@ class TroubleshootingViewModel(
   }
 
   private fun checkLogs() {
-    val enabled = featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) &&
-      hasLogFiles()
+    val enabled =
+      featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) &&
+        hasLogFiles()
     Logger.d(TAG, "Logging is $enabled")
     _showSendLogs.postValue(enabled)
   }
 
-  private fun hasLogFiles(): Boolean {
-    return getLogFile() != null
-  }
+  private fun hasLogFiles(): Boolean = getLogFile() != null
 
   private fun checkBatteryOptimization() {
     val optimizationStatus = powerManager?.isIgnoringBatteryOptimizations(packageName())

@@ -12,15 +12,18 @@ class ForceUploadWorker(
   context: Context,
   workerParams: WorkerParameters,
   private val dispatcherProvider: DispatcherProvider,
-  private val syncApi: SyncApi
+  private val syncApi: SyncApi,
 ) : CoroutineWorker(context, workerParams) {
-
   override suspend fun doWork(): Result {
-    val dataType = inputData.getString(WorkerData.DATA_TYPE)
-      ?.takeIf { it.isNotEmpty() }
-      ?.let { DataType.valueOf(it) }
-    val itemId = inputData.getString(WorkerData.ITEM_ID)
-      ?.takeIf { it.isNotEmpty() }
+    val dataType =
+      inputData
+        .getString(WorkerData.DATA_TYPE)
+        ?.takeIf { it.isNotEmpty() }
+        ?.let { DataType.valueOf(it) }
+    val itemId =
+      inputData
+        .getString(WorkerData.ITEM_ID)
+        ?.takeIf { it.isNotEmpty() }
     withContext(dispatcherProvider.io()) {
       if (dataType != null) {
         if (itemId != null) {

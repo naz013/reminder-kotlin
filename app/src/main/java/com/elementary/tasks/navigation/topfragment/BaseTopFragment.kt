@@ -17,4 +17,6 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
  * @param B The ViewBinding type for this fragment
  */
 @Deprecated("Use RootFragment instead")
-abstract class BaseTopFragment<B : ViewBinding> : BaseNavigationFragment<B>(), RootFragment
+abstract class BaseTopFragment<B : ViewBinding> :
+  BaseNavigationFragment<B>(),
+  RootFragment

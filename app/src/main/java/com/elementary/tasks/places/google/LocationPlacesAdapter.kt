@@ -5,18 +5,17 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.ui.common.theme.ThemeProvider
 import com.elementary.tasks.core.utils.ui.DrawableHelper
-import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemLocationBinding
+import com.github.naz013.domain.Reminder
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.view.inflater
 
 class LocationPlacesAdapter(
-  private val themeUtil: ThemeProvider
+  private val themeUtil: ThemeProvider,
 ) : RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder>() {
-
   private val dataList = ArrayList<Reminder>()
   var actionsListener: ActionsListener<Reminder>? = null
 
@@ -27,10 +26,10 @@ class LocationPlacesAdapter(
   }
 
   inner class ViewHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
   ) : HolderBinding<ListItemLocationBinding>(
-    ListItemLocationBinding.inflate(parent.inflater(), parent, false)
-  ) {
+      ListItemLocationBinding.inflate(parent.inflater(), parent, false),
+    ) {
     fun bind(item: Reminder) {
       val place = item.places[0]
       var name = place.name
@@ -52,17 +51,27 @@ class LocationPlacesAdapter(
     }
   }
 
-  fun loadMarker(view: ImageView, color: Int) {
-    DrawableHelper.withContext(view.context)
+  fun loadMarker(
+    view: ImageView,
+    color: Int,
+  ) {
+    DrawableHelper
+      .withContext(view.context)
       .withDrawable(R.drawable.ic_fluent_place)
       .withColor(themeUtil.getMarkerLightColor(color))
       .tint()
       .applyTo(view)
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ) = ViewHolder(parent)
 
-  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: ViewHolder,
+    position: Int,
+  ) {
     holder.bind(dataList[position])
   }
 

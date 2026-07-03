@@ -11,7 +11,6 @@ import org.threeten.bp.LocalDateTime
  * and therefore don't have future occurrences.
  */
 class NoReminderOccurrenceCalculator : ReminderOccurrenceCalculator {
-
   /**
    * Calculates occurrences for a reminder with no scheduling.
    *
@@ -23,7 +22,7 @@ class NoReminderOccurrenceCalculator : ReminderOccurrenceCalculator {
   override suspend fun calculateOccurrences(
     reminder: Reminder,
     fromDateTime: LocalDateTime,
-    numberOfOccurrences: Int
+    numberOfOccurrences: Int,
   ): List<LocalDateTime> {
     Logger.d(TAG, "calculateOccurrences: NoReminderOccurrenceCalculator - no scheduled occurrences")
 

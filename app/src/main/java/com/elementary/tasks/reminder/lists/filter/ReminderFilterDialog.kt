@@ -46,7 +46,6 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
 class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
-
   private val viewModel by viewModel<ReminderFilterDialogViewModel>()
 
   @Composable
@@ -66,11 +65,14 @@ class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
       },
       onClearAll = { viewModel.clearAllFilters() },
       onApply = { viewModel.onApplyFilters() },
-      onDismiss = { dismiss() }
+      onDismiss = { dismiss() },
     )
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     Logger.i(TAG, "On view created.")
 
@@ -92,9 +94,10 @@ class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
   private fun initViewModel() {
     viewModel.applyFilters.observeEvent(viewLifecycleOwner) { appliedFilters ->
       Logger.i(TAG, "Filters applied: ${appliedFilters.selectedFilters.size}")
-      val result = Bundle().apply {
-        putParcelable(APPLIED_FILTERS_KEY, appliedFilters)
-      }
+      val result =
+        Bundle().apply {
+          putParcelable(APPLIED_FILTERS_KEY, appliedFilters)
+        }
       parentFragmentManager.setFragmentResult(REQUEST_KEY, result)
       dismiss()
     }
@@ -122,21 +125,20 @@ class ReminderFilterDialog : ComposeBottomSheetDialogFragment() {
     const val REQUEST_KEY = "filter_dialog_request"
     private const val APPLIED_FILTERS_KEY = "applied_filters"
 
-    fun getAppliedFiltersFromResult(result: Bundle): AppliedFilters? {
-      return result.readParcelable(APPLIED_FILTERS_KEY, AppliedFilters::class.java)
-    }
+    fun getAppliedFiltersFromResult(result: Bundle): AppliedFilters? =
+      result.readParcelable(APPLIED_FILTERS_KEY, AppliedFilters::class.java)
 
     fun newInstance(
       filters: Filters,
-      title: String
-    ): ReminderFilterDialog {
-      return ReminderFilterDialog().apply {
-        arguments = Bundle().apply {
-          putParcelable(ARG_FILTERS, filters)
-          putString(ARG_TITLE, title)
-        }
+      title: String,
+    ): ReminderFilterDialog =
+      ReminderFilterDialog().apply {
+        arguments =
+          Bundle().apply {
+            putParcelable(ARG_FILTERS, filters)
+            putString(ARG_TITLE, title)
+          }
       }
-    }
   }
 }
 
@@ -149,25 +151,26 @@ fun FilterDialogContent(
   onDateRangeChanged: (groupId: String, startDate: LocalDate?, endDate: LocalDate?) -> Unit,
   onClearAll: () -> Unit,
   onApply: () -> Unit,
-  onDismiss: () -> Unit
+  onDismiss: () -> Unit,
 ) {
   Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(16.dp)
+    modifier =
+      Modifier
+        .fillMaxSize()
+        .padding(16.dp),
   ) {
     // Header with action buttons
     Row(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically
+      verticalAlignment = Alignment.CenterVertically,
     ) {
       PrimaryIconButton(
         icon = AppIcons.Fluent.Dismiss,
         contentDescription = stringResource(R.string.cancel),
         onClick = onDismiss,
         color = MaterialTheme.colorScheme.errorContainer,
-        iconColor = MaterialTheme.colorScheme.onErrorContainer
+        iconColor = MaterialTheme.colorScheme.onErrorContainer,
       )
       Spacer(modifier = Modifier.width(8.dp))
       Text(
@@ -184,19 +187,20 @@ fun FilterDialogContent(
         contentDescription = stringResource(R.string.filters_apply),
         onClick = onApply,
         color = MaterialTheme.colorScheme.primaryContainer,
-        iconColor = MaterialTheme.colorScheme.onPrimaryContainer
+        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
       )
     }
 
     HorizontalDivider(
       modifier = Modifier.padding(vertical = 8.dp),
-      color = MaterialTheme.colorScheme.outlineVariant
+      color = MaterialTheme.colorScheme.outlineVariant,
     )
 
     // Filter groups
     Column(
-      modifier = Modifier
-        .verticalScroll(rememberScrollState())
+      modifier =
+        Modifier
+          .verticalScroll(rememberScrollState()),
     ) {
       filterGroups.forEach { group ->
         FilterGroupSection(
@@ -206,7 +210,7 @@ fun FilterDialogContent(
           },
           onDateRangeChanged = { startDate, endDate ->
             onDateRangeChanged(group.id, startDate, endDate)
-          }
+          },
         )
       }
     }
@@ -218,18 +222,19 @@ fun FilterDialogContent(
 fun FilterGroupSection(
   group: UiFilterGroup,
   onFilterToggle: (String) -> Unit,
-  onDateRangeChanged: (startDate: LocalDate?, endDate: LocalDate?) -> Unit
+  onDateRangeChanged: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
 ) {
   Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(vertical = 8.dp)
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .padding(vertical = 8.dp),
   ) {
     Text(
       text = group.title,
       style = MaterialTheme.typography.titleMedium,
       color = MaterialTheme.colorScheme.onSurface,
-      modifier = Modifier.padding(bottom = 8.dp)
+      modifier = Modifier.padding(bottom = 8.dp),
     )
 
     when (val filter = group.filter) {
@@ -237,7 +242,7 @@ fun FilterGroupSection(
         FlowRow(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.spacedBy(8.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp)
+          verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
           filter.chips.forEach { chip ->
             FilterChip(
@@ -246,9 +251,9 @@ fun FilterGroupSection(
               label = {
                 Text(
                   text = chip.label,
-                  style = MaterialTheme.typography.labelLarge
+                  style = MaterialTheme.typography.labelLarge,
                 )
-              }
+              },
             )
           }
         }
@@ -256,7 +261,7 @@ fun FilterGroupSection(
       is UiDateRangeFilter -> {
         DateRangeFilterSection(
           filter = filter,
-          onDateRangeChanged = onDateRangeChanged
+          onDateRangeChanged = onDateRangeChanged,
         )
       }
     }
@@ -266,23 +271,39 @@ fun FilterGroupSection(
 @Composable
 fun DateRangeFilterSection(
   filter: UiDateRangeFilter,
-  onDateRangeChanged: (startDate: LocalDate?, endDate: LocalDate?) -> Unit
+  onDateRangeChanged: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
 ) {
   val dateFormatter = remember { DateTimeFormatter.ofPattern("yyyy-MM-dd") }
 
   // Convert LocalDate to days since minDate for slider
   val minDays = 0f
-  val maxDays = remember(filter.minDate, filter.maxDate) {
-    filter.minDate.until(filter.maxDate).days.toFloat()
-  }
+  val maxDays =
+    remember(filter.minDate, filter.maxDate) {
+      filter.minDate
+        .until(filter.maxDate)
+        .days
+        .toFloat()
+    }
 
-  val initialStartDays = remember(filter.startDate, filter.minDate) {
-    filter.startDate?.let { filter.minDate.until(it).days.toFloat() } ?: minDays
-  }
+  val initialStartDays =
+    remember(filter.startDate, filter.minDate) {
+      filter.startDate?.let {
+        filter.minDate
+          .until(it)
+          .days
+          .toFloat()
+      } ?: minDays
+    }
 
-  val initialEndDays = remember(filter.endDate, filter.minDate) {
-    filter.endDate?.let { filter.minDate.until(it).days.toFloat() } ?: maxDays
-  }
+  val initialEndDays =
+    remember(filter.endDate, filter.minDate) {
+      filter.endDate?.let {
+        filter.minDate
+          .until(it)
+          .days
+          .toFloat()
+      } ?: maxDays
+    }
 
   var sliderRange by remember(initialStartDays, initialEndDays) {
     mutableStateOf(initialStartDays..initialEndDays)
@@ -290,22 +311,22 @@ fun DateRangeFilterSection(
 
   Column(
     modifier = Modifier.fillMaxWidth(),
-    verticalArrangement = Arrangement.spacedBy(8.dp)
+    verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     // Display selected range
     Row(
       modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween
+      horizontalArrangement = Arrangement.SpaceBetween,
     ) {
       Text(
         text = filter.minDate.plusDays(sliderRange.start.toLong()).format(dateFormatter),
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface,
       )
       Text(
         text = filter.minDate.plusDays(sliderRange.endInclusive.toLong()).format(dateFormatter),
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface,
       )
     }
 
@@ -316,21 +337,22 @@ fun DateRangeFilterSection(
         sliderRange = newRange
       },
       onValueChangeFinished = {
-        val startDate = if (sliderRange.start >= minDays) {
-          filter.minDate.plusDays(sliderRange.start.toLong())
-        } else {
-          null
-        }
-        val endDate = if (sliderRange.endInclusive <= maxDays) {
-          filter.minDate.plusDays(sliderRange.endInclusive.toLong())
-        } else {
-          null
-        }
+        val startDate =
+          if (sliderRange.start >= minDays) {
+            filter.minDate.plusDays(sliderRange.start.toLong())
+          } else {
+            null
+          }
+        val endDate =
+          if (sliderRange.endInclusive <= maxDays) {
+            filter.minDate.plusDays(sliderRange.endInclusive.toLong())
+          } else {
+            null
+          }
         onDateRangeChanged(startDate, endDate)
       },
       valueRange = minDays..maxDays,
-      modifier = Modifier.fillMaxWidth()
+      modifier = Modifier.fillMaxWidth(),
     )
   }
 }
-

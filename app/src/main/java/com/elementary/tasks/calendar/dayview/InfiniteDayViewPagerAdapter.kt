@@ -11,7 +11,6 @@ class InfiniteDayViewPagerAdapter(
   fragment: Fragment,
   private val baseDate: LocalDate = LocalDate.now(),
 ) : FragmentStateAdapter(fragment) {
-
   override fun createFragment(position: Int): Fragment {
     // Calculate the date offset from the center position
     val offset = position - CENTER_POSITION
@@ -20,9 +19,7 @@ class InfiniteDayViewPagerAdapter(
     return DayEventsListFragment.newInstance(DayPagerItem(date))
   }
 
-  override fun getItemCount(): Int {
-    return Int.MAX_VALUE
-  }
+  override fun getItemCount(): Int = Int.MAX_VALUE
 
   /**
    * Get the date for a given position
@@ -36,15 +33,18 @@ class InfiniteDayViewPagerAdapter(
    * Get the position for a given date
    */
   fun getPositionForDate(targetDate: LocalDate): Int {
-    val daysDiff = ChronoUnit.DAYS.between(
-      LocalDate.of(baseDate.year, baseDate.monthValue, baseDate.dayOfMonth),
-      LocalDate.of(targetDate.year, targetDate.monthValue, targetDate.dayOfMonth)
-    ).toInt()
+    val daysDiff =
+      ChronoUnit.DAYS
+        .between(
+          LocalDate.of(baseDate.year, baseDate.monthValue, baseDate.dayOfMonth),
+          LocalDate.of(targetDate.year, targetDate.monthValue, targetDate.dayOfMonth),
+        ).toInt()
     return CENTER_POSITION + daysDiff
   }
 
   companion object {
     private const val TAG = "InfiniteDayViewPagerAdapter"
+
     // Center position for infinite scrolling
     const val CENTER_POSITION = Int.MAX_VALUE / 2
   }

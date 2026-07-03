@@ -10,7 +10,6 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import org.koin.android.ext.android.inject
 
 abstract class BaseSubEventsFragment<B : ViewBinding> : BindingFragment<B>() {
-
   protected var fragmentMenuController: FragmentMenuController? = null
 
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
@@ -32,7 +31,7 @@ abstract class BaseSubEventsFragment<B : ViewBinding> : BindingFragment<B>() {
   protected fun addMenu(
     menuRes: Int?,
     onMenuItemListener: (MenuItem) -> Boolean,
-    menuModifier: ((Menu) -> Unit)? = null
+    menuModifier: ((Menu) -> Unit)? = null,
   ) {
     fragmentMenuController?.addMenu(menuRes, onMenuItemListener, menuModifier)
   }

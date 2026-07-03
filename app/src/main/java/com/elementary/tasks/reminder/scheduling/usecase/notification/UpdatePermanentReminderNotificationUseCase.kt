@@ -11,7 +11,6 @@ class UpdatePermanentReminderNotificationUseCase(
   private val prefs: Prefs,
   private val notifier: Notifier,
 ) {
-
   suspend operator fun invoke() {
     if (prefs.isSbNotificationEnabled) {
       notifier.sendShowReminderPermanent()

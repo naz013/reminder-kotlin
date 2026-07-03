@@ -10,16 +10,15 @@ import com.github.naz013.sync.DataType
 
 class SavePlaceUseCase(
   private val placeRepository: PlaceRepository,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {
-
   suspend operator fun invoke(place: Place) {
     placeRepository.save(place)
     placeRepository.updateSyncState(place.id, SyncState.WaitingForUpload)
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.Places,
-      id = place.id
+      id = place.id,
     )
     Logger.i(TAG, "Saved place with id = ${place.id}")
   }

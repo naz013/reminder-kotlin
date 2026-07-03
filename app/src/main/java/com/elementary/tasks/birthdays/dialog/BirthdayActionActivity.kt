@@ -19,7 +19,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class BirthdayActionActivity : ComposeActivity() {
-
   private val viewModel by viewModel<BirthdayActionViewModel> { parametersOf(getId(), isTest()) }
   private val permissionFlowDelegate by lazy { PermissionFlowDelegateImpl(this) }
 
@@ -30,13 +29,15 @@ class BirthdayActionActivity : ComposeActivity() {
 
   @Composable
   override fun ActivityContent() {
-    val viewModel: BirthdayActionViewModel = koinViewModel {
-      parametersOf(getId(), isTest())
-    }
+    val viewModel: BirthdayActionViewModel =
+      koinViewModel {
+        parametersOf(getId(), isTest())
+      }
     BirthdayActionScreen(viewModel = viewModel)
   }
 
   private fun getId() = intent.getStringExtra(IntentKeys.INTENT_ID) ?: ""
+
   private fun isTest() = intent.getBooleanExtra(ARG_TEST, false)
 
   private fun initViewModel() {
@@ -75,18 +76,23 @@ class BirthdayActionActivity : ComposeActivity() {
     private const val TAG = "BirthdayActionActivity"
     private const val ARG_TEST = "arg_test"
 
-    fun mockTest(context: Context, id: String) {
+    fun mockTest(
+      context: Context,
+      id: String,
+    ) {
       context.startActivity(BirthdayActionActivity::class.java) {
         putExtra(ARG_TEST, true)
         putExtra(IntentKeys.INTENT_ID, id)
       }
     }
 
-    fun getLaunchIntent(context: Context, id: String): Intent {
-      return context.buildIntent(BirthdayActionActivity::class.java) {
+    fun getLaunchIntent(
+      context: Context,
+      id: String,
+    ): Intent =
+      context.buildIntent(BirthdayActionActivity::class.java) {
         putExtra(IntentKeys.INTENT_ID, id)
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
       }
-    }
   }
 }

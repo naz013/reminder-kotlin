@@ -9,5 +9,5 @@ data class UiGoogleTaskPreview(
   val completedDate: String?,
   val isCompleted: Boolean,
   val taskListName: String,
-  val taskListColor: Int
+  val taskListColor: Int,
 )

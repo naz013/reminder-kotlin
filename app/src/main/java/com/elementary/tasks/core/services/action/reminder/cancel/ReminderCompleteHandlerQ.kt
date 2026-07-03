@@ -7,9 +7,8 @@ import com.github.naz013.domain.Reminder
 
 class ReminderCompleteHandlerQ(
   private val notifier: Notifier,
-  private val completeReminderUseCase: CompleteReminderUseCase
+  private val completeReminderUseCase: CompleteReminderUseCase,
 ) : ActionHandler<Reminder> {
-
   override suspend fun handle(data: Reminder) {
     completeReminderUseCase(data)
     notifier.cancel(data.uniqueId)

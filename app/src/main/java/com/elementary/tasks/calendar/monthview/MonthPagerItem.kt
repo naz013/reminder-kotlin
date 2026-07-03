@@ -5,5 +5,5 @@ import org.threeten.bp.LocalDate
 data class MonthPagerItem(
   val monthValue: Int,
   val year: Int,
-  val date: LocalDate
+  val date: LocalDate,
 )

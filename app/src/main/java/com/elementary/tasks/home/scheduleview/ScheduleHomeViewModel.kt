@@ -43,7 +43,6 @@ class ScheduleHomeViewModel(
   private val whatsNewManager: WhatsNewManager,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   val homeScreenState: StateFlow<HomeScreenState> field = MutableStateFlow(HomeScreenState())
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
@@ -143,12 +142,15 @@ class ScheduleHomeViewModel(
     }
   }
 
-  fun onEventActionClicked(context: Context, eventAction: HomeEvent.EventAction) {
+  fun onEventActionClicked(
+    context: Context,
+    eventAction: HomeEvent.EventAction,
+  ) {
     Logger.i(
       TAG,
       "On event action clicked: type=${eventAction::class.java.simpleName}, target=${
         Logger.private(eventAction.toString())
-      }"
+      }",
     )
     dispatchEventActionUseCase(context, eventAction.value)
   }
@@ -163,19 +165,20 @@ class ScheduleHomeViewModel(
       it.copy(
         greeting = getGreetingTextUseCase(),
         headerNavigationItems = emptyList(),
-        addMenuItems = if (googleTasksAuthManager.isAuthorized()) {
-          EventType.entries
-        } else {
-          listOf(EventType.Reminder, EventType.Birthday, EventType.Note)
-        },
-        bannerState = getBannerState()
+        addMenuItems =
+          if (googleTasksAuthManager.isAuthorized()) {
+            EventType.entries
+          } else {
+            listOf(EventType.Reminder, EventType.Birthday, EventType.Note)
+          },
+        bannerState = getBannerState(),
       )
     }
     viewModelScope.launch(dispatcherProvider.io()) {
       val items = getNavigationItemsUseCase(this, LocalDateTime.now())
       homeScreenState.update {
         it.copy(
-          headerNavigationItems = items
+          headerNavigationItems = items,
         )
       }
     }
@@ -186,7 +189,7 @@ class ScheduleHomeViewModel(
       Logger.d(TAG, "Loaded ${sections.size} sections")
       homeScreenState.update {
         it.copy(
-          listState = if (sections.isEmpty()) ListState.Empty else ListState.Ready(sections)
+          listState = if (sections.isEmpty()) ListState.Empty else ListState.Ready(sections),
         )
       }
     }
@@ -209,28 +212,48 @@ class ScheduleHomeViewModel(
   }
 
   sealed interface NavigationEvent {
-    data class OpenReminderDetails(val uuid: String) : NavigationEvent
-    data class OpenBirthdayDetails(val uuid: String) : NavigationEvent
+    data class OpenReminderDetails(
+      val uuid: String,
+    ) : NavigationEvent
+
+    data class OpenBirthdayDetails(
+      val uuid: String,
+    ) : NavigationEvent
+
     data object OpenSettings : NavigationEvent
+
     data class ShowEventTypeSelection(
-      val types: List<EventType>
+      val types: List<EventType>,
     ) : NavigationEvent
 
     data object OpenCreateReminder : NavigationEvent
+
     data object OpenCreateBirthday : NavigationEvent
+
     data object OpenCreateGoogleTask : NavigationEvent
+
     data object OpenCreateNote : NavigationEvent
+
     data object OpenEvents : NavigationEvent
+
     data object OpenCalendar : NavigationEvent
+
     data object OpenNotes : NavigationEvent
+
     data object OpenGoogleTasks : NavigationEvent
+
     data object OpenGroups : NavigationEvent
+
     data object OpenPrivacy : NavigationEvent
+
     data object OpenCloudDrives : NavigationEvent
+
     data object OpenWhatsNew : NavigationEvent
   }
 
-  enum class EventType(@param:StringRes val title: Int) {
+  enum class EventType(
+    @param:StringRes val title: Int,
+  ) {
     Reminder(R.string.add_reminder_menu),
     Birthday(R.string.add_birthday),
     GoogleTask(R.string.add_google_task),

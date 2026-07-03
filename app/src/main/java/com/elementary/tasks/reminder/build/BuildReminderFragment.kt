@@ -42,34 +42,31 @@ class BuildReminderFragment :
   BaseToolbarFragment<FragmentReminderBuilderBinding>(),
   SelectorDialogCallback,
   ValueDialogCallback {
-
   private val viewModel by viewModel<BuildReminderViewModel> { parametersOf(arguments) }
   private val reviewsApi by inject<ReviewsApi>()
   private val featureManager by inject<FeatureManager>()
 
-  private val builderAdapter = BuilderAdapter(
-    onItemClickListener = { position, item ->
-      viewModel.onItemEditedClicked(position, item.builderItem)
-    },
-    onItemRemove = { position, item ->
-      viewModel.removeItem(position, item.builderItem)
+  private val builderAdapter =
+    BuilderAdapter(
+      onItemClickListener = { position, item ->
+        viewModel.onItemEditedClicked(position, item.builderItem)
+      },
+      onItemRemove = { position, item ->
+        viewModel.removeItem(position, item.builderItem)
+      },
+    )
+  private val builderConfigureLauncher =
+    BuilderConfigureActivity.BuilderConfigureLauncher(this) {
+      viewModel.onConfigurationChanged()
     }
-  )
-  private val builderConfigureLauncher = BuilderConfigureActivity.BuilderConfigureLauncher(this) {
-    viewModel.onConfigurationChanged()
-  }
 
-  override fun getTitle(): String {
-    return ""
-  }
+  override fun getTitle(): String = ""
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentReminderBuilderBinding {
-    return FragmentReminderBuilderBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentReminderBuilderBinding = FragmentReminderBuilderBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -78,7 +75,10 @@ class BuildReminderFragment :
     ValueDialogCommunicator.addCallback(this)
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.builderList.layoutManager = LinearLayoutManager(context)
     binding.builderList.adapter = builderAdapter
@@ -129,7 +129,7 @@ class BuildReminderFragment :
               navigate(
                 R.id.reminderHelpFragment,
                 null,
-                NavigationAnimations.inDepthNavOptions()
+                NavigationAnimations.inDepthNavOptions(),
               )
             }
             true
@@ -141,7 +141,7 @@ class BuildReminderFragment :
       menuModifier = { menu ->
         menu.getItem(0)?.isEnabled = viewModel.canSave.value ?: false
         menu.getItem(1)?.isVisible = viewModel.canRemove
-      }
+      },
     )
 
     initViewModel()
@@ -166,7 +166,8 @@ class BuildReminderFragment :
       }
     }
     viewModel.showEditDialog.observeEvent(viewLifecycleOwner) { pair ->
-      ValueDialog.newInstance(pair.first)
+      ValueDialog
+        .newInstance(pair.first)
         .show(parentFragmentManager, ValueDialog.TAG)
     }
     viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
@@ -233,20 +234,18 @@ class BuildReminderFragment :
 
   private fun askCopySaving() {
     if (viewModel.isFromFile && viewModel.hasSameInDb) {
-      dialogues.getMaterialDialog(requireContext())
+      dialogues
+        .getMaterialDialog(requireContext())
         .setMessage(R.string.same_reminder_message)
         .setPositiveButton(R.string.keep) { dialogInterface, _ ->
           dialogInterface.dismiss()
           save(true)
-        }
-        .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+        }.setNegativeButton(R.string.replace) { dialogInterface, _ ->
           dialogInterface.dismiss()
           save()
-        }
-        .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+        }.setNeutralButton(R.string.cancel) { dialogInterface, _ ->
           dialogInterface.dismiss()
-        }
-        .create()
+        }.create()
         .show()
     } else {
       save()
@@ -265,7 +264,10 @@ class BuildReminderFragment :
     viewModel.onPresetSelected(uiPresetList)
   }
 
-  override fun onValueChanged(position: Int, builderItem: BuilderItem<*>) {
+  override fun onValueChanged(
+    position: Int,
+    builderItem: BuilderItem<*>,
+  ) {
     viewModel.updateValue(position, builderItem)
   }
 
@@ -274,17 +276,18 @@ class BuildReminderFragment :
    * Determines the app source (FREE or PRO) based on BuildParams.
    */
   private fun showReviewDialog(title: String) {
-    val appSource = if (BuildParams.isPro) {
-      AppSource.PRO
-    } else {
-      AppSource.FREE
-    }
+    val appSource =
+      if (BuildParams.isPro) {
+        AppSource.PRO
+      } else {
+        AppSource.FREE
+      }
 
     reviewsApi.showFeedbackForm(
       context = requireContext(),
       title = title,
       appSource = appSource,
-      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS)
+      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
     )
   }
 

@@ -8,12 +8,12 @@ class MoveReminderToArchiveUseCase(
   private val reminderRepository: ReminderRepository,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
 ) {
-
   suspend operator fun invoke(id: String) {
-    val reminder = reminderRepository.getById(id) ?: run {
-      Logger.w(TAG, "Reminder with id = $id not found")
-      return
-    }
+    val reminder =
+      reminderRepository.getById(id) ?: run {
+        Logger.w(TAG, "Reminder with id = $id not found")
+        return
+      }
     reminder.isRemoved = true
     deactivateReminderUseCase(reminder)
     Logger.i(TAG, "Moved reminder with id = $id to archive")

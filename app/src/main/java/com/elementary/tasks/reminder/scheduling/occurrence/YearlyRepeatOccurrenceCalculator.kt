@@ -14,7 +14,6 @@ import org.threeten.bp.LocalDateTime
 class YearlyRepeatOccurrenceCalculator(
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderOccurrenceCalculator {
-
   /**
    * Calculates occurrences for a yearly repeating reminder.
    *
@@ -26,7 +25,7 @@ class YearlyRepeatOccurrenceCalculator(
   override suspend fun calculateOccurrences(
     reminder: Reminder,
     fromDateTime: LocalDateTime,
-    numberOfOccurrences: Int
+    numberOfOccurrences: Int,
   ): List<LocalDateTime> {
     // Validate input
     if (numberOfOccurrences <= 0) {
@@ -40,11 +39,12 @@ class YearlyRepeatOccurrenceCalculator(
     }
 
     // Calculate the remaining limit
-    val remainingLimit = if (reminder.isLimited()) {
-      maxOf(reminder.repeatLimit - reminder.eventCount.toInt(), 0)
-    } else {
-      Int.MAX_VALUE
-    }
+    val remainingLimit =
+      if (reminder.isLimited()) {
+        maxOf(reminder.repeatLimit - reminder.eventCount.toInt(), 0)
+      } else {
+        Int.MAX_VALUE
+      }
 
     val maxOccurrences = minOf(numberOfOccurrences, remainingLimit)
 
@@ -57,12 +57,13 @@ class YearlyRepeatOccurrenceCalculator(
     var startDateTime = fromDateTime
 
     repeat(maxOccurrences) {
-      val nextOccurrence = recurrenceCalculator.getNextYearDayDateTime(
-        eventDateTime = startDateTime,
-        monthOfYear = reminder.dayOfMonth,
-        dayOfMonth = reminder.monthOfYear,
-        interval = reminder.repeatInterval,
-      )
+      val nextOccurrence =
+        recurrenceCalculator.getNextYearDayDateTime(
+          eventDateTime = startDateTime,
+          monthOfYear = reminder.dayOfMonth,
+          dayOfMonth = reminder.monthOfYear,
+          interval = reminder.repeatInterval,
+        )
 
       occurrences.add(nextOccurrence)
       startDateTime = nextOccurrence
@@ -71,6 +72,7 @@ class YearlyRepeatOccurrenceCalculator(
     Logger.d(TAG, "calculateOccurrences: generated ${occurrences.size} occurrences")
     return occurrences
   }
+
   companion object {
     private const val TAG = "YearlyRepeatOccurrCalc"
   }

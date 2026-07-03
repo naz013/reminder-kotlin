@@ -15,9 +15,8 @@ class PauseReminderUseCase(
   private val notifier: Notifier,
   private val jobScheduler: JobScheduler,
   private val stopLocationTrackingUseCase: StopLocationTrackingUseCase,
-  private val strategyResolver: BehaviorStrategyResolver
+  private val strategyResolver: BehaviorStrategyResolver,
 ) {
-
   suspend operator fun invoke(reminder: Reminder) {
     notifier.cancel(reminder.uniqueId)
     jobScheduler.cancelReminder(reminder.uniqueId)

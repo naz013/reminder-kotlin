@@ -22,9 +22,8 @@ class PreviewBirthdayViewModel(
   dispatcherProvider: DispatcherProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
-  private val deleteBirthdayUseCase: DeleteBirthdayUseCase
+  private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _birthday = mutableLiveDataOf<UiBirthdayPreview>()
   val birthday = _birthday.toLiveData()
 

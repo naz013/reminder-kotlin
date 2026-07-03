@@ -29,9 +29,8 @@ class BirthdayActionProcessor(
   private val jobScheduler: JobScheduler,
   private val analyticsEventSender: AnalyticsEventSender,
   private val contextProvider: ContextProvider,
-  private val dateValidator: DateValidator = DateValidator()
+  private val dateValidator: DateValidator = DateValidator(),
 ) {
-
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun sendSms(id: String) {
@@ -79,8 +78,10 @@ class BirthdayActionProcessor(
       val handler =
         birthdayHandlerFactory.createAction(!SuperUtil.isPhoneCallActive(contextProvider.context))
 
-      val birthdays = birthdayRepository.getAll()
-        .filter { dateValidator.isLegacyMonthValid(it.month) }
+      val birthdays =
+        birthdayRepository
+          .getAll()
+          .filter { dateValidator.isLegacyMonthValid(it.month) }
 
       for (birthday in birthdays) {
         val year = birthday.showedYear
@@ -95,11 +96,17 @@ class BirthdayActionProcessor(
     }
   }
 
-  private fun getBirthdayValue(month: Int, day: Int, daysBefore: Int): String {
-    val date = LocalDate.now()
-      .withMonth(month + 1)
-      .withDayOfMonth(day)
-      .minusDays(daysBefore.toLong())
+  private fun getBirthdayValue(
+    month: Int,
+    day: Int,
+    daysBefore: Int,
+  ): String {
+    val date =
+      LocalDate
+        .now()
+        .withMonth(month + 1)
+        .withDayOfMonth(day)
+        .minusDays(daysBefore.toLong())
     return dateTimeManager.getBirthdayDateSearch(date)
   }
 

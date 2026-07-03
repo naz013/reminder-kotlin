@@ -16,15 +16,15 @@ class CompleteReminderUseCase(
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val addReminderToHistoryUseCase: AddReminderToHistoryUseCase,
 ) {
-
   suspend operator fun invoke(reminder: Reminder): Reminder {
     reminder.delay = 0
     val strategy = strategyResolver.resolve(reminder)
-    Logger.v(TAG, "Completing reminder id=${reminder.uuId} with strategy=${strategy}")
+    Logger.v(TAG, "Completing reminder id=${reminder.uuId} with strategy=$strategy")
     addReminderToHistoryUseCase(reminder)
     return if (strategy.canSkip(reminder)) {
-      val fromDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-        ?: dateTimeManager.getCurrentDateTime()
+      val fromDateTime =
+        dateTimeManager.fromGmtToLocal(reminder.eventTime)
+          ?: dateTimeManager.getCurrentDateTime()
       val nextDateTime = strategy.calculateNextOccurrence(reminder, fromDateTime)
       if (nextDateTime == null) {
         Logger.i(TAG, "No next occurrence found, deactivating reminder id=${reminder.uuId}")
@@ -32,10 +32,11 @@ class CompleteReminderUseCase(
         return reminder
       }
       Logger.i(TAG, "Scheduling next occurrence for reminder id=${reminder.uuId} at $nextDateTime")
-      val reminder = reminder.copy(
-        eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime),
-        eventCount = reminder.eventCount + 1
-      )
+      val reminder =
+        reminder.copy(
+          eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime),
+          eventCount = reminder.eventCount + 1,
+        )
       activateReminderUseCase(reminder)
     } else {
       Logger.i(TAG, "Going to deactivate reminder id=${reminder.uuId}")

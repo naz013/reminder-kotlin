@@ -43,7 +43,6 @@ import com.github.naz013.ui.common.compose.TopAppbarColor
  * @see com.github.naz013.ui.common.compose.ComposeFragment
  */
 class ReminderHelpFragment : ComposeFragment() {
-
   /**
    * Provides the main content for this fragment.
    *
@@ -53,7 +52,7 @@ class ReminderHelpFragment : ComposeFragment() {
   @Composable
   override fun FragmentContent() {
     ReminderHelpScreen(
-      onBackClick = { activity?.onBackPressedDispatcher?.onBackPressed() }
+      onBackClick = { activity?.onBackPressedDispatcher?.onBackPressed() },
     )
   }
 
@@ -70,9 +69,7 @@ class ReminderHelpFragment : ComposeFragment() {
    */
   @OptIn(ExperimentalMaterial3Api::class)
   @Composable
-  private fun ReminderHelpScreen(
-    onBackClick: () -> Unit
-  ) {
+  private fun ReminderHelpScreen(onBackClick: () -> Unit) {
     // Track whether the WebView has been scrolled
     var isScrolled by remember { mutableStateOf(false) }
 
@@ -86,28 +83,31 @@ class ReminderHelpFragment : ComposeFragment() {
             IconButton(onClick = onBackClick) {
               Icon(
                 painter = painterResource(R.drawable.ic_builder_arrow_left),
-                contentDescription = stringResource(R.string.cd_back)
+                contentDescription = stringResource(R.string.cd_back),
               )
             }
           },
           colors = TopAppbarColor,
-          scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior().apply {
-            state.contentOffset = if (isScrolled) -1f else 0f
-          },
+          scrollBehavior =
+            TopAppBarDefaults.enterAlwaysScrollBehavior().apply {
+              state.contentOffset = if (isScrolled) -1f else 0f
+            },
         )
-      }
+      },
     ) { paddingValues ->
       // WebView to display the HTML help document
       AndroidView(
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(paddingValues),
+        modifier =
+          Modifier
+            .fillMaxSize()
+            .padding(paddingValues),
         factory = { context ->
           WebView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-              ViewGroup.LayoutParams.MATCH_PARENT,
-              ViewGroup.LayoutParams.MATCH_PARENT
-            )
+            layoutParams =
+              ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+              )
 
             // Set up scroll listener to detect when content is scrolled
             setOnScrollChangeListener { _, _, scrollY, _, _ ->
@@ -123,7 +123,7 @@ class ReminderHelpFragment : ComposeFragment() {
           webView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             isScrolled = scrollY > 0
           }
-        }
+        },
       )
     }
   }

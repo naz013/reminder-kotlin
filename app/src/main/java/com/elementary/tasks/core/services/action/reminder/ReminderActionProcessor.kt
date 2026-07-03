@@ -2,13 +2,13 @@ package com.elementary.tasks.core.services.action.reminder
 
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderRepository
@@ -26,9 +26,8 @@ class ReminderActionProcessor(
   private val dateTimeManager: DateTimeManager,
   private val jobScheduler: JobScheduler,
   private val contextProvider: ContextProvider,
-  private val analyticsEventSender: AnalyticsEventSender
+  private val analyticsEventSender: AnalyticsEventSender,
 ) {
-
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun snooze(id: String) {
@@ -58,11 +57,12 @@ class ReminderActionProcessor(
       val reminder = reminderRepository.getById(id) ?: return@launch
       if (doNotDisturbManager.applyDoNotDisturb(reminder.priority)) {
         if (prefs.doNotDisturbAction == 0) {
-          val delayTime = dateTimeManager.millisToEndDnd(
-            prefs.doNotDisturbFrom,
-            prefs.doNotDisturbTo,
-            LocalDateTime.now().minusMinutes(1)
-          )
+          val delayTime =
+            dateTimeManager.millisToEndDnd(
+              prefs.doNotDisturbFrom,
+              prefs.doNotDisturbTo,
+              LocalDateTime.now().minusMinutes(1),
+            )
           if (delayTime > 0) {
             Logger.i(TAG, "Delaying reminder id=${reminder.uuId} for $delayTime ms due to DND")
             jobScheduler.scheduleReminderDelay(delayTime, id, reminder.uniqueId)

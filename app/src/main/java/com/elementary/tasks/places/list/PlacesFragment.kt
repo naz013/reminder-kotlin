@@ -32,34 +32,45 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
-
   private val viewModel by viewModel<PlacesViewModel>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
 
-  private val adapter = PlacesRecyclerAdapter(object : ActionsListener<UiPlaceList> {
-    override fun onAction(view: View, position: Int, t: UiPlaceList?, actions: ListActions) {
-      if (t == null) return
-      when (actions) {
-        ListActions.OPEN -> openPlace(t)
-        ListActions.MORE -> showMore(view, t)
-        else -> {
+  private val adapter =
+    PlacesRecyclerAdapter(
+      object : ActionsListener<UiPlaceList> {
+        override fun onAction(
+          view: View,
+          position: Int,
+          t: UiPlaceList?,
+          actions: ListActions,
+        ) {
+          if (t == null) return
+          when (actions) {
+            ListActions.OPEN -> openPlace(t)
+            ListActions.MORE -> showMore(view, t)
+            else -> {
+            }
+          }
         }
-      }
-    }
-  })
+      },
+    )
 
-  private val searchMenuHandler = SearchMenuHandler(
-    systemServiceProvider.provideSearchManager(),
-    R.string.search_place
-  ) { viewModel.onSearchUpdate(it) }
+  private val searchMenuHandler =
+    SearchMenuHandler(
+      systemServiceProvider.provideSearchManager(),
+      R.string.search_place,
+    ) { viewModel.onSearchUpdate(it) }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentPlacesBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.recyclerView.applyBottomInsets()
     binding.fab.applyBottomInsetsMargin()
@@ -105,10 +116,11 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
   private fun initList() {
     if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
-        resources.getInteger(R.integer.num_of_cols),
-        StaggeredGridLayoutManager.VERTICAL
-      )
+      binding.recyclerView.layoutManager =
+        StaggeredGridLayoutManager(
+          resources.getInteger(R.integer.num_of_cols),
+          StaggeredGridLayoutManager.VERTICAL,
+        )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
@@ -123,16 +135,20 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     refreshView(0)
   }
 
-  private fun showMore(view: View, place: UiPlaceList) {
+  private fun showMore(
+    view: View,
+    place: UiPlaceList,
+  ) {
     Dialogues.showPopup(view, { i ->
       when (i) {
         0 -> openPlace(place)
         1 -> viewModel.sharePlace(place.id)
-        2 -> withContext {
-          dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
-            if (b) viewModel.deletePlace(place.id)
+        2 ->
+          withContext {
+            dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
+              if (b) viewModel.deletePlace(place.id)
+            }
           }
-        }
       }
     }, getString(R.string.edit), getString(R.string.share), getString(R.string.delete))
   }
@@ -156,7 +172,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, place.id)
         },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
@@ -166,9 +182,6 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
   }
 
   companion object {
-
-    fun newInstance(): PlacesFragment {
-      return PlacesFragment()
-    }
+    fun newInstance(): PlacesFragment = PlacesFragment()
   }
 }

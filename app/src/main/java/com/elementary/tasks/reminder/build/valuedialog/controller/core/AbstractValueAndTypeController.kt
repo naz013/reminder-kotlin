@@ -8,23 +8,23 @@ import com.elementary.tasks.databinding.BuilderItemValueAndTypeBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 
 abstract class AbstractValueAndTypeController<T>(
-  builderItem: BuilderItem<T>
+  builderItem: BuilderItem<T>,
 ) : AbstractBindingValueController<T, BuilderItemValueAndTypeBinding>(builderItem) {
+  protected abstract fun convertToValue(
+    textValue: String,
+    typeIndex: Int,
+  ): T?
 
-  protected abstract fun convertToValue(textValue: String, typeIndex: Int): T?
   protected abstract fun parseValueAndType(t: T?): ValueAndType
+
   protected abstract fun getSelectionItems(): List<String>
 
-  override fun isDraggable(): Boolean {
-    return false
-  }
+  override fun isDraggable(): Boolean = false
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemValueAndTypeBinding {
-    return BuilderItemValueAndTypeBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemValueAndTypeBinding = BuilderItemValueAndTypeBinding.inflate(layoutInflater, parent, false)
 
   @SuppressLint("ClickableViewAccessibility")
   override fun onViewCreated() {
@@ -37,7 +37,10 @@ abstract class AbstractValueAndTypeController<T>(
 
     binding.valueAndTypePickerView.onChangedListener =
       object : ValueAndTypePickerView.OnChangedListener {
-        override fun onChanged(value: String, typeIndex: Int) {
+        override fun onChanged(
+          value: String,
+          typeIndex: Int,
+        ) {
           updateValue(convertToValue(value, typeIndex))
         }
       }
@@ -53,6 +56,6 @@ abstract class AbstractValueAndTypeController<T>(
 
   protected data class ValueAndType(
     val value: String,
-    val typeIndex: Int
+    val typeIndex: Int,
   )
 }

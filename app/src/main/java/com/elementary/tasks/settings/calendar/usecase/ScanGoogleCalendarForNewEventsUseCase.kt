@@ -29,7 +29,6 @@ class ScanGoogleCalendarForNewEventsUseCase(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val dispatcherProvider: DispatcherProvider,
 ) {
-
   suspend operator fun invoke() {
     if (!prefs.scanGoogleCalendarEvents) {
       Logger.w(TAG, "Google Calendar scanning is disabled in preferences.")
@@ -72,15 +71,16 @@ class ScanGoogleCalendarForNewEventsUseCase(
           val rule = RecurrenceRule(rrule)
           val interval = rule.interval
           val freq = rule.freq
-          repeat = when {
-            freq === Freq.SECONDLY -> interval * DateTimeManager.SECOND
-            freq === Freq.MINUTELY -> interval * DateTimeManager.MINUTE
-            freq === Freq.HOURLY -> interval * DateTimeManager.HOUR
-            freq === Freq.WEEKLY -> interval.toLong() * 7 * DateTimeManager.DAY
-            freq === Freq.MONTHLY -> interval.toLong() * 30 * DateTimeManager.DAY
-            freq === Freq.YEARLY -> interval.toLong() * 365 * DateTimeManager.DAY
-            else -> interval * DateTimeManager.DAY
-          }
+          repeat =
+            when {
+              freq === Freq.SECONDLY -> interval * DateTimeManager.SECOND
+              freq === Freq.MINUTELY -> interval * DateTimeManager.MINUTE
+              freq === Freq.HOURLY -> interval * DateTimeManager.HOUR
+              freq === Freq.WEEKLY -> interval.toLong() * 7 * DateTimeManager.DAY
+              freq === Freq.MONTHLY -> interval.toLong() * 30 * DateTimeManager.DAY
+              freq === Freq.YEARLY -> interval.toLong() * 365 * DateTimeManager.DAY
+              else -> interval * DateTimeManager.DAY
+            }
         } catch (e: InvalidRecurrenceRuleException) {
           Logger.e(TAG, "Failed to parse recurrence rule: $rrule", e)
         }
@@ -98,7 +98,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
           repeat = repeat,
           categoryId = groupId,
           calendarId = item.calendarId,
-          allDay = item.allDay == 1
+          allDay = item.allDay == 1,
         )
       } else {
         if (repeat > 0) {
@@ -114,7 +114,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
             repeat = repeat,
             categoryId = groupId,
             calendarId = item.calendarId,
-            allDay = item.allDay == 1
+            allDay = item.allDay == 1,
           )
         }
       }
@@ -129,29 +129,30 @@ class ScanGoogleCalendarForNewEventsUseCase(
     repeat: Long,
     categoryId: String,
     calendarId: Long,
-    allDay: Boolean
+    allDay: Boolean,
   ) {
-    val reminder = Reminder(
-      syncState = SyncState.WaitingForUpload,
-      version = 0
-    ).apply {
-      this.type = Reminder.BY_DATE
-      this.repeatInterval = repeat
-      this.groupUuId = categoryId
-      this.summary = summary
-      this.calendarId = calendarId
-      this.eventTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
-      this.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
-      this.allDay = allDay
-    }
+    val reminder =
+      Reminder(
+        syncState = SyncState.WaitingForUpload,
+        version = 0,
+      ).apply {
+        this.type = Reminder.BY_DATE
+        this.repeatInterval = repeat
+        this.groupUuId = categoryId
+        this.summary = summary
+        this.calendarId = calendarId
+        this.eventTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
+        this.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
+        this.allDay = allDay
+      }
     activateReminderUseCase(reminder)
     calendarEventRepository.save(
       CalendarEvent(
         reminderId = reminder.uuId,
         event = summary,
         eventId = itemId,
-        allDay = allDay
-      )
+        allDay = allDay,
+      ),
     )
   }
 

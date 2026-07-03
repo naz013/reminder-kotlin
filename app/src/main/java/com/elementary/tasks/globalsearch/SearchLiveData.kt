@@ -37,56 +37,62 @@ class SearchLiveData(
   private val placeRepository: PlaceRepository,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val dispatcherProvider: DispatcherProvider,
-  private val tableChangeListenerFactory: TableChangeListenerFactory
+  private val tableChangeListenerFactory: TableChangeListenerFactory,
 ) : MediatorLiveData<List<SearchResult>>() {
-
   private val queryLiveDate = MutableLiveData<String>()
 
-  private val recentSearchSource = queryLiveDate.switchMap {
-    createRecentQueryLiveData(it)
-  }
-  private val reminderSearchSource = queryLiveDate.switchMap {
-    if (it.isBlank()) {
-      emptyLiveData()
-    } else {
-      createReminderLiveData(it)
+  private val recentSearchSource =
+    queryLiveDate.switchMap {
+      createRecentQueryLiveData(it)
     }
-  }
-  private val birthdaySearchSource = queryLiveDate.switchMap {
-    if (it.isBlank()) {
-      emptyLiveData()
-    } else {
-      createBirthdayLiveData(it)
+  private val reminderSearchSource =
+    queryLiveDate.switchMap {
+      if (it.isBlank()) {
+        emptyLiveData()
+      } else {
+        createReminderLiveData(it)
+      }
     }
-  }
-  private val noteSearchSource = queryLiveDate.switchMap {
-    if (it.isBlank()) {
-      emptyLiveData()
-    } else {
-      createNoteLiveData(it)
+  private val birthdaySearchSource =
+    queryLiveDate.switchMap {
+      if (it.isBlank()) {
+        emptyLiveData()
+      } else {
+        createBirthdayLiveData(it)
+      }
     }
-  }
-  private val googleTaskSearchSource = queryLiveDate.switchMap {
-    if (it.isBlank()) {
-      emptyLiveData()
-    } else {
-      createGoogleTaskLiveData(it)
+  private val noteSearchSource =
+    queryLiveDate.switchMap {
+      if (it.isBlank()) {
+        emptyLiveData()
+      } else {
+        createNoteLiveData(it)
+      }
     }
-  }
-  private val placeSearchSource = queryLiveDate.switchMap {
-    if (it.isBlank()) {
-      emptyLiveData()
-    } else {
-      createPlaceLiveData(it)
+  private val googleTaskSearchSource =
+    queryLiveDate.switchMap {
+      if (it.isBlank()) {
+        emptyLiveData()
+      } else {
+        createGoogleTaskLiveData(it)
+      }
     }
-  }
-  private val groupSearchSource = queryLiveDate.switchMap {
-    if (it.isBlank()) {
-      emptyLiveData()
-    } else {
-      createGroupLiveData(it)
+  private val placeSearchSource =
+    queryLiveDate.switchMap {
+      if (it.isBlank()) {
+        emptyLiveData()
+      } else {
+        createPlaceLiveData(it)
+      }
     }
-  }
+  private val groupSearchSource =
+    queryLiveDate.switchMap {
+      if (it.isBlank()) {
+        emptyLiveData()
+      } else {
+        createGroupLiveData(it)
+      }
+    }
 
   private var transformJob: Job? = null
   private val scope = CoroutineScope(Job())
@@ -117,13 +123,9 @@ class SearchLiveData(
     queryLiveDate.postValue(query)
   }
 
-  private fun <T> getNonNullList(liveData: LiveData<List<T>>): List<T> {
-    return liveData.value ?: emptyList()
-  }
+  private fun <T> getNonNullList(liveData: LiveData<List<T>>): List<T> = liveData.value ?: emptyList()
 
-  private fun <T> emptyLiveData(): LiveData<T> {
-    return MutableLiveData()
-  }
+  private fun <T> emptyLiveData(): LiveData<T> = MutableLiveData()
 
   private fun transform(
     recentQueries: List<RecentQuery> = getNonNullList(recentSearchSource),
@@ -132,85 +134,80 @@ class SearchLiveData(
     notes: List<Note> = getNonNullList(noteSearchSource),
     googleTasks: List<GoogleTask> = getNonNullList(googleTaskSearchSource),
     places: List<Place> = getNonNullList(placeSearchSource),
-    groups: List<ReminderGroup> = getNonNullList(groupSearchSource)
+    groups: List<ReminderGroup> = getNonNullList(groupSearchSource),
   ) {
     val query = queryLiveDate.value ?: return
     transformJob?.cancel()
-    transformJob = scope.launch(dispatcherProvider.default()) {
-      val results = mutableListOf<SearchResult>()
+    transformJob =
+      scope.launch(dispatcherProvider.default()) {
+        val results = mutableListOf<SearchResult>()
 
-      recentQueries.mapNotNull { it.toSearchResult(query) }.also { results.addAll(it) }
+        recentQueries.mapNotNull { it.toSearchResult(query) }.also { results.addAll(it) }
 
-      if (query.isNotBlank()) {
-        mutableListOf<ObjectSearchResult>().apply {
-          addAll(reminders.map { it.toSearchResult(query) })
-          addAll(birthdays.map { it.toSearchResult(query) })
-          addAll(notes.map { it.toSearchResult(query) })
-          addAll(googleTasks.map { it.toSearchResult(query) })
-          addAll(places.map { it.toSearchResult(query) })
-          addAll(groups.map { it.toSearchResult(query) })
+        if (query.isNotBlank()) {
+          mutableListOf<ObjectSearchResult>()
+            .apply {
+              addAll(reminders.map { it.toSearchResult(query) })
+              addAll(birthdays.map { it.toSearchResult(query) })
+              addAll(notes.map { it.toSearchResult(query) })
+              addAll(googleTasks.map { it.toSearchResult(query) })
+              addAll(places.map { it.toSearchResult(query) })
+              addAll(groups.map { it.toSearchResult(query) })
+            }.sortedBy { it.text.indexOf(query) }
+            .also { results.addAll(it) }
         }
-          .sortedBy { it.text.indexOf(query) }
-          .also { results.addAll(it) }
-      }
 
-      postValue(results)
-    }
+        postValue(results)
+      }
   }
 
-  private fun ReminderGroup.toSearchResult(query: String): ObjectSearchResult {
-    return ObjectSearchResult(
+  private fun ReminderGroup.toSearchResult(query: String): ObjectSearchResult =
+    ObjectSearchResult(
       text = groupTitle,
       objectType = ObjectType.GROUP,
       objectId = groupUuId,
-      query = query
+      query = query,
     )
-  }
 
-  private fun Place.toSearchResult(query: String): ObjectSearchResult {
-    return ObjectSearchResult(
+  private fun Place.toSearchResult(query: String): ObjectSearchResult =
+    ObjectSearchResult(
       text = name,
       objectType = ObjectType.PLACE,
       objectId = id,
-      query = query
+      query = query,
     )
-  }
 
-  private fun GoogleTask.toSearchResult(query: String): ObjectSearchResult {
-    return ObjectSearchResult(
+  private fun GoogleTask.toSearchResult(query: String): ObjectSearchResult =
+    ObjectSearchResult(
       text = title,
       objectType = ObjectType.GOOGLE_TASK,
       objectId = taskId,
-      query = query
+      query = query,
     )
-  }
 
-  private fun Note.toSearchResult(query: String): ObjectSearchResult {
-    return ObjectSearchResult(
+  private fun Note.toSearchResult(query: String): ObjectSearchResult =
+    ObjectSearchResult(
       text = summary,
       objectType = ObjectType.NOTE,
       objectId = key,
-      query = query
+      query = query,
     )
-  }
 
-  private fun Birthday.toSearchResult(query: String): ObjectSearchResult {
-    return ObjectSearchResult(
+  private fun Birthday.toSearchResult(query: String): ObjectSearchResult =
+    ObjectSearchResult(
       text = name,
       objectType = ObjectType.BIRTHDAY,
       objectId = uuId,
-      query = query
+      query = query,
     )
-  }
 
-  private fun Reminder.toSearchResult(query: String): ObjectSearchResult {
-    return ObjectSearchResult(
+  private fun Reminder.toSearchResult(query: String): ObjectSearchResult =
+    ObjectSearchResult(
       text = summary,
       objectType = ObjectType.REMINDER,
       objectId = uuId,
-      query = query
+      query = query,
     )
-  }
 
   private fun RecentQuery.toSearchResult(query: String): SearchResult? {
     return when (queryType) {
@@ -226,8 +223,8 @@ class SearchLiveData(
     }
   }
 
-  private fun RecentQueryTarget.toObjectType(): ObjectType? {
-    return when (this) {
+  private fun RecentQueryTarget.toObjectType(): ObjectType? =
+    when (this) {
       RecentQueryTarget.NONE -> null
       RecentQueryTarget.BIRTHDAY -> ObjectType.BIRTHDAY
       RecentQueryTarget.GOOGLE_TASK -> ObjectType.GOOGLE_TASK
@@ -237,72 +234,51 @@ class SearchLiveData(
       RecentQueryTarget.REMINDER -> ObjectType.REMINDER
       RecentQueryTarget.SCREEN -> null
     }
-  }
 
-  private fun createReminderLiveData(
-    query: String
-  ): LiveData<List<Reminder>> {
-    return scope.observeTable(
+  private fun createReminderLiveData(query: String): LiveData<List<Reminder>> =
+    scope.observeTable(
       Table.Reminder,
       tableChangeListenerFactory,
-      { reminderRepository.search(query) }
+      { reminderRepository.search(query) },
     )
-  }
 
-  private fun createNoteLiveData(
-    query: String
-  ): LiveData<List<Note>> {
-    return scope.observeTable(
+  private fun createNoteLiveData(query: String): LiveData<List<Note>> =
+    scope.observeTable(
       Table.Note,
       tableChangeListenerFactory,
-      { noteRepository.search(query) }
+      { noteRepository.search(query) },
     )
-  }
 
-  private fun createGoogleTaskLiveData(
-    query: String
-  ): LiveData<List<GoogleTask>> {
-    return scope.observeTable(
+  private fun createGoogleTaskLiveData(query: String): LiveData<List<GoogleTask>> =
+    scope.observeTable(
       Table.GoogleTask,
       tableChangeListenerFactory,
-      { googleTaskRepository.search(query) }
+      { googleTaskRepository.search(query) },
     )
-  }
 
-  private fun createGroupLiveData(
-    query: String
-  ): LiveData<List<ReminderGroup>> {
-    return scope.observeTable(
+  private fun createGroupLiveData(query: String): LiveData<List<ReminderGroup>> =
+    scope.observeTable(
       Table.ReminderGroup,
       tableChangeListenerFactory,
-      { reminderGroupRepository.search(query) }
+      { reminderGroupRepository.search(query) },
     )
-  }
 
-  private fun createPlaceLiveData(
-    query: String
-  ): LiveData<List<Place>> {
-    return scope.observeTable(
+  private fun createPlaceLiveData(query: String): LiveData<List<Place>> =
+    scope.observeTable(
       Table.Place,
       tableChangeListenerFactory,
-      { placeRepository.searchByName(query) }
+      { placeRepository.searchByName(query) },
     )
-  }
 
-  private fun createBirthdayLiveData(
-    query: String
-  ): LiveData<List<Birthday>> {
-    return scope.observeTable(
+  private fun createBirthdayLiveData(query: String): LiveData<List<Birthday>> =
+    scope.observeTable(
       Table.Birthday,
       tableChangeListenerFactory,
-      { birthdayRepository.searchByName(query) }
+      { birthdayRepository.searchByName(query) },
     )
-  }
 
-  private fun createRecentQueryLiveData(
-    query: String
-  ): LiveData<List<RecentQuery>> {
-    return scope.observeTable(
+  private fun createRecentQueryLiveData(query: String): LiveData<List<RecentQuery>> =
+    scope.observeTable(
       Table.RecentQuery,
       tableChangeListenerFactory,
       {
@@ -311,7 +287,6 @@ class SearchLiveData(
         } else {
           recentQueryRepository.search(query)
         }
-      }
+      },
     )
-  }
 }

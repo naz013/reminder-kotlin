@@ -29,8 +29,8 @@ import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
+import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.analytics.AnalyticsStateProvider
@@ -45,85 +45,89 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
 
-val workerModule = module {
-  worker { SaveNewTaskWorker(get(), get(), get(), get(), get()) }
-  worker { UpdateTaskWorker(get(), get(), get(), get(), get()) }
-}
-
-val viewModelModule = module {
-
-  viewModel { SelectApplicationViewModel(get(), get()) }
-
-  viewModel {
-    SplashViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
+val workerModule =
+  module {
+    worker { SaveNewTaskWorker(get(), get(), get(), get(), get()) }
+    worker { UpdateTaskWorker(get(), get(), get(), get(), get()) }
   }
 
-  viewModel { TroubleshootingViewModel(get(), get(), get(), get(), get(), get()) }
-}
+val viewModelModule =
+  module {
 
-val storageModule = module {
-  factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
-}
+    viewModel { SelectApplicationViewModel(get(), get()) }
 
-val utilModule = module {
-  factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
-  single { MemoryUtil() }
-  factory { UriReader(get()) }
-  single { BackupTool(get(), get()) }
-  factory { GoogleCalendarUtils(get(), get(), get(), get()) }
-  single { CacheUtil(get(), get()) }
+    viewModel {
+      SplashViewModel(
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
 
-  factory { RecurEventManager(get()) }
-
-  single { Prefs(get()) }
-  single { RemotePrefs(get(), get(), get(), get()) }
-  single { ThemePreferencesImpl(get()) as ThemePreferences }
-  single { LocalePreferencesImpl(get()) as LocalePreferences }
-  single { AuthPreferencesImpl(get()) as AuthPreferences }
-  single { DateTimePreferencesImpl(get()) as DateTimePreferences }
-  single { AppWidgetPreferencesImpl(get()) as AppWidgetPreferences }
-
-  factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
-  factory { JobScheduler(get(), get(), get(), get(), get()) }
-
-  factory { ActivateAllActiveRemindersUseCase(get(), get()) }
-  factory { NoteImageMigration(get(), get()) }
-
-  factory { WorkManagerProvider(get()) }
-
-  factory { AnalyticsStateProviderImpl(get()) as AnalyticsStateProvider }
-
-  single { initializeAnalytics(get(), get()) }
-  factory { ReminderAnalyticsTracker(get()) }
-
-  factory { FeatureManager(get()) }
-  factory { GroupsUtil(get(), get(), get()) }
-  factory { ImageDecoder(get(), get(), get()) }
-  factory { DroppedContentParser(get()) }
-
-  factory { DateTimePickerProvider(get()) }
-  factory { DoNotDisturbManager(get(), get()) }
-
-  factory { (fragment: BaseNavigationFragment<*>, callback: GoogleLogin.LoginCallback) ->
-    GoogleLogin(fragment, get(), get(), get(), get(), callback, get())
+    viewModel { TroubleshootingViewModel(get(), get(), get(), get(), get(), get()) }
   }
-  factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
-    DropboxLogin(activity, get(), get(), callback, get())
+
+val storageModule =
+  module {
+    factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
   }
-  factory { (listener: LocationTracker.Listener) ->
-    LocationTracker(listener, get(), get(), get())
+
+val utilModule =
+  module {
+    factory { PresetInitProcessor(get(), get(), get(), get(), get(), get()) }
+    single { MemoryUtil() }
+    factory { UriReader(get()) }
+    single { BackupTool(get(), get()) }
+    factory { GoogleCalendarUtils(get(), get(), get(), get()) }
+    single { CacheUtil(get(), get()) }
+
+    factory { RecurEventManager(get()) }
+
+    single { Prefs(get()) }
+    single { RemotePrefs(get(), get(), get(), get()) }
+    single { ThemePreferencesImpl(get()) as ThemePreferences }
+    single { LocalePreferencesImpl(get()) as LocalePreferences }
+    single { AuthPreferencesImpl(get()) as AuthPreferences }
+    single { DateTimePreferencesImpl(get()) as DateTimePreferences }
+    single { AppWidgetPreferencesImpl(get()) as AppWidgetPreferences }
+
+    factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
+    factory { JobScheduler(get(), get(), get(), get(), get()) }
+
+    factory { ActivateAllActiveRemindersUseCase(get(), get()) }
+    factory { NoteImageMigration(get(), get()) }
+
+    factory { WorkManagerProvider(get()) }
+
+    factory { AnalyticsStateProviderImpl(get()) as AnalyticsStateProvider }
+
+    single { initializeAnalytics(get(), get()) }
+    factory { ReminderAnalyticsTracker(get()) }
+
+    factory { FeatureManager(get()) }
+    factory { GroupsUtil(get(), get(), get()) }
+    factory { ImageDecoder(get(), get(), get()) }
+    factory { DroppedContentParser(get()) }
+
+    factory { DateTimePickerProvider(get()) }
+    factory { DoNotDisturbManager(get(), get()) }
+
+    factory { (fragment: BaseNavigationFragment<*>, callback: GoogleLogin.LoginCallback) ->
+      GoogleLogin(fragment, get(), get(), get(), get(), callback, get())
+    }
+    factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
+      DropboxLogin(activity, get(), get(), callback, get())
+    }
+    factory { (listener: LocationTracker.Listener) ->
+      LocationTracker(listener, get(), get(), get())
+    }
   }
-}

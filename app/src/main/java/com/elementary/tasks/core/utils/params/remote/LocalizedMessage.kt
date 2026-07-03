@@ -8,5 +8,5 @@ data class LocalizedMessage(
   @SerializedName("text")
   val text: String,
   @SerializedName("lang")
-  val lang: String
+  val lang: String,
 )

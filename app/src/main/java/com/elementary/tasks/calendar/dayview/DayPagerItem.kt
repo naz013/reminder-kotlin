@@ -6,5 +6,5 @@ import org.threeten.bp.LocalDate
 
 @Parcelize
 data class DayPagerItem(
-  val date: LocalDate
+  val date: LocalDate,
 ) : Parcelable

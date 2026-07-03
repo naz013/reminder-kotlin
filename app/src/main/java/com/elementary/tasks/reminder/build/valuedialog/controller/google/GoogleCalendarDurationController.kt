@@ -4,30 +4,25 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.views.common.ValueAndTypePickerView
 import com.elementary.tasks.databinding.BuilderItemCalendarDurationBinding
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
+import com.github.naz013.common.datetime.DateTimeManager
 
 class GoogleCalendarDurationController(
   durationBuilderItem: GoogleCalendarDurationBuilderItem,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
 ) : AbstractBindingValueController<CalendarDuration, BuilderItemCalendarDurationBinding>(
-  durationBuilderItem
-) {
-
-  override fun isDraggable(): Boolean {
-    return false
-  }
+    durationBuilderItem,
+  ) {
+  override fun isDraggable(): Boolean = false
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemCalendarDurationBinding {
-    return BuilderItemCalendarDurationBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemCalendarDurationBinding = BuilderItemCalendarDurationBinding.inflate(layoutInflater, parent, false)
 
   @SuppressLint("ClickableViewAccessibility")
   override fun onViewCreated() {
@@ -49,7 +44,10 @@ class GoogleCalendarDurationController(
 
     binding.valueAndTypePickerView.onChangedListener =
       object : ValueAndTypePickerView.OnChangedListener {
-        override fun onChanged(value: String, typeIndex: Int) {
+        override fun onChanged(
+          value: String,
+          typeIndex: Int,
+        ) {
           notifyUpdate()
         }
       }
@@ -82,20 +80,22 @@ class GoogleCalendarDurationController(
     binding.valueAndTypePickerView.isEnabled = !binding.allDaySwitch.isChecked
   }
 
-  private fun getSelectionItems(): List<String> {
-    return getContext().resources.getStringArray(R.array.repeat_times).toList()
-  }
+  private fun getSelectionItems(): List<String> = getContext().resources.getStringArray(R.array.repeat_times).toList()
 
-  private fun convertToValue(value: String, typeIndex: Int, allDay: Boolean): CalendarDuration? {
+  private fun convertToValue(
+    value: String,
+    typeIndex: Int,
+    allDay: Boolean,
+  ): CalendarDuration? {
     val long = runCatching { value.toLong() }.getOrNull() ?: return null
     return CalendarDuration(
       allDay = allDay,
-      millis = long * getMultiplier(typeIndex)
+      millis = long * getMultiplier(typeIndex),
     )
   }
 
-  private fun getMultiplier(index: Int): Long {
-    return when (index) {
+  private fun getMultiplier(index: Int): Long =
+    when (index) {
       DateTimeManager.MultiplierType.MINUTE.index -> DateTimeManager.MINUTE
       DateTimeManager.MultiplierType.HOUR.index -> DateTimeManager.HOUR
       DateTimeManager.MultiplierType.DAY.index -> DateTimeManager.DAY
@@ -103,5 +103,4 @@ class GoogleCalendarDurationController(
       DateTimeManager.MultiplierType.MONTH.index -> DateTimeManager.DAY * 30
       else -> DateTimeManager.SECOND
     }
-  }
 }

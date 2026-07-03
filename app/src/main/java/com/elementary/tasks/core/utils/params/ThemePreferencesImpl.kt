@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils.params
 import com.github.naz013.ui.common.theme.ThemePreferences
 
 class ThemePreferencesImpl(
-  private val prefs: Prefs
+  private val prefs: Prefs,
 ) : ThemePreferences {
   override val nightMode: Int
     get() {

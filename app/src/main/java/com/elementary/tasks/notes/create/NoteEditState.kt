@@ -36,7 +36,7 @@ data class NoteColors(
   val background: Int,
   val statusBarColor: Int,
   val content: Int,
-  val sliderColors: IntArray
+  val sliderColors: IntArray,
 )
 
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
@@ -57,5 +57,5 @@ enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
  */
 data class TextUpdate(
   val text: String,
-  val boldRange: IntRange? = null
+  val boldRange: IntRange? = null,
 )

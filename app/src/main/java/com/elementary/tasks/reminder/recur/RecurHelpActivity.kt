@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.activity.BindingActivity
 import com.elementary.tasks.databinding.ActivityWebViewBinding
+import com.github.naz013.ui.common.activity.BindingActivity
 
 class RecurHelpActivity : BindingActivity<ActivityWebViewBinding>() {
-
   override fun inflateBinding() = ActivityWebViewBinding.inflate(layoutInflater)
 
   @SuppressLint("SetJavaScriptEnabled")

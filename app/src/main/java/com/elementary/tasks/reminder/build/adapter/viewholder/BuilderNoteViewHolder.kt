@@ -13,17 +13,19 @@ class BuilderNoteViewHolder(
   parent: ViewGroup,
   private val onClickListener: BuilderViewHolderItemClickListener,
   private val onRemoveListener: BuilderViewHolderItemClickListener,
-  private val common: UiNoteListAdapterCommon = UiNoteListAdapterCommon()
+  private val common: UiNoteListAdapterCommon = UiNoteListAdapterCommon(),
 ) : BaseBuilderViewHolder<ListItemReminderBuilderNotePreviewBinding, UiListNoteBuilderItem>(
-  viewCreator = {
-    ListItemReminderBuilderNotePreviewBinding.inflate(
-      /* inflater = */ parent.inflater(),
-      /* parent = */ parent,
-      /* attachToParent = */ false
-    )
-  }
-) {
-
+    viewCreator = {
+      ListItemReminderBuilderNotePreviewBinding.inflate(
+        // inflater =
+        parent.inflater(),
+        // parent =
+        parent,
+        // attachToParent =
+        false,
+      )
+    },
+  ) {
   override fun initClickListeners() {
     binding.clickView.setOnClickListener {
       onClickListener(bindingAdapterPosition)
@@ -63,7 +65,7 @@ class BuilderNoteViewHolder(
       textView = binding.noteTv,
       secondaryImageSize = itemView.dp2px(72),
       backgroundView = binding.bgView,
-      imageClickListener = null
+      imageClickListener = null,
     )
   }
 }

@@ -14,9 +14,8 @@ import com.github.naz013.logging.Logger
  * @param context Application context
  */
 class ObservableWorkerManager(
-  private val context: Context
+  private val context: Context,
 ) {
-
   var onEnd: (() -> Unit)? = null
   var listener: ((Boolean) -> Unit)? = null
 
@@ -31,11 +30,12 @@ class ObservableWorkerManager(
   fun observeWork(
     lifecycleOwner: LifecycleOwner,
     workTag: String,
-    progressKey: String = KEY_IS_IN_PROGRESS
+    progressKey: String = KEY_IS_IN_PROGRESS,
   ) {
     val workManager = WorkManager.getInstance(context)
 
-    workManager.getWorkInfosForUniqueWorkLiveData(workTag)
+    workManager
+      .getWorkInfosForUniqueWorkLiveData(workTag)
       .observe(lifecycleOwner) { workInfoList ->
         handleWorkInfoUpdate(workInfoList, progressKey, workTag)
       }
@@ -51,7 +51,7 @@ class ObservableWorkerManager(
   private fun handleWorkInfoUpdate(
     workInfoList: List<WorkInfo>?,
     progressKey: String,
-    workTag: String
+    workTag: String,
   ) {
     if (workInfoList.isNullOrEmpty()) {
       return
@@ -95,4 +95,3 @@ class ObservableWorkerManager(
     const val KEY_IS_IN_PROGRESS = "is_in_progress"
   }
 }
-

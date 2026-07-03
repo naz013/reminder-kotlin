@@ -7,23 +7,20 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
 import com.elementary.tasks.core.os.PermissionFlow
-import com.github.naz013.common.Permissions
 import com.elementary.tasks.databinding.BuilderItemEmailBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
+import com.github.naz013.common.Permissions
 
 class EmailInputController(
   builderItem: BuilderItem<String>,
   private val permissionFlow: PermissionFlow,
-  private val inputMethodManager: InputMethodManager
+  private val inputMethodManager: InputMethodManager,
 ) : AbstractBindingValueController<String, BuilderItemEmailBinding>(builderItem) {
-
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemEmailBinding {
-    return BuilderItemEmailBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemEmailBinding = BuilderItemEmailBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -41,7 +38,7 @@ class EmailInputController(
       permissionFlow.askPermission(
         permission = Permissions.READ_CONTACTS,
         callback = { startInput() },
-        deniedCallback = { startInput() }
+        deniedCallback = { startInput() },
       )
     }
     binding.emailInputField.doOnTextChanged { text, _, _, _ ->

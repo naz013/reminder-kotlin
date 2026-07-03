@@ -13,9 +13,8 @@ import java.util.UUID
 class AddReminderToHistoryUseCase(
   private val dateTimeManager: DateTimeManager,
   private val strategyResolver: BehaviorStrategyResolver,
-  private val eventHistoryRepository: EventHistoryRepository
+  private val eventHistoryRepository: EventHistoryRepository,
 ) {
-
   suspend operator fun invoke(reminder: Reminder) {
     val strategy = strategyResolver.resolve(reminder)
     if (strategy is LocationBasedStrategy) {
@@ -27,15 +26,16 @@ class AddReminderToHistoryUseCase(
           type = EventHistoricalRecordType.Reminder,
           date = dateTime.toLocalDate(),
           time = dateTime.toLocalTime(),
-        )
+        ),
       )
       Logger.i(TAG, "Added reminder with location to history, id=${reminder.uuId}")
     } else {
-      val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-        ?: run {
-          Logger.e(TAG, "Failed to add reminder to history, can't convert time for id=${reminder.uuId}")
-          return
-        }
+      val dateTime =
+        dateTimeManager.fromGmtToLocal(reminder.eventTime)
+          ?: run {
+            Logger.e(TAG, "Failed to add reminder to history, can't convert time for id=${reminder.uuId}")
+            return
+          }
       eventHistoryRepository.save(
         EventHistoricalRecord(
           id = UUID.randomUUID().toString(),
@@ -43,7 +43,7 @@ class AddReminderToHistoryUseCase(
           type = EventHistoricalRecordType.Reminder,
           date = dateTime.toLocalDate(),
           time = dateTime.toLocalTime(),
-        )
+        ),
       )
       Logger.i(TAG, "Added reminder to history, id=${reminder.uuId}")
     }

@@ -8,11 +8,10 @@ import com.github.naz013.navigation.intent.IntentDataWriter
 
 class NavigationDispatcherFactory(
   private val context: Context,
-  private val intentDataWriter: IntentDataWriter
+  private val intentDataWriter: IntentDataWriter,
 ) {
-
-  fun create(destination: Destination): NavigationDispatcher<Destination> {
-    return when (destination) {
+  fun create(destination: Destination): NavigationDispatcher<Destination> =
+    when (destination) {
       is ActivityDestination -> {
         ActivityNavigationDispatcher(context) as NavigationDispatcher<Destination>
       }
@@ -25,5 +24,4 @@ class NavigationDispatcherFactory(
         ActivityNavigationDispatcher(context) as NavigationDispatcher<Destination>
       }
     }
-  }
 }

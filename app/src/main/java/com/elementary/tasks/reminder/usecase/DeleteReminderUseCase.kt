@@ -19,7 +19,6 @@ class DeleteReminderUseCase(
   private val eventOccurrenceRepository: EventOccurrenceRepository,
   private val eventHistoryRepository: EventHistoryRepository,
 ) {
-
   suspend operator fun invoke(reminder: Reminder) {
     deactivateReminderUseCase(reminder)
     reminderRepository.delete(reminder.uuId)
@@ -29,7 +28,7 @@ class DeleteReminderUseCase(
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Delete,
       dataType = DataType.Reminders,
-      id = reminder.uuId
+      id = reminder.uuId,
     )
     Logger.i(TAG, "Deleted reminder with id = ${reminder.uuId}")
   }

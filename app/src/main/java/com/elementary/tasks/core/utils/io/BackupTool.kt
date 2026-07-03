@@ -11,16 +11,14 @@ class BackupTool(
   private val context: Context,
   private val memoryUtil: MemoryUtil,
 ) {
+  fun reminderToFile(item: Reminder): File? = anyToFile(item, item.uuId + FileConfig.FILE_NAME_REMINDER)
 
-  fun reminderToFile(item: Reminder): File? {
-    return anyToFile(item, item.uuId + FileConfig.FILE_NAME_REMINDER)
-  }
+  fun placeToFile(item: Place): File? = anyToFile(item, item.id + FileConfig.FILE_NAME_PLACE)
 
-  fun placeToFile(item: Place): File? {
-    return anyToFile(item, item.id + FileConfig.FILE_NAME_PLACE)
-  }
-
-  private fun anyToFile(any: Any, fileName: String): File? {
+  private fun anyToFile(
+    any: Any,
+    fileName: String,
+  ): File? {
     val cacheDir = context.externalCacheDir ?: context.cacheDir
     val file = File(cacheDir, fileName)
     if (!file.createNewFile()) {

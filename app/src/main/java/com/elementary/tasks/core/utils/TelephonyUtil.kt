@@ -12,8 +12,11 @@ import com.github.naz013.common.uri.UriUtil
 import java.io.File
 
 object TelephonyUtil {
-
-  fun sendNote(file: File, context: Context, message: String?) {
+  fun sendNote(
+    file: File,
+    context: Context,
+    message: String?,
+  ) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
     var title = "Note"
@@ -40,7 +43,11 @@ object TelephonyUtil {
     }
   }
 
-  fun sendFile(file: File, context: Context, message: String?) {
+  fun sendFile(
+    file: File,
+    context: Context,
+    message: String?,
+  ) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "*/*"
     intent.putExtra(Intent.EXTRA_SUBJECT, message)
@@ -55,7 +62,10 @@ object TelephonyUtil {
     }
   }
 
-  fun sendFile(context: Context, shareData: UiShareData) {
+  fun sendFile(
+    context: Context,
+    shareData: UiShareData,
+  ) {
     if (shareData.file == null) return
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "*/*"
@@ -76,7 +86,7 @@ object TelephonyUtil {
     email: String,
     subject: String,
     message: String,
-    filePath: String?
+    filePath: String?,
   ) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
@@ -101,7 +111,7 @@ object TelephonyUtil {
     email: String,
     subject: String,
     message: String,
-    file: File?
+    file: File?,
   ) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
@@ -121,7 +131,10 @@ object TelephonyUtil {
     }
   }
 
-  fun sendSms(number: String, context: Context) {
+  fun sendSms(
+    number: String,
+    context: Context,
+  ) {
     if (TextUtils.isEmpty(number)) {
       return
     }
@@ -135,7 +148,11 @@ object TelephonyUtil {
     }
   }
 
-  fun sendSms(context: Context, number: String, message: String?) {
+  fun sendSms(
+    context: Context,
+    number: String,
+    message: String?,
+  ) {
     if (TextUtils.isEmpty(number)) {
       return
     }
@@ -150,7 +167,10 @@ object TelephonyUtil {
     }
   }
 
-  fun makeCall(number: String, context: Context) {
+  fun makeCall(
+    number: String,
+    context: Context,
+  ) {
     if (TextUtils.isEmpty(number)) {
       return
     }
@@ -164,7 +184,10 @@ object TelephonyUtil {
     }
   }
 
-  fun openApp(appPackage: String, context: Context) {
+  fun openApp(
+    appPackage: String,
+    context: Context,
+  ) {
     val launchIntent = context.packageManager.getLaunchIntentForPackage(appPackage)
     try {
       context.startActivity(launchIntent)
@@ -173,7 +196,10 @@ object TelephonyUtil {
     }
   }
 
-  fun openLink(link: String, context: Context) {
+  fun openLink(
+    link: String,
+    context: Context,
+  ) {
     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
     try {
       context.startActivity(browserIntent)

@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 
 class UiSquareFrameLayout : FrameLayout {
-
   constructor(context: Context) : super(context)
 
   constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -13,10 +12,13 @@ class UiSquareFrameLayout : FrameLayout {
   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
     context,
     attrs,
-    defStyleAttr
+    defStyleAttr,
   )
 
-  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+  override fun onMeasure(
+    widthMeasureSpec: Int,
+    heightMeasureSpec: Int,
+  ) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     val measuredWidth = measuredWidth
     setMeasuredDimension(measuredWidth, measuredWidth)

@@ -12,17 +12,14 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractB
 class AttachmentsController(
   builderItem: AttachmentsBuilderItem,
   private val attachmentFileAdapter: UriToAttachmentFileAdapter,
-  private val multipleUriPicker: MultipleUriPicker
+  private val multipleUriPicker: MultipleUriPicker,
 ) : AbstractBindingValueController<List<String>, BuilderItemAttachmentFilesBinding>(builderItem) {
-
   private val adapter = EditableAttachmentsAdapter { removeFile(it) }
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemAttachmentFilesBinding {
-    return BuilderItemAttachmentFilesBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemAttachmentFilesBinding = BuilderItemAttachmentFilesBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -36,7 +33,8 @@ class AttachmentsController(
 
   override fun onDataChanged(data: List<String>?) {
     super.onDataChanged(data)
-    data?.let { toUris(it) }
+    data
+      ?.let { toUris(it) }
       ?.map { attachmentFileAdapter(it) }
       ?.also { adapter.submitList(it) }
   }

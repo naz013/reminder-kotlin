@@ -16,15 +16,15 @@ class RemindersAdapter(
   private val reminderCommon: ScheduleReminderViewHolderCommon = ScheduleReminderViewHolderCommon(),
   private val onItemClicked: (UiReminderList) -> Unit = { },
   private val onToggleClicked: (UiReminderList) -> Unit = { },
-  private val onMoreClicked: (View, UiReminderList) -> Unit = { _, _ -> }
+  private val onMoreClicked: (View, UiReminderList) -> Unit = { _, _ -> },
 ) : ListAdapter<UiReminderEventsList, RecyclerView.ViewHolder>(
-  UiReminderEventsListDiffCallback()
-) {
+    UiReminderEventsListDiffCallback(),
+  ) {
   override fun onCreateViewHolder(
     parent: ViewGroup,
-    viewType: Int
-  ): RecyclerView.ViewHolder {
-    return when (viewType) {
+    viewType: Int,
+  ): RecyclerView.ViewHolder =
+    when (viewType) {
       1 -> HeaderViewHolder(parent)
 
       else -> {
@@ -47,16 +47,16 @@ class RemindersAdapter(
             find(i)?.run {
               onMoreClicked(view, this)
             }
-          }
+          },
         )
       }
     }
-  }
 
   private fun find(position: Int): UiReminderList? {
     if (position != -1 && position < itemCount) {
       return try {
-        getItem(position).takeIf { it is UiReminderList }
+        getItem(position)
+          .takeIf { it is UiReminderList }
           ?.let { it as? UiReminderList }
       } catch (e: Throwable) {
         null
@@ -67,7 +67,7 @@ class RemindersAdapter(
 
   override fun onBindViewHolder(
     holder: RecyclerView.ViewHolder,
-    position: Int
+    position: Int,
   ) {
     when (holder) {
       is ReminderViewHolder -> {
@@ -83,10 +83,9 @@ class RemindersAdapter(
     }
   }
 
-  override fun getItemViewType(position: Int): Int {
-    return when (getItem(position)) {
+  override fun getItemViewType(position: Int): Int =
+    when (getItem(position)) {
       is UiReminderListHeader -> 1
       else -> 0
     }
-  }
 }

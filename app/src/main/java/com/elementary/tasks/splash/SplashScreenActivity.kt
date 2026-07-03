@@ -19,7 +19,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : LightThemedActivity() {
-
   private val viewModel by viewModel<SplashViewModel>()
   private val contextSwitcher by inject<ContextSwitcher>()
 
@@ -48,51 +47,57 @@ class SplashScreenActivity : LightThemedActivity() {
   private fun enableShortcuts() {
     val shortcutManager = getSystemService(ShortcutManager::class.java)
     if (shortcutManager != null) {
-      val shortcut = run {
-        val bundle = ShortcutDestination.createBundle(
-          shortcut = ShortcutDestination.Shortcut.Reminder
-        )
-        ShortcutInfo.Builder(this, "id.reminder")
-          .setShortLabel(getString(R.string.add_reminder_menu))
-          .setLongLabel(getString(R.string.add_reminder_menu))
-          .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
+      val shortcut =
+        run {
+          val bundle =
+            ShortcutDestination.createBundle(
+              shortcut = ShortcutDestination.Shortcut.Reminder,
+            )
+          ShortcutInfo
+            .Builder(this, "id.reminder")
+            .setShortLabel(getString(R.string.add_reminder_menu))
+            .setLongLabel(getString(R.string.add_reminder_menu))
+            .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
+            .setIntents(
+              arrayOf(
+                Intent(Intent.ACTION_MAIN)
+                  .setClass(this, BottomNavActivity::class.java)
+                  .putExtras(bundle),
+              ),
+            ).build()
+        }
+
+      val shortcut2 =
+        ShortcutInfo
+          .Builder(this, "id.note")
+          .setShortLabel(getString(R.string.add_note))
+          .setLongLabel(getString(R.string.add_note))
+          .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
           .setIntents(
             arrayOf(
-              Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java)
-                .putExtras(bundle)
-            )
-          )
-          .build()
-      }
-
-      val shortcut2 = ShortcutInfo.Builder(this, "id.note")
-        .setShortLabel(getString(R.string.add_note))
-        .setLongLabel(getString(R.string.add_note))
-        .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
-        .setIntents(
-          arrayOf(
-            Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
-            Intent(Intent.ACTION_VIEW).setClass(this, CreateNoteActivity::class.java)
-          )
-        )
-        .build()
+              Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
+              Intent(Intent.ACTION_VIEW).setClass(this, CreateNoteActivity::class.java),
+            ),
+          ).build()
 
       if (viewModel.isGoogleTasksEnabled) {
-        val bundle = ShortcutDestination.createBundle(
-          shortcut = ShortcutDestination.Shortcut.GoogleTask
-        )
-        val shortcut3 = ShortcutInfo.Builder(this, "id.google.tasks")
-          .setShortLabel(getString(R.string.add_google_task))
-          .setLongLabel(getString(R.string.add_google_task))
-          .setIcon(Icon.createWithResource(this, R.drawable.add_google_shortcut))
-          .setIntents(
-            arrayOf(
-              Intent(Intent.ACTION_MAIN)
-                .setClass(this, BottomNavActivity::class.java)
-                .putExtras(bundle)
-            )
+        val bundle =
+          ShortcutDestination.createBundle(
+            shortcut = ShortcutDestination.Shortcut.GoogleTask,
           )
-          .build()
+        val shortcut3 =
+          ShortcutInfo
+            .Builder(this, "id.google.tasks")
+            .setShortLabel(getString(R.string.add_google_task))
+            .setLongLabel(getString(R.string.add_google_task))
+            .setIcon(Icon.createWithResource(this, R.drawable.add_google_shortcut))
+            .setIntents(
+              arrayOf(
+                Intent(Intent.ACTION_MAIN)
+                  .setClass(this, BottomNavActivity::class.java)
+                  .putExtras(bundle),
+              ),
+            ).build()
         shortcutManager.dynamicShortcuts = listOf(shortcut, shortcut2, shortcut3)
       } else {
         shortcutManager.dynamicShortcuts = listOf(shortcut, shortcut2)

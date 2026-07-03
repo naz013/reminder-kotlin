@@ -32,7 +32,6 @@ data class SharedNote(
   @SerializedName("fontSize")
   val fontSize: Int = -1,
 ) : Parcelable {
-
   companion object {
     const val FILE_EXTENSION = ".etnote"
   }

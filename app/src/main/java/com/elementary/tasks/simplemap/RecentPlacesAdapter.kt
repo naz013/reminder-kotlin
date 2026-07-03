@@ -6,27 +6,31 @@ import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.github.naz013.ui.common.view.inflater
-import com.github.naz013.ui.common.view.visibleGone
 import com.elementary.tasks.databinding.ListItemMapPlaceBinding
 import com.elementary.tasks.places.list.UiPlaceListDiffCallback
+import com.github.naz013.ui.common.view.inflater
+import com.github.naz013.ui.common.view.visibleGone
 
-class RecentPlacesAdapter :
-  ListAdapter<UiPlaceList, RecentPlacesAdapter.ViewHolder>(UiPlaceListDiffCallback()) {
-
+class RecentPlacesAdapter : ListAdapter<UiPlaceList, RecentPlacesAdapter.ViewHolder>(UiPlaceListDiffCallback()) {
   var actionsListener: ActionsListener<UiPlaceList>? = null
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): ViewHolder = ViewHolder(parent)
 
-  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: ViewHolder,
+    position: Int,
+  ) {
     holder.bind(getItem(position))
   }
 
   inner class ViewHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
   ) : HolderBinding<ListItemMapPlaceBinding>(
-    ListItemMapPlaceBinding.inflate(parent.inflater(), parent, false)
-  ) {
+      ListItemMapPlaceBinding.inflate(parent.inflater(), parent, false),
+    ) {
     fun bind(item: UiPlaceList) {
       binding.textView.text = item.name
 
@@ -40,7 +44,7 @@ class RecentPlacesAdapter :
           view,
           bindingAdapterPosition,
           getItem(bindingAdapterPosition),
-          ListActions.OPEN
+          ListActions.OPEN,
         )
       }
     }

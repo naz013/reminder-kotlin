@@ -14,9 +14,8 @@ class DeleteBirthdayUseCase(
   private val notifier: Notifier,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
-  private val eventOccurrenceRepository: EventOccurrenceRepository
+  private val eventOccurrenceRepository: EventOccurrenceRepository,
 ) {
-
   suspend operator fun invoke(id: String) {
     birthdayRepository.delete(id)
     notifier.showBirthdayPermanent()
@@ -25,7 +24,7 @@ class DeleteBirthdayUseCase(
     scheduleBackgroundWorkUseCase.invoke(
       workType = WorkType.Delete,
       dataType = DataType.Birthdays,
-      id = id
+      id = id,
     )
     eventOccurrenceRepository.deleteByEventId(id)
     Logger.i(TAG, "Deleted birthday with id = $id")

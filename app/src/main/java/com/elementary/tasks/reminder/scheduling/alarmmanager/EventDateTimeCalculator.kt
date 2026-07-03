@@ -11,12 +11,12 @@ class EventDateTimeCalculator(
   private val strategyResolver: BehaviorStrategyResolver,
   private val dateTimeManager: DateTimeManager,
 ) {
-
   fun calculateEventDateTime(reminder: Reminder): Long? {
-    var due = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: run {
-      Logger.w(TAG, "Cannot parse event time: ${reminder.eventTime}")
-      return null
-    }
+    var due =
+      dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: run {
+        Logger.w(TAG, "Cannot parse event time: ${reminder.eventTime}")
+        return null
+      }
     if (reminder.remindBefore != 0L) {
       due = due.minusMillis(reminder.remindBefore)
     }

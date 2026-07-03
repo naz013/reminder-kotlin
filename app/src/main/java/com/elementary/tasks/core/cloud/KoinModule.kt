@@ -14,18 +14,19 @@ import com.github.naz013.sync.SyncSettings
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
 
-val cloudModule = module {
-  factory { SyncDataConverterImpl() as SyncDataConverter }
-  factory { SyncSettingsImpl(get()) as SyncSettings }
-  factory { CloudApiProviderImpl(get(), get(), get(), get()) as CloudApiProvider }
-  factory { DataPostProcessorImpl(get(), get(), get(), get()) as DataPostProcessor }
-  factory { FileCacheProviderImpl(get()) as FileCacheProvider }
+val cloudModule =
+  module {
+    factory { SyncDataConverterImpl() as SyncDataConverter }
+    factory { SyncSettingsImpl(get()) as SyncSettings }
+    factory { CloudApiProviderImpl(get(), get(), get(), get()) as CloudApiProvider }
+    factory { DataPostProcessorImpl(get(), get(), get(), get()) as DataPostProcessor }
+    factory { FileCacheProviderImpl(get()) as FileCacheProvider }
 
-  factory { GetWorkerTagUseCase() }
-  factory { ScheduleBackgroundWorkUseCase(get(), get(), get(), get()) }
+    factory { GetWorkerTagUseCase() }
+    factory { ScheduleBackgroundWorkUseCase(get(), get(), get(), get()) }
 
-  worker { DeleteWorker(get(), get(), get(), get()) }
-  worker { ForceUploadWorker(get(), get(), get(), get()) }
-  worker { SyncWorker(get(), get(), get(), get()) }
-  worker { UploadWorker(get(), get(), get(), get()) }
-}
+    worker { DeleteWorker(get(), get(), get(), get()) }
+    worker { ForceUploadWorker(get(), get(), get(), get()) }
+    worker { SyncWorker(get(), get(), get(), get()) }
+    worker { UploadWorker(get(), get(), get(), get()) }
+  }

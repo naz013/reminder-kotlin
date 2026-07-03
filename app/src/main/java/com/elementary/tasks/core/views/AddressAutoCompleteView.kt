@@ -21,20 +21,32 @@ import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
-
+class AddressAutoCompleteView :
+  AppCompatAutoCompleteTextView,
+  KoinComponent {
   private var listener: AdapterView.OnItemClickListener? = null
   private val geocoderTask by inject<GeocoderTask>()
-  private val textWatcher: TextWatcher = object : TextWatcher {
-    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+  private val textWatcher: TextWatcher =
+    object : TextWatcher {
+      override fun beforeTextChanged(
+        charSequence: CharSequence,
+        i: Int,
+        i1: Int,
+        i2: Int,
+      ) {}
 
-    override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-      if (isEnabledInner) performTypeValue(charSequence.toString())
-    }
+      override fun onTextChanged(
+        charSequence: CharSequence,
+        i: Int,
+        i1: Int,
+        i2: Int,
+      ) {
+        if (isEnabledInner) performTypeValue(charSequence.toString())
+      }
 
-    override fun afterTextChanged(editable: Editable) {
+      override fun afterTextChanged(editable: Editable) {
+      }
     }
-  }
   private var mImm: InputMethodManager? = null
   private var foundPlaces: MutableList<Address> = mutableListOf()
   private var mAdapter: AddressAdapter? = null
@@ -51,7 +63,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
   constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
     context,
     attrs,
-    defStyleAttr
+    defStyleAttr,
   ) {
     init()
   }
@@ -64,7 +76,8 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
     inputType = InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS
     setOnEditorActionListener { _, actionId, event ->
       if (
-        event != null && event.keyCode == KeyEvent.KEYCODE_ENTER ||
+        event != null &&
+        event.keyCode == KeyEvent.KEYCODE_ENTER ||
         actionId == EditorInfo.IME_ACTION_SEARCH
       ) {
         performTypeValue(text.toString().trim())
@@ -91,13 +104,12 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
     }
   }
 
-  fun getAddress(position: Int): Address? {
-    return if (position < foundPlaces.size) {
+  fun getAddress(position: Int): Address? =
+    if (position < foundPlaces.size) {
       foundPlaces[position]
     } else {
       null
     }
-  }
 
   private fun performTypeValue(s: String) {
     geocoderTask.findAddresses(s) {
@@ -123,12 +135,19 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
     }
   }
 
-  private inner class AddressAdapter(context: Context, resource: Int, objects: List<Address>) :
-    ArrayAdapter<Address>(context, resource, objects) {
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-      val v: View = convertView
-        ?: LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, null, false)
+  private inner class AddressAdapter(
+    context: Context,
+    resource: Int,
+    objects: List<Address>,
+  ) : ArrayAdapter<Address>(context, resource, objects) {
+    override fun getView(
+      position: Int,
+      convertView: View?,
+      parent: ViewGroup,
+    ): View {
+      val v: View =
+        convertView
+          ?: LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, null, false)
       val tv1 = v.findViewById<TextView>(android.R.id.text1)
       val tv2 = v.findViewById<TextView>(android.R.id.text2)
       val address = getItem(position) ?: return v
@@ -143,15 +162,17 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView, KoinComponent {
     }
 
     fun getName(position: Int): String {
-      val name = getItem(position)?.let {
-        formName(it)
-      }
+      val name =
+        getItem(position)?.let {
+          formName(it)
+        }
       return name ?: ""
     }
   }
 
   companion object {
     private const val TAG = "AddressAutoCompleteView"
+
     fun formName(address: Address): String {
       val sb = StringBuilder()
       sb.append(address.featureName)

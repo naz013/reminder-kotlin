@@ -15,20 +15,19 @@ import com.github.naz013.common.intent.LauncherCreator
 
 class BackupFilePicker private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (Uri) -> Unit
+  private val resultCallback: (Uri) -> Unit,
 ) : IntentPicker<Intent, ActivityResult>(
-  ActivityResultContracts.StartActivityForResult(),
-  launcherCreator
-) {
-
+    ActivityResultContracts.StartActivityForResult(),
+    launcherCreator,
+  ) {
   constructor(
     activity: ComponentActivity,
-    resultCallback: (Uri) -> Unit
+    resultCallback: (Uri) -> Unit,
   ) : this(ActivityLauncherCreator(activity), resultCallback)
 
   constructor(
     fragment: Fragment,
-    resultCallback: (Uri) -> Unit
+    resultCallback: (Uri) -> Unit,
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
   fun pickRbakFile() {

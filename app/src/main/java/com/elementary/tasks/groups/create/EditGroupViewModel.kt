@@ -33,9 +33,8 @@ class EditGroupViewModel(
   private val uiGroupEditAdapter: UiGroupEditAdapter,
   private val intentDataReader: IntentDataReader,
   private val deleteReminderGroupUseCase: DeleteReminderGroupUseCase,
-  private val saveReminderGroupUseCase: SaveReminderGroupUseCase
+  private val saveReminderGroupUseCase: SaveReminderGroupUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _reminderGroup = mutableLiveDataOf<UiGroupEdit>()
   val reminderGroup = _reminderGroup.toLiveData()
 
@@ -51,9 +50,7 @@ class EditGroupViewModel(
 
   private var localGroup: ReminderGroup? = null
 
-  fun hasId(): Boolean {
-    return id.isNotEmpty()
-  }
+  fun hasId(): Boolean = id.isNotEmpty()
 
   fun onPositionChanged(position: Int) {
     sliderPosition = position
@@ -96,29 +93,36 @@ class EditGroupViewModel(
     }
   }
 
-  fun saveGroup(title: String, color: Int, isDefault: Boolean, newId: Boolean = false) {
+  fun saveGroup(
+    title: String,
+    color: Int,
+    isDefault: Boolean,
+    newId: Boolean = false,
+  ) {
     val reminderGroup = localGroup
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val wasDefault = reminderGroup?.isDefaultGroup ?: false
-      val group = reminderGroup?.copy(
-        groupColor = color,
-        groupDateTime = dateTimeManager.getNowGmtDateTime(),
-        groupTitle = title,
-        isDefaultGroup = isDefault,
-        groupUuId = if (newId) {
-          UUID.randomUUID().toString()
-        } else {
-          reminderGroup.groupUuId
-        }
-      ) ?: ReminderGroup(
-        groupColor = color,
-        groupDateTime = dateTimeManager.getNowGmtDateTime(),
-        groupTitle = title,
-        isDefaultGroup = isDefault,
-        groupUuId = UUID.randomUUID().toString(),
-        syncState = SyncState.WaitingForUpload
-      )
+      val group =
+        reminderGroup?.copy(
+          groupColor = color,
+          groupDateTime = dateTimeManager.getNowGmtDateTime(),
+          groupTitle = title,
+          isDefaultGroup = isDefault,
+          groupUuId =
+            if (newId) {
+              UUID.randomUUID().toString()
+            } else {
+              reminderGroup.groupUuId
+            },
+        ) ?: ReminderGroup(
+          groupColor = color,
+          groupDateTime = dateTimeManager.getNowGmtDateTime(),
+          groupTitle = title,
+          isDefaultGroup = isDefault,
+          groupUuId = UUID.randomUUID().toString(),
+          syncState = SyncState.WaitingForUpload,
+        )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))
       if (!wasDefault && group.isDefaultGroup) {
         val groups = reminderGroupRepository.getAll().map { it.copy(isDefaultGroup = false) }

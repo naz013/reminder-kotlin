@@ -3,21 +3,21 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.ical
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.context.startActivity
 import com.elementary.tasks.databinding.BuilderItemTimeBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 import com.elementary.tasks.reminder.recur.RecurHelpActivity
+import com.github.naz013.ui.common.context.startActivity
 import org.threeten.bp.LocalTime
 
 class ICalTimeController(
   builderItem: BuilderItem<LocalTime>,
-  private val is24Format: Boolean
+  private val is24Format: Boolean,
 ) : AbstractBindingValueController<LocalTime, BuilderItemTimeBinding>(builderItem) {
-
-  override fun bindView(layoutInflater: LayoutInflater, parent: ViewGroup): BuilderItemTimeBinding {
-    return BuilderItemTimeBinding.inflate(layoutInflater, parent, false)
-  }
+  override fun bindView(
+    layoutInflater: LayoutInflater,
+    parent: ViewGroup,
+  ): BuilderItemTimeBinding = BuilderItemTimeBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()

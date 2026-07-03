@@ -10,7 +10,6 @@ import org.threeten.bp.LocalDateTime
  * allowing different repeat patterns to be handled without relying on the reminderType property.
  */
 interface ReminderBehaviorStrategy {
-
   /**
    * Calculates the next occurrence time for the reminder.
    *
@@ -20,7 +19,7 @@ interface ReminderBehaviorStrategy {
    */
   fun calculateNextOccurrence(
     reminder: Reminder,
-    fromDateTime: LocalDateTime
+    fromDateTime: LocalDateTime,
   ): LocalDateTime? = null
 
   /**

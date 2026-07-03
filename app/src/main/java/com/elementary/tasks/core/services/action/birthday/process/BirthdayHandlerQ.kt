@@ -28,9 +28,8 @@ class BirthdayHandlerQ(
   private val notifier: Notifier,
   private val prefs: Prefs,
   private val wearNotification: WearNotification,
-  private val modelDateTimeFormatter: ModelDateTimeFormatter
+  private val modelDateTimeFormatter: ModelDateTimeFormatter,
 ) : ActionHandler<Birthday> {
-
   override suspend fun handle(data: Birthday) {
     showBirthdayNotification(data)
   }
@@ -55,60 +54,65 @@ class BirthdayHandlerQ(
     builder.color = ThemeProvider.getPrimaryColor(contextProvider.themedContext)
     builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
-    val notificationIntent = BirthdayActionActivity.getLaunchIntent(
-      contextProvider.context,
-      birthday.uuId
-    )
-    val intent = PendingIntentWrapper.getActivity(
-      contextProvider.context,
-      birthday.uniqueId,
-      notificationIntent,
-      PendingIntent.FLAG_CANCEL_CURRENT
-    )
+    val notificationIntent =
+      BirthdayActionActivity.getLaunchIntent(
+        contextProvider.context,
+        birthday.uuId,
+      )
+    val intent =
+      PendingIntentWrapper.getActivity(
+        contextProvider.context,
+        birthday.uniqueId,
+        notificationIntent,
+        PendingIntent.FLAG_CANCEL_CURRENT,
+      )
 
     builder.setContentIntent(intent)
 
-    getActionReceiverIntent(BirthdayActionReceiver.ACTION_HIDE, birthday.uuId).let {
-      PendingIntentWrapper.getBroadcast(
-        contextProvider.context,
-        birthday.uniqueId,
-        it,
-        PendingIntent.FLAG_CANCEL_CURRENT
-      )
-    }.also {
-      builder.addAction(R.drawable.ic_fluent_checkmark, textProvider.getText(R.string.ok), it)
-    }
+    getActionReceiverIntent(BirthdayActionReceiver.ACTION_HIDE, birthday.uuId)
+      .let {
+        PendingIntentWrapper.getBroadcast(
+          contextProvider.context,
+          birthday.uniqueId,
+          it,
+          PendingIntent.FLAG_CANCEL_CURRENT,
+        )
+      }.also {
+        builder.addAction(R.drawable.ic_fluent_checkmark, textProvider.getText(R.string.ok), it)
+      }
 
     if (birthday.number.isNotEmpty()) {
-      getActionReceiverIntent(BirthdayActionReceiver.ACTION_CALL, birthday.uuId).let {
-        PendingIntentWrapper.getBroadcast(
-          contextProvider.context,
-          birthday.uniqueId,
-          it,
-          PendingIntent.FLAG_CANCEL_CURRENT
-        )
-      }.also {
-        builder.addAction(
-          R.drawable.ic_fluent_phone,
-          textProvider.getText(R.string.make_call),
-          it
-        )
-      }
+      getActionReceiverIntent(BirthdayActionReceiver.ACTION_CALL, birthday.uuId)
+        .let {
+          PendingIntentWrapper.getBroadcast(
+            contextProvider.context,
+            birthday.uniqueId,
+            it,
+            PendingIntent.FLAG_CANCEL_CURRENT,
+          )
+        }.also {
+          builder.addAction(
+            R.drawable.ic_fluent_phone,
+            textProvider.getText(R.string.make_call),
+            it,
+          )
+        }
 
-      getActionReceiverIntent(BirthdayActionReceiver.ACTION_SMS, birthday.uuId).let {
-        PendingIntentWrapper.getBroadcast(
-          contextProvider.context,
-          birthday.uniqueId,
-          it,
-          PendingIntent.FLAG_CANCEL_CURRENT
-        )
-      }.also {
-        builder.addAction(
-          R.drawable.ic_fluent_chat,
-          textProvider.getText(R.string.send_sms),
-          it
-        )
-      }
+      getActionReceiverIntent(BirthdayActionReceiver.ACTION_SMS, birthday.uuId)
+        .let {
+          PendingIntentWrapper.getBroadcast(
+            contextProvider.context,
+            birthday.uniqueId,
+            it,
+            PendingIntent.FLAG_CANCEL_CURRENT,
+          )
+        }.also {
+          builder.addAction(
+            R.drawable.ic_fluent_chat,
+            textProvider.getText(R.string.send_sms),
+            it,
+          )
+        }
     }
 
     val isWear = prefs.isWearEnabled
@@ -124,17 +128,19 @@ class BirthdayHandlerQ(
         birthday.uniqueId,
         birthday.name,
         birthdayDataProvider.getAppName(),
-        "birthday"
+        "birthday",
       )
     }
   }
 
-  private fun getActionReceiverIntent(action: String, id: String): Intent {
-    return Intent(contextProvider.context, BirthdayActionReceiver::class.java).apply {
+  private fun getActionReceiverIntent(
+    action: String,
+    id: String,
+  ): Intent =
+    Intent(contextProvider.context, BirthdayActionReceiver::class.java).apply {
       this.action = action
       putExtra(IntentKeys.INTENT_ID, id)
     }
-  }
 
   companion object {
     private const val TAG = "BirthdayHandlerQ"

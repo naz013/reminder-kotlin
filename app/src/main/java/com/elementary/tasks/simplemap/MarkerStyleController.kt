@@ -4,19 +4,18 @@ import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.config.MapConfig
 import com.elementary.tasks.core.utils.BuildParams
+import com.github.naz013.colorslider.ColorSlider
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.isVisible
 import com.github.naz013.ui.common.view.visible
-import com.github.naz013.colorslider.ColorSlider
 
 class MarkerStyleController(
   rootView: View,
   startColor: Int,
   colors: IntArray,
   selectorColor: Int,
-  private val listener: OnStyleSelectedListener
+  private val listener: OnStyleSelectedListener,
 ) {
-
   private val styleButton = rootView.findViewById<View>(R.id.markersCard)
   private val colorPickerCard = rootView.findViewById<View>(R.id.markerStyleContainer)
   private val colorSlider = rootView.findViewById<ColorSlider>(R.id.markerColorSlider)
@@ -49,9 +48,7 @@ class MarkerStyleController(
     hideCard()
   }
 
-  fun isLayerVisible(): Boolean {
-    return colorPickerCard.isVisible()
-  }
+  fun isLayerVisible(): Boolean = colorPickerCard.isVisible()
 
   private fun toggleCard() {
     listener.onStyleButtonClicked()
@@ -72,6 +69,7 @@ class MarkerStyleController(
 
   interface OnStyleSelectedListener {
     fun onStyleSelected(style: Int)
+
     fun onStyleButtonClicked()
   }
 }

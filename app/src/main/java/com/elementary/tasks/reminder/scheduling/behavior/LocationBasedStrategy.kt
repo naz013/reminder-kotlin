@@ -12,31 +12,18 @@ import org.threeten.bp.LocalDateTime
  * next occurrences.
  */
 data object LocationBasedStrategy : ReminderBehaviorStrategy {
-
   override fun calculateNextOccurrence(
     reminder: Reminder,
-    fromDateTime: LocalDateTime
-  ): LocalDateTime? {
-    return null
-  }
+    fromDateTime: LocalDateTime,
+  ): LocalDateTime? = null
 
-  override fun canSkip(reminder: Reminder): Boolean {
-    return false
-  }
+  override fun canSkip(reminder: Reminder): Boolean = false
 
-  override fun requiresBackgroundService(reminder: Reminder): Boolean {
-    return reminder.places.isNotEmpty()
-  }
+  override fun requiresBackgroundService(reminder: Reminder): Boolean = reminder.places.isNotEmpty()
 
-  override fun requiresTimeScheduling(reminder: Reminder): Boolean {
-    return false
-  }
+  override fun requiresTimeScheduling(reminder: Reminder): Boolean = false
 
-  override fun canSnooze(reminder: Reminder): Boolean {
-    return false
-  }
+  override fun canSnooze(reminder: Reminder): Boolean = false
 
-  override fun canStartImmediately(reminder: Reminder): Boolean {
-    return true
-  }
+  override fun canStartImmediately(reminder: Reminder): Boolean = true
 }

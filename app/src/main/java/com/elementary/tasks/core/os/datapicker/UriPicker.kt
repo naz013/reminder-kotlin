@@ -12,12 +12,12 @@ import com.github.naz013.common.intent.FragmentLauncherCreator
 import com.github.naz013.common.intent.IntentPicker
 import com.github.naz013.common.intent.LauncherCreator
 
-class UriPicker(launcherCreator: LauncherCreator<Intent, ActivityResult>) :
-  IntentPicker<Intent, ActivityResult>(
+class UriPicker(
+  launcherCreator: LauncherCreator<Intent, ActivityResult>,
+) : IntentPicker<Intent, ActivityResult>(
     ActivityResultContracts.StartActivityForResult(),
-    launcherCreator
+    launcherCreator,
   ) {
-
   private var resultCallback: ((Uri?) -> Unit)? = null
 
   constructor(activity: ComponentActivity) : this(ActivityLauncherCreator(activity))
@@ -30,7 +30,10 @@ class UriPicker(launcherCreator: LauncherCreator<Intent, ActivityResult>) :
     }
   }
 
-  fun launchIntent(intent: Intent, callback: (Uri?) -> Unit) {
+  fun launchIntent(
+    intent: Intent,
+    callback: (Uri?) -> Unit,
+  ) {
     resultCallback = callback
     launch(intent)
   }

@@ -32,11 +32,12 @@ class SplashViewModel(
   private val noteImageMigration: NoteImageMigration,
   private val presetInitProcessor: PresetInitProcessor,
   private val appWidgetPreviewUpdater: AppWidgetPreviewUpdater,
-  private val migrateExistingEventOccurrencesUseCase: MigrateExistingEventOccurrencesUseCase
-) : ViewModel(), DefaultLifecycleObserver {
-
-  val isGoogleTasksEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
-    googleTasksAuthManager.isAuthorized()
+  private val migrateExistingEventOccurrencesUseCase: MigrateExistingEventOccurrencesUseCase,
+) : ViewModel(),
+  DefaultLifecycleObserver {
+  val isGoogleTasksEnabled =
+    featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
+      googleTasksAuthManager.isAuthorized()
   val openHome = mutableLiveDataOf<Boolean>()
 
   override fun onCreate(owner: LifecycleOwner) {
