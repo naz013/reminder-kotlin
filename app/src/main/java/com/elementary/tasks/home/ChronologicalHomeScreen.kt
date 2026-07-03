@@ -1,6 +1,12 @@
 package com.elementary.tasks.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +37,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,8 +61,17 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.dynamicParameter
 import com.github.naz013.ui.common.compose.withAlpha
+import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
+
+private const val TILE_ANIMATION_DURATION_MS = 250
+private const val TILE_STAGGER_DELAY_MS = 40L
+private const val TILE_MAX_STAGGER_DELAY_MS = 240L
+
+private const val LIST_ITEM_ANIMATION_DURATION_MS = 250
+private const val LIST_ITEM_STAGGER_DELAY_MS = 30L
+private const val LIST_ITEM_MAX_STAGGER_DELAY_MS = 180L
 
 @Composable
 fun ChronologicalHomeScreen(
@@ -100,10 +116,11 @@ fun ChronologicalHomeScreen(
     }
     when (state.listState) {
       is ListState.Ready -> {
-        items(state.listState.sections.size) {
+        items(state.listState.sections.size) { index ->
           TimeSectionRow(
             modifier = Modifier.padding(horizontal = 16.dp),
-            timeSection = state.listState.sections[it],
+            timeSection = state.listState.sections[index],
+            index = index,
             onEventClick = onEventClick,
             onEventActionClick = onEventActionClick
           )
@@ -239,15 +256,16 @@ private fun HeaderNavigationGrid(
       .padding(horizontal = 16.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    items.chunked(columns).forEach { rowItems ->
+    items.chunked(columns).forEachIndexed { rowIndex, rowItems ->
       Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
       ) {
-        rowItems.forEach { item ->
+        rowItems.forEachIndexed { columnIndex, item ->
           HeaderNavigationTile(
             modifier = Modifier.weight(1f),
             item = item,
+            index = rowIndex * columns + columnIndex,
             onClick = { onItemClick(item) }
           )
         }
@@ -263,46 +281,58 @@ private fun HeaderNavigationGrid(
 private fun HeaderNavigationTile(
   modifier: Modifier = Modifier,
   item: HeaderNavigationItem,
+  index: Int,
   onClick: () -> Unit,
 ) {
-  Surface(
+  val visibleState = remember { MutableTransitionState(false) }
+  LaunchedEffect(Unit) {
+    delay((index * TILE_STAGGER_DELAY_MS).coerceAtMost(TILE_MAX_STAGGER_DELAY_MS))
+    visibleState.targetState = true
+  }
+  AnimatedVisibility(
     modifier = modifier,
-    onClick = onClick,
-    shape = RoundedCornerShape(12.dp),
-    color = MaterialTheme.colorScheme.surfaceContainer,
+    visibleState = visibleState,
+    enter = fadeIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS)) +
+      scaleIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS), initialScale = 0.85f),
   ) {
-    Row(
-      modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(8.dp)
+    Surface(
+      onClick = onClick,
+      shape = RoundedCornerShape(12.dp),
+      color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
-      Box(
-        modifier = Modifier
-          .size(32.dp)
-          .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.secondaryContainer),
-        contentAlignment = Alignment.Center,
+      Row(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
       ) {
-        Icon(
-          painter = painterResource(item.iconRes),
-          contentDescription = null,
-          modifier = Modifier.size(18.dp),
-          tint = MaterialTheme.colorScheme.onSecondaryContainer,
-        )
-      }
-      Column(
-        verticalArrangement = Arrangement.spacedBy(1.dp)
-      ) {
-        Text(
-          text = stringResource(item.titleRes),
-          style = MaterialTheme.typography.labelSmall,
-          fontWeight = FontWeight.Medium
-        )
-        Text(
-          text = item.subtitle,
-          style = MaterialTheme.typography.titleMedium,
-          fontWeight = FontWeight.Bold
-        )
+        Box(
+          modifier = Modifier
+            .size(32.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.secondaryContainer),
+          contentAlignment = Alignment.Center,
+        ) {
+          Icon(
+            painter = painterResource(item.iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(18.dp),
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+          )
+        }
+        Column(
+          verticalArrangement = Arrangement.spacedBy(1.dp)
+        ) {
+          Text(
+            text = stringResource(item.titleRes),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Medium
+          )
+          Text(
+            text = item.subtitle,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+          )
+        }
       }
     }
   }
@@ -336,28 +366,41 @@ private fun EmptyEventsState(
 private fun TimeSectionRow(
   modifier: Modifier = Modifier,
   timeSection: TimeSection,
+  index: Int,
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
-  Row(
-    modifier = modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(16.dp)
+  val visibleState = remember { MutableTransitionState(false) }
+  LaunchedEffect(Unit) {
+    delay((index * LIST_ITEM_STAGGER_DELAY_MS).coerceAtMost(LIST_ITEM_MAX_STAGGER_DELAY_MS))
+    visibleState.targetState = true
+  }
+  AnimatedVisibility(
+    modifier = modifier,
+    visibleState = visibleState,
+    enter = fadeIn(animationSpec = tween(LIST_ITEM_ANIMATION_DURATION_MS)) +
+      slideInVertically(animationSpec = tween(LIST_ITEM_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight / 6 },
   ) {
-    Text(
-      modifier = Modifier.weight(1f)
-        .padding(start = 0.dp, top = 16.dp),
-      text = timeSection.time,
-      color = MaterialTheme.colorScheme.onBackground,
-      style = MaterialTheme.typography.bodyMedium.copy(
-        fontWeight = FontWeight.Medium
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+      Text(
+        modifier = Modifier.weight(1f)
+          .padding(start = 0.dp, top = 16.dp),
+        text = timeSection.time,
+        color = MaterialTheme.colorScheme.onBackground,
+        style = MaterialTheme.typography.bodyMedium.copy(
+          fontWeight = FontWeight.Medium
+        )
       )
-    )
-    EventCard(
-      modifier = Modifier.weight(4f),
-      event = timeSection.event,
-      onEventClick = onEventClick,
-      onEventActionClick = onEventActionClick
-    )
+      EventCard(
+        modifier = Modifier.weight(4f),
+        event = timeSection.event,
+        onEventClick = onEventClick,
+        onEventActionClick = onEventActionClick
+      )
+    }
   }
 }
 
@@ -506,6 +549,7 @@ private fun TimeSectionRow_WithAction() {
           type = HomeEvent.EventType.Reminder,
         )
       ),
+      index = 0,
       onEventClick = {},
       onEventActionClick = {}
     )

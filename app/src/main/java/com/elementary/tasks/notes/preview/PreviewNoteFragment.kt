@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.get
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
@@ -276,11 +275,6 @@ class PreviewNoteFragment : BaseNonToolbarFragment<FragmentNotePreviewBinding>()
       binding.noteTitle.text = uiNotePreview.title
       binding.noteTitle.typeface = uiNotePreview.titleTypeface
       binding.noteTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, uiNotePreview.titleTextSize)
-    }
-    binding.noteText.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-      topMargin = resources.getDimensionPixelSize(
-        if (uiNotePreview.title.isEmpty()) R.dimen.note_preview_text_top_margin else R.dimen.material_margin
-      )
     }
     binding.noteText.text = uiNotePreview.text
     binding.noteText.typeface = uiNotePreview.typeface
