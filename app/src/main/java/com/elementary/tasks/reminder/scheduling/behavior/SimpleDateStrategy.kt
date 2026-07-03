@@ -9,20 +9,17 @@ import org.threeten.bp.LocalDateTime
  * No repeat pattern - fires once at the specified time.
  */
 class SimpleDateStrategy(
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
 ) : ReminderBehaviorStrategy {
-
   override fun calculateNextOccurrence(
     reminder: Reminder,
-    fromDateTime: LocalDateTime
+    fromDateTime: LocalDateTime,
   ): LocalDateTime? {
     // No next occurrence for simple reminders
     return null
   }
 
-  override fun canSkip(reminder: Reminder): Boolean {
-    return false
-  }
+  override fun canSkip(reminder: Reminder): Boolean = false
 
   override fun canSnooze(reminder: Reminder): Boolean {
     // Simple date reminders can be snoozed

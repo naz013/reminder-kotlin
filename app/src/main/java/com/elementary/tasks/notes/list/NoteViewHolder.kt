@@ -17,11 +17,10 @@ class NoteViewHolder(
   private val common: UiNoteListAdapterCommon = UiNoteListAdapterCommon(),
   private val listener: ((View, Int, ListActions) -> Unit)?,
   private val imageClickListener: ((View, position: Int, imageId: Int) -> Unit)?,
-  allowMore: Boolean = true
+  allowMore: Boolean = true,
 ) : HolderBinding<ListItemNoteBinding>(
-  ListItemNoteBinding.inflate(parent.inflater(), parent, false)
-) {
-
+    ListItemNoteBinding.inflate(parent.inflater(), parent, false),
+  ) {
   private var hasMore = true
     set(value) {
       field = value
@@ -47,7 +46,10 @@ class NoteViewHolder(
     }
   }
 
-  private fun hoverClick(view: View, click: (View) -> Unit) {
+  private fun hoverClick(
+    view: View,
+    click: (View) -> Unit,
+  ) {
     view.setOnTouchListener { v, event ->
       when (event.action) {
         MotionEvent.ACTION_DOWN -> {
@@ -79,7 +81,7 @@ class NoteViewHolder(
           imageClickListener?.invoke(it, bindingAdapterPosition, imageId)
         }
       },
-      titleTextView = binding.noteTitleTv
+      titleTextView = binding.noteTitleTv,
     )
 
     binding.buttonMore.setImageDrawable(uiNoteList.moreIcon)

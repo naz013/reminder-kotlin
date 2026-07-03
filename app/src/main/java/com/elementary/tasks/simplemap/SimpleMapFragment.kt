@@ -49,7 +49,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.Serializable
 
 class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
-
   var mapCallback: MapCallback? = null
   var customButtonCallback: CustomButtonCallback? = null
   var radiusChangeListener: RadiusChangeListener? = null
@@ -77,38 +76,39 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
   private var insets: WindowInsetsCompat? = null
 
-  private val mapReadyCallback = OnMapReadyCallback { googleMap ->
-    internalMap = googleMap
-    isMapReady = true
+  private val mapReadyCallback =
+    OnMapReadyCallback { googleMap ->
+      internalMap = googleMap
+      isMapReady = true
 
-    googleMap.uiSettings.isMyLocationButtonEnabled = false
-    googleMap.uiSettings.isCompassEnabled = false
-    googleMap.uiSettings.isMapToolbarEnabled = false
+      googleMap.uiSettings.isMyLocationButtonEnabled = false
+      googleMap.uiSettings.isCompassEnabled = false
+      googleMap.uiSettings.isMapToolbarEnabled = false
 
-    setStyle(googleMap)
-    tryToSetMyLocation()
-    moveToMyLocation()
+      setStyle(googleMap)
+      tryToSetMyLocation()
+      moveToMyLocation()
 
-    if (mapParams.isTouch) {
-      googleMap.setOnMapClickListener {
-        if (!hideAllLayers()) {
-          addMarker(it)
-          onMapClickListener?.onMapClick(it)
+      if (mapParams.isTouch) {
+        googleMap.setOnMapClickListener {
+          if (!hideAllLayers()) {
+            addMarker(it)
+            onMapClickListener?.onMapClick(it)
+          }
         }
       }
-    }
-    setOnMarkerClick(onMarkerClickListener)
+      setOnMarkerClick(onMarkerClickListener)
 
-    delayedMarkerAction?.run {
-      addMarker(
-        markerState = this.markerState,
-        clearMap = this.clearMap,
-        animate = this.animate
-      )
-      delayedMarkerAction = null
+      delayedMarkerAction?.run {
+        addMarker(
+          markerState = this.markerState,
+          clearMap = this.clearMap,
+          animate = this.animate,
+        )
+        delayedMarkerAction = null
+      }
+      mapCallback?.onMapReady()
     }
-    mapCallback?.onMapReady()
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -120,10 +120,13 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSimpleMapBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
       this.insets = insets
@@ -144,7 +147,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
         latLng = LatLng(sel.latitude, sel.longitude),
         title = getFormattedAddress(sel),
         clear = true,
-        animate = true
+        animate = true,
       )
     }
     initPlacesViewModel()
@@ -153,15 +156,20 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
   fun applyInsets() {
     Logger.d(TAG, "Applying insets, insets = $insets")
     insets?.run {
-      val innerPadding = this.getInsets(
-        WindowInsetsCompat.Type.statusBars() or
-          WindowInsetsCompat.Type.displayCutout()
-      )
+      val innerPadding =
+        this.getInsets(
+          WindowInsetsCompat.Type.statusBars() or
+            WindowInsetsCompat.Type.displayCutout(),
+        )
       binding.buttonContainer.setPadding(
-        /* left = */ binding.buttonContainer.paddingLeft,
-        /* top = */ binding.buttonContainer.paddingTop + innerPadding.top,
-        /* right = */ binding.buttonContainer.paddingRight,
-        /* bottom = */ binding.buttonContainer.paddingBottom
+        // left =
+        binding.buttonContainer.paddingLeft,
+        // top =
+        binding.buttonContainer.paddingTop + innerPadding.top,
+        // right =
+        binding.buttonContainer.paddingRight,
+        // bottom =
+        binding.buttonContainer.paddingBottom,
       )
     }
   }
@@ -170,15 +178,16 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     latLng: LatLng,
     title: String? = null,
     clear: Boolean = true,
-    animate: Boolean = true
+    animate: Boolean = true,
   ) {
     addMarker(
-      markerState = (markerState ?: createMarkerState(latLng = latLng)).copy(
-        title = title ?: geocodeAddress(latLng),
-        latLng = latLng
-      ),
+      markerState =
+        (markerState ?: createMarkerState(latLng = latLng)).copy(
+          title = title ?: geocodeAddress(latLng),
+          latLng = latLng,
+        ),
       clearMap = clear,
-      animate = animate
+      animate = animate,
     )
   }
 
@@ -188,7 +197,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     markerStyle: Int,
     radius: Int,
     clear: Boolean,
-    animate: Boolean
+    animate: Boolean,
   ) {
     if (!::markerStyleController.isInitialized) {
       return
@@ -197,14 +206,15 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       return
     }
     addMarker(
-      markerState = (markerState ?: createMarkerState(latLng = latLng)).copy(
-        title = title ?: geocodeAddress(latLng),
-        style = markerStyle,
-        radius = radius,
-        latLng = latLng
-      ),
+      markerState =
+        (markerState ?: createMarkerState(latLng = latLng)).copy(
+          title = title ?: geocodeAddress(latLng),
+          style = markerStyle,
+          radius = radius,
+          latLng = latLng,
+        ),
       clearMap = clear,
-      animate = animate
+      animate = animate,
     )
   }
 
@@ -214,7 +224,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     markerStyle: Int,
     radius: Int,
     clear: Boolean,
-    animate: Boolean
+    animate: Boolean,
   ) {
     if (!::markerStyleController.isInitialized) {
       return
@@ -224,14 +234,15 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     }
     val old = LatLng(latLng.latitude, latLng.longitude)
     addMarker(
-      markerState = (markerState ?: createMarkerState(latLng = old)).copy(
-        title = title ?: geocodeAddress(old),
-        style = markerStyle,
-        radius = radius,
-        latLng = old
-      ),
+      markerState =
+        (markerState ?: createMarkerState(latLng = old)).copy(
+          title = title ?: geocodeAddress(old),
+          style = markerStyle,
+          radius = radius,
+          latLng = old,
+        ),
       clearMap = clear,
-      animate = animate
+      animate = animate,
     )
   }
 
@@ -240,7 +251,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     paddingLeft: Int = 0,
     paddingTop: Int = 0,
     paddingRight: Int = 0,
-    paddingBottom: Int = 0
+    paddingBottom: Int = 0,
   ) {
     internalMap?.run {
       animate(pos)
@@ -248,12 +259,11 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     }
   }
 
-  fun onBackPressed(): Boolean {
-    return when {
+  fun onBackPressed(): Boolean =
+    when {
       hideAllLayers() -> false
       else -> true
     }
-  }
 
   fun setOnMarkerClick(onMarkerClickListener: GoogleMap.OnMarkerClickListener?) {
     this.onMarkerClickListener = onMarkerClickListener
@@ -281,9 +291,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     }
   }
 
-  private fun geocodeAddress(latLng: LatLng): String {
-    return geocoderTask.getAddressForLocation(latLng) ?: latLng.toString()
-  }
+  private fun geocodeAddress(latLng: LatLng): String = geocoderTask.getAddressForLocation(latLng) ?: latLng.toString()
 
   private fun animate(latLng: LatLng) {
     val update = CameraUpdateFactory.newLatLngZoom(latLng, 13f)
@@ -293,7 +301,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
   private fun tryToMoveToMyLocation() {
     permissionFlow.askPermissions(
       listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION),
-      { moveToMyLocation() }
+      { moveToMyLocation() },
     ) { toast(R.string.cant_access_location_services) }
   }
 
@@ -302,7 +310,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     if (!Permissions.checkPermission(
         requireContext(),
         Permissions.ACCESS_COARSE_LOCATION,
-        Permissions.ACCESS_FINE_LOCATION
+        Permissions.ACCESS_FINE_LOCATION,
       )
     ) {
       return
@@ -312,10 +320,11 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       val criteria = Criteria()
       var location: Location? = null
       try {
-        location = locationManager?.getLastKnownLocation(
-          locationManager.getBestProvider(criteria, false)
-            ?: ""
-        )
+        location =
+          locationManager?.getLastKnownLocation(
+            locationManager.getBestProvider(criteria, false)
+              ?: "",
+          )
       } catch (e: Throwable) {
         Logger.d(TAG, "moveToMyLocation: ${e.message}")
       }
@@ -332,46 +341,47 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     }
   }
 
-  private fun getFormattedAddress(address: Address): String {
-    return if (address.getAddressLine(0) != null) {
+  private fun getFormattedAddress(address: Address): String =
+    if (address.getAddressLine(0) != null) {
       address.getAddressLine(0)
     } else {
       AddressAutoCompleteView.formName(address)
     }
-  }
 
   private fun initViews(view: View) {
-    recentPlacesController = RecentPlacesController(
-      rootView = view,
-      placesAllowed = mapParams.isPlaces,
-      listener = object : RecentPlacesController.OnPlaceSelectedListener {
-        override fun onPlaceSelected(place: UiPlaceList) {
-          if (!BuildParams.isPro) {
-            addMarker(
-              latLng = place.latLng,
-              title = place.name,
-              clear = true,
-              animate = true
-            )
-          } else {
-            addMarker(
-              latLng = place.latLng,
-              title = place.name,
-              markerStyle = place.markerStyle,
-              radius = markerRadiusController.selectedRadius,
-              clear = true,
-              animate = true
-            )
-          }
-        }
+    recentPlacesController =
+      RecentPlacesController(
+        rootView = view,
+        placesAllowed = mapParams.isPlaces,
+        listener =
+          object : RecentPlacesController.OnPlaceSelectedListener {
+            override fun onPlaceSelected(place: UiPlaceList) {
+              if (!BuildParams.isPro) {
+                addMarker(
+                  latLng = place.latLng,
+                  title = place.name,
+                  clear = true,
+                  animate = true,
+                )
+              } else {
+                addMarker(
+                  latLng = place.latLng,
+                  title = place.name,
+                  markerStyle = place.markerStyle,
+                  radius = markerRadiusController.selectedRadius,
+                  clear = true,
+                  animate = true,
+                )
+              }
+            }
 
-        override fun onPlaceButtonClicked() {
-          mapLayerController.onOutsideClick()
-          markerRadiusController.onOutsideClick()
-          markerStyleController.onOutsideClick()
-        }
-      }
-    )
+            override fun onPlaceButtonClicked() {
+              mapLayerController.onOutsideClick()
+              markerRadiusController.onOutsideClick()
+              markerStyleController.onOutsideClick()
+            }
+          },
+      )
 
     binding.placesListCard.gone()
     binding.placesButtonCard.gone()
@@ -389,10 +399,11 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     binding.customButtonsContainer.removeAllViewsInLayout()
 
     if (mapParams.customButtons.isNotEmpty()) {
-      val layoutParams = LinearLayout.LayoutParams(
-        resources.getDimensionPixelSize(R.dimen.map_button_size),
-        resources.getDimensionPixelSize(R.dimen.map_button_size)
-      )
+      val layoutParams =
+        LinearLayout.LayoutParams(
+          resources.getDimensionPixelSize(R.dimen.map_button_size),
+          resources.getDimensionPixelSize(R.dimen.map_button_size),
+        )
       val buttonMargin = resources.getDimensionPixelSize(R.dimen.map_button_margin)
       layoutParams.marginStart = buttonMargin
       layoutParams.marginEnd = buttonMargin
@@ -408,7 +419,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
   private fun createCustomButton(
     parent: LinearLayout,
-    customButton: MapCustomButton
+    customButton: MapCustomButton,
   ): ViewMapCustomButtonBinding {
     val buttonBinding = ViewMapCustomButtonBinding.inflate(layoutInflater, parent, false)
     buttonBinding.customButtonIconView.setImageResource(customButton.icon)
@@ -434,7 +445,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
   private fun tryToSetMyLocation() {
     permissionFlow.askPermissions(
-      listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+      listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION),
     ) { setMyLocation() }
   }
 
@@ -443,15 +454,15 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     if (Permissions.checkPermission(
         requireContext(),
         Permissions.ACCESS_COARSE_LOCATION,
-        Permissions.ACCESS_FINE_LOCATION
+        Permissions.ACCESS_FINE_LOCATION,
       )
     ) {
       internalMap?.isMyLocationEnabled = true
     }
   }
 
-  private fun hideAllLayers(): Boolean {
-    return when {
+  private fun hideAllLayers(): Boolean =
+    when {
       mapLayerController.isLayerVisible() -> {
         mapLayerController.onOutsideClick()
         true
@@ -474,7 +485,6 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
 
       else -> false
     }
-  }
 
   override fun onResume() {
     binding.mapView.onResume()
@@ -505,14 +515,15 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     markerState: MarkerState,
     clearMap: Boolean = true,
     animate: Boolean = true,
-    afterRecreate: Boolean = false
+    afterRecreate: Boolean = false,
   ) {
     if (!isMapReady) {
-      delayedMarkerAction = DelayedMarkerAction(
-        markerState = markerState,
-        clearMap = clearMap,
-        animate = animate
-      )
+      delayedMarkerAction =
+        DelayedMarkerAction(
+          markerState = markerState,
+          clearMap = clearMap,
+          animate = animate,
+        )
       Logger.d(TAG, "Map not ready, delaying marker addition.")
       return
     }
@@ -520,10 +531,11 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       Logger.v(TAG, "Fragment not added to activity, can't add marker now.")
       return
     }
-    val map = internalMap ?: run {
-      Logger.v(TAG, "Map is null, can't add marker now.")
-      return
-    }
+    val map =
+      internalMap ?: run {
+        Logger.v(TAG, "Map is null, can't add marker now.")
+        return
+      }
 
     this.markerState = markerState
     mapCallback?.onLocationSelected(markerState)
@@ -540,12 +552,14 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       map.clear()
     }
 
-    val markerOptions = MarkerOptions().apply {
-      position(markerState.latLng)
-      title(markerState.title)
-      draggable(false)
-    }
-    markerState.drawable?.let { BitmapUtils.getDescriptor(it) }
+    val markerOptions =
+      MarkerOptions().apply {
+        position(markerState.latLng)
+        title(markerState.title)
+        draggable(false)
+      }
+    markerState.drawable
+      ?.let { BitmapUtils.getDescriptor(it) }
       ?.also { markerOptions.icon(it) }
       ?: run {
         createDrawable(markerState.style)
@@ -555,17 +569,18 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     map.addMarker(markerOptions)
 
     val markerCircle = themeUtil.getMarkerRadiusStyle(markerState.style)
-    val circleOptions = CircleOptions().apply {
-      center(markerState.latLng)
-      radius(markerState.radius.toDouble())
-      strokeWidth(markerState.strokeWidth)
-      colorOfOrNull(markerCircle.fillColor)?.also {
-        fillColor(it)
+    val circleOptions =
+      CircleOptions().apply {
+        center(markerState.latLng)
+        radius(markerState.radius.toDouble())
+        strokeWidth(markerState.strokeWidth)
+        colorOfOrNull(markerCircle.fillColor)?.also {
+          fillColor(it)
+        }
+        colorOfOrNull(markerCircle.strokeColor)?.also {
+          strokeColor(it)
+        }
       }
-      colorOfOrNull(markerCircle.strokeColor)?.also {
-        strokeColor(it)
-      }
-    }
     map.addCircle(circleOptions)
 
     if (animate) {
@@ -578,140 +593,148 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
       markerState = markerState,
       clearMap = true,
       animate = true,
-      afterRecreate = true
+      afterRecreate = true,
     )
   }
 
-  private fun obtainParams(bundle: Bundle): MapParams {
-    return bundle.readSerializable(KEY_PARAMS, MapParams::class.java) ?: MapParams()
-  }
+  private fun obtainParams(bundle: Bundle): MapParams = bundle.readSerializable(KEY_PARAMS, MapParams::class.java) ?: MapParams()
 
   private fun initMarkerStyleController(view: View) {
     val initStyle = mapParams.markerStyle.takeIf { it != -1 } ?: prefs.markerStyle
-    markerStyleController = MarkerStyleController(
-      rootView = view,
-      startColor = initStyle,
-      colors = ThemeProvider.colorsForSlider(requireContext()),
-      selectorColor = themeUtil.pickColorRes(R.color.pureBlack, R.color.pureWhite),
-      listener = object : MarkerStyleController.OnStyleSelectedListener {
-        override fun onStyleSelected(style: Int) {
-          if (mapParams.rememberMarkerStyle) {
-            prefs.markerStyle = style
-          }
-          onMarkerStateChanged {
-            copy(
-              style = style,
-              drawable = createDrawable(style)
-            )
-          }
-        }
+    markerStyleController =
+      MarkerStyleController(
+        rootView = view,
+        startColor = initStyle,
+        colors = ThemeProvider.colorsForSlider(requireContext()),
+        selectorColor = themeUtil.pickColorRes(R.color.pureBlack, R.color.pureWhite),
+        listener =
+          object : MarkerStyleController.OnStyleSelectedListener {
+            override fun onStyleSelected(style: Int) {
+              if (mapParams.rememberMarkerStyle) {
+                prefs.markerStyle = style
+              }
+              onMarkerStateChanged {
+                copy(
+                  style = style,
+                  drawable = createDrawable(style),
+                )
+              }
+            }
 
-        override fun onStyleButtonClicked() {
-          mapLayerController.onOutsideClick()
-          markerRadiusController.onOutsideClick()
-          recentPlacesController.onOutsideClick()
-        }
-      }
-    )
+            override fun onStyleButtonClicked() {
+              mapLayerController.onOutsideClick()
+              markerRadiusController.onOutsideClick()
+              recentPlacesController.onOutsideClick()
+            }
+          },
+      )
   }
 
   private fun initMarkerRadiusController(view: View) {
     val initRadius = mapParams.radiusParams.radius.takeIf { it != -1 } ?: prefs.radius
-    markerRadiusController = MarkerRadiusController(
-      rootView = view,
-      currentRadius = initRadius,
-      formatter = DefaultRadiusFormatter(requireContext(), prefs.useMetric),
-      listener = object : MarkerRadiusController.OnRadiusChangedListener {
-        override fun onChanged(radius: Int) {
-          if (mapParams.rememberMarkerRadius) {
-            prefs.radius = radius
-          }
-          radiusChangeListener?.onRadiusChanged(radius)
-          onMarkerStateChanged { copy(radius = radius) }
-        }
+    markerRadiusController =
+      MarkerRadiusController(
+        rootView = view,
+        currentRadius = initRadius,
+        formatter = DefaultRadiusFormatter(requireContext(), prefs.useMetric),
+        listener =
+          object : MarkerRadiusController.OnRadiusChangedListener {
+            override fun onChanged(radius: Int) {
+              if (mapParams.rememberMarkerRadius) {
+                prefs.radius = radius
+              }
+              radiusChangeListener?.onRadiusChanged(radius)
+              onMarkerStateChanged { copy(radius = radius) }
+            }
 
-        override fun onRadiusButtonClicked() {
-          markerStyleController.onOutsideClick()
-          mapLayerController.onOutsideClick()
-          recentPlacesController.onOutsideClick()
-        }
-      }
-    )
+            override fun onRadiusButtonClicked() {
+              markerStyleController.onOutsideClick()
+              mapLayerController.onOutsideClick()
+              recentPlacesController.onOutsideClick()
+            }
+          },
+      )
   }
 
   private fun initMapLayerController(view: View) {
-    mapLayerController = MapLayerController(
-      rootView = view,
-      listener = object : MapLayerController.OnLayerStyleListener {
-        override fun onLayerChanged(type: Int) {
-          if (mapParams.rememberMapStyle) {
-            prefs.mapType = type
-          }
-          mapParams = mapParams.copy(
-            mapStyleParams = mapParams.mapStyleParams.copy(
-              mapType = type
-            )
-          )
-          internalMap?.run {
-            setStyle(
-              map = this,
-              mapType = type,
-              mapStyle = mapParams.mapStyleParams.mapStyle
-            )
-          }
-        }
+    mapLayerController =
+      MapLayerController(
+        rootView = view,
+        listener =
+          object : MapLayerController.OnLayerStyleListener {
+            override fun onLayerChanged(type: Int) {
+              if (mapParams.rememberMapStyle) {
+                prefs.mapType = type
+              }
+              mapParams =
+                mapParams.copy(
+                  mapStyleParams =
+                    mapParams.mapStyleParams.copy(
+                      mapType = type,
+                    ),
+                )
+              internalMap?.run {
+                setStyle(
+                  map = this,
+                  mapType = type,
+                  mapStyle = mapParams.mapStyleParams.mapStyle,
+                )
+              }
+            }
 
-        override fun onStyleChanged(style: Int) {
-          if (mapParams.rememberMapStyle) {
-            prefs.mapStyle = style
-          }
-          mapParams = mapParams.copy(
-            mapStyleParams = mapParams.mapStyleParams.copy(
-              mapStyle = style
-            )
-          )
-          internalMap?.run {
-            setStyle(
-              map = this,
-              mapType = mapParams.mapStyleParams.mapType,
-              mapStyle = style
-            )
-          }
-        }
+            override fun onStyleChanged(style: Int) {
+              if (mapParams.rememberMapStyle) {
+                prefs.mapStyle = style
+              }
+              mapParams =
+                mapParams.copy(
+                  mapStyleParams =
+                    mapParams.mapStyleParams.copy(
+                      mapStyle = style,
+                    ),
+                )
+              internalMap?.run {
+                setStyle(
+                  map = this,
+                  mapType = mapParams.mapStyleParams.mapType,
+                  mapStyle = style,
+                )
+              }
+            }
 
-        override fun onLayerButtonClicked() {
-          markerStyleController.onOutsideClick()
-          markerRadiusController.onOutsideClick()
-          recentPlacesController.onOutsideClick()
-        }
-      }
-    )
+            override fun onLayerButtonClicked() {
+              markerStyleController.onOutsideClick()
+              markerRadiusController.onOutsideClick()
+              recentPlacesController.onOutsideClick()
+            }
+          },
+      )
   }
 
   private fun onMarkerStateChanged(f: MarkerState.() -> MarkerState) {
-    markerState?.let { f(it) }
+    markerState
+      ?.let { f(it) }
       ?.also { recreateMarker(it) }
   }
 
-  private fun createMarkerState(latLng: LatLng): MarkerState {
-    return markerState?.copy(
-      latLng = latLng
+  private fun createMarkerState(latLng: LatLng): MarkerState =
+    markerState?.copy(
+      latLng = latLng,
     ) ?: MarkerState(
       latLng = latLng,
       style = markerStyleController.selectedStyle,
       radius = markerRadiusController.selectedRadius,
       title = latLng.toString(),
-      drawable = createDrawable(markerStyleController.selectedStyle)
+      drawable = createDrawable(markerStyleController.selectedStyle),
     )
-  }
 
-  private fun createDrawable(markerStyle: Int): Drawable {
-    return DrawableHelper.withContext(requireContext())
+  private fun createDrawable(markerStyle: Int): Drawable =
+    DrawableHelper
+      .withContext(requireContext())
       .withDrawable(R.drawable.ic_fluent_place)
       .withColor(themeUtil.getMarkerLightColor(markerStyle))
       .tint()
       .get()
-  }
 
   data class MapParams(
     @SerializedName("isTouch")
@@ -739,7 +762,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     @SerializedName("mapParams")
     val mapStyleParams: MapStyleParams = MapStyleParams(),
     @SerializedName("customButtons")
-    val customButtons: List<MapCustomButton> = emptyList()
+    val customButtons: List<MapCustomButton> = emptyList(),
   ) : Serializable
 
   data class RadiusParams(
@@ -748,14 +771,14 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     @SerializedName("max_radius")
     val maxRadius: Int = RadiusConfig.MAX_RADIUS,
     @SerializedName("radius")
-    val radius: Int = -1
+    val radius: Int = -1,
   ) : Serializable
 
   data class MapStyleParams(
     @SerializedName("map_type")
     val mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
     @SerializedName("map_style")
-    val mapStyle: Int = 0
+    val mapStyle: Int = 0,
   ) : Serializable
 
   data class MapCustomButton(
@@ -765,7 +788,7 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     @SerializedName("id")
     val id: Int,
     @SerializedName("content_description")
-    val contentDescription: String? = null
+    val contentDescription: String? = null,
   ) : Serializable
 
   data class MarkerState(
@@ -775,22 +798,23 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
     val title: String = "",
     val strokeWidth: Float = 3f,
     val drawable: Drawable? = null,
-    val address: String = ""
+    val address: String = "",
   )
 
   private data class DelayedMarkerAction(
     val markerState: MarkerState,
     val clearMap: Boolean = true,
-    val animate: Boolean = true
+    val animate: Boolean = true,
   )
 
   private data class CustomButton(
     val view: ViewMapCustomButtonBinding,
-    var customButton: MapCustomButton
+    var customButton: MapCustomButton,
   )
 
   interface MapCallback {
     fun onMapReady()
+
     fun onLocationSelected(markerState: MarkerState)
   }
 
@@ -809,16 +833,15 @@ class SimpleMapFragment : BaseMapFragment<FragmentSimpleMapBinding>() {
   }
 
   companion object {
-
     private const val TAG = "SimpleMapFragment"
     private const val KEY_PARAMS = "key_params"
 
-    fun newInstance(mapParams: MapParams): SimpleMapFragment {
-      return SimpleMapFragment().apply {
-        arguments = Bundle().apply {
-          putSerializable(KEY_PARAMS, mapParams)
-        }
+    fun newInstance(mapParams: MapParams): SimpleMapFragment =
+      SimpleMapFragment().apply {
+        arguments =
+          Bundle().apply {
+            putSerializable(KEY_PARAMS, mapParams)
+          }
       }
-    }
   }
 }

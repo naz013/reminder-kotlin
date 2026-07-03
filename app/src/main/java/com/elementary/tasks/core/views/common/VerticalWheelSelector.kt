@@ -26,30 +26,32 @@ import androidx.dynamicanimation.animation.FloatValueHolder
 import com.elementary.tasks.R
 
 class VerticalWheelSelector : View {
-
   var onSelectionChangedListener: OnSelectionChangedListener? = null
   var selectedItemPosition = 0
     private set
 
-  private val linePaint = Paint().apply {
-    isAntiAlias = true
-    color = Color.RED
-    strokeWidth = 2f
-    style = Paint.Style.STROKE
-    textAlign = Paint.Align.CENTER
-  }
-  private val selectedPaint = TextPaint().apply {
-    isAntiAlias = true
-    color = Color.BLACK
-    textSize = 60f
-    textAlign = Paint.Align.CENTER
-  }
-  private val defaultPaint = TextPaint().apply {
-    set(selectedPaint)
-    color = Color.GRAY
-    textSize = selectedPaint.textSize * 0.8f
-    textAlign = Paint.Align.CENTER
-  }
+  private val linePaint =
+    Paint().apply {
+      isAntiAlias = true
+      color = Color.RED
+      strokeWidth = 2f
+      style = Paint.Style.STROKE
+      textAlign = Paint.Align.CENTER
+    }
+  private val selectedPaint =
+    TextPaint().apply {
+      isAntiAlias = true
+      color = Color.BLACK
+      textSize = 60f
+      textAlign = Paint.Align.CENTER
+    }
+  private val defaultPaint =
+    TextPaint().apply {
+      set(selectedPaint)
+      color = Color.GRAY
+      textSize = selectedPaint.textSize * 0.8f
+      textAlign = Paint.Align.CENTER
+    }
 
   private var viewParams = ViewParams(0, 0)
   private var numberOfVisibleRows = DEFAULT_NUM_ROWS
@@ -72,7 +74,7 @@ class VerticalWheelSelector : View {
   constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
     context,
     attrs,
-    defStyle
+    defStyle,
   ) {
     gestureDetector = GestureDetector(context, gestureListener)
     setOnTouchListener { v, event ->
@@ -84,86 +86,116 @@ class VerticalWheelSelector : View {
 
     if (attrs != null) {
       val textView: TextView = AppCompatTextView(context)
-      val a = context.theme.obtainStyledAttributes(
-        attrs,
-        R.styleable.VerticalWheelSelector,
-        defStyle,
-        0
-      )
+      val a =
+        context.theme.obtainStyledAttributes(
+          attrs,
+          R.styleable.VerticalWheelSelector,
+          defStyle,
+          0,
+        )
       try {
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_visibleRowsCount)) {
-          numberOfVisibleRows = a.getInt(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_visibleRowsCount,
-            /* defValue = */ DEFAULT_NUM_ROWS
-          )
+          numberOfVisibleRows =
+            a.getInt(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_visibleRowsCount,
+              // defValue =
+              DEFAULT_NUM_ROWS,
+            )
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_items)) {
           val id = a.getResourceId(R.styleable.VerticalWheelSelector_wheel_items, 0)
           if (id != 0) {
-            resources.getStringArray(id).map { Item(it) }
+            resources
+              .getStringArray(id)
+              .map { Item(it) }
               .also { this.items = it }
           }
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_defaultTextAppearance)) {
-          val style = a.getResourceId(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_defaultTextAppearance,
-            /* defValue = */ 0
-          )
+          val style =
+            a.getResourceId(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_defaultTextAppearance,
+              // defValue =
+              0,
+            )
           if (style != 0) {
             TextViewCompat.setTextAppearance(textView, style)
             defaultPaint.set(textView.paint)
           }
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_selectedTextAppearance)) {
-          val style = a.getResourceId(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_selectedTextAppearance,
-            /* defValue = */ 0
-          )
+          val style =
+            a.getResourceId(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_selectedTextAppearance,
+              // defValue =
+              0,
+            )
           if (style != 0) {
             TextViewCompat.setTextAppearance(textView, style)
             selectedPaint.set(textView.paint)
           }
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_defaultTextColor)) {
-          val color = a.getColor(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_defaultTextColor,
-            /* defValue = */ 0
-          )
+          val color =
+            a.getColor(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_defaultTextColor,
+              // defValue =
+              0,
+            )
           defaultPaint.color = color
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_selectedTextColor)) {
-          val color = a.getColor(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_selectedTextColor,
-            /* defValue = */ 0
-          )
+          val color =
+            a.getColor(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_selectedTextColor,
+              // defValue =
+              0,
+            )
           selectedPaint.color = color
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_defaultTextSize)) {
-          val textSize = a.getDimensionPixelSize(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_defaultTextSize,
-            /* defValue = */ 0
-          )
+          val textSize =
+            a.getDimensionPixelSize(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_defaultTextSize,
+              // defValue =
+              0,
+            )
           defaultPaint.textSize = textSize.toFloat()
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_selectedTextSize)) {
-          val textSize = a.getDimensionPixelSize(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_selectedTextSize,
-            /* defValue = */ 0
-          )
+          val textSize =
+            a.getDimensionPixelSize(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_selectedTextSize,
+              // defValue =
+              0,
+            )
           selectedPaint.textSize = textSize.toFloat()
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_defaultTextStyle)) {
-          val textStyle = a.getInt(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_defaultTextStyle,
-            /* defValue = */ 0
-          )
+          val textStyle =
+            a.getInt(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_defaultTextStyle,
+              // defValue =
+              0,
+            )
           updateTextStyle(textStyle, defaultPaint)
         }
         if (a.hasValue(R.styleable.VerticalWheelSelector_wheel_selectedTextStyle)) {
-          val textStyle = a.getInt(
-            /* index = */ R.styleable.VerticalWheelSelector_wheel_selectedTextStyle,
-            /* defValue = */ 0
-          )
+          val textStyle =
+            a.getInt(
+              // index =
+              R.styleable.VerticalWheelSelector_wheel_selectedTextStyle,
+              // defValue =
+              0,
+            )
           updateTextStyle(textStyle, selectedPaint)
         }
       } catch (e: Exception) {
@@ -174,15 +206,19 @@ class VerticalWheelSelector : View {
     }
   }
 
-  private fun updateTextStyle(textStyle: Int, paint: TextPaint) {
+  private fun updateTextStyle(
+    textStyle: Int,
+    paint: TextPaint,
+  ) {
     val typefaceStyle = paint.typeface.style
     val need: Int = textStyle and typefaceStyle.inv()
     paint.isFakeBoldText = need and Typeface.BOLD != 0
-    paint.textSkewX = if (need and Typeface.ITALIC != 0) {
-      -0.25f
-    } else {
-      0f
-    }
+    paint.textSkewX =
+      if (need and Typeface.ITALIC != 0) {
+        -0.25f
+      } else {
+        0f
+      }
   }
 
   private fun processTouch(event: MotionEvent): Boolean {
@@ -202,7 +238,9 @@ class VerticalWheelSelector : View {
     log("setItems: items=${this.items.size}, rectangles=${this.rectangles.size}")
   }
 
-  fun setNumberOfVisibleRows(@IntRange(from = 3L, to = 9L) numberOfRows: Int) {
+  fun setNumberOfVisibleRows(
+    @IntRange(from = 3L, to = 9L) numberOfRows: Int,
+  ) {
     if (numberOfRows < 3L || numberOfRows > 9L) {
       throw IllegalArgumentException("Number of rows must be between 3 and 9")
     }
@@ -237,25 +275,36 @@ class VerticalWheelSelector : View {
       if (data.selected) {
 //        canvas.drawRect(data.rectF, linePaint)
         canvas.drawText(
-          /* text = */ data.item.text,
-          /* x = */ data.selectedTextPointF.x,
-          /* y = */ data.selectedTextPointF.y,
-          /* paint = */ selectedPaint
+          // text =
+          data.item.text,
+          // x =
+          data.selectedTextPointF.x,
+          // y =
+          data.selectedTextPointF.y,
+          // paint =
+          selectedPaint,
         )
       } else {
 //        canvas.drawRect(data.rectF, linePaint)
         canvas.drawText(
-          /* text = */ data.item.text,
-          /* x = */ data.unselectedTextPointF.x,
-          /* y = */ data.unselectedTextPointF.y,
-          /* paint = */ defaultPaint
+          // text =
+          data.item.text,
+          // x =
+          data.unselectedTextPointF.x,
+          // y =
+          data.unselectedTextPointF.y,
+          // paint =
+          defaultPaint,
         )
       }
     }
 //    canvas.drawLine(0f, centerY, viewParams.width.toFloat(), centerY, linePaint)
   }
 
-  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+  override fun onMeasure(
+    widthMeasureSpec: Int,
+    heightMeasureSpec: Int,
+  ) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     val width = MeasureSpec.getSize(widthMeasureSpec)
     val height = MeasureSpec.getSize(heightMeasureSpec)
@@ -305,16 +354,18 @@ class VerticalWheelSelector : View {
       val text = items[i].text
 
       selectedPaint.getTextBounds(text, 0, text.length, textBounds)
-      val selectedTextPointF = PointF(
-        rect.centerX() - (textBounds.width() / 2f),
-        rect.centerY() + (textBounds.height() / 3f)
-      )
+      val selectedTextPointF =
+        PointF(
+          rect.centerX() - (textBounds.width() / 2f),
+          rect.centerY() + (textBounds.height() / 3f),
+        )
 
       defaultPaint.getTextBounds(text, 0, text.length, textBounds)
-      val unselectedTextPointF = PointF(
-        rect.centerX() - (textBounds.width() / 2f),
-        rect.centerY() + (textBounds.height() / 3f)
-      )
+      val unselectedTextPointF =
+        PointF(
+          rect.centerX() - (textBounds.width() / 2f),
+          rect.centerY() + (textBounds.height() / 3f),
+        )
 
       rectangles.add(
         ItemData(
@@ -322,15 +373,18 @@ class VerticalWheelSelector : View {
           item = items[i],
           selectedTextPointF = selectedTextPointF,
           unselectedTextPointF = unselectedTextPointF,
-          selected = isSelected(rect, centerX, centerY)
-        )
+          selected = isSelected(rect, centerX, centerY),
+        ),
       )
       top += viewParams.rowHeight + DIVIDER_HEIGHT
       bottom = top + viewParams.rowHeight
     }
   }
 
-  private fun computeSingleTap(x: Float, y: Float) {
+  private fun computeSingleTap(
+    x: Float,
+    y: Float,
+  ) {
     val index = findItemPosition(x, y)
     if (index == -1 || index >= rectangles.size) {
       return
@@ -338,9 +392,10 @@ class VerticalWheelSelector : View {
     selectItem(index)
   }
 
-  private fun findItemPosition(x: Float, y: Float): Int {
-    return rectangles.indexOfFirst { isSelected(it.rectF, x, y) }
-  }
+  private fun findItemPosition(
+    x: Float,
+    y: Float,
+  ): Int = rectangles.indexOfFirst { isSelected(it.rectF, x, y) }
 
   private fun computeScrollY(distanceY: Float) {
     if (viewParams.height == 0 || viewParams.width == 0 || rectangles.isEmpty()) {
@@ -348,13 +403,14 @@ class VerticalWheelSelector : View {
     }
     val oldScrollY = scrollY
     val newScrollY = scrollY + distanceY
-    scrollY = if (newScrollY > maxScrollY) {
-      maxScrollY
-    } else if (newScrollY < 0) {
-      0f
-    } else {
-      newScrollY
-    }
+    scrollY =
+      if (newScrollY > maxScrollY) {
+        maxScrollY
+      } else if (newScrollY < 0) {
+        0f
+      } else {
+        newScrollY
+      }
     val fixedDistanceY = scrollY - oldScrollY
 
     rectangles.forEachIndexed { index, data ->
@@ -370,7 +426,7 @@ class VerticalWheelSelector : View {
 
     onSelectionChangedListener?.onSelectionChanged(
       position = selectedItemPosition,
-      selectedItem = items[selectedItemPosition].text
+      selectedItem = items[selectedItemPosition].text,
     )
 
     this.invalidate()
@@ -417,27 +473,32 @@ class VerticalWheelSelector : View {
     animation.start()
   }
 
-  private fun isSelected(bounds: RectF, x: Float, y: Float): Boolean {
-    return bounds.contains(x, y)
-  }
+  private fun isSelected(
+    bounds: RectF,
+    x: Float,
+    y: Float,
+  ): Boolean = bounds.contains(x, y)
 
   private fun log(message: String) {
     Log.d(TAG, message)
   }
 
   interface OnSelectionChangedListener {
-    fun onSelectionChanged(position: Int, selectedItem: String)
+    fun onSelectionChanged(
+      position: Int,
+      selectedItem: String,
+    )
   }
 
   private data class Item(
-    val text: String
+    val text: String,
   )
 
   private data class ViewParams(
     var width: Int,
     var height: Int,
     var rowHeight: Float = 0f,
-    var rowWidth: Float = 0f
+    var rowWidth: Float = 0f,
   )
 
   private data class ItemData(
@@ -445,19 +506,17 @@ class VerticalWheelSelector : View {
     val item: Item,
     val selectedTextPointF: PointF,
     val unselectedTextPointF: PointF,
-    var selected: Boolean = false
+    var selected: Boolean = false,
   )
 
   private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-    override fun onDown(e: MotionEvent): Boolean {
-      return true
-    }
+    override fun onDown(e: MotionEvent): Boolean = true
 
     override fun onScroll(
       e1: MotionEvent?,
       e2: MotionEvent,
       distanceX: Float,
-      distanceY: Float
+      distanceY: Float,
     ): Boolean {
       computeScrollY(distanceY)
       return true
@@ -467,7 +526,7 @@ class VerticalWheelSelector : View {
       e1: MotionEvent?,
       e2: MotionEvent,
       velocityX: Float,
-      velocityY: Float
+      velocityY: Float,
     ): Boolean {
       animateFlingY(velocityY)
       return true

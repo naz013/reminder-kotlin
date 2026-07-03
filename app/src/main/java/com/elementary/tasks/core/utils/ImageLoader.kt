@@ -9,22 +9,21 @@ import coil.request.ImageResult
 import java.io.File
 
 class ImageLoader(
-  private val context: Context
+  private val context: Context,
 ) {
+  private val internalImageLoader =
+    ImageLoader
+      .Builder(context)
+      .crossfade(true)
+      .build()
 
-  private val internalImageLoader = ImageLoader.Builder(context)
-    .crossfade(true)
-    .build()
-
-  suspend fun execute(imageRequest: ImageRequest): ImageResult {
-    return internalImageLoader.execute(imageRequest)
-  }
+  suspend fun execute(imageRequest: ImageRequest): ImageResult = internalImageLoader.execute(imageRequest)
 
   fun loadFromFile(
     file: File,
     onSuccess: (Drawable) -> Unit = { },
     onFail: (Drawable?) -> Unit = { },
-    onStart: (Drawable?) -> Unit = { }
+    onStart: (Drawable?) -> Unit = { },
   ) {
     internalImageLoader.enqueue(buildRequest(file, onSuccess, onFail, onStart))
   }
@@ -33,7 +32,7 @@ class ImageLoader(
     uri: Uri,
     onSuccess: (Drawable) -> Unit = { },
     onFail: (Drawable?) -> Unit = { },
-    onStart: (Drawable?) -> Unit = { }
+    onStart: (Drawable?) -> Unit = { },
   ) {
     internalImageLoader.enqueue(buildRequest(uri, onSuccess, onFail, onStart))
   }
@@ -42,15 +41,14 @@ class ImageLoader(
     any: Any,
     onSuccess: (Drawable) -> Unit,
     onFail: (Drawable?) -> Unit,
-    onStart: (Drawable?) -> Unit
-  ): ImageRequest {
-    return ImageRequest.Builder(context)
+    onStart: (Drawable?) -> Unit,
+  ): ImageRequest =
+    ImageRequest
+      .Builder(context)
       .data(any)
       .target(
         onError = onFail,
         onSuccess = onSuccess,
-        onStart = onStart
-      )
-      .build()
-  }
+        onStart = onStart,
+      ).build()
 }

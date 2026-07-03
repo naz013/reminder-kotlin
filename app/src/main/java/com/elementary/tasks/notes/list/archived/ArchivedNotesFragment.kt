@@ -49,7 +49,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
 class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
-
   private val viewModel by viewModel<ArchivedNotesViewModel>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val systemServiceProvider by inject<SystemServiceProvider>()
@@ -58,24 +57,28 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
   private var enableGrid = false
   private var oldItemDecoration: RecyclerView.ItemDecoration? = null
 
-  private val searchMenuHandler = SearchMenuHandler(
-    systemServiceProvider.provideSearchManager(),
-    R.string.search
-  ) { viewModel.onSearchUpdate(it) }
+  private val searchMenuHandler =
+    SearchMenuHandler(
+      systemServiceProvider.provideSearchManager(),
+      R.string.search,
+    ) { viewModel.onSearchUpdate(it) }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentNotesBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.emptyText.text = getString(R.string.notes_archive_is_empty)
     binding.fab.setOnClickListener {
       LoginApi.openLogged(
         requireContext(),
-        CreateNoteActivity::class.java
+        CreateNoteActivity::class.java,
       )
     }
 
@@ -98,19 +101,20 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
       context = requireContext(),
       menu = menu,
       index = 1,
-      resource = if (enableGrid) {
-        R.drawable.ic_fluent_grid
-      } else {
-        R.drawable.ic_fluent_list
-      },
-      isDark = isDark
+      resource =
+        if (enableGrid) {
+          R.drawable.ic_fluent_grid
+        } else {
+          R.drawable.ic_fluent_list
+        },
+      isDark = isDark,
     )
     ViewUtils.tintMenuIcon(requireContext(), menu, 2, R.drawable.ic_fluent_arrow_sort, isDark)
     searchMenuHandler.initSearchMenu(requireActivity(), menu, R.id.action_search)
   }
 
-  private fun onMenuItemClicked(menuItem: MenuItem): Boolean {
-    return when (menuItem.itemId) {
+  private fun onMenuItemClicked(menuItem: MenuItem): Boolean =
+    when (menuItem.itemId) {
       R.id.action_order -> {
         showDialog()
         true
@@ -126,7 +130,6 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
 
       else -> false
     }
-  }
 
   private fun initProgress() {
     binding.progressMessageView.setText(R.string.please_wait)
@@ -162,7 +165,10 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
     viewModel.errorEvent.observeEvent(viewLifecycleOwner) { showErrorSending() }
   }
 
-  private fun sendNote(note: NoteWithImages, file: File) {
+  private fun sendNote(
+    note: NoteWithImages,
+    file: File,
+  ) {
     if (!file.exists() || !file.canRead()) {
       showErrorSending()
       return
@@ -179,57 +185,63 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
       binding.recyclerView.removeItemDecoration(this)
     }
     binding.recyclerView.layoutManager = layoutManager()
-    oldItemDecoration = getItemDecoration().also {
-      binding.recyclerView.addItemDecoration(it)
-    }
+    oldItemDecoration =
+      getItemDecoration().also {
+        binding.recyclerView.addItemDecoration(it)
+      }
   }
 
-  private fun getItemDecoration(): RecyclerView.ItemDecoration {
-    return if (enableGrid) {
+  private fun getItemDecoration(): RecyclerView.ItemDecoration =
+    if (enableGrid) {
       SpaceBetweenItemDecoration(dp2px(8))
     } else {
-      val spanCount = if (resources.getBoolean(R.bool.is_tablet)) {
-        resources.getInteger(R.integer.num_of_cols)
-      } else {
-        2
-      }
+      val spanCount =
+        if (resources.getBoolean(R.bool.is_tablet)) {
+          resources.getInteger(R.integer.num_of_cols)
+        } else {
+          2
+        }
       StaggeredSpaceItemDecoration(spanCount, dp2px(8), false)
     }
-  }
 
-  private fun layoutManager(): RecyclerView.LayoutManager {
-    return if (enableGrid) {
+  private fun layoutManager(): RecyclerView.LayoutManager =
+    if (enableGrid) {
       LinearLayoutManager(context)
     } else {
       if (resources.getBoolean(R.bool.is_tablet)) {
         StaggeredGridLayoutManager(
           resources.getInteger(R.integer.num_of_cols),
-          StaggeredGridLayoutManager.VERTICAL
+          StaggeredGridLayoutManager.VERTICAL,
         )
       } else {
         StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
       }
     }
-  }
 
   private fun initList() {
     enableGrid = prefs.isNotesGridEnabled
     setListStyle()
-    notesRecyclerAdapter.actionsListener = object : ActionsListener<UiNoteList> {
-      override fun onAction(view: View, position: Int, t: UiNoteList?, actions: ListActions) {
-        when (actions) {
-          ListActions.OPEN -> if (t != null) previewNote(t.id)
-          ListActions.MORE -> if (t != null) showMore(view, t)
-          else -> {
+    notesRecyclerAdapter.actionsListener =
+      object : ActionsListener<UiNoteList> {
+        override fun onAction(
+          view: View,
+          position: Int,
+          t: UiNoteList?,
+          actions: ListActions,
+        ) {
+          when (actions) {
+            ListActions.OPEN -> if (t != null) previewNote(t.id)
+            ListActions.MORE -> if (t != null) showMore(view, t)
+            else -> {
+            }
           }
         }
       }
-    }
     notesRecyclerAdapter.imageClickListener = { note, imagePosition ->
       imagesSingleton.setCurrent(
         images = note.images,
         color = note.colorPosition,
-        palette = note.colorPalette
+        palette = note.colorPalette,
       )
       startActivity(ImagePreviewActivity::class.java) {
         putExtra(IntentKeys.INTENT_ID, note.id)
@@ -247,13 +259,17 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
     }
   }
 
-  private fun showMore(view: View, note: UiNoteList) {
-    val items = arrayOf(
-      getString(R.string.open),
-      getString(R.string.edit),
-      getString(R.string.notes_unarchive),
-      getString(R.string.delete)
-    )
+  private fun showMore(
+    view: View,
+    note: UiNoteList,
+  ) {
+    val items =
+      arrayOf(
+        getString(R.string.open),
+        getString(R.string.edit),
+        getString(R.string.notes_unarchive),
+        getString(R.string.delete),
+      )
     Dialogues.showPopup(view, { item ->
       when (item) {
         0 -> {
@@ -286,12 +302,13 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
   }
 
   private fun showDialog() {
-    val items = arrayOf<CharSequence>(
-      getString(R.string.by_date_az),
-      getString(R.string.by_date_za),
-      getString(R.string.name_az),
-      getString(R.string.name_za)
-    )
+    val items =
+      arrayOf<CharSequence>(
+        getString(R.string.by_date_az),
+        getString(R.string.by_date_za),
+        getString(R.string.name_az),
+        getString(R.string.name_za),
+      )
     withContext {
       val builder = dialogues.getMaterialDialog(it)
       builder.setTitle(getString(R.string.order))
@@ -318,7 +335,7 @@ class ArchivedNotesFragment : BaseToolbarFragment<FragmentNotesBinding>() {
       navigate(
         R.id.previewNoteFragment,
         Bundle().apply { putString(IntentKeys.INTENT_ID, id) },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }

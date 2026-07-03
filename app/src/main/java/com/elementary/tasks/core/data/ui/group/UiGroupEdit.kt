@@ -4,5 +4,5 @@ data class UiGroupEdit(
   val id: String,
   val title: String,
   val colorPosition: Int,
-  val isDefault: Boolean
+  val isDefault: Boolean,
 )

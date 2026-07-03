@@ -35,7 +35,6 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExportBinding>() {
-
   private val reminderRepository by inject<ReminderRepository>()
   private val noteRepository by inject<NoteRepository>()
   private val birthdayRepository by inject<BirthdayRepository>()
@@ -53,23 +52,32 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsObjectExportBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
 
     binding.objectListView.layoutManager = LinearLayoutManager(requireContext())
     binding.objectListView.adapter = itemAdapter
 
-    binding.objectTypeSelector.adapter = ArrayAdapter(
-      requireContext(),
-      android.R.layout.simple_spinner_dropdown_item,
-      getTypes()
-    )
+    binding.objectTypeSelector.adapter =
+      ArrayAdapter(
+        requireContext(),
+        android.R.layout.simple_spinner_dropdown_item,
+        getTypes(),
+      )
     binding.objectTypeSelector.onItemSelectedListener =
       object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        override fun onItemSelected(
+          parent: AdapterView<*>?,
+          view: View?,
+          position: Int,
+          id: Long,
+        ) {
           objectType = ObjectType.entries[position]
           loadList()
         }
@@ -81,9 +89,7 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
     loadList()
   }
 
-  private fun getTypes(): List<String> {
-    return ObjectType.entries.map { it.name }
-  }
+  private fun getTypes(): List<String> = ObjectType.entries.map { it.name }
 
   private fun loadList() {
     lifecycleScope.launch(Dispatchers.IO) {
@@ -95,56 +101,54 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
     }
   }
 
-  private suspend fun loadItems(): List<Item> {
-    return when (objectType) {
+  private suspend fun loadItems(): List<Item> =
+    when (objectType) {
       ObjectType.Reminder -> loadReminders()
       ObjectType.Note -> loadNotes()
       ObjectType.Birthday -> loadBirthdays()
       ObjectType.Place -> loadPlaces()
       ObjectType.Group -> loadGroups()
     }
-  }
 
-  private suspend fun loadNotes(): List<Item> {
-    return noteRepository.getAll().map {
+  private suspend fun loadNotes(): List<Item> =
+    noteRepository.getAll().map {
       Item(it.getKey(), it.getSummary() + "\nID: " + it.getKey())
     }
-  }
 
-  private suspend fun loadReminders(): List<Item> {
-    return reminderRepository.getAll().map {
+  private suspend fun loadReminders(): List<Item> =
+    reminderRepository.getAll().map {
       Item(it.uuId, it.summary + "\nID: " + it.uuId)
     }
-  }
 
-  private suspend fun loadGroups(): List<Item> {
-    return reminderGroupRepository.getAll().map {
+  private suspend fun loadGroups(): List<Item> =
+    reminderGroupRepository.getAll().map {
       Item(it.groupUuId, it.groupTitle + "\nID: " + it.groupUuId)
     }
-  }
 
-  private suspend fun loadBirthdays(): List<Item> {
-    return birthdayRepository.getAll().map {
+  private suspend fun loadBirthdays(): List<Item> =
+    birthdayRepository.getAll().map {
       Item(it.uuId, it.name + "\nID: " + it.uuId)
     }
-  }
 
-  private suspend fun loadPlaces(): List<Item> {
-    return placeRepository.getAll().map {
+  private suspend fun loadPlaces(): List<Item> =
+    placeRepository.getAll().map {
       Item(it.id, it.name + "\nID: " + it.id)
     }
-  }
 
   private fun askForFile(item: Item) {
-    val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-      addCategory(Intent.CATEGORY_OPENABLE)
-      type = "*/*"
-      putExtra(Intent.EXTRA_TITLE, item.title + getFileExt())
-    }
+    val intent =
+      Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+        addCategory(Intent.CATEGORY_OPENABLE)
+        type = "*/*"
+        putExtra(Intent.EXTRA_TITLE, item.title + getFileExt())
+      }
     uriPicker.launchIntent(intent) { saveObject(item, it) }
   }
 
-  private fun saveObject(item: Item, uri: Uri?) {
+  private fun saveObject(
+    item: Item,
+    uri: Uri?,
+  ) {
     if (uri == null) {
       Logger.d("OETest", "Uri is NULL")
       return
@@ -181,39 +185,42 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
     }
   }
 
-  private suspend fun getObject(item: Item): Any? {
-    return when (objectType) {
+  private suspend fun getObject(item: Item): Any? =
+    when (objectType) {
       ObjectType.Reminder -> reminderRepository.getById(item.id)
       ObjectType.Note -> noteRepository.getById(item.id)
       ObjectType.Birthday -> birthdayRepository.getById(item.id)
       ObjectType.Place -> placeRepository.getById(item.id)
       ObjectType.Group -> reminderGroupRepository.getById(item.id)
     }
-  }
 
-  private fun getFileExt(): String {
-    return when (objectType) {
+  private fun getFileExt(): String =
+    when (objectType) {
       ObjectType.Reminder -> FileConfig.FILE_NAME_REMINDER
       ObjectType.Note -> SharedNote.FILE_EXTENSION
       ObjectType.Birthday -> FileConfig.FILE_NAME_BIRTHDAY
       ObjectType.Place -> FileConfig.FILE_NAME_PLACE
       ObjectType.Group -> FileConfig.FILE_NAME_GROUP
     }
-  }
 
   override fun getTitle(): String = "Save object to File"
 
   private class ItemAdapter(
-    private val onItemClicked: (Item) -> Unit
+    private val onItemClicked: (Item) -> Unit,
   ) : ListAdapter<Item, ViewHolder>(DiffCallback()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-      return ViewHolder(
+    override fun onCreateViewHolder(
+      parent: ViewGroup,
+      viewType: Int,
+    ): ViewHolder =
+      ViewHolder(
         parent = parent,
-        onClick = { onItemClicked(getItem(it)) }
+        onClick = { onItemClicked(getItem(it)) },
       )
-    }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+      holder: ViewHolder,
+      position: Int,
+    ) {
       holder.bind(getItem(position))
     }
   }
@@ -221,13 +228,13 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
   private class ViewHolder(
     parent: ViewGroup,
     private val onClick: (Int) -> Unit,
-    private val binding: ListItemTestsObjectBinding = ListItemTestsObjectBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      false
-    )
+    private val binding: ListItemTestsObjectBinding =
+      ListItemTestsObjectBinding.inflate(
+        LayoutInflater.from(parent.context),
+        parent,
+        false,
+      ),
   ) : RecyclerView.ViewHolder(binding.root) {
-
     init {
       binding.titleView.setOnClickListener {
         onClick(bindingAdapterPosition)
@@ -240,18 +247,20 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
   }
 
   private class DiffCallback : DiffUtil.ItemCallback<Item>() {
-    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-      return oldItem.id == newItem.id
-    }
+    override fun areItemsTheSame(
+      oldItem: Item,
+      newItem: Item,
+    ): Boolean = oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-      return oldItem.title == newItem.title
-    }
+    override fun areContentsTheSame(
+      oldItem: Item,
+      newItem: Item,
+    ): Boolean = oldItem.title == newItem.title
   }
 
   private data class Item(
     val id: String,
-    val title: String
+    val title: String,
   )
 
   private enum class ObjectType {
@@ -259,6 +268,6 @@ class ObjectExportTestFragment : BaseSettingsFragment<FragmentSettingsObjectExpo
     Birthday,
     Note,
     Place,
-    Group
+    Group,
   }
 }

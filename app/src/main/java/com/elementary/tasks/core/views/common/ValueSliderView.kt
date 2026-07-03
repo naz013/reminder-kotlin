@@ -8,7 +8,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.databinding.ViewValueSliderBinding
 
 class ValueSliderView : LinearLayout {
-
   private lateinit var binding: ViewValueSliderBinding
 
   var step: Float = 1f
@@ -41,7 +40,7 @@ class ValueSliderView : LinearLayout {
   constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
     context,
     attrs,
-    defStyle
+    defStyle,
   ) {
     init(context)
   }
@@ -53,7 +52,11 @@ class ValueSliderView : LinearLayout {
     binding.rightButton.isEnabled = enabled
   }
 
-  fun setRange(minValue: Float, maxValue: Float, step: Float) {
+  fun setRange(
+    minValue: Float,
+    maxValue: Float,
+    step: Float,
+  ) {
     if ((maxValue - minValue) % step != 0f) {
       throw IllegalArgumentException("Wrong step = $step")
     }
@@ -97,9 +100,7 @@ class ValueSliderView : LinearLayout {
     updateLabel(newValue)
   }
 
-  private fun getFormattedValue(value: Float): String {
-    return valueFormatter.apply(value)
-  }
+  private fun getFormattedValue(value: Float): String = valueFormatter.apply(value)
 
   private fun updateSlider(value: Float) {
     binding.sliderView.value = value
@@ -120,7 +121,10 @@ class ValueSliderView : LinearLayout {
   }
 
   interface OnValueChangeListener {
-    fun onChanged(value: Float, displayValue: String)
+    fun onChanged(
+      value: Float,
+      displayValue: String,
+    )
   }
 
   interface ValueFormatter {
@@ -128,8 +132,6 @@ class ValueSliderView : LinearLayout {
   }
 
   internal class DefaultFormatter : ValueFormatter {
-    override fun apply(value: Float): String {
-      return "${value.toInt()}"
-    }
+    override fun apply(value: Float): String = "${value.toInt()}"
   }
 }

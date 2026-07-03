@@ -12,9 +12,8 @@ import com.github.naz013.logging.Logger
  */
 class StartLocationTrackingUseCase(
   private val context: Context,
-  private val strategyResolver: BehaviorStrategyResolver
+  private val strategyResolver: BehaviorStrategyResolver,
 ) {
-
   suspend operator fun invoke(reminder: Reminder) {
     val strategy = strategyResolver.resolve(reminder)
     if (strategy is LocationBasedStrategy) {

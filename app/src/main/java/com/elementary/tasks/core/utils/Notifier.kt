@@ -48,9 +48,8 @@ class Notifier(
   private val systemServiceProvider: SystemServiceProvider,
   private val reminderRepository: ReminderRepository,
   private val birthdayRepository: BirthdayRepository,
-  private val modelDateTimeFormatter: ModelDateTimeFormatter
+  private val modelDateTimeFormatter: ModelDateTimeFormatter,
 ) {
-
   fun getNotificationBuilder(channelId: String): NotificationCompat.Builder {
     createChannels()
     return NotificationCompat.Builder(context, channelId)
@@ -120,7 +119,10 @@ class Notifier(
     return channel
   }
 
-  fun notify(id: Int, notification: Notification) {
+  fun notify(
+    id: Int,
+    notification: Notification,
+  ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (Permissions.isNotificationsAllowed(context)) {
         getManager()?.notify(id, notification)
@@ -195,39 +197,43 @@ class Notifier(
     } else {
       builder.priority = NotificationCompat.PRIORITY_MIN
     }
-    val resultIntent = Intent(context, BottomNavActivity::class.java)
-      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-      .setAction(Intent.ACTION_VIEW)
-      .putExtra(DeepLinkDestination.KEY, EditReminderScreen(Bundle()))
+    val resultIntent =
+      Intent(context, BottomNavActivity::class.java)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .setAction(Intent.ACTION_VIEW)
+        .putExtra(DeepLinkDestination.KEY, EditReminderScreen(Bundle()))
     val stackBuilder = TaskStackBuilder.create(context)
     stackBuilder.addParentStack(BottomNavActivity::class.java)
     stackBuilder.addNextIntentWithParentStack(resultIntent)
-    val resultPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
-    } else {
-      stackBuilder.getPendingIntent(0, 0)
-    }
+    val resultPendingIntent =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+      } else {
+        stackBuilder.getPendingIntent(0, 0)
+      }
     remoteViews.setOnClickPendingIntent(R.id.notificationAdd, resultPendingIntent)
     val noteIntent =
       Intent(context, CreateNoteActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     val noteBuilder = TaskStackBuilder.create(context)
     noteBuilder.addParentStack(CreateNoteActivity::class.java)
     noteBuilder.addNextIntent(noteIntent)
-    val notePendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      noteBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
-    } else {
-      noteBuilder.getPendingIntent(0, 0)
-    }
+    val notePendingIntent =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        noteBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+      } else {
+        noteBuilder.getPendingIntent(0, 0)
+      }
     remoteViews.setOnClickPendingIntent(R.id.noteAdd, notePendingIntent)
     val resInt = Intent(context, SplashScreenActivity::class.java)
     val stackInt = TaskStackBuilder.create(context)
     stackInt.addParentStack(SplashScreenActivity::class.java)
     stackInt.addNextIntent(resInt)
-    val resultPendingInt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      stackInt.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
-    } else {
-      stackInt.getPendingIntent(0, 0)
-    }
+    val resultPendingInt =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        stackInt.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+      } else {
+        stackInt.getPendingIntent(0, 0)
+      }
     remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt)
     remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt)
     val reminders = invokeSuspend { reminderRepository.getActive() }.toMutableList()
@@ -261,7 +267,7 @@ class Notifier(
       } else {
         remoteViews.setTextViewText(
           R.id.text,
-          context.getString(R.string.active_reminders) + " " + count
+          context.getString(R.string.active_reminders) + " " + count,
         )
         remoteViews.setViewVisibility(R.id.featured, View.GONE)
       }
@@ -276,7 +282,7 @@ class Notifier(
     remoteViews.setInt(
       R.id.notificationBg,
       "setBackgroundColor",
-      ThemeProvider.getPrimaryColor(context)
+      ThemeProvider.getPrimaryColor(context),
     )
     val colorOnPrimary = ThemeProvider.getOnPrimaryColor(context)
     remoteViews.setTextColor(R.id.featured, colorOnPrimary)
@@ -284,7 +290,11 @@ class Notifier(
     notify(PermanentReminderReceiver.PERM_ID, builder.build())
   }
 
-  private fun setIcon(rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int) {
+  private fun setIcon(
+    rv: RemoteViews,
+    @DrawableRes iconId: Int,
+    @IdRes viewId: Int,
+  ) {
     rv.setImageViewResource(viewId, iconId)
   }
 
@@ -326,9 +336,10 @@ class Notifier(
   }
 
   private fun formatSummary(birthday: Birthday): String {
-    val date = dateTimeManager.parseBirthdayDate(birthday.date)?.let {
-      dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
-    }
+    val date =
+      dateTimeManager.parseBirthdayDate(birthday.date)?.let {
+        dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
+      }
     return if (birthday.ignoreYear) {
       date + " | " + birthday.name
     } else {

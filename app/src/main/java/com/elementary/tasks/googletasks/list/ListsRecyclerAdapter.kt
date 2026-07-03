@@ -19,30 +19,33 @@ import com.github.naz013.ui.common.context.getThemeDimension
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.inflater
 
-class ListsRecyclerAdapter :
-  ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Holder>(GoogleTasksListDiffCallback()) {
-
+class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Holder>(GoogleTasksListDiffCallback()) {
   var actionsListener: ActionsListener<GoogleTaskList>? = null
 
-  override fun onBindViewHolder(holder: Holder, position: Int) {
+  override fun onBindViewHolder(
+    holder: Holder,
+    position: Int,
+  ) {
     holder.bind(getItem(position))
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder = Holder(parent)
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): Holder = Holder(parent)
 
   inner class Holder(
-    parent: ViewGroup
+    parent: ViewGroup,
   ) : HolderBinding<ListItemGoogleTasksListBinding>(
-    ListItemGoogleTasksListBinding.inflate(parent.inflater(), parent, false)
-  ) {
-
+      ListItemGoogleTasksListBinding.inflate(parent.inflater(), parent, false),
+    ) {
     init {
       binding.clickView.setOnClickListener {
         actionsListener?.onAction(
           it,
           bindingAdapterPosition,
           getItem(bindingAdapterPosition),
-          ListActions.OPEN
+          ListActions.OPEN,
         )
       }
     }
@@ -61,16 +64,16 @@ class ListsRecyclerAdapter :
         createShapeDrawable(
           context = context,
           solidColor = ContextCompat.getColor(context, R.color.md_theme_surface),
-          strokeColor = color.adjustAlpha(50)
-        )
+          strokeColor = color.adjustAlpha(50),
+        ),
       )
       stateListDrawable.addState(
         intArrayOf(),
         createShapeDrawable(
           context = context,
           solidColor = ContextCompat.getColor(context, R.color.md_theme_surfaceContainer),
-          strokeColor = color
-        )
+          strokeColor = color,
+        ),
       )
       return stateListDrawable
     }
@@ -89,13 +92,12 @@ class ListsRecyclerAdapter :
       context: Context,
       solidColor: Int,
       strokeColor: Int,
-    ): Drawable {
-      return GradientDrawable().apply {
+    ): Drawable =
+      GradientDrawable().apply {
         shape = GradientDrawable.RECTANGLE
         setColor(solidColor)
         setStroke(context.dp2px(1), strokeColor)
         cornerRadius = context.getThemeDimension(R.attr.cornerRadiusLarge, 0f)
       }
-    }
   }
 }

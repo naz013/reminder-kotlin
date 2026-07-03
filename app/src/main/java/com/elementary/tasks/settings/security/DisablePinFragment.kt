@@ -11,14 +11,16 @@ import com.github.naz013.ui.common.fragment.hideKeyboard
 import com.github.naz013.ui.common.fragment.toast
 
 class DisablePinFragment : BaseSettingsFragment<FragmentSettingsDeletePinBinding>() {
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsDeletePinBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
 
     binding.pinView.supportFinger = false

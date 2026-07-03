@@ -53,9 +53,8 @@ class PreviewNoteViewModel(
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
-  private val themeProvider: ThemeProvider
+  private val themeProvider: ThemeProvider,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
   val state: StateFlow<PreviewNoteState> = _state.asStateFlow()
 
@@ -66,15 +65,16 @@ class PreviewNoteViewModel(
   private var statusBarColorSaved: Boolean = false
 
   @ColorInt
-  fun getStatusBarColor(): Int? {
-    return if (statusBarColorSaved) {
+  fun getStatusBarColor(): Int? =
+    if (statusBarColorSaved) {
       initStatusBarColor.takeIf { it != -1 }
     } else {
       null
     }
-  }
 
-  fun saveStatusBarColor(@ColorInt color: Int) {
+  fun saveStatusBarColor(
+    @ColorInt color: Int,
+  ) {
     if (statusBarColorSaved) return
     initStatusBarColor = color
     statusBarColorSaved = true
@@ -83,16 +83,17 @@ class PreviewNoteViewModel(
   /** Pure contrast math, ported from the previous Fragment implementation — kept here so the
    *  Fragment/Compose layer never has to know about [ThemeProvider] or color math itself. */
   fun colorsFor(state: PreviewNoteState): NotePreviewColors {
-    val isBgDark = if (state.opacity.isAlmostTransparent()) {
-      themeProvider.isDark
-    } else {
-      state.backgroundColor.isColorDark()
-    }
+    val isBgDark =
+      if (state.opacity.isAlmostTransparent()) {
+        themeProvider.isDark
+      } else {
+        state.backgroundColor.isColorDark()
+      }
     val contentColor = if (isBgDark) PURE_WHITE else PURE_BLACK
     return NotePreviewColors(
       background = Color(state.backgroundColor),
       statusBarColor = state.backgroundColor,
-      content = Color(contentColor)
+      content = Color(contentColor),
     )
   }
 
@@ -123,7 +124,7 @@ class PreviewNoteViewModel(
             images = uiNotePreview.images,
             backgroundColor = uiNotePreview.backgroundColor,
             opacity = uiNotePreview.opacity,
-            isArchived = uiNotePreview.isArchived
+            isArchived = uiNotePreview.isArchived,
           )
         }
       }
@@ -132,9 +133,10 @@ class PreviewNoteViewModel(
   }
 
   private suspend fun loadReminders() {
-    val reminders = reminderRepository.getByNoteKey(key).map {
-      reminderToUiNoteAttachedReminder(it)
-    }
+    val reminders =
+      reminderRepository.getByNoteKey(key).map {
+        reminderToUiNoteAttachedReminder(it)
+      }
     _state.update { it.copy(reminders = reminders) }
   }
 
@@ -220,8 +222,8 @@ class PreviewNoteViewModel(
         reminder.copy(
           noteId = "",
           version = reminder.version + 1,
-          syncState = SyncState.WaitingForUpload
-        )
+          syncState = SyncState.WaitingForUpload,
+        ),
       )
 
       loadReminders()

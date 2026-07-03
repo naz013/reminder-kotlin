@@ -32,5 +32,5 @@ data class NoteEditActions(
   val onDeleteConfirmed: () -> Unit = {},
   val onSameNoteKeep: () -> Unit = {},
   val onSameNoteReplace: () -> Unit = {},
-  val onDialogDismiss: () -> Unit = {}
+  val onDialogDismiss: () -> Unit = {},
 )

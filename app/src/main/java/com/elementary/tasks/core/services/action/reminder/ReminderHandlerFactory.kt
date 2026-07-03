@@ -22,18 +22,17 @@ class ReminderHandlerFactory(
   private val prefs: Prefs,
   private val wearNotification: WearNotification,
   private val completeReminderUseCase: CompleteReminderUseCase,
-  private val snoozeReminderUseCase: SnoozeReminderUseCase
+  private val snoozeReminderUseCase: SnoozeReminderUseCase,
 ) {
-
-  fun createAction(canShowWindow: Boolean): ActionHandler<Reminder> {
-    return if (canShowWindow) {
+  fun createAction(canShowWindow: Boolean): ActionHandler<Reminder> =
+    if (canShowWindow) {
       ReminderHandlerQ(
         reminderDataProvider = reminderDataProvider,
         contextProvider = contextProvider,
         textProvider = textProvider,
         notifier = notifier,
         prefs = prefs,
-        wearNotification = wearNotification
+        wearNotification = wearNotification,
       )
     } else {
       ReminderHandlerSilent(
@@ -42,23 +41,20 @@ class ReminderHandlerFactory(
         textProvider = textProvider,
         notifier = notifier,
         prefs = prefs,
-        wearNotification = wearNotification
+        wearNotification = wearNotification,
       )
     }
-  }
 
-  fun createComplete(): ActionHandler<Reminder> {
-    return ReminderCompleteHandlerQ(
+  fun createComplete(): ActionHandler<Reminder> =
+    ReminderCompleteHandlerQ(
       notifier = notifier,
-      completeReminderUseCase = completeReminderUseCase
+      completeReminderUseCase = completeReminderUseCase,
     )
-  }
 
-  fun createSnooze(): ActionHandler<Reminder> {
-    return ReminderSnoozeHandlerQ(
+  fun createSnooze(): ActionHandler<Reminder> =
+    ReminderSnoozeHandlerQ(
       notifier = notifier,
       prefs = prefs,
-      snoozeReminderUseCase = snoozeReminderUseCase
+      snoozeReminderUseCase = snoozeReminderUseCase,
     )
-  }
 }

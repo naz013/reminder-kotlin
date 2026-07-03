@@ -36,19 +36,21 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
-
   private val adapter = TasksRecyclerAdapter()
   private val viewModel by viewModel<TaskListViewModel> { parametersOf(getListId()) }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentGoogleListBinding.inflate(inflater, container, false)
 
   private fun getListId() = arguments?.let { TaskListFragmentArgs.fromBundle(it) }?.argId
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.fab.applyBottomInsetsMargin()
     binding.recyclerView.applyBottomInsets()
@@ -98,7 +100,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, it.listId)
           },
-          NavigationAnimations.inDepthNavOptions()
+          NavigationAnimations.inDepthNavOptions(),
         )
       }
     }
@@ -124,7 +126,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
           Bundle().apply {
             putString(IntentKeys.INTENT_LIST_ID, it.listId)
           },
-          NavigationAnimations.inDepthNavOptions()
+          NavigationAnimations.inDepthNavOptions(),
         )
       }
     }
@@ -141,11 +143,12 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
   private fun showResult(commands: Commands) {
     when (commands) {
       Commands.FAILED -> {
-        Toast.makeText(
-          requireContext(),
-          getString(R.string.failed_to_update_task),
-          Toast.LENGTH_SHORT
-        ).show()
+        Toast
+          .makeText(
+            requireContext(),
+            getString(R.string.failed_to_update_task),
+            Toast.LENGTH_SHORT,
+          ).show()
       }
 
       else -> {
@@ -168,23 +171,30 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
     }
 
     if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
-        resources.getInteger(R.integer.num_of_cols),
-        StaggeredGridLayoutManager.VERTICAL
-      )
+      binding.recyclerView.layoutManager =
+        StaggeredGridLayoutManager(
+          resources.getInteger(R.integer.num_of_cols),
+          StaggeredGridLayoutManager.VERTICAL,
+        )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
-    adapter.actionsListener = object : ActionsListener<UiGoogleTaskList> {
-      override fun onAction(view: View, position: Int, t: UiGoogleTaskList?, actions: ListActions) {
-        when (actions) {
-          ListActions.OPEN -> if (t != null) openTask(t.id)
-          ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t.id)
-          else -> {
+    adapter.actionsListener =
+      object : ActionsListener<UiGoogleTaskList> {
+        override fun onAction(
+          view: View,
+          position: Int,
+          t: UiGoogleTaskList?,
+          actions: ListActions,
+        ) {
+          when (actions) {
+            ListActions.OPEN -> if (t != null) openTask(t.id)
+            ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t.id)
+            else -> {
+            }
           }
         }
       }
-    }
     binding.recyclerView.adapter = adapter
     binding.recyclerView.addItemDecoration(SpaceBetweenItemDecoration(dp2px(8)))
 
@@ -200,7 +210,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
   private fun openTask(taskId: String) {
     navigate {
       navigate(
-        TaskListFragmentDirections.actionTaskListFragmentToPreviewGoogleTaskFragment(taskId)
+        TaskListFragmentDirections.actionTaskListFragmentToPreviewGoogleTaskFragment(taskId),
       )
     }
   }
@@ -223,19 +233,18 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
     setTitle(googleTaskList.title)
     val color = ThemeProvider.themedColor(requireContext(), googleTaskList.color)
     binding.fab.backgroundTintList = ColorStateList.valueOf(color)
-    val textColor = if (color.isColorDark()) {
-      ContextCompat.getColor(requireContext(), R.color.pureWhite)
-    } else {
-      ContextCompat.getColor(requireContext(), R.color.pureBlack)
-    }
+    val textColor =
+      if (color.isColorDark()) {
+        ContextCompat.getColor(requireContext(), R.color.pureWhite)
+      } else {
+        ContextCompat.getColor(requireContext(), R.color.pureBlack)
+      }
     binding.fab.setTextColor(textColor)
     binding.fab.iconTint = ColorStateList.valueOf(textColor)
     invalidateOptionsMenu()
   }
 
-  override fun getTitle(): String {
-    return viewModel.currentTaskList?.title ?: ""
-  }
+  override fun getTitle(): String = viewModel.currentTaskList?.title ?: ""
 
   companion object {
     const val MENU_ITEM_EDIT = 12

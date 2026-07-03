@@ -21,21 +21,19 @@ import com.github.naz013.ui.common.view.dp2px
 import com.github.naz013.ui.common.view.inflater
 
 class NoteController(
-  private val noteBuilderItem: NoteBuilderItem
+  private val noteBuilderItem: NoteBuilderItem,
 ) : AbstractBindingValueController<UiNoteList, BuilderItemSelectableListNoteBinding>(
-  builderItem = noteBuilderItem
-) {
-
-  private val adapter = SelectableNotesRecyclerAdapter { _, item ->
-    onSelectionChanged(item)
-  }
+    builderItem = noteBuilderItem,
+  ) {
+  private val adapter =
+    SelectableNotesRecyclerAdapter { _, item ->
+      onSelectionChanged(item)
+    }
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemSelectableListNoteBinding {
-    return BuilderItemSelectableListNoteBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemSelectableListNoteBinding = BuilderItemSelectableListNoteBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -54,9 +52,8 @@ class NoteController(
   }
 
   private class SelectableNotesRecyclerAdapter(
-    private val onSelectionChangeListener: (position: Int, item: UiNoteList?) -> Unit
+    private val onSelectionChangeListener: (position: Int, item: UiNoteList?) -> Unit,
   ) : ListAdapter<UiNoteList, SelectableNoteViewHolder>(UiNoteListDiffCallback()) {
-
     var selectedPosition: Int = -1
       private set
 
@@ -84,11 +81,18 @@ class NoteController(
       }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectableNoteViewHolder {
-      return SelectableNoteViewHolder(parent) { updateSelection(it) }
-    }
+    override fun onCreateViewHolder(
+      parent: ViewGroup,
+      viewType: Int,
+    ): SelectableNoteViewHolder =
+      SelectableNoteViewHolder(parent) {
+        updateSelection(it)
+      }
 
-    override fun onBindViewHolder(holder: SelectableNoteViewHolder, position: Int) {
+    override fun onBindViewHolder(
+      holder: SelectableNoteViewHolder,
+      position: Int,
+    ) {
       holder.setData(getItem(position), position == selectedPosition)
     }
   }
@@ -96,11 +100,10 @@ class NoteController(
   private class SelectableNoteViewHolder(
     parent: ViewGroup,
     private val common: UiNoteListAdapterCommon = UiNoteListAdapterCommon(),
-    private val listener: (Int) -> Unit
+    private val listener: (Int) -> Unit,
   ) : HolderBinding<ListItemNoteSelectableBinding>(
-    ListItemNoteSelectableBinding.inflate(parent.inflater(), parent, false)
-  ) {
-
+      ListItemNoteSelectableBinding.inflate(parent.inflater(), parent, false),
+    ) {
     init {
       hoverClick(binding.bgView) {
         listener.invoke(bindingAdapterPosition)
@@ -110,27 +113,34 @@ class NoteController(
       }
     }
 
-    fun setData(uiNoteList: UiNoteList, isSelected: Boolean) {
+    fun setData(
+      uiNoteList: UiNoteList,
+      isSelected: Boolean,
+    ) {
       common.populateNoteUi(
         uiNoteList = uiNoteList,
         imagesViewContainer = binding.imagesView,
         textView = binding.noteTv,
         backgroundView = binding.bgView,
         secondaryImageSize = itemView.dp2px(128),
-        imageClickListener = null
+        imageClickListener = null,
       )
 
-      val icon = if (isSelected) {
-        R.drawable.ic_builder_google_task_list
-      } else {
-        R.drawable.ic_fluent_radio_button
-      }
+      val icon =
+        if (isSelected) {
+          R.drawable.ic_builder_google_task_list
+        } else {
+          R.drawable.ic_fluent_radio_button
+        }
       binding.buttonCheck.setImageDrawable(
-        ViewUtils.tintIcon(binding.buttonCheck.context, icon, uiNoteList.textColor)
+        ViewUtils.tintIcon(binding.buttonCheck.context, icon, uiNoteList.textColor),
       )
     }
 
-    private fun hoverClick(view: View, click: (View) -> Unit) {
+    private fun hoverClick(
+      view: View,
+      click: (View) -> Unit,
+    ) {
       view.setOnTouchListener { v, event ->
         when (event.action) {
           MotionEvent.ACTION_DOWN -> {

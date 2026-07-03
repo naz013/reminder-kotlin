@@ -13,34 +13,33 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 abstract class BuilderModifier<T>(
-  protected val storage: BiStorage<T>
+  protected val storage: BiStorage<T>,
 ) {
   abstract fun getUiRepresentation(emptyText: String): String
+
   abstract fun getValue(): T?
+
   abstract fun update(value: T?)
+
   abstract fun isCorrect(): Boolean
+
   abstract fun putInto(reminder: Reminder)
+
   abstract fun setDefault()
 }
 
 abstract class DefaultModifier<T>(
-  storage: BiStorage<T>
+  storage: BiStorage<T>,
 ) : BuilderModifier<T>(storage) {
-  override fun getUiRepresentation(emptyText: String): String {
-    return storage.value?.toString() ?: emptyText
-  }
+  override fun getUiRepresentation(emptyText: String): String = storage.value?.toString() ?: emptyText
 
-  override fun getValue(): T? {
-    return storage.value
-  }
+  override fun getValue(): T? = storage.value
 
   override fun update(value: T?) {
     storage.value = value
   }
 
-  override fun isCorrect(): Boolean {
-    return true
-  }
+  override fun isCorrect(): Boolean = true
 
   override fun putInto(reminder: Reminder) {
     // Do nothing
@@ -52,7 +51,7 @@ abstract class DefaultModifier<T>(
 }
 
 class TimerExclusionModifier(
-  private val formatter: Formatter<TimerExclusion>
+  private val formatter: Formatter<TimerExclusion>,
 ) : DefaultModifier<TimerExclusion>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -70,7 +69,7 @@ class TimerExclusionModifier(
 
 open class IntModifier(
   private val formatter: Formatter<Int>,
-  private val initValue: Int? = null
+  private val initValue: Int? = null,
 ) : DefaultModifier<Int>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -83,7 +82,7 @@ open class IntModifier(
 }
 
 open class ListIntModifier(
-  private val formatter: Formatter<List<Int>>
+  private val formatter: Formatter<List<Int>>,
 ) : DefaultModifier<List<Int>>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -93,7 +92,7 @@ open class ListIntModifier(
 
 open class LongModifier(
   private val formatter: Formatter<Long>,
-  private val initValue: Long? = null
+  private val initValue: Long? = null,
 ) : DefaultModifier<Long>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -106,29 +105,25 @@ open class LongModifier(
 }
 
 class DateModifier(
-  private val formatter: Formatter<LocalDate>
+  private val formatter: Formatter<LocalDate>,
 ) : DefaultModifier<LocalDate>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
     return formatter.format(value)
   }
 
-  override fun isCorrect(): Boolean {
-    return storage.value != null
-  }
+  override fun isCorrect(): Boolean = storage.value != null
 }
 
 class TimeModifier(
-  private val formatter: Formatter<LocalTime>
+  private val formatter: Formatter<LocalTime>,
 ) : DefaultModifier<LocalTime>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
     return formatter.format(value)
   }
 
-  override fun isCorrect(): Boolean {
-    return storage.value != null
-  }
+  override fun isCorrect(): Boolean = storage.value != null
 }
 
 class SummaryModifier : StringModifier() {
@@ -138,9 +133,7 @@ class SummaryModifier : StringModifier() {
 }
 
 class EmailModifier : StringModifier() {
-  override fun isCorrect(): Boolean {
-    return getValue()?.matches(EMAIL_REGEX) == true
-  }
+  override fun isCorrect(): Boolean = getValue()?.matches(EMAIL_REGEX) == true
 
   override fun putInto(reminder: Reminder) {
     reminder.target = getValue() ?: ""
@@ -152,9 +145,7 @@ class EmailModifier : StringModifier() {
 }
 
 class WebAddressModifier : StringModifier() {
-  override fun isCorrect(): Boolean {
-    return getValue()?.let { Patterns.WEB_URL.matcher(it).matches() } ?: false
-  }
+  override fun isCorrect(): Boolean = getValue()?.let { Patterns.WEB_URL.matcher(it).matches() } ?: false
 
   override fun putInto(reminder: Reminder) {
     reminder.target = getValue() ?: ""
@@ -162,16 +153,13 @@ class WebAddressModifier : StringModifier() {
 }
 
 abstract class StringModifier(
-  storage: BiStorage<String> = DefaultBiStorage()
+  storage: BiStorage<String> = DefaultBiStorage(),
 ) : DefaultModifier<String>(storage) {
-
-  override fun getUiRepresentation(emptyText: String): String {
-    return storage.value ?: ""
-  }
+  override fun getUiRepresentation(emptyText: String): String = storage.value ?: ""
 }
 
 open class ListStringModifier(
-  private val formatter: Formatter<List<String>>
+  private val formatter: Formatter<List<String>>,
 ) : DefaultModifier<List<String>>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -182,9 +170,8 @@ open class ListStringModifier(
 open class DefaultStringModifier : StringModifier()
 
 open class FormattedStringModifier(
-  private val formatter: Formatter<String>
+  private val formatter: Formatter<String>,
 ) : DefaultStringModifier() {
-
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
     return formatter.format(value)
@@ -192,7 +179,7 @@ open class FormattedStringModifier(
 }
 
 class GroupModifier(
-  private val initValue: UiGroupList?
+  private val initValue: UiGroupList?,
 ) : DefaultModifier<UiGroupList>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -211,7 +198,6 @@ class GroupModifier(
 }
 
 class PhoneNumberModifier : StringModifier() {
-
   override fun isCorrect(): Boolean {
     val value = getValue()
     if (value.isNullOrBlank()) return false
@@ -224,7 +210,7 @@ class PhoneNumberModifier : StringModifier() {
 }
 
 class GoogleTaskListModifier(
-  private val initValue: GoogleTaskList? = null
+  private val initValue: GoogleTaskList? = null,
 ) : DefaultModifier<GoogleTaskList>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -247,7 +233,7 @@ class GoogleTaskListModifier(
 }
 
 class GoogleCalendarModifier(
-  private val initValue: GoogleCalendarUtils.CalendarItem? = null
+  private val initValue: GoogleCalendarUtils.CalendarItem? = null,
 ) : DefaultModifier<GoogleCalendarUtils.CalendarItem>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -266,7 +252,7 @@ class GoogleCalendarModifier(
 
 class GoogleCalendarDurationModifier(
   private val formatter: Formatter<CalendarDuration>,
-  private val initValue: CalendarDuration? = null
+  private val initValue: CalendarDuration? = null,
 ) : DefaultModifier<CalendarDuration>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -287,7 +273,7 @@ class GoogleCalendarDurationModifier(
 
 class OtherParamsModifier(
   private val formatter: Formatter<OtherParams>,
-  private val initValue: OtherParams? = OtherParams()
+  private val initValue: OtherParams? = OtherParams(),
 ) : DefaultModifier<OtherParams>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -309,7 +295,7 @@ class OtherParamsModifier(
 
 class ShopItemsModifier(
   private val formatter: Formatter<List<ShopItem>>,
-  private val initValue: List<ShopItem>? = emptyList()
+  private val initValue: List<ShopItem>? = emptyList(),
 ) : DefaultModifier<List<ShopItem>>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -326,14 +312,12 @@ class ShopItemsModifier(
     }
   }
 
-  override fun isCorrect(): Boolean {
-    return storage.value?.isNotEmpty() ?: false
-  }
+  override fun isCorrect(): Boolean = storage.value?.isNotEmpty() ?: false
 }
 
 class PlaceModifier(
   private val formatter: Formatter<Place>,
-  private val initValue: Place? = null
+  private val initValue: Place? = null,
 ) : DefaultModifier<Place>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -350,14 +334,12 @@ class PlaceModifier(
     }
   }
 
-  override fun isCorrect(): Boolean {
-    return storage.value != null
-  }
+  override fun isCorrect(): Boolean = storage.value != null
 }
 
 class NoteModifier(
   private val formatter: Formatter<UiNoteList>,
-  private val initValue: UiNoteList? = null
+  private val initValue: UiNoteList? = null,
 ) : DefaultModifier<UiNoteList>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -374,14 +356,12 @@ class NoteModifier(
     }
   }
 
-  override fun isCorrect(): Boolean {
-    return storage.value != null
-  }
+  override fun isCorrect(): Boolean = storage.value != null
 }
 
 class RecurParamModifier<T>(
   private val initValue: T,
-  private val formatter: Formatter<T>? = null
+  private val formatter: Formatter<T>? = null,
 ) : DefaultModifier<T>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
@@ -392,7 +372,5 @@ class RecurParamModifier<T>(
     storage.value = initValue
   }
 
-  override fun isCorrect(): Boolean {
-    return storage.value != null
-  }
+  override fun isCorrect(): Boolean = storage.value != null
 }

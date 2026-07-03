@@ -17,8 +17,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.android.ext.android.inject
 
-class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueControllerParent {
-
+class ValueDialog :
+  BottomSheetDialogFragment(),
+  ParentDialogHandle,
+  ValueControllerParent {
   private val dataHolder by inject<ValueDialogDataHolder>()
   private val controllerFactory by inject<ValueControllerFactory>()
 
@@ -51,7 +53,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View {
     binding = BottomSheetValueSelectorBinding.inflate(inflater, container, false)
 
@@ -61,7 +63,10 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     return binding.root
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.dialogCloseButton.setOnClickListener { dismiss() }
     binding.optionalButton.setOnClickListener { controller?.onOptionalClicked() }
@@ -86,9 +91,10 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
       binding.descriptionView.text = builderItem.description
 
       binding.viewContainer.removeAllViewsInLayout()
-      val controller = controllerFactory.create(this, builderItem).also {
-        this.controller = it
-      }
+      val controller =
+        controllerFactory.create(this, builderItem).also {
+          this.controller = it
+        }
       lifecycleDispatcher = ValueDialogLifecycleDispatcher(controller)
       lifecycleDispatcher?.dispatchOnCreate()
 
@@ -111,9 +117,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     }
   }
 
-  private fun getPosition(): Int {
-    return arguments?.getInt(KEY_POSITION) ?: 0
-  }
+  private fun getPosition(): Int = arguments?.getInt(KEY_POSITION) ?: 0
 
   override fun updateBehavior() {
     val dialog = dialog as? BottomSheetDialog
@@ -124,9 +128,7 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     ValueDialogCommunicator.onValueChanged(getPosition(), builderItem)
   }
 
-  override fun getState(): ValueDialogState {
-    return lifecycleDispatcher?.state ?: ValueDialogState.NONE
-  }
+  override fun getState(): ValueDialogState = lifecycleDispatcher?.state ?: ValueDialogState.NONE
 
   override fun addOptionalButton(icon: Int) {
     binding.optionalButton.setImageResource(icon)
@@ -138,12 +140,12 @@ class ValueDialog : BottomSheetDialogFragment(), ParentDialogHandle, ValueContro
     private const val KEY_POSITION = "arg_position"
 
     @JvmStatic
-    fun newInstance(position: Int): ValueDialog {
-      return ValueDialog().apply {
-        arguments = Bundle().apply {
-          putInt(KEY_POSITION, position)
-        }
+    fun newInstance(position: Int): ValueDialog =
+      ValueDialog().apply {
+        arguments =
+          Bundle().apply {
+            putInt(KEY_POSITION, position)
+          }
       }
-    }
   }
 }

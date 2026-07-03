@@ -14,5 +14,5 @@ data class UiGroupList(
   @SerializedName("colorPosition")
   val colorPosition: Int,
   @SerializedName("contrastColor")
-  val contrastColor: Int
+  val contrastColor: Int,
 )

@@ -5,5 +5,5 @@ enum class ListActions {
   MORE,
   EDIT,
   SWITCH,
-  REMOVE
+  REMOVE,
 }

@@ -19,7 +19,6 @@ import com.github.naz013.ui.common.activity.toast
 import org.koin.android.ext.android.inject
 
 class IntentActivity : LightThemedActivity() {
-
   private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
   private val navigator by inject<Navigator>()
 
@@ -126,56 +125,44 @@ class IntentActivity : LightThemedActivity() {
     return nt != null && nt.key.isNotEmpty()
   }
 
-  private fun ReminderGroup.isValid(): Boolean {
-    return groupTitle.isNotBlank() && groupUuId.isNotEmpty()
-  }
+  private fun ReminderGroup.isValid(): Boolean = groupTitle.isNotBlank() && groupUuId.isNotEmpty()
 
-  private fun ReminderGroup.getInvalidReason(): String {
-    return when {
+  private fun ReminderGroup.getInvalidReason(): String =
+    when {
       groupUuId.isBlank() -> "UUID is blank"
       groupTitle.isBlank() -> "Title is blank"
       else -> ""
     }
-  }
 
-  private fun Place.isValid(): Boolean {
-    return latitude != 0.0 && longitude != 0.0 && name.isNotBlank()
-  }
+  private fun Place.isValid(): Boolean = latitude != 0.0 && longitude != 0.0 && name.isNotBlank()
 
-  private fun Place.getInvalidReason(): String {
-    return when {
+  private fun Place.getInvalidReason(): String =
+    when {
       latitude == 0.0 -> "Latitude is 0"
       longitude == 0.0 -> "Longitude is 0"
       name.isBlank() -> "Name is blank"
       else -> ""
     }
-  }
 
-  private fun Reminder.isValid(): Boolean {
-    return type > 0 && groupUuId.isNotBlank()
-  }
+  private fun Reminder.isValid(): Boolean = type > 0 && groupUuId.isNotBlank()
 
-  private fun Reminder.getInvalidReason(): String {
-    return when {
+  private fun Reminder.getInvalidReason(): String =
+    when {
       type <= 0 -> "Type is not supported"
       groupUuId.isBlank() -> "Group UUID is blank"
       else -> ""
     }
-  }
 
-  private fun Birthday.isValid(): Boolean {
-    return name.isNotBlank() && date.isNotBlank() && uuId.isNotBlank() && day > 0
-  }
+  private fun Birthday.isValid(): Boolean = name.isNotBlank() && date.isNotBlank() && uuId.isNotBlank() && day > 0
 
-  private fun Birthday.getInvalidReason(): String {
-    return when {
+  private fun Birthday.getInvalidReason(): String =
+    when {
       name.isBlank() -> "Name is blank"
       date.isBlank() -> "Date is blank"
       uuId.isBlank() -> "Key is blank"
       day == 0 -> "Day is 0"
       else -> ""
     }
-  }
 
   companion object {
     private const val TAG = "IntentActivity"

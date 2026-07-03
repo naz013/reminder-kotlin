@@ -9,11 +9,15 @@ import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class GoogleCalendarReceiver : BroadcastReceiver(), KoinComponent {
-
+class GoogleCalendarReceiver :
+  BroadcastReceiver(),
+  KoinComponent {
   private val prefs by inject<Prefs>()
 
-  override fun onReceive(context: Context?, intent: Intent?) {
+  override fun onReceive(
+    context: Context?,
+    intent: Intent?,
+  ) {
     Logger.i(TAG, "Received intent: ${intent?.action}")
     if (!prefs.scanGoogleCalendarEvents) {
       Logger.w(TAG, "Google Calendar scanning is disabled in preferences.")

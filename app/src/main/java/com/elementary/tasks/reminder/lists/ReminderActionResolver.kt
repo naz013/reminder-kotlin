@@ -16,12 +16,11 @@ class ReminderActionResolver(
   private val toggleAction: (id: String) -> Unit,
   private val skipAction: (id: String) -> Unit,
   private val openAction: (id: String) -> Unit,
-  private val editAction: (id: String) -> Unit
+  private val editAction: (id: String) -> Unit,
 ) {
-
   fun resolveItemClick(
     id: String,
-    isRemoved: Boolean
+    isRemoved: Boolean,
   ) {
     if (isRemoved) {
       editReminder(id)
@@ -34,7 +33,7 @@ class ReminderActionResolver(
     view: View,
     id: String,
     isRemoved: Boolean,
-    actions: UiReminderListActions
+    actions: UiReminderListActions,
   ) {
     if (isRemoved) {
       showDeletedActionDialog(view, id)
@@ -45,14 +44,14 @@ class ReminderActionResolver(
 
   fun resolveItemToggle(
     id: String,
-    isGps: Boolean
+    isGps: Boolean,
   ) {
     if (isGps) {
       permissionFlow.askPermissions(
         listOf(
           Permissions.FOREGROUND_SERVICE,
-          Permissions.FOREGROUND_SERVICE_LOCATION
-        )
+          Permissions.FOREGROUND_SERVICE_LOCATION,
+        ),
       ) {
         toggleAction(id)
       }
@@ -61,21 +60,26 @@ class ReminderActionResolver(
     }
   }
 
-  private fun showDeletedActionDialog(view: View, id: String) {
-    val items = arrayOf(
-      context.getString(R.string.open),
-      context.getString(R.string.edit),
-      context.getString(R.string.delete)
-    )
+  private fun showDeletedActionDialog(
+    view: View,
+    id: String,
+  ) {
+    val items =
+      arrayOf(
+        context.getString(R.string.open),
+        context.getString(R.string.edit),
+        context.getString(R.string.delete),
+      )
     Dialogues.showPopup(view, { item ->
       when (item) {
         0 -> previewReminder(id)
         1 -> editReminder(id)
-        2 -> askConfirmation(items[item]) {
-          if (it) {
-            deleteAction(id)
+        2 ->
+          askConfirmation(items[item]) {
+            if (it) {
+              deleteAction(id)
+            }
           }
-        }
       }
     }, *items)
   }
@@ -83,38 +87,43 @@ class ReminderActionResolver(
   private fun showActionDialog(
     view: View,
     actions: UiReminderListActions,
-    id: String
+    id: String,
   ) {
-    val items = if (actions.canSkip) {
-      arrayOf(
-        context.getString(R.string.open),
-        context.getString(R.string.edit),
-        context.getString(R.string.move_to_archive),
-        context.getString(R.string.skip_event)
-      )
-    } else {
-      arrayOf(
-        context.getString(R.string.open),
-        context.getString(R.string.edit),
-        context.getString(R.string.move_to_archive)
-      )
-    }
+    val items =
+      if (actions.canSkip) {
+        arrayOf(
+          context.getString(R.string.open),
+          context.getString(R.string.edit),
+          context.getString(R.string.move_to_archive),
+          context.getString(R.string.skip_event),
+        )
+      } else {
+        arrayOf(
+          context.getString(R.string.open),
+          context.getString(R.string.edit),
+          context.getString(R.string.move_to_archive),
+        )
+      }
     Dialogues.showPopup(view, { item ->
       when (item) {
         0 -> previewReminder(id)
         1 -> editReminder(id)
-        2 -> askConfirmation(items[item]) {
-          if (it) {
-            deleteAction(id)
+        2 ->
+          askConfirmation(items[item]) {
+            if (it) {
+              deleteAction(id)
+            }
           }
-        }
 
         3 -> skipAction(id)
       }
     }, *items)
   }
 
-  private fun askConfirmation(title: String, onAction: (Boolean) -> Unit) {
+  private fun askConfirmation(
+    title: String,
+    onAction: (Boolean) -> Unit,
+  ) {
     dialogues.askConfirmation(context, title, onAction = onAction)
   }
 

@@ -10,7 +10,6 @@ import com.elementary.tasks.core.utils.ui.onTextChanged
 import com.elementary.tasks.databinding.ViewNumberValuePickerBinding
 
 class NumberValuePickerView : LinearLayout {
-
   var onValueChangedListener: OnValueChangedListener? = null
   var maxValue: Long = 999
   var minValue: Long = 0
@@ -30,7 +29,7 @@ class NumberValuePickerView : LinearLayout {
   constructor(
     context: Context,
     attrs: AttributeSet?,
-    defStyle: Int
+    defStyle: Int,
   ) : super(context, attrs, defStyle) {
     View.inflate(context, R.layout.view_number_value_picker, this)
     orientation = HORIZONTAL
@@ -71,24 +70,33 @@ class NumberValuePickerView : LinearLayout {
     binding.viewInputEditText.setText("0")
 
     if (attrs != null) {
-      val a = context.theme.obtainStyledAttributes(
-        attrs,
-        R.styleable.NumberValuePickerView,
-        defStyle,
-        0
-      )
+      val a =
+        context.theme.obtainStyledAttributes(
+          attrs,
+          R.styleable.NumberValuePickerView,
+          defStyle,
+          0,
+        )
       try {
         if (a.hasValue(R.styleable.NumberValuePickerView_valuePicker_minValue)) {
-          minValue = a.getInt(
-            /* index = */ R.styleable.NumberValuePickerView_valuePicker_minValue,
-            /* defValue = */ 0
-          ).toLong()
+          minValue =
+            a
+              .getInt(
+                // index =
+                R.styleable.NumberValuePickerView_valuePicker_minValue,
+                // defValue =
+                0,
+              ).toLong()
         }
         if (a.hasValue(R.styleable.NumberValuePickerView_valuePicker_maxValue)) {
-          maxValue = a.getInt(
-            /* index = */ R.styleable.NumberValuePickerView_valuePicker_maxValue,
-            /* defValue = */ 999
-          ).toLong()
+          maxValue =
+            a
+              .getInt(
+                // index =
+                R.styleable.NumberValuePickerView_valuePicker_maxValue,
+                // defValue =
+                999,
+              ).toLong()
         }
         if (a.hasValue(R.styleable.NumberValuePickerView_valuePicker_topButtonText)) {
           a.getString(R.styleable.NumberValuePickerView_valuePicker_topButtonText)?.also {
@@ -132,13 +140,14 @@ class NumberValuePickerView : LinearLayout {
   }
 
   private fun validateAndSet(newValue: Long) {
-    val fixedValue = if (newValue > maxValue) {
-      maxValue
-    } else if (newValue < minValue) {
-      minValue
-    } else {
-      newValue
-    }
+    val fixedValue =
+      if (newValue > maxValue) {
+        maxValue
+      } else if (newValue < minValue) {
+        minValue
+      } else {
+        newValue
+      }
     binding.viewInputEditText.setText(fixedValue.toString())
     updateEditField()
   }
@@ -147,9 +156,7 @@ class NumberValuePickerView : LinearLayout {
     binding.viewInputEditText.setSelection(getInputValue().length)
   }
 
-  private fun getInputValue(): String {
-    return binding.viewInputEditText.text.toString()
-  }
+  private fun getInputValue(): String = binding.viewInputEditText.text.toString()
 
   private fun notifyChange() {
     onValueChangedListener?.onChanged(getInputValue())

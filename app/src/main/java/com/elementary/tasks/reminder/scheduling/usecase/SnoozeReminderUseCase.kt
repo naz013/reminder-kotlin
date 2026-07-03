@@ -24,24 +24,27 @@ class SnoozeReminderUseCase(
   private val strategyResolver: BehaviorStrategyResolver,
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
-  private val notifier: Notifier
+  private val notifier: Notifier,
 ) {
-
-  suspend operator fun invoke(reminder: Reminder, timeInMinutes: Int): Reminder {
+  suspend operator fun invoke(
+    reminder: Reminder,
+    timeInMinutes: Int,
+  ): Reminder {
     val strategy = strategyResolver.resolve(reminder)
     if (strategy is LocationBasedStrategy || strategy.requiresBackgroundService(reminder)) {
       Logger.w(TAG, "Cannot snooze location-based reminder id=${reminder.uuId}")
-     return reminder
+      return reminder
     }
     if (timeInMinutes <= 0) {
       Logger.w(TAG, "Snooze time is less than or equal to zero for reminder id=${reminder.uuId}")
       return completeReminderUseCase(reminder)
     }
     notifier.cancel(reminder.uniqueId)
-    val reminder = reminder.copy(
-      delay = timeInMinutes,
-      syncState = SyncState.WaitingForUpload
-    )
+    val reminder =
+      reminder.copy(
+        delay = timeInMinutes,
+        syncState = SyncState.WaitingForUpload,
+      )
     saveReminderUseCase(reminder)
     jobScheduler.scheduleReminderDelay(timeInMinutes, reminder.uuId, reminder.uniqueId)
     Logger.i(TAG, "Snoozed reminder id=${reminder.uuId} for $timeInMinutes minutes")

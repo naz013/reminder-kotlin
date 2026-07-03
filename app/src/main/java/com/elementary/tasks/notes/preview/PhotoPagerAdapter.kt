@@ -10,32 +10,43 @@ import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.databinding.FragmentImageBinding
 import com.github.chrisbanes.photoview.PhotoView
 
-class PhotoPagerAdapter(private val images: List<UiNoteImage>) : PagerAdapter() {
+class PhotoPagerAdapter(
+  private val images: List<UiNoteImage>,
+) : PagerAdapter() {
+  override fun getCount(): Int = images.size
 
-  override fun getCount(): Int {
-    return images.size
-  }
+  override fun isViewFromObject(
+    view: View,
+    `object`: Any,
+  ): Boolean = view == `object`
 
-  override fun isViewFromObject(view: View, `object`: Any): Boolean {
-    return view == `object`
-  }
-
-  override fun instantiateItem(container: ViewGroup, position: Int): Any {
-    val binding = FragmentImageBinding.inflate(
-      LayoutInflater.from(container.context),
-      container,
-      false
-    )
+  override fun instantiateItem(
+    container: ViewGroup,
+    position: Int,
+  ): Any {
+    val binding =
+      FragmentImageBinding.inflate(
+        LayoutInflater.from(container.context),
+        container,
+        false,
+      )
     loadPhoto(binding.ivPhoto, position)
     container.addView(binding.root)
     return binding.root
   }
 
-  override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+  override fun destroyItem(
+    container: ViewGroup,
+    position: Int,
+    `object`: Any,
+  ) {
     container.removeView(`object` as PhotoView)
   }
 
-  private fun loadPhoto(imageView: ImageView, position: Int) {
+  private fun loadPhoto(
+    imageView: ImageView,
+    position: Int,
+  ) {
     imageView.load(images[position].filePath)
   }
 }

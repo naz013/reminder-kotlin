@@ -24,7 +24,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalTime
 
 class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysBinding>() {
-
   private val viewModel by viewModel<BirthdaySettingsViewModel>()
   private val jobScheduler by inject<JobScheduler>()
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
@@ -36,10 +35,13 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsBirthdaysBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     initBirthdayReminderPrefs()
     initBirthdaysWidgetPrefs()
@@ -193,7 +195,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     dateTimePickerProvider.showTimePicker(
       fragmentManager = childFragmentManager,
       time = time,
-      title = getString(R.string.remind_at)
+      title = getString(R.string.remind_at),
     ) {
       prefs.birthdayTime = dateTimeManager.to24HourString(it)
       initBirthdayTimePrefs()
@@ -213,13 +215,12 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     binding.homePrefs.setDetailText(homeText(prefs.birthdayDurationInDays))
   }
 
-  private fun homeText(i: Int): String {
-    return if (i <= 0) {
+  private fun homeText(i: Int): String =
+    if (i <= 0) {
       getString(R.string.x_day, "1")
     } else {
       getString(R.string.x_days, (i + 1).toString())
     }
-  }
 
   private fun showHomeDaysDialog() {
     withActivity {
@@ -302,13 +303,13 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     if (!isChecked) {
       requireActivity().sendBroadcast(
         Intent(requireContext(), PermanentBirthdayReceiver::class.java)
-          .setAction(PermanentBirthdayReceiver.Companion.ACTION_SHOW)
+          .setAction(PermanentBirthdayReceiver.Companion.ACTION_SHOW),
       )
       jobScheduler.scheduleBirthdayPermanent()
     } else {
       requireActivity().sendBroadcast(
         Intent(requireContext(), PermanentBirthdayReceiver::class.java)
-          .setAction(PermanentBirthdayReceiver.Companion.ACTION_HIDE)
+          .setAction(PermanentBirthdayReceiver.Companion.ACTION_HIDE),
       )
       jobScheduler.cancelBirthdayPermanent()
     }
@@ -344,15 +345,12 @@ class BirthdaySettingsFragment : BaseSettingsFragment<FragmentSettingsBirthdaysB
     }
   }
 
-  override fun getTitle(): String {
-    return arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.birthdays)
-  }
+  override fun getTitle(): String = arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) ?: getString(R.string.birthdays)
 
-  override fun getNavigationIcon(): Int {
-    return if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
+  override fun getNavigationIcon(): Int =
+    if (arguments?.getString(IntentKeys.INTENT_SCREEN_TITLE) == null) {
       super.getNavigationIcon()
     } else {
       R.drawable.ic_builder_clear
     }
-  }
 }

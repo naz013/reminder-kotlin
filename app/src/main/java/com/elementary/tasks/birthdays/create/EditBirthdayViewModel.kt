@@ -42,9 +42,8 @@ class EditBirthdayViewModel(
   private val intentDataReader: IntentDataReader,
   private val uiBirthdayDateFormatter: UiBirthdayDateFormatter,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
-  private val saveBirthdayUseCase: SaveBirthdayUseCase
+  private val saveBirthdayUseCase: SaveBirthdayUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _birthday = mutableLiveDataOf<UiBirthdayEdit>()
   val birthday = _birthday.toLiveData()
 
@@ -123,34 +122,40 @@ class EditBirthdayViewModel(
     onDateChanged(selectedDate)
   }
 
-  fun save(name: String, number: String?, newId: Boolean = false, ignoreYear: Boolean) {
+  fun save(
+    name: String,
+    number: String?,
+    newId: Boolean = false,
+    ignoreYear: Boolean,
+  ) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val contactId = contactsReader.getIdFromNumber(number)
       val formattedDate = dateTimeManager.formatBirthdayDate(selectedDate)
-      val birthday = editableBirthday?.copy(
-        name = name,
-        contactId = contactId,
-        date = formattedDate,
-        number = number ?: "",
-        day = selectedDate.dayOfMonth,
-        month = selectedDate.monthValue - 1,
-        dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
-        uuId = editableBirthday?.uuId?.takeIf { !newId } ?: UUID.randomUUID().toString(),
-        updatedAt = dateTimeManager.getNowGmtDateTime(),
-        ignoreYear = ignoreYear
-      ) ?: Birthday(
-        name = name,
-        contactId = contactId,
-        date = formattedDate,
-        number = number ?: "",
-        day = selectedDate.dayOfMonth,
-        month = selectedDate.monthValue - 1,
-        dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
-        updatedAt = dateTimeManager.getNowGmtDateTime(),
-        ignoreYear = ignoreYear,
-        syncState = SyncState.WaitingForUpload,
-        version = 0
-      )
+      val birthday =
+        editableBirthday?.copy(
+          name = name,
+          contactId = contactId,
+          date = formattedDate,
+          number = number ?: "",
+          day = selectedDate.dayOfMonth,
+          month = selectedDate.monthValue - 1,
+          dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
+          uuId = editableBirthday?.uuId?.takeIf { !newId } ?: UUID.randomUUID().toString(),
+          updatedAt = dateTimeManager.getNowGmtDateTime(),
+          ignoreYear = ignoreYear,
+        ) ?: Birthday(
+          name = name,
+          contactId = contactId,
+          date = formattedDate,
+          number = number ?: "",
+          day = selectedDate.dayOfMonth,
+          month = selectedDate.monthValue - 1,
+          dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
+          updatedAt = dateTimeManager.getNowGmtDateTime(),
+          ignoreYear = ignoreYear,
+          syncState = SyncState.WaitingForUpload,
+          version = 0,
+        )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
       Logger.i(TAG, "Saving the birthday with id: ${birthday.uuId}")
       saveBirthday(birthday)
@@ -172,7 +177,7 @@ class EditBirthdayViewModel(
       isEdited = true
       editableBirthday = birthday
       onDateChanged(
-        dateTimeManager.parseBirthdayDate(birthday.date) ?: dateTimeManager.getCurrentDate()
+        dateTimeManager.parseBirthdayDate(birthday.date) ?: dateTimeManager.getCurrentDate(),
       )
       _birthday.postValue(uiBirthdayEditAdapter.convert(birthday))
     }

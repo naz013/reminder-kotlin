@@ -14,7 +14,6 @@ import org.threeten.bp.LocalDateTime
 class IntervalRepeatOccurrenceCalculator(
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) : ReminderOccurrenceCalculator {
-
   /**
    * Calculates occurrences for an interval-based repeating reminder.
    *
@@ -26,7 +25,7 @@ class IntervalRepeatOccurrenceCalculator(
   override suspend fun calculateOccurrences(
     reminder: Reminder,
     fromDateTime: LocalDateTime,
-    numberOfOccurrences: Int
+    numberOfOccurrences: Int,
   ): List<LocalDateTime> {
     // Validate input
     if (numberOfOccurrences <= 0) {
@@ -40,11 +39,12 @@ class IntervalRepeatOccurrenceCalculator(
     }
 
     // Calculate the remaining limit
-    val remainingLimit = if (reminder.isLimited()) {
-      maxOf(reminder.repeatLimit - reminder.eventCount.toInt(), 0)
-    } else {
-      Int.MAX_VALUE
-    }
+    val remainingLimit =
+      if (reminder.isLimited()) {
+        maxOf(reminder.repeatLimit - reminder.eventCount.toInt(), 0)
+      } else {
+        Int.MAX_VALUE
+      }
 
     val maxOccurrences = minOf(numberOfOccurrences, remainingLimit)
 
@@ -57,10 +57,11 @@ class IntervalRepeatOccurrenceCalculator(
     var startDateTime = fromDateTime
 
     repeat(maxOccurrences) {
-      val nextOccurrence = recurrenceCalculator.getNextIntervalDateTime(
-        startDateTime,
-        reminder.repeatInterval,
-      )
+      val nextOccurrence =
+        recurrenceCalculator.getNextIntervalDateTime(
+          startDateTime,
+          reminder.repeatInterval,
+        )
 
       occurrences.add(nextOccurrence)
       startDateTime = nextOccurrence

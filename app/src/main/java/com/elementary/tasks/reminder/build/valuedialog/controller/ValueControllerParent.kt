@@ -6,6 +6,10 @@ import com.elementary.tasks.reminder.build.valuedialog.ValueDialogState
 
 interface ValueControllerParent {
   fun onValueChanged(builderItem: BuilderItem<*>)
+
   fun getState(): ValueDialogState
-  fun addOptionalButton(@DrawableRes icon: Int)
+
+  fun addOptionalButton(
+    @DrawableRes icon: Int,
+  )
 }

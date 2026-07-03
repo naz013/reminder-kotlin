@@ -17,9 +17,8 @@ class DeleteAllReminderUseCase(
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
   private val eventOccurrenceRepository: EventOccurrenceRepository,
-  private val eventHistoryRepository: EventHistoryRepository
+  private val eventHistoryRepository: EventHistoryRepository,
 ) {
-
   suspend operator fun invoke(reminders: List<Reminder>) {
     reminders.forEach { deactivateReminderUseCase(it) }
     val ids = reminders.map { it.uuId }
@@ -27,7 +26,7 @@ class DeleteAllReminderUseCase(
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Delete,
       dataType = DataType.Reminders,
-      ids = ids
+      ids = ids,
     )
     for (id in ids) {
       googleCalendarUtils.deleteEvents(id)

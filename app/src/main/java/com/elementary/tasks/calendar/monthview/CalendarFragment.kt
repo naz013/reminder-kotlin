@@ -24,20 +24,21 @@ class CalendarFragment :
   BaseCalendarFragment<FragmentFlextCalBinding>(),
   MonthCallback,
   InfinitePagerAdapter2.DataAccessor {
-
-  private val infinitePagerAdapter = InfinitePagerAdapter2(
-    dataAccessor = this,
-    monthCallback = this
-  )
+  private val infinitePagerAdapter =
+    InfinitePagerAdapter2(
+      dataAccessor = this,
+      monthCallback = this,
+    )
 
   private val daysOfWeek: ArrayList<String>
     get() {
       val list = ArrayList<String>()
-      var date = if (isSunday()) {
-        LocalDate.of(2022, 12, 25)
-      } else {
-        LocalDate.of(2022, 12, 26)
-      }
+      var date =
+        if (isSunday()) {
+          LocalDate.of(2022, 12, 25)
+        } else {
+          LocalDate.of(2022, 12, 26)
+        }
       for (i in 0 until 7) {
         list.add(dateTimeManager.formatCalendarWeekday(date).uppercase())
         date = date.plusDays(1)
@@ -45,32 +46,32 @@ class CalendarFragment :
       return list
     }
 
-  override fun getStartDay(): StartDayOfWeekProtocol {
-    return StartDayOfWeekProtocol(prefs.startDay)
-  }
+  override fun getStartDay(): StartDayOfWeekProtocol = StartDayOfWeekProtocol(prefs.startDay)
 
-  override fun getTodayColor(): Int {
-    return prefs.todayColor
-  }
+  override fun getTodayColor(): Int = prefs.todayColor
 
   override fun getTitle(): String = updateMenuTitles(LocalDate.now())
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentFlextCalBinding.inflate(inflater, container, false)
 
   @SuppressLint("ClickableViewAccessibility")
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
 
-    binding.weekdayView.adapter = WeekdayArrayAdapter(
-      context = requireContext(),
-      textViewResourceId = android.R.layout.simple_list_item_1,
-      objects = daysOfWeek,
-      isDark = isDark
-    )
+    binding.weekdayView.adapter =
+      WeekdayArrayAdapter(
+        context = requireContext(),
+        textViewResourceId = android.R.layout.simple_list_item_1,
+        objects = daysOfWeek,
+        isDark = isDark,
+      )
 
     showCalendar()
 
@@ -96,9 +97,7 @@ class CalendarFragment :
     binding.infiniteViewPager.setCurrentItem(1, false)
   }
 
-  private fun isSunday(): Boolean {
-    return prefs.startDay == 0
-  }
+  private fun isSunday(): Boolean = prefs.startDay == 0
 
   private fun updateMenuTitles(date: LocalDate): String {
     val monthTitle = StringUtils.capitalize(dateTimeManager.formatCalendarMonthYear(date))
@@ -159,7 +158,7 @@ class CalendarFragment :
             infinitePagerAdapter.selectPosition(position)
           }
         }
-      }
+      },
     )
     infinitePagerAdapter.updateLeftSide(createSide(LocalDate.now()))
     infinitePagerAdapter.updateRightSide(createSide(LocalDate.now().plusMonths(3)))
@@ -168,23 +167,20 @@ class CalendarFragment :
     binding.infiniteViewPager.setCurrentItem(1, false)
   }
 
-  private fun createSide(date: LocalDate): List<MonthPagerItem> {
-    return listOf(
+  private fun createSide(date: LocalDate): List<MonthPagerItem> =
+    listOf(
       fromDate(date.minusMonths(1)),
       fromDate(date),
-      fromDate(date.plusMonths(1))
+      fromDate(date.plusMonths(1)),
     )
-  }
 
-  private fun fromDate(date: LocalDate): MonthPagerItem {
-    return MonthPagerItem(date.monthValue, date.year, date)
-  }
+  private fun fromDate(date: LocalDate): MonthPagerItem = MonthPagerItem(date.monthValue, date.year, date)
 
   override fun onDateClick(date: LocalDate) {
     safeNavigation(
       CalendarFragmentDirections.actionActionCalendarToDayViewFragment(
-        dateTimeManager.toMillis(LocalDateTime.of(date, LocalTime.now()))
-      )
+        dateTimeManager.toMillis(LocalDateTime.of(date, LocalTime.now())),
+      ),
     )
   }
 
@@ -198,7 +194,7 @@ class CalendarFragment :
         context = this,
         label = dateTimeManager.formatCalendarDate(date),
         addReminderCallback = { addReminder(date) },
-        addBirthdayCallback = { addBirthday(date) }
+        addBirthdayCallback = { addBirthday(date) },
       ).show()
     }
   }

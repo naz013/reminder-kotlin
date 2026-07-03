@@ -7,21 +7,19 @@ import com.github.naz013.common.datetime.DateTimeManager
 class GetTimeSectionsUseCase(
   private val dateTimeManager: DateTimeManager,
 ) {
-
-  operator fun invoke(
-    events: List<HomeEvent>
-  ): List<TimeSection> {
+  operator fun invoke(events: List<HomeEvent>): List<TimeSection> {
     if (events.isEmpty()) return emptyList()
     val timeSections = mutableListOf<TimeSection>()
-    var previousTime = events.first().let {
-      timeSections.add(
-        TimeSection(
-          time = dateTimeManager.getTime(it.time),
-          event = it
+    var previousTime =
+      events.first().let {
+        timeSections.add(
+          TimeSection(
+            time = dateTimeManager.getTime(it.time),
+            event = it,
+          ),
         )
-      )
-      it.time
-    }
+        it.time
+      }
     for (i in 1 until events.size) {
       val event = events[i]
       val time = event.time
@@ -29,16 +27,16 @@ class GetTimeSectionsUseCase(
         timeSections.add(
           TimeSection(
             time = dateTimeManager.getTime(time),
-            event = event
-          )
+            event = event,
+          ),
         )
         previousTime = time
       } else {
         timeSections.add(
           TimeSection(
             time = "",
-            event = event
-          )
+            event = event,
+          ),
         )
       }
     }

@@ -9,14 +9,16 @@ import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
 class OssFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
-
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsWebViewBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     val url = "file:///android_asset/files/oss.html"
     binding.webView.loadUrl(url)

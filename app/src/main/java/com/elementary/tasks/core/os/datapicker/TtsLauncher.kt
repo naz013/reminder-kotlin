@@ -15,20 +15,19 @@ import com.github.naz013.ui.common.activity.toast
 
 class TtsLauncher private constructor(
   launcherCreator: LauncherCreator<Intent, ActivityResult>,
-  private val resultCallback: (Boolean) -> Unit
+  private val resultCallback: (Boolean) -> Unit,
 ) : IntentPicker<Intent, ActivityResult>(
-  ActivityResultContracts.StartActivityForResult(),
-  launcherCreator
-) {
-
+    ActivityResultContracts.StartActivityForResult(),
+    launcherCreator,
+  ) {
   constructor(
     activity: ComponentActivity,
-    resultCallback: (Boolean) -> Unit
+    resultCallback: (Boolean) -> Unit,
   ) : this(ActivityLauncherCreator(activity), resultCallback)
 
   constructor(
     fragment: Fragment,
-    resultCallback: (Boolean) -> Unit
+    resultCallback: (Boolean) -> Unit,
   ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
   fun checkTts() {

@@ -12,9 +12,8 @@ class SyncAllGoogleTaskLists(
   private val syncGoogleTaskList: SyncGoogleTaskList,
   private val addNewTaskList: AddNewTaskList,
   private val deleteGoogleTaskList: DeleteGoogleTaskList,
-  private val googleTasksAuthManager: GoogleTasksAuthManager
+  private val googleTasksAuthManager: GoogleTasksAuthManager,
 ) {
-
   suspend operator fun invoke() {
     if (!googleTasksAuthManager.isAuthorized()) {
       Logger.i(TAG, "Sync all Google Tasks failed, not logged")
@@ -34,15 +33,15 @@ class SyncAllGoogleTaskLists(
 
     // Save updated to DB
     val localMap = localTaskLists.associateBy { it.listId }
-    remoteTaskLists.filterNot { localMap.containsKey(it.listId) }
+    remoteTaskLists
+      .filterNot { localMap.containsKey(it.listId) }
       .also {
         if (it.isNotEmpty()) {
           Logger.i(TAG, "Sync all gtasks, add new task lists = ${it.size}")
         } else {
           Logger.i(TAG, "Sync all gtasks, no new task lists")
         }
-      }
-      .forEach { addNewTaskList(it) }
+      }.forEach { addNewTaskList(it) }
 
     val remoteMap = remoteTaskLists.associateBy { it.listId }
     localTaskLists.filterNot { remoteMap.containsKey(it.listId) }.forEach {
@@ -52,7 +51,9 @@ class SyncAllGoogleTaskLists(
     // Set default Task list if not present
     if (googleTaskListRepository.defaultGoogleTaskList() == null) {
       Logger.i(TAG, "Sync all gtasks, set default task list")
-      googleTaskListRepository.getAll().firstOrNull()
+      googleTaskListRepository
+        .getAll()
+        .firstOrNull()
         ?.apply { def = 1 }
         ?.also { googleTaskListRepository.save(it) }
     }

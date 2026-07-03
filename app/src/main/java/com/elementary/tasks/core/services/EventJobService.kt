@@ -15,9 +15,9 @@ import org.koin.core.component.inject
 
 class EventJobService(
   private val context: Context,
-  private val params: WorkerParameters
-) : CoroutineWorker(context, params), KoinComponent {
-
+  private val params: WorkerParameters,
+) : CoroutineWorker(context, params),
+  KoinComponent {
   private val prefs by inject<Prefs>()
   private val notifier by inject<Notifier>()
   private val jobScheduler by inject<JobScheduler>()
@@ -41,7 +41,7 @@ class EventJobService(
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = null,
-      id = null
+      id = null,
     )
     jobScheduler.scheduleAutoBackup()
   }

@@ -31,9 +31,8 @@ class EditPlaceViewModel(
   private val prefs: Prefs,
   private val intentDataReader: IntentDataReader,
   private val deletePlaceUseCase: DeletePlaceUseCase,
-  private val savePlaceUseCase: SavePlaceUseCase
+  private val savePlaceUseCase: SavePlaceUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _place = mutableLiveDataOf<UiPlaceEdit>()
   val place = _place.toLiveData()
 
@@ -55,30 +54,25 @@ class EditPlaceViewModel(
     load()
   }
 
-  fun hasId(): Boolean {
-    return id.isNotEmpty()
-  }
+  fun hasId(): Boolean = id.isNotEmpty()
 
-  fun hasLatLng(): Boolean {
-    return lat != 0.0 && lng != 0.0
-  }
+  fun hasLatLng(): Boolean = lat != 0.0 && lng != 0.0
 
-  fun getPlace(): UiPlaceEdit? {
-    return place.value
-  }
+  fun getPlace(): UiPlaceEdit? = place.value
 
   fun savePlace(data: SavePlaceData) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val place = (placeRepository.getById(id) ?: Place(syncState = SyncState.WaitingForUpload)).apply {
-        this.name = data.name
-        this.dateTime = dateTimeManager.getNowGmtDateTime()
-        this.radius = markerRadius
-        this.latitude = lat
-        this.longitude = lng
-        this.marker = markerStyle
-        this.syncState = SyncState.WaitingForUpload
-      }
+      val place =
+        (placeRepository.getById(id) ?: Place(syncState = SyncState.WaitingForUpload)).apply {
+          this.name = data.name
+          this.dateTime = dateTimeManager.getNowGmtDateTime()
+          this.radius = markerRadius
+          this.latitude = lat
+          this.longitude = lng
+          this.marker = markerStyle
+          this.syncState = SyncState.WaitingForUpload
+        }
       if (data.newId) {
         place.id = UUID.randomUUID().toString()
       }
@@ -141,6 +135,6 @@ class EditPlaceViewModel(
 
   data class SavePlaceData(
     val name: String,
-    val newId: Boolean
+    val newId: Boolean,
   )
 }

@@ -50,24 +50,27 @@ import com.github.naz013.colorslider.ColorSlider
  * floating bar's generic icon slot, so it deliberately doesn't include its own [IconButton].
  */
 @Composable
-fun MicIcon(speechState: SpeechUiState, contentColor: Color) {
+fun MicIcon(
+  speechState: SpeechUiState,
+  contentColor: Color,
+) {
   when (speechState) {
     SpeechUiState.IDLE -> {
       Icon(
         painter = painterResource(R.drawable.ic_builder_mic_on),
         contentDescription = stringResource(R.string.acc_type_by_voice),
-        tint = contentColor
+        tint = contentColor,
       )
     }
 
     SpeechUiState.SPEAKING -> {
       val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.mic_speaking_waves)
+        LottieCompositionSpec.RawRes(R.raw.mic_speaking_waves),
       )
       LottieAnimation(
         composition = composition,
         iterations = LottieConstants.IterateForever,
-        modifier = Modifier.size(40.dp)
+        modifier = Modifier.size(40.dp),
       )
     }
 
@@ -75,7 +78,7 @@ fun MicIcon(speechState: SpeechUiState, contentColor: Color) {
       Icon(
         painter = painterResource(R.drawable.ic_fluent_recording_stop),
         contentDescription = stringResource(R.string.acc_type_by_voice),
-        tint = contentColor
+        tint = contentColor,
       )
     }
   }
@@ -85,23 +88,24 @@ fun MicIcon(speechState: SpeechUiState, contentColor: Color) {
 fun ReminderPanel(
   state: NoteEditState,
   contentColor: Color,
-  actions: NoteEditActions
+  actions: NoteEditActions,
 ) {
   Column(modifier = Modifier.padding(vertical = 8.dp)) {
     Row(verticalAlignment = Alignment.CenterVertically) {
       Switch(
         checked = state.isReminderAttached,
         onCheckedChange = actions.onReminderAttachedChanged,
-        colors = SwitchDefaults.colors(
-          checkedThumbColor = contentColor,
-          checkedTrackColor = contentColor.copy(alpha = 0.5f)
-        )
+        colors =
+          SwitchDefaults.colors(
+            checkedThumbColor = contentColor,
+            checkedTrackColor = contentColor.copy(alpha = 0.5f),
+          ),
       )
       Text(
         text = stringResource(R.string.add_reminder),
         color = contentColor,
         style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(start = 8.dp)
+        modifier = Modifier.padding(start = 8.dp),
       )
     }
     Row(modifier = Modifier.padding(top = 16.dp)) {
@@ -110,15 +114,16 @@ fun ReminderPanel(
         text = state.reminderDateFormatted,
         color = contentColor.copy(alpha = dateTimeAlpha),
         style = MaterialTheme.typography.titleLarge,
-        modifier = Modifier.clickableIfEnabled(state.isReminderAttached, actions.onDateClick)
+        modifier = Modifier.clickableIfEnabled(state.isReminderAttached, actions.onDateClick),
       )
       Text(
         text = state.reminderTimeFormatted,
         color = contentColor.copy(alpha = dateTimeAlpha),
         style = MaterialTheme.typography.titleLarge,
-        modifier = Modifier
-          .padding(start = 24.dp)
-          .clickableIfEnabled(state.isReminderAttached, actions.onTimeClick)
+        modifier =
+          Modifier
+            .padding(start = 24.dp)
+            .clickableIfEnabled(state.isReminderAttached, actions.onTimeClick),
       )
     }
   }
@@ -134,7 +139,7 @@ fun FontPanel(
   state: NoteEditState,
   contentColor: Color,
   containerColor: Color,
-  actions: NoteEditActions
+  actions: NoteEditActions,
 ) {
   val isTitle = state.focusedField == NoteTextField.TITLE
   val fontStyle = if (isTitle) state.titleFontStyle else state.fontStyle
@@ -144,7 +149,7 @@ fun FontPanel(
     Text(
       text = stringResource(R.string.font_style),
       color = contentColor,
-      style = MaterialTheme.typography.labelSmall
+      style = MaterialTheme.typography.labelSmall,
     )
     var showFontPicker by remember { mutableStateOf(false) }
     Box {
@@ -152,15 +157,16 @@ fun FontPanel(
         text = fontStyleName(fontStyle),
         color = contentColor,
         style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier
-          .padding(top = 8.dp)
-          .clickableIfEnabled(true) { showFontPicker = true }
+        modifier =
+          Modifier
+            .padding(top = 8.dp)
+            .clickableIfEnabled(true) { showFontPicker = true },
       )
       if (showFontPicker) {
         NoteEditCloudBubble(
           onDismissRequest = { showFontPicker = false },
           containerColor = containerColor,
-          contentColor = contentColor
+          contentColor = contentColor,
         ) {
           FontPickerList(
             selected = fontStyle,
@@ -168,7 +174,7 @@ fun FontPanel(
             onSelected = {
               actions.onFontStyleSelected(it)
               showFontPicker = false
-            }
+            },
           )
         }
       }
@@ -177,17 +183,18 @@ fun FontPanel(
       text = stringResource(R.string.text_size),
       color = contentColor,
       style = MaterialTheme.typography.labelSmall,
-      modifier = Modifier.padding(top = 16.dp)
+      modifier = Modifier.padding(top = 16.dp),
     )
     Slider(
       value = fontSize.toFloat(),
       onValueChange = { actions.onFontSizeChanged(it.toInt()) },
       valueRange = 6f..150f,
-      colors = SliderDefaults.colors(
-        thumbColor = contentColor,
-        activeTrackColor = contentColor,
-        inactiveTrackColor = contentColor.copy(alpha = 0.24f)
-      )
+      colors =
+        SliderDefaults.colors(
+          thumbColor = contentColor,
+          activeTrackColor = contentColor,
+          inactiveTrackColor = contentColor.copy(alpha = 0.24f),
+        ),
     )
   }
 }
@@ -200,7 +207,7 @@ fun ImageSourcePanel(
   contentColor: Color,
   onGalleryClick: () -> Unit,
   onCameraClick: () -> Unit,
-  onUrlClick: () -> Unit
+  onUrlClick: () -> Unit,
 ) {
   Column(modifier = Modifier.padding(vertical = 4.dp)) {
     ImageSourceRow(stringResource(R.string.gallery), contentColor, onGalleryClick)
@@ -212,15 +219,20 @@ fun ImageSourcePanel(
 }
 
 @Composable
-private fun ImageSourceRow(text: String, contentColor: Color, onClick: () -> Unit) {
+private fun ImageSourceRow(
+  text: String,
+  contentColor: Color,
+  onClick: () -> Unit,
+) {
   Text(
     text = text,
     color = contentColor,
     style = MaterialTheme.typography.titleMedium,
-    modifier = Modifier
-      .fillMaxWidth()
-      .clickable(onClick = onClick)
-      .padding(vertical = 12.dp)
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .clickable(onClick = onClick)
+        .padding(vertical = 12.dp),
   )
 }
 
@@ -231,7 +243,7 @@ fun ColorPanel(
   containerColor: Color,
   sliderColors: IntArray,
   colorsForPalette: (Int) -> IntArray,
-  actions: NoteEditActions
+  actions: NoteEditActions,
 ) {
   Column(modifier = Modifier.padding(vertical = 8.dp)) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -241,14 +253,14 @@ fun ColorPanel(
           Icon(
             painter = painterResource(R.drawable.ic_fluent_settings),
             contentDescription = null,
-            tint = contentColor
+            tint = contentColor,
           )
         }
         if (showPalettePicker) {
           NoteEditCloudBubble(
             onDismissRequest = { showPalettePicker = false },
             containerColor = containerColor,
-            contentColor = contentColor
+            contentColor = contentColor,
           ) {
             PalettePickerList(
               selected = state.palette,
@@ -257,7 +269,7 @@ fun ColorPanel(
               onSelected = {
                 actions.onPaletteSelected(it)
                 showPalettePicker = false
-              }
+              },
             )
           }
         }
@@ -266,26 +278,28 @@ fun ColorPanel(
         colors = sliderColors,
         selectedIndex = state.colorIndex,
         onSelected = actions.onColorSelected,
-        modifier = Modifier
-          .padding(start = 8.dp)
-          .height(36.dp)
+        modifier =
+          Modifier
+            .padding(start = 8.dp)
+            .height(36.dp),
       )
     }
     Text(
       text = stringResource(R.string.opacity),
       color = contentColor,
       style = MaterialTheme.typography.labelSmall,
-      modifier = Modifier.padding(top = 8.dp)
+      modifier = Modifier.padding(top = 8.dp),
     )
     Slider(
       value = state.opacity.toFloat(),
       onValueChange = { actions.onOpacityChanged(it.toInt()) },
       valueRange = 0f..100f,
-      colors = SliderDefaults.colors(
-        thumbColor = contentColor,
-        activeTrackColor = contentColor,
-        inactiveTrackColor = contentColor.copy(alpha = 0.24f)
-      )
+      colors =
+        SliderDefaults.colors(
+          thumbColor = contentColor,
+          activeTrackColor = contentColor,
+          inactiveTrackColor = contentColor.copy(alpha = 0.24f),
+        ),
     )
   }
 }
@@ -295,7 +309,7 @@ private fun ColorSliderView(
   colors: IntArray,
   selectedIndex: Int,
   onSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   val isDark = isSystemInDarkTheme()
   AndroidView(
@@ -311,7 +325,7 @@ private fun ColorSliderView(
       if (view.selectedItem != selectedIndex) {
         view.setSelection(selectedIndex)
       }
-    }
+    },
   )
 }
 
@@ -325,40 +339,45 @@ private fun PalettePickerList(
   selected: Int,
   contentColor: Color,
   colorsForPalette: (Int) -> IntArray,
-  onSelected: (Int) -> Unit
+  onSelected: (Int) -> Unit,
 ) {
   Column(modifier = Modifier.padding(vertical = 4.dp)) {
     (0..2).forEach { palette ->
       Row(
-        modifier = Modifier
-          .fillMaxWidth()
-          .clickable { onSelected(palette) }
-          .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .clickable { onSelected(palette) }
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
       ) {
         RadioButton(
           selected = selected == palette,
           onClick = { onSelected(palette) },
-          colors = RadioButtonDefaults.colors(
-            selectedColor = contentColor,
-            unselectedColor = contentColor.copy(alpha = 0.6f)
-          )
+          colors =
+            RadioButtonDefaults.colors(
+              selectedColor = contentColor,
+              unselectedColor = contentColor.copy(alpha = 0.6f),
+            ),
         )
         AndroidView(
-          modifier = Modifier
-            .padding(start = 8.dp)
-            .height(36.dp)
-            .fillMaxWidth(),
+          modifier =
+            Modifier
+              .padding(start = 8.dp)
+              .height(36.dp)
+              .fillMaxWidth(),
           factory = { context -> ColorSlider(context).apply { isEnabled = false } },
-          update = { it.setColors(colorsForPalette(palette)) }
+          update = { it.setColors(colorsForPalette(palette)) },
         )
       }
     }
   }
 }
 
-private fun Modifier.clickableIfEnabled(enabled: Boolean, onClick: () -> Unit): Modifier =
-  this.clickable(enabled = enabled, onClick = onClick)
+private fun Modifier.clickableIfEnabled(
+  enabled: Boolean,
+  onClick: () -> Unit,
+): Modifier = this.clickable(enabled = enabled, onClick = onClick)
 
 @Composable
 private fun fontStyleName(fontStyle: Int): String {
@@ -378,38 +397,42 @@ private fun fontStyleName(fontStyle: Int): String {
 private fun FontPickerList(
   selected: Int,
   contentColor: Color,
-  onSelected: (Int) -> Unit
+  onSelected: (Int) -> Unit,
 ) {
   val context = LocalContext.current
-  val fonts = remember {
-    AssetsUtil.getFontNames().mapIndexed { index, name ->
-      val fontFamily = AssetsUtil.getTypeface(context, index)?.let { FontFamily(it) }
-        ?: FontFamily.Default
-      name to fontFamily
+  val fonts =
+    remember {
+      AssetsUtil.getFontNames().mapIndexed { index, name ->
+        val fontFamily =
+          AssetsUtil.getTypeface(context, index)?.let { FontFamily(it) }
+            ?: FontFamily.Default
+        name to fontFamily
+      }
     }
-  }
   LazyColumn(modifier = Modifier.heightIn(max = 280.dp)) {
     itemsIndexed(fonts, key = { index, _ -> index }) { index, (name, fontFamily) ->
       Row(
-        modifier = Modifier
-          .fillMaxWidth()
-          .clickable { onSelected(index) }
-          .padding(vertical = 2.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .clickable { onSelected(index) }
+            .padding(vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
       ) {
         RadioButton(
           selected = selected == index,
           onClick = { onSelected(index) },
-          colors = RadioButtonDefaults.colors(
-            selectedColor = contentColor,
-            unselectedColor = contentColor.copy(alpha = 0.6f)
-          )
+          colors =
+            RadioButtonDefaults.colors(
+              selectedColor = contentColor,
+              unselectedColor = contentColor.copy(alpha = 0.6f),
+            ),
         )
         Text(
           text = name,
           color = contentColor,
           fontFamily = fontFamily,
-          modifier = Modifier.padding(start = 8.dp)
+          modifier = Modifier.padding(start = 8.dp),
         )
       }
     }

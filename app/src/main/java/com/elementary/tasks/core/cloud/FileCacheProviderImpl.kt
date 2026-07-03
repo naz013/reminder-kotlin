@@ -5,10 +5,7 @@ import com.github.naz013.sync.FileCacheProvider
 import java.io.File
 
 class FileCacheProviderImpl(
-  private val context: Context
+  private val context: Context,
 ) : FileCacheProvider {
-
-  override fun getRootCacheDir(): File {
-    return context.externalCacheDir ?: context.cacheDir
-  }
+  override fun getRootCacheDir(): File = context.externalCacheDir ?: context.cacheDir
 }

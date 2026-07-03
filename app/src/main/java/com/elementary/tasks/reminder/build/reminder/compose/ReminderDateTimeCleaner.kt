@@ -5,7 +5,6 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 
 class ReminderDateTimeCleaner {
-
   operator fun invoke(reminder: Reminder) {
     val type = UiReminderType(reminder.type)
     when {

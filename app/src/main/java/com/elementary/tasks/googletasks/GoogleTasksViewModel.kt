@@ -28,9 +28,8 @@ class GoogleTasksViewModel(
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
-  private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists
+  private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _googleTaskLists = mutableLiveDataOf<List<GoogleTaskList>>()
   val googleTaskLists = _googleTaskLists.toLiveData()
 
@@ -54,12 +53,14 @@ class GoogleTasksViewModel(
 
       val map = mapTaskLists(googleTaskLists)
 
-      val googleTasks = googleTaskRepository.getAll().map {
-        uiGoogleTaskListAdapter.convert(it, map[it.listId])
-      }
+      val googleTasks =
+        googleTaskRepository.getAll().map {
+          uiGoogleTaskListAdapter.convert(it, map[it.listId])
+        }
 
-      val defTaskList = googleTaskLists.firstOrNull { it.isDefault() }
-        ?: googleTaskLists.firstOrNull()
+      val defTaskList =
+        googleTaskLists.firstOrNull { it.isDefault() }
+          ?: googleTaskLists.firstOrNull()
 
       defTaskList?.also { _defTaskList.postValue(it) }
       _googleTaskLists.postValue(googleTaskLists)
@@ -75,14 +76,15 @@ class GoogleTasksViewModel(
 
   fun loadGoogleTasks() {
     postInProgress(true)
-    job = viewModelScope.launch(dispatcherProvider.default()) {
-      syncAllGoogleTaskLists()
-      load()
-      withUIContext {
-        postInProgress(false)
+    job =
+      viewModelScope.launch(dispatcherProvider.default()) {
+        syncAllGoogleTaskLists()
+        load()
+        withUIContext {
+          postInProgress(false)
+        }
+        job = null
       }
-      job = null
-    }
   }
 
   fun sync() {
@@ -109,11 +111,12 @@ class GoogleTasksViewModel(
           postCommand(Commands.FAILED)
           return@launch
         }
-        val updated = if (googleTask.isNeedAction()) {
-          googleTasksApi.updateTaskStatus(GoogleTask.TASKS_COMPLETE, googleTask)
-        } else {
-          googleTasksApi.updateTaskStatus(GoogleTask.TASKS_NEED_ACTION, googleTask)
-        }
+        val updated =
+          if (googleTask.isNeedAction()) {
+            googleTasksApi.updateTaskStatus(GoogleTask.TASKS_COMPLETE, googleTask)
+          } else {
+            googleTasksApi.updateTaskStatus(GoogleTask.TASKS_NEED_ACTION, googleTask)
+          }
         updated?.also { googleTaskRepository.save(it) }
         load()
         postInProgress(false)

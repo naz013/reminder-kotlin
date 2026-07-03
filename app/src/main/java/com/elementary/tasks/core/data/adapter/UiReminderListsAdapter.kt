@@ -1,21 +1,20 @@
 package com.elementary.tasks.core.data.adapter
 
 import com.elementary.tasks.R
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.UiReminderList
 import com.elementary.tasks.core.data.ui.UiReminderListData
 import com.elementary.tasks.core.data.ui.UiReminderListHeader
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Reminder
 import org.threeten.bp.LocalDate
 import java.util.UUID
 
 class UiReminderListsAdapter(
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
 ) {
-
   fun convert(data: List<Reminder>): List<UiReminderList> {
     val list = data.map { uiReminderListAdapter.create(it) }
     val result = mutableListOf<UiReminderList>()
@@ -40,11 +39,13 @@ class UiReminderListsAdapter(
     return result
   }
 
-  private fun createHeader(text: String): UiReminderListHeader {
-    return UiReminderListHeader(UUID.randomUUID().toString(), text)
-  }
+  private fun createHeader(text: String): UiReminderListHeader = UiReminderListHeader(UUID.randomUUID().toString(), text)
 
-  private fun getHeaderText(data: UiReminderListData, today: String, tomorrow: String): String {
+  private fun getHeaderText(
+    data: UiReminderListData,
+    today: String,
+    tomorrow: String,
+  ): String {
     val date = data.due?.localDateTime?.toLocalDate()
     return when {
       date != null -> {

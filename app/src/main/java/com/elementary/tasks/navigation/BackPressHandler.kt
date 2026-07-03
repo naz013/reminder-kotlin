@@ -5,7 +5,5 @@ interface BackPressHandler {
 }
 
 class DefaultBackPressHandler : BackPressHandler {
-  override fun canGoBack(): Boolean {
-    return true
-  }
+  override fun canGoBack(): Boolean = true
 }

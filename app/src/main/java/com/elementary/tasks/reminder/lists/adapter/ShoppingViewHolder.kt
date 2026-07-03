@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.core.data.ui.UiReminderListActiveShop
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.databinding.ListItemReminderBinding
+import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.inflater
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
-import com.elementary.tasks.databinding.ListItemReminderBinding
-import com.elementary.tasks.home.scheduleview.viewholder.ScheduleReminderViewHolderCommon
-import com.github.naz013.ui.common.R
 
 class ShoppingViewHolder(
   parent: ViewGroup,
@@ -20,11 +20,10 @@ class ShoppingViewHolder(
   showMore: Boolean = true,
   private val isDark: Boolean,
   private val scheduleReminderViewHolderCommon: ScheduleReminderViewHolderCommon,
-  private val listener: ((View, Int, ListActions) -> Unit)? = null
+  private val listener: ((View, Int, ListActions) -> Unit)? = null,
 ) : BaseUiReminderListViewHolder<ListItemReminderBinding, UiReminderListActiveShop>(
-  ListItemReminderBinding.inflate(parent.inflater(), parent, false)
-) {
-
+    ListItemReminderBinding.inflate(parent.inflater(), parent, false),
+  ) {
   init {
     binding.switchWrapper.visibleGone(editable)
     binding.reminderPhone.gone()
@@ -32,14 +31,14 @@ class ShoppingViewHolder(
       listener?.invoke(
         it,
         bindingAdapterPosition,
-        ListActions.OPEN
+        ListActions.OPEN,
       )
     }
     binding.switchWrapper.setOnClickListener {
       listener?.invoke(
         it,
         bindingAdapterPosition,
-        ListActions.SWITCH
+        ListActions.SWITCH,
       )
     }
 
@@ -48,7 +47,7 @@ class ShoppingViewHolder(
         listener?.invoke(
           it,
           bindingAdapterPosition,
-          ListActions.MORE
+          ListActions.MORE,
         )
       }
       binding.buttonMore.visible()
@@ -57,7 +56,10 @@ class ShoppingViewHolder(
     }
   }
 
-  override fun setData(data: UiReminderListActiveShop, isHistorical: Boolean) {
+  override fun setData(
+    data: UiReminderListActiveShop,
+    isHistorical: Boolean,
+  ) {
     binding.taskText.text = data.summary
     loadCheck(data)
     loadGroup(data)
@@ -67,7 +69,7 @@ class ShoppingViewHolder(
       reminder = data,
       todoListView = binding.todoList,
       isDark = isDark,
-      textColor = ThemeProvider.getThemeOnSurfaceColor(itemView.context)
+      textColor = ThemeProvider.getThemeOnSurfaceColor(itemView.context),
     )
   }
 
@@ -83,15 +85,19 @@ class ShoppingViewHolder(
     binding.reminderTypeGroup.text = "$typeLabel ($groupName, $priority)"
   }
 
-  private fun loadLeft(reminder: UiReminderListActiveShop, isHistorical: Boolean) {
+  private fun loadLeft(
+    reminder: UiReminderListActiveShop,
+    isHistorical: Boolean,
+  ) {
     val due = reminder.due.dateTime
     binding.badgesView.visibleGone(due != null)
     binding.timeToBadge.visibleGone(reminder.isRunning)
-    binding.timeToBadge.text = if (isHistorical) {
-      itemView.context.getString(R.string.completed)
-    } else {
-      reminder.due.remaining
-    }
+    binding.timeToBadge.text =
+      if (isHistorical) {
+        itemView.context.getString(R.string.completed)
+      } else {
+        reminder.due.remaining
+      }
   }
 
   private fun loadShoppingDate(reminder: UiReminderListActiveShop) {

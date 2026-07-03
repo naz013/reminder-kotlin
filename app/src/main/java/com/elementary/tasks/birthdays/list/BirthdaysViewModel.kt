@@ -25,9 +25,8 @@ class BirthdaysViewModel(
   private val birthdayRepository: BirthdayRepository,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   dispatcherProvider: DispatcherProvider,
-  private val deleteBirthdayUseCase: DeleteBirthdayUseCase
+  private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _birthdays = mutableLiveDataOf<List<UiBirthdayList>>()
   val birthdays = _birthdays.toLiveData()
 
@@ -89,14 +88,19 @@ class BirthdaysViewModel(
     val filtered = filterByQuery(allBirthdays, lastQuery)
     Logger.i(TAG, "Filtering birthdays by query '$lastQuery': ${filtered.size} items left.")
 
-    val uiLists = filtered.map { uiBirthdayListAdapter.convert(it) }
-      .sortedBy { it.nextBirthdayDateMillis }
+    val uiLists =
+      filtered
+        .map { uiBirthdayListAdapter.convert(it) }
+        .sortedBy { it.nextBirthdayDateMillis }
     withContext(dispatcherProvider.main()) {
       _birthdays.value = uiLists
     }
   }
 
-  private fun filterByQuery(birthdays: List<Birthday>, query: String): List<Birthday> {
+  private fun filterByQuery(
+    birthdays: List<Birthday>,
+    query: String,
+  ): List<Birthday> {
     if (query.isBlank()) return birthdays
     return birthdays.filter(BirthdayQueryFilter(lastQuery)).also {
       Logger.i(TAG, "Filtered by query: ${it.size} items left, was: ${birthdays.size}. Query: ${Logger.private(query)}")

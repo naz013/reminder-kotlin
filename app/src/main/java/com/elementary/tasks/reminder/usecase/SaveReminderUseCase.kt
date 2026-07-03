@@ -8,9 +8,8 @@ import com.github.naz013.repository.ReminderRepository
 class SaveReminderUseCase(
   private val reminderRepository: ReminderRepository,
   private val appWidgetUpdater: AppWidgetUpdater,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
 ) {
-
   suspend operator fun invoke(reminder: Reminder) {
     reminderRepository.save(reminder)
     appWidgetUpdater.updateScheduleWidget()

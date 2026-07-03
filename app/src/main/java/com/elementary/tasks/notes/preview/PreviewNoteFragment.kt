@@ -39,7 +39,6 @@ import org.koin.core.parameter.parametersOf
 import java.io.File
 
 class PreviewNoteFragment : ComposeFragment() {
-
   private val imagesSingleton by inject<ImagesSingleton>()
   private val dialogues by inject<Dialogues>()
   private val adsProvider = AdsProvider()
@@ -56,7 +55,10 @@ class PreviewNoteFragment : ComposeFragment() {
     Logger.i(TAG, "Opening the note preview screen for id: ${Logger.data(idFromIntent())}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
       Logger.d(TAG, "Received command: $commands")
@@ -79,24 +81,26 @@ class PreviewNoteFragment : ComposeFragment() {
     PreviewNoteScreen(
       state = state,
       colors = colors,
-      actions = PreviewNoteActions(
-        onBackClick = { moveBack() },
-        onEditClick = { editNote() },
-        onStatusClick = { moveToStatus() },
-        onShareClick = { viewModel.onShareClick() },
-        onArchiveClick = { viewModel.onArchiveClick() },
-        onDeleteClick = { viewModel.onDeleteClick() },
-        onDeleteConfirmed = { viewModel.onDeleteConfirmed() },
-        onDialogDismiss = { viewModel.onDialogDismiss() },
-        onImageOpen = { openImagePreview(state, it) },
-        onReminderEditClick = { editReminder(it) },
-        onReminderDetachClick = { viewModel.onReminderDetachClick(it) }
-      ),
-      adsBanner = if (!BuildParams.isPro && AdsProvider.hasAds()) {
-        { NativeAdBanner(adsProvider) }
-      } else {
-        null
-      }
+      actions =
+        PreviewNoteActions(
+          onBackClick = { moveBack() },
+          onEditClick = { editNote() },
+          onStatusClick = { moveToStatus() },
+          onShareClick = { viewModel.onShareClick() },
+          onArchiveClick = { viewModel.onArchiveClick() },
+          onDeleteClick = { viewModel.onDeleteClick() },
+          onDeleteConfirmed = { viewModel.onDeleteConfirmed() },
+          onDialogDismiss = { viewModel.onDialogDismiss() },
+          onImageOpen = { openImagePreview(state, it) },
+          onReminderEditClick = { editReminder(it) },
+          onReminderDetachClick = { viewModel.onReminderDetachClick(it) },
+        ),
+      adsBanner =
+        if (!BuildParams.isPro && AdsProvider.hasAds()) {
+          { NativeAdBanner(adsProvider) }
+        } else {
+          null
+        },
     )
   }
 
@@ -134,19 +138,25 @@ class PreviewNoteFragment : ComposeFragment() {
       navigate(
         R.id.buildReminderFragment,
         Bundle().apply { putString(IntentKeys.INTENT_ID, id) },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
 
-  private fun openImagePreview(state: PreviewNoteState, position: Int) {
+  private fun openImagePreview(
+    state: PreviewNoteState,
+    position: Int,
+  ) {
     imagesSingleton.setCurrent(images = state.images, backgroundColor = state.backgroundColor)
     startActivity(ImagePreviewActivity::class.java) {
       putExtra(IntentKeys.INTENT_POSITION, position)
     }
   }
 
-  private fun sendNote(note: NoteWithImages, file: File) {
+  private fun sendNote(
+    note: NoteWithImages,
+    file: File,
+  ) {
     if (isDetached) return
     if (!file.exists() || !file.canRead()) {
       showErrorSending()
@@ -174,8 +184,8 @@ private fun NativeAdBanner(adsProvider: AdsProvider) {
       adsProvider.showNativeBanner(
         viewGroup,
         AdsProvider.NOTE_PREVIEW_BANNER_ID,
-        R.layout.list_item_ads_hor
+        R.layout.list_item_ads_hor,
       )
-    }
+    },
   )
 }

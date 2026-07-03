@@ -19,10 +19,9 @@ class DateTimeInjector(
   private val iCalDateTimeInjector: ICalDateTimeInjector,
   private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
 ) {
-
   operator fun invoke(
     reminder: Reminder,
-    processedBuilderItems: ProcessedBuilderItems
+    processedBuilderItems: ProcessedBuilderItems,
   ) {
     val type = reminder.readType()
 
@@ -55,74 +54,86 @@ class DateTimeInjector(
       }
 
       type.isCountdown() && reminder.after != 0L -> {
-        recurrenceCalculator.getStartTimerDateTime(
-          countdownTimeInMillis = reminder.after
-        ).also {
-          Logger.i(TAG, "Put countdown date time $it")
-        }
+        recurrenceCalculator
+          .getStartTimerDateTime(
+            countdownTimeInMillis = reminder.after,
+          ).also {
+            Logger.i(TAG, "Put countdown date time $it")
+          }
       }
 
       type.isByDayOfWeek() && IntervalUtil.isWeekday(reminder.weekdays) && time != null -> {
         val dateTime = LocalDateTime.of(LocalDate.now(), time)
-        val nextDateTime = recurrenceCalculator.findNextDayOfWeekDateTime(
-          eventDateTime = dateTime,
-          weekdays = reminder.weekdays,
-          afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
-        ).also {
-          Logger.i(TAG, "Put date time $it for the By Day Of Week")
-        }
+        val nextDateTime =
+          recurrenceCalculator
+            .findNextDayOfWeekDateTime(
+              eventDateTime = dateTime,
+              weekdays = reminder.weekdays,
+              afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+            ).also {
+              Logger.i(TAG, "Put date time $it for the By Day Of Week")
+            }
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime)
         nextDateTime
       }
 
       type.isByDayOfMonth() && time != null -> {
         val dateTime = LocalDateTime.of(LocalDate.now(), time)
-        val nextDateTime = recurrenceCalculator.findNextMonthDayDateTime(
-          eventDateTime = dateTime,
-          dayOfMonth = reminder.dayOfMonth,
-          interval = reminder.repeatInterval,
-          afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
-        ).also {
-          Logger.i(TAG, "Put date time $it for the By Day Of Month")
-        }
+        val nextDateTime =
+          recurrenceCalculator
+            .findNextMonthDayDateTime(
+              eventDateTime = dateTime,
+              dayOfMonth = reminder.dayOfMonth,
+              interval = reminder.repeatInterval,
+              afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+            ).also {
+              Logger.i(TAG, "Put date time $it for the By Day Of Month")
+            }
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime)
         nextDateTime
       }
 
       type.isByDayOfYear() && time != null -> {
         val dateTime = LocalDateTime.of(LocalDate.now(), time)
-        val nextDateTime = recurrenceCalculator.findNextYearDayDateTime(
-          eventDateTime = dateTime,
-          monthOfYear = reminder.monthOfYear,
-          dayOfMonth = reminder.dayOfMonth,
-          interval = reminder.repeatInterval,
-          afterOrEqualDateTime = dateTimeManager.getCurrentDateTime()
-        ).also {
-          Logger.i(TAG, "Put date time $it for the By Day Of Year")
-        }
+        val nextDateTime =
+          recurrenceCalculator
+            .findNextYearDayDateTime(
+              eventDateTime = dateTime,
+              monthOfYear = reminder.monthOfYear,
+              dayOfMonth = reminder.dayOfMonth,
+              interval = reminder.repeatInterval,
+              afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+            ).also {
+              Logger.i(TAG, "Put date time $it for the By Day Of Year")
+            }
         reminder.eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime)
         nextDateTime
       }
 
       type.isGpsType() -> {
-        val delayDate = (itemsMap[BiType.LOCATION_DELAY_DATE] as? LocationDelayDateBuilderItem)
-          ?.modifier?.getValue()
-        val delayTime = (itemsMap[BiType.LOCATION_DELAY_TIME] as? LocationDelayTimeBuilderItem)
-          ?.modifier?.getValue()
+        val delayDate =
+          (itemsMap[BiType.LOCATION_DELAY_DATE] as? LocationDelayDateBuilderItem)
+            ?.modifier
+            ?.getValue()
+        val delayTime =
+          (itemsMap[BiType.LOCATION_DELAY_TIME] as? LocationDelayTimeBuilderItem)
+            ?.modifier
+            ?.getValue()
         var hasDelay = false
-        val delayDateTime = when {
-          delayDate != null && delayTime != null -> {
-            hasDelay = true
-            LocalDateTime.of(delayDate, delayTime)
-          }
+        val delayDateTime =
+          when {
+            delayDate != null && delayTime != null -> {
+              hasDelay = true
+              LocalDateTime.of(delayDate, delayTime)
+            }
 
-          delayDate != null || delayTime != null -> {
-            hasDelay = true
-            null
-          }
+            delayDate != null || delayTime != null -> {
+              hasDelay = true
+              null
+            }
 
-          else -> null
-        }
+            else -> null
+          }
         if (delayDateTime != null && dateTimeManager.isCurrent(delayDateTime)) {
           val startTime = delayDateTime.let { dateTimeManager.getGmtFromDateTime(it) }
           Logger.i(TAG, "Put the delay date time $delayDateTime")

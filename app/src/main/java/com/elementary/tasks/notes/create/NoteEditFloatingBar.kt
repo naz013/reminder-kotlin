@@ -54,7 +54,7 @@ data class NoteEditBarItem(
   val showBadge: Boolean = false,
   val onClick: () -> Unit,
   val icon: @Composable () -> Unit,
-  val bubbleContent: (@Composable () -> Unit)? = null
+  val bubbleContent: (@Composable () -> Unit)? = null,
 )
 
 private val BAR_ITEM_SIZE = 52.dp
@@ -64,7 +64,7 @@ fun NoteEditFloatingBar(
   items: List<NoteEditBarItem>,
   containerColor: Color,
   contentColor: Color,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   val visibleState = remember { MutableTransitionState(false) }
   LaunchedEffect(Unit) {
@@ -73,42 +73,46 @@ fun NoteEditFloatingBar(
   var pressedCount by remember { mutableStateOf(0) }
   val barScale by animateFloatAsState(
     targetValue = if (pressedCount > 0) BAR_PRESSED_SCALE else 1f,
-    animationSpec = spring(
-      dampingRatio = Spring.DampingRatioMediumBouncy,
-      stiffness = Spring.StiffnessMedium
-    ),
-    label = "bar_scale"
+    animationSpec =
+      spring(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessMedium,
+      ),
+    label = "bar_scale",
   )
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
-    enter = scaleIn(
-      animationSpec = spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessLow
-      ),
-      initialScale = 0f
-    ) + fadeIn(animationSpec = tween(FLOATING_BAR_ANIMATION_DURATION_MS / 2)),
+    enter =
+      scaleIn(
+        animationSpec =
+          spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow,
+          ),
+        initialScale = 0f,
+      ) + fadeIn(animationSpec = tween(FLOATING_BAR_ANIMATION_DURATION_MS / 2)),
   ) {
     Surface(
       modifier = Modifier.scale(barScale),
       shape = RoundedCornerShape(percent = 50),
       color = containerColor,
       shadowElevation = 4.dp,
-      tonalElevation = 4.dp
+      tonalElevation = 4.dp,
     ) {
       Row(
-        modifier = Modifier
-          .horizontalScroll(rememberScrollState())
-          .padding(horizontal = 6.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+          Modifier
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 6.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
       ) {
         items.forEach { item ->
           NoteEditBarIconSlot(
             item = item,
             containerColor = containerColor,
             contentColor = contentColor,
-            onPressedChange = { pressed -> pressedCount += if (pressed) 1 else -1 }
+            onPressedChange = { pressed -> pressedCount += if (pressed) 1 else -1 },
           )
         }
       }
@@ -121,7 +125,7 @@ private fun NoteEditBarIconSlot(
   item: NoteEditBarItem,
   containerColor: Color,
   contentColor: Color,
-  onPressedChange: (Boolean) -> Unit
+  onPressedChange: (Boolean) -> Unit,
 ) {
   val interactionSource = remember { MutableInteractionSource() }
   LaunchedEffect(interactionSource) {
@@ -136,23 +140,24 @@ private fun NoteEditBarIconSlot(
 
   Box(
     modifier = Modifier.size(BAR_ITEM_SIZE),
-    contentAlignment = Alignment.Center
+    contentAlignment = Alignment.Center,
   ) {
     IconButton(
       onClick = item.onClick,
       interactionSource = interactionSource,
-      modifier = Modifier.fillMaxWidth().height(BAR_ITEM_SIZE)
+      modifier = Modifier.fillMaxWidth().height(BAR_ITEM_SIZE),
     ) {
       item.icon()
     }
     if (item.showBadge) {
       Box(
-        modifier = Modifier
-          .align(Alignment.TopEnd)
-          .padding(top = 8.dp, end = 8.dp)
-          .size(6.dp)
-          .clip(CircleShape)
-          .background(contentColor)
+        modifier =
+          Modifier
+            .align(Alignment.TopEnd)
+            .padding(top = 8.dp, end = 8.dp)
+            .size(6.dp)
+            .clip(CircleShape)
+            .background(contentColor),
       )
     }
     if (item.selected) {
@@ -161,7 +166,7 @@ private fun NoteEditBarIconSlot(
           onDismissRequest = item.onClick,
           containerColor = containerColor,
           contentColor = contentColor,
-          content = bubble
+          content = bubble,
         )
       }
     }

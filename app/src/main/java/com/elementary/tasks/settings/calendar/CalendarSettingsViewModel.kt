@@ -20,8 +20,8 @@ class CalendarSettingsViewModel(
   private val calendarUtils: GoogleCalendarUtils,
   private val prefs: Prefs,
   private val textProvider: TextProvider,
-) : ViewModel(), DefaultLifecycleObserver {
-
+) : ViewModel(),
+  DefaultLifecycleObserver {
   private val _selectedCalendar = mutableLiveDataOf<GoogleCalendar>()
   val selectedCalendar = _selectedCalendar.toLiveData()
 
@@ -37,24 +37,26 @@ class CalendarSettingsViewModel(
 
   fun onSelectGoogleCalendarClicked() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      calendars = calendarUtils.getCalendarsList().map {
-        GoogleCalendar(
-          id = it.id,
-          name = it.name
-        )
-      }
+      calendars =
+        calendarUtils.getCalendarsList().map {
+          GoogleCalendar(
+            id = it.id,
+            name = it.name,
+          )
+        }
       if (calendars.isEmpty()) {
         Logger.e(TAG, "No Google Calendars found.")
         return@launch
       }
       val selectedPosition = calendars.indexOfFirst { it.id == selectedCalendarId }
       withContext(dispatcherProvider.main()) {
-        _showSelectGoogleCalendarDialog.value = Event(
-          ShowSelectGoogleCalendarDialog(
-            calendars = calendars,
-            selectedPosition = selectedPosition
+        _showSelectGoogleCalendarDialog.value =
+          Event(
+            ShowSelectGoogleCalendarDialog(
+              calendars = calendars,
+              selectedPosition = selectedPosition,
+            ),
           )
-        )
       }
     }
   }
@@ -78,10 +80,11 @@ class CalendarSettingsViewModel(
       val calendar = calendarUtils.getCalendarById(selectedCalendarId)
       if (calendar != null) {
         withContext(dispatcherProvider.main()) {
-          _selectedCalendar.value = GoogleCalendar(
-            id = calendar.id,
-            name = calendar.name
-          )
+          _selectedCalendar.value =
+            GoogleCalendar(
+              id = calendar.id,
+              name = calendar.name,
+            )
         }
       } else {
         Logger.e(TAG, "Selected calendar not found for id: $selectedCalendarId")
@@ -94,7 +97,7 @@ class CalendarSettingsViewModel(
 
   data class ShowSelectGoogleCalendarDialog(
     val calendars: List<GoogleCalendar>,
-    val selectedPosition: Int
+    val selectedPosition: Int,
   )
 
   data class GoogleCalendar(
@@ -104,9 +107,10 @@ class CalendarSettingsViewModel(
 
   companion object {
     private const val TAG = "CalendarSettingsViewModel"
-    private val NO_CALENDAR = GoogleCalendar(
-      id = -1L,
-      name = null
-    )
+    private val NO_CALENDAR =
+      GoogleCalendar(
+        id = -1L,
+        name = null,
+      )
   }
 }

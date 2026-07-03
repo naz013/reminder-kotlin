@@ -9,14 +9,13 @@ import com.github.naz013.logging.Logger
 
 class WearNotification(
   private val contextProvider: ContextProvider,
-  private val notifier: Notifier
+  private val notifier: Notifier,
 ) {
-
   fun show(
     id: Int,
     summary: String,
     secondaryText: String,
-    groupName: String
+    groupName: String,
   ) {
     Logger.d(TAG, "showWearNotification: $secondaryText")
     val wearableNotificationBuilder =

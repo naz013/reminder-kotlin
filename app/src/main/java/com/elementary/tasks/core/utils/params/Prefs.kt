@@ -12,37 +12,45 @@ import com.github.naz013.domain.font.FontParams
 typealias PrefsObserver = (String) -> Unit
 
 class Prefs(
-  context: Context
+  context: Context,
 ) : SharedPrefs(context) {
-
   private val observersMap = mutableMapOf<String, List<PrefsObserver>>()
 
-  fun addObserver(key: String, observer: PrefsObserver) {
-    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
-      observersMap[key]?.toMutableList() ?: mutableListOf()
-    } else {
-      mutableListOf()
-    }
+  fun addObserver(
+    key: String,
+    observer: PrefsObserver,
+  ) {
+    val observers: MutableList<PrefsObserver> =
+      if (observersMap.containsKey(key)) {
+        observersMap[key]?.toMutableList() ?: mutableListOf()
+      } else {
+        mutableListOf()
+      }
     observers.add(observer)
     observersMap[key] = observers
   }
 
-  fun removeObserver(key: String, observer: PrefsObserver) {
-    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
-      observersMap[key]?.toMutableList() ?: mutableListOf()
-    } else {
-      mutableListOf()
-    }
+  fun removeObserver(
+    key: String,
+    observer: PrefsObserver,
+  ) {
+    val observers: MutableList<PrefsObserver> =
+      if (observersMap.containsKey(key)) {
+        observersMap[key]?.toMutableList() ?: mutableListOf()
+      } else {
+        mutableListOf()
+      }
     observers.remove(observer)
     observersMap[key] = observers
   }
 
   private fun notifyKey(key: String) {
-    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
-      observersMap[key]?.toMutableList() ?: mutableListOf()
-    } else {
-      mutableListOf()
-    }
+    val observers: MutableList<PrefsObserver> =
+      if (observersMap.containsKey(key)) {
+        observersMap[key]?.toMutableList() ?: mutableListOf()
+      } else {
+        mutableListOf()
+      }
     observers.forEach {
       it.invoke(key)
     }
@@ -249,10 +257,11 @@ class Prefs(
     set(value) = putInt(PrefsConstants.LOCATION_RADIUS, value)
 
   var isDistanceNotificationEnabled: Boolean
-    get() = getBoolean(
-      PrefsConstants.TRACKING_NOTIFICATION,
-      def = DefaultValues.LOCATION_TRACK_NOTIFICATION
-    )
+    get() =
+      getBoolean(
+        PrefsConstants.TRACKING_NOTIFICATION,
+        def = DefaultValues.LOCATION_TRACK_NOTIFICATION,
+      )
     set(value) = putBoolean(PrefsConstants.TRACKING_NOTIFICATION, value)
 
   var mapType: Int
@@ -418,10 +427,11 @@ class Prefs(
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
 
   var privacyUrl: String
-    get() = getString(
-      PrefsConstants.PRIVACY_POLICY_URL,
-      "https://sukhovych.com/reminder-privacy-policy/"
-    )
+    get() =
+      getString(
+        PrefsConstants.PRIVACY_POLICY_URL,
+        "https://sukhovych.com/reminder-privacy-policy/",
+      )
     set(value) = putString(PrefsConstants.PRIVACY_POLICY_URL, value)
 
   var termsUrl: String
@@ -437,11 +447,12 @@ class Prefs(
     set(value) = putBoolean("note_migration", value)
 
   var reminderCreatorParams: ReminderCreatorConfig
-    get() = ReminderCreatorConfig(
-      getString(
-        PrefsConstants.REMINDER_CREATOR_PARAMS,
-        ReminderCreatorConfig.DEFAULT_VALUE
+    get() =
+      ReminderCreatorConfig(
+        getString(
+          PrefsConstants.REMINDER_CREATOR_PARAMS,
+          ReminderCreatorConfig.DEFAULT_VALUE,
+        ),
       )
-    )
     set(value) = putString(PrefsConstants.REMINDER_CREATOR_PARAMS, value.toHex())
 }

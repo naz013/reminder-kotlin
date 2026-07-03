@@ -15,5 +15,5 @@ enum class UiReminderPreviewDataViewType {
   GOOGLE_TASK,
   CALENDAR,
   ADS,
-  ATTACHMENT
+  ATTACHMENT,
 }

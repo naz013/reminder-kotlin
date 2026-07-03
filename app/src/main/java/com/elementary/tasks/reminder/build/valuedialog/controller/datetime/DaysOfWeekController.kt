@@ -10,9 +10,8 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 
 class DaysOfWeekController(
-  builderItem: BuilderItem<List<Int>>
+  builderItem: BuilderItem<List<Int>>,
 ) : AbstractBindingValueController<List<Int>, BuilderItemDaysOfWeekBinding>(builderItem) {
-
   private val mCheckListener: CompoundButton.OnCheckedChangeListener =
     CompoundButton.OnCheckedChangeListener { _, _ ->
       updateValue(calculateList())
@@ -20,10 +19,8 @@ class DaysOfWeekController(
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemDaysOfWeekBinding {
-    return BuilderItemDaysOfWeekBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemDaysOfWeekBinding = BuilderItemDaysOfWeekBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -60,23 +57,18 @@ class DaysOfWeekController(
     binding.saturdayCheck.isChecked = weekdays[6] == 1
   }
 
-  private fun calculateList(): List<Int> {
-    return IntervalUtil.getWeekRepeat(
+  private fun calculateList(): List<Int> =
+    IntervalUtil.getWeekRepeat(
       binding.mondayCheck.isChecked,
       binding.tuesdayCheck.isChecked,
       binding.wednesdayCheck.isChecked,
       binding.thursdayCheck.isChecked,
       binding.fridayCheck.isChecked,
       binding.saturdayCheck.isChecked,
-      binding.sundayCheck.isChecked
+      binding.sundayCheck.isChecked,
     )
-  }
 
-  private fun getAllDaysChecked(): List<Int> {
-    return WeekDaysProtocol.getAllDays()
-  }
+  private fun getAllDaysChecked(): List<Int> = WeekDaysProtocol.getAllDays()
 
-  private fun getWorkingDaysChecked(): List<Int> {
-    return WeekDaysProtocol.getWorkDays()
-  }
+  private fun getWorkingDaysChecked(): List<Int> = WeekDaysProtocol.getWorkDays()
 }

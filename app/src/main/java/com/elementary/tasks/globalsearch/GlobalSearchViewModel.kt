@@ -26,9 +26,8 @@ class GlobalSearchViewModel(
   dispatcherProvider: DispatcherProvider,
   private val searchLiveData: SearchLiveData,
   private val recentQueryRepository: RecentQueryRepository,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   val searchResults = searchLiveData.toLiveData()
   private val _navigateLiveData = mutableLiveDataOf<NavigationAction>()
   val navigateLiveData = _navigateLiveData.toSingleEvent()
@@ -49,8 +48,8 @@ class GlobalSearchViewModel(
     updateRecentQueries(searchResult)
   }
 
-  private fun createAction(searchResult: SearchResult): NavigationAction? {
-    return when (searchResult) {
+  private fun createAction(searchResult: SearchResult): NavigationAction? =
+    when (searchResult) {
       is ObjectSearchResult -> {
         searchResult.navigationAction()
       }
@@ -61,7 +60,6 @@ class GlobalSearchViewModel(
 
       is RecentSearchResult -> null
     }
-  }
 
   private fun RecentObjectSearchResult.navigationAction(): NavigationAction? {
     val clazz = objectType.toTargetClass()
@@ -69,13 +67,13 @@ class GlobalSearchViewModel(
       clazz.destinationId()?.let {
         FragmentNavigation(
           id = it,
-          objectId = objectId
+          objectId = objectId,
         )
       }
     } else {
       ActivityNavigation(
         clazz = clazz,
-        objectId = objectId
+        objectId = objectId,
       )
     }
   }
@@ -86,28 +84,27 @@ class GlobalSearchViewModel(
       clazz.destinationId()?.let {
         FragmentNavigation(
           id = it,
-          objectId = objectId
+          objectId = objectId,
         )
       }
     } else {
       ActivityNavigation(
         clazz = clazz,
-        objectId = objectId
+        objectId = objectId,
       )
     }
   }
 
-  private fun Class<*>.isFragment(): Boolean {
-    return this == PreviewBirthdayFragment::class.java ||
+  private fun Class<*>.isFragment(): Boolean =
+    this == PreviewBirthdayFragment::class.java ||
       this == EditGroupFragment::class.java ||
       this == EditPlaceFragment::class.java ||
       this == PreviewGoogleTaskFragment::class.java ||
       this == PreviewReminderFragment::class.java ||
       this == PreviewNoteFragment::class.java
-  }
 
-  private fun Class<*>.destinationId(): Int? {
-    return when {
+  private fun Class<*>.destinationId(): Int? =
+    when {
       this == PreviewBirthdayFragment::class.java -> {
         R.id.previewBirthdayFragment
       }
@@ -134,7 +131,6 @@ class GlobalSearchViewModel(
 
       else -> null
     }
-  }
 
   private fun updateRecentQueries(searchResult: SearchResult) {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -148,14 +144,14 @@ class GlobalSearchViewModel(
     }
   }
 
-  private fun SearchResult.toRecentQuery(dateTime: LocalDateTime): RecentQuery {
-    return when (this) {
+  private fun SearchResult.toRecentQuery(dateTime: LocalDateTime): RecentQuery =
+    when (this) {
       is RecentSearchResult -> {
         RecentQuery(
           queryType = RecentQueryType.TEXT,
           queryText = text,
           lastUsedAt = dateTime,
-          id = id
+          id = id,
         )
       }
 
@@ -166,7 +162,7 @@ class GlobalSearchViewModel(
           lastUsedAt = dateTime,
           id = id,
           targetId = objectId,
-          targetType = objectType.toTargetType()
+          targetType = objectType.toTargetType(),
         )
       }
 
@@ -176,14 +172,13 @@ class GlobalSearchViewModel(
           queryText = text,
           lastUsedAt = dateTime,
           targetId = objectId,
-          targetType = objectType.toTargetType()
+          targetType = objectType.toTargetType(),
         )
       }
     }
-  }
 
-  private fun ObjectType.toTargetType(): RecentQueryTarget {
-    return when (this) {
+  private fun ObjectType.toTargetType(): RecentQueryTarget =
+    when (this) {
       ObjectType.GROUP -> RecentQueryTarget.GROUP
       ObjectType.PLACE -> RecentQueryTarget.PLACE
       ObjectType.GOOGLE_TASK -> RecentQueryTarget.GOOGLE_TASK
@@ -191,10 +186,9 @@ class GlobalSearchViewModel(
       ObjectType.BIRTHDAY -> RecentQueryTarget.BIRTHDAY
       ObjectType.REMINDER -> RecentQueryTarget.REMINDER
     }
-  }
 
-  private fun ObjectType.toTargetClass(): Class<*> {
-    return when (this) {
+  private fun ObjectType.toTargetClass(): Class<*> =
+    when (this) {
       ObjectType.GROUP -> EditGroupFragment::class.java
       ObjectType.PLACE -> EditPlaceFragment::class.java
       ObjectType.GOOGLE_TASK -> PreviewGoogleTaskFragment::class.java
@@ -202,5 +196,4 @@ class GlobalSearchViewModel(
       ObjectType.BIRTHDAY -> PreviewBirthdayFragment::class.java
       ObjectType.REMINDER -> PreviewReminderFragment::class.java
     }
-  }
 }

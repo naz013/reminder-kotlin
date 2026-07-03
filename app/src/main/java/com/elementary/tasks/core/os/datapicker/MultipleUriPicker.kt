@@ -13,13 +13,11 @@ import com.github.naz013.common.intent.IntentPicker
 import com.github.naz013.common.intent.LauncherCreator
 
 class MultipleUriPicker private constructor(
-  launcherCreator: LauncherCreator<Intent, ActivityResult>
-) :
-  IntentPicker<Intent, ActivityResult>(
+  launcherCreator: LauncherCreator<Intent, ActivityResult>,
+) : IntentPicker<Intent, ActivityResult>(
     ActivityResultContracts.StartActivityForResult(),
-    launcherCreator
+    launcherCreator,
   ) {
-
   private var resultCallback: ((List<Uri>) -> Unit)? = null
 
   constructor(activity: ComponentActivity) : this(ActivityLauncherCreator(activity))
@@ -58,7 +56,7 @@ class MultipleUriPicker private constructor(
   private fun takePermission(uri: Uri) {
     getActivity().contentResolver.takePersistableUriPermission(
       uri,
-      (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+      (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION),
     )
   }
 }

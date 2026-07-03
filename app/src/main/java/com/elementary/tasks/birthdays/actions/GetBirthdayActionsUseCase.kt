@@ -9,7 +9,6 @@ import com.github.naz013.logging.Logger
  * Returns a list of actions that can be performed based on the birthday's properties.
  */
 class GetBirthdayActionsUseCase {
-
   /**
    * Gets the available actions for a birthday.
    *
@@ -19,7 +18,7 @@ class GetBirthdayActionsUseCase {
    */
   operator fun invoke(
     birthday: Birthday,
-    supportedActions: Set<BirthdayAction>
+    supportedActions: Set<BirthdayAction>,
   ): List<BirthdayAction> {
     val actions = mutableListOf<BirthdayAction>()
 
@@ -60,4 +59,3 @@ class GetBirthdayActionsUseCase {
     private const val TAG = "GetBirthdayActionsUseCase"
   }
 }
-

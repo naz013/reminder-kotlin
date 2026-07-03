@@ -88,9 +88,8 @@ class CreateNoteViewModel(
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val droppedContentParser: DroppedContentParser,
-  private val themeProvider: ThemeProvider
+  private val themeProvider: ThemeProvider,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _state = MutableStateFlow(NoteEditState())
   val state: StateFlow<NoteEditState> = _state.asStateFlow()
 
@@ -124,31 +123,36 @@ class CreateNoteViewModel(
   }
 
   private fun applyNewNoteDefaults() {
-    val color = if (prefs.isNoteColorRememberingEnabled) {
-      prefs.lastNoteColor
-    } else {
-      Random().nextInt(ThemeProvider.NOTE_COLORS)
-    }
-    val fontSize = if (prefs.isNoteFontSizeRememberingEnabled) {
-      prefs.lastNoteFontSize
-    } else {
-      FontParams.DEFAULT_FONT_SIZE
-    }
-    val fontStyle = if (prefs.isNoteFontStyleRememberingEnabled) {
-      prefs.lastNoteFontStyle
-    } else {
-      FontParams.DEFAULT_FONT_STYLE
-    }
-    val titleFontSize = if (prefs.isNoteFontSizeRememberingEnabled) {
-      prefs.lastNoteTitleFontSize
-    } else {
-      FontParams.DEFAULT_TITLE_FONT_SIZE
-    }
-    val titleFontStyle = if (prefs.isNoteFontStyleRememberingEnabled) {
-      prefs.lastNoteTitleFontStyle
-    } else {
-      FontParams.DEFAULT_FONT_STYLE
-    }
+    val color =
+      if (prefs.isNoteColorRememberingEnabled) {
+        prefs.lastNoteColor
+      } else {
+        Random().nextInt(ThemeProvider.NOTE_COLORS)
+      }
+    val fontSize =
+      if (prefs.isNoteFontSizeRememberingEnabled) {
+        prefs.lastNoteFontSize
+      } else {
+        FontParams.DEFAULT_FONT_SIZE
+      }
+    val fontStyle =
+      if (prefs.isNoteFontStyleRememberingEnabled) {
+        prefs.lastNoteFontStyle
+      } else {
+        FontParams.DEFAULT_FONT_STYLE
+      }
+    val titleFontSize =
+      if (prefs.isNoteFontSizeRememberingEnabled) {
+        prefs.lastNoteTitleFontSize
+      } else {
+        FontParams.DEFAULT_TITLE_FONT_SIZE
+      }
+    val titleFontStyle =
+      if (prefs.isNoteFontStyleRememberingEnabled) {
+        prefs.lastNoteTitleFontStyle
+      } else {
+        FontParams.DEFAULT_FONT_STYLE
+      }
     // A remembered opacity of 0 would make every new note's background fully invisible —
     // never a useful "remembered" default, so treat it the same as unset.
     val opacity = prefs.noteColorOpacity.takeIf { it > 0 } ?: 100
@@ -160,7 +164,7 @@ class CreateNoteViewModel(
         fontSize = fontSize,
         fontStyle = fontStyle,
         titleFontSize = titleFontSize,
-        titleFontStyle = titleFontStyle
+        titleFontStyle = titleFontStyle,
       )
     }
   }
@@ -221,18 +225,19 @@ class CreateNoteViewModel(
    */
   fun colorsFor(state: NoteEditState): NoteColors {
     val solidColor = themeProvider.getNoteLightColor(state.colorIndex, 100, state.palette)
-    val isBgDark = if (state.opacity.isAlmostTransparent()) {
-      themeProvider.isDark
-    } else {
-      solidColor.isColorDark()
-    }
+    val isBgDark =
+      if (state.opacity.isAlmostTransparent()) {
+        themeProvider.isDark
+      } else {
+        solidColor.isColorDark()
+      }
     val backgroundColor = themeProvider.getNoteLightColor(state.colorIndex, state.opacity, state.palette)
     val contentColor = if (isBgDark) PURE_WHITE else PURE_BLACK
     return NoteColors(
       background = backgroundColor,
       statusBarColor = solidColor,
       content = contentColor,
-      sliderColors = themeProvider.noteColorsForSlider(state.palette)
+      sliderColors = themeProvider.noteColorsForSlider(state.palette),
     )
   }
 
@@ -268,7 +273,10 @@ class CreateNoteViewModel(
     }
   }
 
-  fun shareNote(text: String, title: String) {
+  fun shareNote(
+    text: String,
+    title: String,
+  ) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.io()) {
       val note = createObject(text, title)
@@ -321,7 +329,7 @@ class CreateNoteViewModel(
           titleFontStyle = uiNoteEdit.titleTypeface,
           titleFontSize = uiNoteEdit.titleFontSize,
           images = uiNoteEdit.images,
-          isNoteEdited = true
+          isNoteEdited = true,
         )
       }
       _textUpdate.postValue(Event(TextUpdate(text = uiNoteEdit.text)))
@@ -335,8 +343,10 @@ class CreateNoteViewModel(
   }
 
   private suspend fun loadLinkedReminder(noteKey: String) {
-    val reminder = reminderRepository.getByNoteKey(noteKey)
-      .firstOrNull { it.isActive && !it.isRemoved }
+    val reminder =
+      reminderRepository
+        .getByNoteKey(noteKey)
+        .firstOrNull { it.isActive && !it.isRemoved }
     linkedReminder = reminder
     if (reminder != null) {
       dateTimeManager.fromGmtToLocal(reminder.eventTime)?.also { localDateTime ->
@@ -370,11 +380,12 @@ class CreateNoteViewModel(
 
   fun addBitmap(bitmap: Bitmap) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      var imageFile = UiNoteImage(
-        state = UiNoteImageState.LOADING,
-        id = 0,
-        fileName = UUID.randomUUID().toString()
-      )
+      var imageFile =
+        UiNoteImage(
+          state = UiNoteImageState.LOADING,
+          id = 0,
+          fileName = UUID.randomUUID().toString(),
+        )
       var mutable = _state.value.images.toMutableList()
       val position = mutable.size
       mutable.add(imageFile)
@@ -390,10 +401,11 @@ class CreateNoteViewModel(
       val filePath = noteImageRepository.saveTemporaryImage(imageFile.fileName, bs)
 
       Logger.i(TAG, "Add bitmap saved to: $filePath")
-      imageFile = imageFile.copy(
-        filePath = filePath,
-        state = UiNoteImageState.READY
-      )
+      imageFile =
+        imageFile.copy(
+          filePath = filePath,
+          state = UiNoteImageState.READY,
+        )
 
       mutable = _state.value.images.toMutableList()
       if (position < mutable.size) {
@@ -416,7 +428,10 @@ class CreateNoteViewModel(
     })
   }
 
-  private fun setImage(imageFile: UiNoteImage, position: Int) {
+  private fun setImage(
+    imageFile: UiNoteImage,
+    position: Int,
+  ) {
     val list = _state.value.images.toMutableList()
     if (position < list.size) {
       if (imageFile.state == UiNoteImageState.ERROR) {
@@ -451,20 +466,24 @@ class CreateNoteViewModel(
    * @param clipData the payload from [android.view.DragEvent.ACTION_DROP].
    * @param text the current text already present in the note editor.
    */
-  fun parseDrop(clipData: ClipData, text: String) {
+  fun parseDrop(
+    clipData: ClipData,
+    text: String,
+  ) {
     Logger.i(TAG, "Parse drop called with ${clipData.itemCount} items.")
     viewModelScope.launch(dispatcherProvider.default()) {
       val result = droppedContentParser.parse(clipData)
       Logger.i(
         TAG,
         "Drop parsed: ${result.textContent.size} text items, " +
-          "${result.imageUris.size} images, ${result.unsupportedCount} unsupported"
+          "${result.imageUris.size} images, ${result.unsupportedCount} unsupported",
       )
 
-      val allTextParts = buildList {
-        if (text.isNotEmpty()) add(text)
-        addAll(result.textContent)
-      }
+      val allTextParts =
+        buildList {
+          if (text.isNotEmpty()) add(text)
+          addAll(result.textContent)
+        }
       if (allTextParts.isNotEmpty()) {
         val combined = allTextParts.joinToString("\n")
         _textUpdate.postValue(Event(TextUpdate(text = combined)))
@@ -482,7 +501,11 @@ class CreateNoteViewModel(
     }
   }
 
-  fun saveNote(text: String, title: String, newId: Boolean = false) {
+  fun saveNote(
+    text: String,
+    title: String,
+    newId: Boolean = false,
+  ) {
     val noteWithImages = createObject(text, title)
     val hasReminder = _state.value.isReminderAttached
     var reminder: Reminder? = null
@@ -508,7 +531,11 @@ class CreateNoteViewModel(
     saveNote(noteWithImages, reminder, reminderToDelete)
   }
 
-  private fun saveNote(note: NoteWithImages, reminder: Reminder?, reminderToDelete: Reminder?) {
+  private fun saveNote(
+    note: NoteWithImages,
+    reminder: Reminder?,
+    reminderToDelete: Reminder?,
+  ) {
     val v = note.note ?: return
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -525,7 +552,10 @@ class CreateNoteViewModel(
     }
   }
 
-  private fun createReminder(note: Note, reuseExisting: Boolean): Reminder? {
+  private fun createReminder(
+    note: Note,
+    reuseExisting: Boolean,
+  ): Reminder? {
     val existing = if (reuseExisting) linkedReminder else null
     val reminder = existing?.copy() ?: Reminder()
     if (existing == null) {
@@ -549,7 +579,10 @@ class CreateNoteViewModel(
     return reminder
   }
 
-  private fun createObject(text: String, title: String): NoteWithImages {
+  private fun createObject(
+    text: String,
+    title: String,
+  ): NoteWithImages {
     val s = _state.value
     val images = s.images
 
@@ -571,14 +604,15 @@ class CreateNoteViewModel(
     note.syncState = SyncState.WaitingForUpload
 
     return (noteWithImages ?: NoteWithImages()).copy(
-      images = images.map {
-        ImageFile(
-          id = it.id,
-          fileName = it.fileName,
-          filePath = it.filePath
-        )
-      },
-      note = note
+      images =
+        images.map {
+          ImageFile(
+            id = it.id,
+            fileName = it.fileName,
+            filePath = it.filePath,
+          )
+        },
+      note = note,
     )
   }
 

@@ -10,9 +10,8 @@ import com.elementary.tasks.databinding.ListItemBuilderSelectableRadioBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 
 abstract class AbstractSelectableRadioController<T, D : SelectableValue>(
-  builderItem: BuilderItem<T>
+  builderItem: BuilderItem<T>,
 ) : AbstractBindingValueController<T, BuilderItemSelectableListRadioBinding>(builderItem) {
-
   private val radioAdapter by lazy {
     RadioAdapter(getAdapterData()) { updateValue(it) }
   }
@@ -23,10 +22,8 @@ abstract class AbstractSelectableRadioController<T, D : SelectableValue>(
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemSelectableListRadioBinding {
-    return BuilderItemSelectableListRadioBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemSelectableListRadioBinding = BuilderItemSelectableListRadioBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -36,12 +33,9 @@ abstract class AbstractSelectableRadioController<T, D : SelectableValue>(
 
   class RadioAdapter<V : SelectableValue>(
     private val items: List<V>,
-    private val onDataChanged: (V?) -> Unit
+    private val onDataChanged: (V?) -> Unit,
   ) : RecyclerView.Adapter<RadioAdapter.RadioAdapterViewHolder>() {
-
-    fun getSelected(): V? {
-      return items.firstOrNull { it.isSelected() }
-    }
+    fun getSelected(): V? = items.firstOrNull { it.isSelected() }
 
     @SuppressLint("NotifyDataSetChanged")
     fun clearSelection() {
@@ -52,20 +46,23 @@ abstract class AbstractSelectableRadioController<T, D : SelectableValue>(
       onDataChanged(getSelected())
     }
 
-    override fun getItemCount(): Int {
-      return items.size
-    }
+    override fun getItemCount(): Int = items.size
 
-    override fun onBindViewHolder(holder: RadioAdapterViewHolder, position: Int) {
+    override fun onBindViewHolder(
+      holder: RadioAdapterViewHolder,
+      position: Int,
+    ) {
       holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RadioAdapterViewHolder {
-      return RadioAdapterViewHolder(
+    override fun onCreateViewHolder(
+      parent: ViewGroup,
+      viewType: Int,
+    ): RadioAdapterViewHolder =
+      RadioAdapterViewHolder(
         parent = parent,
-        clickListener = { onItemClicked(it) }
+        clickListener = { onItemClicked(it) },
       )
-    }
 
     private fun onItemClicked(position: Int) {
       val item = items[position]
@@ -79,21 +76,21 @@ abstract class AbstractSelectableRadioController<T, D : SelectableValue>(
       onDataChanged(getSelected())
     }
 
-    private fun getSelectedPosition(): Int {
-      return items.indexOfFirst { it.isSelected() }
-    }
+    private fun getSelectedPosition(): Int = items.indexOfFirst { it.isSelected() }
 
     class RadioAdapterViewHolder(
       parent: ViewGroup,
       clickListener: (Int) -> Unit,
       private val binding: ListItemBuilderSelectableRadioBinding =
         ListItemBuilderSelectableRadioBinding.inflate(
-          /* inflater = */ LayoutInflater.from(parent.context),
-          /* parent = */ parent,
-          /* attachToParent = */ false
-        )
+          // inflater =
+          LayoutInflater.from(parent.context),
+          // parent =
+          parent,
+          // attachToParent =
+          false,
+        ),
     ) : RecyclerView.ViewHolder(binding.root) {
-
       init {
         binding.nameTextView.setOnClickListener { clickListener(bindingAdapterPosition) }
         binding.radioView.setOnClickListener { clickListener(bindingAdapterPosition) }

@@ -28,7 +28,6 @@ import com.github.naz013.ui.common.view.visibleGone
 import org.koin.android.ext.android.inject
 
 class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreatorBinding>() {
-
   private val prefs by inject<Prefs>()
   private val googleTasksAuthManager by inject<GoogleTasksAuthManager>()
   private val config: ReminderCreatorConfig by lazy { prefs.reminderCreatorParams }
@@ -109,7 +108,11 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
     }
   }
 
-  private fun initParam(prefsView: PrefsView, enabled: Boolean, onClick: (Boolean) -> Unit) {
+  private fun initParam(
+    prefsView: PrefsView,
+    enabled: Boolean,
+    onClick: (Boolean) -> Unit,
+  ) {
     prefsView.isChecked = enabled
     prefsView.setOnClickListener {
       prefsView.isChecked = !prefsView.isChecked
@@ -135,20 +138,19 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
 
   class BuilderConfigureLauncher private constructor(
     launcherCreator: LauncherCreator<Intent, ActivityResult>,
-    private val resultCallback: () -> Unit
+    private val resultCallback: () -> Unit,
   ) : IntentPicker<Intent, ActivityResult>(
-    ActivityResultContracts.StartActivityForResult(),
-    launcherCreator
-  ) {
-
+      ActivityResultContracts.StartActivityForResult(),
+      launcherCreator,
+    ) {
     constructor(
       activity: ComponentActivity,
-      resultCallback: () -> Unit
+      resultCallback: () -> Unit,
     ) : this(ActivityLauncherCreator(activity), resultCallback)
 
     constructor(
       fragment: Fragment,
-      resultCallback: () -> Unit
+      resultCallback: () -> Unit,
     ) : this(FragmentLauncherCreator(fragment), resultCallback)
 
     fun configure() {
@@ -161,9 +163,7 @@ class BuilderConfigureActivity : BindingActivity<ActivityConfigureReminderCreato
       }
     }
 
-    private fun getIntent(): Intent {
-      return getActivity().buildIntent(BuilderConfigureActivity::class.java)
-    }
+    private fun getIntent(): Intent = getActivity().buildIntent(BuilderConfigureActivity::class.java)
   }
 
   companion object {

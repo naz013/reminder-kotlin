@@ -23,7 +23,7 @@ data class PreviewNoteState(
 )
 
 /** Which modal dialog (if any) is currently shown above [PreviewNoteScreen]. */
-enum class PreviewNoteDialog { DELETE }
+enum class PreviewNoteDialog { DELETE, }
 
 /**
  * Colors derived from [PreviewNoteState]'s background/opacity — computed once by

@@ -1,18 +1,15 @@
 package com.elementary.tasks.reminder.build.valuedialog.controller
 
 import androidx.fragment.app.Fragment
-import com.github.naz013.common.PackageManagerWrapper
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.os.datapicker.MultipleUriPicker
 import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.core.utils.io.UriHelper
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.github.naz013.ui.common.Dialogues
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
@@ -54,6 +51,7 @@ import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.TimerExclusionBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.valuedialog.controller.action.ApplicationController
 import com.elementary.tasks.reminder.build.valuedialog.controller.action.EmailInputController
 import com.elementary.tasks.reminder.build.valuedialog.controller.action.PhoneInputController
@@ -88,9 +86,11 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.ical.ICalTimeC
 import com.elementary.tasks.reminder.build.valuedialog.controller.ical.ICalWeekStartController
 import com.elementary.tasks.reminder.build.valuedialog.controller.shopitems.SubTasksController
 import com.elementary.tasks.reminder.build.valuedialog.controller.shopitems.SubTasksViewModel
-import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
+import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.ui.common.Dialogues
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -104,33 +104,36 @@ class ValueControllerFactory(
   private val systemServiceProvider: SystemServiceProvider,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val packageManagerWrapper: PackageManagerWrapper,
-  private val paramToTextAdapter: ParamToTextAdapter
+  private val paramToTextAdapter: ParamToTextAdapter,
 ) {
-
   fun create(
     fragment: Fragment,
-    builderItem: BuilderItem<*>
-  ): ValueController {
-    return when (builderItem) {
+    builderItem: BuilderItem<*>,
+  ): ValueController =
+    when (builderItem) {
       is DateBuilderItem,
-      is LocationDelayDateBuilderItem -> DateController(builderItem as BuilderItem<LocalDate>)
+      is LocationDelayDateBuilderItem,
+      -> DateController(builderItem as BuilderItem<LocalDate>)
 
       is TimeBuilderItem,
-      is LocationDelayTimeBuilderItem -> TimeController(
-        builderItem = builderItem as BuilderItem<LocalTime>,
-        is24Format = prefs.is24HourFormat
-      )
+      is LocationDelayTimeBuilderItem,
+      ->
+        TimeController(
+          builderItem = builderItem as BuilderItem<LocalTime>,
+          is24Format = prefs.is24HourFormat,
+        )
 
       is DaysOfWeekBuilderItem -> DaysOfWeekController(builderItem)
       is DayOfMonthBuilderItem -> DayOfMonthController(builderItem)
       is DayOfYearBuilderItem -> DayOfYearController(builderItem)
       is TimerBuilderItem -> CountdownTimeController(builderItem)
-      is TimerExclusionBuilderItem -> CountdownExclusionController(
-        builderItem = builderItem,
-        fragment = fragment,
-        dateTimeManager = dateTimeManager,
-        dateTimePickerProvider = dateTimePickerProvider
-      )
+      is TimerExclusionBuilderItem ->
+        CountdownExclusionController(
+          builderItem = builderItem,
+          fragment = fragment,
+          dateTimeManager = dateTimeManager,
+          dateTimePickerProvider = dateTimePickerProvider,
+        )
 
       is GroupBuilderItem -> GroupController(builderItem)
       is BeforeTimeBuilderItem -> BeforeTimeController(builderItem, dateTimeManager)
@@ -139,120 +142,140 @@ class ValueControllerFactory(
       is RepeatLimitBuilderItem -> RepeatLimitController(builderItem)
       is PriorityBuilderItem -> PriorityController(builderItem)
       is LedColorBuilderItem -> LedColorController(builderItem)
-      is AttachmentsBuilderItem -> AttachmentsController(
-        builderItem = builderItem,
-        attachmentFileAdapter = UriToAttachmentFileAdapter(uriHelper),
-        multipleUriPicker = MultipleUriPicker(fragment)
-      )
+      is AttachmentsBuilderItem ->
+        AttachmentsController(
+          builderItem = builderItem,
+          attachmentFileAdapter = UriToAttachmentFileAdapter(uriHelper),
+          multipleUriPicker = MultipleUriPicker(fragment),
+        )
 
       is PhoneCallBuilderItem,
-      is SmsBuilderItem -> PhoneInputController(
-        builderItem = builderItem as BuilderItem<String>,
-        permissionFlow = PermissionFlow(fragment, dialogues),
-        contactPicker = ContactPicker(fragment) { },
-        inputMethodManager = systemServiceProvider.provideInputMethodManager()!!
-      )
+      is SmsBuilderItem,
+      ->
+        PhoneInputController(
+          builderItem = builderItem as BuilderItem<String>,
+          permissionFlow = PermissionFlow(fragment, dialogues),
+          contactPicker = ContactPicker(fragment) { },
+          inputMethodManager = systemServiceProvider.provideInputMethodManager()!!,
+        )
 
       is GoogleTaskListBuilderItem -> GoogleTaskListController(builderItem)
-      is GoogleCalendarBuilderItem -> GoogleCalendarController(
-        googleCalendarBuilderItem = builderItem,
-        calendars = googleCalendarUtils.getCalendarsList()
-      )
+      is GoogleCalendarBuilderItem ->
+        GoogleCalendarController(
+          googleCalendarBuilderItem = builderItem,
+          calendars = googleCalendarUtils.getCalendarsList(),
+        )
 
-      is GoogleCalendarDurationBuilderItem -> GoogleCalendarDurationController(
-        durationBuilderItem = builderItem,
-        dateTimeManager = dateTimeManager
-      )
+      is GoogleCalendarDurationBuilderItem ->
+        GoogleCalendarDurationController(
+          durationBuilderItem = builderItem,
+          dateTimeManager = dateTimeManager,
+        )
 
-      is EmailBuilderItem -> EmailInputController(
-        builderItem = builderItem,
-        permissionFlow = PermissionFlow(fragment, dialogues),
-        inputMethodManager = systemServiceProvider.provideInputMethodManager()!!
-      )
+      is EmailBuilderItem ->
+        EmailInputController(
+          builderItem = builderItem,
+          permissionFlow = PermissionFlow(fragment, dialogues),
+          inputMethodManager = systemServiceProvider.provideInputMethodManager()!!,
+        )
 
-      is WebAddressBuilderItem -> WebAddressInputController(
-        builderItem = builderItem,
-        inputMethodManager = systemServiceProvider.provideInputMethodManager()!!
-      )
+      is WebAddressBuilderItem ->
+        WebAddressInputController(
+          builderItem = builderItem,
+          inputMethodManager = systemServiceProvider.provideInputMethodManager()!!,
+        )
 
-      is ApplicationBuilderItem -> ApplicationController(
-        builderItem = builderItem,
-        applicationPicker = ApplicationPicker(fragment) { },
-        packageManagerWrapper = packageManagerWrapper
-      )
+      is ApplicationBuilderItem ->
+        ApplicationController(
+          builderItem = builderItem,
+          applicationPicker = ApplicationPicker(fragment) { },
+          packageManagerWrapper = packageManagerWrapper,
+        )
 
       is OtherParamsBuilderItem -> OtherParamsController(builderItem)
 
-      is SubTasksBuilderItem -> SubTasksController(
-        builderItem = builderItem,
-        viewModel = SubTasksViewModel(dateTimeManager),
-        viewLifecycleOwner = fragment.viewLifecycleOwner,
-        inputMethodManager = systemServiceProvider.provideInputMethodManager()!!
-      )
+      is SubTasksBuilderItem ->
+        SubTasksController(
+          builderItem = builderItem,
+          viewModel = SubTasksViewModel(dateTimeManager),
+          viewLifecycleOwner = fragment.viewLifecycleOwner,
+          inputMethodManager = systemServiceProvider.provideInputMethodManager()!!,
+        )
 
       is ArrivingCoordinatesBuilderItem,
-      is LeavingCoordinatesBuilderItem -> MapController(
-        builderItem = builderItem as BuilderItem<Place>,
-        parentFragment = fragment,
-        dateTimeManager = dateTimeManager
-      )
+      is LeavingCoordinatesBuilderItem,
+      ->
+        MapController(
+          builderItem = builderItem as BuilderItem<Place>,
+          parentFragment = fragment,
+          dateTimeManager = dateTimeManager,
+        )
 
       is ICalUntilDateBuilderItem,
-      is ICalStartDateBuilderItem -> ICalDateController(
-        builderItem = builderItem as BuilderItem<LocalDate>
-      )
+      is ICalStartDateBuilderItem,
+      ->
+        ICalDateController(
+          builderItem = builderItem as BuilderItem<LocalDate>,
+        )
 
       is ICalUntilTimeBuilderItem,
-      is ICalStartTimeBuilderItem -> ICalTimeController(
-        builderItem = builderItem as BuilderItem<LocalTime>,
-        is24Format = prefs.is24HourFormat
-      )
-
-      is ICalFrequencyBuilderItem -> ICalFreqController(
-        builderItem = builderItem,
-        paramToTextAdapter = paramToTextAdapter
-      )
-
-      is ICalWeekStartBuilderItem -> ICalWeekStartController(
-        builderItem = builderItem,
-        paramToTextAdapter = paramToTextAdapter
-      )
-
-      is ICalByDayBuilderItem -> ICalDayValueListController(
-        builderItem = builderItem,
-        paramToTextAdapter = paramToTextAdapter
-      )
-
-      is ICalListIntBuilderItem -> ICalIntListController(
-        builderItem = builderItem as BuilderItem<List<Int>>,
-        array = generateNumbers(
-          minValue = builderItem.minValue,
-          maxValue = builderItem.maxValue,
-          excludedValues = builderItem.excludedValues
+      is ICalStartTimeBuilderItem,
+      ->
+        ICalTimeController(
+          builderItem = builderItem as BuilderItem<LocalTime>,
+          is24Format = prefs.is24HourFormat,
         )
-      )
+
+      is ICalFrequencyBuilderItem ->
+        ICalFreqController(
+          builderItem = builderItem,
+          paramToTextAdapter = paramToTextAdapter,
+        )
+
+      is ICalWeekStartBuilderItem ->
+        ICalWeekStartController(
+          builderItem = builderItem,
+          paramToTextAdapter = paramToTextAdapter,
+        )
+
+      is ICalByDayBuilderItem ->
+        ICalDayValueListController(
+          builderItem = builderItem,
+          paramToTextAdapter = paramToTextAdapter,
+        )
+
+      is ICalListIntBuilderItem ->
+        ICalIntListController(
+          builderItem = builderItem as BuilderItem<List<Int>>,
+          array =
+            generateNumbers(
+              minValue = builderItem.minValue,
+              maxValue = builderItem.maxValue,
+              excludedValues = builderItem.excludedValues,
+            ),
+        )
 
       is ICalIntBuilderItem -> ICalIntController(builderItem)
 
       is NoteBuilderItem -> NoteController(builderItem)
 
-      is StringBuilderItem -> TextInputController(
-        builderItem = builderItem,
-        inputMethodManager = systemServiceProvider.provideInputMethodManager()!!,
-        speechEngine = SpeechEngine(fragment.requireContext()),
-        permissionFlow = PermissionFlow(fragment, dialogues)
-      )
+      is StringBuilderItem ->
+        TextInputController(
+          builderItem = builderItem,
+          inputMethodManager = systemServiceProvider.provideInputMethodManager()!!,
+          speechEngine = SpeechEngine(fragment.requireContext()),
+          permissionFlow = PermissionFlow(fragment, dialogues),
+        )
 
       else -> {
         throw IllegalArgumentException("This type ${builderItem.biType} is not supported!")
       }
     }
-  }
 
   private fun generateNumbers(
     minValue: Int,
     maxValue: Int,
-    excludedValues: IntArray
+    excludedValues: IntArray,
   ): List<Int> {
     val list = mutableListOf<Int>()
     for (i in minValue..maxValue) {

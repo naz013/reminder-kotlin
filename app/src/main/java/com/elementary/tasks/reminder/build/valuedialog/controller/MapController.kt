@@ -15,45 +15,43 @@ import com.github.naz013.domain.sync.SyncState
 class MapController(
   builderItem: BuilderItem<Place>,
   private val parentFragment: Fragment,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
 ) : AbstractBindingValueController<Place, BuilderItemMapBinding>(builderItem) {
-
   private var simpleMapFragment: SimpleMapFragment? = null
 
-  override fun isDraggable(): Boolean {
-    return false
-  }
+  override fun isDraggable(): Boolean = false
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemMapBinding {
-    return BuilderItemMapBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemMapBinding = BuilderItemMapBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
     val simpleMapFragment = SimpleMapFragment.newInstance(SimpleMapFragment.MapParams())
 
-    simpleMapFragment.mapCallback = object : SimpleMapFragment.MapCallback {
-      override fun onLocationSelected(markerState: SimpleMapFragment.MarkerState) {
-        getPlace().copy(
-          latitude = markerState.latLng.latitude,
-          longitude = markerState.latLng.longitude,
-          radius = markerState.radius,
-          marker = markerState.style,
-          address = markerState.address,
-          name = markerState.title,
-          dateTime = dateTimeManager.getNowGmtDateTime()
-        ).also { updateValue(it) }
+    simpleMapFragment.mapCallback =
+      object : SimpleMapFragment.MapCallback {
+        override fun onLocationSelected(markerState: SimpleMapFragment.MarkerState) {
+          getPlace()
+            .copy(
+              latitude = markerState.latLng.latitude,
+              longitude = markerState.latLng.longitude,
+              radius = markerState.radius,
+              marker = markerState.style,
+              address = markerState.address,
+              name = markerState.title,
+              dateTime = dateTimeManager.getNowGmtDateTime(),
+            ).also { updateValue(it) }
+        }
+
+        override fun onMapReady() {
+          builderItem.modifier.getValue()?.also { showPlace(it) }
+        }
       }
 
-      override fun onMapReady() {
-        builderItem.modifier.getValue()?.also { showPlace(it) }
-      }
-    }
-
-    parentFragment.childFragmentManager.beginTransaction()
+    parentFragment.childFragmentManager
+      .beginTransaction()
       .replace(R.id.map_frame_view, simpleMapFragment)
       .addToBackStack(null)
       .commit()
@@ -68,7 +66,7 @@ class MapController(
       markerStyle = place.marker,
       radius = place.radius,
       clear = true,
-      animate = true
+      animate = true,
     )
   }
 
@@ -77,7 +75,5 @@ class MapController(
     simpleMapFragment?.onDestroy()
   }
 
-  private fun getPlace(): Place {
-    return builderItem.modifier.getValue() ?: Place(syncState = SyncState.WaitingForUpload)
-  }
+  private fun getPlace(): Place = builderItem.modifier.getValue() ?: Place(syncState = SyncState.WaitingForUpload)
 }

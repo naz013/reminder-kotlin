@@ -29,9 +29,8 @@ class DayLiveData(
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val getHistoryByDayUseCase: GetHistoryByDayUseCase
+  private val getHistoryByDayUseCase: GetHistoryByDayUseCase,
 ) : LiveData<List<EventModel>>() {
-
   private val scope: CoroutineScope = CoroutineScope(Job())
   private var lastDate: LocalDate? = null
 
@@ -50,48 +49,52 @@ class DayLiveData(
     scope.launch(dispatcherProvider.default()) {
       val birthdays = birthdayRepository.getAll().associateBy { it.uuId }
       val reminders = reminderRepository.getActive().associateBy { it.uuId }
-      val occurrences = getOccurrencesByDayUseCase(date).mapNotNull {
-        when (it.type) {
-          OccurrenceType.Birthday -> {
-            val birthday = birthdays[it.eventId] ?: return@mapNotNull null
-            val dateTime = LocalDateTime.of(it.date, it.time)
-            uiBirthdayListAdapter.convert(
-              birthday = birthday,
-              nowDateTime = dateTime
-            ).toEventModel(LocalDateTime.of(it.date, it.time))
+      val occurrences =
+        getOccurrencesByDayUseCase(date).mapNotNull {
+          when (it.type) {
+            OccurrenceType.Birthday -> {
+              val birthday = birthdays[it.eventId] ?: return@mapNotNull null
+              val dateTime = LocalDateTime.of(it.date, it.time)
+              uiBirthdayListAdapter
+                .convert(
+                  birthday = birthday,
+                  nowDateTime = dateTime,
+                ).toEventModel(LocalDateTime.of(it.date, it.time))
+            }
+            OccurrenceType.Reminder -> {
+              val reminder = reminders[it.eventId] ?: return@mapNotNull null
+              reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(it.date, it.time))
+              uiReminderListAdapter.create(reminder).toEventModel(LocalDateTime.of(it.date, it.time))
+            }
+            else -> null
           }
-          OccurrenceType.Reminder -> {
-            val reminder = reminders[it.eventId] ?: return@mapNotNull null
-            reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(it.date, it.time))
-            uiReminderListAdapter.create(reminder).toEventModel(LocalDateTime.of(it.date, it.time))
-          }
-          else -> null
         }
-      }
-      val historyRecords = getHistoryByDayUseCase(date).mapNotNull { record ->
-        when (record.type) {
-          EventHistoricalRecordType.Birthday -> {
-            val birthday = birthdays[record.eventId] ?: return@mapNotNull null
-            val dateTime = LocalDateTime.of(record.date, record.time)
-            uiBirthdayListAdapter.convert(
-              birthday = birthday,
-              nowDateTime = dateTime
-            ).toEventModel(
-              localDateTime = LocalDateTime.of(record.date, record.time),
-              isHistorical = true
-            )
+      val historyRecords =
+        getHistoryByDayUseCase(date).mapNotNull { record ->
+          when (record.type) {
+            EventHistoricalRecordType.Birthday -> {
+              val birthday = birthdays[record.eventId] ?: return@mapNotNull null
+              val dateTime = LocalDateTime.of(record.date, record.time)
+              uiBirthdayListAdapter
+                .convert(
+                  birthday = birthday,
+                  nowDateTime = dateTime,
+                ).toEventModel(
+                  localDateTime = LocalDateTime.of(record.date, record.time),
+                  isHistorical = true,
+                )
+            }
+            EventHistoricalRecordType.Reminder -> {
+              val reminder = reminders[record.eventId] ?: return@mapNotNull null
+              reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(record.date, record.time))
+              uiReminderListAdapter.create(reminder).toEventModel(
+                dateTime = LocalDateTime.of(record.date, record.time),
+                isHistorical = true,
+              )
+            }
+            else -> null
           }
-          EventHistoricalRecordType.Reminder -> {
-            val reminder = reminders[record.eventId] ?: return@mapNotNull null
-            reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(record.date, record.time))
-            uiReminderListAdapter.create(reminder).toEventModel(
-              dateTime = LocalDateTime.of(record.date, record.time),
-              isHistorical = true
-            )
-          }
-          else -> null
         }
-      }
       val mappedData = (occurrences + historyRecords).sortedBy { it.millis }
 
       Logger.d(TAG, "Mapped data for $date: ${mappedData.size} events")
@@ -103,29 +106,27 @@ class DayLiveData(
 
   private fun UiReminderListData.toEventModel(
     dateTime: LocalDateTime,
-    isHistorical: Boolean = false
-  ): ReminderEventModel {
-    return ReminderEventModel(
+    isHistorical: Boolean = false,
+  ): ReminderEventModel =
+    ReminderEventModel(
       model = this,
       day = dateTime.dayOfMonth,
       monthValue = dateTime.monthValue,
       year = dateTime.year,
-      isHistorical = isHistorical
+      isHistorical = isHistorical,
     )
-  }
 
   private fun UiBirthdayList.toEventModel(
     localDateTime: LocalDateTime,
-    isHistorical: Boolean = false
-  ): BirthdayEventModel {
-    return BirthdayEventModel(
+    isHistorical: Boolean = false,
+  ): BirthdayEventModel =
+    BirthdayEventModel(
       model = this,
       day = localDateTime.dayOfMonth,
       monthValue = localDateTime.monthValue,
       year = localDateTime.year,
-      isHistorical = isHistorical
+      isHistorical = isHistorical,
     )
-  }
 
   companion object {
     private const val TAG = "DayLiveData"

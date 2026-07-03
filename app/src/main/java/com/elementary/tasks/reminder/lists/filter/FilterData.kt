@@ -9,7 +9,7 @@ typealias FilterId = String
 
 @Parcelize
 data class Filters(
-  val filterGroups: List<FilterGroup>
+  val filterGroups: List<FilterGroup>,
 ) : Parcelable
 
 interface FilterGroup : Parcelable {
@@ -23,7 +23,7 @@ data class ReminderGroupFilterGroup(
   override val id: FilterGroupId,
   override val title: String,
   override val appliedFilter: ReminderGroupAppliedFilter?,
-  val filters: List<ReminderGroupFilter>
+  val filters: List<ReminderGroupFilter>,
 ) : FilterGroup
 
 @Parcelize
@@ -38,23 +38,23 @@ data class DateRangeFilterGroup(
   override val title: String,
   override val appliedFilter: DateRangeAppliedFilter?,
   val minDate: LocalDate,
-  val maxDate: LocalDate
+  val maxDate: LocalDate,
 ) : FilterGroup
 
 @Parcelize
 data class AppliedFilters(
-  val selectedFilters: Map<FilterGroupId, AppliedFilter> = emptyMap()
+  val selectedFilters: Map<FilterGroupId, AppliedFilter> = emptyMap(),
 ) : Parcelable
 
 interface AppliedFilter : Parcelable
 
 @Parcelize
 data class ReminderGroupAppliedFilter(
-  val selectedFilterIds: Set<FilterId>
+  val selectedFilterIds: Set<FilterId>,
 ) : AppliedFilter
 
 @Parcelize
 data class DateRangeAppliedFilter(
   val startDate: LocalDate?,
-  val endDate: LocalDate?
+  val endDate: LocalDate?,
 ) : AppliedFilter

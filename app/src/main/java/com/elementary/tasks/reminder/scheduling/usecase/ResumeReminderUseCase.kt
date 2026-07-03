@@ -13,9 +13,8 @@ import com.github.naz013.logging.Logger
 class ResumeReminderUseCase(
   private val jobScheduler: JobScheduler,
   private val strategyResolver: BehaviorStrategyResolver,
-  private val startLocationTrackingUseCase: StartLocationTrackingUseCase
+  private val startLocationTrackingUseCase: StartLocationTrackingUseCase,
 ) {
-
   suspend operator fun invoke(reminder: Reminder) {
     if (reminder.isActive && !reminder.isRemoved) {
       val strategy = strategyResolver.resolve(reminder)

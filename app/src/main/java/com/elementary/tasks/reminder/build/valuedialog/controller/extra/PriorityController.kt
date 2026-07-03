@@ -8,25 +8,23 @@ import com.elementary.tasks.reminder.build.PriorityBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
 
 class PriorityController(
-  builderItem: PriorityBuilderItem
+  builderItem: PriorityBuilderItem,
 ) : AbstractBindingValueController<Int, BuilderItemPriorityBinding>(builderItem) {
-
-  override fun isDraggable(): Boolean {
-    return false
-  }
+  override fun isDraggable(): Boolean = false
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemPriorityBinding {
-    return BuilderItemPriorityBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemPriorityBinding = BuilderItemPriorityBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
     binding.prioritySelectorView.onSelectionChangedListener =
       object : VerticalWheelSelector.OnSelectionChangedListener {
-        override fun onSelectionChanged(position: Int, selectedItem: String) {
+        override fun onSelectionChanged(
+          position: Int,
+          selectedItem: String,
+        ) {
           updateValue(position)
         }
       }

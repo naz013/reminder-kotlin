@@ -20,11 +20,10 @@ class ObservableEraseDataWorker(
   workerParams: WorkerParameters,
   private val dispatcherProvider: DispatcherProvider,
   private val googleDriveApi: GoogleDriveApi,
-  private val dropboxApi: DropboxApi
+  private val dropboxApi: DropboxApi,
 ) : CoroutineWorker(context, workerParams) {
-
-  override suspend fun doWork(): Result {
-    return try {
+  override suspend fun doWork(): Result =
+    try {
       Logger.i(TAG, "Starting observable erase data work")
       setProgress(createProgressData(true))
 
@@ -41,7 +40,6 @@ class ObservableEraseDataWorker(
       setProgress(createProgressData(false))
       Result.failure()
     }
-  }
 
   /**
    * Creates progress data for WorkManager progress updates.
@@ -49,11 +47,11 @@ class ObservableEraseDataWorker(
    * @param isInProgress Whether the backup is currently in progress
    * @return Data object containing progress state
    */
-  private fun createProgressData(isInProgress: Boolean): Data {
-    return Data.Builder()
+  private fun createProgressData(isInProgress: Boolean): Data =
+    Data
+      .Builder()
       .putBoolean(KEY_IS_IN_PROGRESS, isInProgress)
       .build()
-  }
 
   companion object {
     private const val TAG = "ObservableEraseDataWorker"
@@ -65,14 +63,16 @@ class ObservableEraseDataWorker(
      * @param context Application context
      */
     fun schedule(context: Context) {
-      val work = OneTimeWorkRequest.Builder(ObservableEraseDataWorker::class.java)
-        .addTag(TAG)
-        .setConstraints(
-          Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        )
-        .build()
+      val work =
+        OneTimeWorkRequest
+          .Builder(ObservableEraseDataWorker::class.java)
+          .addTag(TAG)
+          .setConstraints(
+            Constraints
+              .Builder()
+              .setRequiredNetworkType(NetworkType.CONNECTED)
+              .build(),
+          ).build()
       WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, work)
     }
 

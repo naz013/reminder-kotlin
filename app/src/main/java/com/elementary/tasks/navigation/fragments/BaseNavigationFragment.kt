@@ -29,7 +29,6 @@ import org.koin.android.ext.android.inject
 abstract class BaseNavigationFragment<B : ViewBinding> :
   BindingFragment<B>(),
   BackPressHandler by DefaultBackPressHandler() {
-
   protected val prefs by inject<Prefs>()
   protected val themeProvider by inject<ThemeProvider>()
   protected val isDark: Boolean

@@ -43,7 +43,6 @@ class ReminderActionActivityViewModel(
   private val colorProvider: ColorProvider,
   private val textProvider: TextProvider,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _state = mutableLiveDataOf<ReminderActionScreenState>()
   val state = _state.toLiveData()
 
@@ -122,13 +121,14 @@ class ReminderActionActivityViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
       // Find and toggle the task
-      val updatedTasks = reminder.shoppings.map { task ->
-        if (task.uuId == itemId) {
-          task.copy(isChecked = !task.isChecked)
-        } else {
-          task
+      val updatedTasks =
+        reminder.shoppings.map { task ->
+          if (task.uuId == itemId) {
+            task.copy(isChecked = !task.isChecked)
+          } else {
+            task
+          }
         }
-      }
       // Save the reminder with updated tasks
       val updatedReminder = reminder.copy(shoppings = updatedTasks)
       saveReminder(updatedReminder)
@@ -173,21 +173,25 @@ class ReminderActionActivityViewModel(
       withContext(dispatcherProvider.main()) {
         showFavouriteNotification(
           text = reminder.summary,
-          notificationId = reminder.uniqueId
+          notificationId = reminder.uniqueId,
         )
         _redirectEvent.value = Event(Redirect.Finish)
       }
     }
   }
 
-  private fun showFavouriteNotification(text: String, notificationId: Int) {
+  private fun showFavouriteNotification(
+    text: String,
+    notificationId: Int,
+  ) {
     val builder = notifier.getNotificationBuilder(Notifier.CHANNEL_REMINDER)
     builder.setContentTitle(text)
-    val appName: String = if (BuildParams.isPro) {
-      textProvider.getString(R.string.app_name_pro)
-    } else {
-      textProvider.getString(R.string.app_name)
-    }
+    val appName: String =
+      if (BuildParams.isPro) {
+        textProvider.getString(R.string.app_name_pro)
+      } else {
+        textProvider.getString(R.string.app_name)
+      }
     builder.setContentText(appName)
     builder.setSmallIcon(R.drawable.ic_fluent_alert)
     builder.color = colorProvider.getColor(R.color.secondaryBlue)
@@ -202,7 +206,7 @@ class ReminderActionActivityViewModel(
       showWearNotification(
         text,
         appName,
-        notificationId
+        notificationId,
       )
     }
   }
@@ -210,7 +214,7 @@ class ReminderActionActivityViewModel(
   private fun showWearNotification(
     text: String,
     secondaryText: String,
-    notificationId: Int
+    notificationId: Int,
   ) {
     Logger.d(TAG, "showWearNotification: $secondaryText")
     val wearableNotificationBuilder = notifier.getNotificationBuilder(Notifier.CHANNEL_REMINDER)
@@ -268,12 +272,13 @@ class ReminderActionActivityViewModel(
               _redirectEvent.value = Event(Redirect.Finish)
             } else {
               Logger.i(TAG, "Sending SMS for reminder id=${reminder.uuId}")
-              _redirectEvent.value = Event(
-                Redirect.SendSms(
-                  target = reminder.to,
-                  message = reminder.summary
+              _redirectEvent.value =
+                Event(
+                  Redirect.SendSms(
+                    target = reminder.to,
+                    message = reminder.summary,
+                  ),
                 )
-              )
             }
           }
           isAppType(reminder) -> {
@@ -287,14 +292,15 @@ class ReminderActionActivityViewModel(
           }
           Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> {
             Logger.i(TAG, "Sending email for reminder id=${reminder.uuId}")
-            _redirectEvent.value = Event(
-              Redirect.SendEmail(
-                email = reminder.to,
-                subject = reminder.subject,
-                message = reminder.summary,
-                filePath = reminder.attachmentFile
+            _redirectEvent.value =
+              Event(
+                Redirect.SendEmail(
+                  email = reminder.to,
+                  subject = reminder.subject,
+                  message = reminder.summary,
+                  filePath = reminder.attachmentFile,
+                ),
               )
-            )
           }
           else -> {
             if (TelephonyUtil.isPhoneNumber(reminder.target)) {
@@ -316,32 +322,48 @@ class ReminderActionActivityViewModel(
       saveReminderUseCase(
         reminder.copy(
           version = reminder.version + 1,
-          syncState = SyncState.WaitingForUpload
-        )
+          syncState = SyncState.WaitingForUpload,
+        ),
       )
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
   }
 
-  private fun isAppType(reminder: Reminder): Boolean {
-    return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
+  private fun isAppType(reminder: Reminder): Boolean =
+    Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
       Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
-  }
 
   sealed class Redirect {
     data object Finish : Redirect()
-    data class Edit(val id: String): Redirect()
-    data class OpenApp(val target: String): Redirect()
-    data class OpenLink(val target: String): Redirect()
-    data class MakeCall(val target: String): Redirect()
-    data class SendSms(val target: String, val message: String): Redirect()
+
+    data class Edit(
+      val id: String,
+    ) : Redirect()
+
+    data class OpenApp(
+      val target: String,
+    ) : Redirect()
+
+    data class OpenLink(
+      val target: String,
+    ) : Redirect()
+
+    data class MakeCall(
+      val target: String,
+    ) : Redirect()
+
+    data class SendSms(
+      val target: String,
+      val message: String,
+    ) : Redirect()
+
     data class SendEmail(
       val email: String,
       val subject: String,
       val message: String,
-      val filePath: String?
-    ): Redirect()
+      val filePath: String?,
+    ) : Redirect()
   }
 
   companion object {

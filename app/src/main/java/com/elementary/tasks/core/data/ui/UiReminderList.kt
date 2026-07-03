@@ -1,12 +1,12 @@
 package com.elementary.tasks.core.data.ui
 
-import com.github.naz013.domain.reminder.ShopItem
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
 import com.elementary.tasks.core.data.ui.reminder.UiReminderTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
+import com.github.naz013.domain.reminder.ShopItem
 
 sealed class UiReminderList {
   abstract val id: String
@@ -24,7 +24,7 @@ sealed class UiReminderListData : UiReminderList() {
 
 data class UiReminderListHeader(
   override val id: String,
-  val date: String
+  val date: String,
 ) : UiReminderList() {
   override val noteId: String? = null
 }
@@ -42,7 +42,7 @@ data class UiReminderListActive(
   val actionTarget: UiReminderTarget?,
   override val isRepeating: Boolean,
   override val canSkip: Boolean,
-  override val noteId: String?
+  override val noteId: String?,
 ) : UiReminderListData()
 
 data class UiReminderListActiveGps(
@@ -55,7 +55,7 @@ data class UiReminderListActiveGps(
   val isRunning: Boolean,
   override val status: UiReminderStatus,
   val actionTarget: UiReminderTarget?,
-  val places: List<UiReminderPlace>
+  val places: List<UiReminderPlace>,
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
   override val due: UiReminderDueData? = null
@@ -74,7 +74,7 @@ data class UiReminderListActiveShop(
   val isRunning: Boolean,
   override val status: UiReminderStatus,
   val shopList: List<ShopItem>,
-  override val noteId: String?
+  override val noteId: String?,
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
   override val canSkip: Boolean = false
@@ -90,7 +90,7 @@ data class UiReminderListRemoved(
   val actionTarget: UiReminderTarget?,
   override val status: UiReminderStatus,
   override val due: UiReminderDueData,
-  override val isRepeating: Boolean
+  override val isRepeating: Boolean,
 ) : UiReminderListData() {
   override val canSkip: Boolean = false
   override val noteId: String? = null
@@ -105,7 +105,7 @@ data class UiReminderListRemovedGps(
   override val group: UiGroupList?,
   override val status: UiReminderStatus,
   val actionTarget: UiReminderTarget?,
-  val places: List<UiReminderPlace>
+  val places: List<UiReminderPlace>,
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
   override val due: UiReminderDueData? = null
@@ -122,7 +122,7 @@ data class UiReminderListRemovedShop(
   override val group: UiGroupList?,
   override val due: UiReminderDueData,
   override val status: UiReminderStatus,
-  val shopList: List<ShopItem>
+  val shopList: List<ShopItem>,
 ) : UiReminderListData() {
   override val isRepeating: Boolean = false
   override val canSkip: Boolean = false

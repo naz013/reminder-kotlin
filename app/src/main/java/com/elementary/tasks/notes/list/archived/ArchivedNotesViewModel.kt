@@ -24,22 +24,23 @@ class ArchivedNotesViewModel(
   private val prefs: Prefs,
   private val noteRepository: NoteRepository,
   private val deleteNoteUseCase: DeleteNoteUseCase,
-  private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase
+  private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toLiveData()
 
   private val noteSortProcessor = NoteSortProcessor()
-  private val notesData = SearchableNotesData(
-    dispatcherProvider = dispatcherProvider,
-    parentScope = viewModelScope,
-    noteRepository = noteRepository,
-    isArchived = true
-  )
-  val notes = notesData.map { list ->
-    noteSortProcessor.apply(list.map { uiNoteListAdapter.convert(it) }, prefs.noteOrder)
-  }
+  private val notesData =
+    SearchableNotesData(
+      dispatcherProvider = dispatcherProvider,
+      parentScope = viewModelScope,
+      noteRepository = noteRepository,
+      isArchived = true,
+    )
+  val notes =
+    notesData.map { list ->
+      noteSortProcessor.apply(list.map { uiNoteListAdapter.convert(it) }, prefs.noteOrder)
+    }
 
   fun onSearchUpdate(query: String) {
     notesData.onNewQuery(query)

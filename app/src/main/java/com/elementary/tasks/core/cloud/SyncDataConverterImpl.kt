@@ -28,7 +28,6 @@ import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
 class SyncDataConverterImpl : SyncDataConverter {
-
   override suspend fun create(any: Any): InputStream {
     if (any is SettingsModel) {
       return toInputStream(any)
@@ -38,17 +37,18 @@ class SyncDataConverterImpl : SyncDataConverter {
       val output64 = Base64OutputStream(outputStream, Base64.DEFAULT)
       val bufferedWriter = BufferedWriter(OutputStreamWriter(output64, StandardCharsets.UTF_8))
       val writer = JsonWriter(bufferedWriter)
-      val type = when (any) {
-        is Reminder -> object : TypeToken<Reminder>() {}.type
-        is Place -> object : TypeToken<Place>() {}.type
-        is Birthday -> object : TypeToken<Birthday>() {}.type
-        is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
-        is RecurPreset -> object : TypeToken<RecurPreset>() {}.type
-        is NoteV3Json -> object : TypeToken<NoteV3Json>() {}.type
-        else -> null
-      } ?: run {
-        throw IllegalArgumentException("Unsupported type: ${any::class.java}")
-      }
+      val type =
+        when (any) {
+          is Reminder -> object : TypeToken<Reminder>() {}.type
+          is Place -> object : TypeToken<Place>() {}.type
+          is Birthday -> object : TypeToken<Birthday>() {}.type
+          is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
+          is RecurPreset -> object : TypeToken<RecurPreset>() {}.type
+          is NoteV3Json -> object : TypeToken<NoteV3Json>() {}.type
+          else -> null
+        } ?: run {
+          throw IllegalArgumentException("Unsupported type: ${any::class.java}")
+        }
       Gson().toJson(any, type, writer)
       writer.close()
       output64.close()
@@ -97,7 +97,10 @@ class SyncDataConverterImpl : SyncDataConverter {
     }
   }
 
-  override suspend fun <T> parse(stream: InputStream, clazz: Class<T>): T {
+  override suspend fun <T> parse(
+    stream: InputStream,
+    clazz: Class<T>,
+  ): T {
     if (clazz == SettingsModel::class.java) {
       @Suppress("UNCHECKED_CAST")
       return convert(stream) as T
@@ -120,8 +123,8 @@ class SyncDataConverterImpl : SyncDataConverter {
    * @throws ClassNotFoundException if the serialized class is not found
    * @throws IllegalStateException if the deserialized object is not a Map
    */
-  private fun convert(stream: InputStream): SettingsModel {
-    return try {
+  private fun convert(stream: InputStream): SettingsModel =
+    try {
       val base64Input = Base64InputStream(stream, Base64.DEFAULT)
       val objectInput = ObjectInputStream(base64Input)
 
@@ -131,7 +134,7 @@ class SyncDataConverterImpl : SyncDataConverter {
         // Validate the deserialized object is a Map
         if (obj !is Map<*, *>) {
           throw IllegalStateException(
-            "Expected Map but got ${obj?.javaClass?.name ?: "null"}"
+            "Expected Map but got ${obj?.javaClass?.name ?: "null"}",
           )
         }
 
@@ -152,7 +155,6 @@ class SyncDataConverterImpl : SyncDataConverter {
       Logger.e(TAG, "SettingsConverter: convert unexpected error: $e")
       throw e
     }
-  }
 
   companion object {
     private const val TAG = "SyncDataConverter"

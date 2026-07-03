@@ -4,5 +4,5 @@ import com.elementary.tasks.core.text.UiTextFormat
 
 data class UiTextElement(
   val text: String,
-  val textFormat: UiTextFormat
+  val textFormat: UiTextFormat,
 )

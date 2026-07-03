@@ -9,7 +9,6 @@ import com.elementary.tasks.core.binding.views.HorizontalSelectorViewBinding
 import com.github.naz013.ui.common.Dialogues
 
 class HorizontalSelectorView : LinearLayout {
-
   private lateinit var binding: HorizontalSelectorViewBinding
   private var pointer: Int = 0
   private var mItemSelect: Int = 0
@@ -32,7 +31,7 @@ class HorizontalSelectorView : LinearLayout {
   constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
     context,
     attrs,
-    defStyle
+    defStyle,
   ) {
     init(context)
   }
@@ -126,7 +125,7 @@ class HorizontalSelectorView : LinearLayout {
     mItemSelect = pointer
     builder.setSingleChoiceItems(
       data.toTypedArray(),
-      mItemSelect
+      mItemSelect,
     ) { _, which ->
       mItemSelect = which
     }

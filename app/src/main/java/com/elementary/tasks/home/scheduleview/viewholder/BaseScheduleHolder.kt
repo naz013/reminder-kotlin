@@ -4,5 +4,5 @@ import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.binding.HolderBinding
 
 abstract class BaseScheduleHolder<B : ViewBinding>(
-  binding: B
+  binding: B,
 ) : HolderBinding<B>(binding)

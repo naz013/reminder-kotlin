@@ -15,9 +15,8 @@ import kotlinx.coroutines.launch
 class FullScreenMapViewModel(
   arguments: Bundle?,
   dispatcherProvider: DispatcherProvider,
-  private val getReminderByIdUseCase: GetReminderByIdUseCase
+  private val getReminderByIdUseCase: GetReminderByIdUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   val id = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 
   private val _reminder = mutableLiveDataOf<Reminder>()

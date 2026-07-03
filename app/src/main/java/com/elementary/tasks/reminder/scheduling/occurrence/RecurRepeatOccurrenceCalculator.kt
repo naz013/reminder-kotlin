@@ -17,7 +17,6 @@ import org.threeten.bp.LocalDateTime
 class RecurRepeatOccurrenceCalculator(
   private val recurEventManager: RecurEventManager,
 ) : ReminderOccurrenceCalculator {
-
   /**
    * Calculates occurrences for an RRULE-based repeating reminder.
    *
@@ -29,7 +28,7 @@ class RecurRepeatOccurrenceCalculator(
   override suspend fun calculateOccurrences(
     reminder: Reminder,
     fromDateTime: LocalDateTime,
-    numberOfOccurrences: Int
+    numberOfOccurrences: Int,
   ): List<LocalDateTime> {
     // Validate input
     if (numberOfOccurrences <= 0) {
@@ -50,10 +49,11 @@ class RecurRepeatOccurrenceCalculator(
     repeat(numberOfOccurrences) {
       if (endOfTheList) return@repeat
 
-      val nextOccurrence = recurEventManager.getNextAfterDateTime(
-        startDateTime,
-        rruleString
-      )
+      val nextOccurrence =
+        recurEventManager.getNextAfterDateTime(
+          startDateTime,
+          rruleString,
+        )
 
       if (nextOccurrence != null) {
         occurrences.add(nextOccurrence)

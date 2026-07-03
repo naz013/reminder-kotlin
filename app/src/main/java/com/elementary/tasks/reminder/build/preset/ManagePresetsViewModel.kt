@@ -17,9 +17,8 @@ class ManagePresetsViewModel(
   dispatcherProvider: DispatcherProvider,
   private val uiPresetListAdapter: UiPresetListAdapter,
   private val recurPresetRepository: RecurPresetRepository,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _presets = mutableLiveDataOf<List<UiPresetList>>()
   val presets = _presets.toLiveData()
 
@@ -36,7 +35,7 @@ class ManagePresetsViewModel(
         workType = WorkType.Delete,
         dataType = DataType.RecurPresets,
         id = id,
-        ids = null
+        ids = null,
       )
       loadPresets()
     }

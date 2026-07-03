@@ -18,33 +18,32 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class EditGroupFragment : BaseToolbarFragment<FragmentEditGroupBinding>() {
-
   private val viewModel by viewModel<EditGroupViewModel> { parametersOf(idFromIntent()) }
 
   private fun idFromIntent(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
 
-  override fun getTitle(): String {
-    return if (viewModel.hasId()) {
+  override fun getTitle(): String =
+    if (viewModel.hasId()) {
       getString(R.string.change_group)
     } else {
       getString(R.string.create_group)
     }
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentEditGroupBinding {
-    return FragmentEditGroupBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentEditGroupBinding = FragmentEditGroupBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the group screen for id: ${idFromIntent()}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     binding.colorSlider.setColors(ThemeProvider.colorsForSliderThemed(requireContext()))
     binding.colorSlider.setSelectorColorResource(
@@ -52,7 +51,7 @@ class EditGroupFragment : BaseToolbarFragment<FragmentEditGroupBinding>() {
         R.color.pureWhite
       } else {
         R.color.pureBlack
-      }
+      },
     )
     binding.colorSlider.setSelection(viewModel.sliderPosition)
     binding.colorSlider.setListener { position, _ ->
@@ -82,7 +81,7 @@ class EditGroupFragment : BaseToolbarFragment<FragmentEditGroupBinding>() {
       },
       menuModifier = { menu ->
         menu.getItem(1).isVisible = !viewModel.isFromFile && viewModel.canBeDeleted
-      }
+      },
     )
 
     initViewModel()
@@ -116,7 +115,10 @@ class EditGroupFragment : BaseToolbarFragment<FragmentEditGroupBinding>() {
   }
 
   private fun saveGroup(newId: Boolean = false) {
-    val text = binding.nameInput.text.toString().trim()
+    val text =
+      binding.nameInput.text
+        .toString()
+        .trim()
     if (text.isEmpty()) {
       binding.nameLayout.error = getString(R.string.must_be_not_empty)
       binding.nameLayout.isErrorEnabled = true
@@ -126,26 +128,24 @@ class EditGroupFragment : BaseToolbarFragment<FragmentEditGroupBinding>() {
       text,
       binding.colorSlider.selectedItem,
       binding.defaultCheck.isChecked,
-      newId
+      newId,
     )
   }
 
   private fun askCopySaving() {
     if (viewModel.isFromFile && viewModel.hasSameInDb) {
-      dialogues.getMaterialDialog(requireContext())
+      dialogues
+        .getMaterialDialog(requireContext())
         .setMessage(R.string.same_group_message)
         .setPositiveButton(R.string.keep) { dialogInterface, _ ->
           dialogInterface.dismiss()
           saveGroup(true)
-        }
-        .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+        }.setNegativeButton(R.string.replace) { dialogInterface, _ ->
           dialogInterface.dismiss()
           saveGroup()
-        }
-        .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+        }.setNeutralButton(R.string.cancel) { dialogInterface, _ ->
           dialogInterface.dismiss()
-        }
-        .create()
+        }.create()
         .show()
     } else {
       saveGroup()

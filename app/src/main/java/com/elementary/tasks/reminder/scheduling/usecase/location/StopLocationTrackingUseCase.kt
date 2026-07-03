@@ -16,15 +16,18 @@ import com.github.naz013.repository.ReminderRepository
 class StopLocationTrackingUseCase(
   private val context: Context,
   private val reminderRepository: ReminderRepository,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
 ) {
-
-  suspend operator fun invoke(reminder: Reminder, isPaused: Boolean) {
-    val list = reminderRepository.getAllTypes(
-      active = true,
-      removed = false,
-      types = Reminder.gpsTypes()
-    )
+  suspend operator fun invoke(
+    reminder: Reminder,
+    isPaused: Boolean,
+  ) {
+    val list =
+      reminderRepository.getAllTypes(
+        active = true,
+        removed = false,
+        types = Reminder.gpsTypes(),
+      )
     if (list.isEmpty()) {
       SuperUtil.stopService(context, GeolocationService::class.java)
       Logger.i(TAG, "No active geolocation reminders. Stopping service.")

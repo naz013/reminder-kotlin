@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Delete
@@ -48,6 +49,9 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import com.github.naz013.ui.common.compose.AppTheme
+
+private val PopupMenuCornerRadius = 16.dp
+private val PopupMenuIconSize = 20.dp
 
 /**
  * Represents a menu item in the popup menu.
@@ -117,6 +121,7 @@ fun PopupMenu(
       expanded = expanded,
       onDismissRequest = onDismissRequest,
       modifier = modifier,
+      shape = RoundedCornerShape(PopupMenuCornerRadius),
       offset = offset,
       properties = PopupProperties(focusable = true)
     ) {
@@ -154,7 +159,7 @@ fun PopupMenu(
     ) {
       Surface(
         modifier = modifier.wrapContentSize(),
-        shape = MaterialTheme.shapes.extraSmall,
+        shape = RoundedCornerShape(PopupMenuCornerRadius),
         tonalElevation = 8.dp,
         color = MaterialTheme.colorScheme.surface
       ) {
@@ -222,7 +227,7 @@ private fun PopupMenuItemContent(
                 Icon(
                   imageVector = iconVector,
                   contentDescription = null,
-                  modifier = Modifier.size(24.dp),
+                  modifier = Modifier.size(PopupMenuIconSize),
                   tint = if (item.enabled) {
                     LocalContentColor.current
                   } else {
@@ -233,7 +238,7 @@ private fun PopupMenuItemContent(
                 Icon(
                   painter = painterResource(id = iconResId),
                   contentDescription = null,
-                  modifier = Modifier.size(24.dp),
+                  modifier = Modifier.size(PopupMenuIconSize),
                   tint = if (item.enabled) {
                     LocalContentColor.current
                   } else {
@@ -503,7 +508,7 @@ fun AnchoredPopupMenu(
       ) {
         Surface(
           modifier = Modifier.wrapContentSize(),
-          shape = MaterialTheme.shapes.extraSmall,
+          shape = RoundedCornerShape(PopupMenuCornerRadius),
           tonalElevation = 8.dp,
           color = MaterialTheme.colorScheme.surface
         ) {

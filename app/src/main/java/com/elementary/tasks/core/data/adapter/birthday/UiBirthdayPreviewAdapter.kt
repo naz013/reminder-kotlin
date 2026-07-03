@@ -10,28 +10,30 @@ import org.threeten.bp.LocalTime
 class UiBirthdayPreviewAdapter(
   private val contactsReader: ContactsReader,
   private val dateTimeManager: DateTimeManager,
-  private val modelDateTimeFormatter: ModelDateTimeFormatter
+  private val modelDateTimeFormatter: ModelDateTimeFormatter,
 ) {
-
   fun convert(birthday: Birthday): UiBirthdayPreview {
     val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
     val dateOfBirth = dateTimeManager.parseBirthdayDate(birthday.date)
-    val dateOfBirthFormatted = dateOfBirth?.let {
-      dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
-    }
-    val futureBirthday = dateOfBirth?.let {
-      modelDateTimeFormatter.getFutureBirthdayDate(
-        birthdayTime = birthTime,
-        birthdayDate = it,
-        birthday = birthday
-      )
-    }
+    val dateOfBirthFormatted =
+      dateOfBirth?.let {
+        dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
+      }
+    val futureBirthday =
+      dateOfBirth?.let {
+        modelDateTimeFormatter.getFutureBirthdayDate(
+          birthdayTime = birthTime,
+          birthdayDate = it,
+          birthday = birthday,
+        )
+      }
     val nextBirthdayDate = futureBirthday?.let { dateTimeManager.getFullDateTime(it) }
-    val contactId = if (birthday.number.isNotEmpty()) {
-      contactsReader.getIdFromNumber(birthday.number)
-    } else {
-      null
-    }
+    val contactId =
+      if (birthday.number.isNotEmpty()) {
+        contactsReader.getIdFromNumber(birthday.number)
+      } else {
+        null
+      }
 
     return UiBirthdayPreview(
       uuId = birthday.uuId,
@@ -41,9 +43,11 @@ class UiBirthdayPreviewAdapter(
       contactName = contactId?.let { contactsReader.getNameFromNumber(birthday.number) },
       dateOfBirth = dateOfBirthFormatted,
       nextBirthdayDate = nextBirthdayDate,
-      ageFormatted = modelDateTimeFormatter.getAgeFormatted(birthday.date)
-        .takeIf { !birthday.ignoreYear },
-      hasBirthdayToday = dateOfBirth?.let { dateTimeManager.isSameDay(it) } ?: false
+      ageFormatted =
+        modelDateTimeFormatter
+          .getAgeFormatted(birthday.date)
+          .takeIf { !birthday.ignoreYear },
+      hasBirthdayToday = dateOfBirth?.let { dateTimeManager.isSameDay(it) } ?: false,
     )
   }
 }

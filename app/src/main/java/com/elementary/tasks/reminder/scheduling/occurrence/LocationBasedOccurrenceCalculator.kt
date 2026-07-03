@@ -12,7 +12,6 @@ import org.threeten.bp.LocalDateTime
  * occurrences.
  */
 class LocationBasedOccurrenceCalculator : ReminderOccurrenceCalculator {
-
   /**
    * Calculates occurrences for a location-based reminder.
    *
@@ -24,7 +23,7 @@ class LocationBasedOccurrenceCalculator : ReminderOccurrenceCalculator {
   override suspend fun calculateOccurrences(
     reminder: Reminder,
     fromDateTime: LocalDateTime,
-    numberOfOccurrences: Int
+    numberOfOccurrences: Int,
   ): List<LocalDateTime> {
     Logger.d(TAG, "calculateOccurrences: LocationBasedOccurrenceCalculator - location-based reminders have no time occurrences")
 

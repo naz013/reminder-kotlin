@@ -9,7 +9,7 @@ import org.threeten.bp.LocalTime
 @Parcelize
 data class ReminderDatetimeTypeDeepLinkData(
   val type: Int,
-  val dateTime: LocalDateTime
+  val dateTime: LocalDateTime,
 ) : DeepLinkData(IntentKey.REMINDER_DATETIME_TYPE)
 
 @Parcelize
@@ -17,18 +17,18 @@ data object ReminderTodoTypeDeepLinkData : DeepLinkData(IntentKey.REMINDER_TODO_
 
 @Parcelize
 data class ReminderTextDeepLinkData(
-  val text: String
+  val text: String,
 ) : DeepLinkData(IntentKey.REMINDER_TEXT)
 
 @Parcelize
 data class BirthdayDateDeepLinkData(
-  val date: LocalDate
+  val date: LocalDate,
 ) : DeepLinkData(IntentKey.BIRTHDAY_DATE)
 
 @Parcelize
 data class GoogleTaskDateTimeDeepLinkData(
   val date: LocalDate,
-  val time: LocalTime?
+  val time: LocalTime?,
 ) : DeepLinkData(IntentKey.GOOGLE_TASK_DATE_TIME)
 
 // Name structure, first word: prefix, second and others: parameters

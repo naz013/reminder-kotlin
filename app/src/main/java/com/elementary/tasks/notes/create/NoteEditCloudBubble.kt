@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.GenericShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,18 +44,19 @@ fun NoteEditCloudBubble(
   containerColor: Color,
   contentColor: Color,
   modifier: Modifier = Modifier,
-  content: @Composable () -> Unit
+  content: @Composable () -> Unit,
 ) {
   val density = LocalDensity.current
   var arrowFraction by remember { mutableFloatStateOf(0.5f) }
-  val positionProvider = remember(density) {
-    CloudBubblePositionProvider(density) { arrowFraction = it }
-  }
+  val positionProvider =
+    remember(density) {
+      CloudBubblePositionProvider(density) { arrowFraction = it }
+    }
 
   Popup(
     popupPositionProvider = positionProvider,
     onDismissRequest = onDismissRequest,
-    properties = PopupProperties(focusable = true)
+    properties = PopupProperties(focusable = true),
   ) {
     Surface(
       modifier = modifier.width(BUBBLE_WIDTH),
@@ -64,15 +64,16 @@ fun NoteEditCloudBubble(
       color = containerColor,
       contentColor = contentColor,
       shadowElevation = 6.dp,
-      tonalElevation = 4.dp
+      tonalElevation = 4.dp,
     ) {
       Box(
-        modifier = Modifier.padding(
-          start = 16.dp,
-          end = 16.dp,
-          top = 12.dp,
-          bottom = 12.dp + TAIL_HEIGHT
-        )
+        modifier =
+          Modifier.padding(
+            start = 16.dp,
+            end = 16.dp,
+            top = 12.dp,
+            bottom = 12.dp + TAIL_HEIGHT,
+          ),
       ) {
         content()
       }
@@ -80,15 +81,19 @@ fun NoteEditCloudBubble(
   }
 }
 
-private fun cloudBubbleShape(arrowFraction: Float, density: Density) = GenericShape { size, _ ->
+private fun cloudBubbleShape(
+  arrowFraction: Float,
+  density: Density,
+) = GenericShape { size, _ ->
   val tailWidthPx = with(density) { TAIL_WIDTH.toPx() }
   val tailHeightPx = with(density) { TAIL_HEIGHT.toPx() }
   val cornerPx = with(density) { BUBBLE_CORNER_RADIUS.toPx() }
   val bodyHeight = (size.height - tailHeightPx).coerceAtLeast(0f)
-  val arrowX = (size.width * arrowFraction).coerceIn(
-    tailWidthPx,
-    (size.width - tailWidthPx).coerceAtLeast(tailWidthPx)
-  )
+  val arrowX =
+    (size.width * arrowFraction).coerceIn(
+      tailWidthPx,
+      (size.width - tailWidthPx).coerceAtLeast(tailWidthPx),
+    )
 
   addRoundRect(
     RoundRect(
@@ -96,8 +101,8 @@ private fun cloudBubbleShape(arrowFraction: Float, density: Density) = GenericSh
       top = 0f,
       right = size.width,
       bottom = bodyHeight,
-      cornerRadius = CornerRadius(cornerPx, cornerPx)
-    )
+      cornerRadius = CornerRadius(cornerPx, cornerPx),
+    ),
   )
   moveTo(arrowX - tailWidthPx / 2, bodyHeight)
   lineTo(arrowX, size.height)
@@ -107,13 +112,13 @@ private fun cloudBubbleShape(arrowFraction: Float, density: Density) = GenericSh
 
 private class CloudBubblePositionProvider(
   private val density: Density,
-  private val onArrowFraction: (Float) -> Unit
+  private val onArrowFraction: (Float) -> Unit,
 ) : PopupPositionProvider {
   override fun calculatePosition(
     anchorBounds: IntRect,
     windowSize: IntSize,
     layoutDirection: LayoutDirection,
-    popupContentSize: IntSize
+    popupContentSize: IntSize,
   ): IntOffset {
     val marginPx = with(density) { BUBBLE_MARGIN.toPx() }.toInt()
     val spacingPx = with(density) { BUBBLE_SPACING.toPx() }.toInt()
@@ -124,11 +129,12 @@ private class CloudBubblePositionProvider(
     val clampedLeft = idealLeft.coerceIn(marginPx, maxLeft)
 
     val arrowX = anchorCenterX - clampedLeft
-    val fraction = if (popupContentSize.width > 0) {
-      arrowX.toFloat() / popupContentSize.width
-    } else {
-      0.5f
-    }
+    val fraction =
+      if (popupContentSize.width > 0) {
+        arrowX.toFloat() / popupContentSize.width
+      } else {
+        0.5f
+      }
     onArrowFraction(fraction.coerceIn(0.12f, 0.88f))
 
     val y = anchorBounds.top - popupContentSize.height - spacingPx

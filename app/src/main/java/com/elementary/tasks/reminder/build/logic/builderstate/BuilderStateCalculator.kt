@@ -6,16 +6,14 @@ import com.elementary.tasks.reminder.build.ReadyState
 import com.github.naz013.logging.Logger
 
 class BuilderStateCalculator {
-
-  operator fun invoke(type: Int): BuilderState {
-    return if (type != 0) {
+  operator fun invoke(type: Int): BuilderState =
+    if (type != 0) {
       Logger.i(TAG, "Builder state is ready")
       ReadyState
     } else {
       Logger.i(TAG, "Builder state is empty")
       EmptyState
     }
-  }
 
   companion object {
     private const val TAG = "BuilderStateCalculator"

@@ -2,15 +2,15 @@ package com.elementary.tasks.reminder.build.formatter
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.bi.TimerExclusion
+import com.github.naz013.common.datetime.DateTimeManager
 
 class TimerExclusionFormatter(
   private val context: Context,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
 ) : Formatter<TimerExclusion>() {
-  override fun format(timerExclusion: TimerExclusion): String {
-    return if (timerExclusion.hours.isNotEmpty()) {
+  override fun format(timerExclusion: TimerExclusion): String =
+    if (timerExclusion.hours.isNotEmpty()) {
       context.getString(R.string.hours) + " " + timerExclusion.hours.joinToString(separator = ", ")
     } else if (timerExclusion.from.isNotEmpty() && timerExclusion.to.isNotEmpty()) {
       val fromTime = dateTimeManager.toLocalTime(timerExclusion.from)
@@ -24,5 +24,4 @@ class TimerExclusionFormatter(
     } else {
       context.getString(R.string.builder_not_selected)
     }
-  }
 }

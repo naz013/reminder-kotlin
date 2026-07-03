@@ -31,93 +31,105 @@ import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDate
 
 class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
-
   private val themeProvider by inject<ThemeProvider>()
   private val viewModel by viewModel<DayViewModel> { parametersOf(getDate()) }
 
-  private val dayEventsAdapter = DayEventsAdapter(
-    isDark = themeProvider.isDark,
-    eventListener = object : ActionsListener<EventModel> {
-      override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
-        if (t == null) return
-        when (t) {
-          is BirthdayEventModel -> {
-            birthdayResolver.resolveAction(view, t.model, actions)
-          }
+  private val dayEventsAdapter =
+    DayEventsAdapter(
+      isDark = themeProvider.isDark,
+      eventListener =
+        object : ActionsListener<EventModel> {
+          override fun onAction(
+            view: View,
+            position: Int,
+            t: EventModel?,
+            actions: ListActions,
+          ) {
+            if (t == null) return
+            when (t) {
+              is BirthdayEventModel -> {
+                birthdayResolver.resolveAction(view, t.model, actions)
+              }
 
-          is ReminderEventModel -> {
-            reminderResolver.resolveAction(view, t.model, actions)
+              is ReminderEventModel -> {
+                reminderResolver.resolveAction(view, t.model, actions)
+              }
+            }
           }
-        }
-      }
-    }
-  )
-  private val birthdayResolver = BirthdayResolver(
-    dialogAction = { dialogues },
-    deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) },
-    birthdayEditAction = {
-      findNavController().navigate(
-        R.id.editBirthdayFragment,
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, it.uuId)
         },
-        NavigationAnimations.inDepthNavOptions()
-      )
-    },
-    birthdayOpenAction = {
-      findNavController().navigate(
-        R.id.previewBirthdayFragment,
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, it.uuId)
-        },
-        NavigationAnimations.inDepthNavOptions()
-      )
-    }
-  )
-  private val reminderResolver = ReminderResolver(
-    dialogAction = { dialogues },
-    toggleAction = { },
-    deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
-    skipAction = { reminder -> viewModel.skip(reminder) },
-    openAction = {
-      findNavController().navigate(
-        R.id.previewReminderFragment,
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, it.id)
-        },
-        NavigationAnimations.inDepthNavOptions()
-      )
-    },
-    editAction = {
-      findNavController().navigate(
-        R.id.buildReminderFragment,
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, it.id)
-        },
-        NavigationAnimations.inDepthNavOptions()
-      )
-    }
-  )
+    )
+  private val birthdayResolver =
+    BirthdayResolver(
+      dialogAction = { dialogues },
+      deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) },
+      birthdayEditAction = {
+        findNavController().navigate(
+          R.id.editBirthdayFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.uuId)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      },
+      birthdayOpenAction = {
+        findNavController().navigate(
+          R.id.previewBirthdayFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.uuId)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      },
+    )
+  private val reminderResolver =
+    ReminderResolver(
+      dialogAction = { dialogues },
+      toggleAction = { },
+      deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
+      skipAction = { reminder -> viewModel.skip(reminder) },
+      openAction = {
+        findNavController().navigate(
+          R.id.previewReminderFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.id)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      },
+      editAction = {
+        findNavController().navigate(
+          R.id.buildReminderFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, it.id)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      },
+    )
 
-  private fun getDate(): LocalDate {
-    return arguments?.readParcelable(ARGUMENT_PAGE_NUMBER, DayPagerItem::class.java)
+  private fun getDate(): LocalDate =
+    arguments
+      ?.readParcelable(ARGUMENT_PAGE_NUMBER, DayPagerItem::class.java)
       ?.date
       ?: LocalDate.now()
-  }
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentEventsListBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     if (isTablet()) {
-      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(
-        resources.getInteger(R.integer.num_of_cols),
-        StaggeredGridLayoutManager.VERTICAL
-      )
+      binding.recyclerView.layoutManager =
+        StaggeredGridLayoutManager(
+          resources.getInteger(R.integer.num_of_cols),
+          StaggeredGridLayoutManager.VERTICAL,
+        )
     } else {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
@@ -143,6 +155,7 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
   companion object {
     private const val ARGUMENT_PAGE_NUMBER = "arg_page"
+
     fun newInstance(item: DayPagerItem): DayEventsListFragment {
       val pageFragment = DayEventsListFragment()
       val bundle = Bundle()

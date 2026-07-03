@@ -3,17 +3,16 @@ package com.elementary.tasks.reminder.preview.adapter
 import android.view.ViewGroup
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
-import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemReminderPreviewStatusBinding
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewStatus
+import com.github.naz013.ui.common.view.inflater
 
 class ReminderStatusViewHolder(
   parent: ViewGroup,
   onToggleClicked: (Int) -> Unit,
   binding: ListItemReminderPreviewStatusBinding =
-    ListItemReminderPreviewStatusBinding.inflate(parent.inflater(), parent, false)
+    ListItemReminderPreviewStatusBinding.inflate(parent.inflater(), parent, false),
 ) : HolderBinding<ListItemReminderPreviewStatusBinding>(binding) {
-
   init {
     binding.statusSwitchView.isFocusableInTouchMode = false
     binding.root.setOnClickListener {

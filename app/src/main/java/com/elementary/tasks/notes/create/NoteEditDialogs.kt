@@ -11,7 +11,7 @@ import com.elementary.tasks.R
 @Composable
 fun DeleteNoteDialog(
   onDismiss: () -> Unit,
-  onConfirm: () -> Unit
+  onConfirm: () -> Unit,
 ) {
   AlertDialog(
     onDismissRequest = onDismiss,
@@ -28,7 +28,7 @@ fun DeleteNoteDialog(
       TextButton(onClick = onDismiss) {
         Text(stringResource(R.string.no))
       }
-    }
+    },
   )
 }
 
@@ -36,7 +36,7 @@ fun DeleteNoteDialog(
 fun SameNoteDialog(
   onDismiss: () -> Unit,
   onKeep: () -> Unit,
-  onReplace: () -> Unit
+  onReplace: () -> Unit,
 ) {
   AlertDialog(
     onDismissRequest = onDismiss,
@@ -61,6 +61,6 @@ fun SameNoteDialog(
           Text(stringResource(R.string.cancel))
         }
       }
-    }
+    },
   )
 }

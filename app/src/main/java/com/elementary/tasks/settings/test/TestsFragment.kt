@@ -28,7 +28,6 @@ import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDateTime
 
 class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
-
   private val reviewsApi by inject<ReviewsApi>()
   private val reminderRepository by inject<ReminderRepository>()
   private val dateTimeManager by inject<DateTimeManager>()
@@ -37,10 +36,13 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) = FragmentSettingsTestsBinding.inflate(inflater, container, false)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
 
     binding.birthdayDialogWindow.setOnClickListener { showBirthdayActionSelectionDialog() }
@@ -52,12 +54,13 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
       reviewsApi.showFeedbackForm(
         context = requireContext(),
         title = "Write a review",
-        appSource = if (BuildParams.isPro) {
-          AppSource.PRO
-        } else {
-          AppSource.FREE
-        },
-        allowLogsAttachment = false
+        appSource =
+          if (BuildParams.isPro) {
+            AppSource.PRO
+          } else {
+            AppSource.FREE
+          },
+        allowLogsAttachment = false,
       )
     }
     binding.developerOptions.setOnClickListener {
@@ -67,7 +70,8 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
   private fun showReminderActionSelectionDialog() {
     var selectedItem = 0
-    dialogues.getMaterialDialog(requireContext())
+    dialogues
+      .getMaterialDialog(requireContext())
       .setTitle("Select action to test")
       .setSingleChoiceItems(
         arrayOf(
@@ -78,21 +82,18 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
           "With SMS action",
           "With Email action",
           "With Open URL action",
-          "With Open Chrome Browser action"
+          "With Open Chrome Browser action",
         ),
         selectedItem,
         { _, which ->
           selectedItem = which
-        }
-      )
-      .setPositiveButton("Run") { dialog, _ ->
+        },
+      ).setPositiveButton("Run") { dialog, _ ->
         dialog.dismiss()
         saveAndOpenReminderScreen(prepareReminder(selectedItem))
-      }
-      .setNegativeButton("Cancel") { dialog, _ ->
+      }.setNegativeButton("Cancel") { dialog, _ ->
         dialog.dismiss()
-      }
-      .show()
+      }.show()
   }
 
   private fun prepareReminder(selectedItem: Int): Reminder {
@@ -104,16 +105,17 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
       }
       1 -> {
         reminder.summary = "This is a recurring daily reminder."
-        reminder.repeatInterval = 24 * 60 * 60 * 1000L //daily
+        reminder.repeatInterval = 24 * 60 * 60 * 1000L // daily
       }
       2 -> {
         reminder.summary = "This is a reminder with todo."
-        reminder.shoppings = listOf(
-          ShopItem(summary = "Milk", createTime = "", isChecked = false),
-          ShopItem(summary = "Bread", createTime = "", isChecked = false),
-          ShopItem(summary = "Eggs", createTime = "", isChecked = false),
-          ShopItem(summary = "Butter", createTime = "", isChecked = true)
-        )
+        reminder.shoppings =
+          listOf(
+            ShopItem(summary = "Milk", createTime = "", isChecked = false),
+            ShopItem(summary = "Bread", createTime = "", isChecked = false),
+            ShopItem(summary = "Eggs", createTime = "", isChecked = false),
+            ShopItem(summary = "Butter", createTime = "", isChecked = true),
+          )
       }
       3 -> {
         reminder.summary = "This is a reminder with call action."
@@ -162,56 +164,57 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
   private fun showBirthdayActionSelectionDialog() {
     var selectedItem = 0
-    dialogues.getMaterialDialog(requireContext())
+    dialogues
+      .getMaterialDialog(requireContext())
       .setTitle("Select action to test")
       .setSingleChoiceItems(
         arrayOf(
           "Simple birthday",
           "Birthday with number",
-          "Birthday without age"
+          "Birthday without age",
         ),
         selectedItem,
         { _, which ->
           selectedItem = which
-        }
-      )
-      .setPositiveButton("Run") { dialog, _ ->
+        },
+      ).setPositiveButton("Run") { dialog, _ ->
         dialog.dismiss()
         saveAndOpenBirthdayScreen(prepareBirthday(selectedItem))
-      }
-      .setNegativeButton("Cancel") { dialog, _ ->
+      }.setNegativeButton("Cancel") { dialog, _ ->
         dialog.dismiss()
-      }
-      .show()
+      }.show()
   }
 
   private fun prepareBirthday(selectedItem: Int): Birthday {
     var birthday = Birthday(syncState = SyncState.Synced)
     when (selectedItem) {
       0 -> {
-        birthday = Birthday(
-          name = "John Doe",
-          date = "1990-05-15",
-          number = "",
-          syncState = SyncState.Synced
-        )
+        birthday =
+          Birthday(
+            name = "John Doe",
+            date = "1990-05-15",
+            number = "",
+            syncState = SyncState.Synced,
+          )
       }
       1 -> {
-        birthday = Birthday(
-          name = "Jane Smith",
-          date = "1985-10-20",
-          number = "+1234567890",
-          syncState = SyncState.Synced
-        )
+        birthday =
+          Birthday(
+            name = "Jane Smith",
+            date = "1985-10-20",
+            number = "+1234567890",
+            syncState = SyncState.Synced,
+          )
       }
       2 -> {
-        birthday = Birthday(
-          name = "Alice Johnson",
-          date = "2000-07-25",
-          number = "",
-          ignoreYear = true,
-          syncState = SyncState.Synced
-        )
+        birthday =
+          Birthday(
+            name = "Alice Johnson",
+            date = "2000-07-25",
+            number = "",
+            ignoreYear = true,
+            syncState = SyncState.Synced,
+          )
       }
     }
     return birthday

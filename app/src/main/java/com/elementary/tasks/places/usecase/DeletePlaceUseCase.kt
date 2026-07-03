@@ -8,9 +8,8 @@ import com.github.naz013.sync.DataType
 
 class DeletePlaceUseCase(
   private val placeRepository: PlaceRepository,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {
-
   suspend operator fun invoke(placeId: String) {
     val place = placeRepository.getById(placeId)
     if (place == null) {
@@ -20,7 +19,7 @@ class DeletePlaceUseCase(
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Delete,
       dataType = DataType.Places,
-      id = placeId
+      id = placeId,
     )
     Logger.i(TAG, "Deleted place with id = $placeId")
   }

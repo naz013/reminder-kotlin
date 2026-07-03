@@ -8,11 +8,10 @@ import com.github.naz013.icalendar.RecurParamType
 
 class BiTypeForUiAdapter(
   private val textProvider: TextProvider,
-  private val paramToTextAdapter: ParamToTextAdapter
+  private val paramToTextAdapter: ParamToTextAdapter,
 ) {
-
-  fun getUiString(biType: BiType): String {
-    return when (biType) {
+  fun getUiString(biType: BiType): String =
+    when (biType) {
       BiType.DATE -> textProvider.getString(R.string.builder_date)
       BiType.TIME -> textProvider.getString(R.string.time)
       BiType.SUMMARY -> textProvider.getString(R.string.builder_summary)
@@ -89,14 +88,11 @@ class BiTypeForUiAdapter(
         }
       }
     }
-  }
 
-  private fun iCalendarPrefix(): String {
-    return textProvider.getString(R.string.builder_icalendar)
-  }
+  private fun iCalendarPrefix(): String = textProvider.getString(R.string.builder_icalendar)
 
-  private fun BiType.toRecurParamType(): RecurParamType? {
-    return when (this) {
+  private fun BiType.toRecurParamType(): RecurParamType? =
+    when (this) {
       BiType.ICAL_BYWEEKNO -> RecurParamType.BYWEEKNO
       BiType.ICAL_BYYEARDAY -> RecurParamType.BYYEARDAY
       BiType.ICAL_BYHOUR -> RecurParamType.BYHOUR
@@ -111,5 +107,4 @@ class BiTypeForUiAdapter(
       BiType.ICAL_FREQ -> RecurParamType.FREQ
       else -> null
     }
-  }
 }

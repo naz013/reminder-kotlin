@@ -30,20 +30,23 @@ import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
 class MemoryUtil {
-
-  fun toStream(any: Any, outputStream: OutputStream): Boolean {
+  fun toStream(
+    any: Any,
+    outputStream: OutputStream,
+  ): Boolean {
     try {
       val output64 = Base64OutputStream(outputStream, Base64.DEFAULT)
       val bufferedWriter = BufferedWriter(OutputStreamWriter(output64, StandardCharsets.UTF_8))
       val writer = JsonWriter(bufferedWriter)
-      val type = when (any) {
-        is Reminder -> object : TypeToken<Reminder>() {}.type
-        is Place -> object : TypeToken<Place>() {}.type
-        is Birthday -> object : TypeToken<Birthday>() {}.type
-        is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
-        is SharedNote -> object : TypeToken<SharedNote>() {}.type
-        else -> null
-      } ?: return false
+      val type =
+        when (any) {
+          is Reminder -> object : TypeToken<Reminder>() {}.type
+          is Place -> object : TypeToken<Place>() {}.type
+          is Birthday -> object : TypeToken<Birthday>() {}.type
+          is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
+          is SharedNote -> object : TypeToken<SharedNote>() {}.type
+          else -> null
+        } ?: return false
       Logger.d(TAG, "toStream: $type, $any")
       try {
         Gson().toJson(any, type, writer)
@@ -61,7 +64,10 @@ class MemoryUtil {
     }
   }
 
-  fun toStream(inputStream: InputStream, outputStream: OutputStream): Boolean {
+  fun toStream(
+    inputStream: InputStream,
+    outputStream: OutputStream,
+  ): Boolean {
     try {
       inputStream.copyTo(outputStream)
       return true
@@ -86,8 +92,8 @@ class MemoryUtil {
     val prefsDir = getDir(DIR_PREFS)
     val parent = getDir("")
 
-    private fun getDir(directory: String): File? {
-      return if (isSdPresent) {
+    private fun getDir(directory: String): File? =
+      if (isSdPresent) {
         val sdPath = Environment.getExternalStorageDirectory()
         val dir = File("$sdPath/JustReminder/$directory")
         if (!dir.exists() && dir.mkdirs()) {
@@ -98,9 +104,12 @@ class MemoryUtil {
       } else {
         null
       }
-    }
 
-    fun readFromUri(context: Context, uri: Uri, source: String = ""): Any? {
+    fun readFromUri(
+      context: Context,
+      uri: Uri,
+      source: String = "",
+    ): Any? {
       val cr = context.contentResolver ?: return null
       var inputStream: InputStream? = null
       try {
@@ -112,49 +121,58 @@ class MemoryUtil {
       if (inputStream == null) {
         return null
       }
-      val cursor: Cursor? = cr.query(
-        /* uri = */ uri,
-        /* projection = */ null,
-        /* selection = */ null,
-        /* selectionArgs = */ null,
-        /* sortOrder = */ null,
-        /* cancellationSignal = */ null
-      )
+      val cursor: Cursor? =
+        cr.query(
+          // uri =
+          uri,
+          // projection =
+          null,
+          // selection =
+          null,
+          // selectionArgs =
+          null,
+          // sortOrder =
+          null,
+          // cancellationSignal =
+          null,
+        )
 
-      val name = try {
-        cursor?.use {
-          if (it.moveToFirst()) {
-            it.readString(OpenableColumns.DISPLAY_NAME) ?: source
-          } else {
-            source
-          }
-        } ?: source
-      } catch (e: Exception) {
-        source
-      }
+      val name =
+        try {
+          cursor?.use {
+            if (it.moveToFirst()) {
+              it.readString(OpenableColumns.DISPLAY_NAME) ?: source
+            } else {
+              source
+            }
+          } ?: source
+        } catch (e: Exception) {
+          source
+        }
       Logger.i(TAG, "Reading from uri: $name, source: $source")
       return try {
         val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
         val bufferedReader = BufferedReader(InputStreamReader(output64))
         val reader = JsonReader(bufferedReader)
-        val obj: Any? = when {
-          name.endsWith(FileConfig.FILE_NAME_PLACE) -> {
-            Gson().fromJson<Place>(reader, object : TypeToken<Place>() {}.type)
+        val obj: Any? =
+          when {
+            name.endsWith(FileConfig.FILE_NAME_PLACE) -> {
+              Gson().fromJson<Place>(reader, object : TypeToken<Place>() {}.type)
+            }
+            name.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
+              Gson().fromJson<Reminder>(reader, object : TypeToken<Reminder>() {}.type)
+            }
+            name.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
+              Gson().fromJson<Birthday>(reader, object : TypeToken<Birthday>() {}.type)
+            }
+            name.endsWith(FileConfig.FILE_NAME_GROUP) -> {
+              Gson().fromJson<ReminderGroup>(reader, object : TypeToken<ReminderGroup>() {}.type)
+            }
+            name.endsWith(SharedNote.FILE_EXTENSION) -> {
+              Gson().fromJson<SharedNote>(reader, object : TypeToken<SharedNote>() {}.type)
+            }
+            else -> null
           }
-          name.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
-            Gson().fromJson<Reminder>(reader, object : TypeToken<Reminder>() {}.type)
-          }
-          name.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
-            Gson().fromJson<Birthday>(reader, object : TypeToken<Birthday>() {}.type)
-          }
-          name.endsWith(FileConfig.FILE_NAME_GROUP) -> {
-            Gson().fromJson<ReminderGroup>(reader, object : TypeToken<ReminderGroup>() {}.type)
-          }
-          name.endsWith(SharedNote.FILE_EXTENSION) -> {
-            Gson().fromJson<SharedNote>(reader, object : TypeToken<SharedNote>() {}.type)
-          }
-          else -> null
-        }
         Logger.d(TAG, "Read object: $obj")
         obj
       } catch (e: Exception) {

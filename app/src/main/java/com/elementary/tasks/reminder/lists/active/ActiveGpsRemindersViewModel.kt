@@ -12,18 +12,18 @@ import com.github.naz013.repository.table.Table
 class ActiveGpsRemindersViewModel(
   reminderRepository: ReminderRepository,
   dispatcherProvider: DispatcherProvider,
-  tableChangeListenerFactory: TableChangeListenerFactory
+  tableChangeListenerFactory: TableChangeListenerFactory,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
-  val events = viewModelScope.observeTable(
-    table = Table.Reminder,
-    tableChangeListenerFactory = tableChangeListenerFactory,
-    queryProducer = {
-      reminderRepository.getAllTypes(
-        active = true,
-        removed = false,
-        types = Reminder.gpsTypes()
-      )
-    }
-  )
+  val events =
+    viewModelScope.observeTable(
+      table = Table.Reminder,
+      tableChangeListenerFactory = tableChangeListenerFactory,
+      queryProducer = {
+        reminderRepository.getAllTypes(
+          active = true,
+          removed = false,
+          types = Reminder.gpsTypes(),
+        )
+      },
+    )
 }

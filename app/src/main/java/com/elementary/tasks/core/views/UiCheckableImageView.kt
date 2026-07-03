@@ -7,7 +7,6 @@ import com.elementary.tasks.R
 import com.github.naz013.logging.Logger
 
 class UiCheckableImageView : AppCompatImageView {
-
   private var mIsChecked: Boolean = false
   private var checkedIcon: Int = 0
   private var uncheckedIcon: Int = 0
@@ -23,14 +22,12 @@ class UiCheckableImageView : AppCompatImageView {
   constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
     context,
     attrs,
-    defStyle
+    defStyle,
   ) {
     init(context, attrs)
   }
 
-  fun isChecked(): Boolean {
-    return mIsChecked
-  }
+  fun isChecked(): Boolean = mIsChecked
 
   fun setChecked(checked: Boolean) {
     this.mIsChecked = checked
@@ -45,7 +42,10 @@ class UiCheckableImageView : AppCompatImageView {
     }
   }
 
-  private fun init(context: Context, attrs: AttributeSet?) {
+  private fun init(
+    context: Context,
+    attrs: AttributeSet?,
+  ) {
     if (attrs != null) {
       val a = context.theme.obtainStyledAttributes(attrs, R.styleable.UiCheckableImageView, 0, 0)
       try {

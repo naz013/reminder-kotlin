@@ -8,7 +8,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.navigation.fragments.BaseWebViewFragment
 
 class TermsFragment : BaseWebViewFragment() {
-
   override val url: String
     get() {
       return prefs.termsUrl
@@ -18,22 +17,26 @@ class TermsFragment : BaseWebViewFragment() {
   override fun setExtraParams(webView: WebView) {
     super.setExtraParams(webView)
     webView.settings.javaScriptEnabled = true
-    webView.webViewClient = object : WebViewClient() {
-      @Deprecated("Deprecated in Java")
-      override fun onReceivedError(
-        view: WebView,
-        errorCode: Int,
-        description: String,
-        failingUrl: String
-      ) {
-      }
+    webView.webViewClient =
+      object : WebViewClient() {
+        @Deprecated("Deprecated in Java")
+        override fun onReceivedError(
+          view: WebView,
+          errorCode: Int,
+          description: String,
+          failingUrl: String,
+        ) {
+        }
 
-      @Deprecated("Deprecated in Java")
-      override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-        view.loadUrl(url)
-        return true
+        @Deprecated("Deprecated in Java")
+        override fun shouldOverrideUrlLoading(
+          view: WebView,
+          url: String,
+        ): Boolean {
+          view.loadUrl(url)
+          return true
+        }
       }
-    }
     webView.webChromeClient = WebChromeClient()
   }
 

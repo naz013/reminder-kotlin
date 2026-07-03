@@ -19,7 +19,6 @@ class SaveBirthdayUseCase(
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
   private val workManagerProvider: WorkManagerProvider,
 ) {
-
   suspend operator fun invoke(birthday: Birthday) {
     birthdayRepository.save(birthday.copy(version = birthday.version + 1))
     birthdayRepository.updateSyncState(birthday.uuId, SyncState.WaitingForUpload)
@@ -29,13 +28,14 @@ class SaveBirthdayUseCase(
     appWidgetUpdater.updateBirthdaysWidget()
     appWidgetUpdater.updateScheduleWidget()
 
-    workManagerProvider.getWorkManager()
+    workManagerProvider
+      .getWorkManager()
       .enqueue(CalculateBirthdayOccurrencesWorker.prepareWork(birthday.uuId))
 
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.Birthdays,
-      id = birthday.uuId
+      id = birthday.uuId,
     )
     Logger.i(TAG, "Birthday saved: ${birthday.uuId}")
   }

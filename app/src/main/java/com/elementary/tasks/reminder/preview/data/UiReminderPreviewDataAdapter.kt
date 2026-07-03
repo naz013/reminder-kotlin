@@ -33,12 +33,11 @@ class UiReminderPreviewDataAdapter(
   private val textProvider: TextProvider,
   private val colorProvider: ColorProvider,
   private val unitsConverter: UnitsConverter,
-  private val attachmentToUiReminderPreviewAttachment: AttachmentToUiReminderPreviewAttachment
+  private val attachmentToUiReminderPreviewAttachment: AttachmentToUiReminderPreviewAttachment,
 ) {
-
   fun create(
     data: Reminder,
-    group: ReminderGroup?
+    group: ReminderGroup?,
   ): List<UiReminderPreviewData> {
     val type = UiReminderType(data.type)
     return addStatus(data) +
@@ -50,15 +49,12 @@ class UiReminderPreviewDataAdapter(
       addAds()
   }
 
-  private fun addAttachments(data: Reminder): List<UiReminderPreviewData> {
-    return data.attachmentFiles.takeIf { it.isNotEmpty() }?.let {
+  private fun addAttachments(data: Reminder): List<UiReminderPreviewData> =
+    data.attachmentFiles.takeIf { it.isNotEmpty() }?.let {
       attachmentToUiReminderPreviewAttachment(it)
     } ?: emptyList()
-  }
 
-  private fun addTargetInfo(
-    data: Reminder
-  ): List<UiReminderPreviewData> {
+  private fun addTargetInfo(data: Reminder): List<UiReminderPreviewData> {
     val type = UiReminderType(data.type)
     if (!type.isLink() && !type.isCall() && !type.isApp() && !type.isEmail() && !type.isSms()) {
       return emptyList()
@@ -73,37 +69,42 @@ class UiReminderPreviewDataAdapter(
           UiReminderPreviewHeader(
             UiTextElement(
               text = textProvider.getText(R.string.make_call),
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(18f),
-                textStyle = UiTextStyle.BOLD,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            )
+              textFormat =
+                UiTextFormat(
+                  fontSize = unitsConverter.spToPx(18f),
+                  textStyle = UiTextStyle.BOLD,
+                  textColor = colorProvider.getColorOnBackground(),
+                ),
+            ),
           ),
           name?.let {
             UiReminderPreviewElement(
-              textElement = UiTextElement(
-                text = it,
-                textFormat = UiTextFormat(
-                  fontSize = unitsConverter.spToPx(16f),
-                  textStyle = UiTextStyle.BOLD,
-                  textColor = colorProvider.getColorOnBackground()
-                )
-              ),
-              icon = UiIcon(Icons.PERSON, colorProvider.getColorOnBackground())
+              textElement =
+                UiTextElement(
+                  text = it,
+                  textFormat =
+                    UiTextFormat(
+                      fontSize = unitsConverter.spToPx(16f),
+                      textStyle = UiTextStyle.BOLD,
+                      textColor = colorProvider.getColorOnBackground(),
+                    ),
+                ),
+              icon = UiIcon(Icons.PERSON, colorProvider.getColorOnBackground()),
             )
           },
           UiReminderPreviewElement(
-            textElement = UiTextElement(
-              text = data.target,
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(16f),
-                textStyle = UiTextStyle.BOLD,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            ),
-            icon = UiIcon(Icons.MAKE_CALL, colorProvider.getColorOnBackground())
-          )
+            textElement =
+              UiTextElement(
+                text = data.target,
+                textFormat =
+                  UiTextFormat(
+                    fontSize = unitsConverter.spToPx(16f),
+                    textStyle = UiTextStyle.BOLD,
+                    textColor = colorProvider.getColorOnBackground(),
+                  ),
+              ),
+            icon = UiIcon(Icons.MAKE_CALL, colorProvider.getColorOnBackground()),
+          ),
         )
       }
 
@@ -113,37 +114,42 @@ class UiReminderPreviewDataAdapter(
           UiReminderPreviewHeader(
             UiTextElement(
               text = textProvider.getText(R.string.send_sms),
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(18f),
-                textStyle = UiTextStyle.BOLD,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            )
+              textFormat =
+                UiTextFormat(
+                  fontSize = unitsConverter.spToPx(18f),
+                  textStyle = UiTextStyle.BOLD,
+                  textColor = colorProvider.getColorOnBackground(),
+                ),
+            ),
           ),
           name?.let {
             UiReminderPreviewElement(
-              textElement = UiTextElement(
-                text = it,
-                textFormat = UiTextFormat(
-                  fontSize = unitsConverter.spToPx(16f),
-                  textStyle = UiTextStyle.BOLD,
-                  textColor = colorProvider.getColorOnBackground()
-                )
-              ),
-              icon = UiIcon(Icons.PERSON, colorProvider.getColorOnBackground())
+              textElement =
+                UiTextElement(
+                  text = it,
+                  textFormat =
+                    UiTextFormat(
+                      fontSize = unitsConverter.spToPx(16f),
+                      textStyle = UiTextStyle.BOLD,
+                      textColor = colorProvider.getColorOnBackground(),
+                    ),
+                ),
+              icon = UiIcon(Icons.PERSON, colorProvider.getColorOnBackground()),
             )
           },
           UiReminderPreviewElement(
-            textElement = UiTextElement(
-              text = data.target,
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(16f),
-                textStyle = UiTextStyle.BOLD,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            ),
-            icon = UiIcon(Icons.SEND_SMS, colorProvider.getColorOnBackground())
-          )
+            textElement =
+              UiTextElement(
+                text = data.target,
+                textFormat =
+                  UiTextFormat(
+                    fontSize = unitsConverter.spToPx(16f),
+                    textStyle = UiTextStyle.BOLD,
+                    textColor = colorProvider.getColorOnBackground(),
+                  ),
+              ),
+            icon = UiIcon(Icons.SEND_SMS, colorProvider.getColorOnBackground()),
+          ),
         )
       }
 
@@ -153,24 +159,27 @@ class UiReminderPreviewDataAdapter(
           UiReminderPreviewHeader(
             UiTextElement(
               text = textProvider.getText(R.string.open_app),
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(18f),
-                textStyle = UiTextStyle.BOLD,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            )
+              textFormat =
+                UiTextFormat(
+                  fontSize = unitsConverter.spToPx(18f),
+                  textStyle = UiTextStyle.BOLD,
+                  textColor = colorProvider.getColorOnBackground(),
+                ),
+            ),
           ),
           UiReminderPreviewElement(
-            textElement = UiTextElement(
-              text = name ?: data.target,
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(16f),
-                textStyle = UiTextStyle.BOLD,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            ),
-            icon = UiIcon(Icons.OPEN_APP, colorProvider.getColorOnBackground())
-          )
+            textElement =
+              UiTextElement(
+                text = name ?: data.target,
+                textFormat =
+                  UiTextFormat(
+                    fontSize = unitsConverter.spToPx(16f),
+                    textStyle = UiTextStyle.BOLD,
+                    textColor = colorProvider.getColorOnBackground(),
+                  ),
+              ),
+            icon = UiIcon(Icons.OPEN_APP, colorProvider.getColorOnBackground()),
+          ),
         )
       }
 
@@ -179,25 +188,28 @@ class UiReminderPreviewDataAdapter(
           UiReminderPreviewHeader(
             UiTextElement(
               text = textProvider.getText(R.string.open_link),
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(18f),
-                textStyle = UiTextStyle.BOLD,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            )
+              textFormat =
+                UiTextFormat(
+                  fontSize = unitsConverter.spToPx(18f),
+                  textStyle = UiTextStyle.BOLD,
+                  textColor = colorProvider.getColorOnBackground(),
+                ),
+            ),
           ),
           UiReminderPreviewElement(
-            textElement = UiTextElement(
-              text = data.target,
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(16f),
-                textStyle = UiTextStyle.BOLD,
-                textDecoration = UiTextDecoration.UNDERLINE,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            ),
-            icon = UiIcon(Icons.OPEN_LINK, colorProvider.getColorOnBackground())
-          )
+            textElement =
+              UiTextElement(
+                text = data.target,
+                textFormat =
+                  UiTextFormat(
+                    fontSize = unitsConverter.spToPx(16f),
+                    textStyle = UiTextStyle.BOLD,
+                    textDecoration = UiTextDecoration.UNDERLINE,
+                    textColor = colorProvider.getColorOnBackground(),
+                  ),
+              ),
+            icon = UiIcon(Icons.OPEN_LINK, colorProvider.getColorOnBackground()),
+          ),
         )
       }
 
@@ -207,50 +219,57 @@ class UiReminderPreviewDataAdapter(
           UiReminderPreviewHeader(
             UiTextElement(
               text = textProvider.getText(R.string.e_mail),
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(18f),
-                textStyle = UiTextStyle.BOLD,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            )
+              textFormat =
+                UiTextFormat(
+                  fontSize = unitsConverter.spToPx(18f),
+                  textStyle = UiTextStyle.BOLD,
+                  textColor = colorProvider.getColorOnBackground(),
+                ),
+            ),
           ),
           name?.let {
             UiReminderPreviewElement(
-              textElement = UiTextElement(
-                text = it,
-                textFormat = UiTextFormat(
-                  fontSize = unitsConverter.spToPx(16f),
-                  textStyle = UiTextStyle.BOLD,
-                  textColor = colorProvider.getColorOnBackground()
-                )
-              ),
-              icon = UiIcon(Icons.PERSON, colorProvider.getColorOnBackground())
+              textElement =
+                UiTextElement(
+                  text = it,
+                  textFormat =
+                    UiTextFormat(
+                      fontSize = unitsConverter.spToPx(16f),
+                      textStyle = UiTextStyle.BOLD,
+                      textColor = colorProvider.getColorOnBackground(),
+                    ),
+                ),
+              icon = UiIcon(Icons.PERSON, colorProvider.getColorOnBackground()),
             )
           },
           UiReminderPreviewElement(
-            textElement = UiTextElement(
-              text = data.target,
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(16f),
-                textStyle = UiTextStyle.BOLD,
-                textDecoration = UiTextDecoration.UNDERLINE,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            ),
-            icon = UiIcon(Icons.SEND_EMAIL, colorProvider.getColorOnBackground())
+            textElement =
+              UiTextElement(
+                text = data.target,
+                textFormat =
+                  UiTextFormat(
+                    fontSize = unitsConverter.spToPx(16f),
+                    textStyle = UiTextStyle.BOLD,
+                    textDecoration = UiTextDecoration.UNDERLINE,
+                    textColor = colorProvider.getColorOnBackground(),
+                  ),
+              ),
+            icon = UiIcon(Icons.SEND_EMAIL, colorProvider.getColorOnBackground()),
           ),
           UiReminderPreviewElement(
-            textElement = UiTextElement(
-              text = data.subject,
-              textFormat = UiTextFormat(
-                fontSize = unitsConverter.spToPx(16f),
-                textStyle = UiTextStyle.BOLD,
-                textDecoration = UiTextDecoration.UNDERLINE,
-                textColor = colorProvider.getColorOnBackground()
-              )
-            ),
-            icon = UiIcon(Icons.EMAIL_SUBJECT, colorProvider.getColorOnBackground())
-          )
+            textElement =
+              UiTextElement(
+                text = data.subject,
+                textFormat =
+                  UiTextFormat(
+                    fontSize = unitsConverter.spToPx(16f),
+                    textStyle = UiTextStyle.BOLD,
+                    textDecoration = UiTextDecoration.UNDERLINE,
+                    textColor = colorProvider.getColorOnBackground(),
+                  ),
+              ),
+            icon = UiIcon(Icons.EMAIL_SUBJECT, colorProvider.getColorOnBackground()),
+          ),
         )
       }
 
@@ -260,249 +279,271 @@ class UiReminderPreviewDataAdapter(
 
   private fun addDetails(
     data: Reminder,
-    group: ReminderGroup?
-  ): List<UiReminderPreviewData> {
-    return listOfNotNull(
+    group: ReminderGroup?,
+  ): List<UiReminderPreviewData> =
+    listOfNotNull(
       UiReminderPreviewHeader(
         UiTextElement(
           text = textProvider.getText(R.string.details),
-          textFormat = UiTextFormat(
-            fontSize = unitsConverter.spToPx(18f),
-            textStyle = UiTextStyle.BOLD,
-            textColor = colorProvider.getColorOnBackground()
-          )
-        )
+          textFormat =
+            UiTextFormat(
+              fontSize = unitsConverter.spToPx(18f),
+              textStyle = UiTextStyle.BOLD,
+              textColor = colorProvider.getColorOnBackground(),
+            ),
+        ),
       ),
       data.summary.takeIf { it.isNotEmpty() }?.let {
         UiReminderPreviewElement(
-          textElement = UiTextElement(
-            text = it,
-            textFormat = UiTextFormat(
-              fontSize = unitsConverter.spToPx(16f),
-              textStyle = UiTextStyle.BOLD
-            )
-          ),
-          icon = UiIcon(Icons.SUMMARY, colorProvider.getColorOnBackground())
+          textElement =
+            UiTextElement(
+              text = it,
+              textFormat =
+                UiTextFormat(
+                  fontSize = unitsConverter.spToPx(16f),
+                  textStyle = UiTextStyle.BOLD,
+                ),
+            ),
+          icon = UiIcon(Icons.SUMMARY, colorProvider.getColorOnBackground()),
         )
       },
       data.description?.takeIf { it.isNotEmpty() }?.let {
         UiReminderPreviewElement(
-          textElement = UiTextElement(
-            text = it,
-            textFormat = UiTextFormat(
-              fontSize = unitsConverter.spToPx(14f),
-              textStyle = UiTextStyle.NORMAL
-            )
-          ),
-          icon = UiIcon(Icons.DESCRIPTION, colorProvider.getColorOnBackground())
+          textElement =
+            UiTextElement(
+              text = it,
+              textFormat =
+                UiTextFormat(
+                  fontSize = unitsConverter.spToPx(14f),
+                  textStyle = UiTextStyle.NORMAL,
+                ),
+            ),
+          icon = UiIcon(Icons.DESCRIPTION, colorProvider.getColorOnBackground()),
         )
-      }
+      },
     ) + addDueInfo(data) + addExtraInfo(data, group)
-  }
 
   private fun addExtraInfo(
     data: Reminder,
-    group: ReminderGroup?
+    group: ReminderGroup?,
   ): List<UiReminderPreviewData> {
-    val uiGroup = if (group != null) {
-      uiGroupListAdapter.convert(group)
-    } else {
-      uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle)
-    }
+    val uiGroup =
+      if (group != null) {
+        uiGroupListAdapter.convert(group)
+      } else {
+        uiGroupListAdapter.convert(data.groupUuId, data.groupColor, data.groupTitle)
+      }
     return listOfNotNull(
       uiGroup?.let {
         getNormalTextElement(
           text = it.title,
-          icon = Icons.GROUP
+          icon = Icons.GROUP,
         )
       },
       getNormalTextElement(uiReminderCommonAdapter.getPriorityTitle(data.priority), Icons.PRIORITY),
-      getNormalTextElement(data.uuId, Icons.ID)
+      getNormalTextElement(data.uuId, Icons.ID),
     )
   }
 
-  private fun addDueInfo(
-    data: Reminder
-  ): List<UiReminderPreviewData> {
+  private fun addDueInfo(data: Reminder): List<UiReminderPreviewData> {
     val type = UiReminderType(data.type)
     val dueData = uiReminderCommonAdapter.getDue(data, type)
     return listOfNotNull(
       dueData.formattedDateTime?.let {
         UiReminderPreviewElement(
-          textElement = UiTextElement(
-            text = it,
-            textFormat = UiTextFormat(
-              fontSize = unitsConverter.spToPx(14f),
-              textStyle = UiTextStyle.NORMAL
-            )
-          ),
-          icon = UiIcon(Icons.DUE, colorProvider.getColorOnBackground())
+          textElement =
+            UiTextElement(
+              text = it,
+              textFormat =
+                UiTextFormat(
+                  fontSize = unitsConverter.spToPx(14f),
+                  textStyle = UiTextStyle.NORMAL,
+                ),
+            ),
+          icon = UiIcon(Icons.DUE, colorProvider.getColorOnBackground()),
         )
       },
       UiReminderPreviewElement(
-        textElement = UiTextElement(
-          text = dueData.repeat,
-          textFormat = UiTextFormat(
-            fontSize = unitsConverter.spToPx(14f),
-            textStyle = UiTextStyle.NORMAL
-          )
-        ),
-        icon = UiIcon(Icons.REPEAT, colorProvider.getColorOnBackground())
+        textElement =
+          UiTextElement(
+            text = dueData.repeat,
+            textFormat =
+              UiTextFormat(
+                fontSize = unitsConverter.spToPx(14f),
+                textStyle = UiTextStyle.NORMAL,
+              ),
+          ),
+        icon = UiIcon(Icons.REPEAT, colorProvider.getColorOnBackground()),
       ),
       UiReminderPreviewElement(
-        textElement = UiTextElement(
-          text = dueData.repeat,
-          textFormat = UiTextFormat(
-            fontSize = unitsConverter.spToPx(14f),
-            textStyle = UiTextStyle.NORMAL
-          )
-        ),
-        icon = UiIcon(Icons.DUE, colorProvider.getColorOnBackground())
-      )
+        textElement =
+          UiTextElement(
+            text = dueData.repeat,
+            textFormat =
+              UiTextFormat(
+                fontSize = unitsConverter.spToPx(14f),
+                textStyle = UiTextStyle.NORMAL,
+              ),
+          ),
+        icon = UiIcon(Icons.DUE, colorProvider.getColorOnBackground()),
+      ),
     )
   }
 
-  private fun addStatus(data: Reminder): List<UiReminderPreviewData> {
-    return listOfNotNull(
-      createStatus(data)
+  private fun addStatus(data: Reminder): List<UiReminderPreviewData> =
+    listOfNotNull(
+      createStatus(data),
     )
-  }
 
-  private fun createStatus(
-    data: Reminder
-  ): UiReminderPreviewStatus? {
+  private fun createStatus(data: Reminder): UiReminderPreviewStatus? {
     val status = uiReminderCommonAdapter.getReminderStatus(data.isActive, data.isRemoved)
-    val text = if (status.active) {
-      textProvider.getText(R.string.enabled4)
-    } else {
-      textProvider.getText(R.string.disabled)
-    }
+    val text =
+      if (status.active) {
+        textProvider.getText(R.string.enabled4)
+      } else {
+        textProvider.getText(R.string.disabled)
+      }
     return UiReminderPreviewStatus(
       id = data.uuId,
       status = status,
-      statusText = UiTextElement(
-        text = text,
-        textFormat = UiTextFormat(
-          fontSize = unitsConverter.spToPx(20f),
-          textStyle = UiTextStyle.BOLD,
-          textColor = colorProvider.getColorOnBackground()
-        )
-      )
+      statusText =
+        UiTextElement(
+          text = text,
+          textFormat =
+            UiTextFormat(
+              fontSize = unitsConverter.spToPx(20f),
+              textStyle = UiTextStyle.BOLD,
+              textColor = colorProvider.getColorOnBackground(),
+            ),
+        ),
     ).takeIf { status.canToggle }
   }
 
-  private fun addAds(): List<UiReminderPreviewData> {
-    return listOfNotNull(
-      UiReminderPreviewAds.takeIf { !BuildParams.isPro }
+  private fun addAds(): List<UiReminderPreviewData> =
+    listOfNotNull(
+      UiReminderPreviewAds.takeIf { !BuildParams.isPro },
     )
-  }
 
-  private fun addMap(data: Reminder, type: UiReminderType): List<UiReminderPreviewData> {
+  private fun addMap(
+    data: Reminder,
+    type: UiReminderType,
+  ): List<UiReminderPreviewData> {
     if (!type.isGpsType()) return emptyList()
     val places = data.places.map { uiReminderPlaceAdapter.create(it) }
     if (places.isEmpty()) return emptyList()
 
-    val headerTitle = if (places.size == 1) {
-      if (type.isBase(UiReminderType.Base.LOCATION_IN)) {
-        textProvider.getText(R.string.builder_arriving_destination)
+    val headerTitle =
+      if (places.size == 1) {
+        if (type.isBase(UiReminderType.Base.LOCATION_IN)) {
+          textProvider.getText(R.string.builder_arriving_destination)
+        } else {
+          textProvider.getText(R.string.builder_leaving_place)
+        }
       } else {
-        textProvider.getText(R.string.builder_leaving_place)
+        textProvider.getText(R.string.places)
       }
-    } else {
-      textProvider.getText(R.string.places)
-    }
     val placeText = places.joinToString("\n") { it.toTitle() }
     return listOf(
       UiReminderPreviewHeader(
         UiTextElement(
           text = headerTitle,
-          textFormat = UiTextFormat(
-            fontSize = unitsConverter.spToPx(18f),
-            textStyle = UiTextStyle.BOLD,
-            textColor = colorProvider.getColorOnBackground()
-          )
-        )
+          textFormat =
+            UiTextFormat(
+              fontSize = unitsConverter.spToPx(18f),
+              textStyle = UiTextStyle.BOLD,
+              textColor = colorProvider.getColorOnBackground(),
+            ),
+        ),
       ),
       UiReminderPreviewMap(
-        placesText = UiTextElement(
-          text = placeText,
-          textFormat = UiTextFormat(
-            fontSize = unitsConverter.spToPx(14f),
-            textStyle = UiTextStyle.NORMAL,
-            textColor = colorProvider.getColorOnBackground()
-          )
-        ),
-        places = places
-      )
+        placesText =
+          UiTextElement(
+            text = placeText,
+            textFormat =
+              UiTextFormat(
+                fontSize = unitsConverter.spToPx(14f),
+                textStyle = UiTextStyle.NORMAL,
+                textColor = colorProvider.getColorOnBackground(),
+              ),
+          ),
+        places = places,
+      ),
     )
   }
 
-  private fun UiReminderPlace.toTitle(): CharSequence {
-    return address.takeIf { it.isNotEmpty() } ?: String.format(
+  private fun UiReminderPlace.toTitle(): CharSequence =
+    address.takeIf { it.isNotEmpty() } ?: String.format(
       Locale.getDefault(),
       "%.5f,%.5f",
       latitude,
-      longitude
+      longitude,
     )
-  }
 
-  private fun addSubTasks(data: Reminder, type: UiReminderType): List<UiReminderPreviewData> {
+  private fun addSubTasks(
+    data: Reminder,
+    type: UiReminderType,
+  ): List<UiReminderPreviewData> {
     if (!type.isSubTasks()) return emptyList()
-    val subTasks = data.shoppings.filterNot { it.isDeleted }
-      .sortedByDescending { !it.isChecked }
-      .map { getSubTaskElement(it) }
+    val subTasks =
+      data.shoppings
+        .filterNot { it.isDeleted }
+        .sortedByDescending { !it.isChecked }
+        .map { getSubTaskElement(it) }
     if (subTasks.isEmpty()) return emptyList()
     return listOf(
       UiReminderPreviewHeader(
         UiTextElement(
           text = textProvider.getText(R.string.builder_sub_tasks),
-          textFormat = UiTextFormat(
-            fontSize = unitsConverter.spToPx(18f),
-            textStyle = UiTextStyle.BOLD,
-            textColor = colorProvider.getColorOnBackground()
-          )
-        )
-      )
+          textFormat =
+            UiTextFormat(
+              fontSize = unitsConverter.spToPx(18f),
+              textStyle = UiTextStyle.BOLD,
+              textColor = colorProvider.getColorOnBackground(),
+            ),
+        ),
+      ),
     ) + subTasks
   }
 
-  private fun getSubTaskElement(
-    shopItem: ShopItem
-  ): UiReminderPreviewSubTask {
-    val textDecoration = when {
-      shopItem.isChecked -> UiTextDecoration.STRIKE_THROUGH
-      else -> UiTextDecoration.NONE
-    }
+  private fun getSubTaskElement(shopItem: ShopItem): UiReminderPreviewSubTask {
+    val textDecoration =
+      when {
+        shopItem.isChecked -> UiTextDecoration.STRIKE_THROUGH
+        else -> UiTextDecoration.NONE
+      }
     return UiReminderPreviewSubTask(
       id = shopItem.uuId,
       isChecked = shopItem.isChecked,
-      textElement = UiTextElement(
-        text = shopItem.summary,
-        textFormat = UiTextFormat(
-          fontSize = unitsConverter.spToPx(14f),
-          textColor = colorProvider.getColorOnBackground(),
-          textStyle = UiTextStyle.NORMAL,
-          textDecoration = textDecoration
-        )
-      )
+      textElement =
+        UiTextElement(
+          text = shopItem.summary,
+          textFormat =
+            UiTextFormat(
+              fontSize = unitsConverter.spToPx(14f),
+              textColor = colorProvider.getColorOnBackground(),
+              textStyle = UiTextStyle.NORMAL,
+              textDecoration = textDecoration,
+            ),
+        ),
     )
   }
 
   private fun getNormalTextElement(
     text: String,
-    icon: Int?
-  ): UiReminderPreviewElement {
-    return UiReminderPreviewElement(
+    icon: Int?,
+  ): UiReminderPreviewElement =
+    UiReminderPreviewElement(
       icon = icon?.let { UiIcon(it, colorProvider.getColorOnBackground()) },
-      textElement = UiTextElement(
-        text = text,
-        textFormat = UiTextFormat(
-          fontSize = unitsConverter.spToPx(14f),
-          textColor = colorProvider.getColorOnBackground(),
-          textStyle = UiTextStyle.NORMAL,
-          textDecoration = UiTextDecoration.NONE
-        )
-      )
+      textElement =
+        UiTextElement(
+          text = text,
+          textFormat =
+            UiTextFormat(
+              fontSize = unitsConverter.spToPx(14f),
+              textColor = colorProvider.getColorOnBackground(),
+              textStyle = UiTextStyle.NORMAL,
+              textDecoration = UiTextDecoration.NONE,
+            ),
+        ),
     )
-  }
 }

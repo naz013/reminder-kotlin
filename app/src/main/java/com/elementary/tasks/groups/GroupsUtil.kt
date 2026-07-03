@@ -13,7 +13,6 @@ class GroupsUtil(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val dateTimeManager: DateTimeManager,
 ) {
-
   private val random = Random()
 
   suspend fun initDefaultIfEmpty() {
@@ -23,14 +22,15 @@ class GroupsUtil(
   }
 
   private suspend fun initDefault(): String {
-    val def = ReminderGroup(
-      groupTitle = textProvider.getText(R.string.general),
-      groupColor = random.nextInt(16),
-      groupDateTime = dateTimeManager.getNowGmtDateTime(),
-      isDefaultGroup = true,
-      groupUuId = getGroupId(1),
-      syncState = SyncState.WaitingForUpload
-    )
+    val def =
+      ReminderGroup(
+        groupTitle = textProvider.getText(R.string.general),
+        groupColor = random.nextInt(16),
+        groupDateTime = dateTimeManager.getNowGmtDateTime(),
+        isDefaultGroup = true,
+        groupUuId = getGroupId(1),
+        syncState = SyncState.WaitingForUpload,
+      )
     runCatching {
       reminderGroupRepository.save(def)
       reminderGroupRepository.save(
@@ -40,8 +40,8 @@ class GroupsUtil(
           groupDateTime = dateTimeManager.getNowGmtDateTime(),
           isDefaultGroup = false,
           groupUuId = getGroupId(2),
-          syncState = SyncState.WaitingForUpload
-        )
+          syncState = SyncState.WaitingForUpload,
+        ),
       )
       reminderGroupRepository.save(
         ReminderGroup(
@@ -50,16 +50,14 @@ class GroupsUtil(
           groupDateTime = dateTimeManager.getNowGmtDateTime(),
           isDefaultGroup = false,
           groupUuId = getGroupId(3),
-          syncState = SyncState.WaitingForUpload
-        )
+          syncState = SyncState.WaitingForUpload,
+        ),
       )
     }
     return def.groupUuId
   }
 
-  private fun getGroupId(index: Int): String {
-    return "default_group_$index"
-  }
+  private fun getGroupId(index: Int): String = "default_group_$index"
 
   suspend fun mapAll(): Map<String, ReminderGroup> {
     val list = reminderGroupRepository.getAll()

@@ -35,17 +35,17 @@ class JobScheduler(
   private val systemServiceProvider: SystemServiceProvider,
   private val eventDateTimeCalculator: EventDateTimeCalculator,
 ) {
-
   fun scheduleBirthdaysCheck() {
-    val work = PeriodicWorkRequest.Builder(
-      CheckBirthdaysWorker::class.java,
-      24,
-      TimeUnit.HOURS,
-      1,
-      TimeUnit.HOURS
-    )
-      .addTag(EVENT_CHECK_BIRTHDAYS)
-      .build()
+    val work =
+      PeriodicWorkRequest
+        .Builder(
+          CheckBirthdaysWorker::class.java,
+          24,
+          TimeUnit.HOURS,
+          1,
+          TimeUnit.HOURS,
+        ).addTag(EVENT_CHECK_BIRTHDAYS)
+        .build()
     schedule(work)
     Logger.i(TAG, "Scheduled birthday check.")
   }
@@ -69,11 +69,13 @@ class JobScheduler(
       millis = calendar.timeInMillis
     }
 
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-      .addTag(EVENT_BIRTHDAY_PERMANENT)
-      .setConstraints(getDefaultConstraints())
-      .build()
+    val work =
+      OneTimeWorkRequest
+        .Builder(EventJobService::class.java)
+        .setInitialDelay(millis - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+        .addTag(EVENT_BIRTHDAY_PERMANENT)
+        .setConstraints(getDefaultConstraints())
+        .build()
 
     schedule(work)
   }
@@ -90,11 +92,13 @@ class JobScheduler(
     }
     val millis = INTERVAL_HOUR * interval
 
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(EVENT_AUTO_BACKUP)
-      .setConstraints(getDefaultConstraints())
-      .build()
+    val work =
+      OneTimeWorkRequest
+        .Builder(EventJobService::class.java)
+        .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+        .addTag(EVENT_AUTO_BACKUP)
+        .setConstraints(getDefaultConstraints())
+        .build()
 
     schedule(work)
   }
@@ -111,11 +115,13 @@ class JobScheduler(
     val millis = dateTimeManager.getMillisToBirthdayTime()
     if (millis <= 0) return
 
-    val work = OneTimeWorkRequest.Builder(EventJobService::class.java)
-      .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-      .addTag(EVENT_BIRTHDAY)
-      .setConstraints(getDefaultConstraints())
-      .build()
+    val work =
+      OneTimeWorkRequest
+        .Builder(EventJobService::class.java)
+        .setInitialDelay(millis, TimeUnit.MILLISECONDS)
+        .addTag(EVENT_BIRTHDAY)
+        .setConstraints(getDefaultConstraints())
+        .build()
 
     schedule(work)
   }
@@ -130,20 +136,29 @@ class JobScheduler(
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_REPEAT,
-      bundle = Bundle().apply {
-        putString(IntentKeys.INTENT_ID, reminder.uuId)
-      },
+      bundle =
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, reminder.uuId)
+        },
       millis = millis,
-      requestCode = reminder.uniqueId
+      requestCode = reminder.uniqueId,
     )
     return true
   }
 
-  fun scheduleReminderDelay(minutes: Int, uuId: String, requestCode: Int) {
+  fun scheduleReminderDelay(
+    minutes: Int,
+    uuId: String,
+    requestCode: Int,
+  ) {
     scheduleReminderDelay(INTERVAL_MINUTE * minutes, uuId, requestCode)
   }
 
-  fun scheduleReminderDelay(millis: Long, uuId: String, requestCode: Int) {
+  fun scheduleReminderDelay(
+    millis: Long,
+    uuId: String,
+    requestCode: Int,
+  ) {
     if (millis <= 0) {
       return
     }
@@ -151,11 +166,12 @@ class JobScheduler(
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER,
-      bundle = Bundle().apply {
-        putString(IntentKeys.INTENT_ID, uuId)
-      },
+      bundle =
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, uuId)
+        },
       millis = System.currentTimeMillis() + millis,
-      requestCode = requestCode
+      requestCode = requestCode,
     )
   }
 
@@ -168,11 +184,12 @@ class JobScheduler(
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_GPS,
-      bundle = Bundle().apply {
-        putString(IntentKeys.INTENT_ID, reminder.uuId)
-      },
+      bundle =
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, reminder.uuId)
+        },
       millis = millis,
-      requestCode = reminder.uniqueId
+      requestCode = reminder.uniqueId,
     )
     return true
   }
@@ -182,18 +199,20 @@ class JobScheduler(
       Logger.w(TAG, "Cannot schedule null reminder")
       return
     }
-    val millis = eventDateTimeCalculator.calculateEventDateTime(reminder) ?: run {
-      Logger.e(TAG, "Cannot calculate event date time for reminder: ${reminder.uuId}")
-      return
-    }
+    val millis =
+      eventDateTimeCalculator.calculateEventDateTime(reminder) ?: run {
+        Logger.e(TAG, "Cannot calculate event date time for reminder: ${reminder.uuId}")
+        return
+      }
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER,
-      bundle = Bundle().apply {
-        putString(IntentKeys.INTENT_ID, reminder.uuId)
-      },
+      bundle =
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, reminder.uuId)
+        },
       millis = millis,
-      requestCode = reminder.uniqueId
+      requestCode = reminder.uniqueId,
     )
   }
 
@@ -201,33 +220,34 @@ class JobScheduler(
     action: String,
     bundle: Bundle,
     millis: Long,
-    requestCode: Int
+    requestCode: Int,
   ) {
     val intent = Intent(context, AlarmReceiver::class.java)
     intent.action = action
     intent.putExtras(bundle)
-    val pendingIntent = PendingIntentWrapper.getBroadcast(
-      context = context,
-      requestCode = requestCode,
-      intent = intent,
-      flags = PendingIntent.FLAG_CANCEL_CURRENT,
-      ignoreIn13 = false
-    )
+    val pendingIntent =
+      PendingIntentWrapper.getBroadcast(
+        context = context,
+        requestCode = requestCode,
+        intent = intent,
+        flags = PendingIntent.FLAG_CANCEL_CURRENT,
+        ignoreIn13 = false,
+      )
     systemServiceProvider.provideAlarmManager()?.setExactAndAllowWhileIdle(
       AlarmManager.RTC_WAKEUP,
       millis,
-      pendingIntent
+      pendingIntent,
     )
   }
 
-  private fun getDefaultConstraints(): Constraints {
-    return Constraints.Builder()
+  private fun getDefaultConstraints(): Constraints =
+    Constraints
+      .Builder()
       .setRequiresCharging(false)
       .setRequiresBatteryNotLow(false)
       .setRequiresStorageNotLow(false)
       .setRequiresDeviceIdle(false)
       .build()
-  }
 
   private fun cancelReminder(uuId: String) {
     Logger.i(TAG, "cancelReminder: uuId=$uuId")
@@ -237,37 +257,47 @@ class JobScheduler(
   fun cancelReminder(requestCode: Int) {
     Logger.i(TAG, "cancelReminder: requestCode=$requestCode")
     val intent = Intent(context, AlarmReceiver::class.java)
-    val pendingIntent = PendingIntentWrapper.getBroadcast(
-      context = context,
-      requestCode = requestCode,
-      intent = intent,
-      flags = PendingIntent.FLAG_CANCEL_CURRENT,
-      ignoreIn13 = false
-    )
+    val pendingIntent =
+      PendingIntentWrapper.getBroadcast(
+        context = context,
+        requestCode = requestCode,
+        intent = intent,
+        flags = PendingIntent.FLAG_CANCEL_CURRENT,
+        ignoreIn13 = false,
+      )
     systemServiceProvider.provideAlarmManager()?.cancel(pendingIntent)
   }
 
-  fun scheduleSaveNewTask(googleTask: GoogleTask, uuId: String) {
-    val work = OneTimeWorkRequest.Builder(SaveNewTaskWorker::class.java)
-      .setInputData(
-        Data.Builder().putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask)).build()
-      )
-      .addTag(uuId)
-      .build()
+  fun scheduleSaveNewTask(
+    googleTask: GoogleTask,
+    uuId: String,
+  ) {
+    val work =
+      OneTimeWorkRequest
+        .Builder(SaveNewTaskWorker::class.java)
+        .setInputData(
+          Data.Builder().putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask)).build(),
+        ).addTag(uuId)
+        .build()
 
     schedule(work)
   }
 
-  fun scheduleTaskDone(googleTask: GoogleTask, uuId: String) {
-    val work = OneTimeWorkRequest.Builder(UpdateTaskWorker::class.java)
-      .setInputData(
-        Data.Builder()
-          .putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask))
-          .putString(IntentKeys.INTENT_STATUS, GoogleTask.TASKS_COMPLETE)
-          .build()
-      )
-      .addTag(uuId)
-      .build()
+  fun scheduleTaskDone(
+    googleTask: GoogleTask,
+    uuId: String,
+  ) {
+    val work =
+      OneTimeWorkRequest
+        .Builder(UpdateTaskWorker::class.java)
+        .setInputData(
+          Data
+            .Builder()
+            .putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask))
+            .putString(IntentKeys.INTENT_STATUS, GoogleTask.TASKS_COMPLETE)
+            .build(),
+        ).addTag(uuId)
+        .build()
 
     schedule(work)
   }

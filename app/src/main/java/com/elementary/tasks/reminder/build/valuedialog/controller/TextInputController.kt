@@ -28,62 +28,60 @@ class TextInputController(
   builderItem: BuilderItem<String>,
   private val inputMethodManager: InputMethodManager,
   private val speechEngine: SpeechEngine,
-  private val permissionFlow: PermissionFlow
+  private val permissionFlow: PermissionFlow,
 ) : AbstractBindingValueController<String, BuilderItemSummaryBinding>(builderItem) {
-
-  private val speechEngineCallback = object : SpeechEngineCallback() {
-    override fun onStarted() {
-      super.onStarted()
-      updateSpeechState(SpeechState.STARTED)
-    }
-
-    override fun onStopped() {
-      super.onStopped()
-      updateSpeechState(SpeechState.IDLE)
-      updateValue(binding.inputEditText.readText())
-    }
-
-    override fun onSpeechStarted() {
-      super.onSpeechStarted()
-      updateSpeechState(SpeechState.SPEAKING)
-    }
-
-    override fun onSpeechEnded() {
-      super.onSpeechEnded()
-      updateSpeechState(SpeechState.STOPPED)
-    }
-
-    override fun onSpeechError(error: SpeechError) {
-      super.onSpeechError(error)
-      updateSpeechState(SpeechState.IDLE)
-    }
-
-    override fun onSpeechResult(speechText: SpeechText) {
-      super.onSpeechResult(speechText)
-      binding.inputEditText.clearSections()
-      binding.inputEditText.setText(speechText.text)
-      speechText.newText?.also { newText ->
-        binding.inputEditText.addGradientSection(
-          startIndex = newText.startIndex,
-          endIndex = newText.endIndex + 1,
-          startColor = ContextCompat.getColor(getContext(), R.color.greenAccent),
-          endColor = ContextCompat.getColor(getContext(), R.color.redAccent)
-        )
-        binding.inputEditText.addBoldSection(
-          startIndex = newText.startIndex,
-          endIndex = newText.endIndex + 1
-        )
+  private val speechEngineCallback =
+    object : SpeechEngineCallback() {
+      override fun onStarted() {
+        super.onStarted()
+        updateSpeechState(SpeechState.STARTED)
       }
-      binding.inputEditText.setSelection(binding.inputEditText.readText().length)
+
+      override fun onStopped() {
+        super.onStopped()
+        updateSpeechState(SpeechState.IDLE)
+        updateValue(binding.inputEditText.readText())
+      }
+
+      override fun onSpeechStarted() {
+        super.onSpeechStarted()
+        updateSpeechState(SpeechState.SPEAKING)
+      }
+
+      override fun onSpeechEnded() {
+        super.onSpeechEnded()
+        updateSpeechState(SpeechState.STOPPED)
+      }
+
+      override fun onSpeechError(error: SpeechError) {
+        super.onSpeechError(error)
+        updateSpeechState(SpeechState.IDLE)
+      }
+
+      override fun onSpeechResult(speechText: SpeechText) {
+        super.onSpeechResult(speechText)
+        binding.inputEditText.clearSections()
+        binding.inputEditText.setText(speechText.text)
+        speechText.newText?.also { newText ->
+          binding.inputEditText.addGradientSection(
+            startIndex = newText.startIndex,
+            endIndex = newText.endIndex + 1,
+            startColor = ContextCompat.getColor(getContext(), R.color.greenAccent),
+            endColor = ContextCompat.getColor(getContext(), R.color.redAccent),
+          )
+          binding.inputEditText.addBoldSection(
+            startIndex = newText.startIndex,
+            endIndex = newText.endIndex + 1,
+          )
+        }
+        binding.inputEditText.setSelection(binding.inputEditText.readText().length)
+      }
     }
-  }
 
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemSummaryBinding {
-    return BuilderItemSummaryBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemSummaryBinding = BuilderItemSummaryBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()
@@ -179,6 +177,6 @@ class TextInputController(
     IDLE,
     STARTED,
     SPEAKING,
-    STOPPED
+    STOPPED,
   }
 }

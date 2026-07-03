@@ -34,16 +34,17 @@ class ReminderPreviewDataAdapter(
   private val noteImageClick: (Int, UiNoteList) -> Unit,
   private val googleTaskClick: (String) -> Unit,
   private val googleCalendarClick: (Long) -> Unit,
-  private val googleRemoveClick: (UiCalendarEventList) -> Unit
-) :
-  ListAdapter<UiReminderPreviewData, RecyclerView.ViewHolder>(UiReminderPreviewDataDiffCallback()) {
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    return when (UiReminderPreviewDataViewType.entries[viewType]) {
+  private val googleRemoveClick: (UiCalendarEventList) -> Unit,
+) : ListAdapter<UiReminderPreviewData, RecyclerView.ViewHolder>(UiReminderPreviewDataDiffCallback()) {
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): RecyclerView.ViewHolder =
+    when (UiReminderPreviewDataViewType.entries[viewType]) {
       UiReminderPreviewDataViewType.STATUS -> {
         ReminderStatusViewHolder(
           parent = parent,
-          onToggleClicked = { onToggleClicked((getItem(it) as UiReminderPreviewStatus).id) }
+          onToggleClicked = { onToggleClicked((getItem(it) as UiReminderPreviewStatus).id) },
         )
       }
 
@@ -56,7 +57,7 @@ class ReminderPreviewDataAdapter(
           parent = parent,
           fragmentManager = fragmentManager,
           prefs = prefs,
-          onMapClick = onMapClick
+          onMapClick = onMapClick,
         )
       }
 
@@ -68,7 +69,7 @@ class ReminderPreviewDataAdapter(
         ReminderSubTaskViewHolder(
           parent = parent,
           removeClick = { subTaskRemoveClick((getItem(it) as UiReminderPreviewSubTask).id) },
-          checkClick = { subTaskCheckClick((getItem(it) as UiReminderPreviewSubTask).id) }
+          checkClick = { subTaskCheckClick((getItem(it) as UiReminderPreviewSubTask).id) },
         )
       }
 
@@ -89,7 +90,7 @@ class ReminderPreviewDataAdapter(
               noteImageClick(imageId, it.note)
             }
           },
-          allowMore = false
+          allowMore = false,
         )
       }
 
@@ -100,7 +101,7 @@ class ReminderPreviewDataAdapter(
             getItem(position).let { it as? UiReminderPreviewGoogleTask }?.also {
               googleTaskClick(it.googleTask.id)
             }
-          }
+          },
         )
       }
 
@@ -115,7 +116,7 @@ class ReminderPreviewDataAdapter(
                 googleCalendarClick(it.data.id)
               }
             }
-          }
+          },
         )
       }
 
@@ -123,9 +124,11 @@ class ReminderPreviewDataAdapter(
         ReminderAttachmentViewHolder(parent = parent)
       }
     }
-  }
 
-  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: RecyclerView.ViewHolder,
+    position: Int,
+  ) {
     when (holder) {
       is ReminderHeaderViewHolder -> holder.bind(getItem(position) as UiReminderPreviewHeader)
       is ReminderElementViewHolder -> holder.bind(getItem(position) as UiReminderPreviewElement)
@@ -143,7 +146,5 @@ class ReminderPreviewDataAdapter(
     }
   }
 
-  override fun getItemViewType(position: Int): Int {
-    return getItem(position).viewType.ordinal
-  }
+  override fun getItemViewType(position: Int): Int = getItem(position).viewType.ordinal
 }

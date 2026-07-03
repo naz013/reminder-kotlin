@@ -5,7 +5,6 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 
 class ResolveReminderEventActionUseCase {
-
   operator fun invoke(reminder: Reminder): ResolvedEventAction? {
     Logger.i(TAG, "Resolving event action for reminder: $reminder")
     return when {
@@ -15,7 +14,7 @@ class ResolveReminderEventActionUseCase {
         } else {
           ResolvedEventAction.SendSms(
             phoneNumber = reminder.to,
-            message = reminder.summary
+            message = reminder.summary,
           )
         }
       }
@@ -31,7 +30,7 @@ class ResolveReminderEventActionUseCase {
           email = reminder.to,
           subject = reminder.subject,
           body = reminder.summary,
-          attachmentPath = reminder.attachmentFile
+          attachmentPath = reminder.attachmentFile,
         )
       }
       else -> {
@@ -44,10 +43,9 @@ class ResolveReminderEventActionUseCase {
     }
   }
 
-  private fun isAppType(reminder: Reminder): Boolean {
-    return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
+  private fun isAppType(reminder: Reminder): Boolean =
+    Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
       Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
-  }
 
   companion object {
     private const val TAG = "ResolveReminderEventActionUseCase"

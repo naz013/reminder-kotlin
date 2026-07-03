@@ -9,9 +9,8 @@ import com.github.naz013.domain.Reminder
  */
 class SaveReminderToGoogleCalendarUseCase(
   private val googleCalendarUtils: GoogleCalendarUtils,
-  private val prefs: Prefs
+  private val prefs: Prefs,
 ) {
-
   suspend operator fun invoke(reminder: Reminder) {
     if (reminder.exportToCalendar) {
       if (prefs.isCalendarEnabled || reminder.jsonSchemaVersion == Reminder.Version.V3) {

@@ -25,7 +25,6 @@ class CheckBirthdaysWorker(
   private val saveBirthdayUseCase: SaveBirthdayUseCase,
   private val getContactsWithMetadataUseCase: GetContactsWithMetadataUseCase,
 ) : CoroutineWorker(context, workerParams) {
-
   override suspend fun doWork(): Result {
     if (!Permissions.checkPermission(applicationContext, Permissions.READ_CONTACTS)) {
       Logger.e(TAG, "No READ_CONTACTS permission!")
@@ -50,19 +49,20 @@ class CheckBirthdaysWorker(
     contacts.filterNot { birthdays.containsKey(it.id) }.forEach { (id, name, number, birthday) ->
       val birthdayDate = birthday?.let { dateTimeManager.findBirthdayDate(it) } ?: return@forEach
       val key = number?.substring(1) ?: "0"
-      val birthdayItem = Birthday(
-        name = name,
-        date = dateTimeManager.formatBirthdayDate(birthdayDate),
-        number = number ?: "",
-        showedYear = 0,
-        contactId = id,
-        day = birthdayDate.dayOfMonth,
-        month = birthdayDate.monthValue - 1,
-        key = "$name|$key",
-        updatedAt = dateTimeManager.getNowGmtDateTime(),
-        version = 0L,
-        syncState = SyncState.WaitingForUpload
-      )
+      val birthdayItem =
+        Birthday(
+          name = name,
+          date = dateTimeManager.formatBirthdayDate(birthdayDate),
+          number = number ?: "",
+          showedYear = 0,
+          contactId = id,
+          day = birthdayDate.dayOfMonth,
+          month = birthdayDate.monthValue - 1,
+          key = "$name|$key",
+          updatedAt = dateTimeManager.getNowGmtDateTime(),
+          version = 0L,
+          syncState = SyncState.WaitingForUpload,
+        )
       saveBirthdayUseCase(birthdayItem)
       newBirthdaysCount++
     }

@@ -38,22 +38,23 @@ class NotesViewModel(
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
   private val saveNoteUseCase: SaveNoteUseCase,
-  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase
+  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toLiveData()
 
   private val noteSortProcessor = NoteSortProcessor()
-  private val notesData = SearchableNotesData(
-    dispatcherProvider = dispatcherProvider,
-    parentScope = viewModelScope,
-    noteRepository = noteRepository,
-    isArchived = false
-  )
-  val notes = notesData.map { list ->
-    noteSortProcessor.apply(list.map { uiNoteListAdapter.convert(it) }, prefs.noteOrder)
-  }
+  private val notesData =
+    SearchableNotesData(
+      dispatcherProvider = dispatcherProvider,
+      parentScope = viewModelScope,
+      noteRepository = noteRepository,
+      isArchived = false,
+    )
+  val notes =
+    notesData.map { list ->
+      noteSortProcessor.apply(list.map { uiNoteListAdapter.convert(it) }, prefs.noteOrder)
+    }
 
   fun onSearchUpdate(query: String) {
     notesData.onNewQuery(query)
@@ -115,7 +116,10 @@ class NotesViewModel(
     }
   }
 
-  fun saveNoteColor(id: String, color: Int) {
+  fun saveNoteColor(
+    id: String,
+    color: Int,
+  ) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(id)

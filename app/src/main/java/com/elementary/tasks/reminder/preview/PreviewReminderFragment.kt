@@ -32,46 +32,45 @@ import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalTime
 
 class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBinding>() {
-
   private val viewModel by viewModel<PreviewReminderViewModel> { parametersOf(arguments) }
   private val dateTimeManager by inject<DateTimeManager>()
   private val imagesSingleton by inject<ImagesSingleton>()
 
   private var adapter: ReminderPreviewDataAdapter? = null
 
-  override fun getTitle(): String {
-    return getString(R.string.details)
-  }
+  override fun getTitle(): String = getString(R.string.details)
 
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): FragmentReminderPreviewBinding {
-    return FragmentReminderPreviewBinding.inflate(inflater, container, false)
-  }
+    savedInstanceState: Bundle?,
+  ): FragmentReminderPreviewBinding = FragmentReminderPreviewBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the reminder preview screen for id: ${viewModel.id}")
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     Logger.d(TAG, "On view created, fragment manager: $parentFragmentManager")
-    adapter = ReminderPreviewDataAdapter(
-      fragmentManager = parentFragmentManager,
-      prefs = prefs,
-      onToggleClicked = { viewModel.switchClick() },
-      onMapClick = { openFullMap() },
-      subTaskCheckClick = { viewModel.onSubTaskChecked(it) },
-      subTaskRemoveClick = { viewModel.onSubTaskRemoved(it) },
-      noteClick = { openNote(it) },
-      noteImageClick = { imageId, note -> onNoteImageClicked(imageId, note) },
-      googleTaskClick = { onGoogleTaskClicked(it) },
-      googleCalendarClick = { openCalendar(it) },
-      googleRemoveClick = { viewModel.deleteEvent(it) }
-    )
+    adapter =
+      ReminderPreviewDataAdapter(
+        fragmentManager = parentFragmentManager,
+        prefs = prefs,
+        onToggleClicked = { viewModel.switchClick() },
+        onMapClick = { openFullMap() },
+        subTaskCheckClick = { viewModel.onSubTaskChecked(it) },
+        subTaskRemoveClick = { viewModel.onSubTaskRemoved(it) },
+        noteClick = { openNote(it) },
+        noteImageClick = { imageId, note -> onNoteImageClicked(imageId, note) },
+        googleTaskClick = { onGoogleTaskClicked(it) },
+        googleCalendarClick = { openCalendar(it) },
+        googleRemoveClick = { viewModel.deleteEvent(it) },
+      )
     binding.dataListView.layoutManager = LinearLayoutManager(context)
     binding.dataListView.adapter = adapter
 
@@ -104,7 +103,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
       },
       menuModifier = { menu ->
         menu.getItem(2)?.isVisible = viewModel.canCopy
-      }
+      },
     )
 
     initViewModel()
@@ -155,7 +154,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, id)
         },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
@@ -165,17 +164,20 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
       navigate(
         R.id.previewNoteFragment,
         Bundle().apply { putString(IntentKeys.INTENT_ID, id) },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
 
-  private fun onNoteImageClicked(imageId: Int, note: UiNoteList) {
+  private fun onNoteImageClicked(
+    imageId: Int,
+    note: UiNoteList,
+  ) {
     val imagePosition = note.images.indexOfFirst { it.id == imageId }.takeIf { it != -1 } ?: 0
     imagesSingleton.setCurrent(
       images = note.images,
       color = note.colorPosition,
-      palette = note.colorPalette
+      palette = note.colorPalette,
     )
     startActivity(ImagePreviewActivity::class.java) {
       putExtra(IntentKeys.INTENT_ID, note.id)
@@ -194,7 +196,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, viewModel.id)
         },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }
@@ -249,7 +251,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, viewModel.id)
         },
-        NavigationAnimations.inDepthNavOptions()
+        NavigationAnimations.inDepthNavOptions(),
       )
     }
   }

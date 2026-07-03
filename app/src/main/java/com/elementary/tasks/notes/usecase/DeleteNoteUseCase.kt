@@ -10,7 +10,7 @@ import com.github.naz013.sync.DataType
 class DeleteNoteUseCase(
   private val noteRepository: NoteRepository,
   private val noteImageRepository: NoteImageRepository,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {
   suspend operator fun invoke(noteId: String) {
     noteRepository.delete(noteId)
@@ -19,7 +19,7 @@ class DeleteNoteUseCase(
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Delete,
       dataType = DataType.Notes,
-      id = noteId
+      id = noteId,
     )
     Logger.i(TAG, "Deleted note with id = $noteId")
   }

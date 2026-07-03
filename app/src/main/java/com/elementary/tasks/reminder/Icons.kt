@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 
 object Icons {
-
   @DrawableRes
   val SUMMARY: Int = R.drawable.ic_fluent_text
 

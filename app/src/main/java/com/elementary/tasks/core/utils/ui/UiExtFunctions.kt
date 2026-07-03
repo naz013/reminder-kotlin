@@ -23,38 +23,44 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.textfield.TextInputLayout
 
-fun AppCompatEditText.onTextChanged(f: (String?) -> Unit): TextWatcher {
-  return doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
-}
+fun AppCompatEditText.onTextChanged(f: (String?) -> Unit): TextWatcher = doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
 
 fun MaterialToolbar.tintOverflowButton(isDark: Boolean) {
-  val color = if (isDark) {
-    context.colorOf(R.color.whitePrimary)
-  } else {
-    context.colorOf(R.color.pureBlack)
-  }
+  val color =
+    if (isDark) {
+      context.colorOf(R.color.whitePrimary)
+    } else {
+      context.colorOf(R.color.pureBlack)
+    }
   setOverflowIcon(ViewUtils.tintIcon(context, R.drawable.ic_fluent_more_vertical, color))
 }
 
 @SuppressLint("ClickableViewAccessibility")
 fun ScrollView.listenScrollableView(listener: ((x: Int) -> Unit)?) {
-  val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
-    listener?.invoke(scrollY)
-  }
-  setOnTouchListener(object : View.OnTouchListener {
-    private var observer: ViewTreeObserver? = null
-    override fun onTouch(v: View, event: MotionEvent): Boolean {
-      if (observer == null) {
-        observer = viewTreeObserver
-        observer?.addOnScrollChangedListener(onScrollChangedListener)
-      } else if (observer?.isAlive == false) {
-        observer?.removeOnScrollChangedListener(onScrollChangedListener)
-        observer = viewTreeObserver
-        observer?.addOnScrollChangedListener(onScrollChangedListener)
-      }
-      return false
+  val onScrollChangedListener =
+    ViewTreeObserver.OnScrollChangedListener {
+      listener?.invoke(scrollY)
     }
-  })
+  setOnTouchListener(
+    object : View.OnTouchListener {
+      private var observer: ViewTreeObserver? = null
+
+      override fun onTouch(
+        v: View,
+        event: MotionEvent,
+      ): Boolean {
+        if (observer == null) {
+          observer = viewTreeObserver
+          observer?.addOnScrollChangedListener(onScrollChangedListener)
+        } else if (observer?.isAlive == false) {
+          observer?.removeOnScrollChangedListener(onScrollChangedListener)
+          observer = viewTreeObserver
+          observer?.addOnScrollChangedListener(onScrollChangedListener)
+        }
+        return false
+      }
+    },
+  )
 }
 
 @SuppressLint("ClickableViewAccessibility")
@@ -71,7 +77,9 @@ fun RecyclerView.listenScrollableView(listener: ((x: Int) -> Unit)?) {
   }
 }
 
-fun TextInputLayout.showError(@StringRes message: Int) {
+fun TextInputLayout.showError(
+  @StringRes message: Int,
+) {
   showError(context.getString(message))
 }
 
@@ -92,15 +100,17 @@ fun TextView.setTextOrHide(text: String?) {
 }
 
 fun TabLayout.onTabSelected(function: (TabLayout.Tab) -> Unit) {
-  addOnTabSelectedListener(object : OnTabSelectedListener {
-    override fun onTabSelected(tab: TabLayout.Tab?) {
-      if (tab != null) {
-        function(tab)
+  addOnTabSelectedListener(
+    object : OnTabSelectedListener {
+      override fun onTabSelected(tab: TabLayout.Tab?) {
+        if (tab != null) {
+          function(tab)
+        }
       }
-    }
 
-    override fun onTabReselected(tab: TabLayout.Tab?) { }
+      override fun onTabReselected(tab: TabLayout.Tab?) { }
 
-    override fun onTabUnselected(tab: TabLayout.Tab?) { }
-  })
+      override fun onTabUnselected(tab: TabLayout.Tab?) { }
+    },
+  )
 }

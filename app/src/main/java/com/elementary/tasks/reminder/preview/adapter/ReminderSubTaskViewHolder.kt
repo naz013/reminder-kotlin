@@ -4,18 +4,17 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.text.applyStyles
-import com.github.naz013.ui.common.view.inflater
 import com.elementary.tasks.databinding.ListItemReminderPreviewSubTaskBinding
 import com.elementary.tasks.reminder.preview.data.UiReminderPreviewSubTask
+import com.github.naz013.ui.common.view.inflater
 
 class ReminderSubTaskViewHolder(
   parent: ViewGroup,
   removeClick: (Int) -> Unit,
   checkClick: (Int) -> Unit,
   binding: ListItemReminderPreviewSubTaskBinding =
-    ListItemReminderPreviewSubTaskBinding.inflate(parent.inflater(), parent, false)
+    ListItemReminderPreviewSubTaskBinding.inflate(parent.inflater(), parent, false),
 ) : HolderBinding<ListItemReminderPreviewSubTaskBinding>(binding) {
-
   init {
     binding.clearButton.setOnClickListener { removeClick(bindingAdapterPosition) }
     binding.checkView.setOnClickListener { checkClick(bindingAdapterPosition) }
@@ -30,7 +29,7 @@ class ReminderSubTaskViewHolder(
         R.drawable.ic_fluent_checkbox_checked
       } else {
         R.drawable.ic_fluent_checkbox_unchecked
-      }
+      },
     )
   }
 }

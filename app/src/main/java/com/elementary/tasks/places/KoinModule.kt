@@ -7,12 +7,13 @@ import com.elementary.tasks.places.usecase.SavePlaceUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val placeKoinModule = module {
-  factory { DeletePlaceUseCase(get(), get()) }
-  factory { SavePlaceUseCase(get(), get()) }
+val placeKoinModule =
+  module {
+    factory { DeletePlaceUseCase(get(), get()) }
+    factory { SavePlaceUseCase(get(), get()) }
 
-  viewModel { (id: String) ->
-    EditPlaceViewModel(id, get(), get(), get(), get(), get(), get(), get(), get())
+    viewModel { (id: String) ->
+      EditPlaceViewModel(id, get(), get(), get(), get(), get(), get(), get(), get())
+    }
+    viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
   }
-  viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
-}

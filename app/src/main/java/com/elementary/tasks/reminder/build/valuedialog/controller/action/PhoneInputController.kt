@@ -7,25 +7,22 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
 import com.elementary.tasks.core.os.PermissionFlow
-import com.github.naz013.common.Permissions
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.databinding.BuilderItemPhoneNumberBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
+import com.github.naz013.common.Permissions
 
 class PhoneInputController(
   builderItem: BuilderItem<String>,
   private val permissionFlow: PermissionFlow,
   private val contactPicker: ContactPicker,
-  private val inputMethodManager: InputMethodManager
+  private val inputMethodManager: InputMethodManager,
 ) : AbstractBindingValueController<String, BuilderItemPhoneNumberBinding>(builderItem) {
-
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemPhoneNumberBinding {
-    return BuilderItemPhoneNumberBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemPhoneNumberBinding = BuilderItemPhoneNumberBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()

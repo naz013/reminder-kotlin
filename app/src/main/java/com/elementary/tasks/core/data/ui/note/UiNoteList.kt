@@ -19,5 +19,5 @@ data class UiNoteList(
   val images: List<UiNoteImage>,
   val colorPosition: Int,
   val colorPalette: Int,
-  val uniqueId: Int
+  val uniqueId: Int,
 )

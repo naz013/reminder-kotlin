@@ -21,79 +21,80 @@ import com.elementary.tasks.googletasks.usecase.tasklist.SyncGoogleTaskList
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val googleTaskModule = module {
-  viewModel { (arguments: Bundle?) ->
-    EditGoogleTaskListViewModel(
-      arguments,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
+val googleTaskModule =
+  module {
+    viewModel { (arguments: Bundle?) ->
+      EditGoogleTaskListViewModel(
+        arguments,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    viewModel { (arguments: Bundle?) ->
+      EditGoogleTaskViewModel(
+        arguments,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    viewModel { (id: String) ->
+      PreviewGoogleTaskViewModel(
+        id,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    viewModel { (listId: String) ->
+      TaskListViewModel(
+        listId,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get(), get()) }
+
+    factory { SyncAllGoogleTaskLists(get(), get(), get(), get(), get(), get()) }
+    factory { SyncGoogleTaskList(get(), get(), get(), get()) }
+
+    factory { SyncGoogleTasks(get(), get(), get(), get(), get()) }
+
+    factory { AddNewTaskList(get(), get(), get()) }
+
+    factory { SaveGoogleTaskList(get()) }
+    factory { SaveGoogleTasks(get()) }
+
+    factory { DeleteGoogleTasks(get()) }
+    factory { DeleteGoogleTaskList(get(), get(), get()) }
+
+    factory { DownloadGoogleTasks(get()) }
+    factory { DownloadGoogleTaskList(get(), get()) }
+
+    factory { UploadGoogleTask(get(), get()) }
+
+    factory { GetGoogleTasksByList(get()) }
+
+    factory { GoogleTaskListFactory() }
   }
-  viewModel { (arguments: Bundle?) ->
-    EditGoogleTaskViewModel(
-      arguments,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-    )
-  }
-  viewModel { (id: String) ->
-    PreviewGoogleTaskViewModel(
-      id,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { (listId: String) ->
-    TaskListViewModel(
-      listId,
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
-  viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get(), get()) }
-
-  factory { SyncAllGoogleTaskLists(get(), get(), get(), get(), get(), get()) }
-  factory { SyncGoogleTaskList(get(), get(), get(), get()) }
-
-  factory { SyncGoogleTasks(get(), get(), get(), get(), get()) }
-
-  factory { AddNewTaskList(get(), get(), get()) }
-
-  factory { SaveGoogleTaskList(get()) }
-  factory { SaveGoogleTasks(get()) }
-
-  factory { DeleteGoogleTasks(get()) }
-  factory { DeleteGoogleTaskList(get(), get(), get()) }
-
-  factory { DownloadGoogleTasks(get()) }
-  factory { DownloadGoogleTaskList(get(), get()) }
-
-  factory { UploadGoogleTask(get(), get()) }
-
-  factory { GetGoogleTasksByList(get()) }
-
-  factory { GoogleTaskListFactory() }
-}

@@ -8,9 +8,8 @@ import com.github.naz013.domain.GoogleTaskList
 class AddNewTaskList(
   private val saveGoogleTaskList: SaveGoogleTaskList,
   private val downloadGoogleTasks: DownloadGoogleTasks,
-  private val saveGoogleTasks: SaveGoogleTasks
+  private val saveGoogleTasks: SaveGoogleTasks,
 ) {
-
   suspend operator fun invoke(googleTaskList: GoogleTaskList) {
     // Save to DB
     saveGoogleTaskList(googleTaskList)

@@ -11,15 +11,14 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
-import com.github.naz013.common.Permissions
-import com.github.naz013.feature.common.readString
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
+import com.github.naz013.common.Permissions
+import com.github.naz013.feature.common.readString
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
-
   private var mData: List<PhoneItem> = ArrayList()
   private var adapter: PhoneAdapter? = null
 
@@ -34,22 +33,34 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
   constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
     context,
     attrs,
-    defStyleAttr
+    defStyleAttr,
   ) {
     init()
   }
 
   private fun init() {
-    addTextChangedListener(object : TextWatcher {
-      override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+    addTextChangedListener(
+      object : TextWatcher {
+        override fun beforeTextChanged(
+          charSequence: CharSequence,
+          i: Int,
+          i1: Int,
+          i2: Int,
+        ) {}
 
-      override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-        performTypeValue(charSequence.toString())
-      }
+        override fun onTextChanged(
+          charSequence: CharSequence,
+          i: Int,
+          i1: Int,
+          i2: Int,
+        ) {
+          performTypeValue(charSequence.toString())
+        }
 
-      override fun afterTextChanged(editable: Editable) {
-      }
-    })
+        override fun afterTextChanged(editable: Editable) {
+        }
+      },
+    )
     adapter = PhoneAdapter(listOf())
     setAdapter(adapter)
     reloadContacts()
@@ -68,8 +79,10 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
     adapter?.filter?.filter(s)
   }
 
-  private inner class PhoneAdapter(items: List<PhoneItem>) : BaseAdapter(), Filterable {
-
+  private inner class PhoneAdapter(
+    items: List<PhoneItem>,
+  ) : BaseAdapter(),
+    Filterable {
     private var items: List<PhoneItem> = ArrayList()
     private var filter: ValueFilter? = null
 
@@ -82,19 +95,17 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
       this.items = items
     }
 
-    override fun getCount(): Int {
-      return items.size
-    }
+    override fun getCount(): Int = items.size
 
-    override fun getItem(i: Int): String {
-      return items[i].phone
-    }
+    override fun getItem(i: Int): String = items[i].phone
 
-    override fun getItemId(i: Int): Long {
-      return 0
-    }
+    override fun getItemId(i: Int): Long = 0
 
-    override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View? {
+    override fun getView(
+      i: Int,
+      view: View?,
+      viewGroup: ViewGroup,
+    ): View? {
       val newView: View?
       val item = items[i]
       if (view == null) {
@@ -128,9 +139,10 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
         val matcher = constraint?.toString()?.trim()?.lowercase() ?: ""
         val results = FilterResults()
         if (matcher.isNotEmpty()) {
-          val filterList = mData.filter {
-            it.name.lowercase().contains(matcher) || it.phone.contains(matcher)
-          }
+          val filterList =
+            mData.filter {
+              it.name.lowercase().contains(matcher) || it.phone.contains(matcher)
+            }
           results.count = filterList.size
           results.values = filterList
         } else {
@@ -140,7 +152,10 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
         return results
       }
 
-      override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+      override fun publishResults(
+        constraint: CharSequence?,
+        results: FilterResults?,
+      ) {
         if (results != null) {
           adapter?.setItems(results.values as List<PhoneItem>)
           adapter?.notifyDataSetChanged()
@@ -153,11 +168,12 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
     launchDefault {
       val list = ArrayList<PhoneItem>()
       val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-      val projection = arrayOf(
-        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-        ContactsContract.CommonDataKinds.Phone.NUMBER,
-        ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER
-      )
+      val projection =
+        arrayOf(
+          ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+          ContactsContract.CommonDataKinds.Phone.NUMBER,
+          ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER,
+        )
 
       val cursor = context.contentResolver.query(uri, projection, null, null, null)
       if (cursor != null && cursor.moveToFirst()) {
@@ -181,5 +197,8 @@ class PhoneAutoCompleteView : MaterialAutoCompleteTextView {
     var binding: ListItemEmailBinding? = null
   }
 
-  data class PhoneItem(val name: String, val phone: String)
+  data class PhoneItem(
+    val name: String,
+    val phone: String,
+  )
 }

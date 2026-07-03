@@ -25,15 +25,14 @@ class ReminderOccurrenceCalculatorFactory(
   private val dateTimeManager: DateTimeManager,
   private val recurEventManager: RecurEventManager,
 ) {
-
   /**
    * Creates the appropriate ReminderOccurrenceCalculator for a given strategy.
    *
    * @param strategy The behavior strategy to get calculator for
    * @return The corresponding calculator implementation
    */
-  fun createCalculator(strategy: ReminderBehaviorStrategy): ReminderOccurrenceCalculator {
-    return when (strategy) {
+  fun createCalculator(strategy: ReminderBehaviorStrategy): ReminderOccurrenceCalculator =
+    when (strategy) {
       is SimpleDateStrategy -> {
         Logger.d(TAG, "createCalculator: SimpleDateStrategy -> SimpleDateOccurrenceCalculator")
         SimpleDateOccurrenceCalculator()
@@ -84,10 +83,8 @@ class ReminderOccurrenceCalculatorFactory(
         NoReminderOccurrenceCalculator()
       }
     }
-  }
 
   companion object {
     private const val TAG = "OccurrenceCalcFactory"
   }
 }
-

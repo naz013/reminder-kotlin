@@ -16,16 +16,14 @@ class RecurRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
   private val recurEventManager: RecurEventManager,
 ) : ReminderBehaviorStrategy {
-
   override fun calculateNextOccurrence(
     reminder: Reminder,
-    fromDateTime: LocalDateTime
-  ): LocalDateTime? {
-    return recurEventManager.getNextAfterDateTime(
+    fromDateTime: LocalDateTime,
+  ): LocalDateTime? =
+    recurEventManager.getNextAfterDateTime(
       fromDateTime,
-      reminder.recurDataObject
+      reminder.recurDataObject,
     )
-  }
 
   override fun canSkip(reminder: Reminder): Boolean {
     if (reminder.recurDataObject.isNullOrEmpty()) return false
@@ -33,15 +31,11 @@ class RecurRepeatStrategy(
     val currentEventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
     return recurEventManager.getNextAfterDateTime(
       currentEventTime,
-      reminder.recurDataObject
+      reminder.recurDataObject,
     ) != null
   }
 
-  override fun canSnooze(reminder: Reminder): Boolean {
-    return true
-  }
+  override fun canSnooze(reminder: Reminder): Boolean = true
 
-  override fun canStartImmediately(reminder: Reminder): Boolean {
-    return dateTimeManager.isCurrent(reminder.eventTime)
-  }
+  override fun canStartImmediately(reminder: Reminder): Boolean = dateTimeManager.isCurrent(reminder.eventTime)
 }

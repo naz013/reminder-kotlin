@@ -6,7 +6,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 class RecurrenceCalculator {
-
   /**
    * Calculates the next occurrence of a yearly event based on the specified month and day.
    * if the day of month is 0, then it means the last day of the month.
@@ -33,11 +32,12 @@ class RecurrenceCalculator {
     val monthOfYear = monthOfYear + 1
     var nextDateTime = eventDateTime.withDayOfMonth(1).withMonth(monthOfYear).plusYears(interval)
     val lastDayOfTargetMonth = nextDateTime.toLocalDate().lengthOfMonth()
-    val targetDay = when {
-      dayOfMonth == 0 -> lastDayOfTargetMonth
-      dayOfMonth > lastDayOfTargetMonth -> lastDayOfTargetMonth
-      else -> dayOfMonth
-    }
+    val targetDay =
+      when {
+        dayOfMonth == 0 -> lastDayOfTargetMonth
+        dayOfMonth > lastDayOfTargetMonth -> lastDayOfTargetMonth
+        else -> dayOfMonth
+      }
     nextDateTime = nextDateTime.withDayOfMonth(targetDay)
     return nextDateTime
   }
@@ -58,7 +58,7 @@ class RecurrenceCalculator {
     monthOfYear: Int,
     dayOfMonth: Int,
     interval: Long,
-    afterOrEqualDateTime: LocalDateTime
+    afterOrEqualDateTime: LocalDateTime,
   ): LocalDateTime {
     var nextDateTime = getNextYearDayDateTime(eventDateTime, monthOfYear, dayOfMonth, interval)
     while (nextDateTime.isBefore(afterOrEqualDateTime)) {
@@ -98,7 +98,7 @@ class RecurrenceCalculator {
   fun findNextDayOfWeekDateTime(
     eventDateTime: LocalDateTime,
     weekdays: List<Int>,
-    afterOrEqualDateTime: LocalDateTime
+    afterOrEqualDateTime: LocalDateTime,
   ): LocalDateTime {
     var nextDateTime = getNextDayOfWeekDateTime(eventDateTime, weekdays)
     while (nextDateTime.isBefore(afterOrEqualDateTime)) {
@@ -127,11 +127,12 @@ class RecurrenceCalculator {
     val interval = if (interval <= 0) 1L else interval
     var nextDateTime = eventDateTime.withDayOfMonth(1).plusMonths(interval)
     val lastDayOfNextMonth = nextDateTime.toLocalDate().lengthOfMonth()
-    val targetDay = when {
-      dayOfMonth <= 0 -> lastDayOfNextMonth
-      dayOfMonth > lastDayOfNextMonth -> lastDayOfNextMonth
-      else -> dayOfMonth
-    }
+    val targetDay =
+      when {
+        dayOfMonth <= 0 -> lastDayOfNextMonth
+        dayOfMonth > lastDayOfNextMonth -> lastDayOfNextMonth
+        else -> dayOfMonth
+      }
     nextDateTime = nextDateTime.withDayOfMonth(targetDay)
     return nextDateTime
   }
@@ -149,7 +150,7 @@ class RecurrenceCalculator {
     eventDateTime: LocalDateTime,
     dayOfMonth: Int,
     interval: Long,
-    afterOrEqualDateTime: LocalDateTime
+    afterOrEqualDateTime: LocalDateTime,
   ): LocalDateTime {
     var nextDateTime = getNextMonthDayDateTime(eventDateTime, dayOfMonth, interval)
     while (nextDateTime.isBefore(afterOrEqualDateTime)) {
@@ -168,9 +169,7 @@ class RecurrenceCalculator {
   fun getNextIntervalDateTime(
     eventDateTime: LocalDateTime,
     intervalMillis: Long,
-  ): LocalDateTime {
-    return eventDateTime.plusMillis(intervalMillis)
-  }
+  ): LocalDateTime = eventDateTime.plusMillis(intervalMillis)
 
   /**
    * Finds the next occurrence of an event based on a specified interval,
@@ -184,7 +183,7 @@ class RecurrenceCalculator {
   fun findNextIntervalDateTime(
     eventDateTime: LocalDateTime,
     intervalMillis: Long,
-    afterOrEqualDateTime: LocalDateTime
+    afterOrEqualDateTime: LocalDateTime,
   ): LocalDateTime {
     var nextDateTime = eventDateTime
     while (nextDateTime.isBefore(afterOrEqualDateTime)) {
@@ -199,11 +198,7 @@ class RecurrenceCalculator {
    * @param countdownTimeInMillis The countdown time in milliseconds
    * @return The calculated start date and time
    */
-  fun getStartTimerDateTime(
-    countdownTimeInMillis: Long,
-  ): LocalDateTime {
-    return LocalDateTime.now().plusMillis(countdownTimeInMillis)
-  }
+  fun getStartTimerDateTime(countdownTimeInMillis: Long): LocalDateTime = LocalDateTime.now().plusMillis(countdownTimeInMillis)
 
   /**
    * Calculates the next occurrence of a timer-based event, considering excluded hours and time ranges.
@@ -220,17 +215,19 @@ class RecurrenceCalculator {
     interval: Long,
     excludedHours: List<Int>,
     excludedFromTime: LocalTime?,
-    excludedToTime: LocalTime?
+    excludedToTime: LocalTime?,
   ): LocalDateTime {
     if (interval <= 0L) {
       throw IllegalArgumentException("Interval must be greater than zero.")
     }
     var nextDateTime = eventDateTime.plusMillis(interval)
-    while (excludedHours.contains(nextDateTime.hour) || isBetweenOf(
+    while (excludedHours.contains(nextDateTime.hour) ||
+      isBetweenOf(
         nextDateTime.toLocalTime(),
         excludedFromTime,
-        excludedToTime
-      )) {
+        excludedToTime,
+      )
+    ) {
       nextDateTime = nextDateTime.plusMillis(interval)
     }
     return nextDateTime
@@ -256,21 +253,23 @@ class RecurrenceCalculator {
     excludedToTime: LocalTime?,
     afterOrEqualDateTime: LocalDateTime,
   ): LocalDateTime {
-    var nextDateTime = getNextTimerDateTime(
-      eventDateTime,
-      interval,
-      excludedHours,
-      excludedFromTime,
-      excludedToTime
-    )
-    while (nextDateTime.isBefore(afterOrEqualDateTime)) {
-      nextDateTime = getNextTimerDateTime(
-        nextDateTime,
+    var nextDateTime =
+      getNextTimerDateTime(
+        eventDateTime,
         interval,
         excludedHours,
         excludedFromTime,
-        excludedToTime
+        excludedToTime,
       )
+    while (nextDateTime.isBefore(afterOrEqualDateTime)) {
+      nextDateTime =
+        getNextTimerDateTime(
+          nextDateTime,
+          interval,
+          excludedHours,
+          excludedFromTime,
+          excludedToTime,
+        )
     }
     return nextDateTime
   }
@@ -286,7 +285,7 @@ class RecurrenceCalculator {
   private fun isBetweenOf(
     time: LocalTime,
     start: LocalTime?,
-    end: LocalTime?
+    end: LocalTime?,
   ): Boolean {
     if (start == null || end == null) return false
     return if (start <= end) {

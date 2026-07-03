@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
-import com.github.naz013.domain.Reminder
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.github.naz013.domain.Reminder
 
 class TypeDecomposer(
   private val byDateDecomposer: ByDateDecomposer,
@@ -11,9 +11,8 @@ class TypeDecomposer(
   private val byDayOfMonthDecomposer: ByDayOfMonthDecomposer,
   private val byDayOfYearDecomposer: ByDayOfYearDecomposer,
   private val byLocationDecomposer: ByLocationDecomposer,
-  private val iCalDecomposer: ICalDecomposer
+  private val iCalDecomposer: ICalDecomposer,
 ) {
-
   suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
     val type = UiReminderType(reminder.type)
     return when {

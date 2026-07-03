@@ -6,5 +6,5 @@ data class UiPlaceEdit(
   val name: String,
   val lat: Double,
   val lng: Double,
-  val radius: Int
+  val radius: Int,
 )

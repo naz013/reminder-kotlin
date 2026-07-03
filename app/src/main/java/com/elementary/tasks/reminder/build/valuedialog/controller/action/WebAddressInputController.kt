@@ -12,15 +12,12 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractB
 
 class WebAddressInputController(
   builderItem: BuilderItem<String>,
-  private val inputMethodManager: InputMethodManager
+  private val inputMethodManager: InputMethodManager,
 ) : AbstractBindingValueController<String, BuilderItemUrlBinding>(builderItem) {
-
   override fun bindView(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup
-  ): BuilderItemUrlBinding {
-    return BuilderItemUrlBinding.inflate(layoutInflater, parent, false)
-  }
+    parent: ViewGroup,
+  ): BuilderItemUrlBinding = BuilderItemUrlBinding.inflate(layoutInflater, parent, false)
 
   override fun onViewCreated() {
     super.onViewCreated()

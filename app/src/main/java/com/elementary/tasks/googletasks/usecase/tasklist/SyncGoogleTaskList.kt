@@ -11,9 +11,8 @@ class SyncGoogleTaskList(
   private val downloadGoogleTaskList: DownloadGoogleTaskList,
   private val saveGoogleTaskList: SaveGoogleTaskList,
   private val syncGoogleTasks: SyncGoogleTasks,
-  private val googleTasksAuthManager: GoogleTasksAuthManager
+  private val googleTasksAuthManager: GoogleTasksAuthManager,
 ) {
-
   suspend operator fun invoke(list: GoogleTaskList) {
     if (!googleTasksAuthManager.isAuthorized()) {
       Logger.w(TAG, "Sync task list - not logged")

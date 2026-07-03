@@ -1,17 +1,17 @@
 package com.elementary.tasks.reminder.build.reminder.validation
 
-import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.Permissions
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.bi.constraint.PermissionConstraint
+import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.Permissions
 
 class PermissionValidator(
-  private val contextProvider: ContextProvider
+  private val contextProvider: ContextProvider,
 ) {
-
   operator fun invoke(items: List<BuilderItem<*>>): Result {
     val set = HashSet<String>()
-    items.map { it.constraints.filterIsInstance<PermissionConstraint>() }
+    items
+      .map { it.constraints.filterIsInstance<PermissionConstraint>() }
       .flatten()
       .map { it.value }
       .toHashSet()
@@ -29,12 +29,11 @@ class PermissionValidator(
 
   sealed class Result {
     data object Success : Result()
+
     data class Failure(
-      val permissions: List<String>
+      val permissions: List<String>,
     ) : Result()
   }
 
-  private fun checkPermission(permission: String): Boolean {
-    return Permissions.checkPermission(contextProvider.context, permission)
-  }
+  private fun checkPermission(permission: String): Boolean = Permissions.checkPermission(contextProvider.context, permission)
 }

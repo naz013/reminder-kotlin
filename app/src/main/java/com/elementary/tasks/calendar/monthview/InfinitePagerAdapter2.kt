@@ -15,9 +15,8 @@ import org.threeten.bp.LocalDate
 
 class InfinitePagerAdapter2(
   private val dataAccessor: DataAccessor,
-  private val monthCallback: MonthCallback
+  private val monthCallback: MonthCallback,
 ) : RecyclerView.Adapter<InfinitePagerAdapter2.ViewHolderDynamic>() {
-
   private var leftPart: List<MonthPagerItem> = emptyList()
   private var rightPart: List<MonthPagerItem> = emptyList()
   private var selectedPosition: Int = 1
@@ -45,11 +44,15 @@ class InfinitePagerAdapter2(
     this.recyclerView = recyclerView
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderDynamic {
-    return ViewHolderDynamic(parent)
-  }
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): ViewHolderDynamic = ViewHolderDynamic(parent)
 
-  override fun onBindViewHolder(holder: ViewHolderDynamic, position: Int) {
+  override fun onBindViewHolder(
+    holder: ViewHolderDynamic,
+    position: Int,
+  ) {
     if (position > 2) {
       holder.bind(rightPart[position - 3])
     } else {
@@ -62,20 +65,16 @@ class InfinitePagerAdapter2(
     Logger.d(TAG, "onViewRecycled: ${holder.bindingAdapterPosition}")
   }
 
-  override fun getItemCount(): Int {
-    return 6
-  }
+  override fun getItemCount(): Int = 6
 
-  private fun findViewHolder(position: Int): RecyclerView.ViewHolder? {
-    return recyclerView?.findViewHolderForAdapterPosition(position)
-  }
+  private fun findViewHolder(position: Int): RecyclerView.ViewHolder? = recyclerView?.findViewHolderForAdapterPosition(position)
 
-  inner class ViewHolderDynamic(parent: ViewGroup) :
-    HolderBinding<FragmentMonthViewBinding>(
-      FragmentMonthViewBinding.inflate(parent.inflater(), parent, false)
+  inner class ViewHolderDynamic(
+    parent: ViewGroup,
+  ) : HolderBinding<FragmentMonthViewBinding>(
+      FragmentMonthViewBinding.inflate(parent.inflater(), parent, false),
     ),
     KoinComponent {
-
     private val monthLiveData by inject<MonthLiveData>()
 
     init {
@@ -91,16 +90,20 @@ class InfinitePagerAdapter2(
       binding.monthView.setTodayColor(dataAccessor.getTodayColor())
       binding.monthView.setStartDayOfWeek(dataAccessor.getStartDay())
 
-      binding.monthView.setDateClick(object : MonthView.OnDateClick {
-        override fun onClick(date: LocalDate) {
-          monthCallback.onDateClick(date)
-        }
-      })
-      binding.monthView.setDateLongClick(object : MonthView.OnDateLongClick {
-        override fun onLongClick(date: LocalDate) {
-          monthCallback.onDateLongClick(date)
-        }
-      })
+      binding.monthView.setDateClick(
+        object : MonthView.OnDateClick {
+          override fun onClick(date: LocalDate) {
+            monthCallback.onDateClick(date)
+          }
+        },
+      )
+      binding.monthView.setDateLongClick(
+        object : MonthView.OnDateLongClick {
+          override fun onLongClick(date: LocalDate) {
+            monthCallback.onDateLongClick(date)
+          }
+        },
+      )
       binding.monthView.setDate(monthPagerItem.year, monthPagerItem.monthValue)
 
       monthLiveData.onDateChanged(monthPagerItem.date)
@@ -109,6 +112,7 @@ class InfinitePagerAdapter2(
 
   interface DataAccessor {
     fun getTodayColor(): Int
+
     fun getStartDay(): StartDayOfWeekProtocol
   }
 

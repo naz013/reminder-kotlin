@@ -21,16 +21,17 @@ class GroupsViewModel(
   private val uiGroupListAdapter: UiGroupListAdapter,
   tableChangeListenerFactory: TableChangeListenerFactory,
   private val deleteReminderGroupUseCase: DeleteReminderGroupUseCase,
-  private val saveReminderGroupUseCase: SaveReminderGroupUseCase
+  private val saveReminderGroupUseCase: SaveReminderGroupUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
-  val allGroups = viewModelScope.observeTable(
-    table = Table.ReminderGroup,
-    tableChangeListenerFactory = tableChangeListenerFactory,
-    queryProducer = { reminderGroupRepository.getAll() }
-  ).map { list ->
-    list.map { uiGroupListAdapter.convert(it) }
-  }
+  val allGroups =
+    viewModelScope
+      .observeTable(
+        table = Table.ReminderGroup,
+        tableChangeListenerFactory = tableChangeListenerFactory,
+        queryProducer = { reminderGroupRepository.getAll() },
+      ).map { list ->
+        list.map { uiGroupListAdapter.convert(it) }
+      }
 
   fun deleteGroup(id: String) {
     postInProgress(true)
@@ -47,7 +48,10 @@ class GroupsViewModel(
     }
   }
 
-  fun changeGroupColor(id: String, color: Int) {
+  fun changeGroupColor(
+    id: String,
+    color: Int,
+  ) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminderGroup = reminderGroupRepository.getById(id)
