@@ -85,7 +85,9 @@ class BottomNavActivity :
             R.id.buildReminderFragment
           }
 
-          ShortcutDestination.Shortcut.Note -> TODO()
+          ShortcutDestination.Shortcut.Note -> {
+            R.id.createNoteFragment
+          }
           null -> null
         }
       destinationId?.also {

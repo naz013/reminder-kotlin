@@ -67,7 +67,6 @@ fun NoteEditScreen(
   onTitleFieldValueChange: (TextFieldValue) -> Unit,
   boldRange: IntRange?,
   backgroundColor: Color,
-  barColor: Color,
   contentColor: Color,
   sliderColors: IntArray,
   activeDialog: NoteEditDialog?,
@@ -177,6 +176,8 @@ fun NoteEditScreen(
               cursorColor = contentColor,
               focusedTextColor = contentColor,
               unfocusedTextColor = contentColor,
+              focusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
+              unfocusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
             ),
         )
         TextField(
@@ -205,6 +206,8 @@ fun NoteEditScreen(
               cursorColor = contentColor,
               focusedTextColor = contentColor,
               unfocusedTextColor = contentColor,
+              focusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
+              unfocusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
             ),
         )
 
@@ -223,6 +226,8 @@ fun NoteEditScreen(
       }
     }
 
+    val barContainerColor = MaterialTheme.colorScheme.primaryContainer
+    val barContentColor = MaterialTheme.colorScheme.onPrimaryContainer
     NoteEditFloatingBar(
       items =
         noteEditBarItems(
@@ -230,14 +235,14 @@ fun NoteEditScreen(
           speechState = speechState,
           supportsSpeech = supportsSpeech,
           hasCamera = hasCamera,
-          contentColor = contentColor,
-          barColor = barColor,
+          contentColor = barContentColor,
+          barColor = barContainerColor,
           sliderColors = sliderColors,
           colorsForPalette = colorsForPalette,
           actions = actions,
         ),
-      containerColor = barColor,
-      contentColor = contentColor,
+      containerColor = barContainerColor,
+      contentColor = barContentColor,
       modifier =
         Modifier
           .align(Alignment.BottomCenter)
@@ -309,7 +314,7 @@ private fun noteEditBarItems(
               Modifier
                 .size(24.dp)
                 .clip(CircleShape)
-                .background(swatch)
+                .background(swatch.copy(alpha = state.opacity / 100f))
                 .border(2.dp, contentColor.copy(alpha = 0.6f), CircleShape)
                 .semantics { contentDescription = colorDescription },
           )

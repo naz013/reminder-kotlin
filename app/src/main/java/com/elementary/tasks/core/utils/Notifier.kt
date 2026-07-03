@@ -23,7 +23,6 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.home.BottomNavActivity
-import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
@@ -33,6 +32,7 @@ import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DeepLinkDestination
+import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderRepository
@@ -213,10 +213,13 @@ class Notifier(
       }
     remoteViews.setOnClickPendingIntent(R.id.notificationAdd, resultPendingIntent)
     val noteIntent =
-      Intent(context, CreateNoteActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      Intent(context, BottomNavActivity::class.java)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .setAction(Intent.ACTION_VIEW)
+        .putExtra(DeepLinkDestination.KEY, EditNoteScreen(Bundle()))
     val noteBuilder = TaskStackBuilder.create(context)
-    noteBuilder.addParentStack(CreateNoteActivity::class.java)
-    noteBuilder.addNextIntent(noteIntent)
+    noteBuilder.addParentStack(BottomNavActivity::class.java)
+    noteBuilder.addNextIntentWithParentStack(noteIntent)
     val notePendingIntent =
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         noteBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)

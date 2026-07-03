@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
+import androidx.annotation.ColorInt
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -92,6 +93,25 @@ class CreateNoteViewModel(
 ) : BaseProgressViewModel(dispatcherProvider) {
   private val _state = MutableStateFlow(NoteEditState())
   val state: StateFlow<NoteEditState> = _state.asStateFlow()
+
+  private var initStatusBarColor: Int = -1
+  private var statusBarColorSaved: Boolean = false
+
+  @ColorInt
+  fun getStatusBarColor(): Int? =
+    if (statusBarColorSaved) {
+      initStatusBarColor.takeIf { it != -1 }
+    } else {
+      null
+    }
+
+  fun saveStatusBarColor(
+    @ColorInt color: Int,
+  ) {
+    if (statusBarColorSaved) return
+    initStatusBarColor = color
+    statusBarColorSaved = true
+  }
 
   private val _textUpdate = mutableLiveDataOf<Event<TextUpdate>>()
   val textUpdate = _textUpdate.toLiveData()

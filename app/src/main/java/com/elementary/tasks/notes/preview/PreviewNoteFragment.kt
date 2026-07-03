@@ -19,9 +19,8 @@ import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.navigation.NavigationAnimations
-import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.onBackStackResume
-import com.elementary.tasks.notes.create.CreateNoteActivity
+import com.elementary.tasks.navigation.safeNavigation
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.NoteWithImages
@@ -32,7 +31,6 @@ import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.ComposeFragment
 import com.github.naz013.ui.common.fragment.startActivity
 import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.login.LoginApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -122,9 +120,11 @@ class PreviewNoteFragment : ComposeFragment() {
   }
 
   private fun editNote() {
-    LoginApi.openLogged(requireContext(), CreateNoteActivity::class.java) {
-      putExtra(IntentKeys.INTENT_ID, viewModel.key)
-    }
+    safeNavigation(
+      R.id.createNoteFragment,
+      Bundle().apply { putString(IntentKeys.INTENT_ID, viewModel.key) },
+      NavigationAnimations.inDepthNavOptions(),
+    )
   }
 
   private fun moveToStatus() {
@@ -134,13 +134,11 @@ class PreviewNoteFragment : ComposeFragment() {
   }
 
   private fun editReminder(id: String) {
-    navigate {
-      navigate(
-        R.id.buildReminderFragment,
-        Bundle().apply { putString(IntentKeys.INTENT_ID, id) },
-        NavigationAnimations.inDepthNavOptions(),
-      )
-    }
+    safeNavigation(
+      R.id.buildReminderFragment,
+      Bundle().apply { putString(IntentKeys.INTENT_ID, id) },
+      NavigationAnimations.inDepthNavOptions(),
+    )
   }
 
   private fun openImagePreview(

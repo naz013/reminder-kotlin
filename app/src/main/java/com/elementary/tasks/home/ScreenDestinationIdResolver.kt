@@ -7,6 +7,7 @@ import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGoogleTaskScreen
 import com.github.naz013.navigation.EditGroupScreen
+import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.navigation.SettingsScreen
@@ -30,5 +31,6 @@ class ScreenDestinationIdResolver {
       is ViewReminderScreen -> R.id.previewReminderFragment
       is EditReminderScreen -> R.id.buildReminderFragment
       is ViewNoteScreen -> R.id.previewNoteFragment
+      is EditNoteScreen -> R.id.createNoteFragment
     }
 }

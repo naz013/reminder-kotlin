@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.home.BottomNavActivity
-import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
@@ -16,6 +15,7 @@ import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGroupScreen
+import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.navigation.intent.IntentDataWriter
@@ -108,7 +108,14 @@ class DataNavigationDispatcher(
 
       is NoteWithImages -> {
         Bundle().apply {
-          putBoolean(IntentKeys.INTENT_ITEM, true)
+          putParcelable(
+            DeepLinkDestination.KEY,
+            EditNoteScreen(
+              Bundle().apply {
+                putBoolean(IntentKeys.INTENT_ITEM, true)
+              },
+            ),
+          )
         }
       }
 
@@ -119,7 +126,7 @@ class DataNavigationDispatcher(
 
   private fun getAction(data: Any): String? =
     when (data) {
-      is Birthday, is ReminderGroup, is Place, is Reminder -> Intent.ACTION_VIEW
+      is Birthday, is ReminderGroup, is Place, is Reminder, is NoteWithImages -> Intent.ACTION_VIEW
       else -> null
     }
 
@@ -128,7 +135,7 @@ class DataNavigationDispatcher(
       is Birthday -> BottomNavActivity::class.java
       is Reminder -> BottomNavActivity::class.java
       is ReminderGroup -> BottomNavActivity::class.java
-      is NoteWithImages -> CreateNoteActivity::class.java
+      is NoteWithImages -> BottomNavActivity::class.java
       is Place -> BottomNavActivity::class.java
       else -> null
     }

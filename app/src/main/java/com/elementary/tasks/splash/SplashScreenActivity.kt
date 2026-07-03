@@ -10,7 +10,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.ContextSwitcher
 import com.elementary.tasks.home.BottomNavActivity
-import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.finishWith
 import com.github.naz013.ui.common.login.LoginApi
@@ -68,17 +67,24 @@ class SplashScreenActivity : LightThemedActivity() {
         }
 
       val shortcut2 =
-        ShortcutInfo
-          .Builder(this, "id.note")
-          .setShortLabel(getString(R.string.add_note))
-          .setLongLabel(getString(R.string.add_note))
-          .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
-          .setIntents(
-            arrayOf(
-              Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
-              Intent(Intent.ACTION_VIEW).setClass(this, CreateNoteActivity::class.java),
-            ),
-          ).build()
+        run {
+          val bundle =
+            ShortcutDestination.createBundle(
+              shortcut = ShortcutDestination.Shortcut.Note,
+            )
+          ShortcutInfo
+            .Builder(this, "id.note")
+            .setShortLabel(getString(R.string.add_note))
+            .setLongLabel(getString(R.string.add_note))
+            .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
+            .setIntents(
+              arrayOf(
+                Intent(Intent.ACTION_MAIN)
+                  .setClass(this, BottomNavActivity::class.java)
+                  .putExtras(bundle),
+              ),
+            ).build()
+        }
 
       if (viewModel.isGoogleTasksEnabled) {
         val bundle =

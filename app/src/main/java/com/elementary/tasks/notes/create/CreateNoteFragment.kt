@@ -6,7 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.activity.enableEdgeToEdge
+import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -19,7 +19,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.os.PermissionFlowDelegateImpl
+import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
@@ -27,6 +27,8 @@ import com.elementary.tasks.core.speech.SpeechText
 import com.elementary.tasks.core.utils.PhotoSelectionUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.navigation.BackPressHandler
+import com.elementary.tasks.navigation.onBackStackResume
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.github.naz013.appwidgets.AppWidgetUpdater
@@ -35,10 +37,11 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.activity.LightThemedActivity
-import com.github.naz013.ui.common.activity.toast
-import com.github.naz013.ui.common.compose.composeView
-import com.github.naz013.ui.common.context.startActivity
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.compose.ComposeFragment
+import com.github.naz013.ui.common.fragment.hideKeyboard
+import com.github.naz013.ui.common.fragment.startActivity
+import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
 import org.koin.android.ext.android.inject
@@ -46,17 +49,19 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
 
-class CreateNoteActivity :
-  LightThemedActivity(),
-  PhotoSelectionUtil.UriCallback {
+class CreateNoteFragment :
+  ComposeFragment(),
+  PhotoSelectionUtil.UriCallback,
+  BackPressHandler {
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
+  private val dialogues by inject<Dialogues>()
 
-  private val viewModel by viewModel<CreateNoteViewModel> { parametersOf(getId()) }
-  private val photoSelectionUtil = PhotoSelectionUtil(this, this)
-  private val permissionFlowDelegate = PermissionFlowDelegateImpl(this)
-  private val speechEngine = SpeechEngine(this)
+  private val viewModel by viewModel<CreateNoteViewModel> { parametersOf(idFromArguments()) }
+  private lateinit var photoSelectionUtil: PhotoSelectionUtil
+  private lateinit var permissionFlow: PermissionFlow
+  private val speechEngine by lazy { SpeechEngine(requireContext()) }
 
   private var textFieldValue by mutableStateOf(TextFieldValue())
   private var titleFieldValue by mutableStateOf(TextFieldValue())
@@ -102,10 +107,16 @@ class CreateNoteActivity :
       }
     }
 
+  private fun idFromArguments(): String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
+
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    permissionFlow = PermissionFlow(this, dialogues)
+    photoSelectionUtil = PhotoSelectionUtil(this, this)
+
     lifecycle.addObserver(photoSelectionUtil)
+    lifecycle.addObserver(viewModel)
+    viewModel.saveStatusBarColor(activity?.window?.statusBarColor ?: -1)
 
     savedInstanceState?.getString(STATE_TEXT)?.let {
       textFieldValue = TextFieldValue(text = it, selection = TextRange(it.length))
@@ -113,22 +124,24 @@ class CreateNoteActivity :
     savedInstanceState?.getString(STATE_TITLE)?.let {
       titleFieldValue = TextFieldValue(text = it, selection = TextRange(it.length))
     }
+  }
 
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
+    super.onViewCreated(view, savedInstanceState)
     initViewModel()
     loadNote()
-
-    composeView {
-      NoteEditContent()
-    }
   }
 
   override fun onStart() {
     super.onStart()
     ViewUtils.registerDragAndDrop(
-      this,
-      window.decorView,
+      requireActivity(),
+      requireActivity().window.decorView,
       true,
-      ThemeProvider.getPrimaryColor(this),
+      ThemeProvider.getPrimaryColor(requireContext()),
       {
         if (it.itemCount > 0) {
           viewModel.parseDrop(it, getText())
@@ -137,6 +150,19 @@ class CreateNoteActivity :
       ClipDescription.MIMETYPE_TEXT_PLAIN,
       UriUtil.ANY_MIME,
     )
+  }
+
+  override fun onResume() {
+    super.onResume()
+    onBackStackResume()
+  }
+
+  override fun onPause() {
+    super.onPause()
+    viewModel.getStatusBarColor()?.also {
+      activity?.window?.statusBarColor = it
+      activity?.window?.navigationBarColor = it
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -152,21 +178,16 @@ class CreateNoteActivity :
     speechEngine.stopListening()
   }
 
-  override fun handleBackPress(): Boolean {
-    if (!viewModel.collapseExpandedTab()) {
-      finish()
-    }
-    return true
-  }
+  override fun canGoBack(): Boolean = !viewModel.collapseExpandedTab()
 
   @Composable
-  private fun NoteEditContent() {
+  override fun FragmentContent() {
     val state by viewModel.state.collectAsState()
     val colors = remember(state) { viewModel.colorsFor(state) }
 
     SideEffect {
-      window.statusBarColor = colors.statusBarColor
-      window.navigationBarColor = colors.statusBarColor
+      activity?.window?.statusBarColor = colors.statusBarColor
+      activity?.window?.navigationBarColor = colors.statusBarColor
     }
 
     NoteEditScreen(
@@ -183,14 +204,13 @@ class CreateNoteActivity :
       onTitleFieldValueChange = { titleFieldValue = it },
       boldRange = boldRange,
       backgroundColor = Color(colors.background),
-      barColor = Color(colors.statusBarColor),
       contentColor = Color(colors.content),
       sliderColors = colors.sliderColors,
       activeDialog = activeDialog,
       colorsForPalette = viewModel::sliderColorsForPalette,
       actions =
         NoteEditActions(
-          onBackClick = { finish() },
+          onBackClick = { moveBack() },
           onSaveClick = { trySave() },
           onShareClick = { viewModel.shareNote(getText(), getNoteTitle()) },
           onDeleteClick = { activeDialog = NoteEditDialog.DELETE },
@@ -230,6 +250,10 @@ class CreateNoteActivity :
     )
   }
 
+  private fun moveBack() {
+    activity?.onBackPressedDispatcher?.onBackPressed()
+  }
+
   private fun trySave() {
     if (viewModel.shouldConfirmBeforeSaving()) {
       activeDialog = NoteEditDialog.SAME_NOTE
@@ -242,8 +266,6 @@ class CreateNoteActivity :
 
   private fun getNoteTitle(): String = titleFieldValue.text.trim()
 
-  private fun getId(): String = intentString(IntentKeys.INTENT_ID)
-
   private fun setText(text: String?) {
     val value = text ?: ""
     speechEngine.setText(value)
@@ -252,104 +274,79 @@ class CreateNoteActivity :
   }
 
   private fun tryMicClick() {
-    permissionFlowDelegate.with {
-      askPermission(Permissions.RECORD_AUDIO) { micClick() }
-    }
+    permissionFlow.askPermission(Permissions.RECORD_AUDIO) { micClick() }
   }
 
   private fun micClick() {
     if (speechEngine.isStarted()) {
       speechEngine.stopListening()
     } else {
-      permissionFlowDelegate.with {
-        askPermission(Permissions.RECORD_AUDIO) {
-          speechEngine.startListening(speechEngineCallback)
-        }
+      permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
+        speechEngine.startListening(speechEngineCallback)
       }
     }
   }
 
   private fun loadNote() {
+    val args = arguments ?: return
     when {
-      intent?.action == Intent.ACTION_SEND -> {
-        if ("text/plain" == intent.type) {
-          handleSendText(intent)
-        } else if (intent.type?.startsWith("image/") == true) {
-          handleSendImage(intent)
-        }
-      }
-
-      intent?.action == Intent.ACTION_SEND_MULTIPLE &&
-        intent.type?.startsWith("image/") == true -> {
-        handleSendMultipleImages(intent)
-      }
-
-      else -> {
-        if (intent.getBooleanExtra(IntentKeys.INTENT_ITEM, false)) {
-          viewModel.onNoteReceivedFromIntent()
-        }
-      }
+      args.containsKey(Intent.EXTRA_TEXT) -> handleSendText(args)
+      args.containsKey(Intent.EXTRA_STREAM) -> handleSendImages(args)
+      args.getBoolean(IntentKeys.INTENT_ITEM, false) -> viewModel.onNoteReceivedFromIntent()
     }
   }
 
-  private fun handleSendText(intent: Intent) {
-    intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+  private fun handleSendText(args: Bundle) {
+    args.getString(Intent.EXTRA_TEXT)?.let {
       Logger.d(TAG, "handleSendText: $it")
       setText(it)
     }
   }
 
-  private fun handleSendImage(intent: Intent) {
-    (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
-      viewModel.addMultiple(listOf(it))
-    }
-  }
-
-  private fun handleSendMultipleImages(intent: Intent) {
-    intent.getParcelableArrayListExtra<Parcelable>(Intent.EXTRA_STREAM)?.let { list ->
+  private fun handleSendImages(args: Bundle) {
+    args.getParcelableArrayList<Parcelable>(Intent.EXTRA_STREAM)?.let { list ->
       viewModel.addMultiple(list.filterNotNull().filterIsInstance<Uri>())
     }
   }
 
   private fun initViewModel() {
-    viewModel.textUpdate.observeEvent(this) { update ->
+    viewModel.textUpdate.observeEvent(viewLifecycleOwner) { update ->
       Logger.d(TAG, "textUpdate: $update")
       speechEngine.setText(update.text)
       textFieldValue = TextFieldValue(text = update.text, selection = TextRange(update.text.length))
       boldRange = update.boldRange
     }
-    viewModel.titleUpdate.observeEvent(this) { title ->
+    viewModel.titleUpdate.observeEvent(viewLifecycleOwner) { title ->
       Logger.d(TAG, "titleUpdate: $title")
       titleFieldValue = TextFieldValue(text = title, selection = TextRange(title.length))
     }
-    viewModel.resultEvent.observeEvent(this) { commands ->
+    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
       Logger.d(TAG, "resultEvent: $commands")
       when (commands) {
         Commands.DELETED, Commands.SAVED -> {
           appWidgetUpdater.updateNotesWidget()
           appWidgetUpdater.updateAllWidgets()
-          finish()
+          moveBack()
         }
 
         else -> {
         }
       }
     }
-    viewModel.noteToShare.observeEvent(this) { sendNote(it.second, it.first) }
-    viewModel.errorEvent.observeEvent(this) { toast(it) }
-    lifecycle.addObserver(viewModel)
+    viewModel.noteToShare.observeEvent(viewLifecycleOwner) { sendNote(it.second, it.first) }
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { toast(it) }
   }
 
   private fun sendNote(
     file: File,
     name: String,
   ) {
-    if (isFinishing) return
+    if (isDetached) return
     if (!file.exists() || !file.canRead()) {
       showErrorSending()
       return
     }
-    TelephonyUtil.sendNote(file, this, name)
+    TelephonyUtil.sendNote(file, requireContext(), name)
   }
 
   private fun showErrorSending() {
@@ -372,7 +369,7 @@ class CreateNoteActivity :
 
   private fun dateDialog() {
     dateTimePickerProvider.showDatePicker(
-      fragmentManager = supportFragmentManager,
+      fragmentManager = childFragmentManager,
       date = viewModel.date,
       title = getString(R.string.select_date),
     ) { viewModel.onNewDate(it) }
@@ -380,7 +377,7 @@ class CreateNoteActivity :
 
   private fun timeDialog() {
     dateTimePickerProvider.showTimePicker(
-      fragmentManager = supportFragmentManager,
+      fragmentManager = childFragmentManager,
       time = viewModel.time,
       title = getString(R.string.select_time),
     ) { viewModel.onNewTime(it) }
@@ -395,7 +392,7 @@ class CreateNoteActivity :
   }
 
   companion object {
-    private const val TAG = "CreateNoteActivity"
+    private const val TAG = "CreateNoteFragment"
     private const val STATE_TEXT = "state_note_text"
     private const val STATE_TITLE = "state_note_title"
   }
