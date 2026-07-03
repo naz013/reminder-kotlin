@@ -8,6 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@Deprecated("Use class scope for coroutine")
 suspend fun <T> withUIContext(
   block: suspend CoroutineScope.() -> T
 ): T = withContext(Dispatchers.Main, block)

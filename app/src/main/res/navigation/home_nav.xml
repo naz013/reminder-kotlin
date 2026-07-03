@@ -35,8 +35,7 @@
     <fragment
         android:id="@+id/actionNotes"
         android:name="com.elementary.tasks.notes.list.NotesFragment"
-        android:label="@string/notes"
-        tools:layout="@layout/fragment_notes">
+        android:label="@string/notes">
         <action
             android:id="@+id/action_actionNotes_to_archivedNotesFragment"
             app:destination="@id/archivedNotesFragment"
@@ -460,8 +459,7 @@
     <fragment
         android:id="@+id/archivedNotesFragment"
         android:name="com.elementary.tasks.notes.list.archived.ArchivedNotesFragment"
-        android:label="@string/notes_archive"
-        tools:layout="@layout/fragment_notes" />
+        android:label="@string/notes_archive" />
     <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"

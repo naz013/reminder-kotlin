@@ -1,10 +1,8 @@
 package com.elementary.tasks.notes.list
 
-import com.elementary.tasks.core.data.ui.note.UiNoteList
-
 class NoteSortProcessor {
 
-  fun apply(data: List<UiNoteList>, order: String): List<UiNoteList> {
+  fun apply(data: List<UiNoteListItem>, order: String): List<UiNoteListItem> {
     return when (order) {
       DATE_AZ -> sortDateAz(data)
       TEXT_AZ -> sortNameAz(data)
@@ -13,19 +11,19 @@ class NoteSortProcessor {
     }
   }
 
-  private fun sortNameAz(data: List<UiNoteList>): List<UiNoteList> {
+  private fun sortNameAz(data: List<UiNoteListItem>): List<UiNoteListItem> {
     return data.sortedBy { it.text }
   }
 
-  private fun sortNameZa(data: List<UiNoteList>): List<UiNoteList> {
+  private fun sortNameZa(data: List<UiNoteListItem>): List<UiNoteListItem> {
     return data.sortedByDescending { it.text }
   }
 
-  private fun sortDateAz(data: List<UiNoteList>): List<UiNoteList> {
+  private fun sortDateAz(data: List<UiNoteListItem>): List<UiNoteListItem> {
     return data.sortedBy { it.formattedDateTime }
   }
 
-  private fun sortDateZa(data: List<UiNoteList>): List<UiNoteList> {
+  private fun sortDateZa(data: List<UiNoteListItem>): List<UiNoteListItem> {
     return data.sortedByDescending { it.formattedDateTime }
   }
 
