@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elementary.tasks.R
-import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import kotlinx.coroutines.delay
 
@@ -53,11 +53,11 @@ private const val OVERFLOW_ITEM_DELETE = 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewNoteScreen(
+  modifier: Modifier = Modifier,
   state: PreviewNoteState,
   colors: NotePreviewColors,
   actions: PreviewNoteActions,
   adsBanner: (@Composable () -> Unit)? = null,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier =
@@ -99,7 +99,7 @@ fun PreviewNoteScreen(
             tint = colors.content,
           )
         }
-        PopupMenu(
+        AppDropdownMenu(
           expanded = overflowExpanded,
           onDismissRequest = { overflowExpanded = false },
           items = listOf(
