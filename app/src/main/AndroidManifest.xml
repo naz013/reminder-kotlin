@@ -280,9 +280,6 @@
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
-            android:name=".other.PrivacyPolicyActivity"
-            android:exported="false" />
-        <activity
             android:name=".reminder.recur.RecurHelpActivity"
             android:exported="false" />
         <activity

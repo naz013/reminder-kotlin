@@ -14,3 +14,7 @@
 /hs_err_pid1568.log
 /.kotlin/
 /research/
+/.firebase/
+/.claude/launch.json
+/.firebaserc
+/firebase.json

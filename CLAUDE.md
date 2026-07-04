@@ -91,6 +91,10 @@ collects all of them into `startKoin {}`. Never call `GlobalContext.get()` outsi
 - New screens: Jetpack Compose + Material 3, stateless composables driven by a ViewModel exposing
   `StateFlow`/`LiveData`, connected via `collectAsStateWithLifecycle()`. Legacy XML/View screens may remain
   but shouldn't be extended. Reuse `ui-common` before adding new shared components.
+- No logic in Fragments, Activities, or Compose screens — they only render state and forward user actions
+  to the ViewModel (`onSomeClick = { viewModel.onSomeClick() }`). Anything beyond that (business logic,
+  branching, calls into use cases/repositories/DI singletons, formatting decisions) belongs in the
+  ViewModel. UI classes should stay thin enough to read at a glance.
 - Logging only through the `Logger` interface (`logging-api`) — never `println`/`android.util.Log`.
 - Room Entity <-> domain-model mapping is mandatory at the `repository` boundary; domain models must stay
   free of Room/Gson annotations.

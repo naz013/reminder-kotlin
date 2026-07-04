@@ -22,6 +22,8 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.legal.LegalDocumentRepository
+import com.github.naz013.legal.LegalDocumentType
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +44,7 @@ class ScheduleHomeViewModel(
   private val featureManager: FeatureManager,
   private val whatsNewManager: WhatsNewManager,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val legalDocumentRepository: LegalDocumentRepository,
 ) : BaseProgressViewModel(dispatcherProvider) {
   val homeScreenState: StateFlow<HomeScreenState> field = MutableStateFlow(HomeScreenState())
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
@@ -74,7 +77,7 @@ class ScheduleHomeViewModel(
 
   fun onPrivacyPolicyClick() {
     Logger.i(TAG, "On privacy policy click.")
-    prefs.isPrivacyPolicyShowed = true
+    legalDocumentRepository.markSeen(LegalDocumentType.PRIVACY_POLICY)
     homeScreenState.update {
       it.copy(bannerState = getBannerState())
     }
@@ -83,7 +86,7 @@ class ScheduleHomeViewModel(
 
   fun onPrivacyAcceptClick() {
     Logger.i(TAG, "On privacy accept click")
-    prefs.isPrivacyPolicyShowed = true
+    legalDocumentRepository.markSeen(LegalDocumentType.PRIVACY_POLICY)
     homeScreenState.update {
       it.copy(bannerState = getBannerState())
     }
@@ -196,7 +199,7 @@ class ScheduleHomeViewModel(
   }
 
   private fun getBannerState(): BannerState? {
-    if (!prefs.isPrivacyPolicyShowed) {
+    if (legalDocumentRepository.hasUpdate(LegalDocumentType.PRIVACY_POLICY)) {
       Logger.v(TAG, "Privacy banner is shown")
       return BannerState.Privacy
     }

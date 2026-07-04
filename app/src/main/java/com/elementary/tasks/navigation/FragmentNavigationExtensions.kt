@@ -44,11 +44,6 @@ fun Fragment.safeNavigation(
 }
 
 @Deprecated("Use safeNavigation(directions: NavDirections, navOptions: NavOptions?) instead")
-fun Fragment.safeNavigation(navDirections: NavDirections) {
-  safeNavigation { navDirections }
-}
-
-@Deprecated("Use safeNavigation(directions: NavDirections, navOptions: NavOptions?) instead")
 fun Fragment.safeNavigation(function: () -> NavDirections) {
   try {
     findNavController().navigate(function())

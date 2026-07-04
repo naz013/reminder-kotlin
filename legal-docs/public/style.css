@@ -1,0 +1,182 @@
+/*
+  Shared stylesheet for the app's legal documents (Privacy Policy, Terms of Use).
+  Palette mirrors the app's Material 3 teal color scheme (see ui-common/src/main/res/values/colors.xml
+  and values-night/colors.xml). Keep all colors inside the :root / dark-mode variable blocks below —
+  do not hardcode colors elsewhere in these files. See legal-docs/README.md before editing.
+*/
+
+:root {
+  color-scheme: light dark;
+  --bg: #f5fbf7;
+  --card-bg: #ffffff;
+  --text: #171d1b;
+  --muted: #4b635c;
+  --border: #dce4e1;
+  --accent: #0b6b59;
+  --accent-container-bg: #a1f2db;
+  --accent-container-text: #002019;
+  --divider: #e2e2e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1513;
+    --card-bg: #16211d;
+    --text: #dee4e0;
+    --muted: #b1ccc3;
+    --border: #2a3733;
+    --accent: #85d6c0;
+    --accent-container-bg: #005142;
+    --accent-container-text: #85d6c0;
+    --divider: #2a3733;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 32px 16px 56px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Montserrat", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+header.doc-header {
+  margin-bottom: 24px;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+
+.version-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-container-text);
+  background: var(--accent-container-bg);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+.intro {
+  font-size: 15px;
+  color: var(--text);
+  margin: 16px 0 24px;
+}
+
+details {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::after {
+  content: "\25BE";
+  color: var(--muted);
+  font-weight: 400;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+details[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.section-body {
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--divider);
+}
+
+.section-body p,
+.section-body li {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 12px 0 0;
+}
+
+.section-body p:first-child {
+  margin-top: 14px;
+}
+
+.section-body ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.section-body strong {
+  color: var(--text);
+}
+
+table.permission-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+table.permission-table th,
+table.permission-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--divider);
+  color: var(--muted);
+}
+
+table.permission-table th {
+  color: var(--text);
+  font-weight: 600;
+}
+
+table.permission-table td:first-child {
+  color: var(--text);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+footer.doc-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 28px;
+}
+
+a {
+  color: var(--accent);
+}

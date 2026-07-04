@@ -53,7 +53,6 @@ class RemotePrefs(
         if (task.isSuccessful) {
           config.fetchAndActivate()
         }
-        readAppConfigs()
         readFeatureFlags()
         readUpdateMessage()
         readInternalMessage()
@@ -205,17 +204,6 @@ class RemotePrefs(
     }
   }
 
-  private fun readAppConfigs() {
-    val privacyUrl = config?.getString(PRIVACY_POLICY_URL)
-    val termsUrl = config?.getString(TERMS_URL)
-
-    Logger.d(TAG, "Privacy Url=$privacyUrl")
-    Logger.d(TAG, "Terms Url=$termsUrl")
-
-    privacyUrl?.also { prefs.privacyUrl = it }
-    termsUrl?.also { prefs.termsUrl = it }
-  }
-
   private fun readFeatureFlags() {
     FeatureManager.Feature.entries
       .map {
@@ -294,9 +282,6 @@ class RemotePrefs(
 
   companion object {
     private const val TAG = "RemotePrefs"
-
-    private const val PRIVACY_POLICY_URL = "privacy_policy_link"
-    private const val TERMS_URL = "terms_link"
 
     private const val UPDATE_MESSAGE = "update_message_v2"
     private const val PRO_SALE_MESSAGE = "pro_sale_message_v2"

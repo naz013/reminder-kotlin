@@ -4,16 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsWhatsNewBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.github.naz013.common.PackageManagerWrapper
-import org.apache.commons.lang3.StringUtils
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WhatsNewFragment : BaseSettingsFragment<FragmentSettingsWhatsNewBinding>() {
-  private val packageManagerWrapper by inject<PackageManagerWrapper>()
+  private val viewModel by viewModel<WhatsNewViewModel>()
 
   override fun inflate(
     inflater: LayoutInflater,
@@ -26,18 +23,11 @@ class WhatsNewFragment : BaseSettingsFragment<FragmentSettingsWhatsNewBinding>()
     savedInstanceState: Bundle?,
   ) {
     super.onViewCreated(view, savedInstanceState)
-    updateDateAndVersion()
-  }
-
-  private fun updateDateAndVersion() {
-    val versionName = packageManagerWrapper.getVersionName()
-    val date = StringUtils.capitalize(BuildConfig.BUILD_DATE)
-
     binding.dateAndVersionView.text =
       getString(
         R.string.whats_new_version_and_date,
-        versionName,
-        date,
+        viewModel.versionName,
+        viewModel.buildDate,
       )
   }
 

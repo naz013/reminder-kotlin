@@ -379,13 +379,6 @@ class Prefs(
       notifyKey(PrefsConstants.USER_LOGGED)
     }
 
-  var isPrivacyPolicyShowed: Boolean
-    get() = getBoolean(PrefsConstants.PRIVACY_SHOWED)
-    set(value) {
-      putBoolean(PrefsConstants.PRIVACY_SHOWED, value)
-      notifyKey(PrefsConstants.PRIVACY_SHOWED)
-    }
-
   var isNoteFontSizeRememberingEnabled: Boolean
     get() = getBoolean(PrefsConstants.REMEMBER_NOTE_FONT_SIZE, def = true)
     set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_FONT_SIZE, value)
@@ -425,18 +418,6 @@ class Prefs(
   var dropboxToken: String
     get() = getString(PrefsConstants.DROPBOX_TOKEN)
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
-
-  var privacyUrl: String
-    get() =
-      getString(
-        PrefsConstants.PRIVACY_POLICY_URL,
-        "https://sukhovych.com/reminder-privacy-policy/",
-      )
-    set(value) = putString(PrefsConstants.PRIVACY_POLICY_URL, value)
-
-  var termsUrl: String
-    get() = getString(PrefsConstants.TERMS_URL, "https://sukhovych.com/terms-and-conditions/")
-    set(value) = putString(PrefsConstants.TERMS_URL, value)
 
   var useDynamicColors: Boolean
     get() = getBoolean(PrefsConstants.DYNAMIC_COLORS, false)

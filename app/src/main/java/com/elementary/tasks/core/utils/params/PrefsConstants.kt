@@ -66,7 +66,6 @@ object PrefsConstants {
   const val NOTE_PALETTE = "note_palette"
   const val AUTO_BACKUP_STATE = "auto_backup_state"
   const val NIGHT_MODE = "night_mode"
-  const val PRIVACY_SHOWED = "privacy_showed"
   const val TO_BIRTHDAY_DAYS = "to_birthday_days"
   const val DYNAMIC_COLORS = "dynamic_colors_13"
   const val ANALYTICS_ENABLED = "analytics_enabled"
@@ -91,9 +90,6 @@ object PrefsConstants {
 
   const val REMINDERS_CREATED_COUNT = "reminders_created_count"
   const val REVIEW_DIALOG_SHOWN = "review_dialog_shown"
-
-  const val PRIVACY_POLICY_URL = "privacy_url"
-  const val TERMS_URL = "terms_url"
 
   const val WORKER_NETWORK_TYPE = "worker_network_type"
   const val OCCURRENCE_MIGRATED = "occurrence_migrated"
