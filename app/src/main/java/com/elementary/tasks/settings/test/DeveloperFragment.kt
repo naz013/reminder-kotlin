@@ -1,9 +1,7 @@
 package com.elementary.tasks.settings.test
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,25 +13,18 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.viewbinding.ViewBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
 import com.github.naz013.feature.common.livedata.observeEvent
-import com.github.naz013.ui.common.compose.composeView
 import com.github.naz013.ui.common.fragment.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class DeveloperFragment : BaseSettingsFragment<DeveloperFragment.ComposeBinding>() {
+class DeveloperFragment : BaseComposeToolbarFragment() {
   private val viewModel by viewModel<DeveloperViewModel>()
 
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ): ComposeBinding {
-    val onResetBannersClick = { viewModel.onResetBannersClick() }
-    return ComposeBinding(composeView { DeveloperScreen(onResetBannersClick = onResetBannersClick) })
+  @Composable
+  override fun Content() {
+    DeveloperScreen(onResetBannersClick = { viewModel.onResetBannersClick() })
   }
 
   override fun onViewCreated(
@@ -47,12 +38,6 @@ class DeveloperFragment : BaseSettingsFragment<DeveloperFragment.ComposeBinding>
   }
 
   override fun getTitle(): String = "Developer"
-
-  class ComposeBinding(
-    private val view: ComposeView,
-  ) : ViewBinding {
-    override fun getRoot(): View = view
-  }
 }
 
 @Composable

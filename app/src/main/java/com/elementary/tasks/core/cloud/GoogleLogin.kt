@@ -3,9 +3,9 @@ package com.elementary.tasks.core.cloud
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
@@ -17,7 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 
 class GoogleLogin(
-  private val fragment: BaseNavigationFragment<*>,
+  private val fragment: Fragment,
   private val googleDriveApi: GoogleDriveApi,
   private val googleDriveAuthManager: GoogleDriveAuthManager,
   private val googleTasksApi: GoogleTasksApi,

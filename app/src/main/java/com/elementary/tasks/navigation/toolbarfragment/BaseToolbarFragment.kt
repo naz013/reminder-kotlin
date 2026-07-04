@@ -2,87 +2,25 @@ package com.elementary.tasks.navigation.toolbarfragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.viewbinding.ViewBinding
-import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentBaseToolbarBinding
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import com.elementary.tasks.navigation.topfragment.FragmentMenuController
-import com.github.naz013.ui.common.view.applyTopInsets
 
-abstract class BaseToolbarFragment<B : ViewBinding> :
-  BaseNavigationFragment<B>(),
-  FragmentMenuController {
-  private lateinit var containerBinding: FragmentBaseToolbarBinding
-  private var menuModifier: ((Menu) -> Unit)? = null
+abstract class BaseToolbarFragment<B : ViewBinding> : ToolbarFragment() {
+  protected lateinit var binding: B
 
-  abstract fun getTitle(): String
-
-  @DrawableRes
-  open fun getNavigationIcon(): Int = R.drawable.ic_builder_arrow_left
-
-  override fun onCreateView(
+  abstract fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ): View? {
-    containerBinding = FragmentBaseToolbarBinding.inflate(inflater, container, false)
-    val subView = inflate(inflater, containerBinding.fragmentContentView, savedInstanceState)
-    containerBinding.fragmentContentView.addView(subView.root)
-    binding = subView
-    return containerBinding.root
-  }
+  ): B
 
-  override fun onViewCreated(
-    view: View,
+  final override fun onCreateContentView(
+    inflater: LayoutInflater,
+    container: ViewGroup,
     savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-    containerBinding.appBar.applyTopInsets()
-    containerBinding.toolbar.title = getTitle()
-    containerBinding.toolbar.setNavigationIcon(getNavigationIcon())
-    containerBinding.toolbar.setNavigationOnClickListener { moveBack() }
-  }
-
-  protected fun setTitle(title: String) {
-    containerBinding.toolbar.title = title
-  }
-
-  @Deprecated("Use updateMenuItem instead")
-  protected fun invalidateOptionsMenu() {
-    menuModifier?.invoke(containerBinding.toolbar.menu)
-  }
-
-  override fun addMenu(
-    menuRes: Int?,
-    onMenuItemListener: (MenuItem) -> Boolean,
-    menuModifier: ((Menu) -> Unit)?,
-  ) {
-    this.menuModifier = menuModifier
-    containerBinding.toolbar.menu.clear()
-    if (menuRes != null) {
-      containerBinding.toolbar.inflateMenu(menuRes)
-    }
-    menuModifier?.invoke(containerBinding.toolbar.menu)
-    containerBinding.toolbar.setOnMenuItemClickListener {
-      return@setOnMenuItemClickListener onMenuItemListener(it)
-    }
-  }
-
-  override fun removeMenu() {
-    containerBinding.toolbar.menu.clear()
-    menuModifier = null
-  }
-
-  override fun updateMenuItem(
-    itemId: Int,
-    modifier: MenuItem.() -> Unit,
-  ) {
-    val menuItem = containerBinding.toolbar.menu.findItem(itemId) ?: return
-    modifier(menuItem)
+  ): View {
+    binding = inflate(inflater, container, savedInstanceState)
+    return binding.root
   }
 }
