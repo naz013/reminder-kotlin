@@ -3,11 +3,8 @@ package com.elementary.tasks.navigation.fragments
 import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
-import com.github.naz013.ui.common.locale.Language
-import org.koin.android.ext.android.inject
 
 abstract class BaseSettingsFragment<B : ViewBinding> : BaseToolbarFragment<B>() {
-  protected val language by inject<Language>()
 
   protected fun priorityList(): Array<String> =
     arrayOf(

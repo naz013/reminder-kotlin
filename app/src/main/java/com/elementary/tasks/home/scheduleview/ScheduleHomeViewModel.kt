@@ -78,10 +78,10 @@ class ScheduleHomeViewModel(
   fun onPrivacyPolicyClick() {
     Logger.i(TAG, "On privacy policy click.")
     legalDocumentRepository.markSeen(LegalDocumentType.PRIVACY_POLICY)
+    navigationEvent.value = Event(NavigationEvent.OpenPrivacy)
     homeScreenState.update {
       it.copy(bannerState = getBannerState())
     }
-    navigationEvent.value = Event(NavigationEvent.OpenPrivacy)
   }
 
   fun onPrivacyAcceptClick() {

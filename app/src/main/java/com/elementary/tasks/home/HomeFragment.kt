@@ -146,11 +146,7 @@ class HomeFragment :
           )
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenPrivacy -> {
-          safeNavigation(
-            R.id.privacyPolicyFragment,
-            null,
-            NavigationAnimations.inDepthNavOptions(),
-          )
+          safeNavigation(HomeFragmentDirections.actionActionHomeToPrivacyPolicyFragment())
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCloudDrives -> {
           safeNavigation(HomeFragmentDirections.actionActionHomeToCloudDrives())

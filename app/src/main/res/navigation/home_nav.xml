@@ -30,8 +30,20 @@
             app:exitAnim="@anim/fragment_wait"
             app:popEnterAnim="@anim/fragment_wait"
             app:popExitAnim="@anim/fragment_slide_bottom" />
+        <action
+            android:id="@+id/action_actionHome_to_privacyPolicyFragment"
+            app:destination="@id/privacyPolicyFragment"
+            app:enterAnim="@anim/fragment_slide_top"
+            app:exitAnim="@anim/fragment_wait"
+            app:popEnterAnim="@anim/fragment_wait"
+            app:popExitAnim="@anim/fragment_slide_bottom" />
     </fragment>
 
+    <fragment
+        android:id="@+id/privacyPolicyFragment"
+        android:name="com.elementary.tasks.settings.other.PrivacyPolicyFragment"
+        android:label="@string/privacy_policy"
+        tools:layout="@layout/fragment_settings_web_view" />
     <fragment
         android:id="@+id/actionNotes"
         android:name="com.elementary.tasks.notes.list.NotesFragment"
@@ -554,7 +566,6 @@
     <fragment
         android:id="@+id/previewNoteFragment"
         android:name="com.elementary.tasks.notes.preview.PreviewNoteFragment"
-        tools:layout="@layout/fragment_note_preview"
         android:label="@string/details" />
     <fragment
         android:id="@+id/createNoteFragment"
