@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.databinding.FragmentHomeEventsBinding
-import com.elementary.tasks.navigation.topfragment.BaseTopFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseNonToolbarFragment
 import com.elementary.tasks.navigation.topfragment.FragmentMenuController
 import com.elementary.tasks.reminder.lists.active.RemindersFragment
 import com.elementary.tasks.reminder.lists.todo.TodoRemindersFragment
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeEventsFragment :
-  BaseTopFragment<FragmentHomeEventsBinding>(),
+  BaseNonToolbarFragment<FragmentHomeEventsBinding>(),
   FragmentMenuController {
   private val viewModel by viewModel<HomeEventsViewModel>()
   private var menuModifier: ((Menu) -> Unit)? = null

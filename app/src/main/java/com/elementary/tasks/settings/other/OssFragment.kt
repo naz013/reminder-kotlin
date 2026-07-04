@@ -1,28 +1,11 @@
 package com.elementary.tasks.settings.other
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseComposeWebViewFragment
 
-class OssFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ) = FragmentSettingsWebViewBinding.inflate(inflater, container, false)
-
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-    val url = "file:///android_asset/files/oss.html"
-    binding.webView.loadUrl(url)
-  }
+class OssFragment : BaseComposeWebViewFragment() {
+  override val url: String
+    get() = "file:///android_asset/files/oss.html"
 
   override fun getTitle(): String = getString(R.string.open_source_licenses)
 }

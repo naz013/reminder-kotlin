@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
+import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.analytics.AnalyticsStateProviderImpl
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
@@ -28,7 +29,6 @@ import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
 import com.elementary.tasks.googletasks.work.UpdateTaskWorker
 import com.elementary.tasks.groups.GroupsUtil
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
@@ -114,7 +114,7 @@ val utilModule = module {
   factory { DateTimePickerProvider(get()) }
   factory { DoNotDisturbManager(get(), get()) }
 
-  factory { (fragment: BaseNavigationFragment<*>, callback: GoogleLogin.LoginCallback) ->
+  factory { (fragment: Fragment, callback: GoogleLogin.LoginCallback) ->
     GoogleLogin(fragment, get(), get(), get(), get(), callback, get())
   }
   factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
