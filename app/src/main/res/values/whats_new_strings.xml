@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
+    <string name="whats_new_version_and_date" translatable="false">%s\n%s</string>
     <string name="whats_new_text" translatable="false">
-        \n
         ✅ Add Reminder help document;\n
         🐞 Fix recurrent reminders;\n
         🐞 Bug fixes and improvements.
