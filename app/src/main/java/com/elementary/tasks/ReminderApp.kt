@@ -36,8 +36,11 @@ import com.elementary.tasks.settings.settingsModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.icalendar.iCalendarModule
+import com.github.naz013.legal.LegalDocumentRepository
+import com.github.naz013.legal.legalModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DataDestination
@@ -54,6 +57,8 @@ import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
 import com.github.naz013.usecase.notes.notesUseCaseModule
 import com.github.naz013.usecase.reminders.remindersUseCaseModule
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -144,6 +149,7 @@ class ReminderApp :
           syncSettingsModule,
           settingsModule,
           eventActionModule,
+          legalModule,
         ),
       )
     }
@@ -172,6 +178,7 @@ class ReminderApp :
     get<Notifier>().createChannels()
     AdsProvider.init(this)
     get<RemotePrefs>().preLoad()
+    CoroutineScope(get<DispatcherProvider>().io()).launch { get<LegalDocumentRepository>().refresh() }
 
     registerActivityLifecycleCallbacks(ActivityObserver(get()))
   }

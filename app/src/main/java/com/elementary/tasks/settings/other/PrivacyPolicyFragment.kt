@@ -6,12 +6,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
 import com.elementary.tasks.navigation.fragments.BaseWebViewFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PrivacyPolicyFragment : BaseWebViewFragment() {
+  private val viewModel by viewModel<PrivacyPolicyViewModel>()
+
   override val url: String
-    get() {
-      return prefs.privacyUrl
-    }
+    get() = viewModel.url
 
   @SuppressLint("SetJavaScriptEnabled")
   override fun setExtraParams(webView: WebView) {

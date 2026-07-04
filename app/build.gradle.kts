@@ -218,6 +218,8 @@ dependencies {
   implementation(project(":icalendar"))
   implementation(project(":sync"))
   implementation(project(":reviews"))
+  implementation(project(":legal-api"))
+  implementation(project(":legal"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")

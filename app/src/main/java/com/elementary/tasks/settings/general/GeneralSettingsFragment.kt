@@ -13,12 +13,17 @@ import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.github.naz013.common.Module
 import com.github.naz013.ui.common.activity.finishWith
+import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.view.gone
 import com.github.naz013.ui.common.view.visible
 import com.github.naz013.ui.common.view.visibleGone
 import com.google.android.material.color.DynamicColors
+import org.koin.android.ext.android.inject
 
 class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
+
+  private val language by inject<Language>()
+
   private var mItemSelect: Int = 0
 
   override fun inflate(
