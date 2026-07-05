@@ -54,9 +54,11 @@ import com.elementary.tasks.notes.list.NotesFragmentDirections
 import com.elementary.tasks.notes.list.NotesScreen
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.preview.ImagePreviewScreen
+import com.elementary.tasks.notes.preview.ImagePreviewState
 import com.elementary.tasks.notes.preview.ImagePreviewViewModel
 import com.elementary.tasks.notes.preview.PreviewNoteActions
 import com.elementary.tasks.notes.preview.PreviewNoteScreen
+import com.elementary.tasks.notes.preview.PreviewNoteState
 import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
@@ -275,7 +277,7 @@ private fun NotesFragment.NotePreviewEntry(
   viewModel.errorEvent.ObserveEvent { showErrorSending() }
   viewModel.sharedFile.ObserveNonNull { sendNoteWithImages(it.first, it.second) }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(PreviewNoteState())
   val colors = remember(state.backgroundColor, state.opacity) { viewModel.colorsFor(state) }
   SideEffect {
     requireActivity().window.statusBarColor = colors.statusBarColor
@@ -545,7 +547,7 @@ private fun NotesFragment.NoteImagePreviewEntry(
   val viewModel = koinViewModel<ImagePreviewViewModel> { parametersOf(key.position) }
   LaunchedEffect(Unit) { viewModel.saveStatusBarColor(key.initialStatusBarColor) }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(ImagePreviewState())
   val colors = viewModel.colorsFor(state)
   SideEffect {
     colors.statusBarColor?.let {

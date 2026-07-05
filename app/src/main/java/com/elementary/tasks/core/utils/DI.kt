@@ -33,7 +33,7 @@ import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
 import com.elementary.tasks.settings.other.TermsViewModel
-import com.elementary.tasks.settings.other.WhatsNewViewModel
+import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
 import com.elementary.tasks.settings.test.DeveloperViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.splash.SplashViewModel

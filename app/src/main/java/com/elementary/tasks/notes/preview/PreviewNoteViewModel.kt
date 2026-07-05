@@ -13,7 +13,6 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
 import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
@@ -37,10 +36,12 @@ import com.github.naz013.ui.common.isAlmostTransparent
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class PreviewNoteViewModel(
@@ -61,8 +62,13 @@ class PreviewNoteViewModel(
   private val themeProvider: ThemeProvider,
   private val imagesSingleton: ImagesSingleton,
 ) : BaseProgressViewModel(dispatcherProvider) {
+
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
-  val state: StateFlow<PreviewNoteState> = _state.asStateFlow()
+  val state = _state.stateIn(
+    viewModelScope,
+    SharingStarted.WhileSubscribed(5000L),
+    PreviewNoteState(id = key),
+  ).onStart { loadInternal() }
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toSingleEvent()
@@ -120,21 +126,23 @@ class PreviewNoteViewModel(
       val noteWithImages = noteRepository.getById(key)
       if (noteWithImages != null) {
         val uiNotePreview = uiNotePreviewAdapter.convert(noteWithImages)
-        _state.update {
-          it.copy(
-            id = uiNotePreview.id,
-            title = uiNotePreview.title,
-            text = uiNotePreview.text,
-            titleTypeface = uiNotePreview.titleTypeface,
-            typeface = uiNotePreview.typeface,
-            titleTextSize = uiNotePreview.titleTextSize,
-            textSize = uiNotePreview.textSize,
-            images = uiNotePreview.images,
-            backgroundColor = uiNotePreview.backgroundColor,
-            opacity = uiNotePreview.opacity,
-            isArchived = uiNotePreview.isArchived,
-            showAdsBanner = !BuildParams.isPro && AdsProvider.hasAds(),
-          )
+        withContext(dispatcherProvider.main()) {
+          _state.update {
+            it.copy(
+              id = uiNotePreview.id,
+              title = uiNotePreview.title,
+              text = uiNotePreview.text,
+              titleTypeface = uiNotePreview.titleTypeface,
+              typeface = uiNotePreview.typeface,
+              titleTextSize = uiNotePreview.titleTextSize,
+              textSize = uiNotePreview.textSize,
+              images = uiNotePreview.images,
+              backgroundColor = uiNotePreview.backgroundColor,
+              opacity = uiNotePreview.opacity,
+              isArchived = uiNotePreview.isArchived,
+              showAdsBanner = !BuildParams.isPro && AdsProvider.hasAds(),
+            )
+          }
         }
       }
       loadReminders()
@@ -153,7 +161,7 @@ class PreviewNoteViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(key) ?: return@launch
       uiNoteNotificationAdapter.convert(noteWithImages).also {
-        withUIContext { notifier.showNoteNotification(it) }
+        withContext(dispatcherProvider.main()) { notifier.showNoteNotification(it) }
       }
     }
   }
