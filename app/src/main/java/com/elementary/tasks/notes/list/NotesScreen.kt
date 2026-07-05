@@ -13,8 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -26,8 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -38,12 +34,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
@@ -51,6 +44,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 
 private const val GRID_COLUMNS = 2
 
@@ -70,17 +64,11 @@ fun NotesScreen(
   onImageClick: (UiNoteListItem, Int) -> Unit,
   modifier: Modifier = Modifier
 ) {
-  var searchExpanded by rememberSaveable { mutableStateOf(false) }
-
   Scaffold(
     modifier = modifier,
     topBar = {
       NotesTopBar(
         title = stringResource(if (state.isArchived) R.string.notes_archive else R.string.notes),
-        searchQuery = state.searchQuery,
-        searchExpanded = searchExpanded,
-        onSearchExpandedChange = { searchExpanded = it },
-        onSearchQueryChange = onSearchQueryChange,
         onBackClick = onBackClick,
         isGrid = state.isGrid,
         onGridToggleClick = onGridToggleClick,
@@ -101,34 +89,59 @@ fun NotesScreen(
       }
     }
   ) { padding ->
-    when (val listState = state.listState) {
-      is ListState.Loading -> Box(
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(padding),
-        contentAlignment = Alignment.Center
-      ) {
-        CircularProgressIndicator()
+    Column(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+    ) {
+      if (state.listState !is ListState.Empty || state.searchQuery.isNotEmpty()) {
+        SearchBar(
+          query = state.searchQuery,
+          onQueryChange = onSearchQueryChange,
+          placeholder = stringResource(R.string.search),
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
       }
 
-      is ListState.Empty -> NotesEmptyState(
-        isArchived = state.isArchived,
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(padding)
-      )
+      when (val listState = state.listState) {
+        is ListState.Loading -> {
+          Box(
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
+            contentAlignment = Alignment.Center
+          ) {
+            CircularProgressIndicator()
+          }
+        }
 
-      is ListState.Ready -> NotesList(
-        notes = listState.notes,
-        isGrid = state.isGrid,
-        isArchived = state.isArchived,
-        contentPadding = padding,
-        hasFab = onAddClick != null,
-        onNoteClick = onNoteClick,
-        onNoteMenuAction = onNoteMenuAction,
-        onImageClick = onImageClick,
-        modifier = Modifier.fillMaxSize()
-      )
+        is ListState.Empty -> {
+          NotesEmptyState(
+            isArchived = state.isArchived,
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f)
+          )
+        }
+
+        is ListState.Ready -> {
+          NotesList(
+            notes = listState.notes,
+            isGrid = state.isGrid,
+            isArchived = state.isArchived,
+            contentPadding = PaddingValues(),
+            hasFab = onAddClick != null,
+            onNoteClick = onNoteClick,
+            onNoteMenuAction = onNoteMenuAction,
+            onImageClick = onImageClick,
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f)
+          )
+        }
+      }
     }
   }
 }
@@ -226,10 +239,6 @@ private fun NotesEmptyState(
 @Composable
 private fun NotesTopBar(
   title: String,
-  searchQuery: String,
-  searchExpanded: Boolean,
-  onSearchExpandedChange: (Boolean) -> Unit,
-  onSearchQueryChange: (String) -> Unit,
   onBackClick: (() -> Unit)?,
   isGrid: Boolean,
   onGridToggleClick: () -> Unit,
@@ -239,28 +248,7 @@ private fun NotesTopBar(
   onSettingsClick: (() -> Unit)?
 ) {
   TopAppBar(
-    title = {
-      if (searchExpanded) {
-        val keyboardController = LocalSoftwareKeyboardController.current
-        TextField(
-          value = searchQuery,
-          onValueChange = onSearchQueryChange,
-          modifier = Modifier.fillMaxWidth(),
-          singleLine = true,
-          placeholder = { Text(stringResource(R.string.search)) },
-          colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent
-          ),
-          keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-          keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() })
-        )
-      } else {
-        Text(title)
-      }
-    },
+    title = { Text(title) },
     navigationIcon = {
       if (onBackClick != null) {
         MenuIconButton(
@@ -271,30 +259,14 @@ private fun NotesTopBar(
       }
     },
     actions = {
-      if (searchExpanded) {
-        MenuIconButton(
-          icon = painterResource(R.drawable.ic_fluent_dismiss),
-          contentDescription = stringResource(R.string.cancel),
-          onClick = {
-            onSearchQueryChange("")
-            onSearchExpandedChange(false)
-          }
-        )
-      } else {
-        MenuIconButton(
-          icon = painterResource(R.drawable.ic_fluent_search),
-          contentDescription = stringResource(R.string.search),
-          onClick = { onSearchExpandedChange(true) }
-        )
-        MenuIconButton(
-          icon = painterResource(if (isGrid) R.drawable.ic_fluent_grid else R.drawable.ic_fluent_list),
-          contentDescription = stringResource(if (isGrid) R.string.grid_view else R.string.list_view),
-          onClick = onGridToggleClick
-        )
-        SortMenuButton(sortOrder = sortOrder, onSortOrderSelected = onSortOrderSelected)
-        if (onArchiveClick != null || onSettingsClick != null) {
-          OverflowMenuButton(onArchiveClick = onArchiveClick, onSettingsClick = onSettingsClick)
-        }
+      MenuIconButton(
+        icon = painterResource(if (isGrid) R.drawable.ic_fluent_grid else R.drawable.ic_fluent_list),
+        contentDescription = stringResource(if (isGrid) R.string.grid_view else R.string.list_view),
+        onClick = onGridToggleClick
+      )
+      SortMenuButton(sortOrder = sortOrder, onSortOrderSelected = onSortOrderSelected)
+      if (onArchiveClick != null || onSettingsClick != null) {
+        OverflowMenuButton(onArchiveClick = onArchiveClick, onSettingsClick = onSettingsClick)
       }
     },
     colors = TopAppBarDefaults.topAppBarColors(
