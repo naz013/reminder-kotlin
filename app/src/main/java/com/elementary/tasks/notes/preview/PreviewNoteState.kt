@@ -20,6 +20,7 @@ data class PreviewNoteState(
   val isArchived: Boolean = false,
   val isLoading: Boolean = false,
   val activeDialog: PreviewNoteDialog? = null,
+  val showAdsBanner: Boolean = false,
 )
 
 /** Which modal dialog (if any) is currently shown above [PreviewNoteScreen]. */

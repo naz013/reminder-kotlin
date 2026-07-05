@@ -1,12 +1,15 @@
 package com.elementary.tasks.notes.preview
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,13 +19,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
+import me.saket.telephoto.zoomable.rememberZoomableImageState
+import me.saket.telephoto.zoomable.rememberZoomableState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,9 +92,16 @@ fun ImagePreviewScreen(
 
 @Composable
 private fun ZoomableImagePage(image: UiNoteImage) {
-  ZoomableAsyncImage(
-    model = image.filePath,
-    contentDescription = null,
-    modifier = Modifier.fillMaxSize(),
-  )
+  val zoomableImageState = rememberZoomableImageState(rememberZoomableState())
+  Box(modifier = Modifier.fillMaxSize()) {
+    if (!zoomableImageState.isImageDisplayed) {
+      CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).size(32.dp))
+    }
+    ZoomableAsyncImage(
+      model = image.filePath,
+      contentDescription = null,
+      state = zoomableImageState,
+      modifier = Modifier.fillMaxSize(),
+    )
+  }
 }

@@ -42,7 +42,6 @@ import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
-import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.safeNavigation
@@ -130,7 +129,7 @@ private fun navScreenSpring() =
     stiffness = Spring.StiffnessMediumLow,
   )
 
-private const val NAV_ANIM_FADE_DURATION_MS = 150
+private const val NAV_ANIM_FADE_DURATION_MS = 250
 private const val NAV_ANIM_ENTER_SCALE = 0.92f
 private const val NAV_ANIM_EXIT_SCALE = 1.08f
 
@@ -311,7 +310,7 @@ private fun NotesFragment.NotePreviewEntry(
         onReminderDetachClick = viewModel::onReminderDetachClick,
       ),
     adsBanner =
-      if (!BuildParams.isPro && AdsProvider.hasAds()) {
+      if (state.showAdsBanner) {
         { NoteNativeAdBanner(adsProvider) }
       } else {
         null

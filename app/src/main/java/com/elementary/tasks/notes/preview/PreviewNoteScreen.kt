@@ -1,10 +1,5 @@
 package com.elementary.tasks.notes.preview
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +20,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,10 +35,6 @@ import androidx.compose.ui.unit.sp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
-import kotlinx.coroutines.delay
-
-private const val CONTENT_ANIMATION_DURATION_MS = 250
-private const val CONTENT_ITEM_STAGGER_DELAY_MS = 60L
 
 private const val OVERFLOW_ITEM_SHARE = 0
 private const val OVERFLOW_ITEM_ARCHIVE = 1
@@ -145,38 +135,34 @@ fun PreviewNoteScreen(
           .verticalScroll(rememberScrollState()),
     ) {
       if (state.title.isNotEmpty()) {
-        AnimatedContentItem(index = 0) {
-          Text(
-            text = state.title,
-            style =
-              MaterialTheme.typography.bodyLarge.copy(
-                color = colors.content,
-                fontSize = state.titleTextSize.sp,
-                fontFamily = state.titleTypeface?.let { FontFamily(it) } ?: FontFamily.Default,
-                lineHeight = TextUnit.Unspecified,
-              ),
-            modifier = Modifier.padding(start = 24.dp, top = 24.dp, end = 24.dp),
-          )
-        }
-      }
-      AnimatedContentItem(index = if (state.title.isNotEmpty()) 1 else 0) {
         Text(
-          text = state.text,
+          text = state.title,
           style =
             MaterialTheme.typography.bodyLarge.copy(
               color = colors.content,
-              fontSize = state.textSize.sp,
-              fontFamily = state.typeface?.let { FontFamily(it) } ?: FontFamily.Default,
+              fontSize = state.titleTextSize.sp,
+              fontFamily = state.titleTypeface?.let { FontFamily(it) } ?: FontFamily.Default,
               lineHeight = TextUnit.Unspecified,
             ),
-          modifier =
-            Modifier.padding(
-              start = 24.dp,
-              top = if (state.title.isNotEmpty()) 24.dp else 16.dp,
-              end = 24.dp,
-            ),
+          modifier = Modifier.padding(start = 24.dp, top = 24.dp, end = 24.dp),
         )
       }
+      Text(
+        text = state.text,
+        style =
+          MaterialTheme.typography.bodyLarge.copy(
+            color = colors.content,
+            fontSize = state.textSize.sp,
+            fontFamily = state.typeface?.let { FontFamily(it) } ?: FontFamily.Default,
+            lineHeight = TextUnit.Unspecified,
+          ),
+        modifier =
+          Modifier.padding(
+            start = 24.dp,
+            top = if (state.title.isNotEmpty()) 24.dp else 16.dp,
+            end = 24.dp,
+          ),
+      )
 
       PreviewNoteImageCarousel(
         images = state.images,
@@ -214,29 +200,5 @@ fun PreviewNoteScreen(
         }
       },
     )
-  }
-}
-
-/** Fades and slides a content block in, staggered by [index] — same entrance pattern used for
- *  [com.elementary.tasks.home.ChronologicalHomeScreen]'s list items. */
-@Composable
-private fun AnimatedContentItem(
-  index: Int,
-  content: @Composable () -> Unit,
-) {
-  val visibleState = remember { MutableTransitionState(false) }
-  LaunchedEffect(Unit) {
-    delay(index * CONTENT_ITEM_STAGGER_DELAY_MS)
-    visibleState.targetState = true
-  }
-  AnimatedVisibility(
-    visibleState = visibleState,
-    enter =
-      fadeIn(animationSpec = tween(CONTENT_ANIMATION_DURATION_MS)) +
-        slideInVertically(
-          animationSpec = tween(CONTENT_ANIMATION_DURATION_MS),
-        ) { fullHeight -> fullHeight / 6 },
-  ) {
-    content()
   }
 }
