@@ -111,7 +111,7 @@ class NotesFragment : Fragment(), RootFragment {
 
       is NotesViewModel.NavigationEvent.OpenImagePreview -> {
         safeNavigation(
-          R.id.imagePreviewFragment,
+          R.id.noteImagePreviewFragment,
           Bundle().apply { putInt(IntentKeys.INTENT_POSITION, event.imagePosition) },
           NavigationAnimations.bottomNavOptions(),
         )

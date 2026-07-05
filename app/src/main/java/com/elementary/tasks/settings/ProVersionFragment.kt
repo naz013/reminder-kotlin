@@ -12,7 +12,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.databinding.FragmentSettingsProPageBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
-class FragmentProVersion : BaseSettingsFragment<FragmentSettingsProPageBinding>() {
+class ProVersionFragment : BaseSettingsFragment<FragmentSettingsProPageBinding>() {
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,

@@ -146,7 +146,7 @@ class PreviewNoteFragment : ComposeFragment() {
   ) {
     imagesSingleton.setCurrent(images = state.images, backgroundColor = state.backgroundColor)
     safeNavigation(
-      R.id.imagePreviewFragment,
+      R.id.noteImagePreviewFragment,
       Bundle().apply { putInt(IntentKeys.INTENT_POSITION, position) },
       NavigationAnimations.bottomNavOptions(),
     )

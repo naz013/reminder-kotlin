@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FullscreenMapFragment : BaseNonToolbarFragment<FragmentReminderFullscreenMapBinding>() {
+class ReminderFullscreenMapFragment : BaseNonToolbarFragment<FragmentReminderFullscreenMapBinding>() {
   private val viewModel by viewModel<FullScreenMapViewModel> { parametersOf(arguments) }
   private var simpleMapFragment: SimpleMapFragment? = null
 
@@ -131,6 +131,6 @@ class FullscreenMapFragment : BaseNonToolbarFragment<FragmentReminderFullscreenM
   }
 
   companion object {
-    private const val TAG = "FullscreenMapFragment"
+    private const val TAG = "ReminderFullscreenMapFragment"
   }
 }

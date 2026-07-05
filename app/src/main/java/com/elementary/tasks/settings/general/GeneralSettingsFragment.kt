@@ -47,7 +47,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     binding.themePreviewPrefs.visibleGone(BuildConfig.DEBUG)
     binding.themePreviewPrefs.setOnClickListener {
       safeNavigation {
-        GeneralSettingsFragmentDirections.actionGeneralSettingsFragmentToUiPreviewFragment()
+        GeneralSettingsFragmentDirections.actionGeneralSettingsFragmentToThemePreviewFragment()
       }
     }
   }

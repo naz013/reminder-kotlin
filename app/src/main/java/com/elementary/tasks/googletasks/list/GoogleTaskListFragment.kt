@@ -35,7 +35,7 @@ import com.github.naz013.ui.common.view.visibleGone
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
+class GoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
   private val adapter = TasksRecyclerAdapter()
   private val viewModel by viewModel<TaskListViewModel> { parametersOf(getListId()) }
 
@@ -45,7 +45,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
     savedInstanceState: Bundle?,
   ) = FragmentGoogleListBinding.inflate(inflater, container, false)
 
-  private fun getListId() = arguments?.let { TaskListFragmentArgs.fromBundle(it) }?.argId
+  private fun getListId() = arguments?.let { GoogleTaskListFragmentArgs.fromBundle(it) }?.argId
 
   override fun onViewCreated(
     view: View,
@@ -210,7 +210,7 @@ class TaskListFragment : BaseToolbarFragment<FragmentGoogleListBinding>() {
   private fun openTask(taskId: String) {
     navigate {
       navigate(
-        TaskListFragmentDirections.actionTaskListFragmentToPreviewGoogleTaskFragment(taskId),
+        GoogleTaskListFragmentDirections.actionTaskListFragmentToPreviewGoogleTaskFragment(taskId),
       )
     }
   }
