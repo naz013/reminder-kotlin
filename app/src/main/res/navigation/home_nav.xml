@@ -42,8 +42,7 @@
     <fragment
         android:id="@+id/privacyPolicyFragment"
         android:name="com.elementary.tasks.settings.other.PrivacyPolicyFragment"
-        android:label="@string/privacy_policy"
-        tools:layout="@layout/fragment_settings_web_view" />
+        android:label="@string/privacy_policy" />
     <fragment
         android:id="@+id/actionNotes"
         android:name="com.elementary.tasks.notes.list.NotesFragment"
@@ -208,15 +207,7 @@
     <fragment
         android:id="@+id/generalSettingsFragment"
         android:name="com.elementary.tasks.settings.general.GeneralSettingsFragment"
-        android:label="@string/general">
-        <action
-            android:id="@+id/action_generalSettingsFragment_to_themePreviewFragment"
-            app:destination="@id/themePreviewFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-    </fragment>
+        android:label="@string/general" />
     <fragment
         android:id="@+id/remindersSettingsFragment"
         android:name="com.elementary.tasks.settings.reminders.RemindersSettingsFragment"
@@ -339,13 +330,11 @@
         <fragment
             android:id="@+id/permissionsFragment"
             android:name="com.elementary.tasks.settings.other.PermissionsFragment"
-            android:label="@string/permissions"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/permissions" />
         <fragment
             android:id="@+id/ossFragment"
             android:name="com.elementary.tasks.settings.other.OssFragment"
-            android:label="@string/open_source_licenses"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/open_source_licenses" />
         <fragment
             android:id="@+id/otherSettingsFragment"
             android:name="com.elementary.tasks.settings.other.OtherSettingsFragment"
@@ -389,18 +378,15 @@
         <fragment
             android:id="@+id/changesFragment"
             android:name="com.elementary.tasks.settings.other.whatsnew.WhatsNewFragment"
-            android:label="@string/whats_new"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/whats_new" />
         <fragment
             android:id="@+id/privacyPolicyFragment"
             android:name="com.elementary.tasks.settings.other.PrivacyPolicyFragment"
-            android:label="@string/privacy_policy"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/privacy_policy" />
         <fragment
             android:id="@+id/termsFragment"
             android:name="com.elementary.tasks.settings.other.TermsFragment"
-            android:label="@string/terms_and_conditions"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/terms_and_conditions" />
     </navigation>
     <fragment
         android:id="@+id/noteSettingsFragment"
@@ -436,19 +422,13 @@
         android:label="@string/pro_version"
         tools:layout="@layout/fragment_settings_pro_page" />
     <fragment
-        android:id="@+id/themePreviewFragment"
-        android:name="com.elementary.tasks.settings.general.ThemePreviewFragment"
-        android:label="Theme Preview"
-        tools:layout="@layout/fragment_settings_theme_preview" />
-    <fragment
         android:id="@+id/troubleshootingFragment"
         android:name="com.elementary.tasks.settings.troubleshooting.TroubleshootingFragment"
         android:label="@string/troubleshooting" />
     <fragment
         android:id="@+id/changesFragment"
         android:name="com.elementary.tasks.settings.other.whatsnew.WhatsNewFragment"
-        android:label="@string/whats_new"
-        tools:layout="@layout/fragment_settings_web_view" />
+        android:label="@string/whats_new" />
     <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"

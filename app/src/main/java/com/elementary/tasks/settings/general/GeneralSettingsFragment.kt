@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.elementary.tasks.R
-import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.splash.SplashScreenActivity
@@ -29,7 +28,6 @@ class GeneralSettingsFragment : BaseComposeToolbarFragment() {
       onDynamicColorsToggle = { viewModel.onDynamicColorsToggle() },
       onMetricToggle = { viewModel.onMetricToggle() },
       onAnalyticsToggle = { viewModel.onAnalyticsToggle() },
-      onThemePreviewClick = viewModel::onThemePreviewClick,
       onDialogOptionSelected = viewModel::onDialogOptionSelected,
       onDialogDismiss = viewModel::onDialogDismiss,
     )
@@ -49,12 +47,6 @@ class GeneralSettingsFragment : BaseComposeToolbarFragment() {
       }
 
       GeneralSettingsEvent.RestartApp -> activity?.finishWith(SplashScreenActivity::class.java)
-
-      GeneralSettingsEvent.OpenThemePreview -> {
-        safeNavigation {
-          GeneralSettingsFragmentDirections.actionGeneralSettingsFragmentToThemePreviewFragment()
-        }
-      }
     }
   }
 

@@ -3,7 +3,6 @@ package com.elementary.tasks.settings.general
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.Module
@@ -85,10 +84,6 @@ class GeneralSettingsViewModel(
     refreshState()
   }
 
-  fun onThemePreviewClick() {
-    navigationEvent.value = Event(GeneralSettingsEvent.OpenThemePreview)
-  }
-
   private fun selectLanguage(index: Int) {
     val changed = prefs.appLanguage != index
     prefs.appLanguage = index
@@ -133,7 +128,6 @@ class GeneralSettingsViewModel(
       isDynamicColorsChecked = prefs.useDynamicColors,
       isMetricChecked = prefs.useMetric,
       isAnalyticsChecked = prefs.analyticsEnabled,
-      isThemePreviewVisible = BuildConfig.DEBUG,
     )
   }
 

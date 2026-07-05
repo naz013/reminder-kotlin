@@ -35,7 +35,6 @@ fun GeneralSettingsScreen(
   onDynamicColorsToggle: (Boolean) -> Unit,
   onMetricToggle: (Boolean) -> Unit,
   onAnalyticsToggle: (Boolean) -> Unit,
-  onThemePreviewClick: () -> Unit,
   onDialogOptionSelected: (Int) -> Unit,
   onDialogDismiss: () -> Unit,
   modifier: Modifier = Modifier,
@@ -96,13 +95,6 @@ fun GeneralSettingsScreen(
       icon = painterResource(R.drawable.ic_fluent_data_area),
       dividerBottom = true,
     )
-    if (state.isThemePreviewVisible) {
-      SettingsItem(
-        title = "Theme Preview",
-        dividerBottom = true,
-        onClick = onThemePreviewClick,
-      )
-    }
   }
 
   val dialog = state.dialog

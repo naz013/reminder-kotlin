@@ -8,7 +8,6 @@ data class GeneralSettingsState(
   val isDynamicColorsChecked: Boolean = false,
   val isMetricChecked: Boolean = false,
   val isAnalyticsChecked: Boolean = false,
-  val isThemePreviewVisible: Boolean = false,
   val dialog: GeneralSettingsDialog? = null,
 )
 
@@ -42,6 +41,4 @@ sealed class GeneralSettingsEvent {
   data object ApplyDynamicColorsAndRecreate : GeneralSettingsEvent()
 
   data object RestartApp : GeneralSettingsEvent()
-
-  data object OpenThemePreview : GeneralSettingsEvent()
 }
