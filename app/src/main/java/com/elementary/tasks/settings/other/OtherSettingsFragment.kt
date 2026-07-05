@@ -67,7 +67,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
   private fun openTroubleshootingScreen() {
     navigate {
       navigate(
-        R.id.fragmentTroubleshooting,
+        R.id.troubleshootingFragment,
         null,
         NavigationAnimations.inDepthNavOptions(),
       )

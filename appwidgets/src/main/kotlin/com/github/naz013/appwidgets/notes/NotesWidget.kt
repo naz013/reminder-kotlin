@@ -59,7 +59,7 @@ internal class NotesWidget : AppWidgetProvider() {
       WidgetUtils.initButton(
         context = context,
         rv = rv,
-        iconId = R.drawable.ic_builder_google_task_list,
+        iconId = R.drawable.ic_fluent_add,
         color = tintColor,
         viewId = R.id.btn_add_note,
         intent = createIntent(context)
@@ -88,7 +88,7 @@ internal class NotesWidget : AppWidgetProvider() {
 
     private fun createIntent(context: Context): Intent {
       return AppWidgetActionActivity.createIntent(context).apply {
-        putExtra(AppWidgetActionActivity.DIRECTION, Direction.NOTE_PREVIEW)
+        putExtra(AppWidgetActionActivity.DIRECTION, Direction.ADD_NOTE)
       }
     }
   }

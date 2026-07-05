@@ -160,7 +160,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
   private fun openNote(id: String) {
     navigate {
       navigate(
-        R.id.previewNoteFragment,
+        R.id.actionNotes,
         Bundle().apply { putString(IntentKeys.INTENT_ID, id) },
         NavigationAnimations.inDepthNavOptions(),
       )
@@ -179,7 +179,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
     )
     navigate {
       navigate(
-        R.id.imagePreviewFragment,
+        R.id.actionNotes,
         Bundle().apply { putInt(IntentKeys.INTENT_POSITION, imagePosition) },
         NavigationAnimations.bottomNavOptions(),
       )
@@ -248,7 +248,7 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
   private fun openFullMap() {
     navigate {
       navigate(
-        R.id.fullscreenMapFragment,
+        R.id.reminderFullscreenMapFragment,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, viewModel.id)
         },

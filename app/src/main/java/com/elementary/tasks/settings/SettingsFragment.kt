@@ -124,7 +124,7 @@ class SettingsFragment :
     binding.securitySettings.setOnClickListener { askPin() }
 
     binding.testsScreen.setOnClickListener {
-      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
+      safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsSettingsFragment())
     }
     binding.buyProBadge.setOnClickListener { openProPage() }
     if (!BuildParams.isPro &&
@@ -185,7 +185,7 @@ class SettingsFragment :
   }
 
   private fun openProPage() {
-    safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToFragmentProVersion())
+    safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToProVersionFragment())
   }
 
   override fun onMessageChanged(

@@ -14,6 +14,9 @@ import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
@@ -22,6 +25,7 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +54,8 @@ class NotesViewModel(
   private val saveNoteUseCase: SaveNoteUseCase,
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val imagesSingleton: ImagesSingleton,
+  private val analyticsEventSender: AnalyticsEventSender,
+  private val themeProvider: ThemeProvider,
   private val isArchived: Boolean = false
 ) : BaseProgressViewModel(dispatcherProvider) {
 
@@ -84,6 +90,11 @@ class NotesViewModel(
         }
         .collect { applyList(it) }
     }
+  }
+
+  override fun onCreate(owner: LifecycleOwner) {
+    super.onCreate(owner)
+    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
   }
 
   override fun onResume(owner: LifecycleOwner) {
@@ -161,7 +172,11 @@ class NotesViewModel(
 
       NoteMenuAction.CHANGE_COLOR -> {
         navigationEvent.value = Event(
-          NavigationEvent.PickColor(note.id, note.colorPosition, note.colorPalette)
+          NavigationEvent.PickColor(
+            id = note.id,
+            colorPosition = note.colorPosition,
+            sliderColors = themeProvider.noteColorsForSlider(note.colorPalette),
+          )
         )
       }
 
@@ -290,7 +305,7 @@ class NotesViewModel(
     data class OpenImagePreview(val noteId: String, val imagePosition: Int) : NavigationEvent
     data class ShareNote(val file: File, val summary: String?) : NavigationEvent
     data class RequestNotificationPermission(val id: String) : NavigationEvent
-    data class PickColor(val id: String, val colorPosition: Int, val colorPalette: Int) : NavigationEvent
+    data class PickColor(val id: String, val colorPosition: Int, val sliderColors: IntArray) : NavigationEvent
     data class ConfirmDelete(val id: String) : NavigationEvent
   }
 

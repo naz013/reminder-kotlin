@@ -6,6 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import androidx.annotation.ColorInt
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -22,6 +25,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.SharedNote
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
+import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
@@ -30,6 +34,7 @@ import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
@@ -44,6 +49,7 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
@@ -90,6 +96,8 @@ class CreateNoteViewModel(
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val droppedContentParser: DroppedContentParser,
   private val themeProvider: ThemeProvider,
+  private val imagesSingleton: ImagesSingleton,
+  private val appWidgetUpdater: AppWidgetUpdater,
 ) : BaseProgressViewModel(dispatcherProvider) {
   private val _state = MutableStateFlow(NoteEditState())
   val state: StateFlow<NoteEditState> = _state.asStateFlow()
@@ -113,14 +121,16 @@ class CreateNoteViewModel(
     statusBarColorSaved = true
   }
 
+  /** Fired whenever [NoteEditState.textFieldValue] is replaced programmatically, so the
+   *  Context-bound [com.elementary.tasks.core.speech.SpeechEngine] instance (owned by the
+   *  entry composable, not this ViewModel) can resync its internal text buffer. */
   private val _textUpdate = mutableLiveDataOf<Event<TextUpdate>>()
   val textUpdate = _textUpdate.toLiveData()
 
-  private val _titleUpdate = mutableLiveDataOf<Event<String>>()
-  val titleUpdate = _titleUpdate.toLiveData()
-
   private val _noteToShare = mutableLiveDataOf<Event<Pair<String, File>>>()
   val noteToShare = _noteToShare.toLiveData()
+
+  val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private var localNote: NoteWithImages? = null
   private var linkedReminder: Reminder? = null
@@ -238,6 +248,85 @@ class CreateNoteViewModel(
     _state.update { it.copy(expandedTab = if (it.expandedTab == tab) null else tab) }
   }
 
+  fun onTextFieldValueChange(value: TextFieldValue) {
+    _state.update { it.copy(textFieldValue = value, boldRange = null) }
+  }
+
+  fun onTitleFieldValueChange(value: TextFieldValue) {
+    _state.update { it.copy(titleFieldValue = value) }
+  }
+
+  fun onSpeechStarted() {
+    _state.update { it.copy(speechState = SpeechUiState.STARTED) }
+  }
+
+  fun onSpeechStopped() {
+    _state.update { it.copy(speechState = SpeechUiState.IDLE) }
+  }
+
+  fun onSpeechSpeaking() {
+    _state.update { it.copy(speechState = SpeechUiState.SPEAKING) }
+  }
+
+  fun onSpeechError() {
+    _state.update { it.copy(speechState = SpeechUiState.IDLE) }
+  }
+
+  fun onSpeechResult(
+    text: String,
+    boldRange: IntRange?,
+  ) {
+    _state.update {
+      it.copy(
+        speechState = SpeechUiState.STOPPED,
+        textFieldValue = TextFieldValue(text = text, selection = TextRange(text.length)),
+        boldRange = boldRange,
+      )
+    }
+  }
+
+  /** Replaces the note body from a share-intent ([android.content.Intent.EXTRA_TEXT]) payload. */
+  fun onSharedTextReceived(text: String) {
+    replaceText(text)
+  }
+
+  private fun replaceText(text: String) {
+    _state.update {
+      it.copy(
+        textFieldValue = TextFieldValue(text = text, selection = TextRange(text.length)),
+        boldRange = null,
+      )
+    }
+    _textUpdate.postValue(Event(TextUpdate(text = text)))
+  }
+
+  fun onImageOpen(position: Int) {
+    val s = _state.value
+    imagesSingleton.setCurrent(images = s.images, color = s.colorIndex, palette = s.palette)
+    navigationEvent.value = Event(NavigationEvent.OpenImagePreview(position))
+  }
+
+  fun onDeleteRequested() {
+    _state.update { it.copy(activeDialog = NoteEditDialog.DELETE) }
+  }
+
+  fun onDialogDismissed() {
+    _state.update { it.copy(activeDialog = null) }
+  }
+
+  fun onSaveClicked() {
+    if (shouldConfirmBeforeSaving()) {
+      _state.update { it.copy(activeDialog = NoteEditDialog.SAME_NOTE) }
+    } else {
+      saveNote()
+    }
+  }
+
+  fun onDeleteConfirmed() {
+    _state.update { it.copy(activeDialog = null) }
+    deleteNote()
+  }
+
   /**
    * Derives the note's background/status-bar/content colors from [state]'s color index, opacity
    * and palette. A pure function of [state] so the Activity/Compose layer never has to know about
@@ -293,19 +382,16 @@ class CreateNoteViewModel(
     }
   }
 
-  fun shareNote(
-    text: String,
-    title: String,
-  ) {
+  fun onShareClick() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.io()) {
-      val note = createObject(text, title)
+      val note = createObject()
       val file = createSharedNoteFileUseCase(note)
       Logger.i(TAG, "Share note file path: ${file?.absolutePath}")
       withContext(dispatcherProvider.main()) {
         postInProgress(false)
         if (file != null) {
-          _noteToShare.postValue(Event(Pair(text, file)))
+          _noteToShare.postValue(Event(Pair(_state.value.textFieldValue.text.trim(), file)))
         } else {
           postError(textProvider.getText(R.string.error_sending))
         }
@@ -350,10 +436,12 @@ class CreateNoteViewModel(
           titleFontSize = uiNoteEdit.titleFontSize,
           images = uiNoteEdit.images,
           isNoteEdited = true,
+          textFieldValue = TextFieldValue(text = uiNoteEdit.text, selection = TextRange(uiNoteEdit.text.length)),
+          titleFieldValue = TextFieldValue(text = uiNoteEdit.title, selection = TextRange(uiNoteEdit.title.length)),
+          boldRange = null,
         )
       }
       _textUpdate.postValue(Event(TextUpdate(text = uiNoteEdit.text)))
-      _titleUpdate.postValue(Event(uiNoteEdit.title))
 
       val noteKey = noteWithImages.note?.key
       if (!noteKey.isNullOrEmpty()) {
@@ -463,7 +551,7 @@ class CreateNoteViewModel(
     }
   }
 
-  fun deleteNote() {
+  private fun deleteNote() {
     val noteWithImages = localNote ?: return
     val note = noteWithImages.note ?: return
     postInProgress(true)
@@ -471,6 +559,11 @@ class CreateNoteViewModel(
       deleteNoteUseCase(note.key)
       postInProgress(false)
       postCommand(Commands.DELETED)
+
+      withContext(dispatcherProvider.main()) {
+        appWidgetUpdater.updateNotesWidget()
+        appWidgetUpdater.updateAllWidgets()
+      }
     }
   }
 
@@ -479,17 +572,13 @@ class CreateNoteViewModel(
    *
    * Each item in the clip data is classified by [DroppedContentParser]:
    * - Inline text, `.txt`  `.md`  other `text*` files, and PDF documents are extracted
-   *   as text and appended (after [text]) to the note.
+   *   as text and appended (after the current body text) to the note.
    * - Image URIs are forwarded to [addMultiple] for the image pipeline.
    * - Unsupported types result in an error toast.
    *
    * @param clipData the payload from [android.view.DragEvent.ACTION_DROP].
-   * @param text the current text already present in the note editor.
    */
-  fun parseDrop(
-    clipData: ClipData,
-    text: String,
-  ) {
+  fun parseDrop(clipData: ClipData) {
     Logger.i(TAG, "Parse drop called with ${clipData.itemCount} items.")
     viewModelScope.launch(dispatcherProvider.default()) {
       val result = droppedContentParser.parse(clipData)
@@ -499,14 +588,15 @@ class CreateNoteViewModel(
           "${result.imageUris.size} images, ${result.unsupportedCount} unsupported",
       )
 
+      val currentText = _state.value.textFieldValue.text
       val allTextParts =
         buildList {
-          if (text.isNotEmpty()) add(text)
+          if (currentText.isNotEmpty()) add(currentText)
           addAll(result.textContent)
         }
       if (allTextParts.isNotEmpty()) {
         val combined = allTextParts.joinToString("\n")
-        _textUpdate.postValue(Event(TextUpdate(text = combined)))
+        withUIContext { replaceText(combined) }
       }
 
       if (result.imageUris.isNotEmpty()) {
@@ -521,12 +611,9 @@ class CreateNoteViewModel(
     }
   }
 
-  fun saveNote(
-    text: String,
-    title: String,
-    newId: Boolean = false,
-  ) {
-    val noteWithImages = createObject(text, title)
+  fun saveNote(newId: Boolean = false) {
+    _state.update { it.copy(activeDialog = null) }
+    val noteWithImages = createObject()
     val hasReminder = _state.value.isReminderAttached
     var reminder: Reminder? = null
     var reminderToDelete: Reminder? = null
@@ -569,6 +656,11 @@ class CreateNoteViewModel(
       }
       postInProgress(false)
       postCommand(Commands.SAVED)
+
+      withContext(dispatcherProvider.main()) {
+        appWidgetUpdater.updateNotesWidget()
+        appWidgetUpdater.updateAllWidgets()
+      }
     }
   }
 
@@ -599,10 +691,7 @@ class CreateNoteViewModel(
     return reminder
   }
 
-  private fun createObject(
-    text: String,
-    title: String,
-  ): NoteWithImages {
+  private fun createObject(): NoteWithImages {
     val s = _state.value
     val images = s.images
 
@@ -611,8 +700,8 @@ class CreateNoteViewModel(
     if (note == null) {
       note = Note(syncState = SyncState.WaitingForUpload)
     }
-    note.summary = text
-    note.title = title
+    note.summary = s.textFieldValue.text.trim()
+    note.title = s.titleFieldValue.text.trim()
     note.date = dateTimeManager.getNowGmtDateTime()
     note.color = s.colorIndex
     note.style = s.fontStyle
@@ -646,6 +735,10 @@ class CreateNoteViewModel(
         activateReminderUseCase(reminder)
       }
     }
+  }
+
+  sealed interface NavigationEvent {
+    data class OpenImagePreview(val position: Int) : NavigationEvent
   }
 
   companion object {

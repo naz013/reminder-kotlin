@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.databinding.FragmentSettingsThemePreviewBinding
 import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 
-class UiPreviewFragment : BaseSettingsFragment<FragmentSettingsThemePreviewBinding>() {
+class ThemePreviewFragment : BaseSettingsFragment<FragmentSettingsThemePreviewBinding>() {
   override fun inflate(
     inflater: LayoutInflater,
     container: ViewGroup?,

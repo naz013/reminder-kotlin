@@ -52,6 +52,10 @@ androidx-lifecycle = "2.10.0"
 androidx-room = "2.8.4"
 
 androidx-navigation = "2.9.8"
+androidx-navigation3 = "1.1.4"
+androidx-lifecycle-viewmodel-navigation3 = "2.11.0"
+
+kotlinx-serialization = "1.11.0"
 
 material = "1.14.0"
 
@@ -173,6 +177,12 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 
+androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "androidx-navigation3" }
+androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "androidx-navigation3" }
+androidx-lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle-viewmodel-navigation3" }
+
+kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+
 androidx-localbroadcastmanager = { group = "androidx.localbroadcastmanager", name = "localbroadcastmanager", version.ref = "androidx-localbroadcastmanager" }
 
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -260,6 +270,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 java-library = { id = "java-library" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation-safeargs" }

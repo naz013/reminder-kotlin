@@ -25,7 +25,7 @@ import com.github.naz013.ui.common.view.visibleGone
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
-class FragmentSettingsTroubleshooting : BaseSettingsFragment<FragmentSettingsTroubleshootingBinding>() {
+class TroubleshootingFragment : BaseSettingsFragment<FragmentSettingsTroubleshootingBinding>() {
   private val viewModel by viewModel<TroubleshootingViewModel>()
 
   override fun inflate(

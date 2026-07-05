@@ -3,6 +3,7 @@ package com.elementary.tasks.notes.preview
 import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
@@ -23,8 +24,10 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.toSingleEvent
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderRepository
@@ -54,12 +57,15 @@ class PreviewNoteViewModel(
   private val saveReminderUseCase: SaveReminderUseCase,
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val themeProvider: ThemeProvider,
+  private val imagesSingleton: ImagesSingleton,
 ) : BaseProgressViewModel(dispatcherProvider) {
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
   val state: StateFlow<PreviewNoteState> = _state.asStateFlow()
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toSingleEvent()
+
+  val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private var initStatusBarColor: Int = -1
   private var statusBarColorSaved: Boolean = false
@@ -208,6 +214,20 @@ class PreviewNoteViewModel(
     }
   }
 
+  fun onEditClick() {
+    navigationEvent.value = Event(NavigationEvent.EditNote(key))
+  }
+
+  fun onReminderEditClick(id: String) {
+    navigationEvent.value = Event(NavigationEvent.EditReminder(id))
+  }
+
+  fun onImageOpen(position: Int) {
+    val s = _state.value
+    imagesSingleton.setCurrent(images = s.images, backgroundColor = s.backgroundColor)
+    navigationEvent.value = Event(NavigationEvent.OpenImagePreview(position))
+  }
+
   fun onReminderDetachClick(id: String) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -230,6 +250,12 @@ class PreviewNoteViewModel(
       postInProgress(false)
       postCommand(Commands.UPDATED)
     }
+  }
+
+  sealed interface NavigationEvent {
+    data class EditNote(val id: String) : NavigationEvent
+    data class EditReminder(val id: String) : NavigationEvent
+    data class OpenImagePreview(val position: Int) : NavigationEvent
   }
 
   companion object {

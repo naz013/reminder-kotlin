@@ -27,7 +27,7 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDateTime
 
-class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
+class TestsSettingsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   private val reviewsApi by inject<ReviewsApi>()
   private val reminderRepository by inject<ReminderRepository>()
   private val dateTimeManager by inject<DateTimeManager>()
@@ -48,7 +48,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
     binding.birthdayDialogWindow.setOnClickListener { showBirthdayActionSelectionDialog() }
     binding.reminderDialogWindow.setOnClickListener { showReminderActionSelectionDialog() }
     binding.objectExport.setOnClickListener {
-      safeNavigation(TestsFragmentDirections.actionTestsFragmentToObjectExportTestFragment())
+      safeNavigation(TestsSettingsFragmentDirections.actionTestsFragmentToObjectExportTestFragment())
     }
     binding.reviewDialogTest.setOnClickListener {
       reviewsApi.showFeedbackForm(
@@ -64,7 +64,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
       )
     }
     binding.developerOptions.setOnClickListener {
-      safeNavigation(TestsFragmentDirections.actionTestsFragmentToDeveloperFragment())
+      safeNavigation(TestsSettingsFragmentDirections.actionTestsFragmentToDeveloperFragment())
     }
   }
 
@@ -148,7 +148,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   }
 
   private fun saveAndOpenReminderScreen(reminder: Reminder) {
-    Logger.d("TestsFragment", "Saving reminder and opening action screen...")
+    Logger.d("TestsSettingsFragment", "Saving reminder and opening action screen...")
     lifecycleScope.launch(Dispatchers.IO) {
       reminderRepository.save(reminder)
       withContext(Dispatchers.Main) {
@@ -158,7 +158,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   }
 
   private fun openReminderScreen(reminder: Reminder) {
-    Logger.d("TestsFragment", "Opening reminder action screen for id: ${reminder.uuId}")
+    Logger.d("TestsSettingsFragment", "Opening reminder action screen for id: ${reminder.uuId}")
     ReminderActionActivity.mockTest(requireContext(), reminder.uuId)
   }
 
@@ -221,7 +221,7 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
   }
 
   private fun saveAndOpenBirthdayScreen(birthday: Birthday) {
-    Logger.d("TestsFragment", "Saving birthday and opening action screen...")
+    Logger.d("TestsSettingsFragment", "Saving birthday and opening action screen...")
     lifecycleScope.launch(Dispatchers.IO) {
       birthdayRepository.save(birthday)
       withContext(Dispatchers.Main) {

@@ -1,146 +1,113 @@
 package com.elementary.tasks.notes.list
 
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.SideEffect
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.elementary.tasks.R
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.navigation.NavigationAnimations
-import com.elementary.tasks.navigation.safeNavigation
+import com.elementary.tasks.core.utils.PhotoSelectionUtil
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.navigation.BackPressHandler
 import com.elementary.tasks.navigation.topfragment.RootFragment
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.common.Permissions
+import com.elementary.tasks.notes.NotesNavGraph
+import com.elementary.tasks.notes.NotesNavKey
+import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.composeView
-import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
-class NotesFragment : Fragment(), RootFragment {
+/**
+ * Hosts the Notes feature as a self-contained Navigation 3 "island": this Fragment owns the
+ * internal backstack and the Android-framework glue (permissions, photo picking, dialogs,
+ * date/time pickers) that only a Fragment/Activity can provide, and is otherwise responsible only
+ * for screen-to-screen navigation. The actual screens and their wiring live in [NotesNavGraph].
+ */
+class NotesFragment :
+  Fragment(),
+  RootFragment,
+  BackPressHandler,
+  PhotoSelectionUtil.UriCallback {
+  internal val dialogues by inject<Dialogues>()
+  internal val dateTimePickerProvider by inject<DateTimePickerProvider>()
+  internal val adsProvider = AdsProvider()
+  internal lateinit var permissionFlow: PermissionFlow
+  internal lateinit var photoSelectionUtil: PhotoSelectionUtil
 
-  private val viewModel by viewModel<NotesViewModel> { parametersOf(false) }
-  private val dialogues by inject<Dialogues>()
-  private val themeProvider by inject<ThemeProvider>()
-  private val analyticsEventSender by inject<AnalyticsEventSender>()
-  private lateinit var permissionFlow: PermissionFlow
+  /** Bridge from the Fragment's plain methods into the Compose-owned Nav3 backstack — the
+   *  backstack itself can only be created via [rememberNavBackStack] inside composition. */
+  private var currentBackStack: MutableList<NavKey>? = null
+
+  /** The [CreateNoteViewModel] currently on screen, if any — [photoSelectionUtil]'s callback is
+   *  Fragment-scoped and long-lived (registered once in [onCreate]), so its results have to be
+   *  routed to whichever edit entry is actually active right now. */
+  internal var activeCreateNoteViewModel: CreateNoteViewModel? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     permissionFlow = PermissionFlow(this, dialogues)
+    photoSelectionUtil = PhotoSelectionUtil(this, this)
+    lifecycle.addObserver(photoSelectionUtil)
   }
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    return composeView {
-      val state by viewModel.notesScreenState.collectAsState()
-      NotesScreen(
-        modifier = Modifier.fillMaxSize(),
-        state = state,
-        onBackClick = { findNavController().popBackStack() },
-        onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
-        onSortOrderSelected = { viewModel.onSortOrderSelected(it) },
-        onGridToggleClick = { viewModel.onGridToggleClick() },
-        onArchiveClick = { viewModel.onArchiveClick() },
-        onSettingsClick = { viewModel.onSettingsClick() },
-        onAddClick = { viewModel.onAddClick() },
-        onNoteClick = { viewModel.onNoteClick(it) },
-        onNoteMenuAction = { note, action -> viewModel.onNoteMenuAction(note, action) },
-        onImageClick = { note, imageId -> viewModel.onImageClick(note, imageId) }
-      )
+    savedInstanceState: Bundle?,
+  ): View =
+    composeView {
+      val backStack = rememberNavBackStack(*initialBackStackKeys().toTypedArray())
+      SideEffect { currentBackStack = backStack }
+      NotesNavGraph(backStack)
+    }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    currentBackStack = null
+  }
+
+  /** Seeds the island's backstack from a note deep link / app shortcut, read once from
+   *  [getArguments] — see [com.elementary.tasks.home.ScreenDestinationIdResolver] and
+   *  [com.elementary.tasks.home.BottomNavActivity], which both now route note deep links /
+   *  shortcuts to this fragment (`R.id.actionNotes`) instead of a dedicated destination. */
+  private fun initialBackStackKeys(): List<NotesNavKey> {
+    val args = arguments ?: return listOf(NotesNavKey.List)
+    val id = args.getString(IntentKeys.INTENT_ID)
+    val statusBarColor = requireActivity().window.statusBarColor
+    return when {
+      args.getBoolean(ARG_OPEN_EDIT, false) -> {
+        listOf(NotesNavKey.List, NotesNavKey.Edit(id ?: "", statusBarColor))
+      }
+
+      // Reached from a reminder's linked-note image (imagesSingleton already holds the images) —
+      // jumps straight to the image viewer, skipping the note preview screen, same as before.
+      args.containsKey(IntentKeys.INTENT_POSITION) -> {
+        listOf(NotesNavKey.List, NotesNavKey.ImagePreview(args.getInt(IntentKeys.INTENT_POSITION), statusBarColor))
+      }
+
+      id != null -> listOf(NotesNavKey.List, NotesNavKey.Preview(id, statusBarColor))
+      else -> listOf(NotesNavKey.List)
     }
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    lifecycle.addObserver(viewModel)
-    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
-    viewModel.navigationEvent.observeEvent(viewLifecycleOwner) { handleNavigationEvent(it) }
-    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { toast(it) }
+  override fun canGoBack(): Boolean = (currentBackStack?.size ?: 1) <= 1
+
+  override fun onImageSelected(uris: List<Uri>) {
+    activeCreateNoteViewModel?.addMultiple(uris)
   }
 
-  private fun handleNavigationEvent(event: NotesViewModel.NavigationEvent) {
-    when (event) {
-      is NotesViewModel.NavigationEvent.OpenNotePreview -> {
-        safeNavigation(
-          R.id.previewNoteFragment,
-          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
-          NavigationAnimations.inDepthNavOptions()
-        )
-      }
+  override fun onBitmapReady(bitmap: Bitmap) {
+    activeCreateNoteViewModel?.addBitmap(bitmap)
+  }
 
-      is NotesViewModel.NavigationEvent.OpenCreateNote -> {
-        safeNavigation(R.id.createNoteFragment, null, NavigationAnimations.inDepthNavOptions())
-      }
-
-      is NotesViewModel.NavigationEvent.OpenEditNote -> {
-        safeNavigation(
-          R.id.createNoteFragment,
-          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
-          NavigationAnimations.inDepthNavOptions(),
-        )
-      }
-
-      is NotesViewModel.NavigationEvent.OpenArchive -> {
-        safeNavigation(NotesFragmentDirections.actionActionNotesToArchivedNotesFragment())
-      }
-
-      is NotesViewModel.NavigationEvent.OpenSettings -> {
-        safeNavigation(
-          NotesFragmentDirections.actionActionNotesToNoteSettingsFragment(
-            getString(R.string.action_settings)
-          )
-        )
-      }
-
-      is NotesViewModel.NavigationEvent.OpenImagePreview -> {
-        safeNavigation(
-          R.id.imagePreviewFragment,
-          Bundle().apply { putInt(IntentKeys.INTENT_POSITION, event.imagePosition) },
-          NavigationAnimations.bottomNavOptions(),
-        )
-      }
-
-      is NotesViewModel.NavigationEvent.ShareNote -> {
-        TelephonyUtil.sendNote(event.file, requireContext(), event.summary)
-      }
-
-      is NotesViewModel.NavigationEvent.RequestNotificationPermission -> {
-        permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
-          viewModel.showNoteInNotification(event.id)
-        }
-      }
-
-      is NotesViewModel.NavigationEvent.PickColor -> {
-        dialogues.showColorDialog(
-          requireActivity(),
-          event.colorPosition,
-          getString(R.string.color),
-          themeProvider.noteColorsForSlider(event.colorPalette)
-        ) { color -> viewModel.saveNoteColor(event.id, color) }
-      }
-
-      is NotesViewModel.NavigationEvent.ConfirmDelete -> {
-        dialogues.askConfirmation(requireContext(), getString(R.string.delete)) { confirmed ->
-          if (confirmed) viewModel.deleteNote(event.id)
-        }
-      }
-    }
+  companion object {
+    const val ARG_OPEN_EDIT = "notes_open_edit"
   }
 }

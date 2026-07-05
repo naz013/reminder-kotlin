@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes.create
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.github.naz013.domain.font.FontParams
 
@@ -19,6 +20,11 @@ data class NoteEditState(
   val expandedTab: EditTab? = null,
   val isNoteEdited: Boolean = false,
   val isFromFile: Boolean = false,
+  val textFieldValue: TextFieldValue = TextFieldValue(),
+  val titleFieldValue: TextFieldValue = TextFieldValue(),
+  val boldRange: IntRange? = null,
+  val speechState: SpeechUiState = SpeechUiState.IDLE,
+  val activeDialog: NoteEditDialog? = null,
 )
 
 enum class EditTab { COLOR, FONT, REMINDER, IMAGE }
@@ -42,20 +48,12 @@ data class NoteColors(
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
 enum class NoteEditDialog { DELETE, SAME_NOTE }
 
-/**
- * Owned by the Activity (not this state), since [com.elementary.tasks.core.speech.SpeechEngine]
- * is tied to Activity lifecycle/context. Kept here only as the shared vocabulary for the mic
- * button's visual state.
- */
 enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
 
 /**
- * A one-shot instruction to programmatically replace the editor's text (initial load, speech
- * recognition result, drag-drop parsed text, share-intent text). [boldRange] mirrors the
- * newly-recognized portion of a speech result so the UI can render it in bold, matching the
- * previous [com.github.naz013.ui.common.view.gradient.UiGradientEditText] bold-section behavior.
+ * One-shot signal that [NoteEditState.textFieldValue] was replaced programmatically (initial
+ * load, speech recognition result, drag-drop parsed text, share-intent text) rather than by the
+ * user typing — the [com.elementary.tasks.core.speech.SpeechEngine] instance is Context-bound and
+ * lives outside the ViewModel, so it needs telling to resync its own text buffer to [text].
  */
-data class TextUpdate(
-  val text: String,
-  val boldRange: IntRange? = null,
-)
+data class TextUpdate(val text: String)
