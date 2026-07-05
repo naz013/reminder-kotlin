@@ -1,0 +1,61 @@
+package com.elementary.tasks.settings.reminders
+
+import org.threeten.bp.LocalTime
+
+data class RemindersSettingsState(
+  val priorityName: String = "",
+  val isCompletedChecked: Boolean = false,
+  val isWearChecked: Boolean = false,
+  val snoozeText: String = "",
+  val isRepeatChecked: Boolean = false,
+  val repeatIntervalText: String = "",
+  val isRepeatIntervalRowEnabled: Boolean = false,
+  val isLedVisible: Boolean = false,
+  val isLedChecked: Boolean = false,
+  val ledColorName: String = "",
+  val isLedColorRowEnabled: Boolean = false,
+  val isPermanentNotificationChecked: Boolean = false,
+  val isStatusIconChecked: Boolean = false,
+  val isStatusIconRowEnabled: Boolean = false,
+  val isDoNotDisturbChecked: Boolean = false,
+  val doNotDisturbFromText: String = "",
+  val doNotDisturbToText: String = "",
+  val doNotDisturbActionName: String = "",
+  val doNotDisturbIgnoreName: String = "",
+  val isDoNotDisturbDependentEnabled: Boolean = false,
+  val dialog: RemindersSettingsDialog? = null,
+)
+
+enum class ChoiceDialogKind { PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE }
+
+enum class SeekDialogKind { SNOOZE, REPEAT_INTERVAL }
+
+enum class DndTimeTarget { FROM, TO }
+
+sealed class RemindersSettingsDialog {
+  data class Choice(
+    val kind: ChoiceDialogKind,
+    val title: String,
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : RemindersSettingsDialog()
+
+  data class Seek(
+    val kind: SeekDialogKind,
+    val title: String,
+    val previewValue: Int,
+    val formattedValue: String,
+  ) : RemindersSettingsDialog()
+}
+
+sealed class RemindersSettingsEvent {
+  data object OpenPresets : RemindersSettingsEvent()
+
+  data object OpenLocationSettings : RemindersSettingsEvent()
+
+  data class ShowTimePicker(val target: DndTimeTarget, val time: LocalTime) : RemindersSettingsEvent()
+
+  data object ShowPermanentNotification : RemindersSettingsEvent()
+
+  data object HidePermanentNotification : RemindersSettingsEvent()
+}

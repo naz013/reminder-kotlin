@@ -6,12 +6,22 @@ import com.elementary.tasks.core.utils.UnitConverter
 import com.elementary.tasks.core.utils.ui.ValueFormatter
 import com.github.naz013.common.TextProvider
 
-open class DefaultRadiusFormatter(
-  context: Context,
+open class DefaultRadiusFormatter private constructor(
+  private val textProvider: TextProvider,
   var useMetric: Boolean,
   private val unitConverter: UnitConverter = UnitConverter(),
 ) : ValueFormatter<Int> {
-  private val textProvider = TextProvider(context)
+
+  constructor(
+    context: Context,
+    useMetric: Boolean,
+    unitConverter: UnitConverter = UnitConverter(),
+  ) : this(TextProvider(context), useMetric, unitConverter)
+
+  constructor(
+    textProvider: TextProvider,
+    useMetric: Boolean,
+  ) : this(textProvider, useMetric, UnitConverter())
 
   override fun format(meters: Int): String =
     if (meters > 5000) {

@@ -1,111 +1,62 @@
 package com.elementary.tasks.settings.security
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentSettingsSecurityBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.navigation.safeNavigation
+import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
+import com.elementary.tasks.notes.ObserveEvent
 import com.github.naz013.common.Module
 import com.github.naz013.ui.common.login.BiometricProvider
-import com.github.naz013.ui.common.view.visibleGone
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBinding>() {
-  private val biometricProvider =
-    BiometricProvider(this) {
-      setFinger(!binding.fingerprintSwitchPrefs.isChecked)
-    }
+class SecuritySettingsFragment : BaseComposeToolbarFragment() {
 
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ) = FragmentSettingsSecurityBinding.inflate(inflater, container, false)
+  private val viewModel by viewModel<SecuritySettingsViewModel>()
+  private val biometricProvider = BiometricProvider(this) { viewModel.onFingerprintAuthSucceeded() }
 
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.changePinPrefs.setDependentView(binding.pinSwitchPrefs)
-    binding.changePinPrefs.setOnClickListener {
-      safeNavigation(
-        SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment(),
-      )
-    }
+  @Composable
+  override fun Content() {
+    val state by viewModel.state.collectAsState()
+    viewModel.navigationEvent.ObserveEvent { handleEvent(it) }
+    val hasBiometricHardware = remember { biometricProvider.hasBiometric() }
+    val hasTelephony = remember { Module.hasTelephony(requireContext()) }
 
-    initFingerPrefs()
-    initShufflePrefs()
-    initPhonePrefs()
+    SecuritySettingsScreen(
+      state = state,
+      hasBiometricHardware = hasBiometricHardware,
+      hasTelephony = hasTelephony,
+      onPinRowClick = viewModel::onPinRowClick,
+      onChangePinClick = viewModel::onChangePinClick,
+      onFingerprintClick = viewModel::onFingerprintClick,
+      onShuffleToggle = viewModel::onShuffleToggle,
+      onTelephonyToggle = viewModel::onTelephonyToggle,
+    )
   }
 
-  private fun initShufflePrefs() {
-    binding.shufflePrefs.setOnClickListener { changeShufflePrefs() }
-    binding.shufflePrefs.setDependentView(binding.pinSwitchPrefs)
-    binding.shufflePrefs.isChecked = prefs.shufflePinView
-  }
-
-  private fun changeShufflePrefs() {
-    val isChecked = binding.shufflePrefs.isChecked
-    binding.shufflePrefs.isChecked = !isChecked
-    prefs.shufflePinView = !isChecked
-  }
-
-  private fun initPhonePrefs() {
-    withContext {
-      if (Module.hasTelephony(it)) {
-        binding.telephonyPrefs.isEnabled = true
-        binding.telephonyPrefs.setOnClickListener { changePhonePrefs() }
-        binding.telephonyPrefs.isChecked = prefs.isTelephonyEnabled
-      } else {
-        prefs.isTelephonyEnabled = false
-        binding.telephonyPrefs.isChecked = false
-        binding.telephonyPrefs.isEnabled = false
+  private fun handleEvent(event: SecuritySettingsEvent) {
+    when (event) {
+      SecuritySettingsEvent.OpenAddPin -> {
+        safeNavigation { SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToAddPinFragment() }
       }
-    }
-  }
 
-  private fun changePhonePrefs() {
-    val isChecked = binding.telephonyPrefs.isChecked
-    binding.telephonyPrefs.isChecked = !isChecked
-    prefs.isTelephonyEnabled = !isChecked
-  }
-
-  private fun initPinPrefs() {
-    binding.pinSwitchPrefs.setOnClickListener { changePinPrefs() }
-    binding.pinSwitchPrefs.isChecked = prefs.hasPinCode
-  }
-
-  private fun changePinPrefs() {
-    val isChecked = binding.pinSwitchPrefs.isChecked
-    if (isChecked) {
-      safeNavigation {
-        SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToDisablePinFragment()
+      SecuritySettingsEvent.OpenDisablePin -> {
+        safeNavigation { SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToDisablePinFragment() }
       }
-    } else {
-      safeNavigation {
-        SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToAddPinFragment()
+
+      SecuritySettingsEvent.OpenChangePin -> {
+        safeNavigation { SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment() }
       }
+
+      SecuritySettingsEvent.TryFingerprintLogin -> biometricProvider.tryToOpenFingerLogin()
     }
-  }
-
-  private fun initFingerPrefs() {
-    binding.fingerprintSwitchPrefs.setOnClickListener { biometricProvider.tryToOpenFingerLogin() }
-    binding.fingerprintSwitchPrefs.setDependentView(binding.pinSwitchPrefs)
-    binding.fingerprintSwitchPrefs.isChecked = prefs.useFingerprint
-    binding.fingerprintSwitchPrefs.visibleGone(biometricProvider.hasBiometric())
-  }
-
-  private fun setFinger(enabled: Boolean) {
-    binding.fingerprintSwitchPrefs.isChecked = enabled
-    prefs.useFingerprint = enabled
   }
 
   override fun onBackStackResumed() {
     super.onBackStackResumed()
-    initPinPrefs()
+    viewModel.onResume(Module.hasTelephony(requireContext()))
   }
 
   override fun getTitle(): String = getString(R.string.security)

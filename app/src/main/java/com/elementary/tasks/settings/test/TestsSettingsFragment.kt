@@ -1,237 +1,65 @@
 package com.elementary.tasks.settings.test
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
 import com.elementary.tasks.navigation.safeNavigation
+import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
+import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.ShopItem
-import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.logging.Logger
-import com.github.naz013.repository.BirthdayRepository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.ReviewsApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import org.threeten.bp.LocalDateTime
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class TestsSettingsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
+class TestsSettingsFragment : BaseComposeToolbarFragment() {
+
+  private val viewModel by viewModel<TestsSettingsViewModel>()
   private val reviewsApi by inject<ReviewsApi>()
-  private val reminderRepository by inject<ReminderRepository>()
-  private val dateTimeManager by inject<DateTimeManager>()
-  private val birthdayRepository by inject<BirthdayRepository>()
 
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ) = FragmentSettingsTestsBinding.inflate(inflater, container, false)
+  @Composable
+  override fun Content() {
+    val state by viewModel.state.collectAsState()
+    viewModel.navigationEvent.ObserveEvent { handleEvent(it) }
 
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
+    TestsSettingsScreen(
+      state = state,
+      onBirthdayDialogClick = viewModel::onBirthdayDialogClick,
+      onReminderDialogClick = viewModel::onReminderDialogClick,
+      onObjectExportClick = viewModel::onObjectExportClick,
+      onReviewDialogClick = viewModel::onReviewDialogClick,
+      onDeveloperOptionsClick = viewModel::onDeveloperOptionsClick,
+      onDialogOptionSelected = viewModel::onDialogOptionSelected,
+      onDialogConfirm = viewModel::onDialogConfirm,
+      onDialogDismiss = viewModel::onDialogDismiss,
+    )
+  }
 
-    binding.birthdayDialogWindow.setOnClickListener { showBirthdayActionSelectionDialog() }
-    binding.reminderDialogWindow.setOnClickListener { showReminderActionSelectionDialog() }
-    binding.objectExport.setOnClickListener {
-      safeNavigation(TestsSettingsFragmentDirections.actionTestsFragmentToObjectExportTestFragment())
+  private fun handleEvent(event: TestsSettingsEvent) {
+    when (event) {
+      TestsSettingsEvent.OpenObjectExport -> {
+        safeNavigation(TestsSettingsFragmentDirections.actionTestsFragmentToObjectExportTestFragment())
+      }
+
+      TestsSettingsEvent.OpenDeveloperOptions -> {
+        safeNavigation(TestsSettingsFragmentDirections.actionTestsFragmentToDeveloperFragment())
+      }
+
+      TestsSettingsEvent.OpenReviewDialog -> {
+        reviewsApi.showFeedbackForm(
+          context = requireContext(),
+          title = "Write a review",
+          appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE,
+          allowLogsAttachment = false,
+        )
+      }
+
+      is TestsSettingsEvent.OpenReminderAction -> ReminderActionActivity.mockTest(requireContext(), event.reminderId)
+
+      is TestsSettingsEvent.OpenBirthdayAction -> BirthdayActionActivity.mockTest(requireContext(), event.birthdayId)
     }
-    binding.reviewDialogTest.setOnClickListener {
-      reviewsApi.showFeedbackForm(
-        context = requireContext(),
-        title = "Write a review",
-        appSource =
-          if (BuildParams.isPro) {
-            AppSource.PRO
-          } else {
-            AppSource.FREE
-          },
-        allowLogsAttachment = false,
-      )
-    }
-    binding.developerOptions.setOnClickListener {
-      safeNavigation(TestsSettingsFragmentDirections.actionTestsFragmentToDeveloperFragment())
-    }
-  }
-
-  private fun showReminderActionSelectionDialog() {
-    var selectedItem = 0
-    dialogues
-      .getMaterialDialog(requireContext())
-      .setTitle("Select action to test")
-      .setSingleChoiceItems(
-        arrayOf(
-          "Simple reminder",
-          "Recurring reminder",
-          "With Todo",
-          "With Call action",
-          "With SMS action",
-          "With Email action",
-          "With Open URL action",
-          "With Open Chrome Browser action",
-        ),
-        selectedItem,
-        { _, which ->
-          selectedItem = which
-        },
-      ).setPositiveButton("Run") { dialog, _ ->
-        dialog.dismiss()
-        saveAndOpenReminderScreen(prepareReminder(selectedItem))
-      }.setNegativeButton("Cancel") { dialog, _ ->
-        dialog.dismiss()
-      }.show()
-  }
-
-  private fun prepareReminder(selectedItem: Int): Reminder {
-    val reminder = Reminder()
-    reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.now())
-    when (selectedItem) {
-      0 -> {
-        reminder.summary = "This is a simple reminder."
-      }
-      1 -> {
-        reminder.summary = "This is a recurring daily reminder."
-        reminder.repeatInterval = 24 * 60 * 60 * 1000L // daily
-      }
-      2 -> {
-        reminder.summary = "This is a reminder with todo."
-        reminder.shoppings =
-          listOf(
-            ShopItem(summary = "Milk", createTime = "", isChecked = false),
-            ShopItem(summary = "Bread", createTime = "", isChecked = false),
-            ShopItem(summary = "Eggs", createTime = "", isChecked = false),
-            ShopItem(summary = "Butter", createTime = "", isChecked = true),
-          )
-      }
-      3 -> {
-        reminder.summary = "This is a reminder with call action."
-        reminder.type = 10 + Reminder.Action.CALL
-        reminder.target = "+1234567890"
-      }
-      4 -> {
-        reminder.summary = "This is a reminder with SMS action."
-        reminder.type = 10 + Reminder.Action.SMS
-        reminder.target = "+1234567890"
-      }
-      5 -> {
-        reminder.type = 10 + Reminder.Action.EMAIL
-        reminder.target = "some@mail.com"
-        reminder.subject = "Test Subject"
-        reminder.summary = "This is a test email from Tasks app."
-      }
-      6 -> {
-        reminder.summary = "This is a reminder with open link action."
-        reminder.type = 10 + Reminder.Action.LINK
-        reminder.target = "https://www.google.com"
-      }
-      7 -> {
-        reminder.summary = "This is a reminder with open Chrome action."
-        reminder.type = 10 + Reminder.Action.APP
-        reminder.target = "com.android.chrome"
-      }
-    }
-    return reminder
-  }
-
-  private fun saveAndOpenReminderScreen(reminder: Reminder) {
-    Logger.d("TestsSettingsFragment", "Saving reminder and opening action screen...")
-    lifecycleScope.launch(Dispatchers.IO) {
-      reminderRepository.save(reminder)
-      withContext(Dispatchers.Main) {
-        openReminderScreen(reminder)
-      }
-    }
-  }
-
-  private fun openReminderScreen(reminder: Reminder) {
-    Logger.d("TestsSettingsFragment", "Opening reminder action screen for id: ${reminder.uuId}")
-    ReminderActionActivity.mockTest(requireContext(), reminder.uuId)
-  }
-
-  private fun showBirthdayActionSelectionDialog() {
-    var selectedItem = 0
-    dialogues
-      .getMaterialDialog(requireContext())
-      .setTitle("Select action to test")
-      .setSingleChoiceItems(
-        arrayOf(
-          "Simple birthday",
-          "Birthday with number",
-          "Birthday without age",
-        ),
-        selectedItem,
-        { _, which ->
-          selectedItem = which
-        },
-      ).setPositiveButton("Run") { dialog, _ ->
-        dialog.dismiss()
-        saveAndOpenBirthdayScreen(prepareBirthday(selectedItem))
-      }.setNegativeButton("Cancel") { dialog, _ ->
-        dialog.dismiss()
-      }.show()
-  }
-
-  private fun prepareBirthday(selectedItem: Int): Birthday {
-    var birthday = Birthday(syncState = SyncState.Synced)
-    when (selectedItem) {
-      0 -> {
-        birthday =
-          Birthday(
-            name = "John Doe",
-            date = "1990-05-15",
-            number = "",
-            syncState = SyncState.Synced,
-          )
-      }
-      1 -> {
-        birthday =
-          Birthday(
-            name = "Jane Smith",
-            date = "1985-10-20",
-            number = "+1234567890",
-            syncState = SyncState.Synced,
-          )
-      }
-      2 -> {
-        birthday =
-          Birthday(
-            name = "Alice Johnson",
-            date = "2000-07-25",
-            number = "",
-            ignoreYear = true,
-            syncState = SyncState.Synced,
-          )
-      }
-    }
-    return birthday
-  }
-
-  private fun saveAndOpenBirthdayScreen(birthday: Birthday) {
-    Logger.d("TestsSettingsFragment", "Saving birthday and opening action screen...")
-    lifecycleScope.launch(Dispatchers.IO) {
-      birthdayRepository.save(birthday)
-      withContext(Dispatchers.Main) {
-        openBirthdayScreen(birthday)
-      }
-    }
-  }
-
-  private fun openBirthdayScreen(birthday: Birthday) {
-    BirthdayActionActivity.mockTest(requireContext(), birthday.uuId)
   }
 
   override fun getTitle(): String = "Tests"

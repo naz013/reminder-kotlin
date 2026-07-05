@@ -133,8 +133,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.elementary.tasks.settings.SettingsFragment"
-        android:label="@string/action_settings"
-        tools:layout="@layout/fragment_settings">
+        android:label="@string/action_settings">
         <action
             android:id="@+id/action_settingsFragment_to_generalSettingsFragment"
             app:destination="@id/generalSettingsFragment"
@@ -209,8 +208,7 @@
     <fragment
         android:id="@+id/generalSettingsFragment"
         android:name="com.elementary.tasks.settings.general.GeneralSettingsFragment"
-        android:label="@string/general"
-        tools:layout="@layout/fragment_settings_general">
+        android:label="@string/general">
         <action
             android:id="@+id/action_generalSettingsFragment_to_themePreviewFragment"
             app:destination="@id/themePreviewFragment"
@@ -222,8 +220,7 @@
     <fragment
         android:id="@+id/remindersSettingsFragment"
         android:name="com.elementary.tasks.settings.reminders.RemindersSettingsFragment"
-        android:label="@string/reminders_"
-        tools:layout="@layout/fragment_settings_reminders">
+        android:label="@string/reminders_">
         <argument
             android:name="screen_title"
             app:nullable="true"
@@ -239,8 +236,7 @@
     <fragment
         android:id="@+id/exportSettingsFragment"
         android:name="com.elementary.tasks.settings.export.CloudBackupSettingsFragment"
-        android:label="@string/cloud_backup"
-        tools:layout="@layout/fragment_settings_export">
+        android:label="@string/cloud_backup">
         <action
             android:id="@+id/action_exportSettingsFragment_to_fragmentCloudDrives"
             app:destination="@id/fragmentCloudDrives"
@@ -257,8 +253,7 @@
     <fragment
         android:id="@+id/calendarSettingsFragment"
         android:name="com.elementary.tasks.settings.calendar.CalendarSettingsFragment"
-        android:label="@string/calendar"
-        tools:layout="@layout/fragment_settings_calendar">
+        android:label="@string/calendar">
         <argument
             android:name="screen_title"
             app:nullable="true"
@@ -267,13 +262,11 @@
     <fragment
         android:id="@+id/birthdaySettingsFragment"
         android:name="com.elementary.tasks.settings.birthday.BirthdaySettingsFragment"
-        android:label="@string/birthdays"
-        tools:layout="@layout/fragment_settings_birthdays" />
+        android:label="@string/birthdays" />
     <fragment
         android:id="@+id/securitySettingsFragment"
         android:name="com.elementary.tasks.settings.security.SecuritySettingsFragment"
-        android:label="@string/security"
-        tools:layout="@layout/fragment_settings_security">
+        android:label="@string/security">
         <action
             android:id="@+id/action_securitySettingsFragment_to_addPinFragment"
             app:destination="@id/addPinFragment"
@@ -314,8 +307,7 @@
     <fragment
         android:id="@+id/locationSettingsFragment"
         android:name="com.elementary.tasks.settings.location.LocationSettingsFragment"
-        android:label="@string/location"
-        tools:layout="@layout/fragment_settings_location">
+        android:label="@string/location">
         <action
             android:id="@+id/action_locationSettingsFragment_to_mapStyleFragment"
             app:destination="@id/mapStyleFragment"
@@ -357,8 +349,7 @@
         <fragment
             android:id="@+id/otherSettingsFragment"
             android:name="com.elementary.tasks.settings.other.OtherSettingsFragment"
-            android:label="@string/other"
-            tools:layout="@layout/fragment_settings_other">
+            android:label="@string/other">
             <action
                 android:id="@+id/action_otherSettingsFragment_to_permissionsFragment"
                 app:destination="@id/permissionsFragment"
@@ -414,8 +405,7 @@
     <fragment
         android:id="@+id/noteSettingsFragment"
         android:name="com.elementary.tasks.settings.NoteSettingsFragment"
-        android:label="@string/notes"
-        tools:layout="@layout/fragment_settings_notes" >
+        android:label="@string/notes">
         <argument
             android:name="screen_title"
             app:nullable="true"
@@ -424,8 +414,7 @@
     <fragment
         android:id="@+id/testsSettingsFragment"
         android:name="com.elementary.tasks.settings.test.TestsSettingsFragment"
-        android:label="Tests"
-        tools:layout="@layout/fragment_settings_tests">
+        android:label="Tests">
         <action
             android:id="@+id/action_testsFragment_to_objectExportTestFragment"
             app:destination="@id/objectExportTestFragment"
@@ -454,8 +443,7 @@
     <fragment
         android:id="@+id/troubleshootingFragment"
         android:name="com.elementary.tasks.settings.troubleshooting.TroubleshootingFragment"
-        android:label="@string/troubleshooting"
-        tools:layout="@layout/fragment_settings_troubleshooting" />
+        android:label="@string/troubleshooting" />
     <fragment
         android:id="@+id/changesFragment"
         android:name="com.elementary.tasks.settings.other.whatsnew.WhatsNewFragment"

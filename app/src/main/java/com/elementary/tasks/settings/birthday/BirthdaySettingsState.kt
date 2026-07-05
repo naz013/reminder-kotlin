@@ -1,0 +1,47 @@
+package com.elementary.tasks.settings.birthday
+
+import org.threeten.bp.LocalTime
+
+data class BirthdaySettingsState(
+  val isReminderChecked: Boolean = false,
+  val isDependentEnabled: Boolean = false,
+  val daysToBirthday: Int = 0,
+  val priorityName: String = "",
+  val reminderTime: String = "",
+  val isWidgetChecked: Boolean = false,
+  val homeDaysText: String = "",
+  val isPermanentChecked: Boolean = false,
+  val isGlobalChecked: Boolean = false,
+  val isLedChecked: Boolean = false,
+  val isLedRowEnabled: Boolean = false,
+  val ledColorName: String = "",
+  val isLedColorRowEnabled: Boolean = false,
+  val isUseContactsChecked: Boolean = false,
+  val isAutoScanChecked: Boolean = false,
+  val isAutoScanRowEnabled: Boolean = false,
+  val dialog: BirthdayDialog? = null,
+)
+
+sealed class BirthdayDialog {
+  data class Priority(
+    val title: String,
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : BirthdayDialog()
+
+  data class LedColor(
+    val title: String,
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : BirthdayDialog()
+
+  data class DaysToBirthday(val previewValue: Int) : BirthdayDialog()
+
+  data class HomeDays(val previewValue: Int) : BirthdayDialog()
+}
+
+sealed class BirthdaySettingsEvent {
+  data class ShowTimePicker(val time: LocalTime) : BirthdaySettingsEvent()
+
+  data class UpdatePermanentNotificationVisibility(val visible: Boolean) : BirthdaySettingsEvent()
+}

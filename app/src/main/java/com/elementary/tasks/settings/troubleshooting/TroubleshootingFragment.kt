@@ -9,53 +9,41 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.databinding.FragmentSettingsTroubleshootingBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
+import com.elementary.tasks.notes.ObserveNonNull
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.ui.common.view.visibleGone
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
 
-class TroubleshootingFragment : BaseSettingsFragment<FragmentSettingsTroubleshootingBinding>() {
+class TroubleshootingFragment : BaseComposeToolbarFragment() {
+
   private val viewModel by viewModel<TroubleshootingViewModel>()
 
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ) = FragmentSettingsTroubleshootingBinding.inflate(inflater, container, false)
+  @Composable
+  override fun Content() {
+    LaunchedEffect(viewModel) { lifecycle.addObserver(viewModel) }
+    val hideBatteryOptimizationCard by viewModel.hideBatteryOptimizationCard.observeAsState(false)
+    val showEmptyView by viewModel.showEmptyView.observeAsState(false)
+    val showSendLogs by viewModel.showSendLogs.observeAsState(false)
+    viewModel.sendLogFile.ObserveNonNull { sendLogs(it) }
 
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.disableOptimizationButton.setOnClickListener { openBatteryOptimizationSettings() }
-    binding.sendLogsPrefs.setOnClickListener { viewModel.sendLogs() }
-
-    lifecycle.addObserver(viewModel)
-    viewModel.hideBatteryOptimizationCard.nonNullObserve(viewLifecycleOwner) {
-      binding.batterSaverOption.visibleGone(!it)
-    }
-    viewModel.showEmptyView.nonNullObserve(viewLifecycleOwner) {
-      binding.emptyStateView.visibleGone(it)
-    }
-    viewModel.showSendLogs.nonNullObserve(viewLifecycleOwner) {
-      binding.sendLogsPrefs.visibleGone(it)
-    }
-    viewModel.sendLogFile.nonNullObserve(viewLifecycleOwner) { sendLogs(it) }
+    TroubleshootingScreen(
+      showSendLogs = showSendLogs,
+      showBatteryOptimizationCard = !hideBatteryOptimizationCard,
+      showEmptyView = showEmptyView,
+      onSendLogsClick = viewModel::sendLogs,
+      onDisableOptimizationClick = ::openBatteryOptimizationSettings,
+    )
   }
 
-  private fun sendLogs(file: File) {
+  private fun sendLogs(file: java.io.File) {
     TelephonyUtil.sendMail(
       context = requireContext(),
       email = "feedback.cray@gmail.com",
@@ -71,13 +59,10 @@ class TroubleshootingFragment : BaseSettingsFragment<FragmentSettingsTroubleshoo
     when (Build.MANUFACTURER) {
       "samsung" -> {
         val intent = Intent()
-        intent.component =
-          ComponentName(
-            // pkg =
-            "com.samsung.android.lool",
-            // cls =
-            "com.samsung.android.sm.ui.battery.BatteryActivity",
-          )
+        intent.component = ComponentName(
+          "com.samsung.android.lool",
+          "com.samsung.android.sm.ui.battery.BatteryActivity",
+        )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {
@@ -87,25 +72,17 @@ class TroubleshootingFragment : BaseSettingsFragment<FragmentSettingsTroubleshoo
 
       "xiaomi" -> {
         var intent = Intent()
-        intent.component =
-          ComponentName(
-            // pkg =
-            "com.miui.securitycenter",
-            // cls =
-            "com.miui.permcenter.autostart.AutoStartManagementActivity",
-          )
+        intent.component = ComponentName(
+          "com.miui.securitycenter",
+          "com.miui.permcenter.autostart.AutoStartManagementActivity",
+        )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {
           try {
             intent = Intent()
             intent.setComponent(
-              ComponentName(
-                // pkg =
-                "com.miui.powerkeeper",
-                // cls =
-                "com.miui.powerkeeper.ui.HiddenAppsConfigActivity",
-              ),
+              ComponentName("com.miui.powerkeeper", "com.miui.powerkeeper.ui.HiddenAppsConfigActivity"),
             )
             intent.putExtra("package_name", viewModel.packageName())
             intent.putExtra("package_label", getText(R.string.app_name))
@@ -118,13 +95,10 @@ class TroubleshootingFragment : BaseSettingsFragment<FragmentSettingsTroubleshoo
 
       "huawei" -> {
         val intent = Intent()
-        intent.component =
-          ComponentName(
-            // pkg =
-            "com.huawei.systemmanager",
-            // cls =
-            "com.huawei.systemmanager.optimize.process.ProtectActivity",
-          )
+        intent.component = ComponentName(
+          "com.huawei.systemmanager",
+          "com.huawei.systemmanager.optimize.process.ProtectActivity",
+        )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {
@@ -132,9 +106,7 @@ class TroubleshootingFragment : BaseSettingsFragment<FragmentSettingsTroubleshoo
         }
       }
 
-      else -> {
-        openAppSettings()
-      }
+      else -> openAppSettings()
     }
   }
 
@@ -147,7 +119,6 @@ class TroubleshootingFragment : BaseSettingsFragment<FragmentSettingsTroubleshoo
       addFlags(FLAG_ACTIVITY_NO_HISTORY)
       addFlags(FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
     }
-
     startActivity(intent)
   }
 
