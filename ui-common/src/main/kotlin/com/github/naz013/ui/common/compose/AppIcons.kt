@@ -18,6 +18,7 @@ object AppIcons {
     val Settings: Painter @Composable get() = painterResource(R.drawable.ic_fluent_settings)
     val Add: Painter @Composable get() = painterResource(R.drawable.ic_fluent_add)
     val Calendar: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar)
+    val Search: Painter @Composable get() = painterResource(R.drawable.ic_fluent_search)
   }
 
   object Builder {
