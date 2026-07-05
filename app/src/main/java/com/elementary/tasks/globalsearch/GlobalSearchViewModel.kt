@@ -6,7 +6,6 @@ import com.elementary.tasks.birthdays.preview.PreviewBirthdayFragment
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment
 import com.elementary.tasks.groups.create.EditGroupFragment
-import com.elementary.tasks.notes.preview.PreviewNoteFragment
 import com.elementary.tasks.places.create.EditPlaceFragment
 import com.elementary.tasks.reminder.preview.PreviewReminderFragment
 import com.github.naz013.common.datetime.DateTimeManager
@@ -62,6 +61,9 @@ class GlobalSearchViewModel(
     }
 
   private fun RecentObjectSearchResult.navigationAction(): NavigationAction? {
+    if (objectType == ObjectType.NOTE) {
+      return FragmentNavigation(id = R.id.actionNotes, objectId = objectId)
+    }
     val clazz = objectType.toTargetClass()
     return if (clazz.isFragment()) {
       clazz.destinationId()?.let {
@@ -79,6 +81,9 @@ class GlobalSearchViewModel(
   }
 
   private fun ObjectSearchResult.navigationAction(): NavigationAction? {
+    if (objectType == ObjectType.NOTE) {
+      return FragmentNavigation(id = R.id.actionNotes, objectId = objectId)
+    }
     val clazz = objectType.toTargetClass()
     return if (clazz.isFragment()) {
       clazz.destinationId()?.let {
@@ -100,8 +105,7 @@ class GlobalSearchViewModel(
       this == EditGroupFragment::class.java ||
       this == EditPlaceFragment::class.java ||
       this == PreviewGoogleTaskFragment::class.java ||
-      this == PreviewReminderFragment::class.java ||
-      this == PreviewNoteFragment::class.java
+      this == PreviewReminderFragment::class.java
 
   private fun Class<*>.destinationId(): Int? =
     when {
@@ -123,10 +127,6 @@ class GlobalSearchViewModel(
 
       this == PreviewReminderFragment::class.java -> {
         R.id.previewReminderFragment
-      }
-
-      this == PreviewNoteFragment::class.java -> {
-        R.id.previewNoteFragment
       }
 
       else -> null
@@ -192,7 +192,7 @@ class GlobalSearchViewModel(
       ObjectType.GROUP -> EditGroupFragment::class.java
       ObjectType.PLACE -> EditPlaceFragment::class.java
       ObjectType.GOOGLE_TASK -> PreviewGoogleTaskFragment::class.java
-      ObjectType.NOTE -> PreviewNoteFragment::class.java
+      ObjectType.NOTE -> error("Notes route directly to the Notes island; handled before toTargetClass()")
       ObjectType.BIRTHDAY -> PreviewBirthdayFragment::class.java
       ObjectType.REMINDER -> PreviewReminderFragment::class.java
     }

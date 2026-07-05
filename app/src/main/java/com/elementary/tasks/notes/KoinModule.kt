@@ -15,7 +15,6 @@ import com.elementary.tasks.notes.usecase.SaveNoteUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val noteModule = module {
@@ -33,17 +32,26 @@ val noteModule = module {
 
   singleOf(::NoteImageRepository)
 
-  viewModelOf(::CreateNoteViewModel)
+  viewModel { (id: String) ->
+    CreateNoteViewModel(
+      id,
+      get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+      get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+      get(),
+    )
+  }
   viewModel { (position: Int) -> ImagePreviewViewModel(get(), position) }
   viewModel { (isArchived: Boolean) ->
     NotesViewModel(
       get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+      get(), get(),
       isArchived
     )
   }
   viewModel { (id: String) ->
     PreviewNoteViewModel(
       id,
+      get(),
       get(),
       get(),
       get(),

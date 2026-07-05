@@ -11,6 +11,7 @@ plugins {
   alias(libs.plugins.google.services)
   alias(libs.plugins.ktlint)
   alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.kotlin.serialization)
 }
 
 extensions.configure<ApplicationExtension> {
@@ -319,6 +320,11 @@ dependencies {
   debugImplementation(libs.compose.ui.test.manifest)
   implementation(libs.compose.ui.tooling.preview)
   debugImplementation(libs.compose.ui.tooling)
+
+  implementation(libs.androidx.navigation3.runtime)
+  implementation(libs.androidx.navigation3.ui)
+  implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+  implementation(libs.kotlinx.serialization.core)
 
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)

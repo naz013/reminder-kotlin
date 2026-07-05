@@ -30,7 +30,7 @@ class ScreenDestinationIdResolver {
       is EditGoogleTaskScreen -> R.id.editGoogleTaskFragment
       is ViewReminderScreen -> R.id.previewReminderFragment
       is EditReminderScreen -> R.id.buildReminderFragment
-      is ViewNoteScreen -> R.id.previewNoteFragment
-      is EditNoteScreen -> R.id.createNoteFragment
+      is ViewNoteScreen -> R.id.actionNotes
+      is EditNoteScreen -> R.id.actionNotes
     }
 }

@@ -49,13 +49,6 @@
         android:name="com.elementary.tasks.notes.list.NotesFragment"
         android:label="@string/notes">
         <action
-            android:id="@+id/action_actionNotes_to_archivedNotesFragment"
-            app:destination="@id/archivedNotesFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
             android:id="@+id/action_actionNotes_to_noteSettingsFragment"
             app:destination="@id/noteSettingsFragment"
             app:enterAnim="@anim/fragment_slide_top"
@@ -469,10 +462,6 @@
         android:label="@string/whats_new"
         tools:layout="@layout/fragment_settings_web_view" />
     <fragment
-        android:id="@+id/archivedNotesFragment"
-        android:name="com.elementary.tasks.notes.list.archived.ArchivedNotesFragment"
-        android:label="@string/notes_archive" />
-    <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"
         android:label="@string/events"
@@ -563,18 +552,6 @@
         android:name="com.elementary.tasks.reminder.build.BuildReminderFragment"
         tools:layout="@layout/fragment_reminder_builder"
         android:label="@string/new_reminder" />
-    <fragment
-        android:id="@+id/previewNoteFragment"
-        android:name="com.elementary.tasks.notes.preview.PreviewNoteFragment"
-        android:label="@string/details" />
-    <fragment
-        android:id="@+id/createNoteFragment"
-        android:name="com.elementary.tasks.notes.create.CreateNoteFragment"
-        android:label="@string/add_note" />
-    <fragment
-        android:id="@+id/noteImagePreviewFragment"
-        android:name="com.elementary.tasks.notes.preview.NoteImagePreviewFragment"
-        android:label="NoteImagePreviewFragment" />
     <fragment
         android:id="@+id/reminderHelpFragment"
         android:name="com.elementary.tasks.reminder.build.help.ReminderHelpFragment"

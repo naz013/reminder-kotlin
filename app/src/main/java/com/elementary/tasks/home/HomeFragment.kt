@@ -16,6 +16,7 @@ import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.onBackStackResume
 import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.topfragment.RootFragment
+import com.elementary.tasks.notes.list.NotesFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.compose.composeView
@@ -155,7 +156,11 @@ class HomeFragment :
           safeNavigation(HomeFragmentDirections.actionActionHomeToChangesFragment())
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCreateNote -> {
-          safeNavigation(R.id.createNoteFragment, null, NavigationAnimations.inDepthNavOptions())
+          safeNavigation(
+            R.id.actionNotes,
+            Bundle().apply { putBoolean(NotesFragment.ARG_OPEN_EDIT, true) },
+            NavigationAnimations.inDepthNavOptions(),
+          )
         }
       }
     }

@@ -15,12 +15,14 @@ import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
+import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.settings.export.work.BackupSettingsWorker
 import com.elementary.tasks.splash.ShortcutDestination
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
+import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.ui.common.activity.BindingActivity
 import org.koin.android.ext.android.inject
 
@@ -66,9 +68,13 @@ class BottomNavActivity :
       deepLinkDestination
         ?.let { ScreenDestinationIdResolver().resolve(deepLinkDestination) }
         ?.also {
+          val arguments =
+            Bundle(deepLinkDestination.extras ?: Bundle()).apply {
+              if (deepLinkDestination is EditNoteScreen) putBoolean(NotesFragment.ARG_OPEN_EDIT, true)
+            }
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
-            .setArguments(deepLinkDestination.extras)
+            .setArguments(arguments)
             .setDestination(it)
             .createTaskStackBuilder()
             .startActivities()
@@ -86,14 +92,18 @@ class BottomNavActivity :
           }
 
           ShortcutDestination.Shortcut.Note -> {
-            R.id.createNoteFragment
+            R.id.actionNotes
           }
           null -> null
         }
       destinationId?.also {
+        val arguments =
+          Bundle(intent.extras ?: Bundle()).apply {
+            if (shortcut == ShortcutDestination.Shortcut.Note) putBoolean(NotesFragment.ARG_OPEN_EDIT, true)
+          }
         NavDeepLinkBuilder(this)
           .setGraph(R.navigation.home_nav)
-          .setArguments(intent.extras)
+          .setArguments(arguments)
           .setDestination(it)
           .createTaskStackBuilder()
           .startActivities()
