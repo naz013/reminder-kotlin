@@ -5,11 +5,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
+import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
@@ -131,6 +133,7 @@ class PreviewNoteViewModel(
             backgroundColor = uiNotePreview.backgroundColor,
             opacity = uiNotePreview.opacity,
             isArchived = uiNotePreview.isArchived,
+            showAdsBanner = !BuildParams.isPro && AdsProvider.hasAds(),
           )
         }
       }
