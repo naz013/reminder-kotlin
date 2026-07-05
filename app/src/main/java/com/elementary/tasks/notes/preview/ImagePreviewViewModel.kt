@@ -3,25 +3,29 @@ package com.elementary.tasks.notes.preview
 import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.ui.common.isColorDark
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ImagePreviewViewModel(
   private val imagesSingleton: ImagesSingleton,
-  initialPosition: Int,
+  private val initialPosition: Int,
+  private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
-  private val _state =
-    MutableStateFlow(
-      ImagePreviewState(
-        images = imagesSingleton.getCurrent(),
-        position = initialPosition,
-        backgroundColor = imagesSingleton.getColor(),
-      ),
-    )
-  val state: StateFlow<ImagePreviewState> = _state
+  private val _state = MutableStateFlow(ImagePreviewState())
+  val state = _state.stateIn(
+    viewModelScope,
+    SharingStarted.WhileSubscribed(5000L),
+    ImagePreviewState(),
+  ).onStart { loadInternal() }
 
   private var initStatusBarColor: Int = -1
   private var statusBarColorSaved: Boolean = false
@@ -62,7 +66,19 @@ class ImagePreviewViewModel(
 
   override fun onCleared() {
     imagesSingleton.clear()
-    super.onCleared()
+  }
+
+  private fun loadInternal() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val state = ImagePreviewState(
+        images = imagesSingleton.getCurrent(),
+        position = initialPosition,
+        backgroundColor = imagesSingleton.getColor(),
+      )
+      withContext(dispatcherProvider.main()) {
+        _state.update { state }
+      }
+    }
   }
 
   companion object {

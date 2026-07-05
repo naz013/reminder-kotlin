@@ -397,7 +397,7 @@
         </fragment>
         <fragment
             android:id="@+id/changesFragment"
-            android:name="com.elementary.tasks.settings.other.WhatsNewFragment"
+            android:name="com.elementary.tasks.settings.other.whatsnew.WhatsNewFragment"
             android:label="@string/whats_new"
             tools:layout="@layout/fragment_settings_web_view" />
         <fragment
@@ -458,7 +458,7 @@
         tools:layout="@layout/fragment_settings_troubleshooting" />
     <fragment
         android:id="@+id/changesFragment"
-        android:name="com.elementary.tasks.settings.other.WhatsNewFragment"
+        android:name="com.elementary.tasks.settings.other.whatsnew.WhatsNewFragment"
         android:label="@string/whats_new"
         tools:layout="@layout/fragment_settings_web_view" />
     <fragment

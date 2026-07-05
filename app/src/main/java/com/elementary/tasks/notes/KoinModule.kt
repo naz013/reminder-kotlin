@@ -40,7 +40,7 @@ val noteModule = module {
       get(),
     )
   }
-  viewModel { (position: Int) -> ImagePreviewViewModel(get(), position) }
+  viewModel { (position: Int) -> ImagePreviewViewModel(get(), position, get()) }
   viewModel { (isArchived: Boolean) ->
     NotesViewModel(
       get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
