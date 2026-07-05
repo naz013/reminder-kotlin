@@ -94,14 +94,16 @@ fun NotesScreen(
         .fillMaxSize()
         .padding(padding)
     ) {
-      SearchBar(
-        query = state.searchQuery,
-        onQueryChange = onSearchQueryChange,
-        placeholder = stringResource(R.string.search),
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp, vertical = 8.dp)
-      )
+      if (state.listState !is ListState.Empty || state.searchQuery.isNotEmpty()) {
+        SearchBar(
+          query = state.searchQuery,
+          onQueryChange = onSearchQueryChange,
+          placeholder = stringResource(R.string.search),
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+      }
 
       when (val listState = state.listState) {
         is ListState.Loading -> {
