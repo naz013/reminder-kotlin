@@ -36,7 +36,7 @@ fun SettingsHubScreen(
   onSecurityClick: () -> Unit,
   onNotesClick: () -> Unit,
   onOtherClick: () -> Unit,
-  onTestsClick: () -> Unit,
+  onDeveloperClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
@@ -156,9 +156,9 @@ fun SettingsHubScreen(
     )
     if (BuildConfig.DEBUG) {
       SettingsItem(
-        title = "Tests",
+        title = "Developer",
         dividerBottom = true,
-        onClick = onTestsClick,
+        onClick = onDeveloperClick,
       )
     }
   }

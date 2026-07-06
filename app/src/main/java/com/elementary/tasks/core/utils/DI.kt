@@ -32,11 +32,11 @@ import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.reminder.build.BuilderConfigureViewModel
+import com.elementary.tasks.settings.proversion.ProVersionViewModel
 import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
 import com.elementary.tasks.settings.other.TermsViewModel
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
 import com.elementary.tasks.settings.test.DeveloperViewModel
-import com.elementary.tasks.settings.test.TestsSettingsViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.analytics.AnalyticsStateProvider
@@ -61,6 +61,7 @@ val workerModule = module {
 val viewModelModule = module {
   viewModelOf(::SelectApplicationViewModel)
   viewModelOf(::BuilderConfigureViewModel)
+  viewModelOf(::ProVersionViewModel)
 
   viewModelOf(::SplashViewModel)
 
@@ -70,7 +71,6 @@ val viewModelModule = module {
   viewModelOf(::TermsViewModel)
   viewModelOf(::WhatsNewViewModel)
   viewModelOf(::DeveloperViewModel)
-  viewModelOf(::TestsSettingsViewModel)
 }
 
 val storageModule = module {

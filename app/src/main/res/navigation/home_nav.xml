@@ -190,8 +190,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_settingsFragment_to_testsSettingsFragment"
-            app:destination="@id/testsSettingsFragment"
+            android:id="@+id/action_settingsFragment_to_developerFragment"
+            app:destination="@id/developerFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -398,29 +398,9 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/testsSettingsFragment"
-        android:name="com.elementary.tasks.settings.test.TestsSettingsFragment"
-        android:label="Tests">
-        <action
-            android:id="@+id/action_testsFragment_to_objectExportTestFragment"
-            app:destination="@id/objectExportTestFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-        <action
-            android:id="@+id/action_testsFragment_to_developerFragment"
-            app:destination="@id/developerFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    </fragment>
-    <fragment
         android:id="@+id/proVersionFragment"
-        android:name="com.elementary.tasks.settings.ProVersionFragment"
-        android:label="@string/pro_version"
-        tools:layout="@layout/fragment_settings_pro_page" />
+        android:name="com.elementary.tasks.settings.proversion.ProVersionFragment"
+        android:label="@string/pro_version" />
     <fragment
         android:id="@+id/troubleshootingFragment"
         android:name="com.elementary.tasks.settings.troubleshooting.TroubleshootingFragment"
@@ -475,7 +455,22 @@
     <fragment
         android:id="@+id/developerFragment"
         android:name="com.elementary.tasks.settings.test.DeveloperFragment"
-        android:label="Developer" />
+        android:label="Developer">
+        <action
+            android:id="@+id/action_developerFragment_to_objectExportTestFragment"
+            app:destination="@id/objectExportTestFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_developerFragment_to_proVersionFragment"
+            app:destination="@id/proVersionFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/editGroupFragment"
         android:name="com.elementary.tasks.groups.create.EditGroupFragment"

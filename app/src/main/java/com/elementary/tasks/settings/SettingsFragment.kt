@@ -55,8 +55,8 @@ class SettingsFragment : BaseComposeToolbarFragment() {
       onOtherClick = {
         safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToOtherSettingsFragment())
       },
-      onTestsClick = {
-        safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsSettingsFragment())
+      onDeveloperClick = {
+        safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToDeveloperFragment())
       },
     )
   }
