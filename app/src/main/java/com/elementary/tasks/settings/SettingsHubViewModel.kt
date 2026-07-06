@@ -9,6 +9,9 @@ import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.elementary.tasks.core.utils.params.RemotePrefs
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +22,7 @@ class SettingsHubViewModel(
   private val prefs: Prefs,
   private val doNotDisturbManager: DoNotDisturbManager,
   private val textProvider: TextProvider,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel(),
   DefaultLifecycleObserver,
   RemotePrefs.SaleObserver,
@@ -28,6 +32,10 @@ class SettingsHubViewModel(
   val state: StateFlow<SettingsHubState> field = MutableStateFlow(SettingsHubState())
 
   private val prefsObserver: (String) -> Unit = { checkDoNotDisturb() }
+
+  init {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.SETTINGS))
+  }
 
   override fun onResume(owner: LifecycleOwner) {
     super.onResume(owner)

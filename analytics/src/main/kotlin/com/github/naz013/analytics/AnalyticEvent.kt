@@ -7,21 +7,6 @@ sealed class AnalyticEvent(val event: Event) {
   fun getName() = event.value
 }
 
-data class VoiceFeatureUsedEvent(
-  val language: String,
-  val status: String,
-  val action: String
-) : AnalyticEvent(Event.VOICE_CONTROL_USED) {
-
-  override fun getParams(): Bundle {
-    return Bundle().apply {
-      putString(Parameter.VOICE_ACTION, action)
-      putString(Parameter.VOICE_LANGUAGE, language)
-      putString(Parameter.VOICE_STATUS, status)
-    }
-  }
-}
-
 data class ReminderFeatureUsedEvent(
   val type: AnalyticsReminderType,
   val timeSeconds: Long
@@ -96,23 +81,31 @@ enum class Feature(val value: String) {
 
   GOOGLE_TASK("login_google_task"),
   GOOGLE_DRIVE("login_google_drive"),
-  DROPBOX("login_dropbox"),
-
-  RECUR_EVENT_CREATED("recur_created")
+  DROPBOX("login_dropbox")
 }
 
 enum class Screen(val value: String) {
   CLOUD_DRIVES("cloud_drives"),
   REMINDERS_LIST("reminders_list"),
+  TODO_REMINDERS_LIST("todo_reminders_list"),
   NOTES_LIST("notes_list"),
   NOTE_PREVIEW("note_preview"),
   GOOGLE_TASKS_LIST("google_tasks_list"),
   CALENDAR("calendar"),
   BIRTHDAYS("birthdays_list"),
   GROUPS("groups_list"),
-  VOICE_CONTROL("voice_control"),
   TROUBLESHOOTING("troubleshooting"),
-  WHATS_NEW("whats_new")
+  WHATS_NEW("whats_new"),
+
+  SETTINGS("settings"),
+  GENERAL_SETTINGS("general_settings"),
+  BIRTHDAY_SETTINGS("birthday_settings"),
+  CALENDAR_SETTINGS("calendar_settings"),
+  REMINDERS_SETTINGS("reminders_settings"),
+  SECURITY_SETTINGS("security_settings"),
+  NOTE_SETTINGS("note_settings"),
+  LOCATION_SETTINGS("location_settings"),
+  OTHER_SETTINGS("other_settings")
 }
 
 enum class Widget(val value: String) {
@@ -129,7 +122,6 @@ enum class Event(val value: String) {
   FEATURE_USED("feature_used"),
   REMINDER_USED("reminder_used"),
   SCREEN_OPENED("screen_opened"),
-  VOICE_CONTROL_USED("voice_control_used"),
   PRESET_USED("preset_used"),
   WIDGET_USED("widget_used")
 }
@@ -164,8 +156,4 @@ object Parameter {
 
   const val REMINDER_TYPE = "reminder_type"
   const val DURATION = "duration"
-
-  const val VOICE_LANGUAGE = "language"
-  const val VOICE_ACTION = "action"
-  const val VOICE_STATUS = "status"
 }

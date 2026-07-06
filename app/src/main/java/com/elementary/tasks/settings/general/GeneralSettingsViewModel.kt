@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.Module
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -16,10 +19,15 @@ import kotlinx.coroutines.flow.update
 class GeneralSettingsViewModel(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
 
   val state: StateFlow<GeneralSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<GeneralSettingsEvent>> field = mutableLiveEventOf()
+
+  init {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.GENERAL_SETTINGS))
+  }
 
   fun onLanguageClick() {
     val options = languageOptions()
@@ -81,6 +89,7 @@ class GeneralSettingsViewModel(
 
   fun onAnalyticsToggle() {
     prefs.analyticsEnabled = !prefs.analyticsEnabled
+    analyticsEventSender.setCollectionEnabled(prefs.analyticsEnabled)
     refreshState()
   }
 

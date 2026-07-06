@@ -2,15 +2,23 @@ package com.elementary.tasks.settings
 
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 class NoteSettingsViewModel(
   private val prefs: Prefs,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
 
   val state: StateFlow<NoteSettingsState> field = MutableStateFlow(buildState())
+
+  init {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTE_SETTINGS))
+  }
 
   fun onColorRememberToggle() {
     prefs.isNoteColorRememberingEnabled = !prefs.isNoteColorRememberingEnabled

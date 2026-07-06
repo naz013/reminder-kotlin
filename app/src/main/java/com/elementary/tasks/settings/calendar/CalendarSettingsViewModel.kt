@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -23,6 +26,7 @@ class CalendarSettingsViewModel(
   private val calendarUtils: GoogleCalendarUtils,
   private val prefs: Prefs,
   private val textProvider: TextProvider,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
 
   val state: StateFlow<CalendarSettingsState> field = MutableStateFlow(buildState())
@@ -36,6 +40,7 @@ class CalendarSettingsViewModel(
   private var calendars: List<GoogleCalendar> = emptyList()
 
   init {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.CALENDAR_SETTINGS))
     loadSelectedCalendar()
   }
 
