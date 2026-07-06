@@ -6,7 +6,6 @@ import com.elementary.tasks.birthdays.preview.PreviewBirthdayFragment
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment
 import com.elementary.tasks.groups.create.EditGroupFragment
-import com.elementary.tasks.places.create.EditPlaceFragment
 import com.elementary.tasks.reminder.preview.PreviewReminderFragment
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.RecentQuery
@@ -64,6 +63,9 @@ class GlobalSearchViewModel(
     if (objectType == ObjectType.NOTE) {
       return FragmentNavigation(id = R.id.actionNotes, objectId = objectId)
     }
+    if (objectType == ObjectType.PLACE) {
+      return FragmentNavigation(id = R.id.placesFragment, objectId = objectId)
+    }
     val clazz = objectType.toTargetClass()
     return if (clazz.isFragment()) {
       clazz.destinationId()?.let {
@@ -84,6 +86,9 @@ class GlobalSearchViewModel(
     if (objectType == ObjectType.NOTE) {
       return FragmentNavigation(id = R.id.actionNotes, objectId = objectId)
     }
+    if (objectType == ObjectType.PLACE) {
+      return FragmentNavigation(id = R.id.placesFragment, objectId = objectId)
+    }
     val clazz = objectType.toTargetClass()
     return if (clazz.isFragment()) {
       clazz.destinationId()?.let {
@@ -103,7 +108,6 @@ class GlobalSearchViewModel(
   private fun Class<*>.isFragment(): Boolean =
     this == PreviewBirthdayFragment::class.java ||
       this == EditGroupFragment::class.java ||
-      this == EditPlaceFragment::class.java ||
       this == PreviewGoogleTaskFragment::class.java ||
       this == PreviewReminderFragment::class.java
 
@@ -115,10 +119,6 @@ class GlobalSearchViewModel(
 
       this == EditGroupFragment::class.java -> {
         R.id.editGroupFragment
-      }
-
-      this == EditPlaceFragment::class.java -> {
-        R.id.editPlaceFragment
       }
 
       this == PreviewGoogleTaskFragment::class.java -> {
@@ -190,9 +190,9 @@ class GlobalSearchViewModel(
   private fun ObjectType.toTargetClass(): Class<*> =
     when (this) {
       ObjectType.GROUP -> EditGroupFragment::class.java
-      ObjectType.PLACE -> EditPlaceFragment::class.java
       ObjectType.GOOGLE_TASK -> PreviewGoogleTaskFragment::class.java
       ObjectType.NOTE -> error("Notes route directly to the Notes island; handled before toTargetClass()")
+      ObjectType.PLACE -> error("Places route directly to the Places island; handled before toTargetClass()")
       ObjectType.BIRTHDAY -> PreviewBirthdayFragment::class.java
       ObjectType.REMINDER -> PreviewReminderFragment::class.java
     }

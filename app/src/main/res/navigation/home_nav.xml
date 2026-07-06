@@ -317,8 +317,7 @@
     <fragment
         android:id="@+id/placesFragment"
         android:name="com.elementary.tasks.places.list.PlacesFragment"
-        android:label="@string/places"
-        tools:layout="@layout/fragment_places" />
+        android:label="@string/places" />
     <navigation
         android:id="@+id/navigation2"
         app:startDestination="@id/otherSettingsFragment">
@@ -470,11 +469,6 @@
         android:name="com.elementary.tasks.groups.create.EditGroupFragment"
         android:label="@string/create_group"
         tools:layout="@layout/fragment_edit_group" />
-    <fragment
-        android:id="@+id/editPlaceFragment"
-        android:name="com.elementary.tasks.places.create.EditPlaceFragment"
-        android:label="@string/new_place"
-        tools:layout="@layout/fragment_edit_place" />
     <fragment
         android:id="@+id/previewGoogleTaskFragment"
         android:name="com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment"

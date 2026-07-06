@@ -4,184 +4,82 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.elementary.tasks.R
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.models.ShareFile
-import com.elementary.tasks.core.data.ui.place.UiPlaceList
-import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ui.SearchMenuHandler
-import com.elementary.tasks.databinding.FragmentPlacesBinding
-import com.elementary.tasks.navigation.NavigationAnimations
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.elementary.tasks.navigation.navigate
+import androidx.compose.runtime.SideEffect
+import androidx.fragment.app.Fragment
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import com.elementary.tasks.navigation.BackPressHandler
+import com.elementary.tasks.navigation.onBackStackResume
+import com.elementary.tasks.places.PlacesNavGraph
+import com.elementary.tasks.places.PlacesNavKey
+import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.feature.common.livedata.nonNullObserve
-import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.view.ViewUtils
-import com.github.naz013.ui.common.view.applyBottomInsets
-import com.github.naz013.ui.common.view.applyBottomInsetsMargin
-import com.github.naz013.ui.common.view.visibleGone
+import com.github.naz013.ui.common.compose.composeView
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
-  private val viewModel by viewModel<PlacesViewModel>()
-  private val systemServiceProvider by inject<SystemServiceProvider>()
+/**
+ * Hosts the Places feature as a self-contained Navigation 3 "island": this Fragment owns the
+ * internal backstack and the Android-framework glue (dialogs, the embedded classic map Fragment
+ * used for picking a location) that only a Fragment can provide, and is otherwise responsible only
+ * for screen-to-screen navigation. The actual screens and their wiring live in [PlacesNavGraph].
+ */
+class PlacesFragment :
+  Fragment(),
+  BackPressHandler {
+  internal val dialogues by inject<Dialogues>()
 
-  private val adapter =
-    PlacesRecyclerAdapter(
-      object : ActionsListener<UiPlaceList> {
-        override fun onAction(
-          view: View,
-          position: Int,
-          t: UiPlaceList?,
-          actions: ListActions,
-        ) {
-          if (t == null) return
-          when (actions) {
-            ListActions.OPEN -> openPlace(t)
-            ListActions.MORE -> showMore(view, t)
-            else -> {
-            }
-          }
-        }
-      },
-    )
+  /** Bridge from the Fragment's plain methods into the Compose-owned Nav3 backstack — the
+   *  backstack itself can only be created via [rememberNavBackStack] inside composition. */
+  private var currentBackStack: MutableList<NavKey>? = null
 
-  private val searchMenuHandler =
-    SearchMenuHandler(
-      systemServiceProvider.provideSearchManager(),
-      R.string.search_place,
-    ) { viewModel.onSearchUpdate(it) }
+  /** The embedded map Fragment on the currently displayed Edit entry, if any — used so the
+   *  visible top-bar back button can collapse an open map layer (style/radius/recent places)
+   *  before leaving the screen, mirroring the legacy `EditPlaceFragment.canGoBack()` behavior. */
+  internal var activeGoogleMap: SimpleMapFragment? = null
 
-  override fun inflate(
+  override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ) = FragmentPlacesBinding.inflate(inflater, container, false)
-
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.recyclerView.applyBottomInsets()
-    binding.fab.applyBottomInsetsMargin()
-
-    addMenu(R.menu.fragment_reminders_archive, { false }) {
-      it.findItem(R.id.action_delete_all)?.isVisible = false
-      ViewUtils.tintMenuIcon(requireContext(), it, 0, R.drawable.ic_fluent_search, isDark)
-      searchMenuHandler.initSearchMenu(requireActivity(), it, R.id.action_search)
+  ): View =
+    composeView {
+      val backStack = rememberNavBackStack(*initialBackStackKeys().toTypedArray())
+      SideEffect { currentBackStack = backStack }
+      PlacesNavGraph(backStack)
     }
-    binding.fab.setOnClickListener { addPlace() }
-    initList()
-    initViewModel()
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    currentBackStack = null
   }
 
-  private fun addPlace() {
-    navigate {
-      navigate(R.id.editPlaceFragment, null, NavigationAnimations.inDepthNavOptions())
-    }
+  /** Registers this fragment as the Activity's "current fragment" for hardware/gesture back-press
+   *  routing (see [com.elementary.tasks.home.BottomNavActivity.handleBackPress]) — without this,
+   *  that tracking stays stuck on whichever screen was last resumed before this island, which can
+   *  route a back press to the wrong handler entirely. */
+  override fun onResume() {
+    super.onResume()
+    onBackStackResume()
   }
 
-  private fun initViewModel() {
-    viewModel.places.nonNullObserve(viewLifecycleOwner) { places ->
-      adapter.submitList(places)
-      binding.recyclerView.smoothScrollToPosition(0)
-      refreshView(places.size)
-    }
-    viewModel.resultEvent.observeEvent(viewLifecycleOwner) {
-      when (it) {
-        Commands.DELETED -> {
-          toast(R.string.deleted)
-        }
-
-        else -> {
-        }
-      }
-    }
-    viewModel.shareFile.nonNullObserve(viewLifecycleOwner) {
-      sendPlace(it)
+  /** Seeds the island's backstack from a place deep link / global search result, read once from
+   *  [getArguments] — see [com.elementary.tasks.home.ScreenDestinationIdResolver] and
+   *  [com.elementary.tasks.home.BottomNavActivity], which both route place deep links to this
+   *  fragment (`R.id.placesFragment`) instead of a dedicated `editPlaceFragment` destination. */
+  private fun initialBackStackKeys(): List<PlacesNavKey> {
+    val args = arguments ?: return listOf(PlacesNavKey.List)
+    val id = args.getString(IntentKeys.INTENT_ID)
+    return when {
+      args.getBoolean(ARG_OPEN_EDIT, false) -> listOf(PlacesNavKey.List, PlacesNavKey.Edit(id ?: ""))
+      id != null -> listOf(PlacesNavKey.List, PlacesNavKey.Edit(id))
+      else -> listOf(PlacesNavKey.List)
     }
   }
 
-  override fun getTitle(): String = getString(R.string.places)
-
-  private fun initList() {
-    if (resources.getBoolean(R.bool.is_tablet)) {
-      binding.recyclerView.layoutManager =
-        StaggeredGridLayoutManager(
-          resources.getInteger(R.integer.num_of_cols),
-          StaggeredGridLayoutManager.VERTICAL,
-        )
-    } else {
-      binding.recyclerView.layoutManager = LinearLayoutManager(context)
-    }
-    binding.recyclerView.adapter = adapter
-    ViewUtils.listenScrollableView(binding.recyclerView) {
-      if (it) {
-        binding.fab.show()
-      } else {
-        binding.fab.hide()
-      }
-    }
-    refreshView(0)
-  }
-
-  private fun showMore(
-    view: View,
-    place: UiPlaceList,
-  ) {
-    Dialogues.showPopup(view, { i ->
-      when (i) {
-        0 -> openPlace(place)
-        1 -> viewModel.sharePlace(place.id)
-        2 ->
-          withContext {
-            dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
-              if (b) viewModel.deletePlace(place.id)
-            }
-          }
-      }
-    }, getString(R.string.edit), getString(R.string.share), getString(R.string.delete))
-  }
-
-  private fun sendPlace(shareFile: ShareFile<UiPlaceList>) {
-    if (shareFile.file == null || !shareFile.file.exists() || !shareFile.file.canRead()) {
-      showErrorSending()
-      return
-    }
-    TelephonyUtil.sendFile(shareFile.file, requireContext(), shareFile.item.name)
-  }
-
-  private fun showErrorSending() {
-    toast(R.string.error_sending)
-  }
-
-  private fun openPlace(place: UiPlaceList) {
-    navigate {
-      navigate(
-        R.id.editPlaceFragment,
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, place.id)
-        },
-        NavigationAnimations.inDepthNavOptions(),
-      )
-    }
-  }
-
-  private fun refreshView(count: Int) {
-    binding.emptyItem.visibleGone(count == 0)
-  }
+  override fun canGoBack(): Boolean = (currentBackStack?.size ?: 1) <= 1
 
   companion object {
-    fun newInstance(): PlacesFragment = PlacesFragment()
+    const val ARG_OPEN_EDIT = "places_open_edit"
   }
 }
