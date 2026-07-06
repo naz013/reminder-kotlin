@@ -24,12 +24,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.googletasks.GoogleTaskRow
 import com.elementary.tasks.googletasks.GoogleTasksEmptyState
+import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
@@ -151,3 +156,50 @@ private fun taskListMenuItems(canDelete: Boolean): List<PopupMenuItem> =
     }
     add(PopupMenuItem(id = MENU_ITEM_CLEAR, title = stringResource(R.string.delete_completed_tasks)))
   }
+
+@Preview(showBackground = true)
+@Composable
+private fun TaskListScreenPreview() {
+  AppTheme {
+    TaskListScreen(
+      state =
+        TaskListState(
+          title = "Groceries",
+          tasks =
+            listOf(
+              UiGoogleTaskList(
+                id = "1",
+                text = "Buy milk",
+                notes = null,
+                dueDate = "Tomorrow",
+                isCompleted = false,
+                taskListColor = Color(0xFF4CAF50).toArgb(),
+                reminderId = null,
+              ),
+              UiGoogleTaskList(
+                id = "2",
+                text = "Buy bread",
+                notes = "Whole grain",
+                dueDate = null,
+                isCompleted = true,
+                taskListColor = Color(0xFF4CAF50).toArgb(),
+                reminderId = null,
+              ),
+            ),
+          fabContainerColor = Color(0xFF4CAF50),
+          fabContentColor = Color.White,
+          canDelete = true,
+        ),
+      onBackClick = {},
+      onEditListClick = {},
+      onDeleteListClick = {},
+      onDeleteConfirmed = {},
+      onDeleteDismiss = {},
+      onClearCompletedClick = {},
+      onTaskClick = {},
+      onTaskToggle = {},
+      onAddTaskClick = {},
+      onRefresh = {},
+    )
+  }
+}

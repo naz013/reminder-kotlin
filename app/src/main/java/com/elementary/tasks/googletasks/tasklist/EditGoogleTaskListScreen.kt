@@ -24,10 +24,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
@@ -99,16 +102,14 @@ fun EditGoogleTaskListScreen(
         enabled = !state.isLoading,
         modifier =
           Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
+            .fillMaxWidth(),
       )
 
       Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
           Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
+            .fillMaxWidth(),
       ) {
         Text(
           text = stringResource(R.string.make_default),
@@ -161,6 +162,43 @@ fun EditGoogleTaskListScreen(
       dismissButton = {
         TextButton(onClick = onDeleteDismiss) { Text(stringResource(R.string.no)) }
       },
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EditGoogleTaskListScreenPreview() {
+  AppTheme {
+    EditGoogleTaskListScreen(
+      state =
+        EditGoogleTaskListState(
+          name = "Groceries",
+          sliderColors =
+            listOf(
+              Color(0xFFF44336),
+              Color(0xFFE91E63),
+              Color(0xFF9C27B0),
+              Color(0xFF673AB7),
+              Color(0xFF3F51B5),
+              Color(0xFF2196F3),
+              Color(0xFF4CAF50),
+              Color(0xFFFFEB3B),
+              Color(0xFFFF9800),
+            ),
+          colorIndex = 6,
+          isDefault = true,
+          canDelete = true,
+          hasId = true,
+        ),
+      onBackClick = {},
+      onSaveClick = {},
+      onDeleteMenuClick = {},
+      onNameChange = {},
+      onColorSelected = {},
+      onDefaultToggle = {},
+      onDeleteConfirmed = {},
+      onDeleteDismiss = {},
     )
   }
 }

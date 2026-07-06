@@ -24,12 +24,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
+import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -184,6 +188,37 @@ private fun DetailRow(
         Modifier
           .weight(1f)
           .padding(start = 16.dp),
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewGoogleTaskScreenPreview() {
+  AppTheme {
+    PreviewGoogleTaskScreen(
+      state =
+        PreviewGoogleTaskState(
+          task =
+            UiGoogleTaskPreview(
+              id = "1",
+              text = "Buy milk",
+              notes = "2 liters, whole",
+              dueDate = "Tomorrow",
+              createdDate = "Today",
+              completedDate = null,
+              isCompleted = false,
+              taskListName = "Groceries",
+              taskListColor = Color(0xFF4CAF50).toArgb(),
+            ),
+        ),
+      onBackClick = {},
+      onEditClick = {},
+      onDeleteClick = {},
+      onDeleteConfirmed = {},
+      onDeleteDismiss = {},
+      onCompleteClick = {},
+      adsContent = {},
     )
   }
 }
