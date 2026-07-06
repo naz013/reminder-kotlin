@@ -48,7 +48,16 @@ class PreviewGoogleTaskViewModel(
     loadTask()
   }
 
-  fun onDelete() {
+  fun onDeleteClick() {
+    state.update { it.copy(showDeleteConfirm = true) }
+  }
+
+  fun onDeleteDismiss() {
+    state.update { it.copy(showDeleteConfirm = false) }
+  }
+
+  fun onDeleteConfirmed() {
+    state.update { it.copy(showDeleteConfirm = false) }
     setBusy(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       try {

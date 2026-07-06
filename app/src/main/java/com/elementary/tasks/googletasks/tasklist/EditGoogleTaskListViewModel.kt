@@ -1,6 +1,5 @@
 package com.elementary.tasks.googletasks.tasklist
 
-import android.os.Bundle
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -12,7 +11,6 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -28,7 +26,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class EditGoogleTaskListViewModel(
-  arguments: Bundle?,
+  val listId: String,
   private val googleTasksApi: GoogleTasksApi,
   dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
@@ -46,7 +44,6 @@ class EditGoogleTaskListViewModel(
     )
   val navigationEvent: LiveData<Event<EditGoogleTaskListEvent>> field = mutableLiveEventOf()
 
-  val listId: String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
   private var editedTaskList: GoogleTaskList? = null
 
   init {

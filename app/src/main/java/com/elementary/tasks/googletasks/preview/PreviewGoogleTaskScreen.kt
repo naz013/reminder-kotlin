@@ -9,12 +9,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,20 +30,48 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
-/**
- * Body content only - the title/back-arrow/menu chrome is the native Toolbar owned by
- * [com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment].
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewGoogleTaskScreen(
   state: PreviewGoogleTaskState,
+  onBackClick: () -> Unit,
+  onEditClick: () -> Unit,
+  onDeleteClick: () -> Unit,
+  onDeleteConfirmed: () -> Unit,
+  onDeleteDismiss: () -> Unit,
   onCompleteClick: () -> Unit,
   adsContent: @Composable () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
+    topBar = {
+      TopAppBar(
+        title = { Text(stringResource(R.string.details)) },
+        navigationIcon = {
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_builder_arrow_left),
+            contentDescription = null,
+            onClick = onBackClick,
+          )
+        },
+        actions = {
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_fluent_edit),
+            contentDescription = stringResource(R.string.edit),
+            onClick = onEditClick,
+          )
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_fluent_delete),
+            contentDescription = stringResource(R.string.delete),
+            onClick = onDeleteClick,
+          )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+      )
+    },
     floatingActionButton = {
       val task = state.task
       if (task != null && !task.isCompleted) {
@@ -104,6 +137,19 @@ fun PreviewGoogleTaskScreen(
 
       adsContent()
     }
+  }
+
+  if (state.showDeleteConfirm) {
+    AlertDialog(
+      onDismissRequest = onDeleteDismiss,
+      text = { Text(stringResource(R.string.are_you_sure)) },
+      confirmButton = {
+        TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) }
+      },
+      dismissButton = {
+        TextButton(onClick = onDeleteDismiss) { Text(stringResource(R.string.no)) }
+      },
+    )
   }
 }
 

@@ -16,5 +16,5 @@ data class GoogleTasksState(
 data class UiGoogleTaskListEntry(
   val id: String,
   val title: String,
-  @ColorInt val color: Int,
+  @ColorInt val color: Int, // TODO: Change to Compose color
 )

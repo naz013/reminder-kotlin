@@ -10,6 +10,7 @@ data class TaskListState(
   val fabContainerColor: Color? = null,
   val fabContentColor: Color? = null,
   val canDelete: Boolean = false,
+  val showDeleteConfirm: Boolean = false,
 )
 
 sealed interface TaskListEvent {

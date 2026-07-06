@@ -31,6 +31,7 @@ class CloudServicesViewModel(
       googleTaskListRepository.deleteAll()
       Logger.i(TAG, "Google tasks cleared.")
       withContext(dispatcherProvider.main()) {
+        state.update { it.copy(isLoading = false) }
         appWidgetUpdater.updateScheduleWidget()
       }
     }

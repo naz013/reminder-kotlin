@@ -29,6 +29,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class CloudServicesFragment : ComposeFragment() {
+
   private val viewModel by viewModel<CloudServicesViewModel>()
   private val featureManager by inject<FeatureManager>()
   private val dialogues by inject<Dialogues>()
@@ -38,9 +39,9 @@ class CloudServicesFragment : ComposeFragment() {
   private val dropboxLogin: DropboxLogin by inject {
     parametersOf(requireActivity(), dropboxCallback)
   }
-  private val googleLogin: GoogleLogin by inject {
-    parametersOf(this@CloudServicesFragment, googleCallback)
-  }
+
+  /** Constructed eagerly in [onCreate], never lazily — see [GoogleLogin]'s kdoc for why. */
+  private lateinit var googleLogin: GoogleLogin
 
   private var isDropboxLoggedIn by mutableStateOf(false)
   private var isGoogleDriveLoggedIn by mutableStateOf(false)
@@ -93,6 +94,7 @@ class CloudServicesFragment : ComposeFragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     permissionFlow = PermissionFlow(this, dialogues)
+    googleLogin = GoogleLogin(this, googleCallback)
   }
 
   @Composable

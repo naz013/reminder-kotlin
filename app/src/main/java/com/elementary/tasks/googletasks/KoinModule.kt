@@ -1,6 +1,5 @@
 package com.elementary.tasks.googletasks
 
-import android.os.Bundle
 import com.elementary.tasks.googletasks.list.TaskListViewModel
 import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskViewModel
 import com.elementary.tasks.googletasks.task.EditGoogleTaskViewModel
@@ -23,9 +22,9 @@ import org.koin.dsl.module
 
 val googleTaskModule =
   module {
-    viewModel { (arguments: Bundle?) ->
+    viewModel { (listId: String) ->
       EditGoogleTaskListViewModel(
-        arguments,
+        listId,
         get(),
         get(),
         get(),
@@ -36,9 +35,10 @@ val googleTaskModule =
         get(),
       )
     }
-    viewModel { (arguments: Bundle?) ->
+    viewModel { (id: String, listId: String) ->
       EditGoogleTaskViewModel(
-        arguments,
+        id,
+        listId,
         get(),
         get(),
         get(),

@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
+import com.elementary.tasks.googletasks.GoogleTasksFragment
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.onBackStackResume
@@ -106,8 +107,8 @@ class HomeFragment :
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCreateGoogleTask -> {
           safeNavigation(
-            R.id.editGoogleTaskFragment,
-            null,
+            R.id.actionGoogle,
+            Bundle().apply { putBoolean(GoogleTasksFragment.ARG_OPEN_EDIT, true) },
             NavigationAnimations.inDepthNavOptions(),
           )
         }

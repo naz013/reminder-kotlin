@@ -41,7 +41,8 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 class EditGoogleTaskViewModel(
-  private val arguments: Bundle?,
+  val id: String,
+  private val initialListId: String,
   private val googleTasksApi: GoogleTasksApi,
   dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
@@ -58,7 +59,6 @@ class EditGoogleTaskViewModel(
   val state: StateFlow<EditGoogleTaskState> field = MutableStateFlow(EditGoogleTaskState())
   val navigationEvent: LiveData<Event<EditGoogleTaskEvent>> field = mutableLiveEventOf()
 
-  val id: String = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
   private var isEdited = false
   private var isReminderEdited = false
   private var listId: String = ""
@@ -77,12 +77,11 @@ class EditGoogleTaskViewModel(
       googleTaskLists = getAllGoogleTaskListsUseCase()
       editedTask = getGoogleTaskByIdUseCase(id)
 
-      val bundleListId = arguments?.getString(IntentKeys.INTENT_LIST_ID)
       val googleTaskList =
-        if (bundleListId.isNullOrEmpty()) {
+        if (initialListId.isEmpty()) {
           googleTaskLists.firstOrNull { it.isDefault() }
         } else {
-          googleTaskLists.firstOrNull { it.listId == bundleListId }
+          googleTaskLists.firstOrNull { it.listId == initialListId }
             ?: googleTaskLists.firstOrNull { it.isDefault() }
         }
 
@@ -101,15 +100,6 @@ class EditGoogleTaskViewModel(
   override fun onDestroy(owner: LifecycleOwner) {
     super.onDestroy(owner)
     appWidgetUpdater.updateAllWidgets()
-  }
-
-  fun onCreated(
-    arguments: Bundle?,
-    savedInstanceState: Bundle?,
-  ) {
-    if (savedInstanceState == null) {
-      checkDeepLink(arguments)
-    }
   }
 
   fun hasId(): Boolean = id.isNotEmpty()
@@ -287,7 +277,7 @@ class EditGoogleTaskViewModel(
       }
   }
 
-  private fun checkDeepLink(arguments: Bundle?) {
+  fun checkDeepLink(arguments: Bundle?) {
     if (arguments?.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) == true) {
       runCatching {
         val parser = DeepLinkDataParser()

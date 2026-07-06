@@ -14,26 +14,33 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
-/**
- * Body content only - the title/back-arrow/menu chrome is the native Toolbar owned by
- * [com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment].
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditGoogleTaskScreen(
   state: EditGoogleTaskState,
+  onBackClick: () -> Unit,
+  onSaveClick: () -> Unit,
+  onDeleteMenuClick: () -> Unit,
+  onMoveMenuClick: () -> Unit,
   onTitleChange: (String) -> Unit,
   onNotesChange: (String) -> Unit,
   onDateFieldClick: () -> Unit,
@@ -46,62 +53,104 @@ fun EditGoogleTaskScreen(
   onDialogDismiss: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState())
-        .padding(16.dp),
-  ) {
-    OutlinedTextField(
-      value = state.title,
-      onValueChange = onTitleChange,
-      label = { Text(stringResource(R.string.task)) },
-      isError = state.titleError,
-      supportingText = {
-        if (state.titleError) Text(stringResource(R.string.must_be_not_empty))
-      },
-      enabled = !state.isLoading,
+  Scaffold(
+    modifier = modifier,
+    topBar = {
+      TopAppBar(
+        title = { Text(stringResource(if (state.hasId) R.string.edit_task else R.string.new_task)) },
+        navigationIcon = {
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_builder_arrow_left),
+            contentDescription = null,
+            enabled = !state.isLoading,
+            onClick = onBackClick,
+          )
+        },
+        actions = {
+          if (state.hasId) {
+            MenuIconButton(
+              icon = painterResource(R.drawable.ic_fluent_arrow_move),
+              contentDescription = stringResource(R.string.move_to_another_list),
+              enabled = !state.isLoading,
+              onClick = onMoveMenuClick,
+            )
+            MenuIconButton(
+              icon = painterResource(R.drawable.ic_fluent_delete),
+              contentDescription = stringResource(R.string.delete),
+              enabled = !state.isLoading,
+              onClick = onDeleteMenuClick,
+            )
+          }
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_fluent_save),
+            contentDescription = stringResource(R.string.save),
+            iconColor = MaterialTheme.colorScheme.tertiary,
+            enabled = !state.isLoading,
+            onClick = onSaveClick,
+          )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+      )
+    },
+  ) { padding ->
+    Column(
       modifier =
         Modifier
-          .fillMaxWidth()
-          .padding(top = 8.dp),
-    )
-
-    OutlinedTextField(
-      value = state.notes,
-      onValueChange = onNotesChange,
-      label = { Text(stringResource(R.string.details)) },
-      enabled = !state.isLoading,
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(top = 16.dp),
-    )
-
-    FieldCard(
-      label = stringResource(R.string.select_date),
-      value = state.dateText ?: stringResource(R.string.no_date),
-      enabled = !state.isLoading,
-      onClick = onDateFieldClick,
-    )
-
-    if (state.isDateSelected) {
-      FieldCard(
-        label = stringResource(R.string.select_time),
-        value = state.timeText ?: stringResource(R.string.no_time),
+          .fillMaxSize()
+          .background(MaterialTheme.colorScheme.background)
+          .padding(padding)
+          .verticalScroll(rememberScrollState())
+          .padding(16.dp),
+    ) {
+      OutlinedTextField(
+        value = state.title,
+        onValueChange = onTitleChange,
+        label = { Text(stringResource(R.string.task)) },
+        isError = state.titleError,
+        supportingText = {
+          if (state.titleError) Text(stringResource(R.string.must_be_not_empty))
+        },
         enabled = !state.isLoading,
-        onClick = onTimeFieldClick,
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+      )
+
+      OutlinedTextField(
+        value = state.notes,
+        onValueChange = onNotesChange,
+        label = { Text(stringResource(R.string.details)) },
+        enabled = !state.isLoading,
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+      )
+
+      FieldCard(
+        label = stringResource(R.string.select_date),
+        value = state.dateText ?: stringResource(R.string.no_date),
+        enabled = !state.isLoading,
+        onClick = onDateFieldClick,
+      )
+
+      if (state.isDateSelected) {
+        FieldCard(
+          label = stringResource(R.string.select_time),
+          value = state.timeText ?: stringResource(R.string.no_time),
+          enabled = !state.isLoading,
+          onClick = onTimeFieldClick,
+        )
+      }
+
+      FieldCard(
+        label = stringResource(R.string.choose_list),
+        value = state.listName,
+        enabled = !state.isLoading,
+        onClick = onListFieldClick,
       )
     }
-
-    FieldCard(
-      label = stringResource(R.string.choose_list),
-      value = state.listName,
-      enabled = !state.isLoading,
-      onClick = onListFieldClick,
-    )
   }
 
   when (val dialog = state.dialog) {

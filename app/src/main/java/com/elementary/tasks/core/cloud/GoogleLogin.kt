@@ -15,16 +15,31 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
+/**
+ * Wraps Google Sign-In for both Drive and Tasks.
+ *
+ * Must be constructed directly with `GoogleLogin(fragment, callback)` — plain constructor call,
+ * never through Koin's lazy `by inject { parametersOf(...) }` — and as early as the host
+ * Fragment's `onCreate()`. [Fragment.registerForActivityResult] requires registration before the
+ * fragment reaches STARTED; a lazy Koin-injected property is only actually constructed on first
+ * read, which from a Composable (e.g. a `LaunchedEffect`) happens well after the fragment is
+ * already RESUMED, so registration throws. Resolving dependencies here via [KoinComponent]
+ * (same approach as [com.elementary.tasks.core.utils.PhotoSelectionUtil]) keeps construction
+ * timing entirely in the caller's hands instead of Koin's.
+ */
 class GoogleLogin(
   private val fragment: Fragment,
-  private val googleDriveApi: GoogleDriveApi,
-  private val googleDriveAuthManager: GoogleDriveAuthManager,
-  private val googleTasksApi: GoogleTasksApi,
-  private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val loginCallback: LoginCallback,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
-) {
+) : KoinComponent {
+  private val googleDriveApi by inject<GoogleDriveApi>()
+  private val googleDriveAuthManager by inject<GoogleDriveAuthManager>()
+  private val googleTasksApi by inject<GoogleTasksApi>()
+  private val googleTasksAuthManager by inject<GoogleTasksAuthManager>()
+  private val scheduleBackgroundWorkUseCase by inject<ScheduleBackgroundWorkUseCase>()
+
   var isGoogleDriveLogged = false
     private set
     get() {
@@ -59,6 +74,7 @@ class GoogleLogin(
     mode = Mode.TASKS
 
     googleTasksApi.disconnect()
+    googleTasksAuthManager.saveUserName("")
 
     val client = getGoogleTasksSignInClient()
     client.signOut().addOnSuccessListener {

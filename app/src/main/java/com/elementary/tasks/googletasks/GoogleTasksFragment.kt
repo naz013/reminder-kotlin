@@ -1,33 +1,57 @@
 package com.elementary.tasks.googletasks
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import android.view.ViewGroup
+import androidx.compose.runtime.SideEffect
+import androidx.fragment.app.Fragment
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.GoogleLogin
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.navigation.NavigationAnimations
-import com.elementary.tasks.navigation.navigate
-import com.elementary.tasks.navigation.safeNavigation
-import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.common.Permissions
+import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.navigation.BackPressHandler
+import com.elementary.tasks.navigation.onBackStackResume
+import com.elementary.tasks.navigation.topfragment.RootFragment
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.compose.composeView
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
-class GoogleTasksFragment : BaseComposeToolbarFragment() {
-  private val viewModel by viewModel<GoogleTasksViewModel>()
-  private val googleLogin: GoogleLogin by inject {
-    parametersOf(this@GoogleTasksFragment, loginCallback)
-  }
+/**
+ * Hosts the Google Tasks feature as a self-contained Navigation 3 "island": this Fragment owns
+ * the internal backstack and the Android-framework glue (Google sign-in, date/time pickers,
+ * dialogs) that only a Fragment can provide, and is otherwise responsible only for
+ * screen-to-screen navigation. The actual screens and their wiring live in [GoogleTasksNavGraph].
+ */
+class GoogleTasksFragment :
+  Fragment(),
+  RootFragment,
+  BackPressHandler {
+  internal val dialogues by inject<Dialogues>()
+  internal val dateTimePickerProvider by inject<DateTimePickerProvider>()
+  internal val appWidgetUpdater by inject<AppWidgetUpdater>()
+  internal val analyticsEventSender by inject<AnalyticsEventSender>()
+  internal val adsProvider = AdsProvider()
+  internal lateinit var permissionFlow: PermissionFlow
+
+  /** Bridge from the Fragment's plain methods into the Compose-owned Nav3 backstack — the
+   *  backstack itself can only be created via [rememberNavBackStack] inside composition. */
+  private var currentBackStack: MutableList<NavKey>? = null
+
+  /** The [GoogleTasksViewModel] currently on screen, if any — [googleLogin]'s callback is
+   *  Fragment-scoped and long-lived (registered once here), so its results have to be routed to
+   *  the list entry only while it's actually active. */
+  internal var activeGoogleTasksViewModel: GoogleTasksViewModel? = null
+
+  /** Constructed eagerly in [onCreate], never lazily — see [GoogleLogin]'s kdoc for why. */
+  internal lateinit var googleLogin: GoogleLogin
   private val loginCallback =
     object : GoogleLogin.LoginCallback {
       override fun onProgress(
@@ -35,7 +59,7 @@ class GoogleTasksFragment : BaseComposeToolbarFragment() {
         mode: GoogleLogin.Mode,
       ) {
         if (mode == GoogleLogin.Mode.TASKS) {
-          viewModel.setLoginInProgress(isLoading)
+          activeGoogleTasksViewModel?.setLoginInProgress(isLoading)
         }
       }
 
@@ -44,7 +68,7 @@ class GoogleTasksFragment : BaseComposeToolbarFragment() {
         mode: GoogleLogin.Mode,
       ) {
         Logger.d(TAG, "On Google Tasks login result: $isLogged")
-        viewModel.updateLoginStatus(isLogged)
+        activeGoogleTasksViewModel?.updateLoginStatus(isLogged)
         if (!isLogged) {
           showErrorDialog()
         }
@@ -58,68 +82,56 @@ class GoogleTasksFragment : BaseComposeToolbarFragment() {
       }
     }
 
-  override fun onViewCreated(
-    view: View,
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    permissionFlow = PermissionFlow(this, dialogues)
+    googleLogin = GoogleLogin(this, loginCallback)
+  }
+
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-    viewModel.updateLoginStatus(googleLogin.isGoogleTasksLogged)
-
-    addMenu(
-      menuRes = R.menu.fragment_google_tasks_menu,
-      onMenuItemListener = { menuItem ->
-        when (menuItem.itemId) {
-          R.id.action_add -> {
-            openAddTaskList()
-            true
-          }
-
-          else -> false
-        }
-      },
-      menuModifier = { menu ->
-        menu.findItem(R.id.action_add)?.isVisible = viewModel.state.value.isLoggedIn
-      },
-    )
-
-    analyticsEventSender.send(ScreenUsedEvent(Screen.GOOGLE_TASKS_LIST))
-    lifecycle.addObserver(viewModel)
-  }
-
-  @Composable
-  override fun Content() {
-    val state by viewModel.state.collectAsState()
-    LaunchedEffect(state.isLoggedIn) {
-      updateMenuItem(R.id.action_add) { isVisible = state.isLoggedIn }
+  ): View =
+    composeView {
+      val backStack = rememberNavBackStack(*initialBackStackKeys().toTypedArray())
+      SideEffect { currentBackStack = backStack }
+      GoogleTasksNavGraph(backStack)
     }
-    GoogleTasksScreen(
-      state = state,
-      onConnectClick = ::googleTasksButtonClick,
-      onAddTaskClick = ::addNewTask,
-      onTaskListClick = ::openGoogleTaskList,
-      onTaskClick = ::openTask,
-      onTaskToggle = viewModel::toggleTask,
-      onRefresh = viewModel::sync,
-    )
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    currentBackStack = null
   }
 
-  private fun googleTasksButtonClick() {
-    Logger.i(TAG, "Google Tasks connect button clicked")
-    permissionFlow.askPermission(Permissions.GET_ACCOUNTS) { switchGoogleTasksStatus() }
+  override fun onResume() {
+    super.onResume()
+    onBackStackResume()
   }
 
-  private fun switchGoogleTasksStatus() {
-    withActivity {
-      if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
-        Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
-        return@withActivity
+  /** Seeds the island's backstack from a Google Task deep link / app shortcut / cross-feature
+   *  link, read once from [getArguments] — see [com.elementary.tasks.home.ScreenDestinationIdResolver],
+   *  [com.elementary.tasks.home.BottomNavActivity] and
+   *  [com.elementary.tasks.reminder.preview.PreviewReminderFragment], which all route Google Task
+   *  deep links to this fragment (`R.id.actionGoogle`) instead of a dedicated destination. */
+  private fun initialBackStackKeys(): List<GoogleTasksNavKey> {
+    val args = arguments ?: return listOf(GoogleTasksNavKey.List)
+    val id = args.getString(IntentKeys.INTENT_ID)
+    val listId = args.getString(IntentKeys.INTENT_LIST_ID)
+    return when {
+      args.getBoolean(ARG_OPEN_EDIT, false) -> {
+        listOf(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id ?: "", listId ?: ""))
       }
-      googleLogin.loginTasks()
+
+      id != null -> listOf(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskPreview(id))
+      else -> listOf(GoogleTasksNavKey.List)
     }
   }
 
-  private fun showErrorDialog() {
-    withContext {
+  override fun canGoBack(): Boolean = (currentBackStack?.size ?: 1) <= 1
+
+  internal fun showErrorDialog() {
+    context?.also {
       val builder = dialogues.getMaterialDialog(it)
       builder.setMessage(getString(R.string.failed_to_login))
       builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
@@ -127,51 +139,8 @@ class GoogleTasksFragment : BaseComposeToolbarFragment() {
     }
   }
 
-  private fun openAddTaskList() {
-    Logger.i(TAG, "Add new Google Task List clicked")
-    navigate {
-      navigate(
-        R.id.editGoogleTaskListFragment,
-        null,
-        NavigationAnimations.inDepthNavOptions(),
-      )
-    }
-  }
-
-  private fun addNewTask() {
-    Logger.i(TAG, "Add new Google Task clicked")
-    navigate {
-      navigate(
-        R.id.editGoogleTaskFragment,
-        null,
-        NavigationAnimations.inDepthNavOptions(),
-      )
-    }
-  }
-
-  private fun openGoogleTaskList(listId: String) {
-    Logger.i(TAG, "Open Google Task List: $listId")
-    safeNavigation(
-      GoogleTasksFragmentDirections.actionActionGoogleToTaskListFragment(listId),
-    )
-  }
-
-  private fun openTask(taskId: String) {
-    Logger.i(TAG, "Open Google Task: $taskId")
-    navigate {
-      navigate(
-        R.id.previewGoogleTaskFragment,
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, taskId)
-        },
-        NavigationAnimations.inDepthNavOptions(),
-      )
-    }
-  }
-
-  override fun getTitle(): String = getString(R.string.google_tasks)
-
   companion object {
     private const val TAG = "GoogleTasksFragment"
+    const val ARG_OPEN_EDIT = "google_tasks_open_edit"
   }
 }

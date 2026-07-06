@@ -15,14 +15,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,16 +44,16 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.google.android.gms.common.SignInButton
 
-/**
- * Body content only - the title/back-arrow/menu chrome is the native Toolbar owned by
- * [com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment].
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoogleTasksScreen(
   state: GoogleTasksState,
+  onBackClick: () -> Unit,
   onConnectClick: () -> Unit,
+  onAddListClick: () -> Unit,
   onAddTaskClick: () -> Unit,
   onTaskListClick: (String) -> Unit,
   onTaskClick: (String) -> Unit,
@@ -58,6 +63,33 @@ fun GoogleTasksScreen(
 ) {
   Scaffold(
     modifier = modifier,
+    topBar = {
+      TopAppBar(
+        title = { Text(stringResource(R.string.google_tasks)) },
+        navigationIcon = {
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_builder_arrow_left),
+            contentDescription = null,
+            onClick = onBackClick,
+          )
+        },
+        actions = {
+          if (state.isLoggedIn) {
+            MenuIconButton(
+              icon = Icons.Default.Refresh,
+              contentDescription = stringResource(R.string.refresh),
+              onClick = onRefresh,
+            )
+            MenuIconButton(
+              icon = painterResource(R.drawable.ic_fluent_task_list_add),
+              contentDescription = stringResource(R.string.new_tasks_list),
+              onClick = onAddListClick,
+            )
+          }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+      )
+    },
     floatingActionButton = {
       if (state.isLoggedIn) {
         ExtendedFloatingActionButton(
@@ -281,7 +313,9 @@ private fun GoogleTasksScreenPreview() {
   AppTheme {
     GoogleTasksScreen(
       state = GoogleTasksState(isLoggedIn = true),
+      onBackClick = {},
       onConnectClick = {},
+      onAddListClick = {},
       onAddTaskClick = {},
       onTaskListClick = {},
       onTaskClick = {},

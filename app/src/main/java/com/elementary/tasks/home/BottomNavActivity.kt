@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
+import com.elementary.tasks.googletasks.GoogleTasksFragment
 import com.elementary.tasks.navigation.BackPressHandler
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.NavigationConsumer
@@ -23,6 +24,7 @@ import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
+import com.github.naz013.navigation.EditGoogleTaskScreen
 import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.ui.common.activity.BindingActivity
@@ -74,6 +76,7 @@ class BottomNavActivity :
             Bundle(deepLinkDestination.extras ?: Bundle()).apply {
               if (deepLinkDestination is EditNoteScreen) putBoolean(NotesFragment.ARG_OPEN_EDIT, true)
               if (deepLinkDestination is EditPlaceScreen) putBoolean(PlacesFragment.ARG_OPEN_EDIT, true)
+              if (deepLinkDestination is EditGoogleTaskScreen) putBoolean(GoogleTasksFragment.ARG_OPEN_EDIT, true)
             }
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)
@@ -87,7 +90,7 @@ class BottomNavActivity :
       val destinationId =
         when (shortcut) {
           ShortcutDestination.Shortcut.GoogleTask -> {
-            R.id.editGoogleTaskFragment
+            R.id.actionGoogle
           }
 
           ShortcutDestination.Shortcut.Reminder -> {
@@ -103,6 +106,7 @@ class BottomNavActivity :
         val arguments =
           Bundle(intent.extras ?: Bundle()).apply {
             if (shortcut == ShortcutDestination.Shortcut.Note) putBoolean(NotesFragment.ARG_OPEN_EDIT, true)
+            if (shortcut == ShortcutDestination.Shortcut.GoogleTask) putBoolean(GoogleTasksFragment.ARG_OPEN_EDIT, true)
           }
         NavDeepLinkBuilder(this)
           .setGraph(R.navigation.home_nav)
