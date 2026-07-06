@@ -9,10 +9,12 @@ import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.utils.Configs
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureAdoptedEvent
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
@@ -55,6 +57,7 @@ class EditGoogleTaskViewModel(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val textProvider: TextProvider,
+  private val prefs: Prefs,
 ) : BaseProgressViewModel(dispatcherProvider) {
   val state: StateFlow<EditGoogleTaskState> field = MutableStateFlow(EditGoogleTaskState())
   val navigationEvent: LiveData<Event<EditGoogleTaskEvent>> field = mutableLiveEventOf()
@@ -218,6 +221,10 @@ class EditGoogleTaskViewModel(
       }
     } else {
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK))
+      if (!prefs.hasAdoptedGoogleTasks) {
+        prefs.hasAdoptedGoogleTasks = true
+        analyticsEventSender.send(FeatureAdoptedEvent(Feature.CREATE_GOOGLE_TASK))
+      }
       newGoogleTask(update(GoogleTask(), summary, note, reminder), reminder)
     }
   }

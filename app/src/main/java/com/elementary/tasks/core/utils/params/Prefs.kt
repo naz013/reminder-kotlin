@@ -124,6 +124,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, def = false)
     set(value) = putBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, value)
 
+  var hasAdoptedGoogleTasks: Boolean
+    get() = getBoolean(PrefsConstants.GOOGLE_TASKS_ADOPTED, def = false)
+    set(value) = putBoolean(PrefsConstants.GOOGLE_TASKS_ADOPTED, value)
+
   var analyticsEnabled: Boolean
     get() = getBoolean(PrefsConstants.ANALYTICS_ENABLED, def = true)
     set(value) = putBoolean(PrefsConstants.ANALYTICS_ENABLED, value)

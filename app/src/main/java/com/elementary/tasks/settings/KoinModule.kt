@@ -27,17 +27,17 @@ val settingsModule =
     worker { ScanGoogleCalendarEventsWorker(get(), get(), get(), get()) }
     worker { CheckBirthdaysWorker(get(), get(), get(), get(), get(), get(), get()) }
 
-    viewModel { CalendarSettingsViewModel(get(), get(), get(), get()) }
-    viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { GeneralSettingsViewModel(get(), get()) }
-    viewModel { NoteSettingsViewModel(get()) }
-    viewModel { SecuritySettingsViewModel(get()) }
+    viewModel { CalendarSettingsViewModel(get(), get(), get(), get(), get()) }
+    viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { GeneralSettingsViewModel(get(), get(), get()) }
+    viewModel { NoteSettingsViewModel(get(), get()) }
+    viewModel { SecuritySettingsViewModel(get(), get()) }
     viewModel { AddPinViewModel(get()) }
     viewModel { ChangePinViewModel(get()) }
     viewModel { DisablePinViewModel(get()) }
-    viewModel { LocationSettingsViewModel(get(), get(), get()) }
+    viewModel { LocationSettingsViewModel(get(), get(), get(), get()) }
     viewModel { MapStyleViewModel(get()) }
-    viewModel { OtherSettingsViewModel(get(), get()) }
-    viewModel { RemindersSettingsViewModel(get(), get(), get()) }
-    viewModel { SettingsHubViewModel(get(), get(), get(), get()) }
+    viewModel { OtherSettingsViewModel(get(), get(), get()) }
+    viewModel { RemindersSettingsViewModel(get(), get(), get(), get()) }
+    viewModel { SettingsHubViewModel(get(), get(), get(), get(), get()) }
   }

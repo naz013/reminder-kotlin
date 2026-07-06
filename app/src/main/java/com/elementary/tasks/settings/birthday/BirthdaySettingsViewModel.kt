@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
@@ -21,10 +24,15 @@ class BirthdaySettingsViewModel(
   private val jobScheduler: JobScheduler,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val dateTimeManager: DateTimeManager,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
 
   val state: StateFlow<BirthdaySettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<BirthdaySettingsEvent>> field = mutableLiveEventOf()
+
+  init {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.BIRTHDAY_SETTINGS))
+  }
 
   fun onReminderToggle() {
     val newValue = !prefs.isBirthdayReminderEnabled

@@ -117,7 +117,7 @@ class TodoRemindersFragment : BaseSubEventsFragment<FragmentRemindersBinding>() 
       viewModel.onSearchUpdate(it?.toString().orEmpty())
     }
 
-    analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_LIST))
+    analyticsEventSender.send(ScreenUsedEvent(Screen.TODO_REMINDERS_LIST))
 
     // Set up result listener for filter selection
     setFragmentResultListener(ReminderFilterDialog.REQUEST_KEY) { _, result ->

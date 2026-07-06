@@ -11,6 +11,10 @@ internal class AnalyticsEventSenderImpl(
 
   private val analytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
 
+  init {
+    analytics.setAnalyticsCollectionEnabled(analyticsStateProvider.analyticsEnabled)
+  }
+
   override fun send(event: AnalyticEvent) {
     if (analyticsStateProvider.analyticsEnabled) {
       val bundle = event.getParams()
@@ -19,6 +23,11 @@ internal class AnalyticsEventSenderImpl(
     } else {
       Logger.d(TAG, "Send event: analytics disabled")
     }
+  }
+
+  override fun setCollectionEnabled(enabled: Boolean) {
+    Logger.d(TAG, "Set Firebase analytics collection enabled=$enabled")
+    analytics.setAnalyticsCollectionEnabled(enabled)
   }
 
   companion object {

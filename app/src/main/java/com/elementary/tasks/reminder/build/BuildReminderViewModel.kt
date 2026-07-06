@@ -838,8 +838,10 @@ class BuildReminderViewModel(
     activateReminderUseCase(reminder, startAnyway = true)
     Logger.i(TAG, "Reminder saved, id = ${reminder.uuId}")
 
-    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
-    reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
+    if (!isEdit) {
+      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
+      reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
+    }
 
     // Track reminder creation and show review dialog after 4 reminders
     if (!isEdit && !prefs.reviewDialogShown) {

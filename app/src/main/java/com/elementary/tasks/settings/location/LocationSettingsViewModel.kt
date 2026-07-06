@@ -7,6 +7,9 @@ import com.elementary.tasks.config.RadiusConfig
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -20,10 +23,15 @@ class LocationSettingsViewModel(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
   private val themeProvider: ThemeProvider,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
 
   val state: StateFlow<LocationSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<LocationSettingsEvent>> field = mutableLiveEventOf()
+
+  init {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.LOCATION_SETTINGS))
+  }
 
   fun onNotificationToggle() {
     prefs.isDistanceNotificationEnabled = !prefs.isDistanceNotificationEnabled

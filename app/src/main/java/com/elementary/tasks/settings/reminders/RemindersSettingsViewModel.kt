@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.livedata.Event
@@ -18,10 +21,15 @@ class RemindersSettingsViewModel(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
 
   val state: StateFlow<RemindersSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<RemindersSettingsEvent>> field = mutableLiveEventOf()
+
+  init {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.REMINDERS_SETTINGS))
+  }
 
   fun onPresetsClick() {
     navigationEvent.value = Event(RemindersSettingsEvent.OpenPresets)

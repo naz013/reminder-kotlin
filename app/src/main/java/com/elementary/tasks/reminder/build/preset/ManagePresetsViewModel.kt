@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.PresetAction
+import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.sync.DataType
@@ -19,6 +22,7 @@ class ManagePresetsViewModel(
   private val uiPresetListAdapter: UiPresetListAdapter,
   private val recurPresetRepository: RecurPresetRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
 
   val state: StateFlow<ManagePresetsState> field = MutableStateFlow(ManagePresetsState())
@@ -38,6 +42,7 @@ class ManagePresetsViewModel(
         id = id,
         ids = null,
       )
+      analyticsEventSender.send(PresetUsed(PresetAction.DELETE))
       loadPresets()
     }
   }
