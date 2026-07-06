@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 private const val FLOATING_BAR_ANIMATION_DURATION_MS = 300
@@ -55,6 +56,7 @@ data class NoteEditBarItem(
   val onClick: () -> Unit,
   val icon: @Composable () -> Unit,
   val bubbleContent: (@Composable () -> Unit)? = null,
+  val bubbleWidth: Dp = NOTE_EDIT_BUBBLE_WIDTH,
 )
 
 private val BAR_ITEM_SIZE = 52.dp
@@ -166,6 +168,7 @@ private fun NoteEditBarIconSlot(
           onDismissRequest = item.onClick,
           containerColor = containerColor,
           contentColor = contentColor,
+          width = item.bubbleWidth,
           content = bubble,
         )
       }

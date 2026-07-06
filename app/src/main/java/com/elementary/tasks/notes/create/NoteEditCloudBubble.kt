@@ -16,6 +16,7 @@ import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
@@ -27,7 +28,7 @@ import androidx.compose.ui.window.PopupProperties
 
 private val BUBBLE_SPACING = 8.dp
 private val BUBBLE_MARGIN = 20.dp
-private val BUBBLE_WIDTH = 272.dp
+val NOTE_EDIT_BUBBLE_WIDTH = 272.dp
 private val TAIL_WIDTH = 16.dp
 private val TAIL_HEIGHT = 8.dp
 private val BUBBLE_CORNER_RADIUS = 16.dp
@@ -44,6 +45,7 @@ fun NoteEditCloudBubble(
   containerColor: Color,
   contentColor: Color,
   modifier: Modifier = Modifier,
+  width: Dp = NOTE_EDIT_BUBBLE_WIDTH,
   content: @Composable () -> Unit,
 ) {
   val density = LocalDensity.current
@@ -59,7 +61,7 @@ fun NoteEditCloudBubble(
     properties = PopupProperties(focusable = true),
   ) {
     Surface(
-      modifier = modifier.width(BUBBLE_WIDTH),
+      modifier = modifier.width(width),
       shape = cloudBubbleShape(arrowFraction, density),
       color = containerColor,
       contentColor = contentColor,
