@@ -3,6 +3,7 @@ package com.github.naz013.ui.common
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.login.LoginStateViewModel
+import com.github.naz013.ui.common.login.PinLoginViewModel
 import com.github.naz013.ui.common.theme.ColorProvider
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -18,4 +19,5 @@ val uiCommonModule = module {
   factory { UnitsConverter(get()) }
 
   viewModel { LoginStateViewModel() }
+  viewModel { PinLoginViewModel(get()) }
 }

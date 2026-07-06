@@ -1,6 +1,6 @@
 package com.elementary.tasks.settings.export
 
-import com.elementary.tasks.settings.export.services.CloudServicesFragmentViewModel
+import com.elementary.tasks.settings.export.services.CloudServicesViewModel
 import com.elementary.tasks.settings.export.work.BackupSettingsWorker
 import com.elementary.tasks.settings.export.work.ObservableBackupWorker
 import com.elementary.tasks.settings.export.work.ObservableEraseDataWorker
@@ -18,6 +18,6 @@ val syncSettingsModule =
     worker { ObservableSyncWorker(get(), get(), get(), get()) }
     worker { ObservableEraseDataWorker(get(), get(), get(), get(), get()) }
 
-    viewModel { CloudBackupSettingsViewModel(get(), get(), get()) }
-    viewModel { CloudServicesFragmentViewModel(get(), get(), get(), get(), get()) }
+    viewModel { CloudBackupSettingsViewModel(get(), get(), get(), get(), get()) }
+    viewModel { CloudServicesViewModel(get(), get(), get(), get(), get()) }
   }

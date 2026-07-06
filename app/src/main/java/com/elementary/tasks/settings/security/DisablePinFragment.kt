@@ -1,46 +1,34 @@
 package com.elementary.tasks.settings.security
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentSettingsDeletePinBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.github.naz013.ui.common.fragment.hideKeyboard
+import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
+import com.elementary.tasks.notes.ObserveEvent
 import com.github.naz013.ui.common.fragment.toast
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class DisablePinFragment : BaseSettingsFragment<FragmentSettingsDeletePinBinding>() {
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ) = FragmentSettingsDeletePinBinding.inflate(inflater, container, false)
+class DisablePinFragment : BaseComposeToolbarFragment() {
+  private val viewModel by viewModel<DisablePinViewModel>()
 
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
+  @Composable
+  override fun Content() {
+    val state by viewModel.state.collectAsState()
+    viewModel.navigationEvent.ObserveEvent { handleEvent(it) }
 
-    binding.pinView.supportFinger = false
-    binding.pinView.callback = { onPinChanged(it) }
+    DisablePinScreen(
+      pin = state.pin,
+      onDigitClick = viewModel::onDigitClick,
+      onDeleteClick = viewModel::onDeleteClick,
+    )
   }
 
-  private fun onPinChanged(pin: String) {
-    if (pin.length < 6) return
-    if (prefs.pinCode == pin) {
-      prefs.pinCode = ""
-      moveBack()
-    } else {
-      toast(R.string.pin_not_match)
-      binding.pinView.clearPin()
+  private fun handleEvent(event: DisablePinEvent) {
+    when (event) {
+      DisablePinEvent.ShowPinMismatch -> toast(R.string.pin_not_match)
+      DisablePinEvent.PinCleared -> moveBack()
     }
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    hideKeyboard()
   }
 
   override fun getTitle(): String = getString(R.string.disable_pin)

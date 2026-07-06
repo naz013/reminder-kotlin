@@ -1,5 +1,6 @@
 package com.elementary.tasks.places.create
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
@@ -13,11 +14,14 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -33,8 +37,8 @@ class EditPlaceViewModel(
   private val deletePlaceUseCase: DeletePlaceUseCase,
   private val savePlaceUseCase: SavePlaceUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
-  private val _place = mutableLiveDataOf<UiPlaceEdit>()
-  val place = _place.toLiveData()
+  val state: StateFlow<EditPlaceState> field = MutableStateFlow(EditPlaceState())
+  val navigationEvent: LiveData<Event<EditPlaceEvent>> field = mutableLiveEventOf()
 
   var lat: Double = 0.0
   var lng: Double = 0.0
@@ -42,13 +46,12 @@ class EditPlaceViewModel(
   var markerStyle: Int = prefs.markerStyle
   var markerRadius: Int = prefs.radius
 
-  var canDelete: Boolean = false
-    private set
   var hasSameInDb: Boolean = false
     private set
   var isFromFile: Boolean = false
     private set
   private var isEdited: Boolean = false
+  private var loadedPlace: UiPlaceEdit? = null
 
   init {
     load()
@@ -58,14 +61,42 @@ class EditPlaceViewModel(
 
   fun hasLatLng(): Boolean = lat != 0.0 && lng != 0.0
 
-  fun getPlace(): UiPlaceEdit? = place.value
+  fun getPlace(): UiPlaceEdit? = loadedPlace
 
-  fun savePlace(data: SavePlaceData) {
+  fun onNameChange(name: String) {
+    state.update { it.copy(name = name, nameError = false) }
+  }
+
+  fun onSaveClick() {
+    val name = state.value.name.trim()
+    if (name.isEmpty()) {
+      state.update { it.copy(nameError = true) }
+      return
+    }
+    if (!hasLatLng()) {
+      navigationEvent.value = Event(EditPlaceEvent.NoLocationSelected)
+      return
+    }
+    if (isFromFile && hasSameInDb) {
+      navigationEvent.value = Event(EditPlaceEvent.AskCopySaving)
+    } else {
+      savePlace(name, newId = false)
+    }
+  }
+
+  fun savePlace(newId: Boolean = false) {
+    savePlace(state.value.name.trim(), newId)
+  }
+
+  private fun savePlace(
+    name: String,
+    newId: Boolean,
+  ) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val place =
         (placeRepository.getById(id) ?: Place(syncState = SyncState.WaitingForUpload)).apply {
-          this.name = data.name
+          this.name = name
           this.dateTime = dateTimeManager.getNowGmtDateTime()
           this.radius = markerRadius
           this.latitude = lat
@@ -73,13 +104,14 @@ class EditPlaceViewModel(
           this.marker = markerStyle
           this.syncState = SyncState.WaitingForUpload
         }
-      if (data.newId) {
+      if (newId) {
         place.id = UUID.randomUUID().toString()
       }
       savePlaceUseCase(place)
       Logger.logEvent("Place saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
+      navigationEvent.value = Event(EditPlaceEvent.Saved)
     }
   }
 
@@ -92,12 +124,17 @@ class EditPlaceViewModel(
     }
   }
 
+  fun onDeleteClick() {
+    navigationEvent.value = Event(EditPlaceEvent.ConfirmDelete)
+  }
+
   fun deletePlace() {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       deletePlaceUseCase(id)
       postInProgress(false)
       postCommand(Commands.DELETED)
+      navigationEvent.value = Event(EditPlaceEvent.Deleted)
     }
   }
 
@@ -105,7 +142,7 @@ class EditPlaceViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val place = placeRepository.getById(id)
       if (place != null) {
-        canDelete = true
+        state.update { it.copy(canDelete = true) }
         onPlaceLoaded(place)
       }
     }
@@ -122,7 +159,9 @@ class EditPlaceViewModel(
     address = place.address
 
     withContext(dispatcherProvider.default()) {
-      _place.postValue(uiPlaceEditAdapter.convert(place))
+      val uiPlace = uiPlaceEditAdapter.convert(place)
+      loadedPlace = uiPlace
+      state.update { it.copy(name = uiPlace.name) }
     }
   }
 
@@ -132,9 +171,4 @@ class EditPlaceViewModel(
       hasSameInDb = place != null
     }
   }
-
-  data class SavePlaceData(
-    val name: String,
-    val newId: Boolean,
-  )
 }

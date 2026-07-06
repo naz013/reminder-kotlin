@@ -35,7 +35,7 @@ class SplashScreenActivity : LightThemedActivity() {
     viewModel.openHome.observe(this) {
       enableShortcuts()
       if (it) {
-        startActivity(LoginApi.authIntent(this))
+        startActivity(LoginApi.authIntent(this, isBack = false))
         finish()
       } else {
         finishWith(BottomNavActivity::class.java)

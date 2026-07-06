@@ -15,5 +15,5 @@ val placeKoinModule =
     viewModel { (id: String) ->
       EditPlaceViewModel(id, get(), get(), get(), get(), get(), get(), get(), get())
     }
-    viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
+    viewModel { PlacesViewModel(get(), get(), get(), get(), get(), get()) }
   }

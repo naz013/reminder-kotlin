@@ -42,8 +42,7 @@
     <fragment
         android:id="@+id/privacyPolicyFragment"
         android:name="com.elementary.tasks.settings.other.PrivacyPolicyFragment"
-        android:label="@string/privacy_policy"
-        tools:layout="@layout/fragment_settings_web_view" />
+        android:label="@string/privacy_policy" />
     <fragment
         android:id="@+id/actionNotes"
         android:name="com.elementary.tasks.notes.list.NotesFragment"
@@ -133,8 +132,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.elementary.tasks.settings.SettingsFragment"
-        android:label="@string/action_settings"
-        tools:layout="@layout/fragment_settings">
+        android:label="@string/action_settings">
         <action
             android:id="@+id/action_settingsFragment_to_generalSettingsFragment"
             app:destination="@id/generalSettingsFragment"
@@ -192,8 +190,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_settingsFragment_to_testsSettingsFragment"
-            app:destination="@id/testsSettingsFragment"
+            android:id="@+id/action_settingsFragment_to_developerFragment"
+            app:destination="@id/developerFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -209,21 +207,11 @@
     <fragment
         android:id="@+id/generalSettingsFragment"
         android:name="com.elementary.tasks.settings.general.GeneralSettingsFragment"
-        android:label="@string/general"
-        tools:layout="@layout/fragment_settings_general">
-        <action
-            android:id="@+id/action_generalSettingsFragment_to_themePreviewFragment"
-            app:destination="@id/themePreviewFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-    </fragment>
+        android:label="@string/general" />
     <fragment
         android:id="@+id/remindersSettingsFragment"
         android:name="com.elementary.tasks.settings.reminders.RemindersSettingsFragment"
-        android:label="@string/reminders_"
-        tools:layout="@layout/fragment_settings_reminders">
+        android:label="@string/reminders_">
         <argument
             android:name="screen_title"
             app:nullable="true"
@@ -239,8 +227,7 @@
     <fragment
         android:id="@+id/exportSettingsFragment"
         android:name="com.elementary.tasks.settings.export.CloudBackupSettingsFragment"
-        android:label="@string/cloud_backup"
-        tools:layout="@layout/fragment_settings_export">
+        android:label="@string/cloud_backup">
         <action
             android:id="@+id/action_exportSettingsFragment_to_fragmentCloudDrives"
             app:destination="@id/fragmentCloudDrives"
@@ -252,13 +239,11 @@
     <fragment
         android:id="@+id/fragmentCloudDrives"
         android:name="com.elementary.tasks.settings.export.services.CloudServicesFragment"
-        android:label="@string/cloud_services"
-        tools:layout="@layout/fragment_settings_cloud_drives" />
+        android:label="@string/cloud_services" />
     <fragment
         android:id="@+id/calendarSettingsFragment"
         android:name="com.elementary.tasks.settings.calendar.CalendarSettingsFragment"
-        android:label="@string/calendar"
-        tools:layout="@layout/fragment_settings_calendar">
+        android:label="@string/calendar">
         <argument
             android:name="screen_title"
             app:nullable="true"
@@ -267,13 +252,11 @@
     <fragment
         android:id="@+id/birthdaySettingsFragment"
         android:name="com.elementary.tasks.settings.birthday.BirthdaySettingsFragment"
-        android:label="@string/birthdays"
-        tools:layout="@layout/fragment_settings_birthdays" />
+        android:label="@string/birthdays" />
     <fragment
         android:id="@+id/securitySettingsFragment"
         android:name="com.elementary.tasks.settings.security.SecuritySettingsFragment"
-        android:label="@string/security"
-        tools:layout="@layout/fragment_settings_security">
+        android:label="@string/security">
         <action
             android:id="@+id/action_securitySettingsFragment_to_addPinFragment"
             app:destination="@id/addPinFragment"
@@ -299,23 +282,19 @@
     <fragment
         android:id="@+id/addPinFragment"
         android:name="com.elementary.tasks.settings.security.AddPinFragment"
-        android:label="@string/add_pin"
-        tools:layout="@layout/fragment_settings_add_pin" />
+        android:label="@string/add_pin" />
     <fragment
         android:id="@+id/changePinFragment"
         android:name="com.elementary.tasks.settings.security.ChangePinFragment"
-        android:label="@string/change_pin"
-        tools:layout="@layout/fragment_settings_change_pin" />
+        android:label="@string/change_pin" />
     <fragment
         android:id="@+id/disablePinFragment"
         android:name="com.elementary.tasks.settings.security.DisablePinFragment"
-        android:label="@string/disable_pin"
-        tools:layout="@layout/fragment_settings_delete_pin" />
+        android:label="@string/disable_pin" />
     <fragment
         android:id="@+id/locationSettingsFragment"
         android:name="com.elementary.tasks.settings.location.LocationSettingsFragment"
-        android:label="@string/location"
-        tools:layout="@layout/fragment_settings_location">
+        android:label="@string/location">
         <action
             android:id="@+id/action_locationSettingsFragment_to_mapStyleFragment"
             app:destination="@id/mapStyleFragment"
@@ -334,31 +313,26 @@
     <fragment
         android:id="@+id/mapStyleFragment"
         android:name="com.elementary.tasks.settings.location.MapStyleFragment"
-        android:label="@string/map_style"
-        tools:layout="@layout/fragment_settings_map_style" />
+        android:label="@string/map_style" />
     <fragment
         android:id="@+id/placesFragment"
         android:name="com.elementary.tasks.places.list.PlacesFragment"
-        android:label="@string/places"
-        tools:layout="@layout/fragment_places" />
+        android:label="@string/places" />
     <navigation
         android:id="@+id/navigation2"
         app:startDestination="@id/otherSettingsFragment">
         <fragment
             android:id="@+id/permissionsFragment"
             android:name="com.elementary.tasks.settings.other.PermissionsFragment"
-            android:label="@string/permissions"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/permissions" />
         <fragment
             android:id="@+id/ossFragment"
             android:name="com.elementary.tasks.settings.other.OssFragment"
-            android:label="@string/open_source_licenses"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/open_source_licenses" />
         <fragment
             android:id="@+id/otherSettingsFragment"
             android:name="com.elementary.tasks.settings.other.OtherSettingsFragment"
-            android:label="@string/other"
-            tools:layout="@layout/fragment_settings_other">
+            android:label="@string/other">
             <action
                 android:id="@+id/action_otherSettingsFragment_to_permissionsFragment"
                 app:destination="@id/permissionsFragment"
@@ -398,69 +372,37 @@
         <fragment
             android:id="@+id/changesFragment"
             android:name="com.elementary.tasks.settings.other.whatsnew.WhatsNewFragment"
-            android:label="@string/whats_new"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/whats_new" />
         <fragment
             android:id="@+id/privacyPolicyFragment"
             android:name="com.elementary.tasks.settings.other.PrivacyPolicyFragment"
-            android:label="@string/privacy_policy"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/privacy_policy" />
         <fragment
             android:id="@+id/termsFragment"
             android:name="com.elementary.tasks.settings.other.TermsFragment"
-            android:label="@string/terms_and_conditions"
-            tools:layout="@layout/fragment_settings_web_view" />
+            android:label="@string/terms_and_conditions" />
     </navigation>
     <fragment
         android:id="@+id/noteSettingsFragment"
         android:name="com.elementary.tasks.settings.NoteSettingsFragment"
-        android:label="@string/notes"
-        tools:layout="@layout/fragment_settings_notes" >
+        android:label="@string/notes">
         <argument
             android:name="screen_title"
             app:nullable="true"
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/testsSettingsFragment"
-        android:name="com.elementary.tasks.settings.test.TestsSettingsFragment"
-        android:label="Tests"
-        tools:layout="@layout/fragment_settings_tests">
-        <action
-            android:id="@+id/action_testsFragment_to_objectExportTestFragment"
-            app:destination="@id/objectExportTestFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-        <action
-            android:id="@+id/action_testsFragment_to_developerFragment"
-            app:destination="@id/developerFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    </fragment>
-    <fragment
         android:id="@+id/proVersionFragment"
-        android:name="com.elementary.tasks.settings.ProVersionFragment"
-        android:label="@string/pro_version"
-        tools:layout="@layout/fragment_settings_pro_page" />
-    <fragment
-        android:id="@+id/themePreviewFragment"
-        android:name="com.elementary.tasks.settings.general.ThemePreviewFragment"
-        android:label="Theme Preview"
-        tools:layout="@layout/fragment_settings_theme_preview" />
+        android:name="com.elementary.tasks.settings.proversion.ProVersionFragment"
+        android:label="@string/pro_version" />
     <fragment
         android:id="@+id/troubleshootingFragment"
         android:name="com.elementary.tasks.settings.troubleshooting.TroubleshootingFragment"
-        android:label="@string/troubleshooting"
-        tools:layout="@layout/fragment_settings_troubleshooting" />
+        android:label="@string/troubleshooting" />
     <fragment
         android:id="@+id/changesFragment"
         android:name="com.elementary.tasks.settings.other.whatsnew.WhatsNewFragment"
-        android:label="@string/whats_new"
-        tools:layout="@layout/fragment_settings_web_view" />
+        android:label="@string/whats_new" />
     <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"
@@ -484,8 +426,7 @@
     <fragment
         android:id="@+id/managePresetsFragment"
         android:name="com.elementary.tasks.settings.reminders.ManagePresetsFragment"
-        android:label="@string/recur_presets"
-        tools:layout="@layout/fragment_manage_presets" />
+        android:label="@string/recur_presets" />
     <fragment
         android:id="@+id/editBirthdayFragment"
         android:name="com.elementary.tasks.birthdays.create.EditBirthdayFragment"
@@ -507,17 +448,27 @@
     <fragment
         android:id="@+id/developerFragment"
         android:name="com.elementary.tasks.settings.test.DeveloperFragment"
-        android:label="Developer" />
+        android:label="Developer">
+        <action
+            android:id="@+id/action_developerFragment_to_objectExportTestFragment"
+            app:destination="@id/objectExportTestFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_developerFragment_to_proVersionFragment"
+            app:destination="@id/proVersionFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/editGroupFragment"
         android:name="com.elementary.tasks.groups.create.EditGroupFragment"
         android:label="@string/create_group"
         tools:layout="@layout/fragment_edit_group" />
-    <fragment
-        android:id="@+id/editPlaceFragment"
-        android:name="com.elementary.tasks.places.create.EditPlaceFragment"
-        android:label="@string/new_place"
-        tools:layout="@layout/fragment_edit_place" />
     <fragment
         android:id="@+id/previewGoogleTaskFragment"
         android:name="com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment"
