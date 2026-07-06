@@ -1,24 +1,28 @@
 package com.elementary.tasks.googletasks
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
-import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.googletasks.usecase.tasklist.SyncAllGoogleTaskLists
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
+import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
-import kotlinx.coroutines.Job
+import com.github.naz013.ui.common.isColorDark
+import com.github.naz013.ui.common.theme.ThemeProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class GoogleTasksViewModel(
@@ -29,85 +33,94 @@ class GoogleTasksViewModel(
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
   private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists,
+  private val contextProvider: ContextProvider,
 ) : BaseProgressViewModel(dispatcherProvider) {
-  private val _googleTaskLists = mutableLiveDataOf<List<GoogleTaskList>>()
-  val googleTaskLists = _googleTaskLists.toLiveData()
 
-  private val _allGoogleTasks = mutableLiveDataOf<List<UiGoogleTaskList>>()
-  val allGoogleTasks = _allGoogleTasks.toLiveData()
+  val state: StateFlow<GoogleTasksState> field = MutableStateFlow(GoogleTasksState())
 
-  private val _defTaskList = mutableLiveDataOf<GoogleTaskList>()
-  val defTaskList = _defTaskList.toLiveData()
+  private val isBusy = MutableStateFlow(false)
+  private val isLoginInProgress = MutableStateFlow(false)
 
-  private var isSyncing = false
-  private var job: Job? = null
-
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    load()
-  }
-
-  private fun load() {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val googleTaskLists = googleTaskListRepository.getAll()
-
-      val map = mapTaskLists(googleTaskLists)
-
-      val googleTasks =
-        googleTaskRepository.getAll().map {
-          uiGoogleTaskListAdapter.convert(it, map[it.listId])
+  init {
+    viewModelScope.launch {
+      combine(isBusy, isLoginInProgress) { busy, login -> busy || login }
+        .collect { loading ->
+          postInProgress(loading)
+          state.update { it.copy(isLoading = loading) }
         }
-
-      val defTaskList =
-        googleTaskLists.firstOrNull { it.isDefault() }
-          ?: googleTaskLists.firstOrNull()
-
-      defTaskList?.also { _defTaskList.postValue(it) }
-      _googleTaskLists.postValue(googleTaskLists)
-      _allGoogleTasks.postValue(googleTasks)
     }
   }
 
-  private fun mapTaskLists(list: List<GoogleTaskList>): Map<String, GoogleTaskList> {
-    val map = mutableMapOf<String, GoogleTaskList>()
-    list.forEach { map[it.listId] = it }
-    return map
+  override fun onResume(owner: LifecycleOwner) {
+    super.onResume(owner)
+    viewModelScope.launch(dispatcherProvider.default()) { load() }
   }
 
-  fun loadGoogleTasks() {
-    postInProgress(true)
-    job =
-      viewModelScope.launch(dispatcherProvider.default()) {
-        syncAllGoogleTaskLists()
-        load()
-        withUIContext {
-          postInProgress(false)
-        }
-        job = null
-      }
+  /** Bridges [com.elementary.tasks.core.cloud.GoogleLogin], which needs the Fragment for its
+   *  sign-in activity result contract and so cannot live in this ViewModel. */
+  fun updateLoginStatus(isLogged: Boolean) {
+    state.update { it.copy(isLoggedIn = isLogged) }
+    if (isLogged) {
+      loadGoogleTasks()
+    }
   }
+
+  fun setLoginInProgress(inProgress: Boolean) {
+    isLoginInProgress.value = inProgress
+  }
+
+  private suspend fun load() {
+    val googleTaskLists = googleTaskListRepository.getAll()
+    val map = googleTaskLists.associateBy { it.listId }
+
+    val tasks =
+      googleTaskRepository.getAll().map {
+        uiGoogleTaskListAdapter.convert(it, map[it.listId])
+      }
+
+    val defTaskList =
+      googleTaskLists.firstOrNull { it.isDefault() }
+        ?: googleTaskLists.firstOrNull()
+
+    state.update {
+      it.copy(
+        taskLists = googleTaskLists.map { list -> list.toEntry() },
+        tasks = tasks,
+        fabContainerColor = defTaskList?.let { list -> Color(themedColor(list.color)) },
+        fabContentColor = defTaskList?.let { list -> fabContentColor(list) },
+      )
+    }
+  }
+
+  private fun GoogleTaskList.toEntry() = UiGoogleTaskListEntry(id = listId, title = title, color = themedColor(color))
+
+  private fun themedColor(colorIndex: Int): Int = ThemeProvider.themedColor(contextProvider.themedContext, colorIndex)
+
+  private fun fabContentColor(list: GoogleTaskList): Color = if (themedColor(list.color).isColorDark()) Color.White else Color.Black
+
+  fun loadGoogleTasks() = refreshTasks { syncAllGoogleTaskLists() }
 
   fun sync() {
-    if (isSyncing) return
-    isSyncing = true
-    postInProgress(true)
+    if (isBusy.value) return
+    refreshTasks { syncAllGoogleTaskLists() }
+  }
+
+  private fun refreshTasks(sync: suspend () -> Unit) {
+    isBusy.value = true
     viewModelScope.launch(dispatcherProvider.default()) {
-      syncAllGoogleTaskLists()
+      sync()
       load()
-      isSyncing = false
-      withUIContext {
-        postInProgress(false)
-      }
+      isBusy.value = false
     }
   }
 
   fun toggleTask(taskId: String) {
-    postInProgress(true)
+    isBusy.value = true
     viewModelScope.launch(dispatcherProvider.default()) {
       try {
         val googleTask = googleTaskRepository.getById(taskId)
         if (googleTask == null) {
-          postInProgress(false)
+          isBusy.value = false
           postCommand(Commands.FAILED)
           return@launch
         }
@@ -119,13 +132,13 @@ class GoogleTasksViewModel(
           }
         updated?.also { googleTaskRepository.save(it) }
         load()
-        postInProgress(false)
+        isBusy.value = false
         postCommand(Commands.UPDATED)
-        withUIContext {
+        withContext(dispatcherProvider.main()) {
           appWidgetUpdater.updateScheduleWidget()
         }
       } catch (e: IOException) {
-        postInProgress(false)
+        isBusy.value = false
         postCommand(Commands.FAILED)
       }
     }

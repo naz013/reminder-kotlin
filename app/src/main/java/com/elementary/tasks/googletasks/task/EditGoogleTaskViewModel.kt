@@ -2,10 +2,10 @@ package com.elementary.tasks.googletasks.task
 
 import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.utils.Configs
@@ -16,14 +16,15 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DeepLinkData
 import com.github.naz013.repository.GoogleTaskRepository
@@ -31,13 +32,17 @@ import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 class EditGoogleTaskViewModel(
-  private val arguments: Bundle?,
+  val id: String,
+  private val initialListId: String,
   private val googleTasksApi: GoogleTasksApi,
   dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
@@ -49,61 +54,40 @@ class EditGoogleTaskViewModel(
   private val getGoogleTaskByIdUseCase: GetGoogleTaskByIdUseCase,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val activateReminderUseCase: ActivateReminderUseCase,
+  private val textProvider: TextProvider,
 ) : BaseProgressViewModel(dispatcherProvider) {
-  private val _dateState = mutableLiveDataOf<DateState>()
-  val dateState = _dateState.toLiveData()
+  val state: StateFlow<EditGoogleTaskState> field = MutableStateFlow(EditGoogleTaskState())
+  val navigationEvent: LiveData<Event<EditGoogleTaskEvent>> field = mutableLiveEventOf()
 
-  private val _timeState = mutableLiveDataOf<TimeState>()
-  val timeState = _timeState.toLiveData()
-
-  private val _taskList = mutableLiveDataOf<GoogleTaskList>()
-  val taskList = _taskList.toLiveData()
-
-  private val _task = mutableLiveDataOf<GoogleTask>()
-  val task = _task.toLiveData()
-
-  private val _toast = mutableLiveDataOf<Int>()
-  val toast = _toast.toLiveData()
-
-  var id = ""
-    private set
   private var isEdited = false
   private var isReminderEdited = false
-  var listId: String = ""
-    private set
+  private var listId: String = ""
 
-  var date: LocalDate = LocalDate.now()
-    private set
-  var time: LocalTime = LocalTime.now()
-    private set
+  private var date: LocalDate = LocalDate.now()
+  private var time: LocalTime = LocalTime.now()
 
-  var editedTask: GoogleTask? = null
-    private set
+  private var editedTask: GoogleTask? = null
   private var editedReminder: Reminder? = null
 
-  var googleTaskLists: List<GoogleTaskList> = emptyList()
-    private set
+  private var googleTaskLists: List<GoogleTaskList> = emptyList()
 
   init {
-    id = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
+    state.update { it.copy(hasId = id.isNotEmpty()) }
     viewModelScope.launch(dispatcherProvider.default()) {
       googleTaskLists = getAllGoogleTaskListsUseCase()
       editedTask = getGoogleTaskByIdUseCase(id)
 
-      val bundleListId = arguments?.getString(IntentKeys.INTENT_LIST_ID)
       val googleTaskList =
-        if (bundleListId.isNullOrEmpty()) {
-          // Load default list
+        if (initialListId.isEmpty()) {
           googleTaskLists.firstOrNull { it.isDefault() }
         } else {
-          // Load list by id
-          googleTaskLists.firstOrNull { it.listId == bundleListId }
+          googleTaskLists.firstOrNull { it.listId == initialListId }
             ?: googleTaskLists.firstOrNull { it.isDefault() }
         }
 
       listId = googleTaskList?.listId ?: ""
-      googleTaskList?.also {
-        _taskList.postValue(it)
+      googleTaskList?.also { list ->
+        state.update { it.copy(listName = list.title) }
       }
       Logger.i(TAG, "Opening Google Task id=$id, listId=$listId")
 
@@ -118,33 +102,111 @@ class EditGoogleTaskViewModel(
     appWidgetUpdater.updateAllWidgets()
   }
 
-  fun onCreated(
-    arguments: Bundle?,
-    savedInstanceState: Bundle?,
-  ) {
-    if (savedInstanceState == null) {
-      initDefaults()
-      checkDeepLink(arguments)
+  fun hasId(): Boolean = id.isNotEmpty()
+
+  fun onTitleChange(text: String) {
+    state.update { it.copy(title = text, titleError = false) }
+  }
+
+  fun onNotesChange(text: String) {
+    state.update { it.copy(notes = text) }
+  }
+
+  fun onDateFieldClick() {
+    state.update { it.copy(dialog = EditGoogleTaskDialog.DateTypeChooser) }
+  }
+
+  fun onTimeFieldClick() {
+    if (state.value.isDateSelected) {
+      state.update { it.copy(dialog = EditGoogleTaskDialog.TimeTypeChooser) }
     }
   }
 
-  fun hasId(): Boolean = id.isNotEmpty()
+  fun onDateTypeSelected(selectDate: Boolean) {
+    dismissDialog()
+    if (selectDate) {
+      navigationEvent.postValue(Event(EditGoogleTaskEvent.ShowDatePicker(date)))
+    } else {
+      onDateStateChanged(false)
+    }
+  }
+
+  fun onTimeTypeSelected(selectTime: Boolean) {
+    dismissDialog()
+    if (selectTime) {
+      navigationEvent.postValue(Event(EditGoogleTaskEvent.ShowTimePicker(time)))
+    } else {
+      onTimeStateChanged(false)
+    }
+  }
 
   fun onDateSet(localDate: LocalDate) {
     date = localDate
-    _dateState.postValue(DateState.SelectedDate(dateTimeManager.toGoogleTaskDate(date)))
+    onDateStateChanged(true)
   }
 
   fun onTimeSet(localTime: LocalTime) {
     time = localTime
-    _timeState.postValue(TimeState.SelectedTime(dateTimeManager.getTime(time)))
+    onTimeStateChanged(true)
   }
 
-  fun save(
-    summary: String,
-    note: String,
-  ) {
-    val reminder = createReminder(summary).takeIf { isTimeSelected() }
+  fun onListFieldClick() {
+    showListPicker(forMove = false)
+  }
+
+  fun onMoveMenuClick() {
+    showListPicker(forMove = true)
+  }
+
+  private fun showListPicker(forMove: Boolean) {
+    if (googleTaskLists.isEmpty()) return
+    state.update {
+      it.copy(
+        dialog =
+          EditGoogleTaskDialog.ListPicker(
+            options = googleTaskLists.map { list -> GoogleTaskListOption(list.listId, list.title) },
+            selectedId = listId,
+            forMove = forMove,
+          ),
+      )
+    }
+  }
+
+  fun onListPicked(selectedListId: String) {
+    val dialog = state.value.dialog as? EditGoogleTaskDialog.ListPicker
+    dismissDialog()
+    if (dialog?.forMove == true) {
+      moveTask(selectedListId)
+    } else {
+      onListSelected(selectedListId)
+    }
+  }
+
+  fun onDeleteMenuClick() {
+    state.update { it.copy(dialog = EditGoogleTaskDialog.DeleteConfirm) }
+  }
+
+  fun onDeleteConfirmed() {
+    dismissDialog()
+    editedTask?.let { deleteGoogleTask(it) }
+  }
+
+  fun onDialogDismiss() {
+    dismissDialog()
+  }
+
+  private fun dismissDialog() {
+    state.update { it.copy(dialog = null) }
+  }
+
+  fun save() {
+    val summary = state.value.title.trim()
+    if (summary.isEmpty()) {
+      state.update { it.copy(titleError = true) }
+      return
+    }
+    val note = state.value.notes.trim()
+    val reminder = createReminder(summary).takeIf { state.value.isTimeSelected }
     val item = editedTask
     if (item != null) {
       val initListId = item.listId
@@ -160,64 +222,62 @@ class EditGoogleTaskViewModel(
     }
   }
 
-  fun onDateStateChanged(enabled: Boolean) {
+  private fun onDateStateChanged(enabled: Boolean) {
     if (enabled) {
-      onDateSet(date)
+      state.update {
+        it.copy(isDateSelected = true, dateText = dateTimeManager.toGoogleTaskDate(date))
+      }
     } else {
-      _dateState.postValue(DateState.NoDate)
+      state.update { it.copy(isDateSelected = false, dateText = null) }
       onTimeStateChanged(false)
     }
   }
 
-  fun onTimeStateChanged(enabled: Boolean) {
+  private fun onTimeStateChanged(enabled: Boolean) {
     if (enabled) {
-      onTimeSet(time)
+      state.update { it.copy(isTimeSelected = true, timeText = dateTimeManager.getTime(time)) }
     } else {
-      _timeState.postValue(TimeState.NoTime)
+      state.update { it.copy(isTimeSelected = false, timeText = null) }
     }
   }
 
-  fun moveTask(listId: String) {
+  private fun moveTask(newListId: String) {
     editedTask?.also {
       val initListId = it.listId
-      if (!listId.matches(initListId.toRegex())) {
-        it.listId = listId
+      if (!newListId.matches(initListId.toRegex())) {
+        it.listId = newListId
         moveGoogleTask(it, initListId)
       } else {
-        _toast.postValue(R.string.this_is_same_list)
+        postError(textProvider.getString(R.string.this_is_same_list))
       }
     }
   }
 
-  fun deleteGoogleTask(googleTask: GoogleTask) {
-    postInProgress(true)
+  private fun deleteGoogleTask(googleTask: GoogleTask) {
+    setBusy(true)
     Logger.i(TAG, "Deleting Google Task (${googleTask.taskId}), listId=${googleTask.listId}")
     viewModelScope.launch(dispatcherProvider.default()) {
       if (googleTasksApi.deleteTask(googleTask)) {
         googleTaskRepository.delete(googleTask.taskId)
-        postInProgress(false)
-        postCommand(Commands.DELETED)
+        setBusy(false)
+        navigationEvent.postValue(Event(EditGoogleTaskEvent.Deleted))
       } else {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+        setBusy(false)
+        postError(textProvider.getString(R.string.failed_to_update_task))
       }
     }
   }
 
-  fun onListSelected(listId: String) {
-    this.listId = listId
+  private fun onListSelected(newListId: String) {
+    listId = newListId
     googleTaskLists
-      .firstOrNull { it.listId == listId }
-      ?.also {
-        _taskList.postValue(it)
+      .firstOrNull { it.listId == newListId }
+      ?.also { list ->
+        state.update { it.copy(listName = list.title) }
       }
   }
 
-  fun isDateSelected(): Boolean = dateState.value is DateState.SelectedDate
-
-  fun isTimeSelected(): Boolean = timeState.value is TimeState.SelectedTime
-
-  private fun checkDeepLink(arguments: Bundle?) {
+  fun checkDeepLink(arguments: Bundle?) {
     if (arguments?.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) == true) {
       runCatching {
         val parser = DeepLinkDataParser()
@@ -231,6 +291,7 @@ class EditGoogleTaskViewModel(
     listId = googleTask.listId
     if (!isEdited) {
       Logger.d(TAG, "Editing Google Task id=${googleTask.taskId}, listId=${googleTask.listId}")
+      state.update { it.copy(title = googleTask.title, notes = googleTask.notes) }
       googleTask.dueDate
         .takeIf { it != 0L }
         ?.let { dateTimeManager.fromMillis(it) }
@@ -239,10 +300,9 @@ class EditGoogleTaskViewModel(
           onDateStateChanged(true)
         }
       isEdited = true
-      _task.postValue(googleTask)
       viewModelScope.launch(dispatcherProvider.default()) {
-        googleTaskLists.firstOrNull { it.listId == googleTask.listId }?.also {
-          _taskList.postValue(it)
+        googleTaskLists.firstOrNull { it.listId == googleTask.listId }?.also { list ->
+          state.update { it.copy(listName = list.title) }
         }
       }
     }
@@ -251,25 +311,16 @@ class EditGoogleTaskViewModel(
 
   private fun initFromDeepLink(deepLinkData: DeepLinkData?) {
     if (deepLinkData is GoogleTaskDateTimeDeepLinkData) {
-      onDateStateChanged(true)
       onDateSet(deepLinkData.date)
-      deepLinkData.time?.also {
-        onTimeStateChanged(true)
-        onTimeSet(it)
-      }
+      deepLinkData.time?.also { onTimeSet(it) }
     }
-  }
-
-  private fun initDefaults() {
-    _dateState.postValue(DateState.NoDate)
-    _timeState.postValue(TimeState.NoTime)
   }
 
   private fun moveGoogleTask(
     googleTask: GoogleTask,
     oldListId: String,
   ) {
-    postInProgress(true)
+    setBusy(true)
     Logger.i(
       TAG,
       "Moving Google Task (${googleTask.taskId}) from $oldListId to ${googleTask.listId}",
@@ -277,21 +328,21 @@ class EditGoogleTaskViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       googleTasksApi.moveTask(googleTask, oldListId)?.let {
         googleTaskRepository.save(it)
-        postInProgress(false)
-        postCommand(Commands.SAVED)
+        setBusy(false)
+        navigationEvent.postValue(Event(EditGoogleTaskEvent.Saved))
       } ?: run {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+        setBusy(false)
+        postError(textProvider.getString(R.string.failed_to_update_task))
       }
     }
   }
 
   private fun loadReminder(uuId: String) {
-    postInProgress(true)
+    setBusy(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = reminderRepository.getById(uuId)
       if (reminder == null) {
-        postInProgress(false)
+        setBusy(false)
         return@launch
       }
       if (!isReminderEdited) {
@@ -300,7 +351,7 @@ class EditGoogleTaskViewModel(
         onTimeStateChanged(true)
         isReminderEdited = true
       }
-      postInProgress(false)
+      setBusy(false)
     }
   }
 
@@ -323,17 +374,17 @@ class EditGoogleTaskViewModel(
     googleTask: GoogleTask,
     reminder: Reminder?,
   ) {
-    postInProgress(true)
+    setBusy(true)
     Logger.i(TAG, "Creating Google Task (${googleTask.taskId}), listId=${googleTask.listId}")
     viewModelScope.launch(dispatcherProvider.default()) {
       googleTasksApi.saveTask(googleTask)?.let {
         googleTaskRepository.save(it)
         saveReminder(reminder)
-        postInProgress(false)
-        postCommand(Commands.SAVED)
+        setBusy(false)
+        navigationEvent.postValue(Event(EditGoogleTaskEvent.Saved))
       } ?: run {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+        setBusy(false)
+        postError(textProvider.getString(R.string.failed_to_update_task))
       }
     }
   }
@@ -342,17 +393,17 @@ class EditGoogleTaskViewModel(
     googleTask: GoogleTask,
     reminder: Reminder?,
   ) {
-    postInProgress(true)
+    setBusy(true)
     Logger.i(TAG, "Updating Google Task (${googleTask.taskId}), listId=${googleTask.listId}")
     viewModelScope.launch(dispatcherProvider.default()) {
       googleTasksApi.updateTask(googleTask)?.let {
         googleTaskRepository.save(it)
         saveReminder(reminder)
-        postInProgress(false)
-        postCommand(Commands.SAVED)
+        setBusy(false)
+        navigationEvent.postValue(Event(EditGoogleTaskEvent.Saved))
       } ?: run {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+        setBusy(false)
+        postError(textProvider.getString(R.string.failed_to_update_task))
       }
     }
   }
@@ -362,7 +413,7 @@ class EditGoogleTaskViewModel(
     oldListId: String,
     reminder: Reminder?,
   ) {
-    postInProgress(true)
+    setBusy(true)
     Logger.i(
       TAG,
       "Updating and moving Google Task (${googleTask.taskId}) " +
@@ -376,11 +427,11 @@ class EditGoogleTaskViewModel(
         }?.let {
           googleTaskRepository.save(it)
           saveReminder(reminder)
-          postInProgress(false)
-          postCommand(Commands.SAVED)
+          setBusy(false)
+          navigationEvent.postValue(Event(EditGoogleTaskEvent.Saved))
         } ?: run {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+        setBusy(false)
+        postError(textProvider.getString(R.string.failed_to_update_task))
       }
     }
   }
@@ -411,7 +462,7 @@ class EditGoogleTaskViewModel(
       notes = note,
       dueDate =
         date
-          .takeIf { isDateSelected() }
+          .takeIf { state.value.isDateSelected }
           ?.let { dateTimeManager.toMillis(LocalDateTime.of(it, time)) } ?: 0L,
       uuId = reminder?.uuId ?: "",
     )
@@ -423,20 +474,9 @@ class EditGoogleTaskViewModel(
       this
     }
 
-  sealed class DateState {
-    data class SelectedDate(
-      val formattedDate: String,
-    ) : DateState()
-
-    data object NoDate : DateState()
-  }
-
-  sealed class TimeState {
-    data class SelectedTime(
-      val formattedTime: String,
-    ) : TimeState()
-
-    data object NoTime : TimeState()
+  private fun setBusy(busy: Boolean) {
+    postInProgress(busy)
+    state.update { it.copy(isLoading = busy) }
   }
 
   companion object {

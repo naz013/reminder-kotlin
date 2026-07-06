@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.databinding.FragmentReminderPreviewBinding
+import com.elementary.tasks.googletasks.GoogleTasksFragment
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
@@ -148,9 +149,10 @@ class PreviewReminderFragment : BaseToolbarFragment<FragmentReminderPreviewBindi
   private fun onGoogleTaskClicked(id: String) {
     navigate {
       navigate(
-        R.id.editGoogleTaskFragment,
+        R.id.actionGoogle,
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, id)
+          putBoolean(GoogleTasksFragment.ARG_OPEN_EDIT, true)
         },
         NavigationAnimations.inDepthNavOptions(),
       )

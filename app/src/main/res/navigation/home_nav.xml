@@ -80,16 +80,7 @@
     <fragment
         android:id="@+id/actionGoogle"
         android:name="com.elementary.tasks.googletasks.GoogleTasksFragment"
-        android:label="@string/tasks"
-        tools:layout="@layout/fragment_google_tasks">
-        <action
-            android:id="@+id/action_actionGoogle_to_taskListFragment"
-            app:destination="@id/googleTaskListFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-    </fragment>
+        android:label="@string/tasks" />
     <fragment
         android:id="@+id/groupsFragment"
         android:name="com.elementary.tasks.groups.list.GroupsFragment"
@@ -112,23 +103,6 @@
             android:id="@+id/deepLink2"
             app:uri="reminderapp.com/calendar/{date}" />
     </fragment>
-    <fragment
-        android:id="@+id/googleTaskListFragment"
-        android:name="com.elementary.tasks.googletasks.list.GoogleTaskListFragment"
-        android:label="@string/google_tasks"
-        tools:layout="@layout/fragment_google_list">
-        <argument
-            android:name="arg_id"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_taskListFragment_to_previewGoogleTaskFragment"
-            app:destination="@id/previewGoogleTaskFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    </fragment>
-
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.elementary.tasks.settings.SettingsFragment"
@@ -469,25 +443,6 @@
         android:name="com.elementary.tasks.groups.create.EditGroupFragment"
         android:label="@string/create_group"
         tools:layout="@layout/fragment_edit_group" />
-    <fragment
-        android:id="@+id/previewGoogleTaskFragment"
-        android:name="com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment"
-        android:label="@string/details"
-        tools:layout="@layout/fragment_google_task_preview">
-        <argument
-            android:name="item_id"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/editGoogleTaskFragment"
-        android:name="com.elementary.tasks.googletasks.task.EditGoogleTaskFragment"
-        android:label="@string/edit_task"
-        tools:layout="@layout/fragment_google_task_edit" />
-    <fragment
-        android:id="@+id/editGoogleTaskListFragment"
-        android:name="com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListFragment"
-        android:label="@string/new_tasks_list"
-        tools:layout="@layout/fragment_google_task_list_edit" />
     <fragment
         android:id="@+id/previewReminderFragment"
         android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"

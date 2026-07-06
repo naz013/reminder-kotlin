@@ -1,13 +1,11 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
-import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.analytics.AnalyticsStateProviderImpl
 import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
-import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.services.JobScheduler
@@ -120,9 +118,6 @@ val utilModule = module {
   factory { DateTimePickerProvider(get()) }
   factory { DoNotDisturbManager(get(), get()) }
 
-  factory { (fragment: Fragment, callback: GoogleLogin.LoginCallback) ->
-    GoogleLogin(fragment, get(), get(), get(), get(), callback, get())
-  }
   factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
     DropboxLogin(activity, get(), get(), callback, get())
   }
