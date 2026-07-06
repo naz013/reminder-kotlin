@@ -239,8 +239,7 @@
     <fragment
         android:id="@+id/fragmentCloudDrives"
         android:name="com.elementary.tasks.settings.export.services.CloudServicesFragment"
-        android:label="@string/cloud_services"
-        tools:layout="@layout/fragment_settings_cloud_drives" />
+        android:label="@string/cloud_services" />
     <fragment
         android:id="@+id/calendarSettingsFragment"
         android:name="com.elementary.tasks.settings.calendar.CalendarSettingsFragment"
