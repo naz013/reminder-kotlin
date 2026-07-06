@@ -90,6 +90,7 @@ object PrefsConstants {
 
   const val REMINDERS_CREATED_COUNT = "reminders_created_count"
   const val REVIEW_DIALOG_SHOWN = "review_dialog_shown"
+  const val GOOGLE_TASKS_ADOPTED = "google_tasks_adopted"
 
   const val WORKER_NETWORK_TYPE = "worker_network_type"
   const val OCCURRENCE_MIGRATED = "occurrence_migrated"

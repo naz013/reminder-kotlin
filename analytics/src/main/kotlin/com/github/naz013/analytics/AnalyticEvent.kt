@@ -30,6 +30,20 @@ data class FeatureUsedEvent(
   }
 }
 
+/** Send once per user, the first time they complete a feature's core action - not on every use
+ *  like [FeatureUsedEvent]. Lets adoption be tracked as a distinct GA4 event/metric from overall
+ *  usage volume, so dashboards can show new adopters over time instead of only total event counts. */
+data class FeatureAdoptedEvent(
+  val feature: Feature
+) : AnalyticEvent(Event.FEATURE_ADOPTED) {
+
+  override fun getParams(): Bundle {
+    return Bundle().apply {
+      putString(Parameter.TYPE, feature.value)
+    }
+  }
+}
+
 data class ScreenUsedEvent(
   val screen: Screen
 ) : AnalyticEvent(Event.SCREEN_OPENED) {
@@ -120,6 +134,7 @@ enum class Widget(val value: String) {
 
 enum class Event(val value: String) {
   FEATURE_USED("feature_used"),
+  FEATURE_ADOPTED("feature_adopted"),
   REMINDER_USED("reminder_used"),
   SCREEN_OPENED("screen_opened"),
   PRESET_USED("preset_used"),
