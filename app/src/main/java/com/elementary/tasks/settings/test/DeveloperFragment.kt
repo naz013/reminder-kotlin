@@ -61,6 +61,7 @@ class DeveloperFragment : BaseComposeToolbarFragment() {
       onClearAllTablesClick = viewModel::onClearAllTablesClick,
       onClearAllTablesConfirm = viewModel::onClearAllTablesConfirm,
       onClearAllTablesDismiss = viewModel::onClearAllTablesDismiss,
+      onInsertDemoDataClick = viewModel::onInsertDemoDataClick,
       onDialogOptionSelected = viewModel::onDialogOptionSelected,
       onDialogConfirm = viewModel::onDialogConfirm,
       onDialogDismiss = viewModel::onDialogDismiss,
@@ -75,7 +76,7 @@ class DeveloperFragment : BaseComposeToolbarFragment() {
     viewModel.bannersReset.observeEvent(viewLifecycleOwner) {
       toast("Home Screen banners have been reset")
     }
-    viewModel.tableActionMessage.observeEvent(viewLifecycleOwner) {
+    viewModel.actionMessage.observeEvent(viewLifecycleOwner) {
       toast(it)
     }
   }
@@ -121,6 +122,7 @@ private fun DeveloperScreen(
   onClearAllTablesClick: () -> Unit,
   onClearAllTablesConfirm: () -> Unit,
   onClearAllTablesDismiss: () -> Unit,
+  onInsertDemoDataClick: () -> Unit,
   onDialogOptionSelected: (Int) -> Unit,
   onDialogConfirm: () -> Unit,
   onDialogDismiss: () -> Unit,
@@ -176,6 +178,12 @@ private fun DeveloperScreen(
       title = "Clear All DB Tables",
       subtitle = "Delete all rows from every table in the database",
       onClick = onClearAllTablesClick,
+    )
+    HorizontalDivider()
+    DeveloperOption(
+      title = "Insert Demo Data",
+      subtitle = "Adds sample reminders, birthdays and notes, useful for taking promo screenshots",
+      onClick = onInsertDemoDataClick,
     )
     HorizontalDivider()
   }

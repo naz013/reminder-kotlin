@@ -7,6 +7,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -29,11 +30,14 @@ import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.repository.UsedTimeRepository
 import com.github.naz013.repository.table.Table
+import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class DeveloperViewModel(
   private val legalDocumentRepository: LegalDocumentRepository,
@@ -58,7 +62,7 @@ class DeveloperViewModel(
 
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val bannersReset: LiveData<Event<Unit>> field = mutableLiveEventOf()
-  val tableActionMessage: LiveData<Event<String>> field = mutableLiveEventOf()
+  val actionMessage: LiveData<Event<String>> field = mutableLiveEventOf()
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
 
   fun onResetBannersClick() {
@@ -100,12 +104,21 @@ class DeveloperViewModel(
     state.update { it.copy(clearAllTablesConfirmation = false) }
     viewModelScope.launch(dispatcherProvider.io()) {
       Table.entries.forEach { clearTable(it) }
-      tableActionMessage.postValue(Event("All tables have been cleared"))
+      actionMessage.postValue(Event("All tables have been cleared"))
     }
   }
 
   fun onClearAllTablesDismiss() {
     state.update { it.copy(clearAllTablesConfirmation = false) }
+  }
+
+  fun onInsertDemoDataClick() {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      insertDemoReminders()
+      insertDemoBirthdays()
+      insertDemoNotes()
+      actionMessage.postValue(Event("Demo data has been inserted"))
+    }
   }
 
   fun onDialogOptionSelected(index: Int) {
@@ -165,7 +178,7 @@ class DeveloperViewModel(
     val table = Table.entries[selectedIndex]
     viewModelScope.launch(dispatcherProvider.io()) {
       clearTable(table)
-      tableActionMessage.postValue(Event("${table.tableName} table has been cleared"))
+      actionMessage.postValue(Event("${table.tableName} table has been cleared"))
     }
   }
 
@@ -186,6 +199,121 @@ class DeveloperViewModel(
       Table.RemoteFileMetadata -> remoteFileMetadataRepository.deleteAll()
       Table.EventOccurrence -> eventOccurrenceRepository.deleteAll()
       Table.EventHistory -> eventHistoryRepository.deleteAll()
+    }
+  }
+
+  private suspend fun insertDemoReminders() {
+    val today = LocalDate.now()
+    val tomorrow = today.plusDays(1)
+    val groupUuId = reminderGroupRepository.defaultGroup()?.groupUuId ?: ""
+    val reminders = listOf(
+      Reminder(
+        summary = "Team standup meeting",
+        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(9, 0))),
+        groupUuId = groupUuId,
+      ),
+      Reminder(
+        summary = "Weekly grocery shopping",
+        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(18, 30))),
+        shoppings = listOf(
+          ShopItem(summary = "Milk", createTime = "", isChecked = false),
+          ShopItem(summary = "Fresh vegetables", createTime = "", isChecked = false),
+          ShopItem(summary = "Coffee beans", createTime = "", isChecked = false),
+          ShopItem(summary = "Birthday candles", createTime = "", isChecked = true),
+        ),
+        groupUuId = groupUuId,
+      ),
+      Reminder(
+        summary = "Call Mom",
+        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(20, 0))),
+        type = 10 + Reminder.Action.CALL,
+        target = "+1234567890",
+        groupUuId = groupUuId,
+      ),
+      Reminder(
+        summary = "Doctor's appointment",
+        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(10, 30))),
+        groupUuId = groupUuId,
+      ),
+      Reminder(
+        summary = "Submit quarterly report",
+        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(14, 0))),
+        groupUuId = groupUuId,
+      ),
+      Reminder(
+        summary = "Flight check-in",
+        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(7, 0))),
+        type = 10 + Reminder.Action.LINK,
+        target = "https://www.google.com/travel/flights",
+        groupUuId = groupUuId,
+      ),
+    )
+    reminders.forEach { reminderRepository.save(it) }
+  }
+
+  private suspend fun insertDemoBirthdays() {
+    val today = LocalDate.now()
+    listOf(
+      Triple("Mom", 0L, 1962),
+      Triple("Alex Johnson", 1L, 1990),
+      Triple("Sophia (Best Friend)", 3L, 1993),
+      Triple("Dad", 6L, 1958),
+    ).forEach { (name, daysAhead, birthYear) ->
+      val upcoming = today.plusDays(daysAhead)
+      val date = LocalDate.of(birthYear, upcoming.monthValue, upcoming.dayOfMonth)
+      birthdayRepository.save(
+        Birthday(
+          name = name,
+          date = dateTimeManager.formatBirthdayDate(date),
+          day = date.dayOfMonth,
+          month = date.monthValue - 1,
+          dayMonth = "${date.dayOfMonth}|${date.monthValue - 1}",
+          syncState = SyncState.Synced,
+        ),
+      )
+    }
+  }
+
+  private suspend fun insertDemoNotes() {
+    val notes = listOf(
+      DemoNote(
+        title = "Grocery List",
+        summary = "Milk, eggs, bread, fresh basil, olive oil, and don't forget the candles for Saturday!",
+        color = ThemeProvider.Color.GREEN,
+      ),
+      DemoNote(
+        title = "Weekend Trip Ideas",
+        summary =
+          "1. Hike the coastal trail\n2. Visit the farmers market\n3. Try that new ramen place downtown\n4. Sunset photos at the pier",
+        color = ThemeProvider.Color.LIGHT_BLUE,
+      ),
+      DemoNote(
+        title = "Meeting Notes - Product Sync",
+        summary =
+          "Discussed Q3 roadmap. Action items: finalize onboarding flow, review pricing page copy, schedule user interviews for next sprint.",
+        color = ThemeProvider.Color.AMBER,
+      ),
+      DemoNote(
+        title = "Book Recommendations",
+        summary = "- Atomic Habits\n- Project Hail Mary\n- The Midnight Library\n- Deep Work",
+        color = ThemeProvider.Color.DEEP_PURPLE,
+      ),
+      DemoNote(
+        title = "Favorite Quote",
+        summary = "\"The secret of getting ahead is getting started.\" - Mark Twain",
+        color = ThemeProvider.Color.PINK,
+      ),
+    )
+    notes.forEach { demoNote ->
+      noteRepository.save(
+        Note(
+          title = demoNote.title,
+          summary = demoNote.summary,
+          color = demoNote.color,
+          date = dateTimeManager.getNowGmtDateTime(),
+          syncState = SyncState.Synced,
+        ),
+      )
     }
   }
 
@@ -276,4 +404,10 @@ class DeveloperViewModel(
     )
     private val TABLE_OPTIONS = Table.entries.map { it.tableName }
   }
+
+  private data class DemoNote(
+    val title: String,
+    val summary: String,
+    val color: Int,
+  )
 }
