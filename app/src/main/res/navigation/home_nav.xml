@@ -282,18 +282,15 @@
     <fragment
         android:id="@+id/addPinFragment"
         android:name="com.elementary.tasks.settings.security.AddPinFragment"
-        android:label="@string/add_pin"
-        tools:layout="@layout/fragment_settings_add_pin" />
+        android:label="@string/add_pin" />
     <fragment
         android:id="@+id/changePinFragment"
         android:name="com.elementary.tasks.settings.security.ChangePinFragment"
-        android:label="@string/change_pin"
-        tools:layout="@layout/fragment_settings_change_pin" />
+        android:label="@string/change_pin" />
     <fragment
         android:id="@+id/disablePinFragment"
         android:name="com.elementary.tasks.settings.security.DisablePinFragment"
-        android:label="@string/disable_pin"
-        tools:layout="@layout/fragment_settings_delete_pin" />
+        android:label="@string/disable_pin" />
     <fragment
         android:id="@+id/locationSettingsFragment"
         android:name="com.elementary.tasks.settings.location.LocationSettingsFragment"
@@ -430,8 +427,7 @@
     <fragment
         android:id="@+id/managePresetsFragment"
         android:name="com.elementary.tasks.settings.reminders.ManagePresetsFragment"
-        android:label="@string/recur_presets"
-        tools:layout="@layout/fragment_manage_presets" />
+        android:label="@string/recur_presets" />
     <fragment
         android:id="@+id/editBirthdayFragment"
         android:name="com.elementary.tasks.birthdays.create.EditBirthdayFragment"

@@ -11,6 +11,9 @@ import com.elementary.tasks.settings.location.LocationSettingsViewModel
 import com.elementary.tasks.settings.location.MapStyleViewModel
 import com.elementary.tasks.settings.other.OtherSettingsViewModel
 import com.elementary.tasks.settings.reminders.RemindersSettingsViewModel
+import com.elementary.tasks.settings.security.AddPinViewModel
+import com.elementary.tasks.settings.security.ChangePinViewModel
+import com.elementary.tasks.settings.security.DisablePinViewModel
 import com.elementary.tasks.settings.security.SecuritySettingsViewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.module.dsl.viewModel
@@ -29,6 +32,9 @@ val settingsModule =
     viewModel { GeneralSettingsViewModel(get(), get()) }
     viewModel { NoteSettingsViewModel(get()) }
     viewModel { SecuritySettingsViewModel(get()) }
+    viewModel { AddPinViewModel(get()) }
+    viewModel { ChangePinViewModel(get()) }
+    viewModel { DisablePinViewModel(get()) }
     viewModel { LocationSettingsViewModel(get(), get(), get()) }
     viewModel { MapStyleViewModel(get()) }
     viewModel { OtherSettingsViewModel(get(), get()) }

@@ -1,91 +1,36 @@
 package com.elementary.tasks.settings.security
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentSettingsChangePinBinding
-import com.elementary.tasks.navigation.fragments.BaseSettingsFragment
-import com.github.naz013.ui.common.fragment.hideKeyboard
+import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
+import com.elementary.tasks.notes.ObserveEvent
 import com.github.naz013.ui.common.fragment.toast
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ChangePinFragment : BaseSettingsFragment<FragmentSettingsChangePinBinding>() {
-  private var state: State = State.OLD
-  private var pin: String = ""
+class ChangePinFragment : BaseComposeToolbarFragment() {
+  private val viewModel by viewModel<ChangePinViewModel>()
 
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ) = FragmentSettingsChangePinBinding.inflate(inflater, container, false)
+  @Composable
+  override fun Content() {
+    val state by viewModel.state.collectAsState()
+    viewModel.navigationEvent.ObserveEvent { handleEvent(it) }
 
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-
-    binding.pinView.supportFinger = false
-    binding.pinView.callback = { onPinChanged(it) }
-
-    onStateChanged(State.OLD)
+    ChangePinScreen(
+      stage = state.stage,
+      pin = state.pin,
+      onDigitClick = viewModel::onDigitClick,
+      onDeleteClick = viewModel::onDeleteClick,
+    )
   }
 
-  private fun onPinChanged(pin: String) {
-    if (pin.length < 6) return
-    when (state) {
-      State.OLD -> {
-        if (prefs.pinCode == pin) {
-          onStateChanged(State.INPUT)
-        } else {
-          toast(R.string.pin_not_match)
-          binding.pinView.clearPin()
-        }
-      }
-      State.INPUT -> {
-        this.pin = pin
-        onStateChanged(State.REPEAT)
-      }
-      State.REPEAT -> {
-        if (this.pin == pin) {
-          prefs.pinCode = pin
-          moveBack()
-        } else {
-          toast(R.string.pin_not_match)
-          onStateChanged(State.INPUT)
-        }
-        this.pin = ""
-      }
+  private fun handleEvent(event: ChangePinEvent) {
+    when (event) {
+      ChangePinEvent.ShowPinMismatch -> toast(R.string.pin_not_match)
+      ChangePinEvent.PinSaved -> moveBack()
     }
-  }
-
-  private fun onStateChanged(state: State) {
-    binding.pinView.clearPin()
-    this.state = state
-    when (state) {
-      State.OLD -> {
-        binding.messageView.text = getString(R.string.old_pin)
-      }
-      State.INPUT -> {
-        binding.messageView.text = getString(R.string.enter_pin)
-      }
-      State.REPEAT -> {
-        binding.messageView.text = getString(R.string.repeat_pin)
-      }
-    }
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    hideKeyboard()
   }
 
   override fun getTitle(): String = getString(R.string.change_pin)
-
-  private enum class State {
-    OLD,
-    INPUT,
-    REPEAT,
-  }
 }

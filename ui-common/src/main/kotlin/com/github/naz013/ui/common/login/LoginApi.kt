@@ -17,9 +17,9 @@ object LoginApi {
     return getBooleanExtra(PinLoginActivity.ARG_LOGGED, false)
   }
 
-  fun authIntent(context: Context): Intent {
+  fun authIntent(context: Context, isBack: Boolean = true): Intent {
     return context.buildIntent(PinLoginActivity::class.java) {
-      putExtra(ARG_BACK, true)
+      putExtra(ARG_BACK, isBack)
     }
   }
 
