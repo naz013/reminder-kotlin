@@ -1,31 +1,25 @@
 package com.elementary.tasks.googletasks.tasklist
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.utils.ui.showError
-import com.elementary.tasks.core.utils.ui.trimmedText
-import com.elementary.tasks.databinding.FragmentGoogleTaskListEditBinding
-import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.feature.common.livedata.nonNullObserve
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.fragment.hideKeyboard
 import com.github.naz013.ui.common.fragment.toast
 import com.github.naz013.ui.common.menu.enableOrDisableItem
 import com.github.naz013.ui.common.menu.showOrHideItem
-import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.ui.common.view.visibleInvisible
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEditBinding>() {
+class EditGoogleTaskListFragment : BaseComposeToolbarFragment() {
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
   private val viewModel by viewModel<EditGoogleTaskListViewModel> { parametersOf(arguments) }
 
@@ -35,12 +29,6 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
     } else {
       getString(R.string.new_tasks_list)
     }
-
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ): FragmentGoogleTaskListEditBinding = FragmentGoogleTaskListEditBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -52,31 +40,18 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
     savedInstanceState: Bundle?,
   ) {
     super.onViewCreated(view, savedInstanceState)
-    onProgressChanged(false)
-
-    binding.colorSlider.setColors(ThemeProvider.colorsForSliderThemed(requireContext()))
-    binding.colorSlider.setSelectorColorResource(
-      if (isDark) {
-        R.color.pureWhite
-      } else {
-        R.color.pureBlack
-      },
-    )
-    binding.colorSlider.setListener { position, _ ->
-      viewModel.onColorChanged(position)
-    }
 
     addMenu(
       menuRes = R.menu.fragment_google_task_list_edit,
       onMenuItemListener = { menuItem ->
-        return@addMenu when (menuItem.itemId) {
+        when (menuItem.itemId) {
           R.id.action_delete -> {
-            doIfPossible { deleteDialog() }
+            doIfPossible { viewModel.onDeleteClick() }
             true
           }
 
           R.id.action_add -> {
-            doIfPossible { saveTaskList() }
+            doIfPossible { viewModel.save() }
             true
           }
 
@@ -84,16 +59,21 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
         }
       },
       menuModifier = { menu ->
-        menu.showOrHideItem(R.id.action_delete, viewModel.canDelete())
-
-        val isInProgress = viewModel.isInProgress.value ?: false
-        menu.enableOrDisableItem(R.id.action_delete, !isInProgress)
-        menu.enableOrDisableItem(R.id.action_add, !isInProgress)
+        val currentState = viewModel.state.value
+        menu.showOrHideItem(R.id.action_delete, currentState.canDelete)
+        menu.enableOrDisableItem(R.id.action_delete, !currentState.isLoading)
+        menu.enableOrDisableItem(R.id.action_add, !currentState.isLoading)
       },
     )
 
-    initViewModel()
-    viewModel.onCreated(savedInstanceState)
+    viewModel.errorEvent.observeEvent(viewLifecycleOwner) { toast(it) }
+    viewModel.navigationEvent.observeEvent(viewLifecycleOwner) { event ->
+      when (event) {
+        EditGoogleTaskListEvent.Saved, EditGoogleTaskListEvent.Deleted -> moveBack()
+      }
+    }
+
+    lifecycle.addObserver(viewModel)
   }
 
   override fun onDestroyView() {
@@ -102,69 +82,24 @@ class EditGoogleTaskListFragment : BaseToolbarFragment<FragmentGoogleTaskListEdi
     appWidgetUpdater.updateScheduleWidget()
   }
 
-  private fun initViewModel() {
-    viewModel.googleTaskList.nonNullObserve(viewLifecycleOwner) { showTaskList(it) }
-    viewModel.isInProgress.nonNullObserve(viewLifecycleOwner) { onProgressChanged(it) }
-    viewModel.resultEvent.observeEvent(viewLifecycleOwner) { commands ->
-      if (commands == Commands.DELETED || commands == Commands.SAVED) {
-        moveBack()
-      }
+  @Composable
+  override fun Content() {
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(state.canDelete, state.isLoading) {
+      invalidateOptionsMenu()
     }
-    viewModel.colorChanged.nonNullObserve(viewLifecycleOwner) {
-      binding.colorSlider.setSelection(it)
-    }
-
-    lifecycle.addObserver(viewModel)
-  }
-
-  private fun showTaskList(googleTaskList: GoogleTaskList) {
-    viewModel.editedTaskList = googleTaskList
-    if (!viewModel.isEdited) {
-      binding.editField.setText(googleTaskList.title)
-      if (googleTaskList.def == 1) {
-        binding.defaultCheck.isChecked = true
-        binding.defaultCheck.isEnabled = false
-      }
-      binding.colorSlider.setSelection(googleTaskList.color)
-    }
-    invalidateOptionsMenu()
-  }
-
-  private fun onProgressChanged(isInProgress: Boolean) {
-    binding.progressBar.visibleInvisible(isInProgress)
-    binding.colorSlider.isEnabled = !isInProgress
-    binding.editField.isEnabled = !isInProgress
-    binding.defaultCheck.isEnabled = !isInProgress
-    invalidateOptionsMenu()
-  }
-
-  private fun saveTaskList() {
-    val listName = binding.editField.trimmedText()
-    if (listName.isEmpty()) {
-      binding.nameLayout.showError(R.string.must_be_not_empty)
-      return
-    }
-    viewModel.save(
-      listName = listName,
-      color = binding.colorSlider.selectedItem,
-      isDefault = binding.defaultCheck.isChecked,
+    EditGoogleTaskListScreen(
+      state = state,
+      onNameChange = viewModel::onNameChange,
+      onColorSelected = viewModel::onColorSelected,
+      onDefaultToggle = viewModel::onDefaultToggle,
+      onDeleteConfirmed = viewModel::deleteGoogleTaskList,
+      onDeleteDismiss = viewModel::onDeleteDismiss,
     )
   }
 
-  private fun deleteDialog() {
-    dialogues
-      .getMaterialDialog(requireContext())
-      .setMessage(getString(R.string.delete_this_list))
-      .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
-        dialog.dismiss()
-        viewModel.deleteGoogleTaskList()
-      }.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-      .create()
-      .show()
-  }
-
   private fun doIfPossible(f: () -> Unit) {
-    if (viewModel.isInProgress.value == true) {
+    if (viewModel.state.value.isLoading) {
       toast(R.string.please_wait)
     } else {
       f.invoke()

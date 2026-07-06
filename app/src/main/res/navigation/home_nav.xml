@@ -80,8 +80,7 @@
     <fragment
         android:id="@+id/actionGoogle"
         android:name="com.elementary.tasks.googletasks.GoogleTasksFragment"
-        android:label="@string/tasks"
-        tools:layout="@layout/fragment_google_tasks">
+        android:label="@string/tasks">
         <action
             android:id="@+id/action_actionGoogle_to_taskListFragment"
             app:destination="@id/googleTaskListFragment"
@@ -115,8 +114,7 @@
     <fragment
         android:id="@+id/googleTaskListFragment"
         android:name="com.elementary.tasks.googletasks.list.GoogleTaskListFragment"
-        android:label="@string/google_tasks"
-        tools:layout="@layout/fragment_google_list">
+        android:label="@string/google_tasks">
         <argument
             android:name="arg_id"
             app:argType="string" />
@@ -472,8 +470,7 @@
     <fragment
         android:id="@+id/previewGoogleTaskFragment"
         android:name="com.elementary.tasks.googletasks.preview.PreviewGoogleTaskFragment"
-        android:label="@string/details"
-        tools:layout="@layout/fragment_google_task_preview">
+        android:label="@string/details">
         <argument
             android:name="item_id"
             app:argType="string" />
@@ -481,13 +478,11 @@
     <fragment
         android:id="@+id/editGoogleTaskFragment"
         android:name="com.elementary.tasks.googletasks.task.EditGoogleTaskFragment"
-        android:label="@string/edit_task"
-        tools:layout="@layout/fragment_google_task_edit" />
+        android:label="@string/edit_task" />
     <fragment
         android:id="@+id/editGoogleTaskListFragment"
         android:name="com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListFragment"
-        android:label="@string/new_tasks_list"
-        tools:layout="@layout/fragment_google_task_list_edit" />
+        android:label="@string/new_tasks_list" />
     <fragment
         android:id="@+id/previewReminderFragment"
         android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"

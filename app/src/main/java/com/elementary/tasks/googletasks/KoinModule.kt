@@ -32,11 +32,14 @@ val googleTaskModule =
         get(),
         get(),
         get(),
+        get(),
+        get(),
       )
     }
     viewModel { (arguments: Bundle?) ->
       EditGoogleTaskViewModel(
         arguments,
+        get(),
         get(),
         get(),
         get(),
@@ -60,6 +63,7 @@ val googleTaskModule =
         get(),
         get(),
         get(),
+        get(),
       )
     }
     viewModel { (listId: String) ->
@@ -72,9 +76,11 @@ val googleTaskModule =
         get(),
         get(),
         get(),
+        get(),
+        get(),
       )
     }
-    viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { GoogleTasksViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 
     factory { SyncAllGoogleTaskLists(get(), get(), get(), get(), get(), get()) }
     factory { SyncGoogleTaskList(get(), get(), get(), get()) }

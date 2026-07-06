@@ -2,6 +2,7 @@ package com.elementary.tasks.googletasks.list
 
 import android.view.View
 import android.view.ViewGroup
+import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
 import com.elementary.tasks.core.utils.ListActions
@@ -33,6 +34,13 @@ class GoogleTaskHolder(
     binding.taskDate.text = googleTask.dueDate
     binding.taskDate.visibleInvisible(!googleTask.dueDate.isNullOrEmpty())
 
-    binding.statusIcon.setImageBitmap(googleTask.statusIcon)
+    binding.statusIcon.setImageResource(
+      if (googleTask.isCompleted) {
+        R.drawable.ic_builder_google_task_list
+      } else {
+        R.drawable.ic_fluent_radio_button
+      },
+    )
+    googleTask.taskListColor?.also { binding.statusIcon.setColorFilter(it) }
   }
 }
