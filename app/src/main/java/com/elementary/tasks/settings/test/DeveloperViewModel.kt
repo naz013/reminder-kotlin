@@ -15,7 +15,20 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.CalendarEventRepository
+import com.github.naz013.repository.EventHistoryRepository
+import com.github.naz013.repository.EventOccurrenceRepository
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.PlaceRepository
+import com.github.naz013.repository.RecentQueryRepository
+import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.RemoteFileMetadataRepository
+import com.github.naz013.repository.UsedTimeRepository
+import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -29,10 +42,23 @@ class DeveloperViewModel(
   private val reminderRepository: ReminderRepository,
   private val birthdayRepository: BirthdayRepository,
   private val dateTimeManager: DateTimeManager,
+  private val calendarEventRepository: CalendarEventRepository,
+  private val eventHistoryRepository: EventHistoryRepository,
+  private val eventOccurrenceRepository: EventOccurrenceRepository,
+  private val googleTaskListRepository: GoogleTaskListRepository,
+  private val googleTaskRepository: GoogleTaskRepository,
+  private val noteRepository: NoteRepository,
+  private val placeRepository: PlaceRepository,
+  private val recentQueryRepository: RecentQueryRepository,
+  private val recurPresetRepository: RecurPresetRepository,
+  private val reminderGroupRepository: ReminderGroupRepository,
+  private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
+  private val usedTimeRepository: UsedTimeRepository,
 ) : ViewModel() {
 
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val bannersReset: LiveData<Event<Unit>> field = mutableLiveEventOf()
+  val tableActionMessage: LiveData<Event<String>> field = mutableLiveEventOf()
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
 
   fun onResetBannersClick() {
@@ -58,6 +84,30 @@ class DeveloperViewModel(
     }
   }
 
+  fun onClearTableClick() {
+    state.update {
+      it.copy(
+        dialog = DeveloperChoiceDialog(kind = DeveloperDialogKind.CLEAR_TABLE, options = TABLE_OPTIONS, selectedIndex = 0),
+      )
+    }
+  }
+
+  fun onClearAllTablesClick() {
+    state.update { it.copy(clearAllTablesConfirmation = true) }
+  }
+
+  fun onClearAllTablesConfirm() {
+    state.update { it.copy(clearAllTablesConfirmation = false) }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      Table.entries.forEach { clearTable(it) }
+      tableActionMessage.postValue(Event("All tables have been cleared"))
+    }
+  }
+
+  fun onClearAllTablesDismiss() {
+    state.update { it.copy(clearAllTablesConfirmation = false) }
+  }
+
   fun onDialogOptionSelected(index: Int) {
     state.update { current ->
       val dialog = current.dialog ?: return@update current
@@ -70,6 +120,7 @@ class DeveloperViewModel(
     when (dialog.kind) {
       DeveloperDialogKind.REMINDER -> saveAndOpenReminder(dialog.selectedIndex)
       DeveloperDialogKind.BIRTHDAY -> saveAndOpenBirthday(dialog.selectedIndex)
+      DeveloperDialogKind.CLEAR_TABLE -> clearSelectedTable(dialog.selectedIndex)
     }
     dismissDialog()
   }
@@ -107,6 +158,34 @@ class DeveloperViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       birthdayRepository.save(birthday)
       navigationEvent.postValue(Event(DeveloperEvent.OpenBirthdayAction(birthday.uuId)))
+    }
+  }
+
+  private fun clearSelectedTable(selectedIndex: Int) {
+    val table = Table.entries[selectedIndex]
+    viewModelScope.launch(dispatcherProvider.io()) {
+      clearTable(table)
+      tableActionMessage.postValue(Event("${table.tableName} table has been cleared"))
+    }
+  }
+
+  private suspend fun clearTable(table: Table) {
+    when (table) {
+      Table.Birthday -> birthdayRepository.deleteAll()
+      Table.RecentQuery -> recentQueryRepository.deleteAll()
+      Table.RecurPreset -> recurPresetRepository.deleteAll()
+      Table.UsedTime -> usedTimeRepository.deleteAll()
+      Table.CalendarEvent -> calendarEventRepository.deleteAll()
+      Table.ReminderGroup -> reminderGroupRepository.deleteAll()
+      Table.Reminder -> reminderRepository.deleteAll()
+      Table.Place -> placeRepository.deleteAll()
+      Table.Note -> noteRepository.deleteAllNotes()
+      Table.ImageFile -> noteRepository.deleteAllImages()
+      Table.GoogleTaskList -> googleTaskListRepository.deleteAll()
+      Table.GoogleTask -> googleTaskRepository.deleteAll()
+      Table.RemoteFileMetadata -> remoteFileMetadataRepository.deleteAll()
+      Table.EventOccurrence -> eventOccurrenceRepository.deleteAll()
+      Table.EventHistory -> eventHistoryRepository.deleteAll()
     }
   }
 
@@ -195,5 +274,6 @@ class DeveloperViewModel(
       "Birthday with number",
       "Birthday without age",
     )
+    private val TABLE_OPTIONS = Table.entries.map { it.tableName }
   }
 }

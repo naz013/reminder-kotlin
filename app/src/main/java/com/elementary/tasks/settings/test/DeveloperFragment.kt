@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -56,6 +57,10 @@ class DeveloperFragment : BaseComposeToolbarFragment() {
       onObjectExportClick = viewModel::onObjectExportClick,
       onReviewDialogClick = viewModel::onReviewDialogClick,
       onProVersionClick = viewModel::onProVersionClick,
+      onClearTableClick = viewModel::onClearTableClick,
+      onClearAllTablesClick = viewModel::onClearAllTablesClick,
+      onClearAllTablesConfirm = viewModel::onClearAllTablesConfirm,
+      onClearAllTablesDismiss = viewModel::onClearAllTablesDismiss,
       onDialogOptionSelected = viewModel::onDialogOptionSelected,
       onDialogConfirm = viewModel::onDialogConfirm,
       onDialogDismiss = viewModel::onDialogDismiss,
@@ -69,6 +74,9 @@ class DeveloperFragment : BaseComposeToolbarFragment() {
     super.onViewCreated(view, savedInstanceState)
     viewModel.bannersReset.observeEvent(viewLifecycleOwner) {
       toast("Home Screen banners have been reset")
+    }
+    viewModel.tableActionMessage.observeEvent(viewLifecycleOwner) {
+      toast(it)
     }
   }
 
@@ -109,6 +117,10 @@ private fun DeveloperScreen(
   onObjectExportClick: () -> Unit,
   onReviewDialogClick: () -> Unit,
   onProVersionClick: () -> Unit,
+  onClearTableClick: () -> Unit,
+  onClearAllTablesClick: () -> Unit,
+  onClearAllTablesConfirm: () -> Unit,
+  onClearAllTablesDismiss: () -> Unit,
   onDialogOptionSelected: (Int) -> Unit,
   onDialogConfirm: () -> Unit,
   onDialogDismiss: () -> Unit,
@@ -154,6 +166,18 @@ private fun DeveloperScreen(
       onClick = onProVersionClick,
     )
     HorizontalDivider()
+    DeveloperOption(
+      title = "Clear DB Table",
+      subtitle = "Pick a database table and delete all of its rows",
+      onClick = onClearTableClick,
+    )
+    HorizontalDivider()
+    DeveloperOption(
+      title = "Clear All DB Tables",
+      subtitle = "Delete all rows from every table in the database",
+      onClick = onClearAllTablesClick,
+    )
+    HorizontalDivider()
   }
 
   val dialog = state.dialog
@@ -163,6 +187,16 @@ private fun DeveloperScreen(
       onOptionSelected = onDialogOptionSelected,
       onConfirm = onDialogConfirm,
       onDismiss = onDialogDismiss,
+    )
+  }
+
+  if (state.clearAllTablesConfirmation) {
+    AlertDialog(
+      onDismissRequest = onClearAllTablesDismiss,
+      title = { Text("Clear all DB tables?") },
+      text = { Text("This will permanently delete all data from every table in the database. This action cannot be undone.") },
+      confirmButton = { TextButton(onClick = onClearAllTablesConfirm) { Text("Clear all") } },
+      dismissButton = { TextButton(onClick = onClearAllTablesDismiss) { Text("Cancel") } },
     )
   }
 }
@@ -189,11 +223,24 @@ private fun DeveloperChoiceDialog(
   onConfirm: () -> Unit,
   onDismiss: () -> Unit,
 ) {
+  val title = when (dialog.kind) {
+    DeveloperDialogKind.CLEAR_TABLE -> "Select table to clear"
+    DeveloperDialogKind.REMINDER, DeveloperDialogKind.BIRTHDAY -> "Select action to test"
+  }
+  val confirmText = when (dialog.kind) {
+    DeveloperDialogKind.CLEAR_TABLE -> "Clear"
+    DeveloperDialogKind.REMINDER, DeveloperDialogKind.BIRTHDAY -> "Run"
+  }
   AlertDialog(
     onDismissRequest = onDismiss,
-    title = { Text("Select action to test") },
+    title = { Text(title) },
     text = {
-      Column(modifier = Modifier.selectableGroup()) {
+      Column(
+        modifier = Modifier
+          .heightIn(max = 400.dp)
+          .selectableGroup()
+          .verticalScroll(rememberScrollState()),
+      ) {
         dialog.options.forEachIndexed { index, option ->
           val selected = index == dialog.selectedIndex
           Row(
@@ -213,7 +260,7 @@ private fun DeveloperChoiceDialog(
         }
       }
     },
-    confirmButton = { TextButton(onClick = onConfirm) { Text("Run") } },
+    confirmButton = { TextButton(onClick = onConfirm) { Text(confirmText) } },
     dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
   )
 }
