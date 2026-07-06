@@ -26,4 +26,7 @@ internal interface CalendarEventsDao {
 
   @Query("DELETE FROM CalendarEvent WHERE uuId=:id")
   fun deleteById(id: String)
+
+  @Query("DELETE FROM CalendarEvent")
+  fun deleteAll()
 }

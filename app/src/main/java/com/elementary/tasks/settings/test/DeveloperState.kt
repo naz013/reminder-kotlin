@@ -2,9 +2,10 @@ package com.elementary.tasks.settings.test
 
 data class DeveloperState(
   val dialog: DeveloperChoiceDialog? = null,
+  val clearAllTablesConfirmation: Boolean = false,
 )
 
-enum class DeveloperDialogKind { BIRTHDAY, REMINDER }
+enum class DeveloperDialogKind { BIRTHDAY, REMINDER, CLEAR_TABLE }
 
 data class DeveloperChoiceDialog(
   val kind: DeveloperDialogKind,
