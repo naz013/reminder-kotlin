@@ -8,6 +8,7 @@ import com.elementary.tasks.settings.calendar.usecase.ScanGoogleCalendarForNewEv
 import com.elementary.tasks.settings.calendar.work.ScanGoogleCalendarEventsWorker
 import com.elementary.tasks.settings.general.GeneralSettingsViewModel
 import com.elementary.tasks.settings.location.LocationSettingsViewModel
+import com.elementary.tasks.settings.location.MapStyleViewModel
 import com.elementary.tasks.settings.other.OtherSettingsViewModel
 import com.elementary.tasks.settings.reminders.RemindersSettingsViewModel
 import com.elementary.tasks.settings.security.SecuritySettingsViewModel
@@ -29,6 +30,7 @@ val settingsModule =
     viewModel { NoteSettingsViewModel(get()) }
     viewModel { SecuritySettingsViewModel(get()) }
     viewModel { LocationSettingsViewModel(get(), get(), get()) }
+    viewModel { MapStyleViewModel(get()) }
     viewModel { OtherSettingsViewModel(get(), get()) }
     viewModel { RemindersSettingsViewModel(get(), get(), get()) }
     viewModel { SettingsHubViewModel(get(), get(), get(), get()) }

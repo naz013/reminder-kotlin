@@ -316,8 +316,7 @@
     <fragment
         android:id="@+id/mapStyleFragment"
         android:name="com.elementary.tasks.settings.location.MapStyleFragment"
-        android:label="@string/map_style"
-        tools:layout="@layout/fragment_settings_map_style" />
+        android:label="@string/map_style" />
     <fragment
         android:id="@+id/placesFragment"
         android:name="com.elementary.tasks.places.list.PlacesFragment"

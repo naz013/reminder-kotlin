@@ -132,7 +132,7 @@ class LocationSettingsViewModel(
     isNotificationChecked = prefs.isDistanceNotificationEnabled,
     radiusText = formatRadius(prefs.radius),
     mapTypeName = mapTypeOptions()[mapTypePosition(prefs.mapType)],
-    isMapStyleRowEnabled = prefs.mapType == GoogleMap.MAP_TYPE_NORMAL,
+    isMapStyleRowEnabled = mapTypePosition(prefs.mapType) == 0,
     mapStylePreviewRes = themeProvider.mapStylePreview,
     mapStyleName = textProvider.getString(themeProvider.styleName),
     isMarkerStyleVisible = BuildParams.isPro,
