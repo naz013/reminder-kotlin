@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -35,14 +34,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.AssetsUtil
-import com.github.naz013.colorslider.ColorSlider
+import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
+import com.github.naz013.ui.common.compose.toColor
 
 /**
  * The icon content for the mic/speech bar item — switches between a static mic icon, an
@@ -240,50 +239,25 @@ private fun ImageSourceRow(
 fun ColorPanel(
   state: NoteEditState,
   contentColor: Color,
-  containerColor: Color,
-  sliderColors: IntArray,
   colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
 ) {
+  val merged = mergedPalette(colorsForPalette)
   Column(modifier = Modifier.padding(vertical = 8.dp)) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      var showPalettePicker by remember { mutableStateOf(false) }
-      Box {
-        IconButton(onClick = { showPalettePicker = true }, modifier = Modifier.size(24.dp)) {
-          Icon(
-            painter = painterResource(R.drawable.ic_fluent_settings),
-            contentDescription = null,
-            tint = contentColor,
-          )
-        }
-        if (showPalettePicker) {
-          NoteEditCloudBubble(
-            onDismissRequest = { showPalettePicker = false },
-            containerColor = containerColor,
-            contentColor = contentColor,
-          ) {
-            PalettePickerList(
-              selected = state.palette,
-              contentColor = contentColor,
-              colorsForPalette = colorsForPalette,
-              onSelected = {
-                actions.onPaletteSelected(it)
-                showPalettePicker = false
-              },
-            )
-          }
-        }
-      }
-      ColorSliderView(
-        colors = sliderColors,
-        selectedIndex = state.colorIndex,
-        onSelected = actions.onColorSelected,
-        modifier =
-          Modifier
-            .padding(start = 8.dp)
-            .height(36.dp),
-      )
-    }
+    ColorSlider(
+      colors = merged.colors,
+      selectedIndex = merged.flatIndexOf(state.palette, state.colorIndex),
+      onColorSelected = { flatIndex ->
+        val selection = merged.selectionAt(flatIndex)
+        actions.onPaletteSelected(selection.palette)
+        actions.onColorSelected(selection.colorIndex)
+      },
+      selectorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .height(36.dp),
+    )
     Text(
       text = stringResource(R.string.opacity),
       color = contentColor,
@@ -304,75 +278,37 @@ fun ColorPanel(
   }
 }
 
-@Composable
-private fun ColorSliderView(
-  colors: IntArray,
-  selectedIndex: Int,
-  onSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  val isDark = isSystemInDarkTheme()
-  AndroidView(
-    modifier = modifier,
-    factory = { context ->
-      ColorSlider(context).apply {
-        setSelectorColorResource(if (isDark) R.color.pureWhite else R.color.pureBlack)
-        setListener { position, _ -> onSelected(position) }
-      }
-    },
-    update = { view ->
-      view.setColors(colors)
-      if (view.selectedItem != selectedIndex) {
-        view.setSelection(selectedIndex)
-      }
-    },
-  )
-}
+/** A specific color within a specific palette - what [NoteEditState.palette]/
+ *  [NoteEditState.colorIndex] together identify. */
+private data class PaletteSelection(val palette: Int, val colorIndex: Int)
 
 /**
- * The palette picker, hosted inside a third-level [NoteEditCloudBubble] anchored to the settings
- * icon in [ColorPanel] — replaces the old full-screen `AlertDialog` version. Selecting a palette
- * applies it immediately and closes the bubble, matching the font picker's behavior.
+ * The 3 note palettes laid out back-to-back as one flat strip, plus the index math to convert
+ * between a flat position in that strip and the (palette, colorIndex) pair the rest of the app
+ * stores color selection as - so [ColorPanel] can offer a single combined [ColorSlider] instead
+ * of a palette switch (radio buttons) plus a separate slider for the chosen palette's colors.
  */
-@Composable
-private fun PalettePickerList(
-  selected: Int,
-  contentColor: Color,
-  colorsForPalette: (Int) -> IntArray,
-  onSelected: (Int) -> Unit,
-) {
-  Column(modifier = Modifier.padding(vertical = 4.dp)) {
-    (0..2).forEach { palette ->
-      Row(
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .clickable { onSelected(palette) }
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-      ) {
-        RadioButton(
-          selected = selected == palette,
-          onClick = { onSelected(palette) },
-          colors =
-            RadioButtonDefaults.colors(
-              selectedColor = contentColor,
-              unselectedColor = contentColor.copy(alpha = 0.6f),
-            ),
-        )
-        AndroidView(
-          modifier =
-            Modifier
-              .padding(start = 8.dp)
-              .height(36.dp)
-              .fillMaxWidth(),
-          factory = { context -> ColorSlider(context).apply { isEnabled = false } },
-          update = { it.setColors(colorsForPalette(palette)) },
-        )
-      }
+private class MergedPalette(colorsForPalette: (Int) -> IntArray) {
+  private val paletteColors = (0..2).map { colorsForPalette(it) }
+  val colors: List<Color> = paletteColors.flatMap { colors -> colors.map { it.toColor() } }
+
+  fun flatIndexOf(palette: Int, colorIndex: Int): Int =
+    paletteColors.take(palette).sumOf { it.size } + colorIndex
+
+  fun selectionAt(flatIndex: Int): PaletteSelection {
+    var remaining = flatIndex
+    paletteColors.forEachIndexed { palette, colors ->
+      if (remaining < colors.size) return PaletteSelection(palette, remaining)
+      remaining -= colors.size
     }
+    val lastPalette = paletteColors.lastIndex
+    return PaletteSelection(lastPalette, paletteColors[lastPalette].lastIndex)
   }
 }
+
+@Composable
+private fun mergedPalette(colorsForPalette: (Int) -> IntArray): MergedPalette =
+  remember(colorsForPalette) { MergedPalette(colorsForPalette) }
 
 private fun Modifier.clickableIfEnabled(
   enabled: Boolean,

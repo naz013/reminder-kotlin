@@ -48,6 +48,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -237,6 +238,7 @@ fun NoteEditScreen(
           hasCamera = hasCamera,
           contentColor = barContentColor,
           barColor = barContainerColor,
+          barMaxWidth = barMaxWidth,
           sliderColors = sliderColors,
           colorsForPalette = colorsForPalette,
           actions = actions,
@@ -283,6 +285,7 @@ private fun noteEditBarItems(
   hasCamera: Boolean,
   contentColor: Color,
   barColor: Color,
+  barMaxWidth: Dp,
   sliderColors: IntArray,
   colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
@@ -320,8 +323,9 @@ private fun noteEditBarItems(
           )
         },
         bubbleContent = {
-          ColorPanel(state, contentColor, barColor, sliderColors, colorsForPalette, actions)
+          ColorPanel(state, contentColor, colorsForPalette, actions)
         },
+        bubbleWidth = barMaxWidth,
       ),
     )
 
