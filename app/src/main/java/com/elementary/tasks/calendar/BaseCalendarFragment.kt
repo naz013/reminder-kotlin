@@ -56,7 +56,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
       val deepLinkData = BirthdayDateDeepLinkData(date)
       navigate {
         navigate(
-          R.id.editBirthdayFragment,
+          R.id.birthdayFragment,
           Bundle().apply {
             putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
             putParcelable(deepLinkData.intentKey, deepLinkData)

@@ -42,10 +42,18 @@ val birthdaysModule =
         get(),
         get(),
         get(),
+      )
+    }
+    viewModel { (id: String) ->
+      PreviewBirthdayViewModel(
+        id,
+        get(),
+        get(),
+        get(),
+        get(),
         get(),
       )
     }
-    viewModel { PreviewBirthdayViewModel(get(), get(), get(), get(), get(), get()) }
 
     factory { DeleteBirthdayUseCase(get(), get(), get(), get(), get()) }
     factory { SaveBirthdayUseCase(get(), get(), get(), get(), get()) }

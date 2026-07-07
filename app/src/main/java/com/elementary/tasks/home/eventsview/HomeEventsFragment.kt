@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.BirthdaysFragment
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.os.PermissionFlow
 import com.elementary.tasks.navigation.NavigationAnimations
@@ -117,7 +118,7 @@ class HomeEventsFragment :
 
       is EventsViewModel.NavigationEvent.OpenBirthdayPreview -> {
         safeNavigation(
-          R.id.previewBirthdayFragment,
+          R.id.birthdayFragment,
           Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
           NavigationAnimations.inDepthNavOptions(),
         )
@@ -125,14 +126,21 @@ class HomeEventsFragment :
 
       is EventsViewModel.NavigationEvent.OpenBirthdayEdit -> {
         safeNavigation(
-          R.id.editBirthdayFragment,
-          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          R.id.birthdayFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, event.id)
+            putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true)
+          },
           NavigationAnimations.inDepthNavOptions(),
         )
       }
 
       EventsViewModel.NavigationEvent.OpenNewBirthday -> {
-        safeNavigation(R.id.editBirthdayFragment, null, NavigationAnimations.inDepthNavOptions())
+        safeNavigation(
+          R.id.birthdayFragment,
+          Bundle().apply { putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
       }
 
       EventsViewModel.NavigationEvent.OpenArchive -> {
