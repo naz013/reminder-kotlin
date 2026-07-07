@@ -52,6 +52,7 @@ dependencies {
   implementation(project(":logging-api"))
   implementation(project(":navigation-api"))
   implementation(project(":platform-common"))
+  implementation(project(":date-calculations"))
 
   implementation(libs.koin.android)
   implementation(libs.androidx.core.ktx)

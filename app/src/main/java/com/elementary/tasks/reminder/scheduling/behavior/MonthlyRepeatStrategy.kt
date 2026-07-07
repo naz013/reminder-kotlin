@@ -1,7 +1,8 @@
 package com.elementary.tasks.reminder.scheduling.behavior
 
-import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.RecurrenceCalculator
+import com.github.naz013.datecalc.RecurrenceCalculatorImpl
 import com.github.naz013.domain.Reminder
 import org.threeten.bp.LocalDateTime
 
@@ -14,7 +15,7 @@ import org.threeten.bp.LocalDateTime
  */
 class MonthlyRepeatStrategy(
   private val dateTimeManager: DateTimeManager,
-  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculatorImpl(),
 ) : ReminderBehaviorStrategy {
   override fun calculateNextOccurrence(
     reminder: Reminder,

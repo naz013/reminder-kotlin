@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.datetime
+package com.github.naz013.datecalc
 
 class DateValidator {
   fun isLegacyMonthValid(month: Int): Boolean = month in 0..11

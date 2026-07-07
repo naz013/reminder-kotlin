@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.scheduling.alarmmanager
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.behavior.TimerRepeatStrategy
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.datetime.minusMillis
+import com.github.naz013.datecalc.minusMillis
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 

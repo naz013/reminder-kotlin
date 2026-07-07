@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.scheduling.occurrence
 
-import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
+import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import io.mockk.every
@@ -35,8 +35,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Birthday reminder",
-          monthOfYear = 15, // Day (note: parameters are swapped in the implementation)
-          dayOfMonth = 2, // Month (0-indexed: 2 = March)
+          monthOfYear = 2, // March (0-indexed)
+          dayOfMonth = 15,
           repeatInterval = 1L,
           syncState = SyncState.Synced,
         )
@@ -56,8 +56,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
         every {
           recurrenceCalculator.getNextYearDayDateTime(
             eventDateTime = if (index == 0) fromDateTime else expectedOccurrences[index - 1],
-            monthOfYear = reminder.dayOfMonth, // Swapped parameters
-            dayOfMonth = reminder.monthOfYear,
+            monthOfYear = reminder.monthOfYear,
+            dayOfMonth = reminder.dayOfMonth,
             interval = reminder.repeatInterval,
           )
         } returns occurrence
@@ -83,8 +83,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Leap year birthday",
-          monthOfYear = 29, // Day
-          dayOfMonth = 1, // Month (0-indexed: 1 = February)
+          monthOfYear = 1, // February (0-indexed)
+          dayOfMonth = 29,
           repeatInterval = 1L,
           syncState = SyncState.Synced,
         )
@@ -102,8 +102,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
         every {
           recurrenceCalculator.getNextYearDayDateTime(
             eventDateTime = if (index == 0) fromDateTime else expectedOccurrences[index - 1],
-            monthOfYear = reminder.dayOfMonth,
-            dayOfMonth = reminder.monthOfYear,
+            monthOfYear = reminder.monthOfYear,
+            dayOfMonth = reminder.dayOfMonth,
             interval = reminder.repeatInterval,
           )
         } returns occurrence
@@ -128,8 +128,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Biennial reminder",
-          monthOfYear = 1, // Day
-          dayOfMonth = 0, // Month (0-indexed: 0 = January)
+          monthOfYear = 0, // January (0-indexed)
+          dayOfMonth = 1,
           repeatInterval = 2L,
           syncState = SyncState.Synced,
         )
@@ -148,8 +148,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
         every {
           recurrenceCalculator.getNextYearDayDateTime(
             eventDateTime = if (index == 0) fromDateTime else expectedOccurrences[index - 1],
-            monthOfYear = reminder.dayOfMonth,
-            dayOfMonth = reminder.monthOfYear,
+            monthOfYear = reminder.monthOfYear,
+            dayOfMonth = reminder.dayOfMonth,
             interval = reminder.repeatInterval,
           )
         } returns occurrence
@@ -174,8 +174,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Limited yearly reminder",
-          monthOfYear = 25, // Day
-          dayOfMonth = 11, // Month (0-indexed: 11 = December)
+          monthOfYear = 11, // December (0-indexed)
+          dayOfMonth = 25,
           repeatInterval = 1L,
           repeatLimit = 15,
           eventCount = 13L,
@@ -194,8 +194,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
         every {
           recurrenceCalculator.getNextYearDayDateTime(
             eventDateTime = if (index == 0) fromDateTime else expectedOccurrences[index - 1],
-            monthOfYear = reminder.dayOfMonth,
-            dayOfMonth = reminder.monthOfYear,
+            monthOfYear = reminder.monthOfYear,
+            dayOfMonth = reminder.dayOfMonth,
             interval = reminder.repeatInterval,
           )
         } returns occurrence
@@ -249,8 +249,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Yearly reminder",
-          monthOfYear = 1,
-          dayOfMonth = 0,
+          monthOfYear = 0,
+          dayOfMonth = 1,
           repeatInterval = 1L,
           syncState = SyncState.Synced,
         )
@@ -276,8 +276,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Yearly reminder",
-          monthOfYear = 1,
-          dayOfMonth = 0,
+          monthOfYear = 0,
+          dayOfMonth = 1,
           repeatInterval = 1L,
           syncState = SyncState.Synced,
         )
@@ -303,8 +303,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Invalid yearly reminder",
-          monthOfYear = -1,
-          dayOfMonth = 0,
+          monthOfYear = 0,
+          dayOfMonth = -1,
           repeatInterval = 1L,
           syncState = SyncState.Synced,
         )
@@ -330,8 +330,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Invalid yearly reminder",
-          monthOfYear = 1,
-          dayOfMonth = -1,
+          monthOfYear = -1,
+          dayOfMonth = 1,
           repeatInterval = 1L,
           syncState = SyncState.Synced,
         )
@@ -357,8 +357,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
       val reminder =
         Reminder(
           summary = "Unlimited yearly reminder",
-          monthOfYear = 1,
-          dayOfMonth = 0,
+          monthOfYear = 0,
+          dayOfMonth = 1,
           repeatInterval = 1L,
           repeatLimit = -1,
           eventCount = 10L,
@@ -380,8 +380,8 @@ class YearlyRepeatOccurrenceCalculatorTest {
         every {
           recurrenceCalculator.getNextYearDayDateTime(
             eventDateTime = if (index == 0) fromDateTime else expectedOccurrences[index - 1],
-            monthOfYear = reminder.dayOfMonth,
-            dayOfMonth = reminder.monthOfYear,
+            monthOfYear = reminder.monthOfYear,
+            dayOfMonth = reminder.dayOfMonth,
             interval = reminder.repeatInterval,
           )
         } returns occurrence

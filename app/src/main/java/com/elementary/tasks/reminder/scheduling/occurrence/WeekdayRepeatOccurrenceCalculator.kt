@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.scheduling.occurrence
 
-import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
+import com.github.naz013.datecalc.RecurrenceCalculator
+import com.github.naz013.datecalc.RecurrenceCalculatorImpl
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
@@ -12,7 +13,7 @@ import org.threeten.bp.LocalDateTime
  * The reminder time remains the same, but dates advance to the next selected weekday.
  */
 class WeekdayRepeatOccurrenceCalculator(
-  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculatorImpl(),
 ) : ReminderOccurrenceCalculator {
   /**
    * Calculates occurrences for a weekday-based repeating reminder.

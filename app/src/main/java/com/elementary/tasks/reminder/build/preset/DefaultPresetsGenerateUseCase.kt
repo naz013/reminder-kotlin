@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.build.preset
 import android.app.AlarmManager
 import com.elementary.tasks.R
 import com.elementary.tasks.config.DayOfMonth
-import com.elementary.tasks.core.protocol.WeekDaysProtocol
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
@@ -23,6 +22,7 @@ import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.WeekDaysProtocol
 import com.github.naz013.domain.PresetBuilderScheme
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset

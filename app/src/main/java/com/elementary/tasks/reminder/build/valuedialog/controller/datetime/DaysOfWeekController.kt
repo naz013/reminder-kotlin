@@ -3,11 +3,11 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.datetime
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import com.elementary.tasks.core.protocol.WeekDaysProtocol
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
 import com.elementary.tasks.databinding.BuilderItemDaysOfWeekBinding
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.core.AbstractBindingValueController
+import com.github.naz013.datecalc.WeekDaysProtocol
 
 class DaysOfWeekController(
   builderItem: BuilderItem<List<Int>>,

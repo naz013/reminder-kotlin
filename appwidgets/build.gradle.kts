@@ -61,6 +61,7 @@ dependencies {
   implementation(project(":usecase:reminders"))
   implementation(project(":analytics"))
   implementation(project(":icalendar"))
+  implementation(project(":date-calculations"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)
