@@ -30,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,7 +61,7 @@ fun NotesScreen(
   onNoteClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -75,7 +74,7 @@ fun NotesScreen(
         sortOrder = state.sortOrder,
         onSortOrderSelected = onSortOrderSelected,
         onArchiveClick = onArchiveClick,
-        onSettingsClick = onSettingsClick
+        onSettingsClick = onSettingsClick,
       )
     },
     floatingActionButton = {
@@ -83,35 +82,38 @@ fun NotesScreen(
         FloatingActionButton(onClick = onAddClick) {
           Icon(
             painter = painterResource(R.drawable.ic_fluent_add),
-            contentDescription = stringResource(R.string.add_note)
+            contentDescription = stringResource(R.string.add_note),
           )
         }
       }
-    }
+    },
   ) { padding ->
     Column(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(padding)
+      modifier =
+        Modifier
+          .fillMaxSize()
+          .padding(padding),
     ) {
       if (state.listState !is ListState.Empty || state.searchQuery.isNotEmpty()) {
         SearchBar(
           query = state.searchQuery,
           onQueryChange = onSearchQueryChange,
           placeholder = stringResource(R.string.search),
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+          modifier =
+            Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 16.dp, vertical = 8.dp),
         )
       }
 
       when (val listState = state.listState) {
         is ListState.Loading -> {
           Box(
-            modifier = Modifier
-              .fillMaxSize()
-              .weight(1f),
-            contentAlignment = Alignment.Center
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .weight(1f),
+            contentAlignment = Alignment.Center,
           ) {
             CircularProgressIndicator()
           }
@@ -120,9 +122,10 @@ fun NotesScreen(
         is ListState.Empty -> {
           NotesEmptyState(
             isArchived = state.isArchived,
-            modifier = Modifier
-              .fillMaxSize()
-              .weight(1f)
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .weight(1f),
           )
         }
 
@@ -136,9 +139,10 @@ fun NotesScreen(
             onNoteClick = onNoteClick,
             onNoteMenuAction = onNoteMenuAction,
             onImageClick = onImageClick,
-            modifier = Modifier
-              .fillMaxSize()
-              .weight(1f)
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .weight(1f),
           )
         }
       }
@@ -156,19 +160,20 @@ private fun NotesList(
   onNoteClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   val fabBottomPadding = if (hasFab) 88.dp else 0.dp
   if (isGrid) {
     LazyColumn(
       modifier = modifier,
-      contentPadding = PaddingValues(
-        start = 16.dp,
-        end = 16.dp,
-        top = contentPadding.calculateTopPadding() + 8.dp,
-        bottom = contentPadding.calculateBottomPadding() + fabBottomPadding
-      ),
-      verticalArrangement = Arrangement.spacedBy(8.dp)
+      contentPadding =
+        PaddingValues(
+          start = 16.dp,
+          end = 16.dp,
+          top = contentPadding.calculateTopPadding() + 8.dp,
+          bottom = contentPadding.calculateBottomPadding() + fabBottomPadding,
+        ),
+      verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
       items(notes, key = { it.id }) { note ->
         NoteCard(
@@ -177,7 +182,7 @@ private fun NotesList(
           onClick = { onNoteClick(note.id) },
           onMenuAction = { action -> onNoteMenuAction(note, action) },
           onImageClick = { imageId -> onImageClick(note, imageId) },
-          modifier = Modifier.animateItem()
+          modifier = Modifier.animateItem(),
         )
       }
     }
@@ -185,14 +190,15 @@ private fun NotesList(
     LazyVerticalStaggeredGrid(
       columns = StaggeredGridCells.Fixed(GRID_COLUMNS),
       modifier = modifier,
-      contentPadding = PaddingValues(
-        start = 16.dp,
-        end = 16.dp,
-        top = contentPadding.calculateTopPadding() + 8.dp,
-        bottom = contentPadding.calculateBottomPadding() + fabBottomPadding
-      ),
+      contentPadding =
+        PaddingValues(
+          start = 16.dp,
+          end = 16.dp,
+          top = contentPadding.calculateTopPadding() + 8.dp,
+          bottom = contentPadding.calculateBottomPadding() + fabBottomPadding,
+        ),
       horizontalArrangement = Arrangement.spacedBy(8.dp),
-      verticalItemSpacing = 8.dp
+      verticalItemSpacing = 8.dp,
     ) {
       items(notes, key = { it.id }) { note ->
         NoteCard(
@@ -201,7 +207,7 @@ private fun NotesList(
           onClick = { onNoteClick(note.id) },
           onMenuAction = { action -> onNoteMenuAction(note, action) },
           onImageClick = { imageId -> onImageClick(note, imageId) },
-          modifier = Modifier.animateItem()
+          modifier = Modifier.animateItem(),
         )
       }
     }
@@ -211,26 +217,27 @@ private fun NotesList(
 @Composable
 private fun NotesEmptyState(
   isArchived: Boolean,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier,
     horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center
+    verticalArrangement = Arrangement.Center,
   ) {
     Icon(
       painter = painterResource(R.drawable.ic_fluent_note),
       contentDescription = null,
       modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
     )
     Text(
-      text = stringResource(
-        if (isArchived) R.string.notes_archive_is_empty else R.string.no_notes
-      ),
+      text =
+        stringResource(
+          if (isArchived) R.string.notes_archive_is_empty else R.string.no_notes,
+        ),
       style = MaterialTheme.typography.bodyLarge,
       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp)
+      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
     )
   }
 }
@@ -245,7 +252,7 @@ private fun NotesTopBar(
   sortOrder: String,
   onSortOrderSelected: (String) -> Unit,
   onArchiveClick: (() -> Unit)?,
-  onSettingsClick: (() -> Unit)?
+  onSettingsClick: (() -> Unit)?,
 ) {
   TopAppBar(
     title = { Text(title) },
@@ -254,7 +261,7 @@ private fun NotesTopBar(
         MenuIconButton(
           icon = painterResource(R.drawable.ic_builder_arrow_left),
           contentDescription = null,
-          onClick = onBackClick
+          onClick = onBackClick,
         )
       }
     },
@@ -262,79 +269,88 @@ private fun NotesTopBar(
       MenuIconButton(
         icon = painterResource(if (isGrid) R.drawable.ic_fluent_grid else R.drawable.ic_fluent_list),
         contentDescription = stringResource(if (isGrid) R.string.grid_view else R.string.list_view),
-        onClick = onGridToggleClick
+        onClick = onGridToggleClick,
       )
       SortMenuButton(sortOrder = sortOrder, onSortOrderSelected = onSortOrderSelected)
       if (onArchiveClick != null || onSettingsClick != null) {
         OverflowMenuButton(onArchiveClick = onArchiveClick, onSettingsClick = onSettingsClick)
       }
     },
-    colors = TopAppBarDefaults.topAppBarColors(
-      containerColor = MaterialTheme.colorScheme.background
-    )
+    colors =
+      TopAppBarDefaults.topAppBarColors(
+        containerColor = MaterialTheme.colorScheme.background,
+      ),
   )
 }
 
 @Composable
 private fun SortMenuButton(
   sortOrder: String,
-  onSortOrderSelected: (String) -> Unit
+  onSortOrderSelected: (String) -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
-  val items = listOf(
-    NoteSortProcessor.DATE_AZ to stringResource(R.string.by_date_az),
-    NoteSortProcessor.DATE_ZA to stringResource(R.string.by_date_za),
-    NoteSortProcessor.TEXT_AZ to stringResource(R.string.name_az),
-    NoteSortProcessor.TEXT_ZA to stringResource(R.string.name_za)
-  )
+  val items =
+    listOf(
+      NoteSortProcessor.DATE_AZ to stringResource(R.string.by_date_az),
+      NoteSortProcessor.DATE_ZA to stringResource(R.string.by_date_za),
+      NoteSortProcessor.TEXT_AZ to stringResource(R.string.name_az),
+      NoteSortProcessor.TEXT_ZA to stringResource(R.string.name_za),
+    )
   Box {
     MenuIconButton(
       icon = sortOrderIcon(sortOrder),
       contentDescription = stringResource(R.string.order),
-      onClick = { expanded = true }
+      onClick = { expanded = true },
     )
     AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
       items = items.mapIndexed { index, (_, title) -> PopupMenuItem(id = index, title = title) },
-      onItemClick = { index -> onSortOrderSelected(items[index].first) }
+      onItemClick = { index -> onSortOrderSelected(items[index].first) },
     )
   }
 }
 
-private fun sortOrderIcon(sortOrder: String): ImageVector = when (sortOrder) {
-  NoteSortProcessor.DATE_AZ -> Icons.Filled.ArrowUpward
-  NoteSortProcessor.TEXT_AZ, NoteSortProcessor.TEXT_ZA -> Icons.Filled.SortByAlpha
-  else -> Icons.Filled.ArrowDownward
-}
+private fun sortOrderIcon(sortOrder: String): ImageVector =
+  when (sortOrder) {
+    NoteSortProcessor.DATE_AZ -> Icons.Filled.ArrowUpward
+    NoteSortProcessor.TEXT_AZ, NoteSortProcessor.TEXT_ZA -> Icons.Filled.SortByAlpha
+    else -> Icons.Filled.ArrowDownward
+  }
 
-private data class OverflowAction(val id: Int, val title: String, val iconRes: Int, val onClick: () -> Unit)
+private data class OverflowAction(
+  val id: Int,
+  val title: String,
+  val iconRes: Int,
+  val onClick: () -> Unit,
+)
 
 @Composable
 private fun OverflowMenuButton(
   onArchiveClick: (() -> Unit)?,
-  onSettingsClick: (() -> Unit)?
+  onSettingsClick: (() -> Unit)?,
 ) {
   var expanded by remember { mutableStateOf(false) }
-  val actions = buildList {
-    if (onArchiveClick != null) {
-      add(OverflowAction(0, stringResource(R.string.notes_archive), R.drawable.ic_fluent_archive, onArchiveClick))
+  val actions =
+    buildList {
+      if (onArchiveClick != null) {
+        add(OverflowAction(0, stringResource(R.string.notes_archive), R.drawable.ic_fluent_archive, onArchiveClick))
+      }
+      if (onSettingsClick != null) {
+        add(OverflowAction(1, stringResource(R.string.action_settings), R.drawable.ic_fluent_settings, onSettingsClick))
+      }
     }
-    if (onSettingsClick != null) {
-      add(OverflowAction(1, stringResource(R.string.action_settings), R.drawable.ic_fluent_settings, onSettingsClick))
-    }
-  }
   Box {
     MenuIconButton(
       icon = painterResource(R.drawable.ic_fluent_more_vertical),
       contentDescription = stringResource(R.string.more_options),
-      onClick = { expanded = true }
+      onClick = { expanded = true },
     )
     AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
       items = actions.map { PopupMenuItem(id = it.id, title = it.title, iconRes = it.iconRes) },
-      onItemClick = { id -> actions.firstOrNull { it.id == id }?.onClick?.invoke() }
+      onItemClick = { id -> actions.firstOrNull { it.id == id }?.onClick?.invoke() },
     )
   }
 }
@@ -354,7 +370,7 @@ private fun NotesScreenEmptyPreview() {
       onAddClick = {},
       onNoteClick = {},
       onNoteMenuAction = { _, _ -> },
-      onImageClick = { _, _ -> }
+      onImageClick = { _, _ -> },
     )
   }
 }

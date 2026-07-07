@@ -39,10 +39,11 @@ fun TroubleshootingScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
   ) {
     if (showSendLogs) {
       SettingsItem(
@@ -55,9 +56,10 @@ fun TroubleshootingScreen(
 
     if (showBatteryOptimizationCard) {
       Card(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(16.dp),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
       ) {
         Column(modifier = Modifier.padding(8.dp)) {
           Row {
@@ -65,9 +67,10 @@ fun TroubleshootingScreen(
               painter = painterResource(R.drawable.ic_fluent_battery_saver),
               contentDescription = null,
               tint = MaterialTheme.colorScheme.onSurface,
-              modifier = Modifier
-                .size(24.dp)
-                .padding(top = 4.dp),
+              modifier =
+                Modifier
+                  .size(24.dp)
+                  .padding(top = 4.dp),
             )
             Text(
               text = stringResource(R.string.troubleshooting_battery_optimization_text),
@@ -77,9 +80,10 @@ fun TroubleshootingScreen(
             )
           }
           Row(
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(top = 16.dp),
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
             horizontalArrangement = Arrangement.End,
           ) {
             Button(onClick = onDisableOptimizationClick) {
@@ -92,9 +96,10 @@ fun TroubleshootingScreen(
 
     if (showEmptyView) {
       Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(top = 32.dp),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(top = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
       ) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.empty_status))

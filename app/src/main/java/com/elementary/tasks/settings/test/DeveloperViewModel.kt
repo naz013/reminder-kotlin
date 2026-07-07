@@ -59,7 +59,6 @@ class DeveloperViewModel(
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val usedTimeRepository: UsedTimeRepository,
 ) : ViewModel() {
-
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val bannersReset: LiveData<Event<Unit>> field = mutableLiveEventOf()
   val actionMessage: LiveData<Event<String>> field = mutableLiveEventOf()
@@ -206,48 +205,50 @@ class DeveloperViewModel(
     val today = LocalDate.now()
     val tomorrow = today.plusDays(1)
     val groupUuId = reminderGroupRepository.defaultGroup()?.groupUuId ?: ""
-    val reminders = listOf(
-      Reminder(
-        summary = "Team standup meeting",
-        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(9, 0))),
-        groupUuId = groupUuId,
-      ),
-      Reminder(
-        summary = "Weekly grocery shopping",
-        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(18, 30))),
-        shoppings = listOf(
-          ShopItem(summary = "Milk", createTime = "", isChecked = false),
-          ShopItem(summary = "Fresh vegetables", createTime = "", isChecked = false),
-          ShopItem(summary = "Coffee beans", createTime = "", isChecked = false),
-          ShopItem(summary = "Birthday candles", createTime = "", isChecked = true),
+    val reminders =
+      listOf(
+        Reminder(
+          summary = "Team standup meeting",
+          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(9, 0))),
+          groupUuId = groupUuId,
         ),
-        groupUuId = groupUuId,
-      ),
-      Reminder(
-        summary = "Call Mom",
-        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(20, 0))),
-        type = 10 + Reminder.Action.CALL,
-        target = "+1234567890",
-        groupUuId = groupUuId,
-      ),
-      Reminder(
-        summary = "Doctor's appointment",
-        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(10, 30))),
-        groupUuId = groupUuId,
-      ),
-      Reminder(
-        summary = "Submit quarterly report",
-        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(14, 0))),
-        groupUuId = groupUuId,
-      ),
-      Reminder(
-        summary = "Flight check-in",
-        eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(7, 0))),
-        type = 10 + Reminder.Action.LINK,
-        target = "https://www.google.com/travel/flights",
-        groupUuId = groupUuId,
-      ),
-    )
+        Reminder(
+          summary = "Weekly grocery shopping",
+          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(18, 30))),
+          shoppings =
+            listOf(
+              ShopItem(summary = "Milk", createTime = "", isChecked = false),
+              ShopItem(summary = "Fresh vegetables", createTime = "", isChecked = false),
+              ShopItem(summary = "Coffee beans", createTime = "", isChecked = false),
+              ShopItem(summary = "Birthday candles", createTime = "", isChecked = true),
+            ),
+          groupUuId = groupUuId,
+        ),
+        Reminder(
+          summary = "Call Mom",
+          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(20, 0))),
+          type = 10 + Reminder.Action.CALL,
+          target = "+1234567890",
+          groupUuId = groupUuId,
+        ),
+        Reminder(
+          summary = "Doctor's appointment",
+          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(10, 30))),
+          groupUuId = groupUuId,
+        ),
+        Reminder(
+          summary = "Submit quarterly report",
+          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(14, 0))),
+          groupUuId = groupUuId,
+        ),
+        Reminder(
+          summary = "Flight check-in",
+          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(7, 0))),
+          type = 10 + Reminder.Action.LINK,
+          target = "https://www.google.com/travel/flights",
+          groupUuId = groupUuId,
+        ),
+      )
     reminders.forEach { reminderRepository.save(it) }
   }
 
@@ -275,35 +276,36 @@ class DeveloperViewModel(
   }
 
   private suspend fun insertDemoNotes() {
-    val notes = listOf(
-      DemoNote(
-        title = "Grocery List",
-        summary = "Milk, eggs, bread, fresh basil, olive oil, and don't forget the candles for Saturday!",
-        color = ThemeProvider.Color.GREEN,
-      ),
-      DemoNote(
-        title = "Weekend Trip Ideas",
-        summary =
-          "1. Hike the coastal trail\n2. Visit the farmers market\n3. Try that new ramen place downtown\n4. Sunset photos at the pier",
-        color = ThemeProvider.Color.LIGHT_BLUE,
-      ),
-      DemoNote(
-        title = "Meeting Notes - Product Sync",
-        summary =
-          "Discussed Q3 roadmap. Action items: finalize onboarding flow, review pricing page copy, schedule user interviews for next sprint.",
-        color = ThemeProvider.Color.AMBER,
-      ),
-      DemoNote(
-        title = "Book Recommendations",
-        summary = "- Atomic Habits\n- Project Hail Mary\n- The Midnight Library\n- Deep Work",
-        color = ThemeProvider.Color.DEEP_PURPLE,
-      ),
-      DemoNote(
-        title = "Favorite Quote",
-        summary = "\"The secret of getting ahead is getting started.\" - Mark Twain",
-        color = ThemeProvider.Color.PINK,
-      ),
-    )
+    val notes =
+      listOf(
+        DemoNote(
+          title = "Grocery List",
+          summary = "Milk, eggs, bread, fresh basil, olive oil, and don't forget the candles for Saturday!",
+          color = ThemeProvider.Color.GREEN,
+        ),
+        DemoNote(
+          title = "Weekend Trip Ideas",
+          summary =
+            "1. Hike the coastal trail\n2. Visit the farmers market\n3. Try that new ramen place downtown\n4. Sunset photos at the pier",
+          color = ThemeProvider.Color.LIGHT_BLUE,
+        ),
+        DemoNote(
+          title = "Meeting Notes - Product Sync",
+          summary =
+            "Discussed Q3 roadmap. Action items: finalize onboarding flow, review pricing page copy, schedule user interviews for next sprint.",
+          color = ThemeProvider.Color.AMBER,
+        ),
+        DemoNote(
+          title = "Book Recommendations",
+          summary = "- Atomic Habits\n- Project Hail Mary\n- The Midnight Library\n- Deep Work",
+          color = ThemeProvider.Color.DEEP_PURPLE,
+        ),
+        DemoNote(
+          title = "Favorite Quote",
+          summary = "\"The secret of getting ahead is getting started.\" - Mark Twain",
+          color = ThemeProvider.Color.PINK,
+        ),
+      )
     notes.forEach { demoNote ->
       noteRepository.save(
         Note(
@@ -330,12 +332,13 @@ class DeveloperViewModel(
 
       2 -> {
         reminder.summary = "This is a reminder with todo."
-        reminder.shoppings = listOf(
-          ShopItem(summary = "Milk", createTime = "", isChecked = false),
-          ShopItem(summary = "Bread", createTime = "", isChecked = false),
-          ShopItem(summary = "Eggs", createTime = "", isChecked = false),
-          ShopItem(summary = "Butter", createTime = "", isChecked = true),
-        )
+        reminder.shoppings =
+          listOf(
+            ShopItem(summary = "Milk", createTime = "", isChecked = false),
+            ShopItem(summary = "Bread", createTime = "", isChecked = false),
+            ShopItem(summary = "Eggs", createTime = "", isChecked = false),
+            ShopItem(summary = "Butter", createTime = "", isChecked = true),
+          )
       }
 
       3 -> {
@@ -372,36 +375,40 @@ class DeveloperViewModel(
     return reminder
   }
 
-  private fun prepareBirthday(selectedItem: Int): Birthday = when (selectedItem) {
-    0 -> Birthday(name = "John Doe", date = "1990-05-15", number = "", syncState = SyncState.Synced)
-    1 -> Birthday(name = "Jane Smith", date = "1985-10-20", number = "+1234567890", syncState = SyncState.Synced)
-    2 -> Birthday(
-      name = "Alice Johnson",
-      date = "2000-07-25",
-      number = "",
-      ignoreYear = true,
-      syncState = SyncState.Synced,
-    )
+  private fun prepareBirthday(selectedItem: Int): Birthday =
+    when (selectedItem) {
+      0 -> Birthday(name = "John Doe", date = "1990-05-15", number = "", syncState = SyncState.Synced)
+      1 -> Birthday(name = "Jane Smith", date = "1985-10-20", number = "+1234567890", syncState = SyncState.Synced)
+      2 ->
+        Birthday(
+          name = "Alice Johnson",
+          date = "2000-07-25",
+          number = "",
+          ignoreYear = true,
+          syncState = SyncState.Synced,
+        )
 
-    else -> Birthday(syncState = SyncState.Synced)
-  }
+      else -> Birthday(syncState = SyncState.Synced)
+    }
 
   companion object {
-    private val REMINDER_OPTIONS = listOf(
-      "Simple reminder",
-      "Recurring reminder",
-      "With Todo",
-      "With Call action",
-      "With SMS action",
-      "With Email action",
-      "With Open URL action",
-      "With Open Chrome Browser action",
-    )
-    private val BIRTHDAY_OPTIONS = listOf(
-      "Simple birthday",
-      "Birthday with number",
-      "Birthday without age",
-    )
+    private val REMINDER_OPTIONS =
+      listOf(
+        "Simple reminder",
+        "Recurring reminder",
+        "With Todo",
+        "With Call action",
+        "With SMS action",
+        "With Email action",
+        "With Open URL action",
+        "With Open Chrome Browser action",
+      )
+    private val BIRTHDAY_OPTIONS =
+      listOf(
+        "Simple birthday",
+        "Birthday with number",
+        "Birthday without age",
+      )
     private val TABLE_OPTIONS = Table.entries.map { it.tableName }
   }
 

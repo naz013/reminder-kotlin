@@ -21,11 +21,13 @@ class ImagePreviewViewModel(
   private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
   private val _state = MutableStateFlow(ImagePreviewState())
-  val state = _state.stateIn(
-    viewModelScope,
-    SharingStarted.WhileSubscribed(5000L),
-    ImagePreviewState(),
-  ).onStart { loadInternal() }
+  val state =
+    _state
+      .stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000L),
+        ImagePreviewState(),
+      ).onStart { loadInternal() }
 
   private var initStatusBarColor: Int = -1
   private var statusBarColorSaved: Boolean = false
@@ -70,11 +72,12 @@ class ImagePreviewViewModel(
 
   private fun loadInternal() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val state = ImagePreviewState(
-        images = imagesSingleton.getCurrent(),
-        position = initialPosition,
-        backgroundColor = imagesSingleton.getColor(),
-      )
+      val state =
+        ImagePreviewState(
+          images = imagesSingleton.getCurrent(),
+          position = initialPosition,
+          backgroundColor = imagesSingleton.getColor(),
+        )
       withContext(dispatcherProvider.main()) {
         _state.update { state }
       }

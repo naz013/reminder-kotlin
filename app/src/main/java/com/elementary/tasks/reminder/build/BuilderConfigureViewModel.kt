@@ -14,7 +14,6 @@ class BuilderConfigureViewModel(
   private val prefs: Prefs,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
 ) : ViewModel() {
-
   private val config: ReminderCreatorConfig = prefs.reminderCreatorParams
 
   val state: StateFlow<BuilderConfigureState> field = MutableStateFlow(buildState())
@@ -25,24 +24,27 @@ class BuilderConfigureViewModel(
 
   fun onRepeatToggle() = toggle(ReminderCreatorConfig::isRepeatPickerEnabled, ReminderCreatorConfig::setRepeatPickerEnabled)
 
-  fun onRepeatLimitToggle() = toggle(
-    ReminderCreatorConfig::isRepeatLimitPickerEnabled,
-    ReminderCreatorConfig::setRepeatLimitPickerEnabled,
-  )
+  fun onRepeatLimitToggle() =
+    toggle(
+      ReminderCreatorConfig::isRepeatLimitPickerEnabled,
+      ReminderCreatorConfig::setRepeatLimitPickerEnabled,
+    )
 
   fun onPriorityToggle() = toggle(ReminderCreatorConfig::isPriorityPickerEnabled, ReminderCreatorConfig::setPriorityPickerEnabled)
 
-  fun onAttachmentToggle() = toggle(
-    ReminderCreatorConfig::isAttachmentPickerEnabled,
-    ReminderCreatorConfig::setAttachmentPickerEnabled,
-  )
+  fun onAttachmentToggle() =
+    toggle(
+      ReminderCreatorConfig::isAttachmentPickerEnabled,
+      ReminderCreatorConfig::setAttachmentPickerEnabled,
+    )
 
   fun onCalendarToggle() = toggle(ReminderCreatorConfig::isCalendarPickerEnabled, ReminderCreatorConfig::setCalendarPickerEnabled)
 
-  fun onTasksToggle() = toggle(
-    ReminderCreatorConfig::isGoogleTasksPickerEnabled,
-    ReminderCreatorConfig::setGoogleTasksPickerEnabled,
-  )
+  fun onTasksToggle() =
+    toggle(
+      ReminderCreatorConfig::isGoogleTasksPickerEnabled,
+      ReminderCreatorConfig::setGoogleTasksPickerEnabled,
+    )
 
   fun onExtraToggle() = toggle(ReminderCreatorConfig::isTuneExtraPickerEnabled, ReminderCreatorConfig::setTuneExtraPickerEnabled)
 
@@ -60,34 +62,38 @@ class BuilderConfigureViewModel(
 
   fun onSendEmailToggle() = toggle(ReminderCreatorConfig::isSendEmailEnabled, ReminderCreatorConfig::setSendEmailEnabled)
 
-  private fun toggle(get: (ReminderCreatorConfig) -> Boolean, set: (ReminderCreatorConfig, Boolean) -> Unit) {
+  private fun toggle(
+    get: (ReminderCreatorConfig) -> Boolean,
+    set: (ReminderCreatorConfig, Boolean) -> Unit,
+  ) {
     set(config, !get(config))
     prefs.reminderCreatorParams = config
     Logger.d(TAG, "save: $config")
     state.update { buildState() }
   }
 
-  private fun buildState(): BuilderConfigureState = BuilderConfigureState(
-    isSummaryChecked = config.isAutoAddSummary(),
-    isBeforeChecked = config.isBeforePickerEnabled(),
-    isRepeatChecked = config.isRepeatPickerEnabled(),
-    isRepeatLimitChecked = config.isRepeatLimitPickerEnabled(),
-    isPriorityChecked = config.isPriorityPickerEnabled(),
-    isAttachmentChecked = config.isAttachmentPickerEnabled(),
-    isCalendarChecked = config.isCalendarPickerEnabled(),
-    isTasksChecked = config.isGoogleTasksPickerEnabled(),
-    isTasksRowVisible = googleTasksAuthManager.isAuthorized(),
-    isExtraChecked = config.isTuneExtraPickerEnabled(),
-    isLedChecked = config.isLedPickerEnabled(),
-    isLedRowVisible = BuildParams.isPro,
-    isICalendarChecked = config.isICalendarEnabled(),
-    isICalendarRowVisible = BuildParams.isPro,
-    isMakeCallChecked = config.isPhoneCallEnabled(),
-    isSendSmsChecked = config.isSendSmsEnabled(),
-    isOpenAppChecked = config.isOpenAppEnabled(),
-    isOpenLinkChecked = config.isOpenLinkEnabled(),
-    isSendEmailChecked = config.isSendEmailEnabled(),
-  )
+  private fun buildState(): BuilderConfigureState =
+    BuilderConfigureState(
+      isSummaryChecked = config.isAutoAddSummary(),
+      isBeforeChecked = config.isBeforePickerEnabled(),
+      isRepeatChecked = config.isRepeatPickerEnabled(),
+      isRepeatLimitChecked = config.isRepeatLimitPickerEnabled(),
+      isPriorityChecked = config.isPriorityPickerEnabled(),
+      isAttachmentChecked = config.isAttachmentPickerEnabled(),
+      isCalendarChecked = config.isCalendarPickerEnabled(),
+      isTasksChecked = config.isGoogleTasksPickerEnabled(),
+      isTasksRowVisible = googleTasksAuthManager.isAuthorized(),
+      isExtraChecked = config.isTuneExtraPickerEnabled(),
+      isLedChecked = config.isLedPickerEnabled(),
+      isLedRowVisible = BuildParams.isPro,
+      isICalendarChecked = config.isICalendarEnabled(),
+      isICalendarRowVisible = BuildParams.isPro,
+      isMakeCallChecked = config.isPhoneCallEnabled(),
+      isSendSmsChecked = config.isSendSmsEnabled(),
+      isOpenAppChecked = config.isOpenAppEnabled(),
+      isOpenLinkChecked = config.isOpenLinkEnabled(),
+      isSendEmailChecked = config.isSendEmailEnabled(),
+    )
 
   companion object {
     private const val TAG = "BuilderConfigureViewModel"

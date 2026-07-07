@@ -62,42 +62,53 @@ fun NoteCard(
   onClick: () -> Unit,
   onMenuAction: (NoteMenuAction) -> Unit,
   onImageClick: (imageId: Int) -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   val context = LocalContext.current
-  val bodyFontFamily = remember(note.fontStyle) {
-    AssetsUtil.getTypeface(context, note.fontStyle)?.let {
-      FontFamily(androidx.compose.ui.text.font.Typeface(it))
+  val bodyFontFamily =
+    remember(note.fontStyle) {
+      AssetsUtil.getTypeface(context, note.fontStyle)?.let {
+        FontFamily(
+          androidx.compose.ui.text.font
+            .Typeface(it),
+        )
+      }
     }
-  }
-  val titleFontFamily = remember(note.titleFontStyle) {
-    AssetsUtil.getTypeface(context, note.titleFontStyle)?.let {
-      FontFamily(androidx.compose.ui.text.font.Typeface(it))
+  val titleFontFamily =
+    remember(note.titleFontStyle) {
+      AssetsUtil.getTypeface(context, note.titleFontStyle)?.let {
+        FontFamily(
+          androidx.compose.ui.text.font
+            .Typeface(it),
+        )
+      }
     }
-  }
   var menuExpanded by remember { mutableStateOf(false) }
 
-  val bodyText = if (note.text.length > BODY_TEXT_MAX_CHARS) {
-    note.text.substring(0, BODY_TEXT_MAX_CHARS) + "..."
-  } else {
-    note.text
-  }
+  val bodyText =
+    if (note.text.length > BODY_TEXT_MAX_CHARS) {
+      note.text.substring(0, BODY_TEXT_MAX_CHARS) + "..."
+    } else {
+      note.text
+    }
 
   Card(
-    modifier = modifier
-      .fillMaxWidth()
-      .clip(MaterialTheme.shapes.medium)
-      .clickable(onClick = onClick),
-    colors = CardDefaults.cardColors(containerColor = note.backgroundColor)
+    modifier =
+      modifier
+        .fillMaxWidth()
+        .clip(MaterialTheme.shapes.medium)
+        .clickable(onClick = onClick),
+    colors = CardDefaults.cardColors(containerColor = note.backgroundColor),
   ) {
     Box(modifier = Modifier.fillMaxWidth()) {
       Column(
-        modifier = Modifier.padding(
-          start = CARD_CONTENT_PADDING_HORIZONTAL,
-          top = CARD_CONTENT_PADDING_TOP,
-          end = CARD_CONTENT_PADDING_HORIZONTAL,
-          bottom = CARD_CONTENT_PADDING_BOTTOM
-        )
+        modifier =
+          Modifier.padding(
+            start = CARD_CONTENT_PADDING_HORIZONTAL,
+            top = CARD_CONTENT_PADDING_TOP,
+            end = CARD_CONTENT_PADDING_HORIZONTAL,
+            bottom = CARD_CONTENT_PADDING_BOTTOM,
+          ),
       ) {
         if (note.title.isNotEmpty()) {
           Text(
@@ -109,9 +120,10 @@ fun NoteCard(
             lineHeight = note.titleFontSize.sp * LINE_HEIGHT_RATIO,
             maxLines = TITLE_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(end = TEXT_END_PADDING)
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .padding(end = TEXT_END_PADDING),
           )
         }
         if (bodyText.isNotEmpty()) {
@@ -123,12 +135,13 @@ fun NoteCard(
             lineHeight = note.fontSize.sp * LINE_HEIGHT_RATIO,
             maxLines = BODY_TEXT_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(
-                top = if (note.title.isNotEmpty()) TEXT_BLOCK_SPACING else 0.dp,
-                end = TEXT_END_PADDING
-              )
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .padding(
+                  top = if (note.title.isNotEmpty()) TEXT_BLOCK_SPACING else 0.dp,
+                  end = TEXT_END_PADDING,
+                ),
           )
         }
         if (note.images.isNotEmpty()) {
@@ -143,13 +156,13 @@ fun NoteCard(
           icon = painterResource(R.drawable.ic_fluent_more_vertical),
           iconColor = note.textColor,
           contentDescription = stringResource(R.string.more_options),
-          onClick = { menuExpanded = true }
+          onClick = { menuExpanded = true },
         )
         AppDropdownMenu(
           expanded = menuExpanded,
           onDismissRequest = { menuExpanded = false },
           items = noteMenuItems(isArchived),
-          onItemClick = { id -> onMenuAction(NoteMenuAction.entries[id]) }
+          onItemClick = { id -> onMenuAction(NoteMenuAction.entries[id]) },
         )
       }
     }
@@ -160,36 +173,39 @@ fun NoteCard(
 private fun NoteCardImages(
   images: List<UiNoteImage>,
   onImageClick: (imageId: Int) -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   Column(modifier = modifier) {
     AsyncImage(
       model = images.first().filePath,
       contentDescription = null,
       contentScale = ContentScale.Crop,
-      modifier = Modifier
-        .fillMaxWidth()
-        .height(dimensionResource(R.dimen.image_height_list))
-        .clip(MaterialTheme.shapes.small)
-        .clickable { onImageClick(images.first().id) }
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .height(dimensionResource(R.dimen.image_height_list))
+          .clip(MaterialTheme.shapes.small)
+          .clickable { onImageClick(images.first().id) },
     )
     if (images.size > 1) {
       val scrollState = rememberScrollState()
       Row(
-        modifier = Modifier
-          .horizontalScroll(scrollState)
-          .padding(top = THUMBNAILS_TOP_PADDING)
+        modifier =
+          Modifier
+            .horizontalScroll(scrollState)
+            .padding(top = THUMBNAILS_TOP_PADDING),
       ) {
         images.drop(1).forEach { image ->
           AsyncImage(
             model = image.filePath,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-              .size(SECONDARY_IMAGE_SIZE_DP.dp)
-              .padding(end = 4.dp)
-              .clip(MaterialTheme.shapes.small)
-              .clickable { onImageClick(image.id) }
+            modifier =
+              Modifier
+                .size(SECONDARY_IMAGE_SIZE_DP.dp)
+                .padding(end = 4.dp)
+                .clip(MaterialTheme.shapes.small)
+                .clickable { onImageClick(image.id) },
           )
         }
       }
@@ -199,62 +215,65 @@ private fun NoteCardImages(
 
 @Composable
 private fun noteMenuItems(isArchived: Boolean): List<PopupMenuItem> {
-  val actions = if (isArchived) {
-    listOf(
-      NoteMenuAction.OPEN to R.string.open,
-      NoteMenuAction.EDIT to R.string.edit,
-      NoteMenuAction.UNARCHIVE to R.string.notes_unarchive,
-      NoteMenuAction.DELETE to R.string.delete
-    )
-  } else {
-    listOf(
-      NoteMenuAction.OPEN to R.string.open,
-      NoteMenuAction.SHARE to R.string.share,
-      NoteMenuAction.SHOW_IN_STATUS_BAR to R.string.show_in_status_bar,
-      NoteMenuAction.CHANGE_COLOR to R.string.change_color,
-      NoteMenuAction.EDIT to R.string.edit,
-      NoteMenuAction.ARCHIVE to R.string.notes_move_to_archive,
-      NoteMenuAction.DELETE to R.string.delete
-    )
-  }
+  val actions =
+    if (isArchived) {
+      listOf(
+        NoteMenuAction.OPEN to R.string.open,
+        NoteMenuAction.EDIT to R.string.edit,
+        NoteMenuAction.UNARCHIVE to R.string.notes_unarchive,
+        NoteMenuAction.DELETE to R.string.delete,
+      )
+    } else {
+      listOf(
+        NoteMenuAction.OPEN to R.string.open,
+        NoteMenuAction.SHARE to R.string.share,
+        NoteMenuAction.SHOW_IN_STATUS_BAR to R.string.show_in_status_bar,
+        NoteMenuAction.CHANGE_COLOR to R.string.change_color,
+        NoteMenuAction.EDIT to R.string.edit,
+        NoteMenuAction.ARCHIVE to R.string.notes_move_to_archive,
+        NoteMenuAction.DELETE to R.string.delete,
+      )
+    }
   return actions.map { (action, titleRes) ->
     PopupMenuItem(id = action.ordinal, title = stringResource(titleRes), iconRes = action.iconRes())
   }
 }
 
-private fun NoteMenuAction.iconRes(): Int = when (this) {
-  NoteMenuAction.OPEN -> R.drawable.ic_fluent_open
-  NoteMenuAction.EDIT -> R.drawable.ic_fluent_edit
-  NoteMenuAction.SHARE -> R.drawable.ic_fluent_share
-  NoteMenuAction.SHOW_IN_STATUS_BAR -> R.drawable.ic_fluent_alert
-  NoteMenuAction.CHANGE_COLOR -> R.drawable.ic_fluent_color
-  NoteMenuAction.ARCHIVE, NoteMenuAction.UNARCHIVE -> R.drawable.ic_fluent_archive
-  NoteMenuAction.DELETE -> R.drawable.ic_fluent_delete
-}
+private fun NoteMenuAction.iconRes(): Int =
+  when (this) {
+    NoteMenuAction.OPEN -> R.drawable.ic_fluent_open
+    NoteMenuAction.EDIT -> R.drawable.ic_fluent_edit
+    NoteMenuAction.SHARE -> R.drawable.ic_fluent_share
+    NoteMenuAction.SHOW_IN_STATUS_BAR -> R.drawable.ic_fluent_alert
+    NoteMenuAction.CHANGE_COLOR -> R.drawable.ic_fluent_color
+    NoteMenuAction.ARCHIVE, NoteMenuAction.UNARCHIVE -> R.drawable.ic_fluent_archive
+    NoteMenuAction.DELETE -> R.drawable.ic_fluent_delete
+  }
 
 @Preview(showBackground = true)
 @Composable
 private fun NoteCardPreview() {
   AppTheme {
     NoteCard(
-      note = UiNoteListItem(
-        id = "1",
-        title = "Shopping list",
-        text = "Milk, eggs, bread, butter, cheese, tomatoes, coffee",
-        backgroundColor = Color(0xFFFFF59D),
-        textColor = Color.Black,
-        fontStyle = 9,
-        fontSize = 14f,
-        titleFontStyle = 2,
-        titleFontSize = 20f,
-        images = emptyList(),
-        colorPosition = 12,
-        colorPalette = 0
-      ),
+      note =
+        UiNoteListItem(
+          id = "1",
+          title = "Shopping list",
+          text = "Milk, eggs, bread, butter, cheese, tomatoes, coffee",
+          backgroundColor = Color(0xFFFFF59D),
+          textColor = Color.Black,
+          fontStyle = 9,
+          fontSize = 14f,
+          titleFontStyle = 2,
+          titleFontSize = 20f,
+          images = emptyList(),
+          colorPosition = 12,
+          colorPalette = 0,
+        ),
       isArchived = false,
       onClick = {},
       onMenuAction = {},
-      onImageClick = {}
+      onImageClick = {},
     )
   }
 }

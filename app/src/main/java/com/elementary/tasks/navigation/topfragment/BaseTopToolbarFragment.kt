@@ -7,8 +7,5 @@ import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 abstract class BaseTopToolbarFragment<B : ViewBinding> :
   BaseToolbarFragment<B>(),
   FragmentMenuController {
-
-  override fun getNavigationIcon(): Int {
-    return R.drawable.ic_builder_arrow_left
-  }
+  override fun getNavigationIcon(): Int = R.drawable.ic_builder_arrow_left
 }

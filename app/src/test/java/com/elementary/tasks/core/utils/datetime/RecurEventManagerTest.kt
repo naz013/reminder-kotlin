@@ -1,8 +1,7 @@
 package com.elementary.tasks.core.utils.datetime
 
 class RecurEventManagerTest {
-
-//  private val dateTimeManager = mockk<DateTimeManager>()
+  //  private val dateTimeManager = mockk<DateTimeManager>()
 //  private val ruleBuilder = RuleBuilder()
 //  private val tagParser = TagParser()
 //

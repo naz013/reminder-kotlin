@@ -29,7 +29,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class CloudServicesFragment : ComposeFragment() {
-
   private val viewModel by viewModel<CloudServicesViewModel>()
   private val featureManager by inject<FeatureManager>()
   private val dialogues by inject<Dialogues>()
@@ -101,14 +100,16 @@ class CloudServicesFragment : ComposeFragment() {
   override fun FragmentContent() {
     val state by viewModel.state.collectAsState()
     val isDropboxVisible = remember { featureManager.isFeatureEnabled(FeatureManager.Feature.DROPBOX) }
-    val isGoogleDriveVisible = remember {
-      SuperUtil.isGooglePlayServicesAvailable(requireContext()) &&
-        featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)
-    }
-    val isGoogleTasksVisible = remember {
-      SuperUtil.isGooglePlayServicesAvailable(requireContext()) &&
-        featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS)
-    }
+    val isGoogleDriveVisible =
+      remember {
+        SuperUtil.isGooglePlayServicesAvailable(requireContext()) &&
+          featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)
+      }
+    val isGoogleTasksVisible =
+      remember {
+        SuperUtil.isGooglePlayServicesAvailable(requireContext()) &&
+          featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS)
+      }
 
     CloudServicesScreen(
       isLoading = state.isLoading,

@@ -27,9 +27,8 @@ class RotatingNativeAdsProvider(
   private val bannerId: String,
   viewGroup: ViewGroup,
   @LayoutRes private val res: Int,
-  onAdsFailureCallback: OnAdsFailureCallback
+  onAdsFailureCallback: OnAdsFailureCallback,
 ) {
-
   private val parent = WeakReference(viewGroup)
   private val callback = WeakReference(onAdsFailureCallback)
   private var nativeAdd: WeakReference<NativeAd>? = null
@@ -64,41 +63,45 @@ class RotatingNativeAdsProvider(
     }
   }
 
-  private fun safeLoadAds(): Boolean {
-    return runCatching { loadAds() }.getOrNull() ?: false
-  }
+  private fun safeLoadAds(): Boolean = runCatching { loadAds() }.getOrNull() ?: false
 
   private fun loadAds(): Boolean {
-    val viewGroup = parent.get() ?: return false.also {
-      Logger.e(TAG, "Will not show ADS, Parent view is null")
-    }
-    val adLoader = AdLoader.Builder(viewGroup.context, bannerId)
-      .forNativeAd { ad: NativeAd ->
-        nativeAdd?.get()?.destroy()
-        nativeAdd = WeakReference(ad)
-        val adView = LayoutInflater.from(viewGroup.context).inflate(res, null) as NativeAdView
-        populateUnifiedNativeAdView(ad, adView)
-        viewGroup.removeAllViews()
-        viewGroup.addView(adView)
+    val viewGroup =
+      parent.get() ?: return false.also {
+        Logger.e(TAG, "Will not show ADS, Parent view is null")
       }
-      .withAdListener(object : AdListener() {
-        override fun onAdFailedToLoad(error: LoadAdError) {
-          super.onAdFailedToLoad(error)
-          Logger.e(TAG, "Failed to load native ad: ${error.message}")
-          callback.get()?.onAdsFailure()
-        }
-      })
-      .withNativeAdOptions(
-        NativeAdOptions.Builder()
-          .setRequestMultipleImages(false)
-          .build()
-      )
-      .build()
+    val adLoader =
+      AdLoader
+        .Builder(viewGroup.context, bannerId)
+        .forNativeAd { ad: NativeAd ->
+          nativeAdd?.get()?.destroy()
+          nativeAdd = WeakReference(ad)
+          val adView = LayoutInflater.from(viewGroup.context).inflate(res, null) as NativeAdView
+          populateUnifiedNativeAdView(ad, adView)
+          viewGroup.removeAllViews()
+          viewGroup.addView(adView)
+        }.withAdListener(
+          object : AdListener() {
+            override fun onAdFailedToLoad(error: LoadAdError) {
+              super.onAdFailedToLoad(error)
+              Logger.e(TAG, "Failed to load native ad: ${error.message}")
+              callback.get()?.onAdsFailure()
+            }
+          },
+        ).withNativeAdOptions(
+          NativeAdOptions
+            .Builder()
+            .setRequestMultipleImages(false)
+            .build(),
+        ).build()
     adLoader.loadAd(AdRequest.Builder().build())
     return true
   }
 
-  private fun populateUnifiedNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
+  private fun populateUnifiedNativeAdView(
+    nativeAd: NativeAd,
+    adView: NativeAdView,
+  ) {
     adView.mediaView = adView.findViewById(R.id.ad_media)
 
     adView.headlineView = adView.findViewById(R.id.ad_headline)
@@ -129,7 +132,7 @@ class RotatingNativeAdsProvider(
       adView.iconView?.gone()
     } else {
       (adView.iconView as ImageView).setImageDrawable(
-        nativeAd.icon?.drawable
+        nativeAd.icon?.drawable,
       )
       adView.iconView?.visible()
     }

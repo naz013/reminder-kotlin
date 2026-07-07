@@ -24,12 +24,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation.fragment.findNavController
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.place.UiPlaceEdit
 import com.elementary.tasks.core.utils.TelephonyUtil
@@ -227,7 +227,9 @@ private fun mapCallbackFor(
       viewModel.markerStyle = markerState.style
       viewModel.markerRadius = markerState.radius
 
-      if (viewModel.state.value.name.isEmpty()) {
+      if (viewModel.state.value.name
+          .isEmpty()
+      ) {
         viewModel.onNameChange(viewModel.address)
       }
     }

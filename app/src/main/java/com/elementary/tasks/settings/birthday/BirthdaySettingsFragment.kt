@@ -9,14 +9,12 @@ import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
 import com.elementary.tasks.notes.ObserveEvent
-import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BirthdaySettingsFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<BirthdaySettingsViewModel>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 
@@ -51,7 +49,7 @@ class BirthdaySettingsFragment : BaseComposeToolbarFragment() {
 
   private fun requestContactsThenToggle() {
     permissionFlow.askPermission(Permissions.READ_CONTACTS) {
-      viewModel.onUseContactsToggle { CheckBirthdaysWorker.scheduleOnTime(requireContext()) }
+      viewModel.onUseContactsToggle()
     }
   }
 
@@ -66,11 +64,12 @@ class BirthdaySettingsFragment : BaseComposeToolbarFragment() {
       }
 
       is BirthdaySettingsEvent.UpdatePermanentNotificationVisibility -> {
-        val action = if (event.visible) {
-          PermanentBirthdayReceiver.ACTION_SHOW
-        } else {
-          PermanentBirthdayReceiver.ACTION_HIDE
-        }
+        val action =
+          if (event.visible) {
+            PermanentBirthdayReceiver.ACTION_SHOW
+          } else {
+            PermanentBirthdayReceiver.ACTION_HIDE
+          }
         requireActivity().sendBroadcast(
           Intent(requireContext(), PermanentBirthdayReceiver::class.java).setAction(action),
         )

@@ -35,13 +35,21 @@ sealed class BirthdayDialog {
     val selectedIndex: Int,
   ) : BirthdayDialog()
 
-  data class DaysToBirthday(val previewValue: Int) : BirthdayDialog()
+  data class DaysToBirthday(
+    val previewValue: Int,
+  ) : BirthdayDialog()
 
-  data class HomeDays(val previewValue: Int) : BirthdayDialog()
+  data class HomeDays(
+    val previewValue: Int,
+  ) : BirthdayDialog()
 }
 
 sealed class BirthdaySettingsEvent {
-  data class ShowTimePicker(val time: LocalTime) : BirthdaySettingsEvent()
+  data class ShowTimePicker(
+    val time: LocalTime,
+  ) : BirthdaySettingsEvent()
 
-  data class UpdatePermanentNotificationVisibility(val visible: Boolean) : BirthdaySettingsEvent()
+  data class UpdatePermanentNotificationVisibility(
+    val visible: Boolean,
+  ) : BirthdaySettingsEvent()
 }

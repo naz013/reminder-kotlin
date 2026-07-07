@@ -15,7 +15,6 @@ import org.junit.Rule
 
 @OptIn(ExperimentalCoroutinesApi::class)
 open class BaseTest {
-
   @get:Rule
   val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -25,9 +24,10 @@ open class BaseTest {
     Logger.loggingEnabled = false
     Dispatchers.setMain(Dispatchers.Unconfined)
     mockkStatic(Looper::class)
-    val looper = mockk<Looper> {
-      every { thread } returns Thread.currentThread()
-    }
+    val looper =
+      mockk<Looper> {
+        every { thread } returns Thread.currentThread()
+      }
     every { Looper.getMainLooper() } returns looper
   }
 

@@ -40,31 +40,35 @@ fun PlaceListItemCard(
   val markerBitmap = remember(place.marker) { place.marker.toBitmap().asImageBitmap() }
 
   Card(
-    modifier = modifier
-      .fillMaxWidth()
-      .clickable(onClick = onClick),
+    modifier =
+      modifier
+        .fillMaxWidth()
+        .clickable(onClick = onClick),
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 4.dp, horizontal = 8.dp),
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
       Image(
         bitmap = markerBitmap,
         contentDescription = null,
-        modifier = Modifier
-          .padding(start = 8.dp)
-          .size(20.dp),
+        modifier =
+          Modifier
+            .padding(start = 8.dp)
+            .size(20.dp),
       )
       Text(
         text = place.name,
         style = MaterialTheme.typography.titleLarge,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
-          .weight(1f)
-          .padding(start = 12.dp),
+        modifier =
+          Modifier
+            .weight(1f)
+            .padding(start = 12.dp),
       )
       Box {
         MenuIconButton(

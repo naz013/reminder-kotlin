@@ -13,10 +13,11 @@ import com.elementary.tasks.calendar.occurrence.CalculateReminderOccurrencesUseC
 import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDateRangeUseCase
 import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDayUseCase
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
-import com.elementary.tasks.calendar.occurrence.worker.CalculateBirthdayOccurrencesWorker
-import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesWorker
-import org.koin.androidx.workmanager.dsl.worker
+import com.elementary.tasks.calendar.occurrence.worker.CalculateBirthdayOccurrencesTask
+import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesTask
+import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.threeten.bp.LocalDate
 
@@ -35,8 +36,8 @@ val calendarModule =
     factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get(), get()) }
     factory { CalculateReminderOccurrencesUseCase(get(), get(), get(), get(), get(), get()) }
 
-    worker { CalculateBirthdayOccurrencesWorker(get(), get(), get(), get()) }
-    worker { CalculateReminderOccurrencesWorker(get(), get(), get(), get()) }
+    factory<BackgroundTask>(named(CalculateBirthdayOccurrencesTask.TASK_KEY)) { CalculateBirthdayOccurrencesTask(get()) }
+    factory<BackgroundTask>(named(CalculateReminderOccurrencesTask.TASK_KEY)) { CalculateReminderOccurrencesTask(get()) }
 
     factory { GetOccurrencesByDateRangeUseCase(get()) }
     factory { GetOccurrencesByDayUseCase(get()) }

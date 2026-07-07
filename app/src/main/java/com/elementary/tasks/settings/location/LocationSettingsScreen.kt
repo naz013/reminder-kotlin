@@ -51,10 +51,11 @@ fun LocationSettingsScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
   ) {
     SettingsSwitchItem(
       title = stringResource(R.string.distance_notification),
@@ -86,17 +87,18 @@ fun LocationSettingsScreen(
       enabled = state.isMapStyleRowEnabled,
       dividerBottom = true,
       onClick = onMapStyleClick,
-      trailing = if (state.mapStylePreviewRes != 0) {
-        {
-          Image(
-            painter = painterResource(state.mapStylePreviewRes),
-            contentDescription = null,
-            modifier = Modifier.size(40.dp),
-          )
-        }
-      } else {
-        null
-      },
+      trailing =
+        if (state.mapStylePreviewRes != 0) {
+          {
+            Image(
+              painter = painterResource(state.mapStylePreviewRes),
+              contentDescription = null,
+              modifier = Modifier.size(40.dp),
+            )
+          }
+        } else {
+          null
+        },
     )
     if (state.isMarkerStyleVisible) {
       SettingsItem(
@@ -209,10 +211,11 @@ private fun SingleChoiceDialog(
           val selected = index == selectedIndex
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-              .fillMaxWidth()
-              .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
-              .padding(vertical = 8.dp),
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
+                .padding(vertical = 8.dp),
           ) {
             RadioButton(selected = selected, onClick = null)
             Text(

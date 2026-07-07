@@ -9,7 +9,6 @@ import com.github.naz013.common.intent.IntentKeys
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NoteSettingsFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<NoteSettingsViewModel>()
 
   @Composable

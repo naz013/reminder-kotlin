@@ -62,13 +62,14 @@ class PreviewNoteViewModel(
   private val themeProvider: ThemeProvider,
   private val imagesSingleton: ImagesSingleton,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
-  val state = _state.stateIn(
-    viewModelScope,
-    SharingStarted.WhileSubscribed(5000L),
-    PreviewNoteState(id = key),
-  ).onStart { loadInternal() }
+  val state =
+    _state
+      .stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000L),
+        PreviewNoteState(id = key),
+      ).onStart { loadInternal() }
 
   private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
   val sharedFile = _sharedFile.toSingleEvent()
@@ -264,9 +265,17 @@ class PreviewNoteViewModel(
   }
 
   sealed interface NavigationEvent {
-    data class EditNote(val id: String) : NavigationEvent
-    data class EditReminder(val id: String) : NavigationEvent
-    data class OpenImagePreview(val position: Int) : NavigationEvent
+    data class EditNote(
+      val id: String,
+    ) : NavigationEvent
+
+    data class EditReminder(
+      val id: String,
+    ) : NavigationEvent
+
+    data class OpenImagePreview(
+      val position: Int,
+    ) : NavigationEvent
   }
 
   companion object {

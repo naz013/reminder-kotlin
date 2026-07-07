@@ -17,9 +17,8 @@ import java.lang.ref.WeakReference
 class RotatingBannerAdsProvider(
   private val bannerId: String,
   viewGroup: ViewGroup,
-  onAdsFailureCallback: OnAdsFailureCallback
+  onAdsFailureCallback: OnAdsFailureCallback,
 ) {
-
   private val parent = WeakReference(viewGroup)
   private val callback = WeakReference(onAdsFailureCallback)
 
@@ -47,14 +46,13 @@ class RotatingBannerAdsProvider(
     }
   }
 
-  private fun safeLoadAds(): Boolean {
-    return runCatching { loadAds() }.getOrNull() ?: false
-  }
+  private fun safeLoadAds(): Boolean = runCatching { loadAds() }.getOrNull() ?: false
 
   private fun loadAds(): Boolean {
-    val viewGroup = parent.get() ?: return false.also {
-      Logger.e(TAG, "Will not show ADS, Parent view is null")
-    }
+    val viewGroup =
+      parent.get() ?: return false.also {
+        Logger.e(TAG, "Will not show ADS, Parent view is null")
+      }
     val adView = AdView(viewGroup.context)
     adView.setAdSize(AdSize.LARGE_BANNER)
     adView.adUnitId = bannerId
@@ -65,16 +63,17 @@ class RotatingBannerAdsProvider(
     val adRequest = AdRequest.Builder().build()
     adView.loadAd(adRequest)
 
-    adView.adListener = object : AdListener() {
-      override fun onAdFailedToLoad(adError: LoadAdError) {
-        adView.gone()
-        callback.get()?.onAdsFailure()
-      }
+    adView.adListener =
+      object : AdListener() {
+        override fun onAdFailedToLoad(adError: LoadAdError) {
+          adView.gone()
+          callback.get()?.onAdsFailure()
+        }
 
-      override fun onAdLoaded() {
-        adView.visible()
+        override fun onAdLoaded() {
+          adView.visible()
+        }
       }
-    }
     return true
   }
 

@@ -29,11 +29,12 @@ class ObjectExportTestFragment : BaseComposeToolbarFragment() {
   private fun handleEvent(event: ObjectExportEvent) {
     when (event) {
       is ObjectExportEvent.RequestSaveLocation -> {
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-          addCategory(Intent.CATEGORY_OPENABLE)
-          type = "*/*"
-          putExtra(Intent.EXTRA_TITLE, event.fileName)
-        }
+        val intent =
+          Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+            putExtra(Intent.EXTRA_TITLE, event.fileName)
+          }
         uriPicker.launchIntent(intent) { uri ->
           if (uri != null) {
             viewModel.onSaveLocationPicked(event.itemId, uri)

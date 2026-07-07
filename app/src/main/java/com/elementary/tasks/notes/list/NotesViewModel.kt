@@ -56,16 +56,16 @@ class NotesViewModel(
   private val imagesSingleton: ImagesSingleton,
   private val analyticsEventSender: AnalyticsEventSender,
   private val themeProvider: ThemeProvider,
-  private val isArchived: Boolean = false
+  private val isArchived: Boolean = false,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
-  val notesScreenState: StateFlow<NotesScreenState> field = MutableStateFlow(
-    NotesScreenState(
-      isArchived = isArchived,
-      isGrid = prefs.isNotesGridEnabled,
-      sortOrder = prefs.noteOrder
+  val notesScreenState: StateFlow<NotesScreenState> field =
+    MutableStateFlow(
+      NotesScreenState(
+        isArchived = isArchived,
+        isGrid = prefs.isNotesGridEnabled,
+        sortOrder = prefs.noteOrder,
+      ),
     )
-  )
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQuery = MutableStateFlow("")
@@ -81,14 +81,13 @@ class NotesViewModel(
       combine(
         searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
         sortOrder,
-        refreshSignal
+        refreshSignal,
       ) { query, order, _ -> query to order }
         .flatMapLatest { (query, order) ->
           flow {
             emit(noteRepository.getNotes(isArchived = isArchived, query = query.lowercase(), sortOrder = order))
           }
-        }
-        .collect { applyList(it) }
+        }.collect { applyList(it) }
     }
   }
 
@@ -151,17 +150,23 @@ class NotesViewModel(
     navigationEvent.value = Event(NavigationEvent.OpenNotePreview(id))
   }
 
-  fun onImageClick(note: UiNoteListItem, imageId: Int) {
+  fun onImageClick(
+    note: UiNoteListItem,
+    imageId: Int,
+  ) {
     val imagePosition = note.images.indexOfFirst { it.id == imageId }.takeIf { it != -1 } ?: 0
     imagesSingleton.setCurrent(
       images = note.images,
       color = note.colorPosition,
-      palette = note.colorPalette
+      palette = note.colorPalette,
     )
     navigationEvent.value = Event(NavigationEvent.OpenImagePreview(note.id, imagePosition))
   }
 
-  fun onNoteMenuAction(note: UiNoteListItem, action: NoteMenuAction) {
+  fun onNoteMenuAction(
+    note: UiNoteListItem,
+    action: NoteMenuAction,
+  ) {
     when (action) {
       NoteMenuAction.OPEN -> onNoteClick(note.id)
       NoteMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenEditNote(note.id))
@@ -171,13 +176,14 @@ class NotesViewModel(
       }
 
       NoteMenuAction.CHANGE_COLOR -> {
-        navigationEvent.value = Event(
-          NavigationEvent.PickColor(
-            id = note.id,
-            colorPosition = note.colorPosition,
-            sliderColors = themeProvider.noteColorsForSlider(note.colorPalette),
+        navigationEvent.value =
+          Event(
+            NavigationEvent.PickColor(
+              id = note.id,
+              colorPosition = note.colorPosition,
+              sliderColors = themeProvider.noteColorsForSlider(note.colorPalette),
+            ),
           )
-        )
       }
 
       NoteMenuAction.ARCHIVE -> moveToArchive(note.id)
@@ -257,7 +263,10 @@ class NotesViewModel(
     }
   }
 
-  fun saveNoteColor(id: String, color: Int) {
+  fun saveNoteColor(
+    id: String,
+    color: Int,
+  ) {
     postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(id)
@@ -297,16 +306,43 @@ class NotesViewModel(
   }
 
   sealed interface NavigationEvent {
-    data class OpenNotePreview(val id: String) : NavigationEvent
+    data class OpenNotePreview(
+      val id: String,
+    ) : NavigationEvent
+
     data object OpenCreateNote : NavigationEvent
-    data class OpenEditNote(val id: String) : NavigationEvent
+
+    data class OpenEditNote(
+      val id: String,
+    ) : NavigationEvent
+
     data object OpenArchive : NavigationEvent
+
     data object OpenSettings : NavigationEvent
-    data class OpenImagePreview(val noteId: String, val imagePosition: Int) : NavigationEvent
-    data class ShareNote(val file: File, val summary: String?) : NavigationEvent
-    data class RequestNotificationPermission(val id: String) : NavigationEvent
-    data class PickColor(val id: String, val colorPosition: Int, val sliderColors: IntArray) : NavigationEvent
-    data class ConfirmDelete(val id: String) : NavigationEvent
+
+    data class OpenImagePreview(
+      val noteId: String,
+      val imagePosition: Int,
+    ) : NavigationEvent
+
+    data class ShareNote(
+      val file: File,
+      val summary: String?,
+    ) : NavigationEvent
+
+    data class RequestNotificationPermission(
+      val id: String,
+    ) : NavigationEvent
+
+    data class PickColor(
+      val id: String,
+      val colorPosition: Int,
+      val sliderColors: IntArray,
+    ) : NavigationEvent
+
+    data class ConfirmDelete(
+      val id: String,
+    ) : NavigationEvent
   }
 
   companion object {

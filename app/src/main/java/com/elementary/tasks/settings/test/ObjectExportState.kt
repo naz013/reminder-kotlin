@@ -19,7 +19,10 @@ enum class ObjectExportType {
 }
 
 sealed class ObjectExportEvent {
-  data class RequestSaveLocation(val fileName: String, val itemId: String) : ObjectExportEvent()
+  data class RequestSaveLocation(
+    val fileName: String,
+    val itemId: String,
+  ) : ObjectExportEvent()
 
   data object ObjectSaved : ObjectExportEvent()
 }

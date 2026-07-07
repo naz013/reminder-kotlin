@@ -32,15 +32,17 @@ fun ManagePresetsScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),
   ) {
     if (presets.isEmpty()) {
       Column(
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(top = 32.dp),
+        modifier =
+          Modifier
+            .fillMaxSize()
+            .padding(top = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
       ) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.empty_status))
@@ -74,10 +76,11 @@ fun ManagePresetsScreen(
 private fun ManagePresetsScreenPreview() {
   AppTheme {
     ManagePresetsScreen(
-      presets = listOf(
-        UiPresetList(name = "Daily standup", id = "1", description = "RRULE:FREQ=DAILY"),
-        UiPresetList(name = "Weekly review", id = "2", description = "RRULE:FREQ=WEEKLY"),
-      ),
+      presets =
+        listOf(
+          UiPresetList(name = "Daily standup", id = "1", description = "RRULE:FREQ=DAILY"),
+          UiPresetList(name = "Weekly review", id = "2", description = "RRULE:FREQ=WEEKLY"),
+        ),
       onDeleteClick = {},
     )
   }

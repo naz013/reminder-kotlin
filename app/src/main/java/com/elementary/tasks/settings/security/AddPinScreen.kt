@@ -27,16 +27,18 @@ fun AddPinScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Spacer(modifier = Modifier.weight(1f))
     Text(
-      text = stringResource(
-        if (stage == AddPinStage.INPUT) R.string.enter_pin else R.string.repeat_pin,
-      ).uppercase(),
+      text =
+        stringResource(
+          if (stage == AddPinStage.INPUT) R.string.enter_pin else R.string.repeat_pin,
+        ).uppercase(),
       style = MaterialTheme.typography.headlineMedium,
       textAlign = TextAlign.Center,
     )

@@ -68,8 +68,7 @@ class PlacesViewModel(
               },
             )
           }
-        }
-        .collect { applyList(it) }
+        }.collect { applyList(it) }
     }
   }
 
@@ -151,11 +150,18 @@ class PlacesViewModel(
   }
 
   sealed interface NavigationEvent {
-    data class OpenEditPlace(val id: String) : NavigationEvent
+    data class OpenEditPlace(
+      val id: String,
+    ) : NavigationEvent
 
-    data class ShareFile(val file: File, val name: String) : NavigationEvent
+    data class ShareFile(
+      val file: File,
+      val name: String,
+    ) : NavigationEvent
 
-    data class ConfirmDelete(val id: String) : NavigationEvent
+    data class ConfirmDelete(
+      val id: String,
+    ) : NavigationEvent
   }
 
   companion object {

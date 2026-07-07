@@ -23,7 +23,6 @@ class RemindersSettingsViewModel(
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
-
   val state: StateFlow<RemindersSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<RemindersSettingsEvent>> field = mutableLiveEventOf()
 
@@ -125,11 +124,12 @@ class RemindersSettingsViewModel(
     val newValue = !prefs.isSbNotificationEnabled
     prefs.isSbNotificationEnabled = newValue
     refreshState()
-    val event = if (newValue) {
-      RemindersSettingsEvent.ShowPermanentNotification
-    } else {
-      RemindersSettingsEvent.HidePermanentNotification
-    }
+    val event =
+      if (newValue) {
+        RemindersSettingsEvent.ShowPermanentNotification
+      } else {
+        RemindersSettingsEvent.HidePermanentNotification
+      }
     navigationEvent.value = Event(event)
   }
 
@@ -154,7 +154,10 @@ class RemindersSettingsViewModel(
     navigationEvent.value = Event(RemindersSettingsEvent.ShowTimePicker(DndTimeTarget.TO, time))
   }
 
-  fun onTimeSelected(target: DndTimeTarget, time: LocalTime) {
+  fun onTimeSelected(
+    target: DndTimeTarget,
+    time: LocalTime,
+  ) {
     when (target) {
       DndTimeTarget.FROM -> prefs.doNotDisturbFrom = dateTimeManager.to24HourString(time)
       DndTimeTarget.TO -> prefs.doNotDisturbTo = dateTimeManager.to24HourString(time)
@@ -184,28 +187,39 @@ class RemindersSettingsViewModel(
     dismissDialog()
   }
 
-  private fun showChoiceDialog(kind: ChoiceDialogKind, title: String, options: List<String>, selectedIndex: Int) {
+  private fun showChoiceDialog(
+    kind: ChoiceDialogKind,
+    title: String,
+    options: List<String>,
+    selectedIndex: Int,
+  ) {
     state.update {
       it.copy(
-        dialog = RemindersSettingsDialog.Choice(
-          kind = kind,
-          title = title,
-          options = options,
-          selectedIndex = selectedIndex.coerceIn(options.indices),
-        ),
+        dialog =
+          RemindersSettingsDialog.Choice(
+            kind = kind,
+            title = title,
+            options = options,
+            selectedIndex = selectedIndex.coerceIn(options.indices),
+          ),
       )
     }
   }
 
-  private fun showSeekDialog(kind: SeekDialogKind, title: String, value: Int) {
+  private fun showSeekDialog(
+    kind: SeekDialogKind,
+    title: String,
+    value: Int,
+  ) {
     state.update {
       it.copy(
-        dialog = RemindersSettingsDialog.Seek(
-          kind = kind,
-          title = title,
-          previewValue = value,
-          formattedValue = minutesText(value),
-        ),
+        dialog =
+          RemindersSettingsDialog.Seek(
+            kind = kind,
+            title = title,
+            previewValue = value,
+            formattedValue = minutesText(value),
+          ),
       )
     }
   }
@@ -239,12 +253,14 @@ class RemindersSettingsViewModel(
       isStatusIconChecked = prefs.isSbIconEnabled,
       isStatusIconRowEnabled = isPermanentNotificationChecked,
       isDoNotDisturbChecked = isDoNotDisturbChecked,
-      doNotDisturbFromText = dateTimeManager.getTime(
-        dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now(),
-      ),
-      doNotDisturbToText = dateTimeManager.getTime(
-        dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now(),
-      ),
+      doNotDisturbFromText =
+        dateTimeManager.getTime(
+          dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now(),
+        ),
+      doNotDisturbToText =
+        dateTimeManager.getTime(
+          dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now(),
+        ),
       doNotDisturbActionName = actionOptions()[prefs.doNotDisturbAction.coerceIn(0, 1)],
       doNotDisturbIgnoreName = ignoreOptions()[prefs.doNotDisturbIgnore.coerceIn(0, 5)],
       isDoNotDisturbDependentEnabled = isDoNotDisturbChecked,
@@ -253,28 +269,31 @@ class RemindersSettingsViewModel(
 
   private fun minutesText(minutes: Int): String = textProvider.getString(R.string.x_minutes, minutes.toString())
 
-  private fun priorityOptions(): List<String> = listOf(
-    textProvider.getString(R.string.priority_lowest),
-    textProvider.getString(R.string.priority_low),
-    textProvider.getString(R.string.priority_normal),
-    textProvider.getString(R.string.priority_high),
-    textProvider.getString(R.string.priority_highest),
-  )
+  private fun priorityOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.priority_lowest),
+      textProvider.getString(R.string.priority_low),
+      textProvider.getString(R.string.priority_normal),
+      textProvider.getString(R.string.priority_high),
+      textProvider.getString(R.string.priority_highest),
+    )
 
-  private fun ledColorOptions(): List<String> = listOf(
-    textProvider.getString(R.string.red),
-    textProvider.getString(R.string.green),
-    textProvider.getString(R.string.blue),
-    textProvider.getString(R.string.yellow),
-    textProvider.getString(R.string.pink),
-    textProvider.getString(R.string.dark_orange),
-    textProvider.getString(R.string.teal),
-  )
+  private fun ledColorOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.red),
+      textProvider.getString(R.string.green),
+      textProvider.getString(R.string.blue),
+      textProvider.getString(R.string.yellow),
+      textProvider.getString(R.string.pink),
+      textProvider.getString(R.string.dark_orange),
+      textProvider.getString(R.string.teal),
+    )
 
-  private fun actionOptions(): List<String> = listOf(
-    textProvider.getString(R.string.schedule_for_later),
-    textProvider.getString(R.string.ignore),
-  )
+  private fun actionOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.schedule_for_later),
+      textProvider.getString(R.string.ignore),
+    )
 
   private fun ignoreOptions(): List<String> {
     val andAbove = textProvider.getString(R.string.and_above)

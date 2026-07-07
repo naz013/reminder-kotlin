@@ -25,7 +25,6 @@ class LocationSettingsViewModel(
   private val themeProvider: ThemeProvider,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
-
   val state: StateFlow<LocationSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<LocationSettingsEvent>> field = mutableLiveEventOf()
 
@@ -43,11 +42,12 @@ class LocationSettingsViewModel(
     val valueTo = initialValueTo(radius.toFloat())
     state.update {
       it.copy(
-        dialog = LocationSettingsDialog.Radius(
-          value = radius,
-          valueTo = valueTo,
-          formattedValue = formatRadius(radius),
-        ),
+        dialog =
+          LocationSettingsDialog.Radius(
+            value = radius,
+            valueTo = valueTo,
+            formattedValue = formatRadius(radius),
+          ),
       )
     }
   }
@@ -136,35 +136,38 @@ class LocationSettingsViewModel(
     state.update { buildState().copy(dialog = it.dialog) }
   }
 
-  private fun buildState(): LocationSettingsState = LocationSettingsState(
-    isNotificationChecked = prefs.isDistanceNotificationEnabled,
-    radiusText = formatRadius(prefs.radius),
-    mapTypeName = mapTypeOptions()[mapTypePosition(prefs.mapType)],
-    isMapStyleRowEnabled = mapTypePosition(prefs.mapType) == 0,
-    mapStylePreviewRes = themeProvider.mapStylePreview,
-    mapStyleName = textProvider.getString(themeProvider.styleName),
-    isMarkerStyleVisible = BuildParams.isPro,
-    markerColor = themeProvider.getMarkerLightColor(prefs.markerStyle),
-  )
+  private fun buildState(): LocationSettingsState =
+    LocationSettingsState(
+      isNotificationChecked = prefs.isDistanceNotificationEnabled,
+      radiusText = formatRadius(prefs.radius),
+      mapTypeName = mapTypeOptions()[mapTypePosition(prefs.mapType)],
+      isMapStyleRowEnabled = mapTypePosition(prefs.mapType) == 0,
+      mapStylePreviewRes = themeProvider.mapStylePreview,
+      mapStyleName = textProvider.getString(themeProvider.styleName),
+      isMarkerStyleVisible = BuildParams.isPro,
+      markerColor = themeProvider.getMarkerLightColor(prefs.markerStyle),
+    )
 
   private fun formatRadius(meters: Int): String {
     val formatter = DefaultRadiusFormatter(textProvider, prefs.useMetric)
     return formatter.format(meters)
   }
 
-  private fun mapTypeOptions(): List<String> = listOf(
-    textProvider.getString(R.string.normal),
-    textProvider.getString(R.string.satellite),
-    textProvider.getString(R.string.terrain),
-    textProvider.getString(R.string.hybrid),
-  )
+  private fun mapTypeOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.normal),
+      textProvider.getString(R.string.satellite),
+      textProvider.getString(R.string.terrain),
+      textProvider.getString(R.string.hybrid),
+    )
 
-  private fun mapTypePosition(type: Int): Int = when (type) {
-    GoogleMap.MAP_TYPE_SATELLITE -> 1
-    GoogleMap.MAP_TYPE_TERRAIN -> 2
-    GoogleMap.MAP_TYPE_HYBRID -> 3
-    else -> 0
-  }
+  private fun mapTypePosition(type: Int): Int =
+    when (type) {
+      GoogleMap.MAP_TYPE_SATELLITE -> 1
+      GoogleMap.MAP_TYPE_TERRAIN -> 2
+      GoogleMap.MAP_TYPE_HYBRID -> 3
+      else -> 0
+    }
 
   private fun initialValueTo(radius: Float): Float {
     var valueTo = MAX_DEF_RADIUS

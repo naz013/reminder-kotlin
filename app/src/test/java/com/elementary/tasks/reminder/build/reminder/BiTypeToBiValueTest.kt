@@ -5,7 +5,6 @@ import org.junit.Before
 import org.junit.Test
 
 class BiTypeToBiValueTest {
-
   private lateinit var subject: BiTypeToBiValue
 
   @Before

@@ -35,18 +35,20 @@ fun ObjectExportScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),
   ) {
     var isExpanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
       expanded = isExpanded,
       onExpandedChange = { isExpanded = it },
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp),
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(16.dp),
     ) {
       OutlinedTextField(
         value = state.objectType.name,
@@ -54,9 +56,10 @@ fun ObjectExportScreen(
         readOnly = true,
         label = { Text("Object type") },
         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
-        modifier = Modifier
-          .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-          .fillMaxWidth(),
+        modifier =
+          Modifier
+            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+            .fillMaxWidth(),
       )
       DropdownMenu(
         expanded = isExpanded,
@@ -80,10 +83,11 @@ fun ObjectExportScreen(
         Text(
           text = item.title,
           style = MaterialTheme.typography.titleMedium,
-          modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onItemClick(item) }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+          modifier =
+            Modifier
+              .fillMaxWidth()
+              .clickable { onItemClick(item) }
+              .padding(horizontal = 16.dp, vertical = 8.dp),
         )
         HorizontalDivider()
       }

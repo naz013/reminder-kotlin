@@ -1,23 +1,23 @@
 package com.elementary.tasks.birthdays.usecase
 
-import com.elementary.tasks.calendar.occurrence.worker.CalculateBirthdayOccurrencesWorker
+import com.elementary.tasks.calendar.occurrence.worker.CalculateBirthdayOccurrencesTask
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.sync.DataType
+import com.github.naz013.workapi.WorkScheduler
 
 class SaveBirthdayUseCase(
   private val birthdayRepository: BirthdayRepository,
   private val notifier: Notifier,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
-  private val workManagerProvider: WorkManagerProvider,
+  private val workScheduler: WorkScheduler,
 ) {
   suspend operator fun invoke(birthday: Birthday) {
     birthdayRepository.save(birthday.copy(version = birthday.version + 1))
@@ -28,9 +28,7 @@ class SaveBirthdayUseCase(
     appWidgetUpdater.updateBirthdaysWidget()
     appWidgetUpdater.updateScheduleWidget()
 
-    workManagerProvider
-      .getWorkManager()
-      .enqueue(CalculateBirthdayOccurrencesWorker.prepareWork(birthday.uuId))
+    workScheduler.enqueue(CalculateBirthdayOccurrencesTask.prepareWorkRequest(birthday.uuId))
 
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,

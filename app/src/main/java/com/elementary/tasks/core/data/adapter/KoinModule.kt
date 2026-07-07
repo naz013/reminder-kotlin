@@ -13,10 +13,10 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
-import com.elementary.tasks.notes.list.UiNoteListItemAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
+import com.elementary.tasks.notes.list.UiNoteListItemAdapter
 import org.koin.dsl.module
 
 val adapterModule =
@@ -43,7 +43,7 @@ val adapterModule =
     factory { UiNoteEditAdapter(get()) }
     factory { UiNoteListAdapter(get(), get(), get(), get()) }
     factory { UiNoteListItemAdapter(get(), get()) }
-  factory { UiNotePreviewAdapter(get(), get(), get()) }
+    factory { UiNotePreviewAdapter(get(), get(), get()) }
     factory { UiNoteNotificationAdapter(get(), get()) }
 
     factory { UiPlaceListAdapter(get(), get(), get()) }

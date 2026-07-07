@@ -13,7 +13,6 @@ class NoteSettingsViewModel(
   private val prefs: Prefs,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
-
   val state: StateFlow<NoteSettingsState> field = MutableStateFlow(buildState())
 
   init {
@@ -57,10 +56,11 @@ class NoteSettingsViewModel(
     state.update { buildState() }
   }
 
-  private fun buildState(): NoteSettingsState = NoteSettingsState(
-    isColorRememberChecked = prefs.isNoteColorRememberingEnabled,
-    isFontSizeRememberChecked = prefs.isNoteFontSizeRememberingEnabled,
-    isFontStyleRememberChecked = prefs.isNoteFontStyleRememberingEnabled,
-    colorOpacity = prefs.noteColorOpacity,
-  )
+  private fun buildState(): NoteSettingsState =
+    NoteSettingsState(
+      isColorRememberChecked = prefs.isNoteColorRememberingEnabled,
+      isFontSizeRememberChecked = prefs.isNoteFontSizeRememberingEnabled,
+      isFontStyleRememberChecked = prefs.isNoteFontStyleRememberingEnabled,
+      colorOpacity = prefs.noteColorOpacity,
+    )
 }

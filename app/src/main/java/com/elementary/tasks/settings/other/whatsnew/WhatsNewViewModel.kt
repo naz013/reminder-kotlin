@@ -9,7 +9,6 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -22,13 +21,14 @@ class WhatsNewViewModel(
   private val packageManagerWrapper: PackageManagerWrapper,
   private val textProvider: TextProvider,
 ) : ViewModel() {
-
   private val _state = MutableStateFlow(WhatsNewState())
-  val state = _state.stateIn(
-    viewModelScope,
-    SharingStarted.WhileSubscribed(5000L),
-    WhatsNewState(),
-  ).onStart { loadState() }
+  val state =
+    _state
+      .stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000L),
+        WhatsNewState(),
+      ).onStart { loadState() }
 
   private fun loadState() {
     viewModelScope.launch(dispatcherProvider.default()) {

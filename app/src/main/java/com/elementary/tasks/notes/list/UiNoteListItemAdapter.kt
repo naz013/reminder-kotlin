@@ -10,28 +10,31 @@ import com.github.naz013.ui.common.theme.ThemeProvider
 
 class UiNoteListItemAdapter(
   private val themeProvider: ThemeProvider,
-  private val uiNoteImagesAdapter: UiNoteImagesAdapter
+  private val uiNoteImagesAdapter: UiNoteImagesAdapter,
 ) {
-
   fun convert(noteWithImages: NoteWithImages): UiNoteListItem {
-    val backgroundColorInt = themeProvider.getNoteLightColor(
-      noteWithImages.getColor(),
-      noteWithImages.getOpacity(),
-      noteWithImages.getPalette()
-    )
-    val isDarkBg = (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
-      backgroundColorInt.isColorDark()
+    val backgroundColorInt =
+      themeProvider.getNoteLightColor(
+        noteWithImages.getColor(),
+        noteWithImages.getOpacity(),
+        noteWithImages.getPalette(),
+      )
+    val isDarkBg =
+      (noteWithImages.getOpacity().isAlmostTransparent() && themeProvider.isDark) ||
+        backgroundColorInt.isColorDark()
 
-    val fontSize = if (noteWithImages.getFontSize() == -1) {
-      FontParams.DEFAULT_FONT_SIZE
-    } else {
-      noteWithImages.getFontSize()
-    }
-    val titleFontSize = if (noteWithImages.getTitleFontSize() == -1) {
-      FontParams.DEFAULT_TITLE_FONT_SIZE
-    } else {
-      noteWithImages.getTitleFontSize()
-    }
+    val fontSize =
+      if (noteWithImages.getFontSize() == -1) {
+        FontParams.DEFAULT_FONT_SIZE
+      } else {
+        noteWithImages.getFontSize()
+      }
+    val titleFontSize =
+      if (noteWithImages.getTitleFontSize() == -1) {
+        FontParams.DEFAULT_TITLE_FONT_SIZE
+      } else {
+        noteWithImages.getTitleFontSize()
+      }
 
     return UiNoteListItem(
       id = noteWithImages.getKey(),
@@ -45,7 +48,7 @@ class UiNoteListItemAdapter(
       titleFontSize = titleFontSize.toFloat(),
       images = uiNoteImagesAdapter.convert(noteWithImages.images),
       colorPosition = noteWithImages.getColor(),
-      colorPalette = noteWithImages.getPalette()
+      colorPalette = noteWithImages.getPalette(),
     )
   }
 }

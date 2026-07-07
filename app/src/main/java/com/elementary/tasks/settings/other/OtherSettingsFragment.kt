@@ -22,7 +22,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class OtherSettingsFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<OtherSettingsViewModel>()
   private val reviewsApi by inject<ReviewsApi>()
   private val featureManager by inject<FeatureManager>()
@@ -88,7 +87,10 @@ class OtherSettingsFragment : BaseComposeToolbarFragment() {
     permissionItems.clear()
     val activity = activity ?: return false
 
-    fun addIfMissing(titleRes: Int, permission: String) {
+    fun addIfMissing(
+      titleRes: Int,
+      permission: String,
+    ) {
       if (!Permissions.checkPermission(activity, permission)) {
         permissionItems.add(PermissionItem(getString(titleRes), permission))
       }
@@ -138,5 +140,8 @@ class OtherSettingsFragment : BaseComposeToolbarFragment() {
 
   override fun getTitle(): String = getString(R.string.other)
 
-  private class PermissionItem(val title: String, val permission: String)
+  private class PermissionItem(
+    val title: String,
+    val permission: String,
+  )
 }

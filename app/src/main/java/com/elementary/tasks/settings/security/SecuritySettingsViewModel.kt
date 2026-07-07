@@ -16,7 +16,6 @@ class SecuritySettingsViewModel(
   private val prefs: Prefs,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
-
   val state: StateFlow<SecuritySettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<SecuritySettingsEvent>> field = mutableLiveEventOf()
 
@@ -35,11 +34,12 @@ class SecuritySettingsViewModel(
   }
 
   fun onPinRowClick() {
-    val event = if (state.value.isPinChecked) {
-      SecuritySettingsEvent.OpenDisablePin
-    } else {
-      SecuritySettingsEvent.OpenAddPin
-    }
+    val event =
+      if (state.value.isPinChecked) {
+        SecuritySettingsEvent.OpenDisablePin
+      } else {
+        SecuritySettingsEvent.OpenAddPin
+      }
     navigationEvent.value = Event(event)
   }
 
@@ -70,10 +70,11 @@ class SecuritySettingsViewModel(
     state.update { buildState() }
   }
 
-  private fun buildState(): SecuritySettingsState = SecuritySettingsState(
-    isPinChecked = prefs.hasPinCode,
-    isFingerprintChecked = prefs.useFingerprint,
-    isShuffleChecked = prefs.shufflePinView,
-    isTelephonyChecked = prefs.isTelephonyEnabled,
-  )
+  private fun buildState(): SecuritySettingsState =
+    SecuritySettingsState(
+      isPinChecked = prefs.hasPinCode,
+      isFingerprintChecked = prefs.useFingerprint,
+      isShuffleChecked = prefs.shufflePinView,
+      isTelephonyChecked = prefs.isTelephonyEnabled,
+    )
 }

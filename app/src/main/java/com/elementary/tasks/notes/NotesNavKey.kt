@@ -18,11 +18,20 @@ sealed interface NotesNavKey : NavKey {
    * on the way back out, mirroring the old per-Fragment `saveStatusBarColor` capture in `onCreate`.
    */
   @Serializable
-  data class Preview(val id: String, val initialStatusBarColor: Int = -1) : NotesNavKey
+  data class Preview(
+    val id: String,
+    val initialStatusBarColor: Int = -1,
+  ) : NotesNavKey
 
   @Serializable
-  data class Edit(val id: String = "", val initialStatusBarColor: Int = -1) : NotesNavKey
+  data class Edit(
+    val id: String = "",
+    val initialStatusBarColor: Int = -1,
+  ) : NotesNavKey
 
   @Serializable
-  data class ImagePreview(val position: Int, val initialStatusBarColor: Int = -1) : NotesNavKey
+  data class ImagePreview(
+    val position: Int,
+    val initialStatusBarColor: Int = -1,
+  ) : NotesNavKey
 }

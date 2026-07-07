@@ -34,10 +34,11 @@ fun OtherSettingsScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
   ) {
     SettingsItem(
       title = stringResource(R.string.privacy_policy),

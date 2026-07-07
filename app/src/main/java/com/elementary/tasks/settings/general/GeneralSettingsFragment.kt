@@ -12,7 +12,6 @@ import com.google.android.material.color.DynamicColors
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GeneralSettingsFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<GeneralSettingsViewModel>()
 
   @Composable

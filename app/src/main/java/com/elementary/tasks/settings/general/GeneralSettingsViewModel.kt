@@ -21,7 +21,6 @@ class GeneralSettingsViewModel(
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
-
   val state: StateFlow<GeneralSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<GeneralSettingsEvent>> field = mutableLiveEventOf()
 
@@ -142,27 +141,31 @@ class GeneralSettingsViewModel(
 
   private fun languageOptions(): List<String> = textProvider.getStringArray(R.array.app_languages).toList()
 
-  private fun themeOptions(): List<String> = listOf(
-    textProvider.getString(R.string.light),
-    textProvider.getString(R.string.dark),
-    textProvider.getString(R.string.system_default),
-  )
+  private fun themeOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.light),
+      textProvider.getString(R.string.dark),
+      textProvider.getString(R.string.system_default),
+    )
 
-  private fun timeFormatOptions(): List<String> = listOf(
-    textProvider.getString(R.string.system_default),
-    textProvider.getString(R.string.use_24_hour_format),
-    textProvider.getString(R.string.use_12_hour_format),
-  )
+  private fun timeFormatOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.system_default),
+      textProvider.getString(R.string.use_24_hour_format),
+      textProvider.getString(R.string.use_12_hour_format),
+    )
 
-  private fun themeIndexFor(nightMode: Int): Int = when (nightMode) {
-    AppCompatDelegate.MODE_NIGHT_NO -> 0
-    AppCompatDelegate.MODE_NIGHT_YES -> 1
-    else -> 2
-  }
+  private fun themeIndexFor(nightMode: Int): Int =
+    when (nightMode) {
+      AppCompatDelegate.MODE_NIGHT_NO -> 0
+      AppCompatDelegate.MODE_NIGHT_YES -> 1
+      else -> 2
+    }
 
-  private fun nightModeFor(index: Int): Int = when (index) {
-    0 -> AppCompatDelegate.MODE_NIGHT_NO
-    1 -> AppCompatDelegate.MODE_NIGHT_YES
-    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-  }
+  private fun nightModeFor(index: Int): Int =
+    when (index) {
+      0 -> AppCompatDelegate.MODE_NIGHT_NO
+      1 -> AppCompatDelegate.MODE_NIGHT_YES
+      else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    }
 }

@@ -7,13 +7,15 @@ data class CloudBackupSettingsState(
 )
 
 sealed class CloudBackupDialog {
-  data class AutoBackupInterval(val options: List<String>, val selectedIndex: Int) : CloudBackupDialog()
+  data class AutoBackupInterval(
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : CloudBackupDialog()
 
-  data class NetworkType(val options: List<String>, val selectedIndex: Int) : CloudBackupDialog()
+  data class NetworkType(
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : CloudBackupDialog()
 
   data object EraseConfirm : CloudBackupDialog()
-}
-
-sealed class CloudBackupSettingsEvent {
-  data object RunErase : CloudBackupSettingsEvent()
 }

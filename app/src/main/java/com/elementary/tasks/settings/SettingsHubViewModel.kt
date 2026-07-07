@@ -28,7 +28,6 @@ class SettingsHubViewModel(
   RemotePrefs.SaleObserver,
   RemotePrefs.UpdateObserver,
   RemotePrefs.MessageObserver {
-
   val state: StateFlow<SettingsHubState> field = MutableStateFlow(SettingsHubState())
 
   private val prefsObserver: (String) -> Unit = { checkDoNotDisturb() }
@@ -64,25 +63,36 @@ class SettingsHubViewModel(
     remotePrefs.removeMessageObserver(this)
   }
 
-  override fun onUpdateChanged(hasUpdate: Boolean, version: String) {
+  override fun onUpdateChanged(
+    hasUpdate: Boolean,
+    version: String,
+  ) {
     state.update {
       it.copy(updateMessage = if (hasUpdate) textProvider.getString(R.string.new_update_message, version) else null)
     }
   }
 
-  override fun onSaleChanged(showDiscount: Boolean, discount: String, until: String) {
+  override fun onSaleChanged(
+    showDiscount: Boolean,
+    discount: String,
+    until: String,
+  ) {
     state.update {
       it.copy(
-        saleMessage = if (showDiscount) {
-          textProvider.getString(R.string.new_sale_message, discount, until)
-        } else {
-          null
-        },
+        saleMessage =
+          if (showDiscount) {
+            textProvider.getString(R.string.new_sale_message, discount, until)
+          } else {
+            null
+          },
       )
     }
   }
 
-  override fun onMessageChanged(showMessage: Boolean, message: String) {
+  override fun onMessageChanged(
+    showMessage: Boolean,
+    message: String,
+  ) {
     state.update { it.copy(internalMessage = if (showMessage) message else null) }
   }
 

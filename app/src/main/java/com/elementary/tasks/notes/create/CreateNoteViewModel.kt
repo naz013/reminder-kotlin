@@ -391,7 +391,15 @@ class CreateNoteViewModel(
       withContext(dispatcherProvider.main()) {
         postInProgress(false)
         if (file != null) {
-          _noteToShare.postValue(Event(Pair(_state.value.textFieldValue.text.trim(), file)))
+          _noteToShare.postValue(
+            Event(
+              Pair(
+                _state.value.textFieldValue.text
+                  .trim(),
+                file,
+              ),
+            ),
+          )
         } else {
           postError(textProvider.getText(R.string.error_sending))
         }
@@ -738,7 +746,9 @@ class CreateNoteViewModel(
   }
 
   sealed interface NavigationEvent {
-    data class OpenImagePreview(val position: Int) : NavigationEvent
+    data class OpenImagePreview(
+      val position: Int,
+    ) : NavigationEvent
   }
 
   companion object {

@@ -40,19 +40,21 @@ fun SettingsHubScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
   ) {
     if (isBuyProBadgeVisible) {
       Text(
         text = stringResource(R.string.pro_version),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.tertiary,
-        modifier = Modifier
-          .clickable(onClick = onBuyProClick)
-          .padding(8.dp),
+        modifier =
+          Modifier
+            .clickable(onClick = onBuyProClick)
+            .padding(8.dp),
       )
     }
     if (state.saleMessage != null) {
@@ -60,9 +62,10 @@ fun SettingsHubScreen(
         text = state.saleMessage,
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(8.dp),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
       )
     }
     if (state.updateMessage != null) {
@@ -70,10 +73,11 @@ fun SettingsHubScreen(
         text = state.updateMessage,
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier
-          .fillMaxWidth()
-          .clickable(onClick = onUpdateClick)
-          .padding(8.dp),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onUpdateClick)
+            .padding(8.dp),
       )
     }
     if (state.internalMessage != null) {
@@ -81,9 +85,10 @@ fun SettingsHubScreen(
         text = state.internalMessage,
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(8.dp),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
       )
     }
     if (isPlayServicesWarningVisible) {
@@ -91,9 +96,10 @@ fun SettingsHubScreen(
         text = stringResource(R.string.google_play_services_not_found_some_functionality_is_disabled),
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.error,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(8.dp),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
       )
     }
     if (state.isDoNotDisturbActive) {

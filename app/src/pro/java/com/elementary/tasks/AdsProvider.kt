@@ -6,20 +6,19 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 
 class AdsProvider {
-
   fun showConsentMessage(activity: Activity) {}
 
   fun showBanner(
     viewGroup: ViewGroup,
     bannerId: String,
-    failListener: (() -> Unit)? = null
+    failListener: (() -> Unit)? = null,
   ) {}
 
   fun showNativeBanner(
     viewGroup: ViewGroup,
     bannerId: String,
     @LayoutRes res: Int,
-    failListener: (() -> Unit)? = null
+    failListener: (() -> Unit)? = null,
   ) {}
 
   fun destroy() {

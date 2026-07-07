@@ -36,7 +36,6 @@ class ObjectExportViewModel(
   private val memoryUtil: MemoryUtil,
   private val noteToOldNoteConverter: NoteToOldNoteConverter,
 ) : ViewModel() {
-
   val state: StateFlow<ObjectExportState> field = MutableStateFlow(ObjectExportState())
   val navigationEvent: LiveData<Event<ObjectExportEvent>> field = mutableLiveEventOf()
 
@@ -104,25 +103,30 @@ class ObjectExportViewModel(
 
   private suspend fun loadItems(objectType: ObjectExportType): List<ObjectExportItem> =
     when (objectType) {
-      ObjectExportType.Reminder -> reminderRepository.getAll().map {
-        ObjectExportItem(it.uuId, it.summary + "\nID: " + it.uuId)
-      }
+      ObjectExportType.Reminder ->
+        reminderRepository.getAll().map {
+          ObjectExportItem(it.uuId, it.summary + "\nID: " + it.uuId)
+        }
 
-      ObjectExportType.Note -> noteRepository.getAll().map {
-        ObjectExportItem(it.getKey(), it.getSummary() + "\nID: " + it.getKey())
-      }
+      ObjectExportType.Note ->
+        noteRepository.getAll().map {
+          ObjectExportItem(it.getKey(), it.getSummary() + "\nID: " + it.getKey())
+        }
 
-      ObjectExportType.Birthday -> birthdayRepository.getAll().map {
-        ObjectExportItem(it.uuId, it.name + "\nID: " + it.uuId)
-      }
+      ObjectExportType.Birthday ->
+        birthdayRepository.getAll().map {
+          ObjectExportItem(it.uuId, it.name + "\nID: " + it.uuId)
+        }
 
-      ObjectExportType.Place -> placeRepository.getAll().map {
-        ObjectExportItem(it.id, it.name + "\nID: " + it.id)
-      }
+      ObjectExportType.Place ->
+        placeRepository.getAll().map {
+          ObjectExportItem(it.id, it.name + "\nID: " + it.id)
+        }
 
-      ObjectExportType.Group -> reminderGroupRepository.getAll().map {
-        ObjectExportItem(it.groupUuId, it.groupTitle + "\nID: " + it.groupUuId)
-      }
+      ObjectExportType.Group ->
+        reminderGroupRepository.getAll().map {
+          ObjectExportItem(it.groupUuId, it.groupTitle + "\nID: " + it.groupUuId)
+        }
     }
 
   private suspend fun getObject(

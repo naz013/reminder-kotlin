@@ -65,10 +65,11 @@ fun EditPlaceScreen(
     },
   ) { padding ->
     Column(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(padding)
-        .background(MaterialTheme.colorScheme.background),
+      modifier =
+        Modifier
+          .fillMaxSize()
+          .padding(padding)
+          .background(MaterialTheme.colorScheme.background),
     ) {
       OutlinedTextField(
         value = state.name,
@@ -81,14 +82,16 @@ fun EditPlaceScreen(
           }
         },
         singleLine = true,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
       )
       Box(
-        modifier = Modifier
-          .fillMaxWidth()
-          .weight(1f),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .weight(1f),
       ) {
         mapContent()
       }

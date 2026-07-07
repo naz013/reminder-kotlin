@@ -13,7 +13,6 @@ import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 
 class AdsProvider {
-
   private var consentInformation: ConsentInformation? = null
   private var consentForm: ConsentForm? = null
 
@@ -22,26 +21,30 @@ class AdsProvider {
   }
 
   fun showConsentMessage(activity: Activity) {
-    val params = ConsentRequestParameters.Builder()
-      .setTagForUnderAgeOfConsent(false)
-      .build()
+    val params =
+      ConsentRequestParameters
+        .Builder()
+        .setTagForUnderAgeOfConsent(false)
+        .build()
 
-    UserMessagingPlatform.getConsentInformation(activity).also {
-      consentInformation = it
-    }.let {
-      it.requestConsentInfoUpdate(
-        activity,
-        params,
-        {
-          if (it.isConsentFormAvailable) {
-            loadForm(activity)
-          }
-        },
-        { formError ->
-          // Handle the error.
-        }
-      )
-    }
+    UserMessagingPlatform
+      .getConsentInformation(activity)
+      .also {
+        consentInformation = it
+      }.let {
+        it.requestConsentInfoUpdate(
+          activity,
+          params,
+          {
+            if (it.isConsentFormAvailable) {
+              loadForm(activity)
+            }
+          },
+          { formError ->
+            // Handle the error.
+          },
+        )
+      }
   }
 
   private fun loadForm(activity: Activity) {
@@ -56,23 +59,24 @@ class AdsProvider {
         }
       },
       { formError ->
-      }
+      },
     )
   }
 
   fun showBanner(
     viewGroup: ViewGroup,
     bannerId: String,
-    failListener: (() -> Unit)? = null
+    failListener: (() -> Unit)? = null,
   ) {
     RotatingBannerAdsProvider(
       bannerId = bannerId,
       viewGroup = viewGroup,
-      onAdsFailureCallback = object : OnAdsFailureCallback {
-        override fun onAdsFailure() {
-          failListener?.invoke()
-        }
-      }
+      onAdsFailureCallback =
+        object : OnAdsFailureCallback {
+          override fun onAdsFailure() {
+            failListener?.invoke()
+          }
+        },
     )
   }
 
@@ -80,23 +84,23 @@ class AdsProvider {
     viewGroup: ViewGroup,
     bannerId: String,
     @LayoutRes res: Int,
-    failListener: (() -> Unit)? = null
+    failListener: (() -> Unit)? = null,
   ) {
     RotatingNativeAdsProvider(
       viewGroup = viewGroup,
       bannerId = bannerId,
       res = res,
-      onAdsFailureCallback = object : OnAdsFailureCallback {
-        override fun onAdsFailure() {
-          wasError = true
-          failListener?.invoke()
-        }
-      }
+      onAdsFailureCallback =
+        object : OnAdsFailureCallback {
+          override fun onAdsFailure() {
+            wasError = true
+            failListener?.invoke()
+          }
+        },
     )
   }
 
   companion object {
-
     private const val TAG = "AdsProvider"
     const val REMINDER_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1084030852"
     const val NOTE_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/4831704177"
@@ -105,9 +109,7 @@ class AdsProvider {
 
     private var wasError = false
 
-    fun hasAds(): Boolean {
-      return !wasError
-    }
+    fun hasAds(): Boolean = !wasError
 
     fun init(context: Context) {
       if (SuperUtil.isGooglePlayServicesAvailable(context)) {

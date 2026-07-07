@@ -2,10 +2,10 @@ package com.elementary.tasks.settings
 
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.birthday.usecase.GetContactsWithMetadataUseCase
-import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
+import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.elementary.tasks.settings.calendar.CalendarSettingsViewModel
 import com.elementary.tasks.settings.calendar.usecase.ScanGoogleCalendarForNewEventsUseCase
-import com.elementary.tasks.settings.calendar.work.ScanGoogleCalendarEventsWorker
+import com.elementary.tasks.settings.calendar.work.ScanGoogleCalendarEventsTask
 import com.elementary.tasks.settings.general.GeneralSettingsViewModel
 import com.elementary.tasks.settings.location.LocationSettingsViewModel
 import com.elementary.tasks.settings.location.MapStyleViewModel
@@ -15,8 +15,9 @@ import com.elementary.tasks.settings.security.AddPinViewModel
 import com.elementary.tasks.settings.security.ChangePinViewModel
 import com.elementary.tasks.settings.security.DisablePinViewModel
 import com.elementary.tasks.settings.security.SecuritySettingsViewModel
-import org.koin.androidx.workmanager.dsl.worker
+import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val settingsModule =
@@ -24,11 +25,11 @@ val settingsModule =
     factory { ScanGoogleCalendarForNewEventsUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { GetContactsWithMetadataUseCase(get()) }
 
-    worker { ScanGoogleCalendarEventsWorker(get(), get(), get(), get()) }
-    worker { CheckBirthdaysWorker(get(), get(), get(), get(), get(), get(), get()) }
+    factory<BackgroundTask>(named(ScanGoogleCalendarEventsTask.TASK_KEY)) { ScanGoogleCalendarEventsTask(get(), get()) }
+    factory<BackgroundTask>(named(CheckBirthdaysTask.TASK_KEY)) { CheckBirthdaysTask(get(), get(), get(), get(), get()) }
 
     viewModel { CalendarSettingsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { GeneralSettingsViewModel(get(), get(), get()) }
     viewModel { NoteSettingsViewModel(get(), get()) }
     viewModel { SecuritySettingsViewModel(get(), get()) }

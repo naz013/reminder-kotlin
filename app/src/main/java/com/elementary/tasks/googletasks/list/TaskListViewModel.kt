@@ -40,7 +40,6 @@ class TaskListViewModel(
   private val contextProvider: ContextProvider,
   private val textProvider: TextProvider,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   val state: StateFlow<TaskListState> field = MutableStateFlow(TaskListState())
   val navigationEvent: LiveData<Event<TaskListEvent>> field = mutableLiveEventOf()
 
@@ -56,8 +55,10 @@ class TaskListViewModel(
   private fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val googleTaskList = googleTaskListRepository.getById(listId) ?: return@launch
-      val googleTasks = googleTaskRepository.getAllByList(listId)
-        .map { uiGoogleTaskListAdapter.convert(it, googleTaskList) }
+      val googleTasks =
+        googleTaskRepository
+          .getAllByList(listId)
+          .map { uiGoogleTaskListAdapter.convert(it, googleTaskList) }
       currentTaskList = googleTaskList
       val color = ThemeProvider.themedColor(contextProvider.themedContext, googleTaskList.color)
       state.update {

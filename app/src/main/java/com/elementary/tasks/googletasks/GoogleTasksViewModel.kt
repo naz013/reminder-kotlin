@@ -35,7 +35,6 @@ class GoogleTasksViewModel(
   private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists,
   private val contextProvider: ContextProvider,
 ) : BaseProgressViewModel(dispatcherProvider) {
-
   val state: StateFlow<GoogleTasksState> field = MutableStateFlow(GoogleTasksState())
 
   private val isBusy = MutableStateFlow(false)
