@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.protocol
+package com.github.naz013.datecalc
 
 import org.threeten.bp.DayOfWeek
 

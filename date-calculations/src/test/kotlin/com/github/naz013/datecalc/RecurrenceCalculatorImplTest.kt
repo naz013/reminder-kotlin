@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.scheduling.recurrence
+package com.github.naz013.datecalc
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -8,17 +8,17 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 /**
- * Unit tests for RecurrenceCalculator.
+ * Unit tests for RecurrenceCalculatorImpl.
  *
  * Tests the calculation of next occurrences for various recurrence patterns:
  * yearly, weekly, monthly, interval-based, and timer-based events.
  */
-class RecurrenceCalculatorTest {
+class RecurrenceCalculatorImplTest {
   private lateinit var calculator: RecurrenceCalculator
 
   @Before
   fun setup() {
-    calculator = RecurrenceCalculator()
+    calculator = RecurrenceCalculatorImpl()
   }
 
   // ========== getNextYearDayDateTime Tests ==========

@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.scheduling.occurrence
 
-import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import io.mockk.every

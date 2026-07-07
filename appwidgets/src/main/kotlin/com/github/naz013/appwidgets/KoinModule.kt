@@ -13,25 +13,26 @@ import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val appWidgetsModule = module {
-  single { WidgetPrefsHolder(get()) }
+val appWidgetsModule =
+  module {
+    single { WidgetPrefsHolder(get()) }
 
-  factory { WidgetDataProvider(get(), get(), get(), get(), get()) }
+    factory { WidgetDataProvider(get(), get(), get(), get()) }
 
-  factory { UiBirthdayWidgetListAdapter(get(), get()) }
-  factory { UiReminderWidgetListAdapter(get()) }
+    factory { UiBirthdayWidgetListAdapter(get(), get()) }
+    factory { UiReminderWidgetListAdapter(get()) }
 
-  factory { AppWidgetUpdaterImpl(get(), get()) as AppWidgetUpdater }
-  factory { AppWidgetPreviewUpdaterImpl(get()) as AppWidgetPreviewUpdater }
+    factory { AppWidgetUpdaterImpl(get(), get()) as AppWidgetUpdater }
+    factory { AppWidgetPreviewUpdaterImpl(get()) as AppWidgetPreviewUpdater }
 
-  factory { UiNoteListSelectableAdapter(get(), get(), get(), get()) }
-  factory { UiNoteImagesAdapter() }
-  factory { RecyclableUiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
-  factory { UiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
+    factory { UiNoteListSelectableAdapter(get(), get(), get(), get()) }
+    factory { UiNoteImagesAdapter() }
+    factory { RecyclableUiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
+    factory { UiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
 
-  viewModel { SingleNoteWidgetConfigViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { SingleNoteWidgetConfigViewModel(get(), get(), get(), get(), get(), get()) }
 
-  factory { (prefs: EventsWidgetPrefsProvider) ->
-    EventsAppWidgetViewModel(prefs, get(), get(), get(), get(), get(), get())
+    factory { (prefs: EventsWidgetPrefsProvider) ->
+      EventsAppWidgetViewModel(prefs, get(), get(), get(), get(), get(), get())
+    }
   }
-}

@@ -228,6 +228,7 @@ dependencies {
   implementation(project(":usecase:notes"))
   implementation(project(":usecase:reminders"))
   implementation(project(":icalendar"))
+  implementation(project(":date-calculations"))
   implementation(project(":sync"))
   implementation(project(":reviews"))
   implementation(project(":legal-api"))

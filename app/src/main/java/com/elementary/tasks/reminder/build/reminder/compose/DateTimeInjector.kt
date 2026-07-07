@@ -6,8 +6,9 @@ import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
-import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.RecurrenceCalculator
+import com.github.naz013.datecalc.RecurrenceCalculatorImpl
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
@@ -17,7 +18,7 @@ import org.threeten.bp.LocalDateTime
 class DateTimeInjector(
   private val dateTimeManager: DateTimeManager,
   private val iCalDateTimeInjector: ICalDateTimeInjector,
-  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculatorImpl(),
 ) {
   operator fun invoke(
     reminder: Reminder,

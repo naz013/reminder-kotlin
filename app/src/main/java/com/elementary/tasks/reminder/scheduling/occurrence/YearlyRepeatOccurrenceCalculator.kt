@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.scheduling.occurrence
 
-import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
+import com.github.naz013.datecalc.RecurrenceCalculator
+import com.github.naz013.datecalc.RecurrenceCalculatorImpl
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
@@ -12,7 +13,7 @@ import org.threeten.bp.LocalDateTime
  * (e.g., March 15th every year). Handles leap years appropriately.
  */
 class YearlyRepeatOccurrenceCalculator(
-  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculator(),
+  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculatorImpl(),
 ) : ReminderOccurrenceCalculator {
   /**
    * Calculates occurrences for a yearly repeating reminder.
@@ -60,8 +61,8 @@ class YearlyRepeatOccurrenceCalculator(
       val nextOccurrence =
         recurrenceCalculator.getNextYearDayDateTime(
           eventDateTime = startDateTime,
-          monthOfYear = reminder.dayOfMonth,
-          dayOfMonth = reminder.monthOfYear,
+          monthOfYear = reminder.monthOfYear,
+          dayOfMonth = reminder.dayOfMonth,
           interval = reminder.repeatInterval,
         )
 

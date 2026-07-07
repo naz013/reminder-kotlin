@@ -43,6 +43,7 @@ kotlin {
 dependencies {
   implementation(project(":logging-api"))
   implementation(project(":feature-common"))
+  implementation(project(":date-calculations"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)

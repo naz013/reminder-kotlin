@@ -87,7 +87,6 @@ import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
 import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
-import com.elementary.tasks.reminder.scheduling.recurrence.RecurrenceCalculator
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
@@ -108,6 +107,8 @@ import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
+import com.github.naz013.datecalc.RecurrenceCalculator
+import com.github.naz013.datecalc.RecurrenceCalculatorImpl
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -394,7 +395,7 @@ val reminderModule =
 
     factory { EventDateTimeCalculator(get(), get()) }
 
-    factory { RecurrenceCalculator() }
+    factory<RecurrenceCalculator> { RecurrenceCalculatorImpl() }
 
     factory { MigrateRecurringParamsUseCase(get(), get()) }
 
