@@ -128,9 +128,10 @@ private fun DeveloperScreen(
   onDialogDismiss: () -> Unit,
 ) {
   Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState()),
   ) {
     DeveloperOption(
       title = "Reset banners state on Home Screen",
@@ -216,9 +217,10 @@ private fun DeveloperOption(
   onClick: () -> Unit,
 ) {
   ListItem(
-    modifier = Modifier
-      .fillMaxWidth()
-      .clickable(onClick = onClick),
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .clickable(onClick = onClick),
     headlineContent = { Text(text = title) },
     supportingContent = { Text(text = subtitle) },
   )
@@ -231,32 +233,36 @@ private fun DeveloperChoiceDialog(
   onConfirm: () -> Unit,
   onDismiss: () -> Unit,
 ) {
-  val title = when (dialog.kind) {
-    DeveloperDialogKind.CLEAR_TABLE -> "Select table to clear"
-    DeveloperDialogKind.REMINDER, DeveloperDialogKind.BIRTHDAY -> "Select action to test"
-  }
-  val confirmText = when (dialog.kind) {
-    DeveloperDialogKind.CLEAR_TABLE -> "Clear"
-    DeveloperDialogKind.REMINDER, DeveloperDialogKind.BIRTHDAY -> "Run"
-  }
+  val title =
+    when (dialog.kind) {
+      DeveloperDialogKind.CLEAR_TABLE -> "Select table to clear"
+      DeveloperDialogKind.REMINDER, DeveloperDialogKind.BIRTHDAY -> "Select action to test"
+    }
+  val confirmText =
+    when (dialog.kind) {
+      DeveloperDialogKind.CLEAR_TABLE -> "Clear"
+      DeveloperDialogKind.REMINDER, DeveloperDialogKind.BIRTHDAY -> "Run"
+    }
   AlertDialog(
     onDismissRequest = onDismiss,
     title = { Text(title) },
     text = {
       Column(
-        modifier = Modifier
-          .heightIn(max = 400.dp)
-          .selectableGroup()
-          .verticalScroll(rememberScrollState()),
+        modifier =
+          Modifier
+            .heightIn(max = 400.dp)
+            .selectableGroup()
+            .verticalScroll(rememberScrollState()),
       ) {
         dialog.options.forEachIndexed { index, option ->
           val selected = index == dialog.selectedIndex
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-              .fillMaxWidth()
-              .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
-              .padding(vertical = 8.dp),
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
+                .padding(vertical = 8.dp),
           ) {
             RadioButton(selected = selected, onClick = null)
             Text(

@@ -63,19 +63,21 @@ private fun WhatsNewScreen(
   AnimatedGradientBackground {
     Column(modifier = Modifier.fillMaxSize()) {
       Row(
-        modifier = Modifier
-          .statusBarsPadding()
-          .fillMaxWidth()
-          .height(64.dp),
+        modifier =
+          Modifier
+            .statusBarsPadding()
+            .fillMaxWidth()
+            .height(64.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Spacer(modifier = Modifier.width(16.dp))
         IconButton(
           onClick = onBackClick,
-          modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
+          modifier =
+            Modifier
+              .size(40.dp)
+              .clip(CircleShape)
+              .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
         ) {
           Icon(
             painter = painterResource(R.drawable.ic_builder_arrow_left),
@@ -121,5 +123,6 @@ private fun WhatsNewScreenPreview() {
   WhatsNewScreen(
     versionAndDate = "1.0.0, Jan 1",
     whatsNewText = "Sample changelog text",
-    onBackClick = {})
+    onBackClick = {},
+  )
 }

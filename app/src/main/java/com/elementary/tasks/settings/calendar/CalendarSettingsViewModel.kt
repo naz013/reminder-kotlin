@@ -28,7 +28,6 @@ class CalendarSettingsViewModel(
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
-
   val state: StateFlow<CalendarSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<CalendarSettingsEvent>> field = mutableLiveEventOf()
 
@@ -61,36 +60,42 @@ class CalendarSettingsViewModel(
   }
 
   fun onTodayColorClick() {
-    navigationEvent.value = Event(
-      CalendarSettingsEvent.ShowColorPicker(
-        target = ColorPickerTarget.TODAY,
-        currentColorIndex = prefs.todayColor,
-        title = textProvider.getString(R.string.today_color),
-      ),
-    )
+    navigationEvent.value =
+      Event(
+        CalendarSettingsEvent.ShowColorPicker(
+          target = ColorPickerTarget.TODAY,
+          currentColorIndex = prefs.todayColor,
+          title = textProvider.getString(R.string.today_color),
+        ),
+      )
   }
 
   fun onReminderColorClick() {
-    navigationEvent.value = Event(
-      CalendarSettingsEvent.ShowColorPicker(
-        target = ColorPickerTarget.REMINDER,
-        currentColorIndex = prefs.reminderColor,
-        title = textProvider.getString(R.string.reminders_color),
-      ),
-    )
+    navigationEvent.value =
+      Event(
+        CalendarSettingsEvent.ShowColorPicker(
+          target = ColorPickerTarget.REMINDER,
+          currentColorIndex = prefs.reminderColor,
+          title = textProvider.getString(R.string.reminders_color),
+        ),
+      )
   }
 
   fun onBirthdayColorClick() {
-    navigationEvent.value = Event(
-      CalendarSettingsEvent.ShowColorPicker(
-        target = ColorPickerTarget.BIRTHDAY,
-        currentColorIndex = prefs.birthdayColor,
-        title = textProvider.getString(R.string.birthdays_color),
-      ),
-    )
+    navigationEvent.value =
+      Event(
+        CalendarSettingsEvent.ShowColorPicker(
+          target = ColorPickerTarget.BIRTHDAY,
+          currentColorIndex = prefs.birthdayColor,
+          title = textProvider.getString(R.string.birthdays_color),
+        ),
+      )
   }
 
-  fun onColorSelected(target: ColorPickerTarget, colorIndex: Int) {
+  fun onColorSelected(
+    target: ColorPickerTarget,
+    colorIndex: Int,
+  ) {
     when (target) {
       ColorPickerTarget.TODAY -> prefs.todayColor = colorIndex
       ColorPickerTarget.REMINDER -> prefs.reminderColor = colorIndex
@@ -108,9 +113,10 @@ class CalendarSettingsViewModel(
       }
       val selectedPosition = calendars.indexOfFirst { it.id == selectedCalendarId }
       withContext(dispatcherProvider.main()) {
-        _showSelectGoogleCalendarDialog.value = Event(
-          ShowSelectGoogleCalendarDialog(calendars = calendars, selectedPosition = selectedPosition),
-        )
+        _showSelectGoogleCalendarDialog.value =
+          Event(
+            ShowSelectGoogleCalendarDialog(calendars = calendars, selectedPosition = selectedPosition),
+          )
       }
     }
   }
@@ -175,10 +181,11 @@ class CalendarSettingsViewModel(
     )
   }
 
-  private fun firstDayOptions(): List<String> = listOf(
-    textProvider.getString(R.string.sunday),
-    textProvider.getString(R.string.monday),
-  )
+  private fun firstDayOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.sunday),
+      textProvider.getString(R.string.monday),
+    )
 
   data class ShowSelectGoogleCalendarDialog(
     val calendars: List<GoogleCalendar>,

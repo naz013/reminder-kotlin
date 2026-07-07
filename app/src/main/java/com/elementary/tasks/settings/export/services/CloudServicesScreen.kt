@@ -53,19 +53,21 @@ fun CloudServicesScreen(
   AnimatedGradientBackground {
     Column(modifier = Modifier.fillMaxSize()) {
       Row(
-        modifier = Modifier
-          .statusBarsPadding()
-          .fillMaxWidth()
-          .height(64.dp),
+        modifier =
+          Modifier
+            .statusBarsPadding()
+            .fillMaxWidth()
+            .height(64.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Spacer(modifier = Modifier.width(16.dp))
         IconButton(
           onClick = onBackClick,
-          modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
+          modifier =
+            Modifier
+              .size(40.dp)
+              .clip(CircleShape)
+              .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
         ) {
           Icon(
             painter = painterResource(UiR.drawable.ic_builder_arrow_left),
@@ -75,10 +77,11 @@ fun CloudServicesScreen(
         }
       }
       Column(
-        modifier = Modifier
-          .fillMaxSize()
-          .verticalScroll(rememberScrollState())
-          .padding(horizontal = 24.dp),
+        modifier =
+          Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp),
       ) {
         Spacer(modifier = Modifier.height(24.dp))
 

@@ -1,8 +1,7 @@
 package com.elementary.tasks.core.utils.datetime
 
 class DateTimeManagerTest {
-
-//  private val dateTimePreferences = mockk<DateTimePreferences>()
+  //  private val dateTimePreferences = mockk<DateTimePreferences>()
 //  private val nowDateTimeProvider = mockk<NowDateTimeProvider>()
 //  private val birthday = mockk<Birthday>()
 //  private val dateTimeManager = DateTimeManager(nowDateTimeProvider, dateTimePreferences)

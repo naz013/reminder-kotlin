@@ -20,7 +20,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RemindersSettingsFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<RemindersSettingsViewModel>()
   private val dateTimePickerProvider by inject<DateTimePickerProvider>()
 

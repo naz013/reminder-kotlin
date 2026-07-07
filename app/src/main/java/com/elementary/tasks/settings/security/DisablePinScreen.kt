@@ -26,9 +26,10 @@ fun DisablePinScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Spacer(modifier = Modifier.weight(1f))

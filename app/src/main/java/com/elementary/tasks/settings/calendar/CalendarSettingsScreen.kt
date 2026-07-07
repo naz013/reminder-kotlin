@@ -51,10 +51,11 @@ fun CalendarSettingsScreen(
   val context = LocalContext.current
 
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
   ) {
     SettingsItem(
       title = stringResource(R.string.first_day_of_the_week),
@@ -96,11 +97,12 @@ fun CalendarSettingsScreen(
       icon = painterResource(R.drawable.ic_fluent_calendar_star),
       dividerBottom = true,
       onClick = onSelectCalendarClick,
-      trailing = if (state.isCalendarSelected) {
-        { TextButton(onClick = onCalendarResetClick) { Text(stringResource(R.string.reset_calendar)) } }
-      } else {
-        null
-      },
+      trailing =
+        if (state.isCalendarSelected) {
+          { TextButton(onClick = onCalendarResetClick) { Text(stringResource(R.string.reset_calendar)) } }
+        } else {
+          null
+        },
     )
     SettingsSwitchItem(
       title = stringResource(R.string.add_reminders_to_google_calendar),
@@ -131,10 +133,11 @@ fun CalendarSettingsScreen(
             val selected = index == dialog.selectedIndex
             Row(
               verticalAlignment = Alignment.CenterVertically,
-              modifier = Modifier
-                .fillMaxWidth()
-                .selectable(selected = selected, onClick = { onFirstDayOptionSelected(index) }, role = Role.RadioButton)
-                .padding(vertical = 8.dp),
+              modifier =
+                Modifier
+                  .fillMaxWidth()
+                  .selectable(selected = selected, onClick = { onFirstDayOptionSelected(index) }, role = Role.RadioButton)
+                  .padding(vertical = 8.dp),
             ) {
               RadioButton(selected = selected, onClick = null)
               Text(
@@ -154,8 +157,9 @@ fun CalendarSettingsScreen(
 @Composable
 private fun ColorSwatch(color: Color) {
   Box(
-    modifier = Modifier
-      .size(24.dp)
-      .background(color, CircleShape),
+    modifier =
+      Modifier
+        .size(24.dp)
+        .background(color, CircleShape),
   )
 }

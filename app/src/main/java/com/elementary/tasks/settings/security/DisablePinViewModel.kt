@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.update
 class DisablePinViewModel(
   private val prefs: Prefs,
 ) : ViewModel() {
-
   val state: StateFlow<DisablePinState> field = MutableStateFlow(DisablePinState())
   val navigationEvent: LiveData<Event<DisablePinEvent>> field = mutableLiveEventOf()
 

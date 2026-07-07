@@ -56,4 +56,6 @@ enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
  * user typing — the [com.elementary.tasks.core.speech.SpeechEngine] instance is Context-bound and
  * lives outside the ViewModel, so it needs telling to resync its own text buffer to [text].
  */
-data class TextUpdate(val text: String)
+data class TextUpdate(
+  val text: String,
+)

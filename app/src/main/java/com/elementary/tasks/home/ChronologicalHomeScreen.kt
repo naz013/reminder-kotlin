@@ -83,59 +83,62 @@ fun ChronologicalHomeScreen(
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
   val listState = rememberLazyListState()
-  val isScrolled = listState.firstVisibleItemIndex > 0 ||
-    listState.firstVisibleItemScrollOffset > 0
+  val isScrolled =
+    listState.firstVisibleItemIndex > 0 ||
+      listState.firstVisibleItemScrollOffset > 0
   val headerElevation by animateDpAsState(
     targetValue = if (isScrolled) 4.dp else 0.dp,
-    label = "header_elevation"
+    label = "header_elevation",
   )
 
   Column(modifier = modifier.fillMaxSize()) {
     Header(
-      modifier = Modifier
-        .shadow(elevation = headerElevation, clip = false)
-        .background(MaterialTheme.colorScheme.background)
-        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+      modifier =
+        Modifier
+          .shadow(elevation = headerElevation, clip = false)
+          .background(MaterialTheme.colorScheme.background)
+          .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
       text = state.greeting,
       addMenuItems = state.addMenuItems,
       onAddMenuItemClick = onAddMenuItemClick,
-      onSettingsClick = onSettingsClick
+      onSettingsClick = onSettingsClick,
     )
     LazyColumn(
       modifier = Modifier.fillMaxSize(),
       state = listState,
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-    item {
-      HeaderNavigationGrid(
-        modifier = Modifier.padding(top = 4.dp),
-        items = state.headerNavigationItems,
-        onItemClick = onHeaderNavigationItemClick
-      )
-    }
-    when (state.listState) {
-      is ListState.Ready -> {
-        items(state.listState.sections.size) { index ->
-          TimeSectionRow(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            timeSection = state.listState.sections[index],
-            index = index,
-            onEventClick = onEventClick,
-            onEventActionClick = onEventActionClick
-          )
-        }
+      item {
+        HeaderNavigationGrid(
+          modifier = Modifier.padding(top = 4.dp),
+          items = state.headerNavigationItems,
+          onItemClick = onHeaderNavigationItemClick,
+        )
       }
-      is ListState.Empty -> {
-        item {
-          EmptyEventsState(
-            modifier = Modifier
-              .fillMaxWidth()
-              .height(300.dp)
-          )
+      when (state.listState) {
+        is ListState.Ready -> {
+          items(state.listState.sections.size) { index ->
+            TimeSectionRow(
+              modifier = Modifier.padding(horizontal = 16.dp),
+              timeSection = state.listState.sections[index],
+              index = index,
+              onEventClick = onEventClick,
+              onEventActionClick = onEventActionClick,
+            )
+          }
         }
+        is ListState.Empty -> {
+          item {
+            EmptyEventsState(
+              modifier =
+                Modifier
+                  .fillMaxWidth()
+                  .height(300.dp),
+            )
+          }
+        }
+        is ListState.Loading -> {}
       }
-      is ListState.Loading -> {}
-    }
     }
   }
 }
@@ -167,9 +170,9 @@ private fun Header(
         modifier = Modifier.size(56.dp),
         icon = AppIcons.Fluent.Settings,
         onClick = onSettingsClick,
-        contentDescription = stringResource(R.string.action_settings)
+        contentDescription = stringResource(R.string.action_settings),
       )
-    }
+    },
   )
 }
 
@@ -182,18 +185,20 @@ private fun AddButton(
   onDismiss: () -> Unit,
   onItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
 ) {
-  val menuItems = items.mapIndexed { index, eventType ->
-    PopupMenuItem(
-      id = index,
-      title = stringResource(eventType.title),
-      iconRes = when (eventType) {
-        ScheduleHomeViewModel.EventType.Reminder -> R.drawable.ic_fluent_alert
-        ScheduleHomeViewModel.EventType.Birthday -> R.drawable.ic_fluent_food_cake
-        ScheduleHomeViewModel.EventType.GoogleTask -> R.drawable.ic_builder_google_task_list
-        ScheduleHomeViewModel.EventType.Note -> R.drawable.ic_fluent_note
-      }
-    )
-  }
+  val menuItems =
+    items.mapIndexed { index, eventType ->
+      PopupMenuItem(
+        id = index,
+        title = stringResource(eventType.title),
+        iconRes =
+          when (eventType) {
+            ScheduleHomeViewModel.EventType.Reminder -> R.drawable.ic_fluent_alert
+            ScheduleHomeViewModel.EventType.Birthday -> R.drawable.ic_fluent_food_cake
+            ScheduleHomeViewModel.EventType.GoogleTask -> R.drawable.ic_builder_google_task_list
+            ScheduleHomeViewModel.EventType.Note -> R.drawable.ic_fluent_note
+          },
+      )
+    }
   Box(modifier = modifier) {
     MenuIconButton(
       modifier = Modifier.size(56.dp),
@@ -201,13 +206,13 @@ private fun AddButton(
       onClick = onExpand,
       color = Color.Transparent,
       iconColor = MaterialTheme.colorScheme.primary,
-      contentDescription = stringResource(R.string.acc_add)
+      contentDescription = stringResource(R.string.acc_add),
     )
     AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = onDismiss,
       items = menuItems,
-      onItemClick = { onItemClick(items[it]) }
+      onItemClick = { onItemClick(items[it]) },
     )
   }
 }
@@ -218,18 +223,20 @@ private fun HeaderNavigationGrid(
   items: List<HeaderNavigationItem>,
   onItemClick: (HeaderNavigationItem) -> Unit,
 ) {
-  val columns = dynamicParameter(
-    mobilePortrait = { 2 },
-    mobileLandscape = { 3 },
-    tabletPortrait = { 4 },
-    tabletLandscape = { 4 },
-    desktopSmall = { 4 },
-    desktopNormal = { 4 },
-  )
+  val columns =
+    dynamicParameter(
+      mobilePortrait = { 2 },
+      mobileLandscape = { 3 },
+      tabletPortrait = { 4 },
+      tabletLandscape = { 4 },
+      desktopSmall = { 4 },
+      desktopNormal = { 4 },
+    )
   Column(
-    modifier = modifier
-      .fillMaxWidth()
-      .padding(horizontal = 16.dp),
+    modifier =
+      modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     items.chunked(columns).forEachIndexed { rowIndex, rowItems ->
@@ -242,7 +249,7 @@ private fun HeaderNavigationGrid(
             modifier = Modifier.weight(1f),
             item = item,
             index = rowIndex * columns + columnIndex,
-            onClick = { onItemClick(item) }
+            onClick = { onItemClick(item) },
           )
         }
         repeat(columns - rowItems.size) {
@@ -268,8 +275,9 @@ private fun HeaderNavigationTile(
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
-    enter = fadeIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS)) +
-      scaleIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS), initialScale = 0.85f),
+    enter =
+      fadeIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS)) +
+        scaleIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS), initialScale = 0.85f),
   ) {
     Surface(
       onClick = onClick,
@@ -279,13 +287,14 @@ private fun HeaderNavigationTile(
       Row(
         modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
       ) {
         Box(
-          modifier = Modifier
-            .size(32.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.secondaryContainer),
+          modifier =
+            Modifier
+              .size(32.dp)
+              .clip(CircleShape)
+              .background(MaterialTheme.colorScheme.secondaryContainer),
           contentAlignment = Alignment.Center,
         ) {
           Icon(
@@ -296,17 +305,17 @@ private fun HeaderNavigationTile(
           )
         }
         Column(
-          verticalArrangement = Arrangement.spacedBy(1.dp)
+          verticalArrangement = Arrangement.spacedBy(1.dp),
         ) {
           Text(
             text = stringResource(item.titleRes),
             style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
           )
           Text(
             text = item.subtitle,
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
           )
         }
       }
@@ -315,9 +324,7 @@ private fun HeaderNavigationTile(
 }
 
 @Composable
-private fun EmptyEventsState(
-  modifier: Modifier = Modifier,
-) {
+private fun EmptyEventsState(modifier: Modifier = Modifier) {
   Column(
     modifier = modifier,
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -327,13 +334,13 @@ private fun EmptyEventsState(
       painter = painterResource(R.drawable.ic_fluent_calendar_agenda),
       contentDescription = null,
       modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
     )
     Spacer(modifier = Modifier.height(12.dp))
     Text(
       text = stringResource(R.string.no_events),
       style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
     )
   }
 }
@@ -354,27 +361,31 @@ private fun TimeSectionRow(
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
-    enter = fadeIn(animationSpec = tween(LIST_ITEM_ANIMATION_DURATION_MS)) +
-      slideInVertically(animationSpec = tween(LIST_ITEM_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight / 6 },
+    enter =
+      fadeIn(animationSpec = tween(LIST_ITEM_ANIMATION_DURATION_MS)) +
+        slideInVertically(animationSpec = tween(LIST_ITEM_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight / 6 },
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.spacedBy(16.dp)
+      horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
       Text(
-        modifier = Modifier.weight(1f)
-          .padding(start = 0.dp, top = 16.dp),
+        modifier =
+          Modifier
+            .weight(1f)
+            .padding(start = 0.dp, top = 16.dp),
         text = timeSection.time,
         color = MaterialTheme.colorScheme.onBackground,
-        style = MaterialTheme.typography.bodyMedium.copy(
-          fontWeight = FontWeight.Medium
-        )
+        style =
+          MaterialTheme.typography.bodyMedium.copy(
+            fontWeight = FontWeight.Medium,
+          ),
       )
       EventCard(
         modifier = Modifier.weight(4f),
         event = timeSection.event,
         onEventClick = onEventClick,
-        onEventActionClick = onEventActionClick
+        onEventActionClick = onEventActionClick,
       )
     }
   }
@@ -392,36 +403,42 @@ private fun EventCard(
   val onContainerColor = MaterialTheme.colorScheme.onBackground
   ElevatedCard(
     onClick = { onEventClick(event) },
-    modifier = modifier
-      .fillMaxWidth(),
+    modifier =
+      modifier
+        .fillMaxWidth(),
     shape = shape,
-    colors = CardDefaults.elevatedCardColors(
-      containerColor = containerColor,
-    ),
-    elevation = CardDefaults.elevatedCardElevation(
-      defaultElevation = 0.dp,
-      pressedElevation = 2.dp,
-    ),
+    colors =
+      CardDefaults.elevatedCardColors(
+        containerColor = containerColor,
+      ),
+    elevation =
+      CardDefaults.elevatedCardElevation(
+        defaultElevation = 0.dp,
+        pressedElevation = 2.dp,
+      ),
   ) {
     Column(
-      modifier = Modifier.fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 16.dp),
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 16.dp, vertical = 16.dp),
     ) {
       Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
       ) {
         Column(
           modifier = Modifier.weight(1f),
-          verticalArrangement = Arrangement.spacedBy(2.dp)
+          verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
           event.text?.let {
             Text(
               text = it,
-              style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Medium
-              ),
+              style =
+                MaterialTheme.typography.bodyMedium.copy(
+                  fontWeight = FontWeight.Medium,
+                ),
               color = onContainerColor,
             )
           }
@@ -437,9 +454,10 @@ private fun EventCard(
           IconButton(
             onClick = { onEventActionClick(event.action) },
             modifier = Modifier.size(36.dp),
-            colors = IconButtonDefaults.iconButtonColors(
-              containerColor = Color.Transparent,
-            )
+            colors =
+              IconButtonDefaults.iconButtonColors(
+                containerColor = Color.Transparent,
+              ),
           ) {
             Icon(
               painter = painterResource(it.icon),
@@ -454,9 +472,10 @@ private fun EventCard(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
           text = it,
-          style = MaterialTheme.typography.bodySmall.copy(
-            fontWeight = FontWeight.Medium
-          ),
+          style =
+            MaterialTheme.typography.bodySmall.copy(
+              fontWeight = FontWeight.Medium,
+            ),
           modifier = Modifier.fillMaxWidth(),
           color = onContainerColor,
         )
@@ -484,7 +503,7 @@ private fun Greeting(
   Row(
     modifier = modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     Text(
       modifier = Modifier.weight(1f),
@@ -501,33 +520,37 @@ private fun Greeting(
 @Composable
 private fun TimeSectionRow_WithAction() {
   Box(
-    modifier = Modifier
-      .padding(16.dp)
+    modifier =
+      Modifier
+        .padding(16.dp),
   ) {
     TimeSectionRow(
       modifier = Modifier.fillMaxWidth(),
-      timeSection = TimeSection(
-        time = "12:00",
-        event = HomeEvent(
-          id = "",
-          text = "Event text",
-          description = "Event description",
-          color = Color.Green,
-          groupName = "Group",
-          remaining = "10 hours",
-          action = HomeEvent.EventAction(
-            icon = HomeEvent.EventAction.MakeCall,
-            value = ResolvedEventAction.MakeCall("+123456789"),
-          ),
-          date = LocalDate.of(2026, 6, 15),
-          time = LocalTime.of(12, 0),
-          isSelected = false,
-          type = HomeEvent.EventType.Reminder,
-        )
-      ),
+      timeSection =
+        TimeSection(
+          time = "12:00",
+          event =
+            HomeEvent(
+              id = "",
+              text = "Event text",
+              description = "Event description",
+              color = Color.Green,
+              groupName = "Group",
+              remaining = "10 hours",
+              action =
+                HomeEvent.EventAction(
+                  icon = HomeEvent.EventAction.MakeCall,
+                  value = ResolvedEventAction.MakeCall("+123456789"),
+                ),
+              date = LocalDate.of(2026, 6, 15),
+              time = LocalTime.of(12, 0),
+              isSelected = false,
+              type = HomeEvent.EventType.Reminder,
+            ),
+        ),
       index = 0,
       onEventClick = {},
-      onEventActionClick = {}
+      onEventActionClick = {},
     )
   }
 }
@@ -536,25 +559,27 @@ private fun TimeSectionRow_WithAction() {
 @Composable
 private fun EventCardPreview() {
   Box(
-    modifier = Modifier
-      .padding(16.dp)
+    modifier =
+      Modifier
+        .padding(16.dp),
   ) {
     EventCard(
-      event = HomeEvent(
-        id = "",
-        text = "Event text",
-        description = "Event description",
-        color = Color.LightGray,
-        groupName = "Group",
-        remaining = "10 hours",
-        action = null,
-        date = LocalDate.of(2026, 6, 15),
-        time = LocalTime.of(12, 0),
-        isSelected = false,
-        type = HomeEvent.EventType.Reminder,
-      ),
+      event =
+        HomeEvent(
+          id = "",
+          text = "Event text",
+          description = "Event description",
+          color = Color.LightGray,
+          groupName = "Group",
+          remaining = "10 hours",
+          action = null,
+          date = LocalDate.of(2026, 6, 15),
+          time = LocalTime.of(12, 0),
+          isSelected = false,
+          type = HomeEvent.EventType.Reminder,
+        ),
       onEventClick = {},
-      onEventActionClick = {}
+      onEventActionClick = {},
     )
   }
 }
@@ -563,28 +588,31 @@ private fun EventCardPreview() {
 @Composable
 private fun EventCardPreview_WithAction() {
   Box(
-    modifier = Modifier
-      .padding(16.dp)
+    modifier =
+      Modifier
+        .padding(16.dp),
   ) {
     EventCard(
-      event = HomeEvent(
-        id = "",
-        text = "Event text",
-        description = "Event description",
-        color = Color.Green,
-        groupName = "Group",
-        remaining = "10 hours",
-        action = HomeEvent.EventAction(
-          icon = HomeEvent.EventAction.MakeCall,
-          value = ResolvedEventAction.MakeCall("+123456789"),
+      event =
+        HomeEvent(
+          id = "",
+          text = "Event text",
+          description = "Event description",
+          color = Color.Green,
+          groupName = "Group",
+          remaining = "10 hours",
+          action =
+            HomeEvent.EventAction(
+              icon = HomeEvent.EventAction.MakeCall,
+              value = ResolvedEventAction.MakeCall("+123456789"),
+            ),
+          date = LocalDate.of(2026, 6, 15),
+          time = LocalTime.of(12, 0),
+          isSelected = false,
+          type = HomeEvent.EventType.Reminder,
         ),
-        date = LocalDate.of(2026, 6, 15),
-        time = LocalTime.of(12, 0),
-        isSelected = false,
-        type = HomeEvent.EventType.Reminder,
-      ),
       onEventClick = {},
-      onEventActionClick = {}
+      onEventActionClick = {},
     )
   }
 }
@@ -593,13 +621,14 @@ private fun EventCardPreview_WithAction() {
 @Composable
 private fun GreetingPreview() {
   Box(
-    modifier = Modifier
-      .size(width = 320.dp, height = 128.dp)
-      .padding(16.dp)
+    modifier =
+      Modifier
+        .size(width = 320.dp, height = 128.dp)
+        .padding(16.dp),
   ) {
     Greeting(
       greeting = "Good Morning",
-      trailingContent = { }
+      trailingContent = { },
     )
   }
 }
@@ -608,9 +637,10 @@ private fun GreetingPreview() {
 @Composable
 private fun GreetingPreview_WithIcon() {
   Box(
-    modifier = Modifier
-      .size(width = 320.dp, height = 128.dp)
-      .padding(16.dp)
+    modifier =
+      Modifier
+        .size(width = 320.dp, height = 128.dp)
+        .padding(16.dp),
   ) {
     Greeting(
       greeting = "Good Morning",
@@ -618,9 +648,9 @@ private fun GreetingPreview_WithIcon() {
         Icon(
           imageVector = Icons.Default.Settings,
           contentDescription = null,
-          tint = Color.Black
+          tint = Color.Black,
         )
-      }
+      },
     )
   }
 }
@@ -629,15 +659,16 @@ private fun GreetingPreview_WithIcon() {
 @Composable
 private fun HeaderPreview() {
   Box(
-    modifier = Modifier
-      .size(width = 320.dp, height = 128.dp)
-      .padding(16.dp)
+    modifier =
+      Modifier
+        .size(width = 320.dp, height = 128.dp)
+        .padding(16.dp),
   ) {
     Header(
       text = "Good Morning",
       addMenuItems = listOf(ScheduleHomeViewModel.EventType.Reminder, ScheduleHomeViewModel.EventType.Birthday),
       onAddMenuItemClick = { },
-      onSettingsClick = { }
+      onSettingsClick = { },
     )
   }
 }
@@ -647,9 +678,10 @@ private fun HeaderPreview() {
 private fun HeaderWithPopupPreview() {
   val items = listOf(ScheduleHomeViewModel.EventType.Reminder, ScheduleHomeViewModel.EventType.Birthday)
   Box(
-    modifier = Modifier
-      .size(width = 320.dp, height = 220.dp)
-      .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+    modifier =
+      Modifier
+        .size(width = 320.dp, height = 220.dp)
+        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
   ) {
     Greeting(
       greeting = "Good Morning",
@@ -661,7 +693,7 @@ private fun HeaderWithPopupPreview() {
           onDismiss = {},
           onItemClick = {},
         )
-      }
+      },
     )
   }
 }
@@ -670,36 +702,37 @@ private fun HeaderWithPopupPreview() {
 @Composable
 private fun HeaderNavigationGridPreview() {
   HeaderNavigationGrid(
-    items = listOf(
-      HeaderNavigationItem(
-        titleRes = R.string.calendar,
-        iconRes = R.drawable.ic_fluent_calendar,
-        color = Color(0xFF4CAF50),
-        navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
-        subtitle = "12",
+    items =
+      listOf(
+        HeaderNavigationItem(
+          titleRes = R.string.calendar,
+          iconRes = R.drawable.ic_fluent_calendar,
+          color = Color(0xFF4CAF50),
+          navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
+          subtitle = "12",
+        ),
+        HeaderNavigationItem(
+          titleRes = R.string.events,
+          iconRes = R.drawable.ic_fluent_timeline,
+          color = Color(0xFF2196F3),
+          navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
+          subtitle = "5",
+        ),
+        HeaderNavigationItem(
+          titleRes = R.string.notes,
+          iconRes = R.drawable.ic_fluent_note,
+          color = Color(0xFFFFA726),
+          navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
+          subtitle = "0",
+        ),
+        HeaderNavigationItem(
+          titleRes = R.string.google_tasks,
+          iconRes = R.drawable.ic_builder_google_task_list,
+          color = Color(0xFFE53935),
+          navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
+          subtitle = "3",
+        ),
       ),
-      HeaderNavigationItem(
-        titleRes = R.string.events,
-        iconRes = R.drawable.ic_fluent_timeline,
-        color = Color(0xFF2196F3),
-        navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
-        subtitle = "5",
-      ),
-      HeaderNavigationItem(
-        titleRes = R.string.notes,
-        iconRes = R.drawable.ic_fluent_note,
-        color = Color(0xFFFFA726),
-        navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
-        subtitle = "0"
-      ),
-      HeaderNavigationItem(
-        titleRes = R.string.google_tasks,
-        iconRes = R.drawable.ic_builder_google_task_list,
-        color = Color(0xFFE53935),
-        navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
-        subtitle = "3"
-      )
-    ),
-    onItemClick = {}
+    onItemClick = {},
   )
 }

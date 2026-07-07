@@ -1,45 +1,42 @@
 package com.elementary.tasks.settings.birthday.work
 
 import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.elementary.tasks.settings.birthday.usecase.GetContactsWithMetadataUseCase
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
-import kotlinx.coroutines.withContext
+import com.github.naz013.workapi.BackgroundTask
+import com.github.naz013.workapi.TaskData
+import com.github.naz013.workapi.TaskProgressReporter
+import com.github.naz013.workapi.TaskResult
 
-class CheckBirthdaysWorker(
-  context: Context,
-  workerParams: WorkerParameters,
+class CheckBirthdaysTask(
+  private val context: Context,
   private val birthdayRepository: BirthdayRepository,
   private val dateTimeManager: DateTimeManager,
-  private val dispatcherProvider: DispatcherProvider,
   private val saveBirthdayUseCase: SaveBirthdayUseCase,
   private val getContactsWithMetadataUseCase: GetContactsWithMetadataUseCase,
-) : CoroutineWorker(context, workerParams) {
-  override suspend fun doWork(): Result {
-    if (!Permissions.checkPermission(applicationContext, Permissions.READ_CONTACTS)) {
-      Logger.e(TAG, "No READ_CONTACTS permission!")
-      return Result.success()
+) : BackgroundTask {
+  override suspend fun run(
+    input: TaskData,
+    progress: TaskProgressReporter,
+  ): TaskResult {
+    if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
+      Logger.e(TASK_KEY, "No READ_CONTACTS permission!")
+      return TaskResult.Success
     }
-    withContext(dispatcherProvider.io()) {
-      scanContacts()
-    }
-    return Result.success()
+    scanContacts()
+    return TaskResult.Success
   }
 
   private suspend fun scanContacts() {
     val contacts = getContactsWithMetadataUseCase()
     if (contacts.isEmpty()) {
-      Logger.w(TAG, "No contacts with birthdays found.")
+      Logger.w(TASK_KEY, "No contacts with birthdays found.")
       return
     }
 
@@ -67,16 +64,10 @@ class CheckBirthdaysWorker(
       newBirthdaysCount++
     }
 
-    Logger.i(TAG, "Scan complete. New birthdays added: $newBirthdaysCount")
+    Logger.i(TASK_KEY, "Scan complete. New birthdays added: $newBirthdaysCount")
   }
 
   companion object {
-    private const val TAG = "CheckBirthdaysWorker"
-
-    fun scheduleOnTime(context: Context) {
-      val work = OneTimeWorkRequest.Builder(CheckBirthdaysWorker::class.java)
-      WorkManager.getInstance(context).enqueue(work.build())
-      Logger.i(TAG, "CheckBirthdaysWorker scheduled.")
-    }
+    const val TASK_KEY = "check_birthdays"
   }
 }

@@ -13,7 +13,6 @@ import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CalendarSettingsFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<CalendarSettingsViewModel>()
 
   @Composable

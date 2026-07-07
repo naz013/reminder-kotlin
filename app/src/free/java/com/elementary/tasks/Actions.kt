@@ -1,7 +1,6 @@
 package com.elementary.tasks
 
 object Actions {
-
   const val ACTION_PLAY = "com.elementary.tasks.ACTION_PLAY"
   const val ACTION_STOP = "com.elementary.tasks.ACTION_STOP"
   const val ACTION_FORCE = "com.elementary.tasks.ACTION_FORCE"

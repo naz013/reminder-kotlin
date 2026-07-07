@@ -17,7 +17,6 @@ class OtherSettingsViewModel(
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
-
   val state: StateFlow<OtherSettingsState> field = MutableStateFlow(OtherSettingsState())
 
   init {
@@ -25,18 +24,20 @@ class OtherSettingsViewModel(
   }
 
   fun onAboutClick() {
-    val appName = if (BuildParams.isPro) {
-      textProvider.getString(R.string.app_name_pro)
-    } else {
-      textProvider.getString(R.string.app_name)
-    }
+    val appName =
+      if (BuildParams.isPro) {
+        textProvider.getString(R.string.app_name_pro)
+      } else {
+        textProvider.getString(R.string.app_name)
+      }
     state.update {
       it.copy(
-        aboutDialog = AboutDialogState(
-          appName = appName.uppercase(),
-          version = packageManagerWrapper.getVersionName(),
-          translators = textProvider.getStringArray(R.array.app_translators).joinToString("\n"),
-        ),
+        aboutDialog =
+          AboutDialogState(
+            appName = appName.uppercase(),
+            version = packageManagerWrapper.getVersionName(),
+            translators = textProvider.getStringArray(R.array.app_translators).joinToString("\n"),
+          ),
       )
     }
   }

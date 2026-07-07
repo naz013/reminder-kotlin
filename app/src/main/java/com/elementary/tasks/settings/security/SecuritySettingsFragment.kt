@@ -13,7 +13,6 @@ import com.github.naz013.ui.common.login.BiometricProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SecuritySettingsFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<SecuritySettingsViewModel>()
   private val biometricProvider = BiometricProvider(this) { viewModel.onFingerprintAuthSucceeded() }
 

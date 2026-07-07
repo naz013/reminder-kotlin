@@ -41,10 +41,11 @@ fun GeneralSettingsScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
   ) {
     SettingsItem(
       title = stringResource(R.string.application_language),
@@ -119,23 +120,24 @@ private fun SingleChoiceDialog(
     title = { Text(dialog.title) },
     text = {
       Column(
-        modifier = Modifier
-          .heightIn(max = 400.dp)
-          .verticalScroll(rememberScrollState())
-          .selectableGroup(),
+        modifier =
+          Modifier
+            .heightIn(max = 400.dp)
+            .verticalScroll(rememberScrollState())
+            .selectableGroup(),
       ) {
         dialog.options.forEachIndexed { index, option ->
           val selected = index == dialog.selectedIndex
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-              .fillMaxWidth()
-              .selectable(
-                selected = selected,
-                onClick = { onOptionSelected(index) },
-                role = Role.RadioButton,
-              )
-              .padding(vertical = 8.dp),
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .selectable(
+                  selected = selected,
+                  onClick = { onOptionSelected(index) },
+                  role = Role.RadioButton,
+                ).padding(vertical = 8.dp),
           ) {
             RadioButton(selected = selected, onClick = null)
             Text(

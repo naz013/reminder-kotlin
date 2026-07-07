@@ -13,7 +13,10 @@ data class CalendarSettingsState(
 )
 
 sealed class CalendarSettingsDialog {
-  data class FirstDay(val options: List<String>, val selectedIndex: Int) : CalendarSettingsDialog()
+  data class FirstDay(
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : CalendarSettingsDialog()
 }
 
 enum class ColorPickerTarget { TODAY, REMINDER, BIRTHDAY }

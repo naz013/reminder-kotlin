@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.utils.datetime
 
-import com.github.naz013.domain.Reminder
 import com.github.naz013.calendarext.addMonths
 import com.github.naz013.calendarext.dropMilliseconds
 import com.github.naz013.calendarext.dropSeconds
@@ -15,13 +14,16 @@ import com.github.naz013.calendarext.setMillis
 import com.github.naz013.calendarext.setTime
 import com.github.naz013.calendarext.toDate
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Reminder
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
 class OldTimeUtil {
-
-  fun getNextMonthDayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
+  fun getNextMonthDayTime(
+    reminder: Reminder,
+    fromTime: Long = System.currentTimeMillis(),
+  ): Long {
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
 
@@ -55,7 +57,10 @@ class OldTimeUtil {
     return calendar.timeInMillis
   }
 
-  private fun getSmartMonthDayTime(fromTime: Long, reminder: Reminder): Long {
+  private fun getSmartMonthDayTime(
+    fromTime: Long,
+    reminder: Reminder,
+  ): Long {
     val dayOfMonth = reminder.dayOfMonth
     val beforeValue = reminder.remindBefore
     val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
@@ -94,7 +99,10 @@ class OldTimeUtil {
     return calendar.timeInMillis
   }
 
-  private fun getLastMonthDayTime(fromTime: Long, reminder: Reminder): Long {
+  private fun getLastMonthDayTime(
+    fromTime: Long,
+    reminder: Reminder,
+  ): Long {
     val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
     var interval = reminder.repeatInterval.toInt()
     if (interval <= 0) {
@@ -113,20 +121,23 @@ class OldTimeUtil {
     return calendar.timeInMillis
   }
 
-  private fun calendarFromEventTime(eventTime: String, fromTime: Long) =
-    newCalendar().takeIf { eventTime != "" }?.apply {
-      this.setMillis(getDateTimeFromGmt(eventTime))
-      val time = DateTimeManager.Time(getHourOfDay(), getMinute(), getSecond())
-      this.setMillis(fromTime)
-      this.setTime(time.hour, time.minute)
-      this.dropSeconds()
-      this.dropMilliseconds()
-    } ?: droppedCalendar()
-
-  private fun droppedCalendar() = newCalendar().apply {
+  private fun calendarFromEventTime(
+    eventTime: String,
+    fromTime: Long,
+  ) = newCalendar().takeIf { eventTime != "" }?.apply {
+    this.setMillis(getDateTimeFromGmt(eventTime))
+    val time = DateTimeManager.Time(getHourOfDay(), getMinute(), getSecond())
+    this.setMillis(fromTime)
+    this.setTime(time.hour, time.minute)
     this.dropSeconds()
     this.dropMilliseconds()
-  }
+  } ?: droppedCalendar()
+
+  private fun droppedCalendar() =
+    newCalendar().apply {
+      this.dropSeconds()
+      this.dropMilliseconds()
+    }
 
   fun getDateTimeFromGmt(dateTime: String?): Long {
     if (dateTime.isNullOrEmpty()) return 0

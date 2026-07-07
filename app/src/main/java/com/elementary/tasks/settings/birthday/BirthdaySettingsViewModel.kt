@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -13,6 +14,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.workapi.WorkRequest
+import com.github.naz013.workapi.WorkScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -25,8 +28,8 @@ class BirthdaySettingsViewModel(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val workScheduler: WorkScheduler,
 ) : ViewModel() {
-
   val state: StateFlow<BirthdaySettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<BirthdaySettingsEvent>> field = mutableLiveEventOf()
 
@@ -63,11 +66,12 @@ class BirthdaySettingsViewModel(
     val options = priorityOptions()
     state.update {
       it.copy(
-        dialog = BirthdayDialog.Priority(
-          title = textProvider.getString(R.string.birthday_notification_priority),
-          options = options,
-          selectedIndex = prefs.birthdayPriority.coerceIn(options.indices),
-        ),
+        dialog =
+          BirthdayDialog.Priority(
+            title = textProvider.getString(R.string.birthday_notification_priority),
+            options = options,
+            selectedIndex = prefs.birthdayPriority.coerceIn(options.indices),
+          ),
       )
     }
   }
@@ -78,9 +82,10 @@ class BirthdaySettingsViewModel(
   }
 
   fun onReminderTimeClick() {
-    navigationEvent.value = Event(
-      BirthdaySettingsEvent.ShowTimePicker(dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()),
-    )
+    navigationEvent.value =
+      Event(
+        BirthdaySettingsEvent.ShowTimePicker(dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()),
+      )
   }
 
   fun onTimeSelected(time: LocalTime) {
@@ -138,11 +143,12 @@ class BirthdaySettingsViewModel(
     val options = ledColorOptions()
     state.update {
       it.copy(
-        dialog = BirthdayDialog.LedColor(
-          title = textProvider.getString(R.string.led_indication_color),
-          options = options,
-          selectedIndex = prefs.birthdayLedColor.coerceIn(options.indices),
-        ),
+        dialog =
+          BirthdayDialog.LedColor(
+            title = textProvider.getString(R.string.led_indication_color),
+            options = options,
+            selectedIndex = prefs.birthdayLedColor.coerceIn(options.indices),
+          ),
       )
     }
   }
@@ -153,11 +159,11 @@ class BirthdaySettingsViewModel(
   }
 
   /** Only called once contact-read permission has already been granted by the Fragment. */
-  fun onUseContactsToggle(onContactsGranted: () -> Unit) {
+  fun onUseContactsToggle() {
     val newValue = !prefs.isContactBirthdaysEnabled
     prefs.isContactBirthdaysEnabled = newValue
     if (newValue) {
-      onContactsGranted()
+      workScheduler.enqueue(WorkRequest(taskKey = CheckBirthdaysTask.TASK_KEY, tag = CheckBirthdaysTask.TASK_KEY))
     } else {
       jobScheduler.cancelBirthdaysCheck()
     }
@@ -221,27 +227,30 @@ class BirthdaySettingsViewModel(
     )
   }
 
-  private fun homeDaysText(days: Int): String = if (days <= 0) {
-    textProvider.getString(R.string.x_day, "1")
-  } else {
-    textProvider.getString(R.string.x_days, (days + 1).toString())
-  }
+  private fun homeDaysText(days: Int): String =
+    if (days <= 0) {
+      textProvider.getString(R.string.x_day, "1")
+    } else {
+      textProvider.getString(R.string.x_days, (days + 1).toString())
+    }
 
-  private fun priorityOptions(): List<String> = listOf(
-    textProvider.getString(R.string.priority_lowest),
-    textProvider.getString(R.string.priority_low),
-    textProvider.getString(R.string.priority_normal),
-    textProvider.getString(R.string.priority_high),
-    textProvider.getString(R.string.priority_highest),
-  )
+  private fun priorityOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.priority_lowest),
+      textProvider.getString(R.string.priority_low),
+      textProvider.getString(R.string.priority_normal),
+      textProvider.getString(R.string.priority_high),
+      textProvider.getString(R.string.priority_highest),
+    )
 
-  private fun ledColorOptions(): List<String> = listOf(
-    textProvider.getString(R.string.red),
-    textProvider.getString(R.string.green),
-    textProvider.getString(R.string.blue),
-    textProvider.getString(R.string.yellow),
-    textProvider.getString(R.string.pink),
-    textProvider.getString(R.string.dark_orange),
-    textProvider.getString(R.string.teal),
-  )
+  private fun ledColorOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.red),
+      textProvider.getString(R.string.green),
+      textProvider.getString(R.string.blue),
+      textProvider.getString(R.string.yellow),
+      textProvider.getString(R.string.pink),
+      textProvider.getString(R.string.dark_orange),
+      textProvider.getString(R.string.teal),
+    )
 }

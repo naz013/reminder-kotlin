@@ -20,7 +20,11 @@ sealed class DeveloperEvent {
 
   data object OpenProVersion : DeveloperEvent()
 
-  data class OpenReminderAction(val reminderId: String) : DeveloperEvent()
+  data class OpenReminderAction(
+    val reminderId: String,
+  ) : DeveloperEvent()
 
-  data class OpenBirthdayAction(val birthdayId: String) : DeveloperEvent()
+  data class OpenBirthdayAction(
+    val birthdayId: String,
+  ) : DeveloperEvent()
 }

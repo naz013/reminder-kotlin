@@ -10,17 +10,18 @@ import java.util.concurrent.TimeUnit
    SPDX-License-Identifier: Apache-2.0 */
 fun <T> LiveData<T>.getOrAwaitValue(
   time: Long = 2,
-  timeUnit: TimeUnit = TimeUnit.SECONDS
+  timeUnit: TimeUnit = TimeUnit.SECONDS,
 ): T? {
   var data: T? = null
   val latch = CountDownLatch(1)
-  val observer = object : Observer<T> {
-    override fun onChanged(o: T) {
-      data = o
-      latch.countDown()
-      this@getOrAwaitValue.removeObserver(this)
+  val observer =
+    object : Observer<T> {
+      override fun onChanged(o: T) {
+        data = o
+        latch.countDown()
+        this@getOrAwaitValue.removeObserver(this)
+      }
     }
-  }
 
   this.observeForever(observer)
 
@@ -32,16 +33,13 @@ fun <T> LiveData<T>.getOrAwaitValue(
 }
 
 class TestableObserver<T> : Observer<T> {
-
   private val history: MutableList<T> = mutableListOf()
 
   override fun onChanged(value: T) {
     history.add(value)
   }
 
-  fun numberOfEmissions(): Int {
-    return history.size
-  }
+  fun numberOfEmissions(): Int = history.size
 
   fun assertNoEmission() {
     assertEquals(0, history.count())

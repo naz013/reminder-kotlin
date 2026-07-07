@@ -13,7 +13,6 @@ import com.github.naz013.ui.common.compose.composeView
  * [FragmentContent].
  */
 abstract class ComposeToolbarFragment : ToolbarFragment() {
-
   final override fun onCreateContentView(
     inflater: LayoutInflater,
     container: ViewGroup,

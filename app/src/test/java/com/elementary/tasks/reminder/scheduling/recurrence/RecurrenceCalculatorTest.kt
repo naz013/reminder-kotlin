@@ -14,7 +14,6 @@ import org.threeten.bp.LocalTime
  * yearly, weekly, monthly, interval-based, and timer-based events.
  */
 class RecurrenceCalculatorTest {
-
   private lateinit var calculator: RecurrenceCalculator
 
   @Before
@@ -33,12 +32,13 @@ class RecurrenceCalculatorTest {
     val interval = 1L
 
     // Act
-    val result = calculator.getNextYearDayDateTime(
-      eventDateTime,
-      monthOfYear,
-      dayOfMonth,
-      interval
-    )
+    val result =
+      calculator.getNextYearDayDateTime(
+        eventDateTime,
+        monthOfYear,
+        dayOfMonth,
+        interval,
+      )
 
     // Assert
     assertEquals(2025, result.year)
@@ -57,12 +57,13 @@ class RecurrenceCalculatorTest {
     val interval = 1L
 
     // Act
-    val result = calculator.getNextYearDayDateTime(
-      eventDateTime,
-      monthOfYear,
-      dayOfMonth,
-      interval
-    )
+    val result =
+      calculator.getNextYearDayDateTime(
+        eventDateTime,
+        monthOfYear,
+        dayOfMonth,
+        interval,
+      )
 
     // Assert - 2025 is not a leap year, so February has 28 days
     assertEquals(2025, result.year)
@@ -79,12 +80,13 @@ class RecurrenceCalculatorTest {
     val interval = 1L
 
     // Act
-    val result = calculator.getNextYearDayDateTime(
-      eventDateTime,
-      monthOfYear,
-      dayOfMonth,
-      interval
-    )
+    val result =
+      calculator.getNextYearDayDateTime(
+        eventDateTime,
+        monthOfYear,
+        dayOfMonth,
+        interval,
+      )
 
     // Assert - February 2025 has only 28 days
     assertEquals(2025, result.year)
@@ -101,12 +103,13 @@ class RecurrenceCalculatorTest {
     val interval = 3L
 
     // Act
-    val result = calculator.getNextYearDayDateTime(
-      eventDateTime,
-      monthOfYear,
-      dayOfMonth,
-      interval
-    )
+    val result =
+      calculator.getNextYearDayDateTime(
+        eventDateTime,
+        monthOfYear,
+        dayOfMonth,
+        interval,
+      )
 
     // Assert - Should be 3 years later
     assertEquals(2027, result.year)
@@ -123,12 +126,13 @@ class RecurrenceCalculatorTest {
     val interval = 0L // Invalid interval
 
     // Act
-    val result = calculator.getNextYearDayDateTime(
-      eventDateTime,
-      monthOfYear,
-      dayOfMonth,
-      interval
-    )
+    val result =
+      calculator.getNextYearDayDateTime(
+        eventDateTime,
+        monthOfYear,
+        dayOfMonth,
+        interval,
+      )
 
     // Assert - Should use interval of 1
     assertEquals(2025, result.year)
@@ -148,13 +152,14 @@ class RecurrenceCalculatorTest {
     val afterOrEqualDateTime = LocalDateTime.of(2026, 7, 1, 0, 0, 0)
 
     // Act
-    val result = calculator.findNextYearDayDateTime(
-      eventDateTime,
-      monthOfYear,
-      dayOfMonth,
-      interval,
-      afterOrEqualDateTime
-    )
+    val result =
+      calculator.findNextYearDayDateTime(
+        eventDateTime,
+        monthOfYear,
+        dayOfMonth,
+        interval,
+        afterOrEqualDateTime,
+      )
 
     // Assert - Should skip 2025 and land on 2027
     assertEquals(2027, result.year)
@@ -172,13 +177,14 @@ class RecurrenceCalculatorTest {
     val afterOrEqualDateTime = LocalDateTime.of(2024, 1, 1, 0, 0, 0)
 
     // Act
-    val result = calculator.findNextYearDayDateTime(
-      eventDateTime,
-      monthOfYear,
-      dayOfMonth,
-      interval,
-      afterOrEqualDateTime
-    )
+    val result =
+      calculator.findNextYearDayDateTime(
+        eventDateTime,
+        monthOfYear,
+        dayOfMonth,
+        interval,
+        afterOrEqualDateTime,
+      )
 
     // Assert - First occurrence in 2025 June should be returned
     assertEquals(2025, result.year)
@@ -241,11 +247,12 @@ class RecurrenceCalculatorTest {
     val afterOrEqualDateTime = LocalDateTime.of(2024, 1, 30, 0, 0, 0)
 
     // Act
-    val result = calculator.findNextDayOfWeekDateTime(
-      eventDateTime,
-      weekdays,
-      afterOrEqualDateTime
-    )
+    val result =
+      calculator.findNextDayOfWeekDateTime(
+        eventDateTime,
+        weekdays,
+        afterOrEqualDateTime,
+      )
 
     // Assert - Should find a Monday after January 30 (February 5, 2024 is a Monday)
     assertEquals(2, result.monthValue) // February
@@ -346,12 +353,13 @@ class RecurrenceCalculatorTest {
     val afterOrEqualDateTime = LocalDateTime.of(2024, 5, 1, 0, 0, 0)
 
     // Act
-    val result = calculator.findNextMonthDayDateTime(
-      eventDateTime,
-      dayOfMonth,
-      interval,
-      afterOrEqualDateTime
-    )
+    val result =
+      calculator.findNextMonthDayDateTime(
+        eventDateTime,
+        dayOfMonth,
+        interval,
+        afterOrEqualDateTime,
+      )
 
     // Assert - Should be May 20, 2024 or later
     assertTrue(result.isAfter(afterOrEqualDateTime) || result.isEqual(afterOrEqualDateTime))
@@ -412,11 +420,12 @@ class RecurrenceCalculatorTest {
     val afterOrEqualDateTime = LocalDateTime.of(2024, 1, 1, 15, 0, 0)
 
     // Act
-    val result = calculator.findNextIntervalDateTime(
-      eventDateTime,
-      intervalMillis,
-      afterOrEqualDateTime
-    )
+    val result =
+      calculator.findNextIntervalDateTime(
+        eventDateTime,
+        intervalMillis,
+        afterOrEqualDateTime,
+      )
 
     // Assert - Should be at or after 15:00
     assertTrue(result.isAfter(afterOrEqualDateTime) || result.isEqual(afterOrEqualDateTime))
@@ -431,11 +440,12 @@ class RecurrenceCalculatorTest {
     val afterOrEqualDateTime = LocalDateTime.of(2024, 1, 1, 10, 0, 0)
 
     // Act
-    val result = calculator.findNextIntervalDateTime(
-      eventDateTime,
-      intervalMillis,
-      afterOrEqualDateTime
-    )
+    val result =
+      calculator.findNextIntervalDateTime(
+        eventDateTime,
+        intervalMillis,
+        afterOrEqualDateTime,
+      )
 
     // Assert - Should be at 10:00 (exactly)
     assertEquals(10, result.hour)
@@ -471,13 +481,14 @@ class RecurrenceCalculatorTest {
     val excludedToTime: LocalTime? = null
 
     // Act
-    val result = calculator.getNextTimerDateTime(
-      eventDateTime,
-      interval,
-      excludedHours,
-      excludedFromTime,
-      excludedToTime
-    )
+    val result =
+      calculator.getNextTimerDateTime(
+        eventDateTime,
+        interval,
+        excludedHours,
+        excludedFromTime,
+        excludedToTime,
+      )
 
     // Assert - Should be 2 hours later (10:00) but will skip to 13:00
     assertTrue(result.hour !in excludedHours)
@@ -493,13 +504,14 @@ class RecurrenceCalculatorTest {
     val excludedToTime = LocalTime.of(13, 0, 0)
 
     // Act
-    val result = calculator.getNextTimerDateTime(
-      eventDateTime,
-      interval,
-      excludedHours,
-      excludedFromTime,
-      excludedToTime
-    )
+    val result =
+      calculator.getNextTimerDateTime(
+        eventDateTime,
+        interval,
+        excludedHours,
+        excludedFromTime,
+        excludedToTime,
+      )
 
     // Assert - Should skip the 12:00-13:00 range
     val resultTime = result.toLocalTime()
@@ -518,18 +530,19 @@ class RecurrenceCalculatorTest {
     val excludedToTime = LocalTime.of(6, 0, 0) // Overnight exclusion
 
     // Act
-    val result = calculator.getNextTimerDateTime(
-      eventDateTime,
-      interval,
-      excludedHours,
-      excludedFromTime,
-      excludedToTime
-    )
+    val result =
+      calculator.getNextTimerDateTime(
+        eventDateTime,
+        interval,
+        excludedHours,
+        excludedFromTime,
+        excludedToTime,
+      )
 
     // Assert - Should skip overnight hours
     val resultTime = result.toLocalTime()
     assertTrue(
-      resultTime.isBefore(excludedFromTime) || resultTime.isAfter(excludedToTime)
+      resultTime.isBefore(excludedFromTime) || resultTime.isAfter(excludedToTime),
     )
   }
 
@@ -544,14 +557,15 @@ class RecurrenceCalculatorTest {
     val afterOrEqualDateTime = LocalDateTime.of(2024, 1, 15, 11, 0, 0)
 
     // Act
-    val result = calculator.findNextTimerDateTime(
-      eventDateTime,
-      interval,
-      excludedHours,
-      null,
-      null,
-      afterOrEqualDateTime
-    )
+    val result =
+      calculator.findNextTimerDateTime(
+        eventDateTime,
+        interval,
+        excludedHours,
+        null,
+        null,
+        afterOrEqualDateTime,
+      )
 
     // Assert - Should be at or after threshold and not in excluded hours
     assertTrue(result.isAfter(afterOrEqualDateTime) || result.isEqual(afterOrEqualDateTime))
@@ -569,18 +583,18 @@ class RecurrenceCalculatorTest {
     val afterOrEqualDateTime = LocalDateTime.of(2024, 1, 15, 14, 0, 0)
 
     // Act
-    val result = calculator.findNextTimerDateTime(
-      eventDateTime,
-      interval,
-      excludedHours,
-      excludedFromTime,
-      excludedToTime,
-      afterOrEqualDateTime
-    )
+    val result =
+      calculator.findNextTimerDateTime(
+        eventDateTime,
+        interval,
+        excludedHours,
+        excludedFromTime,
+        excludedToTime,
+        afterOrEqualDateTime,
+      )
 
     // Assert - Should skip all excluded hours
     assertTrue(result.isAfter(afterOrEqualDateTime) || result.isEqual(afterOrEqualDateTime))
     assertTrue(result.hour !in excludedHours)
   }
 }
-

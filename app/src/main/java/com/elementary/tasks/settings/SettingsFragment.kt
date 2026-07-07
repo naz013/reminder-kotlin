@@ -14,7 +14,6 @@ import com.github.naz013.ui.common.login.LoginLauncher
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<SettingsHubViewModel>()
   private val loginLauncher = LoginLauncher(this) { if (it) openSecurity() }
 
@@ -23,9 +22,10 @@ class SettingsFragment : BaseComposeToolbarFragment() {
     val state by viewModel.state.collectAsState()
     LaunchedEffect(viewModel) { lifecycle.addObserver(viewModel) }
     val isPlayServicesWarningVisible = remember { !SuperUtil.isGooglePlayServicesAvailable(requireContext()) }
-    val isBuyProBadgeVisible = remember {
-      !BuildParams.isPro && !SuperUtil.isAppInstalled(requireContext(), "com.cray.software.justreminderpro")
-    }
+    val isBuyProBadgeVisible =
+      remember {
+        !BuildParams.isPro && !SuperUtil.isAppInstalled(requireContext(), "com.cray.software.justreminderpro")
+      }
 
     SettingsHubScreen(
       state = state,

@@ -13,9 +13,14 @@ data class LocationSettingsState(
 )
 
 sealed class LocationSettingsDialog {
-  data class MapType(val options: List<String>, val selectedIndex: Int) : LocationSettingsDialog()
+  data class MapType(
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : LocationSettingsDialog()
 
-  data class Tracker(val seconds: Int) : LocationSettingsDialog()
+  data class Tracker(
+    val seconds: Int,
+  ) : LocationSettingsDialog()
 
   data class Radius(
     val value: Int,
@@ -29,5 +34,7 @@ sealed class LocationSettingsEvent {
 
   data object OpenPlaces : LocationSettingsEvent()
 
-  data class ShowMarkerColorPicker(val currentColorIndex: Int) : LocationSettingsEvent()
+  data class ShowMarkerColorPicker(
+    val currentColorIndex: Int,
+  ) : LocationSettingsEvent()
 }

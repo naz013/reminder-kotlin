@@ -18,7 +18,7 @@ import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.places.list.PlacesFragment
-import com.elementary.tasks.settings.export.work.BackupSettingsWorker
+import com.elementary.tasks.settings.export.work.BackupSettingsTask
 import com.elementary.tasks.splash.ShortcutDestination
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
@@ -28,6 +28,9 @@ import com.github.naz013.navigation.EditGoogleTaskScreen
 import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.ui.common.activity.BindingActivity
+import com.github.naz013.workapi.NetworkRequirement
+import com.github.naz013.workapi.WorkRequest
+import com.github.naz013.workapi.WorkScheduler
 import org.koin.android.ext.android.inject
 
 class BottomNavActivity :
@@ -35,6 +38,7 @@ class BottomNavActivity :
   FragmentCallback {
   private val navigationObservable by inject<NavigationObservable>()
   private val navigationDispatcherFactory by inject<NavigationDispatcherFactory>()
+  private val workScheduler by inject<WorkScheduler>()
 
   private lateinit var navController: NavController
   private val adsProvider = AdsProvider()
@@ -137,7 +141,14 @@ class BottomNavActivity :
 
   override fun onDestroy() {
     super.onDestroy()
-    BackupSettingsWorker.schedule(this)
+    workScheduler.enqueue(
+      WorkRequest(
+        taskKey = BackupSettingsTask.TASK_KEY,
+        tag = BackupSettingsTask.TASK_KEY,
+        networkRequirement = NetworkRequirement.UNMETERED,
+        requiresBatteryNotLow = true,
+      ),
+    )
   }
 
   override fun handleBackPress(): Boolean {

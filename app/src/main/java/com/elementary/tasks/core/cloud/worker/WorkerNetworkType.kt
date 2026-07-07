@@ -1,11 +1,13 @@
 package com.elementary.tasks.core.cloud.worker
 
-import androidx.work.NetworkType
+import com.github.naz013.workapi.NetworkRequirement
 
 enum class WorkerNetworkType(
-  val type: NetworkType,
+  val networkRequirement: NetworkRequirement,
 ) {
-  Any(NetworkType.CONNECTED),
-  Wifi(NetworkType.UNMETERED),
-  Cellular(NetworkType.METERED),
+  Any(NetworkRequirement.CONNECTED),
+  Wifi(NetworkRequirement.UNMETERED),
+  Cellular(NetworkRequirement.METERED),
 }
+
+fun WorkerNetworkType.toNetworkRequirement(): NetworkRequirement = networkRequirement

@@ -92,29 +92,31 @@ fun PreviewNoteScreen(
         AppDropdownMenu(
           expanded = overflowExpanded,
           onDismissRequest = { overflowExpanded = false },
-          items = listOf(
-            PopupMenuItem(
-              id = OVERFLOW_ITEM_SHARE,
-              title = stringResource(R.string.share),
-              iconRes = R.drawable.ic_fluent_share_android,
-            ),
-            PopupMenuItem(
-              id = OVERFLOW_ITEM_ARCHIVE,
-              title = stringResource(
-                if (state.isArchived) {
-                  R.string.notes_unarchive
-                } else {
-                  R.string.notes_move_to_archive
-                },
+          items =
+            listOf(
+              PopupMenuItem(
+                id = OVERFLOW_ITEM_SHARE,
+                title = stringResource(R.string.share),
+                iconRes = R.drawable.ic_fluent_share_android,
               ),
-              iconRes = R.drawable.ic_fluent_archive,
+              PopupMenuItem(
+                id = OVERFLOW_ITEM_ARCHIVE,
+                title =
+                  stringResource(
+                    if (state.isArchived) {
+                      R.string.notes_unarchive
+                    } else {
+                      R.string.notes_move_to_archive
+                    },
+                  ),
+                iconRes = R.drawable.ic_fluent_archive,
+              ),
+              PopupMenuItem(
+                id = OVERFLOW_ITEM_DELETE,
+                title = stringResource(R.string.delete),
+                iconRes = R.drawable.ic_fluent_delete,
+              ),
             ),
-            PopupMenuItem(
-              id = OVERFLOW_ITEM_DELETE,
-              title = stringResource(R.string.delete),
-              iconRes = R.drawable.ic_fluent_delete,
-            ),
-          ),
           onItemClick = { id ->
             when (id) {
               OVERFLOW_ITEM_SHARE -> actions.onShareClick()

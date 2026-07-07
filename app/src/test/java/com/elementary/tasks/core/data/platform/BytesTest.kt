@@ -8,7 +8,6 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class BytesTest {
-
   @Test
   fun testIfBitSet() {
     val bytes = Bytes(0)

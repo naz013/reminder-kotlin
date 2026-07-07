@@ -30,13 +30,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.elementary.tasks.R as AppR
 import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.ComposeFragment
 import com.github.naz013.ui.common.compose.foundation.component.AnimatedGradientBackground
 import com.github.naz013.ui.common.compose.withAlpha
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.elementary.tasks.R as AppR
 
 class ProVersionFragment : ComposeFragment() {
   private val viewModel by viewModel<ProVersionViewModel>()
@@ -64,19 +64,21 @@ private fun ProVersionScreen(
   AnimatedGradientBackground {
     Column(modifier = Modifier.fillMaxSize()) {
       Row(
-        modifier = Modifier
-          .statusBarsPadding()
-          .fillMaxWidth()
-          .height(64.dp),
+        modifier =
+          Modifier
+            .statusBarsPadding()
+            .fillMaxWidth()
+            .height(64.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Spacer(modifier = Modifier.width(16.dp))
         IconButton(
           onClick = onBackClick,
-          modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
+          modifier =
+            Modifier
+              .size(40.dp)
+              .clip(CircleShape)
+              .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
         ) {
           Icon(
             painter = painterResource(R.drawable.ic_builder_arrow_left),

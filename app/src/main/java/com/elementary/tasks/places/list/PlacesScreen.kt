@@ -68,27 +68,30 @@ fun PlacesScreen(
     },
   ) { padding ->
     Column(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(padding),
+      modifier =
+        Modifier
+          .fillMaxSize()
+          .padding(padding),
     ) {
       if (state.listState !is ListState.Empty || state.searchQuery.isNotEmpty()) {
         SearchBar(
           query = state.searchQuery,
           onQueryChange = onSearchQueryChange,
           placeholder = stringResource(R.string.search_place),
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+          modifier =
+            Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 16.dp, vertical = 8.dp),
         )
       }
 
       when (val listState = state.listState) {
         is ListState.Loading -> {
           Box(
-            modifier = Modifier
-              .fillMaxSize()
-              .weight(1f),
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .weight(1f),
             contentAlignment = Alignment.Center,
           ) {
             CircularProgressIndicator()
@@ -97,23 +100,26 @@ fun PlacesScreen(
 
         is ListState.Empty -> {
           PlacesEmptyState(
-            modifier = Modifier
-              .fillMaxSize()
-              .weight(1f),
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .weight(1f),
           )
         }
 
         is ListState.Ready -> {
           LazyColumn(
-            modifier = Modifier
-              .fillMaxSize()
-              .weight(1f),
-            contentPadding = PaddingValues(
-              start = 16.dp,
-              end = 16.dp,
-              top = 8.dp,
-              bottom = 88.dp,
-            ),
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .weight(1f),
+            contentPadding =
+              PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                top = 8.dp,
+                bottom = 88.dp,
+              ),
             verticalArrangement = Arrangement.spacedBy(4.dp),
           ) {
             items(listState.places, key = { it.id }) { place ->

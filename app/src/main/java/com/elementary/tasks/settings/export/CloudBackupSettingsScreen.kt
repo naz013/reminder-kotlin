@@ -45,10 +45,11 @@ fun CloudBackupSettingsScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
   ) {
     SettingsItem(
       title = stringResource(R.string.cloud_services),
@@ -82,17 +83,19 @@ fun CloudBackupSettingsScreen(
 
     if (isInProgress) {
       Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(16.dp),
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
       ) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         Text(
           text = stringResource(R.string.please_wait),
           style = MaterialTheme.typography.titleLarge,
-          modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .padding(top = 16.dp),
+          modifier =
+            Modifier
+              .align(Alignment.CenterHorizontally)
+              .padding(top = 16.dp),
         )
       }
     }
@@ -100,18 +103,20 @@ fun CloudBackupSettingsScreen(
     OutlinedButton(
       onClick = onBackupNowClick,
       enabled = hasAnyCloudApi && !isInProgress,
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(start = 16.dp, end = 16.dp, top = 16.dp),
     ) {
       Text(stringResource(R.string.backup_data_now))
     }
     OutlinedButton(
       onClick = onSyncNowClick,
       enabled = hasAnyCloudApi && !isInProgress,
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp),
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(16.dp),
     ) {
       Text(stringResource(R.string.sync_data_now))
     }
@@ -169,10 +174,11 @@ private fun SingleChoiceDialog(
           val selected = index == selectedIndex
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-              .fillMaxWidth()
-              .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
-              .padding(vertical = 8.dp),
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
+                .padding(vertical = 8.dp),
           ) {
             RadioButton(selected = selected, onClick = null)
             Text(

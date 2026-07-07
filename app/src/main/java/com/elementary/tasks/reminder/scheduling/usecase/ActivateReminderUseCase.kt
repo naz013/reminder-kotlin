@@ -1,9 +1,8 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
 import android.content.Context
-import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesWorker
+import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesTask
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.utils.work.WorkManagerProvider
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
@@ -15,6 +14,7 @@ import com.github.naz013.common.Module
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
+import com.github.naz013.workapi.WorkScheduler
 
 /**
  * Activates a reminder based on its behavior strategy.
@@ -29,7 +29,7 @@ class ActivateReminderUseCase(
   private val updatePermanentReminderNotificationUseCase: UpdatePermanentReminderNotificationUseCase,
   private val saveReminderToGoogleTasksUseCase: SaveReminderToGoogleTasksUseCase,
   private val saveReminderToGoogleCalendarUseCase: SaveReminderToGoogleCalendarUseCase,
-  private val workManagerProvider: WorkManagerProvider,
+  private val workScheduler: WorkScheduler,
 ) {
   suspend operator fun invoke(
     reminder: Reminder,
@@ -95,9 +95,7 @@ class ActivateReminderUseCase(
       jobScheduler.scheduleReminder(reminder)
       saveReminderToGoogleTasksUseCase(reminder)
       saveReminderToGoogleCalendarUseCase(reminder)
-      workManagerProvider
-        .getWorkManager()
-        .enqueue(CalculateReminderOccurrencesWorker.prepareWork(reminder.uuId))
+      workScheduler.enqueue(CalculateReminderOccurrencesTask.prepareWorkRequest(reminder.uuId))
       return reminder
     } else {
       Logger.w(TAG, "Cannot start reminder id=${reminder.uuId} now, outdated eventTime=${reminder.eventTime}.")

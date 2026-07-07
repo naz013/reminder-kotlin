@@ -21,7 +21,6 @@ import com.github.naz013.ui.common.context.buildIntent
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BuilderConfigureActivity : LightThemedActivity() {
-
   private val viewModel by viewModel<BuilderConfigureViewModel>()
 
   override fun onCreate(savedInstanceState: Bundle?) {

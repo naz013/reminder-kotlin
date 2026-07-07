@@ -24,7 +24,6 @@ class ManagePresetsViewModel(
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
-
   val state: StateFlow<ManagePresetsState> field = MutableStateFlow(ManagePresetsState())
 
   init {

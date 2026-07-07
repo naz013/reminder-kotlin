@@ -23,7 +23,6 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TroubleshootingFragment : BaseComposeToolbarFragment() {
-
   private val viewModel by viewModel<TroubleshootingViewModel>()
 
   @Composable
@@ -59,10 +58,11 @@ class TroubleshootingFragment : BaseComposeToolbarFragment() {
     when (Build.MANUFACTURER) {
       "samsung" -> {
         val intent = Intent()
-        intent.component = ComponentName(
-          "com.samsung.android.lool",
-          "com.samsung.android.sm.ui.battery.BatteryActivity",
-        )
+        intent.component =
+          ComponentName(
+            "com.samsung.android.lool",
+            "com.samsung.android.sm.ui.battery.BatteryActivity",
+          )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {
@@ -72,10 +72,11 @@ class TroubleshootingFragment : BaseComposeToolbarFragment() {
 
       "xiaomi" -> {
         var intent = Intent()
-        intent.component = ComponentName(
-          "com.miui.securitycenter",
-          "com.miui.permcenter.autostart.AutoStartManagementActivity",
-        )
+        intent.component =
+          ComponentName(
+            "com.miui.securitycenter",
+            "com.miui.permcenter.autostart.AutoStartManagementActivity",
+          )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {
@@ -95,10 +96,11 @@ class TroubleshootingFragment : BaseComposeToolbarFragment() {
 
       "huawei" -> {
         val intent = Intent()
-        intent.component = ComponentName(
-          "com.huawei.systemmanager",
-          "com.huawei.systemmanager.optimize.process.ProtectActivity",
-        )
+        intent.component =
+          ComponentName(
+            "com.huawei.systemmanager",
+            "com.huawei.systemmanager.optimize.process.ProtectActivity",
+          )
         try {
           startActivity(intent)
         } catch (ex: ActivityNotFoundException) {

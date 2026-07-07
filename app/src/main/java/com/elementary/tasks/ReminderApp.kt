@@ -56,6 +56,7 @@ import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
 import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
 import com.github.naz013.usecase.notes.notesUseCaseModule
 import com.github.naz013.usecase.reminders.remindersUseCaseModule
+import com.github.naz013.work.workModule
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -150,6 +151,7 @@ class ReminderApp :
           settingsModule,
           eventActionModule,
           legalModule,
+          workModule,
         ),
       )
     }

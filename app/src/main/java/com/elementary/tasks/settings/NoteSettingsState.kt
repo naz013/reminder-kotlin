@@ -8,4 +8,6 @@ data class NoteSettingsState(
   val opacityDialog: OpacityDialogState? = null,
 )
 
-data class OpacityDialogState(val previewValue: Int)
+data class OpacityDialogState(
+  val previewValue: Int,
+)

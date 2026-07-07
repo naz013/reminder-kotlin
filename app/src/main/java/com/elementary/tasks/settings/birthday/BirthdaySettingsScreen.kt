@@ -53,10 +53,11 @@ fun BirthdaySettingsScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.background)
-      .verticalScroll(rememberScrollState()),
+    modifier =
+      modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
   ) {
     SettingsSwitchItem(
       title = stringResource(R.string.birthday_reminder),
@@ -268,10 +269,11 @@ private fun SingleChoiceDialog(
           val selected = index == selectedIndex
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-              .fillMaxWidth()
-              .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
-              .padding(vertical = 8.dp),
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
+                .padding(vertical = 8.dp),
           ) {
             RadioButton(selected = selected, onClick = null)
             Text(

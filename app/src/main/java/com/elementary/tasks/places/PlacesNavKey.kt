@@ -8,5 +8,7 @@ sealed interface PlacesNavKey : NavKey {
   data object List : PlacesNavKey
 
   @Serializable
-  data class Edit(val id: String = "") : PlacesNavKey
+  data class Edit(
+    val id: String = "",
+  ) : PlacesNavKey
 }

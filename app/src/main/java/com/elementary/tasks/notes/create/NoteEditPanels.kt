@@ -280,7 +280,10 @@ fun ColorPanel(
 
 /** A specific color within a specific palette - what [NoteEditState.palette]/
  *  [NoteEditState.colorIndex] together identify. */
-private data class PaletteSelection(val palette: Int, val colorIndex: Int)
+private data class PaletteSelection(
+  val palette: Int,
+  val colorIndex: Int,
+)
 
 /**
  * The 3 note palettes laid out back-to-back as one flat strip, plus the index math to convert
@@ -288,12 +291,16 @@ private data class PaletteSelection(val palette: Int, val colorIndex: Int)
  * stores color selection as - so [ColorPanel] can offer a single combined [ColorSlider] instead
  * of a palette switch (radio buttons) plus a separate slider for the chosen palette's colors.
  */
-private class MergedPalette(colorsForPalette: (Int) -> IntArray) {
+private class MergedPalette(
+  colorsForPalette: (Int) -> IntArray,
+) {
   private val paletteColors = (0..2).map { colorsForPalette(it) }
   val colors: List<Color> = paletteColors.flatMap { colors -> colors.map { it.toColor() } }
 
-  fun flatIndexOf(palette: Int, colorIndex: Int): Int =
-    paletteColors.take(palette).sumOf { it.size } + colorIndex
+  fun flatIndexOf(
+    palette: Int,
+    colorIndex: Int,
+  ): Int = paletteColors.take(palette).sumOf { it.size } + colorIndex
 
   fun selectionAt(flatIndex: Int): PaletteSelection {
     var remaining = flatIndex

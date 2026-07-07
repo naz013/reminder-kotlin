@@ -16,13 +16,22 @@ plugins {
 
 extensions.configure<ApplicationExtension> {
   namespace = "com.elementary.tasks"
-  compileSdk = libs.versions.compileSdk.get().toInt()
+  compileSdk =
+    libs.versions.compileSdk
+      .get()
+      .toInt()
   flavorDimensions.add("level")
 
   defaultConfig {
     applicationId = "com.cray.software.justreminder"
-    minSdk = libs.versions.minSdk.get().toInt()
-    targetSdk = libs.versions.targetSdk.get().toInt()
+    minSdk =
+      libs.versions.minSdk
+        .get()
+        .toInt()
+    targetSdk =
+      libs.versions.targetSdk
+        .get()
+        .toInt()
     versionCode = 344
     versionName = "9.12.0"
     multiDexEnabled = true
@@ -125,7 +134,7 @@ extensions.configure<ApplicationExtension> {
       isMinifyEnabled = true
       proguardFiles(
         getDefaultProguardFile("proguard-android-optimize.txt"),
-        "proguard-rules.pro"
+        "proguard-rules.pro",
       )
       isDebuggable = false
       isJniDebuggable = false
@@ -175,7 +184,11 @@ extensions.configure<ApplicationExtension> {
 }
 
 kotlin {
-  jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
+  jvmToolchain(
+    libs.versions.kotlinTargetJvm
+      .get()
+      .toInt(),
+  )
   compilerOptions {
     optIn.add("-Xreturn-value-checker=check")
     optIn.add("-Xexplicit-backing-fields")
@@ -190,13 +203,9 @@ configurations.testImplementation {
   exclude(module = "logback-android")
 }
 
-fun getDateAndTime(): String {
-  return DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm:ss").format(LocalDateTime.now())
-}
+fun getDateAndTime(): String = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm:ss").format(LocalDateTime.now())
 
-fun getDate(): String {
-  return DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(LocalDateTime.now())
-}
+fun getDate(): String = DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(LocalDateTime.now())
 
 dependencies {
   implementation(project(":domain"))
@@ -207,6 +216,8 @@ dependencies {
   implementation(project(":repository"))
   implementation(project(":cloud-api"))
   implementation(project(":cloud"))
+  implementation(project(":work-api"))
+  implementation(project(":work"))
   implementation(project(":feature-common"))
   implementation(project(":appwidgets"))
   implementation(project(":navigation-api"))

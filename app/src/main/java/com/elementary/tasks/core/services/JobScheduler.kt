@@ -5,18 +5,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
+import com.elementary.tasks.core.services.event.AutoBackupEventTask
+import com.elementary.tasks.core.services.event.BirthdayEventTask
+import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.googletasks.work.SaveNewTaskWorker
-import com.elementary.tasks.googletasks.work.UpdateTaskWorker
+import com.elementary.tasks.googletasks.work.SaveNewTaskTask
+import com.elementary.tasks.googletasks.work.UpdateTaskTask
 import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
-import com.elementary.tasks.settings.birthday.work.CheckBirthdaysWorker
+import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
@@ -24,6 +21,10 @@ import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.logging.Logger
+import com.github.naz013.workapi.PeriodicWorkRequest
+import com.github.naz013.workapi.TaskData
+import com.github.naz013.workapi.WorkRequest
+import com.github.naz013.workapi.WorkScheduler
 import com.google.gson.Gson
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -34,19 +35,17 @@ class JobScheduler(
   private val dateTimeManager: DateTimeManager,
   private val systemServiceProvider: SystemServiceProvider,
   private val eventDateTimeCalculator: EventDateTimeCalculator,
+  private val workScheduler: WorkScheduler,
 ) {
   fun scheduleBirthdaysCheck() {
-    val work =
-      PeriodicWorkRequest
-        .Builder(
-          CheckBirthdaysWorker::class.java,
-          24,
-          TimeUnit.HOURS,
-          1,
-          TimeUnit.HOURS,
-        ).addTag(EVENT_CHECK_BIRTHDAYS)
-        .build()
-    schedule(work)
+    workScheduler.enqueuePeriodic(
+      PeriodicWorkRequest(
+        taskKey = CheckBirthdaysTask.TASK_KEY,
+        tag = EVENT_CHECK_BIRTHDAYS,
+        repeatIntervalMillis = TimeUnit.HOURS.toMillis(24),
+        flexIntervalMillis = TimeUnit.HOURS.toMillis(1),
+      ),
+    )
     Logger.i(TAG, "Scheduled birthday check.")
   }
 
@@ -69,15 +68,13 @@ class JobScheduler(
       millis = calendar.timeInMillis
     }
 
-    val work =
-      OneTimeWorkRequest
-        .Builder(EventJobService::class.java)
-        .setInitialDelay(millis - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-        .addTag(EVENT_BIRTHDAY_PERMANENT)
-        .setConstraints(getDefaultConstraints())
-        .build()
-
-    schedule(work)
+    workScheduler.enqueue(
+      WorkRequest(
+        taskKey = BirthdayPermanentEventTask.TASK_KEY,
+        tag = EVENT_BIRTHDAY_PERMANENT,
+        initialDelayMillis = millis - System.currentTimeMillis(),
+      ),
+    )
   }
 
   fun cancelBirthdayPermanent() {
@@ -92,15 +89,13 @@ class JobScheduler(
     }
     val millis = INTERVAL_HOUR * interval
 
-    val work =
-      OneTimeWorkRequest
-        .Builder(EventJobService::class.java)
-        .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-        .addTag(EVENT_AUTO_BACKUP)
-        .setConstraints(getDefaultConstraints())
-        .build()
-
-    schedule(work)
+    workScheduler.enqueue(
+      WorkRequest(
+        taskKey = AutoBackupEventTask.TASK_KEY,
+        tag = EVENT_AUTO_BACKUP,
+        initialDelayMillis = millis,
+      ),
+    )
   }
 
   private fun cancelAutoBackup() {
@@ -115,15 +110,13 @@ class JobScheduler(
     val millis = dateTimeManager.getMillisToBirthdayTime()
     if (millis <= 0) return
 
-    val work =
-      OneTimeWorkRequest
-        .Builder(EventJobService::class.java)
-        .setInitialDelay(millis, TimeUnit.MILLISECONDS)
-        .addTag(EVENT_BIRTHDAY)
-        .setConstraints(getDefaultConstraints())
-        .build()
-
-    schedule(work)
+    workScheduler.enqueue(
+      WorkRequest(
+        taskKey = BirthdayEventTask.TASK_KEY,
+        tag = EVENT_BIRTHDAY,
+        initialDelayMillis = millis,
+      ),
+    )
   }
 
   fun scheduleReminderRepeat(reminder: Reminder): Boolean {
@@ -240,18 +233,9 @@ class JobScheduler(
     )
   }
 
-  private fun getDefaultConstraints(): Constraints =
-    Constraints
-      .Builder()
-      .setRequiresCharging(false)
-      .setRequiresBatteryNotLow(false)
-      .setRequiresStorageNotLow(false)
-      .setRequiresDeviceIdle(false)
-      .build()
-
   private fun cancelReminder(uuId: String) {
     Logger.i(TAG, "cancelReminder: uuId=$uuId")
-    WorkManager.getInstance(context).cancelAllWorkByTag(uuId)
+    workScheduler.cancelByTag(uuId)
   }
 
   fun cancelReminder(requestCode: Int) {
@@ -272,44 +256,37 @@ class JobScheduler(
     googleTask: GoogleTask,
     uuId: String,
   ) {
-    val work =
-      OneTimeWorkRequest
-        .Builder(SaveNewTaskWorker::class.java)
-        .setInputData(
-          Data.Builder().putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask)).build(),
-        ).addTag(uuId)
-        .build()
-
-    schedule(work)
+    workScheduler.enqueue(
+      WorkRequest(
+        taskKey = SaveNewTaskTask.TASK_KEY,
+        tag = uuId,
+        input = TaskData.builder().putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask)).build(),
+      ),
+    )
   }
 
   fun scheduleTaskDone(
     googleTask: GoogleTask,
     uuId: String,
   ) {
-    val work =
-      OneTimeWorkRequest
-        .Builder(UpdateTaskWorker::class.java)
-        .setInputData(
-          Data
-            .Builder()
+    workScheduler.enqueue(
+      WorkRequest(
+        taskKey = UpdateTaskTask.TASK_KEY,
+        tag = uuId,
+        input =
+          TaskData
+            .builder()
             .putString(IntentKeys.INTENT_JSON, Gson().toJson(googleTask))
             .putString(IntentKeys.INTENT_STATUS, GoogleTask.TASKS_COMPLETE)
             .build(),
-        ).addTag(uuId)
-        .build()
-
-    schedule(work)
-  }
-
-  private fun schedule(workRequest: WorkRequest) {
-    WorkManager.getInstance(context).enqueue(workRequest)
+      ),
+    )
   }
 
   companion object {
-    const val EVENT_BIRTHDAY = "event_birthday"
-    const val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
-    const val EVENT_AUTO_BACKUP = "event_auto_backup"
+    private const val EVENT_BIRTHDAY = "event_birthday"
+    private const val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
+    private const val EVENT_AUTO_BACKUP = "event_auto_backup"
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
     private const val TAG = "JobScheduler"
 

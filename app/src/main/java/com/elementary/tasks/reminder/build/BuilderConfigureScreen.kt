@@ -60,11 +60,12 @@ fun BuilderConfigureScreen(
     },
   ) { padding ->
     Column(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(padding)
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+      modifier =
+        Modifier
+          .fillMaxSize()
+          .padding(padding)
+          .background(MaterialTheme.colorScheme.background)
+          .verticalScroll(rememberScrollState()),
     ) {
       Text(
         text = stringResource(R.string.enable_or_disable_some_parameters_on_reminder_creation_screen),

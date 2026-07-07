@@ -11,7 +11,6 @@ open class DefaultRadiusFormatter private constructor(
   var useMetric: Boolean,
   private val unitConverter: UnitConverter = UnitConverter(),
 ) : ValueFormatter<Int> {
-
   constructor(
     context: Context,
     useMetric: Boolean,

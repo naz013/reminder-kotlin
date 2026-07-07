@@ -21,7 +21,6 @@ class CloudServicesViewModel(
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleTaskRepository: GoogleTaskRepository,
 ) : ViewModel() {
-
   val state: StateFlow<CloudServicesState> field = MutableStateFlow(CloudServicesState())
 
   fun clearGoogleTasks() {

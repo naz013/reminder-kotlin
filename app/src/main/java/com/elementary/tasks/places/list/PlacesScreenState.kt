@@ -10,7 +10,9 @@ data class PlacesScreenState(
 sealed interface ListState {
   data object Loading : ListState
 
-  data class Ready(val places: List<UiPlaceList>) : ListState
+  data class Ready(
+    val places: List<UiPlaceList>,
+  ) : ListState
 
   data object Empty : ListState
 }

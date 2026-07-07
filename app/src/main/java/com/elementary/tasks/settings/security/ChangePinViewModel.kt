@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.update
 class ChangePinViewModel(
   private val prefs: Prefs,
 ) : ViewModel() {
-
   val state: StateFlow<ChangePinState> field = MutableStateFlow(ChangePinState())
   val navigationEvent: LiveData<Event<ChangePinEvent>> field = mutableLiveEventOf()
 
