@@ -1,6 +1,7 @@
 package com.elementary.tasks.settings.export
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -15,6 +16,7 @@ class CloudBackupSettingsFragment : BaseComposeToolbarFragment() {
   @Composable
   override fun Content() {
     val state by viewModel.state.collectAsState()
+    LaunchedEffect(viewModel) { lifecycle.addObserver(viewModel) }
     val hasAnyCloudApi by viewModel.hasAnyCloudApi.observeAsState(false)
     val isInProgress by viewModel.isInProgress.collectAsState()
 
