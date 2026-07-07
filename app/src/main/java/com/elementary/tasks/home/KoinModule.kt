@@ -1,6 +1,7 @@
 package com.elementary.tasks.home
 
-import com.elementary.tasks.home.eventsview.HomeEventsViewModel
+import com.elementary.tasks.home.eventsview.EventsViewModel
+import com.elementary.tasks.home.eventsview.UiEventItemAdapter
 import com.elementary.tasks.home.scheduleview.GetActiveEventsForTheDayUseCase
 import com.elementary.tasks.home.scheduleview.GetGreetingTextUseCase
 import com.elementary.tasks.home.scheduleview.GetNavigationItemsUseCase
@@ -16,7 +17,8 @@ val homeModule =
     factoryOf(::GetTimeSectionsUseCase)
     factoryOf(::GetGreetingTextUseCase)
     factoryOf(::GetNavigationItemsUseCase)
+    factoryOf(::UiEventItemAdapter)
 
     viewModelOf(::ScheduleHomeViewModel)
-    viewModelOf(::HomeEventsViewModel)
+    viewModelOf(::EventsViewModel)
   }

@@ -71,12 +71,10 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.Ur
 import com.elementary.tasks.reminder.dialog.CreateReminderActionScreenStateUseCase
 import com.elementary.tasks.reminder.dialog.ReminderActionActivityViewModel
 import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
-import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialogViewModel
 import com.elementary.tasks.reminder.lists.removed.RemindersArchiveFragmentViewModel
-import com.elementary.tasks.reminder.lists.todo.ActiveTodoRemindersViewModel
 import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
 import com.elementary.tasks.reminder.preview.EventToUiReminderPreview
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
@@ -121,20 +119,6 @@ val reminderModule =
     factory { ScheduleReminderUploadUseCase(get()) }
 
     viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
-    viewModel {
-      ActiveRemindersViewModel(
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
-    viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { RemindersArchiveFragmentViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
     viewModel { ManagePresetsViewModel(get(), get(), get(), get(), get()) }

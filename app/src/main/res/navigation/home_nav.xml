@@ -380,23 +380,7 @@
     <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"
-        android:label="@string/events"
-        tools:layout="@layout/fragment_home_events">
-        <action
-            android:id="@+id/action_actionEvents_to_groupsFragment"
-            app:destination="@id/groupsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_actionEvents_to_archiveFragment"
-            app:destination="@id/archiveFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    </fragment>
+        android:label="@string/events" />
     <fragment
         android:id="@+id/managePresetsFragment"
         android:name="com.elementary.tasks.settings.reminders.ManagePresetsFragment"
