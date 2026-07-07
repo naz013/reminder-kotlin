@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays.list.filter
+package com.elementary.tasks.birthdays
 
 import com.elementary.tasks.core.filter.FilterInstance
 import com.github.naz013.domain.Birthday

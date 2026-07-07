@@ -70,7 +70,6 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControlle
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.dialog.CreateReminderActionScreenStateUseCase
 import com.elementary.tasks.reminder.dialog.ReminderActionActivityViewModel
-import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialogViewModel
@@ -118,7 +117,6 @@ val reminderModule =
     factory { SaveReminderUseCase(get(), get(), get()) }
     factory { ScheduleReminderUploadUseCase(get()) }
 
-    viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
     viewModel { RemindersArchiveFragmentViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
     viewModel { ManagePresetsViewModel(get(), get(), get(), get(), get()) }

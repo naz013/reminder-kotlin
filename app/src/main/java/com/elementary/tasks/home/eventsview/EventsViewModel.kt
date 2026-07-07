@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.list.filter.BirthdayQueryFilter
+import com.elementary.tasks.birthdays.BirthdayQueryFilter
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
