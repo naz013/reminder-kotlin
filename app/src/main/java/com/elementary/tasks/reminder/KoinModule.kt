@@ -70,20 +70,12 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControlle
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.dialog.CreateReminderActionScreenStateUseCase
 import com.elementary.tasks.reminder.dialog.ReminderActionActivityViewModel
-import com.elementary.tasks.reminder.lists.active.ActiveGpsRemindersViewModel
-import com.elementary.tasks.reminder.lists.active.ActiveRemindersViewModel
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialogViewModel
 import com.elementary.tasks.reminder.lists.removed.RemindersArchiveFragmentViewModel
-import com.elementary.tasks.reminder.lists.todo.ActiveTodoRemindersViewModel
-import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
-import com.elementary.tasks.reminder.preview.EventToUiReminderPreview
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
-import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogleTask
-import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
-import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
 import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
@@ -120,21 +112,6 @@ val reminderModule =
     factory { SaveReminderUseCase(get(), get(), get()) }
     factory { ScheduleReminderUploadUseCase(get()) }
 
-    viewModel { ActiveGpsRemindersViewModel(get(), get(), get()) }
-    viewModel {
-      ActiveRemindersViewModel(
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
-    viewModel { ActiveTodoRemindersViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { RemindersArchiveFragmentViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
     viewModel { ManagePresetsViewModel(get(), get(), get(), get(), get()) }
@@ -180,9 +157,11 @@ val reminderModule =
       )
     }
 
-    viewModel { (arguments: Bundle?) ->
+    viewModel { (id: String) ->
       PreviewReminderViewModel(
-        arguments,
+        id,
+        get(),
+        get(),
         get(),
         get(),
         get(),
@@ -222,7 +201,7 @@ val reminderModule =
         get(),
       )
     }
-    viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
+    viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
 
     factory { UriToAttachmentFileAdapter(get()) }
 
@@ -342,13 +321,6 @@ val reminderModule =
 
     single { RadiusFormatterFactory(get(), get()) }
     single { PlaceFormatterFactory(get()) }
-
-    factory { GoogleTaskToUiReminderPreviewGoogleTask(get(), get(), get(), get()) }
-    factory { NoteToUiReminderPreviewNote(get(), get(), get(), get()) }
-    factory { EventToUiReminderPreview(get(), get(), get(), get()) }
-    factory { AttachmentToUiReminderPreviewAttachment(get(), get(), get(), get()) }
-
-    factory { UiReminderPreviewDataAdapter(get(), get(), get(), get(), get(), get(), get()) }
 
     factory { UiReminderListsAdapter(get(), get(), get(), get(), get()) }
     factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }

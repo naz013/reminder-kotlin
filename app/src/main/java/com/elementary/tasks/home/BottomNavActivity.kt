@@ -9,6 +9,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.BirthdaysFragment
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.googletasks.GoogleTasksFragment
 import com.elementary.tasks.navigation.BackPressHandler
@@ -24,6 +25,7 @@ import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.Destination
+import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGoogleTaskScreen
 import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditPlaceScreen
@@ -81,6 +83,7 @@ class BottomNavActivity :
               if (deepLinkDestination is EditNoteScreen) putBoolean(NotesFragment.ARG_OPEN_EDIT, true)
               if (deepLinkDestination is EditPlaceScreen) putBoolean(PlacesFragment.ARG_OPEN_EDIT, true)
               if (deepLinkDestination is EditGoogleTaskScreen) putBoolean(GoogleTasksFragment.ARG_OPEN_EDIT, true)
+              if (deepLinkDestination is EditBirthdayScreen) putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true)
             }
           NavDeepLinkBuilder(this)
             .setGraph(R.navigation.home_nav)

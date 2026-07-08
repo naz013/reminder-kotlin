@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
+import com.elementary.tasks.birthdays.BirthdaysFragment
 import com.elementary.tasks.calendar.data.BirthdayEventModel
 import com.elementary.tasks.calendar.data.EventModel
 import com.elementary.tasks.calendar.data.ReminderEventModel
@@ -64,16 +65,17 @@ class DayEventsListFragment : BindingFragment<FragmentEventsListBinding>() {
       deleteAction = { birthday -> viewModel.deleteBirthday(birthday.uuId) },
       birthdayEditAction = {
         findNavController().navigate(
-          R.id.editBirthdayFragment,
+          R.id.birthdayFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, it.uuId)
+            putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true)
           },
           NavigationAnimations.inDepthNavOptions(),
         )
       },
       birthdayOpenAction = {
         findNavController().navigate(
-          R.id.previewBirthdayFragment,
+          R.id.birthdayFragment,
           Bundle().apply {
             putString(IntentKeys.INTENT_ID, it.uuId)
           },

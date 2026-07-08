@@ -22,8 +22,8 @@ class ScreenDestinationIdResolver {
     when (destination) {
       is DayViewScreen -> R.id.dayViewFragment
       is SettingsScreen -> R.id.settingsFragment
-      is EditBirthdayScreen -> R.id.editBirthdayFragment
-      is ViewBirthdayScreen -> R.id.previewBirthdayFragment
+      is EditBirthdayScreen -> R.id.birthdayFragment
+      is ViewBirthdayScreen -> R.id.birthdayFragment
       is EditGroupScreen -> R.id.editGroupFragment
       is EditPlaceScreen -> R.id.placesFragment
       is ViewGoogleTaskScreen -> R.id.actionGoogle

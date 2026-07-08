@@ -78,7 +78,7 @@ class HomeFragment :
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenBirthdayDetails -> {
           safeNavigation(
-            R.id.previewBirthdayFragment,
+            R.id.birthdayFragment,
             Bundle().apply { putString(IntentKeys.INTENT_ID, it.uuid) },
             NavigationAnimations.inDepthNavOptions(),
           )
@@ -100,7 +100,7 @@ class HomeFragment :
         }
         is ScheduleHomeViewModel.NavigationEvent.OpenCreateBirthday -> {
           safeNavigation(
-            R.id.editBirthdayFragment,
+            R.id.birthdayFragment,
             null,
             NavigationAnimations.inDepthNavOptions(),
           )

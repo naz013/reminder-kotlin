@@ -891,6 +891,7 @@
     <string name="select_network_type">Select the network type</string>
     <string name="report_an_issue">Report an Issue</string>
     <string name="move_to_archive">Move to archive</string>
+    <string name="turn_off">Turn off</string>
     <string name="share_send_email">Send email…</string>
 
     <string name="dark_mode">Dark Mode</string>

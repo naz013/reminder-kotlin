@@ -8,7 +8,7 @@ import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.navigate
-import com.elementary.tasks.navigation.topfragment.BaseTopToolbarFragment
+import com.elementary.tasks.navigation.toolbarfragment.BaseToolbarFragment
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
@@ -17,7 +17,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>() {
+abstract class BaseCalendarFragment<B : ViewBinding> : BaseToolbarFragment<B>() {
   protected val dateTimeManager by inject<DateTimeManager>()
 
   protected fun showActionDialog(date: LocalDate) {
@@ -56,7 +56,7 @@ abstract class BaseCalendarFragment<B : ViewBinding> : BaseTopToolbarFragment<B>
       val deepLinkData = BirthdayDateDeepLinkData(date)
       navigate {
         navigate(
-          R.id.editBirthdayFragment,
+          R.id.birthdayFragment,
           Bundle().apply {
             putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
             putParcelable(deepLinkData.intentKey, deepLinkData)

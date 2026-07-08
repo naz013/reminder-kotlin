@@ -380,41 +380,15 @@
     <fragment
         android:id="@+id/actionEvents"
         android:name="com.elementary.tasks.home.eventsview.HomeEventsFragment"
-        android:label="@string/events"
-        tools:layout="@layout/fragment_home_events">
-        <action
-            android:id="@+id/action_actionEvents_to_groupsFragment"
-            app:destination="@id/groupsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_actionEvents_to_archiveFragment"
-            app:destination="@id/archiveFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    </fragment>
+        android:label="@string/events" />
     <fragment
         android:id="@+id/managePresetsFragment"
         android:name="com.elementary.tasks.settings.reminders.ManagePresetsFragment"
         android:label="@string/recur_presets" />
     <fragment
-        android:id="@+id/editBirthdayFragment"
-        android:name="com.elementary.tasks.birthdays.create.EditBirthdayFragment"
-        android:label="@string/add_birthday"
-        tools:layout="@layout/fragment_edit_birthday" />
-    <fragment
-        android:id="@+id/previewBirthdayFragment"
-        android:name="com.elementary.tasks.birthdays.preview.PreviewBirthdayFragment"
-        android:label="@string/details"
-        tools:layout="@layout/fragment_birthday_preview">
-        <action
-            android:id="@+id/action_previewBirthdayFragment_to_editBirthdayFragment"
-            app:destination="@id/editBirthdayFragment" />
-    </fragment>
+        android:id="@+id/birthdayFragment"
+        android:name="com.elementary.tasks.birthdays.BirthdaysFragment"
+        android:label="@string/details" />
     <fragment
         android:id="@+id/objectExportTestFragment"
         android:name="com.elementary.tasks.settings.test.ObjectExportTestFragment"
@@ -446,12 +420,10 @@
     <fragment
         android:id="@+id/previewReminderFragment"
         android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"
-        android:label="@string/details"
-        tools:layout="@layout/fragment_reminder_preview" />
+        android:label="@string/details" />
     <fragment
         android:id="@+id/reminderFullscreenMapFragment"
         android:name="com.elementary.tasks.reminder.preview.ReminderFullscreenMapFragment"
-        tools:layout="@layout/fragment_reminder_fullscreen_map"
         android:label="@string/map" />
     <fragment
         android:id="@+id/buildReminderFragment"

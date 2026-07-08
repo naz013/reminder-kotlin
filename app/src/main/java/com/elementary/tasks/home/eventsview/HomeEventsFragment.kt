@@ -1,170 +1,181 @@
 package com.elementary.tasks.home.eventsview
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.elementary.tasks.birthdays.list.BirthdaysFragment
-import com.elementary.tasks.databinding.FragmentHomeEventsBinding
-import com.elementary.tasks.navigation.toolbarfragment.BaseNonToolbarFragment
-import com.elementary.tasks.navigation.topfragment.FragmentMenuController
-import com.elementary.tasks.reminder.lists.active.RemindersFragment
-import com.elementary.tasks.reminder.lists.todo.TodoRemindersFragment
-import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.view.applyTopInsets
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import kotlinx.coroutines.launch
+import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.BirthdaysFragment
+import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
+import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.onBackStackResume
+import com.elementary.tasks.navigation.safeNavigation
+import com.elementary.tasks.navigation.topfragment.RootFragment
+import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialog
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.livedata.observeEvent
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.compose.composeView
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+/**
+ * Hosts the merged, chip-filtered Events screen ([EventsScreen]): a single Compose screen
+ * replacing the previous TabLayout + ViewPager2 (Reminders / Shopping / Birthdays tabs). This
+ * Fragment owns only the Android-framework glue [EventsViewModel] can't (permission requests,
+ * confirmation dialogs, the [ReminderFilterDialog] bottom sheet, navigation to sibling
+ * destinations) and otherwise just renders [EventsScreen] against [EventsViewModel]'s state.
+ */
 class HomeEventsFragment :
-  BaseNonToolbarFragment<FragmentHomeEventsBinding>(),
-  FragmentMenuController {
-  private val viewModel by viewModel<HomeEventsViewModel>()
-  private var menuModifier: ((Menu) -> Unit)? = null
-  private lateinit var viewPagerAdapter: TabsPagerAdapter
+  Fragment(),
+  RootFragment {
+  private val viewModel by viewModel<EventsViewModel>()
+  private val dialogues by inject<Dialogues>()
+  private lateinit var permissionFlow: PermissionFlow
 
-  override fun inflate(
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    permissionFlow = PermissionFlow(this, dialogues)
+  }
+
+  override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ): FragmentHomeEventsBinding = FragmentHomeEventsBinding.inflate(inflater, container, false)
+  ): View =
+    composeView {
+      val state by viewModel.eventsScreenState.collectAsState()
+      EventsScreen(
+        state = state,
+        onBackClick = { requireActivity().onBackPressedDispatcher.onBackPressed() },
+        onSearchQueryChange = viewModel::onSearchQueryChange,
+        onCategoryToggle = viewModel::onCategoryToggle,
+        onAddReminderClick = viewModel::onAddReminderClick,
+        onAddShoppingClick = viewModel::onAddShoppingClick,
+        onAddBirthdayClick = viewModel::onAddBirthdayClick,
+        onArchiveClick = viewModel::onArchiveClick,
+        onGroupsClick = viewModel::onGroupsClick,
+        onItemClick = viewModel::onItemClick,
+        onEventMenuAction = viewModel::onEventMenuAction,
+      )
+    }
 
   override fun onViewCreated(
     view: View,
     savedInstanceState: Bundle?,
   ) {
     super.onViewCreated(view, savedInstanceState)
-    Logger.i(TAG, "On view created")
-    binding.appBar.applyTopInsets()
-
-    binding.toolbar.setNavigationOnClickListener {
-      requireActivity().onBackPressedDispatcher.onBackPressed()
-    }
-
-    viewPagerAdapter =
-      TabsPagerAdapter(
-        this,
-        listOf(
-          RemindersFragment(),
-          TodoRemindersFragment(),
-          BirthdaysFragment(),
-        ),
-      )
-
-    binding.fragmentPager.apply {
-      adapter = viewPagerAdapter
-      isUserInputEnabled = false
-    }
-
-    binding.tabLayout.addOnTabSelectedListener(
-      object : OnTabSelectedListener {
-        override fun onTabSelected(tab: TabLayout.Tab?) {
-          tab?.also {
-            viewModel.onTabSelected(getSelectedTab(it))
-          }
-        }
-
-        override fun onTabUnselected(tab: TabLayout.Tab?) {
-        }
-
-        override fun onTabReselected(tab: TabLayout.Tab?) {
-        }
-      },
-    )
-
-    initViewModel()
-  }
-
-  private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    lifecycleScope.launch {
-      viewModel.selectedTab.collect { onTabChanged(it) }
-    }
+    viewModel.navigationEvent.observeEvent(viewLifecycleOwner) { handleNavigationEvent(it) }
   }
 
-  private fun onTabChanged(selectedTab: HomeEventsViewModel.SelectedTab?) {
-    selectedTab ?: return
-    Logger.i(TAG, "On tab changed: $selectedTab")
-    binding.tabLayout.getTabAt(getTabPosition(selectedTab))?.select()
-    binding.fragmentPager.setCurrentItem(getTabPosition(selectedTab), false)
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    Logger.d(TAG, "On attach")
-  }
-
+  /** See [PlacesFragment][com.elementary.tasks.places.list.PlacesFragment]/`GoogleTasksFragment`'s
+   *  kdoc: registers this fragment as the Activity's "current fragment" for hardware/gesture
+   *  back-press routing (see [com.elementary.tasks.home.BottomNavActivity.handleBackPress]). */
   override fun onResume() {
     super.onResume()
-    Logger.d(TAG, "On resume")
+    onBackStackResume()
   }
 
-  override fun onPause() {
-    super.onPause()
-    Logger.d(TAG, "On pause")
-  }
+  private fun handleNavigationEvent(event: EventsViewModel.NavigationEvent) {
+    when (event) {
+      is EventsViewModel.NavigationEvent.OpenReminderPreview -> {
+        safeNavigation(
+          R.id.previewReminderFragment,
+          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
 
-  private fun getSelectedTab(tab: TabLayout.Tab): HomeEventsViewModel.SelectedTab =
-    when (tab.position) {
-      0 -> HomeEventsViewModel.SelectedTab.Reminders
-      1 -> HomeEventsViewModel.SelectedTab.Todo
-      2 -> HomeEventsViewModel.SelectedTab.Birthdays
-      else -> HomeEventsViewModel.SelectedTab.Reminders
+      is EventsViewModel.NavigationEvent.OpenReminderEdit -> {
+        safeNavigation(
+          R.id.buildReminderFragment,
+          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      EventsViewModel.NavigationEvent.OpenNewReminder -> {
+        safeNavigation(R.id.buildReminderFragment, null, NavigationAnimations.inDepthNavOptions())
+      }
+
+      EventsViewModel.NavigationEvent.OpenNewShoppingReminder -> {
+        val deepLinkData = ReminderTodoTypeDeepLinkData
+        safeNavigation(
+          R.id.buildReminderFragment,
+          Bundle().apply {
+            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+            putParcelable(deepLinkData.intentKey, deepLinkData)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      is EventsViewModel.NavigationEvent.OpenBirthdayPreview -> {
+        safeNavigation(
+          R.id.birthdayFragment,
+          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      is EventsViewModel.NavigationEvent.OpenBirthdayEdit -> {
+        safeNavigation(
+          R.id.birthdayFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, event.id)
+            putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      EventsViewModel.NavigationEvent.OpenNewBirthday -> {
+        safeNavigation(
+          R.id.birthdayFragment,
+          Bundle().apply { putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      EventsViewModel.NavigationEvent.OpenArchive -> {
+        safeNavigation(R.id.archiveFragment, null, NavigationAnimations.inDepthNavOptions())
+      }
+
+      EventsViewModel.NavigationEvent.OpenGroups -> {
+        safeNavigation(R.id.groupsFragment, null, NavigationAnimations.inDepthNavOptions())
+      }
+
+      is EventsViewModel.NavigationEvent.RequestGpsPermission -> {
+        permissionFlow.askPermissions(
+          listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
+        ) {
+          viewModel.toggleReminder(event.id)
+        }
+      }
+
+      is EventsViewModel.NavigationEvent.ConfirmArchiveReminder -> {
+        dialogues.askConfirmation(requireContext(), getString(R.string.move_to_archive)) { confirmed ->
+          if (confirmed) viewModel.moveReminderToArchive(event.id)
+        }
+      }
+
+      is EventsViewModel.NavigationEvent.ConfirmDeleteReminder -> {
+        dialogues.askConfirmation(requireContext(), getString(R.string.delete)) { confirmed ->
+          if (confirmed) viewModel.deleteReminder(event.id)
+        }
+      }
+
+      is EventsViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
+        dialogues.askConfirmation(requireContext(), getString(R.string.delete)) { confirmed ->
+          if (confirmed) viewModel.deleteBirthday(event.id)
+        }
+      }
     }
-
-  private fun getTabPosition(selectedTab: HomeEventsViewModel.SelectedTab): Int =
-    when (selectedTab) {
-      HomeEventsViewModel.SelectedTab.Reminders -> 0
-      HomeEventsViewModel.SelectedTab.Todo -> 1
-      HomeEventsViewModel.SelectedTab.Birthdays -> 2
-    }
-
-  override fun addMenu(
-    menuRes: Int?,
-    onMenuItemListener: (MenuItem) -> Boolean,
-    menuModifier: ((Menu) -> Unit)?,
-  ) {
-    this.menuModifier = menuModifier
-    binding.toolbar.menu.clear()
-    if (menuRes != null) {
-      binding.toolbar.inflateMenu(menuRes)
-    }
-    menuModifier?.invoke(binding.toolbar.menu)
-    binding.toolbar.setOnMenuItemClickListener {
-      return@setOnMenuItemClickListener onMenuItemListener(it)
-    }
-  }
-
-  override fun removeMenu() {
-    binding.toolbar.menu.clear()
-    menuModifier = null
-  }
-
-  override fun updateMenuItem(
-    itemId: Int,
-    modifier: MenuItem.() -> Unit,
-  ) {
-    val menuItem = binding.toolbar.menu.findItem(itemId) ?: return
-    modifier(menuItem)
-  }
-
-  private class TabsPagerAdapter(
-    fragment: Fragment,
-    private val tabFragments: List<Fragment>,
-  ) : FragmentStateAdapter(fragment) {
-    override fun getItemCount(): Int = tabFragments.size
-
-    override fun createFragment(position: Int): Fragment = tabFragments[position]
-  }
-
-  companion object {
-    private const val TAG = "HomeEventsFragment"
   }
 }
