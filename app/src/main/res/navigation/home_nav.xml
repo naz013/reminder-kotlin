@@ -424,7 +424,6 @@
     <fragment
         android:id="@+id/reminderFullscreenMapFragment"
         android:name="com.elementary.tasks.reminder.preview.ReminderFullscreenMapFragment"
-        tools:layout="@layout/fragment_reminder_fullscreen_map"
         android:label="@string/map" />
     <fragment
         android:id="@+id/buildReminderFragment"

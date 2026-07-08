@@ -201,7 +201,7 @@ val reminderModule =
         get(),
       )
     }
-    viewModel { (arguments: Bundle?) -> FullScreenMapViewModel(arguments, get(), get()) }
+    viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
 
     factory { UriToAttachmentFileAdapter(get()) }
 

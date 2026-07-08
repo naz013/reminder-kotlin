@@ -109,6 +109,20 @@ class PreviewReminderFragment : Fragment() {
     onBackStackResume()
   }
 
+  /** The embedded [SimpleMapFragment] is added to [childFragmentManager] once and left there —
+   *  when this fragment's own view is torn down (e.g. navigating to the fullscreen map and back),
+   *  the child fragment survives but its container [FragmentContainerView] does not. Without this,
+   *  the child FragmentManager tries to restore that orphaned fragment into a container id that
+   *  Compose hasn't recreated yet on the next [onCreateView], crashing with
+   *  "No view found for id ... for fragment SimpleMapFragment". Explicitly removing it here lets
+   *  [EmbeddedMap] create a fresh instance on the next composition instead. */
+  override fun onDestroyView() {
+    childFragmentManager.findFragmentByTag(MAP_FRAGMENT_TAG)?.let { mapFragment ->
+      childFragmentManager.beginTransaction().remove(mapFragment).commitNowAllowingStateLoss()
+    }
+    super.onDestroyView()
+  }
+
   private fun editReminder() {
     safeNavigation(
       R.id.buildReminderFragment,

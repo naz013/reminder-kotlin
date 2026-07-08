@@ -4,63 +4,153 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.fragment.app.FragmentContainerView
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentReminderFullscreenMapBinding
-import com.elementary.tasks.navigation.toolbarfragment.BaseNonToolbarFragment
+import com.elementary.tasks.navigation.BackPressHandler
+import com.elementary.tasks.navigation.fragments.NavigationFragment
+import com.elementary.tasks.navigation.onBackStackResume
 import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
-import com.github.naz013.feature.common.livedata.nullObserve
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.view.applyBottomInsetsMargin
+import com.github.naz013.ui.common.compose.composeView
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class ReminderFullscreenMapFragment : BaseNonToolbarFragment<FragmentReminderFullscreenMapBinding>() {
-  private val viewModel by viewModel<FullScreenMapViewModel> { parametersOf(arguments) }
+class ReminderFullscreenMapFragment :
+  NavigationFragment(),
+  BackPressHandler {
+  private val id: String by lazy { arguments?.getString(IntentKeys.INTENT_ID) ?: "" }
+  private val viewModel by viewModel<FullScreenMapViewModel> { parametersOf(id) }
   private var simpleMapFragment: SimpleMapFragment? = null
-
-  override fun inflate(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ): FragmentReminderFullscreenMapBinding = FragmentReminderFullscreenMapBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Logger.i(TAG, "Opening the Map for reminder with id: ${viewModel.id}")
+    Logger.i(TAG, "Opening the Map for reminder with id: $id")
   }
+
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?,
+  ): View =
+    composeView {
+      val reminder by viewModel.reminder.collectAsState()
+      ReminderFullscreenMapScreen(
+        isLoading = reminder == null,
+        onMoveToPlaceClick = { moveToNextPlace() },
+        mapContent = { reminder?.let { EmbeddedMap(reminder = it) } },
+      )
+    }
 
   override fun onViewCreated(
     view: View,
     savedInstanceState: Bundle?,
   ) {
     super.onViewCreated(view, savedInstanceState)
-    binding.mapButton.applyBottomInsetsMargin()
-    binding.mapButton.setOnClickListener {
-      val reminder = viewModel.reminder.value ?: return@setOnClickListener
-      if (viewModel.placeIndex < reminder.places.size - 1) {
-        viewModel.placeIndex++
-      } else {
-        viewModel.placeIndex = 0
-      }
-      val place = reminder.places[viewModel.placeIndex]
-      val lat = place.latitude
-      val lon = place.longitude
-      simpleMapFragment?.moveCamera(pos = LatLng(lat, lon))
-    }
-
-    initViewModel()
-  }
-
-  private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.reminder.nullObserve(this) { initMap() }
   }
 
-  private fun showMapData(reminder: Reminder) {
+  override fun onResume() {
+    super.onResume()
+    onBackStackResume()
+  }
+
+  /** See [PreviewReminderFragment.onDestroyView]'s kdoc: the embedded [SimpleMapFragment] must be
+   *  explicitly removed here, or the child FragmentManager tries to restore it into a container id
+   *  Compose hasn't recreated yet the next time this fragment's view is built, crashing with
+   *  "No view found for id ... for fragment SimpleMapFragment". */
+  override fun onDestroyView() {
+    simpleMapFragment?.let { mapFragment ->
+      if (mapFragment.isAdded) {
+        childFragmentManager.beginTransaction().remove(mapFragment).commitNowAllowingStateLoss()
+      }
+    }
+    simpleMapFragment = null
+    super.onDestroyView()
+  }
+
+  override fun canGoBack(): Boolean = simpleMapFragment?.onBackPressed() ?: true
+
+  private fun moveToNextPlace() {
+    val reminder = viewModel.reminder.value ?: return
+    if (reminder.places.isEmpty()) return
+    viewModel.placeIndex =
+      if (viewModel.placeIndex < reminder.places.size - 1) {
+        viewModel.placeIndex + 1
+      } else {
+        0
+      }
+    val place = reminder.places[viewModel.placeIndex]
+    simpleMapFragment?.moveCamera(pos = LatLng(place.latitude, place.longitude))
+  }
+
+  @Composable
+  private fun EmbeddedMap(reminder: Reminder) {
+    var attached by remember { mutableStateOf(false) }
+    AndroidView(
+      modifier = Modifier.fillMaxSize(),
+      factory = { context ->
+        FragmentContainerView(context).apply {
+          id = R.id.reminder_fullscreen_map_container
+          layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        }
+      },
+      update = {
+        if (attached) return@AndroidView
+        attached = true
+        val googleMap =
+          SimpleMapFragment.newInstance(
+            SimpleMapFragment.MapParams(
+              isPlaces = false,
+              isStyles = false,
+              isRadius = false,
+              isSearch = false,
+              isTouch = false,
+              customButtons =
+                listOf(
+                  SimpleMapFragment.MapCustomButton(R.drawable.ic_builder_arrow_left, 0),
+                ),
+            ),
+          )
+        googleMap.customButtonCallback =
+          object : SimpleMapFragment.CustomButtonCallback {
+            override fun onButtonClicked(buttonId: Int) {
+              requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+          }
+        googleMap.mapCallback =
+          object : SimpleMapFragment.DefaultMapCallback() {
+            override fun onMapReady() {
+              googleMap.applyInsets()
+              showMapData(googleMap, reminder)
+            }
+          }
+        childFragmentManager
+          .beginTransaction()
+          .replace(R.id.reminder_fullscreen_map_container, googleMap)
+          .commit()
+        simpleMapFragment = googleMap
+      },
+    )
+  }
+
+  private fun showMapData(
+    map: SimpleMapFragment,
+    reminder: Reminder,
+  ) {
     reminder.places.forEach { place ->
-      simpleMapFragment?.addMarker(
+      map.addMarker(
         latLng = LatLng(place.latitude, place.longitude),
         title =
           place.name.takeIf { it.isNotEmpty() }
@@ -72,62 +162,10 @@ class ReminderFullscreenMapFragment : BaseNonToolbarFragment<FragmentReminderFul
         animate = false,
       )
     }
-
     reminder.places
       .firstOrNull()
-      ?.let {
-        LatLng(it.latitude, it.longitude)
-      }?.run {
-        simpleMapFragment?.moveCamera(this)
-      }
-  }
-
-  private fun initMap() {
-    val googleMap =
-      SimpleMapFragment.newInstance(
-        SimpleMapFragment.MapParams(
-          isPlaces = false,
-          isStyles = false,
-          isRadius = false,
-          isSearch = false,
-          isTouch = false,
-          customButtons =
-            listOf(
-              SimpleMapFragment.MapCustomButton(R.drawable.ic_builder_arrow_left, 0),
-            ),
-        ),
-      )
-    googleMap.customButtonCallback =
-      object : SimpleMapFragment.CustomButtonCallback {
-        override fun onButtonClicked(buttonId: Int) {
-          moveBack()
-        }
-      }
-    googleMap.mapCallback =
-      object : SimpleMapFragment.MapCallback {
-        override fun onLocationSelected(markerState: SimpleMapFragment.MarkerState) {
-        }
-
-        override fun onMapReady() {
-          simpleMapFragment?.applyInsets()
-          viewModel.reminder.value?.also {
-            showMapData(it)
-          }
-        }
-      }
-
-    childFragmentManager
-      .beginTransaction()
-      .replace(R.id.map_container, googleMap)
-      .commit()
-
-    this.simpleMapFragment = googleMap
-  }
-
-  override fun canGoBack(): Boolean {
-    val canCloseMap = simpleMapFragment?.onBackPressed()
-    Logger.i(TAG, "Map can be closed: $canCloseMap")
-    return canCloseMap == true
+      ?.let { LatLng(it.latitude, it.longitude) }
+      ?.run { map.moveCamera(this) }
   }
 
   companion object {
