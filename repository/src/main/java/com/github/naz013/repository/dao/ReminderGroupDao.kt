@@ -46,4 +46,7 @@ internal interface ReminderGroupDao {
 
   @Query("SELECT COUNT(*) FROM ReminderGroup")
   fun countAll(): Int
+
+  @Query("UPDATE ReminderGroup SET isDefaultGroup=:isDef WHERE groupUuId=:id")
+  fun setDefaultGroup(id: String, isDef: Boolean = false)
 }

@@ -1,18 +1,16 @@
 package com.elementary.tasks.core.data.ui.group
 
 import androidx.annotation.ColorInt
-import com.google.gson.annotations.SerializedName
 
 data class UiGroupList(
-  @SerializedName("id")
   val id: String,
-  @SerializedName("title")
   val title: String,
-  @SerializedName("color")
-  @ColorInt
+  @param:ColorInt
   val color: Int,
-  @SerializedName("colorPosition")
   val colorPosition: Int,
-  @SerializedName("contrastColor")
+  @Deprecated("Use compose color contrast color")
   val contrastColor: Int,
+  val isDefaultGroup: Boolean,
+  val canDelete: Boolean,
+  val canSetAsDefault: Boolean,
 )

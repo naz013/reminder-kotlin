@@ -83,9 +83,8 @@
         android:label="@string/tasks" />
     <fragment
         android:id="@+id/groupsFragment"
-        android:name="com.elementary.tasks.groups.list.GroupsFragment"
-        android:label="@string/groups"
-        tools:layout="@layout/fragment_groups" />
+        android:name="com.elementary.tasks.groups.GroupsFragment"
+        android:label="@string/groups" />
     <fragment
         android:id="@+id/archiveFragment"
         android:name="com.elementary.tasks.reminder.lists.removed.RemindersArchiveFragment"
@@ -412,11 +411,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
-    <fragment
-        android:id="@+id/editGroupFragment"
-        android:name="com.elementary.tasks.groups.create.EditGroupFragment"
-        android:label="@string/create_group"
-        tools:layout="@layout/fragment_edit_group" />
     <fragment
         android:id="@+id/previewReminderFragment"
         android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"

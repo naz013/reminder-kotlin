@@ -24,7 +24,7 @@ class ScreenDestinationIdResolver {
       is SettingsScreen -> R.id.settingsFragment
       is EditBirthdayScreen -> R.id.birthdayFragment
       is ViewBirthdayScreen -> R.id.birthdayFragment
-      is EditGroupScreen -> R.id.editGroupFragment
+      is EditGroupScreen -> R.id.groupsFragment
       is EditPlaceScreen -> R.id.placesFragment
       is ViewGoogleTaskScreen -> R.id.actionGoogle
       is EditGoogleTaskScreen -> R.id.actionGoogle
