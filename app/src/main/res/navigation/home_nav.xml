@@ -420,8 +420,7 @@
     <fragment
         android:id="@+id/previewReminderFragment"
         android:name="com.elementary.tasks.reminder.preview.PreviewReminderFragment"
-        android:label="@string/details"
-        tools:layout="@layout/fragment_reminder_preview" />
+        android:label="@string/details" />
     <fragment
         android:id="@+id/reminderFullscreenMapFragment"
         android:name="com.elementary.tasks.reminder.preview.ReminderFullscreenMapFragment"

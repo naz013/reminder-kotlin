@@ -74,13 +74,8 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialogViewModel
 import com.elementary.tasks.reminder.lists.removed.RemindersArchiveFragmentViewModel
-import com.elementary.tasks.reminder.preview.AttachmentToUiReminderPreviewAttachment
-import com.elementary.tasks.reminder.preview.EventToUiReminderPreview
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
-import com.elementary.tasks.reminder.preview.GoogleTaskToUiReminderPreviewGoogleTask
-import com.elementary.tasks.reminder.preview.NoteToUiReminderPreviewNote
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
-import com.elementary.tasks.reminder.preview.data.UiReminderPreviewDataAdapter
 import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
@@ -162,9 +157,11 @@ val reminderModule =
       )
     }
 
-    viewModel { (arguments: Bundle?) ->
+    viewModel { (id: String) ->
       PreviewReminderViewModel(
-        arguments,
+        id,
+        get(),
+        get(),
         get(),
         get(),
         get(),
@@ -324,13 +321,6 @@ val reminderModule =
 
     single { RadiusFormatterFactory(get(), get()) }
     single { PlaceFormatterFactory(get()) }
-
-    factory { GoogleTaskToUiReminderPreviewGoogleTask(get(), get(), get(), get()) }
-    factory { NoteToUiReminderPreviewNote(get(), get(), get(), get()) }
-    factory { EventToUiReminderPreview(get(), get(), get(), get()) }
-    factory { AttachmentToUiReminderPreviewAttachment(get(), get(), get(), get()) }
-
-    factory { UiReminderPreviewDataAdapter(get(), get(), get(), get(), get(), get(), get()) }
 
     factory { UiReminderListsAdapter(get(), get(), get(), get(), get()) }
     factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
