@@ -88,8 +88,7 @@
     <fragment
         android:id="@+id/archiveFragment"
         android:name="com.elementary.tasks.reminder.lists.removed.RemindersArchiveFragment"
-        android:label="@string/trash"
-        tools:layout="@layout/fragment_trash" />
+        android:label="@string/trash" />
     <fragment
         android:id="@+id/dayViewFragment"
         android:name="com.elementary.tasks.calendar.dayview.WeekViewFragment"

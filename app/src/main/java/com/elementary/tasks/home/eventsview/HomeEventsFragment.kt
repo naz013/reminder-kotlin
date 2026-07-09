@@ -15,7 +15,6 @@ import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.onBackStackResume
 import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.topfragment.RootFragment
-import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialog
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.observeEvent
@@ -24,13 +23,6 @@ import com.github.naz013.ui.common.compose.composeView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-/**
- * Hosts the merged, chip-filtered Events screen ([EventsScreen]): a single Compose screen
- * replacing the previous TabLayout + ViewPager2 (Reminders / Shopping / Birthdays tabs). This
- * Fragment owns only the Android-framework glue [EventsViewModel] can't (permission requests,
- * confirmation dialogs, the [ReminderFilterDialog] bottom sheet, navigation to sibling
- * destinations) and otherwise just renders [EventsScreen] against [EventsViewModel]'s state.
- */
 class HomeEventsFragment :
   Fragment(),
   RootFragment {
