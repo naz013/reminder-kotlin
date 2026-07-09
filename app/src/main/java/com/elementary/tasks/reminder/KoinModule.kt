@@ -72,8 +72,7 @@ import com.elementary.tasks.reminder.dialog.CreateReminderActionScreenStateUseCa
 import com.elementary.tasks.reminder.dialog.ReminderActionActivityViewModel
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
-import com.elementary.tasks.reminder.lists.filter.ReminderFilterDialogViewModel
-import com.elementary.tasks.reminder.lists.removed.RemindersArchiveFragmentViewModel
+import com.elementary.tasks.reminder.lists.removed.RemindersArchiveViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
@@ -102,6 +101,7 @@ import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.datecalc.RecurrenceCalculatorImpl
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val reminderModule =
@@ -112,7 +112,7 @@ val reminderModule =
     factory { SaveReminderUseCase(get(), get(), get()) }
     factory { ScheduleReminderUploadUseCase(get()) }
 
-    viewModel { RemindersArchiveFragmentViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModelOf(::RemindersArchiveViewModel)
 
     viewModel { ManagePresetsViewModel(get(), get(), get(), get(), get()) }
     viewModel { SelectorDialogViewModel(get(), get()) }
@@ -324,8 +324,6 @@ val reminderModule =
 
     factory { UiReminderListsAdapter(get(), get(), get(), get(), get()) }
     factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-
-    viewModel { ReminderFilterDialogViewModel(get()) }
 
     factory { BehaviorStrategyResolver(get(), get()) }
 
