@@ -110,6 +110,7 @@
 
         <activity
             android:name=".home.BottomNavActivity"
+            android:configChanges="orientation|screenSize|screenLayout"
             android:launchMode="singleInstance"
             android:exported="false">
             <nav-graph android:value="@navigation/home_nav" />

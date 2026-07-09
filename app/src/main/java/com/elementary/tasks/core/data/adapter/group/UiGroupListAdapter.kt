@@ -24,6 +24,9 @@ class UiGroupListAdapter(
       title = reminderGroup.groupTitle,
       colorPosition = reminderGroup.groupColor,
       contrastColor = getContrastColor(groupColor),
+      isDefaultGroup = reminderGroup.isDefaultGroup,
+      canDelete = !reminderGroup.isDefaultGroup,
+      canSetAsDefault = !reminderGroup.isDefaultGroup,
     )
   }
 
@@ -40,6 +43,9 @@ class UiGroupListAdapter(
       title = title,
       colorPosition = colorPosition,
       contrastColor = getContrastColor(groupColor),
+      isDefaultGroup = false,
+      canDelete = false,
+      canSetAsDefault = true,
     )
   }
 

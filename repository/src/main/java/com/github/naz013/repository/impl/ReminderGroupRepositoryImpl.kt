@@ -71,6 +71,12 @@ internal class ReminderGroupRepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun setDefaultGroup(id: String, isDef: Boolean) {
+    Logger.d(TAG, "Set reminder group as default: $id")
+    dao.setDefaultGroup(id, isDef)
+    tableChangeNotifier.notify(table)
+  }
+
   override suspend fun getAllIds(): List<String> {
     Logger.d(TAG, "Get all reminder group ids")
     return dao.getAllIds()

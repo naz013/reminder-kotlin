@@ -18,6 +18,7 @@ interface ReminderGroupRepository {
   suspend fun updateSyncState(id: String, state: SyncState)
   suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
   suspend fun getAllIds(): List<String>
+  suspend fun setDefaultGroup(id: String, isDef: Boolean = false)
 
   suspend fun countAll(): Int
 }

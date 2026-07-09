@@ -11,10 +11,14 @@ import com.github.naz013.sync.DataType
 class SaveReminderGroupUseCase(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val makeGroupDefaultUseCase: MakeGroupDefaultUseCase,
 ) {
   suspend operator fun invoke(reminderGroup: ReminderGroup) {
     reminderGroupRepository.save(reminderGroup.copy(version = reminderGroup.version + 1))
     reminderGroupRepository.updateSyncState(reminderGroup.groupUuId, SyncState.WaitingForUpload)
+    if (reminderGroup.isDefaultGroup) {
+      makeGroupDefaultUseCase(reminderGroup.groupUuId)
+    }
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.Groups,
