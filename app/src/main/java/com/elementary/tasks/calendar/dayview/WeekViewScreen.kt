@@ -1,0 +1,337 @@
+package com.elementary.tasks.calendar.dayview
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.elementary.tasks.R
+import com.elementary.tasks.calendar.dayview.weekheader.WeekDay
+import com.elementary.tasks.home.eventsview.BirthdayEventRow
+import com.elementary.tasks.home.eventsview.EventMenuAction
+import com.elementary.tasks.home.eventsview.ReminderEventRow
+import com.elementary.tasks.home.eventsview.UiEventBirthday
+import com.elementary.tasks.home.eventsview.UiEventItem
+import com.elementary.tasks.home.eventsview.UiEventReminder
+import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import org.threeten.bp.LocalDate
+
+private val DAY_CELL_NUMBER_SIZE = 32.dp
+private val EVENT_DOT_SIZE = 5.dp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WeekViewScreen(
+  state: WeekViewScreenState,
+  initialPagerPosition: Int,
+  pagerJumpRequest: Int?,
+  onPagerJumpConsumed: () -> Unit,
+  dateForPosition: (Int) -> LocalDate,
+  onPageSettled: (Int) -> Unit,
+  onDayClick: (WeekDay) -> Unit,
+  refreshSignal: Int,
+  loadDayEvents: suspend (LocalDate) -> List<UiEventItem>,
+  onItemClick: (UiEventItem) -> Unit,
+  onEventMenuAction: (UiEventItem, EventMenuAction) -> Unit,
+  onAddReminderClick: () -> Unit,
+  onAddBirthdayClick: () -> Unit,
+  onBackClick: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val pagerState = rememberPagerState(initialPage = initialPagerPosition) { Int.MAX_VALUE }
+
+  LaunchedEffect(pagerState) {
+    snapshotFlow { pagerState.settledPage }.collect { position -> onPageSettled(position) }
+  }
+
+  LaunchedEffect(pagerJumpRequest) {
+    val target = pagerJumpRequest ?: return@LaunchedEffect
+    pagerState.animateScrollToPage(target)
+    onPagerJumpConsumed()
+  }
+
+  Scaffold(
+    modifier = modifier,
+    topBar = {
+      Column {
+        TopAppBar(
+          title = { Text(state.title) },
+          navigationIcon = {
+            MenuIconButton(
+              icon = painterResource(R.drawable.ic_builder_arrow_left),
+              contentDescription = null,
+              onClick = onBackClick,
+            )
+          },
+          colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+        )
+        WeekDayHeaderRow(
+          days = state.days,
+          onDayClick = onDayClick,
+          modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+        )
+      }
+    },
+    floatingActionButton = {
+      AddActionFab(onAddReminderClick = onAddReminderClick, onAddBirthdayClick = onAddBirthdayClick)
+    },
+  ) { padding ->
+    HorizontalPager(
+      state = pagerState,
+      modifier = Modifier.fillMaxSize().padding(padding),
+    ) { position ->
+      DayPage(
+        date = dateForPosition(position),
+        refreshSignal = refreshSignal,
+        loadDayEvents = loadDayEvents,
+        onItemClick = onItemClick,
+        onEventMenuAction = onEventMenuAction,
+      )
+    }
+  }
+}
+
+@Composable
+private fun WeekDayHeaderRow(
+  days: List<WeekDay>,
+  onDayClick: (WeekDay) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Row(modifier = modifier) {
+    days.forEach { day ->
+      WeekDayCell(day = day, onClick = { onDayClick(day) }, modifier = Modifier.weight(1f))
+    }
+  }
+}
+
+@Composable
+private fun WeekDayCell(
+  day: WeekDay,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Column(
+    modifier =
+      modifier
+        .clip(MaterialTheme.shapes.medium)
+        .clickable(enabled = !day.isSelected, onClick = onClick)
+        .padding(vertical = 6.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    Text(
+      text = day.weekday.uppercase(),
+      style = MaterialTheme.typography.labelSmall,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Box(
+      modifier =
+        Modifier
+          .padding(top = 4.dp)
+          .size(DAY_CELL_NUMBER_SIZE)
+          .clip(CircleShape)
+          .background(if (day.isSelected) MaterialTheme.colorScheme.primary else Color.Transparent),
+      contentAlignment = Alignment.Center,
+    ) {
+      Text(
+        text = day.date,
+        style = MaterialTheme.typography.bodyMedium,
+        color = if (day.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+      )
+    }
+    Box(
+      modifier =
+        Modifier
+          .padding(top = 3.dp)
+          .size(EVENT_DOT_SIZE)
+          .clip(CircleShape)
+          .background(if (day.hasEvents) MaterialTheme.colorScheme.primary else Color.Transparent),
+    )
+  }
+}
+
+@Composable
+private fun DayPage(
+  date: LocalDate,
+  refreshSignal: Int,
+  loadDayEvents: suspend (LocalDate) -> List<UiEventItem>,
+  onItemClick: (UiEventItem) -> Unit,
+  onEventMenuAction: (UiEventItem, EventMenuAction) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  var events by remember(date) { mutableStateOf<List<UiEventItem>?>(null) }
+
+  LaunchedEffect(date, refreshSignal) {
+    events = loadDayEvents(date)
+  }
+
+  when (val items = events) {
+    null -> {
+      Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
+      }
+    }
+
+    else -> {
+      if (items.isEmpty()) {
+        DayEmptyState(modifier = modifier.fillMaxSize())
+      } else {
+        LazyColumn(
+          modifier = modifier.fillMaxSize(),
+          contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+          items(items, key = { it.id }) { item ->
+            when (item) {
+              is UiEventReminder -> {
+                ReminderEventRow(
+                  item = item,
+                  onClick = { onItemClick(item) },
+                  onMenuAction = { action -> onEventMenuAction(item, action) },
+                  modifier = Modifier.animateItem(),
+                )
+              }
+
+              is UiEventBirthday -> {
+                BirthdayEventRow(
+                  item = item,
+                  onClick = { onItemClick(item) },
+                  onMenuAction = { action -> onEventMenuAction(item, action) },
+                  modifier = Modifier.animateItem(),
+                )
+              }
+
+              else -> Unit
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@Composable
+private fun DayEmptyState(modifier: Modifier = Modifier) {
+  Column(
+    modifier = modifier,
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center,
+  ) {
+    Icon(
+      painter = painterResource(R.drawable.ic_fluent_alert),
+      contentDescription = null,
+      modifier = Modifier.size(64.dp),
+      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+    )
+    Text(
+      text = stringResource(R.string.no_events),
+      style = MaterialTheme.typography.bodyLarge,
+      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
+    )
+  }
+}
+
+@Composable
+private fun AddActionFab(
+  onAddReminderClick: () -> Unit,
+  onAddBirthdayClick: () -> Unit,
+) {
+  var expanded by remember { mutableStateOf(false) }
+  Box {
+    FloatingActionButton(onClick = { expanded = true }) {
+      Icon(
+        painter = painterResource(R.drawable.ic_fluent_add),
+        contentDescription = stringResource(R.string.acc_add_reminder),
+      )
+    }
+    AppDropdownMenu(
+      expanded = expanded,
+      onDismissRequest = { expanded = false },
+      items =
+        listOf(
+          PopupMenuItem(id = 0, title = stringResource(R.string.add_reminder_menu), iconRes = R.drawable.ic_fluent_alert),
+          PopupMenuItem(id = 1, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake),
+        ),
+      onItemClick = { id ->
+        when (id) {
+          0 -> onAddReminderClick()
+          1 -> onAddBirthdayClick()
+        }
+      },
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun WeekViewScreenPreview() {
+  AppTheme {
+    WeekViewScreen(
+      state =
+        WeekViewScreenState(
+          title = "Today",
+          days =
+            (0..6).map {
+              WeekDay(
+                localDate = LocalDate.now().plusDays(it.toLong()),
+                weekday = "Mon",
+                date = "${it + 1}",
+                isSelected = it == 0,
+                hasEvents = it % 2 == 0,
+              )
+            },
+        ),
+      initialPagerPosition = 0,
+      pagerJumpRequest = null,
+      onPagerJumpConsumed = {},
+      dateForPosition = { LocalDate.now() },
+      onPageSettled = {},
+      onDayClick = {},
+      refreshSignal = 0,
+      loadDayEvents = { emptyList() },
+      onItemClick = {},
+      onEventMenuAction = { _, _ -> },
+      onAddReminderClick = {},
+      onAddBirthdayClick = {},
+      onBackClick = {},
+    )
+  }
+}
