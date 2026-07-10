@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,6 +37,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 
 private const val FLOATING_BAR_ANIMATION_DURATION_MS = 300
 private const val BAR_PRESSED_SCALE = 1.05f
@@ -45,7 +47,7 @@ private const val BAR_PRESSED_SCALE = 1.05f
  * bar (per REM-1027 Phase 2) without touching [NoteEditFloatingBar] itself: just append another
  * item to the list built by the caller.
  *
- * @param bubbleContent when non-null, tapping this item opens a [NoteEditCloudBubble] anchored
+ * @param bubbleContent when non-null, tapping this item opens a [CloudBubble] anchored
  *   to it; when null, [onClick] is a direct one-shot action (e.g. opening the image picker).
  */
 data class NoteEditBarItem(
@@ -56,7 +58,7 @@ data class NoteEditBarItem(
   val onClick: () -> Unit,
   val icon: @Composable () -> Unit,
   val bubbleContent: (@Composable () -> Unit)? = null,
-  val bubbleWidth: Dp = NOTE_EDIT_BUBBLE_WIDTH,
+  val bubbleWidth: Dp = 272.dp,
 )
 
 private val BAR_ITEM_SIZE = 52.dp
@@ -164,11 +166,11 @@ private fun NoteEditBarIconSlot(
     }
     if (item.selected) {
       item.bubbleContent?.let { bubble ->
-        NoteEditCloudBubble(
+        CloudBubble(
           onDismissRequest = item.onClick,
           containerColor = containerColor,
           contentColor = contentColor,
-          width = item.bubbleWidth,
+          modifier = Modifier.width(item.bubbleWidth),
           content = bubble,
         )
       }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
@@ -40,6 +41,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.AssetsUtil
+import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 /**
@@ -161,10 +163,11 @@ fun FontPanel(
             .clickableIfEnabled(true) { showFontPicker = true },
       )
       if (showFontPicker) {
-        NoteEditCloudBubble(
+        CloudBubble(
           onDismissRequest = { showFontPicker = false },
           containerColor = containerColor,
           contentColor = contentColor,
+          modifier = Modifier.width(272.dp),
         ) {
           FontPickerList(
             selected = fontStyle,
@@ -284,7 +287,7 @@ private fun fontStyleName(fontStyle: Int): String {
 }
 
 /**
- * The font-style picker, hosted inside a third-level [NoteEditCloudBubble] anchored to the
+ * The font-style picker, hosted inside a third-level [CloudBubble] anchored to the
  * "current font" row in [FontPanel] — replaces the old full-screen `AlertDialog` version.
  *
  * Renders previews with plain Compose `Text` + [FontFamily] (loaded once, up front, and cached)

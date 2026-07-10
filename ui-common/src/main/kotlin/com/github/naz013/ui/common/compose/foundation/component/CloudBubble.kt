@@ -1,8 +1,7 @@
-package com.elementary.tasks.notes.create
+package com.github.naz013.ui.common.compose.foundation.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
@@ -28,7 +26,6 @@ import androidx.compose.ui.window.PopupProperties
 
 private val BUBBLE_SPACING = 8.dp
 private val BUBBLE_MARGIN = 20.dp
-val NOTE_EDIT_BUBBLE_WIDTH = 272.dp
 private val TAIL_WIDTH = 16.dp
 private val TAIL_HEIGHT = 8.dp
 private val BUBBLE_CORNER_RADIUS = 16.dp
@@ -40,12 +37,11 @@ private val BUBBLE_CORNER_RADIUS = 16.dp
  * the anchor's center.
  */
 @Composable
-fun NoteEditCloudBubble(
+fun CloudBubble(
   onDismissRequest: () -> Unit,
   containerColor: Color,
   contentColor: Color,
   modifier: Modifier = Modifier,
-  width: Dp = NOTE_EDIT_BUBBLE_WIDTH,
   content: @Composable () -> Unit,
 ) {
   val density = LocalDensity.current
@@ -61,7 +57,7 @@ fun NoteEditCloudBubble(
     properties = PopupProperties(focusable = true),
   ) {
     Surface(
-      modifier = modifier.width(width),
+      modifier = modifier,
       shape = cloudBubbleShape(arrowFraction, density),
       color = containerColor,
       contentColor = contentColor,
