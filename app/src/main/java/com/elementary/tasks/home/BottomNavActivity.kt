@@ -17,7 +17,7 @@ import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
-import com.elementary.tasks.notes.list.NotesFragment
+import com.elementary.tasks.notes.NotesFragment
 import com.elementary.tasks.places.list.PlacesFragment
 import com.elementary.tasks.settings.export.work.BackupSettingsTask
 import com.elementary.tasks.splash.ShortcutDestination

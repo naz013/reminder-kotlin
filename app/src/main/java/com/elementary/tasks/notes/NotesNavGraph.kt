@@ -1,11 +1,8 @@
 package com.elementary.tasks.notes
 
-import android.content.ClipDescription
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -26,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -43,14 +41,20 @@ import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
 import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
+import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.datapicker.compose.rememberCameraPicker
+import com.elementary.tasks.core.os.datapicker.compose.rememberGalleryPicker
+import com.elementary.tasks.core.utils.ui.compose.DateTimePickerDialogs
+import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePickerState
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.safeNavigation
-import com.elementary.tasks.notes.create.CreateNoteViewModel
+import com.elementary.tasks.notes.create.NoteEditViewModel
 import com.elementary.tasks.notes.create.EditTab
 import com.elementary.tasks.notes.create.NoteEditActions
 import com.elementary.tasks.notes.create.NoteEditScreen
-import com.elementary.tasks.notes.list.NotesFragment
-import com.elementary.tasks.notes.list.NotesFragmentDirections
+import com.elementary.tasks.notes.create.UrlImagePickerDialogs
+import com.elementary.tasks.notes.create.rememberUrlImagePickerState
 import com.elementary.tasks.notes.list.NotesScreen
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.preview.ImagePreviewScreen
@@ -62,19 +66,15 @@ import com.elementary.tasks.notes.preview.PreviewNoteState
 import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.ui.common.fragment.hideKeyboard
 import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.ui.common.view.ViewUtils
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
 
 /**
  * Builds the Notes island's [NavDisplay] — the "screens" (Nav3 entries) themselves and the
- * routing between them. [com.elementary.tasks.notes.list.NotesFragment] only owns the backstack and the Android-framework glue
+ * routing between them. [NotesFragment] only owns the backstack and the Android-framework glue
  * (permissions, photo picking, dialogs, date/time pickers) that these entries react to.
  */
 @Composable
@@ -140,18 +140,17 @@ private fun NotesFragment.handleNotesNavigationEvent(
   viewModel: NotesViewModel,
   backStack: MutableList<NavKey>,
 ) {
-  val statusBarColor = requireActivity().window.statusBarColor
   when (event) {
     is NotesViewModel.NavigationEvent.OpenNotePreview -> {
-      backStack.add(NotesNavKey.Preview(event.id, statusBarColor))
+      backStack.add(NotesNavKey.Preview(event.id))
     }
 
     is NotesViewModel.NavigationEvent.OpenCreateNote -> {
-      backStack.add(NotesNavKey.Edit(initialStatusBarColor = statusBarColor))
+      backStack.add(NotesNavKey.Edit())
     }
 
     is NotesViewModel.NavigationEvent.OpenEditNote -> {
-      backStack.add(NotesNavKey.Edit(event.id, statusBarColor))
+      backStack.add(NotesNavKey.Edit(event.id))
     }
 
     is NotesViewModel.NavigationEvent.OpenArchive -> backStack.add(NotesNavKey.Archive)
@@ -165,7 +164,7 @@ private fun NotesFragment.handleNotesNavigationEvent(
     }
 
     is NotesViewModel.NavigationEvent.OpenImagePreview -> {
-      backStack.add(NotesNavKey.ImagePreview(event.imagePosition, statusBarColor))
+      backStack.add(NotesNavKey.ImagePreview(event.imagePosition))
     }
 
     is NotesViewModel.NavigationEvent.ShareNote -> {
@@ -332,39 +331,19 @@ private fun NotesFragment.sendNoteWithImages(
   TelephonyUtil.sendNote(file, requireContext(), note.note?.summary)
 }
 
-private fun NotesFragment.sendNoteFile(
-  file: File,
-  name: String,
-) {
-  if (isDetached) return
-  if (!file.exists() || !file.canRead()) {
-    showErrorSending()
-    return
-  }
-  TelephonyUtil.sendNote(file, requireContext(), name)
-}
-
 private fun NotesFragment.showErrorSending() {
   toast(R.string.error_sending)
 }
 
 @Composable
-private fun NotesFragment.NoteEditEntry(
+private fun NoteEditEntry(
   key: NotesNavKey.Edit,
   backStack: MutableList<NavKey>,
 ) {
-  val viewModel = koinViewModel<CreateNoteViewModel> { parametersOf(key.id) }
-  bindLifecycle(viewModel)
-  LaunchedEffect(Unit) { viewModel.saveStatusBarColor(key.initialStatusBarColor) }
+  val viewModel = koinViewModel<NoteEditViewModel> { parametersOf(key.id, null /**arguments**/) }
 
-  DisposableEffect(viewModel) {
-    activeCreateNoteViewModel = viewModel
-    onDispose {
-      if (activeCreateNoteViewModel === viewModel) activeCreateNoteViewModel = null
-    }
-  }
-
-  val speechEngine = remember(viewModel) { SpeechEngine(requireContext()) }
+  val context = LocalContext.current
+  val speechEngine = remember(viewModel) { SpeechEngine(context) }
   val speechCallback =
     remember(viewModel) {
       object : SpeechEngineCallback() {
@@ -406,76 +385,79 @@ private fun NotesFragment.NoteEditEntry(
     onDispose { speechEngine.stopListening() }
   }
   viewModel.textUpdate.ObserveEvent { update -> speechEngine.setText(update.text) }
-
-  val decorView = requireActivity().window.decorView
-  val primaryColor = remember { ThemeProvider.getPrimaryColor(requireContext()) }
-  DisposableEffect(viewModel) {
-    ViewUtils.registerDragAndDrop(
-      requireActivity(),
-      decorView,
-      true,
-      primaryColor,
-      { clipData -> if (clipData.itemCount > 0) viewModel.parseDrop(clipData) },
-      ClipDescription.MIMETYPE_TEXT_PLAIN,
-      UriUtil.ANY_MIME,
-    )
-    onDispose { decorView.setOnDragListener(null) }
-  }
-
-  LaunchedEffect(Unit) {
-    val args = arguments
-    when {
-      args?.containsKey(Intent.EXTRA_TEXT) == true -> {
-        args.getString(Intent.EXTRA_TEXT)?.let { viewModel.onSharedTextReceived(it) }
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is NoteEditViewModel.Action.Finish -> {
+        backStack.removeLastOrNull()
       }
+      is NoteEditViewModel.Action.Error -> {
 
-      args?.containsKey(Intent.EXTRA_STREAM) == true -> {
-        val uris = args.getParcelableArrayList<Parcelable>(Intent.EXTRA_STREAM)
-        uris?.let { list -> viewModel.addMultiple(list.filterNotNull().filterIsInstance<Uri>()) }
       }
+      is NoteEditViewModel.Action.OpenImagePreview -> {
 
-      args?.getBoolean(IntentKeys.INTENT_ITEM, false) == true -> viewModel.onNoteReceivedFromIntent()
+      }
+      is NoteEditViewModel.Action.ShareNote -> {
+        if (event.file.exists() && event.file.canRead()) {
+          TelephonyUtil.sendNote(event.file, context, event.text)
+        } else {
+          Toast.makeText(context, R.string.error_sending, Toast.LENGTH_SHORT).show()
+        }
+      }
     }
   }
 
-  viewModel.resultEvent.ObserveEvent { commands ->
-    if (commands == Commands.DELETED || commands == Commands.SAVED) {
-      backStack.removeLastOrNull()
-    }
-  }
-  viewModel.noteToShare.ObserveEvent { sendNoteFile(it.second, it.first) }
-  viewModel.errorEvent.ObserveEvent { toast(it) }
+//  val decorView = requireActivity().window.decorView
+//  val primaryColor = remember { ThemeProvider.getPrimaryColor(requireContext()) }
+//  DisposableEffect(viewModel) {
+//    ViewUtils.registerDragAndDrop(
+//      requireActivity(),
+//      decorView,
+//      true,
+//      primaryColor,
+//      { clipData -> if (clipData.itemCount > 0) viewModel.parseDrop(clipData) },
+//      ClipDescription.MIMETYPE_TEXT_PLAIN,
+//      UriUtil.ANY_MIME,
+//    )
+//    onDispose { decorView.setOnDragListener(null) }
+//  }
+
+//  LaunchedEffect(Unit) {
+//    val args = arguments
+//    when {
+//      args?.containsKey(Intent.EXTRA_TEXT) == true -> {
+//        args.getString(Intent.EXTRA_TEXT)?.let { viewModel.onSharedTextReceived(it) }
+//      }
+//
+//      args?.containsKey(Intent.EXTRA_STREAM) == true -> {
+//        val uris = args.getParcelableArrayList<Parcelable>(Intent.EXTRA_STREAM)
+//        uris?.let { list -> viewModel.addMultiple(list.filterNotNull().filterIsInstance<Uri>()) }
+//      }
+//
+//      args?.getBoolean(IntentKeys.INTENT_ITEM, false) == true -> viewModel.onNoteReceivedFromIntent()
+//    }
+//  }
+
+//  viewModel.errorEvent.ObserveEvent { toast(it) }
 
   val state by viewModel.state.collectAsState()
-  val colors = remember(state) { viewModel.colorsFor(state) }
-  SideEffect {
-    requireActivity().window.statusBarColor = colors.statusBarColor
-    requireActivity().window.navigationBarColor = colors.statusBarColor
-  }
-  DisposableEffect(viewModel) {
-    onDispose {
-      viewModel.getStatusBarColor()?.also {
-        requireActivity().window.statusBarColor = it
-        requireActivity().window.navigationBarColor = it
-      }
-      hideKeyboard()
-    }
-  }
+
+  val galleryPicker = rememberGalleryPicker { uris -> viewModel.addMultiple(uris) }
+  val cameraPicker = rememberCameraPicker { uri -> viewModel.addMultiple(listOf(uri)) }
+  val permissionRequester = rememberPermissionRequester()
+  val dateTimePickerState = rememberDateTimePickerState(is24Hour = viewModel.is24HourFormat)
+  val urlImagePickerState = rememberUrlImagePickerState()
+  val selectDateTitle = stringResource(R.string.select_date)
+  val selectTimeTitle = stringResource(R.string.select_time)
+
+  PermissionRationaleDialog(permissionRequester)
+  DateTimePickerDialogs(dateTimePickerState)
+  UrlImagePickerDialogs(urlImagePickerState, onUrlConfirmed = viewModel::downloadImageFromUrl)
 
   NoteEditScreen(
     state = state,
-    speechState = state.speechState,
     supportsSpeech = remember { speechEngine.supportsRecognition() },
-    hasCamera = remember { photoSelectionUtil.hasCamera() },
-    textFieldValue = state.textFieldValue,
     onTextFieldValueChange = viewModel::onTextFieldValueChange,
-    titleFieldValue = state.titleFieldValue,
     onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
-    boldRange = state.boldRange,
-    backgroundColor = Color(colors.background),
-    contentColor = Color(colors.content),
-    sliderColors = colors.sliderColors,
-    activeDialog = state.activeDialog,
     colorsForPalette = viewModel::sliderColorsForPalette,
     actions =
       NoteEditActions(
@@ -484,26 +466,29 @@ private fun NotesFragment.NoteEditEntry(
         onShareClick = viewModel::onShareClick,
         onDeleteClick = viewModel::onDeleteRequested,
         onMicClick = {
-          permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
+          permissionRequester.request(Permissions.RECORD_AUDIO, onGranted = {
             if (speechEngine.isStarted()) {
               speechEngine.stopListening()
             } else {
               speechEngine.startListening(speechCallback)
             }
-          }
+          })
         },
         onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
         onImageTabClick = { viewModel.onTabClicked(EditTab.IMAGE) },
         onImagePickFromGallery = {
-          photoSelectionUtil.tryToPickFromGallery()
+          permissionRequester.request(Permissions.READ_EXTERNAL, onGranted = galleryPicker)
           viewModel.collapseExpandedTab()
         },
         onImagePickFromCamera = {
-          photoSelectionUtil.tryToTakePhoto()
+          permissionRequester.request(
+            listOf(Permissions.CAMERA, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL),
+            onGranted = { cameraPicker() },
+          )
           viewModel.collapseExpandedTab()
         },
         onImagePickFromUrl = {
-          photoSelectionUtil.checkClipboard()
+          urlImagePickerState.start(context)
           viewModel.collapseExpandedTab()
         },
         onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
@@ -512,25 +497,16 @@ private fun NotesFragment.NoteEditEntry(
         onOpacityChanged = viewModel::onOpacityChanged,
         onReminderAttachedChanged = viewModel::onReminderAttachedChanged,
         onDateClick = {
-          dateTimePickerProvider.showDatePicker(
-            fragmentManager = childFragmentManager,
-            date = viewModel.date,
-            title = getString(R.string.select_date),
-          ) { viewModel.onNewDate(it) }
+          dateTimePickerState.showDatePicker(state.date, selectDateTitle, viewModel::onNewDate)
         },
         onTimeClick = {
-          dateTimePickerProvider.showTimePicker(
-            fragmentManager = childFragmentManager,
-            time = viewModel.time,
-            title = getString(R.string.select_time),
-          ) { viewModel.onNewTime(it) }
+          dateTimePickerState.showTimePicker(state.time, selectTimeTitle, viewModel::onNewTime)
         },
         onFontSizeChanged = viewModel::onFontSizeChanged,
         onFieldFocused = viewModel::onFieldFocused,
         onImageOpen = { position -> viewModel.onImageOpen(position) },
         onImageRemove = viewModel::removeImage,
         onFontStyleSelected = viewModel::onFontStyleChanged,
-        onPaletteSelected = viewModel::onPaletteChanged,
         onDeleteConfirmed = viewModel::onDeleteConfirmed,
         onSameNoteKeep = { viewModel.saveNote(newId = true) },
         onSameNoteReplace = { viewModel.saveNote() },

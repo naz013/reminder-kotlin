@@ -45,7 +45,7 @@
         android:label="@string/privacy_policy" />
     <fragment
         android:id="@+id/actionNotes"
-        android:name="com.elementary.tasks.notes.list.NotesFragment"
+        android:name="com.elementary.tasks.notes.NotesFragment"
         android:label="@string/notes">
         <action
             android:id="@+id/action_actionNotes_to_noteSettingsFragment"

@@ -59,24 +59,17 @@ import com.elementary.tasks.core.utils.io.AssetsUtil
 @Composable
 fun NoteEditScreen(
   state: NoteEditState,
-  speechState: SpeechUiState,
-  supportsSpeech: Boolean,
-  hasCamera: Boolean,
-  textFieldValue: TextFieldValue,
   onTextFieldValueChange: (TextFieldValue) -> Unit,
-  titleFieldValue: TextFieldValue,
   onTitleFieldValueChange: (TextFieldValue) -> Unit,
-  boldRange: IntRange?,
-  backgroundColor: Color,
-  contentColor: Color,
-  sliderColors: IntArray,
-  activeDialog: NoteEditDialog?,
+  supportsSpeech: Boolean,
   colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
   modifier: Modifier = Modifier,
 ) {
   val focusManager = LocalFocusManager.current
-  val canDelete = state.isNoteEdited && !state.isFromFile
+  val backgroundColor = state.noteColors.background
+  val contentColor = state.noteColors.content
+  val sliderColors = state.noteColors.sliderColors
 
   BoxWithConstraints(
     modifier =
@@ -112,7 +105,7 @@ fun NoteEditScreen(
               tint = contentColor,
             )
           }
-          if (canDelete) {
+          if (state.canDelete) {
             IconButton(onClick = actions.onDeleteClick) {
               Icon(
                 painter = painterResource(R.drawable.ic_fluent_delete),
@@ -152,7 +145,7 @@ fun NoteEditScreen(
               ?: FontFamily.Default
           }
         TextField(
-          value = titleFieldValue,
+          value = state.titleFieldValue,
           onValueChange = onTitleFieldValueChange,
           modifier =
             Modifier
@@ -182,7 +175,7 @@ fun NoteEditScreen(
             ),
         )
         TextField(
-          value = textFieldValue,
+          value = state.textFieldValue,
           onValueChange = onTextFieldValueChange,
           modifier =
             Modifier
@@ -196,7 +189,7 @@ fun NoteEditScreen(
               lineHeight = TextUnit.Unspecified,
             ),
           placeholder = { Text(stringResource(R.string.note)) },
-          visualTransformation = boldRangeVisualTransformation(boldRange),
+          visualTransformation = boldRangeVisualTransformation(state.boldRange),
           colors =
             TextFieldDefaults.colors(
               focusedContainerColor = Color.Transparent,
@@ -233,9 +226,7 @@ fun NoteEditScreen(
       items =
         noteEditBarItems(
           state = state,
-          speechState = speechState,
           supportsSpeech = supportsSpeech,
-          hasCamera = hasCamera,
           contentColor = barContentColor,
           barColor = barContainerColor,
           barMaxWidth = barMaxWidth,
@@ -255,7 +246,7 @@ fun NoteEditScreen(
     )
   }
 
-  when (activeDialog) {
+  when (state.activeDialog) {
     NoteEditDialog.DELETE ->
       DeleteNoteDialog(
         onDismiss = actions.onDialogDismiss,
@@ -280,13 +271,11 @@ fun NoteEditScreen(
 @Composable
 private fun noteEditBarItems(
   state: NoteEditState,
-  speechState: SpeechUiState,
   supportsSpeech: Boolean,
-  hasCamera: Boolean,
   contentColor: Color,
   barColor: Color,
   barMaxWidth: Dp,
-  sliderColors: IntArray,
+  sliderColors: List<Color>,
   colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
 ): List<NoteEditBarItem> =
@@ -298,7 +287,7 @@ private fun noteEditBarItems(
           id = "mic",
           contentDescription = stringResource(R.string.acc_type_by_voice),
           onClick = actions.onMicClick,
-          icon = { MicIcon(speechState, contentColor) },
+          icon = { MicIcon(state.speechState, contentColor) },
         ),
       )
     }
@@ -311,7 +300,7 @@ private fun noteEditBarItems(
         selected = state.expandedTab == EditTab.COLOR,
         onClick = actions.onColorTabClick,
         icon = {
-          val swatch = sliderColors.getOrNull(state.colorIndex)?.let { Color(it) } ?: contentColor
+          val swatch = sliderColors.getOrNull(state.colorIndex) ?: contentColor
           Box(
             modifier =
               Modifier
@@ -323,7 +312,14 @@ private fun noteEditBarItems(
           )
         },
         bubbleContent = {
-          ColorPanel(state, contentColor, colorsForPalette, actions)
+          ColorPanel(
+            colors = state.noteColors.sliderColors,
+            selectedIndex = state.colorIndex,
+            opacity = state.opacity,
+            contentColor = contentColor,
+            onColorSelected = actions.onColorSelected,
+            onOpacityChanged = actions.onOpacityChanged,
+          )
         },
         bubbleWidth = barMaxWidth,
       ),
@@ -345,7 +341,7 @@ private fun noteEditBarItems(
         },
         bubbleContent = {
           ImageSourcePanel(
-            hasCamera = hasCamera,
+            hasCamera = state.hasCamera,
             contentColor = contentColor,
             onGalleryClick = actions.onImagePickFromGallery,
             onCameraClick = actions.onImagePickFromCamera,

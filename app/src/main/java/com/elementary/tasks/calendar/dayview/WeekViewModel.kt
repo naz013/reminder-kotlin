@@ -41,6 +41,7 @@ class WeekViewModel(
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
+
   val state: StateFlow<WeekViewScreenState> field = MutableStateFlow(WeekViewScreenState(selectedDate = startDate))
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
   val refreshSignal: StateFlow<Int> field = MutableStateFlow(0)

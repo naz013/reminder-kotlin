@@ -41,7 +41,6 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
-import com.github.naz013.ui.common.compose.toColor
 
 /**
  * The icon content for the mic/speech bar item — switches between a static mic icon, an
@@ -198,8 +197,6 @@ fun FontPanel(
   }
 }
 
-/** The "add image" bubble content: choose gallery / camera / URL, matching the options the old
- *  [com.elementary.tasks.core.utils.PhotoSelectionUtil.selectImage] dialog offered. */
 @Composable
 fun ImageSourcePanel(
   hasCamera: Boolean,
@@ -237,21 +234,18 @@ private fun ImageSourceRow(
 
 @Composable
 fun ColorPanel(
-  state: NoteEditState,
+  colors: List<Color>,
+  selectedIndex: Int,
+  opacity: Int,
   contentColor: Color,
-  colorsForPalette: (Int) -> IntArray,
-  actions: NoteEditActions,
+  onColorSelected: (Int) -> Unit,
+  onOpacityChanged: (Int) -> Unit,
 ) {
-  val merged = mergedPalette(colorsForPalette)
   Column(modifier = Modifier.padding(vertical = 8.dp)) {
     ColorSlider(
-      colors = merged.colors,
-      selectedIndex = merged.flatIndexOf(state.palette, state.colorIndex),
-      onColorSelected = { flatIndex ->
-        val selection = merged.selectionAt(flatIndex)
-        actions.onPaletteSelected(selection.palette)
-        actions.onColorSelected(selection.colorIndex)
-      },
+      colors = colors,
+      selectedIndex = selectedIndex,
+      onColorSelected = { onColorSelected(it) },
       selectorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
       modifier =
         Modifier
@@ -265,8 +259,8 @@ fun ColorPanel(
       modifier = Modifier.padding(top = 8.dp),
     )
     Slider(
-      value = state.opacity.toFloat(),
-      onValueChange = { actions.onOpacityChanged(it.toInt()) },
+      value = opacity.toFloat(),
+      onValueChange = { onOpacityChanged(it.toInt()) },
       valueRange = 0f..100f,
       colors =
         SliderDefaults.colors(
@@ -277,45 +271,6 @@ fun ColorPanel(
     )
   }
 }
-
-/** A specific color within a specific palette - what [NoteEditState.palette]/
- *  [NoteEditState.colorIndex] together identify. */
-private data class PaletteSelection(
-  val palette: Int,
-  val colorIndex: Int,
-)
-
-/**
- * The 3 note palettes laid out back-to-back as one flat strip, plus the index math to convert
- * between a flat position in that strip and the (palette, colorIndex) pair the rest of the app
- * stores color selection as - so [ColorPanel] can offer a single combined [ColorSlider] instead
- * of a palette switch (radio buttons) plus a separate slider for the chosen palette's colors.
- */
-private class MergedPalette(
-  colorsForPalette: (Int) -> IntArray,
-) {
-  private val paletteColors = (0..2).map { colorsForPalette(it) }
-  val colors: List<Color> = paletteColors.flatMap { colors -> colors.map { it.toColor() } }
-
-  fun flatIndexOf(
-    palette: Int,
-    colorIndex: Int,
-  ): Int = paletteColors.take(palette).sumOf { it.size } + colorIndex
-
-  fun selectionAt(flatIndex: Int): PaletteSelection {
-    var remaining = flatIndex
-    paletteColors.forEachIndexed { palette, colors ->
-      if (remaining < colors.size) return PaletteSelection(palette, remaining)
-      remaining -= colors.size
-    }
-    val lastPalette = paletteColors.lastIndex
-    return PaletteSelection(lastPalette, paletteColors[lastPalette].lastIndex)
-  }
-}
-
-@Composable
-private fun mergedPalette(colorsForPalette: (Int) -> IntArray): MergedPalette =
-  remember(colorsForPalette) { MergedPalette(colorsForPalette) }
 
 private fun Modifier.clickableIfEnabled(
   enabled: Boolean,
