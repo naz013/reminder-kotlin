@@ -1,26 +1,17 @@
 import com.android.build.api.dsl.ApplicationExtension
-import org.gradle.kotlin.dsl.configure
 import java.util.Properties
 
 plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.compose.compiler)
+  id("reminder.android.application.compose")
 }
 
 extensions.configure<ApplicationExtension> {
   namespace = "com.github.nsy.reviewsadmin"
-  compileSdk {
-    version = release(libs.versions.compileSdk.get().toInt())
-  }
 
   defaultConfig {
     applicationId = "com.github.nsy.reviewsadmin"
-    minSdk = libs.versions.minSdk.get().toInt()
-    targetSdk = libs.versions.targetSdk.get().toInt()
     versionCode = 1
     versionName = "1.0"
-
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   val propsFile = file("${rootProject.rootDir}/keystore.properties")
@@ -51,10 +42,6 @@ extensions.configure<ApplicationExtension> {
   }
 
   buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-    }
     debug {
       if (shouldSign) {
         signingConfig = signingConfigs.getByName("debugApp")
@@ -65,37 +52,9 @@ extensions.configure<ApplicationExtension> {
       buildConfigField("String", "REVIEWS_STORAGE_BUCKET", props.getProperty("reviewsStorageBucket", "\"\""))
     }
   }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  buildFeatures {
-    compose = true
-    buildConfig = true
-  }
-  packaging {
-    resources {
-      excludes += "META-INF/NOTICE"
-      excludes += "META-INF/LICENSE.txt"
-      excludes += "META-INF/NOTICE.txt"
-      excludes += "META-INF/proguard/androidx-annotations.pro"
-      excludes += "META-INF/DEPENDENCIES"
-      excludes += "META-INF/LICENSE"
-      excludes += "META-INF/license.txt"
-      excludes += "META-INF/ASL2.0"
-      excludes += "META-INF/LICENSE.md"
-    }
-  }
-}
 
-kotlin {
-  jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  compilerOptions {
-    optIn.add("-Xreturn-value-checker=check")
-    optIn.add("-Xexplicit-backing-fields")
-    optIn.add("-Xname-based-destructuring=only-syntax")
-    optIn.add("-Xdata-flow-based-exhaustiveness")
-    optIn.add("-Xcollection-literals")
+  buildFeatures {
+    buildConfig = true
   }
 }
 
