@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes.create
 
+import android.content.ClipData
+
 /**
  * Bundles every user-interaction callback for the note edit screen so the composable tree
  * (screen -> top bar / bottom bar / image grid / dialogs) doesn't need a long parameter list
@@ -33,4 +35,5 @@ data class NoteEditActions(
   val onSameNoteKeep: () -> Unit = {},
   val onSameNoteReplace: () -> Unit = {},
   val onDialogDismiss: () -> Unit = {},
+  val onDrop: (ClipData) -> Unit = {},
 )

@@ -2,22 +2,28 @@ package com.elementary.tasks.notes.create
 
 import android.content.ClipData
 import android.content.ContentResolver
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
-import androidx.annotation.ColorInt
+import android.os.Bundle
+import android.os.Parcelable
+import android.util.Patterns
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.request.ImageRequest
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
+import com.elementary.tasks.core.utils.ImageLoader
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
@@ -39,6 +45,7 @@ import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.ImageFile
@@ -55,6 +62,8 @@ import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.ui.common.compose.toColor
+import com.github.naz013.ui.common.compose.withAlpha
 import com.github.naz013.ui.common.isAlmostTransparent
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
@@ -73,10 +82,11 @@ import java.io.File
 import java.util.Random
 import java.util.UUID
 
-class CreateNoteViewModel(
-  private val id: String,
+class NoteEditViewModel(
+  private val id: String?,
+  private val arguments: Bundle?,
   private val imageDecoder: ImageDecoder,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val noteRepository: NoteRepository,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val reminderRepository: ReminderRepository,
@@ -98,122 +108,79 @@ class CreateNoteViewModel(
   private val themeProvider: ThemeProvider,
   private val imagesSingleton: ImagesSingleton,
   private val appWidgetUpdater: AppWidgetUpdater,
-) : BaseProgressViewModel(dispatcherProvider) {
+  private val systemInfo: SystemInfo,
+  private val imageLoader: ImageLoader,
+) : ViewModel() {
+  val is24HourFormat: Boolean = prefs.is24HourFormat
+
   private val _state = MutableStateFlow(NoteEditState())
   val state: StateFlow<NoteEditState> = _state.asStateFlow()
 
-  private var initStatusBarColor: Int = -1
-  private var statusBarColorSaved: Boolean = false
-
-  @ColorInt
-  fun getStatusBarColor(): Int? =
-    if (statusBarColorSaved) {
-      initStatusBarColor.takeIf { it != -1 }
-    } else {
-      null
-    }
-
-  fun saveStatusBarColor(
-    @ColorInt color: Int,
-  ) {
-    if (statusBarColorSaved) return
-    initStatusBarColor = color
-    statusBarColorSaved = true
-  }
-
-  /** Fired whenever [NoteEditState.textFieldValue] is replaced programmatically, so the
-   *  Context-bound [com.elementary.tasks.core.speech.SpeechEngine] instance (owned by the
-   *  entry composable, not this ViewModel) can resync its internal text buffer. */
   private val _textUpdate = mutableLiveDataOf<Event<TextUpdate>>()
   val textUpdate = _textUpdate.toLiveData()
 
-  private val _noteToShare = mutableLiveDataOf<Event<Pair<String, File>>>()
-  val noteToShare = _noteToShare.toLiveData()
+  val event: LiveData<Event<Action>> field = mutableLiveEventOf()
 
-  val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
-
-  private var localNote: NoteWithImages? = null
-  private var linkedReminder: Reminder? = null
-
-  var hasSameInDb: Boolean = false
-    private set
-
-  var date: LocalDate = LocalDate.now()
-    private set
-  var time: LocalTime = LocalTime.now()
-    private set
+  private val mergedPalette by lazy { MergedPalette(themeProvider::noteColorsForSlider) }
 
   init {
-    setDateTime()
-    if (id.isEmpty()) {
-      applyNewNoteDefaults()
-    } else {
-      load()
-    }
-  }
-
-  private fun applyNewNoteDefaults() {
-    val color =
+    val colorIndex =
       if (prefs.isNoteColorRememberingEnabled) {
         prefs.lastNoteColor
       } else {
         Random().nextInt(ThemeProvider.NOTE_COLORS)
       }
-    val fontSize =
-      if (prefs.isNoteFontSizeRememberingEnabled) {
-        prefs.lastNoteFontSize
-      } else {
-        FontParams.DEFAULT_FONT_SIZE
-      }
-    val fontStyle =
-      if (prefs.isNoteFontStyleRememberingEnabled) {
-        prefs.lastNoteFontStyle
-      } else {
-        FontParams.DEFAULT_FONT_STYLE
-      }
-    val titleFontSize =
-      if (prefs.isNoteFontSizeRememberingEnabled) {
-        prefs.lastNoteTitleFontSize
-      } else {
-        FontParams.DEFAULT_TITLE_FONT_SIZE
-      }
-    val titleFontStyle =
-      if (prefs.isNoteFontStyleRememberingEnabled) {
-        prefs.lastNoteTitleFontStyle
-      } else {
-        FontParams.DEFAULT_FONT_STYLE
-      }
-    // A remembered opacity of 0 would make every new note's background fully invisible —
-    // never a useful "remembered" default, so treat it the same as unset.
-    val opacity = prefs.noteColorOpacity.takeIf { it > 0 } ?: 100
+    val flatColorIndex = mergedPalette.flatIndexOf(prefs.notePalette, colorIndex)
+    val opacity = prefs.noteColorOpacity.takeIf { op -> op > 0 } ?: 100
+
     _state.update {
       it.copy(
-        colorIndex = color,
+        colorIndex = flatColorIndex,
         opacity = opacity,
-        palette = prefs.notePalette,
-        fontSize = fontSize,
-        fontStyle = fontStyle,
-        titleFontSize = titleFontSize,
-        titleFontStyle = titleFontStyle,
+        fontSize =
+          if (prefs.isNoteFontSizeRememberingEnabled) {
+            prefs.lastNoteFontSize
+          } else {
+            FontParams.DEFAULT_FONT_SIZE
+          },
+        fontStyle =
+          if (prefs.isNoteFontStyleRememberingEnabled) {
+            prefs.lastNoteFontStyle
+          } else {
+            FontParams.DEFAULT_FONT_STYLE
+          },
+        titleFontSize =
+          if (prefs.isNoteFontSizeRememberingEnabled) {
+            prefs.lastNoteTitleFontSize
+          } else {
+            FontParams.DEFAULT_TITLE_FONT_SIZE
+          },
+        titleFontStyle =
+          if (prefs.isNoteFontStyleRememberingEnabled) {
+            prefs.lastNoteTitleFontStyle
+          } else {
+            FontParams.DEFAULT_FONT_STYLE
+          },
+        hasCamera = systemInfo.hasCamera,
+        noteColors = colorsFor(flatIndex = flatColorIndex, opacity = opacity),
       )
     }
+    onNewTime(LocalTime.now())
+    onNewDate(LocalDate.now())
+
+    load()
   }
 
   fun onColorSelected(index: Int) {
     if (prefs.isNoteColorRememberingEnabled) {
       prefs.lastNoteColor = index
     }
-    _state.update { it.copy(colorIndex = index) }
+    _state.update { it.copy(colorIndex = index, noteColors = colorsFor(index, it.opacity)) }
   }
 
   fun onOpacityChanged(value: Int) {
     prefs.noteColorOpacity = value
-    _state.update { it.copy(opacity = value) }
-  }
-
-  fun onPaletteChanged(value: Int) {
-    prefs.notePalette = value
-    _state.update { it.copy(palette = value) }
+    _state.update { it.copy(opacity = value, noteColors = colorsFor(it.colorIndex, value)) }
   }
 
   fun onFontSizeChanged(value: Int) {
@@ -285,25 +252,15 @@ class CreateNoteViewModel(
     }
   }
 
-  /** Replaces the note body from a share-intent ([android.content.Intent.EXTRA_TEXT]) payload. */
-  fun onSharedTextReceived(text: String) {
-    replaceText(text)
-  }
-
-  private fun replaceText(text: String) {
-    _state.update {
-      it.copy(
-        textFieldValue = TextFieldValue(text = text, selection = TextRange(text.length)),
-        boldRange = null,
-      )
-    }
-    _textUpdate.postValue(Event(TextUpdate(text = text)))
-  }
-
   fun onImageOpen(position: Int) {
     val s = _state.value
-    imagesSingleton.setCurrent(images = s.images, color = s.colorIndex, palette = s.palette)
-    navigationEvent.value = Event(NavigationEvent.OpenImagePreview(position))
+    val selection = mergedPalette.selectionAt(s.colorIndex)
+    imagesSingleton.setCurrent(
+      images = s.images,
+      color = selection.colorIndex,
+      palette = selection.palette,
+    )
+    event.value = Event(Action.OpenImagePreview(position))
   }
 
   fun onDeleteRequested() {
@@ -327,26 +284,20 @@ class CreateNoteViewModel(
     deleteNote()
   }
 
-  /**
-   * Derives the note's background/status-bar/content colors from [state]'s color index, opacity
-   * and palette. A pure function of [state] so the Activity/Compose layer never has to know about
-   * [ThemeProvider] or the contrast math itself.
-   */
-  fun colorsFor(state: NoteEditState): NoteColors {
-    val solidColor = themeProvider.getNoteLightColor(state.colorIndex, 100, state.palette)
+  /** Pure contrast math, mirroring [com.elementary.tasks.notes.preview.PreviewNoteViewModel.colorsFor]
+   *  — kept here so the Compose layer never has to know about [ThemeProvider] or the contrast math. */
+  private fun colorsFor(
+    flatIndex: Int,
+    opacity: Int,
+  ): NoteColors {
+    val selection = mergedPalette.selectionAt(flatIndex)
+    val solidColor = themeProvider.getNoteColor(selection.colorIndex, selection.palette)
     val isBgDark =
-      if (state.opacity.isAlmostTransparent()) {
-        themeProvider.isDark
-      } else {
-        solidColor.isColorDark()
-      }
-    val backgroundColor = themeProvider.getNoteLightColor(state.colorIndex, state.opacity, state.palette)
-    val contentColor = if (isBgDark) PURE_WHITE else PURE_BLACK
+      if (opacity.isAlmostTransparent()) themeProvider.isDark else solidColor.isColorDark()
     return NoteColors(
-      background = backgroundColor,
-      statusBarColor = solidColor,
-      content = contentColor,
-      sliderColors = themeProvider.noteColorsForSlider(state.palette),
+      background = solidColor.toColor().withAlpha(opacity.toPercentage()),
+      sliderColors = mergedPalette.colors,
+      content = (if (isBgDark) PURE_WHITE else PURE_BLACK).toColor(),
     )
   }
 
@@ -354,7 +305,7 @@ class CreateNoteViewModel(
 
   /** True when saving should first confirm overwrite-vs-keep, because this came from an
    *  imported file that already has a matching note in the database. */
-  fun shouldConfirmBeforeSaving(): Boolean = _state.value.isFromFile && hasSameInDb
+  fun shouldConfirmBeforeSaving(): Boolean = _state.value.isFromFile && _state.value.hasSameInDb
 
   /** Collapses the currently expanded tab, if any. Returns true if a tab was collapsed. */
   fun collapseExpandedTab(): Boolean {
@@ -383,50 +334,85 @@ class CreateNoteViewModel(
   }
 
   fun onShareClick() {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.io()) {
       val note = createObject()
       val file = createSharedNoteFileUseCase(note)
       Logger.i(TAG, "Share note file path: ${file?.absolutePath}")
       withContext(dispatcherProvider.main()) {
-        postInProgress(false)
         if (file != null) {
-          _noteToShare.postValue(
+          event.value =
             Event(
-              Pair(
-                _state.value.textFieldValue.text
-                  .trim(),
-                file,
+              Action.ShareNote(
+                text =
+                  _state.value.textFieldValue.text
+                    .trim(),
+                file = file,
               ),
-            ),
-          )
+            )
         } else {
-          postError(textProvider.getText(R.string.error_sending))
+          event.value = Event(Action.Error(textProvider.getText(R.string.error_sending)))
         }
       }
     }
   }
 
   fun onNewTime(localTime: LocalTime) {
-    time = localTime
-    _state.update { it.copy(reminderTimeFormatted = dateTimeManager.getTime(time)) }
-  }
-
-  fun onNewDate(localDate: LocalDate) {
-    date = localDate
-    _state.update { it.copy(reminderDateFormatted = dateTimeManager.getDate(date)) }
-  }
-
-  private fun load() {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      localNote = noteRepository.getById(id)
-      localNote?.also { noteWithImages -> onNoteLoaded(noteWithImages) }
+    _state.update {
+      it.copy(
+        time = localTime,
+        reminderTimeFormatted = dateTimeManager.getTime(localTime),
+      )
     }
   }
 
-  fun onNoteReceivedFromIntent() {
-    intentDataReader.get(IntentKeys.INTENT_ITEM, NoteWithImages::class.java)?.run {
-      onNoteLoaded(this)
+  fun onNewDate(localDate: LocalDate) {
+    _state.update {
+      it.copy(
+        date = localDate,
+        reminderDateFormatted = dateTimeManager.getDate(localDate),
+      )
+    }
+  }
+
+  private fun replaceText(text: String) {
+    _state.update {
+      it.copy(
+        textFieldValue = TextFieldValue(text = text, selection = TextRange(text.length)),
+        boldRange = null,
+      )
+    }
+    _textUpdate.postValue(Event(TextUpdate(text = text)))
+  }
+
+  private fun load() {
+    viewModelScope.launch(dispatcherProvider.main()) {
+      when {
+        arguments?.containsKey(Intent.EXTRA_TEXT) == true -> {
+          arguments.getString(Intent.EXTRA_TEXT)?.let { replaceText(it) }
+        }
+
+        arguments?.containsKey(Intent.EXTRA_STREAM) == true -> {
+          val uris = arguments.getParcelableArrayList<Parcelable>(Intent.EXTRA_STREAM)
+          uris?.let { list -> addMultiple(list.filterNotNull().filterIsInstance<Uri>()) }
+        }
+
+        arguments?.getBoolean(IntentKeys.INTENT_ITEM, false) == true -> {
+          intentDataReader.get(IntentKeys.INTENT_ITEM, NoteWithImages::class.java)?.run {
+            onNoteLoaded(this)
+            findSame(this.getKey())
+          }
+        }
+
+        else -> {
+          val noteWithImages =
+            id?.let {
+              withContext(dispatcherProvider.io()) {
+                noteRepository.getById(id)
+              }
+            }
+          noteWithImages?.also { onNoteLoaded(it) }
+        }
+      }
     }
   }
 
@@ -437,24 +423,29 @@ class CreateNoteViewModel(
         it.copy(
           colorIndex = uiNoteEdit.colorPosition,
           opacity = uiNoteEdit.opacity,
-          palette = uiNoteEdit.colorPalette,
+          noteColors = colorsFor(uiNoteEdit.colorPosition, uiNoteEdit.opacity),
           fontStyle = uiNoteEdit.typeface,
           fontSize = uiNoteEdit.fontSize,
           titleFontStyle = uiNoteEdit.titleTypeface,
           titleFontSize = uiNoteEdit.titleFontSize,
           images = uiNoteEdit.images,
-          isNoteEdited = true,
-          textFieldValue = TextFieldValue(text = uiNoteEdit.text, selection = TextRange(uiNoteEdit.text.length)),
-          titleFieldValue = TextFieldValue(text = uiNoteEdit.title, selection = TextRange(uiNoteEdit.title.length)),
+          textFieldValue =
+            TextFieldValue(
+              text = uiNoteEdit.text,
+              selection = TextRange(uiNoteEdit.text.length),
+            ),
+          titleFieldValue =
+            TextFieldValue(
+              text = uiNoteEdit.title,
+              selection = TextRange(uiNoteEdit.title.length),
+            ),
           boldRange = null,
+          noteId = noteWithImages.getKey(),
         )
       }
       _textUpdate.postValue(Event(TextUpdate(text = uiNoteEdit.text)))
 
-      val noteKey = noteWithImages.note?.key
-      if (!noteKey.isNullOrEmpty()) {
-        loadLinkedReminder(noteKey)
-      }
+      noteWithImages.getKey().also { loadLinkedReminder(it) }
     }
   }
 
@@ -463,27 +454,33 @@ class CreateNoteViewModel(
       reminderRepository
         .getByNoteKey(noteKey)
         .firstOrNull { it.isActive && !it.isRemoved }
-    linkedReminder = reminder
+
     if (reminder != null) {
       dateTimeManager.fromGmtToLocal(reminder.eventTime)?.also { localDateTime ->
         onNewDate(localDateTime.toLocalDate())
         onNewTime(localDateTime.toLocalTime())
       }
-      _state.update { it.copy(isReminderAttached = true) }
+      _state.update {
+        it.copy(
+          isReminderAttached = true,
+          reminderId = reminder.uuId,
+        )
+      }
     }
   }
 
-  private fun findSame(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val note = noteRepository.getById(id)
-      hasSameInDb = note?.note != null
+  private suspend fun findSame(id: String) {
+    val hasSameInDb =
+      withContext(dispatcherProvider.io()) {
+        val noteWithImages = noteRepository.getById(id)
+        noteWithImages != null
+      }
+    _state.update {
+      it.copy(
+        hasSameInDb = hasSameInDb,
+        isFromFile = true,
+      )
     }
-  }
-
-  private fun setDateTime() {
-    val dateTime = LocalDateTime.now()
-    onNewDate(dateTime.toLocalDate())
-    onNewTime(dateTime.toLocalTime())
   }
 
   fun removeImage(position: Int) {
@@ -533,6 +530,26 @@ class CreateNoteViewModel(
     }
   }
 
+  /** Downloads an image from a pasted/typed URL and appends it, mirroring the download step of
+   *  the previous Fragment-based `PhotoSelectionUtil.downloadUrl`. */
+  fun downloadImageFromUrl(url: String) {
+    if (!Patterns.WEB_URL.matcher(url).matches()) {
+      event.value = Event(Action.Error(textProvider.getText(R.string.wrong_url)))
+      return
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val request = ImageRequest.Builder(contextProvider.context).data(url).build()
+      val bitmap = runCatching { imageLoader.execute(request).drawable?.toBitmap() }.getOrNull()
+      if (bitmap != null) {
+        addBitmap(bitmap)
+      } else {
+        withContext(dispatcherProvider.main()) {
+          event.value = Event(Action.Error(textProvider.getText(R.string.failed_to_download)))
+        }
+      }
+    }
+  }
+
   fun addMultiple(uris: List<Uri>) {
     val count = _state.value.images.size
     imageDecoder.startDecoding(viewModelScope, uris, count, {
@@ -560,17 +577,25 @@ class CreateNoteViewModel(
   }
 
   private fun deleteNote() {
-    val noteWithImages = localNote ?: return
-    val note = noteWithImages.note ?: return
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      deleteNoteUseCase(note.key)
-      postInProgress(false)
-      postCommand(Commands.DELETED)
+    val id =
+      id ?: run {
+        Logger.w(TAG, "Note id is null")
+        return
+      }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      noteRepository.getById(id) ?: run {
+        withContext(dispatcherProvider.main()) {
+          event.value = Event(Action.Error(textProvider.getText(R.string.default_error_msg)))
+        }
+        return@launch
+      }
+
+      deleteNoteUseCase(id)
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
         appWidgetUpdater.updateAllWidgets()
+        event.value = Event(Action.Finish)
       }
     }
   }
@@ -604,7 +629,9 @@ class CreateNoteViewModel(
         }
       if (allTextParts.isNotEmpty()) {
         val combined = allTextParts.joinToString("\n")
-        withUIContext { replaceText(combined) }
+        withContext(dispatcherProvider.main()) {
+          replaceText(combined)
+        }
       }
 
       if (result.imageUris.isNotEmpty()) {
@@ -612,8 +639,8 @@ class CreateNoteViewModel(
       }
 
       if (result.unsupportedCount > 0) {
-        withUIContext {
-          postError(textProvider.getText(R.string.unsupported_file_format))
+        withContext(dispatcherProvider.main()) {
+          event.value = Event(Action.Error(textProvider.getText(R.string.unsupported_file_format)))
         }
       }
     }
@@ -621,39 +648,44 @@ class CreateNoteViewModel(
 
   fun saveNote(newId: Boolean = false) {
     _state.update { it.copy(activeDialog = null) }
-    val noteWithImages = createObject()
-    val hasReminder = _state.value.isReminderAttached
-    var reminder: Reminder? = null
-    var reminderToDelete: Reminder? = null
-    val note = noteWithImages.note
-    if (hasReminder && note != null) {
-      // Reuse the existing linked reminder's identity so saving updates it in place instead
-      // of creating a duplicate — unless we're splitting off a new note copy (newId), in which
-      // case the original reminder must stay with the original note.
-      reminder = createReminder(note, reuseExisting = !newId) ?: return
-    } else if (!newId) {
-      // The switch was turned off for a note that had a reminder attached — remove it.
-      reminderToDelete = linkedReminder
-    }
 
-    if (newId) {
-      noteWithImages.note?.key = UUID.randomUUID().toString()
-      reminder?.noteId = noteWithImages.getKey()
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val noteWithImages = createObject()
+      val hasReminder = _state.value.isReminderAttached
+      var reminder: Reminder? = null
+      var reminderToDelete: Reminder? = null
+      val note = noteWithImages.note
+      if (hasReminder && note != null) {
+        // Reuse the existing linked reminder's identity so saving updates it in place instead
+        // of creating a duplicate — unless we're splitting off a new note copy (newId), in which
+        // case the original reminder must stay with the original note.
+        reminder = createReminder(note, reuseExisting = !newId) ?: run {
+          Logger.e(TAG, "Failed to create reminder")
+          return@launch
+        }
+      } else if (!newId) {
+        // The switch was turned off for a note that had a reminder attached — remove it.
+        reminderToDelete = getLinkedReminder(_state.value.reminderId)
+      }
+
+      if (newId) {
+        noteWithImages.note?.key = UUID.randomUUID().toString()
+        reminder?.noteId = noteWithImages.getKey()
+      }
+      noteWithImages.note?.archived = false
+      analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_NOTE))
+      Logger.logEvent("Note saved")
+      saveNote(noteWithImages, reminder, reminderToDelete)
     }
-    noteWithImages.note?.archived = false
-    analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_NOTE))
-    Logger.logEvent("Note saved")
-    saveNote(noteWithImages, reminder, reminderToDelete)
   }
 
-  private fun saveNote(
+  private suspend fun saveNote(
     note: NoteWithImages,
     reminder: Reminder?,
     reminderToDelete: Reminder?,
   ) {
     val v = note.note ?: return
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
+    withContext(dispatcherProvider.default()) {
       v.updatedAt = DateTimeManager.gmtDateTime
       saveNoteUseCase(note)
       Logger.i(TAG, "Note saved with id: ${v.key}")
@@ -662,21 +694,33 @@ class CreateNoteViewModel(
       } else if (reminderToDelete != null) {
         deleteReminderUseCase(reminderToDelete)
       }
-      postInProgress(false)
-      postCommand(Commands.SAVED)
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
         appWidgetUpdater.updateAllWidgets()
+        event.value = Event(Action.Finish)
       }
     }
   }
 
-  private fun createReminder(
+  private suspend fun getLinkedReminder(reminderId: String?): Reminder? {
+    reminderId ?: return null
+    return withContext(dispatcherProvider.io()) {
+      reminderRepository.getById(reminderId)
+    }
+  }
+
+  private suspend fun createReminder(
     note: Note,
     reuseExisting: Boolean,
   ): Reminder? {
-    val existing = if (reuseExisting) linkedReminder else null
+    val reminderId = _state.value.reminderId
+    val existing =
+      if (reuseExisting && reminderId != null) {
+        getLinkedReminder(reminderId)
+      } else {
+        null
+      }
     val reminder = existing?.copy() ?: Reminder()
     if (existing == null) {
       reminder.delay = 0
@@ -689,9 +733,9 @@ class CreateNoteViewModel(
     reminder.isRemoved = false
     reminder.summary = SuperUtil.normalizeSummary(note.title.ifBlank { note.summary })
 
-    val startTime = LocalDateTime.of(date, time)
+    val startTime = LocalDateTime.of(_state.value.date, _state.value.time)
     if (!dateTimeManager.isCurrent(startTime)) {
-      postError(textProvider.getText(R.string.reminder_is_outdated))
+      event.value = Event(Action.Error(textProvider.getText(R.string.reminder_is_outdated)))
       return null
     }
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
@@ -699,28 +743,32 @@ class CreateNoteViewModel(
     return reminder
   }
 
-  private fun createObject(): NoteWithImages {
+  private suspend fun createObject(): NoteWithImages {
     val s = _state.value
     val images = s.images
+    val oldNote =
+      withContext(dispatcherProvider.io()) {
+        noteRepository.getById(s.noteId)
+      }
 
-    val noteWithImages = localNote
-    var note = noteWithImages?.note
+    var note = oldNote?.note
     if (note == null) {
       note = Note(syncState = SyncState.WaitingForUpload)
     }
+    val merged = mergedPalette.selectionAt(s.colorIndex)
     note.summary = s.textFieldValue.text.trim()
     note.title = s.titleFieldValue.text.trim()
     note.date = dateTimeManager.getNowGmtDateTime()
-    note.color = s.colorIndex
+    note.color = merged.colorIndex
     note.style = s.fontStyle
     note.fontSize = s.fontSize
     note.titleFontStyle = s.titleFontStyle
     note.titleFontSize = s.titleFontSize
-    note.palette = s.palette
+    note.palette = merged.palette
     note.opacity = s.opacity
     note.syncState = SyncState.WaitingForUpload
 
-    return (noteWithImages ?: NoteWithImages()).copy(
+    return (oldNote ?: NoteWithImages()).copy(
       images =
         images.map {
           ImageFile(
@@ -745,10 +793,50 @@ class CreateNoteViewModel(
     }
   }
 
-  sealed interface NavigationEvent {
+  private fun Int.toPercentage(): Float = this / 100f
+
+  private data class PaletteSelection(
+    val palette: Int,
+    val colorIndex: Int,
+  )
+
+  private class MergedPalette(
+    colorsForPalette: (Int) -> IntArray,
+  ) {
+    private val paletteColors = (0..2).map { colorsForPalette(it) }
+    val colors: List<Color> = paletteColors.flatMap { colors -> colors.map { it.toColor() } }
+
+    fun flatIndexOf(
+      palette: Int,
+      colorIndex: Int,
+    ): Int = paletteColors.take(palette).sumOf { it.size } + colorIndex
+
+    fun selectionAt(flatIndex: Int): PaletteSelection {
+      var remaining = flatIndex
+      paletteColors.forEachIndexed { palette, colors ->
+        if (remaining < colors.size) return PaletteSelection(palette, remaining)
+        remaining -= colors.size
+      }
+      val lastPalette = paletteColors.lastIndex
+      return PaletteSelection(lastPalette, paletteColors[lastPalette].lastIndex)
+    }
+  }
+
+  sealed interface Action {
     data class OpenImagePreview(
       val position: Int,
-    ) : NavigationEvent
+    ) : Action
+
+    data class Error(
+      val message: String,
+    ) : Action
+
+    data object Finish : Action
+
+    data class ShareNote(
+      val text: String,
+      val file: File,
+    ) : Action
   }
 
   companion object {

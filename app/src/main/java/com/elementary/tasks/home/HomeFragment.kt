@@ -17,7 +17,7 @@ import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.onBackStackResume
 import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.topfragment.RootFragment
-import com.elementary.tasks.notes.list.NotesFragment
+import com.elementary.tasks.notes.NotesFragment
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.compose.composeView

@@ -4,131 +4,190 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.elementary.tasks.calendar.BaseCalendarFragment
-import com.elementary.tasks.calendar.dayview.weekheader.WeekAdapter
-import com.elementary.tasks.databinding.FragmentDayViewBinding
-import com.github.naz013.feature.common.livedata.nonNullObserve
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.fragment.app.Fragment
+import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.BirthdaysFragment
+import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
+import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
+import com.elementary.tasks.core.os.PermissionFlow
+import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.onBackStackResume
+import com.elementary.tasks.navigation.safeNavigation
+import com.elementary.tasks.navigation.topfragment.RootFragment
+import com.github.naz013.common.Permissions
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.livedata.observeEvent
-import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.compose.composeView
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
-class WeekViewFragment : BaseCalendarFragment<FragmentDayViewBinding>() {
-  private lateinit var pagerAdapter: InfiniteDayViewPagerAdapter
-  private var isUpdatingProgrammatically = false
+class WeekViewFragment :
+  Fragment(),
+  RootFragment {
+  private val dateTimeManager by inject<DateTimeManager>()
+  private val dialogues by inject<Dialogues>()
+  private lateinit var permissionFlow: PermissionFlow
 
   private val viewModel by viewModel<WeekViewModel> { parametersOf(getDate()) }
 
-  private val weekAdapter = WeekAdapter { viewModel.selectDate(it.localDate) }
+  private var pagerJumpRequest by mutableStateOf<Int?>(null)
 
   private fun getDate(): LocalDate =
     arguments?.let {
       dateTimeManager.fromMillis(WeekViewFragmentArgs.fromBundle(it).date).toLocalDate()
     } ?: LocalDate.now()
 
-  override fun inflate(
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    permissionFlow = PermissionFlow(this, dialogues)
+  }
+
+  override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ) = FragmentDayViewBinding.inflate(inflater, container, false)
+  ): View =
+    composeView {
+      val state by viewModel.state.collectAsState()
+      val refreshSignal by viewModel.refreshSignal.collectAsState()
+      WeekViewScreen(
+        state = state,
+        initialPagerPosition = viewModel.lastPosition,
+        pagerJumpRequest = pagerJumpRequest,
+        onPagerJumpConsumed = { pagerJumpRequest = null },
+        dateForPosition = viewModel::dateForPosition,
+        onPageSettled = { position ->
+          viewModel.updateLastPosition(position)
+          viewModel.onDateSelected(viewModel.dateForPosition(position))
+        },
+        onDayClick = { day -> viewModel.selectDate(day.localDate) },
+        refreshSignal = refreshSignal,
+        loadDayEvents = viewModel::loadDayEvents,
+        onItemClick = viewModel::onItemClick,
+        onEventMenuAction = viewModel::onEventMenuAction,
+        onAddReminderClick = { viewModel.onAddReminderClick(state.selectedDate) },
+        onAddBirthdayClick = { viewModel.onAddBirthdayClick(state.selectedDate) },
+        onBackClick = { requireActivity().onBackPressedDispatcher.onBackPressed() },
+      )
+    }
 
   override fun onViewCreated(
     view: View,
     savedInstanceState: Bundle?,
   ) {
     super.onViewCreated(view, savedInstanceState)
-    Logger.d(TAG, "On view created")
-    binding.weekGridView.adapter = weekAdapter
-    binding.fab.setOnClickListener { tryToShowActionDialog() }
-
-    initPager()
-    initViewModel()
-  }
-
-  private fun tryToShowActionDialog() {
-    showActionDialog(viewModel.lastSelectedDate)
-  }
-
-  private fun initViewModel() {
     lifecycle.addObserver(viewModel)
-    viewModel.state.nonNullObserve(viewLifecycleOwner) { onStateChanged(it) }
-    viewModel.moveToDate.observeEvent(viewLifecycleOwner) { updateDate(it, true) }
-  }
-
-  private fun onStateChanged(state: DayViewState) {
-    weekAdapter.submitList(state.days)
-    setTitle(state.title)
-  }
-
-  private fun initPager() {
-    Logger.i(TAG, "Initializing pager, date: ${viewModel.initDate}, position: ${viewModel.lastPosition}")
-
-    pagerAdapter = InfiniteDayViewPagerAdapter(this, viewModel.initDate)
-    binding.pager.adapter = pagerAdapter
-    binding.pager.offscreenPageLimit = 1
-
-    // Reduce sensitivity to make swiping smoother
-    try {
-      val recyclerView = binding.pager.getChildAt(0) as? RecyclerView
-      recyclerView?.overScrollMode = View.OVER_SCROLL_NEVER
-    } catch (e: Exception) {
-      Logger.e(TAG, "Failed to configure pager", e)
+    viewModel.navigationEvent.observeEvent(viewLifecycleOwner) { event ->
+      if (event is WeekViewModel.NavigationEvent.MoveToDate) {
+        pagerJumpRequest = viewModel.positionForDate(event.date)
+      } else {
+        handleNavigationEvent(event)
+      }
     }
+  }
 
-    // Set initial position to center
-    binding.pager.setCurrentItem(viewModel.lastPosition, false)
+  override fun onResume() {
+    super.onResume()
+    onBackStackResume()
+  }
 
-    // Listen for page changes
-    binding.pager.registerOnPageChangeCallback(
-      object : ViewPager2.OnPageChangeCallback() {
-        override fun onPageSelected(position: Int) {
-          super.onPageSelected(position)
+  private fun handleNavigationEvent(event: WeekViewModel.NavigationEvent) {
+    when (event) {
+      is WeekViewModel.NavigationEvent.MoveToDate -> Unit
 
-          // Skip if we're updating programmatically
-          if (isUpdatingProgrammatically) {
-            Logger.d(TAG, "Skipping page selected - programmatic update")
-            return
-          }
+      is WeekViewModel.NavigationEvent.OpenReminderPreview -> {
+        safeNavigation(
+          R.id.previewReminderFragment,
+          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
 
-          // Calculate the date for this position
-          val newDate = pagerAdapter.getDateForPosition(position)
-          Logger.d(TAG, "Page selected: $position, date: $newDate")
+      is WeekViewModel.NavigationEvent.OpenReminderEdit -> {
+        safeNavigation(
+          R.id.buildReminderFragment,
+          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
 
-          viewModel.onDateSelected(newDate)
-          viewModel.updateLastPosition(position)
+      is WeekViewModel.NavigationEvent.OpenBirthdayPreview -> {
+        safeNavigation(
+          R.id.birthdayFragment,
+          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      is WeekViewModel.NavigationEvent.OpenBirthdayEdit -> {
+        safeNavigation(
+          R.id.birthdayFragment,
+          Bundle().apply {
+            putString(IntentKeys.INTENT_ID, event.id)
+            putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      is WeekViewModel.NavigationEvent.OpenNewReminder -> {
+        val deepLinkData =
+          ReminderDatetimeTypeDeepLinkData(
+            type = Reminder.BY_DATE,
+            dateTime = LocalDateTime.of(event.date, LocalTime.now()),
+          )
+        safeNavigation(
+          R.id.buildReminderFragment,
+          Bundle().apply {
+            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+            putParcelable(deepLinkData.intentKey, deepLinkData)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      is WeekViewModel.NavigationEvent.OpenNewBirthday -> {
+        val deepLinkData = BirthdayDateDeepLinkData(event.date)
+        safeNavigation(
+          R.id.birthdayFragment,
+          Bundle().apply {
+            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+            putParcelable(deepLinkData.intentKey, deepLinkData)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
+
+      is WeekViewModel.NavigationEvent.ConfirmArchiveReminder -> {
+        dialogues.askConfirmation(requireContext(), getString(R.string.move_to_archive)) { confirmed ->
+          if (confirmed) viewModel.moveReminderToArchive(event.id)
         }
-      },
-    )
-  }
+      }
 
-  override fun getTitle(): String = viewModel.state.value?.title ?: ""
+      is WeekViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
+        dialogues.askConfirmation(requireContext(), getString(R.string.delete)) { confirmed ->
+          if (confirmed) viewModel.deleteBirthday(event.id)
+        }
+      }
 
-  private fun updateDate(
-    targetDate: LocalDate,
-    smooth: Boolean,
-  ) {
-    Logger.d(TAG, "Update date: $targetDate, smooth: $smooth")
-
-    // Calculate the position for this date
-    val targetPosition = pagerAdapter.getPositionForDate(targetDate)
-    Logger.d(TAG, "Target position: $targetPosition")
-
-    // Update pager position
-    isUpdatingProgrammatically = true
-    binding.pager.post {
-      binding.pager.setCurrentItem(targetPosition, smooth)
-      viewModel.updateLastPosition(targetPosition)
-      // Reset flag after a short delay to ensure the transition completes
-      binding.pager.postDelayed({
-        isUpdatingProgrammatically = false
-      }, 100)
+      is WeekViewModel.NavigationEvent.RequestGpsPermission -> {
+        permissionFlow.askPermissions(
+          listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
+        ) {
+          viewModel.toggleReminder(event.id)
+        }
+      }
     }
-  }
-
-  companion object {
-    private const val TAG = "WeekViewFragment"
   }
 }

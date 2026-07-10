@@ -1,11 +1,9 @@
 package com.elementary.tasks.notes
 
-import android.content.ClipDescription
-import android.content.Intent
-import android.net.Uri
+import android.app.Activity
 import android.os.Bundle
-import android.os.Parcelable
 import android.widget.FrameLayout
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -16,6 +14,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -23,14 +22,17 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -38,19 +40,26 @@ import androidx.navigation3.ui.NavDisplay
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
+import com.elementary.tasks.core.os.compose.PermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.datapicker.compose.rememberCameraPicker
+import com.elementary.tasks.core.os.datapicker.compose.rememberGalleryPicker
 import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
 import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.ui.compose.DateTimePickerDialogs
+import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePickerState
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.safeNavigation
-import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.create.EditTab
 import com.elementary.tasks.notes.create.NoteEditActions
 import com.elementary.tasks.notes.create.NoteEditScreen
-import com.elementary.tasks.notes.list.NotesFragment
-import com.elementary.tasks.notes.list.NotesFragmentDirections
+import com.elementary.tasks.notes.create.NoteEditViewModel
+import com.elementary.tasks.notes.create.UrlImagePickerDialogs
+import com.elementary.tasks.notes.create.rememberUrlImagePickerState
 import com.elementary.tasks.notes.list.NotesScreen
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.preview.ImagePreviewScreen
@@ -62,23 +71,23 @@ import com.elementary.tasks.notes.preview.PreviewNoteState
 import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.common.uri.UriUtil
-import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.ui.common.fragment.hideKeyboard
-import com.github.naz013.ui.common.fragment.toast
-import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.ui.common.view.ViewUtils
+import com.github.naz013.ui.common.Dialogues
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import java.io.File
 
 /**
  * Builds the Notes island's [NavDisplay] — the "screens" (Nav3 entries) themselves and the
- * routing between them. [com.elementary.tasks.notes.list.NotesFragment] only owns the backstack and the Android-framework glue
- * (permissions, photo picking, dialogs, date/time pickers) that these entries react to.
+ * routing between them. None of these entries depend on a Fragment/Activity beyond what Compose
+ * itself exposes ([LocalActivity], [LocalView]'s [NavController]) — [NotesFragment] only owns the
+ * backstack and forwards its `arguments` bundle once to seed it.
  */
 @Composable
-internal fun NotesFragment.NotesNavGraph(backStack: MutableList<NavKey>) {
+internal fun NotesNavGraph(
+  backStack: MutableList<NavKey>,
+  arguments: Bundle?,
+) {
   NavDisplay(
     backStack = backStack,
     onBack = { backStack.removeLastOrNull() },
@@ -119,7 +128,7 @@ internal fun NotesFragment.NotesNavGraph(backStack: MutableList<NavKey>) {
         entry<NotesNavKey.List> { NotesListEntry(backStack) }
         entry<NotesNavKey.Archive> { NotesArchiveEntry(backStack) }
         entry<NotesNavKey.Preview> { key -> NotePreviewEntry(key, backStack) }
-        entry<NotesNavKey.Edit> { key -> NoteEditEntry(key, backStack) }
+        entry<NotesNavKey.Edit> { key -> NoteEditEntry(key, backStack, arguments = arguments) }
         entry<NotesNavKey.ImagePreview> { key -> NoteImagePreviewEntry(key, backStack) }
       },
   )
@@ -135,60 +144,105 @@ private const val NAV_ANIM_FADE_DURATION_MS = 250
 private const val NAV_ANIM_ENTER_SCALE = 0.92f
 private const val NAV_ANIM_EXIT_SCALE = 1.08f
 
-private fun NotesFragment.handleNotesNavigationEvent(
+/**
+ * Bundles the framework-level dependencies [handleNotesNavigationEvent] needs so [NotesListEntry]
+ * and [NotesArchiveEntry] don't have to repeat a long parameter list — resolved once via
+ * [rememberNotesHostDependencies], none of it via a Fragment/Activity reference held by the caller.
+ */
+private class NotesHostDependencies(
+  val activity: Activity,
+  val navController: NavController,
+  val dialogues: Dialogues,
+  val permissionRequester: PermissionRequester,
+  val settingsTitle: String,
+  val colorDialogTitle: String,
+  val deleteDialogTitle: String,
+)
+
+@Composable
+private fun rememberNotesHostDependencies(permissionRequester: PermissionRequester): NotesHostDependencies {
+  val activity =
+    requireNotNull(LocalActivity.current) { "Notes screens require an Activity-backed composition" }
+  val view = LocalView.current
+  val navController = remember(view) { view.findNavController() }
+  val dialogues = koinInject<Dialogues>()
+  val settingsTitle = stringResource(R.string.action_settings)
+  val colorDialogTitle = stringResource(R.string.color)
+  val deleteDialogTitle = stringResource(R.string.delete)
+  return remember(
+    activity,
+    navController,
+    dialogues,
+    permissionRequester,
+    settingsTitle,
+    colorDialogTitle,
+    deleteDialogTitle,
+  ) {
+    NotesHostDependencies(
+      activity = activity,
+      navController = navController,
+      dialogues = dialogues,
+      permissionRequester = permissionRequester,
+      settingsTitle = settingsTitle,
+      colorDialogTitle = colorDialogTitle,
+      deleteDialogTitle = deleteDialogTitle,
+    )
+  }
+}
+
+private fun handleNotesNavigationEvent(
   event: NotesViewModel.NavigationEvent,
   viewModel: NotesViewModel,
   backStack: MutableList<NavKey>,
+  deps: NotesHostDependencies,
 ) {
-  val statusBarColor = requireActivity().window.statusBarColor
   when (event) {
     is NotesViewModel.NavigationEvent.OpenNotePreview -> {
-      backStack.add(NotesNavKey.Preview(event.id, statusBarColor))
+      backStack.add(NotesNavKey.Preview(event.id))
     }
 
     is NotesViewModel.NavigationEvent.OpenCreateNote -> {
-      backStack.add(NotesNavKey.Edit(initialStatusBarColor = statusBarColor))
+      backStack.add(NotesNavKey.Edit())
     }
 
     is NotesViewModel.NavigationEvent.OpenEditNote -> {
-      backStack.add(NotesNavKey.Edit(event.id, statusBarColor))
+      backStack.add(NotesNavKey.Edit(event.id))
     }
 
     is NotesViewModel.NavigationEvent.OpenArchive -> backStack.add(NotesNavKey.Archive)
 
     is NotesViewModel.NavigationEvent.OpenSettings -> {
-      safeNavigation(
-        NotesFragmentDirections.actionActionNotesToNoteSettingsFragment(
-          getString(R.string.action_settings),
-        ),
+      deps.navController.safeNavigation(
+        NotesFragmentDirections.actionActionNotesToNoteSettingsFragment(deps.settingsTitle),
       )
     }
 
     is NotesViewModel.NavigationEvent.OpenImagePreview -> {
-      backStack.add(NotesNavKey.ImagePreview(event.imagePosition, statusBarColor))
+      backStack.add(NotesNavKey.ImagePreview(event.imagePosition))
     }
 
     is NotesViewModel.NavigationEvent.ShareNote -> {
-      TelephonyUtil.sendNote(event.file, requireContext(), event.summary)
+      TelephonyUtil.sendNote(event.file, deps.activity, event.summary)
     }
 
     is NotesViewModel.NavigationEvent.RequestNotificationPermission -> {
-      permissionFlow.askPermission(Permissions.POST_NOTIFICATION) {
-        viewModel.showNoteInNotification(event.id)
-      }
+      deps.permissionRequester.request(
+        Permissions.POST_NOTIFICATION,
+        onGranted = { viewModel.showNoteInNotification(event.id) },
+      )
     }
 
     is NotesViewModel.NavigationEvent.PickColor -> {
-      dialogues.showColorDialog(
-        requireActivity(),
+      deps.dialogues.showColorDialog(
+        deps.activity,
         event.colorPosition,
-        getString(R.string.color),
+        deps.colorDialogTitle,
         event.sliderColors,
       ) { color -> viewModel.saveNoteColor(event.id, color) }
     }
 
     is NotesViewModel.NavigationEvent.ConfirmDelete -> {
-      dialogues.askConfirmation(requireContext(), getString(R.string.delete)) { confirmed ->
+      deps.dialogues.askConfirmation(deps.activity, deps.deleteDialogTitle) { confirmed ->
         if (confirmed) viewModel.deleteNote(event.id)
       }
     }
@@ -196,17 +250,24 @@ private fun NotesFragment.handleNotesNavigationEvent(
 }
 
 @Composable
-private fun NotesFragment.NotesListEntry(backStack: MutableList<NavKey>) {
+private fun NotesListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<NotesViewModel> { parametersOf(false) }
   bindLifecycle(viewModel)
-  viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, viewModel, backStack) }
-  viewModel.errorEvent.ObserveEvent { toast(it) }
+  val permissionRequester = rememberPermissionRequester()
+  val hostDeps = rememberNotesHostDependencies(permissionRequester)
+  viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, viewModel, backStack, hostDeps) }
 
+  val snackbarHostState = remember { SnackbarHostState() }
+  val scope = rememberCoroutineScope()
+  viewModel.errorEvent.ObserveEvent { message -> scope.launch { snackbarHostState.showSnackbar(message) } }
+
+  PermissionRationaleDialog(permissionRequester)
   val state by viewModel.notesScreenState.collectAsState()
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
-    onBackClick = { findNavController().popBackStack() },
+    snackbarHostState = snackbarHostState,
+    onBackClick = { hostDeps.navController.popBackStack() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,
     onGridToggleClick = viewModel::onGridToggleClick,
@@ -220,16 +281,23 @@ private fun NotesFragment.NotesListEntry(backStack: MutableList<NavKey>) {
 }
 
 @Composable
-private fun NotesFragment.NotesArchiveEntry(backStack: MutableList<NavKey>) {
+private fun NotesArchiveEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<NotesViewModel> { parametersOf(true) }
   bindLifecycle(viewModel)
-  viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, viewModel, backStack) }
-  viewModel.errorEvent.ObserveEvent { toast(it) }
+  val permissionRequester = rememberPermissionRequester()
+  val hostDeps = rememberNotesHostDependencies(permissionRequester)
+  viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, viewModel, backStack, hostDeps) }
 
+  val snackbarHostState = remember { SnackbarHostState() }
+  val scope = rememberCoroutineScope()
+  viewModel.errorEvent.ObserveEvent { message -> scope.launch { snackbarHostState.showSnackbar(message) } }
+
+  PermissionRationaleDialog(permissionRequester)
   val state by viewModel.notesScreenState.collectAsState()
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,
@@ -244,7 +312,7 @@ private fun NotesFragment.NotesArchiveEntry(backStack: MutableList<NavKey>) {
 }
 
 @Composable
-private fun NotesFragment.NotePreviewEntry(
+private fun NotePreviewEntry(
   key: NotesNavKey.Preview,
   backStack: MutableList<NavKey>,
 ) {
@@ -252,14 +320,23 @@ private fun NotesFragment.NotePreviewEntry(
   bindLifecycle(viewModel)
   LaunchedEffect(Unit) { viewModel.saveStatusBarColor(key.initialStatusBarColor) }
 
+  val activity =
+    requireNotNull(LocalActivity.current) { "NotePreviewEntry requires an Activity-backed composition" }
+  val view = LocalView.current
+  val navController = remember(view) { view.findNavController() }
+  val permissionRequester = rememberPermissionRequester()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val scope = rememberCoroutineScope()
+  val errorSendingMessage = stringResource(R.string.error_sending)
+
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is PreviewNoteViewModel.NavigationEvent.EditNote -> {
-        backStack.add(NotesNavKey.Edit(event.id, requireActivity().window.statusBarColor))
+        backStack.add(NotesNavKey.Edit(event.id))
       }
 
       is PreviewNoteViewModel.NavigationEvent.EditReminder -> {
-        safeNavigation(
+        navController.safeNavigation(
           R.id.buildReminderFragment,
           Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
           NavigationAnimations.inDepthNavOptions(),
@@ -268,39 +345,47 @@ private fun NotesFragment.NotePreviewEntry(
 
       is PreviewNoteViewModel.NavigationEvent.OpenImagePreview -> {
         backStack.add(
-          NotesNavKey.ImagePreview(event.position, requireActivity().window.statusBarColor),
+          NotesNavKey.ImagePreview(event.position, activity.window.statusBarColor),
         )
       }
     }
   }
   viewModel.resultEvent.ObserveEvent { if (it == Commands.DELETED) backStack.removeLastOrNull() }
-  viewModel.errorEvent.ObserveEvent { showErrorSending() }
-  viewModel.sharedFile.ObserveNonNull { sendNoteWithImages(it.first, it.second) }
+  viewModel.errorEvent.ObserveEvent { scope.launch { snackbarHostState.showSnackbar(errorSendingMessage) } }
+  viewModel.sharedFile.ObserveNonNull { (note, file) ->
+    if (file.exists() && file.canRead()) {
+      TelephonyUtil.sendNote(file, activity, note.note?.summary)
+    } else {
+      scope.launch { snackbarHostState.showSnackbar(errorSendingMessage) }
+    }
+  }
 
   val state by viewModel.state.collectAsState(PreviewNoteState())
   val colors = remember(state.backgroundColor, state.opacity) { viewModel.colorsFor(state) }
   SideEffect {
-    requireActivity().window.statusBarColor = colors.statusBarColor
-    requireActivity().window.navigationBarColor = colors.statusBarColor
+    activity.window.statusBarColor = colors.statusBarColor
+    activity.window.navigationBarColor = colors.statusBarColor
   }
   DisposableEffect(viewModel) {
     onDispose {
       viewModel.getStatusBarColor()?.also {
-        requireActivity().window.statusBarColor = it
-        requireActivity().window.navigationBarColor = it
+        activity.window.statusBarColor = it
+        activity.window.navigationBarColor = it
       }
     }
   }
 
+  PermissionRationaleDialog(permissionRequester)
   PreviewNoteScreen(
     state = state,
     colors = colors,
+    snackbarHostState = snackbarHostState,
     actions =
       PreviewNoteActions(
         onBackClick = { backStack.removeLastOrNull() },
         onEditClick = viewModel::onEditClick,
         onStatusClick = {
-          permissionFlow.askPermission(Permissions.POST_NOTIFICATION) { viewModel.onStatusClick() }
+          permissionRequester.request(Permissions.POST_NOTIFICATION, onGranted = { viewModel.onStatusClick() })
         },
         onShareClick = viewModel::onShareClick,
         onArchiveClick = viewModel::onArchiveClick,
@@ -313,58 +398,23 @@ private fun NotesFragment.NotePreviewEntry(
       ),
     adsBanner =
       if (state.showAdsBanner) {
-        { NoteNativeAdBanner(adsProvider) }
+        { NoteNativeAdBanner(remember { AdsProvider() }) }
       } else {
         null
       },
   )
 }
 
-private fun NotesFragment.sendNoteWithImages(
-  note: NoteWithImages,
-  file: File,
-) {
-  if (isDetached) return
-  if (!file.exists() || !file.canRead()) {
-    showErrorSending()
-    return
-  }
-  TelephonyUtil.sendNote(file, requireContext(), note.note?.summary)
-}
-
-private fun NotesFragment.sendNoteFile(
-  file: File,
-  name: String,
-) {
-  if (isDetached) return
-  if (!file.exists() || !file.canRead()) {
-    showErrorSending()
-    return
-  }
-  TelephonyUtil.sendNote(file, requireContext(), name)
-}
-
-private fun NotesFragment.showErrorSending() {
-  toast(R.string.error_sending)
-}
-
 @Composable
-private fun NotesFragment.NoteEditEntry(
+private fun NoteEditEntry(
   key: NotesNavKey.Edit,
   backStack: MutableList<NavKey>,
+  arguments: Bundle?,
 ) {
-  val viewModel = koinViewModel<CreateNoteViewModel> { parametersOf(key.id) }
-  bindLifecycle(viewModel)
-  LaunchedEffect(Unit) { viewModel.saveStatusBarColor(key.initialStatusBarColor) }
+  val viewModel = koinViewModel<NoteEditViewModel> { parametersOf(key.id, arguments) }
 
-  DisposableEffect(viewModel) {
-    activeCreateNoteViewModel = viewModel
-    onDispose {
-      if (activeCreateNoteViewModel === viewModel) activeCreateNoteViewModel = null
-    }
-  }
-
-  val speechEngine = remember(viewModel) { SpeechEngine(requireContext()) }
+  val context = LocalContext.current
+  val speechEngine = remember(viewModel) { SpeechEngine(context) }
   val speechCallback =
     remember(viewModel) {
       object : SpeechEngineCallback() {
@@ -407,76 +457,51 @@ private fun NotesFragment.NoteEditEntry(
   }
   viewModel.textUpdate.ObserveEvent { update -> speechEngine.setText(update.text) }
 
-  val decorView = requireActivity().window.decorView
-  val primaryColor = remember { ThemeProvider.getPrimaryColor(requireContext()) }
-  DisposableEffect(viewModel) {
-    ViewUtils.registerDragAndDrop(
-      requireActivity(),
-      decorView,
-      true,
-      primaryColor,
-      { clipData -> if (clipData.itemCount > 0) viewModel.parseDrop(clipData) },
-      ClipDescription.MIMETYPE_TEXT_PLAIN,
-      UriUtil.ANY_MIME,
-    )
-    onDispose { decorView.setOnDragListener(null) }
-  }
-
-  LaunchedEffect(Unit) {
-    val args = arguments
-    when {
-      args?.containsKey(Intent.EXTRA_TEXT) == true -> {
-        args.getString(Intent.EXTRA_TEXT)?.let { viewModel.onSharedTextReceived(it) }
+  val snackbarHostState = remember { SnackbarHostState() }
+  val scope = rememberCoroutineScope()
+  val errorSendingMessage = stringResource(R.string.error_sending)
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is NoteEditViewModel.Action.Finish -> {
+        backStack.removeLastOrNull()
       }
-
-      args?.containsKey(Intent.EXTRA_STREAM) == true -> {
-        val uris = args.getParcelableArrayList<Parcelable>(Intent.EXTRA_STREAM)
-        uris?.let { list -> viewModel.addMultiple(list.filterNotNull().filterIsInstance<Uri>()) }
+      is NoteEditViewModel.Action.Error -> {
+        scope.launch { snackbarHostState.showSnackbar(event.message) }
       }
-
-      args?.getBoolean(IntentKeys.INTENT_ITEM, false) == true -> viewModel.onNoteReceivedFromIntent()
+      is NoteEditViewModel.Action.OpenImagePreview -> {
+        backStack.add(NotesNavKey.ImagePreview(event.position))
+      }
+      is NoteEditViewModel.Action.ShareNote -> {
+        if (event.file.exists() && event.file.canRead()) {
+          TelephonyUtil.sendNote(event.file, context, event.text)
+        } else {
+          scope.launch { snackbarHostState.showSnackbar(errorSendingMessage) }
+        }
+      }
     }
   }
-
-  viewModel.resultEvent.ObserveEvent { commands ->
-    if (commands == Commands.DELETED || commands == Commands.SAVED) {
-      backStack.removeLastOrNull()
-    }
-  }
-  viewModel.noteToShare.ObserveEvent { sendNoteFile(it.second, it.first) }
-  viewModel.errorEvent.ObserveEvent { toast(it) }
 
   val state by viewModel.state.collectAsState()
-  val colors = remember(state) { viewModel.colorsFor(state) }
-  SideEffect {
-    requireActivity().window.statusBarColor = colors.statusBarColor
-    requireActivity().window.navigationBarColor = colors.statusBarColor
-  }
-  DisposableEffect(viewModel) {
-    onDispose {
-      viewModel.getStatusBarColor()?.also {
-        requireActivity().window.statusBarColor = it
-        requireActivity().window.navigationBarColor = it
-      }
-      hideKeyboard()
-    }
-  }
+
+  val galleryPicker = rememberGalleryPicker { uris -> viewModel.addMultiple(uris) }
+  val cameraPicker = rememberCameraPicker { uri -> viewModel.addMultiple(listOf(uri)) }
+  val permissionRequester = rememberPermissionRequester()
+  val dateTimePickerState = rememberDateTimePickerState(is24Hour = viewModel.is24HourFormat)
+  val urlImagePickerState = rememberUrlImagePickerState()
+  val selectDateTitle = stringResource(R.string.select_date)
+  val selectTimeTitle = stringResource(R.string.select_time)
+
+  PermissionRationaleDialog(permissionRequester)
+  DateTimePickerDialogs(dateTimePickerState)
+  UrlImagePickerDialogs(urlImagePickerState, onUrlConfirmed = viewModel::downloadImageFromUrl)
 
   NoteEditScreen(
     state = state,
-    speechState = state.speechState,
     supportsSpeech = remember { speechEngine.supportsRecognition() },
-    hasCamera = remember { photoSelectionUtil.hasCamera() },
-    textFieldValue = state.textFieldValue,
     onTextFieldValueChange = viewModel::onTextFieldValueChange,
-    titleFieldValue = state.titleFieldValue,
     onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
-    boldRange = state.boldRange,
-    backgroundColor = Color(colors.background),
-    contentColor = Color(colors.content),
-    sliderColors = colors.sliderColors,
-    activeDialog = state.activeDialog,
     colorsForPalette = viewModel::sliderColorsForPalette,
+    snackbarHostState = snackbarHostState,
     actions =
       NoteEditActions(
         onBackClick = { backStack.removeLastOrNull() },
@@ -484,26 +509,29 @@ private fun NotesFragment.NoteEditEntry(
         onShareClick = viewModel::onShareClick,
         onDeleteClick = viewModel::onDeleteRequested,
         onMicClick = {
-          permissionFlow.askPermission(Permissions.RECORD_AUDIO) {
+          permissionRequester.request(Permissions.RECORD_AUDIO, onGranted = {
             if (speechEngine.isStarted()) {
               speechEngine.stopListening()
             } else {
               speechEngine.startListening(speechCallback)
             }
-          }
+          })
         },
         onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
         onImageTabClick = { viewModel.onTabClicked(EditTab.IMAGE) },
         onImagePickFromGallery = {
-          photoSelectionUtil.tryToPickFromGallery()
+          permissionRequester.request(Permissions.READ_EXTERNAL, onGranted = galleryPicker)
           viewModel.collapseExpandedTab()
         },
         onImagePickFromCamera = {
-          photoSelectionUtil.tryToTakePhoto()
+          permissionRequester.request(
+            listOf(Permissions.CAMERA, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL),
+            onGranted = { cameraPicker() },
+          )
           viewModel.collapseExpandedTab()
         },
         onImagePickFromUrl = {
-          photoSelectionUtil.checkClipboard()
+          urlImagePickerState.start(context)
           viewModel.collapseExpandedTab()
         },
         onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
@@ -512,54 +540,48 @@ private fun NotesFragment.NoteEditEntry(
         onOpacityChanged = viewModel::onOpacityChanged,
         onReminderAttachedChanged = viewModel::onReminderAttachedChanged,
         onDateClick = {
-          dateTimePickerProvider.showDatePicker(
-            fragmentManager = childFragmentManager,
-            date = viewModel.date,
-            title = getString(R.string.select_date),
-          ) { viewModel.onNewDate(it) }
+          dateTimePickerState.showDatePicker(state.date, selectDateTitle, viewModel::onNewDate)
         },
         onTimeClick = {
-          dateTimePickerProvider.showTimePicker(
-            fragmentManager = childFragmentManager,
-            time = viewModel.time,
-            title = getString(R.string.select_time),
-          ) { viewModel.onNewTime(it) }
+          dateTimePickerState.showTimePicker(state.time, selectTimeTitle, viewModel::onNewTime)
         },
         onFontSizeChanged = viewModel::onFontSizeChanged,
         onFieldFocused = viewModel::onFieldFocused,
         onImageOpen = { position -> viewModel.onImageOpen(position) },
         onImageRemove = viewModel::removeImage,
         onFontStyleSelected = viewModel::onFontStyleChanged,
-        onPaletteSelected = viewModel::onPaletteChanged,
         onDeleteConfirmed = viewModel::onDeleteConfirmed,
         onSameNoteKeep = { viewModel.saveNote(newId = true) },
         onSameNoteReplace = { viewModel.saveNote() },
         onDialogDismiss = viewModel::onDialogDismissed,
+        onDrop = { clipData -> if (clipData.itemCount > 0) viewModel.parseDrop(clipData) },
       ),
   )
 }
 
 @Composable
-private fun NotesFragment.NoteImagePreviewEntry(
+private fun NoteImagePreviewEntry(
   key: NotesNavKey.ImagePreview,
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<ImagePreviewViewModel> { parametersOf(key.position) }
   LaunchedEffect(Unit) { viewModel.saveStatusBarColor(key.initialStatusBarColor) }
 
+  val activity =
+    requireNotNull(LocalActivity.current) { "NoteImagePreviewEntry requires an Activity-backed composition" }
   val state by viewModel.state.collectAsState(ImagePreviewState())
   val colors = viewModel.colorsFor(state)
   SideEffect {
     colors.statusBarColor?.let {
-      requireActivity().window.statusBarColor = it
-      requireActivity().window.navigationBarColor = it
+      activity.window.statusBarColor = it
+      activity.window.navigationBarColor = it
     }
   }
   DisposableEffect(viewModel) {
     onDispose {
       viewModel.getStatusBarColor()?.also {
-        requireActivity().window.statusBarColor = it
-        requireActivity().window.navigationBarColor = it
+        activity.window.statusBarColor = it
+        activity.window.navigationBarColor = it
       }
     }
   }

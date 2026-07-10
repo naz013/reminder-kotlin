@@ -1,7 +1,5 @@
-package com.elementary.tasks.notes.list
+package com.elementary.tasks.notes
 
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,52 +8,24 @@ import androidx.compose.runtime.SideEffect
 import androidx.fragment.app.Fragment
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
-import com.elementary.tasks.AdsProvider
-import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.PhotoSelectionUtil
-import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.navigation.BackPressHandler
-import com.elementary.tasks.navigation.topfragment.RootFragment
-import com.elementary.tasks.notes.NotesNavGraph
-import com.elementary.tasks.notes.NotesNavKey
-import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.composeView
-import org.koin.android.ext.android.inject
 
 /**
- * Hosts the Notes feature as a self-contained Navigation 3 "island": this Fragment owns the
- * internal backstack and the Android-framework glue (permissions, photo picking, dialogs,
- * date/time pickers) that only a Fragment/Activity can provide, and is otherwise responsible only
- * for screen-to-screen navigation. The actual screens and their wiring live in [NotesNavGraph].
+ * Hosts the Notes feature as a self-contained Navigation 3 "island": this Fragment owns only the
+ * internal backstack and forwards its [getArguments] bundle once to seed it. The actual screens
+ * live in [NotesNavGraph] and are Fragment/Activity-independent themselves — they resolve what
+ * they need (permissions, dialogs, date/time pickers, the host [android.app.Activity]) from the
+ * Compose composition instead of from this Fragment.
  */
 class NotesFragment :
   Fragment(),
-  RootFragment,
-  BackPressHandler,
-  PhotoSelectionUtil.UriCallback {
-  internal val dialogues by inject<Dialogues>()
-  internal val dateTimePickerProvider by inject<DateTimePickerProvider>()
-  internal val adsProvider = AdsProvider()
-  internal lateinit var permissionFlow: PermissionFlow
-  internal lateinit var photoSelectionUtil: PhotoSelectionUtil
+  BackPressHandler {
 
   /** Bridge from the Fragment's plain methods into the Compose-owned Nav3 backstack — the
-   *  backstack itself can only be created via [rememberNavBackStack] inside composition. */
+   *  backstack itself can only be created via [androidx.navigation3.runtime.rememberNavBackStack] inside composition. */
   private var currentBackStack: MutableList<NavKey>? = null
-
-  /** The [CreateNoteViewModel] currently on screen, if any — [photoSelectionUtil]'s callback is
-   *  Fragment-scoped and long-lived (registered once in [onCreate]), so its results have to be
-   *  routed to whichever edit entry is actually active right now. */
-  internal var activeCreateNoteViewModel: CreateNoteViewModel? = null
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    permissionFlow = PermissionFlow(this, dialogues)
-    photoSelectionUtil = PhotoSelectionUtil(this, this)
-    lifecycle.addObserver(photoSelectionUtil)
-  }
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -65,7 +35,7 @@ class NotesFragment :
     composeView {
       val backStack = rememberNavBackStack(*initialBackStackKeys().toTypedArray())
       SideEffect { currentBackStack = backStack }
-      NotesNavGraph(backStack)
+      NotesNavGraph(backStack, arguments)
     }
 
   override fun onDestroyView() {
@@ -83,7 +53,7 @@ class NotesFragment :
     val statusBarColor = requireActivity().window.statusBarColor
     return when {
       args.getBoolean(ARG_OPEN_EDIT, false) -> {
-        listOf(NotesNavKey.List, NotesNavKey.Edit(id ?: "", statusBarColor))
+        listOf(NotesNavKey.List, NotesNavKey.Edit(id))
       }
 
       // Reached from a reminder's linked-note image (imagesSingleton already holds the images) —
@@ -98,14 +68,6 @@ class NotesFragment :
   }
 
   override fun canGoBack(): Boolean = (currentBackStack?.size ?: 1) <= 1
-
-  override fun onImageSelected(uris: List<Uri>) {
-    activeCreateNoteViewModel?.addMultiple(uris)
-  }
-
-  override fun onBitmapReady(bitmap: Bitmap) {
-    activeCreateNoteViewModel?.addBitmap(bitmap)
-  }
 
   companion object {
     const val ARG_OPEN_EDIT = "notes_open_edit"

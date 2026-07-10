@@ -1,8 +1,9 @@
 package com.elementary.tasks.notes
 
+import android.os.Bundle
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
-import com.elementary.tasks.notes.create.CreateNoteViewModel
+import com.elementary.tasks.notes.create.NoteEditViewModel
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.preview.ImagePreviewViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -33,9 +34,12 @@ val noteModule =
 
     singleOf(::NoteImageRepository)
 
-    viewModel { (id: String) ->
-      CreateNoteViewModel(
+    viewModel { (id: String?, arguments: Bundle?) ->
+      NoteEditViewModel(
         id,
+        arguments,
+        get(),
+        get(),
         get(),
         get(),
         get(),
