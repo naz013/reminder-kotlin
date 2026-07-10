@@ -8,37 +8,24 @@ import androidx.compose.runtime.SideEffect
 import androidx.fragment.app.Fragment
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
-import com.elementary.tasks.AdsProvider
-import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.navigation.BackPressHandler
-import com.elementary.tasks.navigation.topfragment.RootFragment
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.composeView
-import org.koin.android.ext.android.inject
 
 /**
- * Hosts the Notes feature as a self-contained Navigation 3 "island": this Fragment owns the
- * internal backstack and the Android-framework glue (permissions, photo picking, dialogs,
- * date/time pickers) that only a Fragment/Activity can provide, and is otherwise responsible only
- * for screen-to-screen navigation. The actual screens and their wiring live in [NotesNavGraph].
+ * Hosts the Notes feature as a self-contained Navigation 3 "island": this Fragment owns only the
+ * internal backstack and forwards its [getArguments] bundle once to seed it. The actual screens
+ * live in [NotesNavGraph] and are Fragment/Activity-independent themselves — they resolve what
+ * they need (permissions, dialogs, date/time pickers, the host [android.app.Activity]) from the
+ * Compose composition instead of from this Fragment.
  */
-class NotesFragment : Fragment(), BackPressHandler {
-
-  internal val dialogues by inject<Dialogues>()
-  internal val dateTimePickerProvider by inject<DateTimePickerProvider>()
-  internal val adsProvider = AdsProvider()
-  internal lateinit var permissionFlow: PermissionFlow
+class NotesFragment :
+  Fragment(),
+  BackPressHandler {
 
   /** Bridge from the Fragment's plain methods into the Compose-owned Nav3 backstack — the
    *  backstack itself can only be created via [androidx.navigation3.runtime.rememberNavBackStack] inside composition. */
   private var currentBackStack: MutableList<NavKey>? = null
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    permissionFlow = PermissionFlow(this, dialogues)
-  }
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -48,7 +35,7 @@ class NotesFragment : Fragment(), BackPressHandler {
     composeView {
       val backStack = rememberNavBackStack(*initialBackStackKeys().toTypedArray())
       SideEffect { currentBackStack = backStack }
-      NotesNavGraph(backStack)
+      NotesNavGraph(backStack, arguments)
     }
 
   override fun onDestroyView() {
@@ -66,7 +53,7 @@ class NotesFragment : Fragment(), BackPressHandler {
     val statusBarColor = requireActivity().window.statusBarColor
     return when {
       args.getBoolean(ARG_OPEN_EDIT, false) -> {
-        listOf(NotesNavKey.List, NotesNavKey.Edit(id ?: "", statusBarColor))
+        listOf(NotesNavKey.List, NotesNavKey.Edit(id))
       }
 
       // Reached from a reminder's linked-note image (imagesSingleton already holds the images) —

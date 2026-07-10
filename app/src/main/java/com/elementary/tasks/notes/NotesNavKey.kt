@@ -25,8 +25,7 @@ sealed interface NotesNavKey : NavKey {
 
   @Serializable
   data class Edit(
-    val id: String = "",
-    val initialStatusBarColor: Int = -1,
+    val id: String? = null,
   ) : NotesNavKey
 
   @Serializable

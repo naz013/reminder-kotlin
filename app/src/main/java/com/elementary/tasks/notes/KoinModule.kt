@@ -34,7 +34,7 @@ val noteModule =
 
     singleOf(::NoteImageRepository)
 
-    viewModel { (id: String, arguments: Bundle?) ->
+    viewModel { (id: String?, arguments: Bundle?) ->
       NoteEditViewModel(
         id,
         arguments,

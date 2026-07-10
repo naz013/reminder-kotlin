@@ -6,12 +6,12 @@ import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.github.naz013.domain.font.FontParams
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
+import java.util.UUID
 
 data class NoteEditState(
   val colorIndex: Int = 0,
   val opacity: Int = 100,
   val noteColors: NoteColors = NoteColors(Color.Unspecified, emptyList(), Color.Unspecified),
-
   val fontStyle: Int = FontParams.DEFAULT_FONT_STYLE,
   val fontSize: Int = FontParams.DEFAULT_FONT_SIZE,
   val titleFontStyle: Int = FontParams.DEFAULT_FONT_STYLE,
@@ -19,25 +19,22 @@ data class NoteEditState(
   val textFieldValue: TextFieldValue = TextFieldValue(),
   val titleFieldValue: TextFieldValue = TextFieldValue(),
   val boldRange: IntRange? = null,
-
   val images: List<UiNoteImage> = emptyList(),
-
   val speechState: SpeechUiState = SpeechUiState.IDLE,
-
   val date: LocalDate = LocalDate.now(),
   val time: LocalTime = LocalTime.now(),
   val reminderDateFormatted: String = "",
   val reminderTimeFormatted: String = "",
-
   val focusedField: NoteTextField = NoteTextField.BODY,
   val expandedTab: EditTab? = null,
   val activeDialog: NoteEditDialog? = null,
-
   val hasCamera: Boolean = false,
   val hasSameInDb: Boolean = false,
   val isFromFile: Boolean = false,
   val isReminderAttached: Boolean = false,
   val canDelete: Boolean = false,
+  val reminderId: String? = null,
+  val noteId: String = UUID.randomUUID().toString(),
 )
 
 enum class EditTab { COLOR, FONT, REMINDER, IMAGE }

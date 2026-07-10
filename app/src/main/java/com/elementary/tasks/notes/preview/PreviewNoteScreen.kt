@@ -15,6 +15,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -48,6 +50,7 @@ fun PreviewNoteScreen(
   colors: NotePreviewColors,
   actions: PreviewNoteActions,
   adsBanner: (@Composable () -> Unit)? = null,
+  snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
   Column(
     modifier =
@@ -129,6 +132,8 @@ fun PreviewNoteScreen(
       colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
       modifier = Modifier.statusBarsPadding(),
     )
+
+    SnackbarHost(hostState = snackbarHostState)
 
     Column(
       modifier =

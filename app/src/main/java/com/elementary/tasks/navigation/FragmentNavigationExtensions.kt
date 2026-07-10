@@ -17,8 +17,30 @@ fun Fragment.safeNavigation(
   navOptions: NavOptions? = NavigationAnimations.inDepthNavOptions(),
   navigatorExtras: Navigator.Extras? = null,
 ) {
+  findNavController().safeNavigation(resId, args, navOptions, navigatorExtras)
+}
+
+fun Fragment.safeNavigation(
+  directions: NavDirections,
+  navOptions: NavOptions? = NavigationAnimations.inDepthNavOptions(),
+) {
+  findNavController().safeNavigation(directions, navOptions)
+}
+
+/**
+ * [NavController]-receiver counterpart to the [Fragment] overloads above — for Compose call sites
+ * (e.g. a Nav3 "island" Fragment's screens) that resolve their [NavController] via
+ * [androidx.navigation.findNavController] on the current [androidx.compose.ui.platform.LocalView]
+ * instead of holding a Fragment reference.
+ */
+fun NavController.safeNavigation(
+  resId: Int,
+  args: Bundle? = null,
+  navOptions: NavOptions? = NavigationAnimations.inDepthNavOptions(),
+  navigatorExtras: Navigator.Extras? = null,
+) {
   try {
-    findNavController().navigate(
+    navigate(
       resId = resId,
       args = args,
       navOptions = navOptions,
@@ -29,12 +51,12 @@ fun Fragment.safeNavigation(
   }
 }
 
-fun Fragment.safeNavigation(
+fun NavController.safeNavigation(
   directions: NavDirections,
   navOptions: NavOptions? = NavigationAnimations.inDepthNavOptions(),
 ) {
   try {
-    findNavController().navigate(
+    navigate(
       directions = directions,
       navOptions = navOptions,
     )

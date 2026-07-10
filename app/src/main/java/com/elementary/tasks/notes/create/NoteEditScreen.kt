@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes.create
 
+import android.content.ClipDescription
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -21,6 +22,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -54,6 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.AssetsUtil
+import com.github.naz013.common.uri.UriUtil
+import com.github.naz013.ui.common.compose.foundation.dragAndDropHighlight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,18 +69,25 @@ fun NoteEditScreen(
   supportsSpeech: Boolean,
   colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
+  snackbarHostState: SnackbarHostState,
   modifier: Modifier = Modifier,
 ) {
   val focusManager = LocalFocusManager.current
   val backgroundColor = state.noteColors.background
   val contentColor = state.noteColors.content
   val sliderColors = state.noteColors.sliderColors
+  val dropHighlightColor = MaterialTheme.colorScheme.primary
 
   BoxWithConstraints(
     modifier =
       modifier
         .fillMaxSize()
-        .background(backgroundColor),
+        .background(backgroundColor)
+        .dragAndDropHighlight(
+          dropHighlightColor,
+          onDrop = actions.onDrop,
+          mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN, UriUtil.ANY_MIME),
+        ),
   ) {
     val barMaxWidth = maxWidth - 32.dp
     Column(modifier = Modifier.fillMaxSize()) {
@@ -123,6 +135,8 @@ fun NoteEditScreen(
             titleContentColor = contentColor,
           ),
       )
+
+      SnackbarHost(hostState = snackbarHostState)
 
       Column(
         modifier =
