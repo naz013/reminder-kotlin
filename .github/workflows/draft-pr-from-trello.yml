@@ -1,0 +1,75 @@
+name: Draft PR from Trello card
+
+on:
+  push:
+    branches:
+      - 'feature/REM-*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  draft-pr:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Extract REM number from branch name
+      id: rem
+      run: |
+        BRANCH="${{ github.ref_name }}"
+        REM_ID=$(echo "$BRANCH" | grep -oE 'REM-[0-9]+' | head -1)
+        if [ -z "$REM_ID" ]; then
+          echo "No REM-xxxx found in branch name '$BRANCH'."
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        echo "rem_id=$REM_ID" >> "$GITHUB_OUTPUT"
+        echo "id_short=${REM_ID#REM-}" >> "$GITHUB_OUTPUT"
+
+    - name: Check for an existing PR on this branch
+      id: existing
+      if: steps.rem.outputs.skip != 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        COUNT=$(gh pr list --repo "${{ github.repository }}" --head "${{ github.ref_name }}" --state all --json number --jq 'length')
+        echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+    - name: Fetch Trello card title
+      id: trello
+      if: steps.rem.outputs.skip != 'true' && steps.existing.outputs.count == '0'
+      env:
+        TRELLO_KEY: ${{ secrets.TRELLO_API_KEY }}
+        TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+        TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
+        ID_SHORT: ${{ steps.rem.outputs.id_short }}
+      run: |
+        RESPONSE=$(curl -sf "https://api.trello.com/1/boards/$TRELLO_BOARD_ID/cards?key=$TRELLO_KEY&token=$TRELLO_TOKEN&filter=all&fields=name,idShort")
+        CARD_NAME=$(echo "$RESPONSE" | jq -r --argjson n "$ID_SHORT" '[.[] | select(.idShort == $n)][0].name // empty')
+        if [ -z "$CARD_NAME" ]; then
+          echo "No Trello card found with idShort $ID_SHORT, falling back to a generic title."
+          CARD_NAME="Untitled"
+        fi
+        {
+          echo "card_name<<TRELLO_EOF"
+          echo "$CARD_NAME"
+          echo "TRELLO_EOF"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Create draft PR
+      if: steps.rem.outputs.skip != 'true' && steps.existing.outputs.count == '0'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh pr create \
+          --repo "${{ github.repository }}" \
+          --draft \
+          --base develop \
+          --head "${{ github.ref_name }}" \
+          --title "${{ steps.rem.outputs.rem_id }} - ${{ steps.trello.outputs.card_name }}" \
+          --body "Auto-created for \`${{ github.ref_name }}\`, linked to Trello card ${{ steps.rem.outputs.rem_id }}."

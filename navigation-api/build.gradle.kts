@@ -1,44 +1,10 @@
-import com.android.build.api.dsl.LibraryExtension
-import org.gradle.kotlin.dsl.configure
-
 plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.ktlint)
+  id("reminder.android.library")
   alias(libs.plugins.kotlin.parcelize)
 }
 
-extensions.configure<LibraryExtension> {
+android {
   namespace = "com.github.naz013.navigation"
-  compileSdk = libs.versions.compileSdk.get().toInt()
-
-  defaultConfig {
-    minSdk = libs.versions.minSdk.get().toInt()
-
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    consumerProguardFiles("consumer-rules.pro")
-  }
-
-  buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-    }
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-}
-
-kotlin {
-  jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  compilerOptions {
-    optIn.add("-Xreturn-value-checker=check")
-    optIn.add("-Xexplicit-backing-fields")
-    optIn.add("-Xname-based-destructuring=only-syntax")
-    optIn.add("-Xdata-flow-based-exhaustiveness")
-    optIn.add("-Xcollection-literals")
-  }
 }
 
 dependencies {
@@ -47,9 +13,4 @@ dependencies {
 
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)
-}
-
-ktlint {
-  android = true
-  outputColorName.set("RED")
 }

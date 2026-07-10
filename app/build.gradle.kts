@@ -4,45 +4,29 @@ import java.time.format.DateTimeFormatter
 import java.util.Properties
 
 plugins {
-  alias(libs.plugins.android.application)
+  id("reminder.android.application.compose")
   alias(libs.plugins.kotlin.parcelize)
   alias(libs.plugins.navigation.safeargs)
   alias(libs.plugins.crashlytics.gradle)
   alias(libs.plugins.google.services)
-  alias(libs.plugins.ktlint)
-  alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.serialization)
 }
 
 extensions.configure<ApplicationExtension> {
   namespace = "com.elementary.tasks"
-  compileSdk =
-    libs.versions.compileSdk
-      .get()
-      .toInt()
   flavorDimensions.add("level")
 
   defaultConfig {
     applicationId = "com.cray.software.justreminder"
-    minSdk =
-      libs.versions.minSdk
-        .get()
-        .toInt()
-    targetSdk =
-      libs.versions.targetSdk
-        .get()
-        .toInt()
     versionCode = 344
     versionName = "9.12.0"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
   buildFeatures {
     viewBinding = true
     buildConfig = true
-    compose = true
   }
 
   val propsFile = file("${rootProject.rootDir}/keystore.properties")
@@ -110,15 +94,6 @@ extensions.configure<ApplicationExtension> {
   }
   packaging {
     resources {
-      excludes += "META-INF/NOTICE"
-      excludes += "META-INF/LICENSE.txt"
-      excludes += "META-INF/NOTICE.txt"
-      excludes += "META-INF/proguard/androidx-annotations.pro"
-      excludes += "META-INF/DEPENDENCIES"
-      excludes += "META-INF/LICENSE"
-      excludes += "META-INF/license.txt"
-      excludes += "META-INF/ASL2.0"
-      excludes += "META-INF/LICENSE.md"
       excludes += "META-INF/INDEX.LIST"
       // pdfbox-android (Bouncy Castle) signing files
       excludes += "META-INF/BCKEY.DSA"
@@ -155,13 +130,6 @@ extensions.configure<ApplicationExtension> {
       }
     }
   }
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
 
   @Suppress("UnstableApiUsage")
   testOptions {
@@ -181,20 +149,13 @@ extensions.configure<ApplicationExtension> {
     checkReleaseBuilds = false
     abortOnError = false
   }
+  composeOptions {
+    kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
+  }
 }
 
 kotlin {
-  jvmToolchain(
-    libs.versions.kotlinTargetJvm
-      .get()
-      .toInt(),
-  )
   compilerOptions {
-    optIn.add("-Xreturn-value-checker=check")
-    optIn.add("-Xexplicit-backing-fields")
-    optIn.add("-Xname-based-destructuring=only-syntax")
-    optIn.add("-Xdata-flow-based-exhaustiveness")
-    optIn.add("-Xcollection-literals")
     freeCompilerArgs.add("-XXLanguage:+ExplicitBackingFields")
   }
 }
@@ -347,9 +308,4 @@ dependencies {
   testImplementation(libs.androidx.lifecycle.runtime.testing)
   testImplementation(libs.kotlinx.coroutines.test)
   testImplementation(libs.robolectric)
-}
-
-ktlint {
-  android = true
-  outputColorName.set("RED")
 }

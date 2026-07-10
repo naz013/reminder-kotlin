@@ -10,7 +10,6 @@ kotlin = "2.4.0"
 google-services = "4.4.4"
 navigation-safeargs = "2.9.8"
 crashlytics-gradle = "3.0.7"
-ktlint = "14.2.0"
 ksp = "2.3.4"
 kotlinCompilerExtensionVersion = "1.5.15"
 
@@ -264,6 +263,10 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 
 logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback-classic" }
 
+# build-logic convention plugin classpath
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -275,6 +278,5 @@ java-library = { id = "java-library" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation-safeargs" }
 crashlytics-gradle = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-gradle" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

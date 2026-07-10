@@ -17,6 +17,14 @@ For deeper background, read (don't duplicate into this file):
 
 JDK 17 required. Use `./gradlew` (or `gradlew.bat` on plain cmd.exe).
 
+Module `build.gradle.kts` files are intentionally thin: shared Android/Kotlin config (compileSdk, minSdk,
+compileOptions, kotlin compiler opt-ins, buildTypes defaults, Compose setup) lives in convention plugins
+under `build-logic/convention` (`reminder.kotlin.jvm`, `reminder.android.library[.compose]`,
+`reminder.android.application[.compose]`), included via `pluginManagement.includeBuild("build-logic")` in
+`settings.gradle.kts`. A module's own `build.gradle.kts` should only need `plugins { id("reminder.*") }`,
+`android { namespace = "..." }`, and its `dependencies {}` block — put any genuinely module-specific Android
+config there, not in the convention plugin.
+
 ```bash
 # Build a flavor (debug)
 ./gradlew assembleFreeDebug
@@ -35,10 +43,6 @@ JDK 17 required. Use `./gradlew` (or `gradlew.bat` on plain cmd.exe).
 
 # Run a single test class
 ./gradlew :app:testProDebugUnitTest --tests "com.elementary.tasks.SomeClassTest"
-
-# Lint / format (ktlint is applied to nearly every module, not just app)
-./gradlew ktlintCheck
-./gradlew ktlintFormat
 ```
 
 CI (`.github/workflows/build_and_test.yml`) runs `testProDebugUnitTest` for Android modules and `test` for
