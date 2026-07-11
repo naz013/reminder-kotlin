@@ -312,6 +312,7 @@ private fun SaveAsPresetRow(
       value = presetName,
       onValueChange = onPresetNameChange,
       modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+      enabled = checked,
       label = { Text(stringResource(R.string.recur_preset_name_hint)) },
       singleLine = true,
     )
