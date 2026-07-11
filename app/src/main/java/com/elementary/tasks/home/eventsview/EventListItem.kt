@@ -41,8 +41,7 @@ private const val TERTIARY_TEXT_MAX_LINES = 2
  * Reusable card scaffold shared by [ReminderEventRow] and [BirthdayEventRow]: an optional
  * non-clickable status-chip row (e.g. "Enabled") above the title, title/date/tertiary text stack,
  * an optional non-clickable tag-chip row (repeat/remaining/group labels) below, an optional
- * leading slot, and a "more" menu in the top-right. Mirrors `list_item_reminder_new.xml`'s visual
- * language.
+ * leading slot, and a "more" menu in the top-right.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

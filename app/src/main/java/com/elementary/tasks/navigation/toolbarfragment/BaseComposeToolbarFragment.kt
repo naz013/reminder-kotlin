@@ -7,11 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import com.github.naz013.ui.common.compose.composeView
 
-/**
- * Compose counterpart of [BaseToolbarFragment]. Provides the same AppBar/Toolbar scaffold
- * (title, navigation icon, options menu via [FragmentMenuController]) without requiring a
- * [androidx.viewbinding.ViewBinding] - content is a plain composable instead.
- */
 abstract class BaseComposeToolbarFragment : ToolbarFragment() {
   @Composable
   protected abstract fun Content()

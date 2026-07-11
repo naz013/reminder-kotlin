@@ -36,7 +36,6 @@ import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
-import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.PauseReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
@@ -90,7 +89,6 @@ class BuildReminderViewModel(
   private val selectorDialogDataHolder: SelectorDialogDataHolder,
   private val uiBuilderItemsAdapter: UiBuilderItemsAdapter,
   private val uiSelectorItemsAdapter: UiSelectorItemsAdapter,
-  private val valueDialogDataHolder: ValueDialogDataHolder,
   private val biToReminderAdapter: BiToReminderAdapter,
   private val permissionValidator: PermissionValidator,
   private val reminderToBiDecomposer: ReminderToBiDecomposer,
@@ -335,14 +333,12 @@ class BuildReminderViewModel(
     if (permissions.isNotEmpty()) {
       val permissionResult = permissionValidator(listOf(builderItem))
       if (permissionResult is PermissionValidator.Result.Success) {
-        valueDialogDataHolder.data = builderItem
         _showEditDialog.postValue(Event(pair))
       } else if (permissionResult is PermissionValidator.Result.Failure) {
         requestedPermissionsFor = pair
         _askEditPermissions.postValue(Event(permissionResult.permissions))
       }
     } else {
-      valueDialogDataHolder.data = builderItem
       _showEditDialog.postValue(Event(pair))
     }
   }

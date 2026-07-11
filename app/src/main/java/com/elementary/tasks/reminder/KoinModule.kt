@@ -64,9 +64,6 @@ import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
 import com.elementary.tasks.reminder.build.reminder.validation.SubTasksValidator
 import com.elementary.tasks.reminder.build.reminder.validation.TargetValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
-import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogViewModel
-import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
-import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerFactory
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.dialog.CreateReminderActionScreenStateUseCase
 import com.elementary.tasks.reminder.dialog.ReminderActionActivityViewModel
@@ -115,11 +112,9 @@ val reminderModule =
     viewModelOf(::RemindersArchiveViewModel)
 
     viewModel { ManagePresetsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { SelectorDialogViewModel(get(), get()) }
     viewModel { (arguments: Bundle?) ->
       BuildReminderViewModel(
         arguments,
-        get(),
         get(),
         get(),
         get(),
@@ -228,9 +223,8 @@ val reminderModule =
     factory { BiFactoryICal(get(), get(), get(), get()) }
 
     single { SelectorDialogDataHolder() }
-    single { ValueDialogDataHolder() }
 
-    factory { UiSelectorItemsAdapter(get(), get(), get()) }
+    factory { UiSelectorItemsAdapter(get(), get(), get(), get()) }
 
     factory { UiBuilderItemsAdapter(get(), get(), get(), get(), get()) }
     factory { BiValueForUiAdapter(get()) }
@@ -242,20 +236,6 @@ val reminderModule =
     factory { BuilderItemMandatoryIfConstraintCalculator() }
     factory { BuilderItemPermissionConstraintCalculator(get()) }
     factory { BuilderItemRequiresAnyConstraintCalculator() }
-
-    factory {
-      ValueControllerFactory(
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
 
     factory { BuilderStateCalculator() }
     factory { TypeCalculator(get()) }
