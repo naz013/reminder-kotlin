@@ -26,6 +26,9 @@ sealed interface NotesNavKey : NavKey {
   @Serializable
   data class Edit(
     val id: String? = null,
+    val fromIntentData: Boolean = false,
+    val sharedText: String? = null,
+    val sharedImageUris: kotlin.collections.List<String>? = null,
   ) : NotesNavKey
 
   @Serializable

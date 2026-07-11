@@ -1,6 +1,5 @@
 package com.elementary.tasks.birthdays.create
 
-import android.os.Bundle
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
@@ -63,14 +62,6 @@ class EditBirthdayViewModelTest : BaseTest() {
       saveBirthdayUseCase = saveBirthdayUseCase,
     )
 
-  /** [Bundle] isn't backed by real Android framework code under plain JUnit, so its methods must
-   *  be mocked rather than exercised via a real instance. */
-  private fun bundleWithIntentItem(): Bundle =
-    mockk<Bundle> {
-      every { getBoolean(IntentKeys.INTENT_ITEM, any()) } returns true
-      every { getBoolean(IntentKeys.INTENT_DEEP_LINK, any()) } returns false
-    }
-
   @Test
   fun `leaves state empty when no birthday exists for id`() =
     runTest {
@@ -124,7 +115,7 @@ class EditBirthdayViewModelTest : BaseTest() {
       coEvery { birthdayRepository.getById("from-file") } returns null
 
       val viewModel = createViewModel()
-      viewModel.checkArguments(bundleWithIntentItem())
+      viewModel.checkArguments(fromIntentData = true, prefillDateEpochDay = null)
 
       assertEquals("Bob", viewModel.state.value.name)
       assertEquals(false, viewModel.state.value.canDelete)
@@ -140,7 +131,7 @@ class EditBirthdayViewModelTest : BaseTest() {
       coEvery { birthdayRepository.getById("dup") } returns birthday
 
       val viewModel = createViewModel()
-      viewModel.checkArguments(bundleWithIntentItem())
+      viewModel.checkArguments(fromIntentData = true, prefillDateEpochDay = null)
 
       viewModel.onSaveClick()
 

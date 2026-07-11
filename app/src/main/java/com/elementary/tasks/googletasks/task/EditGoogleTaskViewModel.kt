@@ -1,13 +1,10 @@
 package com.elementary.tasks.googletasks.task
 
-import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.deeplink.DeepLinkDataParser
-import com.elementary.tasks.core.deeplink.GoogleTaskDateTimeDeepLinkData
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
@@ -20,7 +17,6 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Reminder
@@ -28,7 +24,6 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
-import com.github.naz013.navigation.DeepLinkData
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
@@ -284,15 +279,6 @@ class EditGoogleTaskViewModel(
       }
   }
 
-  fun checkDeepLink(arguments: Bundle?) {
-    if (arguments?.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) == true) {
-      runCatching {
-        val parser = DeepLinkDataParser()
-        initFromDeepLink(parser.readDeepLinkData(arguments))
-      }
-    }
-  }
-
   private fun onEditTask(googleTask: GoogleTask) {
     editedTask = googleTask
     listId = googleTask.listId
@@ -314,13 +300,6 @@ class EditGoogleTaskViewModel(
       }
     }
     loadReminder(googleTask.uuId)
-  }
-
-  private fun initFromDeepLink(deepLinkData: DeepLinkData?) {
-    if (deepLinkData is GoogleTaskDateTimeDeepLinkData) {
-      onDateSet(deepLinkData.date)
-      deepLinkData.time?.also { onTimeSet(it) }
-    }
   }
 
   private fun moveGoogleTask(

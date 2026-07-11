@@ -8,15 +8,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.BirthdaysFragment
-import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
+import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.core.os.PermissionFlow
-import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.groups.GroupsNavKey
+import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.elementary.tasks.navigation.onBackStackResume
-import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.topfragment.RootFragment
+import com.elementary.tasks.reminder.build.BuildReminderNavKey
+import com.elementary.tasks.reminder.lists.removed.RemindersArchiveNavKey
+import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.livedata.observeEvent
 import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.compose.composeView
@@ -28,6 +29,7 @@ class HomeEventsFragment :
   RootFragment {
   private val viewModel by viewModel<EventsViewModel>()
   private val dialogues by inject<Dialogues>()
+  private val appNavBridge by inject<AppNavBridge>()
   private lateinit var permissionFlow: PermissionFlow
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,9 +68,8 @@ class HomeEventsFragment :
     viewModel.navigationEvent.observeEvent(viewLifecycleOwner) { handleNavigationEvent(it) }
   }
 
-  /** See [PlacesFragment][com.elementary.tasks.places.list.PlacesFragment]/`GoogleTasksFragment`'s
-   *  kdoc: registers this fragment as the Activity's "current fragment" for hardware/gesture
-   *  back-press routing (see [com.elementary.tasks.home.BottomNavActivity.handleBackPress]). */
+  /** Registers this fragment as the Activity's "current fragment" for hardware/gesture back-press
+   *  routing (see [com.elementary.tasks.home.BottomNavActivity.handleBackPress]). */
   override fun onResume() {
     super.onResume()
     onBackStackResume()
@@ -77,70 +78,39 @@ class HomeEventsFragment :
   private fun handleNavigationEvent(event: EventsViewModel.NavigationEvent) {
     when (event) {
       is EventsViewModel.NavigationEvent.OpenReminderPreview -> {
-        safeNavigation(
-          R.id.previewReminderFragment,
-          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
-          NavigationAnimations.inDepthNavOptions(),
-        )
+        appNavBridge.navigate(ReminderPreviewNavKey.Preview(event.id))
       }
 
       is EventsViewModel.NavigationEvent.OpenReminderEdit -> {
-        safeNavigation(
-          R.id.buildReminderFragment,
-          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
-          NavigationAnimations.inDepthNavOptions(),
-        )
+        appNavBridge.navigate(BuildReminderNavKey.Main(id = event.id))
       }
 
       EventsViewModel.NavigationEvent.OpenNewReminder -> {
-        safeNavigation(R.id.buildReminderFragment, null, NavigationAnimations.inDepthNavOptions())
+        appNavBridge.navigate(BuildReminderNavKey.Main())
       }
 
       EventsViewModel.NavigationEvent.OpenNewShoppingReminder -> {
-        val deepLinkData = ReminderTodoTypeDeepLinkData
-        safeNavigation(
-          R.id.buildReminderFragment,
-          Bundle().apply {
-            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
-            putParcelable(deepLinkData.intentKey, deepLinkData)
-          },
-          NavigationAnimations.inDepthNavOptions(),
-        )
+        appNavBridge.navigate(BuildReminderNavKey.Main(deepLinkTodo = true))
       }
 
       is EventsViewModel.NavigationEvent.OpenBirthdayPreview -> {
-        safeNavigation(
-          R.id.birthdayFragment,
-          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
-          NavigationAnimations.inDepthNavOptions(),
-        )
+        appNavBridge.navigate(BirthdaysNavKey.Preview(event.id))
       }
 
       is EventsViewModel.NavigationEvent.OpenBirthdayEdit -> {
-        safeNavigation(
-          R.id.birthdayFragment,
-          Bundle().apply {
-            putString(IntentKeys.INTENT_ID, event.id)
-            putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true)
-          },
-          NavigationAnimations.inDepthNavOptions(),
-        )
+        appNavBridge.navigate(BirthdaysNavKey.Edit(event.id))
       }
 
       EventsViewModel.NavigationEvent.OpenNewBirthday -> {
-        safeNavigation(
-          R.id.birthdayFragment,
-          Bundle().apply { putBoolean(BirthdaysFragment.ARG_OPEN_EDIT, true) },
-          NavigationAnimations.inDepthNavOptions(),
-        )
+        appNavBridge.navigate(BirthdaysNavKey.Edit())
       }
 
       EventsViewModel.NavigationEvent.OpenArchive -> {
-        safeNavigation(R.id.archiveFragment, null, NavigationAnimations.inDepthNavOptions())
+        appNavBridge.navigate(RemindersArchiveNavKey.List)
       }
 
       EventsViewModel.NavigationEvent.OpenGroups -> {
-        safeNavigation(R.id.groupsFragment, null, NavigationAnimations.inDepthNavOptions())
+        appNavBridge.navigate(GroupsNavKey.List)
       }
 
       is EventsViewModel.NavigationEvent.RequestGpsPermission -> {

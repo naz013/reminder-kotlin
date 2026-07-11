@@ -2,12 +2,9 @@ package com.elementary.tasks.notes.create
 
 import android.content.ClipData
 import android.content.ContentResolver
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
-import android.os.Bundle
-import android.os.Parcelable
 import android.util.Patterns
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
@@ -84,7 +81,9 @@ import java.util.UUID
 
 class NoteEditViewModel(
   private val id: String?,
-  private val arguments: Bundle?,
+  private val sharedText: String?,
+  private val sharedImageUris: List<String>?,
+  private val fromIntentData: Boolean,
   private val imageDecoder: ImageDecoder,
   private val dispatcherProvider: DispatcherProvider,
   private val noteRepository: NoteRepository,
@@ -387,16 +386,13 @@ class NoteEditViewModel(
   private fun load() {
     viewModelScope.launch(dispatcherProvider.main()) {
       when {
-        arguments?.containsKey(Intent.EXTRA_TEXT) == true -> {
-          arguments.getString(Intent.EXTRA_TEXT)?.let { replaceText(it) }
+        sharedText != null -> replaceText(sharedText)
+
+        !sharedImageUris.isNullOrEmpty() -> {
+          addMultiple(sharedImageUris.map { Uri.parse(it) })
         }
 
-        arguments?.containsKey(Intent.EXTRA_STREAM) == true -> {
-          val uris = arguments.getParcelableArrayList<Parcelable>(Intent.EXTRA_STREAM)
-          uris?.let { list -> addMultiple(list.filterNotNull().filterIsInstance<Uri>()) }
-        }
-
-        arguments?.getBoolean(IntentKeys.INTENT_ITEM, false) == true -> {
+        fromIntentData -> {
           intentDataReader.get(IntentKeys.INTENT_ITEM, NoteWithImages::class.java)?.run {
             onNoteLoaded(this)
             findSame(this.getKey())

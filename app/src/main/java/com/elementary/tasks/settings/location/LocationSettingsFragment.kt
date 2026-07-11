@@ -5,15 +5,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.elementary.tasks.R
+import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.elementary.tasks.navigation.safeNavigation
 import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
 import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.places.PlacesNavKey
 import com.github.naz013.common.Module
 import com.github.naz013.ui.common.theme.ThemeProvider
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LocationSettingsFragment : BaseComposeToolbarFragment() {
   private val viewModel by viewModel<LocationSettingsViewModel>()
+  private val appNavBridge by inject<AppNavBridge>()
 
   @Composable
   override fun Content() {
@@ -47,7 +51,7 @@ class LocationSettingsFragment : BaseComposeToolbarFragment() {
       }
 
       LocationSettingsEvent.OpenPlaces -> {
-        safeNavigation { LocationSettingsFragmentDirections.actionLocationSettingsFragmentToPlacesFragment() }
+        appNavBridge.navigate(PlacesNavKey.List)
       }
 
       is LocationSettingsEvent.ShowMarkerColorPicker -> {

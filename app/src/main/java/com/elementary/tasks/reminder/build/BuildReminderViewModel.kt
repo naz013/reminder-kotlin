@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.build
 
-import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
@@ -12,10 +11,6 @@ import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.deeplink.DeepLinkDataParser
-import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
-import com.elementary.tasks.core.deeplink.ReminderTextDeepLinkData
-import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.reminder.build.adapter.BuilderErrorToTextAdapter
@@ -77,7 +72,12 @@ import org.threeten.bp.LocalTime
 import java.util.UUID
 
 class BuildReminderViewModel(
-  private val arguments: Bundle?,
+  initialId: String,
+  private val fromIntentItem: Boolean,
+  private val deepLinkDateTimeType: Int?,
+  private val deepLinkDateTimeMillis: Long?,
+  private val deepLinkTodo: Boolean,
+  private val deepLinkText: String?,
   dispatcherProvider: DispatcherProvider,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val reminderRepository: ReminderRepository,
@@ -137,7 +137,7 @@ class BuildReminderViewModel(
   private val _showReviewDialog = mutableLiveDataOf<Event<Unit>>()
   val showReviewDialog = _showReviewDialog.toLiveData()
 
-  var id: String = ""
+  var id: String = initialId
     private set
   var hasSameInDb: Boolean = false
   var isFromFile: Boolean = false
@@ -180,7 +180,7 @@ class BuildReminderViewModel(
     super.onCreate(owner)
     Logger.i(TAG, "Creating view model")
     reminderAnalyticsTracker.startTracking()
-    handleDeepLink(arguments)
+    handleDeepLink()
   }
 
   override fun onCleared() {
@@ -275,22 +275,27 @@ class BuildReminderViewModel(
     }
   }
 
-  private fun handleDeepLink(bundle: Bundle?) {
-    Logger.i(TAG, "Handle reminder Deep Link: $bundle")
-    if (bundle == null) {
-      return
-    }
-    id = bundle.getString(IntentKeys.INTENT_ID) ?: ""
+  private fun handleDeepLink() {
+    Logger.i(
+      TAG,
+      "Handle reminder Deep Link: id=$id, fromIntentItem=$fromIntentItem, " +
+        "deepLinkDateTimeType=$deepLinkDateTimeType, deepLinkTodo=$deepLinkTodo, " +
+        "deepLinkText=${Logger.data(deepLinkText)}",
+    )
     viewModelScope.launch(dispatcherProvider.default()) {
       when {
-        bundle.getBoolean(IntentKeys.INTENT_ITEM, false) -> {
+        fromIntentItem -> {
           Logger.i(TAG, "Handle reminder object Deep Link")
           readObjectFromIntent()
         }
 
-        bundle.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) -> {
-          readDeepLink(bundle)
+        deepLinkDateTimeType != null && deepLinkDateTimeMillis != null -> {
+          readDateTimeDeepLink(deepLinkDateTimeType, deepLinkDateTimeMillis)
         }
+
+        deepLinkTodo -> readTodoDeepLink()
+
+        deepLinkText != null -> readTextDeepLink(deepLinkText)
 
         id.isNotEmpty() -> {
           Logger.i(TAG, "Handle reminder ID Deep Link")
@@ -379,39 +384,40 @@ class BuildReminderViewModel(
     }
   }
 
-  private suspend fun readDeepLink(bundle: Bundle) {
+  private suspend fun readDateTimeDeepLink(
+    type: Int,
+    millis: Long,
+  ) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
-    runCatching {
-      val parser = DeepLinkDataParser()
-      when (val deepLinkData = parser.readDeepLinkData(bundle)) {
-        is ReminderDatetimeTypeDeepLinkData -> {
-          if (deepLinkData.type == Reminder.BY_DATE) {
-            Logger.i(TAG, "Handle reminder date/time Deep Link")
-            addDateItemToBuilder(deepLinkData.dateTime.toLocalDate())
-            addTimeItemToBuilder(deepLinkData.dateTime.toLocalTime())
-            addEmptySummaryItemToBuilderIfNeeded()
-            updateSelector()
-          }
-        }
-
-        is ReminderTodoTypeDeepLinkData -> {
-          Logger.i(TAG, "Handle reminder todo Deep Link")
-          addSubTasksItemToBuilder()
-          addEmptySummaryItemToBuilderIfNeeded()
-          updateSelector()
-        }
-
-        is ReminderTextDeepLinkData -> {
-          Logger.i(TAG, "Handle reminder text Deep Link")
-          addSummaryItemToBuilder(deepLinkData.text)
-          updateSelector()
-        }
-
-        else -> {}
-      }
+    if (type == Reminder.BY_DATE) {
+      Logger.i(TAG, "Handle reminder date/time Deep Link")
+      val dateTime = dateTimeManager.fromMillis(millis)
+      addDateItemToBuilder(dateTime.toLocalDate())
+      addTimeItemToBuilder(dateTime.toLocalTime())
+      addEmptySummaryItemToBuilderIfNeeded()
+      updateSelector()
     }
+  }
+
+  private suspend fun readTodoDeepLink() {
+    while (builderItemsLogic.getAvailable().isEmpty()) {
+      delay(50)
+    }
+    Logger.i(TAG, "Handle reminder todo Deep Link")
+    addSubTasksItemToBuilder()
+    addEmptySummaryItemToBuilderIfNeeded()
+    updateSelector()
+  }
+
+  private suspend fun readTextDeepLink(text: String) {
+    while (builderItemsLogic.getAvailable().isEmpty()) {
+      delay(50)
+    }
+    Logger.i(TAG, "Handle reminder text Deep Link")
+    addSummaryItemToBuilder(text)
+    updateSelector()
   }
 
   private fun addDateItemToBuilder(date: LocalDate) {

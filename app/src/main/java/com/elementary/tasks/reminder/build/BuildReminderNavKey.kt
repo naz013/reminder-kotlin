@@ -5,7 +5,14 @@ import kotlinx.serialization.Serializable
 
 sealed interface BuildReminderNavKey : NavKey {
   @Serializable
-  data object Main : BuildReminderNavKey
+  data class Main(
+    val id: String = "",
+    val fromIntentItem: Boolean = false,
+    val deepLinkDateTimeType: Int? = null,
+    val deepLinkDateTimeMillis: Long? = null,
+    val deepLinkTodo: Boolean = false,
+    val deepLinkText: String? = null,
+  ) : BuildReminderNavKey
 
   @Serializable
   data object Configure : BuildReminderNavKey

@@ -1,15 +1,12 @@
 package com.elementary.tasks.birthdays.create
 
 import android.graphics.Bitmap
-import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
-import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
-import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.os.data.ContactData
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -58,13 +55,15 @@ class EditBirthdayViewModel(
     load()
   }
 
-  /** Seeds the screen from a shared-file import / calendar date deep link, read once from the
-   *  island Fragment's arguments — mirrors [com.elementary.tasks.googletasks.task.EditGoogleTaskViewModel.checkDeepLink]. */
-  fun checkArguments(arguments: Bundle?) {
-    val bundle = arguments ?: return
+  /** Seeds the screen from a shared-file import / calendar date prefill, read once from the
+   *  navigation key's typed fields. */
+  fun checkArguments(
+    fromIntentData: Boolean,
+    prefillDateEpochDay: Long?,
+  ) {
     when {
-      bundle.getBoolean(IntentKeys.INTENT_ITEM, false) -> onIntent()
-      bundle.getBoolean(IntentKeys.INTENT_DEEP_LINK, false) -> onDeepLink(bundle)
+      fromIntentData -> onIntent()
+      prefillDateEpochDay != null -> onDateChanged(LocalDate.ofEpochDay(prefillDateEpochDay))
       id.isEmpty() -> onDateChanged(LocalDate.now())
     }
   }
@@ -162,16 +161,6 @@ class EditBirthdayViewModel(
       isFromFile = true
       onBirthdayLoaded(this)
       findSame(uuId)
-    }
-  }
-
-  private fun onDeepLink(bundle: Bundle) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val parser = DeepLinkDataParser()
-      when (val deepLinkData = parser.readDeepLinkData(bundle)) {
-        is BirthdayDateDeepLinkData -> onDateChanged(deepLinkData.date)
-        else -> onDateChanged(LocalDate.now())
-      }
     }
   }
 

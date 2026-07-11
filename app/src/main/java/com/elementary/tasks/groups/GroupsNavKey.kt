@@ -10,5 +10,6 @@ sealed interface GroupsNavKey : NavKey {
   @Serializable
   data class Edit(
     val id: String = "",
+    val fromIntentData: Boolean = false,
   ) : GroupsNavKey
 }

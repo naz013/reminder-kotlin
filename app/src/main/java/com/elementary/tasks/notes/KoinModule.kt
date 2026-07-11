@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes
 
-import android.os.Bundle
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.notes.create.NoteEditViewModel
@@ -34,10 +33,12 @@ val noteModule =
 
     singleOf(::NoteImageRepository)
 
-    viewModel { (id: String?, arguments: Bundle?) ->
+    viewModel { (id: String?, sharedText: String?, sharedImageUris: List<String>?, fromIntentData: Boolean) ->
       NoteEditViewModel(
         id,
-        arguments,
+        sharedText,
+        sharedImageUris,
+        fromIntentData,
         get(),
         get(),
         get(),

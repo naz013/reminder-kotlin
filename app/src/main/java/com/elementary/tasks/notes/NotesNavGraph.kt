@@ -4,14 +4,6 @@ import android.app.Activity
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.activity.compose.LocalActivity
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.SnackbarHostState
@@ -25,18 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
-import androidx.navigation3.ui.NavDisplay
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
@@ -52,8 +38,7 @@ import com.elementary.tasks.core.speech.SpeechText
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.compose.DateTimePickerDialogs
 import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePickerState
-import com.elementary.tasks.navigation.NavigationAnimations
-import com.elementary.tasks.navigation.safeNavigation
+import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.elementary.tasks.notes.create.EditTab
 import com.elementary.tasks.notes.create.NoteEditActions
 import com.elementary.tasks.notes.create.NoteEditScreen
@@ -69,6 +54,7 @@ import com.elementary.tasks.notes.preview.PreviewNoteActions
 import com.elementary.tasks.notes.preview.PreviewNoteScreen
 import com.elementary.tasks.notes.preview.PreviewNoteState
 import com.elementary.tasks.notes.preview.PreviewNoteViewModel
+import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.ui.common.Dialogues
@@ -78,71 +64,19 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 /**
- * Builds the Notes island's [NavDisplay] — the "screens" (Nav3 entries) themselves and the
- * routing between them. None of these entries depend on a Fragment/Activity beyond what Compose
- * itself exposes ([LocalActivity], [LocalView]'s [NavController]) — [NotesFragment] only owns the
- * backstack and forwards its `arguments` bundle once to seed it.
+ * Contributes the Notes island's screens (Nav3 entries) and the routing between them into the
+ * app's single, shared [androidx.navigation3.ui.NavDisplay] (see
+ * [com.elementary.tasks.navigation.nav3.AppNavGraph]). None of these entries depend on a Fragment
+ * beyond what Compose itself exposes ([LocalActivity]) plus [AppNavBridge] for the handful of
+ * destinations (Settings, the reminder builder) not yet promoted out of the legacy Fragment graph.
  */
-@Composable
-internal fun NotesNavGraph(
-  backStack: MutableList<NavKey>,
-  arguments: Bundle?,
-) {
-  NavDisplay(
-    backStack = backStack,
-    onBack = { backStack.removeLastOrNull() },
-    entryDecorators =
-      listOf(
-        rememberSaveableStateHolderNavEntryDecorator(),
-        rememberViewModelStoreNavEntryDecorator(),
-      ),
-    transitionSpec = {
-      (
-        fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_ENTER_SCALE)
-      ) togetherWith (
-        fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_EXIT_SCALE)
-      )
-    },
-    popTransitionSpec = {
-      (
-        fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_EXIT_SCALE)
-      ) togetherWith (
-        fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_ENTER_SCALE)
-      )
-    },
-    predictivePopTransitionSpec = {
-      (
-        fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_EXIT_SCALE)
-      ) togetherWith (
-        fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_ENTER_SCALE)
-      )
-    },
-    entryProvider =
-      entryProvider {
-        entry<NotesNavKey.List> { NotesListEntry(backStack) }
-        entry<NotesNavKey.Archive> { NotesArchiveEntry(backStack) }
-        entry<NotesNavKey.Preview> { key -> NotePreviewEntry(key, backStack) }
-        entry<NotesNavKey.Edit> { key -> NoteEditEntry(key, backStack, arguments = arguments) }
-        entry<NotesNavKey.ImagePreview> { key -> NoteImagePreviewEntry(key, backStack) }
-      },
-  )
+fun EntryProviderScope<NavKey>.notesEntries(backStack: MutableList<NavKey>) {
+  entry<NotesNavKey.List> { NotesListEntry(backStack) }
+  entry<NotesNavKey.Archive> { NotesArchiveEntry(backStack) }
+  entry<NotesNavKey.Preview> { key -> NotePreviewEntry(key, backStack) }
+  entry<NotesNavKey.Edit> { key -> NoteEditEntry(key, backStack) }
+  entry<NotesNavKey.ImagePreview> { key -> NoteImagePreviewEntry(key, backStack) }
 }
-
-private fun navScreenSpring() =
-  spring<Float>(
-    dampingRatio = Spring.DampingRatioLowBouncy,
-    stiffness = Spring.StiffnessMediumLow,
-  )
-
-private const val NAV_ANIM_FADE_DURATION_MS = 250
-private const val NAV_ANIM_ENTER_SCALE = 0.92f
-private const val NAV_ANIM_EXIT_SCALE = 1.08f
 
 /**
  * Bundles the framework-level dependencies [handleNotesNavigationEvent] needs so [NotesListEntry]
@@ -151,7 +85,7 @@ private const val NAV_ANIM_EXIT_SCALE = 1.08f
  */
 private class NotesHostDependencies(
   val activity: Activity,
-  val navController: NavController,
+  val appNavBridge: AppNavBridge,
   val dialogues: Dialogues,
   val permissionRequester: PermissionRequester,
   val settingsTitle: String,
@@ -163,15 +97,14 @@ private class NotesHostDependencies(
 private fun rememberNotesHostDependencies(permissionRequester: PermissionRequester): NotesHostDependencies {
   val activity =
     requireNotNull(LocalActivity.current) { "Notes screens require an Activity-backed composition" }
-  val view = LocalView.current
-  val navController = remember(view) { view.findNavController() }
+  val appNavBridge = koinInject<AppNavBridge>()
   val dialogues = koinInject<Dialogues>()
   val settingsTitle = stringResource(R.string.action_settings)
   val colorDialogTitle = stringResource(R.string.color)
   val deleteDialogTitle = stringResource(R.string.delete)
   return remember(
     activity,
-    navController,
+    appNavBridge,
     dialogues,
     permissionRequester,
     settingsTitle,
@@ -180,7 +113,7 @@ private fun rememberNotesHostDependencies(permissionRequester: PermissionRequest
   ) {
     NotesHostDependencies(
       activity = activity,
-      navController = navController,
+      appNavBridge = appNavBridge,
       dialogues = dialogues,
       permissionRequester = permissionRequester,
       settingsTitle = settingsTitle,
@@ -212,8 +145,9 @@ private fun handleNotesNavigationEvent(
     is NotesViewModel.NavigationEvent.OpenArchive -> backStack.add(NotesNavKey.Archive)
 
     is NotesViewModel.NavigationEvent.OpenSettings -> {
-      deps.navController.safeNavigation(
-        NotesFragmentDirections.actionActionNotesToNoteSettingsFragment(deps.settingsTitle),
+      deps.appNavBridge.navigateLegacy(
+        R.id.noteSettingsFragment,
+        Bundle().apply { putString(IntentKeys.INTENT_SCREEN_TITLE, deps.settingsTitle) },
       )
     }
 
@@ -267,7 +201,7 @@ private fun NotesListEntry(backStack: MutableList<NavKey>) {
     modifier = Modifier.fillMaxSize(),
     state = state,
     snackbarHostState = snackbarHostState,
-    onBackClick = { hostDeps.navController.popBackStack() },
+    onBackClick = { backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,
     onGridToggleClick = viewModel::onGridToggleClick,
@@ -322,8 +256,6 @@ private fun NotePreviewEntry(
 
   val activity =
     requireNotNull(LocalActivity.current) { "NotePreviewEntry requires an Activity-backed composition" }
-  val view = LocalView.current
-  val navController = remember(view) { view.findNavController() }
   val permissionRequester = rememberPermissionRequester()
   val snackbarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
@@ -336,11 +268,7 @@ private fun NotePreviewEntry(
       }
 
       is PreviewNoteViewModel.NavigationEvent.EditReminder -> {
-        navController.safeNavigation(
-          R.id.buildReminderFragment,
-          Bundle().apply { putString(IntentKeys.INTENT_ID, event.id) },
-          NavigationAnimations.inDepthNavOptions(),
-        )
+        backStack.add(BuildReminderNavKey.Main(id = event.id))
       }
 
       is PreviewNoteViewModel.NavigationEvent.OpenImagePreview -> {
@@ -409,9 +337,11 @@ private fun NotePreviewEntry(
 private fun NoteEditEntry(
   key: NotesNavKey.Edit,
   backStack: MutableList<NavKey>,
-  arguments: Bundle?,
 ) {
-  val viewModel = koinViewModel<NoteEditViewModel> { parametersOf(key.id, arguments) }
+  val viewModel =
+    koinViewModel<NoteEditViewModel> {
+      parametersOf(key.id, key.sharedText, key.sharedImageUris, key.fromIntentData)
+    }
 
   val context = LocalContext.current
   val speechEngine = remember(viewModel) { SpeechEngine(context) }

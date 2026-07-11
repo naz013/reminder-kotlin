@@ -1,6 +1,5 @@
 package com.elementary.tasks.groups.create
 
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,7 +31,7 @@ import java.util.UUID
 
 class EditGroupViewModel(
   private val id: String,
-  private val arguments: Bundle?,
+  private val fromIntentData: Boolean,
   private val dispatcherProvider: DispatcherProvider,
   private val reminderGroupRepository: ReminderGroupRepository,
   private val dateTimeManager: DateTimeManager,
@@ -169,8 +168,7 @@ class EditGroupViewModel(
   }
 
   private fun getFromIntentIfAvailable(): ReminderGroup? {
-    val bundle = arguments ?: return null
-    if (!bundle.getBoolean(IntentKeys.INTENT_ITEM, false)) return null
+    if (!fromIntentData) return null
     return intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java)
   }
 
