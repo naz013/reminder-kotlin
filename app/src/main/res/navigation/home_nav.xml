@@ -420,7 +420,6 @@
     <fragment
         android:id="@+id/buildReminderFragment"
         android:name="com.elementary.tasks.reminder.build.BuildReminderFragment"
-        tools:layout="@layout/fragment_reminder_builder"
         android:label="@string/new_reminder" />
     <fragment
         android:id="@+id/reminderHelpFragment"
