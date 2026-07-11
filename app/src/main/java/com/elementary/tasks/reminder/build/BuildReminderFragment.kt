@@ -14,6 +14,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
@@ -45,6 +46,7 @@ class BuildReminderFragment :
   private val featureManager by inject<FeatureManager>()
   private val selectorDialogDataHolder by inject<SelectorDialogDataHolder>()
   private val paramToTextAdapter by inject<ParamToTextAdapter>()
+  private val googleCalendarUtils by inject<GoogleCalendarUtils>()
 
   private val builderConfigureLauncher =
     BuilderConfigureActivity.BuilderConfigureLauncher(this) {
@@ -195,6 +197,7 @@ class BuildReminderFragment :
         builderItem = item,
         is24HourFormat = prefs.is24HourFormat,
         paramToTextAdapter = paramToTextAdapter,
+        googleCalendarUtils = googleCalendarUtils,
         onDismissRequest = { editingItem = null },
         onValueChange = { updated -> viewModel.updateValue(position, updated) },
         onHelpClick = if (item.biGroup == BiGroup.ICAL) {

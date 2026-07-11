@@ -18,13 +18,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
 import com.elementary.tasks.reminder.build.DayOfYearBuilderItem
 import com.elementary.tasks.reminder.build.DaysOfWeekBuilderItem
+import com.elementary.tasks.reminder.build.DescriptionBuilderItem
 import com.elementary.tasks.reminder.build.EmailBuilderItem
+import com.elementary.tasks.reminder.build.EmailSubjectBuilderItem
+import com.elementary.tasks.reminder.build.GoogleCalendarBuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
@@ -45,6 +49,7 @@ import com.elementary.tasks.reminder.build.PriorityBuilderItem
 import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
 import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
 import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
+import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
@@ -56,6 +61,7 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfMonthValueEdi
 import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfYearValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DaysOfWeekValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleCalendarDurationValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleCalendarValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleTaskListValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GroupValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.ICalDayValueListValueEditor
@@ -70,6 +76,7 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatIntervalValu
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatLimitValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.SimpleTextValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.TextInputValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
@@ -110,6 +117,10 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is ICalIntBuilderItem,
     is ICalListIntBuilderItem,
     is ICalByDayBuilderItem,
+    is GoogleCalendarBuilderItem,
+    is SummaryBuilderItem,
+    is DescriptionBuilderItem,
+    is EmailSubjectBuilderItem,
     -> true
 
     else -> false
@@ -133,6 +144,7 @@ fun ValueEditorSheet(
   onDismissRequest: () -> Unit,
   onValueChange: (BuilderItem<*>) -> Unit,
   paramToTextAdapter: ParamToTextAdapter,
+  googleCalendarUtils: GoogleCalendarUtils,
   modifier: Modifier = Modifier,
   is24HourFormat: Boolean = false,
   onHelpClick: (() -> Unit)? = null,
@@ -190,6 +202,7 @@ fun ValueEditorSheet(
         onValueChange = onValueChange,
         is24HourFormat = is24HourFormat,
         paramToTextAdapter = paramToTextAdapter,
+        googleCalendarUtils = googleCalendarUtils,
       )
     }
 
@@ -203,6 +216,7 @@ private fun ValueEditorContent(
   onValueChange: (BuilderItem<*>) -> Unit,
   is24HourFormat: Boolean,
   paramToTextAdapter: ParamToTextAdapter,
+  googleCalendarUtils: GoogleCalendarUtils,
 ) {
   when (builderItem) {
     is DateBuilderItem -> DateValueEditor(builderItem, onValueChange)
@@ -234,6 +248,10 @@ private fun ValueEditorContent(
     is OtherParamsBuilderItem -> OtherParamsValueEditor(builderItem, onValueChange)
     is EmailBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Email)
     is WebAddressBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Uri)
+    is GoogleCalendarBuilderItem -> GoogleCalendarValueEditor(builderItem, googleCalendarUtils, onValueChange)
+    is SummaryBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
+    is DescriptionBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
+    is EmailSubjectBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     else -> {}
   }
 }

@@ -10,7 +10,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.elementary.tasks.reminder.build.GoogleCalendarBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
 import com.github.naz013.domain.GoogleTaskList
@@ -61,6 +63,31 @@ fun GoogleTaskListValueEditor(
     },
     itemLabel = GoogleTaskList::title,
     itemKey = { it.listId },
+    modifier = Modifier.fillMaxWidth().heightIn(max = LIST_MAX_HEIGHT),
+  )
+}
+
+/** Single-select Google Calendar picker. Replaces `GoogleCalendarController`. Unlike the other
+ *  selectable-radio items, the option list isn't on the [BuilderItem] itself - it's fetched (a
+ *  synchronous ContentResolver query) once per edit session via [GoogleCalendarUtils]. */
+@Composable
+fun GoogleCalendarValueEditor(
+  builderItem: GoogleCalendarBuilderItem,
+  googleCalendarUtils: GoogleCalendarUtils,
+  onValueChange: (BuilderItem<*>) -> Unit,
+) {
+  val calendars = remember(builderItem) { googleCalendarUtils.getCalendarsList() }
+  var selected by remember(builderItem) { mutableStateOf(builderItem.modifier.getValue()) }
+  SelectableRadioList(
+    items = calendars,
+    selectedItem = selected,
+    onItemSelected = { calendar ->
+      selected = calendar
+      builderItem.modifier.update(calendar)
+      onValueChange(builderItem)
+    },
+    itemLabel = GoogleCalendarUtils.CalendarItem::name,
+    itemKey = { it.id },
     modifier = Modifier.fillMaxWidth().heightIn(max = LIST_MAX_HEIGHT),
   )
 }
