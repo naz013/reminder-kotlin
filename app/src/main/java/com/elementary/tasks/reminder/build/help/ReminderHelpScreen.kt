@@ -75,8 +75,8 @@ fun ReminderHelpScreen(onBackClick: () -> Unit) {
             isScrolled = scrollY > 0
           }
 
-          // Load the HTML file from raw resources
-          loadUrl("file:///android_res/raw/how_to_create_a_reminder.html")
+          // Load the HTML file from assets, alongside the shared style.css
+          loadUrl("file:///android_asset/files/how_to_create_a_reminder.html")
         }
       },
       update = { webView ->
