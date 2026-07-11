@@ -17,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
+import android.net.Uri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
+import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
@@ -57,7 +59,9 @@ import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
+import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.build.valuedialog.editor.ApplicationValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.AttachmentsValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.BeforeTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
@@ -130,6 +134,7 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is ApplicationBuilderItem,
     is PhoneCallBuilderItem,
     is SmsBuilderItem,
+    is AttachmentsBuilderItem,
     -> true
 
     else -> false
@@ -155,8 +160,10 @@ fun ValueEditorSheet(
   paramToTextAdapter: ParamToTextAdapter,
   googleCalendarUtils: GoogleCalendarUtils,
   packageManagerWrapper: PackageManagerWrapper,
+  attachmentFileAdapter: UriToAttachmentFileAdapter,
   onPickApplication: (onResult: (String) -> Unit) -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
+  onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
   modifier: Modifier = Modifier,
   is24HourFormat: Boolean = false,
   onHelpClick: (() -> Unit)? = null,
@@ -216,8 +223,10 @@ fun ValueEditorSheet(
         paramToTextAdapter = paramToTextAdapter,
         googleCalendarUtils = googleCalendarUtils,
         packageManagerWrapper = packageManagerWrapper,
+        attachmentFileAdapter = attachmentFileAdapter,
         onPickApplication = onPickApplication,
         onPickContact = onPickContact,
+        onPickFiles = onPickFiles,
       )
     }
 
@@ -233,8 +242,10 @@ private fun ValueEditorContent(
   paramToTextAdapter: ParamToTextAdapter,
   googleCalendarUtils: GoogleCalendarUtils,
   packageManagerWrapper: PackageManagerWrapper,
+  attachmentFileAdapter: UriToAttachmentFileAdapter,
   onPickApplication: (onResult: (String) -> Unit) -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
+  onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
 ) {
   when (builderItem) {
     is DateBuilderItem -> DateValueEditor(builderItem, onValueChange)
@@ -273,6 +284,7 @@ private fun ValueEditorContent(
     is ApplicationBuilderItem -> ApplicationValueEditor(builderItem, packageManagerWrapper, onPickApplication, onValueChange)
     is PhoneCallBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     is SmsBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
+    is AttachmentsBuilderItem -> AttachmentsValueEditor(builderItem, attachmentFileAdapter, onPickFiles, onValueChange)
     else -> {}
   }
 }

@@ -16,6 +16,7 @@ import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.os.datapicker.ContactPicker
+import com.elementary.tasks.core.os.datapicker.MultipleUriPicker
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.navigate
@@ -28,6 +29,7 @@ import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCommunicator
 import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
+import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.build.valuedialog.isSupportedByComposeEditor
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.recur.RecurHelpActivity
@@ -51,6 +53,7 @@ class BuildReminderFragment :
   private val paramToTextAdapter by inject<ParamToTextAdapter>()
   private val googleCalendarUtils by inject<GoogleCalendarUtils>()
   private val packageManagerWrapper by inject<PackageManagerWrapper>()
+  private val attachmentFileAdapter by inject<UriToAttachmentFileAdapter>()
 
   private val builderConfigureLauncher =
     BuilderConfigureActivity.BuilderConfigureLauncher(this) {
@@ -58,6 +61,7 @@ class BuildReminderFragment :
     }
   private val applicationPicker = ApplicationPicker(this) { }
   private val contactPicker = ContactPicker(this) { }
+  private val multipleUriPicker = MultipleUriPicker(this)
 
   override fun getTitle(): String = ""
 
@@ -205,12 +209,14 @@ class BuildReminderFragment :
         paramToTextAdapter = paramToTextAdapter,
         googleCalendarUtils = googleCalendarUtils,
         packageManagerWrapper = packageManagerWrapper,
+        attachmentFileAdapter = attachmentFileAdapter,
         onPickApplication = { onResult -> applicationPicker.pickApplication(onResult) },
         onPickContact = { onResult ->
           permissionFlow.askPermission(Permissions.READ_CONTACTS) {
             contactPicker.pickContact { contactData -> onResult(contactData.phone) }
           }
         },
+        onPickFiles = { onResult -> multipleUriPicker.pickFiles(onResult) },
         onDismissRequest = { editingItem = null },
         onValueChange = { updated -> viewModel.updateValue(position, updated) },
         onHelpClick = if (item.biGroup == BiGroup.ICAL) {
