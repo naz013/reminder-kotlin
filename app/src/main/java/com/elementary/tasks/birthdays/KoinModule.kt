@@ -29,9 +29,9 @@ val birthdaysModule =
         get(),
       )
     }
-    viewModel { (id: String) ->
+    viewModel { (key: BirthdaysNavKey.Edit) ->
       EditBirthdayViewModel(
-        id,
+        key,
         get(),
         get(),
         get(),

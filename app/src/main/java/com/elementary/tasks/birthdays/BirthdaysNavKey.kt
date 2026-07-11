@@ -11,7 +11,7 @@ sealed interface BirthdaysNavKey : NavKey {
 
   @Serializable
   data class Edit(
-    val id: String = "",
+    val id: String? = null,
     val fromIntentData: Boolean = false,
     val prefillDateEpochDay: Long? = null,
   ) : BirthdaysNavKey

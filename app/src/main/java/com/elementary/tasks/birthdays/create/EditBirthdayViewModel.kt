@@ -1,11 +1,12 @@
 package com.elementary.tasks.birthdays.create
 
 import android.graphics.Bitmap
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.os.data.ContactData
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -17,20 +18,25 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.sendEvent
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import java.util.UUID
 
 class EditBirthdayViewModel(
-  private val id: String,
+  private val key: BirthdaysNavKey.Edit,
   private val birthdayRepository: BirthdayRepository,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val contactsReader: ContactsReader,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -39,46 +45,43 @@ class EditBirthdayViewModel(
   private val uiBirthdayDateFormatter: UiBirthdayDateFormatter,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
   private val saveBirthdayUseCase: SaveBirthdayUseCase,
-) : BaseProgressViewModel(dispatcherProvider) {
-  val state: StateFlow<EditBirthdayState> field = MutableStateFlow(EditBirthdayState())
+) : ViewModel() {
 
-  private var editableBirthday: Birthday? = null
+  private val _state = MutableStateFlow(EditBirthdayState())
+  val state = _state.stateInWhileSubscribed(EditBirthdayState())
+    .onStart { checkArguments() }
 
-  private var isEdited = false
-  private var hasSameInDb = false
-  private var isFromFile = false
-  var selectedDate: LocalDate = dateTimeManager.getCurrentDate()
-    private set
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
   init {
-    state.update { it.copy(hasId = id.isNotEmpty()) }
-    load()
+    _state.update {
+      it.copy(
+        id = key.id ?: UUID.randomUUID().toString(),
+        hasId = key.id.isNullOrEmpty().not()
+      )
+    }
   }
 
-  /** Seeds the screen from a shared-file import / calendar date prefill, read once from the
-   *  navigation key's typed fields. */
-  fun checkArguments(
-    fromIntentData: Boolean,
-    prefillDateEpochDay: Long?,
-  ) {
+  private fun checkArguments() {
     when {
-      fromIntentData -> onIntent()
-      prefillDateEpochDay != null -> onDateChanged(LocalDate.ofEpochDay(prefillDateEpochDay))
-      id.isEmpty() -> onDateChanged(LocalDate.now())
+      key.fromIntentData -> onIntent()
+      key.prefillDateEpochDay != null -> onDateChanged(LocalDate.ofEpochDay(key.prefillDateEpochDay))
+      key.id.isNullOrEmpty() -> onDateChanged(LocalDate.now())
+      else -> load()
     }
   }
 
   fun onNameChanged(text: String) {
-    state.update { it.copy(name = text, nameError = false) }
+    _state.update { it.copy(name = text, nameError = false) }
   }
 
   fun onNumberChanged(text: String) {
-    state.update { it.copy(number = text) }
+    _state.update { it.copy(number = text) }
     if (text.isNotEmpty()) resolveContactInfo(text) else clearContactInfo()
   }
 
   fun onContactPicked(contactData: ContactData) {
-    state.update {
+    _state.update {
       it.copy(
         number = contactData.phone,
         name = it.name.ifBlank { contactData.name },
@@ -89,25 +92,28 @@ class EditBirthdayViewModel(
   }
 
   fun onDateChanged(localDate: LocalDate) {
-    Logger.d(TAG, "onDateChanged: $localDate")
-    selectedDate = localDate
-    state.update { it.copy(dateText = uiBirthdayDateFormatter.getDateFormatted(localDate)) }
+    Logger.d(TAG, "Date changed: $localDate")
+    _state.update {
+      it.copy(
+        dateText = uiBirthdayDateFormatter.getDateFormatted(localDate, !_state.value.ignoreYear),
+        selectedDate = localDate,
+      )
+    }
   }
 
   fun onYearCheckChanged(ignoreYear: Boolean) {
-    uiBirthdayDateFormatter.changeShowYear(!ignoreYear)
-    state.update { it.copy(ignoreYear = ignoreYear) }
-    onDateChanged(selectedDate)
+    _state.update { it.copy(ignoreYear = ignoreYear) }
+    onDateChanged(_state.value.selectedDate)
   }
 
   fun onSaveClick() {
-    val name = state.value.name.trim()
+    val name = _state.value.name.trim()
     if (name.isEmpty()) {
-      state.update { it.copy(nameError = true) }
+      _state.update { it.copy(nameError = true) }
       return
     }
-    if (isFromFile && hasSameInDb) {
-      state.update { it.copy(dialog = EditBirthdayDialog.CopyConflict) }
+    if (_state.value.isFromFile && _state.value.hasSameInDb) {
+      _state.update { it.copy(dialog = EditBirthdayDialog.CopyConflict) }
       return
     }
     performSave(name, newId = false)
@@ -115,27 +121,29 @@ class EditBirthdayViewModel(
 
   fun onCopyKeepClick() {
     dismissDialog()
-    performSave(state.value.name.trim(), newId = true)
+    performSave(_state.value.name.trim(), newId = true)
   }
 
   fun onCopyReplaceClick() {
     dismissDialog()
-    performSave(state.value.name.trim(), newId = false)
+    performSave(_state.value.name.trim(), newId = false)
   }
 
   fun onDeleteMenuClick() {
-    state.update { it.copy(dialog = EditBirthdayDialog.DeleteConfirm) }
+    _state.update { it.copy(dialog = EditBirthdayDialog.DeleteConfirm) }
   }
 
   fun onDeleteConfirmed() {
     dismissDialog()
-    if (!state.value.canDelete) return
+    if (!_state.value.canDelete) return
+    val id = _state.value.id
     Logger.i(TAG, "Deleting birthday, id: $id")
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
+    viewModelScope.launch(dispatcherProvider.io()) {
       deleteBirthdayUseCase(id)
-      postInProgress(false)
-      postCommand(Commands.DELETED)
+
+      withContext(dispatcherProvider.main()) {
+        event.sendEvent(ViewModelEvent.MoveBack)
+      }
     }
   }
 
@@ -144,46 +152,58 @@ class EditBirthdayViewModel(
   }
 
   private fun dismissDialog() {
-    state.update { it.copy(dialog = null) }
+    _state.update { it.copy(dialog = null) }
   }
 
   private fun load() {
-    viewModelScope.launch(dispatcherProvider.default()) {
+    val id = key.id ?: run {
+      Logger.w(TAG, "Id is null")
+      return
+    }
+
+    viewModelScope.launch(dispatcherProvider.io()) {
       val birthday = birthdayRepository.getById(id) ?: return@launch
-      Logger.logEvent("Birthday loaded from DB")
+
+      Logger.i(TAG, "Birthday loaded from DB")
       onBirthdayLoaded(birthday)
     }
   }
 
   private fun onIntent() {
-    intentDataReader.get(IntentKeys.INTENT_ITEM, Birthday::class.java)?.run {
-      Logger.logEvent("Birthday loaded from intent")
-      isFromFile = true
-      onBirthdayLoaded(this)
-      findSame(uuId)
+    viewModelScope.launch(dispatcherProvider.default()) {
+      intentDataReader.get(IntentKeys.INTENT_ITEM, Birthday::class.java)?.run {
+        Logger.i(TAG, "Birthday loaded from intent, id: $uuId")
+
+        withContext(dispatcherProvider.main()) {
+          _state.update {
+            it.copy(
+              isFromFile = true
+            )
+          }
+        }
+        onBirthdayLoaded(this)
+        findSame(uuId)
+      }
     }
   }
 
-  private fun performSave(
-    name: String,
-    newId: Boolean,
-  ) {
-    val number = state.value.number.takeIf { it.isNotEmpty() }
-    postInProgress(true)
+  private fun performSave(name: String, newId: Boolean) {
+    val state = _state.value
+    val number = state.number.takeIf { it.isNotEmpty() }
     viewModelScope.launch(dispatcherProvider.default()) {
       val contactId = contactsReader.getIdFromNumber(number)
-      val formattedDate = dateTimeManager.formatBirthdayDate(selectedDate)
-      val ignoreYear = state.value.ignoreYear
-      val birthday =
-        editableBirthday?.copy(
+      val formattedDate = dateTimeManager.formatBirthdayDate(state.selectedDate)
+      val ignoreYear = state.ignoreYear
+      val oldBirthday = birthdayRepository.getById(state.id)
+      val birthday = oldBirthday?.copy(
           name = name,
           contactId = contactId,
           date = formattedDate,
           number = number ?: "",
-          day = selectedDate.dayOfMonth,
-          month = selectedDate.monthValue - 1,
-          dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
-          uuId = editableBirthday?.uuId?.takeIf { !newId } ?: UUID.randomUUID().toString(),
+          day = state.selectedDate.dayOfMonth,
+          month = state.selectedDate.monthValue - 1,
+          dayMonth = "${state.selectedDate.dayOfMonth}|${state.selectedDate.monthValue - 1}",
+          uuId = oldBirthday.uuId.takeIf { !newId } ?: UUID.randomUUID().toString(),
           updatedAt = dateTimeManager.getNowGmtDateTime(),
           ignoreYear = ignoreYear,
         ) ?: Birthday(
@@ -191,9 +211,9 @@ class EditBirthdayViewModel(
           contactId = contactId,
           date = formattedDate,
           number = number ?: "",
-          day = selectedDate.dayOfMonth,
-          month = selectedDate.monthValue - 1,
-          dayMonth = "${selectedDate.dayOfMonth}|${selectedDate.monthValue - 1}",
+          day = state.selectedDate.dayOfMonth,
+          month = state.selectedDate.monthValue - 1,
+          dayMonth = "${state.selectedDate.dayOfMonth}|${state.selectedDate.monthValue - 1}",
           updatedAt = dateTimeManager.getNowGmtDateTime(),
           ignoreYear = ignoreYear,
           syncState = SyncState.WaitingForUpload,
@@ -202,31 +222,39 @@ class EditBirthdayViewModel(
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_BIRTHDAY))
       Logger.i(TAG, "Saving the birthday with id: ${birthday.uuId}")
       saveBirthdayUseCase(birthday)
-      postInProgress(false)
-      postCommand(Commands.SAVED)
+
+      withContext(dispatcherProvider.main()) {
+        event.sendEvent(ViewModelEvent.MoveBack)
+      }
     }
   }
 
-  private fun onBirthdayLoaded(birthday: Birthday) {
-    if (isEdited) return
-    isEdited = true
-    editableBirthday = birthday
-    onDateChanged(dateTimeManager.parseBirthdayDate(birthday.date) ?: dateTimeManager.getCurrentDate())
+  private suspend fun onBirthdayLoaded(birthday: Birthday) {
     val uiBirthday = uiBirthdayEditAdapter.convert(birthday)
-    state.update {
-      it.copy(
-        name = uiBirthday.name,
-        number = uiBirthday.number,
-        ignoreYear = uiBirthday.isYearIgnored,
-        canDelete = isEdited && !isFromFile,
-      )
-    }
     if (uiBirthday.number.isNotEmpty()) resolveContactInfo(uiBirthday.number)
+
+    withContext(dispatcherProvider.main()) {
+      onDateChanged(
+        dateTimeManager.parseBirthdayDate(birthday.date) ?: dateTimeManager.getCurrentDate()
+      )
+      _state.update {
+        it.copy(
+          id = birthday.uuId,
+          name = uiBirthday.name,
+          number = uiBirthday.number,
+          ignoreYear = uiBirthday.isYearIgnored,
+          canDelete = !_state.value.isFromFile,
+        )
+      }
+    }
   }
 
-  private fun findSame(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      hasSameInDb = birthdayRepository.getById(id) != null
+  private suspend fun findSame(id: String) {
+    withContext(dispatcherProvider.io()) {
+      val birthday = birthdayRepository.getById(id)
+      if (birthday != null) {
+        _state.update { it.copy(hasSameInDb = true) }
+      }
     }
   }
 
@@ -234,18 +262,27 @@ class EditBirthdayViewModel(
     number: String,
     knownName: String? = null,
   ) {
-    val contactId = contactsReader.getIdFromNumber(number)
-    if (contactId == 0L) {
-      clearContactInfo()
-      return
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val contactId = contactsReader.getIdFromNumber(number)
+      if (contactId == 0L) {
+        clearContactInfo()
+        return@launch
+      }
+      val photo: Bitmap? = contactsReader.getPhotoBitmap(contactId)
+      val name = knownName ?: contactsReader.getNameFromNumber(number)
+
+      withContext(dispatcherProvider.main()) {
+        _state.update { it.copy(contactName = name, contactPhoto = photo) }
+      }
     }
-    val photo: Bitmap? = contactsReader.getPhotoBitmap(contactId)
-    val name = knownName ?: contactsReader.getNameFromNumber(number)
-    state.update { it.copy(contactName = name, contactPhoto = photo) }
   }
 
   private fun clearContactInfo() {
-    state.update { it.copy(contactName = null, contactPhoto = null) }
+    _state.update { it.copy(contactName = null, contactPhoto = null) }
+  }
+
+  sealed interface ViewModelEvent {
+    data object MoveBack : ViewModelEvent
   }
 
   companion object {

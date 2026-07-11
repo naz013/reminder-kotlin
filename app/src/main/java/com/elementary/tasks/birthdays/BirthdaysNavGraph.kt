@@ -1,12 +1,10 @@
 package com.elementary.tasks.birthdays
 
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -15,18 +13,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.EditBirthdayScreen
+import com.elementary.tasks.birthdays.create.EditBirthdayState
 import com.elementary.tasks.birthdays.create.EditBirthdayViewModel
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayScreen
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayState
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
 import com.elementary.tasks.core.os.compose.rememberPermissionRequester
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
@@ -92,7 +88,7 @@ private fun EditEntry(
   key: BirthdaysNavKey.Edit,
   backStack: MutableList<NavKey>,
 ) {
-  val viewModel = koinViewModel<EditBirthdayViewModel> { parametersOf(key.id) }
+  val viewModel = koinViewModel<EditBirthdayViewModel> { parametersOf(key) }
   val context = LocalContext.current
   val activity = LocalActivity.current as FragmentActivity
   val dateTimePickerProvider = koinInject<DateTimePickerProvider>()
@@ -102,14 +98,14 @@ private fun EditEntry(
   DisposableEffect(viewModel) {
     onDispose { context.hideKeyboard() }
   }
-  LaunchedEffect(Unit) { viewModel.checkArguments(key.fromIntentData, key.prefillDateEpochDay) }
 
-  viewModel.resultEvent.ObserveEvent { command ->
-    if (command == Commands.SAVED || command == Commands.DELETED) backStack.removeLastOrNull()
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is EditBirthdayViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+    }
   }
-  viewModel.errorEvent.ObserveEvent { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(EditBirthdayState())
   val selectDateTitle = stringResource(R.string.select_date)
   PermissionRationaleDialog(permissionRequester)
   EditBirthdayScreen(
@@ -128,7 +124,7 @@ private fun EditEntry(
     onDateFieldClick = {
       dateTimePickerProvider.showDatePicker(
         fragmentManager = activity.supportFragmentManager,
-        date = viewModel.selectedDate,
+        date = state.selectedDate,
         title = selectDateTitle,
       ) { viewModel.onDateChanged(it) }
     },

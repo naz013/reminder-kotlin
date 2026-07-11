@@ -6,16 +6,15 @@ import org.threeten.bp.LocalDate
 class UiBirthdayDateFormatter(
   private val dateTimeManager: DateTimeManager,
 ) {
-  private var showYear: Boolean = true
 
-  fun getDateFormatted(date: LocalDate): String =
-    if (showYear) {
+  fun getDateFormatted(
+    date: LocalDate,
+    showYear: Boolean
+  ): String {
+    return if (showYear) {
       dateTimeManager.formatBirthdayFullDateForUi(date)
     } else {
       dateTimeManager.formatBirthdayDateForUi(date)
     }
-
-  fun changeShowYear(showYear: Boolean) {
-    this.showYear = showYear
   }
 }
