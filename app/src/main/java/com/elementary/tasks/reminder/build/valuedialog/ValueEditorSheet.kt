@@ -62,12 +62,14 @@ import com.elementary.tasks.reminder.build.SubTasksBuilderItem
 import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
+import com.elementary.tasks.reminder.build.TimerExclusionBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.build.valuedialog.editor.ApplicationValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.AttachmentsValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.BeforeTimeValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownExclusionValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfMonthValueEditor
@@ -148,6 +150,7 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is SubTasksBuilderItem,
     is ArrivingCoordinatesBuilderItem,
     is LeavingCoordinatesBuilderItem,
+    is TimerExclusionBuilderItem,
     -> true
 
     else -> false
@@ -308,6 +311,7 @@ private fun ValueEditorContent(
     is SubTasksBuilderItem -> SubTasksValueEditor(builderItem, dateTimeManager, onValueChange)
     is ArrivingCoordinatesBuilderItem -> MapValueEditor(builderItem, parentFragment, dateTimeManager, onValueChange)
     is LeavingCoordinatesBuilderItem -> MapValueEditor(builderItem, parentFragment, dateTimeManager, onValueChange)
+    is TimerExclusionBuilderItem -> CountdownExclusionValueEditor(builderItem, dateTimeManager, is24HourFormat, onValueChange)
     else -> {}
   }
 }
