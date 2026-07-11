@@ -213,6 +213,7 @@ class BuildReminderFragment :
         packageManagerWrapper = packageManagerWrapper,
         attachmentFileAdapter = attachmentFileAdapter,
         dateTimeManager = dateTimeManager,
+        parentFragment = this,
         onPickApplication = { onResult -> applicationPicker.pickApplication(onResult) },
         onPickContact = { onResult ->
           permissionFlow.askPermission(Permissions.READ_CONTACTS) {
