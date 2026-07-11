@@ -20,11 +20,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppTheme
 import kotlinx.coroutines.launch
+
+private const val DISABLED_ALPHA = 0.38f
 
 /**
  * A scrollable, snapping vertical picker wheel: the selected item sits in the center row,
@@ -38,6 +41,7 @@ import kotlinx.coroutines.launch
  * @param visibleItemCount How many rows are visible at once. Must be odd so one row can be
  * centered.
  * @param itemHeight Height of a single row; also used to size the centered selection window.
+ * @param enabled When false, scrolling/tapping is disabled and the wheel is dimmed.
  */
 @Composable
 fun WheelPicker(
@@ -47,6 +51,7 @@ fun WheelPicker(
   modifier: Modifier = Modifier,
   visibleItemCount: Int = 3,
   itemHeight: Dp = 40.dp,
+  enabled: Boolean = true,
 ) {
   require(visibleItemCount % 2 == 1) { "visibleItemCount must be odd, was $visibleItemCount" }
   if (items.isEmpty()) return
@@ -74,12 +79,17 @@ fun WheelPicker(
     }
   }
 
-  Box(modifier = modifier.height(itemHeight * visibleItemCount)) {
+  Box(
+    modifier = modifier
+      .height(itemHeight * visibleItemCount)
+      .alpha(if (enabled) 1f else DISABLED_ALPHA),
+  ) {
     LazyColumn(
       state = listState,
       flingBehavior = flingBehavior,
       contentPadding = PaddingValues(vertical = sidePadding),
       modifier = Modifier.fillMaxWidth(),
+      userScrollEnabled = enabled,
     ) {
       itemsIndexed(items) { index, label ->
         val selected = index == selectedIndex
@@ -87,7 +97,7 @@ fun WheelPicker(
           modifier = Modifier
             .fillMaxWidth()
             .height(itemHeight)
-            .clickable {
+            .clickable(enabled = enabled) {
               coroutineScope.launch { listState.animateScrollToItem(index) }
               onSelectedIndexChange(index)
             },

@@ -23,6 +23,8 @@ import com.github.naz013.ui.common.compose.AppTheme
  * @param typeItems Unit labels for the wheel (e.g. "Minutes", "Hours", "Days").
  * @param selectedTypeIndex Index of the currently selected unit in [typeItems].
  * @param onTypeIndexChange Invoked once the wheel settles on a new unit index.
+ * @param enabled When false, both the stepper and the wheel are disabled and dimmed - e.g. for an
+ * "all day" toggle that makes the duration irrelevant.
  */
 @Composable
 fun ValueAndTypePicker(
@@ -34,6 +36,7 @@ fun ValueAndTypePicker(
   modifier: Modifier = Modifier,
   minValue: Long = 0,
   maxValue: Long = 999,
+  enabled: Boolean = true,
 ) {
   Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
     NumberStepperField(
@@ -41,6 +44,7 @@ fun ValueAndTypePicker(
       onValueChange = onValueChange,
       minValue = minValue,
       maxValue = maxValue,
+      enabled = enabled,
       modifier = Modifier.weight(1f),
     )
     Spacer(modifier = Modifier.width(8.dp))
@@ -48,6 +52,7 @@ fun ValueAndTypePicker(
       items = typeItems,
       selectedIndex = selectedTypeIndex,
       onSelectedIndexChange = onTypeIndexChange,
+      enabled = enabled,
       modifier = Modifier.weight(1f),
     )
   }

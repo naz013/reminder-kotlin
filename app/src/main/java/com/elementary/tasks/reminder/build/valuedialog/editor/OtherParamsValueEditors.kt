@@ -128,6 +128,7 @@ fun GoogleCalendarDurationValueEditor(
         typeItems = items,
         selectedTypeIndex = typeIndex,
         onTypeIndexChange = { typeIndex = it; commit() },
+        enabled = !allDay,
         modifier = Modifier.fillMaxWidth(),
       )
     }
