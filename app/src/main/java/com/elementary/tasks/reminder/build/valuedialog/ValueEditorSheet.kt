@@ -47,6 +47,7 @@ import com.elementary.tasks.reminder.build.ICalWeekStartBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
+import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
@@ -78,6 +79,7 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntListValueEd
 import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.ICalWeekStartValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.LedColorValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.NoteValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.OtherParamsValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.PhoneInputValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.PriorityValueEditor
@@ -135,6 +137,7 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is PhoneCallBuilderItem,
     is SmsBuilderItem,
     is AttachmentsBuilderItem,
+    is NoteBuilderItem,
     -> true
 
     else -> false
@@ -285,6 +288,7 @@ private fun ValueEditorContent(
     is PhoneCallBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     is SmsBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     is AttachmentsBuilderItem -> AttachmentsValueEditor(builderItem, attachmentFileAdapter, onPickFiles, onValueChange)
+    is NoteBuilderItem -> NoteValueEditor(builderItem, onValueChange)
     else -> {}
   }
 }
