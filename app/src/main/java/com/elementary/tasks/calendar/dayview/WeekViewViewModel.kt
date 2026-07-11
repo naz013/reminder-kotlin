@@ -29,7 +29,7 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.temporal.ChronoUnit
 
-class WeekViewModel(
+class WeekViewViewModel(
   startDate: LocalDate,
   dispatcherProvider: DispatcherProvider,
   private val weekHeaderController: WeekHeaderController,

@@ -18,7 +18,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
-import com.elementary.tasks.calendar.dayview.WeekViewModel
+import com.elementary.tasks.calendar.dayview.WeekViewViewModel
 import com.elementary.tasks.calendar.dayview.WeekViewScreen
 import com.elementary.tasks.core.os.compose.rememberPermissionRequester
 import com.elementary.tasks.navigation.NavigationAnimations
@@ -132,7 +132,7 @@ private fun DayEntry(
 ) {
   val dateTimeManager = koinInject<DateTimeManager>()
   val startDate = remember(key.dateMillis) { dateTimeManager.fromMillis(key.dateMillis).toLocalDate() }
-  val viewModel = koinViewModel<WeekViewModel> { parametersOf(startDate) }
+  val viewModel = koinViewModel<WeekViewViewModel> { parametersOf(startDate) }
   bindLifecycle(viewModel)
 
   val context = LocalContext.current
@@ -144,27 +144,27 @@ private fun DayEntry(
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is WeekViewModel.NavigationEvent.MoveToDate -> {
+      is WeekViewViewModel.NavigationEvent.MoveToDate -> {
         pagerJumpRequest = viewModel.positionForDate(event.date)
       }
 
-      is WeekViewModel.NavigationEvent.OpenReminderPreview -> {
+      is WeekViewViewModel.NavigationEvent.OpenReminderPreview -> {
         backStack.add(ReminderPreviewNavKey.Preview(event.id))
       }
 
-      is WeekViewModel.NavigationEvent.OpenReminderEdit -> {
+      is WeekViewViewModel.NavigationEvent.OpenReminderEdit -> {
         appNavBridge.navigate(BuildReminderNavKey.Main(id = event.id))
       }
 
-      is WeekViewModel.NavigationEvent.OpenBirthdayPreview -> {
+      is WeekViewViewModel.NavigationEvent.OpenBirthdayPreview -> {
         appNavBridge.navigate(BirthdaysNavKey.Preview(event.id))
       }
 
-      is WeekViewModel.NavigationEvent.OpenBirthdayEdit -> {
+      is WeekViewViewModel.NavigationEvent.OpenBirthdayEdit -> {
         appNavBridge.navigate(BirthdaysNavKey.Edit(event.id))
       }
 
-      is WeekViewModel.NavigationEvent.OpenNewReminder -> {
+      is WeekViewViewModel.NavigationEvent.OpenNewReminder -> {
         appNavBridge.navigate(
           BuildReminderNavKey.Main(
             deepLinkDateTimeType = Reminder.BY_DATE,
@@ -173,23 +173,23 @@ private fun DayEntry(
         )
       }
 
-      is WeekViewModel.NavigationEvent.OpenNewBirthday -> {
+      is WeekViewViewModel.NavigationEvent.OpenNewBirthday -> {
         appNavBridge.navigate(BirthdaysNavKey.Edit(prefillDateEpochDay = event.date.toEpochDay()))
       }
 
-      is WeekViewModel.NavigationEvent.ConfirmArchiveReminder -> {
+      is WeekViewViewModel.NavigationEvent.ConfirmArchiveReminder -> {
         dialogues.askConfirmation(context, context.getString(R.string.move_to_archive)) { confirmed ->
           if (confirmed) viewModel.moveReminderToArchive(event.id)
         }
       }
 
-      is WeekViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
+      is WeekViewViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
         dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
           if (confirmed) viewModel.deleteBirthday(event.id)
         }
       }
 
-      is WeekViewModel.NavigationEvent.RequestGpsPermission -> {
+      is WeekViewViewModel.NavigationEvent.RequestGpsPermission -> {
         permissionRequester.request(
           listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
           onGranted = { viewModel.toggleReminder(event.id) },
