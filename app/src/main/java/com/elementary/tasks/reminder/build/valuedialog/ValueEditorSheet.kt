@@ -17,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import androidx.compose.ui.text.input.KeyboardType
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
 import com.elementary.tasks.reminder.build.DayOfYearBuilderItem
 import com.elementary.tasks.reminder.build.DaysOfWeekBuilderItem
+import com.elementary.tasks.reminder.build.EmailBuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
@@ -36,6 +38,7 @@ import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
 import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
+import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.editor.BeforeTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
@@ -51,6 +54,7 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.PriorityValueEdito
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatIntervalValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatLimitValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatTimeValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.SimpleTextValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
@@ -80,6 +84,8 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is TimerBuilderItem,
     is GoogleCalendarDurationBuilderItem,
     is OtherParamsBuilderItem,
+    is EmailBuilderItem,
+    is WebAddressBuilderItem,
     -> true
 
     else -> false
@@ -180,6 +186,8 @@ private fun ValueEditorContent(
     is TimerBuilderItem -> CountdownTimeValueEditor(builderItem, onValueChange)
     is GoogleCalendarDurationBuilderItem -> GoogleCalendarDurationValueEditor(builderItem, onValueChange)
     is OtherParamsBuilderItem -> OtherParamsValueEditor(builderItem, onValueChange)
+    is EmailBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Email)
+    is WebAddressBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Uri)
     else -> {}
   }
 }
