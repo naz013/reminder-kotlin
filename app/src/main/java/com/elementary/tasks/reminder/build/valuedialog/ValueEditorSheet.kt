@@ -55,6 +55,7 @@ import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
 import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
 import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
 import com.elementary.tasks.reminder.build.SmsBuilderItem
+import com.elementary.tasks.reminder.build.SubTasksBuilderItem
 import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
@@ -87,9 +88,11 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatIntervalValu
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatLimitValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.SimpleTextValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.SubTasksValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TextInputValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
 import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
 /**
@@ -138,6 +141,7 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is SmsBuilderItem,
     is AttachmentsBuilderItem,
     is NoteBuilderItem,
+    is SubTasksBuilderItem,
     -> true
 
     else -> false
@@ -164,6 +168,7 @@ fun ValueEditorSheet(
   googleCalendarUtils: GoogleCalendarUtils,
   packageManagerWrapper: PackageManagerWrapper,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
+  dateTimeManager: DateTimeManager,
   onPickApplication: (onResult: (String) -> Unit) -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
@@ -227,6 +232,7 @@ fun ValueEditorSheet(
         googleCalendarUtils = googleCalendarUtils,
         packageManagerWrapper = packageManagerWrapper,
         attachmentFileAdapter = attachmentFileAdapter,
+        dateTimeManager = dateTimeManager,
         onPickApplication = onPickApplication,
         onPickContact = onPickContact,
         onPickFiles = onPickFiles,
@@ -246,6 +252,7 @@ private fun ValueEditorContent(
   googleCalendarUtils: GoogleCalendarUtils,
   packageManagerWrapper: PackageManagerWrapper,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
+  dateTimeManager: DateTimeManager,
   onPickApplication: (onResult: (String) -> Unit) -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
@@ -289,6 +296,7 @@ private fun ValueEditorContent(
     is SmsBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     is AttachmentsBuilderItem -> AttachmentsValueEditor(builderItem, attachmentFileAdapter, onPickFiles, onValueChange)
     is NoteBuilderItem -> NoteValueEditor(builderItem, onValueChange)
+    is SubTasksBuilderItem -> SubTasksValueEditor(builderItem, dateTimeManager, onValueChange)
     else -> {}
   }
 }

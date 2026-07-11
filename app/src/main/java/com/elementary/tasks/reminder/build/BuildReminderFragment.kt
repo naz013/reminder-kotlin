@@ -35,6 +35,7 @@ import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.recur.RecurHelpActivity
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.ReviewsApi
@@ -54,6 +55,7 @@ class BuildReminderFragment :
   private val googleCalendarUtils by inject<GoogleCalendarUtils>()
   private val packageManagerWrapper by inject<PackageManagerWrapper>()
   private val attachmentFileAdapter by inject<UriToAttachmentFileAdapter>()
+  private val dateTimeManager by inject<DateTimeManager>()
 
   private val builderConfigureLauncher =
     BuilderConfigureActivity.BuilderConfigureLauncher(this) {
@@ -210,6 +212,7 @@ class BuildReminderFragment :
         googleCalendarUtils = googleCalendarUtils,
         packageManagerWrapper = packageManagerWrapper,
         attachmentFileAdapter = attachmentFileAdapter,
+        dateTimeManager = dateTimeManager,
         onPickApplication = { onResult -> applicationPicker.pickApplication(onResult) },
         onPickContact = { onResult ->
           permissionFlow.askPermission(Permissions.READ_CONTACTS) {
