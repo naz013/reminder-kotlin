@@ -7,7 +7,6 @@ import com.elementary.tasks.navigation.DefaultBackPressHandler
 import com.elementary.tasks.navigation.onBackStackResume
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.ui.common.activity.LightThemedActivity
-import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.android.ext.android.inject
 
 /**
@@ -18,11 +17,6 @@ abstract class NavigationFragment :
   BaseFragment(),
   BackPressHandler by DefaultBackPressHandler() {
   protected val prefs by inject<Prefs>()
-  protected val themeProvider by inject<ThemeProvider>()
-  protected val isDark: Boolean
-    get() {
-      return themeProvider.isDark
-    }
   protected val analyticsEventSender by inject<AnalyticsEventSender>()
 
   protected fun moveBack() {
