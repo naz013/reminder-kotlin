@@ -23,6 +23,8 @@ import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHold
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCommunicator
+import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
+import com.elementary.tasks.reminder.build.valuedialog.isSupportedByComposeEditor
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
@@ -119,6 +121,7 @@ class BuildReminderFragment :
     var saveAsPresetChecked by remember { mutableStateOf(false) }
     var presetNameState by remember { mutableStateOf("") }
     var showSelector by remember { mutableStateOf(false) }
+    var editingItem by remember { mutableStateOf<Pair<Int, BuilderItem<*>>?>(null) }
 
     LaunchedEffect(builderItems, canSave) { invalidateOptionsMenu() }
 
@@ -129,7 +132,11 @@ class BuildReminderFragment :
       permissionFlow.askPermissions(list) { viewModel.onEditPermissionsGranted() }
     }
     viewModel.showEditDialog.ObserveEvent { pair ->
-      ValueDialog.newInstance(pair.first).show(parentFragmentManager, ValueDialog.TAG)
+      if (isSupportedByComposeEditor(pair.second)) {
+        editingItem = pair
+      } else {
+        ValueDialog.newInstance(pair.first).show(parentFragmentManager, ValueDialog.TAG)
+      }
     }
     viewModel.resultEvent.ObserveEvent { commands ->
       when (commands) {
@@ -175,6 +182,15 @@ class BuildReminderFragment :
           showSelector = false
           viewModel.onPresetSelected(preset)
         },
+      )
+    }
+
+    editingItem?.let { (position, item) ->
+      ValueEditorSheet(
+        builderItem = item,
+        is24HourFormat = prefs.is24HourFormat,
+        onDismissRequest = { editingItem = null },
+        onValueChange = { updated -> viewModel.updateValue(position, updated) },
       )
     }
   }
