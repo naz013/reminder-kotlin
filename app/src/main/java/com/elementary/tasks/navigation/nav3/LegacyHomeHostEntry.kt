@@ -4,7 +4,6 @@ import android.view.View
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentActivity
@@ -16,6 +15,20 @@ import com.elementary.tasks.R
 import org.koin.compose.koinInject
 
 private const val LEGACY_NAV_HOST_TAG = "legacy_home_nav_host"
+
+/**
+ * Generated once per process, not via `rememberSaveable` - the retained [NavHostFragment] (kept
+ * alive across full unmount/remount cycles of [LegacyHomeHostEntry] by [LEGACY_NAV_HOST_TAG], per
+ * this file's kdoc) remembers the container id it was first attached to internally. Now that
+ * `LegacyHomeNavKey` is only added to the outer backstack on demand (see [AppNavGraph]) instead of
+ * being permanently seeded, this composable's own `rememberSaveable` state gets cleared every time
+ * the key leaves the backstack - a fresh [View.generateViewId] on the next bridge hop wouldn't
+ * match the id the retained fragment still expects, crashing `attach()` with
+ * "No view found for id ... for fragment NavHostFragment". A file-scoped constant sidesteps that
+ * entirely by never changing for the lifetime of the process, matching the fragment's own actual
+ * retention scope.
+ */
+private val LEGACY_NAV_HOST_CONTAINER_ID = View.generateViewId()
 
 /**
  * Hosts the legacy `home_nav.xml` [NavHostFragment] inside a single Nav3 entry, the same way
@@ -48,7 +61,7 @@ private const val LEGACY_NAV_HOST_TAG = "legacy_home_nav_host"
 internal fun LegacyHomeHostEntry(onNavHostReady: (NavController) -> Unit) {
   val activity = LocalActivity.current as FragmentActivity
   val appNavBridge = koinInject<AppNavBridge>()
-  val containerId = rememberSaveable { View.generateViewId() }
+  val containerId = LEGACY_NAV_HOST_CONTAINER_ID
 
   AndroidView(
     modifier = Modifier.fillMaxSize(),

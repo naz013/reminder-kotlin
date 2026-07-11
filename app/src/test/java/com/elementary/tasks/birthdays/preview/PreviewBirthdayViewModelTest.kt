@@ -2,7 +2,6 @@ package com.elementary.tasks.birthdays.preview
 
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
 import com.elementary.tasks.getOrAwaitValue
@@ -15,6 +14,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -31,6 +31,12 @@ class PreviewBirthdayViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
+    // PreviewBirthdayViewModel.state runs load() in onStart on every collection - every test
+    // collects state at least once (even ones only exercising delete-dialog toggles), so a
+    // default stub avoids an unstubbed-call failure from that automatic load().
+    val defaultBirthday = Birthday(uuId = "42", name = "Alice", syncState = SyncState.Synced)
+    coEvery { birthdayRepository.getById("42") } returns defaultBirthday
+    every { uiBirthdayPreviewAdapter.convert(any()) } returns uiBirthday()
     viewModel =
       PreviewBirthdayViewModel(
         id = "42",
@@ -56,14 +62,9 @@ class PreviewBirthdayViewModelTest : BaseTest() {
     )
 
   @Test
-  fun `onResume loads the birthday into state`() =
+  fun `loads the birthday into state on first collection`() =
     runTest {
-      val birthday = Birthday(uuId = "42", name = "Alice", syncState = SyncState.Synced)
-      coEvery { birthdayRepository.getById("42") } returns birthday
-      every { uiBirthdayPreviewAdapter.convert(birthday) } returns uiBirthday()
-
-      viewModel.onResume(mockk(relaxed = true))
-      val state = viewModel.state.value
+      val state = viewModel.state.first()
 
       assertEquals("Alice", state.birthday?.name)
     }
@@ -75,39 +76,41 @@ class PreviewBirthdayViewModelTest : BaseTest() {
       coEvery { birthdayRepository.getById("42") } returns birthday
       every { uiBirthdayPreviewAdapter.convert(birthday) } returns uiBirthday(hasBirthdayToday = true)
 
-      viewModel.onResume(mockk(relaxed = true))
-      assertEquals(true, viewModel.state.value.playConfetti)
-
-      viewModel.onResume(mockk(relaxed = true))
-      assertEquals(false, viewModel.state.value.playConfetti)
+      // Each fresh collection of `state` re-runs load() in onStart, matching the screen re-entering
+      // foreground - `canShowAnimation` flips to false after the first load, so a second collection
+      // shouldn't replay the confetti.
+      assertEquals(true, viewModel.state.first().playConfetti)
+      assertEquals(false, viewModel.state.first().playConfetti)
     }
 
   @Test
-  fun `onDeleteClick shows the delete confirmation dialog`() {
-    viewModel.onDeleteClick()
+  fun `onDeleteClick shows the delete confirmation dialog`() =
+    runTest {
+      viewModel.onDeleteClick()
 
-    assertEquals(true, viewModel.state.value.showDeleteConfirm)
-  }
-
-  @Test
-  fun `onDeleteDismiss hides the delete confirmation dialog`() {
-    viewModel.onDeleteClick()
-
-    viewModel.onDeleteDismiss()
-
-    assertEquals(false, viewModel.state.value.showDeleteConfirm)
-  }
+      assertEquals(true, viewModel.state.first().showDeleteConfirm)
+    }
 
   @Test
-  fun `onDeleteConfirmed deletes the birthday and posts DELETED`() =
+  fun `onDeleteDismiss hides the delete confirmation dialog`() =
+    runTest {
+      viewModel.onDeleteClick()
+
+      viewModel.onDeleteDismiss()
+
+      assertEquals(false, viewModel.state.first().showDeleteConfirm)
+    }
+
+  @Test
+  fun `onDeleteConfirmed deletes the birthday and posts MoveBack`() =
     runTest {
       viewModel.onDeleteClick()
 
       viewModel.onDeleteConfirmed()
 
       coVerify(exactly = 1) { deleteBirthdayUseCase("42") }
-      assertEquals(false, viewModel.state.value.showDeleteConfirm)
-      val event = viewModel.resultEvent.getOrAwaitValue()
-      assertEquals(Commands.DELETED, event?.getContentIfNotHandled())
+      assertEquals(false, viewModel.state.first().showDeleteConfirm)
+      val event = viewModel.event.getOrAwaitValue()
+      assertEquals(PreviewBirthdayViewModel.ViewModelEvent.MoveBack, event?.getContentIfNotHandled())
     }
 }
