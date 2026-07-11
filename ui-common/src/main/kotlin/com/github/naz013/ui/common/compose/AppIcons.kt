@@ -32,5 +32,6 @@ object AppIcons {
     val EmailSubject: Painter @Composable get() = painterResource(R.drawable.ic_builder_email_subject)
     val AddApp: Painter @Composable get() = painterResource(R.drawable.ic_builder_add_app)
     val WebAddress: Painter @Composable get() = painterResource(R.drawable.ic_builder_web_address)
+    val Clear: Painter @Composable get() = painterResource(R.drawable.ic_builder_clear)
   }
 }
