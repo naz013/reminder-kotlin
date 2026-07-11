@@ -26,9 +26,7 @@ import org.koin.core.component.inject
  * Fragment's `onCreate()`. [Fragment.registerForActivityResult] requires registration before the
  * fragment reaches STARTED; a lazy Koin-injected property is only actually constructed on first
  * read, which from a Composable (e.g. a `LaunchedEffect`) happens well after the fragment is
- * already RESUMED, so registration throws. Resolving dependencies here via [KoinComponent]
- * (same approach as [com.elementary.tasks.core.utils.PhotoSelectionUtil]) keeps construction
- * timing entirely in the caller's hands instead of Koin's.
+ * already RESUMED, so registration throws. Resolving dependencies here via [KoinComponent].
  */
 class GoogleLogin(
   private val fragment: Fragment,
