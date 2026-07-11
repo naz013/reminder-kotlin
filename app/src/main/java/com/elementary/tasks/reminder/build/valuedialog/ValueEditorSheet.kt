@@ -18,15 +18,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
 import android.net.Uri
-import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
-import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
-import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
 import com.elementary.tasks.reminder.build.DayOfYearBuilderItem
@@ -85,7 +82,6 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntListValueEd
 import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.ICalWeekStartValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.LedColorValueEditor
-import com.elementary.tasks.reminder.build.valuedialog.editor.MapValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.NoteValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.OtherParamsValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.PhoneInputValueEditor
@@ -123,7 +119,6 @@ fun ValueEditorSheet(
   packageManagerWrapper: PackageManagerWrapper,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
   dateTimeManager: DateTimeManager,
-  parentFragment: Fragment,
   onPickApplication: (onResult: (String) -> Unit) -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
@@ -188,7 +183,6 @@ fun ValueEditorSheet(
         packageManagerWrapper = packageManagerWrapper,
         attachmentFileAdapter = attachmentFileAdapter,
         dateTimeManager = dateTimeManager,
-        parentFragment = parentFragment,
         onPickApplication = onPickApplication,
         onPickContact = onPickContact,
         onPickFiles = onPickFiles,
@@ -209,7 +203,6 @@ private fun ValueEditorContent(
   packageManagerWrapper: PackageManagerWrapper,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
   dateTimeManager: DateTimeManager,
-  parentFragment: Fragment,
   onPickApplication: (onResult: (String) -> Unit) -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
@@ -254,8 +247,6 @@ private fun ValueEditorContent(
     is AttachmentsBuilderItem -> AttachmentsValueEditor(builderItem, attachmentFileAdapter, onPickFiles, onValueChange)
     is NoteBuilderItem -> NoteValueEditor(builderItem, onValueChange)
     is SubTasksBuilderItem -> SubTasksValueEditor(builderItem, dateTimeManager, onValueChange)
-    is ArrivingCoordinatesBuilderItem -> MapValueEditor(builderItem, parentFragment, dateTimeManager, onValueChange)
-    is LeavingCoordinatesBuilderItem -> MapValueEditor(builderItem, parentFragment, dateTimeManager, onValueChange)
     is TimerExclusionBuilderItem -> CountdownExclusionValueEditor(builderItem, dateTimeManager, is24HourFormat, onValueChange)
     else -> {}
   }

@@ -37,14 +37,15 @@ fun MapValueEditor(
   parentFragment: Fragment,
   dateTimeManager: DateTimeManager,
   onValueChange: (BuilderItem<*>) -> Unit,
+  modifier: Modifier = Modifier
+    .fillMaxWidth()
+    .aspectRatio(1f),
 ) {
   val containerId = remember(builderItem) { View.generateViewId() }
   var fragmentAttached by remember(builderItem) { mutableStateOf(false) }
 
   AndroidView(
-    modifier = Modifier
-      .fillMaxWidth()
-      .aspectRatio(1f),
+    modifier = modifier,
     factory = { context -> FragmentContainerView(context).apply { id = containerId } },
     update = {
       if (fragmentAttached) return@AndroidView

@@ -27,7 +27,9 @@ import com.elementary.tasks.reminder.build.selectordialog.BuilderSelectorSheet
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
+import com.elementary.tasks.reminder.build.valuedialog.editor.MapEditorScreen
 import com.elementary.tasks.reminder.build.bi.BiGroup
+import com.github.naz013.domain.Place
 import com.elementary.tasks.reminder.recur.RecurHelpActivity
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
@@ -192,30 +194,45 @@ class BuildReminderFragment : BaseComposeToolbarFragment() {
     }
 
     editingItem?.let { (position, item) ->
-      ValueEditorSheet(
-        builderItem = item,
-        is24HourFormat = prefs.is24HourFormat,
-        paramToTextAdapter = paramToTextAdapter,
-        googleCalendarUtils = googleCalendarUtils,
-        packageManagerWrapper = packageManagerWrapper,
-        attachmentFileAdapter = attachmentFileAdapter,
-        dateTimeManager = dateTimeManager,
-        parentFragment = this,
-        onPickApplication = { onResult -> applicationPicker.pickApplication(onResult) },
-        onPickContact = { onResult ->
-          permissionFlow.askPermission(Permissions.READ_CONTACTS) {
-            contactPicker.pickContact { contactData -> onResult(contactData.phone) }
-          }
-        },
-        onPickFiles = { onResult -> multipleUriPicker.pickFiles(onResult) },
-        onDismissRequest = { editingItem = null },
-        onValueChange = { updated -> viewModel.updateValue(position, updated) },
-        onHelpClick = if (item.biGroup == BiGroup.ICAL) {
-          { requireContext().startActivity(RecurHelpActivity::class.java) }
-        } else {
-          null
-        },
-      )
+      // Arriving/Leaving coordinates host a real Fragment (SimpleMapFragment, Google Maps SDK) via
+      // FragmentContainerView. ValueEditorSheet's AppModalBottomSheet renders in a separate Compose
+      // Popup/Dialog window, which isn't part of the fragment view tree childFragmentManager
+      // searches when resolving that container by id, so it must be shown in-place instead (see
+      // MapEditorScreen's kdoc).
+      if (item is ArrivingCoordinatesBuilderItem || item is LeavingCoordinatesBuilderItem) {
+        @Suppress("UNCHECKED_CAST")
+        MapEditorScreen(
+          builderItem = item as BuilderItem<Place>,
+          parentFragment = this,
+          dateTimeManager = dateTimeManager,
+          onDismissRequest = { editingItem = null },
+          onValueChange = { updated -> viewModel.updateValue(position, updated) },
+        )
+      } else {
+        ValueEditorSheet(
+          builderItem = item,
+          is24HourFormat = prefs.is24HourFormat,
+          paramToTextAdapter = paramToTextAdapter,
+          googleCalendarUtils = googleCalendarUtils,
+          packageManagerWrapper = packageManagerWrapper,
+          attachmentFileAdapter = attachmentFileAdapter,
+          dateTimeManager = dateTimeManager,
+          onPickApplication = { onResult -> applicationPicker.pickApplication(onResult) },
+          onPickContact = { onResult ->
+            permissionFlow.askPermission(Permissions.READ_CONTACTS) {
+              contactPicker.pickContact { contactData -> onResult(contactData.phone) }
+            }
+          },
+          onPickFiles = { onResult -> multipleUriPicker.pickFiles(onResult) },
+          onDismissRequest = { editingItem = null },
+          onValueChange = { updated -> viewModel.updateValue(position, updated) },
+          onHelpClick = if (item.biGroup == BiGroup.ICAL) {
+            { requireContext().startActivity(RecurHelpActivity::class.java) }
+          } else {
+            null
+          },
+        )
+      }
     }
   }
 
