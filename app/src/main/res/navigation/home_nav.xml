@@ -421,8 +421,4 @@
         android:id="@+id/buildReminderFragment"
         android:name="com.elementary.tasks.reminder.build.BuildReminderFragment"
         android:label="@string/new_reminder" />
-    <fragment
-        android:id="@+id/reminderHelpFragment"
-        android:name="com.elementary.tasks.reminder.build.help.ReminderHelpFragment"
-        android:label="ReminderHelpFragment" />
 </navigation>

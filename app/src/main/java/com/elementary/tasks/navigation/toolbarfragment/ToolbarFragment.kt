@@ -62,6 +62,15 @@ abstract class ToolbarFragment :
     containerBinding.toolbar.title = title
   }
 
+  /**
+   * Shows/hides the whole AppBar (toolbar + menu). Used by hosts of a Navigation 3 "island" that
+   * need to yield the toolbar to a sub-screen with its own Scaffold/TopAppBar (e.g. a folded-in
+   * Config/Help screen) instead of stacking two toolbars.
+   */
+  protected fun setAppBarVisible(visible: Boolean) {
+    containerBinding.appBar.visibility = if (visible) View.VISIBLE else View.GONE
+  }
+
   @Deprecated("Use updateMenuItem instead")
   protected fun invalidateOptionsMenu() {
     menuModifier?.invoke(containerBinding.toolbar.menu)

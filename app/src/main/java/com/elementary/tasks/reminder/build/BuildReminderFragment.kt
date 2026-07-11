@@ -3,13 +3,30 @@ package com.elementary.tasks.reminder.build
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.utils.BuildParams
@@ -18,30 +35,36 @@ import com.elementary.tasks.core.os.datapicker.ApplicationPicker
 import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.os.datapicker.MultipleUriPicker
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.navigation.NavigationAnimations
-import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
+import com.elementary.tasks.reminder.build.help.ReminderHelpScreen
 import com.elementary.tasks.reminder.build.selectordialog.BuilderSelectorSheet
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.build.valuedialog.editor.MapEditorScreen
 import com.elementary.tasks.reminder.build.bi.BiGroup
-import com.github.naz013.domain.Place
-import com.elementary.tasks.reminder.recur.RecurHelpActivity
+import com.elementary.tasks.reminder.recur.RecurHelpScreen
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.Place
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.ReviewsApi
-import com.github.naz013.ui.common.context.startActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Hosts the reminder builder as a self-contained Navigation 3 "island": Main (the actual builder
+ * screen) plus the Configure and Help sub-screens, previously separate Activities/Fragment-nav
+ * destinations, are now internal [BuildReminderNavKey] entries sharing this Fragment's classic
+ * toolbar. The toolbar is hidden (see [setAppBarVisible]) whenever a sub-screen - which owns its
+ * own Material 3 Scaffold/TopAppBar - is on top, so the two don't stack.
+ */
 class BuildReminderFragment : BaseComposeToolbarFragment() {
   private val viewModel by viewModel<BuildReminderViewModel> { parametersOf(arguments) }
   private val reviewsApi by inject<ReviewsApi>()
@@ -53,13 +76,13 @@ class BuildReminderFragment : BaseComposeToolbarFragment() {
   private val attachmentFileAdapter by inject<UriToAttachmentFileAdapter>()
   private val dateTimeManager by inject<DateTimeManager>()
 
-  private val builderConfigureLauncher =
-    BuilderConfigureActivity.BuilderConfigureLauncher(this) {
-      viewModel.onConfigurationChanged()
-    }
   private val applicationPicker = ApplicationPicker(this) { }
   private val contactPicker = ContactPicker(this) { }
   private val multipleUriPicker = MultipleUriPicker(this)
+
+  /** Bridge from the Fragment's plain methods into the Compose-owned Nav3 backstack - the
+   *  backstack itself can only be created via [rememberNavBackStack] inside composition. */
+  private var currentBackStack: MutableList<NavKey>? = null
 
   override fun getTitle(): String = ""
 
@@ -91,7 +114,7 @@ class BuildReminderFragment : BaseComposeToolbarFragment() {
 
           R.id.action_configure -> {
             Logger.i(TAG, "User wants to configure reminder.")
-            builderConfigureLauncher.configure()
+            currentBackStack?.add(BuildReminderNavKey.Configure)
             true
           }
 
@@ -103,13 +126,7 @@ class BuildReminderFragment : BaseComposeToolbarFragment() {
 
           R.id.action_help -> {
             Logger.i(TAG, "User wants to see help.")
-            navigate {
-              navigate(
-                R.id.reminderHelpFragment,
-                null,
-                NavigationAnimations.inDepthNavOptions(),
-              )
-            }
+            currentBackStack?.add(BuildReminderNavKey.Help)
             true
           }
 
@@ -125,6 +142,69 @@ class BuildReminderFragment : BaseComposeToolbarFragment() {
 
   @Composable
   override fun Content() {
+    val backStack = rememberNavBackStack(BuildReminderNavKey.Main)
+    SideEffect { currentBackStack = backStack }
+    BuildReminderNavGraph(backStack)
+  }
+
+  @Composable
+  private fun BuildReminderNavGraph(backStack: MutableList<NavKey>) {
+    val topKey = backStack.lastOrNull()
+    LaunchedEffect(topKey) {
+      setAppBarVisible(topKey == BuildReminderNavKey.Main || topKey == null)
+    }
+
+    NavDisplay(
+      backStack = backStack,
+      onBack = { backStack.removeLastOrNull() },
+      entryDecorators =
+        listOf(
+          rememberSaveableStateHolderNavEntryDecorator(),
+          rememberViewModelStoreNavEntryDecorator(),
+        ),
+      transitionSpec = {
+        (
+          fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_ENTER_SCALE)
+        ) togetherWith (
+          fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_EXIT_SCALE)
+        )
+      },
+      popTransitionSpec = {
+        (
+          fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_EXIT_SCALE)
+        ) togetherWith (
+          fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_ENTER_SCALE)
+        )
+      },
+      predictivePopTransitionSpec = {
+        (
+          fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_EXIT_SCALE)
+        ) togetherWith (
+          fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_ENTER_SCALE)
+        )
+      },
+      entryProvider =
+        entryProvider {
+          entry<BuildReminderNavKey.Main> { MainEntry(backStack) }
+          entry<BuildReminderNavKey.Configure> { ConfigureEntry(backStack) }
+          entry<BuildReminderNavKey.Help> {
+            ReminderHelpScreen(onBackClick = { backStack.removeLastOrNull() })
+          }
+          entry<BuildReminderNavKey.RecurHelp> {
+            RecurHelpScreen(onBackClick = { backStack.removeLastOrNull() })
+          }
+        },
+    )
+  }
+
+  @Composable
+  private fun MainEntry(backStack: MutableList<NavKey>) {
     LaunchedEffect(viewModel) { lifecycle.addObserver(viewModel) }
 
     val builderItems by viewModel.builderItems.observeAsState(emptyList())
@@ -227,7 +307,7 @@ class BuildReminderFragment : BaseComposeToolbarFragment() {
           onDismissRequest = { editingItem = null },
           onValueChange = { updated -> viewModel.updateValue(position, updated) },
           onHelpClick = if (item.biGroup == BiGroup.ICAL) {
-            { requireContext().startActivity(RecurHelpActivity::class.java) }
+            { backStack.add(BuildReminderNavKey.RecurHelp) }
           } else {
             null
           },
@@ -235,6 +315,41 @@ class BuildReminderFragment : BaseComposeToolbarFragment() {
       }
     }
   }
+
+  @Composable
+  private fun ConfigureEntry(backStack: MutableList<NavKey>) {
+    val configureViewModel = koinViewModel<BuilderConfigureViewModel>()
+    // BuilderConfigureViewModel writes each toggle straight to prefs; BuildReminderViewModel only
+    // needs to know the config may have changed once the user leaves this screen (any way: back
+    // button, system back gesture, or programmatic pop), matching the old ActivityResult callback.
+    DisposableEffect(Unit) {
+      onDispose { viewModel.onConfigurationChanged() }
+    }
+
+    val state by configureViewModel.state.collectAsState()
+    BuilderConfigureScreen(
+      state = state,
+      onBackClick = { backStack.removeLastOrNull() },
+      onSummaryToggle = configureViewModel::onSummaryToggle,
+      onBeforeToggle = configureViewModel::onBeforeToggle,
+      onRepeatToggle = configureViewModel::onRepeatToggle,
+      onRepeatLimitToggle = configureViewModel::onRepeatLimitToggle,
+      onPriorityToggle = configureViewModel::onPriorityToggle,
+      onAttachmentToggle = configureViewModel::onAttachmentToggle,
+      onCalendarToggle = configureViewModel::onCalendarToggle,
+      onTasksToggle = configureViewModel::onTasksToggle,
+      onExtraToggle = configureViewModel::onExtraToggle,
+      onLedToggle = configureViewModel::onLedToggle,
+      onICalendarToggle = configureViewModel::onICalendarToggle,
+      onMakeCallToggle = configureViewModel::onMakeCallToggle,
+      onSendSmsToggle = configureViewModel::onSendSmsToggle,
+      onOpenAppToggle = configureViewModel::onOpenAppToggle,
+      onOpenLinkToggle = configureViewModel::onOpenLinkToggle,
+      onSendEmailToggle = configureViewModel::onSendEmailToggle,
+    )
+  }
+
+  override fun canGoBack(): Boolean = (currentBackStack?.size ?: 1) <= 1
 
   private fun deleteReminder() {
     if (viewModel.isRemoved) {
@@ -310,3 +425,13 @@ class BuildReminderFragment : BaseComposeToolbarFragment() {
     private const val TAG = "BuildReminderFragment"
   }
 }
+
+private fun navScreenSpring() =
+  spring<Float>(
+    dampingRatio = Spring.DampingRatioLowBouncy,
+    stiffness = Spring.StiffnessMediumLow,
+  )
+
+private const val NAV_ANIM_FADE_DURATION_MS = 250
+private const val NAV_ANIM_ENTER_SCALE = 0.92f
+private const val NAV_ANIM_EXIT_SCALE = 1.08f

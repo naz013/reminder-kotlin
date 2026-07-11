@@ -280,13 +280,6 @@
             android:name=".birthdays.dialog.BirthdayActionActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
-        <activity
-            android:name=".reminder.recur.RecurHelpActivity"
-            android:exported="false" />
-        <activity
-            android:name=".reminder.build.BuilderConfigureActivity"
-            android:excludeFromRecents="true"
-            android:exported="false" />
 
         <receiver
             android:name=".core.services.BootReceiver"
