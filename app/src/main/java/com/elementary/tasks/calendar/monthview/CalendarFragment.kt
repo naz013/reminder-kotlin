@@ -1,205 +1,130 @@
 package com.elementary.tasks.calendar.monthview
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager2.widget.ViewPager2
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import com.elementary.tasks.calendar.BaseCalendarFragment
-import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
-import com.elementary.tasks.databinding.FragmentFlextCalBinding
+import com.elementary.tasks.core.deeplink.BirthdayDateDeepLinkData
+import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
+import com.elementary.tasks.navigation.NavigationAnimations
+import com.elementary.tasks.navigation.onBackStackResume
 import com.elementary.tasks.navigation.safeNavigation
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
-import com.github.naz013.logging.Logger
-import org.apache.commons.lang3.StringUtils
-import org.threeten.bp.LocalDate
+import com.elementary.tasks.navigation.topfragment.RootFragment
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.domain.Reminder
+import com.github.naz013.feature.common.livedata.observeEvent
+import com.github.naz013.ui.common.compose.composeView
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 class CalendarFragment :
-  BaseCalendarFragment<FragmentFlextCalBinding>(),
-  MonthCallback,
-  InfinitePagerAdapter2.DataAccessor {
-  private val infinitePagerAdapter =
-    InfinitePagerAdapter2(
-      dataAccessor = this,
-      monthCallback = this,
-    )
+  Fragment(),
+  RootFragment {
+  private val dateTimeManager by inject<DateTimeManager>()
 
-  private val daysOfWeek: ArrayList<String>
-    get() {
-      val list = ArrayList<String>()
-      var date =
-        if (isSunday()) {
-          LocalDate.of(2022, 12, 25)
-        } else {
-          LocalDate.of(2022, 12, 26)
-        }
-      for (i in 0 until 7) {
-        list.add(dateTimeManager.formatCalendarWeekday(date).uppercase())
-        date = date.plusDays(1)
-      }
-      return list
-    }
+  private val viewModel by viewModel<CalendarViewModel>()
 
-  override fun getStartDay(): StartDayOfWeekProtocol = StartDayOfWeekProtocol(prefs.startDay)
+  private var pagerJumpRequest by mutableStateOf<Int?>(null)
 
-  override fun getTodayColor(): Int = prefs.todayColor
-
-  override fun getTitle(): String = updateMenuTitles(LocalDate.now())
-
-  override fun inflate(
+  override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?,
-  ) = FragmentFlextCalBinding.inflate(inflater, container, false)
+  ): View =
+    composeView {
+      val state by viewModel.state.collectAsState()
+      val refreshSignal by viewModel.refreshSignal.collectAsState()
+      CalendarScreen(
+        state = state,
+        initialPagerPosition = viewModel.lastPosition,
+        pagerJumpRequest = pagerJumpRequest,
+        onPagerJumpConsumed = { pagerJumpRequest = null },
+        monthForPosition = viewModel::monthForPosition,
+        onPageSettled = { position ->
+          viewModel.updateLastPosition(position)
+          viewModel.onPageSettled(position)
+        },
+        buildGrid = viewModel::buildGrid,
+        refreshSignal = refreshSignal,
+        loadMonthEvents = viewModel::loadMonthEvents,
+        onDayClick = viewModel::onDayClick,
+        onAddReminderClick = viewModel::onAddReminderClick,
+        onAddBirthdayClick = viewModel::onAddBirthdayClick,
+        onSettingsClick = viewModel::onSettingsClick,
+        onBackClick = { requireActivity().onBackPressedDispatcher.onBackPressed() },
+      )
+    }
 
-  @SuppressLint("ClickableViewAccessibility")
   override fun onViewCreated(
     view: View,
     savedInstanceState: Bundle?,
   ) {
     super.onViewCreated(view, savedInstanceState)
+    viewModel.navigationEvent.observeEvent(viewLifecycleOwner) { event -> handleNavigationEvent(event) }
+  }
 
-    binding.weekdayView.adapter =
-      WeekdayArrayAdapter(
-        context = requireContext(),
-        textViewResourceId = android.R.layout.simple_list_item_1,
-        objects = daysOfWeek,
-        isDark = isDark,
-      )
+  override fun onResume() {
+    super.onResume()
+    onBackStackResume()
+    // Always snap back to the current month when this screen becomes visible, matching the
+    // legacy behavior of resetting the pager on every resume (not just after a back-stack pop).
+    pagerJumpRequest = CalendarViewModel.CENTER_POSITION
+    viewModel.resetToToday()
+    viewModel.refresh()
+  }
 
-    showCalendar()
-
-    addMenu(R.menu.fragment_calendar, { menuItem ->
-      when (menuItem.itemId) {
-        R.id.action_settings -> {
-          safeNavigation {
-            CalendarFragmentDirections.actionActionCalendarToCalendarSettingsFragment(getString(R.string.action_settings))
-          }
-          true
-        }
-
-        else -> false
+  private fun handleNavigationEvent(event: CalendarViewModel.NavigationEvent) {
+    when (event) {
+      is CalendarViewModel.NavigationEvent.OpenDayView -> {
+        safeNavigation(
+          CalendarFragmentDirections.actionActionCalendarToDayViewFragment(
+            dateTimeManager.toMillis(LocalDateTime.of(event.date, LocalTime.now())),
+          ),
+        )
       }
-    })
 
-    analyticsEventSender.send(ScreenUsedEvent(Screen.CALENDAR))
-  }
+      is CalendarViewModel.NavigationEvent.OpenNewReminder -> {
+        val deepLinkData =
+          ReminderDatetimeTypeDeepLinkData(
+            type = Reminder.BY_DATE,
+            dateTime = LocalDateTime.of(event.date, LocalTime.now()),
+          )
+        safeNavigation(
+          R.id.buildReminderFragment,
+          Bundle().apply {
+            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+            putParcelable(deepLinkData.intentKey, deepLinkData)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
 
-  override fun onBackStackResumed() {
-    super.onBackStackResumed()
-    infinitePagerAdapter.selectPosition(1)
-    binding.infiniteViewPager.setCurrentItem(1, false)
-  }
+      is CalendarViewModel.NavigationEvent.OpenNewBirthday -> {
+        val deepLinkData = BirthdayDateDeepLinkData(event.date)
+        safeNavigation(
+          R.id.birthdayFragment,
+          Bundle().apply {
+            putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+            putParcelable(deepLinkData.intentKey, deepLinkData)
+          },
+          NavigationAnimations.inDepthNavOptions(),
+        )
+      }
 
-  private fun isSunday(): Boolean = prefs.startDay == 0
-
-  private fun updateMenuTitles(date: LocalDate): String {
-    val monthTitle = StringUtils.capitalize(dateTimeManager.formatCalendarMonthYear(date))
-    setTitle(monthTitle)
-    return monthTitle
-  }
-
-  private fun showCalendar() {
-    val date = LocalDate.now().withDayOfMonth(15)
-    updateMenuTitles(date)
-
-    binding.infiniteViewPager.adapter = infinitePagerAdapter
-    binding.infiniteViewPager.registerOnPageChangeCallback(
-      object : ViewPager2.OnPageChangeCallback() {
-        private var currentDate = LocalDate.now()
-
-        override fun onPageScrollStateChanged(state: Int) {
-          super.onPageScrollStateChanged(state)
-          if (state == ViewPager2.SCROLL_STATE_IDLE) {
-            Logger.d(TAG, "onPageScrollStateChanged: ${binding.infiniteViewPager.currentItem}")
-            when (binding.infiniteViewPager.currentItem) {
-              0 -> {
-                // move to 4th position, current - 1
-                currentDate = currentDate.minusMonths(1)
-                infinitePagerAdapter.updateRightSide(createSide(currentDate))
-                binding.infiniteViewPager.setCurrentItem(4, false)
-              }
-
-              2 -> {
-                // move to 4th position, current + 1
-                currentDate = currentDate.plusMonths(1)
-                infinitePagerAdapter.updateRightSide(createSide(currentDate))
-                binding.infiniteViewPager.setCurrentItem(4, false)
-              }
-
-              3 -> {
-                // move to 1st position, current - 1
-                currentDate = currentDate.minusMonths(1)
-                infinitePagerAdapter.updateLeftSide(createSide(currentDate))
-                binding.infiniteViewPager.setCurrentItem(1, false)
-              }
-
-              5 -> {
-                // move to 1th position, current + 1
-                currentDate = currentDate.plusMonths(1)
-                infinitePagerAdapter.updateLeftSide(createSide(currentDate))
-                binding.infiniteViewPager.setCurrentItem(1, false)
-              }
-            }
-          }
-        }
-
-        override fun onPageSelected(position: Int) {
-          super.onPageSelected(position)
-          Logger.d(TAG, "onPageSelected: $position")
-          if (position == 1 || position == 4) {
-            updateMenuTitles(currentDate)
-            infinitePagerAdapter.selectPosition(position)
-          }
-        }
-      },
-    )
-    infinitePagerAdapter.updateLeftSide(createSide(LocalDate.now()))
-    infinitePagerAdapter.updateRightSide(createSide(LocalDate.now().plusMonths(3)))
-
-    infinitePagerAdapter.selectPosition(1)
-    binding.infiniteViewPager.setCurrentItem(1, false)
-  }
-
-  private fun createSide(date: LocalDate): List<MonthPagerItem> =
-    listOf(
-      fromDate(date.minusMonths(1)),
-      fromDate(date),
-      fromDate(date.plusMonths(1)),
-    )
-
-  private fun fromDate(date: LocalDate): MonthPagerItem = MonthPagerItem(date.monthValue, date.year, date)
-
-  override fun onDateClick(date: LocalDate) {
-    safeNavigation(
-      CalendarFragmentDirections.actionActionCalendarToDayViewFragment(
-        dateTimeManager.toMillis(LocalDateTime.of(date, LocalTime.now())),
-      ),
-    )
-  }
-
-  override fun onDateLongClick(date: LocalDate) {
-    showSheet(date)
-  }
-
-  private fun showSheet(date: LocalDate) {
-    safeContext {
-      DayBottomSheetDialog(
-        context = this,
-        label = dateTimeManager.formatCalendarDate(date),
-        addReminderCallback = { addReminder(date) },
-        addBirthdayCallback = { addBirthday(date) },
-      ).show()
+      CalendarViewModel.NavigationEvent.OpenSettings -> {
+        safeNavigation(
+          CalendarFragmentDirections.actionActionCalendarToCalendarSettingsFragment(getString(R.string.action_settings)),
+        )
+      }
     }
-  }
-
-  companion object {
-    private const val TAG = "CalendarFragment"
   }
 }

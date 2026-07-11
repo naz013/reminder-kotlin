@@ -59,8 +59,7 @@
     <fragment
         android:id="@+id/actionCalendar"
         android:name="com.elementary.tasks.calendar.monthview.CalendarFragment"
-        android:label="@string/calendar"
-        tools:layout="@layout/fragment_flext_cal">
+        android:label="@string/calendar">
         <action
             android:id="@+id/action_actionCalendar_to_dayViewFragment"
             app:destination="@id/dayViewFragment"
