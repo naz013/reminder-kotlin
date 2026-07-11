@@ -102,61 +102,6 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
 /**
- * Whether [ValueEditorSheet] has a Compose editor for this item's type yet. `BuildReminderFragment`
- * falls back to the legacy `ValueDialog` (a `BottomSheetDialogFragment`) for anything not listed
- * here - this list grows as more `ValueController` subclasses are ported, and the fallback is
- * removed once it covers every `BuilderItem` type `ValueControllerFactory` handles.
- */
-fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
-  when (builderItem) {
-    is DateBuilderItem,
-    is LocationDelayDateBuilderItem,
-    is TimeBuilderItem,
-    is LocationDelayTimeBuilderItem,
-    is GroupBuilderItem,
-    is GoogleTaskListBuilderItem,
-    is LedColorBuilderItem,
-    is DayOfMonthBuilderItem,
-    is DayOfYearBuilderItem,
-    is DaysOfWeekBuilderItem,
-    is PriorityBuilderItem,
-    is RepeatLimitBuilderItem,
-    is BeforeTimeBuilderItem,
-    is RepeatTimeBuilderItem,
-    is RepeatIntervalBuilderItem,
-    is TimerBuilderItem,
-    is GoogleCalendarDurationBuilderItem,
-    is OtherParamsBuilderItem,
-    is EmailBuilderItem,
-    is WebAddressBuilderItem,
-    is ICalStartDateBuilderItem,
-    is ICalUntilDateBuilderItem,
-    is ICalStartTimeBuilderItem,
-    is ICalUntilTimeBuilderItem,
-    is ICalFrequencyBuilderItem,
-    is ICalWeekStartBuilderItem,
-    is ICalIntBuilderItem,
-    is ICalListIntBuilderItem,
-    is ICalByDayBuilderItem,
-    is GoogleCalendarBuilderItem,
-    is SummaryBuilderItem,
-    is DescriptionBuilderItem,
-    is EmailSubjectBuilderItem,
-    is ApplicationBuilderItem,
-    is PhoneCallBuilderItem,
-    is SmsBuilderItem,
-    is AttachmentsBuilderItem,
-    is NoteBuilderItem,
-    is SubTasksBuilderItem,
-    is ArrivingCoordinatesBuilderItem,
-    is LeavingCoordinatesBuilderItem,
-    is TimerExclusionBuilderItem,
-    -> true
-
-    else -> false
-  }
-
-/**
  * The reminder builder's "edit value" bottom sheet: title + close button, optional description,
  * and a type-specific editor body. This is the Compose replacement for `ValueDialog` +
  * `ValueControllerFactory` - each editor below owns its own local UI state and calls

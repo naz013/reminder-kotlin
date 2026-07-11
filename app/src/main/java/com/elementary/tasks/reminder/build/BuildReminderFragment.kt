@@ -25,12 +25,8 @@ import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.selectordialog.BuilderSelectorSheet
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
-import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
-import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
-import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCommunicator
 import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
-import com.elementary.tasks.reminder.build.valuedialog.isSupportedByComposeEditor
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.recur.RecurHelpActivity
 import com.github.naz013.common.PackageManagerWrapper
@@ -44,9 +40,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class BuildReminderFragment :
-  BaseComposeToolbarFragment(),
-  ValueDialogCallback {
+class BuildReminderFragment : BaseComposeToolbarFragment() {
   private val viewModel by viewModel<BuildReminderViewModel> { parametersOf(arguments) }
   private val reviewsApi by inject<ReviewsApi>()
   private val featureManager by inject<FeatureManager>()
@@ -70,7 +64,6 @@ class BuildReminderFragment :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the reminder edit screen for id: ${Logger.data(viewModel.id)}")
-    ValueDialogCommunicator.addCallback(this)
   }
 
   override fun onViewCreated(
@@ -150,13 +143,7 @@ class BuildReminderFragment :
     viewModel.askEditPermissions.ObserveEvent { list ->
       permissionFlow.askPermissions(list) { viewModel.onEditPermissionsGranted() }
     }
-    viewModel.showEditDialog.ObserveEvent { pair ->
-      if (isSupportedByComposeEditor(pair.second)) {
-        editingItem = pair
-      } else {
-        ValueDialog.newInstance(pair.first).show(parentFragmentManager, ValueDialog.TAG)
-      }
-    }
+    viewModel.showEditDialog.ObserveEvent { pair -> editingItem = pair }
     viewModel.resultEvent.ObserveEvent { commands ->
       when (commands) {
         Commands.DELETED, Commands.SAVED -> moveBack()
@@ -280,13 +267,6 @@ class BuildReminderFragment :
 
   private fun save(newId: Boolean = false) {
     viewModel.saveReminder(newId)
-  }
-
-  override fun onValueChanged(
-    position: Int,
-    builderItem: BuilderItem<*>,
-  ) {
-    viewModel.updateValue(position, builderItem)
   }
 
   /**
