@@ -14,6 +14,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
+import com.elementary.tasks.core.os.datapicker.ApplicationPicker
+import com.elementary.tasks.core.os.datapicker.ContactPicker
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.navigate
@@ -29,6 +31,7 @@ import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
 import com.elementary.tasks.reminder.build.valuedialog.isSupportedByComposeEditor
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.recur.RecurHelpActivity
+import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
@@ -47,11 +50,14 @@ class BuildReminderFragment :
   private val selectorDialogDataHolder by inject<SelectorDialogDataHolder>()
   private val paramToTextAdapter by inject<ParamToTextAdapter>()
   private val googleCalendarUtils by inject<GoogleCalendarUtils>()
+  private val packageManagerWrapper by inject<PackageManagerWrapper>()
 
   private val builderConfigureLauncher =
     BuilderConfigureActivity.BuilderConfigureLauncher(this) {
       viewModel.onConfigurationChanged()
     }
+  private val applicationPicker = ApplicationPicker(this) { }
+  private val contactPicker = ContactPicker(this) { }
 
   override fun getTitle(): String = ""
 
@@ -198,6 +204,13 @@ class BuildReminderFragment :
         is24HourFormat = prefs.is24HourFormat,
         paramToTextAdapter = paramToTextAdapter,
         googleCalendarUtils = googleCalendarUtils,
+        packageManagerWrapper = packageManagerWrapper,
+        onPickApplication = { onResult -> applicationPicker.pickApplication(onResult) },
+        onPickContact = { onResult ->
+          permissionFlow.askPermission(Permissions.READ_CONTACTS) {
+            contactPicker.pickContact { contactData -> onResult(contactData.phone) }
+          }
+        },
         onDismissRequest = { editingItem = null },
         onValueChange = { updated -> viewModel.updateValue(position, updated) },
         onHelpClick = if (item.biGroup == BiGroup.ICAL) {

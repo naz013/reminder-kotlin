@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
+import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
@@ -45,15 +46,18 @@ import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
+import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
 import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
 import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
 import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
+import com.elementary.tasks.reminder.build.SmsBuilderItem
 import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
+import com.elementary.tasks.reminder.build.valuedialog.editor.ApplicationValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.BeforeTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
@@ -71,6 +75,7 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.ICalWeekStartValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.LedColorValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.OtherParamsValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.PhoneInputValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.PriorityValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatIntervalValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatLimitValueEditor
@@ -78,6 +83,7 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatTimeValueEdi
 import com.elementary.tasks.reminder.build.valuedialog.editor.SimpleTextValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TextInputValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
+import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
 /**
@@ -121,6 +127,9 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is SummaryBuilderItem,
     is DescriptionBuilderItem,
     is EmailSubjectBuilderItem,
+    is ApplicationBuilderItem,
+    is PhoneCallBuilderItem,
+    is SmsBuilderItem,
     -> true
 
     else -> false
@@ -145,6 +154,9 @@ fun ValueEditorSheet(
   onValueChange: (BuilderItem<*>) -> Unit,
   paramToTextAdapter: ParamToTextAdapter,
   googleCalendarUtils: GoogleCalendarUtils,
+  packageManagerWrapper: PackageManagerWrapper,
+  onPickApplication: (onResult: (String) -> Unit) -> Unit,
+  onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   modifier: Modifier = Modifier,
   is24HourFormat: Boolean = false,
   onHelpClick: (() -> Unit)? = null,
@@ -203,6 +215,9 @@ fun ValueEditorSheet(
         is24HourFormat = is24HourFormat,
         paramToTextAdapter = paramToTextAdapter,
         googleCalendarUtils = googleCalendarUtils,
+        packageManagerWrapper = packageManagerWrapper,
+        onPickApplication = onPickApplication,
+        onPickContact = onPickContact,
       )
     }
 
@@ -217,6 +232,9 @@ private fun ValueEditorContent(
   is24HourFormat: Boolean,
   paramToTextAdapter: ParamToTextAdapter,
   googleCalendarUtils: GoogleCalendarUtils,
+  packageManagerWrapper: PackageManagerWrapper,
+  onPickApplication: (onResult: (String) -> Unit) -> Unit,
+  onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
 ) {
   when (builderItem) {
     is DateBuilderItem -> DateValueEditor(builderItem, onValueChange)
@@ -252,6 +270,9 @@ private fun ValueEditorContent(
     is SummaryBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     is DescriptionBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     is EmailSubjectBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
+    is ApplicationBuilderItem -> ApplicationValueEditor(builderItem, packageManagerWrapper, onPickApplication, onValueChange)
+    is PhoneCallBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
+    is SmsBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     else -> {}
   }
 }
