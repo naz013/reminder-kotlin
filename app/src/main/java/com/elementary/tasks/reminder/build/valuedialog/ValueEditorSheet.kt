@@ -27,6 +27,8 @@ import com.elementary.tasks.reminder.build.GroupBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
+import com.elementary.tasks.reminder.build.PriorityBuilderItem
+import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfMonthValueEditor
@@ -35,6 +37,8 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.DaysOfWeekValueEdi
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleTaskListValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GroupValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.LedColorValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.PriorityValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatLimitValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
@@ -56,6 +60,8 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is DayOfMonthBuilderItem,
     is DayOfYearBuilderItem,
     is DaysOfWeekBuilderItem,
+    is PriorityBuilderItem,
+    is RepeatLimitBuilderItem,
     -> true
 
     else -> false
@@ -148,6 +154,8 @@ private fun ValueEditorContent(
     is DayOfMonthBuilderItem -> DayOfMonthValueEditor(builderItem, onValueChange)
     is DayOfYearBuilderItem -> DayOfYearValueEditor(builderItem, onValueChange)
     is DaysOfWeekBuilderItem -> DaysOfWeekValueEditor(builderItem, onValueChange)
+    is PriorityBuilderItem -> PriorityValueEditor(builderItem, onValueChange)
+    is RepeatLimitBuilderItem -> RepeatLimitValueEditor(builderItem, onValueChange)
     else -> {}
   }
 }
