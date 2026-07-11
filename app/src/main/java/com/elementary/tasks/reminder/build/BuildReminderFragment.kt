@@ -18,6 +18,7 @@ import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
 import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.selectordialog.BuilderSelectorSheet
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
@@ -25,10 +26,13 @@ import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCommunicator
 import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
 import com.elementary.tasks.reminder.build.valuedialog.isSupportedByComposeEditor
+import com.elementary.tasks.reminder.build.bi.BiGroup
+import com.elementary.tasks.reminder.recur.RecurHelpActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.ReviewsApi
+import com.github.naz013.ui.common.context.startActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -40,6 +44,7 @@ class BuildReminderFragment :
   private val reviewsApi by inject<ReviewsApi>()
   private val featureManager by inject<FeatureManager>()
   private val selectorDialogDataHolder by inject<SelectorDialogDataHolder>()
+  private val paramToTextAdapter by inject<ParamToTextAdapter>()
 
   private val builderConfigureLauncher =
     BuilderConfigureActivity.BuilderConfigureLauncher(this) {
@@ -189,8 +194,14 @@ class BuildReminderFragment :
       ValueEditorSheet(
         builderItem = item,
         is24HourFormat = prefs.is24HourFormat,
+        paramToTextAdapter = paramToTextAdapter,
         onDismissRequest = { editingItem = null },
         onValueChange = { updated -> viewModel.updateValue(position, updated) },
+        onHelpClick = if (item.biGroup == BiGroup.ICAL) {
+          { requireContext().startActivity(RecurHelpActivity::class.java) }
+        } else {
+          null
+        },
       )
     }
   }

@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.elementary.tasks.R
 import androidx.compose.ui.text.input.KeyboardType
+import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
@@ -28,6 +28,15 @@ import com.elementary.tasks.reminder.build.EmailBuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
+import com.elementary.tasks.reminder.build.ICalByDayBuilderItem
+import com.elementary.tasks.reminder.build.ICalFrequencyBuilderItem
+import com.elementary.tasks.reminder.build.ICalIntBuilderItem
+import com.elementary.tasks.reminder.build.ICalListIntBuilderItem
+import com.elementary.tasks.reminder.build.ICalStartDateBuilderItem
+import com.elementary.tasks.reminder.build.ICalStartTimeBuilderItem
+import com.elementary.tasks.reminder.build.ICalUntilDateBuilderItem
+import com.elementary.tasks.reminder.build.ICalUntilTimeBuilderItem
+import com.elementary.tasks.reminder.build.ICalWeekStartBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
@@ -39,6 +48,7 @@ import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.valuedialog.editor.BeforeTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
@@ -48,6 +58,11 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.DaysOfWeekValueEdi
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleCalendarDurationValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleTaskListValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GroupValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.ICalDayValueListValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.ICalFreqValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntListValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.ICalWeekStartValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.LedColorValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.OtherParamsValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.PriorityValueEditor
@@ -86,6 +101,15 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is OtherParamsBuilderItem,
     is EmailBuilderItem,
     is WebAddressBuilderItem,
+    is ICalStartDateBuilderItem,
+    is ICalUntilDateBuilderItem,
+    is ICalStartTimeBuilderItem,
+    is ICalUntilTimeBuilderItem,
+    is ICalFrequencyBuilderItem,
+    is ICalWeekStartBuilderItem,
+    is ICalIntBuilderItem,
+    is ICalListIntBuilderItem,
+    is ICalByDayBuilderItem,
     -> true
 
     else -> false
@@ -108,8 +132,10 @@ fun ValueEditorSheet(
   builderItem: BuilderItem<*>,
   onDismissRequest: () -> Unit,
   onValueChange: (BuilderItem<*>) -> Unit,
+  paramToTextAdapter: ParamToTextAdapter,
   modifier: Modifier = Modifier,
   is24HourFormat: Boolean = false,
+  onHelpClick: (() -> Unit)? = null,
 ) {
   AppModalBottomSheet(onDismissRequest = onDismissRequest, modifier = modifier) {
     Row(
@@ -124,6 +150,15 @@ fun ValueEditorSheet(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.weight(1f),
       )
+      if (onHelpClick != null) {
+        IconButton(onClick = onHelpClick) {
+          Icon(
+            painter = painterResource(R.drawable.ic_builder_ical_help),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface,
+          )
+        }
+      }
       IconButton(onClick = onDismissRequest) {
         Icon(
           painter = painterResource(R.drawable.ic_builder_chevron_down),
@@ -154,6 +189,7 @@ fun ValueEditorSheet(
         builderItem = builderItem,
         onValueChange = onValueChange,
         is24HourFormat = is24HourFormat,
+        paramToTextAdapter = paramToTextAdapter,
       )
     }
 
@@ -166,10 +202,20 @@ private fun ValueEditorContent(
   builderItem: BuilderItem<*>,
   onValueChange: (BuilderItem<*>) -> Unit,
   is24HourFormat: Boolean,
+  paramToTextAdapter: ParamToTextAdapter,
 ) {
   when (builderItem) {
     is DateBuilderItem -> DateValueEditor(builderItem, onValueChange)
     is LocationDelayDateBuilderItem -> DateValueEditor(builderItem, onValueChange)
+    is ICalStartDateBuilderItem -> DateValueEditor(builderItem, onValueChange)
+    is ICalUntilDateBuilderItem -> DateValueEditor(builderItem, onValueChange)
+    is ICalStartTimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
+    is ICalUntilTimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
+    is ICalFrequencyBuilderItem -> ICalFreqValueEditor(builderItem, paramToTextAdapter, onValueChange)
+    is ICalWeekStartBuilderItem -> ICalWeekStartValueEditor(builderItem, paramToTextAdapter, onValueChange)
+    is ICalIntBuilderItem -> ICalIntValueEditor(builderItem, onValueChange)
+    is ICalListIntBuilderItem -> ICalIntListValueEditor(builderItem, onValueChange)
+    is ICalByDayBuilderItem -> ICalDayValueListValueEditor(builderItem, paramToTextAdapter, onValueChange)
     is TimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
     is LocationDelayTimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
     is GroupBuilderItem -> GroupValueEditor(builderItem, onValueChange)
