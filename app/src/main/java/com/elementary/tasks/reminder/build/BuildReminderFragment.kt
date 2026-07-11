@@ -12,16 +12,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.livedata.observeAsState
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.navigate
 import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
 import com.elementary.tasks.notes.ObserveEvent
-import com.elementary.tasks.reminder.build.selectordialog.SelectorDialog
-import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogCallback
-import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogCommunicator
+import com.elementary.tasks.reminder.build.selectordialog.BuilderSelectorSheet
+import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialog
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCallback
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogCommunicator
@@ -35,11 +33,11 @@ import org.koin.core.parameter.parametersOf
 
 class BuildReminderFragment :
   BaseComposeToolbarFragment(),
-  SelectorDialogCallback,
   ValueDialogCallback {
   private val viewModel by viewModel<BuildReminderViewModel> { parametersOf(arguments) }
   private val reviewsApi by inject<ReviewsApi>()
   private val featureManager by inject<FeatureManager>()
+  private val selectorDialogDataHolder by inject<SelectorDialogDataHolder>()
 
   private val builderConfigureLauncher =
     BuilderConfigureActivity.BuilderConfigureLauncher(this) {
@@ -51,7 +49,6 @@ class BuildReminderFragment :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Logger.i(TAG, "Opening the reminder edit screen for id: ${Logger.data(viewModel.id)}")
-    SelectorDialogCommunicator.addCallback(this)
     ValueDialogCommunicator.addCallback(this)
   }
 
@@ -121,6 +118,7 @@ class BuildReminderFragment :
 
     var saveAsPresetChecked by remember { mutableStateOf(false) }
     var presetNameState by remember { mutableStateOf("") }
+    var showSelector by remember { mutableStateOf(false) }
 
     LaunchedEffect(builderItems, canSave) { invalidateOptionsMenu() }
 
@@ -159,8 +157,26 @@ class BuildReminderFragment :
       },
       onItemClick = { position, item -> viewModel.onItemEditedClicked(position, item) },
       onItemRemove = { position, item -> viewModel.removeItem(position, item) },
-      onAddClick = { SelectorDialog().show(parentFragmentManager, SelectorDialog.TAG) },
+      onAddClick = { showSelector = true },
     )
+
+    if (showSelector) {
+      BuilderSelectorSheet(
+        tabs = selectorDialogDataHolder.getTabs(),
+        builderItems = selectorDialogDataHolder.selectorBuilderItems,
+        presets = selectorDialogDataHolder.presets,
+        recurPresets = selectorDialogDataHolder.recurPresets,
+        onDismissRequest = { showSelector = false },
+        onBuilderItemSelected = { builderItem ->
+          showSelector = false
+          viewModel.addItem(builderItem)
+        },
+        onPresetSelected = { preset ->
+          showSelector = false
+          viewModel.onPresetSelected(preset)
+        },
+      )
+    }
   }
 
   private fun deleteReminder() {
@@ -211,14 +227,6 @@ class BuildReminderFragment :
 
   private fun save(newId: Boolean = false) {
     viewModel.saveReminder(newId)
-  }
-
-  override fun onBuilderItemAdd(builderItem: BuilderItem<*>) {
-    viewModel.addItem(builderItem)
-  }
-
-  override fun onPresetSelected(uiPresetList: UiPresetList) {
-    viewModel.onPresetSelected(uiPresetList)
   }
 
   override fun onValueChanged(

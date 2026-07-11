@@ -64,7 +64,6 @@ import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
 import com.elementary.tasks.reminder.build.reminder.validation.SubTasksValidator
 import com.elementary.tasks.reminder.build.reminder.validation.TargetValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
-import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogViewModel
 import com.elementary.tasks.reminder.build.valuedialog.ValueDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.controller.ValueControllerFactory
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
@@ -115,7 +114,6 @@ val reminderModule =
     viewModelOf(::RemindersArchiveViewModel)
 
     viewModel { ManagePresetsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { SelectorDialogViewModel(get(), get()) }
     viewModel { (arguments: Bundle?) ->
       BuildReminderViewModel(
         arguments,
