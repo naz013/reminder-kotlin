@@ -1,18 +1,20 @@
 package com.github.naz013.ui.common.compose.foundation.component
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppTheme
 
 /**
- * A number entry ([NumberStepperField]) paired with a unit/type wheel ([WheelPicker]) below it,
- * e.g. "5 [minutes/hours/days]". This is the Compose replacement for the legacy
+ * A number entry ([NumberStepperField]) paired with a unit/type wheel ([WheelPicker]) in the same
+ * row, e.g. "5 [minutes/hours/days]". This is the Compose replacement for the legacy
  * `ValueAndTypePickerView` composite `LinearLayout`, used by before-time, repeat-interval and
  * countdown-style builder items.
  *
@@ -33,21 +35,20 @@ fun ValueAndTypePicker(
   minValue: Long = 0,
   maxValue: Long = 999,
 ) {
-  Column(modifier = modifier.fillMaxWidth()) {
+  Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
     NumberStepperField(
       value = value,
       onValueChange = onValueChange,
       minValue = minValue,
       maxValue = maxValue,
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(bottom = 8.dp),
+      modifier = Modifier.weight(1f),
     )
+    Spacer(modifier = Modifier.width(8.dp))
     WheelPicker(
       items = typeItems,
       selectedIndex = selectedTypeIndex,
       onSelectedIndexChange = onTypeIndexChange,
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier.weight(1f),
     )
   }
 }

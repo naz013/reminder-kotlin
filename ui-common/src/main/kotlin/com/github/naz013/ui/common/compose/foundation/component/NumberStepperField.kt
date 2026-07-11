@@ -1,6 +1,7 @@
 package com.github.naz013.ui.common.compose.foundation.component
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppTheme
+
+private val STEP_BUTTON_SIZE = 40.dp
+private val TEXT_FIELD_WIDTH = 64.dp
 
 /**
  * A numeric stepper: minus/plus buttons around a directly-editable text field, clamped to
@@ -42,6 +46,7 @@ fun NumberStepperField(
     IconButton(
       onClick = { onValueChange((value - step).coerceIn(minValue, maxValue)) },
       enabled = enabled && value > minValue,
+      modifier = Modifier.size(STEP_BUTTON_SIZE),
     ) {
       Icon(imageVector = Icons.Filled.Remove, contentDescription = null)
     }
@@ -56,7 +61,7 @@ fun NumberStepperField(
           onValueChange(minValue)
         }
       },
-      modifier = Modifier.width(96.dp),
+      modifier = Modifier.width(TEXT_FIELD_WIDTH),
       enabled = enabled,
       singleLine = true,
       textStyle = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center),
@@ -66,6 +71,7 @@ fun NumberStepperField(
     IconButton(
       onClick = { onValueChange((value + step).coerceIn(minValue, maxValue)) },
       enabled = enabled && value < maxValue,
+      modifier = Modifier.size(STEP_BUTTON_SIZE),
     ) {
       Icon(imageVector = Icons.Filled.Add, contentDescription = null)
     }
