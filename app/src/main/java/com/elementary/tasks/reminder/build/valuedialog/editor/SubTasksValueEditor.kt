@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.build.valuedialog.editor
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -16,11 +17,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,6 +38,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
@@ -63,11 +66,18 @@ fun SubTasksValueEditor(
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
   val viewModel = remember(builderItem) { SubTasksViewModel(dateTimeManager) }
-  val items by viewModel.showItems.observeAsState(emptyList())
+  var items by remember { mutableStateOf(emptyList<ShopItem>(), neverEqualPolicy()) }
 
   LaunchedEffect(builderItem) {
     viewModel.initWithData(builderItem.modifier.getValue() ?: emptyList())
   }
+
+  // ShopItem entries are mutated in place, so a checked-state change can produce a list that is
+  // structurally equal to the previous one (same object references, same values) whenever the
+  // sort order doesn't change. observeAsState's default structural-equality policy would then
+  // skip recomposition, so this uses a never-equal-policy state updated from a raw Observer
+  // instead, mirroring the saveItems handling below.
+  viewModel.showItems.ObserveNonNull { items = it }
 
   viewModel.saveItems.ObserveNonNull { saved ->
     builderItem.modifier.update(saved)
@@ -119,33 +129,44 @@ private fun ShopItemRow(
         tint = MaterialTheme.colorScheme.onSurface,
       )
     }
-    BasicTextField(
-      value = text,
-      onValueChange = {
-        text = it
-        onTextChange(it)
-      },
-      modifier = Modifier
-        .weight(1f)
-        .padding(horizontal = 8.dp)
-        .focusRequester(focusRequester)
-        .onFocusChanged { isFocused = it.isFocused }
-        .onPreviewKeyEvent { keyEvent ->
-          if (keyEvent.type == KeyEventType.KeyDown &&
-            keyEvent.key == Key.Backspace &&
-            text.isEmpty()
-          ) {
-            onDeletePressed()
-            true
-          } else {
-            false
-          }
+    Box(modifier = Modifier.weight(1f)) {
+      if (text.isEmpty()) {
+        Text(
+          text = stringResource(R.string.builder_write_something),
+          style = MaterialTheme.typography.bodyLarge,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(horizontal = 8.dp),
+        )
+      }
+      BasicTextField(
+        value = text,
+        onValueChange = {
+          text = it
+          onTextChange(it)
         },
-      textStyle = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
-      cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-      keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-      keyboardActions = KeyboardActions(onDone = { if (text.isNotEmpty()) onEnterPressed() }),
-    )
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 8.dp)
+          .focusRequester(focusRequester)
+          .onFocusChanged { isFocused = it.isFocused }
+          .onPreviewKeyEvent { keyEvent ->
+            if (keyEvent.type == KeyEventType.KeyDown &&
+              keyEvent.key == Key.Backspace &&
+              text.isEmpty()
+            ) {
+              onDeletePressed()
+              true
+            } else {
+              false
+            }
+          },
+        textStyle = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions(onNext = { if (text.isNotEmpty()) onEnterPressed() }),
+      )
+    }
     if (isFocused && text.isNotEmpty()) {
       IconButton(onClick = onRemoveClick, modifier = Modifier.size(40.dp)) {
         Icon(
