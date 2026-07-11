@@ -19,10 +19,22 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
+import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
+import com.elementary.tasks.reminder.build.DayOfYearBuilderItem
+import com.elementary.tasks.reminder.build.DaysOfWeekBuilderItem
+import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
+import com.elementary.tasks.reminder.build.GroupBuilderItem
+import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfMonthValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfYearValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.DaysOfWeekValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleTaskListValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.GroupValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.LedColorValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
@@ -38,6 +50,12 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is LocationDelayDateBuilderItem,
     is TimeBuilderItem,
     is LocationDelayTimeBuilderItem,
+    is GroupBuilderItem,
+    is GoogleTaskListBuilderItem,
+    is LedColorBuilderItem,
+    is DayOfMonthBuilderItem,
+    is DayOfYearBuilderItem,
+    is DaysOfWeekBuilderItem,
     -> true
 
     else -> false
@@ -124,6 +142,12 @@ private fun ValueEditorContent(
     is LocationDelayDateBuilderItem -> DateValueEditor(builderItem, onValueChange)
     is TimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
     is LocationDelayTimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
+    is GroupBuilderItem -> GroupValueEditor(builderItem, onValueChange)
+    is GoogleTaskListBuilderItem -> GoogleTaskListValueEditor(builderItem, onValueChange)
+    is LedColorBuilderItem -> LedColorValueEditor(builderItem, onValueChange)
+    is DayOfMonthBuilderItem -> DayOfMonthValueEditor(builderItem, onValueChange)
+    is DayOfYearBuilderItem -> DayOfYearValueEditor(builderItem, onValueChange)
+    is DaysOfWeekBuilderItem -> DaysOfWeekValueEditor(builderItem, onValueChange)
     else -> {}
   }
 }
