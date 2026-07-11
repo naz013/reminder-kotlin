@@ -34,6 +34,10 @@ fun <T> LiveData<out Event<T>?>.observeEvent(owner: LifecycleOwner, observer: Ob
   }
 }
 
+inline fun <reified T> MutableLiveData<Event<T>>.sendEvent(event: T) {
+  this.value = Event(event)
+}
+
 fun <T> LiveData<out T?>.nullObserve(owner: LifecycleOwner, observer: Observer<T>) {
   this.observe(owner) { o: T? ->
     if (o != null) {

@@ -206,6 +206,7 @@ dependencies {
   implementation(libs.koin.android.ext)
   implementation(libs.koin.androidx.workmanager)
   implementation(libs.koin.androidx.compose)
+  implementation(libs.koin.compose.navigation3)
 
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.android)

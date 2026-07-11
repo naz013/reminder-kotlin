@@ -1,66 +1,78 @@
 package com.elementary.tasks.birthdays.preview
 
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.sendEvent
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PreviewBirthdayViewModel(
   private val id: String,
   private val birthdayRepository: BirthdayRepository,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
-) : BaseProgressViewModel(dispatcherProvider) {
-  val state: StateFlow<PreviewBirthdayState> field = MutableStateFlow(PreviewBirthdayState())
+) : ViewModel() {
 
-  /** Confetti should only auto-play once per time this screen is shown, even though [onResume]
-   *  reloads the birthday every time the fragment resumes. */
-  private var canShowAnimation = true
+  private val _state = MutableStateFlow(PreviewBirthdayState())
+  val state = _state.stateInWhileSubscribed(PreviewBirthdayState())
+    .onStart { load() }
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    load()
-  }
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
   fun onDeleteClick() {
-    state.update { it.copy(showDeleteConfirm = true) }
+    _state.update { it.copy(showDeleteConfirm = true) }
   }
 
   fun onDeleteDismiss() {
-    state.update { it.copy(showDeleteConfirm = false) }
+    _state.update { it.copy(showDeleteConfirm = false) }
   }
 
   fun onDeleteConfirmed() {
-    state.update { it.copy(showDeleteConfirm = false) }
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
+    _state.update { it.copy(showDeleteConfirm = false) }
+    viewModelScope.launch(dispatcherProvider.io()) {
       deleteBirthdayUseCase(id)
-      postInProgress(false)
-      postCommand(Commands.DELETED)
+
+      withContext(dispatcherProvider.main()) {
+        event.sendEvent(ViewModelEvent.MoveBack)
+      }
     }
   }
 
   private fun load() {
-    viewModelScope.launch(dispatcherProvider.default()) {
+    viewModelScope.launch(dispatcherProvider.io()) {
       val birthday = birthdayRepository.getById(id) ?: return@launch
+
       analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY_PREVIEW))
+
       val uiBirthday = uiBirthdayPreviewAdapter.convert(birthday)
-      val shouldPlayConfetti = uiBirthday.hasBirthdayToday && canShowAnimation
-      if (shouldPlayConfetti) canShowAnimation = false
-      state.update { it.copy(birthday = uiBirthday, playConfetti = shouldPlayConfetti) }
+      val shouldPlayConfetti = uiBirthday.hasBirthdayToday && _state.value.canShowAnimation
+      _state.update {
+        it.copy(
+          birthday = uiBirthday,
+          playConfetti = shouldPlayConfetti,
+          canShowAnimation = false
+        )
+      }
     }
+  }
+
+  sealed interface ViewModelEvent {
+    data object MoveBack : ViewModelEvent
   }
 }

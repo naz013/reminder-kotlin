@@ -24,6 +24,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.EditBirthdayScreen
 import com.elementary.tasks.birthdays.create.EditBirthdayViewModel
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayScreen
+import com.elementary.tasks.birthdays.preview.PreviewBirthdayState
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayViewModel
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
@@ -55,15 +56,17 @@ private fun PreviewEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<PreviewBirthdayViewModel> { parametersOf(key.id) }
-  bindLifecycle(viewModel)
   val context = LocalContext.current
   val permissionRequester = rememberPermissionRequester()
-  viewModel.resultEvent.ObserveEvent { command ->
-    if (command == Commands.DELETED) backStack.removeLastOrNull()
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is PreviewBirthdayViewModel.ViewModelEvent.MoveBack -> {
+        backStack.removeLastOrNull()
+      }
+    }
   }
-  viewModel.errorEvent.ObserveEvent { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(PreviewBirthdayState())
   PermissionRationaleDialog(permissionRequester)
   PreviewBirthdayScreen(
     state = state,
@@ -136,15 +139,6 @@ private fun EditEntry(
     onCopyReplaceClick = viewModel::onCopyReplaceClick,
     onDialogDismiss = viewModel::onDialogDismiss,
   )
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 }
 
 @Composable
