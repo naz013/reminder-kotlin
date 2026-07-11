@@ -228,7 +228,7 @@ val reminderModule =
     single { SelectorDialogDataHolder() }
     single { ValueDialogDataHolder() }
 
-    factory { UiSelectorItemsAdapter(get(), get(), get()) }
+    factory { UiSelectorItemsAdapter(get(), get(), get(), get()) }
 
     factory { UiBuilderItemsAdapter(get(), get(), get(), get(), get()) }
     factory { BiValueForUiAdapter(get()) }

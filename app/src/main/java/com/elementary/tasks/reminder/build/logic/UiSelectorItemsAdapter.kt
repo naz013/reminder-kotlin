@@ -7,18 +7,21 @@ import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.bi.BuilderItemConstraints
 import com.elementary.tasks.reminder.build.bi.BuilderItemError
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
+import com.github.naz013.domain.reminder.BiType
 
 class UiSelectorItemsAdapter(
   private val blockedByConstraintCalculator: BuilderItemBlockedByConstraintCalculator,
   private val permissionConstraintCalculator: BuilderItemPermissionConstraintCalculator,
+  private val mandatoryIfConstraintCalculator: BuilderItemMandatoryIfConstraintCalculator,
   private val biErrorForUiAdapter: BiErrorForUiAdapter,
 ) {
   fun calculateStates(
     used: List<BuilderItem<*>>,
     available: List<BuilderItem<*>>,
   ): List<UiSelectorItem> {
-    val usedMap = used.associateBy { it.biType }
     val processedBuilderItems = ProcessedBuilderItems(used)
+    val requiredByMap = calculateRequiredByMap(used, processedBuilderItems)
+
     return available
       .map {
         val builderItemConstraints = BuilderItemConstraints(it.constraints)
@@ -32,8 +35,32 @@ class UiSelectorItemsAdapter(
             }
             else -> UiSelectorItemState.UiSelectorAvailable
           }
-        it.toUi(state)
+        val requiredMessage =
+          requiredByMap[it.biType]?.let { requiredBy ->
+            biErrorForUiAdapter.getUiString(listOf(BuilderItemError.MandatoryIfConstraintError(requiredBy)))
+          }
+        it.toUi(state, requiredMessage)
       }.sortedBy { it.state !is UiSelectorItemState.UiSelectorAvailable }
+  }
+
+  /**
+   * For every used item that declares `mandatoryIf(x)`, and whose `x` isn't used yet, `x` is now
+   * mandatory - e.g. adding Date makes Time mandatory (and vice versa, since the pairing is
+   * declared on both sides). Returns a map of "not-yet-used, now-mandatory type" to the used
+   * type(s) that triggered it, so the selector can show *why* an item became required.
+   */
+  private fun calculateRequiredByMap(
+    used: List<BuilderItem<*>>,
+    processedBuilderItems: ProcessedBuilderItems,
+  ): Map<BiType, List<BiType>> {
+    val result = mutableMapOf<BiType, MutableList<BiType>>()
+    used.forEach { usedItem ->
+      val constraints = BuilderItemConstraints(usedItem.constraints)
+      mandatoryIfConstraintCalculator(constraints, processedBuilderItems).forEach { requiredType ->
+        result.getOrPut(requiredType) { mutableListOf() }.add(usedItem.biType)
+      }
+    }
+    return result
   }
 
   private fun getErrors(
@@ -51,5 +78,8 @@ class UiSelectorItemsAdapter(
     return listOfNotNull(blockedBy)
   }
 
-  private fun <T> BuilderItem<T>.toUi(state: UiSelectorItemState): UiSelectorItem = UiSelectorItem(this, state)
+  private fun <T> BuilderItem<T>.toUi(
+    state: UiSelectorItemState,
+    requiredMessage: String?,
+  ): UiSelectorItem = UiSelectorItem(this, state, requiredMessage)
 }

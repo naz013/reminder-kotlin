@@ -204,6 +204,14 @@ private fun SelectorItemRow(
             modifier = Modifier.padding(top = 4.dp),
           )
         }
+        if (!item.requiredMessage.isNullOrEmpty()) {
+          Text(
+            text = item.requiredMessage,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier.padding(top = 4.dp),
+          )
+        }
         val state = item.state
         if (state is UiSelectorItemState.UiSelectorUnavailable) {
           Text(
