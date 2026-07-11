@@ -17,28 +17,40 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
 import com.elementary.tasks.reminder.build.DayOfYearBuilderItem
 import com.elementary.tasks.reminder.build.DaysOfWeekBuilderItem
+import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
+import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
+import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
 import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
+import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
+import com.elementary.tasks.reminder.build.TimerBuilderItem
+import com.elementary.tasks.reminder.build.valuedialog.editor.BeforeTimeValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfMonthValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfYearValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DaysOfWeekValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleCalendarDurationValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleTaskListValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GroupValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.LedColorValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.OtherParamsValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.PriorityValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatIntervalValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatLimitValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.RepeatTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
@@ -62,6 +74,12 @@ fun isSupportedByComposeEditor(builderItem: BuilderItem<*>): Boolean =
     is DaysOfWeekBuilderItem,
     is PriorityBuilderItem,
     is RepeatLimitBuilderItem,
+    is BeforeTimeBuilderItem,
+    is RepeatTimeBuilderItem,
+    is RepeatIntervalBuilderItem,
+    is TimerBuilderItem,
+    is GoogleCalendarDurationBuilderItem,
+    is OtherParamsBuilderItem,
     -> true
 
     else -> false
@@ -156,6 +174,12 @@ private fun ValueEditorContent(
     is DaysOfWeekBuilderItem -> DaysOfWeekValueEditor(builderItem, onValueChange)
     is PriorityBuilderItem -> PriorityValueEditor(builderItem, onValueChange)
     is RepeatLimitBuilderItem -> RepeatLimitValueEditor(builderItem, onValueChange)
+    is BeforeTimeBuilderItem -> BeforeTimeValueEditor(builderItem, onValueChange)
+    is RepeatTimeBuilderItem -> RepeatTimeValueEditor(builderItem, onValueChange)
+    is RepeatIntervalBuilderItem -> RepeatIntervalValueEditor(builderItem, onValueChange)
+    is TimerBuilderItem -> CountdownTimeValueEditor(builderItem, onValueChange)
+    is GoogleCalendarDurationBuilderItem -> GoogleCalendarDurationValueEditor(builderItem, onValueChange)
+    is OtherParamsBuilderItem -> OtherParamsValueEditor(builderItem, onValueChange)
     else -> {}
   }
 }
