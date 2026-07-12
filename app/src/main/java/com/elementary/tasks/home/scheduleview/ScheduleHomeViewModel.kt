@@ -19,7 +19,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
-import com.github.naz013.feature.common.livedata.sendEvent
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.legal.LegalDocumentRepository
@@ -64,19 +64,19 @@ class ScheduleHomeViewModel(
     Logger.i(TAG, "On event type selected: type=$eventType")
     when (eventType) {
       EventType.Reminder -> {
-        event.sendEvent(ViewModelEvent.OpenCreateReminder)
+        event.emit(ViewModelEvent.OpenCreateReminder)
       }
 
       EventType.Birthday -> {
-        event.sendEvent(ViewModelEvent.OpenCreateBirthday)
+        event.emit(ViewModelEvent.OpenCreateBirthday)
       }
 
       EventType.GoogleTask -> {
-        event.sendEvent(ViewModelEvent.OpenCreateGoogleTask)
+        event.emit(ViewModelEvent.OpenCreateGoogleTask)
       }
 
       EventType.Note -> {
-        event.sendEvent(ViewModelEvent.OpenCreateNote)
+        event.emit(ViewModelEvent.OpenCreateNote)
       }
     }
   }
@@ -112,7 +112,7 @@ class ScheduleHomeViewModel(
     _state.update {
       it.copy(bannerState = getBannerState())
     }
-    event.sendEvent(ViewModelEvent.OpenCloudDrives)
+    event.emit(ViewModelEvent.OpenCloudDrives)
   }
 
   fun onWhatsNewDetailsClick() {
@@ -122,7 +122,7 @@ class ScheduleHomeViewModel(
     _state.update {
       it.copy(bannerState = getBannerState())
     }
-    event.sendEvent(ViewModelEvent.OpenWhatsNew)
+    event.emit(ViewModelEvent.OpenWhatsNew)
   }
 
   fun onWhatsNewDismissClick() {
@@ -135,18 +135,18 @@ class ScheduleHomeViewModel(
 
   fun onSettingsClicked() {
     Logger.i(TAG, "On settings clicked")
-    event.sendEvent(ViewModelEvent.OpenSettings)
+    event.emit(ViewModelEvent.OpenSettings)
   }
 
   fun onEventClicked(homeEvent: HomeEvent) {
     Logger.i(TAG, "On event clicked: id=${homeEvent.id}")
     when (homeEvent.type) {
       HomeEvent.EventType.Reminder -> {
-        event.sendEvent(ViewModelEvent.OpenReminderDetails(homeEvent.id))
+        event.emit(ViewModelEvent.OpenReminderDetails(homeEvent.id))
       }
 
       HomeEvent.EventType.Birthday -> {
-        event.sendEvent(ViewModelEvent.OpenBirthdayDetails(homeEvent.id))
+        event.emit(ViewModelEvent.OpenBirthdayDetails(homeEvent.id))
       }
     }
   }
@@ -158,12 +158,12 @@ class ScheduleHomeViewModel(
         Logger.private(eventAction.toString())
       }",
     )
-    event.sendEvent(ViewModelEvent.EventAction(eventAction.value))
+    event.emit(ViewModelEvent.EventAction(eventAction.value))
   }
 
   fun onHeaderNavigationItemClicked(item: HeaderNavigationItem) {
     Logger.i(TAG, "On header navigation item clicked: ${item.navigationEvent}")
-    event.sendEvent(item.navigationEvent)
+    event.emit(item.navigationEvent)
   }
 
   private fun loadData() {

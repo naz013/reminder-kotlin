@@ -19,7 +19,7 @@ import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
-import com.github.naz013.feature.common.livedata.sendEvent
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -142,7 +142,7 @@ class EditBirthdayViewModel(
       deleteBirthdayUseCase(id)
 
       withContext(dispatcherProvider.main()) {
-        event.sendEvent(ViewModelEvent.MoveBack)
+        event.emit(ViewModelEvent.MoveBack)
       }
     }
   }
@@ -224,7 +224,7 @@ class EditBirthdayViewModel(
       saveBirthdayUseCase(birthday)
 
       withContext(dispatcherProvider.main()) {
-        event.sendEvent(ViewModelEvent.MoveBack)
+        event.emit(ViewModelEvent.MoveBack)
       }
     }
   }

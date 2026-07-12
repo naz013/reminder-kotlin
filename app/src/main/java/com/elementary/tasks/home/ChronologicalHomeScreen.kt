@@ -39,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -267,9 +268,13 @@ private fun HeaderNavigationTile(
   index: Int,
   onClick: () -> Unit,
 ) {
-  val visibleState = remember { MutableTransitionState(false) }
+  var hasAnimated by rememberSaveable { mutableStateOf(false) }
+  val visibleState = remember { MutableTransitionState(hasAnimated) }
   LaunchedEffect(Unit) {
-    delay((index * TILE_STAGGER_DELAY_MS).coerceAtMost(TILE_MAX_STAGGER_DELAY_MS))
+    if (!hasAnimated) {
+      delay((index * TILE_STAGGER_DELAY_MS).coerceAtMost(TILE_MAX_STAGGER_DELAY_MS))
+      hasAnimated = true
+    }
     visibleState.targetState = true
   }
   AnimatedVisibility(

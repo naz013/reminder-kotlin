@@ -69,6 +69,7 @@ val noteModule =
     viewModel { (position: Int) -> ImagePreviewViewModel(get(), position, get()) }
     viewModel { (isArchived: Boolean) ->
       NotesViewModel(
+        isArchived = isArchived,
         get(),
         get(),
         get(),
@@ -83,8 +84,6 @@ val noteModule =
         get(),
         get(),
         get(),
-        get(),
-        isArchived,
       )
     }
     viewModel { (id: String) ->

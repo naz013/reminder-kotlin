@@ -34,7 +34,7 @@ fun <T> LiveData<out Event<T>?>.observeEvent(owner: LifecycleOwner, observer: Ob
   }
 }
 
-inline fun <reified T> MutableLiveData<Event<T>>.sendEvent(event: T) {
+inline fun <reified T> MutableLiveData<Event<T>>.emit(event: T) {
   this.value = Event(event)
 }
 

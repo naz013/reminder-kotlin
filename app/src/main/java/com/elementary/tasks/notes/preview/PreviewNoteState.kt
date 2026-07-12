@@ -19,20 +19,7 @@ data class PreviewNoteState(
   val opacity: Int = 100,
   val isArchived: Boolean = false,
   val isLoading: Boolean = false,
-  val activeDialog: PreviewNoteDialog? = null,
   val showAdsBanner: Boolean = false,
-)
-
-/** Which modal dialog (if any) is currently shown above [PreviewNoteScreen]. */
-enum class PreviewNoteDialog { DELETE, }
-
-/**
- * Colors derived from [PreviewNoteState]'s background/opacity — computed once by
- * [PreviewNoteViewModel.colorsFor] so the Fragment/Compose layer never has to know about
- * [com.github.naz013.ui.common.theme.ThemeProvider] or the contrast math itself.
- */
-data class NotePreviewColors(
-  val background: Color,
-  val statusBarColor: Int,
-  val content: Color,
+  val background: Color = Color.Transparent,
+  val content: Color = Color.Unspecified,
 )

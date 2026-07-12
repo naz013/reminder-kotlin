@@ -228,7 +228,6 @@ private fun noteMenuItems(isArchived: Boolean): List<PopupMenuItem> {
         NoteMenuAction.OPEN to R.string.open,
         NoteMenuAction.SHARE to R.string.share,
         NoteMenuAction.SHOW_IN_STATUS_BAR to R.string.show_in_status_bar,
-        NoteMenuAction.CHANGE_COLOR to R.string.change_color,
         NoteMenuAction.EDIT to R.string.edit,
         NoteMenuAction.ARCHIVE to R.string.notes_move_to_archive,
         NoteMenuAction.DELETE to R.string.delete,
@@ -245,7 +244,6 @@ private fun NoteMenuAction.iconRes(): Int =
     NoteMenuAction.EDIT -> R.drawable.ic_fluent_edit
     NoteMenuAction.SHARE -> R.drawable.ic_fluent_share
     NoteMenuAction.SHOW_IN_STATUS_BAR -> R.drawable.ic_fluent_alert
-    NoteMenuAction.CHANGE_COLOR -> R.drawable.ic_fluent_color
     NoteMenuAction.ARCHIVE, NoteMenuAction.UNARCHIVE -> R.drawable.ic_fluent_archive
     NoteMenuAction.DELETE -> R.drawable.ic_fluent_delete
   }

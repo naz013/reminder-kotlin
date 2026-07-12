@@ -12,8 +12,6 @@ data class PreviewNoteActions(
   val onShareClick: () -> Unit = {},
   val onArchiveClick: () -> Unit = {},
   val onDeleteClick: () -> Unit = {},
-  val onDeleteConfirmed: () -> Unit = {},
-  val onDialogDismiss: () -> Unit = {},
   val onImageOpen: (Int) -> Unit = {},
   val onReminderEditClick: (String) -> Unit = {},
   val onReminderDetachClick: (String) -> Unit = {},

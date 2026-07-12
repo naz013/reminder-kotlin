@@ -11,37 +11,8 @@ import com.elementary.tasks.core.data.ui.UiShareData
 import com.github.naz013.common.uri.UriUtil
 import java.io.File
 
+@Deprecated("Use Composable implementation instead")
 object TelephonyUtil {
-  fun sendNote(
-    file: File,
-    context: Context,
-    message: String?,
-  ) {
-    val intent = Intent(Intent.ACTION_SEND)
-    intent.type = "text/plain"
-    var title = "Note"
-    var note = ""
-    if (message != null) {
-      if (message.length > 100) {
-        title = message.take(48)
-        title = "$title..."
-      }
-      if (message.length > 150) {
-        note = message.take(135)
-        note = "$note..."
-      }
-    }
-    intent.putExtra(Intent.EXTRA_SUBJECT, title)
-    intent.putExtra(Intent.EXTRA_TEXT, note)
-    val uri = UriUtil.getUri(context, file, BuildConfig.APPLICATION_ID)
-    intent.putExtra(Intent.EXTRA_STREAM, uri)
-    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-    try {
-      context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_send_email)))
-    } catch (e: Exception) {
-      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
-    }
-  }
 
   fun sendFile(
     file: File,

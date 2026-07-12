@@ -10,7 +10,7 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
-import com.github.naz013.feature.common.livedata.sendEvent
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
@@ -49,7 +49,7 @@ class PreviewBirthdayViewModel(
       deleteBirthdayUseCase(id)
 
       withContext(dispatcherProvider.main()) {
-        event.sendEvent(ViewModelEvent.MoveBack)
+        event.emit(ViewModelEvent.MoveBack)
       }
     }
   }

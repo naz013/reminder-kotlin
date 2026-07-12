@@ -1,11 +1,9 @@
 package com.elementary.tasks.notes.list
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
@@ -23,17 +21,18 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,7 +40,8 @@ import java.io.File
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class NotesViewModel(
-  dispatcherProvider: DispatcherProvider,
+  private val isArchived: Boolean = false,
+  private val dispatcherProvider: DispatcherProvider,
   private val textProvider: TextProvider,
   private val uiNoteListItemAdapter: UiNoteListItemAdapter,
   private val prefs: Prefs,
@@ -55,28 +55,31 @@ class NotesViewModel(
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val imagesSingleton: ImagesSingleton,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val themeProvider: ThemeProvider,
-  private val isArchived: Boolean = false,
-) : BaseProgressViewModel(dispatcherProvider) {
-  val notesScreenState: StateFlow<NotesScreenState> field =
-    MutableStateFlow(
-      NotesScreenState(
-        isArchived = isArchived,
-        isGrid = prefs.isNotesGridEnabled,
-        sortOrder = prefs.noteOrder,
-      ),
+) : ViewModel() {
+
+  private val _notesScreenState = MutableStateFlow(
+    NotesScreenState(
+      isArchived = isArchived,
+      isGrid = prefs.isNotesGridEnabled,
+      sortOrder = prefs.noteOrder,
+    ),
+  )
+  val notesScreenState = _notesScreenState.stateInWhileSubscribed(
+    NotesScreenState(
+      isArchived = isArchived,
+      isGrid = prefs.isNotesGridEnabled,
+      sortOrder = prefs.noteOrder,
     )
+  ).onStart { refresh() }
+
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQuery = MutableStateFlow("")
   private val sortOrder = MutableStateFlow(prefs.noteOrder)
   private val refreshSignal = MutableStateFlow(0)
-  private var hasResumedBefore = false
 
   init {
-    // Search is debounced so typing doesn't re-query on every keystroke, but the very first
-    // (empty) query and clearing the field should apply immediately, not wait out the debounce.
-    // refreshSignal lets mutations/resume force a re-query without a Flow-returning DAO query.
+    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
     viewModelScope.launch(dispatcherProvider.default()) {
       combine(
         searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
@@ -85,25 +88,16 @@ class NotesViewModel(
       ) { query, order, _ -> query to order }
         .flatMapLatest { (query, order) ->
           flow {
-            emit(noteRepository.getNotes(isArchived = isArchived, query = query.lowercase(), sortOrder = order))
+            emit(
+              noteRepository.getNotes(
+                isArchived = isArchived,
+                query = query.lowercase(),
+                sortOrder = order
+              )
+            )
           }
         }.collect { applyList(it) }
     }
-  }
-
-  override fun onCreate(owner: LifecycleOwner) {
-    super.onCreate(owner)
-    analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
-  }
-
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    // The initial load already happens in init{}; only force a re-query on later resumes
-    // (e.g. returning from the note editor) to avoid redundantly re-running the first query.
-    if (hasResumedBefore) {
-      refresh()
-    }
-    hasResumedBefore = true
   }
 
   private fun refresh() {
@@ -112,42 +106,44 @@ class NotesViewModel(
 
   private fun applyList(list: List<NoteWithImages>) {
     val items = list.map { uiNoteListItemAdapter.convert(it) }
-    notesScreenState.update {
+    _notesScreenState.update {
       it.copy(listState = if (items.isEmpty()) ListState.Empty else ListState.Ready(items))
     }
   }
 
   fun onSearchQueryChange(query: String) {
-    notesScreenState.update { it.copy(searchQuery = query) }
+    _notesScreenState.update { it.copy(searchQuery = query) }
     searchQuery.value = query
   }
 
   fun onSortOrderSelected(order: String) {
     prefs.noteOrder = order
-    notesScreenState.update { it.copy(sortOrder = order) }
+    _notesScreenState.update { it.copy(sortOrder = order) }
     sortOrder.value = order
   }
 
   fun onGridToggleClick() {
-    val newValue = !notesScreenState.value.isGrid
+    val newValue = !_notesScreenState.value.isGrid
     prefs.isNotesGridEnabled = newValue
-    notesScreenState.update { it.copy(isGrid = newValue) }
+    _notesScreenState.update { it.copy(isGrid = newValue) }
   }
 
   fun onAddClick() {
-    navigationEvent.value = Event(NavigationEvent.OpenCreateNote)
+    navigationEvent.emit(NavigationEvent.OpenCreateNote)
   }
 
   fun onArchiveClick() {
-    navigationEvent.value = Event(NavigationEvent.OpenArchive)
+    navigationEvent.emit(NavigationEvent.OpenArchive)
   }
 
   fun onSettingsClick() {
-    navigationEvent.value = Event(NavigationEvent.OpenSettings)
+    navigationEvent.emit(
+      NavigationEvent.OpenSettings(textProvider.getString(R.string.action_settings))
+    )
   }
 
   fun onNoteClick(id: String) {
-    navigationEvent.value = Event(NavigationEvent.OpenNotePreview(id))
+    navigationEvent.emit(NavigationEvent.OpenNotePreview(id))
   }
 
   fun onImageClick(
@@ -160,7 +156,7 @@ class NotesViewModel(
       color = note.colorPosition,
       palette = note.colorPalette,
     )
-    navigationEvent.value = Event(NavigationEvent.OpenImagePreview(note.id, imagePosition))
+    navigationEvent.emit(NavigationEvent.OpenImagePreview(note.id, imagePosition))
   }
 
   fun onNoteMenuAction(
@@ -169,38 +165,23 @@ class NotesViewModel(
   ) {
     when (action) {
       NoteMenuAction.OPEN -> onNoteClick(note.id)
-      NoteMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenEditNote(note.id))
+      NoteMenuAction.EDIT -> navigationEvent.emit(NavigationEvent.OpenEditNote(note.id))
       NoteMenuAction.SHARE -> shareNote(note.id)
       NoteMenuAction.SHOW_IN_STATUS_BAR -> {
-        navigationEvent.value = Event(NavigationEvent.RequestNotificationPermission(note.id))
-      }
-
-      NoteMenuAction.CHANGE_COLOR -> {
-        navigationEvent.value =
-          Event(
-            NavigationEvent.PickColor(
-              id = note.id,
-              colorPosition = note.colorPosition,
-              sliderColors = themeProvider.noteColorsForSlider(note.colorPalette),
-            ),
-          )
+        navigationEvent.emit(NavigationEvent.RequestNotificationPermission(note.id))
       }
 
       NoteMenuAction.ARCHIVE -> moveToArchive(note.id)
       NoteMenuAction.UNARCHIVE -> unarchive(note.id)
-      NoteMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDelete(note.id))
+      NoteMenuAction.DELETE -> navigationEvent.emit(NavigationEvent.ConfirmDelete(note.id))
     }
   }
 
   private fun moveToArchive(id: String) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       changeNoteArchiveStateUseCase(id, true)
 
       refresh()
-
-      postInProgress(false)
-      postCommand(Commands.UPDATED)
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
@@ -209,51 +190,39 @@ class NotesViewModel(
   }
 
   private fun unarchive(id: String) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       changeNoteArchiveStateUseCase(id, false)
-
       refresh()
-
-      postInProgress(false)
-      postCommand(Commands.UPDATED)
     }
   }
 
   private fun shareNote(id: String) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val note = noteRepository.getById(id)
       if (note == null) {
-        postInProgress(false)
-        postError(textProvider.getText(R.string.failed_to_send_note))
+        navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.failed_to_send_note)))
         return@launch
       }
       val file = createSharedNoteFileUseCase(note)
-      postInProgress(false)
       if (file == null) {
-        postError(textProvider.getText(R.string.failed_to_send_note))
+        navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.failed_to_send_note)))
         return@launch
       }
       if (!file.exists() || !file.canRead()) {
-        postError(textProvider.getText(R.string.error_sending))
+        navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.error_sending)))
         return@launch
       }
       withContext(dispatcherProvider.main()) {
-        navigationEvent.value = Event(NavigationEvent.ShareNote(file, note.note?.summary))
+        navigationEvent.emit(NavigationEvent.ShareNote(file, note.note?.summary))
       }
     }
   }
 
   fun deleteNote(id: String) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteNoteUseCase(id)
 
       refresh()
-
-      postInProgress(false)
-      postCommand(Commands.DELETED)
 
       if (!isArchived) {
         withContext(dispatcherProvider.main()) {
@@ -267,28 +236,14 @@ class NotesViewModel(
     id: String,
     color: Int,
   ) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = noteRepository.getById(id)
-      if (noteWithImages == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
-      val note = noteWithImages.note
-      if (note == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
+      val noteWithImages = noteRepository.getById(id) ?: return@launch
+      val note = noteWithImages.note ?: return@launch
       note.color = color
       note.updatedAt = DateTimeManager.gmtDateTime
       saveNoteUseCase(noteWithImages)
 
       refresh()
-
-      postInProgress(false)
-      postCommand(Commands.SAVED)
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
@@ -318,7 +273,9 @@ class NotesViewModel(
 
     data object OpenArchive : NavigationEvent
 
-    data object OpenSettings : NavigationEvent
+    data class OpenSettings(
+      val title: String,
+    ) : NavigationEvent
 
     data class OpenImagePreview(
       val noteId: String,
@@ -334,18 +291,14 @@ class NotesViewModel(
       val id: String,
     ) : NavigationEvent
 
-    data class PickColor(
-      val id: String,
-      val colorPosition: Int,
-      val sliderColors: IntArray,
-    ) : NavigationEvent
-
     data class ConfirmDelete(
       val id: String,
     ) : NavigationEvent
+
+    data class Error(val message: String) : NavigationEvent
   }
 
   companion object {
-    private const val SEARCH_DEBOUNCE_MS = 300L
+    private const val SEARCH_DEBOUNCE_MS = 150L
   }
 }
