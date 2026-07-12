@@ -3,12 +3,8 @@ package com.elementary.tasks.home
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
-import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
@@ -16,8 +12,6 @@ import com.elementary.tasks.core.deeplink.ReminderTextDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
-import com.elementary.tasks.navigation.BackPressHandler
-import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
@@ -27,6 +21,7 @@ import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.places.PlacesNavKey
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
+import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.work.BackupSettingsTask
 import com.elementary.tasks.splash.ShortcutDestination
 import com.github.naz013.common.datetime.DateTimeManager
@@ -42,6 +37,7 @@ import com.github.naz013.navigation.EditGroupScreen
 import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditPlaceScreen
 import com.github.naz013.navigation.EditReminderScreen
+import com.github.naz013.navigation.SettingsScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.navigation.ViewGoogleTaskScreen
 import com.github.naz013.navigation.ViewNoteScreen
@@ -53,18 +49,13 @@ import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
 import org.koin.android.ext.android.inject
 
-class BottomNavActivity :
-  LightThemedActivity(),
-  FragmentCallback {
+class BottomNavActivity : LightThemedActivity() {
   private val navigationObservable by inject<NavigationObservable>()
   private val navigationDispatcherFactory by inject<NavigationDispatcherFactory>()
   private val workScheduler by inject<WorkScheduler>()
   private val dateTimeManager by inject<DateTimeManager>()
 
-  private var navController: NavController? = null
   private val adsProvider = AdsProvider()
-
-  private var currentResumedFragment: Fragment? = null
 
   private val navigationConsumer =
     object : NavigationConsumer {
@@ -82,22 +73,16 @@ class BottomNavActivity :
 
     val initialNavKeys = resolveInitialNavKeys()
     composeView {
-      AppNavGraph(initialKeys = initialNavKeys, onLegacyNavHostReady = { navController = it })
-    }
-
-    if (initialNavKeys.isEmpty()) {
-      dispatchLegacyIntent()
+      AppNavGraph(initialKeys = initialNavKeys)
     }
 
     adsProvider.showConsentMessage(this)
   }
 
   /**
-   * Resolves an incoming deep link / app shortcut to typed Nav3 keys for screens already promoted
-   * out of `home_nav.xml` (Notes, Groups, Places) - seeded straight into [AppNavGraph]'s initial
-   * backstack instead of going through [dispatchLegacyIntent]'s `NavDeepLinkBuilder`, since those
-   * screens no longer have a `home_nav.xml` destination id to target. Returns an empty list for
-   * anything else, which [dispatchLegacyIntent] still handles exactly as before.
+   * Resolves an incoming deep link / app shortcut to typed Nav3 keys, seeded straight into
+   * [AppNavGraph]'s initial backstack. Every [DeepLinkDestination] and [ShortcutDestination] now
+   * resolves to a typed `NavKey` here - there is no longer a legacy Fragment graph to fall back to.
    */
   private fun resolveInitialNavKeys(): List<NavKey> {
     if (intent.action == Intent.ACTION_VIEW) {
@@ -167,6 +152,8 @@ class BottomNavActivity :
           return if (dateMillis >= 0L) listOf(CalendarNavKey.Month, CalendarNavKey.Day(dateMillis)) else listOf(CalendarNavKey.Month)
         }
 
+        is SettingsScreen -> return listOf(SettingsNavKey.Hub)
+
         else -> return emptyList()
       }
     } else if (ShortcutDestination.hasShortcut(intent.extras)) {
@@ -204,35 +191,6 @@ class BottomNavActivity :
     }
   }
 
-  /**
-   * Unchanged legacy dispatch for every destination still living in `home_nav.xml`. App shortcuts
-   * (`ShortcutDestination`) are no longer dispatched here - every shortcut now resolves to a typed
-   * `NavKey` in [resolveInitialNavKeys] (Note, Google Task and Reminder are all promoted), so
-   * [dispatchLegacyIntent] is only ever invoked for `ACTION_VIEW` deep links to destinations still
-   * living in `home_nav.xml`.
-   */
-  private fun dispatchLegacyIntent() {
-    if (intent.action == Intent.ACTION_VIEW) {
-      val deepLinkDestination =
-        intent.readParcelable(
-          DeepLinkDestination.KEY,
-          DeepLinkDestination::class.java,
-        )
-      Logger.i(TAG, "Deep link destination: $deepLinkDestination")
-      deepLinkDestination
-        ?.let { ScreenDestinationIdResolver().resolve(deepLinkDestination) }
-        ?.also {
-          val arguments = Bundle(deepLinkDestination.extras ?: Bundle())
-          NavDeepLinkBuilder(this)
-            .setGraph(R.navigation.home_nav)
-            .setArguments(arguments)
-            .setDestination(it)
-            .createTaskStackBuilder()
-            .startActivities()
-        }
-    }
-  }
-
   override fun onResume() {
     super.onResume()
     navigationObservable.subscribe(navigationConsumer)
@@ -241,11 +199,6 @@ class BottomNavActivity :
   override fun onPause() {
     super.onPause()
     navigationObservable.unsubscribe(navigationConsumer)
-  }
-
-  override fun setCurrentFragment(fragment: Fragment) {
-    currentResumedFragment = fragment
-    Logger.logEvent("Fragment opened = ${fragment.javaClass.name}")
   }
 
   override fun onDestroy() {
@@ -260,20 +213,14 @@ class BottomNavActivity :
     )
   }
 
+  /**
+   * [AppNavGraph]'s [androidx.navigation3.ui.NavDisplay] handles back press internally (its own
+   * `onBack` pops the outer Nav3 backstack, with predictive-back support built in) whenever there's
+   * more than one entry on the stack - this only actually fires once that backstack has bottomed
+   * out, so there's nothing left to do but exit.
+   */
   override fun handleBackPress(): Boolean {
-    val fragment = currentResumedFragment
-    Logger.i(TAG, "Handle back press, current fragment: $fragment")
-    // fragment can be a *stale* reference once the outer Nav3 backstack has fallen through to
-    // here with no legacy Fragment currently attached (e.g. back-ing out of a promoted screen -
-    // legacy Fragment via AppNavBridge - back to a promoted screen with nothing legacy left in the
-    // outer backstack): navController would then point at a detached NavHostFragment and silently
-    // no-op. Treat that the same as being at a promoted screen (Home included, now that it's a
-    // Nav3 entry with no Fragment of its own) - there's nothing legacy left to pop to.
-    if (fragment == null || !fragment.isAdded) {
-      finishAffinity()
-    } else if (fragment is BackPressHandler && fragment.canGoBack()) {
-      navController?.popBackStack()
-    }
+    finishAffinity()
     return true
   }
 

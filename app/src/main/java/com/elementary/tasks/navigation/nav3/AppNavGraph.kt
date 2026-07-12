@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation.NavController
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -30,27 +29,23 @@ import com.elementary.tasks.places.placesEntries
 import com.elementary.tasks.reminder.build.buildReminderEntries
 import com.elementary.tasks.reminder.lists.removed.remindersArchiveEntries
 import com.elementary.tasks.reminder.preview.reminderPreviewEntries
+import com.elementary.tasks.settings.export.exportEntries
+import com.elementary.tasks.settings.location.locationEntries
+import com.elementary.tasks.settings.other.otherEntries
+import com.elementary.tasks.settings.security.securityEntries
+import com.elementary.tasks.settings.settingsEntries
 import org.koin.compose.koinInject
 
 /**
  * Root of the app's single Nav3 graph, hosted directly by
- * [BottomNavActivity][com.elementary.tasks.home.BottomNavActivity] - replaces the
- * `NavHostFragment`/`home_nav.xml` Navigation Component graph that used to be the Activity's
- * entire content view. [HomeNavKey.Main] is the graph's own start destination.
- *
- * [LegacyHomeNavKey] embeds what's *left* of the legacy Fragment graph (now just the Settings tree
- * and a handful of other screens) as one entry (see [LegacyHomeHostEntry]), reached on demand via
- * [AppNavBridge.navigateLegacy] rather than being seeded into the backstack up front. Screens
- * promoted out of it register their own entries here via a
+ * [BottomNavActivity][com.elementary.tasks.home.BottomNavActivity]. [HomeNavKey.Main] is the
+ * graph's own start destination. Every screen registers its own entries here via a
  * `fun EntryProviderScope<NavKey>.xyzEntries(backStack)` extension in that feature's own
- * `XyzNavGraph.kt`, mirroring what `notesEntries`/`groupsEntries` do today. [AppNavBridge] carries
- * navigation requests across the promoted/legacy boundary in both directions while it still exists.
+ * `XyzNavGraph.kt`; [AppNavBridge] lets a screen several NavEntries deep reach a destination
+ * belonging to a different feature's graph without holding the backstack directly.
  */
 @Composable
-fun AppNavGraph(
-  initialKeys: List<NavKey> = emptyList(),
-  onLegacyNavHostReady: (NavController) -> Unit,
-) {
+fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
   val appNavBridge = koinInject<AppNavBridge>()
 
@@ -97,7 +92,6 @@ fun AppNavGraph(
     },
     entryProvider =
       entryProvider {
-        entry<LegacyHomeNavKey> { LegacyHomeHostEntry(onNavHostReady = onLegacyNavHostReady) }
         homeEntries(backStack)
         notesEntries(backStack)
         groupsEntries(backStack)
@@ -108,6 +102,11 @@ fun AppNavGraph(
         calendarEntries(backStack)
         reminderPreviewEntries(backStack)
         remindersArchiveEntries(backStack)
+        settingsEntries(backStack)
+        securityEntries(backStack)
+        locationEntries(backStack)
+        otherEntries(backStack)
+        exportEntries(backStack)
       },
   )
 }

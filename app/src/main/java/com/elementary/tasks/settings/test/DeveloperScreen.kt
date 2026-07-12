@@ -1,7 +1,5 @@
 package com.elementary.tasks.settings.test
 
-import android.os.Bundle
-import android.view.View
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,96 +19,13 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
-import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.navigation.safeNavigation
-import com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment
-import com.elementary.tasks.notes.ObserveEvent
-import com.elementary.tasks.reminder.dialog.ReminderActionActivity
-import com.github.naz013.feature.common.livedata.observeEvent
-import com.github.naz013.reviews.AppSource
-import com.github.naz013.reviews.ReviewsApi
-import com.github.naz013.ui.common.fragment.toast
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
-class DeveloperFragment : BaseComposeToolbarFragment() {
-  private val viewModel by viewModel<DeveloperViewModel>()
-  private val reviewsApi by inject<ReviewsApi>()
-
-  @Composable
-  override fun Content() {
-    val state by viewModel.state.collectAsState()
-    viewModel.navigationEvent.ObserveEvent { handleEvent(it) }
-
-    DeveloperScreen(
-      state = state,
-      onResetBannersClick = viewModel::onResetBannersClick,
-      onBirthdayDialogClick = viewModel::onBirthdayDialogClick,
-      onReminderDialogClick = viewModel::onReminderDialogClick,
-      onObjectExportClick = viewModel::onObjectExportClick,
-      onReviewDialogClick = viewModel::onReviewDialogClick,
-      onProVersionClick = viewModel::onProVersionClick,
-      onClearTableClick = viewModel::onClearTableClick,
-      onClearAllTablesClick = viewModel::onClearAllTablesClick,
-      onClearAllTablesConfirm = viewModel::onClearAllTablesConfirm,
-      onClearAllTablesDismiss = viewModel::onClearAllTablesDismiss,
-      onInsertDemoDataClick = viewModel::onInsertDemoDataClick,
-      onDialogOptionSelected = viewModel::onDialogOptionSelected,
-      onDialogConfirm = viewModel::onDialogConfirm,
-      onDialogDismiss = viewModel::onDialogDismiss,
-    )
-  }
-
-  override fun onViewCreated(
-    view: View,
-    savedInstanceState: Bundle?,
-  ) {
-    super.onViewCreated(view, savedInstanceState)
-    viewModel.bannersReset.observeEvent(viewLifecycleOwner) {
-      toast("Home Screen banners have been reset")
-    }
-    viewModel.actionMessage.observeEvent(viewLifecycleOwner) {
-      toast(it)
-    }
-  }
-
-  private fun handleEvent(event: DeveloperEvent) {
-    when (event) {
-      DeveloperEvent.OpenObjectExport -> {
-        safeNavigation(DeveloperFragmentDirections.actionDeveloperFragmentToObjectExportTestFragment())
-      }
-
-      DeveloperEvent.OpenReviewDialog -> {
-        reviewsApi.showFeedbackForm(
-          context = requireContext(),
-          title = "Write a review",
-          appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE,
-          allowLogsAttachment = false,
-        )
-      }
-
-      is DeveloperEvent.OpenReminderAction -> ReminderActionActivity.mockTest(requireContext(), event.reminderId)
-
-      is DeveloperEvent.OpenBirthdayAction -> BirthdayActionActivity.mockTest(requireContext(), event.birthdayId)
-
-      DeveloperEvent.OpenProVersion -> {
-        safeNavigation(DeveloperFragmentDirections.actionDeveloperFragmentToProVersionFragment())
-      }
-    }
-  }
-
-  override fun getTitle(): String = "Developer"
-}
 
 @Composable
-private fun DeveloperScreen(
+fun DeveloperScreen(
   state: DeveloperState,
   onResetBannersClick: () -> Unit,
   onBirthdayDialogClick: () -> Unit,

@@ -1,6 +1,7 @@
-package com.elementary.tasks.settings.other.whatsnew
+package com.elementary.tasks.settings.proversion
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,14 +16,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,34 +31,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
-import com.github.naz013.ui.common.compose.ComposeFragment
 import com.github.naz013.ui.common.compose.foundation.component.AnimatedGradientBackground
 import com.github.naz013.ui.common.compose.withAlpha
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
-class WhatsNewFragment : ComposeFragment() {
-  private val viewModel by viewModel<WhatsNewViewModel>()
-
-  @Composable
-  override fun FragmentContent() {
-    val state by viewModel.state.collectAsState(WhatsNewState())
-    WhatsNewScreen(
-      versionAndDate = state.versionName + "\n" + state.lastUpdated,
-      whatsNewText = state.whatsNewText,
-      onBackClick = { moveBack() },
-    )
-  }
-
-  private fun moveBack() {
-    activity?.onBackPressedDispatcher?.onBackPressed()
-  }
-}
+import com.elementary.tasks.R as AppR
 
 @Composable
-private fun WhatsNewScreen(
-  versionAndDate: String,
-  whatsNewText: String,
+fun ProVersionScreen(
+  advantages: List<String>,
   onBackClick: () -> Unit,
+  onBuyClick: () -> Unit,
 ) {
   AnimatedGradientBackground {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -95,7 +76,7 @@ private fun WhatsNewScreen(
       ) {
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-          text = versionAndDate,
+          text = stringResource(AppR.string.pro_advantages),
           style = MaterialTheme.typography.headlineSmall,
           color = MaterialTheme.colorScheme.tertiary,
         )
@@ -105,11 +86,24 @@ private fun WhatsNewScreen(
           color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
           modifier = Modifier.fillMaxWidth(),
         ) {
-          Text(
-            text = whatsNewText,
-            style = MaterialTheme.typography.titleMedium,
+          Column(
             modifier = Modifier.padding(20.dp),
-          )
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+          ) {
+            advantages.forEach { advantage ->
+              Text(
+                text = advantage,
+                style = MaterialTheme.typography.titleMedium,
+              )
+            }
+          }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+          onClick = onBuyClick,
+          modifier = Modifier.fillMaxWidth(),
+        ) {
+          Text(text = stringResource(AppR.string.pro_buy))
         }
         Spacer(modifier = Modifier.height(24.dp))
       }
@@ -119,10 +113,10 @@ private fun WhatsNewScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun WhatsNewScreenPreview() {
-  WhatsNewScreen(
-    versionAndDate = "1.0.0, Jan 1",
-    whatsNewText = "Sample changelog text",
+private fun ProVersionScreenPreview() {
+  ProVersionScreen(
+    advantages = listOf("- No Advertisement", "- LED notification"),
     onBackClick = {},
+    onBuyClick = {},
   )
 }

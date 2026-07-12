@@ -15,15 +15,24 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
+import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
+import com.elementary.tasks.core.os.compose.rememberPermissionRequester
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
+import com.elementary.tasks.home.eventsview.EventsScreen
+import com.elementary.tasks.home.eventsview.EventsViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
-import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
+import com.elementary.tasks.reminder.lists.removed.RemindersArchiveNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
+import com.elementary.tasks.settings.SettingsNavKey
+import com.elementary.tasks.settings.export.ExportNavKey
+import com.elementary.tasks.settings.other.OtherNavKey
+import com.github.naz013.common.Permissions
+import com.github.naz013.ui.common.Dialogues
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -35,6 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
   entry<HomeNavKey.Main> { HomeEntry(backStack) }
+  entry<HomeNavKey.Events> { EventsEntry(backStack) }
 }
 
 @Composable
@@ -57,7 +67,7 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
       is ScheduleHomeViewModel.NavigationEvent.ShowEventTypeSelection -> Unit
 
       is ScheduleHomeViewModel.NavigationEvent.OpenSettings -> {
-        appNavBridge.navigateLegacy(R.id.settingsFragment, null, NavigationAnimations.inDepthNavOptions())
+        backStack.add(SettingsNavKey.Hub)
       }
 
       is ScheduleHomeViewModel.NavigationEvent.OpenCreateReminder -> {
@@ -77,7 +87,7 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
       }
 
       is ScheduleHomeViewModel.NavigationEvent.OpenEvents -> {
-        appNavBridge.navigateLegacy(R.id.actionEvents, null, NavigationAnimations.inDepthNavOptions())
+        backStack.add(HomeNavKey.Events)
       }
 
       is ScheduleHomeViewModel.NavigationEvent.OpenNotes -> {
@@ -93,15 +103,15 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
       }
 
       is ScheduleHomeViewModel.NavigationEvent.OpenPrivacy -> {
-        appNavBridge.navigateLegacy(R.id.privacyPolicyFragment, null, NavigationAnimations.modalNavOptions())
+        backStack.add(OtherNavKey.PrivacyPolicy)
       }
 
       is ScheduleHomeViewModel.NavigationEvent.OpenCloudDrives -> {
-        appNavBridge.navigateLegacy(R.id.fragmentCloudDrives, null, NavigationAnimations.modalNavOptions())
+        backStack.add(ExportNavKey.CloudServices)
       }
 
       is ScheduleHomeViewModel.NavigationEvent.OpenWhatsNew -> {
-        appNavBridge.navigateLegacy(R.id.changesFragment, null, NavigationAnimations.modalNavOptions())
+        backStack.add(OtherNavKey.WhatsNew)
       }
 
       is ScheduleHomeViewModel.NavigationEvent.OpenCreateNote -> {
@@ -134,6 +144,97 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
         onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },
       )
     },
+  )
+}
+
+@Composable
+private fun EventsEntry(backStack: MutableList<NavKey>) {
+  val viewModel = koinViewModel<EventsViewModel>()
+  bindLifecycle(viewModel)
+  val context = LocalContext.current
+  val dialogues = koinInject<Dialogues>()
+  val appNavBridge = koinInject<AppNavBridge>()
+  val permissionRequester = rememberPermissionRequester()
+
+  viewModel.navigationEvent.ObserveEvent { event ->
+    when (event) {
+      is EventsViewModel.NavigationEvent.OpenReminderPreview -> {
+        backStack.add(ReminderPreviewNavKey.Preview(event.id))
+      }
+
+      is EventsViewModel.NavigationEvent.OpenReminderEdit -> {
+        appNavBridge.navigate(BuildReminderNavKey.Main(id = event.id))
+      }
+
+      EventsViewModel.NavigationEvent.OpenNewReminder -> {
+        appNavBridge.navigate(BuildReminderNavKey.Main())
+      }
+
+      EventsViewModel.NavigationEvent.OpenNewShoppingReminder -> {
+        appNavBridge.navigate(BuildReminderNavKey.Main(deepLinkTodo = true))
+      }
+
+      is EventsViewModel.NavigationEvent.OpenBirthdayPreview -> {
+        appNavBridge.navigate(BirthdaysNavKey.Preview(event.id))
+      }
+
+      is EventsViewModel.NavigationEvent.OpenBirthdayEdit -> {
+        appNavBridge.navigate(BirthdaysNavKey.Edit(event.id))
+      }
+
+      EventsViewModel.NavigationEvent.OpenNewBirthday -> {
+        appNavBridge.navigate(BirthdaysNavKey.Edit())
+      }
+
+      EventsViewModel.NavigationEvent.OpenArchive -> {
+        backStack.add(RemindersArchiveNavKey.List)
+      }
+
+      EventsViewModel.NavigationEvent.OpenGroups -> {
+        appNavBridge.navigate(GroupsNavKey.List)
+      }
+
+      is EventsViewModel.NavigationEvent.RequestGpsPermission -> {
+        permissionRequester.request(
+          listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
+          onGranted = { viewModel.toggleReminder(event.id) },
+        )
+      }
+
+      is EventsViewModel.NavigationEvent.ConfirmArchiveReminder -> {
+        dialogues.askConfirmation(context, context.getString(R.string.move_to_archive)) { confirmed ->
+          if (confirmed) viewModel.moveReminderToArchive(event.id)
+        }
+      }
+
+      is EventsViewModel.NavigationEvent.ConfirmDeleteReminder -> {
+        dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
+          if (confirmed) viewModel.deleteReminder(event.id)
+        }
+      }
+
+      is EventsViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
+        dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
+          if (confirmed) viewModel.deleteBirthday(event.id)
+        }
+      }
+    }
+  }
+
+  val state by viewModel.eventsScreenState.collectAsState()
+  PermissionRationaleDialog(permissionRequester)
+  EventsScreen(
+    state = state,
+    onBackClick = { backStack.removeLastOrNull() },
+    onSearchQueryChange = viewModel::onSearchQueryChange,
+    onCategoryToggle = viewModel::onCategoryToggle,
+    onAddReminderClick = viewModel::onAddReminderClick,
+    onAddShoppingClick = viewModel::onAddShoppingClick,
+    onAddBirthdayClick = viewModel::onAddBirthdayClick,
+    onArchiveClick = viewModel::onArchiveClick,
+    onGroupsClick = viewModel::onGroupsClick,
+    onItemClick = viewModel::onItemClick,
+    onEventMenuAction = viewModel::onEventMenuAction,
   )
 }
 

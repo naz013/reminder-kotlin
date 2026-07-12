@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.os.bundleOf
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -21,11 +20,11 @@ import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.dayview.WeekViewViewModel
 import com.elementary.tasks.calendar.dayview.WeekViewScreen
 import com.elementary.tasks.core.os.compose.rememberPermissionRequester
-import com.elementary.tasks.navigation.NavigationAnimations
 import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
+import com.elementary.tasks.settings.SettingsNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
@@ -93,11 +92,7 @@ private fun MonthEntry(backStack: MutableList<NavKey>) {
       }
 
       CalendarViewModel.NavigationEvent.OpenSettings -> {
-        appNavBridge.navigateLegacy(
-          R.id.calendarSettingsFragment,
-          bundleOf("screen_title" to settingsTitle),
-          NavigationAnimations.modalNavOptions(),
-        )
+        backStack.add(SettingsNavKey.Calendar(settingsTitle))
       }
     }
   }

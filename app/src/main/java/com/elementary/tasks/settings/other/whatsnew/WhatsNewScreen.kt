@@ -1,7 +1,6 @@
-package com.elementary.tasks.settings.proversion
+package com.elementary.tasks.settings.other.whatsnew
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,36 +28,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.ui.common.R
-import com.github.naz013.ui.common.compose.ComposeFragment
 import com.github.naz013.ui.common.compose.foundation.component.AnimatedGradientBackground
 import com.github.naz013.ui.common.compose.withAlpha
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.elementary.tasks.R as AppR
-
-class ProVersionFragment : ComposeFragment() {
-  private val viewModel by viewModel<ProVersionViewModel>()
-
-  @Composable
-  override fun FragmentContent() {
-    ProVersionScreen(
-      advantages = viewModel.state.advantages,
-      onBackClick = { moveBack() },
-      onBuyClick = { SuperUtil.launchMarket(requireContext()) },
-    )
-  }
-
-  private fun moveBack() {
-    activity?.onBackPressedDispatcher?.onBackPressed()
-  }
-}
 
 @Composable
-private fun ProVersionScreen(
-  advantages: List<String>,
+fun WhatsNewScreen(
+  versionAndDate: String,
+  whatsNewText: String,
   onBackClick: () -> Unit,
-  onBuyClick: () -> Unit,
 ) {
   AnimatedGradientBackground {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -96,7 +73,7 @@ private fun ProVersionScreen(
       ) {
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-          text = stringResource(AppR.string.pro_advantages),
+          text = versionAndDate,
           style = MaterialTheme.typography.headlineSmall,
           color = MaterialTheme.colorScheme.tertiary,
         )
@@ -106,24 +83,11 @@ private fun ProVersionScreen(
           color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
           modifier = Modifier.fillMaxWidth(),
         ) {
-          Column(
+          Text(
+            text = whatsNewText,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-          ) {
-            advantages.forEach { advantage ->
-              Text(
-                text = advantage,
-                style = MaterialTheme.typography.titleMedium,
-              )
-            }
-          }
-        }
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(
-          onClick = onBuyClick,
-          modifier = Modifier.fillMaxWidth(),
-        ) {
-          Text(text = stringResource(AppR.string.pro_buy))
+          )
         }
         Spacer(modifier = Modifier.height(24.dp))
       }
@@ -133,10 +97,10 @@ private fun ProVersionScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun ProVersionScreenPreview() {
-  ProVersionScreen(
-    advantages = listOf("- No Advertisement", "- LED notification"),
+private fun WhatsNewScreenPreview() {
+  WhatsNewScreen(
+    versionAndDate = "1.0.0, Jan 1",
+    whatsNewText = "Sample changelog text",
     onBackClick = {},
-    onBuyClick = {},
   )
 }

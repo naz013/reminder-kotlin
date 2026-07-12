@@ -1,7 +1,6 @@
 package com.elementary.tasks.notes
 
 import android.app.Activity
-import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,8 +54,8 @@ import com.elementary.tasks.notes.preview.PreviewNoteScreen
 import com.elementary.tasks.notes.preview.PreviewNoteState
 import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
+import com.elementary.tasks.settings.SettingsNavKey
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.ui.common.Dialogues
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -145,10 +144,7 @@ private fun handleNotesNavigationEvent(
     is NotesViewModel.NavigationEvent.OpenArchive -> backStack.add(NotesNavKey.Archive)
 
     is NotesViewModel.NavigationEvent.OpenSettings -> {
-      deps.appNavBridge.navigateLegacy(
-        R.id.noteSettingsFragment,
-        Bundle().apply { putString(IntentKeys.INTENT_SCREEN_TITLE, deps.settingsTitle) },
-      )
+      backStack.add(SettingsNavKey.Note(deps.settingsTitle))
     }
 
     is NotesViewModel.NavigationEvent.OpenImagePreview -> {
