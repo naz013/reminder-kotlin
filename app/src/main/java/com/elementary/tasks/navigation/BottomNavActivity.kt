@@ -39,14 +39,14 @@ import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.navigation.ViewGoogleTaskScreen
 import com.github.naz013.navigation.ViewNoteScreen
 import com.github.naz013.navigation.ViewReminderScreen
-import com.github.naz013.ui.common.activity.LightThemedActivity
+import com.github.naz013.ui.common.compose.BaseAuthActivity
 import com.github.naz013.ui.common.compose.composeView
 import com.github.naz013.workapi.NetworkRequirement
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
 import org.koin.android.ext.android.inject
 
-class BottomNavActivity : LightThemedActivity() {
+class BottomNavActivity : BaseAuthActivity() {
   private val navigationObservable by inject<NavigationObservable>()
   private val navigationDispatcherFactory by inject<NavigationDispatcherFactory>()
   private val workScheduler by inject<WorkScheduler>()
@@ -68,9 +68,8 @@ class BottomNavActivity : LightThemedActivity() {
     Logger.i(TAG, "Starting with data: ${intent.data}")
     Logger.i(TAG, "Starting with extras: ${intent.extras?.keySet()?.toList()}")
 
-    val initialNavKeys = resolveInitialNavKeys()
     composeView {
-      AppNavGraph(initialKeys = initialNavKeys)
+      AppNavGraph(initialKeys = resolveInitialNavKeys())
     }
 
     adsProvider.showConsentMessage(this)

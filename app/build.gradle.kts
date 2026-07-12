@@ -6,7 +6,6 @@ import java.util.Properties
 plugins {
   id("reminder.android.application.compose")
   alias(libs.plugins.kotlin.parcelize)
-  alias(libs.plugins.navigation.safeargs)
   alias(libs.plugins.crashlytics.gradle)
   alias(libs.plugins.google.services)
   alias(libs.plugins.kotlin.serialization)
@@ -213,18 +212,10 @@ dependencies {
 
   implementation(libs.material)
 
-  implementation(libs.androidx.recyclerview)
   implementation(libs.androidx.multidex)
-  implementation(libs.androidx.constraintlayout)
-  implementation(libs.androidx.swiperefreshlayout)
-  implementation(libs.androidx.viewpager2)
   implementation(libs.androidx.splashscreen)
   implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.fragment.ktx)
-  implementation(libs.androidx.activity.ktx)
-  implementation(libs.androidx.collection.ktx)
-  implementation(libs.androidx.palette.ktx)
-  implementation(libs.androidx.dynamicanimation.ktx)
+  implementation(libs.androidx.activity.compose)
 
   implementation(libs.androidx.work.runtime) {
     exclude(group = "com.google.guava", module = "listenablefuture")
@@ -237,9 +228,6 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.ktx)
   implementation(libs.androidx.lifecycle.common.java8)
   implementation(libs.androidx.lifecycle.livedata.ktx)
-
-  implementation(libs.androidx.navigation.fragment.ktx)
-  implementation(libs.androidx.navigation.ui.ktx)
 
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.crashlytics)
@@ -267,10 +255,6 @@ dependencies {
   }
   implementation(libs.lottie)
   implementation(libs.lottie.compose)
-  implementation(libs.sheets.core)
-  implementation(libs.sheets.info)
-  implementation(libs.sheets.lottie)
-  implementation(libs.sheets.input)
 
   implementation(libs.kotlin.stdlib)
   implementation(libs.kotlin.reflect)
