@@ -62,8 +62,8 @@ class BottomNavActivity : LightThemedActivity() {
     }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    enableEdgeToEdge()
     Logger.i(TAG, "Starting with action: ${intent.action}")
     Logger.i(TAG, "Starting with data: ${intent.data}")
     Logger.i(TAG, "Starting with extras: ${intent.extras?.keySet()?.toList()}")

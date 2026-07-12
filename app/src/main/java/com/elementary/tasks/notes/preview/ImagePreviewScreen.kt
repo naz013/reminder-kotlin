@@ -79,10 +79,8 @@ fun ImagePreviewScreen(
       HorizontalPager(
         state = pagerState,
         key = { state.images[it].id },
-        modifier =
-          Modifier
-            .weight(1f)
-            .navigationBarsPadding(),
+        modifier = Modifier
+          .weight(1f),
       ) { page ->
         ZoomableImagePage(image = state.images[page])
       }
@@ -95,7 +93,9 @@ private fun ZoomableImagePage(image: UiNoteImage) {
   val zoomableImageState = rememberZoomableImageState(rememberZoomableState())
   Box(modifier = Modifier.fillMaxSize()) {
     if (!zoomableImageState.isImageDisplayed) {
-      CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).size(32.dp))
+      CircularProgressIndicator(modifier = Modifier
+        .align(Alignment.Center)
+        .size(32.dp))
     }
     ZoomableAsyncImage(
       model = image.filePath,
