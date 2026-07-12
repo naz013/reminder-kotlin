@@ -19,7 +19,7 @@ data class HeaderNavigationItem(
   val titleRes: Int,
   val iconRes: Int,
   val color: Color,
-  val navigationEvent: ScheduleHomeViewModel.NavigationEvent,
+  val navigationEvent: ScheduleHomeViewModel.ViewModelEvent,
   val subtitle: String,
 )
 

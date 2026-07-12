@@ -13,41 +13,10 @@ import com.github.naz013.ui.common.databinding.ViewColorSliderBinding
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
+@Deprecated("Use Compose dialogs")
 class Dialogues(
   private val themeProvider: ThemeProvider
 ) {
-
-  private var selectedItemPosition: Int = 0
-
-  fun showPropertyDialog(
-    context: Context,
-    selectionList: SelectionList,
-    onOk: (position: Int) -> Unit,
-    onCancel: (() -> Unit)? = null
-  ) {
-    propertyDialog(context, selectionList, onOk, onCancel).show()
-  }
-
-  private fun propertyDialog(
-    context: Context,
-    selectionList: SelectionList,
-    onOk: (position: Int) -> Unit,
-    onCancel: (() -> Unit)? = null
-  ) = getMaterialDialog(context).also {
-    it.setTitle(selectionList.title)
-    selectedItemPosition = selectionList.position
-    it.setSingleChoiceItems(selectionList.items.toTypedArray(), selectedItemPosition) { _, which ->
-      selectedItemPosition = which
-    }
-    it.setPositiveButton(selectionList.okButtonTitle) { dialog, _ ->
-      onOk.invoke(selectedItemPosition)
-      dialog.dismiss()
-    }
-    it.setNegativeButton(selectionList.cancelButtonTitle) { dialog, _ ->
-      onCancel?.invoke()
-      dialog.dismiss()
-    }
-  }.create()
 
   fun showColorDialog(
     activity: Activity,
@@ -82,14 +51,6 @@ class Dialogues(
     return MaterialAlertDialogBuilder(context)
   }
 
-  fun getNullableDialog(context: Context?): MaterialAlertDialogBuilder? {
-    return if (context != null) {
-      getMaterialDialog(context)
-    } else {
-      null
-    }
-  }
-
   fun askConfirmation(
     context: Context,
     title: String,
@@ -113,24 +74,7 @@ class Dialogues(
       .show()
   }
 
-  data class SelectionList(
-    val position: Int,
-    val title: String,
-    val okButtonTitle: String,
-    val cancelButtonTitle: String,
-    val items: List<String>
-  )
-
-  interface OnValueSelectedListener<T> {
-    fun onSelected(t: T)
-    fun getTitle(t: T): String
-  }
-
   companion object {
-
-    fun getMaterialDialog(context: Context): MaterialAlertDialogBuilder {
-      return MaterialAlertDialogBuilder(context)
-    }
 
     fun showPopup(
       anchor: View,
