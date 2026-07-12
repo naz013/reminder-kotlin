@@ -109,7 +109,7 @@
         </activity>
 
         <activity
-            android:name=".home.BottomNavActivity"
+            android:name=".navigation.BottomNavActivity"
             android:configChanges="orientation|screenSize|screenLayout"
             android:launchMode="singleInstance"
             android:exported="false" />

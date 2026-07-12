@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -248,7 +246,6 @@ private fun NotePreviewEntry(
 ) {
   val viewModel = koinViewModel<PreviewNoteViewModel> { parametersOf(key.id) }
   bindLifecycle(viewModel)
-  LaunchedEffect(Unit) { viewModel.saveStatusBarColor(key.initialStatusBarColor) }
 
   val activity =
     requireNotNull(LocalActivity.current) { "NotePreviewEntry requires an Activity-backed composition" }
@@ -269,7 +266,7 @@ private fun NotePreviewEntry(
 
       is PreviewNoteViewModel.NavigationEvent.OpenImagePreview -> {
         backStack.add(
-          NotesNavKey.ImagePreview(event.position, activity.window.statusBarColor),
+          NotesNavKey.ImagePreview(event.position),
         )
       }
     }
@@ -286,18 +283,6 @@ private fun NotePreviewEntry(
 
   val state by viewModel.state.collectAsState(PreviewNoteState())
   val colors = remember(state.backgroundColor, state.opacity) { viewModel.colorsFor(state) }
-  SideEffect {
-    activity.window.statusBarColor = colors.statusBarColor
-    activity.window.navigationBarColor = colors.statusBarColor
-  }
-  DisposableEffect(viewModel) {
-    onDispose {
-      viewModel.getStatusBarColor()?.also {
-        activity.window.statusBarColor = it
-        activity.window.navigationBarColor = it
-      }
-    }
-  }
 
   PermissionRationaleDialog(permissionRequester)
   PreviewNoteScreen(
@@ -491,26 +476,8 @@ private fun NoteImagePreviewEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<ImagePreviewViewModel> { parametersOf(key.position) }
-  LaunchedEffect(Unit) { viewModel.saveStatusBarColor(key.initialStatusBarColor) }
-
-  val activity =
-    requireNotNull(LocalActivity.current) { "NoteImagePreviewEntry requires an Activity-backed composition" }
   val state by viewModel.state.collectAsState(ImagePreviewState())
   val colors = viewModel.colorsFor(state)
-  SideEffect {
-    colors.statusBarColor?.let {
-      activity.window.statusBarColor = it
-      activity.window.navigationBarColor = it
-    }
-  }
-  DisposableEffect(viewModel) {
-    onDispose {
-      viewModel.getStatusBarColor()?.also {
-        activity.window.statusBarColor = it
-        activity.window.navigationBarColor = it
-      }
-    }
-  }
 
   ImagePreviewScreen(
     state = state,

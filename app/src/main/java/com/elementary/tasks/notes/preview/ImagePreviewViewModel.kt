@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.preview
 
-import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,30 +28,9 @@ class ImagePreviewViewModel(
         ImagePreviewState(),
       ).onStart { loadInternal() }
 
-  private var initStatusBarColor: Int = -1
-  private var statusBarColorSaved: Boolean = false
-
   fun onPageChanged(position: Int) {
     _state.update { it.copy(position = position) }
   }
-
-  /** Snapshot of the caller screen's status bar color, so it can be restored once this screen
-   *  is popped — the caller may not repaint it itself (e.g. the plain notes list). */
-  fun saveStatusBarColor(
-    @ColorInt color: Int,
-  ) {
-    if (statusBarColorSaved) return
-    initStatusBarColor = color
-    statusBarColorSaved = true
-  }
-
-  @ColorInt
-  fun getStatusBarColor(): Int? =
-    if (statusBarColorSaved) {
-      initStatusBarColor.takeIf { it != -1 }
-    } else {
-      null
-    }
 
   fun colorsFor(state: ImagePreviewState): ImagePreviewColors {
     if (state.backgroundColor == NO_COLOR_OVERRIDE) {

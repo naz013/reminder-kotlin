@@ -1,4 +1,4 @@
-package com.elementary.tasks.home
+package com.elementary.tasks.navigation
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,16 +6,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.birthdays.BirthdaysNavKey
+import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.core.deeplink.DeepLinkDataParser
 import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTextDeepLinkData
 import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
-import com.elementary.tasks.navigation.NavigationConsumer
-import com.elementary.tasks.navigation.NavigationDispatcherFactory
-import com.elementary.tasks.navigation.NavigationObservable
-import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.places.PlacesNavKey
@@ -81,7 +78,7 @@ class BottomNavActivity : LightThemedActivity() {
 
   /**
    * Resolves an incoming deep link / app shortcut to typed Nav3 keys, seeded straight into
-   * [AppNavGraph]'s initial backstack. Every [DeepLinkDestination] and [ShortcutDestination] now
+   * [AppNavGraph]'s initial backstack. Every [com.github.naz013.navigation.DeepLinkDestination] and [com.elementary.tasks.splash.ShortcutDestination] now
    * resolves to a typed `NavKey` here - there is no longer a legacy Fragment graph to fall back to.
    */
   private fun resolveInitialNavKeys(): List<NavKey> {
@@ -149,7 +146,8 @@ class BottomNavActivity : LightThemedActivity() {
 
         is DayViewScreen -> {
           val dateMillis = deepLinkDestination.extras.getLong("date", -1L)
-          return if (dateMillis >= 0L) listOf(CalendarNavKey.Month, CalendarNavKey.Day(dateMillis)) else listOf(CalendarNavKey.Month)
+          return if (dateMillis >= 0L) listOf(CalendarNavKey.Month, CalendarNavKey.Day(dateMillis)) else listOf(
+            CalendarNavKey.Month)
         }
 
         is SettingsScreen -> return listOf(SettingsNavKey.Hub)

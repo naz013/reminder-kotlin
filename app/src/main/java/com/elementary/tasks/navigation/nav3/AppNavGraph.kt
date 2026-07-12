@@ -38,7 +38,7 @@ import org.koin.compose.koinInject
 
 /**
  * Root of the app's single Nav3 graph, hosted directly by
- * [BottomNavActivity][com.elementary.tasks.home.BottomNavActivity]. [HomeNavKey.Main] is the
+ * [BottomNavActivity][com.elementary.tasks.navigation.BottomNavActivity]. [HomeNavKey.Main] is the
  * graph's own start destination. Every screen registers its own entries here via a
  * `fun EntryProviderScope<NavKey>.xyzEntries(backStack)` extension in that feature's own
  * `XyzNavGraph.kt`; [AppNavBridge] lets a screen several NavEntries deep reach a destination
