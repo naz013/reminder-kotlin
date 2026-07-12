@@ -15,8 +15,6 @@ data class PreviewNoteState(
   val textSize: Float = 18f,
   val images: List<UiNoteImage> = emptyList(),
   val reminders: List<UiNoteAttachedReminder> = emptyList(),
-  val backgroundColor: Int = -1,
-  val opacity: Int = 100,
   val isArchived: Boolean = false,
   val isLoading: Boolean = false,
   val showAdsBanner: Boolean = false,

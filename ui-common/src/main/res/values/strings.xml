@@ -937,4 +937,5 @@
 
     <string name="note_moved_to_archive">Note moved to archive</string>
     <string name="note_reverted_from_archive">Note reverted from archive</string>
+    <string name="show_note_in_notifications">Show note in notifications</string>
 </resources>

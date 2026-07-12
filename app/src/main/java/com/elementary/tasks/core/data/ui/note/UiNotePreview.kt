@@ -7,8 +7,6 @@ data class UiNotePreview(
   val id: String,
   val text: String,
   val title: String,
-  @ColorInt val backgroundColor: Int,
-  val opacity: Int,
   val typeface: Typeface?,
   val images: List<UiNoteImage>,
   val uniqueId: Int,

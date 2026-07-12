@@ -153,8 +153,7 @@ class NotesViewModel(
     val imagePosition = note.images.indexOfFirst { it.id == imageId }.takeIf { it != -1 } ?: 0
     imagesSingleton.setCurrent(
       images = note.images,
-      color = note.colorPosition,
-      palette = note.colorPalette,
+      backgroundColor = note.backgroundColor,
     )
     navigationEvent.emit(NavigationEvent.OpenImagePreview(note.id, imagePosition))
   }

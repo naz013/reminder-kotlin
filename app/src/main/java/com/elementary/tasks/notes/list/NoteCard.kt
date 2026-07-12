@@ -227,7 +227,7 @@ private fun noteMenuItems(isArchived: Boolean): List<PopupMenuItem> {
       listOf(
         NoteMenuAction.OPEN to R.string.open,
         NoteMenuAction.SHARE to R.string.share,
-        NoteMenuAction.SHOW_IN_STATUS_BAR to R.string.show_in_status_bar,
+        NoteMenuAction.SHOW_IN_STATUS_BAR to R.string.show_note_in_notifications,
         NoteMenuAction.EDIT to R.string.edit,
         NoteMenuAction.ARCHIVE to R.string.notes_move_to_archive,
         NoteMenuAction.DELETE to R.string.delete,
@@ -265,8 +265,6 @@ private fun NoteCardPreview() {
           titleFontStyle = 2,
           titleFontSize = 20f,
           images = emptyList(),
-          colorPosition = 12,
-          colorPalette = 0,
         ),
       isArchived = false,
       onClick = {},

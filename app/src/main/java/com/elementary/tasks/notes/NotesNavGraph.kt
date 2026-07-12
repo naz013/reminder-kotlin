@@ -386,7 +386,6 @@ private fun NoteEditEntry(
     supportsSpeech = remember { speechEngine.supportsRecognition() },
     onTextFieldValueChange = viewModel::onTextFieldValueChange,
     onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
-    colorsForPalette = viewModel::sliderColorsForPalette,
     snackbarHostState = snackbarHostState,
     actions =
       NoteEditActions(
@@ -452,11 +451,9 @@ private fun NoteImagePreviewEntry(
 ) {
   val viewModel = koinViewModel<ImagePreviewViewModel> { parametersOf(key.position) }
   val state by viewModel.state.collectAsState(ImagePreviewState())
-  val colors = viewModel.colorsFor(state)
 
   ImagePreviewScreen(
     state = state,
-    colors = colors,
     onBackClick = { backStack.removeLastOrNull() },
     onPageChanged = viewModel::onPageChanged,
   )

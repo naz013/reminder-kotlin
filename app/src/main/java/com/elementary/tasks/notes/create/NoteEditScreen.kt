@@ -67,7 +67,6 @@ fun NoteEditScreen(
   onTextFieldValueChange: (TextFieldValue) -> Unit,
   onTitleFieldValueChange: (TextFieldValue) -> Unit,
   supportsSpeech: Boolean,
-  colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
   snackbarHostState: SnackbarHostState,
   modifier: Modifier = Modifier,
@@ -75,7 +74,7 @@ fun NoteEditScreen(
   val focusManager = LocalFocusManager.current
   val backgroundColor = state.noteColors.background
   val contentColor = state.noteColors.content
-  val sliderColors = state.noteColors.sliderColors
+  val sliderColors = state.sliderColors
   val dropHighlightColor = MaterialTheme.colorScheme.primary
 
   BoxWithConstraints(
@@ -245,7 +244,6 @@ fun NoteEditScreen(
           barColor = barContainerColor,
           barMaxWidth = barMaxWidth,
           sliderColors = sliderColors,
-          colorsForPalette = colorsForPalette,
           actions = actions,
         ),
       containerColor = barContainerColor,
@@ -290,7 +288,6 @@ private fun noteEditBarItems(
   barColor: Color,
   barMaxWidth: Dp,
   sliderColors: List<Color>,
-  colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
 ): List<NoteEditBarItem> =
   buildList {
@@ -327,7 +324,7 @@ private fun noteEditBarItems(
         },
         bubbleContent = {
           ColorPanel(
-            colors = state.noteColors.sliderColors,
+            colors = state.sliderColors,
             selectedIndex = state.colorIndex,
             opacity = state.opacity,
             contentColor = contentColor,

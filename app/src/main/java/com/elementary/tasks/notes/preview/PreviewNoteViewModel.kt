@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.preview
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +9,7 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.notes.NoteColorEngine
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
 import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
@@ -28,9 +28,6 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderRepository
-import com.github.naz013.ui.common.isAlmostTransparent
-import com.github.naz013.ui.common.isColorDark
-import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -53,9 +50,10 @@ class PreviewNoteViewModel(
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
-  private val themeProvider: ThemeProvider,
   private val imagesSingleton: ImagesSingleton,
+  private val noteColorEngine: NoteColorEngine,
 ) : ViewModel() {
+
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
   val state = _state.stateInWhileSubscribed(PreviewNoteState(id = key))
     .onStart { loadInternal() }
@@ -71,6 +69,11 @@ class PreviewNoteViewModel(
       val noteWithImages = noteRepository.getById(key)
       if (noteWithImages != null) {
         val uiNotePreview = uiNotePreviewAdapter.convert(noteWithImages)
+        val noteColors = noteColorEngine.colorsForLegacy(
+          code = noteWithImages.getColor(),
+          palette = noteWithImages.getPalette(),
+          opacity = noteWithImages.getOpacity(),
+        )
         withContext(dispatcherProvider.main()) {
           _state.update {
             it.copy(
@@ -82,31 +85,15 @@ class PreviewNoteViewModel(
               titleTextSize = uiNotePreview.titleTextSize,
               textSize = uiNotePreview.textSize,
               images = uiNotePreview.images,
-              backgroundColor = uiNotePreview.backgroundColor,
-              opacity = uiNotePreview.opacity,
               isArchived = uiNotePreview.isArchived,
               showAdsBanner = !BuildParams.isPro && AdsProvider.hasAds(),
+              background = noteColors.background,
+              content = noteColors.content,
             )
           }
-          updateColors(_state.value)
         }
       }
       loadReminders()
-    }
-  }
-
-  private fun updateColors(state: PreviewNoteState) {
-    val isBgDark = if (state.opacity.isAlmostTransparent()) {
-        themeProvider.isDark
-      } else {
-        state.backgroundColor.isColorDark()
-      }
-    val contentColor = if (isBgDark) PURE_WHITE else PURE_BLACK
-    _state.update {
-      it.copy(
-        background = Color(state.backgroundColor),
-        content = Color(contentColor),
-      )
     }
   }
 
@@ -184,8 +171,7 @@ class PreviewNoteViewModel(
   }
 
   fun onImageOpen(position: Int) {
-    val s = _state.value
-    imagesSingleton.setCurrent(images = s.images, backgroundColor = s.backgroundColor)
+    imagesSingleton.setCurrent(images = _state.value.images, backgroundColor = _state.value.background)
     event.emit(ViewModelEvent.OpenImagePreview(position))
   }
 
@@ -234,7 +220,5 @@ class PreviewNoteViewModel(
 
   companion object {
     private const val TAG = "PreviewNoteViewModel"
-    private const val PURE_WHITE = android.graphics.Color.WHITE
-    private const val PURE_BLACK = android.graphics.Color.BLACK
   }
 }

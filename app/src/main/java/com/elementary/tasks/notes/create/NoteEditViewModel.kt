@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.util.Patterns
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.core.graphics.drawable.toBitmap
@@ -25,6 +24,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.notes.NoteColorEngine
 import com.elementary.tasks.notes.SharedNote
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
@@ -59,11 +59,6 @@ import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
-import com.github.naz013.ui.common.compose.toColor
-import com.github.naz013.ui.common.compose.withAlpha
-import com.github.naz013.ui.common.isAlmostTransparent
-import com.github.naz013.ui.common.isColorDark
-import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -76,7 +71,6 @@ import org.threeten.bp.LocalTime
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.util.Random
 import java.util.UUID
 
 class NoteEditViewModel(
@@ -104,12 +98,13 @@ class NoteEditViewModel(
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val droppedContentParser: DroppedContentParser,
-  private val themeProvider: ThemeProvider,
   private val imagesSingleton: ImagesSingleton,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val systemInfo: SystemInfo,
   private val imageLoader: ImageLoader,
+  private val noteColorEngine: NoteColorEngine,
 ) : ViewModel() {
+
   val is24HourFormat: Boolean = prefs.is24HourFormat
 
   private val _state = MutableStateFlow(NoteEditState())
@@ -120,21 +115,16 @@ class NoteEditViewModel(
 
   val event: LiveData<Event<Action>> field = mutableLiveEventOf()
 
-  private val mergedPalette by lazy { MergedPalette(themeProvider::noteColorsForSlider) }
-
   init {
-    val colorIndex =
-      if (prefs.isNoteColorRememberingEnabled) {
-        prefs.lastNoteColor
-      } else {
-        Random().nextInt(ThemeProvider.NOTE_COLORS)
-      }
-    val flatColorIndex = mergedPalette.flatIndexOf(prefs.notePalette, colorIndex)
-    val opacity = prefs.noteColorOpacity.takeIf { op -> op > 0 } ?: 100
+    val colorCode = noteColorEngine.getColorCode(
+      noteColorEngine.getLastPalette(),
+      noteColorEngine.getLastColorCode(),
+    )
+    val opacity = noteColorEngine.getLasterOpacity()
 
     _state.update {
       it.copy(
-        colorIndex = flatColorIndex,
+        colorIndex = colorCode,
         opacity = opacity,
         fontSize =
           if (prefs.isNoteFontSizeRememberingEnabled) {
@@ -161,7 +151,8 @@ class NoteEditViewModel(
             FontParams.DEFAULT_FONT_STYLE
           },
         hasCamera = systemInfo.hasCamera,
-        noteColors = colorsFor(flatIndex = flatColorIndex, opacity = opacity),
+        sliderColors = noteColorEngine.allColors(),
+        noteColors = noteColorEngine.colorsFor(colorCode, opacity),
       )
     }
     onNewTime(LocalTime.now())
@@ -174,12 +165,12 @@ class NoteEditViewModel(
     if (prefs.isNoteColorRememberingEnabled) {
       prefs.lastNoteColor = index
     }
-    _state.update { it.copy(colorIndex = index, noteColors = colorsFor(index, it.opacity)) }
+    _state.update { it.copy(colorIndex = index, noteColors = noteColorEngine.colorsFor(index, it.opacity)) }
   }
 
   fun onOpacityChanged(value: Int) {
     prefs.noteColorOpacity = value
-    _state.update { it.copy(opacity = value, noteColors = colorsFor(it.colorIndex, value)) }
+    _state.update { it.copy(opacity = value, noteColors = noteColorEngine.colorsFor(it.colorIndex, value)) }
   }
 
   fun onFontSizeChanged(value: Int) {
@@ -253,11 +244,9 @@ class NoteEditViewModel(
 
   fun onImageOpen(position: Int) {
     val s = _state.value
-    val selection = mergedPalette.selectionAt(s.colorIndex)
     imagesSingleton.setCurrent(
       images = s.images,
-      color = selection.colorIndex,
-      palette = selection.palette,
+      backgroundColor = s.noteColors.background,
     )
     event.value = Event(Action.OpenImagePreview(position))
   }
@@ -282,25 +271,6 @@ class NoteEditViewModel(
     _state.update { it.copy(activeDialog = null) }
     deleteNote()
   }
-
-  /** Pure contrast math, mirroring [com.elementary.tasks.notes.preview.PreviewNoteViewModel.colorsFor]
-   *  — kept here so the Compose layer never has to know about [ThemeProvider] or the contrast math. */
-  private fun colorsFor(
-    flatIndex: Int,
-    opacity: Int,
-  ): NoteColors {
-    val selection = mergedPalette.selectionAt(flatIndex)
-    val solidColor = themeProvider.getNoteColor(selection.colorIndex, selection.palette)
-    val isBgDark =
-      if (opacity.isAlmostTransparent()) themeProvider.isDark else solidColor.isColorDark()
-    return NoteColors(
-      background = solidColor.toColor().withAlpha(opacity.toPercentage()),
-      sliderColors = mergedPalette.colors,
-      content = (if (isBgDark) PURE_WHITE else PURE_BLACK).toColor(),
-    )
-  }
-
-  fun sliderColorsForPalette(palette: Int): IntArray = themeProvider.noteColorsForSlider(palette)
 
   /** True when saving should first confirm overwrite-vs-keep, because this came from an
    *  imported file that already has a matching note in the database. */
@@ -415,11 +385,12 @@ class NoteEditViewModel(
   private fun onNoteLoaded(noteWithImages: NoteWithImages) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val uiNoteEdit = uiNoteEditAdapter.convert(noteWithImages)
+      val colorCode = noteColorEngine.getColorCode(uiNoteEdit.colorPalette, uiNoteEdit.colorPosition)
       _state.update {
         it.copy(
           colorIndex = uiNoteEdit.colorPosition,
           opacity = uiNoteEdit.opacity,
-          noteColors = colorsFor(uiNoteEdit.colorPosition, uiNoteEdit.opacity),
+          noteColors = noteColorEngine.colorsFor(colorCode, uiNoteEdit.opacity),
           fontStyle = uiNoteEdit.typeface,
           fontSize = uiNoteEdit.fontSize,
           titleFontStyle = uiNoteEdit.titleTypeface,
@@ -751,16 +722,15 @@ class NoteEditViewModel(
     if (note == null) {
       note = Note(syncState = SyncState.WaitingForUpload)
     }
-    val merged = mergedPalette.selectionAt(s.colorIndex)
     note.summary = s.textFieldValue.text.trim()
     note.title = s.titleFieldValue.text.trim()
     note.date = dateTimeManager.getNowGmtDateTime()
-    note.color = merged.colorIndex
+    note.color = noteColorEngine.getLegacyColorCode(s.colorIndex)
     note.style = s.fontStyle
     note.fontSize = s.fontSize
     note.titleFontStyle = s.titleFontStyle
     note.titleFontSize = s.titleFontSize
-    note.palette = merged.palette
+    note.palette = noteColorEngine.getLegacyPalette(s.colorIndex)
     note.opacity = s.opacity
     note.syncState = SyncState.WaitingForUpload
 
@@ -789,35 +759,6 @@ class NoteEditViewModel(
     }
   }
 
-  private fun Int.toPercentage(): Float = this / 100f
-
-  private data class PaletteSelection(
-    val palette: Int,
-    val colorIndex: Int,
-  )
-
-  private class MergedPalette(
-    colorsForPalette: (Int) -> IntArray,
-  ) {
-    private val paletteColors = (0..2).map { colorsForPalette(it) }
-    val colors: List<Color> = paletteColors.flatMap { colors -> colors.map { it.toColor() } }
-
-    fun flatIndexOf(
-      palette: Int,
-      colorIndex: Int,
-    ): Int = paletteColors.take(palette).sumOf { it.size } + colorIndex
-
-    fun selectionAt(flatIndex: Int): PaletteSelection {
-      var remaining = flatIndex
-      paletteColors.forEachIndexed { palette, colors ->
-        if (remaining < colors.size) return PaletteSelection(palette, remaining)
-        remaining -= colors.size
-      }
-      val lastPalette = paletteColors.lastIndex
-      return PaletteSelection(lastPalette, paletteColors[lastPalette].lastIndex)
-    }
-  }
-
   sealed interface Action {
     data class OpenImagePreview(
       val position: Int,
@@ -837,7 +778,5 @@ class NoteEditViewModel(
 
   companion object {
     private const val TAG = "CreateNoteViewModel"
-    private const val PURE_WHITE = android.graphics.Color.WHITE
-    private const val PURE_BLACK = android.graphics.Color.BLACK
   }
 }

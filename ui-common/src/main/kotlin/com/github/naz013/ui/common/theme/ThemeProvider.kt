@@ -2,7 +2,6 @@ package com.github.naz013.ui.common.theme
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -10,10 +9,9 @@ import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import com.github.naz013.common.ContextProvider
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.adjustAlpha
-import com.github.naz013.common.ContextProvider
-import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.MaterialColors
 
 class ThemeProvider(
@@ -72,27 +70,6 @@ class ThemeProvider(
     }
   }
 
-  val mapStyleJson: Int
-    @RawRes
-    get() {
-      when (themePreferences.mapStyle) {
-        0 -> return R.raw.map_terrain_day
-        1 -> return R.raw.map_terrain_retro
-        2 -> return R.raw.map_terrain_silver
-        3 -> return R.raw.map_terrain_night
-        4 -> return R.raw.map_terrain_dark
-        5 -> return R.raw.map_terrain_aubergine
-        6 -> {
-          return if (isDark) {
-            R.raw.map_terrain_night
-          } else {
-            R.raw.map_terrain_day
-          }
-        }
-      }
-      return R.raw.map_terrain_day
-    }
-
   val mapStylePreview: Int
     @DrawableRes
     get() {
@@ -113,21 +90,6 @@ class ThemeProvider(
       }
       return R.drawable.preview_map_day
     }
-
-  @ColorInt
-  fun getTertiaryColor(context: Context): Int {
-    return if (DynamicColors.isDynamicColorAvailable() && themePreferences.useDynamicColors) {
-      // if your base context is already using Material3 theme you can omit R.style argument
-      val dynamicColorContext = DynamicColors.wrapContextIfAvailable(context)
-      val attrsToResolve = intArrayOf(R.attr.colorPrimary)
-      val ta = dynamicColorContext.obtainStyledAttributes(attrsToResolve)
-      val tertiary = ta.getColor(0, ContextCompat.getColor(context, R.color.md_theme_tertiary))
-      ta.recycle() // recycle TypedArray
-      tertiary
-    } else {
-      ContextCompat.getColor(context, R.color.md_theme_tertiary)
-    }
-  }
 
   fun getMarkerRadiusStyle(color: Int): Marker {
     val fillColor: Int
@@ -290,10 +252,6 @@ class ThemeProvider(
   }
 
   @ColorInt
-  fun noteColorsForSlider(palette: Int = themePreferences.notePalette): IntArray =
-    obtainPalette(palette)
-
-  @ColorInt
   fun getNoteColor(code: Int = Color.RED, palette: Int = themePreferences.notePalette): Int {
     return obtainPalette(palette)[code]
   }
@@ -325,40 +283,6 @@ class ThemeProvider(
     @ColorInt
     fun getOnPrimaryColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.md_theme_onPrimary)
-    }
-
-    @ColorInt
-    fun getTertiaryContainerColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_tertiaryContainer)
-    }
-
-    @ColorInt
-    fun getSecondaryContainerColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_secondaryContainer)
-    }
-
-    @ColorInt
-    fun getPrimaryContainerColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_primaryContainer)
-    }
-
-    @ColorInt
-    fun getBackgroundColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_background)
-    }
-
-    @ColorInt
-    fun getSurfaceColor(context: Context): Int {
-      return MaterialColors.getColor(context, R.attr.colorSurface, "getSurfaceColor()")
-    }
-
-    @ColorInt
-    fun getSurfaceVariantColor(context: Context): Int {
-      return MaterialColors.getColor(
-        context,
-        R.attr.colorSurfaceContainer,
-        "getSurfaceVariantColor()"
-      )
     }
 
     @ColorInt
@@ -473,20 +397,6 @@ class ThemeProvider(
         else -> color = R.color.blueAccent
       }
       return ContextCompat.getColor(context, color)
-    }
-
-    @ColorInt
-    fun colorWithAlpha(@ColorInt color: Int, alpha: Int): Int {
-      val r = android.graphics.Color.red(color)
-      val g = android.graphics.Color.green(color)
-      val b = android.graphics.Color.blue(color)
-      return android.graphics.Color.argb(alpha, r, g, b)
-    }
-
-    fun getThemeSecondaryColor(context: Context): Int {
-      val outValue = TypedValue()
-      context.theme.resolveAttribute(android.R.attr.colorSecondary, outValue, true)
-      return outValue.data
     }
 
     @ColorInt
