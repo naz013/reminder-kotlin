@@ -933,6 +933,8 @@
     <string name="delete_reminder_permanently">Delete reminder permanently?</string>
     <string name="delete_birthday_permanently">Delete birthday permanently?</string>
     <string name="delete_note_permanently">Delete note permanently?</string>
+    <string name="delete_group_permanently">Delete group permanently?</string>
+
     <string name="share_send_note">Send note…</string>
 
     <string name="note_moved_to_archive">Note moved to archive</string>
