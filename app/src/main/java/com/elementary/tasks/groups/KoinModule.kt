@@ -1,6 +1,5 @@
 package com.elementary.tasks.groups
 
-import android.os.Bundle
 import com.elementary.tasks.groups.create.EditGroupViewModel
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
@@ -18,10 +17,10 @@ val reminderGroupModule =
     factoryOf(::MakeGroupDefaultUseCase)
 
     viewModelOf(::GroupsViewModel)
-    viewModel { (id: String, arguments: Bundle?) ->
+    viewModel { (id: String, fromIntentData: Boolean) ->
       EditGroupViewModel(
         id,
-        arguments,
+        fromIntentData,
         get(),
         get(),
         get(),

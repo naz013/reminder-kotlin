@@ -27,8 +27,6 @@ enum class EventCategory {
   BIRTHDAYS,
 }
 
-/** Mirrors [com.elementary.tasks.reminder.lists.ReminderActionResolver]'s callback set and
- *  [com.elementary.tasks.birthdays.BirthdayResolver]'s `ListActions`, unified for both domains. */
 enum class EventMenuAction {
   OPEN,
   EDIT,

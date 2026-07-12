@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder
 
-import android.os.Bundle
 import com.elementary.tasks.reminder.actions.GetReminderActionsUseCase
+import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.build.BuildReminderViewModel
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
@@ -112,9 +112,18 @@ val reminderModule =
     viewModelOf(::RemindersArchiveViewModel)
 
     viewModel { ManagePresetsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { (arguments: Bundle?) ->
+    // Resolved from the single Main key object, not loose positional values: Koin's
+    // ParametersHolder matches by KClass, so two same-typed values in one parametersOf() list
+    // (id: String, deepLinkText: String?) resolve ambiguously - id's value was leaking into
+    // deepLinkText.
+    viewModel { (key: BuildReminderNavKey.Main) ->
       BuildReminderViewModel(
-        arguments,
+        key.id,
+        key.fromIntentItem,
+        key.deepLinkDateTimeType,
+        key.deepLinkDateTimeMillis,
+        key.deepLinkTodo,
+        key.deepLinkText,
         get(),
         get(),
         get(),

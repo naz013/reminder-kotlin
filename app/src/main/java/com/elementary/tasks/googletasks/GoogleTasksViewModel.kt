@@ -19,7 +19,6 @@ import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,15 +37,13 @@ class GoogleTasksViewModel(
   val state: StateFlow<GoogleTasksState> field = MutableStateFlow(GoogleTasksState())
 
   private val isBusy = MutableStateFlow(false)
-  private val isLoginInProgress = MutableStateFlow(false)
 
   init {
     viewModelScope.launch {
-      combine(isBusy, isLoginInProgress) { busy, login -> busy || login }
-        .collect { loading ->
-          postInProgress(loading)
-          state.update { it.copy(isLoading = loading) }
-        }
+      isBusy.collect { loading ->
+        postInProgress(loading)
+        state.update { it.copy(isLoading = loading) }
+      }
     }
   }
 
@@ -55,17 +52,13 @@ class GoogleTasksViewModel(
     viewModelScope.launch(dispatcherProvider.default()) { load() }
   }
 
-  /** Bridges [com.elementary.tasks.core.cloud.GoogleLogin], which needs the Fragment for its
-   *  sign-in activity result contract and so cannot live in this ViewModel. */
+  /** Bridges [com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin], which needs a
+   *  Compose-scoped activity-result launcher and so cannot live in this ViewModel. */
   fun updateLoginStatus(isLogged: Boolean) {
     state.update { it.copy(isLoggedIn = isLogged) }
     if (isLogged) {
       loadGoogleTasks()
     }
-  }
-
-  fun setLoginInProgress(inProgress: Boolean) {
-    isLoginInProgress.value = inProgress
   }
 
   private suspend fun load() {

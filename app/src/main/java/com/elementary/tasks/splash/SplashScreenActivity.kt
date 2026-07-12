@@ -9,7 +9,7 @@ import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.ContextSwitcher
-import com.elementary.tasks.home.BottomNavActivity
+import com.elementary.tasks.navigation.BottomNavActivity
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.finishWith
 import com.github.naz013.ui.common.login.LoginApi

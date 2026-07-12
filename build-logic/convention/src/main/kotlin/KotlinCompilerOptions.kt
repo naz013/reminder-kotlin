@@ -8,4 +8,6 @@ fun KotlinJvmCompilerOptions.applyReminderOptIns() {
   optIn.add("-Xname-based-destructuring=only-syntax")
   optIn.add("-Xdata-flow-based-exhaustiveness")
   optIn.add("-Xcollection-literals")
+
+  freeCompilerArgs.add("-Xcontext-parameters")
 }

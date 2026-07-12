@@ -11,8 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentManager
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.github.naz013.common.datetime.DateTimeManager
@@ -27,14 +27,14 @@ import com.github.naz013.domain.sync.SyncState
  *
  * The fragment transaction runs from [AndroidView]'s `update` block (not a plain
  * `DisposableEffect`) since that's the point at which the container view is guaranteed to already
- * be attached to the composition's view hierarchy - `childFragmentManager` needs to resolve the
+ * be attached to the composition's view hierarchy - [fragmentManager] needs to resolve the
  * container by id, which fails if attempted too early. A `remember`-backed flag keeps the
  * transaction to a one-time "attach" per time this editor enters composition.
  */
 @Composable
 fun MapValueEditor(
   builderItem: BuilderItem<Place>,
-  parentFragment: Fragment,
+  fragmentManager: FragmentManager,
   dateTimeManager: DateTimeManager,
   onValueChange: (BuilderItem<*>) -> Unit,
   modifier: Modifier = Modifier
@@ -82,7 +82,7 @@ fun MapValueEditor(
         }
       }
 
-      parentFragment.childFragmentManager
+      fragmentManager
         .beginTransaction()
         .replace(containerId, simpleMapFragment)
         .commitNowAllowingStateLoss()
@@ -91,7 +91,6 @@ fun MapValueEditor(
 
   DisposableEffect(builderItem) {
     onDispose {
-      val fragmentManager = parentFragment.childFragmentManager
       if (!fragmentManager.isDestroyed) {
         fragmentManager.findFragmentById(containerId)?.also { existing ->
           fragmentManager.beginTransaction().remove(existing).commitNowAllowingStateLoss()

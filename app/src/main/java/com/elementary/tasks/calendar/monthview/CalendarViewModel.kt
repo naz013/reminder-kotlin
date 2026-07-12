@@ -69,7 +69,8 @@ class CalendarViewModel(
   suspend fun loadMonthEvents(monthDate: LocalDate): Map<LocalDate, List<Int>> =
     withContext(dispatcherProvider.default()) { loadMonthEventsUseCase(monthDate) }
 
-  /** Called explicitly from [CalendarFragment.onResume] since this is a plain [ViewModel]. */
+  /** Called explicitly on every `ON_RESUME` from `CalendarNavGraph.kt`'s `MonthEntry` since this
+   *  is a plain [ViewModel], not a lifecycle observer. */
   fun refresh() {
     if (hasResumedBefore) {
       refreshSignal.update { it + 1 }
@@ -77,7 +78,7 @@ class CalendarViewModel(
     hasResumedBefore = true
   }
 
-  /** Snaps the header/title back to the current month; the pager reset itself is driven by the Fragment. */
+  /** Snaps the header/title back to the current month; the pager reset itself is driven by `MonthEntry`. */
   fun resetToToday() {
     lastPosition = CENTER_POSITION
     applyMonth(initDate)

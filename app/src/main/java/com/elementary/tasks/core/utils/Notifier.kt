@@ -22,7 +22,7 @@ import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
-import com.elementary.tasks.home.BottomNavActivity
+import com.elementary.tasks.navigation.BottomNavActivity
 import com.elementary.tasks.splash.SplashScreenActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager

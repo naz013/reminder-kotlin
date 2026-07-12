@@ -1,7 +1,7 @@
 package com.elementary.tasks.calendar
 
 import com.elementary.tasks.calendar.dayview.GetDayEventItemsUseCase
-import com.elementary.tasks.calendar.dayview.WeekViewModel
+import com.elementary.tasks.calendar.dayview.WeekViewViewModel
 import com.elementary.tasks.calendar.dayview.weekheader.WeekFactory
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.calendar.history.AddReminderToHistoryUseCase
@@ -27,7 +27,7 @@ val calendarModule =
     factory { WeekFactory(get(), get(), get()) }
     factory { WeekHeaderController(get()) }
 
-    viewModel { (date: LocalDate) -> WeekViewModel(date, get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { (date: LocalDate) -> WeekViewViewModel(date, get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
     factory { GetDayEventItemsUseCase(get(), get(), get(), get(), get(), get(), get()) }
 

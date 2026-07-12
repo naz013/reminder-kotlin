@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.github.naz013.common.datetime.DateTimeManager
@@ -52,10 +52,10 @@ private val DISMISS_DRAG_THRESHOLD = 120.dp
  * the Arriving/Leaving coordinates editors.
  *
  * `AppModalBottomSheet` renders its content in a separate Compose `Popup`/`Dialog` window, which is
- * not part of the fragment view tree `parentFragment.childFragmentManager` searches when resolving
- * a `FragmentContainerView` by id - embedding `SimpleMapFragment` there throws
+ * not part of the fragment view tree [fragmentManager] searches when resolving a
+ * `FragmentContainerView` by id - embedding `SimpleMapFragment` there throws
  * `IllegalArgumentException: No view found for id ...`. This renders a manually-dragged sheet
- * directly in `BuildReminderFragment`'s own composition (same window, no Popup) so the container
+ * directly in the reminder builder's own composition (same window, no Popup) so the container
  * stays reachable, while still supporting swipe-down-to-dismiss and a tap-outside scrim like a real
  * modal bottom sheet.
  */
@@ -63,7 +63,7 @@ private val DISMISS_DRAG_THRESHOLD = 120.dp
 @Composable
 fun MapEditorScreen(
   builderItem: BuilderItem<Place>,
-  parentFragment: Fragment,
+  fragmentManager: FragmentManager,
   dateTimeManager: DateTimeManager,
   onDismissRequest: () -> Unit,
   onValueChange: (BuilderItem<*>) -> Unit,
@@ -157,7 +157,7 @@ fun MapEditorScreen(
 
       MapValueEditor(
         builderItem = builderItem,
-        parentFragment = parentFragment,
+        fragmentManager = fragmentManager,
         dateTimeManager = dateTimeManager,
         onValueChange = onValueChange,
         modifier = Modifier

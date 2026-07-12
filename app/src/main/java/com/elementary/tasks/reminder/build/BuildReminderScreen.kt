@@ -18,16 +18,23 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,24 +59,40 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.BuilderItemStatus
 import com.github.naz013.ui.common.compose.foundation.component.BuilderListItemCard
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import androidx.compose.ui.text.font.Typeface as ComposeTypeface
 
+private const val OVERFLOW_ITEM_CONFIGURE = 0
+private const val OVERFLOW_ITEM_HELP = 1
+private const val OVERFLOW_ITEM_REPORT_ISSUE = 2
+
 /**
- * The reminder builder screen body: the list of configured builder items (or an empty state when
- * there are none), a forecast row predicting when the reminder will fire, an optional
- * "save as preset" row, and a FAB to add a new item. Hosted below the toolbar by
- * `BuildReminderFragment` (a [com.elementary.tasks.navigation.toolbarfragment.BaseComposeToolbarFragment]),
- * so this composable owns no top app bar of its own.
+ * The reminder builder screen: its own Material 3 [Scaffold]/[TopAppBar] (mirroring
+ * `R.menu.fragment_reminder_builder`'s save/delete/configure/help/report-issue actions) wrapping
+ * the list of configured builder items (or an empty state when there are none), a forecast row
+ * predicting when the reminder will fire, an optional "save as preset" row, and a FAB to add a new
+ * item.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BuildReminderScreen(
   builderItems: List<UiBuilderItem>,
   prediction: ReminderPrediction?,
+  canSave: Boolean,
+  canRemove: Boolean,
   canSaveAsPreset: Boolean,
   saveAsPresetChecked: Boolean,
   presetName: String,
+  onBackClick: () -> Unit,
+  onSaveClick: () -> Unit,
+  onDeleteClick: () -> Unit,
+  onConfigureClick: () -> Unit,
+  onHelpClick: () -> Unit,
+  onReportIssueClick: () -> Unit,
   onSaveAsPresetChange: (Boolean) -> Unit,
   onPresetNameChange: (String) -> Unit,
   onItemClick: (Int, BuilderItem<*>) -> Unit,
@@ -80,6 +103,59 @@ fun BuildReminderScreen(
   Scaffold(
     modifier = modifier,
     containerColor = MaterialTheme.colorScheme.background,
+    topBar = {
+      TopAppBar(
+        title = {},
+        navigationIcon = {
+          IconButton(onClick = onBackClick) {
+            Icon(painter = painterResource(R.drawable.ic_builder_arrow_left), contentDescription = null)
+          }
+        },
+        actions = {
+          IconButton(onClick = onSaveClick, enabled = canSave) {
+            Icon(
+              painter = painterResource(R.drawable.ic_builder_rocket),
+              contentDescription = stringResource(R.string.save),
+              tint = MaterialTheme.colorScheme.tertiary,
+            )
+          }
+          if (canRemove) {
+            IconButton(onClick = onDeleteClick) {
+              Icon(
+                painter = painterResource(R.drawable.ic_fluent_delete),
+                contentDescription = stringResource(R.string.delete),
+              )
+            }
+          }
+          var overflowExpanded by remember { mutableStateOf(false) }
+          IconButton(onClick = { overflowExpanded = true }) {
+            Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+          }
+          AppDropdownMenu(
+            expanded = overflowExpanded,
+            onDismissRequest = { overflowExpanded = false },
+            items =
+              listOf(
+                PopupMenuItem(id = OVERFLOW_ITEM_CONFIGURE, title = stringResource(R.string.configure)),
+                PopupMenuItem(id = OVERFLOW_ITEM_HELP, title = stringResource(R.string.help)),
+                PopupMenuItem(
+                  id = OVERFLOW_ITEM_REPORT_ISSUE,
+                  title = stringResource(R.string.report_an_issue),
+                ),
+              ),
+            onItemClick = { id ->
+              overflowExpanded = false
+              when (id) {
+                OVERFLOW_ITEM_CONFIGURE -> onConfigureClick()
+                OVERFLOW_ITEM_HELP -> onHelpClick()
+                OVERFLOW_ITEM_REPORT_ISSUE -> onReportIssueClick()
+              }
+            },
+          )
+        },
+        colors = TopAppbarColor,
+      )
+    },
     floatingActionButton = {
       FloatingActionButton(onClick = onAddClick) {
         Icon(
@@ -360,9 +436,17 @@ private fun PreviewBuildReminderScreenEmpty() {
     BuildReminderScreen(
       builderItems = emptyList(),
       prediction = null,
+      canSave = false,
+      canRemove = false,
       canSaveAsPreset = false,
       saveAsPresetChecked = false,
       presetName = "",
+      onBackClick = {},
+      onSaveClick = {},
+      onDeleteClick = {},
+      onConfigureClick = {},
+      onHelpClick = {},
+      onReportIssueClick = {},
       onSaveAsPresetChange = {},
       onPresetNameChange = {},
       onItemClick = { _, _ -> },

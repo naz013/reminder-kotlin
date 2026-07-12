@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.preview
 
-import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -76,27 +75,6 @@ class PreviewNoteViewModel(
 
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
-  private var initStatusBarColor: Int = -1
-  private var statusBarColorSaved: Boolean = false
-
-  @ColorInt
-  fun getStatusBarColor(): Int? =
-    if (statusBarColorSaved) {
-      initStatusBarColor.takeIf { it != -1 }
-    } else {
-      null
-    }
-
-  fun saveStatusBarColor(
-    @ColorInt color: Int,
-  ) {
-    if (statusBarColorSaved) return
-    initStatusBarColor = color
-    statusBarColorSaved = true
-  }
-
-  /** Pure contrast math, ported from the previous Fragment implementation — kept here so the
-   *  Fragment/Compose layer never has to know about [ThemeProvider] or color math itself. */
   fun colorsFor(state: PreviewNoteState): NotePreviewColors {
     val isBgDark =
       if (state.opacity.isAlmostTransparent()) {

@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation
 
 import android.content.Context
 import android.os.Bundle
-import com.elementary.tasks.home.BottomNavActivity
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DeepLinkDestination

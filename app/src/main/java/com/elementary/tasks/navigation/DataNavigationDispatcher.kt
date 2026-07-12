@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.elementary.tasks.home.BottomNavActivity
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
