@@ -1,11 +1,13 @@
 package com.elementary.tasks.reminder.build.adapter
 
+import androidx.compose.runtime.Composable
 import com.elementary.tasks.R
 import com.github.naz013.common.TextProvider
 import com.github.naz013.icalendar.Day
 import com.github.naz013.icalendar.DayValue
 import com.github.naz013.icalendar.FreqType
 import com.github.naz013.icalendar.RecurParamType
+import org.koin.compose.koinInject
 
 class ParamToTextAdapter(
   private val textProvider: TextProvider,
@@ -49,3 +51,6 @@ class ParamToTextAdapter(
       FreqType.MINUTELY -> textProvider.getText(R.string.recur_minutely)
     }
 }
+
+@Composable
+fun rememberParamToTextAdapter(): ParamToTextAdapter = koinInject()

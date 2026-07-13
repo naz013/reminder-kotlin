@@ -24,6 +24,7 @@ data class RemindersSettingsState(
   val doNotDisturbIgnoreName: String = "",
   val isDoNotDisturbDependentEnabled: Boolean = false,
   val dialog: RemindersSettingsDialog? = null,
+  val hasLocation: Boolean = false,
 )
 
 enum class ChoiceDialogKind { PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE }

@@ -1,13 +1,11 @@
 package com.elementary.tasks.settings
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,8 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
@@ -26,8 +22,6 @@ import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
@@ -62,23 +56,13 @@ import com.elementary.tasks.settings.troubleshooting.TroubleshootingScreen
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingScreenState
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSettingsLauncher
-import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
-import com.github.naz013.ui.common.login.LoginApi
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.login.rememberAuthProvider
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the "hub" Settings island's screens (Nav3 entries) - everything reached directly
- * from the Settings hub except Security/PIN, Location/MapStyle, the Other/WebView/WhatsNew tree
- * and Cloud Backup/Services, each of which is its own sibling NavGraph (see [SecurityNavKey],
- * [LocationNavKey], [OtherNavKey], [com.elementary.tasks.settings.export.ExportNavKey]) - into the
- * app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.settingsEntries(backStack: MutableList<NavKey>) {
   entry<SettingsNavKey.Hub> { HubEntry(backStack) }
   entry<SettingsNavKey.General> { GeneralEntry(backStack) }
@@ -96,23 +80,11 @@ fun EntryProviderScope<NavKey>.settingsEntries(backStack: MutableList<NavKey>) {
 @Composable
 private fun HubEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<SettingsHubViewModel>()
-  bindLifecycle(viewModel)
 
   val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
+  val authProvider = rememberAuthProvider()
 
-  val context = LocalContext.current
-  val prefs = koinInject<Prefs>()
-  val state by viewModel.state.collectAsState()
-  val isPlayServicesWarningVisible = remember { !SuperUtil.isGooglePlayServicesAvailable(context) }
-  val isBuyProBadgeVisible =
-    remember {
-      !BuildParams.isPro && !SuperUtil.isAppInstalled(context, "com.cray.software.justreminderpro")
-    }
-
-  val pinLoginLauncher =
-    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-      if (result.resultCode == Activity.RESULT_OK) backStack.add(SecurityNavKey.Security)
-    }
+  val state by viewModel.state.collectAsState(SettingsHubState())
 
   SettingsScaffold(
     title = stringResource(R.string.action_settings),
@@ -120,8 +92,6 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
   ) { padding ->
     SettingsHubScreen(
       state = state,
-      isBuyProBadgeVisible = isBuyProBadgeVisible,
-      isPlayServicesWarningVisible = isPlayServicesWarningVisible,
       onBuyProClick = { backStack.add(SettingsNavKey.ProVersion) },
       onUpdateClick = { googlePlayMarketLauncher.launchSelf() },
       onGeneralClick = { backStack.add(SettingsNavKey.General) },
@@ -130,8 +100,8 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
       onRemindersClick = { backStack.add(SettingsNavKey.Reminders()) },
       onBirthdaysClick = { backStack.add(SettingsNavKey.Birthday()) },
       onSecurityClick = {
-        if (prefs.hasPinCode) {
-          pinLoginLauncher.launch(LoginApi.authIntent(context))
+        if (state.hasPinCode) {
+          authProvider.requestAuth(onAuthSuccess = { backStack.add(SecurityNavKey.Security) })
         } else {
           backStack.add(SecurityNavKey.Security)
         }
@@ -147,14 +117,15 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun GeneralEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GeneralSettingsViewModel>()
+
   val appRestartController = rememberAppRestartController()
-  val prefs = koinInject<Prefs>()
+
   val state by viewModel.state.collectAsState()
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       GeneralSettingsEvent.RecreateActivity -> appRestartController.recreate()
-      GeneralSettingsEvent.ApplyDynamicColorsAndRecreate -> {
-        appRestartController.applyDynamicColorsAndRecreate(prefs.useDynamicColors)
+      is GeneralSettingsEvent.ApplyDynamicColorsAndRecreate -> {
+        appRestartController.applyDynamicColorsAndRecreate(event.useDynamicColors)
       }
       GeneralSettingsEvent.RestartApp -> appRestartController.restartApp()
     }
@@ -189,7 +160,6 @@ private fun RemindersEntry(
   val dateTimePicker = rememberDateTimePicker()
   val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
-  val hasLocation = remember { Module.hasLocation(context) }
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
@@ -215,7 +185,6 @@ private fun RemindersEntry(
   ) { padding ->
     RemindersSettingsScreen(
       state = state,
-      hasLocation = hasLocation,
       onPresetsClick = viewModel::onPresetsClick,
       onLocationClick = viewModel::onLocationClick,
       onPriorityClick = viewModel::onPriorityClick,
@@ -529,14 +498,5 @@ private fun TroubleshootingEntry(backStack: MutableList<NavKey>) {
       onDisableOptimizationClick = { viewModel.onOpenOptimizationSettingsClicked() },
       modifier = Modifier.padding(padding),
     )
-  }
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
   }
 }

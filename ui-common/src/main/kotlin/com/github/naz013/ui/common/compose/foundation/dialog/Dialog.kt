@@ -1,5 +1,6 @@
 package com.github.naz013.ui.common.compose.foundation.dialog
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -22,8 +23,11 @@ interface DialogDispatcher {
     positiveButton: String? = null,
     negativeButtonRes: Int? = null,
     negativeButton: String? = null,
+    neutralButtonRes: Int? = null,
+    neutralButton: String? = null,
     onNegative: () -> Unit = {},
     onPositive: () -> Unit = {},
+    onNeutral: () -> Unit = {},
   )
 }
 
@@ -48,8 +52,11 @@ fun rememberDialogDispatcher(): DialogDispatcher {
       positiveButton: String?,
       negativeButtonRes: Int?,
       negativeButton: String?,
+      neutralButtonRes: Int?,
+      neutralButton: String?,
       onNegative: () -> Unit,
-      onPositive: () -> Unit
+      onPositive: () -> Unit,
+      onNeutral: () -> Unit,
     ) {
       dialogData.value = DialogData(
         iconRes = iconRes,
@@ -62,12 +69,18 @@ fun rememberDialogDispatcher(): DialogDispatcher {
         positiveButton = positiveButton,
         negativeButtonRes = negativeButtonRes,
         negativeButton = negativeButton,
+        neutralButtonRes = neutralButtonRes,
+        neutralButton = neutralButton,
         onNegative = {
           onNegative()
           openAlertDialog.value = false
         },
         onPositive = {
           onPositive()
+          openAlertDialog.value = false
+        },
+        onNeutral = {
+          onNeutral()
           openAlertDialog.value = false
         }
       )
@@ -87,8 +100,11 @@ private data class DialogData(
   val positiveButton: String? = null,
   val negativeButtonRes: Int? = null,
   val negativeButton: String? = null,
+  val neutralButtonRes: Int? = null,
+  val neutralButton: String? = null,
   val onNegative: () -> Unit = {},
   val onPositive: () -> Unit = {},
+  val onNeutral: () -> Unit = {},
 )
 
 @Composable
@@ -114,7 +130,7 @@ private fun Dialog(data: DialogData) {
       }
     },
     onDismissRequest = {
-      data.onNegative()
+      if (data.neutralButtonRes != null || data.neutralButton != null) data.onNeutral() else data.onNegative()
     },
     confirmButton = {
       val positiveButton: @Composable (String) -> Unit = {
@@ -142,10 +158,26 @@ private fun Dialog(data: DialogData) {
           Text(it)
         }
       }
-      data.negativeButton?.let {
-        negativeButton(it)
-      } ?: data.negativeButtonRes?.let {
-        negativeButton(stringResource(it))
+      val neutralButton: @Composable (String) -> Unit = {
+        TextButton(
+          onClick = {
+            data.onNeutral()
+          }
+        ) {
+          Text(it)
+        }
+      }
+      Row {
+        data.negativeButton?.let {
+          negativeButton(it)
+        } ?: data.negativeButtonRes?.let {
+          negativeButton(stringResource(it))
+        }
+        data.neutralButton?.let {
+          neutralButton(it)
+        } ?: data.neutralButtonRes?.let {
+          neutralButton(stringResource(it))
+        }
       }
     },
   )

@@ -19,17 +19,16 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.dayview.WeekViewScreen
 import com.elementary.tasks.calendar.dayview.WeekViewViewModel
+import com.elementary.tasks.core.compose.rememberDateTimeManager
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
-import com.elementary.tasks.navigation.nav3.AppNavBridge
+import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.ui.common.Dialogues
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalDateTime
@@ -48,8 +47,8 @@ fun EntryProviderScope<NavKey>.calendarEntries(backStack: MutableList<NavKey>) {
 @Composable
 private fun MonthEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<CalendarViewModel>()
-  val dateTimeManager = koinInject<DateTimeManager>()
-  val appNavBridge = koinInject<AppNavBridge>()
+  val dateTimeManager = rememberDateTimeManager()
+  val appNavBridge = rememberAppNavBridge()
   val settingsTitle = stringResource(R.string.action_settings)
 
   var pagerJumpRequest by remember { mutableStateOf<Int?>(null) }
@@ -125,14 +124,14 @@ private fun DayEntry(
   key: CalendarNavKey.Day,
   backStack: MutableList<NavKey>,
 ) {
-  val dateTimeManager = koinInject<DateTimeManager>()
+  val dateTimeManager = rememberDateTimeManager()
   val startDate = remember(key.dateMillis) { dateTimeManager.fromMillis(key.dateMillis).toLocalDate() }
   val viewModel = koinViewModel<WeekViewViewModel> { parametersOf(startDate) }
   bindLifecycle(viewModel)
 
   val context = LocalContext.current
-  val dialogues = koinInject<Dialogues>()
-  val appNavBridge = koinInject<AppNavBridge>()
+  val dialogDispatcher = rememberDialogDispatcher()
+  val appNavBridge = rememberAppNavBridge()
   val permissionRequester = rememberPermissionRequesterRationale()
 
   var pagerJumpRequest by remember { mutableStateOf<Int?>(null) }
@@ -173,15 +172,23 @@ private fun DayEntry(
       }
 
       is WeekViewViewModel.NavigationEvent.ConfirmArchiveReminder -> {
-        dialogues.askConfirmation(context, context.getString(R.string.move_to_archive)) { confirmed ->
-          if (confirmed) viewModel.moveReminderToArchive(event.id)
-        }
+        dialogDispatcher.showDialog(
+          titleRes = R.string.move_to_archive,
+          textRes = R.string.are_you_sure,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.no,
+          onPositive = { viewModel.moveReminderToArchive(event.id) },
+        )
       }
 
       is WeekViewViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
-        dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
-          if (confirmed) viewModel.deleteBirthday(event.id)
-        }
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete,
+          textRes = R.string.are_you_sure,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.no,
+          onPositive = { viewModel.deleteBirthday(event.id) },
+        )
       }
 
       is WeekViewViewModel.NavigationEvent.RequestGpsPermission -> {

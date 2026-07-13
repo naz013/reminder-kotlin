@@ -9,7 +9,7 @@ import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.locale.Language

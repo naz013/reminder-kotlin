@@ -31,7 +31,6 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchIt
 @Composable
 fun RemindersSettingsScreen(
   state: RemindersSettingsState,
-  hasLocation: Boolean,
   onPresetsClick: () -> Unit,
   onLocationClick: () -> Unit,
   onPriorityClick: () -> Unit,
@@ -68,7 +67,7 @@ fun RemindersSettingsScreen(
       dividerBottom = true,
       onClick = onPresetsClick,
     )
-    if (hasLocation) {
+    if (state.hasLocation) {
       SettingsItem(
         title = stringResource(R.string.location),
         icon = painterResource(R.drawable.ic_builder_map_my_location),

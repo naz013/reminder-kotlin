@@ -31,11 +31,13 @@ import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
+import com.elementary.tasks.core.compose.rememberDateTimeManager
+import com.elementary.tasks.core.compose.rememberPrefs
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
-import com.elementary.tasks.navigation.nav3.AppNavBridge
+import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.notes.ObserveNonNull
@@ -43,9 +45,9 @@ import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.simplemap.SimpleMapFragment
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.compose.foundation.dialog.ListDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
 import com.google.android.gms.maps.model.LatLng
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalTime
@@ -70,10 +72,10 @@ private fun PreviewEntry(
 
   val context = LocalContext.current
   val activity = LocalActivity.current as FragmentActivity
-  val dialogues = koinInject<Dialogues>()
-  val dateTimeManager = koinInject<DateTimeManager>()
-  val prefs = koinInject<Prefs>()
-  val appNavBridge = koinInject<AppNavBridge>()
+  val listDialogDispatcher = rememberListDialogDispatcher()
+  val dateTimeManager = rememberDateTimeManager()
+  val prefs = rememberPrefs()
+  val appNavBridge = rememberAppNavBridge()
   val adsProvider = remember { AdsProvider() }
 
   viewModel.resultEvent.ObserveEvent { commands ->
@@ -96,7 +98,7 @@ private fun PreviewEntry(
     onEditClick = { appNavBridge.navigate(BuildReminderNavKey.Main(id = key.id)) },
     onShareClick = { viewModel.shareReminder() },
     onCopyClick = {
-      showCopyTimeDialog(context, dialogues, dateTimeManager) { time -> viewModel.copyReminder(time) }
+      showCopyTimeDialog(listDialogDispatcher, dateTimeManager) { time -> viewModel.copyReminder(time) }
     },
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
@@ -313,8 +315,7 @@ private fun openSystemCalendarEvent(
 }
 
 private fun showCopyTimeDialog(
-  context: Context,
-  dialogues: Dialogues,
+  listDialogDispatcher: ListDialogDispatcher,
   dateTimeManager: DateTimeManager,
   onTimePicked: (LocalTime) -> Unit,
 ) {
@@ -331,13 +332,11 @@ private fun showCopyTimeDialog(
       time = time.plusMinutes(30)
     }
   } while (isRunning)
-  val builder = dialogues.getMaterialDialog(context)
-  builder.setTitle(R.string.choose_time)
-  builder.setItems(times.toTypedArray()) { dialog, which ->
-    dialog.dismiss()
-    onTimePicked(list[which])
-  }
-  builder.create().show()
+  listDialogDispatcher.showDialog(
+    titleRes = R.string.choose_time,
+    items = times,
+    onItemClick = { which -> onTimePicked(list[which]) },
+  )
 }
 
 @Composable

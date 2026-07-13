@@ -6,7 +6,7 @@ import androidx.glance.ImageProvider
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import com.github.naz013.appwidgets.WidgetUtils
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
 
 internal fun GlanceModifier.roundedBackground(color: Int): GlanceModifier {
   return if (Module.is12) {

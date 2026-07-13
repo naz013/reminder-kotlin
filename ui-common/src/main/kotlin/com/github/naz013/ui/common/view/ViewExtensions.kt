@@ -3,9 +3,6 @@ package com.github.naz013.ui.common.view
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.ColorRes
@@ -26,58 +23,9 @@ fun EditText.showKeyboard() {
   imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
-fun View.getSize(block: (width: Int, height: Int) -> Unit) {
-  addOnLayoutChangeListener(
-    object : View.OnLayoutChangeListener {
-      override fun onLayoutChange(
-        v: View?,
-        left: Int,
-        top: Int,
-        right: Int,
-        bottom: Int,
-        oldLeft: Int,
-        oldTop: Int,
-        oldRight: Int,
-        oldBottom: Int
-      ) {
-        removeOnLayoutChangeListener(this)
-        block(v?.height ?: -1, v?.width ?: -1)
-      }
-    }
-  )
-}
-
-fun View.singleClick(function: (View) -> Unit) {
-  this.setOnClickListener {
-    if (shouldDispatchClick(it)) {
-      function(it)
-    }
-  }
-}
-
-private fun shouldDispatchClick(key: Any): Boolean {
-  return if (ClickMap.viewClickMap.containsKey(key)) {
-    (System.currentTimeMillis() - (ClickMap.viewClickMap[key] ?: 0L) > ClickMap.DELAY).also {
-      if (it) {
-        ClickMap.viewClickMap[key] = System.currentTimeMillis()
-      }
-    }
-  } else {
-    ClickMap.viewClickMap[key] = System.currentTimeMillis()
-    true
-  }
-}
-
-object ClickMap {
-  const val DELAY = 500L
-  val viewClickMap = mutableMapOf<Any, Long>()
-}
-
 fun View.isVisible(): Boolean = visibility == View.VISIBLE
 
 fun View.isGone(): Boolean = visibility == View.GONE
-
-fun View.isTransparent(): Boolean = visibility == View.INVISIBLE
 
 fun View.transparent() {
   visibility = View.INVISIBLE
@@ -99,54 +47,11 @@ fun View.visibleGone(value: Boolean) {
   }
 }
 
-fun View.visibleInvisible(value: Boolean) {
-  if (value && !isVisible()) {
-    visible()
-  } else if (!value && !isTransparent()) {
-    transparent()
-  }
-}
-
 fun View.colorOf(@ColorRes color: Int) = ContextCompat.getColor(context, color)
 
 fun View.inflater(): LayoutInflater = LayoutInflater.from(context)
 
 fun View.dp2px(dp: Int) = context.dp2px(dp)
-
-fun View.fadeInAnimation() {
-  val fadeIn = AlphaAnimation(0f, 1f)
-  fadeIn.interpolator = DecelerateInterpolator()
-  fadeIn.startOffset = 400
-  fadeIn.duration = 400
-  animation = fadeIn
-  visibility = View.VISIBLE
-}
-
-fun View.fadeOutAnimation() {
-  val fadeOut = AlphaAnimation(1f, 0f)
-  fadeOut.interpolator = AccelerateInterpolator()
-  fadeOut.duration = 400
-  animation = fadeOut
-  visibility = View.GONE
-}
-
-fun View.applyMarginsRes(
-  @DimenRes startRes: Int = -1,
-  @DimenRes topRes: Int = -1,
-  @DimenRes endRes: Int = -1,
-  @DimenRes bottomRes: Int = -1
-) {
-  val startMargin = startRes.getPx(context)
-  val topMargin = topRes.getPx(context)
-  val endMargin = endRes.getPx(context)
-  val bottomMargin = bottomRes.getPx(context)
-  this.layoutParams = this.layoutParams.applyMargins(
-    start = startMargin,
-    top = topMargin,
-    end = endMargin,
-    bottom = bottomMargin
-  )
-}
 
 fun View.applyMarginsPx(
   @Px start: Int = 0,
@@ -160,15 +65,6 @@ fun View.applyMarginsPx(
     end = end,
     bottom = bottom
   )
-}
-
-@Px
-private fun Int.getPx(context: Context): Int {
-  return if (this == -1) {
-    0
-  } else {
-    context.resources.getDimensionPixelSize(this)
-  }
 }
 
 fun View.applyTopInsets(
@@ -185,24 +81,6 @@ fun View.applyTopInsets(
       /* right = */ v.paddingRight,
       /* bottom = */ v.paddingBottom
     )
-    insets
-  }
-}
-
-fun View.applyTopInsetsMargin(
-  @DimenRes topExtraRes: Int = -1
-) {
-  val margin = if (topExtraRes != -1) {
-    context.resources.getDimensionPixelSize(topExtraRes)
-  } else {
-    0
-  }
-  ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
-    val innerPadding = insets.getInsets(
-      WindowInsetsCompat.Type.systemBars() or
-        WindowInsetsCompat.Type.displayCutout()
-    )
-    v.applyMarginsPx(top = v.marginTop + margin + innerPadding.top)
     insets
   }
 }
@@ -248,27 +126,6 @@ fun View.applyBottomInsets(
       /* top = */ v.paddingTop,
       /* right = */ v.paddingRight,
       /* bottom = */ innerPadding.bottom + bottomMargin
-    )
-    insets
-  }
-}
-
-fun View.applyInsets(
-  leftExtra: Int = 0,
-  topExtra: Int = 0,
-  rightExtra: Int = 0,
-  bottomExtra: Int = 0
-) {
-  ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
-    val innerPadding = insets.getInsets(
-      WindowInsetsCompat.Type.systemBars() or
-        WindowInsetsCompat.Type.displayCutout()
-    )
-    v.setPadding(
-      /* left = */ innerPadding.left + leftExtra,
-      /* top = */ innerPadding.top + topExtra,
-      /* right = */ innerPadding.right + rightExtra,
-      /* bottom = */ innerPadding.bottom + bottomExtra
     )
     insets
   }

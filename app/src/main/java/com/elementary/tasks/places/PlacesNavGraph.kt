@@ -32,9 +32,8 @@ import com.elementary.tasks.places.create.EditPlaceViewModel
 import com.elementary.tasks.places.list.PlacesScreen
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.simplemap.SimpleMapFragment
-import com.github.naz013.ui.common.Dialogues
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.google.android.gms.maps.model.LatLng
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -54,9 +53,8 @@ fun EntryProviderScope<NavKey>.placesEntries(backStack: MutableList<NavKey>) {
 private fun PlacesListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<PlacesViewModel>()
   bindLifecycle(viewModel)
-  val dialogues = koinInject<Dialogues>()
+  val dialogDispatcher = rememberDialogDispatcher()
   val context = LocalContext.current
-  val deleteTitle = stringResource(R.string.delete)
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is PlacesViewModel.NavigationEvent.OpenEditPlace -> backStack.add(PlacesNavKey.Edit(event.id))
@@ -66,9 +64,13 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
       }
 
       is PlacesViewModel.NavigationEvent.ConfirmDelete -> {
-        dialogues.askConfirmation(context, deleteTitle) { confirmed ->
-          if (confirmed) viewModel.deletePlace(event.id)
-        }
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete,
+          textRes = R.string.are_you_sure,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.no,
+          onPositive = { viewModel.deletePlace(event.id) },
+        )
       }
     }
   }
@@ -92,7 +94,7 @@ private fun PlaceEditEntry(
 ) {
   val viewModel = koinViewModel<EditPlaceViewModel> { parametersOf(key.id) }
   bindLifecycle(viewModel)
-  val dialogues = koinInject<Dialogues>()
+  val dialogDispatcher = rememberDialogDispatcher()
   val context = LocalContext.current
 
   var mapFragment by remember { mutableStateOf<SimpleMapFragment?>(null) }
@@ -116,24 +118,24 @@ private fun PlaceEditEntry(
       }
 
       EditPlaceEvent.ConfirmDelete -> {
-        dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
-          if (confirmed) viewModel.deletePlace()
-        }
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete,
+          textRes = R.string.are_you_sure,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.no,
+          onPositive = { viewModel.deletePlace() },
+        )
       }
 
       EditPlaceEvent.AskCopySaving -> {
-        dialogues
-          .getMaterialDialog(context)
-          .setMessage(R.string.same_place_message)
-          .setPositiveButton(R.string.keep) { dialog, _ ->
-            dialog.dismiss()
-            viewModel.savePlace(newId = true)
-          }.setNegativeButton(R.string.replace) { dialog, _ ->
-            dialog.dismiss()
-            viewModel.savePlace()
-          }.setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-          .create()
-          .show()
+        dialogDispatcher.showDialog(
+          textRes = R.string.same_place_message,
+          positiveButtonRes = R.string.keep,
+          negativeButtonRes = R.string.replace,
+          neutralButtonRes = R.string.cancel,
+          onPositive = { viewModel.savePlace(newId = true) },
+          onNegative = { viewModel.savePlace() },
+        )
       }
     }
   }

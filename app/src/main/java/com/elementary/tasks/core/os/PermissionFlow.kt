@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.data.UiPermissionDialogData
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.ui.common.Dialogues
 import java.util.LinkedList

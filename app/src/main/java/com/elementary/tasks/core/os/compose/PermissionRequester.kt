@@ -21,7 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.data.UiPermissionDialogData
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
 import com.github.naz013.common.Permissions
 
 /**

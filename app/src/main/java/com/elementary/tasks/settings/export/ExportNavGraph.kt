@@ -19,28 +19,27 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.DropboxLogin
+import com.elementary.tasks.core.cloud.compose.rememberDropboxLogin
+import com.elementary.tasks.core.cloud.compose.rememberGoogleDriveAuthManager
 import com.elementary.tasks.core.cloud.compose.rememberGoogleDriveLogin
+import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksAuthManager
 import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
+import com.elementary.tasks.core.compose.rememberAnalyticsEventSender
+import com.elementary.tasks.core.compose.rememberFeatureManager
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.settings.SettingsScaffold
 import com.elementary.tasks.settings.export.services.CloudServicesScreen
 import com.elementary.tasks.settings.export.services.CloudServicesViewModel
-import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
-import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.toast
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 /**
  * Contributes the Cloud Backup/Cloud Services Settings sub-tree's screens (Nav3 entries) into the
@@ -88,11 +87,11 @@ private fun CloudBackupEntry(backStack: MutableList<NavKey>) {
 private fun CloudServicesEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<CloudServicesViewModel>()
   val activity = LocalActivity.current as FragmentActivity
-  val featureManager = koinInject<FeatureManager>()
-  val dialogues = koinInject<Dialogues>()
-  val analyticsEventSender = koinInject<AnalyticsEventSender>()
-  val googleDriveAuthManager = koinInject<GoogleDriveAuthManager>()
-  val googleTasksAuthManager = koinInject<GoogleTasksAuthManager>()
+  val featureManager = rememberFeatureManager()
+  val dialogDispatcher = rememberDialogDispatcher()
+  val analyticsEventSender = rememberAnalyticsEventSender()
+  val googleDriveAuthManager = rememberGoogleDriveAuthManager()
+  val googleTasksAuthManager = rememberGoogleTasksAuthManager()
   val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
 
@@ -101,10 +100,10 @@ private fun CloudServicesEntry(backStack: MutableList<NavKey>) {
   var isDropboxLoggedIn by remember { mutableStateOf(false) }
 
   fun showErrorDialog() {
-    val builder = dialogues.getMaterialDialog(activity)
-    builder.setMessage(activity.getString(R.string.failed_to_login))
-    builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
-    builder.create().show()
+    dialogDispatcher.showDialog(
+      textRes = R.string.failed_to_login,
+      positiveButtonRes = R.string.ok,
+    )
   }
 
   val googleDriveLogin =
@@ -124,16 +123,13 @@ private fun CloudServicesEntry(backStack: MutableList<NavKey>) {
       },
       onFail = { showErrorDialog() },
     )
-  val dropboxCallback =
-    remember {
-      object : DropboxLogin.LoginCallback {
-        override fun onResult(isSuccess: Boolean) {
-          if (isSuccess) analyticsEventSender.send(FeatureUsedEvent(Feature.DROPBOX))
-          isDropboxLoggedIn = isSuccess
-        }
-      }
-    }
-  val dropboxLogin = koinInject<DropboxLogin> { parametersOf(activity, dropboxCallback) }
+  val dropboxLogin =
+    rememberDropboxLogin(
+      onResult = { isSuccess ->
+        if (isSuccess) analyticsEventSender.send(FeatureUsedEvent(Feature.DROPBOX))
+        isDropboxLoggedIn = isSuccess
+      },
+    )
 
   val lifecycleOwner = LocalLifecycleOwner.current
   DisposableEffect(dropboxLogin, googleDriveAuthManager, googleTasksAuthManager, lifecycleOwner) {

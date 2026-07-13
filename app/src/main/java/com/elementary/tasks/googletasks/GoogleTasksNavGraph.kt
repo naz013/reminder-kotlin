@@ -28,10 +28,12 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
+import com.elementary.tasks.core.compose.rememberAnalyticsEventSender
+import com.elementary.tasks.core.compose.rememberAppWidgetUpdater
+import com.elementary.tasks.core.compose.rememberPrefs
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.googletasks.list.TaskListEvent
 import com.elementary.tasks.googletasks.list.TaskListScreen
@@ -47,12 +49,9 @@ import com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListScreen
 import com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListViewModel
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
-import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.Permissions
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -74,7 +73,7 @@ private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GoogleTasksViewModel>()
   bindLifecycle(viewModel)
   val activity = LocalActivity.current as FragmentActivity
-  val analyticsEventSender = koinInject<AnalyticsEventSender>()
+  val analyticsEventSender = rememberAnalyticsEventSender()
   val permissionRequester = rememberPermissionRequesterRationale()
   var showLoginError by remember { mutableStateOf(false) }
   val googleTasksLogin =
@@ -189,9 +188,9 @@ private fun TaskEditEntry(
   val viewModel = koinViewModel<EditGoogleTaskViewModel> { parametersOf(key.id, key.listId) }
   bindLifecycle(viewModel)
   val context = LocalContext.current
-  val prefs = koinInject<Prefs>()
+  val prefs = rememberPrefs()
   val dateTimePicker = rememberDateTimePicker()
-  val appWidgetUpdater = koinInject<AppWidgetUpdater>()
+  val appWidgetUpdater = rememberAppWidgetUpdater()
   DisposableEffect(viewModel) {
     onDispose {
       context.hideKeyboard()
@@ -252,7 +251,7 @@ private fun ListEditEntry(
   val viewModel = koinViewModel<EditGoogleTaskListViewModel> { parametersOf(key.id) }
   bindLifecycle(viewModel)
   val context = LocalContext.current
-  val appWidgetUpdater = koinInject<AppWidgetUpdater>()
+  val appWidgetUpdater = rememberAppWidgetUpdater()
   DisposableEffect(viewModel) {
     onDispose {
       context.hideKeyboard()

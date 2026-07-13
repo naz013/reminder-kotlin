@@ -11,6 +11,7 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.ui.common.theme.ThemeProvider
@@ -24,6 +25,7 @@ class LocationSettingsViewModel(
   private val textProvider: TextProvider,
   private val themeProvider: ThemeProvider,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val systemInfo: SystemInfo,
 ) : ViewModel() {
   val state: StateFlow<LocationSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<LocationSettingsEvent>> field = mutableLiveEventOf()
@@ -146,6 +148,7 @@ class LocationSettingsViewModel(
       mapStyleName = textProvider.getString(themeProvider.styleName),
       isMarkerStyleVisible = BuildParams.isPro,
       markerColor = themeProvider.getMarkerLightColor(prefs.markerStyle),
+      hasLocation = systemInfo.hasLocation,
     )
 
   private fun formatRadius(meters: Int): String {

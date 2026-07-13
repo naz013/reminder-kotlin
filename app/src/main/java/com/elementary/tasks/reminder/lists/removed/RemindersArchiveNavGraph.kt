@@ -11,11 +11,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.navigation.nav3.AppNavBridge
+import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.github.naz013.ui.common.Dialogues
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -31,8 +30,8 @@ private fun ListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<RemindersArchiveViewModel>()
   bindLifecycle(viewModel)
   val context = LocalContext.current
-  val dialogues = koinInject<Dialogues>()
-  val appNavBridge = koinInject<AppNavBridge>()
+  val dialogDispatcher = rememberDialogDispatcher()
+  val appNavBridge = rememberAppNavBridge()
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
@@ -41,18 +40,21 @@ private fun ListEntry(backStack: MutableList<NavKey>) {
       }
 
       is RemindersArchiveViewModel.NavigationEvent.ConfirmDeleteReminder -> {
-        dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
-          if (confirmed) viewModel.deleteReminder(event.id)
-        }
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete,
+          textRes = R.string.are_you_sure,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.no,
+          onPositive = { viewModel.deleteReminder(event.id) },
+        )
       }
 
       RemindersArchiveViewModel.NavigationEvent.ConfirmDeleteAll -> {
-        dialogues.askConfirmation(
-          context = context,
-          title = context.getString(R.string.delete_all_archived_reminders),
-          positiveText = context.getString(R.string.yes_delete_all),
-          negativeText = context.getString(R.string.cancel),
-          onAction = { confirmed -> if (confirmed) viewModel.deleteAll() },
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete_all_archived_reminders,
+          positiveButtonRes = R.string.yes_delete_all,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.deleteAll() },
         )
       }
 

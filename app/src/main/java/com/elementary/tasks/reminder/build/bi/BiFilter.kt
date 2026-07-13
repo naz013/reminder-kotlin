@@ -1,21 +1,22 @@
 package com.elementary.tasks.reminder.build.bi
 
-import android.content.Context
-import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.BuilderItem
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
+import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 
 class BiFilter(
   private val locationFilter: LocationFilter,
   private val creatorConfigFilter: CreatorConfigFilter,
+  private val buildInfo: BuildInfo
 ) {
   operator fun invoke(item: BuilderItem<*>): Boolean {
     val isEnabled = item.isEnabled
     val isForPro = item.isForPro
-    val isProEnabled = !item.isForPro || (item.isForPro && BuildParams.isPro)
+    val isProEnabled = !item.isForPro || (item.isForPro && buildInfo.isPro)
     val isInSdkRange = Module.CURRENT_SDK in item.minSdk..item.maxSdk
     val isLocationAllowed = locationFilter(item)
     val isCreatorConfigAllowed = creatorConfigFilter(item)
@@ -59,9 +60,9 @@ class CreatorConfigFilter(
 }
 
 class LocationFilter(
-  context: Context,
+  systemInfo: SystemInfo
 ) {
-  private val hasLocation = Module.hasLocation(context)
+  private val hasLocation = systemInfo.hasLocation
 
   operator fun invoke(item: BuilderItem<*>): Boolean =
     if (LOCATION_TYPES.contains(item.biType)) {

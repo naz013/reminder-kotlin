@@ -20,6 +20,12 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
+import com.elementary.tasks.core.compose.rememberDateTimeManager
+import com.elementary.tasks.core.compose.rememberFeatureManager
+import com.elementary.tasks.core.compose.rememberGoogleCalendarUtils
+import com.elementary.tasks.core.compose.rememberPackageManagerWrapper
+import com.elementary.tasks.core.compose.rememberPrefs
+import com.elementary.tasks.core.compose.rememberReviewsApi
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.os.compose.PermissionRequester
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
@@ -28,27 +34,23 @@ import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicke
 import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.notes.ObserveEvent
-import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
+import com.elementary.tasks.reminder.build.adapter.rememberParamToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.help.ReminderHelpScreen
 import com.elementary.tasks.reminder.build.selectordialog.BuilderSelectorSheet
-import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
+import com.elementary.tasks.reminder.build.selectordialog.rememberSelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
-import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
+import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.rememberUriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.build.valuedialog.editor.MapEditorScreen
 import com.elementary.tasks.reminder.recur.RecurHelpScreen
-import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.ReviewsApi
-import com.github.naz013.ui.common.Dialogues
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -83,16 +85,16 @@ private fun MainEntry(
 
   val context = LocalContext.current
   val activity = LocalActivity.current as FragmentActivity
-  val dialogues = koinInject<Dialogues>()
-  val prefs = koinInject<Prefs>()
-  val reviewsApi = koinInject<ReviewsApi>()
-  val featureManager = koinInject<FeatureManager>()
-  val selectorDialogDataHolder = koinInject<SelectorDialogDataHolder>()
-  val paramToTextAdapter = koinInject<ParamToTextAdapter>()
-  val googleCalendarUtils = koinInject<GoogleCalendarUtils>()
-  val packageManagerWrapper = koinInject<PackageManagerWrapper>()
-  val attachmentFileAdapter = koinInject<UriToAttachmentFileAdapter>()
-  val dateTimeManager = koinInject<DateTimeManager>()
+  val dialogDispatcher = rememberDialogDispatcher()
+  val prefs = rememberPrefs()
+  val reviewsApi = rememberReviewsApi()
+  val featureManager = rememberFeatureManager()
+  val selectorDialogDataHolder = rememberSelectorDialogDataHolder()
+  val paramToTextAdapter = rememberParamToTextAdapter()
+  val googleCalendarUtils = rememberGoogleCalendarUtils()
+  val packageManagerWrapper = rememberPackageManagerWrapper()
+  val attachmentFileAdapter = rememberUriToAttachmentFileAdapter()
+  val dateTimeManager = rememberDateTimeManager()
 
   val permissionRequester = rememberPermissionRequesterRationale()
   val pickApplication = rememberApplicationPicker()
@@ -151,10 +153,10 @@ private fun MainEntry(
     onBackClick = { backStack.removeLastOrNull() },
     onSaveClick = {
       askNotificationPermissionIfNeeded(permissionRequester) {
-        askCopySaving(context, dialogues, viewModel)
+        askCopySaving(dialogDispatcher, viewModel)
       }
     },
-    onDeleteClick = { deleteReminder(context, dialogues, viewModel) },
+    onDeleteClick = { deleteReminder(dialogDispatcher, viewModel) },
     onConfigureClick = {
       pendingConfigRefresh = true
       backStack.add(BuildReminderNavKey.Configure)
@@ -273,42 +275,43 @@ private fun askNotificationPermissionIfNeeded(
 }
 
 private fun askCopySaving(
-  context: Context,
-  dialogues: Dialogues,
+  dialogDispatcher: DialogDispatcher,
   viewModel: BuildReminderViewModel,
 ) {
   if (viewModel.isFromFile && viewModel.hasSameInDb) {
-    dialogues
-      .getMaterialDialog(context)
-      .setMessage(R.string.same_reminder_message)
-      .setPositiveButton(R.string.keep) { dialogInterface, _ ->
-        dialogInterface.dismiss()
-        viewModel.saveReminder(true)
-      }.setNegativeButton(R.string.replace) { dialogInterface, _ ->
-        dialogInterface.dismiss()
-        viewModel.saveReminder(false)
-      }.setNeutralButton(R.string.cancel) { dialogInterface, _ ->
-        dialogInterface.dismiss()
-      }.create()
-      .show()
+    dialogDispatcher.showDialog(
+      textRes = R.string.same_reminder_message,
+      positiveButtonRes = R.string.keep,
+      negativeButtonRes = R.string.replace,
+      neutralButtonRes = R.string.cancel,
+      onPositive = { viewModel.saveReminder(true) },
+      onNegative = { viewModel.saveReminder(false) },
+    )
   } else {
     viewModel.saveReminder(false)
   }
 }
 
 private fun deleteReminder(
-  context: Context,
-  dialogues: Dialogues,
+  dialogDispatcher: DialogDispatcher,
   viewModel: BuildReminderViewModel,
 ) {
   if (viewModel.isRemoved) {
-    dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
-      if (confirmed) viewModel.deleteReminder(true)
-    }
+    dialogDispatcher.showDialog(
+      titleRes = R.string.delete,
+      textRes = R.string.are_you_sure,
+      positiveButtonRes = R.string.yes,
+      negativeButtonRes = R.string.no,
+      onPositive = { viewModel.deleteReminder(true) },
+    )
   } else {
-    dialogues.askConfirmation(context, context.getString(R.string.move_to_the_archive)) { confirmed ->
-      if (confirmed) viewModel.moveToTrash()
-    }
+    dialogDispatcher.showDialog(
+      titleRes = R.string.move_to_the_archive,
+      textRes = R.string.are_you_sure,
+      positiveButtonRes = R.string.yes,
+      negativeButtonRes = R.string.no,
+      onPositive = { viewModel.moveToTrash() },
+    )
   }
 }
 

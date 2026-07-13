@@ -34,7 +34,6 @@ import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
-import org.koin.compose.koinInject
 
 /**
  * Root of the app's single Nav3 graph, hosted directly by
@@ -47,7 +46,7 @@ import org.koin.compose.koinInject
 @Composable
 fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
-  val appNavBridge = koinInject<AppNavBridge>()
+  val appNavBridge = rememberAppNavBridge()
 
   DisposableEffect(backStack) {
     appNavBridge.attachOuterBackStack(backStack)

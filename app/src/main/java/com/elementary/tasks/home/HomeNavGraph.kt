@@ -21,7 +21,7 @@ import com.elementary.tasks.home.eventsview.EventsScreen
 import com.elementary.tasks.home.eventsview.EventsScreenState
 import com.elementary.tasks.home.eventsview.EventsViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
-import com.elementary.tasks.navigation.nav3.AppNavBridge
+import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
@@ -32,7 +32,6 @@ import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.other.OtherNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -49,7 +48,7 @@ fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
 @Composable
 private fun HomeEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<ScheduleHomeViewModel>()
-  val appNavBridge = koinInject<AppNavBridge>()
+  val appNavBridge = rememberAppNavBridge()
   val eventActionDispatcher = rememberEventActionDispatcher()
 
   viewModel.event.ObserveEvent { event ->
@@ -154,7 +153,7 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun EventsEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<EventsViewModel>()
-  val appNavBridge = koinInject<AppNavBridge>()
+  val appNavBridge = rememberAppNavBridge()
   val permissionRequester = rememberPermissionRequesterRationale()
   val dialogDispatcher = rememberDialogDispatcher()
 

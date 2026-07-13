@@ -12,7 +12,7 @@ import org.koin.dsl.module
 val uiCommonModule = module {
   single { ThemeProvider(get(), get()) }
   single { Language(get(), get(), get()) }
-  single { Dialogues(get()) }
+  single { Dialogues() }
   single { ModelDateTimeFormatter(get(), get(), get()) }
 
   factory { ColorProvider(get()) }

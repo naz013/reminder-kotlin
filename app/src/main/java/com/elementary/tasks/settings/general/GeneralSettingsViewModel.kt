@@ -8,9 +8,10 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.common.Module
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.Module
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -78,7 +79,7 @@ class GeneralSettingsViewModel(
   fun onDynamicColorsToggle() {
     prefs.useDynamicColors = !prefs.useDynamicColors
     refreshState()
-    navigationEvent.value = Event(GeneralSettingsEvent.ApplyDynamicColorsAndRecreate)
+    navigationEvent.emit(GeneralSettingsEvent.ApplyDynamicColorsAndRecreate(prefs.useDynamicColors))
   }
 
   fun onMetricToggle() {
@@ -97,14 +98,14 @@ class GeneralSettingsViewModel(
     prefs.appLanguage = index
     refreshState()
     if (changed) {
-      navigationEvent.value = Event(GeneralSettingsEvent.RestartApp)
+      navigationEvent.emit(GeneralSettingsEvent.RestartApp)
     }
   }
 
   private fun selectTheme(index: Int) {
     prefs.nightMode = nightModeFor(index)
     refreshState()
-    navigationEvent.value = Event(GeneralSettingsEvent.RecreateActivity)
+    navigationEvent.emit(GeneralSettingsEvent.RecreateActivity)
   }
 
   private fun selectTimeFormat(index: Int) {
@@ -133,7 +134,7 @@ class GeneralSettingsViewModel(
       themeName = themeOptions[themeIndexFor(prefs.nightMode)],
       timeFormatName = timeFormatOptions[prefs.hourFormat.coerceIn(timeFormatOptions.indices)],
       isDynamicColorsVisible = Module.is12,
-      isDynamicColorsChecked = prefs.useDynamicColors,
+      useDynamicColors = prefs.useDynamicColors,
       isMetricChecked = prefs.useMetric,
       isAnalyticsChecked = prefs.analyticsEnabled,
     )

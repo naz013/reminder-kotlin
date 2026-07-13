@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.util.Base64
 import androidx.core.content.ContextCompat
@@ -109,21 +108,6 @@ object SuperUtil {
     } else {
       0
     }
-
-  fun isAppInstalled(
-    context: Context,
-    packageName: String,
-  ): Boolean {
-    val pm = context.packageManager
-    val installed: Boolean =
-      try {
-        pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
-        true
-      } catch (e: PackageManager.NameNotFoundException) {
-        false
-      }
-    return installed
-  }
 
   fun decrypt(string: String): String {
     var result = ""

@@ -2,9 +2,11 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.attachments
 
 import android.net.Uri
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.UriHelper
 import com.github.naz013.logging.Logger
+import org.koin.compose.koinInject
 
 class UriToAttachmentFileAdapter(
   private val uriHelper: UriHelper,
@@ -53,3 +55,6 @@ class UriToAttachmentFileAdapter(
     private const val TAG = "UriToAttachmentFileAdapter"
   }
 }
+
+@Composable
+fun rememberUriToAttachmentFileAdapter(): UriToAttachmentFileAdapter = koinInject()

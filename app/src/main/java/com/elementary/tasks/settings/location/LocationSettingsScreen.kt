@@ -34,7 +34,6 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchIt
 @Composable
 fun LocationSettingsScreen(
   state: LocationSettingsState,
-  hasLocation: Boolean,
   onNotificationToggle: () -> Unit,
   onRadiusClick: () -> Unit,
   onRadiusPreviewChange: (Int) -> Unit,
@@ -121,7 +120,7 @@ fun LocationSettingsScreen(
       dividerBottom = true,
       onClick = onTrackerClick,
     )
-    if (hasLocation) {
+    if (state.hasLocation) {
       SettingsItem(
         title = stringResource(R.string.places),
         icon = painterResource(R.drawable.ic_fluent_place),

@@ -18,7 +18,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.notes.ObserveEvent
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.login.BiometricProvider
 import com.elementary.tasks.settings.SettingsScaffold

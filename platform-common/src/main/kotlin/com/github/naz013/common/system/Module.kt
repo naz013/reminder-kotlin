@@ -1,10 +1,9 @@
-package com.github.naz013.common
+package com.github.naz013.common.system
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Build
-import androidx.fragment.app.Fragment
-import com.github.naz013.common.playservices.PlayServices
 
 object Module {
 
@@ -21,11 +20,9 @@ object Module {
 
   fun isTablet(context: Context): Boolean {
     val screenLayout = context.resources.configuration.screenLayout
-    val screenSize = screenLayout and android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
-    return screenSize >= android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE
+    val screenSize = screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+    return screenSize >= Configuration.SCREENLAYOUT_SIZE_LARGE
   }
-
-  fun Fragment.isTablet() = isTablet(requireContext())
 
   fun isChromeOs(context: Context) =
     context.packageManager.hasSystemFeature("org.chromium.arc.device_management")
@@ -33,16 +30,9 @@ object Module {
   fun hasTelephony(context: Context) =
     context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
 
-  fun hasLocation(context: Context) =
-    context.packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION) &&
-      PlayServices.isGooglePlayServicesAvailable(context)
-
   fun hasCamera(context: Context) =
     context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
   fun hasMicrophone(context: Context) =
     context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
-
-  fun hasBluetooth(context: Context) =
-    context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
 }

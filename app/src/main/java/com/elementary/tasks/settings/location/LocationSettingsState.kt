@@ -10,6 +10,7 @@ data class LocationSettingsState(
   val isMarkerStyleVisible: Boolean = false,
   val markerColor: Int = 0,
   val dialog: LocationSettingsDialog? = null,
+  val hasLocation: Boolean = false,
 )
 
 sealed class LocationSettingsDialog {

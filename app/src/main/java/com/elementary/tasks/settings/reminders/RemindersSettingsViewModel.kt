@@ -10,6 +10,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,9 @@ class RemindersSettingsViewModel(
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val systemInfo: SystemInfo,
 ) : ViewModel() {
+
   val state: StateFlow<RemindersSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<RemindersSettingsEvent>> field = mutableLiveEventOf()
 
@@ -278,6 +281,7 @@ class RemindersSettingsViewModel(
       doNotDisturbActionName = actionOptions()[prefs.doNotDisturbAction.coerceIn(0, 1)],
       doNotDisturbIgnoreName = ignoreOptions()[prefs.doNotDisturbIgnore.coerceIn(0, 5)],
       isDoNotDisturbDependentEnabled = isDoNotDisturbChecked,
+      hasLocation = systemInfo.hasLocation,
     )
   }
 

@@ -22,6 +22,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
+import com.elementary.tasks.core.compose.rememberFeatureManager
+import com.elementary.tasks.core.compose.rememberReviewsApi
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
@@ -31,13 +33,11 @@ import com.elementary.tasks.settings.other.whatsnew.WhatsNewScreen
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewState
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
 import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.reviews.AppSource
-import com.github.naz013.reviews.ReviewsApi
-import com.github.naz013.ui.common.Dialogues
 import com.github.naz013.ui.common.activity.toast
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -60,9 +60,9 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
 
   val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
 
-  val reviewsApi = koinInject<ReviewsApi>()
-  val featureManager = koinInject<FeatureManager>()
-  val dialogues = koinInject<Dialogues>()
+  val reviewsApi = rememberReviewsApi()
+  val featureManager = rememberFeatureManager()
+  val listDialogDispatcher = rememberListDialogDispatcher()
   val activity = LocalActivity.current as FragmentActivity
   val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
@@ -103,16 +103,14 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
 
   fun showPermissionDialog() {
     if (!loadPermissionItems()) return
-    val builder = dialogues.getMaterialDialog(activity)
-    builder.setTitle(R.string.allow_permission)
-    val names = permissionItems.map { it.title }
-    builder.setItems(names.toTypedArray()) { dialogInterface, i ->
-      dialogInterface.dismiss()
-      val item = permissionItems[i]
-      permissionRequester.request(item.permission, onGranted = { showPermissionDialog() })
-    }
-    builder.setNegativeButton(activity.getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
-    builder.create().show()
+    listDialogDispatcher.showDialog(
+      titleRes = R.string.allow_permission,
+      items = permissionItems.map { it.title },
+      onItemClick = { index ->
+        val item = permissionItems[index]
+        permissionRequester.request(item.permission, onGranted = { showPermissionDialog() })
+      },
+    )
   }
 
   SettingsScaffold(

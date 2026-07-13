@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
 import com.github.naz013.domain.font.FontParams
 
 typealias PrefsObserver = (String) -> Unit
