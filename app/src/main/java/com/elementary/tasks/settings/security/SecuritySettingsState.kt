@@ -5,6 +5,8 @@ data class SecuritySettingsState(
   val isFingerprintChecked: Boolean = false,
   val isShuffleChecked: Boolean = false,
   val isTelephonyChecked: Boolean = false,
+  val hasBiometricHardware: Boolean = false,
+  val hasTelephony: Boolean = false,
 )
 
 sealed class SecuritySettingsEvent {
@@ -14,5 +16,5 @@ sealed class SecuritySettingsEvent {
 
   data object OpenChangePin : SecuritySettingsEvent()
 
-  data object TryFingerprintLogin : SecuritySettingsEvent()
+  data object TryBiometricLogin : SecuritySettingsEvent()
 }

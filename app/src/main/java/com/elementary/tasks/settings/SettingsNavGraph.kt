@@ -59,6 +59,7 @@ import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSetting
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.reviews.AppSource
+import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.login.rememberAuthProvider
 import org.koin.compose.viewmodel.koinViewModel
@@ -368,7 +369,7 @@ private fun ManagePresetsEntry(backStack: MutableList<NavKey>) {
 private fun DeveloperEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<DeveloperViewModel>()
 
-  val reviewApiLauncher = rememberReviewApiLauncher()
+  val reviewsFormLauncher = rememberReviewsFormLauncher()
   val toastDispatcher = rememberToastDispatcher()
 
   val context = LocalContext.current
@@ -378,7 +379,7 @@ private fun DeveloperEntry(backStack: MutableList<NavKey>) {
     when (event) {
       DeveloperEvent.OpenObjectExport -> backStack.add(SettingsNavKey.ObjectExportTest)
       DeveloperEvent.OpenReviewDialog -> {
-        reviewApiLauncher.launch(
+        reviewsFormLauncher.showFeedbackForm(
           title = "Write a review",
           appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE,
           allowLogsAttachment = false,

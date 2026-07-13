@@ -3,6 +3,7 @@ package com.github.naz013.common.system
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.biometric.BiometricManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 
@@ -31,6 +32,13 @@ class SystemInfo(
 
   val hasMicrophone: Boolean
     get() = Module.hasMicrophone(context)
+
+  val hasBiometricHardware: Boolean
+    get() {
+      return BiometricManager.from(context).canAuthenticate(
+        BiometricManager.Authenticators.BIOMETRIC_WEAK
+      ) == BiometricManager.BIOMETRIC_SUCCESS
+    }
 
   val currentPackageName: String
     get() = if (buildInfo.isPro) {

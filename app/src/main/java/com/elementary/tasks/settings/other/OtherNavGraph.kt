@@ -23,7 +23,6 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.core.compose.rememberFeatureManager
-import com.elementary.tasks.core.compose.rememberReviewsApi
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
@@ -33,9 +32,10 @@ import com.elementary.tasks.settings.other.whatsnew.WhatsNewScreen
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewState
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
 import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
-import com.github.naz013.common.system.Module
 import com.github.naz013.common.Permissions
+import com.github.naz013.common.system.Module
 import com.github.naz013.reviews.AppSource
+import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
@@ -59,8 +59,8 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<OtherSettingsViewModel>()
 
   val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
+  val reviewsFormLauncher = rememberReviewsFormLauncher()
 
-  val reviewsApi = rememberReviewsApi()
   val featureManager = rememberFeatureManager()
   val listDialogDispatcher = rememberListDialogDispatcher()
   val activity = LocalActivity.current as FragmentActivity
@@ -123,9 +123,8 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
       onTermsClick = { backStack.add(OtherNavKey.Terms) },
       onTroubleshootingClick = { backStack.add(SettingsNavKey.Troubleshooting) },
       onFeedbackClick = {
-        reviewsApi.showFeedbackForm(
-          activity,
-          activity.getString(R.string.share_your_experience),
+        reviewsFormLauncher.showFeedbackForm(
+          title = activity.getString(R.string.share_your_experience),
           appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE,
           allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
         )

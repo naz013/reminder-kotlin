@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.build
 
-import android.content.Context
 import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
@@ -25,7 +24,6 @@ import com.elementary.tasks.core.compose.rememberFeatureManager
 import com.elementary.tasks.core.compose.rememberGoogleCalendarUtils
 import com.elementary.tasks.core.compose.rememberPackageManagerWrapper
 import com.elementary.tasks.core.compose.rememberPrefs
-import com.elementary.tasks.core.compose.rememberReviewsApi
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.os.compose.PermissionRequester
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
@@ -48,7 +46,7 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.domain.Place
 import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.AppSource
-import com.github.naz013.reviews.ReviewsApi
+import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
@@ -85,9 +83,11 @@ private fun MainEntry(
 
   val context = LocalContext.current
   val activity = LocalActivity.current as FragmentActivity
+
   val dialogDispatcher = rememberDialogDispatcher()
+  val reviewsFormLauncher = rememberReviewsFormLauncher()
+
   val prefs = rememberPrefs()
-  val reviewsApi = rememberReviewsApi()
   val featureManager = rememberFeatureManager()
   val selectorDialogDataHolder = rememberSelectorDialogDataHolder()
   val paramToTextAdapter = rememberParamToTextAdapter()
@@ -139,7 +139,12 @@ private fun MainEntry(
     }
   }
   viewModel.showReviewDialog.ObserveEvent {
-    showReviewDialog(context, reviewsApi, featureManager, context.getString(R.string.share_your_experience))
+    val appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE
+    reviewsFormLauncher.showFeedbackForm(
+      title = context.getString(R.string.share_your_experience),
+      appSource = appSource,
+      allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
+    )
   }
 
   BuildReminderScreen(
@@ -163,7 +168,12 @@ private fun MainEntry(
     },
     onHelpClick = { backStack.add(BuildReminderNavKey.Help) },
     onReportIssueClick = {
-      showReviewDialog(context, reviewsApi, featureManager, context.getString(R.string.report_an_issue))
+      val appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE
+      reviewsFormLauncher.showFeedbackForm(
+        title = context.getString(R.string.report_an_issue),
+        appSource = appSource,
+        allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
+      )
     },
     onSaveAsPresetChange = {
       saveAsPresetChecked = it
@@ -313,21 +323,6 @@ private fun deleteReminder(
       onPositive = { viewModel.moveToTrash() },
     )
   }
-}
-
-private fun showReviewDialog(
-  context: Context,
-  reviewsApi: ReviewsApi,
-  featureManager: FeatureManager,
-  title: String,
-) {
-  val appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE
-  reviewsApi.showFeedbackForm(
-    context = context,
-    title = title,
-    appSource = appSource,
-    allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
-  )
 }
 
 @Composable

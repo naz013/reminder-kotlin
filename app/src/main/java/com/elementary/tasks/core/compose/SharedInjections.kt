@@ -8,7 +8,6 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.reviews.ReviewsApi
 import org.koin.compose.koinInject
 
 /**
@@ -28,9 +27,6 @@ fun rememberAnalyticsEventSender(): AnalyticsEventSender = koinInject()
 
 @Composable
 fun rememberFeatureManager(): FeatureManager = koinInject()
-
-@Composable
-fun rememberReviewsApi(): ReviewsApi = koinInject()
 
 @Composable
 fun rememberAppWidgetUpdater(): AppWidgetUpdater = koinInject()

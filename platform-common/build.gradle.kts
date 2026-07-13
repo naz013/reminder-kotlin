@@ -17,4 +17,6 @@ dependencies {
   implementation(libs.play.services.auth)
 
   implementation(libs.threetenbp)
+
+  implementation(libs.androidx.biometric)
 }

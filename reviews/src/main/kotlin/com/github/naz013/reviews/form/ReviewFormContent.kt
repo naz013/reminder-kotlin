@@ -1,9 +1,5 @@
 package com.github.naz013.reviews.form
 
-import android.content.Context
-import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -30,144 +26,19 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.naz013.feature.common.android.readSerializable
-import com.github.naz013.feature.common.livedata.observeEvent
-import com.github.naz013.logging.Logger
-import com.github.naz013.reviews.AppSource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
-import com.github.naz013.ui.common.compose.ComposeBottomSheetDialogFragment
 import com.github.naz013.ui.common.compose.foundation.PrimaryIconButton
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
-/**
- * Bottom sheet dialog for collecting user feedback and reviews.
- *
- * This dialog presents a form for users to submit their feedback, including:
- * - Star rating (1-5 scale)
- * - Comment text
- * - Optional log file attachment
- * - Optional user email
- */
-internal class ReviewDialog : ComposeBottomSheetDialogFragment() {
-
-  private val viewModel by viewModel<ReviewDialogViewModel>()
-
-  init {
-    Logger.d(TAG, "ReviewDialog instance created at ${System.currentTimeMillis()}")
-  }
-
-  @Composable
-  override fun FragmentContent() {
-    Logger.d(TAG, "FragmentContent composition started at ${System.currentTimeMillis()}")
-
-    val title = arguments?.getString(ARG_TITLE) ?: stringResource(R.string.feedback)
-    val appSource = arguments?.readSerializable(ARG_SOURCE, AppSource::class.java) ?: AppSource.FREE
-    val allowLogs = arguments?.getBoolean(ARG_ALLOW_LOGS) ?: false
-
-    val isLoading by viewModel.isLoading.observeAsState(false)
-
-    ReviewFormContent(
-      title = title,
-      isLoading = isLoading,
-      allowLogs = allowLogs,
-      onSubmit = { rating, comment, attachLog, email ->
-        viewModel.submitReview(rating, comment, attachLog, email, appSource)
-      },
-      onDismiss = { dismiss() },
-      onShowError = { message -> showMessage(message) }
-    )
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    Logger.i(TAG, "On view created at ${System.currentTimeMillis()}")
-    initViewModel()
-    setupBottomSheet()
-  }
-
-  /**
-   * Initializes ViewModel observers for submission results.
-   */
-  private fun initViewModel() {
-    viewModel.submitSuccess.observeEvent(viewLifecycleOwner) {
-      Logger.i(TAG, "Review submitted successfully, closing dialog")
-      showMessage(getString(com.github.naz013.reviews.R.string.thank_you_for_your_feedback))
-      dismiss()
-    }
-
-    viewModel.submitError.observeEvent(viewLifecycleOwner) { errorMessage ->
-      Logger.e(TAG, "Review submission failed: $errorMessage")
-      showMessage(errorMessage)
-    }
-  }
-
-  /**
-   * Shows a message to the user using Toast.
-   *
-   * @param message The message to display
-   */
-  private fun showMessage(message: String) {
-    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-  }
-
-  private fun setupBottomSheet() {
-    // Open the bottom sheet expanded having half screen height
-    dialog?.let { dlg ->
-      dlg.setOnShowListener { dialogInterface ->
-        val bottomSheetDialog = dialogInterface as BottomSheetDialog
-        val bottomSheet = bottomSheetDialog.findViewById<View>(
-          com.google.android.material.R.id.design_bottom_sheet
-        )
-        bottomSheet?.let { sheet ->
-          val behavior = BottomSheetBehavior.from(sheet)
-          behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-          behavior.peekHeight = resources.displayMetrics.heightPixels / 2
-        }
-      }
-    }
-  }
-
-  companion object {
-    internal const val TAG = "ReviewDialog"
-    private const val ARG_TITLE = "dialog_title"
-    private const val ARG_SOURCE = "dialog_source"
-    private const val ARG_ALLOW_LOGS = "allow_logs"
-
-    /**
-     * Creates a new instance of ReviewDialog.
-     *
-     * @param title The dialog title
-     * @return New ReviewDialog instance
-     */
-    fun newInstance(
-      title: String?,
-      appSource: AppSource,
-      allowLogsAttachment: Boolean
-    ): ReviewDialog {
-      return ReviewDialog().apply {
-        arguments = Bundle().apply {
-          putString(ARG_TITLE, title)
-          putSerializable(ARG_SOURCE, appSource)
-          putBoolean(ARG_ALLOW_LOGS, allowLogsAttachment)
-        }
-      }
-    }
-  }
-}
 
 /**
  * Validates email address format.
