@@ -1,6 +1,5 @@
 package com.elementary.tasks.settings.calendar
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
@@ -11,9 +10,6 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.Event
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,10 +25,6 @@ class CalendarSettingsViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {
   val state: StateFlow<CalendarSettingsState> field = MutableStateFlow(buildState())
-  val navigationEvent: LiveData<Event<CalendarSettingsEvent>> field = mutableLiveEventOf()
-
-  private val _showSelectGoogleCalendarDialog = mutableLiveEventOf<ShowSelectGoogleCalendarDialog>()
-  val showSelectGoogleCalendarDialog = _showSelectGoogleCalendarDialog.toLiveData()
 
   private var selectedCalendarId: Long = -1L
   private var selectedCalendarName: String? = null
@@ -60,48 +52,37 @@ class CalendarSettingsViewModel(
   }
 
   fun onTodayColorClick() {
-    navigationEvent.value =
-      Event(
-        CalendarSettingsEvent.ShowColorPicker(
-          target = ColorPickerTarget.TODAY,
-          currentColorIndex = prefs.todayColor,
-          title = textProvider.getString(R.string.today_color),
-        ),
-      )
+    showColorPicker(
+      target = ColorPickerTarget.TODAY,
+      currentColorIndex = prefs.todayColor,
+      title = textProvider.getString(R.string.today_color),
+    )
   }
 
   fun onReminderColorClick() {
-    navigationEvent.value =
-      Event(
-        CalendarSettingsEvent.ShowColorPicker(
-          target = ColorPickerTarget.REMINDER,
-          currentColorIndex = prefs.reminderColor,
-          title = textProvider.getString(R.string.reminders_color),
-        ),
-      )
+    showColorPicker(
+      target = ColorPickerTarget.REMINDER,
+      currentColorIndex = prefs.reminderColor,
+      title = textProvider.getString(R.string.reminders_color),
+    )
   }
 
   fun onBirthdayColorClick() {
-    navigationEvent.value =
-      Event(
-        CalendarSettingsEvent.ShowColorPicker(
-          target = ColorPickerTarget.BIRTHDAY,
-          currentColorIndex = prefs.birthdayColor,
-          title = textProvider.getString(R.string.birthdays_color),
-        ),
-      )
+    showColorPicker(
+      target = ColorPickerTarget.BIRTHDAY,
+      currentColorIndex = prefs.birthdayColor,
+      title = textProvider.getString(R.string.birthdays_color),
+    )
   }
 
-  fun onColorSelected(
-    target: ColorPickerTarget,
-    colorIndex: Int,
-  ) {
-    when (target) {
-      ColorPickerTarget.TODAY -> prefs.todayColor = colorIndex
-      ColorPickerTarget.REMINDER -> prefs.reminderColor = colorIndex
-      ColorPickerTarget.BIRTHDAY -> prefs.birthdayColor = colorIndex
+  fun onColorOptionSelected(index: Int) {
+    val dialog = state.value.dialog as? CalendarSettingsDialog.ColorPicker ?: return
+    when (dialog.target) {
+      ColorPickerTarget.TODAY -> prefs.todayColor = index
+      ColorPickerTarget.REMINDER -> prefs.reminderColor = index
+      ColorPickerTarget.BIRTHDAY -> prefs.birthdayColor = index
     }
-    refreshState()
+    dismissDialog()
   }
 
   fun onSelectGoogleCalendarClicked() {
@@ -113,10 +94,11 @@ class CalendarSettingsViewModel(
       }
       val selectedPosition = calendars.indexOfFirst { it.id == selectedCalendarId }
       withContext(dispatcherProvider.main()) {
-        _showSelectGoogleCalendarDialog.value =
-          Event(
-            ShowSelectGoogleCalendarDialog(calendars = calendars, selectedPosition = selectedPosition),
+        state.update {
+          it.copy(
+            dialog = CalendarSettingsDialog.SelectGoogleCalendar(calendars = calendars, selectedPosition = selectedPosition),
           )
+        }
       }
     }
   }
@@ -128,12 +110,12 @@ class CalendarSettingsViewModel(
     refreshState()
   }
 
-  fun onCalendarSelected(position: Int) {
+  fun onGoogleCalendarOptionSelected(position: Int) {
     val calendar = calendars.getOrNull(position) ?: return
     selectedCalendarId = calendar.id
     selectedCalendarName = calendar.name
     prefs.googleCalendarReminderId = selectedCalendarId
-    refreshState()
+    dismissDialog()
   }
 
   fun onExportToggle() {
@@ -144,6 +126,16 @@ class CalendarSettingsViewModel(
   fun onScanToggle() {
     prefs.scanGoogleCalendarEvents = !prefs.scanGoogleCalendarEvents
     refreshState()
+  }
+
+  private fun showColorPicker(
+    target: ColorPickerTarget,
+    currentColorIndex: Int,
+    title: String,
+  ) {
+    state.update {
+      it.copy(dialog = CalendarSettingsDialog.ColorPicker(target = target, title = title, selectedIndex = currentColorIndex))
+    }
   }
 
   private fun loadSelectedCalendar() {
@@ -186,16 +178,6 @@ class CalendarSettingsViewModel(
       textProvider.getString(R.string.sunday),
       textProvider.getString(R.string.monday),
     )
-
-  data class ShowSelectGoogleCalendarDialog(
-    val calendars: List<GoogleCalendar>,
-    val selectedPosition: Int,
-  )
-
-  data class GoogleCalendar(
-    val id: Long,
-    val name: String?,
-  )
 
   companion object {
     private const val TAG = "CalendarSettingsViewModel"

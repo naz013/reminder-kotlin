@@ -146,12 +146,26 @@ class RemindersSettingsViewModel(
 
   fun onDndFromClick() {
     val time = dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now()
-    navigationEvent.value = Event(RemindersSettingsEvent.ShowTimePicker(DndTimeTarget.FROM, time))
+    navigationEvent.value = Event(
+      RemindersSettingsEvent.ShowTimePicker(
+        DndTimeTarget.FROM,
+        time,
+        textProvider.getString(R.string.from),
+        prefs.is24HourFormat,
+      )
+    )
   }
 
   fun onDndToClick() {
     val time = dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now()
-    navigationEvent.value = Event(RemindersSettingsEvent.ShowTimePicker(DndTimeTarget.TO, time))
+    navigationEvent.value = Event(
+      RemindersSettingsEvent.ShowTimePicker(
+        DndTimeTarget.TO,
+        time,
+        textProvider.getString(R.string.to),
+        prefs.is24HourFormat,
+      )
+    )
   }
 
   fun onTimeSelected(
@@ -267,7 +281,8 @@ class RemindersSettingsViewModel(
     )
   }
 
-  private fun minutesText(minutes: Int): String = textProvider.getString(R.string.x_minutes, minutes.toString())
+  private fun minutesText(minutes: Int): String =
+    textProvider.getString(R.string.x_minutes, minutes.toString())
 
   private fun priorityOptions(): List<String> =
     listOf(

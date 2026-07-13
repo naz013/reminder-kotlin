@@ -2,17 +2,13 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.app.ActivityManager
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioManager
-import android.net.Uri
 import android.util.Base64
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.elementary.tasks.R
 import com.elementary.tasks.core.services.GeolocationService
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
@@ -149,20 +145,5 @@ object SuperUtil {
       e.printStackTrace()
     }
     return Base64.encodeToString(input, Base64.DEFAULT).trim()
-  }
-
-  fun launchMarket(context: Context) {
-    val uri = Uri.parse("market://details?id=" + context.packageName)
-    val goToMarket = Intent(Intent.ACTION_VIEW, uri)
-    try {
-      context.startActivity(goToMarket)
-    } catch (e: ActivityNotFoundException) {
-      Toast
-        .makeText(
-          context,
-          context.getString(R.string.could_not_launch_market),
-          Toast.LENGTH_SHORT,
-        ).show()
-    }
   }
 }

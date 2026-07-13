@@ -143,7 +143,7 @@ class PermissionRequester internal constructor(
 }
 
 @Composable
-fun rememberPermissionRequester(): PermissionRequester {
+fun rememberPermissionRequesterRationale(): PermissionRequester {
   val context = LocalContext.current
   val activity = remember(context) { context.findActivity() }
   requireNotNull(activity) { "rememberPermissionRequester must be called from an Activity-backed composition" }
@@ -155,19 +155,13 @@ fun rememberPermissionRequester(): PermissionRequester {
       requester.onSystemResult(permission, isGranted)
     }
   requester.launchSystemPrompt = { permission -> launcher.launch(arrayOf(permission)) }
-  return requester
-}
-
-@Composable
-fun rememberPermissionRequesterRationale(): PermissionRequester {
-  val requester = rememberPermissionRequester()
   PermissionRationaleDialog(requester)
   return requester
 }
 
 /** Renders [PermissionRequester.rationale] as an explanation dialog; no-op while there's none pending. */
 @Composable
-fun PermissionRationaleDialog(state: PermissionRequester) {
+private fun PermissionRationaleDialog(state: PermissionRequester) {
   val data = state.rationale ?: return
   AlertDialog(
     onDismissRequest = state::onRationaleDismissed,

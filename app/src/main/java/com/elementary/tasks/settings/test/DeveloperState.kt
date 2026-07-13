@@ -27,4 +27,10 @@ sealed class DeveloperEvent {
   data class OpenBirthdayAction(
     val birthdayId: String,
   ) : DeveloperEvent()
+
+  data object BannersReset : DeveloperEvent()
+
+  data class ShowMessage(
+    val message: String,
+  ) : DeveloperEvent()
 }

@@ -28,11 +28,11 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.googletasks.list.TaskListEvent
 import com.elementary.tasks.googletasks.list.TaskListScreen
 import com.elementary.tasks.googletasks.list.TaskListViewModel
@@ -73,10 +73,9 @@ fun EntryProviderScope<NavKey>.googleTasksEntries(backStack: MutableList<NavKey>
 private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GoogleTasksViewModel>()
   bindLifecycle(viewModel)
-  val context = LocalContext.current
   val activity = LocalActivity.current as FragmentActivity
   val analyticsEventSender = koinInject<AnalyticsEventSender>()
-  val permissionRequester = rememberPermissionRequester()
+  val permissionRequester = rememberPermissionRequesterRationale()
   var showLoginError by remember { mutableStateOf(false) }
   val googleTasksLogin =
     rememberGoogleTasksLogin(
@@ -93,7 +92,6 @@ private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
   }
 
   val state by viewModel.state.collectAsState()
-  PermissionRationaleDialog(permissionRequester)
   if (showLoginError) {
     AlertDialog(
       onDismissRequest = { showLoginError = false },
@@ -191,8 +189,8 @@ private fun TaskEditEntry(
   val viewModel = koinViewModel<EditGoogleTaskViewModel> { parametersOf(key.id, key.listId) }
   bindLifecycle(viewModel)
   val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
-  val dateTimePickerProvider = koinInject<DateTimePickerProvider>()
+  val prefs = koinInject<Prefs>()
+  val dateTimePicker = rememberDateTimePicker()
   val appWidgetUpdater = koinInject<AppWidgetUpdater>()
   DisposableEffect(viewModel) {
     onDispose {
@@ -204,19 +202,20 @@ private fun TaskEditEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is EditGoogleTaskEvent.ShowDatePicker -> {
-        dateTimePickerProvider.showDatePicker(
-          fragmentManager = activity.supportFragmentManager,
+        dateTimePicker.showDatePicker(
           date = event.date,
           title = context.getString(R.string.select_date),
-        ) { viewModel.onDateSet(it) }
+          onDateSelected = { viewModel.onDateSet(it) },
+        )
       }
 
       is EditGoogleTaskEvent.ShowTimePicker -> {
-        dateTimePickerProvider.showTimePicker(
-          fragmentManager = activity.supportFragmentManager,
+        dateTimePicker.showTimePicker(
           time = event.time,
           title = context.getString(R.string.select_time),
-        ) { viewModel.onTimeSet(it) }
+          is24Hour = prefs.is24HourFormat,
+          onTimeSelected = { viewModel.onTimeSet(it) },
+        )
       }
 
       EditGoogleTaskEvent.Saved, EditGoogleTaskEvent.Deleted -> backStack.removeLastOrNull()
@@ -225,6 +224,7 @@ private fun TaskEditEntry(
   viewModel.errorEvent.ObserveEvent { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
 
   val state by viewModel.state.collectAsState()
+
   EditGoogleTaskScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },

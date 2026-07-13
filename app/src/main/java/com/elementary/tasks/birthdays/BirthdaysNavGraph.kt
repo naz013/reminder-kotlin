@@ -1,7 +1,6 @@
 package com.elementary.tasks.birthdays
 
 import android.widget.FrameLayout
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -12,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
@@ -23,16 +21,14 @@ import com.elementary.tasks.birthdays.create.EditBirthdayViewModel
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayScreen
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayState
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayViewModel
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
 import com.github.naz013.common.Permissions
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -53,7 +49,7 @@ private fun PreviewEntry(
 ) {
   val viewModel = koinViewModel<PreviewBirthdayViewModel> { parametersOf(key.id) }
   val context = LocalContext.current
-  val permissionRequester = rememberPermissionRequester()
+  val permissionRequester = rememberPermissionRequesterRationale()
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is PreviewBirthdayViewModel.ViewModelEvent.MoveBack -> {
@@ -63,7 +59,6 @@ private fun PreviewEntry(
   }
 
   val state by viewModel.state.collectAsState(PreviewBirthdayState())
-  PermissionRationaleDialog(permissionRequester)
   PreviewBirthdayScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -90,9 +85,8 @@ private fun EditEntry(
 ) {
   val viewModel = koinViewModel<EditBirthdayViewModel> { parametersOf(key) }
   val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
-  val dateTimePickerProvider = koinInject<DateTimePickerProvider>()
-  val permissionRequester = rememberPermissionRequester()
+  val dateTimePicker = rememberDateTimePicker()
+  val permissionRequester = rememberPermissionRequesterRationale()
   val pickContact = rememberContactPicker(onContactPicked = viewModel::onContactPicked)
 
   DisposableEffect(viewModel) {
@@ -107,7 +101,7 @@ private fun EditEntry(
 
   val state by viewModel.state.collectAsState(EditBirthdayState())
   val selectDateTitle = stringResource(R.string.select_date)
-  PermissionRationaleDialog(permissionRequester)
+
   EditBirthdayScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -122,11 +116,11 @@ private fun EditEntry(
     onNameChange = viewModel::onNameChanged,
     onYearCheckChanged = viewModel::onYearCheckChanged,
     onDateFieldClick = {
-      dateTimePickerProvider.showDatePicker(
-        fragmentManager = activity.supportFragmentManager,
+      dateTimePicker.showDatePicker(
         date = state.selectedDate,
         title = selectDateTitle,
-      ) { viewModel.onDateChanged(it) }
+        onDateSelected = { viewModel.onDateChanged(it) },
+      )
     },
     onNumberChange = viewModel::onNumberChanged,
     onPickContactClick = pickContact,

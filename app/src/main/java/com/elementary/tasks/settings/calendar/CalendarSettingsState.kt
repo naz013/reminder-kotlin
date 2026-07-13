@@ -17,14 +17,22 @@ sealed class CalendarSettingsDialog {
     val options: List<String>,
     val selectedIndex: Int,
   ) : CalendarSettingsDialog()
+
+  data class ColorPicker(
+    val target: ColorPickerTarget,
+    val title: String,
+    val selectedIndex: Int,
+  ) : CalendarSettingsDialog()
+
+  data class SelectGoogleCalendar(
+    val calendars: List<GoogleCalendar>,
+    val selectedPosition: Int,
+  ) : CalendarSettingsDialog()
 }
 
 enum class ColorPickerTarget { TODAY, REMINDER, BIRTHDAY }
 
-sealed class CalendarSettingsEvent {
-  data class ShowColorPicker(
-    val target: ColorPickerTarget,
-    val currentColorIndex: Int,
-    val title: String,
-  ) : CalendarSettingsEvent()
-}
+data class GoogleCalendar(
+  val id: Long,
+  val name: String?,
+)

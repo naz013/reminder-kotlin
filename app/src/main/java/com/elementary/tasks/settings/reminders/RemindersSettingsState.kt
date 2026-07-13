@@ -56,6 +56,8 @@ sealed class RemindersSettingsEvent {
   data class ShowTimePicker(
     val target: DndTimeTarget,
     val time: LocalTime,
+    val title: String,
+    val is24Hour: Boolean,
   ) : RemindersSettingsEvent()
 
   data object ShowPermanentNotification : RemindersSettingsEvent()

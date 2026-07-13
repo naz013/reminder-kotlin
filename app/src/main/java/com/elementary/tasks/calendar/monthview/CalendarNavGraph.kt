@@ -17,9 +17,9 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
-import com.elementary.tasks.calendar.dayview.WeekViewViewModel
 import com.elementary.tasks.calendar.dayview.WeekViewScreen
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.calendar.dayview.WeekViewViewModel
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
@@ -133,7 +133,7 @@ private fun DayEntry(
   val context = LocalContext.current
   val dialogues = koinInject<Dialogues>()
   val appNavBridge = koinInject<AppNavBridge>()
-  val permissionRequester = rememberPermissionRequester()
+  val permissionRequester = rememberPermissionRequesterRationale()
 
   var pagerJumpRequest by remember { mutableStateOf<Int?>(null) }
 

@@ -60,15 +60,13 @@ class DeveloperViewModel(
   private val usedTimeRepository: UsedTimeRepository,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
-  val bannersReset: LiveData<Event<Unit>> field = mutableLiveEventOf()
-  val actionMessage: LiveData<Event<String>> field = mutableLiveEventOf()
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
 
   fun onResetBannersClick() {
     legalDocumentRepository.resetSeen(LegalDocumentType.PRIVACY_POLICY)
     prefs.isUserLogged = false
     prefs.lastVersionCode = 0
-    bannersReset.value = Event(Unit)
+    navigationEvent.value = Event(DeveloperEvent.BannersReset)
   }
 
   fun onReminderDialogClick() {
@@ -103,7 +101,7 @@ class DeveloperViewModel(
     state.update { it.copy(clearAllTablesConfirmation = false) }
     viewModelScope.launch(dispatcherProvider.io()) {
       Table.entries.forEach { clearTable(it) }
-      actionMessage.postValue(Event("All tables have been cleared"))
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("All tables have been cleared")))
     }
   }
 
@@ -116,7 +114,7 @@ class DeveloperViewModel(
       insertDemoReminders()
       insertDemoBirthdays()
       insertDemoNotes()
-      actionMessage.postValue(Event("Demo data has been inserted"))
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("Demo data has been inserted")))
     }
   }
 
@@ -177,7 +175,7 @@ class DeveloperViewModel(
     val table = Table.entries[selectedIndex]
     viewModelScope.launch(dispatcherProvider.io()) {
       clearTable(table)
-      actionMessage.postValue(Event("${table.tableName} table has been cleared"))
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("${table.tableName} table has been cleared")))
     }
   }
 

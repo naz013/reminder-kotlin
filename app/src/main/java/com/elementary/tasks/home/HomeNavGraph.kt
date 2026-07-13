@@ -13,8 +13,7 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
@@ -156,7 +155,7 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
 private fun EventsEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<EventsViewModel>()
   val appNavBridge = koinInject<AppNavBridge>()
-  val permissionRequester = rememberPermissionRequester()
+  val permissionRequester = rememberPermissionRequesterRationale()
   val dialogDispatcher = rememberDialogDispatcher()
 
   viewModel.navigationEvent.ObserveEvent { event ->
@@ -238,7 +237,6 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
   }
 
   val state by viewModel.eventsScreenState.collectAsState(EventsScreenState())
-  PermissionRationaleDialog(permissionRequester)
   EventsScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },

@@ -25,7 +25,6 @@ import com.elementary.tasks.core.utils.params.LocalePreferencesImpl
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.params.ThemePreferencesImpl
-import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
 import com.elementary.tasks.googletasks.work.SaveNewTaskTask
 import com.elementary.tasks.googletasks.work.UpdateTaskTask
 import com.elementary.tasks.groups.GroupsUtil
@@ -124,7 +123,6 @@ val utilModule =
     factory { ImageDecoder(get(), get(), get()) }
     factory { DroppedContentParser(get()) }
 
-    factory { DateTimePickerProvider(get()) }
     factory { DoNotDisturbManager(get(), get()) }
 
     factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->

@@ -84,7 +84,11 @@ class BirthdaySettingsViewModel(
   fun onReminderTimeClick() {
     navigationEvent.value =
       Event(
-        BirthdaySettingsEvent.ShowTimePicker(dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()),
+        BirthdaySettingsEvent.ShowTimePicker(
+          time = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now(),
+          is24Hour = prefs.is24HourFormat,
+          title = textProvider.getString(R.string.remind_at),
+        )
       )
   }
 

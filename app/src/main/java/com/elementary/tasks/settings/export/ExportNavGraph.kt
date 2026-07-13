@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -23,8 +22,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.compose.rememberGoogleDriveLogin
 import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.settings.SettingsScaffold
@@ -64,8 +62,6 @@ private fun CloudBackupEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<CloudBackupSettingsViewModel>()
   bindLifecycle(viewModel)
   val state by viewModel.state.collectAsState()
-  val hasAnyCloudApi by viewModel.hasAnyCloudApi.observeAsState(false)
-  val isInProgress by viewModel.isInProgress.collectAsState()
 
   SettingsScaffold(
     title = stringResource(R.string.cloud_backup),
@@ -73,8 +69,6 @@ private fun CloudBackupEntry(backStack: MutableList<NavKey>) {
   ) { padding ->
     CloudBackupSettingsScreen(
       state = state,
-      hasAnyCloudApi = hasAnyCloudApi,
-      isInProgress = isInProgress,
       onCloudServicesClick = { backStack.add(ExportNavKey.CloudServices) },
       onAutoBackupIntervalClick = viewModel::onAutoBackupIntervalClick,
       onAutoBackupIntervalSelected = viewModel::onAutoBackupIntervalSelected,
@@ -99,7 +93,7 @@ private fun CloudServicesEntry(backStack: MutableList<NavKey>) {
   val analyticsEventSender = koinInject<AnalyticsEventSender>()
   val googleDriveAuthManager = koinInject<GoogleDriveAuthManager>()
   val googleTasksAuthManager = koinInject<GoogleTasksAuthManager>()
-  val permissionRequester = rememberPermissionRequester()
+  val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
 
   var isGoogleDriveLoggedIn by remember { mutableStateOf(googleDriveAuthManager.isAuthorized()) }
@@ -199,7 +193,6 @@ private fun CloudServicesEntry(backStack: MutableList<NavKey>) {
     )
   }
 
-  PermissionRationaleDialog(permissionRequester)
   CloudServicesScreen(
     isLoading = state.isLoading,
     isDropboxVisible = isDropboxVisible,

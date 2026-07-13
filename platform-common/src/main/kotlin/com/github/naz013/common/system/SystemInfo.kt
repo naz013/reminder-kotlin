@@ -23,4 +23,9 @@ class SystemInfo(
 
   val hasMicrophone: Boolean
     get() = Module.hasMicrophone(context)
+
+  companion object {
+    const val FREE_PACKAGE_NAME = "com.cray.software.justreminder"
+    const val PRO_PACKAGE_NAME = "com.cray.software.justreminderpro"
+  }
 }

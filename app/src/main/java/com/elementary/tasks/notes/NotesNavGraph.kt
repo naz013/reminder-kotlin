@@ -27,8 +27,7 @@ import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
-import com.elementary.tasks.core.utils.ui.compose.DateTimePickerDialogs
-import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePickerState
+import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.elementary.tasks.notes.create.EditTab
 import com.elementary.tasks.notes.create.NoteEditActions
@@ -373,12 +372,11 @@ private fun NoteEditEntry(
   val galleryPicker = rememberGalleryPicker { uris -> viewModel.addMultiple(uris) }
   val cameraPicker = rememberCameraPicker { uri -> viewModel.addMultiple(listOf(uri)) }
   val permissionRequester = rememberPermissionRequesterRationale()
-  val dateTimePickerState = rememberDateTimePickerState(is24Hour = viewModel.is24HourFormat)
+  val dateTimePicker = rememberDateTimePicker()
   val urlImagePickerState = rememberUrlImagePickerState()
   val selectDateTitle = stringResource(R.string.select_date)
   val selectTimeTitle = stringResource(R.string.select_time)
 
-  DateTimePickerDialogs(dateTimePickerState)
   UrlImagePickerDialogs(urlImagePickerState, onUrlConfirmed = viewModel::downloadImageFromUrl)
 
   NoteEditScreen(
@@ -425,10 +423,15 @@ private fun NoteEditEntry(
         onOpacityChanged = viewModel::onOpacityChanged,
         onReminderAttachedChanged = viewModel::onReminderAttachedChanged,
         onDateClick = {
-          dateTimePickerState.showDatePicker(state.date, selectDateTitle, viewModel::onNewDate)
+          dateTimePicker.showDatePicker(state.date, selectDateTitle, viewModel::onNewDate)
         },
         onTimeClick = {
-          dateTimePickerState.showTimePicker(state.time, selectTimeTitle, viewModel::onNewTime)
+          dateTimePicker.showTimePicker(
+            time = state.time,
+            title = selectTimeTitle,
+            is24Hour = viewModel.is24HourFormat,
+            onTimeSelected = viewModel::onNewTime
+          )
         },
         onFontSizeChanged = viewModel::onFontSizeChanged,
         onFieldFocused = viewModel::onFieldFocused,

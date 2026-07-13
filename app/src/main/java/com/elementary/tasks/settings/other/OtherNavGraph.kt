@@ -16,23 +16,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.SettingsScaffold
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewScreen
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewState
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
+import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
 import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.reviews.AppSource
@@ -59,11 +57,14 @@ fun EntryProviderScope<NavKey>.otherEntries(backStack: MutableList<NavKey>) {
 @Composable
 private fun OtherEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<OtherSettingsViewModel>()
+
+  val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
+
   val reviewsApi = koinInject<ReviewsApi>()
   val featureManager = koinInject<FeatureManager>()
   val dialogues = koinInject<Dialogues>()
   val activity = LocalActivity.current as FragmentActivity
-  val permissionRequester = rememberPermissionRequester()
+  val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
   var permissionItems by remember { mutableStateOf<List<PermissionItem>>(emptyList()) }
 
@@ -114,7 +115,6 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
     builder.create().show()
   }
 
-  PermissionRationaleDialog(permissionRequester)
   SettingsScaffold(
     title = stringResource(R.string.other),
     onBackClick = { backStack.removeLastOrNull() },
@@ -132,7 +132,7 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
           allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
         )
       },
-      onRateClick = { SuperUtil.launchMarket(activity) },
+      onRateClick = { googlePlayMarketLauncher.launchSelf() },
       onTellFriendsClick = {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"

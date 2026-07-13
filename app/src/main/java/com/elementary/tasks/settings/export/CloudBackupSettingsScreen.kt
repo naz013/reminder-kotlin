@@ -30,8 +30,6 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 @Composable
 fun CloudBackupSettingsScreen(
   state: CloudBackupSettingsState,
-  hasAnyCloudApi: Boolean,
-  isInProgress: Boolean,
   onCloudServicesClick: () -> Unit,
   onAutoBackupIntervalClick: () -> Unit,
   onAutoBackupIntervalSelected: (Int) -> Unit,
@@ -61,7 +59,7 @@ fun CloudBackupSettingsScreen(
       title = stringResource(R.string.automatically_backup),
       subtitle = state.autoBackupStateName,
       icon = painterResource(R.drawable.ic_fluent_cloud_backup),
-      enabled = hasAnyCloudApi,
+      enabled = state.hasAnyCloudApi,
       dividerBottom = true,
       onClick = onAutoBackupIntervalClick,
     )
@@ -69,19 +67,19 @@ fun CloudBackupSettingsScreen(
       title = stringResource(R.string.which_network_to_use_for_sync),
       subtitle = state.networkTypeName,
       icon = painterResource(R.drawable.ic_fluent_network_check),
-      enabled = hasAnyCloudApi,
+      enabled = state.hasAnyCloudApi,
       dividerBottom = true,
       onClick = onNetworkTypeClick,
     )
     SettingsItem(
       title = stringResource(R.string.erase_cloud_data),
       icon = painterResource(R.drawable.ic_fluent_broom),
-      enabled = hasAnyCloudApi,
+      enabled = state.hasAnyCloudApi,
       dividerBottom = true,
       onClick = onEraseClick,
     )
 
-    if (isInProgress) {
+    if (state.isInProgress) {
       Column(
         modifier =
           Modifier
@@ -102,7 +100,7 @@ fun CloudBackupSettingsScreen(
 
     OutlinedButton(
       onClick = onBackupNowClick,
-      enabled = hasAnyCloudApi && !isInProgress,
+      enabled = state.hasAnyCloudApi && !state.isInProgress,
       modifier =
         Modifier
           .fillMaxWidth()
@@ -112,7 +110,7 @@ fun CloudBackupSettingsScreen(
     }
     OutlinedButton(
       onClick = onSyncNowClick,
-      enabled = hasAnyCloudApi && !isInProgress,
+      enabled = state.hasAnyCloudApi && !state.isInProgress,
       modifier =
         Modifier
           .fillMaxWidth()

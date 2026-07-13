@@ -3,7 +3,6 @@ package com.elementary.tasks.settings
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
@@ -11,49 +10,44 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
+import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.notes.ObserveEvent
-import com.elementary.tasks.notes.ObserveNonNull
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
-import com.elementary.tasks.settings.reminders.ManagePresetsScreen
 import com.elementary.tasks.settings.birthday.BirthdaySettingsEvent
 import com.elementary.tasks.settings.birthday.BirthdaySettingsScreen
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
-import com.elementary.tasks.settings.calendar.CalendarSettingsEvent
 import com.elementary.tasks.settings.calendar.CalendarSettingsScreen
 import com.elementary.tasks.settings.calendar.CalendarSettingsViewModel
 import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.general.GeneralSettingsEvent
 import com.elementary.tasks.settings.general.GeneralSettingsScreen
 import com.elementary.tasks.settings.general.GeneralSettingsViewModel
+import com.elementary.tasks.settings.general.rememberAppRestartController
 import com.elementary.tasks.settings.location.LocationNavKey
 import com.elementary.tasks.settings.other.OtherNavKey
 import com.elementary.tasks.settings.proversion.ProVersionScreen
 import com.elementary.tasks.settings.proversion.ProVersionViewModel
-import com.elementary.tasks.settings.reminders.DndTimeTarget
+import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
+import com.elementary.tasks.settings.reminders.ManagePresetsScreen
 import com.elementary.tasks.settings.reminders.RemindersSettingsEvent
 import com.elementary.tasks.settings.reminders.RemindersSettingsScreen
 import com.elementary.tasks.settings.reminders.RemindersSettingsViewModel
@@ -65,31 +59,17 @@ import com.elementary.tasks.settings.test.ObjectExportEvent
 import com.elementary.tasks.settings.test.ObjectExportScreen
 import com.elementary.tasks.settings.test.ObjectExportViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingScreen
+import com.elementary.tasks.settings.troubleshooting.TroubleshootingScreenState
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
-import com.elementary.tasks.splash.SplashScreenActivity
+import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSettingsLauncher
 import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.reviews.AppSource
-import com.github.naz013.reviews.ReviewsApi
-import com.github.naz013.ui.common.Dialogues
-import com.github.naz013.ui.common.activity.finishWith
-import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.login.LoginApi
-import com.github.naz013.ui.common.theme.ThemeProvider
-import com.google.android.material.color.DynamicColors
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Intent.CATEGORY_DEFAULT
-import android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
-import android.net.Uri
-import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
 
 /**
  * Contributes the "hub" Settings island's screens (Nav3 entries) - everything reached directly
@@ -117,13 +97,16 @@ fun EntryProviderScope<NavKey>.settingsEntries(backStack: MutableList<NavKey>) {
 private fun HubEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<SettingsHubViewModel>()
   bindLifecycle(viewModel)
-  val activity = LocalActivity.current as FragmentActivity
+
+  val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
+
+  val context = LocalContext.current
   val prefs = koinInject<Prefs>()
   val state by viewModel.state.collectAsState()
-  val isPlayServicesWarningVisible = remember { !SuperUtil.isGooglePlayServicesAvailable(activity) }
+  val isPlayServicesWarningVisible = remember { !SuperUtil.isGooglePlayServicesAvailable(context) }
   val isBuyProBadgeVisible =
     remember {
-      !BuildParams.isPro && !SuperUtil.isAppInstalled(activity, "com.cray.software.justreminderpro")
+      !BuildParams.isPro && !SuperUtil.isAppInstalled(context, "com.cray.software.justreminderpro")
     }
 
   val pinLoginLauncher =
@@ -140,7 +123,7 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
       isBuyProBadgeVisible = isBuyProBadgeVisible,
       isPlayServicesWarningVisible = isPlayServicesWarningVisible,
       onBuyProClick = { backStack.add(SettingsNavKey.ProVersion) },
-      onUpdateClick = { SuperUtil.launchMarket(activity) },
+      onUpdateClick = { googlePlayMarketLauncher.launchSelf() },
       onGeneralClick = { backStack.add(SettingsNavKey.General) },
       onCloudBackupClick = { backStack.add(ExportNavKey.CloudBackup) },
       onCalendarClick = { backStack.add(SettingsNavKey.Calendar()) },
@@ -148,7 +131,7 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
       onBirthdaysClick = { backStack.add(SettingsNavKey.Birthday()) },
       onSecurityClick = {
         if (prefs.hasPinCode) {
-          pinLoginLauncher.launch(LoginApi.authIntent(activity))
+          pinLoginLauncher.launch(LoginApi.authIntent(context))
         } else {
           backStack.add(SecurityNavKey.Security)
         }
@@ -164,17 +147,16 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun GeneralEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GeneralSettingsViewModel>()
-  val activity = LocalActivity.current as FragmentActivity
+  val appRestartController = rememberAppRestartController()
   val prefs = koinInject<Prefs>()
   val state by viewModel.state.collectAsState()
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      GeneralSettingsEvent.RecreateActivity -> activity.recreate()
+      GeneralSettingsEvent.RecreateActivity -> appRestartController.recreate()
       GeneralSettingsEvent.ApplyDynamicColorsAndRecreate -> {
-        if (prefs.useDynamicColors) DynamicColors.applyToActivityIfAvailable(activity)
-        activity.recreate()
+        appRestartController.applyDynamicColorsAndRecreate(prefs.useDynamicColors)
       }
-      GeneralSettingsEvent.RestartApp -> activity.finishWith(SplashScreenActivity::class.java)
+      GeneralSettingsEvent.RestartApp -> appRestartController.restartApp()
     }
   }
 
@@ -204,9 +186,8 @@ private fun RemindersEntry(
 ) {
   val viewModel = koinViewModel<RemindersSettingsViewModel>()
   val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
-  val dateTimePickerProvider = koinInject<DateTimePickerProvider>()
-  val permissionRequester = rememberPermissionRequester()
+  val dateTimePicker = rememberDateTimePicker()
+  val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
   val hasLocation = remember { Module.hasLocation(context) }
 
@@ -215,19 +196,18 @@ private fun RemindersEntry(
       RemindersSettingsEvent.OpenPresets -> backStack.add(SettingsNavKey.ManagePresets)
       RemindersSettingsEvent.OpenLocationSettings -> backStack.add(LocationNavKey.Location)
       is RemindersSettingsEvent.ShowTimePicker -> {
-        val titleRes = if (event.target == DndTimeTarget.FROM) R.string.from else R.string.to
-        dateTimePickerProvider.showTimePicker(
-          fragmentManager = activity.supportFragmentManager,
+        dateTimePicker.showTimePicker(
           time = event.time,
-          title = context.getString(titleRes),
-        ) { viewModel.onTimeSelected(event.target, it) }
+          title = event.title,
+          is24Hour = event.is24Hour,
+          onTimeSelected = { viewModel.onTimeSelected(event.target, it) },
+        )
       }
       RemindersSettingsEvent.ShowPermanentNotification -> PermanentReminderReceiver.show(context)
       RemindersSettingsEvent.HidePermanentNotification -> PermanentReminderReceiver.hide(context)
     }
   }
 
-  PermissionRationaleDialog(permissionRequester)
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.reminders_),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
@@ -278,39 +258,9 @@ private fun CalendarEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<CalendarSettingsViewModel>()
-  val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
-  val dialogues = koinInject<Dialogues>()
-  val permissionRequester = rememberPermissionRequester()
+  val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
 
-  viewModel.navigationEvent.ObserveEvent { event ->
-    when (event) {
-      is CalendarSettingsEvent.ShowColorPicker -> {
-        dialogues.showColorDialog(
-          activity,
-          event.currentColorIndex,
-          event.title,
-          ThemeProvider.colorsForSliderThemed(activity),
-        ) { color -> viewModel.onColorSelected(event.target, color) }
-      }
-    }
-  }
-  viewModel.showSelectGoogleCalendarDialog.ObserveEvent { data ->
-    val names = data.calendars.map { it.name }.toTypedArray()
-    val builder = dialogues.getMaterialDialog(context)
-    builder.setTitle(R.string.choose_calendar)
-    var selectedPosition = data.selectedPosition
-    builder.setSingleChoiceItems(names, data.selectedPosition) { _, i -> selectedPosition = i }
-    builder.setPositiveButton(R.string.save) { dialog, _ ->
-      viewModel.onCalendarSelected(selectedPosition)
-      dialog.dismiss()
-    }
-    builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-    builder.create().show()
-  }
-
-  PermissionRationaleDialog(permissionRequester)
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.calendar),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
@@ -323,12 +273,14 @@ private fun CalendarEntry(
       onTodayColorClick = viewModel::onTodayColorClick,
       onReminderColorClick = viewModel::onReminderColorClick,
       onBirthdayColorClick = viewModel::onBirthdayColorClick,
+      onColorOptionSelected = viewModel::onColorOptionSelected,
       onSelectCalendarClick = {
         permissionRequester.request(
           listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR),
           onGranted = { viewModel.onSelectGoogleCalendarClicked() },
         )
       },
+      onGoogleCalendarOptionSelected = viewModel::onGoogleCalendarOptionSelected,
       onCalendarResetClick = viewModel::onCalendarReset,
       onExportToggle = viewModel::onExportToggle,
       onScanToggle = viewModel::onScanToggle,
@@ -345,19 +297,19 @@ private fun BirthdayEntry(
 ) {
   val viewModel = koinViewModel<BirthdaySettingsViewModel>()
   val context = LocalContext.current
-  val dateTimePickerProvider = koinInject<DateTimePickerProvider>()
-  val activity = LocalActivity.current as FragmentActivity
-  val permissionRequester = rememberPermissionRequester()
+  val dateTimePicker = rememberDateTimePicker()
+  val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is BirthdaySettingsEvent.ShowTimePicker -> {
-        dateTimePickerProvider.showTimePicker(
-          fragmentManager = activity.supportFragmentManager,
+        dateTimePicker.showTimePicker(
           time = event.time,
-          title = context.getString(R.string.remind_at),
-        ) { viewModel.onTimeSelected(it) }
+          title = event.title,
+          is24Hour = event.is24Hour,
+          onTimeSelected = { viewModel.onTimeSelected(it) },
+        )
       }
       is BirthdaySettingsEvent.UpdatePermanentNotificationVisibility -> {
         val action = if (event.visible) PermanentBirthdayReceiver.ACTION_SHOW else PermanentBirthdayReceiver.ACTION_HIDE
@@ -366,7 +318,6 @@ private fun BirthdayEntry(
     }
   }
 
-  PermissionRationaleDialog(permissionRequester)
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.birthdays),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
@@ -447,8 +398,10 @@ private fun ManagePresetsEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun DeveloperEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<DeveloperViewModel>()
-  val reviewsApi = koinInject<ReviewsApi>()
-  val activity = LocalActivity.current as FragmentActivity
+
+  val reviewApiLauncher = rememberReviewApiLauncher()
+  val toastDispatcher = rememberToastDispatcher()
+
   val context = LocalContext.current
   val state by viewModel.state.collectAsState()
 
@@ -456,8 +409,7 @@ private fun DeveloperEntry(backStack: MutableList<NavKey>) {
     when (event) {
       DeveloperEvent.OpenObjectExport -> backStack.add(SettingsNavKey.ObjectExportTest)
       DeveloperEvent.OpenReviewDialog -> {
-        reviewsApi.showFeedbackForm(
-          context = context,
+        reviewApiLauncher.launch(
           title = "Write a review",
           appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE,
           allowLogsAttachment = false,
@@ -466,10 +418,10 @@ private fun DeveloperEntry(backStack: MutableList<NavKey>) {
       is DeveloperEvent.OpenReminderAction -> ReminderActionActivity.mockTest(context, event.reminderId)
       is DeveloperEvent.OpenBirthdayAction -> BirthdayActionActivity.mockTest(context, event.birthdayId)
       DeveloperEvent.OpenProVersion -> backStack.add(SettingsNavKey.ProVersion)
+      DeveloperEvent.BannersReset -> toastDispatcher.showToast(message = "Home Screen banners have been reset")
+      is DeveloperEvent.ShowMessage -> toastDispatcher.showToast(message = event.message)
     }
   }
-  viewModel.bannersReset.ObserveEvent { activity.toast("Home Screen banners have been reset") }
-  viewModel.actionMessage.ObserveEvent { message -> activity.toast(message) }
 
   SettingsScaffold(
     title = "Developer",
@@ -534,31 +486,37 @@ private fun ObjectExportEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun ProVersionEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<ProVersionViewModel>()
-  val activity = LocalActivity.current as FragmentActivity
+  val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
   ProVersionScreen(
     advantages = viewModel.state.advantages,
     onBackClick = { backStack.removeLastOrNull() },
-    onBuyClick = { SuperUtil.launchMarket(activity) },
+    onBuyClick = { googlePlayMarketLauncher.launch(SystemInfo.PRO_PACKAGE_NAME) },
   )
 }
 
 @Composable
 private fun TroubleshootingEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<TroubleshootingViewModel>()
-  bindLifecycle(viewModel)
-  val activity = LocalActivity.current as FragmentActivity
-  val analyticsEventSender = koinInject<AnalyticsEventSender>()
-  val hideBatteryOptimizationCard by viewModel.hideBatteryOptimizationCard.observeAsState(false)
-  val showEmptyView by viewModel.showEmptyView.observeAsState(false)
-  val showSendLogs by viewModel.showSendLogs.observeAsState(false)
-  viewModel.sendLogFile.ObserveNonNull { file ->
-    TelephonyUtil.sendMail(
-      context = activity,
-      email = "feedback.cray@gmail.com",
-      subject = "Issue Logs",
-      message = "Hi,\n\nHere is logs for my issue.\n\nIssue description: \n\nBest regards\n",
-      file = file,
-    )
+
+  val optimizationSettingsLauncher = rememberOptimizationSettingsLauncher()
+  val emailSender = rememberEmailSender()
+
+  val state by viewModel.state.collectAsState(TroubleshootingScreenState())
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is TroubleshootingViewModel.ViewModelEvent.SendLogs -> {
+        emailSender.send(
+          email = "feedback.cray@gmail.com",
+          subject = "Issue Logs",
+          message = "Hi,\n\nHere is logs for my issue.\n\nIssue description: \n\nBest regards\n",
+          file = event.file,
+        )
+      }
+
+      is TroubleshootingViewModel.ViewModelEvent.OpenOptimizationSettings -> {
+        optimizationSettingsLauncher.launch()
+      }
+    }
   }
 
   SettingsScaffold(
@@ -566,80 +524,11 @@ private fun TroubleshootingEntry(backStack: MutableList<NavKey>) {
     onBackClick = { backStack.removeLastOrNull() },
   ) { padding ->
     TroubleshootingScreen(
-      showSendLogs = showSendLogs,
-      showBatteryOptimizationCard = !hideBatteryOptimizationCard,
-      showEmptyView = showEmptyView,
+      state = state,
       onSendLogsClick = viewModel::sendLogs,
-      onDisableOptimizationClick = {
-        analyticsEventSender.send(ScreenUsedEvent(Screen.TROUBLESHOOTING))
-        openBatteryOptimizationSettings(activity, viewModel)
-      },
+      onDisableOptimizationClick = { viewModel.onOpenOptimizationSettingsClicked() },
       modifier = Modifier.padding(padding),
     )
-  }
-}
-
-private fun openBatteryOptimizationSettings(
-  activity: Activity,
-  viewModel: TroubleshootingViewModel,
-) {
-  fun openAppSettings() {
-    val intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
-    with(intent) {
-      data = Uri.fromParts("package", viewModel.packageName(), null)
-      addCategory(CATEGORY_DEFAULT)
-      addFlags(FLAG_ACTIVITY_NEW_TASK)
-      addFlags(FLAG_ACTIVITY_NO_HISTORY)
-      addFlags(FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-    }
-    activity.startActivity(intent)
-  }
-
-  when (Build.MANUFACTURER) {
-    "samsung" -> {
-      val intent = Intent()
-      intent.component =
-        ComponentName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity")
-      try {
-        activity.startActivity(intent)
-      } catch (ex: ActivityNotFoundException) {
-        openAppSettings()
-      }
-    }
-
-    "xiaomi" -> {
-      var intent = Intent()
-      intent.component =
-        ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")
-      try {
-        activity.startActivity(intent)
-      } catch (ex: ActivityNotFoundException) {
-        try {
-          intent = Intent()
-          intent.setComponent(
-            ComponentName("com.miui.powerkeeper", "com.miui.powerkeeper.ui.HiddenAppsConfigActivity"),
-          )
-          intent.putExtra("package_name", viewModel.packageName())
-          intent.putExtra("package_label", activity.getText(R.string.app_name))
-          activity.startActivity(intent)
-        } catch (anfe: ActivityNotFoundException) {
-          openAppSettings()
-        }
-      }
-    }
-
-    "huawei" -> {
-      val intent = Intent()
-      intent.component =
-        ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")
-      try {
-        activity.startActivity(intent)
-      } catch (ex: ActivityNotFoundException) {
-        openAppSettings()
-      }
-    }
-
-    else -> openAppSettings()
   }
 }
 

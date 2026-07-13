@@ -1,8 +1,11 @@
 package com.elementary.tasks.settings.calendar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +22,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +45,9 @@ fun CalendarSettingsScreen(
   onTodayColorClick: () -> Unit,
   onReminderColorClick: () -> Unit,
   onBirthdayColorClick: () -> Unit,
+  onColorOptionSelected: (Int) -> Unit,
   onSelectCalendarClick: () -> Unit,
+  onGoogleCalendarOptionSelected: (Int) -> Unit,
   onCalendarResetClick: () -> Unit,
   onExportToggle: () -> Unit,
   onScanToggle: () -> Unit,
@@ -122,36 +128,115 @@ fun CalendarSettingsScreen(
     )
   }
 
-  val dialog = state.dialog
-  if (dialog is CalendarSettingsDialog.FirstDay) {
-    AlertDialog(
-      onDismissRequest = onDialogDismiss,
-      title = { Text(stringResource(R.string.first_day_of_the_week)) },
-      text = {
-        Column(modifier = Modifier.selectableGroup()) {
-          dialog.options.forEachIndexed { index, option ->
-            val selected = index == dialog.selectedIndex
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              modifier =
-                Modifier
-                  .fillMaxWidth()
-                  .selectable(selected = selected, onClick = { onFirstDayOptionSelected(index) }, role = Role.RadioButton)
-                  .padding(vertical = 8.dp),
-            ) {
-              RadioButton(selected = selected, onClick = null)
-              Text(
-                text = option,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(start = 8.dp),
-              )
-            }
+  when (val dialog = state.dialog) {
+    is CalendarSettingsDialog.FirstDay -> {
+      SingleChoiceDialog(
+        title = stringResource(R.string.first_day_of_the_week),
+        options = dialog.options,
+        selectedIndex = dialog.selectedIndex,
+        onOptionSelected = onFirstDayOptionSelected,
+        onDismissRequest = onDialogDismiss,
+      )
+    }
+
+    is CalendarSettingsDialog.SelectGoogleCalendar -> {
+      SingleChoiceDialog(
+        title = stringResource(R.string.choose_calendar),
+        options = dialog.calendars.map { it.name.orEmpty() },
+        selectedIndex = dialog.selectedPosition,
+        onOptionSelected = onGoogleCalendarOptionSelected,
+        onDismissRequest = onDialogDismiss,
+      )
+    }
+
+    is CalendarSettingsDialog.ColorPicker -> {
+      ColorPickerDialog(
+        title = dialog.title,
+        colors = remember { ThemeProvider.colorsForSliderThemed(context).map { Color(it) } },
+        selectedIndex = dialog.selectedIndex,
+        onColorSelected = onColorOptionSelected,
+        onDismissRequest = onDialogDismiss,
+      )
+    }
+
+    null -> Unit
+  }
+}
+
+@Composable
+private fun SingleChoiceDialog(
+  title: String,
+  options: List<String>,
+  selectedIndex: Int,
+  onOptionSelected: (Int) -> Unit,
+  onDismissRequest: () -> Unit,
+) {
+  AlertDialog(
+    onDismissRequest = onDismissRequest,
+    title = { Text(title) },
+    text = {
+      Column(modifier = Modifier.selectableGroup()) {
+        options.forEachIndexed { index, option ->
+          val selected = index == selectedIndex
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier =
+              Modifier
+                .fillMaxWidth()
+                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
+                .padding(vertical = 8.dp),
+          ) {
+            RadioButton(selected = selected, onClick = null)
+            Text(
+              text = option,
+              style = MaterialTheme.typography.bodyLarge,
+              modifier = Modifier.padding(start = 8.dp),
+            )
           }
         }
-      },
-      confirmButton = { TextButton(onClick = onDialogDismiss) { Text(stringResource(R.string.cancel)) } },
-    )
-  }
+      }
+    },
+    confirmButton = { TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) } },
+  )
+}
+
+@Composable
+private fun ColorPickerDialog(
+  title: String,
+  colors: List<Color>,
+  selectedIndex: Int,
+  onColorSelected: (Int) -> Unit,
+  onDismissRequest: () -> Unit,
+) {
+  AlertDialog(
+    onDismissRequest = onDismissRequest,
+    title = { Text(title) },
+    text = {
+      FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+      ) {
+        colors.forEachIndexed { index, color ->
+          val selected = index == selectedIndex
+          Box(
+            modifier =
+              Modifier
+                .size(40.dp)
+                .background(color, CircleShape)
+                .then(
+                  if (selected) {
+                    Modifier.border(3.dp, MaterialTheme.colorScheme.onSurface, CircleShape)
+                  } else {
+                    Modifier
+                  },
+                ).selectable(selected = selected, onClick = { onColorSelected(index) }, role = Role.RadioButton),
+          )
+        }
+      }
+    },
+    confirmButton = { TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) } },
+  )
 }
 
 @Composable

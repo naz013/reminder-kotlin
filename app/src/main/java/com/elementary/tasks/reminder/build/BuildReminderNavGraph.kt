@@ -22,7 +22,7 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.os.compose.PermissionRequester
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.os.datapicker.compose.rememberApplicationPicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
@@ -94,7 +94,7 @@ private fun MainEntry(
   val attachmentFileAdapter = koinInject<UriToAttachmentFileAdapter>()
   val dateTimeManager = koinInject<DateTimeManager>()
 
-  val permissionRequester = rememberPermissionRequester()
+  val permissionRequester = rememberPermissionRequesterRationale()
   val pickApplication = rememberApplicationPicker()
   val pickContactPhone = rememberContactPhonePicker()
   val pickFiles = rememberMultipleUriPicker()

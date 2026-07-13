@@ -47,6 +47,8 @@ sealed class BirthdayDialog {
 sealed class BirthdaySettingsEvent {
   data class ShowTimePicker(
     val time: LocalTime,
+    val is24Hour: Boolean,
+    val title: String,
   ) : BirthdaySettingsEvent()
 
   data class UpdatePermanentNotificationVisibility(
