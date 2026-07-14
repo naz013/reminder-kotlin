@@ -3,46 +3,42 @@ package com.elementary.tasks.reminder.preview
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
+import com.elementary.tasks.core.compose.rememberDateTimeManager
 import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
-import com.elementary.tasks.core.compose.rememberDateTimeManager
-import com.elementary.tasks.core.compose.rememberPrefs
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.notes.ObserveNonNull
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.elementary.tasks.simplemap.SimpleMapFragment
+import com.elementary.tasks.simplemap.MapCallerEvent
+import com.elementary.tasks.simplemap.MapCustomButton
+import com.elementary.tasks.simplemap.MapParams
+import com.elementary.tasks.simplemap.MapViewModel
+import com.elementary.tasks.simplemap.MarkerState
+import com.elementary.tasks.simplemap.SimpleMapView
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
 import com.github.naz013.ui.common.compose.foundation.dialog.ListDialogDispatcher
@@ -71,10 +67,8 @@ private fun PreviewEntry(
   bindLifecycle(viewModel)
 
   val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
   val listDialogDispatcher = rememberListDialogDispatcher()
   val dateTimeManager = rememberDateTimeManager()
-  val prefs = rememberPrefs()
   val appNavBridge = rememberAppNavBridge()
   val adsProvider = remember { AdsProvider() }
 
@@ -118,8 +112,6 @@ private fun PreviewEntry(
     mapContent = {
       EmbeddedMap(
         places = state.places,
-        prefs = prefs,
-        fragmentManager = activity.supportFragmentManager,
         onMapClick = { backStack.add(ReminderPreviewNavKey.FullscreenMap(key.id)) },
       )
     },
@@ -134,12 +126,27 @@ private fun FullscreenMapEntry(
 ) {
   val viewModel = koinViewModel<FullScreenMapViewModel> { parametersOf(key.id) }
   bindLifecycle(viewModel)
-  val activity = LocalActivity.current as FragmentActivity
-  var simpleMapFragment by remember { mutableStateOf<SimpleMapFragment?>(null) }
+
+  val mapParams = remember {
+    MapParams(
+      isPlaces = false,
+      isStyles = false,
+      isRadius = false,
+      isSearch = false,
+      isTouch = false,
+      customButtons = listOf(MapCustomButton(R.drawable.ic_builder_arrow_left, id = 0)),
+    )
+  }
+  val mapViewModel = koinViewModel<MapViewModel> { parametersOf(mapParams) }
+
+  mapViewModel.callerEvent.ObserveEvent { event ->
+    if (event is MapCallerEvent.CustomButtonClicked && event.id == 0) {
+      backStack.removeLastOrNull()
+    }
+  }
 
   BackHandler {
-    val canPopNormally = simpleMapFragment?.onBackPressed() ?: true
-    if (canPopNormally) backStack.removeLastOrNull()
+    if (mapViewModel.onBackPressed()) backStack.removeLastOrNull()
   }
 
   val reminder by viewModel.reminder.collectAsState()
@@ -151,16 +158,11 @@ private fun FullscreenMapEntry(
       viewModel.placeIndex =
         if (viewModel.placeIndex < currentReminder.places.size - 1) viewModel.placeIndex + 1 else 0
       val place = currentReminder.places[viewModel.placeIndex]
-      simpleMapFragment?.moveCamera(pos = LatLng(place.latitude, place.longitude))
+      mapViewModel.moveCamera(LatLng(place.latitude, place.longitude))
     },
     mapContent = {
       reminder?.let {
-        FullscreenEmbeddedMap(
-          reminder = it,
-          fragmentManager = activity.supportFragmentManager,
-          onBackClick = { backStack.removeLastOrNull() },
-          onMapFragmentReady = { simpleMapFragment = it },
-        )
+        FullscreenEmbeddedMap(viewModel = mapViewModel, reminder = it)
       }
     },
   )
@@ -169,139 +171,46 @@ private fun FullscreenMapEntry(
 @Composable
 private fun EmbeddedMap(
   places: List<UiReminderPlace>,
-  prefs: Prefs,
-  fragmentManager: FragmentManager,
   onMapClick: () -> Unit,
 ) {
-  val containerId = remember { View.generateViewId() }
-  var attached by remember { mutableStateOf(false) }
-  AndroidView(
-    modifier = Modifier.fillMaxSize(),
-    factory = { context -> FragmentContainerView(context).apply { id = containerId } },
-    update = {
-      if (attached) return@AndroidView
-      attached = true
-      val simpleMapFragment =
-        SimpleMapFragment.newInstance(
-          SimpleMapFragment.MapParams(
-            isTouch = false,
-            isSearch = false,
-            isRadius = false,
-            isPlaces = false,
-            isStyles = false,
-            isLayers = false,
-            mapStyleParams =
-              SimpleMapFragment.MapStyleParams(
-                mapType = prefs.mapType,
-                mapStyle = prefs.mapStyle,
-              ),
-          ),
-        )
-      simpleMapFragment.mapCallback =
-        object : SimpleMapFragment.DefaultMapCallback() {
-          override fun onMapReady() {
-            simpleMapFragment.setOnMapClickListener { onMapClick() }
-            places.forEach { place ->
-              simpleMapFragment.addMarker(
-                latLng = place.latLng(),
-                title = place.address,
-                markerStyle = place.marker,
-                radius = place.radius,
-                clear = false,
-                animate = false,
-              )
-            }
-            places.firstOrNull()?.run {
-              simpleMapFragment.moveCamera(latLng(), 0, 0, 0, 0)
-            }
-          }
-        }
-      fragmentManager
-        .beginTransaction()
-        .replace(containerId, simpleMapFragment, MAP_FRAGMENT_TAG)
-        .commitNowAllowingStateLoss()
-    },
-  )
-  DisposableEffect(Unit) {
-    onDispose {
-      if (!fragmentManager.isDestroyed) {
-        fragmentManager.findFragmentById(containerId)?.also { existing ->
-          fragmentManager.beginTransaction().remove(existing).commitNowAllowingStateLoss()
-        }
-      }
-    }
+  val mapParams = remember {
+    MapParams(isTouch = false, isSearch = false, isRadius = false, isPlaces = false, isStyles = false, isLayers = false)
   }
+  val mapViewModel = koinViewModel<MapViewModel> { parametersOf(mapParams) }
+
+  mapViewModel.callerEvent.ObserveEvent { event ->
+    if (event is MapCallerEvent.MapClicked) onMapClick()
+  }
+
+  SimpleMapView(
+    viewModel = mapViewModel,
+    markers = places.map {
+      MarkerState(latLng = it.latLng(), style = it.marker, radius = it.radius, title = it.address)
+    },
+    modifier = Modifier.fillMaxSize(),
+  )
 }
 
 @Composable
 private fun FullscreenEmbeddedMap(
+  viewModel: MapViewModel,
   reminder: Reminder,
-  fragmentManager: FragmentManager,
-  onBackClick: () -> Unit,
-  onMapFragmentReady: (SimpleMapFragment) -> Unit,
 ) {
-  val containerId = remember { View.generateViewId() }
-  var attached by remember { mutableStateOf(false) }
-  AndroidView(
-    modifier = Modifier.fillMaxSize(),
-    factory = { context -> FragmentContainerView(context).apply { id = containerId } },
-    update = {
-      if (attached) return@AndroidView
-      attached = true
-      val googleMap =
-        SimpleMapFragment.newInstance(
-          SimpleMapFragment.MapParams(
-            isPlaces = false,
-            isStyles = false,
-            isRadius = false,
-            isSearch = false,
-            isTouch = false,
-            customButtons = listOf(SimpleMapFragment.MapCustomButton(R.drawable.ic_builder_arrow_left, 0)),
-          ),
-        )
-      googleMap.customButtonCallback =
-        object : SimpleMapFragment.CustomButtonCallback {
-          override fun onButtonClicked(buttonId: Int) = onBackClick()
-        }
-      googleMap.mapCallback =
-        object : SimpleMapFragment.DefaultMapCallback() {
-          override fun onMapReady() {
-            googleMap.applyInsets()
-            reminder.places.forEach { place ->
-              googleMap.addMarker(
-                latLng = LatLng(place.latitude, place.longitude),
-                title =
-                  place.name.takeIf { it.isNotEmpty() }
-                    ?: place.address.takeIf { it.isNotEmpty() }
-                    ?: reminder.summary,
-                markerStyle = place.marker,
-                radius = place.radius,
-                clear = false,
-                animate = false,
-              )
-            }
-            reminder.places
-              .firstOrNull()
-              ?.let { LatLng(it.latitude, it.longitude) }
-              ?.run { googleMap.moveCamera(this) }
-          }
-        }
-      fragmentManager
-        .beginTransaction()
-        .replace(containerId, googleMap, MAP_FRAGMENT_TAG)
-        .commitNowAllowingStateLoss()
-      onMapFragmentReady(googleMap)
+  SimpleMapView(
+    viewModel = viewModel,
+    markers = reminder.places.map { place ->
+      MarkerState(
+        latLng = LatLng(place.latitude, place.longitude),
+        style = place.marker,
+        radius = place.radius,
+        title = place.name.takeIf { it.isNotEmpty() }
+          ?: place.address.takeIf { it.isNotEmpty() }
+          ?: reminder.summary,
+      )
     },
+    edgeToEdge = true,
+    modifier = Modifier.fillMaxSize(),
   )
-  DisposableEffect(Unit) {
-    onDispose {
-      if (!fragmentManager.isDestroyed) {
-        fragmentManager.findFragmentById(containerId)?.also { existing ->
-          fragmentManager.beginTransaction().remove(existing).commitNowAllowingStateLoss()
-        }
-      }
-    }
-  }
 }
 
 private fun openSystemCalendarEvent(
@@ -360,5 +269,3 @@ private fun ReminderAdBanner(adsProvider: AdsProvider) {
     },
   )
 }
-
-private const val MAP_FRAGMENT_TAG = "reminder_preview_map"

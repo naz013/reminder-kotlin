@@ -40,7 +40,7 @@ class PlacesViewModel(
   private val deletePlaceUseCase: DeletePlaceUseCase,
   private val textProvider: TextProvider,
 ) : BaseProgressViewModel(dispatcherProvider) {
-  /** Kept for [com.elementary.tasks.simplemap.SimpleMapFragment], which injects its own instance
+  /** Kept for [com.elementary.tasks.simplemap.SimpleMapView], which injects its own instance
    *  of this ViewModel to populate the map's "recent places" layer — unrelated to the searchable
    *  list below, and always unfiltered since that instance never calls [onSearchQueryChange]. */
   private val placesData = SearchableData(dispatcherProvider, viewModelScope, placeRepository)

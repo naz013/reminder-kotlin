@@ -64,7 +64,13 @@ class LocationSettingsViewModel(
       } else if (percent < 10f && valueTo.toInt() > 5000) {
         valueTo -= valueTo * 0.2f
       }
-      current.copy(dialog = dialog.copy(value = value, valueTo = valueTo, formattedValue = formatRadius(value)))
+      current.copy(
+        dialog = dialog.copy(
+          value = value,
+          valueTo = valueTo,
+          formattedValue = formatRadius(value)
+        )
+      )
     }
   }
 
@@ -77,7 +83,12 @@ class LocationSettingsViewModel(
   fun onMapTypeClick() {
     val options = mapTypeOptions()
     state.update {
-      it.copy(dialog = LocationSettingsDialog.MapType(options = options, selectedIndex = mapTypePosition(prefs.mapType)))
+      it.copy(
+        dialog = LocationSettingsDialog.MapType(
+          options = options,
+          selectedIndex = mapTypePosition(prefs.mapType)
+        )
+      )
     }
   }
 
@@ -91,7 +102,13 @@ class LocationSettingsViewModel(
   }
 
   fun onMarkerStyleClick() {
-    navigationEvent.value = Event(LocationSettingsEvent.ShowMarkerColorPicker(prefs.markerStyle))
+    navigationEvent.value = Event(
+      LocationSettingsEvent.ShowMarkerColorPicker(
+        title = textProvider.getString(R.string.style_of_marker),
+        currentColorIndex = prefs.markerStyle,
+        colors = themeProvider.colorsForSlider(),
+      )
+    )
   }
 
   fun onMarkerColorSelected(colorIndex: Int) {

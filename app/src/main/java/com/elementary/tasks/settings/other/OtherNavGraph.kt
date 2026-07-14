@@ -1,43 +1,32 @@
 package com.elementary.tasks.settings.other
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.os.Build
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.core.compose.rememberFeatureManager
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
-import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.FeatureManager
+import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.SettingsScaffold
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewScreen
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewState
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
 import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
-import com.github.naz013.common.Permissions
-import com.github.naz013.common.system.Module
-import com.github.naz013.reviews.AppSource
+import com.elementary.tasks.settings.rememberSendIntentResolver
 import com.github.naz013.reviews.rememberReviewsFormLauncher
-import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -60,57 +49,45 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
 
   val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
   val reviewsFormLauncher = rememberReviewsFormLauncher()
-
-  val featureManager = rememberFeatureManager()
+  val toastDispatcher = rememberToastDispatcher()
   val listDialogDispatcher = rememberListDialogDispatcher()
-  val activity = LocalActivity.current as FragmentActivity
   val permissionRequester = rememberPermissionRequesterRationale()
-  val state by viewModel.state.collectAsState()
-  var permissionItems by remember { mutableStateOf<List<PermissionItem>>(emptyList()) }
+  val sendIntentResolver = rememberSendIntentResolver()
 
-  fun loadPermissionItems(): Boolean {
-    val items = buildList {
-      fun addIfMissing(titleRes: Int, permission: String) {
-        if (!Permissions.checkPermission(activity, permission)) {
-          add(PermissionItem(activity.getString(titleRes), permission))
-        }
+  val state by viewModel.state.collectAsState(OtherSettingsState())
+
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is OtherSettingsViewModel.ViewModelEvent.ShowPermissionDialog -> {
+        listDialogDispatcher.showDialog(
+          titleRes = R.string.allow_permission,
+          items = event.permissions.map { it.title },
+          onItemClick = { index ->
+            val item = event.permissions[index]
+            permissionRequester.request(
+              permission = item.permission,
+              onGranted = { viewModel.onShowPermissionDialogClicked() },
+            )
+          },
+        )
       }
-      addIfMissing(R.string.course_location, Permissions.ACCESS_COARSE_LOCATION)
-      addIfMissing(R.string.fine_location, Permissions.ACCESS_FINE_LOCATION)
-      addIfMissing(R.string.call_phone, Permissions.CALL_PHONE)
-      addIfMissing(R.string.get_accounts, Permissions.GET_ACCOUNTS)
-      addIfMissing(R.string.read_calendar, Permissions.READ_CALENDAR)
-      addIfMissing(R.string.write_calendar, Permissions.WRITE_CALENDAR)
-      addIfMissing(R.string.read_contacts, Permissions.READ_CONTACTS)
-      addIfMissing(R.string.read_external_storage, Permissions.READ_EXTERNAL)
-      addIfMissing(R.string.write_external_storage, Permissions.WRITE_EXTERNAL)
-      addIfMissing(R.string.record_audio, Permissions.RECORD_AUDIO)
-      addIfMissing(R.string.foreground_service, Permissions.FOREGROUND_SERVICE)
-      addIfMissing(R.string.background_location, Permissions.BACKGROUND_LOCATION)
-      if (Module.is15) addIfMissing(R.string.foreground_service_location, Permissions.FOREGROUND_SERVICE_LOCATION)
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        addIfMissing(R.string.post_notification, Permissions.POST_NOTIFICATION)
+
+      is OtherSettingsViewModel.ViewModelEvent.ShowToast -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is OtherSettingsViewModel.ViewModelEvent.ShowFeedbackDialog -> {
+        reviewsFormLauncher.showFeedbackForm(
+          title = event.title,
+          appSource = event.appSource,
+          allowLogsAttachment = event.allowLogsAttachment,
+        )
+      }
+
+      is OtherSettingsViewModel.ViewModelEvent.ShareApp -> {
+        sendIntentResolver.resolve(event.intent, event.title)
       }
     }
-    return if (items.isEmpty()) {
-      activity.toast(R.string.all_permissions_are_enabled)
-      false
-    } else {
-      permissionItems = items
-      true
-    }
-  }
-
-  fun showPermissionDialog() {
-    if (!loadPermissionItems()) return
-    listDialogDispatcher.showDialog(
-      titleRes = R.string.allow_permission,
-      items = permissionItems.map { it.title },
-      onItemClick = { index ->
-        val item = permissionItems[index]
-        permissionRequester.request(item.permission, onGranted = { showPermissionDialog() })
-      },
-    )
   }
 
   SettingsScaffold(
@@ -122,23 +99,12 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
       onPrivacyPolicyClick = { backStack.add(OtherNavKey.PrivacyPolicy) },
       onTermsClick = { backStack.add(OtherNavKey.Terms) },
       onTroubleshootingClick = { backStack.add(SettingsNavKey.Troubleshooting) },
-      onFeedbackClick = {
-        reviewsFormLauncher.showFeedbackForm(
-          title = activity.getString(R.string.share_your_experience),
-          appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE,
-          allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
-        )
-      },
+      onFeedbackClick = { viewModel.onFeedbackClicked() },
       onRateClick = { googlePlayMarketLauncher.launchSelf() },
-      onTellFriendsClick = {
-        val shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.type = "text/plain"
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" + activity.packageName)
-        activity.startActivity(Intent.createChooser(shareIntent, "Share..."))
-      },
+      onTellFriendsClick = { viewModel.onShareClicked() },
       onWhatsNewClick = { backStack.add(OtherNavKey.WhatsNew) },
       onPermissionsClick = { backStack.add(OtherNavKey.Permissions) },
-      onAllowPermissionClick = { showPermissionDialog() },
+      onAllowPermissionClick = { viewModel.onShowPermissionDialogClicked() },
       onOssClick = { backStack.add(OtherNavKey.Oss) },
       onAboutClick = viewModel::onAboutClick,
       onAboutDialogDismiss = viewModel::onAboutDialogDismiss,
@@ -147,15 +113,16 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
   }
 }
 
-private class PermissionItem(val title: String, val permission: String)
-
 @Composable
 private fun PermissionsEntry(backStack: MutableList<NavKey>) {
   SettingsScaffold(
     title = stringResource(R.string.permissions),
     onBackClick = { backStack.removeLastOrNull() },
   ) { padding ->
-    SettingsWebView(url = "file:///android_asset/files/permissions.html", modifier = Modifier.padding(padding))
+    SettingsWebView(
+      url = "file:///android_asset/files/permissions.html",
+      modifier = Modifier.padding(padding)
+    )
   }
 }
 
@@ -165,7 +132,10 @@ private fun OssEntry(backStack: MutableList<NavKey>) {
     title = stringResource(R.string.open_source_licenses),
     onBackClick = { backStack.removeLastOrNull() },
   ) { padding ->
-    SettingsWebView(url = "file:///android_asset/files/oss.html", modifier = Modifier.padding(padding))
+    SettingsWebView(
+      url = "file:///android_asset/files/oss.html",
+      modifier = Modifier.padding(padding)
+    )
   }
 }
 

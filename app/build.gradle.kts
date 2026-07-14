@@ -237,6 +237,7 @@ dependencies {
   implementation(libs.play.services.location)
   implementation(libs.play.services.maps)
   implementation(libs.play.services.auth)
+  implementation(libs.maps.compose)
 
   "freeImplementation"(libs.play.services.ads)
   "freeImplementation"(libs.user.messaging.platform)
@@ -249,7 +250,6 @@ dependencies {
   implementation(libs.okhttp3.logging.interceptor)
   implementation(libs.lib.recur)
   implementation(libs.commons.lang3)
-  implementation(libs.colorslider)
   implementation(libs.android.calendar.ext) {
     exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
   }

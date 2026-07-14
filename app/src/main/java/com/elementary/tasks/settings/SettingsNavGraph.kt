@@ -469,7 +469,7 @@ private fun TroubleshootingEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<TroubleshootingViewModel>()
 
   val optimizationSettingsLauncher = rememberOptimizationSettingsLauncher()
-  val emailSender = rememberEmailSender()
+  val emailSender = rememberSendEmailResolver()
 
   val state by viewModel.state.collectAsState(TroubleshootingScreenState())
   viewModel.event.ObserveEvent { event ->

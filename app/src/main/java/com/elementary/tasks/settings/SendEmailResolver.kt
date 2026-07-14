@@ -10,7 +10,7 @@ import com.elementary.tasks.R
 import com.github.naz013.common.uri.UriUtil
 import java.io.File
 
-interface EmailSender {
+interface SendEmailResolver {
   fun send(
     email: String,
     subject: String,
@@ -19,9 +19,9 @@ interface EmailSender {
   )
 }
 
-private class EmailSenderImpl(
+private class SendEmailResolverImpl(
   private val context: Context,
-) : EmailSender {
+) : SendEmailResolver {
   override fun send(email: String, subject: String, message: String, file: File?) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
@@ -43,7 +43,7 @@ private class EmailSenderImpl(
 }
 
 @Composable
-fun rememberEmailSender(): EmailSender {
+fun rememberSendEmailResolver(): SendEmailResolver {
   val context = LocalContext.current
-  return EmailSenderImpl(context)
+  return SendEmailResolverImpl(context)
 }

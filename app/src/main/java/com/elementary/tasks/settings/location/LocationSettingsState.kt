@@ -1,5 +1,7 @@
 package com.elementary.tasks.settings.location
 
+import androidx.compose.ui.graphics.Color
+
 data class LocationSettingsState(
   val isNotificationChecked: Boolean = false,
   val radiusText: String = "",
@@ -36,6 +38,8 @@ sealed class LocationSettingsEvent {
   data object OpenPlaces : LocationSettingsEvent()
 
   data class ShowMarkerColorPicker(
+    val title: String,
     val currentColorIndex: Int,
+    val colors: List<Color>,
   ) : LocationSettingsEvent()
 }

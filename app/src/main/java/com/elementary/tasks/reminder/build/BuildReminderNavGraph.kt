@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.build
 
 import android.os.Build
-import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -13,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
@@ -82,7 +80,6 @@ private fun MainEntry(
   Logger.i("BuildReminderNavGraph", "Opening the reminder edit screen for id: ${Logger.data(viewModel.id)}")
 
   val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
 
   val dialogDispatcher = rememberDialogDispatcher()
   val reviewsFormLauncher = rememberReviewsFormLauncher()
@@ -207,16 +204,12 @@ private fun MainEntry(
   }
 
   editingItem?.let { (position, item) ->
-    // Arriving/Leaving coordinates host a real Fragment (SimpleMapFragment, Google Maps SDK) via
-    // FragmentContainerView. ValueEditorSheet's AppModalBottomSheet renders in a separate Compose
-    // Popup/Dialog window, which isn't part of the fragment view tree childFragmentManager
-    // searches when resolving that container by id, so it must be shown in-place instead (see
-    // MapEditorScreen's kdoc).
+    // Arriving/Leaving coordinates use MapEditorScreen's own swipeable sheet rather than
+    // ValueEditorSheet's AppModalBottomSheet (see MapEditorScreen's kdoc).
     if (item is ArrivingCoordinatesBuilderItem || item is LeavingCoordinatesBuilderItem) {
       @Suppress("UNCHECKED_CAST")
       MapEditorScreen(
         builderItem = item as BuilderItem<Place>,
-        fragmentManager = activity.supportFragmentManager,
         dateTimeManager = dateTimeManager,
         onDismissRequest = { editingItem = null },
         onValueChange = { updated -> viewModel.updateValue(position, updated) },

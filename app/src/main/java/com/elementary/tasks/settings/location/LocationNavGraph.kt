@@ -1,19 +1,11 @@
 package com.elementary.tasks.settings.location
 
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
@@ -22,7 +14,6 @@ import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.places.PlacesNavKey
 import com.elementary.tasks.settings.SettingsScaffold
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
-import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -38,19 +29,9 @@ fun EntryProviderScope<NavKey>.locationEntries(backStack: MutableList<NavKey>) {
 @Composable
 private fun LocationEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<LocationSettingsViewModel>()
-  val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val appNavBridge = rememberAppNavBridge()
   val state by viewModel.state.collectAsState()
-
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(viewModel, lifecycleOwner) {
-    val observer =
-      LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) viewModel.onResume() }
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
@@ -58,8 +39,8 @@ private fun LocationEntry(backStack: MutableList<NavKey>) {
       LocationSettingsEvent.OpenPlaces -> appNavBridge.navigate(PlacesNavKey.List)
       is LocationSettingsEvent.ShowMarkerColorPicker -> {
         colorPickerDialogDispatcher.showDialog(
-          title = context.getString(R.string.style_of_marker),
-          colors = ThemeProvider.colorsForSlider(activity).map { Color(it) },
+          title = event.title,
+          colors = event.colors,
           selectedIndex = event.currentColorIndex,
           onColorSelected = { color -> viewModel.onMarkerColorSelected(color) },
         )

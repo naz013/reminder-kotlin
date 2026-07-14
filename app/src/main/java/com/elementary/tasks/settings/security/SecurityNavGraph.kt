@@ -32,7 +32,7 @@ private fun SecurityEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<SecuritySettingsViewModel>()
 
   val biometricProvider = rememberBiometricProvider()
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(SecuritySettingsState())
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {

@@ -111,7 +111,9 @@ class EditPlaceViewModel(
       Logger.logEvent("Place saved")
       postInProgress(false)
       postCommand(Commands.SAVED)
-      navigationEvent.value = Event(EditPlaceEvent.Saved)
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.value = Event(EditPlaceEvent.Saved)
+      }
     }
   }
 

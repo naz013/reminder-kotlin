@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.adjustAlpha
+import com.github.naz013.ui.common.compose.toColor
 import com.google.android.material.color.MaterialColors
 
 class ThemeProvider(
@@ -270,6 +271,27 @@ class ThemeProvider(
     return ContextCompat.getColor(context, colorRes)
   }
 
+  fun colorsForSlider(): List<androidx.compose.ui.graphics.Color> {
+    return listOf(
+      ContextCompat.getColor(context, R.color.redAccentOld),
+      ContextCompat.getColor(context, R.color.pinkAccentOld),
+      ContextCompat.getColor(context, R.color.purpleAccentOld),
+      ContextCompat.getColor(context, R.color.purpleDeepAccentOld),
+      ContextCompat.getColor(context, R.color.indigoAccentOld),
+      ContextCompat.getColor(context, R.color.blueAccentOld),
+      ContextCompat.getColor(context, R.color.blueLightAccentOld),
+      ContextCompat.getColor(context, R.color.cyanAccentOld),
+      ContextCompat.getColor(context, R.color.tealAccentOld),
+      ContextCompat.getColor(context, R.color.greenAccentOld),
+      ContextCompat.getColor(context, R.color.greenLightAccentOld),
+      ContextCompat.getColor(context, R.color.limeAccentOld),
+      ContextCompat.getColor(context, R.color.yellowAccentOld),
+      ContextCompat.getColor(context, R.color.amberAccentOld),
+      ContextCompat.getColor(context, R.color.orangeAccentOld),
+      ContextCompat.getColor(context, R.color.orangeDeepAccentOld)
+    ).map { it.toColor() }
+  }
+
   data class Marker(@param:ColorRes val fillColor: Int, @param:ColorRes val strokeColor: Int)
 
   companion object {
@@ -283,24 +305,6 @@ class ThemeProvider(
     @ColorInt
     fun getOnPrimaryColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.md_theme_onPrimary)
-    }
-
-    @ColorInt
-    fun getHintTextColor(context: Context): Int {
-      return MaterialColors.getColor(
-        context,
-        android.R.attr.textColorHint,
-        "getHintTextColor()"
-      )
-    }
-
-    @ColorInt
-    fun getTitleTextColor(context: Context): Int {
-      return MaterialColors.getColor(
-        context,
-        android.R.attr.textColorPrimary,
-        "getTitleTextColor()"
-      )
     }
 
     @ColorInt
@@ -402,11 +406,6 @@ class ThemeProvider(
     @ColorInt
     fun getThemeOnSurfaceColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.md_theme_onSurface)
-    }
-
-    @ColorInt
-    fun getThemeOnSecondaryColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_onSecondary)
     }
 
     @ColorInt
