@@ -279,29 +279,29 @@ class DeveloperViewModel(
         DemoNote(
           title = "Grocery List",
           summary = "Milk, eggs, bread, fresh basil, olive oil, and don't forget the candles for Saturday!",
-          color = ThemeProvider.Color.GREEN,
+          color = ThemeProvider.AppColorIndex.GREEN,
         ),
         DemoNote(
           title = "Weekend Trip Ideas",
           summary =
             "1. Hike the coastal trail\n2. Visit the farmers market\n3. Try that new ramen place downtown\n4. Sunset photos at the pier",
-          color = ThemeProvider.Color.LIGHT_BLUE,
+          color = ThemeProvider.AppColorIndex.LIGHT_BLUE,
         ),
         DemoNote(
           title = "Meeting Notes - Product Sync",
           summary =
             "Discussed Q3 roadmap. Action items: finalize onboarding flow, review pricing page copy, schedule user interviews for next sprint.",
-          color = ThemeProvider.Color.AMBER,
+          color = ThemeProvider.AppColorIndex.AMBER,
         ),
         DemoNote(
           title = "Book Recommendations",
           summary = "- Atomic Habits\n- Project Hail Mary\n- The Midnight Library\n- Deep Work",
-          color = ThemeProvider.Color.DEEP_PURPLE,
+          color = ThemeProvider.AppColorIndex.DEEP_PURPLE,
         ),
         DemoNote(
           title = "Favorite Quote",
           summary = "\"The secret of getting ahead is getting started.\" - Mark Twain",
-          color = ThemeProvider.Color.PINK,
+          color = ThemeProvider.AppColorIndex.PINK,
         ),
       )
     notes.forEach { demoNote ->

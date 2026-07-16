@@ -19,6 +19,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -37,6 +38,7 @@ class EditPlaceViewModel(
   private val deletePlaceUseCase: DeletePlaceUseCase,
   private val savePlaceUseCase: SavePlaceUseCase,
 ) : BaseProgressViewModel(dispatcherProvider) {
+
   val state: StateFlow<EditPlaceState> field = MutableStateFlow(EditPlaceState())
   val navigationEvent: LiveData<Event<EditPlaceEvent>> field = mutableLiveEventOf()
 
@@ -60,8 +62,6 @@ class EditPlaceViewModel(
   fun hasId(): Boolean = id.isNotEmpty()
 
   fun hasLatLng(): Boolean = lat != 0.0 && lng != 0.0
-
-  fun getPlace(): UiPlaceEdit? = loadedPlace
 
   fun onNameChange(name: String) {
     state.update { it.copy(name = name, nameError = false) }
@@ -160,10 +160,23 @@ class EditPlaceViewModel(
     markerRadius = place.radius
     address = place.address
 
+    val editMarker = EditMarker(
+      latLng = LatLng(place.latitude, place.longitude),
+      style = place.marker,
+      radius = place.radius,
+      title = place.address,
+    )
+
+    val uiPlace = uiPlaceEditAdapter.convert(place)
+    loadedPlace = uiPlace
+
     withContext(dispatcherProvider.default()) {
-      val uiPlace = uiPlaceEditAdapter.convert(place)
-      loadedPlace = uiPlace
-      state.update { it.copy(name = uiPlace.name) }
+      state.update {
+        it.copy(
+          name = uiPlace.name,
+          markers = listOf(editMarker),
+        )
+      }
     }
   }
 

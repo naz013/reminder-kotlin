@@ -2,6 +2,9 @@ package com.elementary.tasks.simplemap
 
 import android.location.Address
 import androidx.annotation.DrawableRes
+import androidx.compose.ui.graphics.Color
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.withAlpha
 import com.google.android.gms.maps.model.LatLng
 
 /**
@@ -31,10 +34,14 @@ data class MapCustomButton(
 
 data class MarkerState(
   val latLng: LatLng,
-  val style: Int,
-  val radius: Int,
+  val radius: Int = MapConfig.Radius.DEFAULT_METERS,
   val title: String = "",
   val address: String = "",
+  val styleIndex: Int = 0,
+  val color: Color = Color.Red,
+  val iconRes: Int = R.drawable.ic_fluent_place,
+  val circleColor: Color = Color.Red.withAlpha(0.33f),
+  val circleStrokeColor: Color = Color.Red,
 )
 
 internal fun Address.toDisplayTitle(): String = getAddressLine(0) ?: toShortDisplayName()

@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils.ui.radius
+package com.elementary.tasks.simplemap
 
 import android.content.Context
 import com.elementary.tasks.R

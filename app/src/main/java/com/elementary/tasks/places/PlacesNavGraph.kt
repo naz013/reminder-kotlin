@@ -7,7 +7,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -23,13 +25,10 @@ import com.elementary.tasks.places.create.EditPlaceScreen
 import com.elementary.tasks.places.create.EditPlaceViewModel
 import com.elementary.tasks.places.list.PlacesScreen
 import com.elementary.tasks.places.list.PlacesViewModel
-import com.elementary.tasks.simplemap.MapCallerEvent
 import com.elementary.tasks.simplemap.MapParams
-import com.elementary.tasks.simplemap.MapViewModel
-import com.elementary.tasks.simplemap.MarkerState
+import com.elementary.tasks.simplemap.SimpleMapController
 import com.elementary.tasks.simplemap.SimpleMapView
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
-import com.google.android.gms.maps.model.LatLng
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -91,25 +90,7 @@ private fun PlaceEditEntry(
   val dialogDispatcher = rememberDialogDispatcher()
   val context = LocalContext.current
 
-  val mapParams = remember {
-    MapParams(isPlaces = false, isStyles = true, isRadius = true, rememberMarkerRadius = false, rememberMarkerStyle = false)
-  }
-  val mapViewModel = koinViewModel<MapViewModel> { parametersOf(mapParams) }
-
-  mapViewModel.callerEvent.ObserveEvent { event ->
-    if (event is MapCallerEvent.LocationSelected) {
-      val markerState = event.markerState
-      viewModel.lat = markerState.latLng.latitude
-      viewModel.lng = markerState.latLng.longitude
-      viewModel.address = markerState.address
-      viewModel.markerStyle = markerState.style
-      viewModel.markerRadius = markerState.radius
-
-      if (viewModel.state.value.name.isEmpty()) {
-        viewModel.onNameChange(viewModel.address)
-      }
-    }
-  }
+  var mapController by remember { mutableStateOf<SimpleMapController?>(null) }
 
   LaunchedEffect(Unit) {
     if (key.fromIntentData) {
@@ -150,36 +131,37 @@ private fun PlaceEditEntry(
 
   val state by viewModel.state.collectAsState()
 
-  val markers = remember(state.canDelete) {
-    if (state.canDelete) {
-      viewModel.getPlace()?.let { place ->
-        listOf(
-          MarkerState(
-            latLng = LatLng(place.lat, place.lng),
-            style = place.marker,
-            radius = place.radius,
-            title = place.name,
-          ),
-        )
-      } ?: emptyList()
-    } else {
-      emptyList()
-    }
-  }
-
   EditPlaceScreen(
     state = state,
     title = if (viewModel.hasId()) stringResource(R.string.edit_place) else stringResource(R.string.new_place),
     onBackClick = {
-      if (mapViewModel.onBackPressed()) backStack.removeLastOrNull()
+      if (mapController?.onBackPressed() != false) backStack.removeLastOrNull()
     },
     onNameChange = viewModel::onNameChange,
     onSaveClick = viewModel::onSaveClick,
     onDeleteClick = viewModel::onDeleteClick,
   ) {
     SimpleMapView(
-      viewModel = mapViewModel,
-      markers = markers,
+      mapParams = MapParams(
+        isPlaces = false,
+        isStyles = true,
+        isRadius = true,
+        rememberMarkerRadius = false,
+        rememberMarkerStyle = false,
+      ),
+      markers = state.markers,
+      onLocationSelected = { markerState ->
+        viewModel.lat = markerState.latLng.latitude
+        viewModel.lng = markerState.latLng.longitude
+        viewModel.address = markerState.address
+        viewModel.markerStyle = markerState.styleIndex
+        viewModel.markerRadius = markerState.radius
+
+        if (viewModel.state.value.name.isEmpty()) {
+          viewModel.onNameChange(viewModel.address)
+        }
+      },
+      onControllerReady = { mapController = it },
       modifier = Modifier.fillMaxSize(),
     )
   }

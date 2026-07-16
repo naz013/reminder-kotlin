@@ -1,8 +1,5 @@
 package com.elementary.tasks.simplemap
 
-import android.content.Context
-import android.graphics.drawable.Drawable
-import android.location.Criteria
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,98 +21,106 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.io.BitmapUtils
-import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.elementary.tasks.notes.ObserveEvent
 import com.github.naz013.common.Permissions
-import com.github.naz013.feature.common.android.SystemServiceProvider
-import com.github.naz013.ui.common.theme.ThemeProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.Circle
-import com.google.maps.android.compose.GoogleMap as ComposeGoogleMap
 import com.google.maps.android.compose.GoogleMapComposable
 import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+import java.util.UUID
+import com.google.maps.android.compose.GoogleMap as ComposeGoogleMap
 
 /**
  * Compose replacement for the legacy `SimpleMapFragment`: a Google Map with an optional tap-to-set
- * marker + radius circle, and the layers/marker-style/radius/recent-places picker chrome. Purely a
- * renderer over [viewModel] - every state transition and business decision lives there; this
- * composable's own state is limited to the two things that must stay Compose-side: the
- * `CameraPositionState` driving map animation, and the location-permission request flow (which
- * needs an `Activity`/launcher [viewModel] can't hold).
+ * marker + radius circle, and the layers/marker-style/radius/recent-places picker chrome. Every
+ * state transition and business decision lives in its own internal [SimpleMapViewViewModel] - callers only
+ * ever see [mapParams]/[markers] going in and the `onX` callbacks (plus [onControllerReady] for
+ * the few things, like "move to this place" or "back button", that need to be driven
+ * imperatively from outside).
  */
 @Composable
 fun SimpleMapView(
-  viewModel: MapViewModel,
-  markers: List<MarkerState> = emptyList(),
-  edgeToEdge: Boolean = false,
   modifier: Modifier = Modifier,
+  mapParams: MapParams,
+  markers: List<MapMarker> = emptyList(),
+  onLocationSelected: (MarkerState) -> Unit = {},
+  onMapClick: (() -> Unit)? = null,
+  onCustomButtonClick: (Int) -> Unit = {},
+  onControllerReady: (SimpleMapController) -> Unit = {},
+  edgeToEdge: Boolean = false,
 ) {
-  val context = LocalContext.current
-  val themeProvider = koinInject<ThemeProvider>()
-  val systemServiceProvider = koinInject<SystemServiceProvider>()
+  val viewModelKey = rememberSaveable { UUID.randomUUID().toString() }
+  val viewModel = koinViewModel<SimpleMapViewViewModel>(key = viewModelKey) { parametersOf(mapParams) }
+
+  val controller = remember(viewModel) { SimpleMapController(viewModel) }
+  LaunchedEffect(controller) { onControllerReady(controller) }
+
   val permissionRequester = rememberPermissionRequesterRationale()
   val coroutineScope = rememberCoroutineScope()
   val cameraPositionState = rememberCameraPositionState()
   var rawMap by remember { mutableStateOf<GoogleMap?>(null) }
 
-  val uiState by viewModel.state.collectAsState()
-  val mapParams = viewModel.mapParams
+  val uiState by viewModel.state.collectAsState(MapUiState())
 
   LaunchedEffect(markers) { viewModel.setSeedMarkers(markers) }
 
-  viewModel.cameraEvent.ObserveEvent { latLng ->
-    coroutineScope.launch {
-      cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
-    }
-  }
-  viewModel.permissionRequestEvent.ObserveEvent { moveToMyLocationAfterGrant ->
-    permissionRequester.request(
-      listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION),
-      onGranted = { viewModel.onLocationPermissionGranted(moveToMyLocationAfterGrant) },
-    )
-  }
-  viewModel.myLocationRequestEvent.ObserveEvent {
-    resolveMyLocation(systemServiceProvider, rawMap)?.let { latLng ->
-      coroutineScope.launch {
-        cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is SimpleMapViewViewModel.MapEvent.RequestMyLocationPermission -> {
+        permissionRequester.request(
+          listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION),
+          onGranted = { viewModel.onLocationPermissionGranted() },
+        )
+      }
+
+      is SimpleMapViewViewModel.MapEvent.ZoomToLocation -> {
+        coroutineScope.launch {
+          cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(event.latLng, event.zoom))
+        }
+      }
+
+      is SimpleMapViewViewModel.MapEvent.RequestLocationPermission -> {
+        permissionRequester.request(
+          listOf(Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION),
+          onGranted = { viewModel.onLocationPermissionGranted() },
+        )
+      }
+
+      is SimpleMapViewViewModel.MapEvent.CustomButtonClicked -> {
+        onCustomButtonClick(event.id)
+      }
+
+      is SimpleMapViewViewModel.MapEvent.LocationSelected -> {
+        onLocationSelected(event.markerState)
+      }
+
+      is SimpleMapViewViewModel.MapEvent.MapClicked -> {
+        onMapClick?.invoke()
       }
     }
   }
 
-  val mapStyleOptions = remember(uiState.mapType, uiState.mapStyle) {
-    if (uiState.mapType == GoogleMap.MAP_TYPE_NORMAL) {
-      MapStyleOptions.loadRawResourceStyle(context, themeProvider.getMapStyleJson(uiState.mapStyle))
-    } else {
-      null
-    }
-  }
-  val mapProperties = remember(uiState.mapType, mapStyleOptions, uiState.hasLocationPermission) {
+  val mapProperties = remember(uiState.mapType, uiState.mapStyleOptions, uiState.hasLocationPermission) {
     MapProperties(
-      mapType = uiState.mapType.toComposeMapType(),
-      mapStyleOptions = mapStyleOptions,
+      mapType = uiState.mapType,
+      mapStyleOptions = uiState.mapStyleOptions,
       isMyLocationEnabled = uiState.hasLocationPermission,
     )
   }
@@ -134,7 +139,7 @@ fun SimpleMapView(
     ) {
       MapEffect(Unit) { map -> rawMap = map }
       uiState.markers.forEach { marker ->
-        MapMarkerAndCircle(markerState = marker, themeProvider = themeProvider)
+        MapMarkerAndCircle(markerState = marker)
       }
     }
 
@@ -207,21 +212,17 @@ fun SimpleMapView(
           )
 
           MapPicker.MARKER_STYLE -> {
-            val colors = remember {
-              ThemeProvider.colorsForSlider(context).map { argb -> Color(argb) }
-            }
             MarkerStyleCard(
-              colors = colors,
-              selectedIndex = uiState.pendingStyle,
-              selectorColor = colorResource(themeProvider.pickColorRes(R.color.pureBlack, R.color.pureWhite)),
+              colors = uiState.markerStyleSliderColors,
+              selectedIndex = uiState.selectedMarkerStyle,
               onStyleSelected = viewModel::onMarkerStyleSelected,
               modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
             )
           }
 
           MapPicker.RADIUS -> MarkerRadiusCard(
-            radius = uiState.radius,
-            valueTo = uiState.radiusValueTo,
+            radius = uiState.radiusMeters,
+            valueTo = uiState.maxRadiusMeters,
             formattedRadius = uiState.radiusText,
             onValueChange = viewModel::onRadiusChanged,
             onValueChangeFinished = viewModel::onRadiusChangeFinished,
@@ -243,24 +244,26 @@ fun SimpleMapView(
 
 @Composable
 @GoogleMapComposable
-private fun MapMarkerAndCircle(
-  markerState: MarkerState,
-  themeProvider: ThemeProvider,
-) {
-  val context = LocalContext.current
-  val icon = remember(markerState.style) { createMarkerIcon(context, themeProvider, markerState.style) }
+private fun MapMarkerAndCircle(markerState: MarkerState) {
   val gmsMarkerState = remember(markerState.latLng) {
     com.google.maps.android.compose.MarkerState(position = markerState.latLng)
   }
-  Marker(state = gmsMarkerState, title = markerState.title, icon = icon)
-
-  val radiusStyle = themeProvider.getMarkerRadiusStyle(markerState.style)
+  MarkerComposable(
+    state = gmsMarkerState,
+    title = markerState.title,
+  ) {
+    Icon(
+      painter = painterResource(markerState.iconRes),
+      contentDescription = null,
+      tint = markerState.color,
+    )
+  }
   Circle(
     center = markerState.latLng,
     radius = markerState.radius.toDouble(),
     strokeWidth = 3f,
-    fillColor = colorResource(radiusStyle.fillColor),
-    strokeColor = colorResource(radiusStyle.strokeColor),
+    fillColor = markerState.circleColor,
+    strokeColor = markerState.circleStrokeColor,
   )
 }
 
@@ -306,47 +309,4 @@ private fun MyLocationButton(
       )
     }
   }
-}
-
-/**
- * Prefers `LocationManager`'s last known location, falling back to the raw `GoogleMap`'s own
- * my-location layer when that cache is empty (common on emulators / devices where the fused
- * provider hasn't populated `LocationManager` yet, but the map's blue dot already has a fix).
- */
-@Suppress("DEPRECATION")
-private fun resolveMyLocation(
-  systemServiceProvider: SystemServiceProvider,
-  map: GoogleMap?,
-): LatLng? {
-  val locationManager = systemServiceProvider.provideLocationManager()
-  val criteria = Criteria()
-  val fromLocationManager = runCatching {
-    locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false) ?: "")
-  }.getOrNull()
-  if (fromLocationManager != null) {
-    return LatLng(fromLocationManager.latitude, fromLocationManager.longitude)
-  }
-  return runCatching { map?.myLocation }.getOrNull()?.let { LatLng(it.latitude, it.longitude) }
-}
-
-private fun createMarkerIcon(
-  context: Context,
-  themeProvider: ThemeProvider,
-  style: Int,
-): BitmapDescriptor {
-  val drawable: Drawable = DrawableHelper
-    .withContext(context)
-    .withDrawable(R.drawable.ic_fluent_place)
-    .withColor(themeProvider.getMarkerLightColor(style))
-    .tint()
-    .get()
-  return BitmapUtils.getDescriptor(drawable)
-}
-
-private fun Int.toComposeMapType(): MapType = when (this) {
-  GoogleMap.MAP_TYPE_SATELLITE -> MapType.SATELLITE
-  GoogleMap.MAP_TYPE_TERRAIN -> MapType.TERRAIN
-  GoogleMap.MAP_TYPE_HYBRID -> MapType.HYBRID
-  GoogleMap.MAP_TYPE_NONE -> MapType.NONE
-  else -> MapType.NORMAL
 }

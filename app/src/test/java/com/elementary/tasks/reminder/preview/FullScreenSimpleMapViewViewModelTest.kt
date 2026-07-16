@@ -12,7 +12,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-class FullScreenMapViewModelTest : BaseTest() {
+class FullScreenSimpleMapViewViewModelTest : BaseTest() {
   private val getReminderByIdUseCase = mockk<GetReminderByIdUseCase>()
 
   private fun createViewModel(id: String = "42"): FullScreenMapViewModel =

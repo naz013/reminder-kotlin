@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -33,11 +35,10 @@ import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.notes.ObserveNonNull
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.elementary.tasks.simplemap.MapCallerEvent
+import com.elementary.tasks.reminder.build.valuedialog.editor.ReminderMapMarker
 import com.elementary.tasks.simplemap.MapCustomButton
 import com.elementary.tasks.simplemap.MapParams
-import com.elementary.tasks.simplemap.MapViewModel
-import com.elementary.tasks.simplemap.MarkerState
+import com.elementary.tasks.simplemap.SimpleMapController
 import com.elementary.tasks.simplemap.SimpleMapView
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
@@ -126,27 +127,10 @@ private fun FullscreenMapEntry(
 ) {
   val viewModel = koinViewModel<FullScreenMapViewModel> { parametersOf(key.id) }
   bindLifecycle(viewModel)
-
-  val mapParams = remember {
-    MapParams(
-      isPlaces = false,
-      isStyles = false,
-      isRadius = false,
-      isSearch = false,
-      isTouch = false,
-      customButtons = listOf(MapCustomButton(R.drawable.ic_builder_arrow_left, id = 0)),
-    )
-  }
-  val mapViewModel = koinViewModel<MapViewModel> { parametersOf(mapParams) }
-
-  mapViewModel.callerEvent.ObserveEvent { event ->
-    if (event is MapCallerEvent.CustomButtonClicked && event.id == 0) {
-      backStack.removeLastOrNull()
-    }
-  }
+  var mapController by remember { mutableStateOf<SimpleMapController?>(null) }
 
   BackHandler {
-    if (mapViewModel.onBackPressed()) backStack.removeLastOrNull()
+    if (mapController?.onBackPressed() != false) backStack.removeLastOrNull()
   }
 
   val reminder by viewModel.reminder.collectAsState()
@@ -158,11 +142,15 @@ private fun FullscreenMapEntry(
       viewModel.placeIndex =
         if (viewModel.placeIndex < currentReminder.places.size - 1) viewModel.placeIndex + 1 else 0
       val place = currentReminder.places[viewModel.placeIndex]
-      mapViewModel.moveCamera(LatLng(place.latitude, place.longitude))
+      mapController?.moveCamera(LatLng(place.latitude, place.longitude))
     },
     mapContent = {
       reminder?.let {
-        FullscreenEmbeddedMap(viewModel = mapViewModel, reminder = it)
+        FullscreenEmbeddedMap(
+          reminder = it,
+          onBackClick = { backStack.removeLastOrNull() },
+          onControllerReady = { mapController = it },
+        )
       }
     },
   )
@@ -173,33 +161,45 @@ private fun EmbeddedMap(
   places: List<UiReminderPlace>,
   onMapClick: () -> Unit,
 ) {
-  val mapParams = remember {
-    MapParams(isTouch = false, isSearch = false, isRadius = false, isPlaces = false, isStyles = false, isLayers = false)
-  }
-  val mapViewModel = koinViewModel<MapViewModel> { parametersOf(mapParams) }
-
-  mapViewModel.callerEvent.ObserveEvent { event ->
-    if (event is MapCallerEvent.MapClicked) onMapClick()
-  }
-
   SimpleMapView(
-    viewModel = mapViewModel,
+    mapParams = MapParams(
+      isTouch = false,
+      isSearch = false,
+      isRadius = false,
+      isPlaces = false,
+      isStyles = false,
+      isLayers = false,
+    ),
     markers = places.map {
-      MarkerState(latLng = it.latLng(), style = it.marker, radius = it.radius, title = it.address)
+      ReminderMapMarker(
+        latLng = it.latLng(),
+        style = it.marker,
+        radius = it.radius,
+        title = it.address
+      )
     },
+    onMapClick = onMapClick,
     modifier = Modifier.fillMaxSize(),
   )
 }
 
 @Composable
 private fun FullscreenEmbeddedMap(
-  viewModel: MapViewModel,
   reminder: Reminder,
+  onBackClick: () -> Unit,
+  onControllerReady: (SimpleMapController) -> Unit,
 ) {
   SimpleMapView(
-    viewModel = viewModel,
+    mapParams = MapParams(
+      isPlaces = false,
+      isStyles = false,
+      isRadius = false,
+      isSearch = false,
+      isTouch = false,
+      customButtons = listOf(MapCustomButton(R.drawable.ic_builder_arrow_left, id = 0)),
+    ),
     markers = reminder.places.map { place ->
-      MarkerState(
+      ReminderMapMarker(
         latLng = LatLng(place.latitude, place.longitude),
         style = place.marker,
         radius = place.radius,
@@ -208,6 +208,8 @@ private fun FullscreenEmbeddedMap(
           ?: reminder.summary,
       )
     },
+    onCustomButtonClick = { id -> if (id == 0) onBackClick() },
+    onControllerReady = onControllerReady,
     edgeToEdge = true,
     modifier = Modifier.fillMaxSize(),
   )

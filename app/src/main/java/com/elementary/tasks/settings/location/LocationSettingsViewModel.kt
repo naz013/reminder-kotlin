@@ -3,10 +3,11 @@ package com.elementary.tasks.settings.location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.config.RadiusConfig
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
+import com.elementary.tasks.simplemap.DefaultRadiusFormatter
+import com.elementary.tasks.simplemap.MapConfig
+import com.elementary.tasks.simplemap.MapStyle
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -26,6 +27,7 @@ class LocationSettingsViewModel(
   private val themeProvider: ThemeProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val systemInfo: SystemInfo,
+  private val mapStyle: MapStyle,
 ) : ViewModel() {
   val state: StateFlow<LocationSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<LocationSettingsEvent>> field = mutableLiveEventOf()
@@ -106,7 +108,7 @@ class LocationSettingsViewModel(
       LocationSettingsEvent.ShowMarkerColorPicker(
         title = textProvider.getString(R.string.style_of_marker),
         currentColorIndex = prefs.markerStyle,
-        colors = themeProvider.colorsForSlider(),
+        colors = mapStyle.colorsForSlider(),
       )
     )
   }
@@ -205,7 +207,7 @@ class LocationSettingsViewModel(
   }
 
   companion object {
-    private val MAX_RADIUS = RadiusConfig.MAX_RADIUS.toFloat()
+    private val MAX_RADIUS = MapConfig.Radius.MAX_METERS.toFloat()
     private const val MAX_DEF_RADIUS = 5000f
   }
 }

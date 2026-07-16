@@ -49,8 +49,8 @@ internal fun PickerCard(
 
 @Composable
 internal fun LayerTypeCard(
-  onTypeSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
+  onTypeSelected: (Int) -> Unit,
 ) {
   PickerCard(modifier = modifier.width(112.dp)) {
     LayerTypeRow(stringResource(R.string.normal)) { onTypeSelected(GoogleMap.MAP_TYPE_NORMAL) }
@@ -95,8 +95,8 @@ private val MapStyleOptions = listOf(
 
 @Composable
 internal fun MapStyleCard(
-  onStyleSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
+  onStyleSelected: (Int) -> Unit,
 ) {
   PickerCard(modifier = modifier) {
     Column(modifier = Modifier.padding(16.dp)) {
@@ -130,11 +130,11 @@ private fun MapStyleThumbnail(
 
 @Composable
 internal fun MarkerStyleCard(
+  modifier: Modifier = Modifier,
   colors: List<Color>,
   selectedIndex: Int,
-  selectorColor: Color,
+  selectorColor: Color = MaterialTheme.colorScheme.onSurface,
   onStyleSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   PickerCard(modifier = modifier) {
     // padding() must come before height() - applied the other way around, the 16dp padding on

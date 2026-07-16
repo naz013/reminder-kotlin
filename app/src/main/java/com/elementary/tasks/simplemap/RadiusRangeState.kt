@@ -1,13 +1,11 @@
 package com.elementary.tasks.simplemap
 
-import com.elementary.tasks.config.RadiusConfig
-
 /**
- * Backs [MapViewModel]'s radius slider: keeps the slider's upper bound ([valueTo]) auto-expanding
+ * Backs [SimpleMapViewViewModel]'s radius slider: keeps the slider's upper bound ([valueTo]) auto-expanding
  * as the value approaches either end, ported from the legacy `RadiusSliderBehaviour` View
  * behaviour (same 95%/10% thresholds and 20% growth/shrink step). [updateValue] and
  * [growRangeIfNeeded] are split rather than combined into one "on drag" call because growing
- * [valueTo] mid-gesture resets a Compose `Slider`'s drag tracking - see [MapViewModel.onRadiusChanged].
+ * [valueTo] mid-gesture resets a Compose `Slider`'s drag tracking - see [SimpleMapViewViewModel.onRadiusChanged].
  */
 class RadiusRangeState(
   initialRadius: Int,
@@ -35,7 +33,7 @@ class RadiusRangeState(
   }
 
   companion object {
-    private val MAX_RADIUS = RadiusConfig.MAX_RADIUS.toFloat()
+    private const val MAX_RADIUS = MapConfig.Radius.MAX_METERS.toFloat()
     private const val DEFAULT_VALUE_TO = 5000f
 
     private fun valueToFor(radius: Float): Float = if (radius <= 0f) DEFAULT_VALUE_TO else radius * 2f

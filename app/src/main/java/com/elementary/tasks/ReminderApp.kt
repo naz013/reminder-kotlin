@@ -36,6 +36,7 @@ import com.elementary.tasks.simplemap.simpleMapKoinModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
+import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.icalendar.iCalendarModule
@@ -152,6 +153,7 @@ class ReminderApp :
           eventActionModule,
           legalModule,
           workModule,
+          dateTimeCalculationsModule,
         ),
       )
     }
