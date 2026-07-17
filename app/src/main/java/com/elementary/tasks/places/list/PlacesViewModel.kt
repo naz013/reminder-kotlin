@@ -98,13 +98,19 @@ class PlacesViewModel(
     refreshSignal.update { it + 1 }
   }
 
-  private fun applyList(list: List<Place>) {
+  private fun applyList(mergedPlaces: MergedPlaces) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val states = list.map { toPlaceState(it) }.sortedBy { it.name }
+      val states = mergedPlaces.places.map { toPlaceState(it) }.sortedBy { it.name }
 
       withContext(dispatcherProvider.main()) {
         _screenState.update {
-          it.copy(listState = if (states.isEmpty()) ListState.Empty else ListState.Ready(states))
+          it.copy(
+            listState = if (states.isEmpty() && !mergedPlaces.hasAny) {
+              ListState.Empty
+            } else {
+              ListState.Ready(states)
+            }
+          )
         }
       }
     }
@@ -144,14 +150,23 @@ class PlacesViewModel(
     )
   }
 
-  private suspend fun loadMerged(query: String): List<Place> {
-    return placeRepository.getAll().filter {
-      it.name.contains(query, ignoreCase = true) ||
-        (it.name.isNotEmpty() && query.contains(it.name, ignoreCase = true)) ||
-        it.address.contains(query, ignoreCase = true) ||
-        (it.address.isNotEmpty() && query.contains(it.address, ignoreCase = true))
-    }
+  private suspend fun loadMerged(query: String): MergedPlaces {
+    val all = placeRepository.getAll()
+    return MergedPlaces(
+      places = all.filter {
+        it.name.contains(query, ignoreCase = true) ||
+          (it.name.isNotEmpty() && query.contains(it.name, ignoreCase = true)) ||
+          it.address.contains(query, ignoreCase = true) ||
+          (it.address.isNotEmpty() && query.contains(it.address, ignoreCase = true))
+      },
+      hasAny = all.isNotEmpty(),
+    )
   }
+
+  private data class MergedPlaces(
+    val places: List<Place>,
+    val hasAny: Boolean,
+  )
 
   sealed interface NavigationEvent {
     data class OpenEditPlace(
