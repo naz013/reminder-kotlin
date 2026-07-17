@@ -56,6 +56,10 @@ class Prefs(
     }
   }
 
+  var hapticsEnabled: Boolean
+    get() = getBoolean(PrefsConstants.GENERAL_HAPTICS, true)
+    set(value) = putBoolean(PrefsConstants.GENERAL_HAPTICS, value)
+
   var addRemindersToGoogleCalendar: Boolean
     get() = getBoolean(PrefsConstants.GOOGLE_CALENDAR_ADD_REMINDERS, def = false)
     set(value) = putBoolean(PrefsConstants.GOOGLE_CALENDAR_ADD_REMINDERS, value)

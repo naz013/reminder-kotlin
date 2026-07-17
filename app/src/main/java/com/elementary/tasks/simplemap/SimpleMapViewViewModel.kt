@@ -47,7 +47,7 @@ class SimpleMapViewViewModel(
 
   private val _state = MutableStateFlow(MapUiState())
   val state = _state.stateInWhileSubscribed(MapUiState())
-    .onStart { loadInitialState() }
+    .onStart { _state.update { loadInitialState(it) } }
 
   val event: LiveData<Event<MapEvent>> field = mutableLiveEventOf()
 
@@ -225,20 +225,21 @@ class SimpleMapViewViewModel(
   }
 
   fun onMarkerStyleSelected(style: Int) {
+    if (_state.value.selectedMarkerStyle != style && prefs.hapticsEnabled) {
+      event.emit(MapEvent.HapticFeedback)
+    }
     if (mapParams.rememberMarkerStyle) prefs.markerStyle = style
     _state.update { it.copy(selectedMarkerStyle = style) }
     val current = _state.value.markers.firstOrNull() ?: return
     placeMarker(updateMarkerStyle(current, style))
   }
 
-  /**
-   * Called continuously while dragging. Deliberately does *not* touch [RadiusRangeState.valueTo]
-   * - changing a Compose `Slider`'s `valueRange` mid-gesture resets its internal drag tracking,
-   * which drops the pointer and forces the user to lift and re-drag. Range growth is deferred to
-   * [onRadiusChangeFinished] instead.
-   */
   fun onRadiusChanged(value: Float) {
+    val previousRadius = radiusRange.radius
     radiusRange.updateValue(value)
+    if (radiusRange.radius != previousRadius && prefs.hapticsEnabled) {
+      event.emit(MapEvent.HapticFeedback)
+    }
     if (mapParams.rememberMarkerRadius) prefs.radius = radiusRange.radius
     _state.update {
       it.copy(
@@ -248,12 +249,6 @@ class SimpleMapViewViewModel(
     }
     val current = _state.value.markers.firstOrNull() ?: return
     placeMarker(current.copy(radius = radiusRange.radius))
-  }
-
-  /** Called once the drag gesture ends - grows/shrinks the slider's range for the next drag. */
-  fun onRadiusChangeFinished() {
-    radiusRange.growRangeIfNeeded()
-    _state.update { it.copy(maxRadiusMeters = radiusRange.valueTo) }
   }
 
   fun onRecentPlaceSelected(place: UiPlaceList) {
@@ -306,8 +301,8 @@ class SimpleMapViewViewModel(
     return null
   }
 
-  private fun loadInitialState(): MapUiState {
-    return MapUiState(
+  private fun loadInitialState(current: MapUiState): MapUiState {
+    return current.copy(
       selectedMapType = prefs.mapType,
       selectedMapStyle = prefs.mapStyle,
       selectedMarkerStyle = if (BuildParams.isPro) {
@@ -371,6 +366,8 @@ class SimpleMapViewViewModel(
     data object MapClicked : MapEvent
 
     data class CustomButtonClicked(val id: Int) : MapEvent
+
+    data object HapticFeedback : MapEvent
   }
 
   companion object {

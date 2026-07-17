@@ -1,6 +1,11 @@
 package com.elementary.tasks.simplemap
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +30,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
@@ -46,6 +53,10 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import java.util.UUID
 import com.google.maps.android.compose.GoogleMap as ComposeGoogleMap
+
+private const val RAIL_ANIM_DURATION_MS = 300
+private const val SEARCH_ANIM_DURATION_MS = 300
+private const val SEARCH_ANIM_DELAY_MS = 80
 
 /**
  * Compose replacement for the legacy `SimpleMapFragment`: a Google Map with an optional tap-to-set
@@ -75,7 +86,9 @@ fun SimpleMapView(
   val permissionRequester = rememberPermissionRequesterRationale()
   val coroutineScope = rememberCoroutineScope()
   val cameraPositionState = rememberCameraPositionState()
+  val hapticFeedback = LocalHapticFeedback.current
   var rawMap by remember { mutableStateOf<GoogleMap?>(null) }
+  var controlsVisible by rememberSaveable { mutableStateOf(false) }
 
   val uiState by viewModel.state.collectAsState(MapUiState())
 
@@ -114,6 +127,10 @@ fun SimpleMapView(
       is SimpleMapViewViewModel.MapEvent.MapClicked -> {
         onMapClick?.invoke()
       }
+
+      is SimpleMapViewViewModel.MapEvent.HapticFeedback -> {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+      }
     }
   }
 
@@ -134,7 +151,10 @@ fun SimpleMapView(
       cameraPositionState = cameraPositionState,
       properties = mapProperties,
       uiSettings = mapUiSettings,
-      onMapLoaded = viewModel::onMapReady,
+      onMapLoaded = {
+        controlsVisible = true
+        viewModel.onMapReady()
+      },
       onMapClick = { viewModel.onMapClick(it) },
     ) {
       MapEffect(Unit) { map -> rawMap = map }
@@ -148,56 +168,68 @@ fun SimpleMapView(
         .fillMaxSize()
         .then(if (edgeToEdge) Modifier.statusBarsPadding() else Modifier),
     ) {
-      Column(modifier = Modifier.width(56.dp + 16.dp).padding(horizontal = 8.dp, vertical = 8.dp)) {
-        mapParams.customButtons.forEach { button ->
-          MapRailButton(
-            icon = button.icon,
-            onClick = { viewModel.onCustomButtonClicked(button.id) },
-            modifier = Modifier.padding(bottom = 8.dp),
-          )
-        }
-        if (mapParams.isLayers) {
-          MapRailButton(
-            icon = R.drawable.ic_builder_map_layers,
-            onClick = viewModel::onLayersButtonClicked,
-            modifier = Modifier.padding(bottom = 8.dp),
-          )
-        }
-        if (mapParams.isStyles && BuildParams.isPro) {
-          MapRailButton(
-            icon = R.drawable.ic_fluent_style_guide,
-            onClick = viewModel::onMarkerStyleButtonClicked,
-            modifier = Modifier.padding(bottom = 8.dp),
-          )
-        }
-        if (mapParams.isRadius) {
-          MapRailButton(
-            icon = R.drawable.ic_builder_map_radius,
-            onClick = viewModel::onRadiusButtonClicked,
-            modifier = Modifier.padding(bottom = 8.dp),
-          )
-        }
-        if (mapParams.isPlaces && uiState.recentPlaces.isNotEmpty()) {
-          MapRailButton(
-            icon = R.drawable.ic_builder_map_history,
-            onClick = viewModel::onPlacesButtonClicked,
-            modifier = Modifier.padding(bottom = 8.dp),
-          )
+      AnimatedVisibility(
+        visible = controlsVisible,
+        enter = fadeIn(tween(RAIL_ANIM_DURATION_MS)) +
+          slideInHorizontally(tween(RAIL_ANIM_DURATION_MS)) { -it },
+      ) {
+        Column(modifier = Modifier.width(56.dp + 16.dp).padding(horizontal = 8.dp, vertical = 8.dp)) {
+          mapParams.customButtons.forEach { button ->
+            MapRailButton(
+              icon = button.icon,
+              onClick = { viewModel.onCustomButtonClicked(button.id) },
+              modifier = Modifier.padding(bottom = 8.dp),
+            )
+          }
+          if (mapParams.isLayers) {
+            MapRailButton(
+              icon = R.drawable.ic_builder_map_layers,
+              onClick = viewModel::onLayersButtonClicked,
+              modifier = Modifier.padding(bottom = 8.dp),
+            )
+          }
+          if (mapParams.isStyles && BuildParams.isPro) {
+            MapRailButton(
+              icon = R.drawable.ic_fluent_style_guide,
+              onClick = viewModel::onMarkerStyleButtonClicked,
+              modifier = Modifier.padding(bottom = 8.dp),
+            )
+          }
+          if (mapParams.isRadius) {
+            MapRailButton(
+              icon = R.drawable.ic_builder_map_radius,
+              onClick = viewModel::onRadiusButtonClicked,
+              modifier = Modifier.padding(bottom = 8.dp),
+            )
+          }
+          if (mapParams.isPlaces && uiState.recentPlaces.isNotEmpty()) {
+            MapRailButton(
+              icon = R.drawable.ic_builder_map_history,
+              onClick = viewModel::onPlacesButtonClicked,
+              modifier = Modifier.padding(bottom = 8.dp),
+            )
+          }
         }
       }
 
       Column(modifier = Modifier.fillMaxWidth().padding(top = 8.dp, end = 8.dp)) {
         if (mapParams.isSearch) {
-          Row(modifier = Modifier.fillMaxWidth()) {
-            AddressSearchField(
-              query = uiState.addressQuery,
-              suggestions = uiState.addressSuggestions,
-              onQueryChange = viewModel::onAddressQueryChanged,
-              onSuggestionSelected = viewModel::onAddressSuggestionSelected,
-              onDismissSuggestions = viewModel::dismissAddressSuggestions,
-              modifier = Modifier.weight(1f),
-            )
-            MyLocationButton(onClick = viewModel::onMyLocationClick)
+          AnimatedVisibility(
+            visible = controlsVisible,
+            enter = fadeIn(tween(SEARCH_ANIM_DURATION_MS, delayMillis = SEARCH_ANIM_DELAY_MS)) +
+              slideInVertically(tween(SEARCH_ANIM_DURATION_MS, delayMillis = SEARCH_ANIM_DELAY_MS)) { -it },
+          ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+              AddressSearchField(
+                query = uiState.addressQuery,
+                suggestions = uiState.addressSuggestions,
+                onQueryChange = viewModel::onAddressQueryChanged,
+                onSuggestionSelected = viewModel::onAddressSuggestionSelected,
+                onDismissSuggestions = viewModel::dismissAddressSuggestions,
+                modifier = Modifier.weight(1f),
+              )
+              MyLocationButton(onClick = viewModel::onMyLocationClick)
+            }
           }
         }
         when (uiState.activePicker) {
@@ -225,7 +257,7 @@ fun SimpleMapView(
             valueTo = uiState.maxRadiusMeters,
             formattedRadius = uiState.radiusText,
             onValueChange = viewModel::onRadiusChanged,
-            onValueChangeFinished = viewModel::onRadiusChangeFinished,
+            onValueChangeFinished = { },
             modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
           )
 
