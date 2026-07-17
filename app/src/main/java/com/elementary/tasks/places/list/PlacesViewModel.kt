@@ -1,53 +1,47 @@
 package com.elementary.tasks.places.list
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
-import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.places.usecase.DeletePlaceUseCase
-import com.github.naz013.common.TextProvider
+import com.elementary.tasks.simplemap.MapStyle
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
-import com.github.naz013.feature.common.livedata.SearchableLiveData
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.PlaceRepository
-import kotlinx.coroutines.CoroutineScope
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class PlacesViewModel(
   private val backupTool: BackupTool,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val placeRepository: PlaceRepository,
-  private val uiPlaceListAdapter: UiPlaceListAdapter,
   private val deletePlaceUseCase: DeletePlaceUseCase,
-  private val textProvider: TextProvider,
-) : BaseProgressViewModel(dispatcherProvider) {
-  /** Kept for [com.elementary.tasks.simplemap.SimpleMapView], which injects its own instance
-   *  of this ViewModel to populate the map's "recent places" layer — unrelated to the searchable
-   *  list below, and always unfiltered since that instance never calls [onSearchQueryChange]. */
-  private val placesData = SearchableData(dispatcherProvider, viewModelScope, placeRepository)
-  val places: LiveData<List<UiPlaceList>> =
-    placesData.map { list -> list.map { uiPlaceListAdapter.convert(it) } }
+  private val mapStyle: MapStyle,
+  private val dateTimeManager: DateTimeManager,
+) : ViewModel() {
 
-  val screenState: StateFlow<PlacesScreenState> field = MutableStateFlow(PlacesScreenState())
+  private val _screenState = MutableStateFlow(PlacesScreenState())
+  val screenState = _screenState.stateInWhileSubscribed(PlacesScreenState())
+    .onStart { refresh() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQuery = MutableStateFlow("")
@@ -55,45 +49,31 @@ class PlacesViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      searchQuery
-        .debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS }
-        .combine(refreshSignal) { query, _ -> query }
+      combine(
+        searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
+        refreshSignal,
+      ) { query, _ -> query }
         .flatMapLatest { query ->
-          flow {
-            emit(
-              if (query.isEmpty()) {
-                placeRepository.getAll()
-              } else {
-                placeRepository.searchByName(query.lowercase())
-              },
-            )
-          }
+          flow { emit(loadMerged(query)) }
         }.collect { applyList(it) }
     }
   }
 
-  private fun refresh() {
-    refreshSignal.update { it + 1 }
-  }
-
-  private fun applyList(list: List<Place>) {
-    val items = list.map { uiPlaceListAdapter.convert(it) }
-    screenState.update {
-      it.copy(listState = if (items.isEmpty()) ListState.Empty else ListState.Ready(items))
-    }
+  fun onBackClicked() {
+    navigationEvent.emit(NavigationEvent.MoveBack)
   }
 
   fun onSearchQueryChange(query: String) {
-    screenState.update { it.copy(searchQuery = query) }
+    _screenState.update { it.copy(searchQuery = query) }
     searchQuery.value = query
   }
 
   fun onAddClick() {
-    navigationEvent.value = Event(NavigationEvent.OpenEditPlace(""))
+    navigationEvent.emit(NavigationEvent.OpenEditPlace(""))
   }
 
   fun onPlaceClick(id: String) {
-    navigationEvent.value = Event(NavigationEvent.OpenEditPlace(id))
+    navigationEvent.emit(NavigationEvent.OpenEditPlace(id))
   }
 
   fun onPlaceMenuAction(
@@ -103,50 +83,74 @@ class PlacesViewModel(
     when (action) {
       PlaceMenuAction.EDIT -> onPlaceClick(id)
       PlaceMenuAction.SHARE -> sharePlace(id)
-      PlaceMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDelete(id))
+      PlaceMenuAction.DELETE -> navigationEvent.emit(NavigationEvent.ConfirmDelete(id))
     }
   }
 
   fun deletePlace(id: String) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       deletePlaceUseCase(id)
       refresh()
-      postInProgress(false)
-      postCommand(Commands.DELETED)
+    }
+  }
+
+  private fun refresh() {
+    refreshSignal.update { it + 1 }
+  }
+
+  private fun applyList(list: List<Place>) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val states = list.map { toPlaceState(it) }.sortedBy { it.name }
+
+      withContext(dispatcherProvider.main()) {
+        _screenState.update {
+          it.copy(listState = if (states.isEmpty()) ListState.Empty else ListState.Ready(states))
+        }
+      }
     }
   }
 
   private fun sharePlace(id: String) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       val place = placeRepository.getById(id)
       if (place == null) {
-        postInProgress(false)
-        postError(textProvider.getString(R.string.error_sending))
+        withContext(dispatcherProvider.main()) {
+          navigationEvent.emit(NavigationEvent.ShowToast(R.string.error_sending))
+        }
         return@launch
       }
       val file = backupTool.placeToFile(place)
-      postInProgress(false)
       if (file == null || !file.exists() || !file.canRead()) {
-        postError(textProvider.getString(R.string.error_sending))
+        withContext(dispatcherProvider.main()) {
+          navigationEvent.emit(NavigationEvent.ShowToast(R.string.error_sending))
+        }
         return@launch
       }
-      navigationEvent.value = Event(NavigationEvent.ShareFile(file, place.name))
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.emit(NavigationEvent.ShareFile(file, place.name))
+      }
     }
   }
 
-  internal class SearchableData(
-    dispatcherProvider: DispatcherProvider,
-    parentScope: CoroutineScope,
-    private val placeRepository: PlaceRepository,
-  ) : SearchableLiveData<List<Place>>(parentScope + dispatcherProvider.default()) {
-    override suspend fun runQuery(query: String): List<Place> =
-      if (query.isEmpty()) {
-        placeRepository.getAll()
-      } else {
-        placeRepository.searchByName(query.lowercase())
-      }
+  private fun toPlaceState(place: Place): PlaceState {
+    return PlaceState(
+      markerColor = mapStyle.getMarkerColor(place.marker),
+      id = place.id,
+      name = place.name,
+      latLng = LatLng(place.latitude, place.longitude),
+      formattedDate = dateTimeManager.getPlaceDateTimeFromGmt(place.dateTime)?.let {
+        dateTimeManager.getDate(it)
+      },
+    )
+  }
+
+  private suspend fun loadMerged(query: String): List<Place> {
+    return placeRepository.getAll().filter {
+      it.name.contains(query, ignoreCase = true) ||
+        (it.name.isNotEmpty() && query.contains(it.name, ignoreCase = true)) ||
+        it.address.contains(query, ignoreCase = true) ||
+        (it.address.isNotEmpty() && query.contains(it.address, ignoreCase = true))
+    }
   }
 
   sealed interface NavigationEvent {
@@ -161,6 +165,12 @@ class PlacesViewModel(
 
     data class ConfirmDelete(
       val id: String,
+    ) : NavigationEvent
+
+    data object MoveBack : NavigationEvent
+
+    data class ShowToast(
+      val messageRes: Int
     ) : NavigationEvent
   }
 

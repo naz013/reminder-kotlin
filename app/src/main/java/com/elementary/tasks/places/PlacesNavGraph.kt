@@ -3,7 +3,6 @@ package com.elementary.tasks.places
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,8 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
@@ -22,19 +19,16 @@ import com.elementary.tasks.places.create.EditPlaceScreen
 import com.elementary.tasks.places.create.EditPlaceState
 import com.elementary.tasks.places.create.EditPlaceViewModel
 import com.elementary.tasks.places.list.PlacesScreen
+import com.elementary.tasks.places.list.PlacesScreenState
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.simplemap.MapParams
 import com.elementary.tasks.simplemap.SimpleMapController
 import com.elementary.tasks.simplemap.SimpleMapView
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Contributes the Places island's screens (Nav3 entries) and the routing between them into the
- * app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.placesEntries(backStack: MutableList<NavKey>) {
   entry<PlacesNavKey.List> { PlacesListEntry(backStack) }
   entry<PlacesNavKey.Edit> { key -> PlaceEditEntry(key, backStack) }
@@ -43,9 +37,11 @@ fun EntryProviderScope<NavKey>.placesEntries(backStack: MutableList<NavKey>) {
 @Composable
 private fun PlacesListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<PlacesViewModel>()
-  bindLifecycle(viewModel)
+
   val dialogDispatcher = rememberDialogDispatcher()
+  val toastDispatcher = rememberToastDispatcher()
   val context = LocalContext.current
+
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is PlacesViewModel.NavigationEvent.OpenEditPlace -> backStack.add(PlacesNavKey.Edit(event.id))
@@ -56,21 +52,27 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
 
       is PlacesViewModel.NavigationEvent.ConfirmDelete -> {
         dialogDispatcher.showDialog(
-          titleRes = R.string.delete,
           textRes = R.string.are_you_sure,
           positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.no,
+          negativeButtonRes = R.string.cancel,
           onPositive = { viewModel.deletePlace(event.id) },
         )
       }
+
+      is PlacesViewModel.NavigationEvent.MoveBack -> {
+        backStack.removeLastOrNull()
+      }
+
+      is PlacesViewModel.NavigationEvent.ShowToast -> {
+        toastDispatcher.showToast(messageRes = event.messageRes)
+      }
     }
   }
-  viewModel.errorEvent.ObserveEvent { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
 
-  val state by viewModel.screenState.collectAsState()
+  val state by viewModel.screenState.collectAsState(PlacesScreenState())
   PlacesScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = viewModel::onBackClicked,
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onAddClick = viewModel::onAddClick,
     onPlaceClick = viewModel::onPlaceClick,
@@ -145,14 +147,5 @@ private fun PlaceEditEntry(
       onControllerReady = { mapController = it },
       modifier = Modifier.fillMaxSize(),
     )
-  }
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
   }
 }

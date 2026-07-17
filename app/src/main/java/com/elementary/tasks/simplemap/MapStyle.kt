@@ -51,118 +51,31 @@ class MapStyle(
   fun getMarkerColor(code: Int = AppColorIndex.RED): Color {
     val color: Int
     when (code) {
-      AppColorIndex.RED -> color = R.color.redAccentOld
-      AppColorIndex.PURPLE -> color = R.color.purpleAccentOld
-      AppColorIndex.LIGHT_GREEN -> color = R.color.greenLightAccentOld
-      AppColorIndex.GREEN -> color = R.color.greenAccentOld
-      AppColorIndex.LIGHT_BLUE -> color = R.color.blueLightAccentOld
-      AppColorIndex.BLUE -> color = R.color.blueAccentOld
-      AppColorIndex.YELLOW -> color = R.color.yellowAccentOld
-      AppColorIndex.ORANGE -> color = R.color.orangeAccentOld
-      AppColorIndex.CYAN -> color = R.color.cyanAccentOld
-      AppColorIndex.PINK -> color = R.color.pinkAccentOld
-      AppColorIndex.TEAL -> color = R.color.tealAccentOld
-      AppColorIndex.AMBER -> color = R.color.amberAccentOld
-      AppColorIndex.DEEP_PURPLE -> color = R.color.purpleDeepAccentOld
-      AppColorIndex.DEEP_ORANGE -> color = R.color.orangeDeepAccentOld
-      AppColorIndex.LIME -> color = R.color.limeAccentOld
-      AppColorIndex.INDIGO -> color = R.color.indigoAccentOld
+      AppColorIndex.RED -> color = R.color.redAccent
+      AppColorIndex.PURPLE -> color = R.color.purpleAccent
+      AppColorIndex.LIGHT_GREEN -> color = R.color.greenLightAccent
+      AppColorIndex.GREEN -> color = R.color.greenAccent
+      AppColorIndex.LIGHT_BLUE -> color = R.color.blueLightAccent
+      AppColorIndex.BLUE -> color = R.color.blueAccent
+      AppColorIndex.YELLOW -> color = R.color.yellowAccent
+      AppColorIndex.ORANGE -> color = R.color.orangeAccent
+      AppColorIndex.CYAN -> color = R.color.cyanAccent
+      AppColorIndex.PINK -> color = R.color.pinkAccent
+      AppColorIndex.TEAL -> color = R.color.tealAccent
+      AppColorIndex.AMBER -> color = R.color.amberAccent
+      AppColorIndex.DEEP_PURPLE -> color = R.color.purpleDeepAccent
+      AppColorIndex.DEEP_ORANGE -> color = R.color.orangeDeepAccent
+      AppColorIndex.LIME -> color = R.color.limeAccent
+      AppColorIndex.INDIGO -> color = R.color.indigoAccent
       AppColorIndex.LIVING_CORAL -> color = R.color.secondaryLivingCoral
-      else -> color = R.color.blueAccentOld
+      else -> color = R.color.blueAccent
     }
     return ContextCompat.getColor(context, color).toColor()
   }
 
   fun getMarkerRadiusStyle(color: Int): Marker {
-    val fillColor: Int
-    val strokeColor: Int
-    when (color) {
-      AppColorIndex.RED -> {
-        fillColor = R.color.secondaryRed12
-        strokeColor = R.color.secondaryRed
-      }
-
-      AppColorIndex.PURPLE -> {
-        fillColor = R.color.secondaryPurple12
-        strokeColor = R.color.secondaryPurple
-      }
-
-      AppColorIndex.LIGHT_GREEN -> {
-        fillColor = R.color.secondaryGreenLight12
-        strokeColor = R.color.secondaryGreenLight
-      }
-
-      AppColorIndex.GREEN -> {
-        fillColor = R.color.secondaryGreen12
-        strokeColor = R.color.secondaryGreen
-      }
-
-      AppColorIndex.LIGHT_BLUE -> {
-        fillColor = R.color.secondaryBlueLight12
-        strokeColor = R.color.secondaryBlueLight
-      }
-
-      AppColorIndex.BLUE -> {
-        fillColor = R.color.secondaryBlue12
-        strokeColor = R.color.secondaryBlue
-      }
-
-      AppColorIndex.YELLOW -> {
-        fillColor = R.color.secondaryYellow12
-        strokeColor = R.color.secondaryYellow
-      }
-
-      AppColorIndex.ORANGE -> {
-        fillColor = R.color.secondaryOrange12
-        strokeColor = R.color.secondaryOrange
-      }
-
-      AppColorIndex.CYAN -> {
-        fillColor = R.color.secondaryCyan12
-        strokeColor = R.color.secondaryCyan
-      }
-
-      AppColorIndex.PINK -> {
-        fillColor = R.color.secondaryPink12
-        strokeColor = R.color.secondaryPink
-      }
-
-      AppColorIndex.TEAL -> {
-        fillColor = R.color.secondaryTeal12
-        strokeColor = R.color.secondaryTeal
-      }
-
-      AppColorIndex.AMBER -> {
-        fillColor = R.color.secondaryAmber12
-        strokeColor = R.color.secondaryAmber
-      }
-
-      AppColorIndex.DEEP_PURPLE -> {
-        fillColor = R.color.secondaryPurpleDeep12
-        strokeColor = R.color.secondaryPurpleDeep
-      }
-
-      AppColorIndex.DEEP_ORANGE -> {
-        fillColor = R.color.secondaryOrangeDeep12
-        strokeColor = R.color.secondaryOrangeDeep
-      }
-
-      AppColorIndex.INDIGO -> {
-        fillColor = R.color.secondaryIndigo12
-        strokeColor = R.color.secondaryIndigo
-      }
-
-      AppColorIndex.LIME -> {
-        fillColor = R.color.secondaryLime12
-        strokeColor = R.color.secondaryLime
-      }
-
-      else -> {
-        fillColor = R.color.secondaryBlue12
-        strokeColor = R.color.secondaryBlue
-      }
-    }
-    return Marker(fillColor.toColor().withAlpha(0.25f), strokeColor.toColor())
+    val strokeColor = getMarkerColor(color)
+    return Marker(strokeColor.withAlpha(0.12f), strokeColor)
   }
 
   fun colorsForSlider(): List<Color> {

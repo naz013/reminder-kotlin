@@ -139,9 +139,10 @@ class SimpleMapViewViewModel(
     if (mapParams.isTouch) {
       val title = geocoderTask.getAddressForLocation(latLng) ?: latLng.toString()
       placeMarker(
-        MarkerState(latLng = latLng, radius = _state.value.radiusMeters, title = title).apply {
-          updateMarkerStyle(this, _state.value.selectedMarkerStyle)
-        }
+        updateMarkerStyle(
+          MarkerState(latLng = latLng, radius = _state.value.radiusMeters, title = title),
+          _state.value.selectedMarkerStyle,
+        )
       )
     } else {
       event.emit(MapEvent.MapClicked)
@@ -164,13 +165,14 @@ class SimpleMapViewViewModel(
     }
     val latLng = LatLng(address.latitude, address.longitude)
     placeMarker(
-      MarkerState(
-        latLng = latLng,
-        radius = _state.value.radiusMeters,
-        title = address.toDisplayTitle()
-      ).apply {
-        updateMarkerStyle(this, _state.value.selectedMarkerStyle)
-      },
+      updateMarkerStyle(
+        MarkerState(
+          latLng = latLng,
+          radius = _state.value.radiusMeters,
+          title = address.toDisplayTitle()
+        ),
+        _state.value.selectedMarkerStyle,
+      ),
     )
   }
 
@@ -256,11 +258,14 @@ class SimpleMapViewViewModel(
     val style = if (BuildParams.isPro) place.markerStyle else _state.value.selectedMarkerStyle
     _state.update { it.copy(selectedMarkerStyle = style, activePicker = null) }
     placeMarker(
-      MarkerState(
-        latLng = place.latLng,
-        radius = _state.value.radiusMeters,
-        title = place.name
-      ).apply { updateMarkerStyle(this, style) }
+      updateMarkerStyle(
+        MarkerState(
+          latLng = place.latLng,
+          radius = _state.value.radiusMeters,
+          title = place.name
+        ),
+        style,
+      )
     )
   }
 
@@ -325,6 +330,7 @@ class SimpleMapViewViewModel(
   ): MarkerState {
     val colors = mapStyle.getMarkerRadiusStyle(newStyleIndex)
     return markerState.copy(
+      styleIndex = newStyleIndex,
       color = mapStyle.getMarkerColor(newStyleIndex),
       circleStrokeColor = colors.strokeColor,
       circleColor = colors.fillColor,
@@ -340,11 +346,14 @@ class SimpleMapViewViewModel(
   }
 
   private fun toMarkerState(mapMarker: MapMarker): MarkerState {
-    return MarkerState(
-      latLng = mapMarker.latLng,
-      title = mapMarker.title,
-      radius = mapMarker.radius
-    ).apply { updateMarkerStyle(this, mapMarker.style) }
+    return updateMarkerStyle(
+      MarkerState(
+        latLng = mapMarker.latLng,
+        title = mapMarker.title,
+        radius = mapMarker.radius
+      ),
+      mapMarker.style,
+    )
   }
 
   private enum class PermissionMode {

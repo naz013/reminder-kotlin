@@ -72,7 +72,7 @@ class EditPlaceViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val place =
         (placeRepository.getById(key.id) ?: Place(syncState = SyncState.WaitingForUpload)).apply {
-          this.name = name
+          this.name = state.name
           this.dateTime = dateTimeManager.getNowGmtDateTime()
           this.radius = state.markerRadius
           this.latitude = state.lat
