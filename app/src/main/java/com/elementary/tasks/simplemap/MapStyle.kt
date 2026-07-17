@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.toColor
+import com.github.naz013.ui.common.compose.withAlpha
 import com.github.naz013.ui.common.theme.DarkModeState
 import com.github.naz013.ui.common.theme.ThemeProvider.AppColorIndex
 import com.google.android.gms.maps.GoogleMap
@@ -47,7 +48,7 @@ class MapStyle(
     }
   }
 
-  fun getMarkerLightColor(code: Int = AppColorIndex.RED): Int {
+  fun getMarkerColor(code: Int = AppColorIndex.RED): Color {
     val color: Int
     when (code) {
       AppColorIndex.RED -> color = R.color.redAccentOld
@@ -69,7 +70,7 @@ class MapStyle(
       AppColorIndex.LIVING_CORAL -> color = R.color.secondaryLivingCoral
       else -> color = R.color.blueAccentOld
     }
-    return ContextCompat.getColor(context, color)
+    return ContextCompat.getColor(context, color).toColor()
   }
 
   fun getMarkerRadiusStyle(color: Int): Marker {
@@ -161,7 +162,7 @@ class MapStyle(
         strokeColor = R.color.secondaryBlue
       }
     }
-    return Marker(fillColor.toColor(), strokeColor.toColor())
+    return Marker(fillColor.toColor().withAlpha(0.25f), strokeColor.toColor())
   }
 
   fun colorsForSlider(): List<Color> {

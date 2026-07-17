@@ -281,6 +281,8 @@ private fun MapMarkerAndCircle(markerState: MarkerState) {
     com.google.maps.android.compose.MarkerState(position = markerState.latLng)
   }
   MarkerComposable(
+    markerState.iconRes,
+    markerState.color,
     state = gmsMarkerState,
     title = markerState.title,
   ) {

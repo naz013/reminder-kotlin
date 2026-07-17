@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,10 +71,8 @@ fun EditGoogleTaskListScreen(
               onClick = onDeleteMenuClick,
             )
           }
-          MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_save),
-            contentDescription = stringResource(R.string.save),
-            iconColor = MaterialTheme.colorScheme.tertiary,
+          MenuTextButton(
+            text = stringResource(R.string.save),
             enabled = !state.isLoading,
             onClick = onSaveClick,
           )

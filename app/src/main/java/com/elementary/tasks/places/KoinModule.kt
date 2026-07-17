@@ -12,8 +12,8 @@ val placeKoinModule =
     factory { DeletePlaceUseCase(get(), get()) }
     factory { SavePlaceUseCase(get(), get()) }
 
-    viewModel { (id: String) ->
-      EditPlaceViewModel(id, get(), get(), get(), get(), get(), get(), get(), get())
+    viewModel { (key: PlacesNavKey.Edit) ->
+      EditPlaceViewModel(key, get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { PlacesViewModel(get(), get(), get(), get(), get(), get()) }
   }

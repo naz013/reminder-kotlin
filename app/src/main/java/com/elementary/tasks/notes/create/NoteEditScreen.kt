@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.github.naz013.common.uri.UriUtil
+import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.dragAndDropHighlight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,13 +103,11 @@ fun NoteEditScreen(
         },
         title = {},
         actions = {
-          IconButton(onClick = actions.onSaveClick) {
-            Icon(
-              painter = painterResource(R.drawable.ic_fluent_checkmark),
-              contentDescription = stringResource(R.string.save),
-              tint = contentColor,
-            )
-          }
+          MenuTextButton(
+            text = stringResource(R.string.save),
+            color = contentColor,
+            onClick = actions.onSaveClick,
+          )
           IconButton(onClick = actions.onShareClick) {
             Icon(
               painter = painterResource(R.drawable.ic_fluent_share_android),

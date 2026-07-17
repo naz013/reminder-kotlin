@@ -135,6 +135,7 @@ class SimpleMapViewViewModel(
       _state.update { it.copy(activePicker = null) }
       return
     }
+    Logger.v(TAG, "On map clicked with location: ${Logger.private(latLng.toString())}")
     if (mapParams.isTouch) {
       val title = geocoderTask.getAddressForLocation(latLng) ?: latLng.toString()
       placeMarker(
@@ -324,7 +325,7 @@ class SimpleMapViewViewModel(
   ): MarkerState {
     val colors = mapStyle.getMarkerRadiusStyle(newStyleIndex)
     return markerState.copy(
-      color = colors.strokeColor,
+      color = mapStyle.getMarkerColor(newStyleIndex),
       circleStrokeColor = colors.strokeColor,
       circleColor = colors.fillColor,
     )

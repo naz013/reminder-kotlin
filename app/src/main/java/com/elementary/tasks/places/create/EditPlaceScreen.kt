@@ -14,18 +14,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.MenuTextButton
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPlaceScreen(
   state: EditPlaceState,
-  title: String,
   onBackClick: () -> Unit,
   onNameChange: (String) -> Unit,
   onSaveClick: () -> Unit,
@@ -37,7 +43,7 @@ fun EditPlaceScreen(
     modifier = modifier,
     topBar = {
       TopAppBar(
-        title = { Text(title) },
+        title = { Text(stringResource(state.screenTitle)) },
         navigationIcon = {
           MenuIconButton(
             icon = painterResource(R.drawable.ic_builder_arrow_left),
@@ -46,19 +52,16 @@ fun EditPlaceScreen(
           )
         },
         actions = {
+          MenuTextButton(
+            text = stringResource(R.string.save),
+            onClick = onSaveClick,
+            enabled = state.canSave,
+          )
           if (state.canDelete) {
-            MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_delete),
-              contentDescription = stringResource(R.string.delete),
-              onClick = onDeleteClick,
+            OverflowMenuButton(
+              onDeleteClick = onDeleteClick
             )
           }
-          MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_save),
-            contentDescription = stringResource(R.string.save),
-            iconColor = MaterialTheme.colorScheme.tertiary,
-            onClick = onSaveClick,
-          )
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
       )
@@ -96,5 +99,29 @@ fun EditPlaceScreen(
         mapContent()
       }
     }
+  }
+}
+
+@Composable
+private fun OverflowMenuButton(
+  onDeleteClick: () -> Unit,
+) {
+  var expanded by remember { mutableStateOf(false) }
+  val actions =
+    listOf(
+      Triple(0, stringResource(R.string.action_delete), R.drawable.ic_fluent_delete) to onDeleteClick,
+    )
+  Box {
+    MenuIconButton(
+      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      contentDescription = stringResource(R.string.more_options),
+      onClick = { expanded = true },
+    )
+    AppDropdownMenu(
+      expanded = expanded,
+      onDismissRequest = { expanded = false },
+      items = actions.map { (triple, _) -> PopupMenuItem(id = triple.first, title = triple.second, iconRes = triple.third) },
+      onItemClick = { id -> actions.firstOrNull { it.first.first == id }?.second?.invoke() },
+    )
   }
 }
