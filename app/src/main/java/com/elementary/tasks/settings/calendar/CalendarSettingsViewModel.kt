@@ -23,7 +23,7 @@ class CalendarSettingsViewModel(
   private val calendarUtils: GoogleCalendarUtils,
   private val prefs: Prefs,
   private val textProvider: TextProvider,
-  private val analyticsEventSender: AnalyticsEventSender,
+  analyticsEventSender: AnalyticsEventSender,
   private val themeProvider: ThemeProvider,
 ) : ViewModel() {
   val state: StateFlow<CalendarSettingsState> field = MutableStateFlow(buildState())

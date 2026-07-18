@@ -16,6 +16,7 @@ data class BirthdaySettingsState(
   val isLedRowEnabled: Boolean = false,
   val ledColorName: String = "",
   val isLedColorRowEnabled: Boolean = false,
+  val isLedIndicationVisible: Boolean = true,
   val isUseContactsChecked: Boolean = false,
   val isAutoScanChecked: Boolean = false,
   val isAutoScanRowEnabled: Boolean = false,
@@ -37,10 +38,12 @@ sealed class BirthdayDialog {
 
   data class DaysToBirthday(
     val previewValue: Int,
+    val hapticFeedbackEnabled: Boolean,
   ) : BirthdayDialog()
 
   data class HomeDays(
     val previewValue: Int,
+    val hapticFeedbackEnabled: Boolean,
   ) : BirthdayDialog()
 }
 
