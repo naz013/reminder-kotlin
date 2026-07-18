@@ -1,32 +1,29 @@
 package com.github.naz013.ui.common.compose.foundation.dialog
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 /**
- * A dialog offering a grid of color swatches to pick from, tap-to-select-and-dismiss (no
- * preview/confirm step) - the Compose replacement for the legacy `Dialogues.showColorDialog`'s
- * `ColorSlider` widget.
+ * A dialog offering the same [ColorSlider] strip used by the map's marker-style picker. Sliding
+ * across it only previews a color (with a haptic tick each time the highlighted swatch changes);
+ * the choice isn't handed back to the caller until Save is pressed, and Cancel discards it.
  */
 interface ColorPickerDialogDispatcher {
   fun showDialog(
@@ -34,7 +31,9 @@ interface ColorPickerDialogDispatcher {
     title: String? = null,
     colors: List<Color>,
     selectedIndex: Int,
+    hapticFeedbackEnabled: Boolean = true,
     onColorSelected: (Int) -> Unit,
+    onDismissRequest: () -> Unit = {},
   )
 }
 
@@ -44,7 +43,17 @@ fun rememberColorPickerDialogDispatcher(): ColorPickerDialogDispatcher {
   val dialogData = remember { mutableStateOf(ColorPickerDialogData()) }
 
   if (openDialog.value) {
-    ColorPickerDialog(dialogData.value, onDismissRequest = { openDialog.value = false })
+    ColorPickerDialog(
+      data = dialogData.value,
+      onDismissRequest = {
+        dialogData.value.onDismissRequest()
+        openDialog.value = false
+      },
+      onSave = { index ->
+        dialogData.value.onColorSelected(index)
+        openDialog.value = false
+      },
+    )
   }
 
   return object : ColorPickerDialogDispatcher {
@@ -53,17 +62,18 @@ fun rememberColorPickerDialogDispatcher(): ColorPickerDialogDispatcher {
       title: String?,
       colors: List<Color>,
       selectedIndex: Int,
+      hapticFeedbackEnabled: Boolean,
       onColorSelected: (Int) -> Unit,
+      onDismissRequest: () -> Unit,
     ) {
       dialogData.value = ColorPickerDialogData(
         titleRes = titleRes,
         title = title,
         colors = colors,
         selectedIndex = selectedIndex,
-        onColorSelected = {
-          onColorSelected(it)
-          openDialog.value = false
-        },
+        onColorSelected = onColorSelected,
+        hapticFeedbackEnabled = hapticFeedbackEnabled,
+        onDismissRequest = onDismissRequest,
       )
       openDialog.value = true
     }
@@ -75,42 +85,41 @@ private data class ColorPickerDialogData(
   val title: String? = null,
   val colors: List<Color> = emptyList(),
   val selectedIndex: Int = 0,
+  val hapticFeedbackEnabled: Boolean = true,
   val onColorSelected: (Int) -> Unit = {},
+  val onDismissRequest: () -> Unit = {},
 )
 
 @Composable
 private fun ColorPickerDialog(
   data: ColorPickerDialogData,
   onDismissRequest: () -> Unit,
+  onSave: (Int) -> Unit,
 ) {
+  var previewIndex by remember { mutableIntStateOf(data.selectedIndex) }
+  val hapticFeedback = LocalHapticFeedback.current
+
   AlertDialog(
     onDismissRequest = onDismissRequest,
     title = {
       data.title?.let { Text(text = it) } ?: data.titleRes?.let { Text(text = stringResource(it)) }
     },
     text = {
-      FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-      ) {
-        data.colors.forEachIndexed { index, color ->
-          val selected = index == data.selectedIndex
-          Box(
-            modifier = Modifier
-              .size(40.dp)
-              .background(color, CircleShape)
-              .then(
-                if (selected) {
-                  Modifier.border(3.dp, MaterialTheme.colorScheme.onSurface, CircleShape)
-                } else {
-                  Modifier
-                },
-              ).selectable(selected = selected, onClick = { data.onColorSelected(index) }, role = Role.RadioButton),
-          )
-        }
-      }
+      ColorSlider(
+        colors = data.colors,
+        selectedIndex = previewIndex,
+        onColorSelected = { index ->
+          if (index != previewIndex && data.hapticFeedbackEnabled) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          }
+          previewIndex = index
+        },
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(40.dp),
+      )
     },
-    confirmButton = { TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) } },
+    confirmButton = { TextButton(onClick = { onSave(previewIndex) }) { Text(stringResource(R.string.save)) } },
+    dismissButton = { TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) } },
   )
 }

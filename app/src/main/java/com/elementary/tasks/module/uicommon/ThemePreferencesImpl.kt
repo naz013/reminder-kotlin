@@ -1,5 +1,6 @@
-package com.elementary.tasks.core.utils.params
+package com.elementary.tasks.module.uicommon
 
+import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.ui.common.theme.ThemePreferences
 
 class ThemePreferencesImpl(

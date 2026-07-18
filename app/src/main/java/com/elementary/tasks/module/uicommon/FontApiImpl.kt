@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.uicommon
+package com.elementary.tasks.module.uicommon
 
 import android.content.Context
 import android.graphics.Typeface

@@ -41,5 +41,8 @@ sealed class LocationSettingsEvent {
     val title: String,
     val currentColorIndex: Int,
     val colors: List<Color>,
+    val hapticFeedbackEnabled: Boolean,
   ) : LocationSettingsEvent()
+
+  data object HapticFeedback : LocationSettingsEvent()
 }

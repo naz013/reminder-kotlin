@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils.io
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
 import com.github.naz013.feature.common.readString
@@ -9,14 +8,6 @@ import com.github.naz013.feature.common.readString
 class UriHelper(
   private val context: Context,
 ) {
-  fun grantPermission(uri: Uri) {
-    runCatching {
-      context.contentResolver.takePersistableUriPermission(
-        uri,
-        (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION),
-      )
-    }
-  }
 
   fun getMimeType(uri: Uri): String? = context.contentResolver.getType(uri)
 

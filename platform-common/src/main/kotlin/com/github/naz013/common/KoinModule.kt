@@ -3,6 +3,7 @@ package com.github.naz013.common
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.datetime.NowDateTimeProvider
+import com.github.naz013.common.intent.IntentFactory
 import com.github.naz013.common.system.SystemInfo
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -16,4 +17,5 @@ val platformCommonModule = module {
   factoryOf(::DateTimeManager)
   factoryOf(::NowDateTimeProvider)
   factoryOf(::SystemInfo)
+  factoryOf(::IntentFactory)
 }

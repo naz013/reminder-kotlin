@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.analytics
+package com.elementary.tasks.module.analytics
 
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.AnalyticsReminderType

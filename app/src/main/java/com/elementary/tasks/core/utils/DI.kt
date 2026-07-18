@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
-import com.elementary.tasks.core.analytics.AnalyticsStateProviderImpl
-import com.elementary.tasks.core.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
@@ -17,14 +15,8 @@ import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.core.utils.io.UriReader
-import com.elementary.tasks.core.utils.params.AppWidgetPreferencesImpl
-import com.elementary.tasks.core.utils.params.AuthPreferencesImpl
-import com.elementary.tasks.core.utils.params.DateTimePreferencesImpl
-import com.elementary.tasks.core.utils.params.LocalePreferencesImpl
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.elementary.tasks.core.utils.params.ThemePreferencesImpl
 import com.elementary.tasks.googletasks.work.SaveNewTaskTask
 import com.elementary.tasks.googletasks.work.UpdateTaskTask
 import com.elementary.tasks.groups.GroupsUtil
@@ -39,14 +31,7 @@ import com.elementary.tasks.settings.test.DeveloperViewModel
 import com.elementary.tasks.settings.test.ObjectExportViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.splash.SplashViewModel
-import com.github.naz013.analytics.AnalyticsStateProvider
-import com.github.naz013.analytics.initializeAnalytics
-import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.cloudapi.CloudKeysStorage
-import com.github.naz013.common.datetime.DateTimePreferences
-import com.github.naz013.ui.common.locale.LocalePreferences
-import com.github.naz013.ui.common.login.AuthPreferences
-import com.github.naz013.ui.common.theme.ThemePreferences
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -85,7 +70,6 @@ val storageModule =
 val utilModule =
   module {
     factoryOf(::PresetInitProcessor)
-    factoryOf(::UriReader)
     factoryOf(::GoogleCalendarUtils)
 
     singleOf(::MemoryUtil)
@@ -97,12 +81,6 @@ val utilModule =
     singleOf(::Prefs)
     singleOf(::RemotePrefs)
 
-    single { ThemePreferencesImpl(get()) as ThemePreferences }
-    single { LocalePreferencesImpl(get()) as LocalePreferences }
-    single { AuthPreferencesImpl(get()) as AuthPreferences }
-    single { DateTimePreferencesImpl(get()) as DateTimePreferences }
-    single { AppWidgetPreferencesImpl(get()) as AppWidgetPreferences }
-
     factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
     factory { JobScheduler(get(), get(), get(), get(), get(), get()) }
 
@@ -112,11 +90,6 @@ val utilModule =
     factory<BackgroundTask>(named(AutoBackupEventTask.TASK_KEY)) { AutoBackupEventTask(get(), get()) }
     factory<BackgroundTask>(named(BirthdayEventTask.TASK_KEY)) { BirthdayEventTask(get()) }
     factory<BackgroundTask>(named(BirthdayPermanentEventTask.TASK_KEY)) { BirthdayPermanentEventTask(get(), get()) }
-
-    factory { AnalyticsStateProviderImpl(get()) as AnalyticsStateProvider }
-
-    single { initializeAnalytics(get(), get()) }
-    factory { ReminderAnalyticsTracker(get()) }
 
     factory { FeatureManager(get()) }
     factory { GroupsUtil(get(), get(), get()) }

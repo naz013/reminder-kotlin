@@ -11,6 +11,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -23,6 +24,7 @@ class CalendarSettingsViewModel(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val themeProvider: ThemeProvider,
 ) : ViewModel() {
   val state: StateFlow<CalendarSettingsState> field = MutableStateFlow(buildState())
 
@@ -38,7 +40,12 @@ class CalendarSettingsViewModel(
   fun onFirstDayClick() {
     val options = firstDayOptions()
     state.update {
-      it.copy(dialog = CalendarSettingsDialog.FirstDay(options = options, selectedIndex = prefs.startDay))
+      it.copy(
+        dialog = CalendarSettingsDialog.FirstDay(
+          options = options,
+          selectedIndex = prefs.startDay
+        )
+      )
     }
   }
 
@@ -87,7 +94,8 @@ class CalendarSettingsViewModel(
 
   fun onSelectGoogleCalendarClicked() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      calendars = calendarUtils.getCalendarsList().map { GoogleCalendar(id = it.id, name = it.name) }
+      calendars =
+        calendarUtils.getCalendarsList().map { GoogleCalendar(id = it.id, name = it.name) }
       if (calendars.isEmpty()) {
         Logger.e(TAG, "No Google Calendars found.")
         return@launch
@@ -96,7 +104,10 @@ class CalendarSettingsViewModel(
       withContext(dispatcherProvider.main()) {
         state.update {
           it.copy(
-            dialog = CalendarSettingsDialog.SelectGoogleCalendar(calendars = calendars, selectedPosition = selectedPosition),
+            dialog = CalendarSettingsDialog.SelectGoogleCalendar(
+              calendars = calendars,
+              selectedPosition = selectedPosition
+            ),
           )
         }
       }
@@ -134,7 +145,15 @@ class CalendarSettingsViewModel(
     title: String,
   ) {
     state.update {
-      it.copy(dialog = CalendarSettingsDialog.ColorPicker(target = target, title = title, selectedIndex = currentColorIndex))
+      it.copy(
+        dialog = CalendarSettingsDialog.ColorPicker(
+          target = target,
+          title = title,
+          selectedIndex = currentColorIndex,
+          colors = themeProvider.colorsForSliderThemed(),
+          hapticFeedback = prefs.hapticsEnabled,
+        )
+      )
     }
   }
 
@@ -163,9 +182,9 @@ class CalendarSettingsViewModel(
     val isCalendarSelected = selectedCalendarId != -1L
     return CalendarSettingsState(
       firstDayName = firstDayOptions()[prefs.startDay.coerceIn(0, 1)],
-      todayColorIndex = prefs.todayColor,
-      reminderColorIndex = prefs.reminderColor,
-      birthdayColorIndex = prefs.birthdayColor,
+      todayColor = themeProvider.themedColor(prefs.todayColor),
+      reminderColor = themeProvider.themedColor(prefs.reminderColor),
+      birthdayColor = themeProvider.themedColor(prefs.birthdayColor),
       selectedCalendarName = selectedCalendarName ?: "",
       isCalendarSelected = isCalendarSelected,
       isExportChecked = prefs.addRemindersToGoogleCalendar,

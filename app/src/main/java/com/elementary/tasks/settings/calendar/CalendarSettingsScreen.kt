@@ -1,41 +1,28 @@
 package com.elementary.tasks.settings.calendar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
-import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 
 @Composable
 fun CalendarSettingsScreen(
@@ -54,7 +41,7 @@ fun CalendarSettingsScreen(
   onDialogDismiss: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val context = LocalContext.current
+  val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
 
   Column(
     modifier =
@@ -78,21 +65,21 @@ fun CalendarSettingsScreen(
       icon = painterResource(R.drawable.ic_fluent_color),
       dividerBottom = true,
       onClick = onTodayColorClick,
-      trailing = { ColorSwatch(Color(ThemeProvider.colorTodayCalendar(context, state.todayColorIndex))) },
+      trailing = { ColorSwatch(state.todayColor) },
     )
     SettingsItem(
       title = stringResource(R.string.reminders_color),
       icon = painterResource(R.drawable.ic_fluent_color_fill),
       dividerBottom = true,
       onClick = onReminderColorClick,
-      trailing = { ColorSwatch(Color(ThemeProvider.colorReminderCalendar(context, state.reminderColorIndex))) },
+      trailing = { ColorSwatch(state.reminderColor) },
     )
     SettingsItem(
       title = stringResource(R.string.birthdays_color),
       icon = painterResource(R.drawable.ic_fluent_food_cake),
       dividerBottom = true,
       onClick = onBirthdayColorClick,
-      trailing = { ColorSwatch(Color(ThemeProvider.colorBirthdayCalendar(context, state.birthdayColorIndex))) },
+      trailing = { ColorSwatch(state.birthdayColor) },
     )
 
     SettingsSectionHeader(stringResource(R.string.google_calendar))
@@ -135,7 +122,7 @@ fun CalendarSettingsScreen(
         options = dialog.options,
         selectedIndex = dialog.selectedIndex,
         onOptionSelected = onFirstDayOptionSelected,
-        onDismissRequest = onDialogDismiss,
+        onDismiss = onDialogDismiss,
       )
     }
 
@@ -145,98 +132,23 @@ fun CalendarSettingsScreen(
         options = dialog.calendars.map { it.name.orEmpty() },
         selectedIndex = dialog.selectedPosition,
         onOptionSelected = onGoogleCalendarOptionSelected,
-        onDismissRequest = onDialogDismiss,
+        onDismiss = onDialogDismiss,
       )
     }
 
     is CalendarSettingsDialog.ColorPicker -> {
-      ColorPickerDialog(
+      colorPickerDialogDispatcher.showDialog(
         title = dialog.title,
-        colors = remember { ThemeProvider.colorsForSliderThemed(context).map { Color(it) } },
+        colors = dialog.colors,
         selectedIndex = dialog.selectedIndex,
         onColorSelected = onColorOptionSelected,
+        hapticFeedbackEnabled = dialog.hapticFeedback,
         onDismissRequest = onDialogDismiss,
       )
     }
 
     null -> Unit
   }
-}
-
-@Composable
-private fun SingleChoiceDialog(
-  title: String,
-  options: List<String>,
-  selectedIndex: Int,
-  onOptionSelected: (Int) -> Unit,
-  onDismissRequest: () -> Unit,
-) {
-  AlertDialog(
-    onDismissRequest = onDismissRequest,
-    title = { Text(title) },
-    text = {
-      Column(modifier = Modifier.selectableGroup()) {
-        options.forEachIndexed { index, option ->
-          val selected = index == selectedIndex
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier =
-              Modifier
-                .fillMaxWidth()
-                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
-                .padding(vertical = 8.dp),
-          ) {
-            RadioButton(selected = selected, onClick = null)
-            Text(
-              text = option,
-              style = MaterialTheme.typography.bodyLarge,
-              modifier = Modifier.padding(start = 8.dp),
-            )
-          }
-        }
-      }
-    },
-    confirmButton = { TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) } },
-  )
-}
-
-@Composable
-private fun ColorPickerDialog(
-  title: String,
-  colors: List<Color>,
-  selectedIndex: Int,
-  onColorSelected: (Int) -> Unit,
-  onDismissRequest: () -> Unit,
-) {
-  AlertDialog(
-    onDismissRequest = onDismissRequest,
-    title = { Text(title) },
-    text = {
-      FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-      ) {
-        colors.forEachIndexed { index, color ->
-          val selected = index == selectedIndex
-          Box(
-            modifier =
-              Modifier
-                .size(40.dp)
-                .background(color, CircleShape)
-                .then(
-                  if (selected) {
-                    Modifier.border(3.dp, MaterialTheme.colorScheme.onSurface, CircleShape)
-                  } else {
-                    Modifier
-                  },
-                ).selectable(selected = selected, onClick = { onColorSelected(index) }, role = Role.RadioButton),
-          )
-        }
-      }
-    },
-    confirmButton = { TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) } },
-  )
 }
 
 @Composable

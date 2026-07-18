@@ -1,5 +1,6 @@
 package com.elementary.tasks.places.list
 
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +8,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.places.usecase.DeletePlaceUseCase
 import com.elementary.tasks.simplemap.MapStyle
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentFactory
 import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -37,6 +40,8 @@ class PlacesViewModel(
   private val deletePlaceUseCase: DeletePlaceUseCase,
   private val mapStyle: MapStyle,
   private val dateTimeManager: DateTimeManager,
+  private val textProvider: TextProvider,
+  private val intentFactory: IntentFactory,
 ) : ViewModel() {
 
   private val _screenState = MutableStateFlow(PlacesScreenState())
@@ -133,9 +138,20 @@ class PlacesViewModel(
         return@launch
       }
       withContext(dispatcherProvider.main()) {
-        navigationEvent.emit(NavigationEvent.ShareFile(file, place.name))
+        navigationEvent.emit(
+          NavigationEvent.ShareFile(
+            createIntent(file, place.name),
+            textProvider.getString(R.string.share_send_email)
+          )
+        )
       }
     }
+  }
+
+  private fun createIntent(file: File, name: String): Intent {
+    val intent = intentFactory.createFileUriIntent(file = file)
+    intent.putExtra(Intent.EXTRA_SUBJECT, name)
+    return intent
   }
 
   private fun toPlaceState(place: Place): PlaceState {
@@ -174,7 +190,7 @@ class PlacesViewModel(
     ) : NavigationEvent
 
     data class ShareFile(
-      val file: File,
+      val intent: Intent,
       val name: String,
     ) : NavigationEvent
 

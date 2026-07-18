@@ -23,6 +23,7 @@ import com.elementary.tasks.eventaction.eventActionModule
 import com.elementary.tasks.googletasks.googleTaskModule
 import com.elementary.tasks.groups.reminderGroupModule
 import com.elementary.tasks.home.homeModule
+import com.elementary.tasks.module.libModule
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
@@ -154,6 +155,7 @@ class ReminderApp :
           legalModule,
           workModule,
           dateTimeCalculationsModule,
+          libModule,
         ),
       )
     }

@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -16,11 +18,6 @@ import com.elementary.tasks.settings.SettingsScaffold
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the Location Settings sub-tree's screens (Nav3 entries) into the app's single,
- * shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.locationEntries(backStack: MutableList<NavKey>) {
   entry<LocationNavKey.Location> { LocationEntry(backStack) }
   entry<LocationNavKey.MapStyle> { MapStyleEntry(backStack) }
@@ -31,7 +28,8 @@ private fun LocationEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<LocationSettingsViewModel>()
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val appNavBridge = rememberAppNavBridge()
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(LocationSettingsState())
+  val hapticFeedback = LocalHapticFeedback.current
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
@@ -42,8 +40,13 @@ private fun LocationEntry(backStack: MutableList<NavKey>) {
           title = event.title,
           colors = event.colors,
           selectedIndex = event.currentColorIndex,
+          hapticFeedbackEnabled = event.hapticFeedbackEnabled,
           onColorSelected = { color -> viewModel.onMarkerColorSelected(color) },
         )
+      }
+
+      LocationSettingsEvent.HapticFeedback -> {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
       }
     }
   }

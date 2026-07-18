@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.analytics
+package com.elementary.tasks.module.analytics
 
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsStateProvider

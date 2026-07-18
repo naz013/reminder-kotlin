@@ -13,7 +13,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.places.create.EditPlaceScreen
 import com.elementary.tasks.places.create.EditPlaceState
@@ -21,6 +20,7 @@ import com.elementary.tasks.places.create.EditPlaceViewModel
 import com.elementary.tasks.places.list.PlacesScreen
 import com.elementary.tasks.places.list.PlacesScreenState
 import com.elementary.tasks.places.list.PlacesViewModel
+import com.elementary.tasks.settings.rememberSendIntentResolver
 import com.elementary.tasks.simplemap.MapParams
 import com.elementary.tasks.simplemap.SimpleMapController
 import com.elementary.tasks.simplemap.SimpleMapView
@@ -40,14 +40,14 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
 
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
-  val context = LocalContext.current
+  val sendIntentResolver = rememberSendIntentResolver()
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is PlacesViewModel.NavigationEvent.OpenEditPlace -> backStack.add(PlacesNavKey.Edit(event.id))
 
       is PlacesViewModel.NavigationEvent.ShareFile -> {
-        TelephonyUtil.sendFile(event.file, context, event.name)
+        sendIntentResolver.resolve(event.intent, event.name)
       }
 
       is PlacesViewModel.NavigationEvent.ConfirmDelete -> {

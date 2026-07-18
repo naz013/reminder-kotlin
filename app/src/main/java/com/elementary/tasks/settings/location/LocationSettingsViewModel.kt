@@ -15,10 +15,11 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.google.android.gms.maps.GoogleMap
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 
 class LocationSettingsViewModel(
@@ -29,7 +30,10 @@ class LocationSettingsViewModel(
   private val systemInfo: SystemInfo,
   private val mapStyle: MapStyle,
 ) : ViewModel() {
-  val state: StateFlow<LocationSettingsState> field = MutableStateFlow(buildState())
+
+  private val _state = MutableStateFlow(buildState())
+  val state = _state.stateInWhileSubscribed(buildState())
+    .onStart { refreshState() }
   val navigationEvent: LiveData<Event<LocationSettingsEvent>> field = mutableLiveEventOf()
 
   init {
@@ -42,34 +46,28 @@ class LocationSettingsViewModel(
   }
 
   fun onRadiusClick() {
-    val radius = prefs.radius
-    val valueTo = initialValueTo(radius.toFloat())
-    state.update {
+    _state.update {
       it.copy(
         dialog =
           LocationSettingsDialog.Radius(
-            value = radius,
-            valueTo = valueTo,
-            formattedValue = formatRadius(radius),
+            value = prefs.radius,
+            valueTo = MapConfig.Radius.MAX_METERS.toFloat(),
+            formattedValue = formatRadius(prefs.radius),
           ),
       )
     }
   }
 
   fun onRadiusPreviewChange(value: Int) {
-    state.update { current ->
-      val dialog = current.dialog as? LocationSettingsDialog.Radius ?: return@update current
-      var valueTo = dialog.valueTo
-      val percent = value / valueTo * 100f
-      if (percent > 95f && valueTo < MAX_RADIUS) {
-        valueTo += valueTo * 0.2f
-      } else if (percent < 10f && valueTo.toInt() > 5000) {
-        valueTo -= valueTo * 0.2f
-      }
+    val dialog = _state.value.dialog as? LocationSettingsDialog.Radius ?: return
+    if (dialog.value != value && prefs.hapticsEnabled) {
+      navigationEvent.value = Event(LocationSettingsEvent.HapticFeedback)
+    }
+    _state.update { current ->
+      val currentDialog = current.dialog as? LocationSettingsDialog.Radius ?: return@update current
       current.copy(
-        dialog = dialog.copy(
+        dialog = currentDialog.copy(
           value = value,
-          valueTo = valueTo,
           formattedValue = formatRadius(value)
         )
       )
@@ -77,14 +75,14 @@ class LocationSettingsViewModel(
   }
 
   fun onRadiusConfirm() {
-    val dialog = state.value.dialog as? LocationSettingsDialog.Radius ?: return
+    val dialog = _state.value.dialog as? LocationSettingsDialog.Radius ?: return
     prefs.radius = dialog.value
     dismissDialog()
   }
 
   fun onMapTypeClick() {
     val options = mapTypeOptions()
-    state.update {
+    _state.update {
       it.copy(
         dialog = LocationSettingsDialog.MapType(
           options = options,
@@ -109,6 +107,7 @@ class LocationSettingsViewModel(
         title = textProvider.getString(R.string.style_of_marker),
         currentColorIndex = prefs.markerStyle,
         colors = mapStyle.colorsForSlider(),
+        hapticFeedbackEnabled = prefs.hapticsEnabled,
       )
     )
   }
@@ -119,18 +118,22 @@ class LocationSettingsViewModel(
   }
 
   fun onTrackerClick() {
-    state.update { it.copy(dialog = LocationSettingsDialog.Tracker(seconds = prefs.trackTime)) }
+    _state.update { it.copy(dialog = LocationSettingsDialog.Tracker(seconds = prefs.trackTime)) }
   }
 
   fun onTrackerPreviewChange(seconds: Int) {
-    state.update { current ->
-      val dialog = current.dialog as? LocationSettingsDialog.Tracker ?: return@update current
-      current.copy(dialog = dialog.copy(seconds = seconds))
+    val dialog = _state.value.dialog as? LocationSettingsDialog.Tracker ?: return
+    if (dialog.seconds != seconds && prefs.hapticsEnabled) {
+      navigationEvent.value = Event(LocationSettingsEvent.HapticFeedback)
+    }
+    _state.update { current ->
+      val currentDialog = current.dialog as? LocationSettingsDialog.Tracker ?: return@update current
+      current.copy(dialog = currentDialog.copy(seconds = seconds))
     }
   }
 
   fun onTrackerConfirm() {
-    val dialog = state.value.dialog as? LocationSettingsDialog.Tracker ?: return
+    val dialog = _state.value.dialog as? LocationSettingsDialog.Tracker ?: return
     prefs.trackTime = dialog.seconds
     dismissDialog()
   }
@@ -143,18 +146,12 @@ class LocationSettingsViewModel(
     dismissDialog()
   }
 
-  /** Called on every resume - the marker color and map-style preview can be changed by sub-screens
-   *  (color dialog, [MapStyleFragment]) that this ViewModel doesn't observe directly. */
-  fun onResume() {
-    refreshState()
-  }
-
   private fun dismissDialog() {
-    state.update { buildState().copy(dialog = null) }
+    _state.update { buildState().copy(dialog = null) }
   }
 
   private fun refreshState() {
-    state.update { buildState().copy(dialog = it.dialog) }
+    _state.update { buildState().copy(dialog = it.dialog) }
   }
 
   private fun buildState(): LocationSettingsState =
@@ -190,24 +187,4 @@ class LocationSettingsViewModel(
       GoogleMap.MAP_TYPE_HYBRID -> 3
       else -> 0
     }
-
-  private fun initialValueTo(radius: Float): Float {
-    var valueTo = MAX_DEF_RADIUS
-    if (valueTo < radius && valueTo < MAX_RADIUS) {
-      valueTo = radius + (valueTo * 0.2f)
-    }
-    if (radius > MAX_RADIUS) {
-      valueTo = MAX_RADIUS
-    }
-    valueTo = radius * 2f
-    if (radius == 0f) {
-      valueTo = MAX_DEF_RADIUS
-    }
-    return valueTo
-  }
-
-  companion object {
-    private val MAX_RADIUS = MapConfig.Radius.MAX_METERS.toFloat()
-    private const val MAX_DEF_RADIUS = 5000f
-  }
 }

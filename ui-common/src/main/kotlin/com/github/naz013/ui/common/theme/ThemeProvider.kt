@@ -7,10 +7,12 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.adjustAlpha
+import com.github.naz013.ui.common.compose.toColor
 
 class ThemeProvider(
   private val contextProvider: ContextProvider,
@@ -151,6 +153,53 @@ class ThemeProvider(
   @ColorInt
   fun getColor(@ColorRes colorRes: Int): Int {
     return ContextCompat.getColor(context, colorRes)
+  }
+
+  fun colorsForSliderThemed(): List<Color> {
+    return listOf(
+      ContextCompat.getColor(context, R.color.redAccent),
+      ContextCompat.getColor(context, R.color.pinkAccent),
+      ContextCompat.getColor(context, R.color.purpleAccent),
+      ContextCompat.getColor(context, R.color.purpleDeepAccent),
+      ContextCompat.getColor(context, R.color.indigoAccent),
+      ContextCompat.getColor(context, R.color.blueAccent),
+      ContextCompat.getColor(context, R.color.blueLightAccent),
+      ContextCompat.getColor(context, R.color.cyanAccent),
+      ContextCompat.getColor(context, R.color.tealAccent),
+      ContextCompat.getColor(context, R.color.greenAccent),
+      ContextCompat.getColor(context, R.color.greenLightAccent),
+      ContextCompat.getColor(context, R.color.limeAccent),
+      ContextCompat.getColor(context, R.color.yellowAccent),
+      ContextCompat.getColor(context, R.color.amberAccent),
+      ContextCompat.getColor(context, R.color.orangeAccent),
+      ContextCompat.getColor(context, R.color.orangeDeepAccent)
+    ).map { it.toColor() }
+  }
+
+  fun themedColor(code: Int = AppColorIndex.RED): Color {
+    val color: Int
+    when (code) {
+      AppColorIndex.RED -> color = R.color.redAccent
+      AppColorIndex.PURPLE -> color = R.color.purpleAccent
+      AppColorIndex.LIGHT_GREEN -> color = R.color.greenLightAccent
+      AppColorIndex.GREEN -> color = R.color.greenAccent
+      AppColorIndex.LIGHT_BLUE -> color = R.color.blueLightAccent
+      AppColorIndex.BLUE -> color = R.color.blueAccent
+      AppColorIndex.YELLOW -> color = R.color.yellowAccent
+      AppColorIndex.ORANGE -> color = R.color.orangeAccent
+      AppColorIndex.CYAN -> color = R.color.cyanAccent
+      AppColorIndex.PINK -> color = R.color.pinkAccent
+      AppColorIndex.TEAL -> color = R.color.tealAccent
+      AppColorIndex.AMBER -> color = R.color.amberAccent
+      AppColorIndex.DEEP_PURPLE -> color = R.color.purpleDeepAccent
+      AppColorIndex.DEEP_ORANGE -> color = R.color.orangeDeepAccent
+      AppColorIndex.LIME -> color = R.color.limeAccent
+      AppColorIndex.INDIGO -> color = R.color.indigoAccent
+      AppColorIndex.WHITE -> color = R.color.pureWhite
+      AppColorIndex.BLACK -> color = R.color.pureBlack
+      else -> color = R.color.blueAccent
+    }
+    return ContextCompat.getColor(context, color).toColor()
   }
 
   companion object {
