@@ -128,7 +128,6 @@ private fun GeneralEntry(backStack: MutableList<NavKey>) {
       is GeneralSettingsEvent.ApplyDynamicColorsAndRecreate -> {
         appRestartController.applyDynamicColorsAndRecreate(event.useDynamicColors)
       }
-      GeneralSettingsEvent.RestartApp -> appRestartController.restartApp()
     }
   }
 

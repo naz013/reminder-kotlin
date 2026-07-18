@@ -110,7 +110,7 @@
 
         <activity
             android:name=".navigation.BottomNavActivity"
-            android:configChanges="orientation|screenSize|screenLayout"
+            android:configChanges="orientation|screenSize|screenLayout|uiMode"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Reminder"
             android:exported="false" />

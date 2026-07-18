@@ -13,6 +13,8 @@ import com.github.naz013.common.system.Module
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.ui.common.locale.Language
+import com.github.naz013.ui.common.theme.ThemeModeHolder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -21,6 +23,7 @@ class GeneralSettingsViewModel(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val themeModeHolder: ThemeModeHolder,
 ) : ViewModel() {
   val state: StateFlow<GeneralSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<GeneralSettingsEvent>> field = mutableLiveEventOf()
@@ -98,14 +101,16 @@ class GeneralSettingsViewModel(
     prefs.appLanguage = index
     refreshState()
     if (changed) {
-      navigationEvent.emit(GeneralSettingsEvent.RestartApp)
+      AppCompatDelegate.setApplicationLocales(Language.getLocaleList(index))
+      navigationEvent.emit(GeneralSettingsEvent.RecreateActivity)
     }
   }
 
   private fun selectTheme(index: Int) {
-    prefs.nightMode = nightModeFor(index)
+    val mode = nightModeFor(index)
+    prefs.nightMode = mode
+    themeModeHolder.nightMode = mode
     refreshState()
-    navigationEvent.emit(GeneralSettingsEvent.RecreateActivity)
   }
 
   private fun selectTimeFormat(index: Int) {

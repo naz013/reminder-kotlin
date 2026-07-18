@@ -7,6 +7,7 @@ import com.github.naz013.ui.common.login.LoginStateViewModel
 import com.github.naz013.ui.common.login.PinLoginViewModel
 import com.github.naz013.ui.common.theme.ColorProvider
 import com.github.naz013.ui.common.theme.DarkModeState
+import com.github.naz013.ui.common.theme.ThemeModeHolder
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -15,6 +16,7 @@ import org.koin.dsl.module
 
 val uiCommonModule = module {
   singleOf(::ThemeProvider)
+  singleOf(::ThemeModeHolder)
   singleOf(::Language)
   singleOf(::Dialogues)
   singleOf(::ModelDateTimeFormatter)
