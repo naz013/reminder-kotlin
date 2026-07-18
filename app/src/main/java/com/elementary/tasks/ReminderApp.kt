@@ -13,6 +13,7 @@ import com.elementary.tasks.core.services.action.actionModule
 import com.elementary.tasks.core.services.servicesModule
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.newUtilsModule
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.ui.uiUtilsModule
@@ -53,6 +54,7 @@ import com.github.naz013.reviews.ReviewSdk
 import com.github.naz013.reviews.config.SecondaryFirebaseConfig
 import com.github.naz013.reviews.reviewsKoinModule
 import com.github.naz013.sync.syncApiModule
+import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
 import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
@@ -178,6 +180,11 @@ class ReminderApp :
           .e("App", "❌ Reviews init failed", error)
       },
     )
+
+    // Migration continuity: AppCompatDelegate's own per-app language storage doesn't know about
+    // a locale the user picked under the old attachBaseContext-based mechanism until we tell it
+    // once - after that it persists this itself and this call is just a harmless no-op resync.
+    AppCompatDelegate.setApplicationLocales(Language.getLocaleList(get<Prefs>().appLanguage))
 
     get<NavigationObservable>().subscribeGlobal(navigationConsumer)
 

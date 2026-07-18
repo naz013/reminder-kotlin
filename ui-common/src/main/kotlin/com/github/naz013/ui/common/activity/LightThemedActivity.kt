@@ -1,6 +1,5 @@
 package com.github.naz013.ui.common.activity
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -12,7 +11,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.github.naz013.common.system.Module
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.login.AuthPreferences
 import com.github.naz013.ui.common.login.LoginApi.isLogged
 import com.github.naz013.ui.common.login.LoginLauncher
@@ -27,7 +25,6 @@ abstract class LightThemedActivity : AppCompatActivity() {
 
   private val themeProvider by inject<ThemeProvider>()
   private val themePreferences by inject<ThemePreferences>()
-  protected val language by inject<Language>()
   private val authPreferences by inject<AuthPreferences>()
 
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
@@ -104,10 +101,6 @@ abstract class LightThemedActivity : AppCompatActivity() {
     if (themePreferences.useDynamicColors) {
       DynamicColors.applyToActivityIfAvailable(this)
     }
-  }
-
-  override fun attachBaseContext(newBase: Context) {
-    super.attachBaseContext(language.onAttach(newBase))
   }
 
   protected fun hideKeyboard(token: IBinder? = null) {

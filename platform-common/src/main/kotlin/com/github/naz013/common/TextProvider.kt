@@ -6,16 +6,7 @@ import androidx.annotation.StringRes
 
 class TextProvider(initContext: Context) {
 
-  private var context: Context = initContext
-
-  fun updateContext(newContext: Context) {
-    if (
-      newContext.resources.configuration.locale.language !=
-      context.resources.configuration.locale.language
-    ) {
-      this.context = newContext
-    }
-  }
+  private val context: Context = initContext
 
   fun getString(@StringRes id: Int): String {
     return context.getString(id)

@@ -41,6 +41,4 @@ sealed class GeneralSettingsEvent {
   data class ApplyDynamicColorsAndRecreate(
     val useDynamicColors: Boolean,
   ) : GeneralSettingsEvent()
-
-  data object RestartApp : GeneralSettingsEvent()
 }
