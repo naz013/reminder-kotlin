@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.utils
 
-import android.app.Activity
+import android.content.Context
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
@@ -98,8 +98,8 @@ val utilModule =
 
     factory { DoNotDisturbManager(get(), get()) }
 
-    factory { (activity: Activity, callback: DropboxLogin.LoginCallback) ->
-      DropboxLogin(activity, get(), get(), callback, get())
+    factory { (context: Context) ->
+      DropboxLogin(context, get(), get(), get(), get(), get())
     }
     factory { (listener: LocationTracker.Listener) ->
       LocationTracker(listener, get(), get(), get())

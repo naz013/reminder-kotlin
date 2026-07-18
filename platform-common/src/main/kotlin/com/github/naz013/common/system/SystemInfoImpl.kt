@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
 import androidx.biometric.BiometricManager
+import com.github.naz013.common.system.SystemInfo.Companion.FREE_PACKAGE_NAME
 import com.github.naz013.common.system.SystemInfo.Companion.PRO_PACKAGE_NAME
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -86,9 +87,5 @@ internal class SystemInfoImpl(
     } catch (_: PackageManager.NameNotFoundException) {
       false
     }
-  }
-
-  private companion object {
-    const val FREE_PACKAGE_NAME = "com.cray.software.justreminder"
   }
 }

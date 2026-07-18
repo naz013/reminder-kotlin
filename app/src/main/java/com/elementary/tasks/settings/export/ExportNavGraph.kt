@@ -1,18 +1,12 @@
 package com.elementary.tasks.settings.export
 
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -20,37 +14,19 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.compose.rememberDropboxLogin
-import com.elementary.tasks.core.cloud.compose.rememberGoogleDriveAuthManager
 import com.elementary.tasks.core.cloud.compose.rememberGoogleDriveLogin
-import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksAuthManager
 import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
-import com.elementary.tasks.core.compose.rememberAnalyticsEventSender
-import com.elementary.tasks.core.compose.rememberFeatureManager
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
-import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.settings.SettingsScaffold
 import com.elementary.tasks.settings.export.services.CloudServicesScreen
+import com.elementary.tasks.settings.export.services.CloudServicesState
 import com.elementary.tasks.settings.export.services.CloudServicesViewModel
-import com.github.naz013.analytics.Feature
-import com.github.naz013.analytics.FeatureUsedEvent
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the Cloud Backup/Cloud Services Settings sub-tree's screens (Nav3 entries) into the
- * app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]). Cloud Services' Google sign-in used to
- * require a Fragment host (`GoogleLogin` registers an `ActivityResultLauncher` eagerly in
- * `onCreate()`, see that class's kdoc) - replaced here by
- * [com.elementary.tasks.core.cloud.compose.rememberGoogleDriveLogin]/[rememberGoogleTasksLogin],
- * the same `rememberLauncherForActivityResult`-based pattern already proven for Google Tasks'
- * own island in Phase 2.
- */
 fun EntryProviderScope<NavKey>.exportEntries(backStack: MutableList<NavKey>) {
   entry<ExportNavKey.CloudBackup> { CloudBackupEntry(backStack) }
   entry<ExportNavKey.CloudServices> { CloudServicesEntry(backStack) }
@@ -59,8 +35,7 @@ fun EntryProviderScope<NavKey>.exportEntries(backStack: MutableList<NavKey>) {
 @Composable
 private fun CloudBackupEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<CloudBackupSettingsViewModel>()
-  bindLifecycle(viewModel)
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(CloudBackupSettingsState())
 
   SettingsScaffold(
     title = stringResource(R.string.cloud_backup),
@@ -86,129 +61,89 @@ private fun CloudBackupEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun CloudServicesEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<CloudServicesViewModel>()
-  val activity = LocalActivity.current as FragmentActivity
-  val featureManager = rememberFeatureManager()
+
   val dialogDispatcher = rememberDialogDispatcher()
-  val analyticsEventSender = rememberAnalyticsEventSender()
-  val googleDriveAuthManager = rememberGoogleDriveAuthManager()
-  val googleTasksAuthManager = rememberGoogleTasksAuthManager()
   val permissionRequester = rememberPermissionRequesterRationale()
-  val state by viewModel.state.collectAsState()
+  val toastDispatcher = rememberToastDispatcher()
+  val state by viewModel.state.collectAsState(CloudServicesState())
 
-  var isGoogleDriveLoggedIn by remember { mutableStateOf(googleDriveAuthManager.isAuthorized()) }
-  var isGoogleTasksLoggedIn by remember { mutableStateOf(googleTasksAuthManager.isAuthorized()) }
-  var isDropboxLoggedIn by remember { mutableStateOf(false) }
+  val googleDriveLogin = rememberGoogleDriveLogin(
+    onResult = { viewModel.onGoogleDriveLoginStateChanged(it) },
+    onFail = { viewModel.onGoogleDriveAuthFailed() },
+  )
+  val googleTasksLogin = rememberGoogleTasksLogin(
+    onResult = { viewModel.onGoogleTasksLoginStateChanged(it) },
+    onFail = { viewModel.onGoogleTasksAuthFailed() },
+  )
+  val dropboxLogin = rememberDropboxLogin()
 
-  fun showErrorDialog() {
-    dialogDispatcher.showDialog(
-      textRes = R.string.failed_to_login,
-      positiveButtonRes = R.string.ok,
-    )
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      CloudServicesViewModel.ViewModelEvent.RequestAccountsPermission -> {
+        permissionRequester.request(
+          permission = Permissions.GET_ACCOUNTS,
+          onGranted = { viewModel.onAccountsPermissionGranted() },
+        )
+      }
+
+      is CloudServicesViewModel.ViewModelEvent.ShowToast -> {
+        toastDispatcher.showToast(messageRes = event.messageRes)
+      }
+
+      CloudServicesViewModel.ViewModelEvent.LogInGoogleDrive -> {
+        googleDriveLogin.login()
+      }
+
+      CloudServicesViewModel.ViewModelEvent.LogOutGoogleDrive -> {
+        googleDriveLogin.logOut { viewModel.onGoogleDriveLoginStateChanged(it) }
+      }
+
+      CloudServicesViewModel.ViewModelEvent.LogInGoogleTasks -> {
+        googleTasksLogin.login()
+      }
+
+      CloudServicesViewModel.ViewModelEvent.LogInDropbox -> {
+        dropboxLogin.login(
+          onAuthResult = { viewModel.onDropboxLoginStateChanged(it) },
+          onDuplicateFound = {
+            dialogDispatcher.showDialog(
+              textRes = R.string.other_version_detected,
+              positiveButtonRes = R.string.open,
+              neutralButtonRes = R.string.cancel,
+              negativeButtonRes = R.string.delete,
+              onPositive = { dropboxLogin.openApp() },
+              onNeutral = {},
+              onNegative = { dropboxLogin.deleteApp() }
+            )
+          }
+        )
+      }
+
+      CloudServicesViewModel.ViewModelEvent.ShowLoginError -> {
+        dialogDispatcher.showDialog(
+          textRes = R.string.failed_to_login,
+          positiveButtonRes = R.string.ok,
+        )
+      }
+    }
   }
-
-  val googleDriveLogin =
-    rememberGoogleDriveLogin(
-      onResult = { isLogged ->
-        isGoogleDriveLoggedIn = isLogged
-        if (isLogged) analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_DRIVE))
-      },
-      onFail = { showErrorDialog() },
-    )
-  val googleTasksLogin =
-    rememberGoogleTasksLogin(
-      onResult = { isLogged ->
-        if (isLogged) viewModel.loadGoogleTasks()
-        isGoogleTasksLoggedIn = isLogged
-        if (isLogged) analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_TASK))
-      },
-      onFail = { showErrorDialog() },
-    )
-  val dropboxLogin =
-    rememberDropboxLogin(
-      onResult = { isSuccess ->
-        if (isSuccess) analyticsEventSender.send(FeatureUsedEvent(Feature.DROPBOX))
-        isDropboxLoggedIn = isSuccess
-      },
-    )
 
   val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(dropboxLogin, googleDriveAuthManager, googleTasksAuthManager, lifecycleOwner) {
-    analyticsEventSender.send(ScreenUsedEvent(Screen.CLOUD_DRIVES))
-    val observer =
-      LifecycleEventObserver { _, event ->
-        if (event == Lifecycle.Event.ON_RESUME) {
-          dropboxLogin.checkAuthOnResume()
-          isGoogleDriveLoggedIn = googleDriveAuthManager.isAuthorized()
-          isGoogleTasksLoggedIn = googleTasksAuthManager.isAuthorized()
-        }
+  DisposableEffect(dropboxLogin, lifecycleOwner) {
+    val observer = LifecycleEventObserver { _, event ->
+      if (event == Lifecycle.Event.ON_RESUME) {
+        dropboxLogin.checkAuthOnResume()
       }
+    }
     lifecycleOwner.lifecycle.addObserver(observer)
     onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
-
-  val isDropboxVisible = remember { featureManager.isFeatureEnabled(FeatureManager.Feature.DROPBOX) }
-  val isGoogleDriveVisible =
-    remember {
-      SuperUtil.isGooglePlayServicesAvailable(activity) &&
-        featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)
-    }
-  val isGoogleTasksVisible =
-    remember {
-      SuperUtil.isGooglePlayServicesAvailable(activity) &&
-        featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS)
-    }
-
-  fun googleDriveButtonClick() {
-    permissionRequester.request(
-      Permissions.GET_ACCOUNTS,
-      onGranted = {
-        if (!SuperUtil.checkGooglePlayServicesAvailability(activity)) {
-          activity.toast(R.string.google_play_services_not_installed)
-        } else if (googleDriveAuthManager.isAuthorized()) {
-          googleDriveLogin.logOut { isGoogleDriveLoggedIn = it }
-        } else {
-          googleDriveLogin.login()
-        }
-      },
-    )
-  }
-
-  fun googleTasksButtonClick() {
-    permissionRequester.request(
-      Permissions.GET_ACCOUNTS,
-      onGranted = {
-        if (!SuperUtil.checkGooglePlayServicesAvailability(activity)) {
-          activity.toast(R.string.google_play_services_not_installed)
-        } else if (googleTasksAuthManager.isAuthorized()) {
-          isGoogleTasksLoggedIn = false
-          viewModel.clearGoogleTasks()
-        } else {
-          googleTasksLogin.login()
-        }
-      },
-    )
   }
 
   CloudServicesScreen(
-    isLoading = state.isLoading,
-    isDropboxVisible = isDropboxVisible,
-    isDropboxLoggedIn = isDropboxLoggedIn,
-    isGoogleDriveVisible = isGoogleDriveVisible,
-    isGoogleDriveLoggedIn = isGoogleDriveLoggedIn,
-    isGoogleTasksVisible = isGoogleTasksVisible,
-    isGoogleTasksLoggedIn = isGoogleTasksLoggedIn,
+    state = state,
     onBackClick = { backStack.removeLastOrNull() },
-    onDropboxClick = { dropboxLogin.login() },
-    onGoogleDriveClick = { googleDriveButtonClick() },
-    onGoogleTasksClick = { googleTasksButtonClick() },
+    onDropboxClick = { viewModel.onDropboxClicked() },
+    onGoogleDriveClick = { viewModel.onGoogleDriveClicked() },
+    onGoogleTasksClick = { viewModel.onGoogleTasksClicked() },
   )
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 }

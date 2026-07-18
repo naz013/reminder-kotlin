@@ -1,7 +1,5 @@
 package com.elementary.tasks.settings.export
 
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
@@ -12,7 +10,9 @@ import com.elementary.tasks.settings.export.work.ObservableBackupTask
 import com.elementary.tasks.settings.export.work.ObservableEraseDataTask
 import com.elementary.tasks.settings.export.work.ObservableSyncTask
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.workapi.ExistingWorkPolicy
@@ -21,7 +21,7 @@ import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
 import com.github.naz013.workapi.WorkState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,18 +33,15 @@ class CloudBackupSettingsViewModel(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
   private val workScheduler: WorkScheduler,
-) : ViewModel(),
-  DefaultLifecycleObserver {
-  val state: StateFlow<CloudBackupSettingsState> field = MutableStateFlow(buildState())
+) : ViewModel() {
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    loadCloudApis()
-  }
+  private val _state = MutableStateFlow(CloudBackupSettingsState())
+  val state = _state.stateInWhileSubscribed(CloudBackupSettingsState())
+    .onStart { loadCloudApis() }
 
   fun onAutoBackupIntervalClick() {
     val options = syncStates()
-    state.update {
+    _state.update {
       it.copy(
         dialog =
           CloudBackupDialog.AutoBackupInterval(
@@ -64,7 +61,7 @@ class CloudBackupSettingsViewModel(
 
   fun onNetworkTypeClick() {
     val options = networkTypeNames()
-    state.update {
+    _state.update {
       it.copy(
         dialog =
           CloudBackupDialog.NetworkType(
@@ -81,7 +78,7 @@ class CloudBackupSettingsViewModel(
   }
 
   fun onEraseClick() {
-    state.update { it.copy(dialog = CloudBackupDialog.EraseConfirm) }
+    _state.update { it.copy(dialog = CloudBackupDialog.EraseConfirm) }
   }
 
   fun onEraseConfirmed() {
@@ -114,7 +111,7 @@ class CloudBackupSettingsViewModel(
     taskKey: String,
     progressKey: String,
   ) {
-    state.update { it.copy(isInProgress = true) }
+    _state.update { it.copy(isInProgress = true) }
     workScheduler.enqueueUnique(
       uniqueName = taskKey,
       policy = ExistingWorkPolicy.REPLACE,
@@ -129,18 +126,18 @@ class CloudBackupSettingsViewModel(
             is WorkState.Succeeded, is WorkState.Failed, is WorkState.Cancelled -> false
             is WorkState.Blocked -> return@collect
           }
-        state.update { it.copy(isInProgress = inProgress) }
+        _state.update { it.copy(isInProgress = inProgress) }
       }
     }
   }
 
   private fun dismissDialog() {
-    state.update { it.copy(dialog = null) }
+    _state.update { it.copy(dialog = null) }
   }
 
   private fun refreshState() {
     val refreshed = buildState()
-    state.update {
+    _state.update {
       it.copy(
         autoBackupStateName = refreshed.autoBackupStateName,
         networkTypeName = refreshed.networkTypeName,
@@ -154,7 +151,7 @@ class CloudBackupSettingsViewModel(
       val apis = cloudApiProvider.getAllowedCloudApis()
       Logger.i(TAG, "Loaded cloud APIs: ${apis.size}")
       withContext(dispatcherProvider.main()) {
-        state.update { it.copy(hasAnyCloudApi = apis.isNotEmpty()) }
+        _state.update { it.copy(hasAnyCloudApi = apis.isNotEmpty()) }
       }
     }
   }

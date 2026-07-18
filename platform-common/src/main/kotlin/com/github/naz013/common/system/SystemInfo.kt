@@ -29,5 +29,6 @@ interface SystemInfo {
 
   companion object {
     const val PRO_PACKAGE_NAME = "com.cray.software.justreminderpro"
+    const val FREE_PACKAGE_NAME = "com.cray.software.justreminder"
   }
 }

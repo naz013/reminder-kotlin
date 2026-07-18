@@ -106,6 +106,3 @@ fun rememberGoogleDriveLogin(
     )
   }
 }
-
-@Composable
-fun rememberGoogleDriveAuthManager(): GoogleDriveAuthManager = koinInject()
