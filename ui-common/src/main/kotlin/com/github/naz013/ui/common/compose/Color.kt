@@ -3,6 +3,8 @@ package com.github.naz013.ui.common.compose
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 
+const val DisabledAlpha = 0.38f
+
 val primaryLight = Color(0xFF0B6B59)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFA1F2DB)

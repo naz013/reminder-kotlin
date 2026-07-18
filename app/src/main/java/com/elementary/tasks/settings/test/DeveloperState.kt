@@ -1,5 +1,7 @@
 package com.elementary.tasks.settings.test
 
+import com.github.naz013.reviews.AppSource
+
 data class DeveloperState(
   val dialog: DeveloperChoiceDialog? = null,
   val clearAllTablesConfirmation: Boolean = false,
@@ -16,7 +18,9 @@ data class DeveloperChoiceDialog(
 sealed class DeveloperEvent {
   data object OpenObjectExport : DeveloperEvent()
 
-  data object OpenReviewDialog : DeveloperEvent()
+  data class OpenReviewDialog(
+    val appSource: AppSource,
+  ) : DeveloperEvent()
 
   data object OpenProVersion : DeveloperEvent()
 

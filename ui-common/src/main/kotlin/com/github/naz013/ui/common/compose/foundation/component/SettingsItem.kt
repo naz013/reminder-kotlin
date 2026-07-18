@@ -26,12 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.DisabledAlpha
 
 private val ItemPadding = 16.dp
 private val IconSize = 24.dp
 private val IconSpacing = 20.dp
 private val TrailingSpacing = 16.dp
-private const val DisabledAlpha = 0.38f
 
 /**
  * A single settings list row: leading icon, title/subtitle, and an optional trailing slot

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.note.Note
@@ -30,6 +31,7 @@ import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.repository.UsedTimeRepository
 import com.github.naz013.repository.table.Table
+import com.github.naz013.reviews.AppSource
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -58,6 +60,7 @@ class DeveloperViewModel(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val usedTimeRepository: UsedTimeRepository,
+  private val buildInfo: BuildInfo,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
@@ -144,7 +147,11 @@ class DeveloperViewModel(
   }
 
   fun onReviewDialogClick() {
-    navigationEvent.value = Event(DeveloperEvent.OpenReviewDialog)
+    navigationEvent.value = Event(
+      DeveloperEvent.OpenReviewDialog(
+        appSource = if (buildInfo.isPro) AppSource.PRO else AppSource.FREE
+      )
+    )
   }
 
   fun onProVersionClick() {

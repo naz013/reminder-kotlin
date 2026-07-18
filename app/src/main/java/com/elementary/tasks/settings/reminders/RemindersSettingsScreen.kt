@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.DisabledAlpha
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
@@ -167,13 +168,25 @@ fun RemindersSettingsScreen(
       icon = painterResource(R.drawable.ic_fluent_sleep),
       dividerBottom = true,
     )
+
+    val dndValueColor = MaterialTheme.colorScheme.onSurface.copy(
+      alpha = if (state.isDoNotDisturbDependentEnabled) {
+        1f
+      } else DisabledAlpha
+    )
     SettingsItem(
       title = stringResource(R.string.from),
       icon = painterResource(R.drawable.ic_builder_timer),
       enabled = state.isDoNotDisturbDependentEnabled,
       dividerBottom = true,
       onClick = onDndFromClick,
-      trailing = { Text(state.doNotDisturbFromText, style = MaterialTheme.typography.titleLarge) },
+      trailing = {
+        Text(
+          text = state.doNotDisturbFromText,
+          style = MaterialTheme.typography.titleLarge,
+          color = dndValueColor
+        )
+      },
     )
     SettingsItem(
       title = stringResource(R.string.to),
@@ -181,7 +194,13 @@ fun RemindersSettingsScreen(
       enabled = state.isDoNotDisturbDependentEnabled,
       dividerBottom = true,
       onClick = onDndToClick,
-      trailing = { Text(state.doNotDisturbToText, style = MaterialTheme.typography.titleLarge) },
+      trailing = {
+        Text(
+          text = state.doNotDisturbToText,
+          style = MaterialTheme.typography.titleLarge,
+          color = dndValueColor
+        )
+      },
     )
     SettingsItem(
       title = stringResource(R.string.events_that_occured_during),

@@ -12,7 +12,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -21,7 +23,6 @@ import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
@@ -58,7 +59,6 @@ import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSettingsLauncher
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.SystemInfo
-import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.login.rememberAuthProvider
@@ -158,6 +158,7 @@ private fun RemindersEntry(
 ) {
   val viewModel = koinViewModel<RemindersSettingsViewModel>()
   val context = LocalContext.current
+  val hapticFeedback = LocalHapticFeedback.current
   val dateTimePicker = rememberDateTimePicker()
   val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
@@ -176,6 +177,9 @@ private fun RemindersEntry(
       }
       RemindersSettingsEvent.ShowPermanentNotification -> PermanentReminderReceiver.show(context)
       RemindersSettingsEvent.HidePermanentNotification -> PermanentReminderReceiver.hide(context)
+      RemindersSettingsEvent.HapticFeedback -> {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+      }
     }
   }
 
@@ -378,10 +382,10 @@ private fun DeveloperEntry(backStack: MutableList<NavKey>) {
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       DeveloperEvent.OpenObjectExport -> backStack.add(SettingsNavKey.ObjectExportTest)
-      DeveloperEvent.OpenReviewDialog -> {
+      is DeveloperEvent.OpenReviewDialog -> {
         reviewsFormLauncher.showFeedbackForm(
           title = "Write a review",
-          appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE,
+          appSource = event.appSource,
           allowLogsAttachment = false,
         )
       }

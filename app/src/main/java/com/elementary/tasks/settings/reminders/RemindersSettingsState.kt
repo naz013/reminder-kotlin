@@ -64,4 +64,6 @@ sealed class RemindersSettingsEvent {
   data object ShowPermanentNotification : RemindersSettingsEvent()
 
   data object HidePermanentNotification : RemindersSettingsEvent()
+
+  data object HapticFeedback : RemindersSettingsEvent()
 }
