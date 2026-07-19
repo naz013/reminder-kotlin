@@ -15,11 +15,6 @@ import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDisp
 import com.github.naz013.ui.common.login.rememberBiometricProvider
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the Security/PIN Settings sub-tree's screens (Nav3 entries) into the app's single,
- * shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.securityEntries(backStack: MutableList<NavKey>) {
   entry<SecurityNavKey.Security> { SecurityEntry(backStack) }
   entry<SecurityNavKey.AddPin> { AddPinEntry(backStack) }

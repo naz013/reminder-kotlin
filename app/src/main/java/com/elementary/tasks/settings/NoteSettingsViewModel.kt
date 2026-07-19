@@ -62,5 +62,6 @@ class NoteSettingsViewModel(
       isFontSizeRememberChecked = prefs.isNoteFontSizeRememberingEnabled,
       isFontStyleRememberChecked = prefs.isNoteFontStyleRememberingEnabled,
       colorOpacity = prefs.noteColorOpacity,
+      hapticFeedbackEnabled = prefs.hapticsEnabled,
     )
 }

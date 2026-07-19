@@ -29,11 +29,6 @@ import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogD
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the "Other"/legal/WebView Settings sub-tree's screens (Nav3 entries) into the app's
- * single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.otherEntries(backStack: MutableList<NavKey>) {
   entry<OtherNavKey.Other> { OtherEntry(backStack) }
   entry<OtherNavKey.Permissions> { PermissionsEntry(backStack) }
