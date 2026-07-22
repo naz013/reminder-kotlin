@@ -1,13 +1,8 @@
 package com.elementary.tasks.reminder.lists.removed
 
-import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
@@ -15,12 +10,9 @@ import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the reminders archive screen (Nav3 entry) into the app's single, shared
- * [androidx.navigation3.ui.NavDisplay] (see [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.remindersArchiveEntries(backStack: MutableList<NavKey>) {
   entry<RemindersArchiveNavKey.List> { ListEntry(backStack) }
 }
@@ -28,12 +20,12 @@ fun EntryProviderScope<NavKey>.remindersArchiveEntries(backStack: MutableList<Na
 @Composable
 private fun ListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<RemindersArchiveViewModel>()
-  bindLifecycle(viewModel)
-  val context = LocalContext.current
+
   val dialogDispatcher = rememberDialogDispatcher()
   val appNavBridge = rememberAppNavBridge()
+  val toastDispatcher = rememberToastDispatcher()
 
-  viewModel.navigationEvent.ObserveEvent { event ->
+  viewModel.event.ObserveEvent { event ->
     when (event) {
       is RemindersArchiveViewModel.NavigationEvent.OpenEdit -> {
         appNavBridge.navigate(BuildReminderNavKey.Main(id = event.id))
@@ -59,12 +51,12 @@ private fun ListEntry(backStack: MutableList<NavKey>) {
       }
 
       RemindersArchiveViewModel.NavigationEvent.ArchiveEmptied -> {
-        Toast.makeText(context, R.string.archive_was_emptied, Toast.LENGTH_SHORT).show()
+        toastDispatcher.showToast(messageRes = R.string.archive_was_emptied)
       }
     }
   }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(RemindersArchiveScreenState())
   RemindersArchiveScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -73,13 +65,4 @@ private fun ListEntry(backStack: MutableList<NavKey>) {
     onItemClick = viewModel::onItemClick,
     onMenuAction = viewModel::onMenuAction,
   )
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 }
