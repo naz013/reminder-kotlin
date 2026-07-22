@@ -48,14 +48,20 @@ data class ReminderSchedule(
 data class NotificationSettings(
   val color: Int = 0,
   val vibrate: Boolean = false,
+  val vibrationPattern: List<Long>? = null,
   val repeatNotification: Boolean = false,
   val volume: Int = -1,
+  val soundUri: String? = null,
   val useGlobalSettings: Boolean = true,
   val quietHoursFrom: String = "",
   val quietHoursTo: String = "",
   val activeHours: List<Int> = emptyList(),
   val delayMinutes: Int = 0,
   val priority: ReminderPriority = ReminderPriority.NORMAL,
+  val category: ReminderNotificationCategory = ReminderNotificationCategory.DEFAULT,
+  val bypassDoNotDisturb: Boolean = false,
+  val wakeScreen: Boolean = false,
+  val lockScreenVisibility: LockScreenVisibility = LockScreenVisibility.PRIVATE,
   val remindBefore: Long = 0
 )
 
@@ -65,6 +71,21 @@ enum class ReminderPriority {
   NORMAL,
   HIGH,
   HIGHEST
+}
+
+/** Maps to [android.app.Notification.CATEGORY_REMINDER]/[android.app.Notification.CATEGORY_ALARM]/etc. */
+enum class ReminderNotificationCategory {
+  DEFAULT,
+  ALARM,
+  EVENT,
+  CALL
+}
+
+/** Maps to [android.app.Notification.VISIBILITY_PUBLIC]/[android.app.Notification.VISIBILITY_PRIVATE]/[android.app.Notification.VISIBILITY_SECRET]. */
+enum class LockScreenVisibility {
+  PUBLIC,
+  PRIVATE,
+  SECRET
 }
 
 data class CalendarExportSettings(

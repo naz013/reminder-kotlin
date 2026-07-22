@@ -66,10 +66,14 @@ data class NotificationSettingsJson(
   val color: Int = 0,
   @SerializedName("vibrate")
   val vibrate: Boolean = false,
+  @SerializedName("vibrationPattern")
+  val vibrationPattern: List<Long>? = null,
   @SerializedName("repeatNotification")
   val repeatNotification: Boolean = false,
   @SerializedName("volume")
   val volume: Int = -1,
+  @SerializedName("soundUri")
+  val soundUri: String? = null,
   @SerializedName("useGlobalSettings")
   val useGlobalSettings: Boolean = true,
   @SerializedName("quietHoursFrom")
@@ -82,6 +86,14 @@ data class NotificationSettingsJson(
   val delayMinutes: Int = 0,
   @SerializedName("priority")
   val priority: String = "NORMAL",
+  @SerializedName("category")
+  val category: String = "DEFAULT",
+  @SerializedName("bypassDoNotDisturb")
+  val bypassDoNotDisturb: Boolean = false,
+  @SerializedName("wakeScreen")
+  val wakeScreen: Boolean = false,
+  @SerializedName("lockScreenVisibility")
+  val lockScreenVisibility: String = "PRIVATE",
   @SerializedName("remindBefore")
   val remindBefore: Long = 0
 )

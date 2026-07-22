@@ -11,6 +11,7 @@ import com.github.naz013.repository.converters.ListStringTypeConverter
 import com.github.naz013.repository.converters.PlacesTypeConverter
 import com.github.naz013.repository.converters.ReminderV2BuilderSchemeConverter
 import com.github.naz013.repository.converters.ReminderV2ShopItemsConverter
+import com.github.naz013.repository.converters.ReminderV2VibrationPatternConverter
 import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 import java.util.UUID
@@ -30,7 +31,8 @@ import java.util.UUID
   ListIntTypeConverter::class,
   PlacesTypeConverter::class,
   ReminderV2ShopItemsConverter::class,
-  ReminderV2BuilderSchemeConverter::class
+  ReminderV2BuilderSchemeConverter::class,
+  ReminderV2VibrationPatternConverter::class
 )
 @Keep
 internal data class ReminderV2Entity(
@@ -82,14 +84,20 @@ data class ReminderScheduleColumns(
 data class NotificationSettingsColumns(
   val color: Int = 0,
   val vibrate: Boolean = false,
+  val vibrationPattern: List<Long>? = null,
   val repeatNotification: Boolean = false,
   val volume: Int = -1,
+  val soundUri: String? = null,
   val useGlobalSettings: Boolean = true,
   val quietHoursFrom: String = "",
   val quietHoursTo: String = "",
   val activeHours: List<Int> = emptyList(),
   val delayMinutes: Int = 0,
   val priority: String = "NORMAL",
+  val category: String = "DEFAULT",
+  val bypassDoNotDisturb: Boolean = false,
+  val wakeScreen: Boolean = false,
+  val lockScreenVisibility: String = "PRIVATE",
   val remindBefore: Long = 0
 )
 

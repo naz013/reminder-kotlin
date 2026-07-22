@@ -2,8 +2,10 @@ package com.github.naz013.repository.entity
 
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
 import com.github.naz013.domain.reminder.v2.LocationSettings
+import com.github.naz013.domain.reminder.v2.LockScreenVisibility
 import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -81,6 +83,30 @@ class ReminderV2MapperTest {
       summary = "Team meeting",
       recurrence = RecurrenceRule.RelativeMonthly(weekday = 2, ordinal = 2),
       schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 14, 10, 0)),
+      action = ReminderAction.None
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips an alarm-style reminder with custom sound and vibration`() {
+    val reminder = ReminderV2(
+      uuId = "id-6",
+      summary = "Take medication",
+      recurrence = RecurrenceRule.Daily(),
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 8, 0)),
+      notification = NotificationSettings(
+        vibrate = true,
+        vibrationPattern = listOf(0L, 200L, 100L, 200L),
+        soundUri = "content://media/external/audio/media/42",
+        category = ReminderNotificationCategory.ALARM,
+        bypassDoNotDisturb = true,
+        wakeScreen = true,
+        lockScreenVisibility = LockScreenVisibility.PUBLIC
+      ),
       action = ReminderAction.None
     )
 

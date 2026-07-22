@@ -45,3 +45,22 @@ internal class ReminderV2BuilderSchemeConverter {
     }.getOrNull()
   }
 }
+
+internal class ReminderV2VibrationPatternConverter {
+
+  @TypeConverter
+  fun toJson(list: List<Long>?): String? {
+    if (list.isNullOrEmpty()) {
+      return null
+    }
+    return Gson().toJson(list)
+  }
+
+  @TypeConverter
+  fun toList(json: String?): List<Long>? {
+    if (json == null) return null
+    return runCatching {
+      Gson().fromJson<List<Long>>(json, object : TypeToken<List<Long>>() {}.type)
+    }.getOrNull()
+  }
+}

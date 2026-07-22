@@ -48,6 +48,7 @@ import com.github.naz013.repository.migrations.MIGRATION_19_20
 import com.github.naz013.repository.migrations.MIGRATION_1_2
 import com.github.naz013.repository.migrations.MIGRATION_20_21
 import com.github.naz013.repository.migrations.MIGRATION_21_22
+import com.github.naz013.repository.migrations.MIGRATION_22_23
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
@@ -76,7 +77,7 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     EventHistoryEntity::class,
     ReminderV2Entity::class
   ],
-  version = 22,
+  version = 23,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -126,7 +127,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_18_19,
             MIGRATION_19_20,
             MIGRATION_20_21,
-            MIGRATION_21_22
+            MIGRATION_21_22,
+            MIGRATION_22_23
           )
           .allowMainThreadQueries()
           .build()

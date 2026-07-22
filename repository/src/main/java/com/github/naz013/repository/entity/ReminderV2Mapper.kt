@@ -2,8 +2,10 @@ package com.github.naz013.repository.entity
 
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
 import com.github.naz013.domain.reminder.v2.LocationSettings
+import com.github.naz013.domain.reminder.v2.LockScreenVisibility
 import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -91,22 +93,30 @@ private fun ReminderScheduleColumns.toDomain(): ReminderSchedule = ReminderSched
 private fun NotificationSettings.toColumns(): NotificationSettingsColumns = NotificationSettingsColumns(
   color = color,
   vibrate = vibrate,
+  vibrationPattern = vibrationPattern,
   repeatNotification = repeatNotification,
   volume = volume,
+  soundUri = soundUri,
   useGlobalSettings = useGlobalSettings,
   quietHoursFrom = quietHoursFrom,
   quietHoursTo = quietHoursTo,
   activeHours = activeHours,
   delayMinutes = delayMinutes,
   priority = priority.name,
+  category = category.name,
+  bypassDoNotDisturb = bypassDoNotDisturb,
+  wakeScreen = wakeScreen,
+  lockScreenVisibility = lockScreenVisibility.name,
   remindBefore = remindBefore
 )
 
 private fun NotificationSettingsColumns.toDomain(): NotificationSettings = NotificationSettings(
   color = color,
   vibrate = vibrate,
+  vibrationPattern = vibrationPattern,
   repeatNotification = repeatNotification,
   volume = volume,
+  soundUri = soundUri,
   useGlobalSettings = useGlobalSettings,
   quietHoursFrom = quietHoursFrom,
   quietHoursTo = quietHoursTo,
@@ -115,6 +125,14 @@ private fun NotificationSettingsColumns.toDomain(): NotificationSettings = Notif
   priority = runCatching {
     ReminderPriority.valueOf(priority)
   }.getOrDefault(ReminderPriority.NORMAL),
+  category = runCatching {
+    ReminderNotificationCategory.valueOf(category)
+  }.getOrDefault(ReminderNotificationCategory.DEFAULT),
+  bypassDoNotDisturb = bypassDoNotDisturb,
+  wakeScreen = wakeScreen,
+  lockScreenVisibility = runCatching {
+    LockScreenVisibility.valueOf(lockScreenVisibility)
+  }.getOrDefault(LockScreenVisibility.PRIVATE),
   remindBefore = remindBefore
 )
 
