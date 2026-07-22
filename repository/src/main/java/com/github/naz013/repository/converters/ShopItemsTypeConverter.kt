@@ -13,7 +13,12 @@ internal class ShopItemsTypeConverter {
   }
 
   @TypeConverter
-  fun toList(json: String): List<ShopItem>? {
-    return Gson().fromJson<List<ShopItem>>(json, object : TypeToken<List<ShopItem>>() {}.type)
+  fun toList(json: String): List<ShopItem> {
+    if (json.isEmpty()) {
+      return emptyList()
+    }
+    return runCatching {
+      Gson().fromJson<List<ShopItem>>(json, object : TypeToken<List<ShopItem>>() {}.type)
+    }.getOrNull() ?: emptyList()
   }
 }
