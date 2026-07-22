@@ -57,6 +57,39 @@ class ReminderV2MapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips a daily recurrence with an until date`() {
+    val reminder = ReminderV2(
+      uuId = "id-4",
+      summary = "Take vitamins",
+      recurrence = RecurrenceRule.Daily(
+        repeatInterval = 2L,
+        until = LocalDateTime.of(2026, 12, 31, 0, 0)
+      ),
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 8, 0)),
+      action = ReminderAction.None
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a relative monthly recurrence`() {
+    val reminder = ReminderV2(
+      uuId = "id-5",
+      summary = "Team meeting",
+      recurrence = RecurrenceRule.RelativeMonthly(weekday = 2, ordinal = 2),
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 14, 10, 0)),
+      action = ReminderAction.None
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+  }
+
+  @Test
   fun `toEntity then toDomain round trips a location reminder without export settings`() {
     val reminder = ReminderV2(
       uuId = "id-3",

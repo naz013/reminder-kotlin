@@ -48,6 +48,40 @@ class ReminderToReminderV2MapperTest {
   }
 
   @Test
+  fun `normalizes an unset repeatInterval of 0 to 1 for a weekly reminder`() {
+    val reminder = Reminder(
+      type = Reminder.BY_WEEK,
+      weekdays = listOf(1, 0, 0, 0, 0, 0, 0),
+      repeatInterval = 0L,
+      startTime = GMT_TIME
+    )
+
+    val result = reminder.toReminderV2()
+
+    assertEquals(
+      RecurrenceRule.Weekly(weekdays = listOf(1, 0, 0, 0, 0, 0, 0), repeatInterval = 1L),
+      result.recurrence
+    )
+  }
+
+  @Test
+  fun `carries through an explicit every-N-weeks interval`() {
+    val reminder = Reminder(
+      type = Reminder.BY_WEEK,
+      weekdays = listOf(1, 0, 0, 0, 0, 0, 0),
+      repeatInterval = 3L,
+      startTime = GMT_TIME
+    )
+
+    val result = reminder.toReminderV2()
+
+    assertEquals(
+      RecurrenceRule.Weekly(weekdays = listOf(1, 0, 0, 0, 0, 0, 0), repeatInterval = 3L),
+      result.recurrence
+    )
+  }
+
+  @Test
   fun `maps a monthly reminder`() {
     val reminder = Reminder(
       type = Reminder.BY_MONTH,

@@ -155,8 +155,10 @@ private fun LocationSettingsColumns.toDomain(): LocationSettings = LocationSetti
 private fun RecurrenceRule.toColumns(): Pair<String, String> = when (this) {
   is RecurrenceRule.Once -> "ONCE" to ""
   is RecurrenceRule.Countdown -> "COUNTDOWN" to gson.toJson(this)
+  is RecurrenceRule.Daily -> "DAILY" to gson.toJson(this)
   is RecurrenceRule.Weekly -> "WEEKLY" to gson.toJson(this)
   is RecurrenceRule.Monthly -> "MONTHLY" to gson.toJson(this)
+  is RecurrenceRule.RelativeMonthly -> "RELATIVE_MONTHLY" to gson.toJson(this)
   is RecurrenceRule.Yearly -> "YEARLY" to gson.toJson(this)
   is RecurrenceRule.LocationEnter -> "LOCATION_ENTER" to ""
   is RecurrenceRule.LocationExit -> "LOCATION_EXIT" to ""
@@ -166,8 +168,10 @@ private fun RecurrenceRule.toColumns(): Pair<String, String> = when (this) {
 private fun toRecurrenceRule(type: String, payload: String): RecurrenceRule = when (type) {
   "ONCE" -> RecurrenceRule.Once
   "COUNTDOWN" -> gson.fromJson(payload, RecurrenceRule.Countdown::class.java)
+  "DAILY" -> gson.fromJson(payload, RecurrenceRule.Daily::class.java)
   "WEEKLY" -> gson.fromJson(payload, RecurrenceRule.Weekly::class.java)
   "MONTHLY" -> gson.fromJson(payload, RecurrenceRule.Monthly::class.java)
+  "RELATIVE_MONTHLY" -> gson.fromJson(payload, RecurrenceRule.RelativeMonthly::class.java)
   "YEARLY" -> gson.fromJson(payload, RecurrenceRule.Yearly::class.java)
   "LOCATION_ENTER" -> RecurrenceRule.LocationEnter
   "LOCATION_EXIT" -> RecurrenceRule.LocationExit

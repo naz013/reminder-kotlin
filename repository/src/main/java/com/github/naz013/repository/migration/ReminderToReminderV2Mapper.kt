@@ -94,15 +94,34 @@ internal fun Reminder.toReminderV2(): ReminderV2 {
 private fun Reminder.toRecurrenceRule(): RecurrenceRule = when {
   Reminder.isBase(type, Reminder.BY_DATE) -> RecurrenceRule.Once
   Reminder.isBase(type, Reminder.BY_TIME) -> RecurrenceRule.Countdown(after)
-  Reminder.isBase(type, Reminder.BY_WEEK) -> RecurrenceRule.Weekly(weekdays)
+  Reminder.isBase(type, Reminder.BY_WEEK) ->
+    RecurrenceRule.Weekly(
+      weekdays = weekdays,
+      repeatInterval = normalizeInterval(repeatInterval),
+      repeatLimit = repeatLimit
+    )
   Reminder.isBase(type, Reminder.BY_MONTH) ->
-    RecurrenceRule.Monthly(dayOfMonth, repeatInterval, repeatLimit)
-  Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> RecurrenceRule.Yearly(dayOfMonth, monthOfYear)
+    RecurrenceRule.Monthly(
+      dayOfMonth = dayOfMonth,
+      repeatInterval = normalizeInterval(repeatInterval),
+      repeatLimit = repeatLimit
+    )
+  Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) ->
+    RecurrenceRule.Yearly(
+      dayOfMonth = dayOfMonth,
+      monthOfYear = monthOfYear,
+      repeatInterval = normalizeInterval(repeatInterval),
+      repeatLimit = repeatLimit
+    )
   Reminder.isBase(type, Reminder.BY_LOCATION) -> RecurrenceRule.LocationEnter
   Reminder.isBase(type, Reminder.BY_OUT) -> RecurrenceRule.LocationExit
   Reminder.isBase(type, Reminder.BY_RECUR) -> RecurrenceRule.ICalendar(recurDataObject.orEmpty())
   else -> RecurrenceRule.Once
 }
+
+/** V1's shared `repeatInterval` field defaults to 0 when unused; 0 has no meaning as a recurrence
+ * interval, so treat it the same as "every occurrence" (interval 1) instead of carrying the 0 forward. */
+private fun normalizeInterval(repeatInterval: Long): Long = if (repeatInterval > 0) repeatInterval else 1L
 
 private fun Reminder.toReminderAction(): ReminderAction = when (type % Reminder.BY_DATE) {
   Reminder.Action.CALL -> ReminderAction.Call(target)
