@@ -1,135 +1,153 @@
 package com.elementary.tasks.googletasks.preview
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskPreviewAdapter
-import com.elementary.tasks.core.utils.withUIContext
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PreviewGoogleTaskViewModel(
   private val id: String,
   private val googleTasksApi: GoogleTasksApi,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
-  private val analyticsEventSender: AnalyticsEventSender,
+  analyticsEventSender: AnalyticsEventSender,
   private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val textProvider: TextProvider,
-) : BaseProgressViewModel(dispatcherProvider) {
-  val state: StateFlow<PreviewGoogleTaskState> field = MutableStateFlow(PreviewGoogleTaskState())
-  val navigationEvent: LiveData<Event<PreviewGoogleTaskEvent>> field = mutableLiveEventOf()
+  private val buildInfo: BuildInfo,
+) : ViewModel() {
 
-  override fun onCreate(owner: LifecycleOwner) {
-    super.onCreate(owner)
+  private val _state = MutableStateFlow(PreviewGoogleTaskState())
+  val state = _state.stateInWhileSubscribed(PreviewGoogleTaskState())
+    .onStart { loadTask() }
+  val event: LiveData<Event<PreviewGoogleTaskEvent>> field = mutableLiveEventOf()
+
+  init {
     analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_TASK_PREVIEW))
   }
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    loadTask()
-  }
-
   fun onDeleteClick() {
-    state.update { it.copy(showDeleteConfirm = true) }
+    _state.update { it.copy(showDeleteConfirm = true) }
   }
 
   fun onDeleteDismiss() {
-    state.update { it.copy(showDeleteConfirm = false) }
+    _state.update { it.copy(showDeleteConfirm = false) }
   }
 
   fun onDeleteConfirmed() {
-    state.update { it.copy(showDeleteConfirm = false) }
-    setBusy(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      try {
-        val googleTask = googleTaskRepository.getById(id)
-        if (googleTask == null) {
-          setBusy(false)
-          postError(textProvider.getString(R.string.failed_to_update_task))
-          return@launch
+    _state.update { it.copy(showDeleteConfirm = false) }
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val googleTask = withContext(dispatcherProvider.io()) {
+        googleTaskRepository.getById(id)
+      }
+
+      if (googleTask == null) {
+        event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
+        return@launch
+      }
+
+      val deleted = withContext(dispatcherProvider.io()) {
+        try {
+          googleTasksApi.deleteTask(googleTask).also {
+            if (it) {
+              googleTaskRepository.delete(googleTask.taskId)
+            }
+          }
+        } catch (e: Throwable) {
+          Logger.e(TAG, "Got an error while deleting the Google Task, ${e.message}")
+          false
         }
-        if (googleTasksApi.deleteTask(googleTask)) {
-          googleTaskRepository.delete(googleTask.taskId)
-          setBusy(false)
-          navigationEvent.postValue(Event(PreviewGoogleTaskEvent.Deleted))
-        } else {
-          setBusy(false)
-          postError(textProvider.getString(R.string.failed_to_update_task))
-        }
-      } catch (e: Throwable) {
-        setBusy(false)
-        postError(textProvider.getString(R.string.failed_to_update_task))
+      }
+
+      if (deleted) {
+        event.emit(PreviewGoogleTaskEvent.MoveBack)
+      } else {
+        event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
       }
     }
   }
 
   fun onComplete() {
-    setBusy(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      try {
-        val googleTask = googleTaskRepository.getById(id)
-        if (googleTask == null) {
-          setBusy(false)
-          postError(textProvider.getString(R.string.failed_to_update_task))
-          return@launch
-        }
-        if (googleTask.isNeedAction()) {
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val googleTask = withContext(dispatcherProvider.io()) {
+        googleTaskRepository.getById(id)
+      } ?: run {
+        event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
+        return@launch
+      }
+
+      if (googleTask.isNeedAction()) {
+        withContext(dispatcherProvider.io()) {
           googleTasksApi.updateTaskStatus(GoogleTask.TASKS_COMPLETE, googleTask)?.also {
             googleTaskRepository.save(it)
-          } ?: run {
-            setBusy(false)
-            postError(textProvider.getString(R.string.failed_to_update_task))
-            return@launch
           }
-        } else {
-          setBusy(false)
-          postError(textProvider.getString(R.string.failed_to_update_task))
+        } ?: run {
+          event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
           return@launch
         }
-        loadTask()
-        setBusy(false)
-        withUIContext {
-          appWidgetUpdater.updateScheduleWidget()
-        }
-      } catch (e: Throwable) {
-        setBusy(false)
-        postError(textProvider.getString(R.string.failed_to_update_task))
+      } else {
+        event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
+        return@launch
       }
+      loadTask()
+      appWidgetUpdater.updateScheduleWidget()
     }
   }
 
   private fun loadTask() {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val googleTask = googleTaskRepository.getById(id) ?: return@launch
-      val googleTaskList =
-        googleTaskListRepository.getById(googleTask.listId)
-          ?: googleTaskListRepository.defaultGoogleTaskList()
-      val uiTask = uiGoogleTaskPreviewAdapter.convert(googleTask, googleTaskList)
-      state.update { it.copy(task = uiTask) }
+    _state.update {
+      it.copy(hasAdsBanner = !buildInfo.isPro && AdsProvider.hasAds())
+    }
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val googleTask = withContext(dispatcherProvider.io()) {
+        googleTaskRepository.getById(id)
+      } ?: run {
+        Logger.w(TAG, "Google Task with id $id not found.")
+        return@launch
+      }
+      val googleTaskList = withContext(dispatcherProvider.io()) {
+        googleTaskListRepository.getById(googleTask.listId) ?: googleTaskListRepository.defaultGoogleTaskList()
+      }
+      val uiTask = withContext(dispatcherProvider.io()) {
+        uiGoogleTaskPreviewAdapter.convert(googleTask, googleTaskList)
+      }
+      _state.update { it.copy(task = uiTask) }
     }
   }
 
-  private fun setBusy(busy: Boolean) {
-    postInProgress(busy)
-    state.update { it.copy(isLoading = busy) }
+  sealed interface PreviewGoogleTaskEvent {
+    data class ShowError(
+      val message: String
+    ) : PreviewGoogleTaskEvent
+
+    data object MoveBack : PreviewGoogleTaskEvent
+  }
+
+  companion object {
+    private const val TAG = "PreviewGoogleTaskViewModel"
   }
 }

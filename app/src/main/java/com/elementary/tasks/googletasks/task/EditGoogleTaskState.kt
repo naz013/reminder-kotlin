@@ -1,9 +1,12 @@
 package com.elementary.tasks.googletasks.task
 
+import com.github.naz013.domain.GoogleTaskList
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
+import java.util.UUID
 
 data class EditGoogleTaskState(
+  val taskId: String = UUID.randomUUID().toString(),
   val title: String = "",
   val titleError: Boolean = false,
   val notes: String = "",
@@ -12,9 +15,14 @@ data class EditGoogleTaskState(
   val timeText: String? = null,
   val isTimeSelected: Boolean = false,
   val listName: String = "",
+  val initialListId: String = "",
+  val listId: String = "",
   val isLoading: Boolean = false,
-  val hasId: Boolean = false,
   val dialog: EditGoogleTaskDialog? = null,
+  val reminderId: String? = null,
+  val date: LocalDate = LocalDate.now(),
+  val time: LocalTime = LocalTime.now(),
+  val googleTaskLists: List<GoogleTaskList> = emptyList()
 )
 
 sealed interface EditGoogleTaskDialog {
@@ -35,17 +43,3 @@ data class GoogleTaskListOption(
   val id: String,
   val title: String,
 )
-
-sealed interface EditGoogleTaskEvent {
-  data class ShowDatePicker(
-    val date: LocalDate,
-  ) : EditGoogleTaskEvent
-
-  data class ShowTimePicker(
-    val time: LocalTime,
-  ) : EditGoogleTaskEvent
-
-  data object Saved : EditGoogleTaskEvent
-
-  data object Deleted : EditGoogleTaskEvent
-}

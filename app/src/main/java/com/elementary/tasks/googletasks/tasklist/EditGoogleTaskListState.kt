@@ -1,22 +1,18 @@
 package com.elementary.tasks.googletasks.tasklist
 
 import androidx.compose.ui.graphics.Color
+import java.util.UUID
 
 data class EditGoogleTaskListState(
+  val id: String = UUID.randomUUID().toString(),
   val name: String = "",
   val nameError: Boolean = false,
   val sliderColors: List<Color> = emptyList(),
   val colorIndex: Int = 0,
+  val wasDefault: Boolean = false,
   val isDefault: Boolean = false,
   val isDefaultLocked: Boolean = false,
   val isLoading: Boolean = false,
   val canDelete: Boolean = false,
-  val hasId: Boolean = false,
   val showDeleteConfirm: Boolean = false,
 )
-
-sealed interface EditGoogleTaskListEvent {
-  data object Saved : EditGoogleTaskListEvent
-
-  data object Deleted : EditGoogleTaskListEvent
-}
