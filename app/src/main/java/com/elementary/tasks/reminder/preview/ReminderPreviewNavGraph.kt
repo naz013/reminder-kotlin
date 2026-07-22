@@ -1,15 +1,10 @@
 package com.elementary.tasks.reminder.preview
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,24 +13,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.compose.rememberDateTimeManager
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
-import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
-import com.elementary.tasks.notes.ObserveNonNull
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.build.valuedialog.editor.ReminderMapMarker
+import com.elementary.tasks.settings.rememberSendIntentResolver
+import com.elementary.tasks.share.rememberFileIntentSender
 import com.elementary.tasks.simplemap.MapCustomButton
 import com.elementary.tasks.simplemap.MapParams
 import com.elementary.tasks.simplemap.SimpleMapController
@@ -44,16 +35,12 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
 import com.github.naz013.ui.common.compose.foundation.dialog.ListDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.google.android.gms.maps.model.LatLng
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.threeten.bp.LocalTime
 
-/**
- * Contributes the reminder preview + fullscreen-map screens (Nav3 entries) and the routing between
- * them into the app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.reminderPreviewEntries(backStack: MutableList<NavKey>) {
   entry<ReminderPreviewNavKey.Preview> { key -> PreviewEntry(key, backStack) }
   entry<ReminderPreviewNavKey.FullscreenMap> { key -> FullscreenMapEntry(key, backStack) }
@@ -65,27 +52,36 @@ private fun PreviewEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<PreviewReminderViewModel> { parametersOf(key.id) }
-  bindLifecycle(viewModel)
 
-  val context = LocalContext.current
   val listDialogDispatcher = rememberListDialogDispatcher()
   val dateTimeManager = rememberDateTimeManager()
   val appNavBridge = rememberAppNavBridge()
+  val toastDispatcher = rememberToastDispatcher()
+  val fileIntentSender = rememberFileIntentSender()
+  val intentResolver = rememberSendIntentResolver()
   val adsProvider = remember { AdsProvider() }
 
-  viewModel.resultEvent.ObserveEvent { commands ->
-    when (commands) {
-      Commands.DELETED -> backStack.removeLastOrNull()
-      Commands.FAILED -> {
-        Toast.makeText(context, context.getString(R.string.reminder_is_outdated), Toast.LENGTH_SHORT).show()
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      PreviewReminderViewModel.ViewModelEvent.MoveBack -> {
+        backStack.removeLastOrNull()
       }
 
-      else -> {}
+      is PreviewReminderViewModel.ViewModelEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is PreviewReminderViewModel.ViewModelEvent.ShareData -> {
+        fileIntentSender.send(event.title, event.file)
+      }
+
+      is PreviewReminderViewModel.ViewModelEvent.OpenCalendar -> {
+        intentResolver.resolve(event.intent, event.title)
+      }
     }
   }
-  viewModel.sharedFile.ObserveNonNull { TelephonyUtil.sendFile(context, it) }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(PreviewReminderState())
   PreviewReminderScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -108,7 +104,7 @@ private fun PreviewEntry(
       val taskId = state.googleTask?.id
       if (taskId != null) appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = taskId))
     },
-    onCalendarOpenClick = { openSystemCalendarEvent(context, it.id) },
+    onCalendarOpenClick = { viewModel.onOpenCalendarClicked(it.id) },
     onCalendarRemoveClick = { viewModel.deleteEvent(it) },
     mapContent = {
       EmbeddedMap(
@@ -116,7 +112,7 @@ private fun PreviewEntry(
         onMapClick = { backStack.add(ReminderPreviewNavKey.FullscreenMap(key.id)) },
       )
     },
-    adsContent = { ReminderAdBanner(adsProvider) },
+    adsContent = { if (state.hasAds) ReminderAdBanner(adsProvider) },
   )
 }
 
@@ -126,7 +122,6 @@ private fun FullscreenMapEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<FullScreenMapViewModel> { parametersOf(key.id) }
-  bindLifecycle(viewModel)
   var mapController by remember { mutableStateOf<SimpleMapController?>(null) }
 
   BackHandler {
@@ -215,16 +210,6 @@ private fun FullscreenEmbeddedMap(
   )
 }
 
-private fun openSystemCalendarEvent(
-  context: Context,
-  id: Long,
-) {
-  if (id <= 0L) return
-  val uri = Uri.parse("content://com.android.calendar/events/$id")
-  val intent = Intent(Intent.ACTION_VIEW, uri)
-  runCatching { context.startActivity(intent) }
-}
-
 private fun showCopyTimeDialog(
   listDialogDispatcher: ListDialogDispatcher,
   dateTimeManager: DateTimeManager,
@@ -251,17 +236,7 @@ private fun showCopyTimeDialog(
 }
 
 @Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
-}
-
-@Composable
 private fun ReminderAdBanner(adsProvider: AdsProvider) {
-  if (BuildParams.isPro || !AdsProvider.hasAds()) return
   val context = LocalContext.current
   AndroidView(
     modifier = Modifier.fillMaxWidth(),

@@ -7,30 +7,10 @@ import android.text.TextUtils
 import android.widget.Toast
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.ui.UiShareData
 import com.github.naz013.common.uri.UriUtil
 
 @Deprecated("Use Composable implementation instead")
 object TelephonyUtil {
-
-  fun sendFile(
-    context: Context,
-    shareData: UiShareData,
-  ) {
-    if (shareData.file == null) return
-    val intent = Intent(Intent.ACTION_SEND)
-    intent.type = "*/*"
-    intent.putExtra(Intent.EXTRA_SUBJECT, shareData.name)
-    val uri = UriUtil.getUri(context, shareData.file, BuildConfig.APPLICATION_ID)
-    intent.putExtra(Intent.EXTRA_STREAM, uri)
-    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    try {
-      val chooser = Intent.createChooser(intent, context.getString(R.string.share_send_email))
-      context.startActivity(chooser)
-    } catch (e: Exception) {
-      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
-    }
-  }
 
   fun sendMail(
     context: Context,
