@@ -19,4 +19,7 @@ dependencies {
   implementation(libs.threetenbp)
 
   implementation(libs.androidx.biometric)
+
+  testImplementation(libs.junit)
+  testImplementation(libs.mockk)
 }

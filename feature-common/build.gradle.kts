@@ -23,4 +23,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.extensions)
   implementation(libs.androidx.lifecycle.viewmodel.ktx)
   implementation(libs.androidx.lifecycle.livedata.ktx)
+
+  testImplementation(libs.junit)
+  testImplementation(libs.mockk)
 }
