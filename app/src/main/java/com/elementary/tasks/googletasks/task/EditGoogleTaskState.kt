@@ -1,5 +1,6 @@
 package com.elementary.tasks.googletasks.task
 
+import com.elementary.tasks.R
 import com.github.naz013.domain.GoogleTaskList
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -22,7 +23,10 @@ data class EditGoogleTaskState(
   val reminderId: String? = null,
   val date: LocalDate = LocalDate.now(),
   val time: LocalTime = LocalTime.now(),
-  val googleTaskLists: List<GoogleTaskList> = emptyList()
+  val googleTaskLists: List<GoogleTaskList> = emptyList(),
+  val canMove: Boolean = false,
+  val canDelete: Boolean = false,
+  val screenTitleRes: Int = R.string.new_task,
 )
 
 sealed interface EditGoogleTaskDialog {

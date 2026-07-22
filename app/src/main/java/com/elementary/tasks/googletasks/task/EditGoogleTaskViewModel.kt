@@ -469,6 +469,14 @@ class EditGoogleTaskViewModel(
           listId = googleTaskList?.listId ?: "",
           listName = googleTaskList?.title ?: "",
           initialListId = googleTaskList?.listId ?: "",
+          googleTaskLists = googleTaskLists,
+          canMove = editedTask != null,
+          canDelete = editedTask != null,
+          screenTitleRes = if (editedTask != null) {
+            R.string.edit_task
+          } else {
+            R.string.new_task
+          }
         )
       }
       Logger.i(TAG, "Opening Google Task id=$id, listId=${_state.value.listId}")

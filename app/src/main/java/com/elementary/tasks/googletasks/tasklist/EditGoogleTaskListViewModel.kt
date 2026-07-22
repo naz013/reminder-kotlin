@@ -206,6 +206,7 @@ class EditGoogleTaskListViewModel(
             isDefaultLocked = list.isDefault(),
             canDelete = !list.isDefault(),
             wasDefault = list.isDefault(),
+            screenTitleRes = R.string.edit_task_list,
           )
         }
       }

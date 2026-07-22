@@ -1,6 +1,7 @@
 package com.elementary.tasks.googletasks.tasklist
 
 import androidx.compose.ui.graphics.Color
+import com.elementary.tasks.R
 import java.util.UUID
 
 data class EditGoogleTaskListState(
@@ -15,4 +16,5 @@ data class EditGoogleTaskListState(
   val isLoading: Boolean = false,
   val canDelete: Boolean = false,
   val showDeleteConfirm: Boolean = false,
+  val screenTitleRes: Int = R.string.new_tasks_list,
 )

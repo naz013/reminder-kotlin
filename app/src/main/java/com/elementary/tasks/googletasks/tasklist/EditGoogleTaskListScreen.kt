@@ -53,7 +53,7 @@ fun EditGoogleTaskListScreen(
     modifier = modifier,
     topBar = {
       TopAppBar(
-        title = { Text(stringResource(if (state.hasId) R.string.edit_task_list else R.string.new_tasks_list)) },
+        title = { Text(stringResource(state.screenTitleRes)) },
         navigationIcon = {
           MenuIconButton(
             icon = painterResource(R.drawable.ic_builder_arrow_left),
@@ -188,7 +188,6 @@ private fun EditGoogleTaskListScreenPreview() {
           colorIndex = 6,
           isDefault = true,
           canDelete = true,
-          hasId = true,
         ),
       onBackClick = {},
       onSaveClick = {},
