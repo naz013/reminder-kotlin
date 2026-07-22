@@ -1,0 +1,127 @@
+package com.github.naz013.repository.migration
+
+import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2
+import com.github.naz013.domain.reminder.v2.CalendarExportSettings
+import com.github.naz013.domain.reminder.v2.LocationSettings
+import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderPriority
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ShopItemV2
+import com.github.naz013.domain.reminder.v2.SyncMetadata
+import com.github.naz013.domain.reminder.v2.TaskExportSettings
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import java.util.Locale
+
+/**
+ * One-time V1 -> V2 backfill mapper. Not part of ReminderV2's steady-state entity<->domain
+ * mapping (see [com.github.naz013.repository.entity.toEntity]/[com.github.naz013.repository.entity.toDomain]),
+ * kept separate so it can be deleted wholesale once the backfill is no longer needed.
+ */
+internal fun Reminder.toReminderV2(): ReminderV2 {
+  val startDateTime = parseGmtToUtc(startTime) ?: LocalDateTime.now(ZoneOffset.UTC)
+  return ReminderV2(
+    uuId = uuId,
+    summary = summary,
+    description = description,
+    noteId = noteId,
+    groupId = groupUuId.takeIf { it.isNotEmpty() },
+    recurrence = toRecurrenceRule(),
+    schedule = ReminderSchedule(
+      startDateTime = startDateTime,
+      eventDateTime = parseGmtToUtc(eventTime),
+      updatedAt = parseGmtToUtc(updatedAt)
+    ),
+    notification = NotificationSettings(
+      color = color,
+      vibrate = vibrate,
+      repeatNotification = repeatNotification,
+      volume = volume,
+      useGlobalSettings = useGlobal,
+      quietHoursFrom = from,
+      quietHoursTo = to,
+      activeHours = hours,
+      delayMinutes = delay,
+      priority = toReminderPriority(priority),
+      remindBefore = remindBefore
+    ),
+    calendarExport = if (exportToCalendar) {
+      CalendarExportSettings(calendarId = calendarId, duration = duration, allDay = allDay)
+    } else {
+      null
+    },
+    taskExport = if (exportToTasks && !taskListId.isNullOrEmpty()) {
+      TaskExportSettings(taskListId = taskListId.orEmpty())
+    } else {
+      null
+    },
+    location = if (Reminder.isGpsType(type)) {
+      LocationSettings(
+        isNotificationShown = isNotificationShown,
+        isLocked = isLocked,
+        hasDelayedReminder = hasReminder
+      )
+    } else {
+      null
+    },
+    action = toReminderAction(),
+    attachmentFiles = attachmentFiles,
+    places = places,
+    shoppingItems = shoppings.map {
+      ShopItemV2(
+        uuId = it.uuId,
+        summary = it.summary,
+        isChecked = it.isChecked,
+        isDeleted = it.isDeleted,
+        createdAt = parseGmtToUtc(it.createTime) ?: LocalDateTime.now(ZoneOffset.UTC)
+      )
+    },
+    builderScheme = builderScheme?.map { BuilderSchemeItemV2(type = it.type.ordinal, position = it.position) },
+    uniqueId = uniqueId,
+    isActive = isActive,
+    isRemoved = isRemoved,
+    eventCount = eventCount,
+    sync = SyncMetadata(version = version, syncState = syncState)
+  )
+}
+
+private fun Reminder.toRecurrenceRule(): RecurrenceRule = when {
+  Reminder.isBase(type, Reminder.BY_DATE) -> RecurrenceRule.Once
+  Reminder.isBase(type, Reminder.BY_TIME) -> RecurrenceRule.Countdown(after)
+  Reminder.isBase(type, Reminder.BY_WEEK) -> RecurrenceRule.Weekly(weekdays)
+  Reminder.isBase(type, Reminder.BY_MONTH) ->
+    RecurrenceRule.Monthly(dayOfMonth, repeatInterval, repeatLimit)
+  Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> RecurrenceRule.Yearly(dayOfMonth, monthOfYear)
+  Reminder.isBase(type, Reminder.BY_LOCATION) -> RecurrenceRule.LocationEnter
+  Reminder.isBase(type, Reminder.BY_OUT) -> RecurrenceRule.LocationExit
+  Reminder.isBase(type, Reminder.BY_RECUR) -> RecurrenceRule.ICalendar(recurDataObject.orEmpty())
+  else -> RecurrenceRule.Once
+}
+
+private fun Reminder.toReminderAction(): ReminderAction = when (type % Reminder.BY_DATE) {
+  Reminder.Action.CALL -> ReminderAction.Call(target)
+  Reminder.Action.SMS -> ReminderAction.Sms(target, subject)
+  Reminder.Action.LINK -> ReminderAction.Link(target)
+  Reminder.Action.EMAIL -> ReminderAction.Email(target, subject)
+  Reminder.Action.SHOP -> ReminderAction.Shopping
+  else -> ReminderAction.None
+}
+
+private fun toReminderPriority(priority: Int): ReminderPriority =
+  ReminderPriority.entries.getOrElse(priority) { ReminderPriority.NORMAL }
+
+private val GMT_FORMATTER: DateTimeFormatter =
+  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
+
+private fun parseGmtToUtc(value: String?): LocalDateTime? {
+  if (value.isNullOrEmpty()) return null
+  return runCatching {
+    ZonedDateTime.parse(value, GMT_FORMATTER).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()
+  }.getOrNull()
+}

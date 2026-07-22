@@ -16,6 +16,7 @@ import com.github.naz013.repository.dao.RecentQueryDao
 import com.github.naz013.repository.dao.RecurPresetDao
 import com.github.naz013.repository.dao.ReminderDao
 import com.github.naz013.repository.dao.ReminderGroupDao
+import com.github.naz013.repository.dao.ReminderV2Dao
 import com.github.naz013.repository.dao.RemoteFileMetadataDao
 import com.github.naz013.repository.dao.UsedTimeDao
 import com.github.naz013.repository.entity.BirthdayEntity
@@ -31,6 +32,7 @@ import com.github.naz013.repository.entity.RecentQueryEntity
 import com.github.naz013.repository.entity.RecurPresetEntity
 import com.github.naz013.repository.entity.ReminderEntity
 import com.github.naz013.repository.entity.ReminderGroupEntity
+import com.github.naz013.repository.entity.ReminderV2Entity
 import com.github.naz013.repository.entity.RemoteFileMetadataEntity
 import com.github.naz013.repository.entity.UsedTimeEntity
 import com.github.naz013.repository.migrations.MIGRATION_10_11
@@ -45,6 +47,7 @@ import com.github.naz013.repository.migrations.MIGRATION_18_19
 import com.github.naz013.repository.migrations.MIGRATION_19_20
 import com.github.naz013.repository.migrations.MIGRATION_1_2
 import com.github.naz013.repository.migrations.MIGRATION_20_21
+import com.github.naz013.repository.migrations.MIGRATION_21_22
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
@@ -70,15 +73,17 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     RecentQueryEntity::class,
     RemoteFileMetadataEntity::class,
     EventOccurrenceEntity::class,
-    EventHistoryEntity::class
+    EventHistoryEntity::class,
+    ReminderV2Entity::class
   ],
-  version = 21,
+  version = 22,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
 
   abstract fun reminderDao(): ReminderDao
   abstract fun reminderGroupDao(): ReminderGroupDao
+  abstract fun reminderV2Dao(): ReminderV2Dao
   abstract fun placesDao(): PlacesDao
   abstract fun calendarEventsDao(): CalendarEventsDao
   abstract fun notesDao(): NotesDao
@@ -120,7 +125,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_17_18,
             MIGRATION_18_19,
             MIGRATION_19_20,
-            MIGRATION_20_21
+            MIGRATION_20_21,
+            MIGRATION_21_22
           )
           .allowMainThreadQueries()
           .build()

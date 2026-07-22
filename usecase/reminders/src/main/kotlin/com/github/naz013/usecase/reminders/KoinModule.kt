@@ -7,4 +7,9 @@ val remindersUseCaseModule = module {
   factory { GetActiveRemindersWithoutGpsUseCase(get()) }
 
   factory { GetReminderByIdUseCase(get()) }
+
+  factory { GetActiveRemindersV2UseCase(get()) }
+  factory { GetReminderV2ByIdUseCase(get()) }
+  factory { GetRemindersV2ByGroupIdUseCase(get()) }
+  factory { GetRemindersV2InRangeUseCase(get()) }
 }

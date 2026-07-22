@@ -8,4 +8,5 @@ dependencies {
   implementation(project(":repository-api"))
 
   implementation(libs.koin.core)
+  implementation(libs.threetenbp)
 }

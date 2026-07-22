@@ -12,8 +12,10 @@ import com.github.naz013.repository.impl.RecentQueryRepositoryImpl
 import com.github.naz013.repository.impl.RecurPresetRepositoryImpl
 import com.github.naz013.repository.impl.ReminderGroupRepositoryImpl
 import com.github.naz013.repository.impl.ReminderRepositoryImpl
+import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
 import com.github.naz013.repository.impl.RemoteFileMetadataRepositoryImpl
 import com.github.naz013.repository.impl.UsedTimeRepositoryImpl
+import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.observer.TableChangeListenerFactoryImpl
 import com.github.naz013.repository.observer.TableChangeNotifier
@@ -61,6 +63,8 @@ val repositoryModule = module {
   factory { GoogleTaskRepositoryImpl(get<AppDb>().googleTasksDao(), get()) as GoogleTaskRepository }
   factory { NoteRepositoryImpl(get<AppDb>().notesDao(), get()) as NoteRepository }
   factory { ReminderRepositoryImpl(get<AppDb>().reminderDao(), get()) as ReminderRepository }
+  factory { ReminderV2RepositoryImpl(get<AppDb>().reminderV2Dao(), get()) as ReminderV2Repository }
+  factory { ReminderV2BackfillUseCase(get(), get()) }
   factory { RemoteFileMetadataRepositoryImpl(get<AppDb>().remoteFileMetadataDao(), get()) as RemoteFileMetadataRepository }
   factory { EventOccurrenceRepositoryImpl(get<AppDb>().eventOccurrenceDao(), get()) as EventOccurrenceRepository }
   factory { EventHistoryRepositoryImpl(get<AppDb>().eventHistoryDao(), get()) as EventHistoryRepository }

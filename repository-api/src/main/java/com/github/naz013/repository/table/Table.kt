@@ -8,6 +8,7 @@ enum class Table(val tableName: String) {
   CalendarEvent("CalendarEvent"),
   ReminderGroup("ReminderGroup"),
   Reminder("Reminder"),
+  ReminderV2("ReminderV2"),
   Place("Place"),
   Note("Note"),
   ImageFile("ImageFile"),
