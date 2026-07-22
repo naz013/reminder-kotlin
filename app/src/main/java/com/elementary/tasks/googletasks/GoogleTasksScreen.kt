@@ -15,8 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -75,11 +73,6 @@ fun GoogleTasksScreen(
         },
         actions = {
           if (state.isLoggedIn) {
-            MenuIconButton(
-              icon = Icons.Default.Refresh,
-              contentDescription = stringResource(R.string.refresh),
-              onClick = onRefresh,
-            )
             MenuIconButton(
               icon = painterResource(R.drawable.ic_fluent_task_list_add),
               contentDescription = stringResource(R.string.new_tasks_list),

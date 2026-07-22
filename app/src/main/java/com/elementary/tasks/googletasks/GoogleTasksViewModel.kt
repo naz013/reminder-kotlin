@@ -90,7 +90,7 @@ class GoogleTasksViewModel(
   private fun load() {
     viewModelScope.launch(dispatcherProvider.main()) {
       _state.update {
-        it.copy(isLoading = googleTasksAuthManager.isAuthorized())
+        it.copy(isLoggedIn = googleTasksAuthManager.isAuthorized())
       }
       val googleTaskLists = withContext(dispatcherProvider.io()) {
         googleTaskListRepository.getAll()
