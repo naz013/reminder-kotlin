@@ -118,13 +118,22 @@ class PreviewReminderViewModel(
     viewModelScope.launch(dispatcherProvider.main()) {
       val reminder = withContext(dispatcherProvider.io()) {
         reminderRepository.getById(id)
-      } ?: return@launch
-      if (reminder.isRemoved) return@launch
+      } ?: run {
+        event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.error_reminder_not_found)))
+        event.emit(ViewModelEvent.MoveBack)
+        return@launch
+      }
+      if (reminder.isRemoved) {
+        event.emit(
+          ViewModelEvent.ShowError(textProvider.getString(R.string.error_reminder_is_already_removed_edit_it_first))
+        )
+        return@launch
+      }
       Logger.i(TAG, "Toggling reminder, id: ${reminder.uuId}")
-      val updatedReminder = withContext(dispatcherProvider.io()) {
+      val result = withContext(dispatcherProvider.io()) {
         toggleReminderStateUseCase(reminder)
       }
-      if (!updatedReminder.first) {
+      if (!result.success) {
         event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.reminder_is_outdated)))
       }
       load()

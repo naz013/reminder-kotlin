@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.github.naz013.logging.Logger
 
 enum class ToastDuration(val value: Int) {
   Long(Toast.LENGTH_LONG),
@@ -36,6 +37,7 @@ fun rememberToastDispatcher(): ToastDispatcher {
 
   return object : ToastDispatcher {
     override fun showToast(messageRes: Int?, message: String?, duration: ToastDuration) {
+      Logger.i("ToastDispatcher", "Showing toast with message: ${Logger.private(message)}")
       toastData.value = ToastData(messageRes, message, duration)
       showToast.value = true
     }
