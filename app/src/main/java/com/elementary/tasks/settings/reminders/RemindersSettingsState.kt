@@ -23,10 +23,15 @@ data class RemindersSettingsState(
   val doNotDisturbActionName: String = "",
   val doNotDisturbIgnoreName: String = "",
   val isDoNotDisturbDependentEnabled: Boolean = false,
+  val isDefaultVibrateChecked: Boolean = false,
+  val isDefaultBypassDoNotDisturbChecked: Boolean = false,
+  val isDefaultWakeScreenChecked: Boolean = false,
+  val defaultCategoryName: String = "",
+  val defaultLockScreenVisibilityName: String = "",
   val dialog: RemindersSettingsDialog? = null,
 )
 
-enum class ChoiceDialogKind { PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE }
+enum class ChoiceDialogKind { PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE, CATEGORY, LOCK_SCREEN_VISIBILITY }
 
 enum class SeekDialogKind { SNOOZE, REPEAT_INTERVAL }
 

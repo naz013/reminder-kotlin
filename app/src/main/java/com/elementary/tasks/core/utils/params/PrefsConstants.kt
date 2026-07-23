@@ -100,4 +100,17 @@ object PrefsConstants {
   const val GOOGLE_CALENDAR_SYNC = "google_calendar_sync"
   const val GOOGLE_CALENDAR_ID = "google_calendar_id"
   const val GOOGLE_CALENDAR_ADD_REMINDERS = "google_calendar_add_reminders"
+
+  // ReminderV2 notification-customization defaults (base of the Settings -> Group -> Reminder hierarchy)
+  const val DEFAULT_VIBRATE = "default_vibrate"
+  const val DEFAULT_VIBRATION_PATTERN = "default_vibration_pattern"
+  const val DEFAULT_VOLUME = "default_volume"
+  const val DEFAULT_SOUND_URI = "default_sound_uri"
+  const val DEFAULT_NOTIFICATION_CATEGORY = "default_notification_category"
+  const val DEFAULT_BYPASS_DO_NOT_DISTURB = "default_bypass_do_not_disturb"
+  const val DEFAULT_WAKE_SCREEN = "default_wake_screen"
+  const val DEFAULT_LOCK_SCREEN_VISIBILITY = "default_lock_screen_visibility"
+
+  const val REMINDER_V2_BACKFILL_DONE = "reminder_v2_backfill_done"
+  const val GROUP_V2_BACKFILL_DONE = "group_v2_backfill_done"
 }

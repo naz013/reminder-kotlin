@@ -6,10 +6,10 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.github.naz013.repository.converters.ListIntTypeConverter
 import com.github.naz013.repository.converters.ListStringTypeConverter
 import com.github.naz013.repository.converters.PlacesTypeConverter
 import com.github.naz013.repository.converters.ReminderV2BuilderSchemeConverter
+import com.github.naz013.repository.converters.ReminderV2NullableIntListConverter
 import com.github.naz013.repository.converters.ReminderV2ShopItemsConverter
 import com.github.naz013.repository.converters.ReminderV2VibrationPatternConverter
 import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2
@@ -28,11 +28,11 @@ import java.util.UUID
 )
 @TypeConverters(
   ListStringTypeConverter::class,
-  ListIntTypeConverter::class,
   PlacesTypeConverter::class,
   ReminderV2ShopItemsConverter::class,
   ReminderV2BuilderSchemeConverter::class,
-  ReminderV2VibrationPatternConverter::class
+  ReminderV2VibrationPatternConverter::class,
+  ReminderV2NullableIntListConverter::class
 )
 @Keep
 internal data class ReminderV2Entity(
@@ -49,7 +49,7 @@ internal data class ReminderV2Entity(
   @Embedded(prefix = "sched_")
   val schedule: ReminderScheduleColumns,
   @Embedded(prefix = "notif_")
-  val notification: NotificationSettingsColumns,
+  val notification: NotificationSettingsOverrideColumns,
   @Embedded(prefix = "cal_")
   val calendarExport: CalendarExportSettingsColumns?,
   @Embedded(prefix = "task_")
@@ -81,24 +81,24 @@ data class ReminderScheduleColumns(
   val updatedAt: Long? = null
 )
 
-data class NotificationSettingsColumns(
-  val color: Int = 0,
-  val vibrate: Boolean = false,
+/** Mirrors [com.github.naz013.domain.reminder.v2.NotificationSettingsOverride] — all columns nullable. */
+data class NotificationSettingsOverrideColumns(
+  val color: Int? = null,
+  val vibrate: Boolean? = null,
   val vibrationPattern: List<Long>? = null,
-  val repeatNotification: Boolean = false,
-  val volume: Int = -1,
+  val repeatNotification: Boolean? = null,
+  val volume: Int? = null,
   val soundUri: String? = null,
-  val useGlobalSettings: Boolean = true,
-  val quietHoursFrom: String = "",
-  val quietHoursTo: String = "",
-  val activeHours: List<Int> = emptyList(),
-  val delayMinutes: Int = 0,
-  val priority: String = "NORMAL",
-  val category: String = "DEFAULT",
-  val bypassDoNotDisturb: Boolean = false,
-  val wakeScreen: Boolean = false,
-  val lockScreenVisibility: String = "PRIVATE",
-  val remindBefore: Long = 0
+  val quietHoursFrom: String? = null,
+  val quietHoursTo: String? = null,
+  val activeHours: List<Int>? = null,
+  val delayMinutes: Int? = null,
+  val priority: String? = null,
+  val category: String? = null,
+  val bypassDoNotDisturb: Boolean? = null,
+  val wakeScreen: Boolean? = null,
+  val lockScreenVisibility: String? = null,
+  val remindBefore: Long? = null
 )
 
 data class CalendarExportSettingsColumns(

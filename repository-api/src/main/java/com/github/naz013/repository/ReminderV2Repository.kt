@@ -21,6 +21,7 @@ interface ReminderV2Repository {
 
   suspend fun delete(id: String)
   suspend fun deleteAll(ids: List<String>)
+  suspend fun deleteAll()
 
   suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
   suspend fun updateSyncState(id: String, state: SyncState)

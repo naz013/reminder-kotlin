@@ -3,7 +3,7 @@ package com.github.naz013.repository.entity
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
 import com.github.naz013.domain.reminder.v2.LocationSettings
 import com.github.naz013.domain.reminder.v2.LockScreenVisibility
-import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
@@ -90,51 +90,47 @@ private fun ReminderScheduleColumns.toDomain(): ReminderSchedule = ReminderSched
   updatedAt = updatedAt?.toLocalDateTimeUtc()
 )
 
-private fun NotificationSettings.toColumns(): NotificationSettingsColumns = NotificationSettingsColumns(
-  color = color,
-  vibrate = vibrate,
-  vibrationPattern = vibrationPattern,
-  repeatNotification = repeatNotification,
-  volume = volume,
-  soundUri = soundUri,
-  useGlobalSettings = useGlobalSettings,
-  quietHoursFrom = quietHoursFrom,
-  quietHoursTo = quietHoursTo,
-  activeHours = activeHours,
-  delayMinutes = delayMinutes,
-  priority = priority.name,
-  category = category.name,
-  bypassDoNotDisturb = bypassDoNotDisturb,
-  wakeScreen = wakeScreen,
-  lockScreenVisibility = lockScreenVisibility.name,
-  remindBefore = remindBefore
-)
+internal fun NotificationSettingsOverride.toColumns(): NotificationSettingsOverrideColumns =
+  NotificationSettingsOverrideColumns(
+    color = color,
+    vibrate = vibrate,
+    vibrationPattern = vibrationPattern,
+    repeatNotification = repeatNotification,
+    volume = volume,
+    soundUri = soundUri,
+    quietHoursFrom = quietHoursFrom,
+    quietHoursTo = quietHoursTo,
+    activeHours = activeHours,
+    delayMinutes = delayMinutes,
+    priority = priority?.name,
+    category = category?.name,
+    bypassDoNotDisturb = bypassDoNotDisturb,
+    wakeScreen = wakeScreen,
+    lockScreenVisibility = lockScreenVisibility?.name,
+    remindBefore = remindBefore
+  )
 
-private fun NotificationSettingsColumns.toDomain(): NotificationSettings = NotificationSettings(
-  color = color,
-  vibrate = vibrate,
-  vibrationPattern = vibrationPattern,
-  repeatNotification = repeatNotification,
-  volume = volume,
-  soundUri = soundUri,
-  useGlobalSettings = useGlobalSettings,
-  quietHoursFrom = quietHoursFrom,
-  quietHoursTo = quietHoursTo,
-  activeHours = activeHours,
-  delayMinutes = delayMinutes,
-  priority = runCatching {
-    ReminderPriority.valueOf(priority)
-  }.getOrDefault(ReminderPriority.NORMAL),
-  category = runCatching {
-    ReminderNotificationCategory.valueOf(category)
-  }.getOrDefault(ReminderNotificationCategory.DEFAULT),
-  bypassDoNotDisturb = bypassDoNotDisturb,
-  wakeScreen = wakeScreen,
-  lockScreenVisibility = runCatching {
-    LockScreenVisibility.valueOf(lockScreenVisibility)
-  }.getOrDefault(LockScreenVisibility.PRIVATE),
-  remindBefore = remindBefore
-)
+internal fun NotificationSettingsOverrideColumns.toDomain(): NotificationSettingsOverride =
+  NotificationSettingsOverride(
+    color = color,
+    vibrate = vibrate,
+    vibrationPattern = vibrationPattern,
+    repeatNotification = repeatNotification,
+    volume = volume,
+    soundUri = soundUri,
+    quietHoursFrom = quietHoursFrom,
+    quietHoursTo = quietHoursTo,
+    activeHours = activeHours,
+    delayMinutes = delayMinutes,
+    priority = priority?.let { runCatching { ReminderPriority.valueOf(it) }.getOrNull() },
+    category = category?.let { runCatching { ReminderNotificationCategory.valueOf(it) }.getOrNull() },
+    bypassDoNotDisturb = bypassDoNotDisturb,
+    wakeScreen = wakeScreen,
+    lockScreenVisibility = lockScreenVisibility?.let {
+      runCatching { LockScreenVisibility.valueOf(it) }.getOrNull()
+    },
+    remindBefore = remindBefore
+  )
 
 private fun CalendarExportSettings.toColumns(): CalendarExportSettingsColumns =
   CalendarExportSettingsColumns(

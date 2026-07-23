@@ -49,6 +49,11 @@ fun RemindersSettingsScreen(
   onDndToClick: () -> Unit,
   onDndActionClick: () -> Unit,
   onDndIgnoreClick: () -> Unit,
+  onDefaultVibrateToggle: () -> Unit,
+  onDefaultBypassDoNotDisturbToggle: () -> Unit,
+  onDefaultWakeScreenToggle: () -> Unit,
+  onDefaultCategoryClick: () -> Unit,
+  onDefaultLockScreenVisibilityClick: () -> Unit,
   onChoiceOptionSelected: (Int) -> Unit,
   onSeekValueChange: (Int) -> Unit,
   onSeekConfirm: () -> Unit,
@@ -204,6 +209,45 @@ fun RemindersSettingsScreen(
       enabled = state.isDoNotDisturbDependentEnabled,
       dividerBottom = true,
       onClick = onDndIgnoreClick,
+    )
+
+    SettingsSectionHeader(stringResource(R.string.notification_defaults))
+
+    SettingsSwitchItem(
+      title = stringResource(R.string.default_vibrate),
+      checked = state.isDefaultVibrateChecked,
+      onCheckedChange = { onDefaultVibrateToggle() },
+      subtitleOn = stringResource(R.string.vibrate_on_notification),
+      subtitleOff = stringResource(R.string.do_not_vibrate_on_notification),
+      dividerBottom = true,
+    )
+    SettingsSwitchItem(
+      title = stringResource(R.string.bypass_do_not_disturb),
+      checked = state.isDefaultBypassDoNotDisturbChecked,
+      onCheckedChange = { onDefaultBypassDoNotDisturbToggle() },
+      subtitleOn = stringResource(R.string.bypass_do_not_disturb_enabled),
+      subtitleOff = stringResource(R.string.bypass_do_not_disturb_disabled),
+      dividerBottom = true,
+    )
+    SettingsSwitchItem(
+      title = stringResource(R.string.wake_screen),
+      checked = state.isDefaultWakeScreenChecked,
+      onCheckedChange = { onDefaultWakeScreenToggle() },
+      subtitleOn = stringResource(R.string.wake_screen_enabled),
+      subtitleOff = stringResource(R.string.wake_screen_disabled),
+      dividerBottom = true,
+    )
+    SettingsItem(
+      title = stringResource(R.string.notification_category),
+      subtitle = state.defaultCategoryName,
+      dividerBottom = true,
+      onClick = onDefaultCategoryClick,
+    )
+    SettingsItem(
+      title = stringResource(R.string.lock_screen_visibility),
+      subtitle = state.defaultLockScreenVisibilityName,
+      dividerBottom = true,
+      onClick = onDefaultLockScreenVisibilityClick,
     )
   }
 

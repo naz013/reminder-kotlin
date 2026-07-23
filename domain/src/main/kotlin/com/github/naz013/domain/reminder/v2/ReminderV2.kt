@@ -14,7 +14,7 @@ data class ReminderV2(
   val groupId: String? = null,
   val recurrence: RecurrenceRule = RecurrenceRule.Once,
   val schedule: ReminderSchedule,
-  val notification: NotificationSettings = NotificationSettings(),
+  val notification: NotificationSettingsOverride = NotificationSettingsOverride(),
   val calendarExport: CalendarExportSettings? = null,
   val taskExport: TaskExportSettings? = null,
   val location: LocationSettings? = null,
@@ -45,6 +45,7 @@ data class ReminderSchedule(
   val updatedAt: LocalDateTime? = null
 )
 
+/** The fully-resolved shape: what global Settings holds, and what [NotificationSettingsOverride.resolve] returns. */
 data class NotificationSettings(
   val color: Int = 0,
   val vibrate: Boolean = false,
@@ -52,7 +53,6 @@ data class NotificationSettings(
   val repeatNotification: Boolean = false,
   val volume: Int = -1,
   val soundUri: String? = null,
-  val useGlobalSettings: Boolean = true,
   val quietHoursFrom: String = "",
   val quietHoursTo: String = "",
   val activeHours: List<Int> = emptyList(),

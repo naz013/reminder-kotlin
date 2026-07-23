@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
 import com.elementary.tasks.eventaction.eventActionModule
 import com.elementary.tasks.googletasks.googleTaskModule
-import com.elementary.tasks.groups.reminderGroupModule
+import com.elementary.tasks.groups.groupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcherFactory
@@ -142,7 +142,7 @@ class ReminderApp :
           navigationApiModule,
           cloudModule,
           syncApiModule,
-          reminderGroupModule,
+          groupModule,
           placeKoinModule,
           reviewsKoinModule,
           syncSettingsModule,

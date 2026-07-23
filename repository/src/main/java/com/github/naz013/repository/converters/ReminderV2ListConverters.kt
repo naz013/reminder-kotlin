@@ -64,3 +64,21 @@ internal class ReminderV2VibrationPatternConverter {
     }.getOrNull()
   }
 }
+
+/** Nullable equivalent of [ListIntTypeConverter], for override-shaped columns where null means "unset". */
+internal class ReminderV2NullableIntListConverter {
+
+  @TypeConverter
+  fun toJson(list: List<Int>?): String? {
+    if (list == null) return null
+    return Gson().toJson(list)
+  }
+
+  @TypeConverter
+  fun toList(json: String?): List<Int>? {
+    if (json == null) return null
+    return runCatching {
+      Gson().fromJson<List<Int>>(json, object : TypeToken<List<Int>>() {}.type)
+    }.getOrNull()
+  }
+}

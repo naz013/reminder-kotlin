@@ -18,6 +18,8 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.repository.migration.GroupV2BackfillUseCase
+import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
@@ -33,6 +35,8 @@ class SplashViewModel(
   private val presetInitProcessor: PresetInitProcessor,
   private val appWidgetPreviewUpdater: AppWidgetPreviewUpdater,
   private val migrateExistingEventOccurrencesUseCase: MigrateExistingEventOccurrencesUseCase,
+  private val groupV2BackfillUseCase: GroupV2BackfillUseCase,
+  private val reminderV2BackfillUseCase: ReminderV2BackfillUseCase,
 ) : ViewModel(),
   DefaultLifecycleObserver {
   val isGoogleTasksEnabled =
@@ -72,6 +76,14 @@ class SplashViewModel(
       if (!prefs.noteMigrationDone) {
         prefs.noteMigrationDone = true
         noteImageMigration.migrate()
+      }
+      if (!prefs.groupV2BackfillDone) {
+        groupV2BackfillUseCase()
+        prefs.groupV2BackfillDone = true
+      }
+      if (!prefs.reminderV2BackfillDone) {
+        reminderV2BackfillUseCase()
+        prefs.reminderV2BackfillDone = true
       }
     }
   }

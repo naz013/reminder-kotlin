@@ -4,7 +4,7 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
 import com.github.naz013.domain.reminder.v2.LocationSettings
-import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -38,12 +38,11 @@ internal fun Reminder.toReminderV2(): ReminderV2 {
       eventDateTime = parseGmtToUtc(eventTime),
       updatedAt = parseGmtToUtc(updatedAt)
     ),
-    notification = NotificationSettings(
+    notification = NotificationSettingsOverride(
       color = color,
       vibrate = vibrate,
       repeatNotification = repeatNotification,
       volume = volume,
-      useGlobalSettings = useGlobal,
       quietHoursFrom = from,
       quietHoursTo = to,
       activeHours = hours,

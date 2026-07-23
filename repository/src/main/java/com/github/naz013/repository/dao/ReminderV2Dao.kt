@@ -55,6 +55,9 @@ internal interface ReminderV2Dao {
   @Query("DELETE FROM ReminderV2 WHERE uuId IN (:ids)")
   fun deleteAll(ids: List<String>)
 
+  @Query("DELETE FROM ReminderV2")
+  fun deleteAll()
+
   @Query("UPDATE ReminderV2 SET syncState=:state WHERE uuId=:id")
   fun updateSyncState(id: String, state: String)
 

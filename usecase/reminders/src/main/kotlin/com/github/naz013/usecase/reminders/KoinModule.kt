@@ -12,4 +12,5 @@ val remindersUseCaseModule = module {
   factory { GetReminderV2ByIdUseCase(get()) }
   factory { GetRemindersV2ByGroupIdUseCase(get()) }
   factory { GetRemindersV2InRangeUseCase(get()) }
+  factory { ResolveReminderV2NotificationSettingsUseCase(get(), get()) }
 }

@@ -6,6 +6,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 
@@ -27,6 +28,20 @@ class UiGroupListAdapter(
       isDefaultGroup = reminderGroup.isDefaultGroup,
       canDelete = !reminderGroup.isDefaultGroup,
       canSetAsDefault = !reminderGroup.isDefaultGroup,
+    )
+  }
+
+  fun convert(group: GroupV2): UiGroupList {
+    val groupColor = ThemeProvider.themedColor(contextProvider.themedContext, group.color)
+    return UiGroupList(
+      id = group.uuId,
+      color = groupColor,
+      title = group.title,
+      colorPosition = group.color,
+      contrastColor = getContrastColor(groupColor),
+      isDefaultGroup = group.isDefault,
+      canDelete = !group.isDefault,
+      canSetAsDefault = !group.isDefault,
     )
   }
 

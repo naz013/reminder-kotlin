@@ -9,6 +9,7 @@ enum class Table(val tableName: String) {
   ReminderGroup("ReminderGroup"),
   Reminder("Reminder"),
   ReminderV2("ReminderV2"),
+  GroupV2("GroupV2"),
   Place("Place"),
   Note("Note"),
   ImageFile("ImageFile"),

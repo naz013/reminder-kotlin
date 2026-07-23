@@ -81,6 +81,12 @@ internal class ReminderV2RepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun deleteAll() {
+    Logger.d(TAG, "Delete all reminders")
+    dao.deleteAll()
+    tableChangeNotifier.notify(table)
+  }
+
   override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> {
     Logger.d(TAG, "Get reminder ids by sync states: $syncStates")
     return dao.getBySyncStates(syncStates.map { it.name })

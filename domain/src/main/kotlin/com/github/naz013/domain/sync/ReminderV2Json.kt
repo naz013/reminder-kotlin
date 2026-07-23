@@ -28,7 +28,7 @@ data class ReminderV2Json(
   @SerializedName("updatedAt")
   val updatedAt: String? = null,
   @SerializedName("notification")
-  val notification: NotificationSettingsJson,
+  val notification: NotificationSettingsOverrideJson,
   @SerializedName("calendarExport")
   val calendarExport: CalendarExportSettingsJson? = null,
   @SerializedName("taskExport")
@@ -61,41 +61,40 @@ data class ReminderV2Json(
   val version: Long = 0L
 )
 
-data class NotificationSettingsJson(
+/** Wire shape for [com.github.naz013.domain.reminder.v2.NotificationSettingsOverride] — every field optional. */
+data class NotificationSettingsOverrideJson(
   @SerializedName("color")
-  val color: Int = 0,
+  val color: Int? = null,
   @SerializedName("vibrate")
-  val vibrate: Boolean = false,
+  val vibrate: Boolean? = null,
   @SerializedName("vibrationPattern")
   val vibrationPattern: List<Long>? = null,
   @SerializedName("repeatNotification")
-  val repeatNotification: Boolean = false,
+  val repeatNotification: Boolean? = null,
   @SerializedName("volume")
-  val volume: Int = -1,
+  val volume: Int? = null,
   @SerializedName("soundUri")
   val soundUri: String? = null,
-  @SerializedName("useGlobalSettings")
-  val useGlobalSettings: Boolean = true,
   @SerializedName("quietHoursFrom")
-  val quietHoursFrom: String = "",
+  val quietHoursFrom: String? = null,
   @SerializedName("quietHoursTo")
-  val quietHoursTo: String = "",
+  val quietHoursTo: String? = null,
   @SerializedName("activeHours")
-  val activeHours: List<Int> = emptyList(),
+  val activeHours: List<Int>? = null,
   @SerializedName("delayMinutes")
-  val delayMinutes: Int = 0,
+  val delayMinutes: Int? = null,
   @SerializedName("priority")
-  val priority: String = "NORMAL",
+  val priority: String? = null,
   @SerializedName("category")
-  val category: String = "DEFAULT",
+  val category: String? = null,
   @SerializedName("bypassDoNotDisturb")
-  val bypassDoNotDisturb: Boolean = false,
+  val bypassDoNotDisturb: Boolean? = null,
   @SerializedName("wakeScreen")
-  val wakeScreen: Boolean = false,
+  val wakeScreen: Boolean? = null,
   @SerializedName("lockScreenVisibility")
-  val lockScreenVisibility: String = "PRIVATE",
+  val lockScreenVisibility: String? = null,
   @SerializedName("remindBefore")
-  val remindBefore: Long = 0
+  val remindBefore: Long? = null
 )
 
 data class CalendarExportSettingsJson(

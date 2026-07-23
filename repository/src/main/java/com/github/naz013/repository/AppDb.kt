@@ -10,6 +10,7 @@ import com.github.naz013.repository.dao.EventHistoryDao
 import com.github.naz013.repository.dao.EventOccurrenceDao
 import com.github.naz013.repository.dao.GoogleTaskListsDao
 import com.github.naz013.repository.dao.GoogleTasksDao
+import com.github.naz013.repository.dao.GroupV2Dao
 import com.github.naz013.repository.dao.NotesDao
 import com.github.naz013.repository.dao.PlacesDao
 import com.github.naz013.repository.dao.RecentQueryDao
@@ -25,6 +26,7 @@ import com.github.naz013.repository.entity.EventHistoryEntity
 import com.github.naz013.repository.entity.EventOccurrenceEntity
 import com.github.naz013.repository.entity.GoogleTaskEntity
 import com.github.naz013.repository.entity.GoogleTaskListEntity
+import com.github.naz013.repository.entity.GroupV2Entity
 import com.github.naz013.repository.entity.ImageFileEntity
 import com.github.naz013.repository.entity.NoteEntity
 import com.github.naz013.repository.entity.PlaceEntity
@@ -49,6 +51,8 @@ import com.github.naz013.repository.migrations.MIGRATION_1_2
 import com.github.naz013.repository.migrations.MIGRATION_20_21
 import com.github.naz013.repository.migrations.MIGRATION_21_22
 import com.github.naz013.repository.migrations.MIGRATION_22_23
+import com.github.naz013.repository.migrations.MIGRATION_23_24
+import com.github.naz013.repository.migrations.MIGRATION_24_25
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
@@ -75,9 +79,10 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     RemoteFileMetadataEntity::class,
     EventOccurrenceEntity::class,
     EventHistoryEntity::class,
-    ReminderV2Entity::class
+    ReminderV2Entity::class,
+    GroupV2Entity::class
   ],
-  version = 23,
+  version = 25,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -85,6 +90,7 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun reminderDao(): ReminderDao
   abstract fun reminderGroupDao(): ReminderGroupDao
   abstract fun reminderV2Dao(): ReminderV2Dao
+  abstract fun groupV2Dao(): GroupV2Dao
   abstract fun placesDao(): PlacesDao
   abstract fun calendarEventsDao(): CalendarEventsDao
   abstract fun notesDao(): NotesDao
@@ -128,7 +134,9 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_19_20,
             MIGRATION_20_21,
             MIGRATION_21_22,
-            MIGRATION_22_23
+            MIGRATION_22_23,
+            MIGRATION_23_24,
+            MIGRATION_24_25
           )
           .allowMainThreadQueries()
           .build()

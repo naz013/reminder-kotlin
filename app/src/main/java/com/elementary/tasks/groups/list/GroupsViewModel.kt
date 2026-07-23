@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.ui.group.UiGroupList
-import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
+import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.MakeGroupDefaultUseCase
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,9 +21,9 @@ import kotlinx.coroutines.withContext
 
 class GroupsViewModel(
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val uiGroupListAdapter: UiGroupListAdapter,
-  private val deleteReminderGroupUseCase: DeleteReminderGroupUseCase,
+  private val deleteGroupUseCase: DeleteGroupUseCase,
   private val makeGroupDefaultUseCase: MakeGroupDefaultUseCase,
 ) : ViewModel() {
   private val _state = MutableStateFlow(GroupsScreenState())
@@ -64,12 +64,12 @@ class GroupsViewModel(
 
   fun deleteGroup(id: String) {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminderGroup = reminderGroupRepository.getById(id)
-      if (reminderGroup == null) {
+      val group = groupV2Repository.getById(id)
+      if (group == null) {
         Logger.e(TAG, "Group not found: $id")
         return@launch
       }
-      deleteReminderGroupUseCase(id)
+      deleteGroupUseCase(id)
       loadGroups()
     }
   }
@@ -77,7 +77,7 @@ class GroupsViewModel(
   private fun loadGroups() {
     viewModelScope.launch(dispatcherProvider.io()) {
       val groups =
-        reminderGroupRepository
+        groupV2Repository
           .getAll()
           .map {
             uiGroupListAdapter.convert(it)

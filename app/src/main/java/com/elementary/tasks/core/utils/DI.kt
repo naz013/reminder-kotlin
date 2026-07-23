@@ -7,6 +7,7 @@ import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.data.repository.NoteImageMigration
+import com.elementary.tasks.core.data.repository.ReminderSettingsRepositoryImpl
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.event.AutoBackupEventTask
@@ -48,6 +49,7 @@ import com.github.naz013.common.datetime.DateTimePreferences
 import com.github.naz013.ui.common.locale.LocalePreferences
 import com.github.naz013.ui.common.login.AuthPreferences
 import com.github.naz013.ui.common.theme.ThemePreferences
+import com.github.naz013.repository.ReminderSettingsRepository
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -81,6 +83,7 @@ val viewModelModule =
 val storageModule =
   module {
     factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
+    factory { ReminderSettingsRepositoryImpl(get()) as ReminderSettingsRepository }
   }
 
 val utilModule =
@@ -120,7 +123,7 @@ val utilModule =
     factory { ReminderAnalyticsTracker(get()) }
 
     factory { FeatureManager(get()) }
-    factory { GroupsUtil(get(), get(), get()) }
+    factory { GroupsUtil(get(), get(), get(), get()) }
     factory { ImageDecoder(get(), get(), get()) }
     factory { DroppedContentParser(get()) }
 

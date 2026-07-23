@@ -9,4 +9,7 @@ dependencies {
 
   implementation(libs.koin.core)
   implementation(libs.threetenbp)
+
+  testImplementation(libs.junit)
+  testImplementation(libs.kotlinx.coroutines.test)
 }

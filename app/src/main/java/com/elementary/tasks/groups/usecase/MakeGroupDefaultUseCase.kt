@@ -1,36 +1,27 @@
 package com.elementary.tasks.groups.usecase
 
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.repository.GroupV2Repository
 
 class MakeGroupDefaultUseCase(
-  private val reminderGroupRepository: ReminderGroupRepository,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val groupV2Repository: GroupV2Repository,
 ) {
   suspend operator fun invoke(id: String) {
-    reminderGroupRepository.getById(id) ?: run {
+    groupV2Repository.getById(id) ?: run {
       Logger.e(TAG, "Group not found: $id")
       return
     }
-    reminderGroupRepository
+    groupV2Repository
       .getAll()
-      .filter { it.isDefaultGroup }
-      .filterNot { it.groupUuId == id }
+      .filter { it.isDefault }
+      .filterNot { it.uuId == id }
       .forEach {
-        reminderGroupRepository.setDefaultGroup(it.groupUuId, false)
-        reminderGroupRepository.updateSyncState(it.groupUuId, SyncState.WaitingForUpload)
+        groupV2Repository.setDefaultGroup(it.uuId, false)
+        groupV2Repository.updateSyncState(it.uuId, SyncState.WaitingForUpload)
       }
 
-    reminderGroupRepository.setDefaultGroup(id, true)
-    scheduleBackgroundWorkUseCase(
-      workType = WorkType.Upload,
-      dataType = DataType.Groups,
-      id = null,
-    )
+    groupV2Repository.setDefaultGroup(id, true)
     Logger.i(TAG, "Group set as default: $id")
   }
 

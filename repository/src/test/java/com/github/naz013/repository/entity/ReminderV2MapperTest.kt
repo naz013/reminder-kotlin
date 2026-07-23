@@ -3,7 +3,7 @@ package com.github.naz013.repository.entity
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
 import com.github.naz013.domain.reminder.v2.LocationSettings
 import com.github.naz013.domain.reminder.v2.LockScreenVisibility
-import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
@@ -46,7 +46,7 @@ class ReminderV2MapperTest {
         startDateTime = LocalDateTime.of(2026, 8, 5, 10, 0),
         eventDateTime = LocalDateTime.of(2026, 8, 5, 10, 0)
       ),
-      notification = NotificationSettings(priority = ReminderPriority.HIGH, vibrate = true),
+      notification = NotificationSettingsOverride(priority = ReminderPriority.HIGH, vibrate = true),
       calendarExport = CalendarExportSettings(calendarId = 42L, duration = 3600L, allDay = false),
       taskExport = TaskExportSettings(taskListId = "list-1"),
       action = ReminderAction.Call(target = "+123456789"),
@@ -98,7 +98,7 @@ class ReminderV2MapperTest {
       summary = "Take medication",
       recurrence = RecurrenceRule.Daily(),
       schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 8, 0)),
-      notification = NotificationSettings(
+      notification = NotificationSettingsOverride(
         vibrate = true,
         vibrationPattern = listOf(0L, 200L, 100L, 200L),
         soundUri = "content://media/external/audio/media/42",

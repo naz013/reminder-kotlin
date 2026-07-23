@@ -21,12 +21,14 @@ import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecentQueryRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.repository.UsedTimeRepository
 import com.github.naz013.repository.table.Table
@@ -58,6 +60,8 @@ class DeveloperViewModel(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val usedTimeRepository: UsedTimeRepository,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val groupV2Repository: GroupV2Repository,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val bannersReset: LiveData<Event<Unit>> field = mutableLiveEventOf()
@@ -198,6 +202,8 @@ class DeveloperViewModel(
       Table.RemoteFileMetadata -> remoteFileMetadataRepository.deleteAll()
       Table.EventOccurrence -> eventOccurrenceRepository.deleteAll()
       Table.EventHistory -> eventHistoryRepository.deleteAll()
+      Table.ReminderV2 -> reminderV2Repository.deleteAll()
+      Table.GroupV2 -> groupV2Repository.deleteAll()
     }
   }
 
