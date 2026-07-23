@@ -30,10 +30,12 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import android.net.Uri
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -196,8 +198,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     runTest {
       val activeReminder = reminder(isActive = true)
       coEvery { reminderRepository.getById("42") } returns activeReminder
-      coEvery { toggleReminderStateUseCase(activeReminder) } returns
-        ToggleReminderStateUseCase.Result(success = true, newReminder = activeReminder.copy(isActive = false))
+      coEvery { toggleReminderStateUseCase(activeReminder) } returns (true to activeReminder.copy(isActive = false))
       val viewModel = createViewModel()
 
       viewModel.onToggleClick()
@@ -212,8 +213,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       every { textProvider.getString(any()) } returns "Reminder is outdated"
       val activeReminder = reminder()
       coEvery { reminderRepository.getById("42") } returns activeReminder
-      coEvery { toggleReminderStateUseCase(activeReminder) } returns
-        ToggleReminderStateUseCase.Result(success = false, newReminder = activeReminder)
+      coEvery { toggleReminderStateUseCase(activeReminder) } returns (false to activeReminder)
       val viewModel = createViewModel()
 
       viewModel.onToggleClick()
@@ -223,7 +223,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onToggleClick shows an error and moves back when the reminder is not found`() =
+  fun `onToggleClick does nothing when the reminder is not found`() =
     runTest {
       coEvery { reminderRepository.getById("42") } returns null
       val viewModel = createViewModel()
@@ -231,22 +231,19 @@ class PreviewReminderViewModelTest : BaseTest() {
       viewModel.onToggleClick()
 
       coVerify(exactly = 0) { toggleReminderStateUseCase(any()) }
-      val event = viewModel.event.value?.peekContent()
-      assertEquals(PreviewReminderViewModel.ViewModelEvent.MoveBack, event)
+      assertEquals(null, viewModel.event.value?.peekContent())
     }
 
   @Test
-  fun `onToggleClick shows an error when the reminder is already removed`() =
+  fun `onToggleClick does nothing when the reminder is already removed`() =
     runTest {
       coEvery { reminderRepository.getById("42") } returns reminder(isRemoved = true)
-      every { textProvider.getString(any()) } returns "Already removed"
       val viewModel = createViewModel()
 
       viewModel.onToggleClick()
 
       coVerify(exactly = 0) { toggleReminderStateUseCase(any()) }
-      val event = viewModel.event.value?.peekContent()
-      assertEquals(PreviewReminderViewModel.ViewModelEvent.ShowError("Already removed"), event)
+      assertEquals(null, viewModel.event.value?.peekContent())
     }
 
   @Test
@@ -395,6 +392,10 @@ class PreviewReminderViewModelTest : BaseTest() {
   @Test
   fun `onOpenCalendarClicked posts OpenCalendar for a valid event id`() =
     runTest {
+      // toUri() delegates to the real Uri.parse(), which isn't mockable-by-default under the
+      // JVM unit test android.jar stub - mock the underlying static call it wraps instead.
+      mockkStatic(Uri::class)
+      every { Uri.parse(any()) } returns mockk(relaxed = true)
       coEvery { reminderRepository.getById("42") } returns reminder()
       every { textProvider.getString(any()) } returns "Calendar"
       val viewModel = createViewModel()
@@ -427,7 +428,9 @@ class PreviewReminderViewModelTest : BaseTest() {
 
       val event = viewModel.event.value?.peekContent()
       assertTrue(event is PreviewReminderViewModel.ViewModelEvent.ShowCopyTimeDialog)
-      assertEquals(48, (event as PreviewReminderViewModel.ViewModelEvent.ShowCopyTimeDialog).times.size)
+      // Slots run from 00:00 up to (but excluding) 23:30 in 30-minute steps: 47 entries, last one 23:00.
+      assertEquals(47, (event as PreviewReminderViewModel.ViewModelEvent.ShowCopyTimeDialog).times.size)
       assertEquals(LocalTime.of(0, 0), event.times.first())
+      assertEquals(LocalTime.of(23, 0), event.times.last())
     }
 }
