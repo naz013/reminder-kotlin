@@ -2,13 +2,15 @@ package com.elementary.tasks.core.services.action.birthday
 
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.telephony.PhoneCaller
+import com.elementary.tasks.telephony.SmsSender
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.Permissions
 import com.github.naz013.datecalc.BirthdayDateCalculator
 import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.datecalc.DateValidator
@@ -31,6 +33,8 @@ class BirthdayActionProcessor(
   private val contextProvider: ContextProvider,
   private val dateValidator: DateValidator = DateValidator(),
   private val birthdayDateCalculator: BirthdayDateCalculator = BirthdayDateCalculatorImpl(),
+  private val smsSender: SmsSender,
+  private val phoneCaller: PhoneCaller,
 ) {
   private val scope = CoroutineScope(dispatcherProvider.default())
 
@@ -40,7 +44,7 @@ class BirthdayActionProcessor(
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
       withContext(dispatcherProvider.main()) {
-        TelephonyUtil.sendSms(birthday.number, contextProvider.context)
+        smsSender.send(birthday.number, null)
       }
     }
   }
@@ -51,7 +55,9 @@ class BirthdayActionProcessor(
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
       withContext(dispatcherProvider.main()) {
-        TelephonyUtil.makeCall(birthday.number, contextProvider.context)
+        if (Permissions.checkPermission(contextProvider.context, Permissions.CALL_PHONE)) {
+          phoneCaller.call(birthday.number)
+        }
       }
     }
   }

@@ -16,11 +16,9 @@ val birthdaysModule = module {
   factory { GetBirthdayActionsUseCase() }
   factory { CreateBirthdayActionScreenStateUseCase(get(), get(), get(), get(), get()) }
 
-  viewModel { (id: String, isTest: Boolean) ->
+  viewModel { (id: String) ->
     BirthdayActionViewModel(
       id,
-      isTest,
-      get(),
       get(),
       get(),
       get(),

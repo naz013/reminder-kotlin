@@ -17,7 +17,6 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.compose.rememberDateTimeManager
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
@@ -31,15 +30,12 @@ import com.elementary.tasks.simplemap.MapCustomButton
 import com.elementary.tasks.simplemap.MapParams
 import com.elementary.tasks.simplemap.SimpleMapController
 import com.elementary.tasks.simplemap.SimpleMapView
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
-import com.github.naz013.ui.common.compose.foundation.dialog.ListDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.google.android.gms.maps.model.LatLng
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import org.threeten.bp.LocalTime
 
 fun EntryProviderScope<NavKey>.reminderPreviewEntries(backStack: MutableList<NavKey>) {
   entry<ReminderPreviewNavKey.Preview> { key -> PreviewEntry(key, backStack) }
@@ -54,7 +50,6 @@ private fun PreviewEntry(
   val viewModel = koinViewModel<PreviewReminderViewModel> { parametersOf(key.id) }
 
   val listDialogDispatcher = rememberListDialogDispatcher()
-  val dateTimeManager = rememberDateTimeManager()
   val appNavBridge = rememberAppNavBridge()
   val toastDispatcher = rememberToastDispatcher()
   val fileIntentSender = rememberFileIntentSender()
@@ -78,6 +73,14 @@ private fun PreviewEntry(
       is PreviewReminderViewModel.ViewModelEvent.OpenCalendar -> {
         intentResolver.resolve(event.intent, event.title)
       }
+
+      is PreviewReminderViewModel.ViewModelEvent.ShowCopyTimeDialog -> {
+        listDialogDispatcher.showDialog(
+          titleRes = R.string.choose_time,
+          items = event.titles,
+          onItemClick = { which -> viewModel.copyReminder(event.times[which]) },
+        )
+      }
     }
   }
 
@@ -87,10 +90,8 @@ private fun PreviewEntry(
     onBackClick = { backStack.removeLastOrNull() },
     onToggleClick = viewModel::onToggleClick,
     onEditClick = { appNavBridge.navigate(BuildReminderNavKey.Main(id = key.id)) },
-    onShareClick = { viewModel.shareReminder() },
-    onCopyClick = {
-      showCopyTimeDialog(listDialogDispatcher, dateTimeManager) { time -> viewModel.copyReminder(time) }
-    },
+    onShareClick = viewModel::shareReminder,
+    onCopyClick = viewModel::onCopyClicked,
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,
@@ -207,31 +208,6 @@ private fun FullscreenEmbeddedMap(
     onControllerReady = onControllerReady,
     edgeToEdge = true,
     modifier = Modifier.fillMaxSize(),
-  )
-}
-
-private fun showCopyTimeDialog(
-  listDialogDispatcher: ListDialogDispatcher,
-  dateTimeManager: DateTimeManager,
-  onTimePicked: (LocalTime) -> Unit,
-) {
-  var time = LocalTime.of(0, 0)
-  val list = mutableListOf<LocalTime>()
-  val times = mutableListOf<String>()
-  var isRunning = true
-  do {
-    if (time.hour == 23 && time.minute == 30) {
-      isRunning = false
-    } else {
-      list.add(time)
-      times.add(dateTimeManager.getTime(time))
-      time = time.plusMinutes(30)
-    }
-  } while (isRunning)
-  listDialogDispatcher.showDialog(
-    titleRes = R.string.choose_time,
-    items = times,
-    onItemClick = { which -> onTimePicked(list[which]) },
   )
 }
 

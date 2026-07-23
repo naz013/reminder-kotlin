@@ -159,6 +159,9 @@ val reminderModule =
         get(),
         get(),
         get(),
+        get(),
+        get(),
+        get()
       )
     }
 
@@ -190,10 +193,9 @@ val reminderModule =
       )
     }
 
-    viewModel { (id: String, isTest: Boolean) ->
+    viewModel { (id: String) ->
       ReminderActionActivityViewModel(
         id,
-        isTest,
         get(),
         get(),
         get(),

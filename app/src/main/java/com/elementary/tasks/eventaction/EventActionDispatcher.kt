@@ -1,9 +1,19 @@
 package com.elementary.tasks.eventaction
 
-import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.os.compose.PermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.elementary.tasks.settings.SendEmailResolver
+import com.elementary.tasks.settings.rememberSendEmailResolver
+import com.elementary.tasks.telephony.ApplicationLauncher
+import com.elementary.tasks.telephony.PhoneCaller
+import com.elementary.tasks.telephony.SmsSender
+import com.elementary.tasks.telephony.UrlLauncher
+import com.elementary.tasks.telephony.rememberApplicationLauncher
+import com.elementary.tasks.telephony.rememberPhoneCaller
+import com.elementary.tasks.telephony.rememberSmsSender
+import com.elementary.tasks.telephony.rememberUrlLauncher
+import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 
 interface EventActionDispatcher {
@@ -11,30 +21,37 @@ interface EventActionDispatcher {
 }
 
 private class EventActionDispatcherImpl(
-  private val context: Context,
+  private val applicationLauncher: ApplicationLauncher,
+  private val urlLauncher: UrlLauncher,
+  private val emailResolver: SendEmailResolver,
+  private val phoneCaller: PhoneCaller,
+  private val smsSender: SmsSender,
+  private val permissionRequester: PermissionRequester,
 ) : EventActionDispatcher {
   override fun dispatch(action: ResolvedEventAction) {
     Logger.i(TAG, "Dispatching event action: $action")
     when (action) {
       is ResolvedEventAction.OpenApp -> {
-        TelephonyUtil.openApp(action.packageName, context)
+        applicationLauncher.launch(action.packageName)
       }
       is ResolvedEventAction.OpenLink -> {
-        TelephonyUtil.openLink(action.url, context)
+        urlLauncher.launch(action.url)
       }
       is ResolvedEventAction.MakeCall -> {
-        TelephonyUtil.makeCall(action.phoneNumber, context)
+        permissionRequester.request(
+          Permissions.CALL_PHONE,
+          onGranted = { phoneCaller.call(action.phoneNumber) }
+        )
       }
       is ResolvedEventAction.SendSms -> {
-        TelephonyUtil.sendSms(context, action.phoneNumber, action.message)
+        smsSender.send(action.phoneNumber, action.message)
       }
       is ResolvedEventAction.SendEmail -> {
-        TelephonyUtil.sendMail(
-          context = context,
+        emailResolver.send(
           email = action.email,
           subject = action.subject,
           message = action.body,
-          filePath = action.attachmentPath,
+          file = action.attachmentFile,
         )
       }
     }
@@ -47,6 +64,12 @@ private class EventActionDispatcherImpl(
 
 @Composable
 fun rememberEventActionDispatcher(): EventActionDispatcher {
-  val context = LocalContext.current
-  return EventActionDispatcherImpl(context = context)
+  return EventActionDispatcherImpl(
+    applicationLauncher = rememberApplicationLauncher(),
+    urlLauncher = rememberUrlLauncher(),
+    emailResolver = rememberSendEmailResolver(),
+    phoneCaller = rememberPhoneCaller(),
+    smsSender = rememberSmsSender(),
+    permissionRequester = rememberPermissionRequesterRationale(),
+  )
 }

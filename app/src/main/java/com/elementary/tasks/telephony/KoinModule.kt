@@ -8,4 +8,6 @@ val intentModule = module {
   factory { PhoneCallerImpl(get()) as PhoneCaller }
   factory { SmsSenderImpl(get()) as SmsSender }
   factory { FileIntentSenderImpl(get()) as FileIntentSender }
+  factory { ApplicationLauncherImpl(get()) as ApplicationLauncher }
+  factory { UrlLauncherImpl(get()) as UrlLauncher }
 }

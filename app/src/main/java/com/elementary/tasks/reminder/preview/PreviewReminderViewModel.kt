@@ -80,6 +80,33 @@ class PreviewReminderViewModel(
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
+  fun onCopyClicked() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      var time = LocalTime.of(0, 0)
+      val list = mutableListOf<LocalTime>()
+      val times = mutableListOf<String>()
+      var isRunning = true
+      do {
+        if (time.hour == 23 && time.minute == 30) {
+          isRunning = false
+        } else {
+          list.add(time)
+          times.add(dateTimeManager.getTime(time))
+          time = time.plusMinutes(30)
+        }
+      } while (isRunning)
+
+      withContext(dispatcherProvider.main()) {
+        event.emit(
+          ViewModelEvent.ShowCopyTimeDialog(
+            times = list,
+            titles = times,
+          )
+        )
+      }
+    }
+  }
+
   fun onOpenCalendarClicked(id: Long) {
     if (id <= 0L) return
     val uri = "content://com.android.calendar/events/$id".toUri()
@@ -374,6 +401,11 @@ class PreviewReminderViewModel(
     data class OpenCalendar(
       val intent: Intent,
       val title: String,
+    ) : ViewModelEvent
+
+    data class ShowCopyTimeDialog(
+      val times: List<LocalTime>,
+      val titles: List<String>,
     ) : ViewModelEvent
   }
 

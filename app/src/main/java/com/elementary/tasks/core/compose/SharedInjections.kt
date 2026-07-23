@@ -14,14 +14,9 @@ import org.koin.compose.koinInject
  * instead of `koinInject<>()` directly, keeping the DI lookup expressed as a composable like every
  * other Entry-level dependency (permission requesters, dialog/toast dispatchers, launchers, ...).
  */
-@Composable
-fun rememberPrefs(): Prefs = koinInject()
 
 @Composable
 fun rememberDateTimeManager(): DateTimeManager = koinInject()
-
-@Composable
-fun rememberFeatureManager(): FeatureManager = koinInject()
 
 @Composable
 fun rememberGoogleCalendarUtils(): GoogleCalendarUtils = koinInject()

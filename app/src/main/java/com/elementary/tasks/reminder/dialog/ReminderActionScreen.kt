@@ -28,11 +28,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -54,7 +53,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.actions.ReminderAction
+import com.elementary.tasks.settings.rememberSendEmailResolver
+import com.elementary.tasks.telephony.rememberApplicationLauncher
+import com.elementary.tasks.telephony.rememberPhoneCaller
+import com.elementary.tasks.telephony.rememberSmsSender
+import com.elementary.tasks.telephony.rememberUrlLauncher
+import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
@@ -68,48 +75,87 @@ import com.github.naz013.ui.common.compose.foundation.component.BottomSheetList
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-/**
- * Main screen composable for displaying reminder action UI.
- *
- * This screen displays the reminder content with header information,
- * optional todo list, and action buttons. It handles window insets
- * to provide full-screen display while respecting system UI.
- *
- * Input validation and early returns:
- * - If state is null, returns early without rendering content
- * - Todo item click ignores blank item ids
- *
- * @param viewModel The ViewModel providing state and handling actions
- * @param modifier Optional modifier for the root container
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReminderActionScreen(
-  viewModel: ReminderActionActivityViewModel = koinViewModel(),
   modifier: Modifier = Modifier,
+  id: String,
+  onFinish: () -> Unit,
+  onEdit: (String) -> Unit,
 ) {
-  val snackbarHostState = remember { SnackbarHostState() }
-  val state by viewModel.state.observeAsState()
+  val viewModel: ReminderActionActivityViewModel = koinViewModel { parametersOf(id) }
 
   var showSnoozeBottomSheet by remember { mutableStateOf(false) }
-  val snoozeSheetState = rememberModalBottomSheetState()
+  val snoozeSheetState = rememberBottomSheetState(SheetValue.Hidden)
   val scope = rememberCoroutineScope()
 
-  val showSnoozeDialog by viewModel.showSnoozeDialog.observeAsState()
+  val screenConfiguration = deviceScreenConfiguration()
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val phoneCaller = rememberPhoneCaller()
+  val smsSender = rememberSmsSender()
+  val sendEmailResolver = rememberSendEmailResolver()
+  val toastDispatcher = rememberToastDispatcher()
+  val applicationLauncher = rememberApplicationLauncher()
+  val urlLauncher = rememberUrlLauncher()
 
-  // Observe showSnoozeDialog event and display bottom sheet
-  showSnoozeDialog?.getContentIfNotHandled()?.let {
-    showSnoozeBottomSheet = true
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is ReminderActionActivityViewModel.ViewModelEvent.Finish -> onFinish()
+      is ReminderActionActivityViewModel.ViewModelEvent.Edit -> onEdit(event.id)
+
+      is ReminderActionActivityViewModel.ViewModelEvent.MakeCall -> {
+        permissionRequester.request(
+          Permissions.CALL_PHONE,
+          onGranted = {
+            phoneCaller.call(event.target)
+            onFinish()
+          }
+        )
+      }
+
+      is ReminderActionActivityViewModel.ViewModelEvent.SendSms -> {
+        smsSender.send(event.target, event.message)
+        onFinish()
+      }
+
+      is ReminderActionActivityViewModel.ViewModelEvent.SendEmail -> {
+        sendEmailResolver.send(
+          email = event.email,
+          subject = event.subject,
+          message = event.message,
+          file = null,
+        )
+        onFinish()
+      }
+
+      is ReminderActionActivityViewModel.ViewModelEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is ReminderActionActivityViewModel.ViewModelEvent.OpenApp -> {
+        applicationLauncher.launch(event.target)
+        onFinish()
+      }
+
+      is ReminderActionActivityViewModel.ViewModelEvent.OpenLink -> {
+        urlLauncher.launch(event.target)
+        onFinish()
+      }
+
+      is ReminderActionActivityViewModel.ViewModelEvent.ShowSnoozeDialog -> {
+        showSnoozeBottomSheet = true
+      }
+    }
   }
 
-  val screenConfiguration = deviceScreenConfiguration()
+  val state by viewModel.state.observeAsState()
 
-  Scaffold(
-    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-  ) { paddingValues ->
+  Scaffold { paddingValues ->
     Surface(
       modifier =
         modifier
