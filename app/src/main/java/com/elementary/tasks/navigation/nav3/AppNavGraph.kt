@@ -34,6 +34,7 @@ import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
+import com.elementary.tasks.workflow.workflowEntries
 import org.koin.compose.koinInject
 
 /**
@@ -107,6 +108,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         locationEntries(backStack)
         otherEntries(backStack)
         exportEntries(backStack)
+        workflowEntries(backStack)
       },
   )
 }

@@ -34,6 +34,7 @@ fun RemindersSettingsScreen(
   hasLocation: Boolean,
   onPresetsClick: () -> Unit,
   onLocationClick: () -> Unit,
+  onWorkflowRulesClick: () -> Unit,
   onPriorityClick: () -> Unit,
   onCompletedToggle: () -> Unit,
   onWearToggle: () -> Unit,
@@ -72,6 +73,12 @@ fun RemindersSettingsScreen(
       icon = painterResource(R.drawable.ic_builder_preset),
       dividerBottom = true,
       onClick = onPresetsClick,
+    )
+    SettingsItem(
+      title = stringResource(R.string.workflow_rules),
+      icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
+      dividerBottom = true,
+      onClick = onWorkflowRulesClick,
     )
     if (hasLocation) {
       SettingsItem(

@@ -32,6 +32,7 @@ import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
+import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +44,7 @@ fun EditGroupScreen(
   onNameChange: (String) -> Unit,
   onColorSelected: (Int) -> Unit,
   onDefaultCheckChanged: (Boolean) -> Unit,
+  onWorkflowRulesClick: () -> Unit,
   onDeleteConfirmed: () -> Unit,
   onCopyKeepClick: () -> Unit,
   onCopyReplaceClick: () -> Unit,
@@ -139,6 +141,15 @@ fun EditGroupScreen(
           )
         }
       }
+
+      if (state.hasId) {
+        SettingsItem(
+          title = stringResource(R.string.workflow_rules),
+          icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
+          modifier = Modifier.padding(top = 16.dp),
+          onClick = onWorkflowRulesClick,
+        )
+      }
     }
   }
 
@@ -191,6 +202,7 @@ private fun EditGroupScreenPreview() {
       onNameChange = {},
       onColorSelected = {},
       onDefaultCheckChanged = {},
+      onWorkflowRulesClick = {},
       onDeleteConfirmed = {},
       onCopyKeepClick = {},
       onCopyReplaceClick = {},

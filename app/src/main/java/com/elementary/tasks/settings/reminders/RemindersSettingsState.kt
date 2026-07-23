@@ -58,6 +58,8 @@ sealed class RemindersSettingsEvent {
 
   data object OpenLocationSettings : RemindersSettingsEvent()
 
+  data object OpenWorkflowRules : RemindersSettingsEvent()
+
   data class ShowTimePicker(
     val target: DndTimeTarget,
     val time: LocalTime,

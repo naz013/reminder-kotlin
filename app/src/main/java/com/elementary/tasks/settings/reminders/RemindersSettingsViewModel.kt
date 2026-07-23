@@ -40,6 +40,10 @@ class RemindersSettingsViewModel(
     navigationEvent.value = Event(RemindersSettingsEvent.OpenLocationSettings)
   }
 
+  fun onWorkflowRulesClick() {
+    navigationEvent.value = Event(RemindersSettingsEvent.OpenWorkflowRules)
+  }
+
   fun onPriorityClick() {
     showChoiceDialog(
       kind = ChoiceDialogKind.PRIORITY,

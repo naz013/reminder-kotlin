@@ -99,6 +99,59 @@ class WorkflowEngineTest {
     scope = scope,
     createdAt = now
   )
+
+  private fun groupCompletionRule(scope: WorkflowScope) = WorkflowRule(
+    uuId = "rule-group-completion-${scope::class.simpleName}",
+    trigger = WorkflowTrigger.GroupAllCompleted,
+    action = WorkflowAction.ArchiveReminder,
+    scope = scope,
+    createdAt = now
+  )
+
+  @Test
+  fun `archives every completed reminder once a group has no active reminders left`() = runTest {
+    val completed = completedReminder("completed", updatedAt = now, groupId = "group-1")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(completed.uuId to completed))
+    val ruleRepository = FakeWorkflowRuleRepository(
+      listOf(groupCompletionRule(WorkflowScope.ForGroup("group-1")))
+    )
+    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
+
+    engine.runGroupCompletionRules()
+
+    assertTrue(reminderRepository.saved.getValue("completed").isRemoved)
+  }
+
+  @Test
+  fun `does not archive a group's reminders while one is still active`() = runTest {
+    val completed = completedReminder("completed", updatedAt = now, groupId = "group-1")
+    val active = completed.copy(uuId = "active", isActive = true)
+    val reminderRepository = FakeReminderV2Repository(
+      mutableMapOf(completed.uuId to completed, active.uuId to active)
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(
+      listOf(groupCompletionRule(WorkflowScope.ForGroup("group-1")))
+    )
+    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
+
+    engine.runGroupCompletionRules()
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `skips group-completion rules that are not scoped to a group`() = runTest {
+    val completed = completedReminder("completed", updatedAt = now, groupId = "group-1")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(completed.uuId to completed))
+    val ruleRepository = FakeWorkflowRuleRepository(
+      listOf(groupCompletionRule(WorkflowScope.Global))
+    )
+    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
+
+    engine.runGroupCompletionRules()
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
 }
 
 private object WorkflowRuleFixture {
@@ -121,6 +174,8 @@ private class FakeReminderV2Repository(
     reminders.values.filter { it.isActive == active && it.isRemoved == removed }
   override suspend fun getActiveInRange(removed: Boolean, from: LocalDateTime, to: LocalDateTime): List<ReminderV2> = emptyList()
   override suspend fun getByGroupId(groupId: String): List<ReminderV2> = reminders.values.filter { it.groupId == groupId }
+  override suspend fun countActiveByGroupId(groupId: String): Int =
+    reminders.values.count { it.groupId == groupId && it.isActive && !it.isRemoved }
   override suspend fun getByNoteId(noteId: String): List<ReminderV2> = emptyList()
   override suspend fun search(query: String): List<ReminderV2> = emptyList()
   override suspend fun delete(id: String) { reminders.remove(id) }
@@ -159,6 +214,7 @@ private class FakeWorkflowRuleRepository(
     rules.filter {
       when (triggerType) {
         "REMINDER_AGE_EXCEEDED" -> it.trigger is WorkflowTrigger.ReminderAgeExceeded
+        "GROUP_ALL_COMPLETED" -> it.trigger is WorkflowTrigger.GroupAllCompleted
         else -> false
       }
     }

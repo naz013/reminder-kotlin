@@ -15,7 +15,8 @@ class RunWorkflowRulesTask(
     progress: TaskProgressReporter
   ): TaskResult {
     workflowEngine.runAgeBasedRules()
-    Logger.i(TASK_KEY, "Ran age-based workflow rules.")
+    workflowEngine.runGroupCompletionRules()
+    Logger.i(TASK_KEY, "Ran age-based and group-completion workflow rules.")
     return TaskResult.Success
   }
 

@@ -247,6 +247,8 @@ class ScheduleHomeViewModel(
 
     data object OpenGroups : NavigationEvent
 
+    data object OpenWorkflowGallery : NavigationEvent
+
     data object OpenPrivacy : NavigationEvent
 
     data object OpenCloudDrives : NavigationEvent

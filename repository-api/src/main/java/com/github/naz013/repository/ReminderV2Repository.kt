@@ -16,6 +16,7 @@ interface ReminderV2Repository {
     to: LocalDateTime
   ): List<ReminderV2>
   suspend fun getByGroupId(groupId: String): List<ReminderV2>
+  suspend fun countActiveByGroupId(groupId: String): Int
   suspend fun getByNoteId(noteId: String): List<ReminderV2>
   suspend fun search(query: String): List<ReminderV2>
 

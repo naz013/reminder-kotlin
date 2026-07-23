@@ -948,4 +948,26 @@
     <string name="cd_back">Move back</string>
     <string name="how_to_create_a_reminder">How to Create a Reminder</string>
     <string name="copy_of">"Copy of: %s"</string>
+
+    <string name="workflow_rules">Workflow rules</string>
+    <string name="workflow_automations">Automations</string>
+    <string name="workflow_active_global_rules">Active global rules</string>
+    <string name="workflow_rules_for_group">Rules for this group</string>
+    <string name="workflow_no_rules_yet">No rules yet</string>
+    <string name="workflow_templates">Templates</string>
+    <string name="workflow_apply_globally">Apply globally</string>
+    <string name="workflow_apply_to_group">Apply to group</string>
+    <string name="workflow_open_group_to_apply">Open a group\'s rules to apply this</string>
+    <string name="workflow_save_as_template">Save as template</string>
+    <string name="workflow_create_custom_rule">Create custom rule</string>
+    <string name="workflow_archive_after_days_title">Archive completed reminders after N days</string>
+    <string name="workflow_archive_after_days_hint">Days</string>
+    <string name="workflow_archive_group_on_completion_title">Archive this group once everything in it is completed</string>
+    <string name="workflow_create">Create</string>
+    <string name="workflow_category_reminder_lifecycle">Reminder lifecycle</string>
+    <string name="workflow_category_group">Group</string>
+    <string name="workflow_category_location">Location</string>
+    <string name="workflow_category_notification_escalation">Notification &amp; escalation</string>
+    <string name="workflow_category_system_integration">System integration</string>
+    <string name="workflow_category_privacy_data_hygiene">Privacy &amp; data hygiene</string>
 </resources>

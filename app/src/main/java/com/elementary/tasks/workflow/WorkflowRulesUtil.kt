@@ -63,11 +63,23 @@ class WorkflowRulesUtil(
         )
       )
     )
+    workflowTemplateRepository.save(
+      WorkflowTemplate(
+        id = GROUP_COMPLETE_TEMPLATE_ID,
+        title = "Archive group once everything is completed",
+        description = "Archives every reminder in a group once none of its reminders are still active.",
+        category = WorkflowTemplateCategory.GROUP,
+        supportedScopeTypes = listOf(WorkflowScopeType.GROUP),
+        trigger = WorkflowTrigger.GroupAllCompleted,
+        action = WorkflowAction.ArchiveReminder
+      )
+    )
   }
 
   companion object {
     private const val ARCHIVE_TEMPLATE_ID = "built_in_template_archive_completed_reminders"
     private const val ESCALATE_TEMPLATE_ID = "built_in_template_escalate_on_repeated_snooze"
+    private const val GROUP_COMPLETE_TEMPLATE_ID = "built_in_template_archive_group_on_completion"
     private const val ARCHIVE_AFTER_DAYS = 30
     private const val ESCALATE_AFTER_SNOOZES = 3
   }

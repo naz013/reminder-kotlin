@@ -31,6 +31,7 @@ import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.other.OtherNavKey
+import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.ui.common.Dialogues
 import org.koin.compose.koinInject
@@ -100,6 +101,10 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
 
       is ScheduleHomeViewModel.NavigationEvent.OpenGroups -> {
         appNavBridge.navigate(GroupsNavKey.List)
+      }
+
+      is ScheduleHomeViewModel.NavigationEvent.OpenWorkflowGallery -> {
+        appNavBridge.navigate(WorkflowNavKey.Gallery)
       }
 
       is ScheduleHomeViewModel.NavigationEvent.OpenPrivacy -> {

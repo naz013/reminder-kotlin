@@ -9,6 +9,7 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -21,6 +22,7 @@ class GetNavigationItemsUseCase(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val noteRepository: NoteRepository,
   private val googleTaskRepository: GoogleTaskRepository,
+  private val workflowRuleRepository: WorkflowRuleRepository,
 ) {
   suspend operator fun invoke(
     scope: CoroutineScope,
@@ -32,6 +34,7 @@ class GetNavigationItemsUseCase(
       getNoteItem(scope = scope),
       getGoogleTasksItem(scope = scope),
 //      getGroupItem(scope = scope),
+      getWorkflowItem(scope = scope),
     )
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
@@ -82,6 +85,18 @@ class GetNavigationItemsUseCase(
           color = Color.Green,
           navigationEvent = NavigationEvent.OpenGoogleTasks,
           subtitle = "${googleTaskRepository.countAll()}",
+        )
+      }.await()
+
+  private suspend fun getWorkflowItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.workflow_automations,
+          iconRes = R.drawable.ic_fluent_arrow_repeat_all,
+          color = Color.Green,
+          navigationEvent = NavigationEvent.OpenWorkflowGallery,
+          subtitle = "${workflowRuleRepository.getEnabled().size}",
         )
       }.await()
 
