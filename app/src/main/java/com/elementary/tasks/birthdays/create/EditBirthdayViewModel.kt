@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
@@ -12,6 +13,7 @@ import com.elementary.tasks.core.os.data.ContactData
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -45,6 +47,7 @@ class EditBirthdayViewModel(
   private val uiBirthdayDateFormatter: UiBirthdayDateFormatter,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
   private val saveBirthdayUseCase: SaveBirthdayUseCase,
+  private val textProvider: TextProvider,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EditBirthdayState())
@@ -60,6 +63,15 @@ class EditBirthdayViewModel(
         hasId = key.id.isNullOrEmpty().not()
       )
     }
+  }
+
+  fun onDateClicked() {
+    event.emit(
+      ViewModelEvent.OpenDatePicker(
+        title = textProvider.getString(R.string.select_date),
+        date = _state.value.selectedDate,
+      )
+    )
   }
 
   private fun checkArguments() {
@@ -283,6 +295,11 @@ class EditBirthdayViewModel(
 
   sealed interface ViewModelEvent {
     data object MoveBack : ViewModelEvent
+
+    data class OpenDatePicker(
+      val title: String,
+      val date: LocalDate
+    ) : ViewModelEvent
   }
 
   companion object {

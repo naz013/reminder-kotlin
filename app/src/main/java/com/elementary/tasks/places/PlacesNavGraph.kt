@@ -1,6 +1,5 @@
 package com.elementary.tasks.places
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -9,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
@@ -87,7 +85,7 @@ private fun PlaceEditEntry(
 ) {
   val viewModel = koinViewModel<EditPlaceViewModel> { parametersOf(key) }
   val dialogDispatcher = rememberDialogDispatcher()
-  val context = LocalContext.current
+  val toastDispatcher = rememberToastDispatcher()
 
   var mapController by remember { mutableStateOf<SimpleMapController?>(null) }
 
@@ -96,7 +94,7 @@ private fun PlaceEditEntry(
       EditPlaceViewModel.EditPlaceEvent.MoveBack -> backStack.removeLastOrNull()
 
       EditPlaceViewModel.EditPlaceEvent.NoLocationSelected -> {
-        Toast.makeText(context, R.string.you_dont_select_place, Toast.LENGTH_SHORT).show()
+        toastDispatcher.showToast(messageRes = R.string.you_dont_select_place)
       }
 
       EditPlaceViewModel.EditPlaceEvent.ConfirmDelete -> {

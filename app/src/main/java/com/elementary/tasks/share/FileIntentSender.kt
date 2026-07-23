@@ -15,7 +15,7 @@ interface FileIntentSender {
   fun send(text: String?, file: File)
 }
 
-private class FileIntentSenderImpl(
+class FileIntentSenderImpl(
   private val context: Context,
 ) : FileIntentSender {
   override fun send(text: String?, file: File) {

@@ -9,12 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
-import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.EditBirthdayScreen
 import com.elementary.tasks.birthdays.create.EditBirthdayState
 import com.elementary.tasks.birthdays.create.EditBirthdayViewModel
@@ -23,20 +21,15 @@ import com.elementary.tasks.birthdays.preview.PreviewBirthdayState
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayViewModel
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
-import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.telephony.rememberPhoneCaller
+import com.elementary.tasks.telephony.rememberSmsSender
 import com.github.naz013.common.Permissions
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Contributes the Birthdays island's screens (Nav3 entries) and the routing between them into the
- * app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.birthdaysEntries(backStack: MutableList<NavKey>) {
   entry<BirthdaysNavKey.Preview> { key -> PreviewEntry(key, backStack) }
   entry<BirthdaysNavKey.Edit> { key -> EditEntry(key, backStack) }
@@ -48,12 +41,23 @@ private fun PreviewEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<PreviewBirthdayViewModel> { parametersOf(key.id) }
-  val context = LocalContext.current
+
   val permissionRequester = rememberPermissionRequesterRationale()
+  val phoneCaller = rememberPhoneCaller()
+  val smsSender = rememberSmsSender()
+
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is PreviewBirthdayViewModel.ViewModelEvent.MoveBack -> {
         backStack.removeLastOrNull()
+      }
+
+      is PreviewBirthdayViewModel.ViewModelEvent.MakeCall -> {
+        permissionRequester.request(Permissions.CALL_PHONE, onGranted = { phoneCaller.call(event.number) })
+      }
+
+      is PreviewBirthdayViewModel.ViewModelEvent.SendSms -> {
+        smsSender.send(event.number, null)
       }
     }
   }
@@ -66,15 +70,9 @@ private fun PreviewEntry(
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,
-    onCallClick = {
-      state.birthday?.number?.let { number ->
-        permissionRequester.request(Permissions.CALL_PHONE, onGranted = { TelephonyUtil.makeCall(number, context) })
-      }
-    },
-    onSmsClick = {
-      state.birthday?.number?.let { number -> TelephonyUtil.sendSms(number, context) }
-    },
-    adsContent = { BirthdayAdBanner() },
+    onCallClick = viewModel::onCallClicked,
+    onSmsClick = viewModel::onSmsClicked,
+    adsContent = { if (state.hasAds) BirthdayAdBanner() },
   )
 }
 
@@ -96,11 +94,18 @@ private fun EditEntry(
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is EditBirthdayViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+
+      is EditBirthdayViewModel.ViewModelEvent.OpenDatePicker -> {
+        dateTimePicker.showDatePicker(
+          date = event.date,
+          title = event.title,
+          onDateSelected = { viewModel.onDateChanged(it) },
+        )
+      }
     }
   }
 
   val state by viewModel.state.collectAsState(EditBirthdayState())
-  val selectDateTitle = stringResource(R.string.select_date)
 
   EditBirthdayScreen(
     state = state,
@@ -115,13 +120,7 @@ private fun EditEntry(
     onDeleteMenuClick = viewModel::onDeleteMenuClick,
     onNameChange = viewModel::onNameChanged,
     onYearCheckChanged = viewModel::onYearCheckChanged,
-    onDateFieldClick = {
-      dateTimePicker.showDatePicker(
-        date = state.selectedDate,
-        title = selectDateTitle,
-        onDateSelected = { viewModel.onDateChanged(it) },
-      )
-    },
+    onDateFieldClick = viewModel::onDateClicked,
     onNumberChange = viewModel::onNumberChanged,
     onPickContactClick = pickContact,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
@@ -133,7 +132,6 @@ private fun EditEntry(
 
 @Composable
 private fun BirthdayAdBanner() {
-  if (BuildParams.isPro || !AdsProvider.hasAds()) return
   val context = LocalContext.current
   val adsProvider = remember { AdsProvider() }
   AndroidView(
