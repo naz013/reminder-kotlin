@@ -17,6 +17,7 @@ import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
 import com.github.naz013.repository.impl.RemoteFileMetadataRepositoryImpl
 import com.github.naz013.repository.impl.UsedTimeRepositoryImpl
 import com.github.naz013.repository.impl.WorkflowRuleRepositoryImpl
+import com.github.naz013.repository.impl.WorkflowTemplateRepositoryImpl
 import com.github.naz013.repository.migration.GroupV2BackfillUseCase
 import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
 import com.github.naz013.repository.observer.TableChangeListenerFactory
@@ -74,4 +75,5 @@ val repositoryModule = module {
   factory { EventOccurrenceRepositoryImpl(get<AppDb>().eventOccurrenceDao(), get()) as EventOccurrenceRepository }
   factory { EventHistoryRepositoryImpl(get<AppDb>().eventHistoryDao(), get()) as EventHistoryRepository }
   factory { WorkflowRuleRepositoryImpl(get<AppDb>().workflowRuleDao(), get()) as WorkflowRuleRepository }
+  factory { WorkflowTemplateRepositoryImpl(get<AppDb>().workflowTemplateDao(), get()) as WorkflowTemplateRepository }
 }

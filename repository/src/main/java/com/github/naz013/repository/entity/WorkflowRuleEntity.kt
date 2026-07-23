@@ -19,6 +19,7 @@ internal data class WorkflowRuleEntity(
   @PrimaryKey
   val uuId: String = UUID.randomUUID().toString(),
   val title: String = "",
+  val templateId: String? = null,
   val scopeType: String,
   val scopeId: String? = null,
 

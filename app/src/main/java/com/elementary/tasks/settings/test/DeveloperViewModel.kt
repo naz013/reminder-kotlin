@@ -32,6 +32,7 @@ import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.repository.UsedTimeRepository
 import com.github.naz013.repository.WorkflowRuleRepository
+import com.github.naz013.repository.WorkflowTemplateRepository
 import com.github.naz013.repository.table.Table
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,6 +65,7 @@ class DeveloperViewModel(
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
   private val workflowRuleRepository: WorkflowRuleRepository,
+  private val workflowTemplateRepository: WorkflowTemplateRepository,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val bannersReset: LiveData<Event<Unit>> field = mutableLiveEventOf()
@@ -207,6 +209,7 @@ class DeveloperViewModel(
       Table.ReminderV2 -> reminderV2Repository.deleteAll()
       Table.GroupV2 -> groupV2Repository.deleteAll()
       Table.WorkflowRule -> workflowRuleRepository.deleteAll()
+      Table.WorkflowTemplate -> workflowTemplateRepository.deleteAll()
     }
   }
 

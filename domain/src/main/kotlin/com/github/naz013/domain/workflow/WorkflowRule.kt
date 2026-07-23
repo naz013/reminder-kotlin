@@ -7,6 +7,7 @@ import java.util.UUID
 data class WorkflowRule(
   val uuId: String = UUID.randomUUID().toString(),
   val title: String = "",
+  val templateId: String? = null,
   val scope: WorkflowScope = WorkflowScope.Global,
   val trigger: WorkflowTrigger,
   val action: WorkflowAction,

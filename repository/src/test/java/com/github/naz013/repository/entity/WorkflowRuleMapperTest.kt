@@ -18,6 +18,7 @@ class WorkflowRuleMapperTest {
     val rule = WorkflowRule(
       uuId = "rule-1",
       title = "Archive completed reminders after 30 days",
+      templateId = "template-archive-30",
       scope = WorkflowScope.Global,
       trigger = WorkflowTrigger.ReminderAgeExceeded(days = 30),
       action = WorkflowAction.ArchiveReminder,
