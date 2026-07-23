@@ -23,13 +23,12 @@ class FullScreenSimpleMapViewViewModelTest : BaseTest() {
     )
 
   @Test
-  fun `onCreate loads the reminder into state`() =
+  fun `loads the reminder into state on creation`() =
     runTest {
       val reminder = Reminder(uuId = "42", summary = "Trip", syncState = SyncState.Synced)
       coEvery { getReminderByIdUseCase("42") } returns reminder
-      val viewModel = createViewModel()
 
-      viewModel.onCreate(mockk(relaxed = true))
+      val viewModel = createViewModel()
 
       assertEquals("Trip", viewModel.reminder.value?.summary)
     }
@@ -38,9 +37,8 @@ class FullScreenSimpleMapViewViewModelTest : BaseTest() {
   fun `state stays null when the reminder is not found`() =
     runTest {
       coEvery { getReminderByIdUseCase("42") } returns null
-      val viewModel = createViewModel()
 
-      viewModel.onCreate(mockk(relaxed = true))
+      val viewModel = createViewModel()
 
       assertNull(viewModel.reminder.value)
     }
