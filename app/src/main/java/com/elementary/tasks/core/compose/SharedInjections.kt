@@ -4,8 +4,6 @@ import androidx.compose.runtime.Composable
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.datetime.DateTimeManager
 import org.koin.compose.koinInject
@@ -23,13 +21,7 @@ fun rememberPrefs(): Prefs = koinInject()
 fun rememberDateTimeManager(): DateTimeManager = koinInject()
 
 @Composable
-fun rememberAnalyticsEventSender(): AnalyticsEventSender = koinInject()
-
-@Composable
 fun rememberFeatureManager(): FeatureManager = koinInject()
-
-@Composable
-fun rememberAppWidgetUpdater(): AppWidgetUpdater = koinInject()
 
 @Composable
 fun rememberGoogleCalendarUtils(): GoogleCalendarUtils = koinInject()

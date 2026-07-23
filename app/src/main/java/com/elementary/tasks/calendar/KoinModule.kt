@@ -18,22 +18,22 @@ import com.elementary.tasks.calendar.occurrence.worker.CalculateBirthdayOccurren
 import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesTask
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.threeten.bp.LocalDate
 
 val calendarModule =
   module {
     factory { WeekFactory(get(), get(), get()) }
     factory { WeekHeaderController(get()) }
 
-    viewModel { (date: LocalDate) -> WeekViewViewModel(date, get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { (dateMillis: Long) -> WeekViewViewModel(dateMillis, get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
     factory { GetDayEventItemsUseCase(get(), get(), get(), get(), get(), get(), get()) }
 
     factory { MonthGridFactory(get()) }
     factory { LoadMonthEventsUseCase(get(), get(), get(), get(), get()) }
-    viewModel { CalendarViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModelOf(::CalendarViewModel)
 
     factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get()) }
     factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get(), get()) }

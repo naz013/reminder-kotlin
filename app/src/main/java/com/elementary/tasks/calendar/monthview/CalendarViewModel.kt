@@ -2,15 +2,18 @@ package com.elementary.tasks.calendar.monthview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.elementary.tasks.R
 import com.elementary.tasks.calendar.monthview.monthgrid.MonthGridCell
 import com.elementary.tasks.calendar.monthview.monthgrid.MonthGridFactory
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +21,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class CalendarViewModel(
   private val dispatcherProvider: DispatcherProvider,
@@ -26,6 +31,7 @@ class CalendarViewModel(
   private val monthGridFactory: MonthGridFactory,
   private val loadMonthEventsUseCase: LoadMonthEventsUseCase,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val textProvider: TextProvider,
 ) : ViewModel() {
 
   val state: StateFlow<CalendarScreenState> field = MutableStateFlow(CalendarScreenState())
@@ -85,11 +91,13 @@ class CalendarViewModel(
   }
 
   fun onDayClick(date: LocalDate) {
-    navigationEvent.value = Event(NavigationEvent.OpenDayView(date))
+    val millis = dateTimeManager.toMillis(LocalDateTime.of(date, LocalTime.now()))
+    navigationEvent.value = Event(NavigationEvent.OpenDayView(millis))
   }
 
   fun onAddReminderClick(date: LocalDate) {
-    navigationEvent.value = Event(NavigationEvent.OpenNewReminder(date))
+    val millis = dateTimeManager.toMillis(LocalDateTime.of(date, LocalTime.now()))
+    navigationEvent.value = Event(NavigationEvent.OpenNewReminder(millis))
   }
 
   fun onAddBirthdayClick(date: LocalDate) {
@@ -97,7 +105,7 @@ class CalendarViewModel(
   }
 
   fun onSettingsClick() {
-    navigationEvent.value = Event(NavigationEvent.OpenSettings)
+    navigationEvent.emit(NavigationEvent.OpenSettings(textProvider.getString(R.string.action_settings)))
   }
 
   private fun applyMonth(monthDate: LocalDate) {
@@ -107,18 +115,20 @@ class CalendarViewModel(
 
   sealed interface NavigationEvent {
     data class OpenDayView(
-      val date: LocalDate,
+      val dateMillis: Long,
     ) : NavigationEvent
 
     data class OpenNewReminder(
-      val date: LocalDate,
+      val dateMillis: Long,
     ) : NavigationEvent
 
     data class OpenNewBirthday(
       val date: LocalDate,
     ) : NavigationEvent
 
-    data object OpenSettings : NavigationEvent
+    data class OpenSettings(
+      val screenTitle: String,
+    ) : NavigationEvent
   }
 
   companion object {
