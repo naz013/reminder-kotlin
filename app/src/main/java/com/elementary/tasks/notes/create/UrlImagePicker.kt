@@ -16,13 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
 
-/**
- * Compose replacement for [PhotoSelectionUtil]'s
- * clipboard/URL-entry flow: reads the clipboard for a pasted image URL (offering to download it
- * directly) or falls back to a manual URL text field. Needs no Fragment/Activity reference — the
- * actual download itself is the caller's (ViewModel's) responsibility, invoked via
- * [UrlImagePickerDialogs]'s `onUrlConfirmed`.
- */
 @Stable
 class UrlImagePickerState internal constructor() {
   internal var clipboardUrl: String? by mutableStateOf(null)

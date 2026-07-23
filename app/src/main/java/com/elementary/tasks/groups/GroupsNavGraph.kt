@@ -20,11 +20,6 @@ import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispa
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Contributes the Groups island's screens (Nav3 entries) and the routing between them into the
- * app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.groupsEntries(backStack: MutableList<NavKey>) {
   entry<GroupsNavKey.List> { GroupsListEntry(backStack) }
   entry<GroupsNavKey.Edit> { key -> GroupsEditEntry(key, backStack) }

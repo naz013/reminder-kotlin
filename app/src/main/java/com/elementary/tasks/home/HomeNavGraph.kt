@@ -34,12 +34,6 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the Home island's screen (Nav3 entry) into the app's single, shared
- * [androidx.navigation3.ui.NavDisplay] (see [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- * [HomeNavKey.Main] is the graph's own start destination - the `LegacyHomeNavKey`/`home_nav.xml`
- * shim no longer occupies that role once Home is promoted.
- */
 fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
   entry<HomeNavKey.Main> { HomeEntry(backStack) }
   entry<HomeNavKey.Events> { EventsEntry(backStack) }

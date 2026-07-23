@@ -50,12 +50,6 @@ import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispa
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Contributes the reminder builder island's screens (Nav3 entries) and the routing between them
- * into the app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]). Main, Configure, Help and RecurHelp each own
- * their own Material 3 Scaffold/TopAppBar - no shared chrome, matching every other promoted island.
- */
 fun EntryProviderScope<NavKey>.buildReminderEntries(backStack: MutableList<NavKey>) {
   entry<BuildReminderNavKey.Main> { key -> MainEntry(key, backStack) }
   entry<BuildReminderNavKey.Configure> { ConfigureEntry(backStack) }

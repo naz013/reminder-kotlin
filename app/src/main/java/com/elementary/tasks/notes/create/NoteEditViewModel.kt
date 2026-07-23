@@ -51,6 +51,7 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -113,7 +114,7 @@ class NoteEditViewModel(
   private val _textUpdate = mutableLiveDataOf<Event<TextUpdate>>()
   val textUpdate = _textUpdate.toLiveData()
 
-  val event: LiveData<Event<Action>> field = mutableLiveEventOf()
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
   init {
     val colorCode = noteColorEngine.getColorCode(
@@ -159,6 +160,24 @@ class NoteEditViewModel(
     onNewDate(LocalDate.now())
 
     load()
+  }
+
+  fun onDateClicked() {
+    event.emit(
+      ViewModelEvent.ShowDatePicker(
+        date = _state.value.date,
+        title = textProvider.getString(R.string.select_date),
+      )
+    )
+  }
+
+  fun onTimeClicked() {
+    event.emit(
+      ViewModelEvent.ShowTimePicker(
+        time = _state.value.time,
+        title = textProvider.getString(R.string.select_time),
+      )
+    )
   }
 
   fun onColorSelected(index: Int) {
@@ -248,7 +267,7 @@ class NoteEditViewModel(
       images = s.images,
       backgroundColor = s.noteColors.background,
     )
-    event.value = Event(Action.OpenImagePreview(position))
+    event.value = Event(ViewModelEvent.OpenImagePreview(position))
   }
 
   fun onDeleteRequested() {
@@ -309,17 +328,19 @@ class NoteEditViewModel(
       Logger.i(TAG, "Share note file path: ${file?.absolutePath}")
       withContext(dispatcherProvider.main()) {
         if (file != null) {
-          event.value =
-            Event(
-              Action.ShareNote(
-                text =
-                  _state.value.textFieldValue.text
-                    .trim(),
+          if (file.exists() && file.canRead()) {
+            event.emit(
+              ViewModelEvent.ShareNote(
+                text = _state.value.textFieldValue.text.trim(),
                 file = file,
-              ),
+              )
             )
+          } else {
+            event.emit(ViewModelEvent.Error(textProvider.getText(R.string.error_sending)))
+          }
+
         } else {
-          event.value = Event(Action.Error(textProvider.getText(R.string.error_sending)))
+          event.emit(ViewModelEvent.Error(textProvider.getText(R.string.error_sending)))
         }
       }
     }
@@ -501,7 +522,7 @@ class NoteEditViewModel(
    *  the previous Fragment-based `PhotoSelectionUtil.downloadUrl`. */
   fun downloadImageFromUrl(url: String) {
     if (!Patterns.WEB_URL.matcher(url).matches()) {
-      event.value = Event(Action.Error(textProvider.getText(R.string.wrong_url)))
+      event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.wrong_url)))
       return
     }
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -511,7 +532,7 @@ class NoteEditViewModel(
         addBitmap(bitmap)
       } else {
         withContext(dispatcherProvider.main()) {
-          event.value = Event(Action.Error(textProvider.getText(R.string.failed_to_download)))
+          event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.failed_to_download)))
         }
       }
     }
@@ -552,7 +573,7 @@ class NoteEditViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       noteRepository.getById(id) ?: run {
         withContext(dispatcherProvider.main()) {
-          event.value = Event(Action.Error(textProvider.getText(R.string.default_error_msg)))
+          event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.default_error_msg)))
         }
         return@launch
       }
@@ -562,7 +583,7 @@ class NoteEditViewModel(
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
         appWidgetUpdater.updateAllWidgets()
-        event.value = Event(Action.Finish)
+        event.value = Event(ViewModelEvent.MoveBack)
       }
     }
   }
@@ -607,7 +628,7 @@ class NoteEditViewModel(
 
       if (result.unsupportedCount > 0) {
         withContext(dispatcherProvider.main()) {
-          event.value = Event(Action.Error(textProvider.getText(R.string.unsupported_file_format)))
+          event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.unsupported_file_format)))
         }
       }
     }
@@ -665,7 +686,7 @@ class NoteEditViewModel(
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
         appWidgetUpdater.updateAllWidgets()
-        event.value = Event(Action.Finish)
+        event.value = Event(ViewModelEvent.MoveBack)
       }
     }
   }
@@ -702,7 +723,7 @@ class NoteEditViewModel(
 
     val startTime = LocalDateTime.of(_state.value.date, _state.value.time)
     if (!dateTimeManager.isCurrent(startTime)) {
-      event.value = Event(Action.Error(textProvider.getText(R.string.reminder_is_outdated)))
+      event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.reminder_is_outdated)))
       return null
     }
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
@@ -759,21 +780,31 @@ class NoteEditViewModel(
     }
   }
 
-  sealed interface Action {
+  sealed interface ViewModelEvent {
     data class OpenImagePreview(
       val position: Int,
-    ) : Action
+    ) : ViewModelEvent
 
     data class Error(
       val message: String,
-    ) : Action
+    ) : ViewModelEvent
 
-    data object Finish : Action
+    data object MoveBack : ViewModelEvent
 
     data class ShareNote(
       val text: String,
       val file: File,
-    ) : Action
+    ) : ViewModelEvent
+
+    data class ShowDatePicker(
+      val date: LocalDate,
+      val title: String,
+    ) : ViewModelEvent
+
+    data class ShowTimePicker(
+      val time: LocalTime,
+      val title: String,
+    ) : ViewModelEvent
   }
 
   companion object {

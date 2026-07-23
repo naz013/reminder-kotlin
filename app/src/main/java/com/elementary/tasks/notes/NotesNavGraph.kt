@@ -1,7 +1,6 @@
 package com.elementary.tasks.notes
 
 import android.widget.FrameLayout
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.SnackbarHostState
@@ -10,10 +9,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -28,7 +25,6 @@ import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
 import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
-import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.elementary.tasks.notes.create.EditTab
 import com.elementary.tasks.notes.create.NoteEditActions
 import com.elementary.tasks.notes.create.NoteEditScreen
@@ -52,17 +48,9 @@ import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.ToastDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Contributes the Notes island's screens (Nav3 entries) and the routing between them into the
- * app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]). None of these entries depend on a Fragment
- * beyond what Compose itself exposes ([LocalActivity]) plus [AppNavBridge] for the handful of
- * destinations (Settings, the reminder builder) not yet promoted out of the legacy Fragment graph.
- */
 fun EntryProviderScope<NavKey>.notesEntries(backStack: MutableList<NavKey>) {
   entry<NotesNavKey.List> { NotesListEntry(backStack) }
   entry<NotesNavKey.Archive> { NotesArchiveEntry(backStack) }
@@ -261,7 +249,6 @@ private fun NotePreviewEntry(
   }
 
   val state by viewModel.state.collectAsState(PreviewNoteState())
-
   PreviewNoteScreen(
     state = state,
     actions =
@@ -292,14 +279,20 @@ private fun NoteEditEntry(
   key: NotesNavKey.Edit,
   backStack: MutableList<NavKey>,
 ) {
-  val viewModel =
-    koinViewModel<NoteEditViewModel> {
-      parametersOf(key.id, key.sharedText, key.sharedImageUris, key.fromIntentData)
-    }
+  val viewModel = koinViewModel<NoteEditViewModel> {
+    parametersOf(key.id, key.sharedText, key.sharedImageUris, key.fromIntentData)
+  }
 
+  val toastDispatcher = rememberToastDispatcher()
   val noteIntentSender = rememberNoteIntentSender()
-
   val context = LocalContext.current
+  val galleryPicker = rememberGalleryPicker { uris -> viewModel.addMultiple(uris) }
+  val cameraPicker = rememberCameraPicker { uri -> viewModel.addMultiple(listOf(uri)) }
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val dateTimePicker = rememberDateTimePicker()
+  val urlImagePickerState = rememberUrlImagePickerState()
+  UrlImagePickerDialogs(urlImagePickerState, onUrlConfirmed = viewModel::downloadImageFromUrl)
+
   val speechEngine = remember(viewModel) { SpeechEngine(context) }
   val speechCallback =
     remember(viewModel) {
@@ -342,49 +335,45 @@ private fun NoteEditEntry(
     onDispose { speechEngine.stopListening() }
   }
   viewModel.textUpdate.ObserveEvent { update -> speechEngine.setText(update.text) }
-
-  val snackbarHostState = remember { SnackbarHostState() }
-  val scope = rememberCoroutineScope()
-  val errorSendingMessage = stringResource(R.string.error_sending)
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      is NoteEditViewModel.Action.Finish -> {
+      is NoteEditViewModel.ViewModelEvent.MoveBack -> {
         backStack.removeLastOrNull()
       }
-      is NoteEditViewModel.Action.Error -> {
-        scope.launch { snackbarHostState.showSnackbar(event.message) }
+
+      is NoteEditViewModel.ViewModelEvent.Error -> {
+        toastDispatcher.showToast(message = event.message)
       }
-      is NoteEditViewModel.Action.OpenImagePreview -> {
+
+      is NoteEditViewModel.ViewModelEvent.OpenImagePreview -> {
         backStack.add(NotesNavKey.ImagePreview(event.position))
       }
-      is NoteEditViewModel.Action.ShareNote -> {
-        if (event.file.exists() && event.file.canRead()) {
-          noteIntentSender.send(event.text, event.file)
-        } else {
-          scope.launch { snackbarHostState.showSnackbar(errorSendingMessage) }
-        }
+
+      is NoteEditViewModel.ViewModelEvent.ShareNote -> {
+        noteIntentSender.send(event.text, event.file)
+      }
+
+      is NoteEditViewModel.ViewModelEvent.ShowDatePicker -> {
+        dateTimePicker.showDatePicker(event.date, event.title, viewModel::onNewDate)
+      }
+
+      is NoteEditViewModel.ViewModelEvent.ShowTimePicker -> {
+        dateTimePicker.showTimePicker(
+          time = event.time,
+          title = event.title,
+          is24Hour = viewModel.is24HourFormat,
+          onTimeSelected = viewModel::onNewTime
+        )
       }
     }
   }
 
   val state by viewModel.state.collectAsState()
-
-  val galleryPicker = rememberGalleryPicker { uris -> viewModel.addMultiple(uris) }
-  val cameraPicker = rememberCameraPicker { uri -> viewModel.addMultiple(listOf(uri)) }
-  val permissionRequester = rememberPermissionRequesterRationale()
-  val dateTimePicker = rememberDateTimePicker()
-  val urlImagePickerState = rememberUrlImagePickerState()
-  val selectDateTitle = stringResource(R.string.select_date)
-  val selectTimeTitle = stringResource(R.string.select_time)
-
-  UrlImagePickerDialogs(urlImagePickerState, onUrlConfirmed = viewModel::downloadImageFromUrl)
-
   NoteEditScreen(
     state = state,
     supportsSpeech = remember { speechEngine.supportsRecognition() },
     onTextFieldValueChange = viewModel::onTextFieldValueChange,
     onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
-    snackbarHostState = snackbarHostState,
     actions =
       NoteEditActions(
         onBackClick = { backStack.removeLastOrNull() },
@@ -422,17 +411,8 @@ private fun NoteEditEntry(
         onColorSelected = viewModel::onColorSelected,
         onOpacityChanged = viewModel::onOpacityChanged,
         onReminderAttachedChanged = viewModel::onReminderAttachedChanged,
-        onDateClick = {
-          dateTimePicker.showDatePicker(state.date, selectDateTitle, viewModel::onNewDate)
-        },
-        onTimeClick = {
-          dateTimePicker.showTimePicker(
-            time = state.time,
-            title = selectTimeTitle,
-            is24Hour = viewModel.is24HourFormat,
-            onTimeSelected = viewModel::onNewTime
-          )
-        },
+        onDateClick = viewModel::onDateClicked,
+        onTimeClick = viewModel::onTimeClicked,
         onFontSizeChanged = viewModel::onFontSizeChanged,
         onFieldFocused = viewModel::onFieldFocused,
         onImageOpen = { position -> viewModel.onImageOpen(position) },
