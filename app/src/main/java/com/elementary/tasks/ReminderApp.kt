@@ -32,6 +32,7 @@ import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.settings.export.syncSettingsModule
 import com.elementary.tasks.settings.settingsModule
+import com.elementary.tasks.workflow.workflowModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
@@ -150,6 +151,7 @@ class ReminderApp :
           eventActionModule,
           legalModule,
           workModule,
+          workflowModule,
         ),
       )
     }

@@ -10,6 +10,7 @@ enum class Table(val tableName: String) {
   Reminder("Reminder"),
   ReminderV2("ReminderV2"),
   GroupV2("GroupV2"),
+  WorkflowRule("WorkflowRule"),
   Place("Place"),
   Note("Note"),
   ImageFile("ImageFile"),
