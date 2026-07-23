@@ -74,7 +74,7 @@ class GetDayEventItemsUseCase(
       secondaryText = uiReminderList.secondaryText,
       tertiaryText = uiReminderList.tertiaryText,
       tags = uiReminderList.tags,
-      actions = uiReminderList.actions,
+      actions = uiReminderList.actions.copy(canSkip = false),
       state = uiReminderList.state,
     )
   }

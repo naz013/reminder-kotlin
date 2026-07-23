@@ -27,7 +27,7 @@ val calendarModule =
     factory { WeekFactory(get(), get(), get()) }
     factory { WeekHeaderController(get()) }
 
-    viewModel { (dateMillis: Long) -> WeekViewViewModel(dateMillis, get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { (dateMillis: Long) -> WeekViewViewModel(dateMillis, get(), get(), get(), get(), get(), get(), get(), get()) }
 
     factory { GetDayEventItemsUseCase(get(), get(), get(), get(), get(), get(), get()) }
 

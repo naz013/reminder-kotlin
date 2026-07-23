@@ -37,7 +37,6 @@ class WeekViewViewModel(
   private val getDayEventItemsUseCase: GetDayEventItemsUseCase,
   private val reminderRepository: ReminderRepository,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
-  private val skipReminderUseCase: SkipReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
 ) : ViewModel() {
@@ -50,8 +49,6 @@ class WeekViewViewModel(
   val initDate: LocalDate = startDate
   var lastPosition: Int = CENTER_POSITION
     private set
-
-  private var hasResumedBefore = false
 
   init {
     refreshSignal.update { it + 1 }
@@ -122,7 +119,7 @@ class WeekViewViewModel(
       EventMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
       EventMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenReminderEdit(item.id))
       EventMenuAction.ARCHIVE -> navigationEvent.value = Event(NavigationEvent.ConfirmArchiveReminder(item.id))
-      EventMenuAction.SKIP -> skipReminder(item.id)
+      EventMenuAction.SKIP -> Unit
       EventMenuAction.TURN_OFF -> onToggleReminder(item)
       EventMenuAction.DELETE -> Unit
     }
@@ -153,17 +150,6 @@ class WeekViewViewModel(
       withContext(dispatcherProvider.io()) {
         reminderRepository.getById(id)?.let {
           toggleReminderStateUseCase(it)
-        }
-      }
-      refreshSignal.update { it + 1 }
-    }
-  }
-
-  fun skipReminder(id: String) {
-    viewModelScope.launch(dispatcherProvider.main()) {
-      withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)?.let {
-          skipReminderUseCase(it)
         }
       }
       refreshSignal.update { it + 1 }
