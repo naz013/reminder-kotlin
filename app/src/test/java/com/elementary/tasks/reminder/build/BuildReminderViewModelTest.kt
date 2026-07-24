@@ -42,6 +42,8 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.migration.toReminderV2
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.icalendar.ICalendarApi
@@ -121,8 +123,11 @@ class BuildReminderViewModelTest : BaseTest() {
     // harmless success so individual tests only need to override it when they care.
     every { permissionValidator(any()) } returns PermissionValidator.Result.Success
     every { biToReminderAdapter(any(), any(), any()) } returns
-      BiToReminderAdapter.BuildResult.Success(Reminder(syncState = SyncState.Synced))
+      BiToReminderAdapter.BuildResult.Success(reminderV2Fixture())
   }
+
+  private fun reminderV2Fixture(uuId: String = "v2") =
+    ReminderV2(uuId = uuId, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 
   private fun summaryItem(title: String = "s") = SummaryBuilderItem(title = title, description = null)
 
@@ -354,15 +359,43 @@ class BuildReminderViewModelTest : BaseTest() {
   @Test
   fun `saveReminder activates the reminder and posts MoveBack on success`() =
     runTest {
-      val built = Reminder(uuId = "new", syncState = SyncState.Synced)
+      val built = reminderV2Fixture(uuId = "new")
       every { biToReminderAdapter(any(), any(), any()) } returns
         BiToReminderAdapter.BuildResult.Success(built)
       val viewModel = createViewModel()
 
       viewModel.saveReminder(newId = false)
 
-      coVerify(exactly = 1) { activateReminderUseCase(built, startAnyway = true) }
+      coVerify(exactly = 1) { activateReminderUseCase(match { it.uuId == "new" }, startAnyway = true) }
       assertEquals(BuildReminderViewModel.ViewModelEvent.MoveBack, viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `saveReminder with newId regenerates the uuId instead of reusing the built one`() =
+    runTest {
+      val built = reminderV2Fixture(uuId = "duplicate-source-id")
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(built)
+      val viewModel = createViewModel()
+
+      viewModel.saveReminder(newId = true)
+
+      coVerify(exactly = 1) {
+        activateReminderUseCase(match { it.uuId.isNotEmpty() && it.uuId != "duplicate-source-id" }, startAnyway = true)
+      }
+    }
+
+  @Test
+  fun `saveReminder without newId keeps the built uuId`() =
+    runTest {
+      val built = reminderV2Fixture(uuId = "kept-id")
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(built)
+      val viewModel = createViewModel()
+
+      viewModel.saveReminder(newId = false)
+
+      coVerify(exactly = 1) { activateReminderUseCase(match { it.uuId == "kept-id" }, startAnyway = true) }
     }
 
   @Test
@@ -662,7 +695,7 @@ class BuildReminderViewModelTest : BaseTest() {
       coEvery { reminderRepository.getById("42") } returns reminder
       coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       every { biToReminderAdapter(any(), any(), any()) } returns
-        BiToReminderAdapter.BuildResult.Success(reminder)
+        BiToReminderAdapter.BuildResult.Success(reminderV2Fixture(uuId = "42"))
       val viewModel = createViewModel(initialId = "42")
       viewModel.saveReminder(newId = false)
       val store = ViewModelStore()

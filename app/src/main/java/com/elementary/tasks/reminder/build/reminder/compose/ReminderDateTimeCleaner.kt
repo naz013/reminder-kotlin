@@ -4,6 +4,9 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
 
+/** Standalone legacy-data repair utility for [MigrateRecurringParamsUseCase][com.elementary.tasks.reminder.scheduling.usecase.legacy.MigrateRecurringParamsUseCase] -
+ * scrubs stale cross-type fields left over on old V1 [Reminder] rows. Unrelated to the builder's
+ * compose pipeline (Phase B3 replaced that role with an immutable reset-to-blank). */
 class ReminderDateTimeCleaner {
   operator fun invoke(reminder: Reminder) {
     val type = UiReminderType(reminder.type)

@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.validation
 
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 
 class ReminderValidator(
@@ -8,7 +8,7 @@ class ReminderValidator(
   private val subTasksValidator: SubTasksValidator,
   private val eventTimeValidator: EventTimeValidator,
 ) {
-  operator fun invoke(reminder: Reminder): ValidationResult {
+  operator fun invoke(reminder: ReminderV2): ValidationResult {
     if (!targetValidator(reminder)) {
       Logger.e(TAG, "Reminder target is not valid")
       return ValidationResult.Failed(ValidationError.TARGET)

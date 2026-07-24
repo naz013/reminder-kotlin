@@ -50,7 +50,9 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.migration.toReminder
 import com.github.naz013.domain.reminder.migration.toReminderV2
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -141,6 +143,7 @@ class BuildReminderViewModel(
   private var isPaused: Boolean = false
   private var isSaving: Boolean = false
   private var original: Reminder? = null
+  private var originalV2: ReminderV2? = null
   private var isFromFile: Boolean = false
 
   private var requestedNewId = false
@@ -250,17 +253,21 @@ class BuildReminderViewModel(
         }
       }
 
-      val reminder = original ?: Reminder()
-      when (val buildResult = biToReminderAdapter(reminder, builderItems, isEdited)) {
+      val baseV2 = originalV2 ?: newBlankReminderV2()
+      when (val buildResult = biToReminderAdapter(baseV2, builderItems, isEdited)) {
         is BiToReminderAdapter.BuildResult.Success -> {
           Logger.i(TAG, "Reminder build success")
 
-          if (newId) {
-            reminder.uuId = UUID.randomUUID().toString()
-          }
+          val finalV2 =
+            if (newId) {
+              buildResult.reminderV2.copy(uuId = UUID.randomUUID().toString())
+            } else {
+              buildResult.reminderV2
+            }
+          val reminder = finalV2.toReminder().apply { jsonSchemaVersion = Reminder.Version.V3 }
 
           isSaving = true
-          saveAndStartReminder(buildResult.reminder, isEdit = isEdited)
+          saveAndStartReminder(reminder, isEdit = isEdited)
 
           if (_state.value.saveAsPresetChecked && _state.value.presetName.isNotEmpty()) {
             savePreset(builderItems)
@@ -552,9 +559,9 @@ class BuildReminderViewModel(
     }
   }
 
-  /** [reminder] (V1) is kept as [original] purely for the save path - the composer
-   * (`BiToReminderAdapter`) still builds/persists a V1 `Reminder` (Phase B3 will retarget it).
-   * [reminderV2] drives everything the user actually edits. */
+  /** [reminder] (V1) is kept as [original] for the action handlers (snooze/pause/resume/delete/
+   * archive), which still operate on V1 `Reminder`. [reminderV2] drives everything the user
+   * actually edits, including the save path via [BiToReminderAdapter]. */
   private suspend fun editReminder(
     reminderV2: ReminderV2,
     reminder: Reminder,
@@ -563,6 +570,7 @@ class BuildReminderViewModel(
 
     isEdited = true
     original = reminder
+    originalV2 = reminderV2
 
     if (isFromFile) {
       findSame(reminder.uuId)
@@ -787,12 +795,12 @@ class BuildReminderViewModel(
       return
     }
 
-    val reminder = Reminder()
-    when (val buildResult = biToReminderAdapter(reminder, builderItems, false)) {
+    val baseV2 = originalV2 ?: newBlankReminderV2()
+    when (val buildResult = biToReminderAdapter(baseV2, builderItems, false)) {
       is BiToReminderAdapter.BuildResult.Success -> {
         _state.update {
           it.copy(
-            prediction = reminderPredictionCalculator(reminder),
+            prediction = reminderPredictionCalculator(buildResult.reminderV2),
             canSaveAsPreset = true,
             canSave = true,
           )
@@ -805,7 +813,7 @@ class BuildReminderViewModel(
             prediction =
               ReminderPrediction.FailedPrediction(
                 icon = R.drawable.ic_fluent_error_circle,
-                message = builderErrorToTextAdapter(builderErrorFinder(reminder, builderItems)),
+                message = builderErrorToTextAdapter(builderErrorFinder(baseV2, builderItems)),
               ),
             canSaveAsPreset = false,
             canSave = false,
@@ -815,6 +823,9 @@ class BuildReminderViewModel(
       }
     }
   }
+
+  private fun newBlankReminderV2(): ReminderV2 =
+    ReminderV2(schedule = ReminderSchedule(startDateTime = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime())))
 
   private fun getGroupBuilderItem(): GroupBuilderItem? =
     builderItemsLogic

@@ -342,6 +342,7 @@ class BiFactory(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_add_list_of_subtasks_to_the_reminder),
           shopItemsFormatter = ShopItemsFormatter(context),
+          dateTimeManager = dateTimeManager,
         )
       }
 

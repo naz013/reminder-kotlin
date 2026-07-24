@@ -41,12 +41,10 @@ import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.BiTypeToBiValue
 import com.elementary.tasks.reminder.build.reminder.ICalDateTimeCalculator
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
-import com.elementary.tasks.reminder.build.reminder.compose.ActionCalculator
-import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
-import com.elementary.tasks.reminder.build.reminder.compose.EditedReminderDataCleaner
-import com.elementary.tasks.reminder.build.reminder.compose.ICalDateTimeInjector
+import com.elementary.tasks.reminder.build.reminder.compose.CalendarExportCalculator
+import com.elementary.tasks.reminder.build.reminder.compose.ReminderActionCalculator
+import com.elementary.tasks.reminder.build.reminder.compose.RecurrenceRuleCalculator
 import com.elementary.tasks.reminder.build.reminder.compose.ReminderDateTimeCleaner
-import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
 import com.elementary.tasks.reminder.build.reminder.decompose.ActionDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ByDateDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ByDayOfMonthDecomposer
@@ -255,12 +253,13 @@ val reminderModule =
     factory { BuilderItemRequiresAnyConstraintCalculator() }
 
     factory { BuilderStateCalculator() }
-    factory { TypeCalculator(get()) }
-    factory { ActionCalculator() }
+    factory { RecurrenceRuleCalculator(get(), get()) }
+    factory { ReminderActionCalculator() }
+    factory { CalendarExportCalculator() }
 
-    factory { BiToReminderAdapter(get(), get(), get(), get(), get(), get()) }
+    factory { BiToReminderAdapter(get(), get(), get(), get(), get()) }
 
-    factory { BuilderErrorFinder(get(), get(), get(), get(), get()) }
+    factory { BuilderErrorFinder(get(), get(), get(), get()) }
     factory { BuilderErrorToTextAdapter(get(), get()) }
 
     factory { RecurParamsToBiAdapter(get()) }
@@ -273,11 +272,7 @@ val reminderModule =
     factory { PermissionValidator(get()) }
 
     factory { ICalDateTimeCalculator(get(), get()) }
-
-    factory { DateTimeInjector(get(), get(), get()) }
-    factory { ICalDateTimeInjector(get(), get()) }
     factory { ReminderDateTimeCleaner() }
-    factory { EditedReminderDataCleaner() }
 
     factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get()) }
 
