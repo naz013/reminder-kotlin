@@ -613,11 +613,7 @@ class BuildReminderViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onCleared attempts to resume the reminder when paused, but viewModelScope is already dead`() {
-    // BUG (see task flagged separately): onCleared() calls resumeReminder(), which launches on
-    // viewModelScope - but AndroidX ViewModel.clear() cancels viewModelScope's Job BEFORE
-    // invoking onCleared(), so this launch{} body never actually runs. This test documents the
-    // current (broken) behavior rather than the intended one.
+  fun `onCleared resumes the reminder when it was paused and not saving`() {
     val reminder = Reminder(uuId = "42", syncState = SyncState.Synced)
     coEvery { reminderRepository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem())
@@ -627,7 +623,7 @@ class BuildReminderViewModelTest : BaseTest() {
 
     store.clear()
 
-    coVerify(exactly = 0) { resumeReminderUseCase(reminder) }
+    coVerify(exactly = 1) { resumeReminderUseCase(reminder) }
   }
 
   @Test

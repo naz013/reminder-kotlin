@@ -67,6 +67,8 @@ import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.sync.DataType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -139,6 +141,11 @@ class BuildReminderViewModel(
 
   private var requestedNewId = false
   private var requestedPermissionsFor: Pair<Int, BuilderItem<*>>? = null
+
+  /** For [resumeReminder], which onCleared() calls after AndroidX has already cancelled
+   *  [viewModelScope]'s Job as part of clearing this ViewModel - launching there would create a
+   *  coroutine that never runs its body, silently leaving a paused reminder inactive forever. */
+  private val cleanupScope = CoroutineScope(SupervisorJob() + dispatcherProvider.default())
 
   init {
     _state.update {
@@ -886,7 +893,7 @@ class BuildReminderViewModel(
 
   private fun resumeReminder(reminder: Reminder) {
     Logger.i(TAG, "Resume reminder, id = ${reminder.uuId}")
-    viewModelScope.launch(dispatcherProvider.default()) {
+    cleanupScope.launch {
       isPaused = false
       resumeReminderUseCase(reminder)
     }
