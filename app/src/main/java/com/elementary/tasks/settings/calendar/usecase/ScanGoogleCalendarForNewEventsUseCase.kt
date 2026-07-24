@@ -12,7 +12,7 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import kotlinx.coroutines.withContext
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
@@ -24,7 +24,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val dateTimeManager: DateTimeManager,
   private val calendarEventRepository: CalendarEventRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val dispatcherProvider: DispatcherProvider,
@@ -59,7 +59,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
     val alreadyImportedIds = calendarEventRepository.eventIds()
     val newEvents = events.filterNot { alreadyImportedIds.contains(it.id) }
 
-    val groupId = reminderGroupRepository.defaultGroup()?.groupUuId ?: ""
+    val groupId = groupV2Repository.defaultGroup()?.uuId ?: ""
     Logger.i(TAG, "Using reminder group ID: $groupId")
 
     for (item in newEvents) {

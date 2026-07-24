@@ -20,9 +20,11 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 
 /**
- * One-time V1 -> V2 backfill mapper. Not part of ReminderV2's steady-state entity<->domain
- * mapping (see [com.github.naz013.repository.entity.toEntity]/[com.github.naz013.repository.entity.toDomain]),
- * kept separate so it can be deleted wholesale once the backfill is no longer needed.
+ * V1 -> V2 field mapping. Originally written as a one-time backfill mapper; now also used by
+ * [com.github.naz013.repository.impl.ReminderRepositoryImpl] to mirror every V1 write into
+ * `ReminderV2Repository`, keeping `ReminderV2` rows fresh while `ReminderV2` isn't yet the
+ * write-of-record anywhere in the app. Not part of ReminderV2's steady-state entity<->domain
+ * mapping (see [com.github.naz013.repository.entity.toEntity]/[com.github.naz013.repository.entity.toDomain]).
  */
 internal fun Reminder.toReminderV2(): ReminderV2 {
   val startDateTime = parseGmtToUtc(startTime) ?: LocalDateTime.now(ZoneOffset.UTC)

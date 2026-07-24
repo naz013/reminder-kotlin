@@ -6,8 +6,8 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import io.mockk.coEvery
@@ -30,12 +30,11 @@ import org.threeten.bp.LocalTime
 class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
 
   private fun defaultGroup() =
-    ReminderGroup(
-      groupTitle = "Default",
-      groupUuId = "group-1",
-      groupColor = 0,
-      groupDateTime = "",
-      isDefaultGroup = true,
+    GroupV2(
+      title = "Default",
+      uuId = "group-1",
+      color = 0,
+      isDefault = true,
       syncState = SyncState.Synced,
     )
 
@@ -104,7 +103,7 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     viewModel.onReminderAttachedChanged(true)
     viewModel.onNewDate(LocalDate.of(2026, 8, 1))
     viewModel.onNewTime(LocalTime.of(9, 0))
-    coEvery { reminderGroupRepository.defaultGroup() } returns defaultGroup()
+    coEvery { groupV2Repository.defaultGroup() } returns defaultGroup()
 
     viewModel.saveNote()
 
@@ -119,7 +118,7 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
   fun `saveNote does not activate a reminder when there is no default reminder group`() {
     val viewModel = buildViewModel()
     viewModel.onReminderAttachedChanged(true)
-    coEvery { reminderGroupRepository.defaultGroup() } returns null
+    coEvery { groupV2Repository.defaultGroup() } returns null
 
     viewModel.saveNote()
 
@@ -139,7 +138,7 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     coEvery { reminderRepository.getByNoteKey("42") } returns listOf(existingReminder)
     every { dateTimeManager.fromGmtToLocal(existingReminder.eventTime) } returns LocalDateTime.of(2026, 7, 1, 9, 0)
     coEvery { reminderRepository.getById("r1") } returns existingReminder
-    coEvery { reminderGroupRepository.defaultGroup() } returns defaultGroup()
+    coEvery { groupV2Repository.defaultGroup() } returns defaultGroup()
     val viewModel = buildViewModel(id = "42")
 
     viewModel.saveNote()

@@ -29,7 +29,7 @@ import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -61,7 +61,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val googleTaskRepository = mockk<GoogleTaskRepository>(relaxed = true)
   private val googleTaskListRepository = mockk<GoogleTaskListRepository>(relaxed = true)
   private val calendarEventRepository = mockk<CalendarEventRepository>(relaxed = true)
-  private val reminderGroupRepository = mockk<ReminderGroupRepository>(relaxed = true)
+  private val groupV2Repository = mockk<GroupV2Repository>(relaxed = true)
   private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
@@ -89,7 +89,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     every { uiGroupListAdapter.convert(any(), any(), any()) } returns null
     every { dateTimeManager.fromGmtToLocal(any<String>()) } returns null
     every { dateTimeManager.getGmtFromDateTime(any<LocalDateTime>()) } returns ""
-    coEvery { reminderGroupRepository.getById(any()) } returns null
+    coEvery { groupV2Repository.getById(any()) } returns null
     coEvery { noteRepository.getById(any()) } returns null
     coEvery { googleTaskRepository.getByReminderId(any()) } returns null
   }
@@ -128,7 +128,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       googleTaskRepository = googleTaskRepository,
       googleTaskListRepository = googleTaskListRepository,
       calendarEventRepository = calendarEventRepository,
-      reminderGroupRepository = reminderGroupRepository,
+      groupV2Repository = groupV2Repository,
       dateTimeManager = dateTimeManager,
       textProvider = textProvider,
       deleteReminderUseCase = deleteReminderUseCase,

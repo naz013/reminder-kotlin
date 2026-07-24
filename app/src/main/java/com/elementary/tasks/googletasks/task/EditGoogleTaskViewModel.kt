@@ -24,7 +24,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
@@ -44,7 +44,7 @@ class EditGoogleTaskViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
   private val reminderRepository: ReminderRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val getAllGoogleTaskListsUseCase: GetAllGoogleTaskListsUseCase,
@@ -329,15 +329,15 @@ class EditGoogleTaskViewModel(
     if (reminder == null) return
     Logger.d(TAG, "Saving reminder: $reminder")
     val group = withContext(dispatcherProvider.io()) {
-      reminderGroupRepository.defaultGroup()
+      groupV2Repository.defaultGroup()
     }
 
     if (group != null) {
-      reminder.groupColor = group.groupColor
-      reminder.groupTitle = group.groupTitle
-      reminder.groupUuId = group.groupUuId
+      reminder.groupColor = group.color
+      reminder.groupTitle = group.title
+      reminder.groupUuId = group.uuId
 
-      Logger.v(TAG, "Reminder saved with the Group id = ${group.groupUuId}")
+      Logger.v(TAG, "Reminder saved with the Group id = ${group.uuId}")
     } else {
       Logger.v(TAG, "Reminder saved without the Group")
     }

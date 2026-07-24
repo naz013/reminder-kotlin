@@ -4,14 +4,24 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.dao.ReminderDao
 import com.github.naz013.repository.entity.ReminderEntity
+import com.github.naz013.repository.migration.toReminderV2
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
 
+/**
+ * [reminderV2Repository] is mirrored on every write so `ReminderV2` rows never go stale while
+ * `ReminderV2` isn't yet the write-of-record anywhere in the app (see the ReminderV2/GroupV2
+ * linking plan) — every V1 write path (builder, snooze/complete/dismiss handlers, repeat-reschedule,
+ * Google Tasks/Calendar sync-back) flows through this class, so mirroring here covers all of them
+ * without hunting down each call site individually.
+ */
 internal class ReminderRepositoryImpl(
   private val dao: ReminderDao,
-  private val tableChangeNotifier: TableChangeNotifier
+  private val tableChangeNotifier: TableChangeNotifier,
+  private val reminderV2Repository: ReminderV2Repository
 ) : ReminderRepository {
 
   private val table = Table.Reminder
@@ -124,24 +134,28 @@ internal class ReminderRepositoryImpl(
     Logger.d(TAG, "Save reminder: ${reminder.uuId}")
     dao.insert(ReminderEntity(reminder))
     tableChangeNotifier.notify(table)
+    reminderV2Repository.save(reminder.toReminderV2())
   }
 
   override suspend fun delete(id: String) {
     Logger.d(TAG, "Delete reminder by id: $id")
     dao.delete(id)
     tableChangeNotifier.notify(table)
+    reminderV2Repository.delete(id)
   }
 
   override suspend fun deleteAll() {
     Logger.d(TAG, "Delete all reminders")
     dao.deleteAll()
     tableChangeNotifier.notify(table)
+    reminderV2Repository.deleteAll()
   }
 
   override suspend fun deleteAll(ids: List<String>) {
     Logger.d(TAG, "Delete all reminders by ids: $ids")
     dao.deleteAll(ids)
     tableChangeNotifier.notify(table)
+    reminderV2Repository.deleteAll(ids)
   }
 
   override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> {
@@ -153,6 +167,7 @@ internal class ReminderRepositoryImpl(
     Logger.d(TAG, "Update reminder sync state, id: $id, state: $state")
     dao.updateSyncState(id, state.name)
     tableChangeNotifier.notify(table)
+    reminderV2Repository.updateSyncState(id, state)
   }
 
   override suspend fun getAllIds(): List<String> {

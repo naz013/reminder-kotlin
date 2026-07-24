@@ -35,7 +35,7 @@ import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
@@ -64,7 +64,7 @@ class PreviewReminderViewModel(
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val calendarEventRepository: CalendarEventRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
   private val deleteReminderUseCase: DeleteReminderUseCase,
@@ -189,11 +189,11 @@ class PreviewReminderViewModel(
       val reminder = reminderRepository.getById(id) ?: return@launch
 
       if (reminder.groupUuId == "") {
-        val group = reminderGroupRepository.defaultGroup()
+        val group = groupV2Repository.defaultGroup()
         if (group != null) {
-          reminder.groupColor = group.groupColor
-          reminder.groupTitle = group.groupTitle
-          reminder.groupUuId = group.groupUuId
+          reminder.groupColor = group.color
+          reminder.groupTitle = group.title
+          reminder.groupUuId = group.uuId
         }
       }
       val newItem =
@@ -286,7 +286,7 @@ class PreviewReminderViewModel(
         reminderRepository.getById(id)
       } ?: return@launch
       val reminderGroup = withContext(dispatcherProvider.io()) {
-        reminderGroupRepository.getById(reminder.groupUuId)
+        groupV2Repository.getById(reminder.groupUuId)
       }
       val type = UiReminderType(reminder.type)
 

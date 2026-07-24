@@ -58,7 +58,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -82,7 +82,7 @@ class NoteEditViewModel(
   private val imageDecoder: ImageDecoder,
   private val dispatcherProvider: DispatcherProvider,
   private val noteRepository: NoteRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val reminderRepository: ReminderRepository,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val prefs: Prefs,
@@ -771,11 +771,11 @@ class NoteEditViewModel(
 
   private fun saveReminder(reminder: Reminder) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val group = reminderGroupRepository.defaultGroup()
+      val group = groupV2Repository.defaultGroup()
       if (group != null) {
-        reminder.groupColor = group.groupColor
-        reminder.groupTitle = group.groupTitle
-        reminder.groupUuId = group.groupUuId
+        reminder.groupColor = group.color
+        reminder.groupTitle = group.title
+        reminder.groupUuId = group.uuId
         activateReminderUseCase(reminder)
       }
     }

@@ -5,8 +5,8 @@ import com.elementary.tasks.home.HeaderNavigationItem
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.ui.common.R
@@ -18,7 +18,7 @@ class GetNavigationItemsUseCase(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderRepository: ReminderRepository,
   private val birthdayRepository: BirthdayRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val noteRepository: NoteRepository,
   private val googleTaskRepository: GoogleTaskRepository,
   private val workflowRuleRepository: WorkflowRuleRepository,
@@ -107,7 +107,7 @@ class GetNavigationItemsUseCase(
           iconRes = R.drawable.ic_builder_group,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
-          subtitle = "${reminderGroupRepository.countAll()}",
+          subtitle = "${groupV2Repository.countAll()}",
         )
       }.await()
 }

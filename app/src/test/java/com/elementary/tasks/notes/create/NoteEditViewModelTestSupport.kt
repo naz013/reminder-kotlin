@@ -30,7 +30,7 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
 import io.mockk.coEvery
 import io.mockk.every
@@ -54,7 +54,7 @@ import java.util.regex.Pattern
 open class NoteEditViewModelTestSupport : BaseTest() {
   protected val imageDecoder = mockk<ImageDecoder>()
   protected val noteRepository = mockk<NoteRepository>()
-  protected val reminderGroupRepository = mockk<ReminderGroupRepository>()
+  protected val groupV2Repository = mockk<GroupV2Repository>()
   protected val reminderRepository = mockk<ReminderRepository>()
   protected val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
   protected val prefs = mockk<Prefs>(relaxed = true)
@@ -98,7 +98,7 @@ open class NoteEditViewModelTestSupport : BaseTest() {
     coEvery { noteRepository.getById(any()) } returns null
     coEvery { reminderRepository.getByNoteKey(any()) } returns emptyList()
     coEvery { reminderRepository.getById(any()) } returns null
-    coEvery { reminderGroupRepository.defaultGroup() } returns null
+    coEvery { groupV2Repository.defaultGroup() } returns null
 
     every { dateTimeManager.getTime(any<LocalTime>()) } returns "10:00"
     every { dateTimeManager.getDate(any<LocalDate>()) } returns "24 Jul 2026"
@@ -201,7 +201,7 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       imageDecoder = imageDecoder,
       dispatcherProvider = mockDispatcherProvider(),
       noteRepository = noteRepository,
-      reminderGroupRepository = reminderGroupRepository,
+      groupV2Repository = groupV2Repository,
       reminderRepository = reminderRepository,
       deleteReminderUseCase = deleteReminderUseCase,
       prefs = prefs,

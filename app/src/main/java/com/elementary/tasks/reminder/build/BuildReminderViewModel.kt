@@ -63,7 +63,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.sync.DataType
@@ -88,7 +88,7 @@ class BuildReminderViewModel(
   private val deepLinkTodo: Boolean,
   private val deepLinkText: String?,
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val reminderRepository: ReminderRepository,
   private val placeRepository: PlaceRepository,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -854,12 +854,12 @@ class BuildReminderViewModel(
       "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupUuId}",
     )
     if (reminder.groupUuId.isEmpty()) {
-      val group = reminderGroupRepository.defaultGroup()
+      val group = groupV2Repository.defaultGroup()
       Logger.i(TAG, "Reminder does not have a group, get default = $group")
       if (group != null) {
-        reminder.groupColor = group.groupColor
-        reminder.groupTitle = group.groupTitle
-        reminder.groupUuId = group.groupUuId
+        reminder.groupColor = group.color
+        reminder.groupTitle = group.title
+        reminder.groupUuId = group.uuId
       }
     }
     if (!isEdit) {

@@ -46,7 +46,7 @@ import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -62,7 +62,7 @@ import org.junit.Test
 import org.threeten.bp.LocalDateTime
 
 class BuildReminderViewModelTest : BaseTest() {
-  private val reminderGroupRepository = mockk<ReminderGroupRepository>(relaxed = true)
+  private val groupV2Repository = mockk<GroupV2Repository>(relaxed = true)
   private val reminderRepository = mockk<ReminderRepository>(relaxed = true)
   private val placeRepository = mockk<PlaceRepository>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
@@ -136,7 +136,7 @@ class BuildReminderViewModelTest : BaseTest() {
       deepLinkTodo = deepLinkTodo,
       deepLinkText = deepLinkText,
       dispatcherProvider = mockDispatcherProvider(),
-      reminderGroupRepository = reminderGroupRepository,
+      groupV2Repository = groupV2Repository,
       reminderRepository = reminderRepository,
       placeRepository = placeRepository,
       analyticsEventSender = analyticsEventSender,
