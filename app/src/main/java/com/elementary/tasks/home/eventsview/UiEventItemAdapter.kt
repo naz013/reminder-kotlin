@@ -7,6 +7,9 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
@@ -32,6 +35,35 @@ class UiEventItemAdapter(
     val birthdayItems = birthdays.map { toUiEventBirthday(it) }
     val merged = (reminderItems + birthdayItems).sortedBy { it.dateTime }
     return insertHeaders(merged)
+  }
+
+  fun convertV2(
+    reminders: List<ReminderV2>,
+    groupsById: Map<String, GroupV2>,
+    birthdays: List<Birthday>,
+  ): List<UiEventItem> {
+    val reminderItems = reminders.map { toUiEventReminderV2(it, it.groupId?.let { id -> groupsById[id] }) }
+    val birthdayItems = birthdays.map { toUiEventBirthday(it) }
+    val merged = (reminderItems + birthdayItems).sortedBy { it.dateTime }
+    return insertHeaders(merged)
+  }
+
+  private fun toUiEventReminderV2(
+    reminder: ReminderV2,
+    group: GroupV2?,
+  ): UiEventReminder {
+    val uiReminderList = uiReminderListAdapter.createV2(reminder, group)
+    return UiEventReminder(
+      id = uiReminderList.id,
+      dateTime = resolveReminderDateTime(uiReminderList.dueDateTime, uiReminderList.state.isActive),
+      category = if (reminder.action is ReminderAction.Shopping) EventCategory.SHOPPING else EventCategory.REMINDERS,
+      mainText = uiReminderList.mainText,
+      secondaryText = uiReminderList.secondaryText,
+      tertiaryText = uiReminderList.tertiaryText,
+      tags = uiReminderList.tags,
+      actions = uiReminderList.actions,
+      state = uiReminderList.state,
+    )
   }
 
   private fun toUiEventReminder(reminder: Reminder): UiEventReminder {

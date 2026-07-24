@@ -9,8 +9,12 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListState
 import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -21,9 +25,12 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 
 class RemindersArchiveViewModelTest : BaseTest() {
   private val reminderRepository = mockk<ReminderRepository>()
+  private val getRemindersV2ByRemovedStatusUseCase = mockk<GetRemindersV2ByRemovedStatusUseCase>()
+  private val groupV2Repository = mockk<GroupV2Repository>()
   private val uiReminderListAdapter = mockk<UiReminderListAdapter>()
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
   private val deleteAllReminderUseCase = mockk<DeleteAllReminderUseCase>(relaxed = true)
@@ -35,12 +42,15 @@ class RemindersArchiveViewModelTest : BaseTest() {
     super.setUp()
     // RemindersArchiveViewModel.state runs loadReminders() in onStart on every collection - every
     // test collects state at least once, so a default stub avoids an unstubbed-call failure.
-    coEvery { reminderRepository.getByRemovedStatus(removed = true) } returns emptyList()
-    every { uiReminderListAdapter.create(any()) } answers { uiReminderList(firstArg<Reminder>().uuId) }
+    coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns emptyList()
+    coEvery { groupV2Repository.getAll() } returns emptyList()
+    every { uiReminderListAdapter.createV2(any(), any()) } answers { uiReminderList(firstArg<ReminderV2>().uuId) }
 
     viewModel =
       RemindersArchiveViewModel(
         reminderRepository = reminderRepository,
+        getRemindersV2ByRemovedStatusUseCase = getRemindersV2ByRemovedStatusUseCase,
+        groupV2Repository = groupV2Repository,
         dispatcherProvider = mockDispatcherProvider(),
         uiReminderListAdapter = uiReminderListAdapter,
         deleteReminderUseCase = deleteReminderUseCase,
@@ -52,6 +62,15 @@ class RemindersArchiveViewModelTest : BaseTest() {
     id: String,
     summary: String = "",
   ) = Reminder(uuId = id, summary = summary, syncState = SyncState.Synced)
+
+  private fun reminderV2(
+    id: String,
+    summary: String = "",
+  ) = ReminderV2(
+    uuId = id,
+    summary = summary,
+    schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+  )
 
   private fun uiReminderList(id: String) =
     UiReminderList(
@@ -69,8 +88,8 @@ class RemindersArchiveViewModelTest : BaseTest() {
   @Test
   fun `loads archived reminders into state on first collection`() =
     runTest {
-      val reminders = listOf(reminder("1"), reminder("2"))
-      coEvery { reminderRepository.getByRemovedStatus(removed = true) } returns reminders
+      val reminders = listOf(reminderV2("1"), reminderV2("2"))
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns reminders
 
       val state = viewModel.state.first()
 
@@ -83,7 +102,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
   @Test
   fun `state is Empty when there are no archived reminders`() =
     runTest {
-      coEvery { reminderRepository.getByRemovedStatus(removed = true) } returns emptyList()
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns emptyList()
 
       val state = viewModel.state.first()
 
@@ -93,9 +112,9 @@ class RemindersArchiveViewModelTest : BaseTest() {
   @Test
   fun `onSearchQueryChange updates search query and filters reminders on next load`() =
     runTest {
-      val matching = reminder("1", summary = "Buy milk")
-      val nonMatching = reminder("2", summary = "Call mom")
-      coEvery { reminderRepository.getByRemovedStatus(removed = true) } returns listOf(matching, nonMatching)
+      val matching = reminderV2("1", summary = "Buy milk")
+      val nonMatching = reminderV2("2", summary = "Call mom")
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns listOf(matching, nonMatching)
 
       viewModel.onSearchQueryChange("milk")
       val state = viewModel.state.first()
@@ -141,12 +160,12 @@ class RemindersArchiveViewModelTest : BaseTest() {
     runTest {
       val target = reminder("1")
       coEvery { reminderRepository.getById("1") } returns target
-      coEvery { reminderRepository.getByRemovedStatus(removed = true) } returns listOf(target)
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns listOf(reminderV2("1"))
 
       viewModel.deleteReminder("1")
 
       coVerify(exactly = 1) { deleteReminderUseCase(target) }
-      coVerify(exactly = 1) { reminderRepository.getByRemovedStatus(removed = true) }
+      coVerify(exactly = 1) { getRemindersV2ByRemovedStatusUseCase(removed = true) }
     }
 
   @Test
@@ -157,20 +176,23 @@ class RemindersArchiveViewModelTest : BaseTest() {
       viewModel.deleteReminder("missing")
 
       coVerify(exactly = 0) { deleteReminderUseCase(any()) }
-      coVerify(exactly = 0) { reminderRepository.getByRemovedStatus(removed = true) }
+      coVerify(exactly = 0) { getRemindersV2ByRemovedStatusUseCase(removed = true) }
     }
 
   @Test
-  fun `deleteAll deletes filtered reminders, reloads and emits ArchiveEmptied`() =
+  fun `deleteAll re-fetches the V1 reminders by id, deletes them, reloads and emits ArchiveEmptied`() =
     runTest {
-      val reminders = listOf(reminder("1"), reminder("2"))
-      coEvery { reminderRepository.getByRemovedStatus(removed = true) } returns reminders
+      val remindersV2 = listOf(reminderV2("1"), reminderV2("2"))
+      val remindersV1 = listOf(reminder("1"), reminder("2"))
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns remindersV2
+      coEvery { reminderRepository.getById("1") } returns remindersV1[0]
+      coEvery { reminderRepository.getById("2") } returns remindersV1[1]
       viewModel.state.first()
 
       viewModel.deleteAll()
 
-      coVerify(exactly = 1) { deleteAllReminderUseCase(reminders) }
-      coVerify(exactly = 2) { reminderRepository.getByRemovedStatus(removed = true) }
+      coVerify(exactly = 1) { deleteAllReminderUseCase(remindersV1) }
+      coVerify(exactly = 2) { getRemindersV2ByRemovedStatusUseCase(removed = true) }
       val event = viewModel.event.value?.peekContent()
       assertEquals(RemindersArchiveViewModel.NavigationEvent.ArchiveEmptied, event)
     }
@@ -178,7 +200,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
   @Test
   fun `deleteAll does nothing when there are no filtered reminders`() =
     runTest {
-      coEvery { reminderRepository.getByRemovedStatus(removed = true) } returns emptyList()
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns emptyList()
       viewModel.state.first()
 
       viewModel.deleteAll()

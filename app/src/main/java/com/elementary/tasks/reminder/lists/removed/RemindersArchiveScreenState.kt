@@ -1,13 +1,13 @@
 package com.elementary.tasks.reminder.lists.removed
 
 import com.elementary.tasks.reminder.lists.data.UiReminderList
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 
 data class RemindersArchiveScreenState(
   val listState: ListState = ListState.Loading,
   val searchQuery: String = "",
-  val allReminders: List<Reminder> = emptyList(),
-  val filteredReminders: List<Reminder> = emptyList(),
+  val allReminders: List<ReminderV2> = emptyList(),
+  val filteredReminders: List<ReminderV2> = emptyList(),
 )
 
 sealed interface ListState {

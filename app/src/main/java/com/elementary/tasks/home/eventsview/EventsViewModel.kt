@@ -10,22 +10,24 @@ import com.elementary.tasks.reminder.lists.filter.DateRangeFilterGroup
 import com.elementary.tasks.reminder.lists.filter.FilterGroup
 import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilter
 import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilterGroup
-import com.elementary.tasks.reminder.lists.filter.query.ReminderQueryFilterInstance
+import com.elementary.tasks.reminder.lists.filter.query.ReminderV2QueryFilterInstance
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,11 +44,11 @@ import org.threeten.bp.LocalDate
 class EventsViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderRepository: ReminderRepository,
-  private val groupRepository: ReminderGroupRepository,
+  private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase,
+  private val groupV2Repository: GroupV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val uiEventItemAdapter: UiEventItemAdapter,
   private val textProvider: TextProvider,
-  private val dateTimeManager: DateTimeManager,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val skipReminderUseCase: SkipReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
@@ -87,15 +89,17 @@ class EventsViewModel(
     val reminderCategoriesSelected =
       categories.contains(EventCategory.REMINDERS) || categories.contains(EventCategory.SHOPPING)
     val allReminders =
-      if (reminderCategoriesSelected) reminderRepository.getByRemovedStatus(removed = false) else emptyList()
+      if (reminderCategoriesSelected) getRemindersV2ByRemovedStatusUseCase(removed = false) else emptyList()
     val allBirthdays = if (categories.contains(EventCategory.BIRTHDAYS)) birthdayRepository.getAll() else emptyList()
+    val groups = groupV2Repository.getAll()
 
-    val canFilter = prepareFilters(allReminders, reminderCategoriesSelected)
+    val canFilter = prepareFilters(allReminders, groups, reminderCategoriesSelected)
 
     val filteredReminders = filterReminders(allReminders, query, categories)
     val filteredBirthdays = filterBirthdays(allBirthdays, query)
 
-    val items = uiEventItemAdapter.convert(filteredReminders, filteredBirthdays)
+    val groupsById = groups.associateBy { it.uuId }
+    val items = uiEventItemAdapter.convertV2(filteredReminders, groupsById, filteredBirthdays)
     return MergedResult(items, canFilter)
   }
 
@@ -107,15 +111,13 @@ class EventsViewModel(
     }
   }
 
-  private suspend fun prepareFilters(
-    reminders: List<Reminder>,
+  private fun prepareFilters(
+    reminders: List<ReminderV2>,
+    groups: List<GroupV2>,
     reminderCategoriesSelected: Boolean,
   ): Boolean {
     val filterGroups = mutableListOf<FilterGroup>()
-    val groupFilters =
-      groupRepository
-        .getAll()
-        .map { ReminderGroupFilter(it.groupUuId, it.groupTitle) }
+    val groupFilters = groups.map { ReminderGroupFilter(it.uuId, it.title) }
     if (groupFilters.isNotEmpty()) {
       filterGroups.add(
         ReminderGroupFilterGroup(
@@ -131,7 +133,7 @@ class EventsViewModel(
       var minDate = LocalDate.now()
       var maxDate = LocalDate.now()
       reminders.forEach {
-        val reminderDate = dateTimeManager.fromGmtToLocal(it.eventTime)?.toLocalDate() ?: return@forEach
+        val reminderDate = it.schedule.eventDateTime?.toLocalDate() ?: return@forEach
         if (reminderDate.isBefore(minDate)) {
           minDate = reminderDate
         } else if (reminderDate.isAfter(maxDate)) {
@@ -153,16 +155,16 @@ class EventsViewModel(
   }
 
   private fun filterReminders(
-    reminders: List<Reminder>,
+    reminders: List<ReminderV2>,
     query: String,
     categories: Set<EventCategory>,
-  ): List<Reminder> {
+  ): List<ReminderV2> {
     val byCategory =
       reminders.filter { reminder ->
-        val isShopping = reminder.type == Reminder.BY_DATE_SHOP
+        val isShopping = reminder.action is ReminderAction.Shopping
         if (isShopping) categories.contains(EventCategory.SHOPPING) else categories.contains(EventCategory.REMINDERS)
       }
-    val byQuery = if (query.isBlank()) byCategory else byCategory.filter(ReminderQueryFilterInstance(query))
+    val byQuery = if (query.isBlank()) byCategory else byCategory.filter(ReminderV2QueryFilterInstance(query))
     return byQuery
   }
 
