@@ -133,7 +133,8 @@ class UiReminderListAdapter(
       -> true
 
       is RecurrenceRule.ICalendar -> hasNextRecurV2(data, rule)
-      RecurrenceRule.Once, is RecurrenceRule.Countdown, RecurrenceRule.LocationEnter, RecurrenceRule.LocationExit -> false
+      is RecurrenceRule.Countdown -> rule.repeatInterval > 0
+      RecurrenceRule.Once, RecurrenceRule.LocationEnter, RecurrenceRule.LocationExit -> false
     }
   }
 

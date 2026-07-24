@@ -47,6 +47,24 @@ class ReminderToReminderV2MapperTest {
   }
 
   @Test
+  fun `maps a repeating countdown timer to RecurrenceRule Countdown carrying the raw millis interval`() {
+    val reminder = Reminder(
+      type = Reminder.BY_TIME,
+      after = 60_000L,
+      repeatInterval = 7_200_000L, // every 2 hours
+      repeatLimit = 3,
+      startTime = GMT_TIME
+    )
+
+    val result = reminder.toReminderV2()
+
+    assertEquals(
+      RecurrenceRule.Countdown(after = 60_000L, repeatInterval = 7_200_000L, repeatLimit = 3),
+      result.recurrence
+    )
+  }
+
+  @Test
   fun `maps a countdown reminder with a call action`() {
     val reminder = Reminder(
       type = Reminder.BY_TIME + Reminder.Action.CALL,

@@ -101,7 +101,8 @@ private data class RecurrenceFields(
 
 private fun RecurrenceRule.toFields(): RecurrenceFields = when (this) {
   RecurrenceRule.Once -> RecurrenceFields(base = Reminder.BY_DATE)
-  is RecurrenceRule.Countdown -> RecurrenceFields(base = Reminder.BY_TIME, after = after)
+  is RecurrenceRule.Countdown ->
+    RecurrenceFields(base = Reminder.BY_TIME, after = after, repeatInterval = repeatInterval, repeatLimit = repeatLimit)
   is RecurrenceRule.Daily ->
     RecurrenceFields(base = Reminder.BY_DATE, repeatInterval = repeatInterval, repeatLimit = repeatLimit)
   is RecurrenceRule.Weekly ->

@@ -99,7 +99,8 @@ private fun Reminder.toRecurrenceRule(): RecurrenceRule = when {
     } else {
       RecurrenceRule.Once
     }
-  Reminder.isBase(type, Reminder.BY_TIME) -> RecurrenceRule.Countdown(after)
+  Reminder.isBase(type, Reminder.BY_TIME) ->
+    RecurrenceRule.Countdown(after = after, repeatInterval = repeatInterval, repeatLimit = repeatLimit)
   Reminder.isBase(type, Reminder.BY_WEEK) ->
     RecurrenceRule.Weekly(
       weekdays = weekdays,

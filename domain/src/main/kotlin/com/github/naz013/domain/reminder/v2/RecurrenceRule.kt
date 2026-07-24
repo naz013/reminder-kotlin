@@ -5,8 +5,12 @@ import org.threeten.bp.LocalDateTime
 sealed class RecurrenceRule {
   data object Once : RecurrenceRule()
 
+  /** Fires once after [after] millis. [repeatInterval] (raw millis, same convention as [Daily])
+   * optionally repeats the timer after that; 0 (the default) means fire once and stop. */
   data class Countdown(
-    val after: Long
+    val after: Long,
+    val repeatInterval: Long = 0,
+    val repeatLimit: Int = -1
   ) : RecurrenceRule()
 
   /** Plain "repeat every X" reminder with no calendar-unit meaning. Unlike [Weekly]/[Monthly]/

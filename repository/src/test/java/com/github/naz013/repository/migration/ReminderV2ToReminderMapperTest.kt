@@ -21,6 +21,18 @@ class ReminderV2ToReminderMapperTest {
   }
 
   @Test
+  fun `maps RecurrenceRule Countdown carrying a repeat interval back onto BY_TIME's repeatInterval`() {
+    val reminder = reminderV2(
+      recurrence = RecurrenceRule.Countdown(after = 60_000L, repeatInterval = 7_200_000L, repeatLimit = 3)
+    ).toReminder()
+
+    assertEquals(Reminder.BY_TIME, reminder.type)
+    assertEquals(60_000L, reminder.after)
+    assertEquals(7_200_000L, reminder.repeatInterval)
+    assertEquals(3, reminder.repeatLimit)
+  }
+
+  @Test
   fun `maps RecurrenceRule Daily carrying a sub-day millis interval back onto repeatInterval`() {
     val reminder = reminderV2(
       recurrence = RecurrenceRule.Daily(repeatInterval = 21_600_000L, repeatLimit = 5)

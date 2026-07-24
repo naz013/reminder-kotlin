@@ -222,8 +222,12 @@ class UiReminderCommonAdapter(
           ?: textProvider.getText(R.string.repeat_once)
       }
 
+      is RecurrenceRule.Countdown -> {
+        IntervalUtil.getInterval(recurrence.repeatInterval) { getIntervalPattern(it) }
+          ?: textProvider.getText(R.string.repeat_once)
+      }
+
       RecurrenceRule.Once,
-      is RecurrenceRule.Countdown,
       RecurrenceRule.LocationEnter,
       RecurrenceRule.LocationExit,
       -> textProvider.getText(R.string.repeat_once)
