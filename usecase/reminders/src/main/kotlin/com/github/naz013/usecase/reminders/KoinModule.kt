@@ -12,6 +12,8 @@ val remindersUseCaseModule = module {
   factory { GetReminderV2ByIdUseCase(get()) }
   factory { GetRemindersV2ByGroupIdUseCase(get()) }
   factory { GetRemindersV2InRangeUseCase(get()) }
+  factory { GetRemindersV2ByRemovedStatusUseCase(get()) }
+  factory { GetOccurrencesByDateRangeUseCase(get()) }
   factory { ResolveReminderV2NotificationSettingsUseCase(get(), get()) }
   factory { WorkflowEngine(get(), get(), get()) }
   factory { ApplyWorkflowTemplateUseCase(get(), get()) }

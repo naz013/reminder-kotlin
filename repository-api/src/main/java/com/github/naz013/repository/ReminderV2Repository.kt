@@ -10,6 +10,7 @@ interface ReminderV2Repository {
   suspend fun getById(id: String): ReminderV2?
   suspend fun getAll(): List<ReminderV2>
   suspend fun getAll(active: Boolean, removed: Boolean): List<ReminderV2>
+  suspend fun getByRemovedStatus(removed: Boolean): List<ReminderV2>
   suspend fun getActiveInRange(
     removed: Boolean,
     from: LocalDateTime,

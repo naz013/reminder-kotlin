@@ -172,6 +172,8 @@ private class FakeReminderV2Repository(
   override suspend fun getAll(): List<ReminderV2> = reminders.values.toList()
   override suspend fun getAll(active: Boolean, removed: Boolean): List<ReminderV2> =
     reminders.values.filter { it.isActive == active && it.isRemoved == removed }
+  override suspend fun getByRemovedStatus(removed: Boolean): List<ReminderV2> =
+    reminders.values.filter { it.isRemoved == removed }
   override suspend fun getActiveInRange(removed: Boolean, from: LocalDateTime, to: LocalDateTime): List<ReminderV2> = emptyList()
   override suspend fun getByGroupId(groupId: String): List<ReminderV2> = reminders.values.filter { it.groupId == groupId }
   override suspend fun countActiveByGroupId(groupId: String): Int =

@@ -40,6 +40,11 @@ internal class ReminderV2RepositoryImpl(
     return dao.getAll(active, removed).map { it.toDomain() }
   }
 
+  override suspend fun getByRemovedStatus(removed: Boolean): List<ReminderV2> {
+    Logger.d(TAG, "Get reminders by removed status: $removed")
+    return dao.getByRemovedStatus(removed).map { it.toDomain() }
+  }
+
   override suspend fun getActiveInRange(
     removed: Boolean,
     from: LocalDateTime,
