@@ -39,6 +39,7 @@ dependencies {
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)
+  implementation(libs.koin.androidx.compose)
 
   implementation(libs.gson)
   implementation(libs.threetenbp)

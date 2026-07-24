@@ -1,5 +1,6 @@
 package com.github.naz013.ui.common.compose.foundation.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -14,6 +15,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +34,8 @@ private val TEXT_FIELD_WIDTH = 64.dp
  * @param value Current value.
  * @param onValueChange Invoked with the clamped new value, from either button or direct typing.
  * @param step Amount the minus/plus buttons add or subtract per tap.
+ * @param hapticFeedbackEnabled When true, a tick is played on every minus/plus button tap that
+ * actually changes the value. Typing directly into the field never triggers it.
  */
 @Composable
 fun NumberStepperField(
@@ -41,10 +46,20 @@ fun NumberStepperField(
   maxValue: Long = 999,
   step: Long = 1,
   enabled: Boolean = true,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
-  Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+  val hapticFeedback = LocalHapticFeedback.current
+
+  Row(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.Center,
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
     IconButton(
-      onClick = { onValueChange((value - step).coerceIn(minValue, maxValue)) },
+      onClick = {
+        if (hapticFeedbackEnabled) hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        onValueChange((value - step).coerceIn(minValue, maxValue))
+      },
       enabled = enabled && value > minValue,
       modifier = Modifier.size(STEP_BUTTON_SIZE),
     ) {
@@ -69,7 +84,10 @@ fun NumberStepperField(
     )
 
     IconButton(
-      onClick = { onValueChange((value + step).coerceIn(minValue, maxValue)) },
+      onClick = {
+        if (hapticFeedbackEnabled) hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        onValueChange((value + step).coerceIn(minValue, maxValue))
+      },
       enabled = enabled && value < maxValue,
       modifier = Modifier.size(STEP_BUTTON_SIZE),
     ) {

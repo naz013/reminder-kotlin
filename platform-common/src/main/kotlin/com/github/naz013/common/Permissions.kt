@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import com.github.naz013.common.system.Module
 
 @SuppressLint("InlinedApi")
 object Permissions {

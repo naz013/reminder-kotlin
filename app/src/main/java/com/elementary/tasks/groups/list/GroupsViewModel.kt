@@ -10,11 +10,11 @@ import com.elementary.tasks.groups.usecase.MakeGroupDefaultUseCase
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GroupV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,13 +26,11 @@ class GroupsViewModel(
   private val deleteGroupUseCase: DeleteGroupUseCase,
   private val makeGroupDefaultUseCase: MakeGroupDefaultUseCase,
 ) : ViewModel() {
-  private val _state = MutableStateFlow(GroupsScreenState())
-  val state: StateFlow<GroupsScreenState> = _state.asStateFlow()
-  val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
-  init {
-    loadGroups()
-  }
+  private val _state = MutableStateFlow(GroupsScreenState())
+  val state = _state.stateInWhileSubscribed(GroupsScreenState())
+    .onStart { loadGroups() }
+  val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   fun onAddClick() {
     navigationEvent.postValue(Event(NavigationEvent.AddGroup))

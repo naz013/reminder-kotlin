@@ -2,31 +2,26 @@ package com.elementary.tasks.settings.birthday
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
+import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
 fun BirthdaySettingsScreen(
@@ -74,7 +69,12 @@ fun BirthdaySettingsScreen(
       enabled = state.isDependentEnabled,
       dividerBottom = true,
       onClick = onDaysToBirthdayClick,
-      trailing = { Text(state.daysToBirthday.toString(), style = MaterialTheme.typography.titleLarge) },
+      trailing = {
+        Text(
+          state.daysToBirthday.toString(),
+          style = MaterialTheme.typography.titleLarge
+        )
+      },
     )
     SettingsItem(
       title = stringResource(R.string.birthday_notification_priority),
@@ -120,35 +120,37 @@ fun BirthdaySettingsScreen(
       dividerBottom = true,
     )
 
-    SettingsSectionHeader(stringResource(R.string.notification))
+    if (state.isLedIndicationVisible) {
+      SettingsSectionHeader(stringResource(R.string.notification))
 
-    SettingsSwitchItem(
-      title = stringResource(R.string.global_settings),
-      checked = state.isGlobalChecked,
-      onCheckedChange = { onGlobalToggle() },
-      subtitleOn = stringResource(R.string.use_settings_for_reminders),
-      subtitleOff = stringResource(R.string.specify_own_configuration),
-      enabled = state.isDependentEnabled,
-      dividerBottom = true,
-    )
-    SettingsSwitchItem(
-      title = stringResource(R.string.led_indication_if_available),
-      checked = state.isLedChecked,
-      onCheckedChange = { onLedToggle() },
-      subtitleOn = stringResource(R.string.show_led_indication),
-      subtitleOff = stringResource(R.string.do_not_show_led_indication),
-      icon = painterResource(R.drawable.ic_builder_led_color),
-      enabled = state.isLedRowEnabled,
-      dividerBottom = true,
-    )
-    SettingsItem(
-      title = stringResource(R.string.led_indication_color),
-      subtitle = state.ledColorName,
-      icon = painterResource(R.drawable.ic_fluent_color),
-      enabled = state.isLedColorRowEnabled,
-      dividerBottom = true,
-      onClick = onLedColorClick,
-    )
+      SettingsSwitchItem(
+        title = stringResource(R.string.global_settings),
+        checked = state.isGlobalChecked,
+        onCheckedChange = { onGlobalToggle() },
+        subtitleOn = stringResource(R.string.use_settings_for_reminders),
+        subtitleOff = stringResource(R.string.specify_own_configuration),
+        enabled = state.isDependentEnabled,
+        dividerBottom = true,
+      )
+      SettingsSwitchItem(
+        title = stringResource(R.string.led_indication_if_available),
+        checked = state.isLedChecked,
+        onCheckedChange = { onLedToggle() },
+        subtitleOn = stringResource(R.string.show_led_indication),
+        subtitleOff = stringResource(R.string.do_not_show_led_indication),
+        icon = painterResource(R.drawable.ic_builder_led_color),
+        enabled = state.isLedRowEnabled,
+        dividerBottom = true,
+      )
+      SettingsItem(
+        title = stringResource(R.string.led_indication_color),
+        subtitle = state.ledColorName,
+        icon = painterResource(R.drawable.ic_fluent_color),
+        enabled = state.isLedColorRowEnabled,
+        dividerBottom = true,
+        onClick = onLedColorClick,
+      )
+    }
 
     SettingsSectionHeader(stringResource(R.string.import_))
 
@@ -183,6 +185,7 @@ fun BirthdaySettingsScreen(
         onValueChange = onDaysToBirthdayPreviewChange,
         onConfirm = onDaysToBirthdayConfirm,
         onDismiss = onDialogDismiss,
+        hapticFeedbackEnabled = dialog.hapticFeedbackEnabled,
       )
     }
 
@@ -195,6 +198,7 @@ fun BirthdaySettingsScreen(
         onValueChange = onHomeDaysPreviewChange,
         onConfirm = onHomeDaysConfirm,
         onDismiss = onDialogDismiss,
+        hapticFeedbackEnabled = dialog.hapticFeedbackEnabled,
       )
     }
 
@@ -228,10 +232,13 @@ private fun SeekValueDialog(
   value: Int,
   valueRange: ClosedFloatingPointRange<Float>,
   valueText: String,
+  hapticFeedbackEnabled: Boolean,
   onValueChange: (Int) -> Unit,
   onConfirm: () -> Unit,
   onDismiss: () -> Unit,
 ) {
+  val hapticFeedback = LocalHapticFeedback.current
+
   AlertDialog(
     onDismissRequest = onDismiss,
     title = { Text(title) },
@@ -240,51 +247,19 @@ private fun SeekValueDialog(
         Text(text = valueText, style = MaterialTheme.typography.bodyLarge)
         Slider(
           value = value.toFloat(),
-          onValueChange = { onValueChange(it.toInt()) },
+          onValueChange = { index ->
+            if (index.toInt() != value && hapticFeedbackEnabled) {
+              hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+            onValueChange(index.toInt())
+          },
           valueRange = valueRange,
           steps = (valueRange.endInclusive - valueRange.start).toInt() - 1,
           modifier = Modifier.fillMaxWidth(),
         )
       }
     },
-    confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.ok)) } },
+    confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.save)) } },
     dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
-  )
-}
-
-@Composable
-private fun SingleChoiceDialog(
-  title: String,
-  options: List<String>,
-  selectedIndex: Int,
-  onOptionSelected: (Int) -> Unit,
-  onDismiss: () -> Unit,
-) {
-  AlertDialog(
-    onDismissRequest = onDismiss,
-    title = { Text(title) },
-    text = {
-      Column(modifier = Modifier.selectableGroup()) {
-        options.forEachIndexed { index, option ->
-          val selected = index == selectedIndex
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier =
-              Modifier
-                .fillMaxWidth()
-                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
-                .padding(vertical = 8.dp),
-          ) {
-            RadioButton(selected = selected, onClick = null)
-            Text(
-              text = option,
-              style = MaterialTheme.typography.bodyLarge,
-              modifier = Modifier.padding(start = 8.dp),
-            )
-          }
-        }
-      }
-    },
-    confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
   )
 }

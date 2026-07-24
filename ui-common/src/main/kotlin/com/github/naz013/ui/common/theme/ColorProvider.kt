@@ -16,23 +16,8 @@ class ColorProvider(
   }
 
   @ColorInt
-  fun getHintTextColor(): Int {
-    return ThemeProvider.getHintTextColor(getContext())
-  }
-
-  @ColorInt
-  fun getTitleTextColor(): Int {
-    return ThemeProvider.getTitleTextColor(getContext())
-  }
-
-  @ColorInt
   fun getColorOnSurface(): Int {
     return ThemeProvider.getThemeOnSurfaceColor(getContext())
-  }
-
-  @ColorInt
-  fun getColorOnSecondary(): Int {
-    return ThemeProvider.getThemeOnSecondaryColor(getContext())
   }
 
   @ColorInt

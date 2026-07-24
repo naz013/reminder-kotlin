@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -18,6 +19,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.github.naz013.datecalc.WeekDaysProtocol
 import com.github.naz013.ui.common.compose.foundation.component.SelectableChipGrid
+import com.github.naz013.ui.common.compose.foundation.component.WheelPicker
 
 private val GRID_MAX_HEIGHT = 320.dp
 
@@ -27,27 +29,30 @@ private val GRID_MAX_HEIGHT = 320.dp
  */
 private const val LAST_DAY_VALUE = 0
 
-/** Single-select day-of-month grid (1..28, plus "Last day"). Replaces `DayOfMonthController`. */
+/** Single-select day-of-month wheel (1..28, plus "Last day"). Replaces `DayOfMonthController`. */
 @Composable
 fun DayOfMonthValueEditor(
   builderItem: BuilderItem<Int>,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
-  var selected by remember(builderItem) { mutableStateOf(builderItem.modifier.getValue()) }
   val lastDayLabel = stringResource(R.string.last_day)
   val days = remember(lastDayLabel) { (1..28).toList() + LAST_DAY_VALUE }
+  var selectedIndex by remember(builderItem) {
+    mutableIntStateOf(days.indexOf(builderItem.modifier.getValue()).coerceAtLeast(0))
+  }
 
-  SelectableChipGrid(
-    items = days,
-    selectedItems = setOfNotNull(selected),
-    onItemToggle = { day ->
-      selected = day
-      builderItem.modifier.update(day)
-      onValueChange(builderItem)
+  WheelPicker(
+    items = days.map { if (it == LAST_DAY_VALUE) lastDayLabel else it.toString() },
+    selectedIndex = selectedIndex,
+    onSelectedIndexChange = { index ->
+      val day = days.getOrNull(index)
+      if (day != null) {
+        selectedIndex = index
+        builderItem.modifier.update(day)
+        onValueChange(builderItem)
+      }
     },
-    itemLabel = { if (it == LAST_DAY_VALUE) lastDayLabel else it.toString() },
-    columns = 7,
-    modifier = Modifier.fillMaxWidth().heightIn(max = GRID_MAX_HEIGHT),
+    modifier = Modifier.fillMaxWidth(),
   )
 }
 

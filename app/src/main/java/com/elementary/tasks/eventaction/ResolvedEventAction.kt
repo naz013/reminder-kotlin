@@ -1,5 +1,7 @@
 package com.elementary.tasks.eventaction
 
+import java.io.File
+
 sealed interface ResolvedEventAction {
   data class MakeCall(
     val phoneNumber: String,
@@ -22,6 +24,6 @@ sealed interface ResolvedEventAction {
     val email: String,
     val subject: String,
     val body: String,
-    val attachmentPath: String?,
+    val attachmentFile: File?,
   ) : ResolvedEventAction
 }

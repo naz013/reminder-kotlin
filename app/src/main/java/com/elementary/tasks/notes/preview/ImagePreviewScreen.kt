@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -13,7 +12,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -36,23 +34,21 @@ import me.saket.telephoto.zoomable.rememberZoomableState
 fun ImagePreviewScreen(
   modifier: Modifier = Modifier,
   state: ImagePreviewState,
-  colors: ImagePreviewColors,
   onBackClick: () -> Unit,
   onPageChanged: (Int) -> Unit,
 ) {
-  val contentColor = colors.content ?: MaterialTheme.colorScheme.onSurface
   Column(
     modifier =
       modifier
         .fillMaxSize()
-        .background(colors.background ?: MaterialTheme.colorScheme.background),
+        .background(state.background),
   ) {
     TopAppBar(
       title = {
         if (state.images.isNotEmpty()) {
           Text(
             text = stringResource(R.string.x_out_of_x, state.position + 1, state.images.size),
-            color = contentColor,
+            color = state.content,
           )
         }
       },
@@ -61,7 +57,7 @@ fun ImagePreviewScreen(
           Icon(
             painter = painterResource(R.drawable.ic_builder_arrow_left),
             contentDescription = stringResource(R.string.cd_back),
-            tint = contentColor,
+            tint = state.content,
           )
         }
       },

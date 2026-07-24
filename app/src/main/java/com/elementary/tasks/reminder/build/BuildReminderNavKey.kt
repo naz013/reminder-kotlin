@@ -22,4 +22,7 @@ sealed interface BuildReminderNavKey : NavKey {
 
   @Serializable
   data object RecurHelp : BuildReminderNavKey
+
+  @Serializable
+  data object SelectApplication : BuildReminderNavKey
 }

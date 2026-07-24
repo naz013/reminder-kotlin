@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +53,7 @@ fun EditGoogleTaskListScreen(
     modifier = modifier,
     topBar = {
       TopAppBar(
-        title = { Text(stringResource(if (state.hasId) R.string.edit_task_list else R.string.new_tasks_list)) },
+        title = { Text(stringResource(state.screenTitleRes)) },
         navigationIcon = {
           MenuIconButton(
             icon = painterResource(R.drawable.ic_builder_arrow_left),
@@ -70,10 +71,8 @@ fun EditGoogleTaskListScreen(
               onClick = onDeleteMenuClick,
             )
           }
-          MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_save),
-            contentDescription = stringResource(R.string.save),
-            iconColor = MaterialTheme.colorScheme.tertiary,
+          MenuTextButton(
+            text = stringResource(R.string.save),
             enabled = !state.isLoading,
             onClick = onSaveClick,
           )
@@ -189,7 +188,6 @@ private fun EditGoogleTaskListScreenPreview() {
           colorIndex = 6,
           isDefault = true,
           canDelete = true,
-          hasId = true,
         ),
       onBackClick = {},
       onSaveClick = {},

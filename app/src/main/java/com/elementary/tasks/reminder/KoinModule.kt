@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder
 
 import com.elementary.tasks.reminder.actions.GetReminderActionsUseCase
+import com.elementary.tasks.reminder.build.ApplicationPickerResultHolder
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.build.BuildReminderViewModel
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
@@ -97,6 +98,7 @@ import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
 import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.datecalc.RecurrenceCalculatorImpl
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -158,6 +160,9 @@ val reminderModule =
         get(),
         get(),
         get(),
+        get(),
+        get(),
+        get()
       )
     }
 
@@ -185,13 +190,13 @@ val reminderModule =
         get(),
         get(),
         get(),
+        get()
       )
     }
 
-    viewModel { (id: String, isTest: Boolean) ->
+    viewModel { (id: String) ->
       ReminderActionActivityViewModel(
         id,
-        isTest,
         get(),
         get(),
         get(),
@@ -232,6 +237,7 @@ val reminderModule =
     factory { BiFactoryICal(get(), get(), get(), get()) }
 
     single { SelectorDialogDataHolder() }
+    single { ApplicationPickerResultHolder() }
 
     factory { UiSelectorItemsAdapter(get(), get(), get(), get()) }
 
@@ -290,9 +296,9 @@ val reminderModule =
 
     factory { NoteDecomposer(get(), get(), get()) }
 
-    factory { LocationFilter(get()) }
-    factory { CreatorConfigFilter(get()) }
-    factory { BiFilter(get(), get()) }
+    factoryOf(::LocationFilter)
+    factoryOf(::CreatorConfigFilter)
+    factoryOf(::BiFilter)
 
     factory { PrimitiveProtocol() }
     factory { BiTypeToBiValue() }
@@ -311,37 +317,24 @@ val reminderModule =
     single { RadiusFormatterFactory(get(), get()) }
     single { PlaceFormatterFactory(get()) }
 
-    factory { UiReminderListsAdapter(get(), get(), get(), get(), get()) }
-    factory { UiReminderListAdapter(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factoryOf(::UiReminderListsAdapter)
+    factoryOf(::UiReminderListAdapter)
 
-    factory { BehaviorStrategyResolver(get(), get()) }
+    factoryOf(::BehaviorStrategyResolver)
 
-    factory {
-      ActivateReminderUseCase(
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
-    factory { DeactivateReminderUseCase(get(), get(), get(), get(), get()) }
+    factoryOf(::ActivateReminderUseCase)
+    factoryOf(::DeactivateReminderUseCase)
 
-    factory { PauseReminderUseCase(get(), get(), get(), get()) }
-    factory { ResumeReminderUseCase(get(), get(), get()) }
+    factoryOf(::PauseReminderUseCase)
+    factoryOf(::ResumeReminderUseCase)
 
-    factory { SnoozeReminderUseCase(get(), get(), get(), get(), get()) }
-    factory { CompleteReminderUseCase(get(), get(), get(), get(), get()) }
-    factory { SkipReminderUseCase(get(), get(), get()) }
+    factoryOf(::SnoozeReminderUseCase)
+    factoryOf(::CompleteReminderUseCase)
+    factoryOf(::SkipReminderUseCase)
 
-    factory { ToggleReminderStateUseCase(get(), get()) }
+    factoryOf(::ToggleReminderStateUseCase)
 
-    factory { UpdatePermanentReminderNotificationUseCase(get(), get()) }
+    factoryOf(::UpdatePermanentReminderNotificationUseCase)
 
     factory { StopLocationTrackingUseCase(get(), get(), get()) }
     factory { StartLocationTrackingUseCase(get(), get()) }

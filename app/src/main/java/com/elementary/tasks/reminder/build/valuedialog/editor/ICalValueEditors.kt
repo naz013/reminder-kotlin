@@ -14,6 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.reminder.build.BuilderItem
@@ -83,10 +85,12 @@ fun ICalWeekStartValueEditor(
 fun ICalIntValueEditor(
   builderItem: ICalIntBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   var value by remember(builderItem) {
     mutableFloatStateOf((builderItem.modifier.getValue() ?: builderItem.minValue).toFloat())
   }
+  val hapticFeedback = LocalHapticFeedback.current
   Column(modifier = Modifier.fillMaxWidth()) {
     Text(
       text = builderItem.formatter.format(value.toInt()),
@@ -99,6 +103,9 @@ fun ICalIntValueEditor(
     Slider(
       value = value,
       onValueChange = {
+        if (hapticFeedbackEnabled && it != value) {
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        }
         value = it
         builderItem.modifier.update(it.toInt())
         onValueChange(builderItem)

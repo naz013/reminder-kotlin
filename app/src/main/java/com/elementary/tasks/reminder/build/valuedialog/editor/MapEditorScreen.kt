@@ -35,7 +35,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.github.naz013.common.datetime.DateTimeManager
@@ -49,21 +48,15 @@ private val DISMISS_DRAG_THRESHOLD = 120.dp
 /**
  * Bottom-sheet-styled, swipe-to-dismiss host for [MapValueEditor], used instead of
  * [com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet]'s `AppModalBottomSheet` for
- * the Arriving/Leaving coordinates editors.
- *
- * `AppModalBottomSheet` renders its content in a separate Compose `Popup`/`Dialog` window, which is
- * not part of the fragment view tree [fragmentManager] searches when resolving a
- * `FragmentContainerView` by id - embedding `SimpleMapFragment` there throws
- * `IllegalArgumentException: No view found for id ...`. This renders a manually-dragged sheet
- * directly in the reminder builder's own composition (same window, no Popup) so the container
- * stays reachable, while still supporting swipe-down-to-dismiss and a tap-outside scrim like a real
- * modal bottom sheet.
+ * the Arriving/Leaving coordinates editors - that composable renders in a separate Compose
+ * `Popup`/`Dialog` window, so a manually-dragged sheet is used here instead to keep the map in the
+ * reminder builder's own composition (same window, no Popup), while still supporting
+ * swipe-down-to-dismiss and a tap-outside scrim like a real modal bottom sheet.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapEditorScreen(
   builderItem: BuilderItem<Place>,
-  fragmentManager: FragmentManager,
   dateTimeManager: DateTimeManager,
   onDismissRequest: () -> Unit,
   onValueChange: (BuilderItem<*>) -> Unit,
@@ -157,7 +150,6 @@ fun MapEditorScreen(
 
       MapValueEditor(
         builderItem = builderItem,
-        fragmentManager = fragmentManager,
         dateTimeManager = dateTimeManager,
         onValueChange = onValueChange,
         modifier = Modifier

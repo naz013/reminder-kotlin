@@ -47,8 +47,6 @@ class UiNoteListItemAdapter(
       titleFontStyle = noteWithImages.getTitleFontStyle(),
       titleFontSize = titleFontSize.toFloat(),
       images = uiNoteImagesAdapter.convert(noteWithImages.images),
-      colorPosition = noteWithImages.getColor(),
-      colorPalette = noteWithImages.getPalette(),
     )
   }
 }

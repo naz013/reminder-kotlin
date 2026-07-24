@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.util.Patterns
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.core.graphics.drawable.toBitmap
@@ -25,6 +24,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.notes.NoteColorEngine
 import com.elementary.tasks.notes.SharedNote
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
@@ -51,6 +51,7 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -59,11 +60,6 @@ import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
-import com.github.naz013.ui.common.compose.toColor
-import com.github.naz013.ui.common.compose.withAlpha
-import com.github.naz013.ui.common.isAlmostTransparent
-import com.github.naz013.ui.common.isColorDark
-import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -76,7 +72,6 @@ import org.threeten.bp.LocalTime
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.util.Random
 import java.util.UUID
 
 class NoteEditViewModel(
@@ -104,12 +99,13 @@ class NoteEditViewModel(
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val droppedContentParser: DroppedContentParser,
-  private val themeProvider: ThemeProvider,
   private val imagesSingleton: ImagesSingleton,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val systemInfo: SystemInfo,
   private val imageLoader: ImageLoader,
+  private val noteColorEngine: NoteColorEngine,
 ) : ViewModel() {
+
   val is24HourFormat: Boolean = prefs.is24HourFormat
 
   private val _state = MutableStateFlow(NoteEditState())
@@ -118,23 +114,18 @@ class NoteEditViewModel(
   private val _textUpdate = mutableLiveDataOf<Event<TextUpdate>>()
   val textUpdate = _textUpdate.toLiveData()
 
-  val event: LiveData<Event<Action>> field = mutableLiveEventOf()
-
-  private val mergedPalette by lazy { MergedPalette(themeProvider::noteColorsForSlider) }
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
   init {
-    val colorIndex =
-      if (prefs.isNoteColorRememberingEnabled) {
-        prefs.lastNoteColor
-      } else {
-        Random().nextInt(ThemeProvider.NOTE_COLORS)
-      }
-    val flatColorIndex = mergedPalette.flatIndexOf(prefs.notePalette, colorIndex)
-    val opacity = prefs.noteColorOpacity.takeIf { op -> op > 0 } ?: 100
+    val colorCode = noteColorEngine.getColorCode(
+      noteColorEngine.getLastPalette(),
+      noteColorEngine.getLastColorCode(),
+    )
+    val opacity = noteColorEngine.getLasterOpacity()
 
     _state.update {
       it.copy(
-        colorIndex = flatColorIndex,
+        colorIndex = colorCode,
         opacity = opacity,
         fontSize =
           if (prefs.isNoteFontSizeRememberingEnabled) {
@@ -161,7 +152,8 @@ class NoteEditViewModel(
             FontParams.DEFAULT_FONT_STYLE
           },
         hasCamera = systemInfo.hasCamera,
-        noteColors = colorsFor(flatIndex = flatColorIndex, opacity = opacity),
+        sliderColors = noteColorEngine.allColors(),
+        noteColors = noteColorEngine.colorsFor(colorCode, opacity),
       )
     }
     onNewTime(LocalTime.now())
@@ -170,16 +162,34 @@ class NoteEditViewModel(
     load()
   }
 
+  fun onDateClicked() {
+    event.emit(
+      ViewModelEvent.ShowDatePicker(
+        date = _state.value.date,
+        title = textProvider.getString(R.string.select_date),
+      )
+    )
+  }
+
+  fun onTimeClicked() {
+    event.emit(
+      ViewModelEvent.ShowTimePicker(
+        time = _state.value.time,
+        title = textProvider.getString(R.string.select_time),
+      )
+    )
+  }
+
   fun onColorSelected(index: Int) {
     if (prefs.isNoteColorRememberingEnabled) {
       prefs.lastNoteColor = index
     }
-    _state.update { it.copy(colorIndex = index, noteColors = colorsFor(index, it.opacity)) }
+    _state.update { it.copy(colorIndex = index, noteColors = noteColorEngine.colorsFor(index, it.opacity)) }
   }
 
   fun onOpacityChanged(value: Int) {
     prefs.noteColorOpacity = value
-    _state.update { it.copy(opacity = value, noteColors = colorsFor(it.colorIndex, value)) }
+    _state.update { it.copy(opacity = value, noteColors = noteColorEngine.colorsFor(it.colorIndex, value)) }
   }
 
   fun onFontSizeChanged(value: Int) {
@@ -253,13 +263,11 @@ class NoteEditViewModel(
 
   fun onImageOpen(position: Int) {
     val s = _state.value
-    val selection = mergedPalette.selectionAt(s.colorIndex)
     imagesSingleton.setCurrent(
       images = s.images,
-      color = selection.colorIndex,
-      palette = selection.palette,
+      backgroundColor = s.noteColors.background,
     )
-    event.value = Event(Action.OpenImagePreview(position))
+    event.value = Event(ViewModelEvent.OpenImagePreview(position))
   }
 
   fun onDeleteRequested() {
@@ -282,25 +290,6 @@ class NoteEditViewModel(
     _state.update { it.copy(activeDialog = null) }
     deleteNote()
   }
-
-  /** Pure contrast math, mirroring [com.elementary.tasks.notes.preview.PreviewNoteViewModel.colorsFor]
-   *  — kept here so the Compose layer never has to know about [ThemeProvider] or the contrast math. */
-  private fun colorsFor(
-    flatIndex: Int,
-    opacity: Int,
-  ): NoteColors {
-    val selection = mergedPalette.selectionAt(flatIndex)
-    val solidColor = themeProvider.getNoteColor(selection.colorIndex, selection.palette)
-    val isBgDark =
-      if (opacity.isAlmostTransparent()) themeProvider.isDark else solidColor.isColorDark()
-    return NoteColors(
-      background = solidColor.toColor().withAlpha(opacity.toPercentage()),
-      sliderColors = mergedPalette.colors,
-      content = (if (isBgDark) PURE_WHITE else PURE_BLACK).toColor(),
-    )
-  }
-
-  fun sliderColorsForPalette(palette: Int): IntArray = themeProvider.noteColorsForSlider(palette)
 
   /** True when saving should first confirm overwrite-vs-keep, because this came from an
    *  imported file that already has a matching note in the database. */
@@ -339,17 +328,19 @@ class NoteEditViewModel(
       Logger.i(TAG, "Share note file path: ${file?.absolutePath}")
       withContext(dispatcherProvider.main()) {
         if (file != null) {
-          event.value =
-            Event(
-              Action.ShareNote(
-                text =
-                  _state.value.textFieldValue.text
-                    .trim(),
+          if (file.exists() && file.canRead()) {
+            event.emit(
+              ViewModelEvent.ShareNote(
+                text = _state.value.textFieldValue.text.trim(),
                 file = file,
-              ),
+              )
             )
+          } else {
+            event.emit(ViewModelEvent.Error(textProvider.getText(R.string.error_sending)))
+          }
+
         } else {
-          event.value = Event(Action.Error(textProvider.getText(R.string.error_sending)))
+          event.emit(ViewModelEvent.Error(textProvider.getText(R.string.error_sending)))
         }
       }
     }
@@ -415,11 +406,13 @@ class NoteEditViewModel(
   private fun onNoteLoaded(noteWithImages: NoteWithImages) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val uiNoteEdit = uiNoteEditAdapter.convert(noteWithImages)
+      val colorCode = noteColorEngine.getColorCode(uiNoteEdit.colorPalette, uiNoteEdit.colorPosition)
       _state.update {
         it.copy(
-          colorIndex = uiNoteEdit.colorPosition,
+          canDelete = true,
+          colorIndex = colorCode,
           opacity = uiNoteEdit.opacity,
-          noteColors = colorsFor(uiNoteEdit.colorPosition, uiNoteEdit.opacity),
+          noteColors = noteColorEngine.colorsFor(colorCode, uiNoteEdit.opacity),
           fontStyle = uiNoteEdit.typeface,
           fontSize = uiNoteEdit.fontSize,
           titleFontStyle = uiNoteEdit.titleTypeface,
@@ -530,7 +523,7 @@ class NoteEditViewModel(
    *  the previous Fragment-based `PhotoSelectionUtil.downloadUrl`. */
   fun downloadImageFromUrl(url: String) {
     if (!Patterns.WEB_URL.matcher(url).matches()) {
-      event.value = Event(Action.Error(textProvider.getText(R.string.wrong_url)))
+      event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.wrong_url)))
       return
     }
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -540,7 +533,7 @@ class NoteEditViewModel(
         addBitmap(bitmap)
       } else {
         withContext(dispatcherProvider.main()) {
-          event.value = Event(Action.Error(textProvider.getText(R.string.failed_to_download)))
+          event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.failed_to_download)))
         }
       }
     }
@@ -581,7 +574,7 @@ class NoteEditViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       noteRepository.getById(id) ?: run {
         withContext(dispatcherProvider.main()) {
-          event.value = Event(Action.Error(textProvider.getText(R.string.default_error_msg)))
+          event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.default_error_msg)))
         }
         return@launch
       }
@@ -591,7 +584,7 @@ class NoteEditViewModel(
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
         appWidgetUpdater.updateAllWidgets()
-        event.value = Event(Action.Finish)
+        event.value = Event(ViewModelEvent.MoveBack)
       }
     }
   }
@@ -636,7 +629,7 @@ class NoteEditViewModel(
 
       if (result.unsupportedCount > 0) {
         withContext(dispatcherProvider.main()) {
-          event.value = Event(Action.Error(textProvider.getText(R.string.unsupported_file_format)))
+          event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.unsupported_file_format)))
         }
       }
     }
@@ -694,7 +687,7 @@ class NoteEditViewModel(
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
         appWidgetUpdater.updateAllWidgets()
-        event.value = Event(Action.Finish)
+        event.value = Event(ViewModelEvent.MoveBack)
       }
     }
   }
@@ -731,7 +724,7 @@ class NoteEditViewModel(
 
     val startTime = LocalDateTime.of(_state.value.date, _state.value.time)
     if (!dateTimeManager.isCurrent(startTime)) {
-      event.value = Event(Action.Error(textProvider.getText(R.string.reminder_is_outdated)))
+      event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.reminder_is_outdated)))
       return null
     }
     reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
@@ -751,16 +744,15 @@ class NoteEditViewModel(
     if (note == null) {
       note = Note(syncState = SyncState.WaitingForUpload)
     }
-    val merged = mergedPalette.selectionAt(s.colorIndex)
     note.summary = s.textFieldValue.text.trim()
     note.title = s.titleFieldValue.text.trim()
     note.date = dateTimeManager.getNowGmtDateTime()
-    note.color = merged.colorIndex
+    note.color = noteColorEngine.getLegacyColorCode(s.colorIndex)
     note.style = s.fontStyle
     note.fontSize = s.fontSize
     note.titleFontStyle = s.titleFontStyle
     note.titleFontSize = s.titleFontSize
-    note.palette = merged.palette
+    note.palette = noteColorEngine.getLegacyPalette(s.colorIndex)
     note.opacity = s.opacity
     note.syncState = SyncState.WaitingForUpload
 
@@ -789,55 +781,34 @@ class NoteEditViewModel(
     }
   }
 
-  private fun Int.toPercentage(): Float = this / 100f
-
-  private data class PaletteSelection(
-    val palette: Int,
-    val colorIndex: Int,
-  )
-
-  private class MergedPalette(
-    colorsForPalette: (Int) -> IntArray,
-  ) {
-    private val paletteColors = (0..2).map { colorsForPalette(it) }
-    val colors: List<Color> = paletteColors.flatMap { colors -> colors.map { it.toColor() } }
-
-    fun flatIndexOf(
-      palette: Int,
-      colorIndex: Int,
-    ): Int = paletteColors.take(palette).sumOf { it.size } + colorIndex
-
-    fun selectionAt(flatIndex: Int): PaletteSelection {
-      var remaining = flatIndex
-      paletteColors.forEachIndexed { palette, colors ->
-        if (remaining < colors.size) return PaletteSelection(palette, remaining)
-        remaining -= colors.size
-      }
-      val lastPalette = paletteColors.lastIndex
-      return PaletteSelection(lastPalette, paletteColors[lastPalette].lastIndex)
-    }
-  }
-
-  sealed interface Action {
+  sealed interface ViewModelEvent {
     data class OpenImagePreview(
       val position: Int,
-    ) : Action
+    ) : ViewModelEvent
 
     data class Error(
       val message: String,
-    ) : Action
+    ) : ViewModelEvent
 
-    data object Finish : Action
+    data object MoveBack : ViewModelEvent
 
     data class ShareNote(
       val text: String,
       val file: File,
-    ) : Action
+    ) : ViewModelEvent
+
+    data class ShowDatePicker(
+      val date: LocalDate,
+      val title: String,
+    ) : ViewModelEvent
+
+    data class ShowTimePicker(
+      val time: LocalTime,
+      val title: String,
+    ) : ViewModelEvent
   }
 
   companion object {
     private const val TAG = "CreateNoteViewModel"
-    private const val PURE_WHITE = android.graphics.Color.WHITE
-    private const val PURE_BLACK = android.graphics.Color.BLACK
   }
 }

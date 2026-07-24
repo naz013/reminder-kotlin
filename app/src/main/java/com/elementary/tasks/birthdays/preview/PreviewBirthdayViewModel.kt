@@ -3,14 +3,16 @@ package com.elementary.tasks.birthdays.preview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
-import com.github.naz013.feature.common.livedata.sendEvent
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
@@ -27,6 +29,7 @@ class PreviewBirthdayViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
+  private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewBirthdayState())
@@ -34,6 +37,18 @@ class PreviewBirthdayViewModel(
     .onStart { load() }
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
+
+  fun onSmsClicked() {
+    _state.value.birthday?.number?.also {
+      event.emit(ViewModelEvent.SendSms(it))
+    }
+  }
+
+  fun onCallClicked() {
+    _state.value.birthday?.number?.also {
+      event.emit(ViewModelEvent.MakeCall(it))
+    }
+  }
 
   fun onDeleteClick() {
     _state.update { it.copy(showDeleteConfirm = true) }
@@ -49,7 +64,7 @@ class PreviewBirthdayViewModel(
       deleteBirthdayUseCase(id)
 
       withContext(dispatcherProvider.main()) {
-        event.sendEvent(ViewModelEvent.MoveBack)
+        event.emit(ViewModelEvent.MoveBack)
       }
     }
   }
@@ -66,7 +81,8 @@ class PreviewBirthdayViewModel(
         it.copy(
           birthday = uiBirthday,
           playConfetti = shouldPlayConfetti,
-          canShowAnimation = false
+          canShowAnimation = false,
+          hasAds = !buildInfo.isPro && AdsProvider.hasAds(),
         )
       }
     }
@@ -74,5 +90,9 @@ class PreviewBirthdayViewModel(
 
   sealed interface ViewModelEvent {
     data object MoveBack : ViewModelEvent
+
+    data class SendSms(val number: String) : ViewModelEvent
+
+    data class MakeCall(val number: String) : ViewModelEvent
   }
 }

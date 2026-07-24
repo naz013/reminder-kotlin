@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.os
 
-import androidx.fragment.app.FragmentActivity
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.naz013.ui.common.Dialogues
@@ -14,7 +14,7 @@ interface PermissionFlowDelegate {
 }
 
 class PermissionFlowDelegateImpl(
-  private val activity: FragmentActivity,
+  private val activity: ComponentActivity,
 ) : PermissionFlowDelegate,
   KoinComponent {
   private val dialogues by inject<Dialogues>()

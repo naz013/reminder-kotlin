@@ -60,6 +60,7 @@ import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
+import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.BuilderItemStatus
 import com.github.naz013.ui.common.compose.foundation.component.BuilderListItemCard
@@ -112,13 +113,11 @@ fun BuildReminderScreen(
           }
         },
         actions = {
-          IconButton(onClick = onSaveClick, enabled = canSave) {
-            Icon(
-              painter = painterResource(R.drawable.ic_builder_rocket),
-              contentDescription = stringResource(R.string.save),
-              tint = MaterialTheme.colorScheme.tertiary,
-            )
-          }
+          MenuTextButton(
+            text = stringResource(R.string.save),
+            enabled = canSave,
+            onClick = onSaveClick,
+          )
           if (canRemove) {
             IconButton(onClick = onDeleteClick) {
               Icon(

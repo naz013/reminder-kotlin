@@ -5,6 +5,7 @@ import com.elementary.tasks.calendar.monthview.monthgrid.MonthGridFactory
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import io.mockk.coEvery
 import io.mockk.every
@@ -14,6 +15,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class CalendarViewModelTest : BaseTest() {
   private val dateTimeManager = mockk<DateTimeManager>()
@@ -21,6 +24,7 @@ class CalendarViewModelTest : BaseTest() {
   private val monthGridFactory = mockk<MonthGridFactory>()
   private val loadMonthEventsUseCase = mockk<LoadMonthEventsUseCase>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
+  private val textProvider = mockk<TextProvider>(relaxed = true)
 
   private lateinit var viewModel: CalendarViewModel
 
@@ -30,6 +34,7 @@ class CalendarViewModelTest : BaseTest() {
     every { prefs.startDay } returns 0
     every { dateTimeManager.formatCalendarWeekday(any()) } returns "Mon"
     every { dateTimeManager.formatCalendarMonthYear(any()) } returns "July 2026"
+    every { dateTimeManager.toMillis(any<LocalDateTime>()) } returns 1L
 
     viewModel =
       CalendarViewModel(
@@ -39,6 +44,7 @@ class CalendarViewModelTest : BaseTest() {
         monthGridFactory = monthGridFactory,
         loadMonthEventsUseCase = loadMonthEventsUseCase,
         analyticsEventSender = analyticsEventSender,
+        textProvider = textProvider,
       )
   }
 
@@ -71,7 +77,7 @@ class CalendarViewModelTest : BaseTest() {
     viewModel.onDayClick(date)
 
     val event = viewModel.navigationEvent.value?.peekContent()
-    assertEquals(CalendarViewModel.NavigationEvent.OpenDayView(date), event)
+    assertEquals(CalendarViewModel.NavigationEvent.OpenDayView(1L), event)
   }
 
   @Test
@@ -81,7 +87,7 @@ class CalendarViewModelTest : BaseTest() {
     viewModel.onAddReminderClick(date)
 
     val event = viewModel.navigationEvent.value?.peekContent()
-    assertEquals(CalendarViewModel.NavigationEvent.OpenNewReminder(date), event)
+    assertEquals(CalendarViewModel.NavigationEvent.OpenNewReminder(1L), event)
   }
 
   @Test
@@ -96,10 +102,12 @@ class CalendarViewModelTest : BaseTest() {
 
   @Test
   fun `onSettingsClick posts OpenSettings navigation event`() {
+    every { textProvider.getString(any()) } returns "Settings"
+
     viewModel.onSettingsClick()
 
     val event = viewModel.navigationEvent.value?.peekContent()
-    assertEquals(CalendarViewModel.NavigationEvent.OpenSettings, event)
+    assertEquals(CalendarViewModel.NavigationEvent.OpenSettings("Settings"), event)
   }
 
   @Test

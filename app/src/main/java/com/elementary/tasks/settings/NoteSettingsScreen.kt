@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
@@ -31,6 +33,8 @@ fun NoteSettingsScreen(
   onOpacityDialogDismiss: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
+  val hapticFeedback = LocalHapticFeedback.current
+
   Column(
     modifier =
       modifier
@@ -82,7 +86,11 @@ fun NoteSettingsScreen(
           Text(text = "${opacityDialog.previewValue}%", style = MaterialTheme.typography.bodyLarge)
           Slider(
             value = opacityDialog.previewValue.toFloat(),
-            onValueChange = { onOpacityPreviewChange(it.toInt()) },
+            onValueChange = {
+              if (it.toInt() != state.colorOpacity && state.hapticFeedbackEnabled) {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+              }
+              onOpacityPreviewChange(it.toInt()) },
             valueRange = 0f..100f,
             modifier = Modifier.fillMaxWidth(),
           )

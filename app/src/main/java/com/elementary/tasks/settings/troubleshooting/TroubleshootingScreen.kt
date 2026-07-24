@@ -31,9 +31,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
 fun TroubleshootingScreen(
-  showSendLogs: Boolean,
-  showBatteryOptimizationCard: Boolean,
-  showEmptyView: Boolean,
+  state: TroubleshootingScreenState,
   onSendLogsClick: () -> Unit,
   onDisableOptimizationClick: () -> Unit,
   modifier: Modifier = Modifier,
@@ -45,7 +43,7 @@ fun TroubleshootingScreen(
         .background(MaterialTheme.colorScheme.background)
         .verticalScroll(rememberScrollState()),
   ) {
-    if (showSendLogs) {
+    if (state.showSendLogs) {
       SettingsItem(
         title = stringResource(R.string.send_logs),
         icon = painterResource(R.drawable.ic_fluent_send_logging),
@@ -54,7 +52,7 @@ fun TroubleshootingScreen(
       )
     }
 
-    if (showBatteryOptimizationCard) {
+    if (state.showBatteryOptimizationCard) {
       Card(
         modifier =
           Modifier
@@ -94,7 +92,7 @@ fun TroubleshootingScreen(
       }
     }
 
-    if (showEmptyView) {
+    if (state.showEmptyView) {
       Column(
         modifier =
           Modifier

@@ -3,6 +3,7 @@ package com.elementary.tasks.notes.create
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
+import com.elementary.tasks.notes.NoteColorEngine
 import com.github.naz013.domain.font.FontParams
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -11,7 +12,7 @@ import java.util.UUID
 data class NoteEditState(
   val colorIndex: Int = 0,
   val opacity: Int = 100,
-  val noteColors: NoteColors = NoteColors(Color.Unspecified, emptyList(), Color.Unspecified),
+  val noteColors: NoteColorEngine.Colors = NoteColorEngine.Colors(Color.Unspecified, Color.Unspecified),
   val fontStyle: Int = FontParams.DEFAULT_FONT_STYLE,
   val fontSize: Int = FontParams.DEFAULT_FONT_SIZE,
   val titleFontStyle: Int = FontParams.DEFAULT_FONT_STYLE,
@@ -35,6 +36,7 @@ data class NoteEditState(
   val canDelete: Boolean = false,
   val reminderId: String? = null,
   val noteId: String = UUID.randomUUID().toString(),
+  val sliderColors: List<Color> = emptyList(),
 )
 
 enum class EditTab { COLOR, FONT, REMINDER, IMAGE }
@@ -42,17 +44,6 @@ enum class EditTab { COLOR, FONT, REMINDER, IMAGE }
 /** Which of the two text fields last had focus — drives which field's font size/style
  *  [com.elementary.tasks.notes.create.FontPanel] displays and edits. */
 enum class NoteTextField { TITLE, BODY }
-
-/**
- * Colors derived from [NoteEditState]'s color/opacity/palette — computed once by
- * [NoteEditViewModel.colorsFor] so the Activity/Compose layer never has to know about
- * [com.github.naz013.ui.common.theme.ThemeProvider] or the contrast math itself.
- */
-data class NoteColors(
-  val background: Color,
-  val sliderColors: List<Color>,
-  val content: Color,
-)
 
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
 enum class NoteEditDialog { DELETE, SAME_NOTE }

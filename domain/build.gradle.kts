@@ -5,4 +5,6 @@ plugins {
 dependencies {
   implementation(libs.gson)
   implementation(libs.threetenbp)
+
+  testImplementation(libs.junit)
 }

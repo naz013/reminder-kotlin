@@ -6,7 +6,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.common.Module
+import com.elementary.tasks.simplemap.MapConfig
+import com.github.naz013.common.system.Module
 import com.github.naz013.domain.font.FontParams
 
 typealias PrefsObserver = (String) -> Unit
@@ -55,6 +56,10 @@ class Prefs(
       it.invoke(key)
     }
   }
+
+  var hapticsEnabled: Boolean
+    get() = getBoolean(PrefsConstants.GENERAL_HAPTICS, true)
+    set(value) = putBoolean(PrefsConstants.GENERAL_HAPTICS, value)
 
   var addRemindersToGoogleCalendar: Boolean
     get() = getBoolean(PrefsConstants.GOOGLE_CALENDAR_ADD_REMINDERS, def = false)
@@ -257,15 +262,11 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION, value)
 
   var radius: Int
-    get() = getInt(PrefsConstants.LOCATION_RADIUS, def = DefaultValues.RADIUS)
+    get() = getInt(PrefsConstants.LOCATION_RADIUS, def = MapConfig.Radius.DEFAULT_METERS)
     set(value) = putInt(PrefsConstants.LOCATION_RADIUS, value)
 
   var isDistanceNotificationEnabled: Boolean
-    get() =
-      getBoolean(
-        PrefsConstants.TRACKING_NOTIFICATION,
-        def = DefaultValues.LOCATION_TRACK_NOTIFICATION,
-      )
+    get() = getBoolean(PrefsConstants.TRACKING_NOTIFICATION, def = true)
     set(value) = putBoolean(PrefsConstants.TRACKING_NOTIFICATION, value)
 
   var mapType: Int

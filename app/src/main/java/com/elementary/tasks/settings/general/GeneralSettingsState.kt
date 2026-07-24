@@ -5,10 +5,10 @@ data class GeneralSettingsState(
   val themeName: String = "",
   val timeFormatName: String = "",
   val isDynamicColorsVisible: Boolean = false,
-  val isDynamicColorsChecked: Boolean = false,
   val isMetricChecked: Boolean = false,
   val isAnalyticsChecked: Boolean = false,
   val dialog: GeneralSettingsDialog? = null,
+  val useDynamicColors: Boolean = false,
 )
 
 sealed class GeneralSettingsDialog {
@@ -38,7 +38,7 @@ sealed class GeneralSettingsDialog {
 sealed class GeneralSettingsEvent {
   data object RecreateActivity : GeneralSettingsEvent()
 
-  data object ApplyDynamicColorsAndRecreate : GeneralSettingsEvent()
-
-  data object RestartApp : GeneralSettingsEvent()
+  data class ApplyDynamicColorsAndRecreate(
+    val useDynamicColors: Boolean,
+  ) : GeneralSettingsEvent()
 }

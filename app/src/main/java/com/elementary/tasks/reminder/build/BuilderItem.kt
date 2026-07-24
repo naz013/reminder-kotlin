@@ -62,7 +62,7 @@ import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place

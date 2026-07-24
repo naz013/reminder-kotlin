@@ -24,6 +24,7 @@ import com.github.naz013.ui.common.compose.foundation.component.ValueAndTypePick
 fun BeforeTimeValueEditor(
   builderItem: BeforeTimeBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   val items = stringArrayResource(R.array.before_times).toList()
   val initial = remember(builderItem) { decomposeDuration(builderItem.modifier.getValue()) }
@@ -44,6 +45,7 @@ fun BeforeTimeValueEditor(
       builderItem.modifier.update(value * durationMultiplier(it))
       onValueChange(builderItem)
     },
+    hapticFeedbackEnabled = hapticFeedbackEnabled,
     modifier = Modifier.fillMaxWidth(),
   )
 }
@@ -54,6 +56,7 @@ fun BeforeTimeValueEditor(
 fun RepeatTimeValueEditor(
   builderItem: RepeatTimeBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   val items = stringArrayResource(R.array.repeat_times).toList()
   val initial = remember(builderItem) { decomposeDuration(builderItem.modifier.getValue()) }
@@ -74,6 +77,7 @@ fun RepeatTimeValueEditor(
       builderItem.modifier.update(value * durationMultiplier(it))
       onValueChange(builderItem)
     },
+    hapticFeedbackEnabled = hapticFeedbackEnabled,
     modifier = Modifier.fillMaxWidth(),
   )
 }
@@ -84,6 +88,7 @@ fun RepeatTimeValueEditor(
 fun RepeatIntervalValueEditor(
   builderItem: RepeatIntervalBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   var value by remember(builderItem) { mutableLongStateOf(builderItem.modifier.getValue() ?: 1L) }
   NumberStepperField(
@@ -93,6 +98,7 @@ fun RepeatIntervalValueEditor(
       builderItem.modifier.update(it)
       onValueChange(builderItem)
     },
+    hapticFeedbackEnabled = hapticFeedbackEnabled,
     modifier = Modifier.fillMaxWidth(),
   )
 }

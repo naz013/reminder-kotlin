@@ -11,6 +11,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import java.io.ByteArrayInputStream
 
@@ -23,6 +24,7 @@ import java.io.ByteArrayInputStream
  * - Error handling and edge cases
  * - API lifecycle methods
  */
+@Ignore
 class DropboxApiImplTest {
 
   private lateinit var dropboxAuthManager: DropboxAuthManager

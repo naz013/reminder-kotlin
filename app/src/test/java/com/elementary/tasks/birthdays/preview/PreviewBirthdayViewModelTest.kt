@@ -7,6 +7,7 @@ import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
@@ -25,6 +26,7 @@ class PreviewBirthdayViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val uiBirthdayPreviewAdapter = mockk<UiBirthdayPreviewAdapter>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>(relaxed = true)
+  private val buildInfo = mockk<BuildInfo>(relaxed = true)
 
   private lateinit var viewModel: PreviewBirthdayViewModel
 
@@ -45,6 +47,7 @@ class PreviewBirthdayViewModelTest : BaseTest() {
         analyticsEventSender = analyticsEventSender,
         uiBirthdayPreviewAdapter = uiBirthdayPreviewAdapter,
         deleteBirthdayUseCase = deleteBirthdayUseCase,
+        buildInfo = buildInfo,
       )
   }
 

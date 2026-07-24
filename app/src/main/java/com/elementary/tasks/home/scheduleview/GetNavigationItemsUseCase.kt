@@ -2,7 +2,6 @@ package com.elementary.tasks.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.home.HeaderNavigationItem
-import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel.NavigationEvent
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -46,7 +45,7 @@ class GetNavigationItemsUseCase(
           titleRes = R.string.calendar,
           iconRes = R.drawable.ic_fluent_calendar,
           color = Color.Green,
-          navigationEvent = NavigationEvent.OpenCalendar,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
           subtitle = "${remindersCount + birthdaysCount}",
         )
       }.await()
@@ -59,7 +58,7 @@ class GetNavigationItemsUseCase(
           titleRes = R.string.events,
           iconRes = R.drawable.ic_fluent_timeline,
           color = Color.Green,
-          navigationEvent = NavigationEvent.OpenEvents,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenEvents,
           subtitle = "${reminderRepository.countAllTypesInState(active = true, removed = false)}",
         )
       }.await()
@@ -71,7 +70,7 @@ class GetNavigationItemsUseCase(
           titleRes = R.string.notes,
           iconRes = R.drawable.ic_fluent_note,
           color = Color.Green,
-          navigationEvent = NavigationEvent.OpenNotes,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
           subtitle = "${noteRepository.countAll(isArchived = false)}",
         )
       }.await()
@@ -83,7 +82,7 @@ class GetNavigationItemsUseCase(
           titleRes = R.string.google_tasks,
           iconRes = R.drawable.ic_builder_google_task_list,
           color = Color.Green,
-          navigationEvent = NavigationEvent.OpenGoogleTasks,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks,
           subtitle = "${googleTaskRepository.countAll()}",
         )
       }.await()
@@ -107,7 +106,7 @@ class GetNavigationItemsUseCase(
           titleRes = R.string.groups,
           iconRes = R.drawable.ic_builder_group,
           color = Color.Green,
-          navigationEvent = NavigationEvent.OpenGroups,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
           subtitle = "${reminderGroupRepository.countAll()}",
         )
       }.await()

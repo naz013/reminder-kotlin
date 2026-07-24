@@ -9,6 +9,7 @@ import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -36,6 +37,7 @@ class EditBirthdayViewModelTest : BaseTest() {
   private val intentDataReader = mockk<IntentDataReader>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>(relaxed = true)
   private val saveBirthdayUseCase = mockk<SaveBirthdayUseCase>(relaxed = true)
+  private val textProvider = mockk<TextProvider>(relaxed = true)
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
 
   @Before
@@ -65,6 +67,7 @@ class EditBirthdayViewModelTest : BaseTest() {
       uiBirthdayDateFormatter = UiBirthdayDateFormatter(dateTimeManager),
       deleteBirthdayUseCase = deleteBirthdayUseCase,
       saveBirthdayUseCase = saveBirthdayUseCase,
+      textProvider = textProvider,
     )
 
   @Test

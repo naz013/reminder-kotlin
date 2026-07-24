@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +60,7 @@ fun EditGoogleTaskScreen(
     modifier = modifier,
     topBar = {
       TopAppBar(
-        title = { Text(stringResource(if (state.hasId) R.string.edit_task else R.string.new_task)) },
+        title = { Text(stringResource(state.screenTitleRes)) },
         navigationIcon = {
           MenuIconButton(
             icon = painterResource(R.drawable.ic_builder_arrow_left),
@@ -69,13 +70,15 @@ fun EditGoogleTaskScreen(
           )
         },
         actions = {
-          if (state.hasId) {
+          if (state.canMove) {
             MenuIconButton(
               icon = painterResource(R.drawable.ic_fluent_arrow_move),
               contentDescription = stringResource(R.string.move_to_another_list),
               enabled = !state.isLoading,
               onClick = onMoveMenuClick,
             )
+          }
+          if (state.canDelete) {
             MenuIconButton(
               icon = painterResource(R.drawable.ic_fluent_delete),
               contentDescription = stringResource(R.string.delete),
@@ -83,10 +86,8 @@ fun EditGoogleTaskScreen(
               onClick = onDeleteMenuClick,
             )
           }
-          MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_save),
-            contentDescription = stringResource(R.string.save),
-            iconColor = MaterialTheme.colorScheme.tertiary,
+          MenuTextButton(
+            text = stringResource(R.string.save),
             enabled = !state.isLoading,
             onClick = onSaveClick,
           )
@@ -315,7 +316,8 @@ private fun EditGoogleTaskScreenPreview() {
           timeText = "10:00",
           isTimeSelected = true,
           listName = "Groceries",
-          hasId = true,
+          canMove = true,
+          canDelete = true,
         ),
       onBackClick = {},
       onSaveClick = {},

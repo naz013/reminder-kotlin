@@ -1,26 +1,34 @@
 package com.github.naz013.common.system
 
-import android.content.Context
-import com.github.naz013.common.Module
+interface SystemInfo {
 
-class SystemInfo(
-  private val context: Context,
-) {
   val isTablet: Boolean
-    get() = Module.isTablet(context)
-
   val isChromeOs: Boolean
-    get() = Module.isChromeOs(context)
-
   val hasTelephony: Boolean
-    get() = Module.hasTelephony(context)
-
   val hasLocation: Boolean
-    get() = Module.hasLocation(context)
-
   val hasCamera: Boolean
-    get() = Module.hasCamera(context)
-
   val hasMicrophone: Boolean
-    get() = Module.hasMicrophone(context)
+  val hasBiometricHardware: Boolean
+  val hasLedIndication: Boolean
+  val currentPackageName: String
+  val googlePlayServicesAvailable: Boolean
+  val isProAppInstalled: Boolean
+
+  val is16: Boolean
+  val is15: Boolean
+  val is14: Boolean
+  val is13: Boolean
+  val is12: Boolean
+  val is11: Boolean
+
+  val currentSdkLevel: Int
+  val minSdkLevel: Int
+  val maxSdkLevel: Int
+
+  fun isAppInstalled(packageName: String): Boolean
+
+  companion object {
+    const val PRO_PACKAGE_NAME = "com.cray.software.justreminderpro"
+    const val FREE_PACKAGE_NAME = "com.cray.software.justreminder"
+  }
 }

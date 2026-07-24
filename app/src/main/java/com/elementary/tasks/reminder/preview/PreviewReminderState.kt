@@ -34,6 +34,7 @@ data class PreviewReminderState(
   val canCopy: Boolean = false,
   val canDelete: Boolean = false,
   val showDeleteConfirm: Boolean = false,
+  val hasAds: Boolean = false,
 )
 
 data class UiPreviewSubTask(

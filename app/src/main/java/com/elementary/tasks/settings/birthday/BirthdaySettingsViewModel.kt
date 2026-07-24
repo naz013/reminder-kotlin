@@ -12,6 +12,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.workapi.WorkRequest
@@ -27,8 +28,9 @@ class BirthdaySettingsViewModel(
   private val jobScheduler: JobScheduler,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val dateTimeManager: DateTimeManager,
-  private val analyticsEventSender: AnalyticsEventSender,
+  analyticsEventSender: AnalyticsEventSender,
   private val workScheduler: WorkScheduler,
+  private val systemInfo: SystemInfo,
 ) : ViewModel() {
   val state: StateFlow<BirthdaySettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<BirthdaySettingsEvent>> field = mutableLiveEventOf()
@@ -49,7 +51,14 @@ class BirthdaySettingsViewModel(
   }
 
   fun onDaysToBirthdayClick() {
-    state.update { it.copy(dialog = BirthdayDialog.DaysToBirthday(previewValue = prefs.daysToBirthday)) }
+    state.update {
+      it.copy(
+        dialog = BirthdayDialog.DaysToBirthday(
+          previewValue = prefs.daysToBirthday,
+          hapticFeedbackEnabled = prefs.hapticsEnabled,
+        )
+      )
+    }
   }
 
   fun onDaysToBirthdayPreviewChange(value: Int) {
@@ -84,7 +93,11 @@ class BirthdaySettingsViewModel(
   fun onReminderTimeClick() {
     navigationEvent.value =
       Event(
-        BirthdaySettingsEvent.ShowTimePicker(dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()),
+        BirthdaySettingsEvent.ShowTimePicker(
+          time = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now(),
+          is24Hour = prefs.is24HourFormat,
+          title = textProvider.getString(R.string.remind_at),
+        )
       )
   }
 
@@ -104,7 +117,14 @@ class BirthdaySettingsViewModel(
   }
 
   fun onHomeDaysClick() {
-    state.update { it.copy(dialog = BirthdayDialog.HomeDays(previewValue = prefs.birthdayDurationInDays)) }
+    state.update {
+      it.copy(
+        dialog = BirthdayDialog.HomeDays(
+          previewValue = prefs.birthdayDurationInDays,
+          hapticFeedbackEnabled = prefs.hapticsEnabled,
+        )
+      )
+    }
   }
 
   fun onHomeDaysPreviewChange(value: Int) {
@@ -224,6 +244,7 @@ class BirthdaySettingsViewModel(
       isUseContactsChecked = isUseContactsChecked,
       isAutoScanChecked = prefs.isContactAutoCheckEnabled,
       isAutoScanRowEnabled = isReminderChecked && isUseContactsChecked,
+      isLedIndicationVisible = systemInfo.hasLedIndication,
     )
   }
 

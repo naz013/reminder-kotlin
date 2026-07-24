@@ -1,10 +1,8 @@
 package com.elementary.tasks.reminder.lists.removed
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.filter.query.ReminderQueryFilterInstance
@@ -13,64 +11,52 @@ import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.milliseconds
 
-/**
- * Replaces `RemindersArchiveFragmentViewModel`: same read/filter/delete logic against removed
- * [Reminder]s, restructured around a single [StateFlow]<[RemindersArchiveScreenState]> and a
- * one-shot [NavigationEvent] channel, mirroring [com.elementary.tasks.home.eventsview.EventsViewModel].
- */
 @OptIn(FlowPreview::class)
 class RemindersArchiveViewModel(
   private val reminderRepository: ReminderRepository,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteAllReminderUseCase: DeleteAllReminderUseCase,
-) : BaseProgressViewModel(dispatcherProvider) {
-  val state: StateFlow<RemindersArchiveScreenState> field = MutableStateFlow(RemindersArchiveScreenState())
-  val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
+) : ViewModel() {
+
+  private val _state = MutableStateFlow(RemindersArchiveScreenState())
+  val state = _state.stateInWhileSubscribed(RemindersArchiveScreenState())
+    .onStart { loadReminders() }
+
+  val event: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQueryFlow = MutableStateFlow("")
-  private var lastQuery = ""
-  private var reminders = listOf<Reminder>()
-
-  /** The [Reminder]s backing the currently displayed (search + group filtered) list — what
-   *  "delete all" actually deletes, matching the legacy behaviour of only clearing what's visible. */
-  private var filteredReminders = listOf<Reminder>()
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
       searchQueryFlow
         .debounce(SEARCH_DEBOUNCE_MS)
-        .collect {
-          lastQuery = it
-          filterReminders()
-        }
+        .collect { filterReminders() }
     }
   }
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    loadReminders()
-  }
-
   fun onSearchQueryChange(query: String) {
-    state.update { it.copy(searchQuery = query) }
+    _state.update { it.copy(searchQuery = query) }
     searchQueryFlow.value = query
   }
 
   fun onItemClick(item: UiReminderList) {
-    navigationEvent.value = Event(NavigationEvent.OpenEdit(item.id))
+    event.emit(NavigationEvent.OpenEdit(item.id))
   }
 
   fun onMenuAction(
@@ -78,53 +64,69 @@ class RemindersArchiveViewModel(
     action: ArchiveReminderMenuAction,
   ) {
     when (action) {
-      ArchiveReminderMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenEdit(item.id))
-      ArchiveReminderMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteReminder(item.id))
+      ArchiveReminderMenuAction.EDIT -> event.emit(NavigationEvent.OpenEdit(item.id))
+      ArchiveReminderMenuAction.DELETE -> event.emit(NavigationEvent.ConfirmDeleteReminder(item.id))
     }
   }
 
   fun onDeleteAllClick() {
-    navigationEvent.value = Event(NavigationEvent.ConfirmDeleteAll)
+    event.emit(NavigationEvent.ConfirmDeleteAll)
   }
 
   fun deleteReminder(id: String) {
     Logger.i(TAG, "Deleting reminder: $id")
-    withResultSuspend {
-      reminderRepository.getById(id)?.let {
-        deleteReminderUseCase(it)
-        loadReminders()
-        Commands.DELETED
-      } ?: Commands.FAILED
+    viewModelScope.launch(dispatcherProvider.main()) {
+      withContext(dispatcherProvider.io()) {
+        reminderRepository.getById(id)?.also {
+          deleteReminderUseCase(it)
+        }
+      } ?: run {
+        Logger.e(TAG, "Cannot delete reminder with id = $id. Not found.")
+        return@launch
+      }
+
+      loadReminders()
     }
   }
 
   fun deleteAll() {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val toDelete = filteredReminders
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val toDelete = _state.value.filteredReminders
       if (toDelete.isEmpty()) return@launch
       Logger.i(TAG, "Deleting all reminders: ${toDelete.size}")
-      deleteAllReminderUseCase(toDelete)
+      withContext(dispatcherProvider.io()) {
+        deleteAllReminderUseCase(toDelete)
+      }
       loadReminders()
-      navigationEvent.postValue(Event(NavigationEvent.ArchiveEmptied))
+      event.emit(NavigationEvent.ArchiveEmptied)
     }
   }
 
   private fun loadReminders() {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      reminders = reminderRepository.getByRemovedStatus(removed = true)
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val allReminders = withContext(dispatcherProvider.io()) {
+        reminderRepository.getByRemovedStatus(removed = true)
+      }
+      _state.update {
+        it.copy(allReminders = allReminders)
+      }
       filterReminders()
-      Logger.i(TAG, "Loaded ${reminders.size} archived reminders.")
+      Logger.i(TAG, "Loaded ${allReminders.size} archived reminders.")
     }
   }
 
   private suspend fun filterReminders() {
-    val filtered = filterByQuery(reminders = reminders, query = lastQuery)
-    filteredReminders = filtered
-    val uiItems = filtered.map { uiReminderListAdapter.create(it) }
-    withContext(dispatcherProvider.main()) {
-      state.update {
-        it.copy(listState = if (uiItems.isEmpty()) ListState.Empty else ListState.Ready(uiItems))
-      }
+    val filtered = withContext(dispatcherProvider.default()) {
+      filterByQuery(reminders = _state.value.allReminders, query = _state.value.searchQuery)
+    }
+    _state.update {
+      it.copy(filteredReminders = filtered)
+    }
+    val uiItems = withContext(dispatcherProvider.default()) {
+      filtered.map { uiReminderListAdapter.create(it) }
+    }
+    _state.update {
+      it.copy(listState = if (uiItems.isEmpty()) ListState.Empty else ListState.Ready(uiItems))
     }
   }
 
@@ -157,6 +159,6 @@ class RemindersArchiveViewModel(
 
   companion object {
     private const val TAG = "RemindersArchiveViewModel"
-    private const val SEARCH_DEBOUNCE_MS = 300L
+    private val SEARCH_DEBOUNCE_MS = 300L.milliseconds
   }
 }

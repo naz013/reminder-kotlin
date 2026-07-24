@@ -101,6 +101,8 @@ object PrefsConstants {
   const val GOOGLE_CALENDAR_ID = "google_calendar_id"
   const val GOOGLE_CALENDAR_ADD_REMINDERS = "google_calendar_add_reminders"
 
+  const val GENERAL_HAPTICS = "settings.general.haptics"
+
   // ReminderV2 notification-customization defaults (base of the Settings -> Group -> Reminder hierarchy)
   const val DEFAULT_VIBRATE = "default_vibrate"
   const val DEFAULT_VIBRATION_PATTERN = "default_vibration_pattern"

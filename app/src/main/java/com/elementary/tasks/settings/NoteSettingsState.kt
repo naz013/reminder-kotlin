@@ -6,6 +6,7 @@ data class NoteSettingsState(
   val isFontStyleRememberChecked: Boolean = false,
   val colorOpacity: Int = 100,
   val opacityDialog: OpacityDialogState? = null,
+  val hapticFeedbackEnabled: Boolean = true,
 )
 
 data class OpacityDialogState(

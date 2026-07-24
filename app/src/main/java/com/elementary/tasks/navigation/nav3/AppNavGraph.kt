@@ -34,6 +34,7 @@ import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
+import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.elementary.tasks.workflow.workflowEntries
 import org.koin.compose.koinInject
 
@@ -48,7 +49,7 @@ import org.koin.compose.koinInject
 @Composable
 fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
-  val appNavBridge = koinInject<AppNavBridge>()
+  val appNavBridge = rememberAppNavBridge()
 
   DisposableEffect(backStack) {
     appNavBridge.attachOuterBackStack(backStack)

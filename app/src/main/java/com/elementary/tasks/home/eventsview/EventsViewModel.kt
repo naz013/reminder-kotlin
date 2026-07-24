@@ -1,13 +1,11 @@
 package com.elementary.tasks.home.eventsview
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayQueryFilter
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.reminder.lists.filter.DateRangeFilterGroup
 import com.elementary.tasks.reminder.lists.filter.FilterGroup
 import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilter
@@ -24,30 +22,25 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 
-/**
- * Replaces `HomeEventsViewModel`, `ActiveRemindersViewModel`, `ActiveTodoRemindersViewModel` and
- * `BirthdaysViewModel`: merges active reminders, shopping-type reminders and birthdays into a
- * single chronologically sorted list, filterable via multi-select [EventCategory] chips instead
- * of tabs.
- */
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class EventsViewModel(
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val reminderRepository: ReminderRepository,
   private val groupRepository: ReminderGroupRepository,
   private val birthdayRepository: BirthdayRepository,
@@ -59,15 +52,16 @@ class EventsViewModel(
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
-) : BaseProgressViewModel(dispatcherProvider) {
-  val eventsScreenState: StateFlow<EventsScreenState> field = MutableStateFlow(EventsScreenState())
+) : ViewModel() {
+
+  private val _eventsScreenState = MutableStateFlow(EventsScreenState())
+  val eventsScreenState = _eventsScreenState.stateInWhileSubscribed(EventsScreenState())
+    .onStart { refresh() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQuery = MutableStateFlow("")
   private val selectedCategories = MutableStateFlow(EventCategory.entries.toSet())
   private val refreshSignal = MutableStateFlow(0)
-
-  private var hasResumedBefore = false
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -82,22 +76,10 @@ class EventsViewModel(
     }
   }
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    if (hasResumedBefore) {
-      refresh()
-    }
-    hasResumedBefore = true
-  }
-
   private fun refresh() {
     refreshSignal.update { it + 1 }
   }
 
-  /**
-   * Visible for testing: runs the load/filter/merge pipeline directly, bypassing the debounced
-   * reactive [init] block so tests don't need to fight [kotlinx.coroutines.flow.debounce] timing.
-   */
   internal suspend fun loadMerged(
     query: String,
     categories: Set<EventCategory>,
@@ -118,7 +100,7 @@ class EventsViewModel(
   }
 
   private fun applyList(result: MergedResult) {
-    eventsScreenState.update {
+    _eventsScreenState.update {
       it.copy(
         listState = if (result.items.isEmpty()) ListState.Empty else ListState.Ready(result.items),
       )
@@ -190,7 +172,7 @@ class EventsViewModel(
   ): List<Birthday> = if (query.isBlank()) birthdays else birthdays.filter(BirthdayQueryFilter(query))
 
   fun onSearchQueryChange(query: String) {
-    eventsScreenState.update { it.copy(searchQuery = query) }
+    _eventsScreenState.update { it.copy(searchQuery = query) }
     searchQuery.value = query
   }
 
@@ -198,7 +180,7 @@ class EventsViewModel(
     val current = selectedCategories.value
     val updated = if (current.contains(category)) current - category else current + category
     selectedCategories.value = updated
-    eventsScreenState.update { it.copy(selectedCategories = updated) }
+    _eventsScreenState.update { it.copy(selectedCategories = updated) }
   }
 
   fun onItemClick(item: UiEventItem) {
@@ -218,16 +200,9 @@ class EventsViewModel(
   }
 
   fun toggleReminder(id: String) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
-      val item = reminderRepository.getById(id)
-      if (item == null) {
-        postInProgress(false)
-        return@launch
-      }
-      val (success, _) = toggleReminderStateUseCase(item)
-      postInProgress(false)
-      postCommand(if (success) Commands.SAVED else Commands.OUTDATED)
+      val item = reminderRepository.getById(id) ?: return@launch
+      toggleReminderStateUseCase(item)
       refresh()
     }
   }
@@ -270,46 +245,36 @@ class EventsViewModel(
   }
 
   fun skipReminder(id: String) {
-    withResultSuspend {
+    viewModelScope.launch(dispatcherProvider.io()) {
       val fromDb = reminderRepository.getById(id)
       if (fromDb != null) {
         skipReminderUseCase(fromDb)
         refresh()
-        Commands.SAVED
-      } else {
-        Commands.FAILED
       }
     }
   }
 
   fun moveReminderToArchive(id: String) {
-    withResultSuspend {
+    viewModelScope.launch(dispatcherProvider.io()) {
       moveReminderToArchiveUseCase(id)
       refresh()
-      Commands.DELETED
     }
   }
 
   fun deleteReminder(id: String) {
-    withResultSuspend {
+    viewModelScope.launch(dispatcherProvider.io()) {
       val fromDb = reminderRepository.getById(id)
       if (fromDb != null) {
         deleteReminderUseCase(fromDb)
         refresh()
-        Commands.DELETED
-      } else {
-        Commands.FAILED
       }
     }
   }
 
   fun deleteBirthday(id: String) {
-    postInProgress(true)
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteBirthdayUseCase(id)
       refresh()
-      postInProgress(false)
-      postCommand(Commands.DELETED)
     }
   }
 

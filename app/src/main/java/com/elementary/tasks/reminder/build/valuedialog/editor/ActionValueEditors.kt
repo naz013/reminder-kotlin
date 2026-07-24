@@ -32,20 +32,22 @@ import androidx.core.graphics.drawable.toBitmap
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.ui.common.compose.foundation.component.PhoneNumberVisualTransformation
 
 /**
- * App picker: current app icon/name (if any) + a button that launches the system app picker.
- * Replaces `ApplicationController`. Picking itself is delegated to [onPickApplication], since it
- * needs a Fragment-registered `ActivityResultLauncher` (see `ApplicationPicker`).
+ * App picker: current app icon/name (if any) + a button that navigates to
+ * [com.elementary.tasks.reminder.build.BuildReminderNavKey.SelectApplication]. Replaces
+ * `ApplicationController`. That destination can't update this [builderItem] directly (it's a
+ * separate Nav3 entry), so the pick result is applied back through the view model - see
+ * [onPickApplication]'s call site in `BuildReminderNavGraph` for the round trip.
  */
 @Composable
 fun ApplicationValueEditor(
   builderItem: BuilderItem<String>,
   packageManagerWrapper: PackageManagerWrapper,
-  onPickApplication: (onResult: (String) -> Unit) -> Unit,
-  onValueChange: (BuilderItem<*>) -> Unit,
+  onPickApplication: () -> Unit,
 ) {
-  var packageName by remember(builderItem) { mutableStateOf(builderItem.modifier.getValue()) }
+  val packageName = builderItem.modifier.getValue()
   val appInfo = remember(packageName) {
     packageName?.let { runCatching { packageManagerWrapper.getAppInfo(it) }.getOrNull() }
   }
@@ -75,13 +77,7 @@ fun ApplicationValueEditor(
     Spacer(modifier = Modifier.height(8.dp))
     OutlinedButton(
       modifier = Modifier.fillMaxWidth(),
-      onClick = {
-        onPickApplication { picked ->
-          packageName = picked
-          builderItem.modifier.update(picked)
-          onValueChange(builderItem)
-        }
-      },
+      onClick = onPickApplication,
     ) {
       Text(stringResource(R.string.acc_select_application))
     }
@@ -112,6 +108,7 @@ fun PhoneInputValueEditor(
       modifier = Modifier.weight(1f),
       singleLine = true,
       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
+      visualTransformation = PhoneNumberVisualTransformation,
     )
     Spacer(modifier = Modifier.width(8.dp))
     IconButton(

@@ -16,15 +16,16 @@ import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,17 +43,19 @@ class EditGroupViewModel(
   private val deleteGroupUseCase: DeleteGroupUseCase,
   private val saveGroupUseCase: SaveGroupUseCase,
 ) : ViewModel() {
-  private val _state =
-    MutableStateFlow(
-      EditGroupState(
-        sliderColors = ThemeProvider.colorsForSliderThemed(contextProvider.themedContext).map { color -> color.toColor() },
-      ),
-    )
-  val state: StateFlow<EditGroupState> = _state.asStateFlow()
+
+  private val _state = MutableStateFlow(EditGroupState())
+  val state = _state.stateInWhileSubscribed(EditGroupState())
+    .onStart { load() }
+
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   init {
-    load()
+    _state.update {
+      it.copy(
+        sliderColors = ThemeProvider.colorsForSliderThemed(contextProvider.themedContext).map { color -> color.toColor() },
+      )
+    }
   }
 
   fun onNameChanged(text: String) {
@@ -106,7 +109,7 @@ class EditGroupViewModel(
       Logger.i(TAG, "Deleted group, id: $id")
 
       withContext(dispatcherProvider.main()) {
-        navigationEvent.value = Event(NavigationEvent.Back)
+        navigationEvent.emit(NavigationEvent.Back)
       }
     }
   }
@@ -198,6 +201,10 @@ class EditGroupViewModel(
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))
       saveGroupUseCase(group)
       Logger.i(TAG, "Saved group, id: ${group.uuId}")
+
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.emit(NavigationEvent.Back)
+      }
     }
   }
 
