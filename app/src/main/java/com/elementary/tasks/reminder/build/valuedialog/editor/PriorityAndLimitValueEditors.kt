@@ -12,6 +12,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.style.TextAlign
 import com.elementary.tasks.R
@@ -54,10 +56,12 @@ fun PriorityValueEditor(
 fun RepeatLimitValueEditor(
   builderItem: RepeatLimitBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   var value by remember(builderItem) {
     mutableFloatStateOf((builderItem.modifier.getValue() ?: 0).toFloat())
   }
+  val hapticFeedback = LocalHapticFeedback.current
   Column(modifier = Modifier.fillMaxWidth()) {
     Text(
       text = builderItem.repeatLimitFormatter.format(value.toInt()),
@@ -69,6 +73,9 @@ fun RepeatLimitValueEditor(
     Slider(
       value = value,
       onValueChange = { newValue ->
+        if (hapticFeedbackEnabled && newValue != value) {
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        }
         value = newValue
         builderItem.modifier.update(newValue.toInt())
         onValueChange(builderItem)

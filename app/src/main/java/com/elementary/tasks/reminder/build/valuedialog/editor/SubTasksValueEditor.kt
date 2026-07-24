@@ -21,8 +21,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,12 +52,13 @@ private val LIST_MAX_HEIGHT = 400.dp
 
 /**
  * Editable shopping/checklist grid: type to add text, Enter/Done adds the next row and focuses
- * it, backspace on an empty row deletes it and refocuses the previous one, tapping the checkbox
- * (re)sorts checked items to the bottom. Replaces `SubTasksController`.
+ * it, backspace on an empty row deletes it and refocuses the previous one. Checking an item never
+ * reorders the list - toggling it in place is what keeps re-checking items predictable while
+ * ticking several off. Replaces `SubTasksController`.
  *
- * All of the position/focus/reordering bookkeeping is delegated unchanged to
- * [SubTasksViewModel] (a plain, View-framework-agnostic class already used by the legacy
- * controller) - this editor only owns the row rendering and per-row focus requesting.
+ * All of the position/focus bookkeeping is delegated unchanged to [SubTasksViewModel] (a plain,
+ * View-framework-agnostic class already used by the legacy controller) - this editor only owns
+ * the row rendering and per-row focus requesting.
  */
 @Composable
 fun SubTasksValueEditor(
@@ -66,18 +67,12 @@ fun SubTasksValueEditor(
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
   val viewModel = remember(builderItem) { SubTasksViewModel(dateTimeManager) }
-  var items by remember { mutableStateOf(emptyList<ShopItem>(), neverEqualPolicy()) }
 
   LaunchedEffect(builderItem) {
     viewModel.initWithData(builderItem.modifier.getValue() ?: emptyList())
   }
 
-  // ShopItem entries are mutated in place, so a checked-state change can produce a list that is
-  // structurally equal to the previous one (same object references, same values) whenever the
-  // sort order doesn't change. observeAsState's default structural-equality policy would then
-  // skip recomposition, so this uses a never-equal-policy state updated from a raw Observer
-  // instead, mirroring the saveItems handling below.
-  viewModel.showItems.ObserveNonNull { items = it }
+  val items by viewModel.showItems.observeAsState(emptyList())
 
   viewModel.saveItems.ObserveNonNull { saved ->
     builderItem.modifier.update(saved)

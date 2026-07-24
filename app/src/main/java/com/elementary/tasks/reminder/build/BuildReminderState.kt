@@ -15,4 +15,5 @@ data class BuildReminderState(
   val isFromFile: Boolean = false,
   val hasSameInDb: Boolean = false,
   val is24HourFormat: Boolean = true,
+  val hapticFeedbackEnabled: Boolean = true,
 )

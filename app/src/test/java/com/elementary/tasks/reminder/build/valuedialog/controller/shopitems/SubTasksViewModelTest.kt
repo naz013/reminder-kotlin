@@ -227,14 +227,14 @@ class SubTasksViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onCheckPressed toggles checked state and sorts checked items to the bottom`() {
+  fun `onCheckPressed toggles checked state without reordering the list`() {
     viewModel.initWithData(listOf(shopItem("A", createTime = "t1"), shopItem("B", createTime = "t2")))
 
     viewModel.onCheckPressed(0)
 
     val items = viewModel.showItems.value!!
-    assertEquals(listOf("B", "A"), items.map { it.summary })
-    assertEquals(true, items[1].isChecked)
+    assertEquals(listOf("A", "B"), items.map { it.summary })
+    assertEquals(true, items[0].isChecked)
     assertEquals(listOf(0, 1), items.map { it.position })
   }
 

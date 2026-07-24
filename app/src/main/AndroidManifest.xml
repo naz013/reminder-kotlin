@@ -271,11 +271,6 @@
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
-            android:name=".core.apps.SelectApplicationActivity"
-            android:excludeFromRecents="true"
-            android:exported="false"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
             android:name=".birthdays.dialog.BirthdayActionActivity"
             android:excludeFromRecents="true"
             android:exported="false" />

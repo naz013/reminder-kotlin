@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder
 
 import com.elementary.tasks.reminder.actions.GetReminderActionsUseCase
+import com.elementary.tasks.reminder.build.ApplicationPickerResultHolder
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.build.BuildReminderViewModel
 import com.elementary.tasks.reminder.build.adapter.BiErrorForUiAdapter
@@ -236,6 +237,7 @@ val reminderModule =
     factory { BiFactoryICal(get(), get(), get(), get()) }
 
     single { SelectorDialogDataHolder() }
+    single { ApplicationPickerResultHolder() }
 
     factory { UiSelectorItemsAdapter(get(), get(), get(), get()) }
 

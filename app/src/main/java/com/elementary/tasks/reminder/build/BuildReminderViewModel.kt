@@ -149,7 +149,10 @@ class BuildReminderViewModel(
 
   init {
     _state.update {
-      it.copy(is24HourFormat = prefs.is24HourFormat)
+      it.copy(
+        is24HourFormat = prefs.is24HourFormat,
+        hapticFeedbackEnabled = prefs.hapticsEnabled,
+      )
     }
     reminderAnalyticsTracker.startTracking()
     initBuilder()
@@ -378,6 +381,23 @@ class BuildReminderViewModel(
     Logger.i(TAG, "Update VALUE for builder item, type = ${builderItem.biType}")
     viewModelScope.launch(dispatcherProvider.default()) {
       builderItemsLogic.update(position, builderItem)
+      updateSelector()
+    }
+  }
+
+  /** Applies a package name picked on [BuildReminderNavKey.SelectApplication] - a separate Nav3
+   *  entry, so it can't reach the [ApplicationBuilderItem] being edited directly. The sheet is
+   *  dismissed before navigating there (see [BuildReminderNavGraph]), so this looks the item up by
+   *  [position] rather than relying on `editingItem` still being set. */
+  fun onApplicationPicked(
+    position: Int,
+    packageName: String,
+  ) {
+    Logger.i(TAG, "Application picked for position = $position")
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val item = builderItemsLogic.getUsed().getOrNull(position) as? ApplicationBuilderItem ?: return@launch
+      item.modifier.update(packageName)
+      builderItemsLogic.update(position, item)
       updateSelector()
     }
   }

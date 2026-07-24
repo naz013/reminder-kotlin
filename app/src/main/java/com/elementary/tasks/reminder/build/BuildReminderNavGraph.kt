@@ -12,12 +12,12 @@ import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
+import com.elementary.tasks.core.apps.SelectApplicationScreen
 import com.elementary.tasks.core.compose.rememberDateTimeManager
 import com.elementary.tasks.core.compose.rememberGoogleCalendarUtils
 import com.elementary.tasks.core.compose.rememberPackageManagerWrapper
 import com.elementary.tasks.core.os.compose.PermissionRequester
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
-import com.elementary.tasks.core.os.datapicker.compose.rememberApplicationPicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
 import com.elementary.tasks.notes.ObserveEvent
@@ -48,6 +48,19 @@ fun EntryProviderScope<NavKey>.buildReminderEntries(backStack: MutableList<NavKe
   entry<BuildReminderNavKey.RecurHelp> {
     RecurHelpScreen(onBackClick = { backStack.removeLastOrNull() })
   }
+  entry<BuildReminderNavKey.SelectApplication> { SelectApplicationEntry(backStack) }
+}
+
+@Composable
+private fun SelectApplicationEntry(backStack: MutableList<NavKey>) {
+  val resultHolder = rememberApplicationPickerResultHolder()
+  SelectApplicationScreen(
+    onBackClick = { backStack.removeLastOrNull() },
+    onAppSelected = { packageName ->
+      resultHolder.pendingPackageName = packageName
+      backStack.removeLastOrNull()
+    },
+  )
 }
 
 @Composable
@@ -72,9 +85,9 @@ private fun MainEntry(
   val dateTimeManager = rememberDateTimeManager()
 
   val permissionRequester = rememberPermissionRequesterRationale()
-  val pickApplication = rememberApplicationPicker()
   val pickContactPhone = rememberContactPhonePicker()
   val pickFiles = rememberMultipleUriPicker()
+  val applicationPickerResultHolder = rememberApplicationPickerResultHolder()
 
   val state by viewModel.state.collectAsState()
 
@@ -91,6 +104,21 @@ private fun MainEntry(
     if (pendingConfigRefresh) {
       pendingConfigRefresh = false
       viewModel.onConfigurationChanged()
+    }
+  }
+
+  // SelectApplication is a separate Nav3 entry (its own ViewModelStoreOwner), so it can't hand
+  // the picked package name back to viewModel directly - this position (rememberSaveable for the
+  // same reason as pendingConfigRefresh above) plus the shared applicationPickerResultHolder is
+  // how Main recovers "which item was being edited" once it remounts after the picker pops.
+  var pendingApplicationPickPosition by rememberSaveable { mutableStateOf<Int?>(null) }
+  LaunchedEffect(Unit) {
+    val position = pendingApplicationPickPosition
+    val packageName = applicationPickerResultHolder.pendingPackageName
+    if (position != null && packageName != null) {
+      pendingApplicationPickPosition = null
+      applicationPickerResultHolder.pendingPackageName = null
+      viewModel.onApplicationPicked(position, packageName)
     }
   }
 
@@ -177,12 +205,17 @@ private fun MainEntry(
       ValueEditorSheet(
         builderItem = item,
         is24HourFormat = state.is24HourFormat,
+        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
         paramToTextAdapter = paramToTextAdapter,
         googleCalendarUtils = googleCalendarUtils,
         packageManagerWrapper = packageManagerWrapper,
         attachmentFileAdapter = attachmentFileAdapter,
         dateTimeManager = dateTimeManager,
-        onPickApplication = { onResult -> pickApplication(onResult) },
+        onPickApplication = {
+          pendingApplicationPickPosition = position
+          viewModel.onEditDialogDismissed()
+          backStack.add(BuildReminderNavKey.SelectApplication)
+        },
         onPickContact = { onResult ->
           permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { pickContactPhone(onResult) })
         },

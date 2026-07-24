@@ -1,24 +1,18 @@
 package com.elementary.tasks.reminder.build.valuedialog.editor
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
-import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.ui.common.compose.foundation.component.SelectableRadioList
-
-private val LIST_MAX_HEIGHT = 360.dp
+import com.github.naz013.ui.common.compose.foundation.component.WheelPicker
 
 /** Single-select group picker. Replaces `GroupController`, which resets to the item's default
  *  group on clear rather than to no selection - there's no explicit "clear" affordance here since
@@ -29,20 +23,23 @@ fun GroupValueEditor(
   builderItem: GroupBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
-  var selected by remember(builderItem) {
-    mutableStateOf(builderItem.modifier.getValue() ?: builderItem.defaultGroup)
+  val groups = builderItem.groups
+  val initial = remember(builderItem) { builderItem.modifier.getValue() ?: builderItem.defaultGroup }
+  var selectedIndex by remember(builderItem) {
+    mutableIntStateOf(groups.indexOf(initial).coerceAtLeast(0))
   }
-  SelectableRadioList(
-    items = builderItem.groups,
-    selectedItem = selected,
-    onItemSelected = { group ->
-      selected = group
-      builderItem.modifier.update(group)
-      onValueChange(builderItem)
+  WheelPicker(
+    items = groups.map { it.title },
+    selectedIndex = selectedIndex,
+    onSelectedIndexChange = { index ->
+      val group = groups.getOrNull(index)
+      if (group != null) {
+        selectedIndex = index
+        builderItem.modifier.update(group)
+        onValueChange(builderItem)
+      }
     },
-    itemLabel = UiGroupList::title,
-    itemKey = { it.id },
-    modifier = Modifier.fillMaxWidth().heightIn(max = LIST_MAX_HEIGHT),
+    modifier = Modifier.fillMaxWidth(),
   )
 }
 
@@ -52,23 +49,28 @@ fun GoogleTaskListValueEditor(
   builderItem: GoogleTaskListBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
-  var selected by remember(builderItem) { mutableStateOf(builderItem.modifier.getValue()) }
-  SelectableRadioList(
-    items = builderItem.taskLists,
-    selectedItem = selected,
-    onItemSelected = { taskList ->
-      selected = taskList
-      builderItem.modifier.update(taskList)
-      onValueChange(builderItem)
+  val taskLists = builderItem.taskLists
+  val initial = remember(builderItem) { builderItem.modifier.getValue() }
+  var selectedIndex by remember(builderItem) {
+    mutableIntStateOf(taskLists.indexOf(initial).coerceAtLeast(0))
+  }
+  WheelPicker(
+    items = taskLists.map { it.title },
+    selectedIndex = selectedIndex,
+    onSelectedIndexChange = { index ->
+      val taskList = taskLists.getOrNull(index)
+      if (taskList != null) {
+        selectedIndex = index
+        builderItem.modifier.update(taskList)
+        onValueChange(builderItem)
+      }
     },
-    itemLabel = GoogleTaskList::title,
-    itemKey = { it.listId },
-    modifier = Modifier.fillMaxWidth().heightIn(max = LIST_MAX_HEIGHT),
+    modifier = Modifier.fillMaxWidth(),
   )
 }
 
 /** Single-select Google Calendar picker. Replaces `GoogleCalendarController`. Unlike the other
- *  selectable-radio items, the option list isn't on the [BuilderItem] itself - it's fetched (a
+ *  selectable items, the option list isn't on the [BuilderItem] itself - it's fetched (a
  *  synchronous ContentResolver query) once per edit session via [GoogleCalendarUtils]. */
 @Composable
 fun GoogleCalendarValueEditor(
@@ -77,17 +79,21 @@ fun GoogleCalendarValueEditor(
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
   val calendars = remember(builderItem) { googleCalendarUtils.getCalendarsList() }
-  var selected by remember(builderItem) { mutableStateOf(builderItem.modifier.getValue()) }
-  SelectableRadioList(
-    items = calendars,
-    selectedItem = selected,
-    onItemSelected = { calendar ->
-      selected = calendar
-      builderItem.modifier.update(calendar)
-      onValueChange(builderItem)
+  val initial = remember(builderItem) { builderItem.modifier.getValue() }
+  var selectedIndex by remember(builderItem) {
+    mutableIntStateOf(calendars.indexOf(initial).coerceAtLeast(0))
+  }
+  WheelPicker(
+    items = calendars.map { it.name },
+    selectedIndex = selectedIndex,
+    onSelectedIndexChange = { index ->
+      val calendar = calendars.getOrNull(index)
+      if (calendar != null) {
+        selectedIndex = index
+        builderItem.modifier.update(calendar)
+        onValueChange(builderItem)
+      }
     },
-    itemLabel = GoogleCalendarUtils.CalendarItem::name,
-    itemKey = { it.id },
-    modifier = Modifier.fillMaxWidth().heightIn(max = LIST_MAX_HEIGHT),
+    modifier = Modifier.fillMaxWidth(),
   )
 }
