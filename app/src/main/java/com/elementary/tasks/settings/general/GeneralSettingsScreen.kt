@@ -64,7 +64,7 @@ fun GeneralSettingsScreen(
     if (state.isDynamicColorsVisible) {
       SettingsSwitchItem(
         title = stringResource(R.string.dynamic_colors),
-        checked = state.isDynamicColorsChecked,
+        checked = state.useDynamicColors,
         onCheckedChange = onDynamicColorsToggle,
         subtitleOn = stringResource(R.string.use_theme_colors_from_wallpaper),
         subtitleOff = stringResource(R.string.use_built_in_theme_color),

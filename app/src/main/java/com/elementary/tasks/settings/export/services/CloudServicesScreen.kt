@@ -16,7 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,13 +37,7 @@ import com.github.naz013.ui.common.R as UiR
 
 @Composable
 fun CloudServicesScreen(
-  isLoading: Boolean,
-  isDropboxVisible: Boolean,
-  isDropboxLoggedIn: Boolean,
-  isGoogleDriveVisible: Boolean,
-  isGoogleDriveLoggedIn: Boolean,
-  isGoogleTasksVisible: Boolean,
-  isGoogleTasksLoggedIn: Boolean,
+  state: CloudServicesState,
   onBackClick: () -> Unit,
   onDropboxClick: () -> Unit,
   onGoogleDriveClick: () -> Unit,
@@ -85,21 +78,7 @@ fun CloudServicesScreen(
       ) {
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (isLoading) {
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 24.dp),
-          ) {
-            CircularProgressIndicator(modifier = Modifier.size(24.dp))
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-              text = stringResource(R.string.please_wait),
-              style = MaterialTheme.typography.titleMedium,
-            )
-          }
-        }
-
-        if (isDropboxVisible || isGoogleDriveVisible) {
+        if (state.isDropboxVisible || state.isGoogleDriveVisible) {
           SectionTitle(text = stringResource(R.string.application_data))
           Spacer(modifier = Modifier.height(16.dp))
           Surface(
@@ -111,19 +90,19 @@ fun CloudServicesScreen(
               modifier = Modifier.padding(20.dp),
               verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-              if (isDropboxVisible) {
+              if (state.isDropboxVisible) {
                 ServiceRow(
                   title = stringResource(R.string.dropbox),
-                  isLoggedIn = isDropboxLoggedIn,
-                  enabled = !isLoading,
+                  isLoggedIn = state.isDropboxLoggedIn,
+                  enabled = !state.isLoading,
                   onClick = onDropboxClick,
                 )
               }
-              if (isGoogleDriveVisible) {
+              if (state.isGoogleDriveVisible) {
                 ServiceRow(
                   title = stringResource(R.string.google_drive),
-                  isLoggedIn = isGoogleDriveLoggedIn,
-                  enabled = !isLoading,
+                  isLoggedIn = state.isGoogleDriveLoggedIn,
+                  enabled = !state.isLoading,
                   onClick = onGoogleDriveClick,
                 )
               }
@@ -132,7 +111,7 @@ fun CloudServicesScreen(
           Spacer(modifier = Modifier.height(32.dp))
         }
 
-        if (isGoogleTasksVisible) {
+        if (state.isGoogleTasksVisible) {
           SectionTitle(text = stringResource(R.string.google_tasks))
           Spacer(modifier = Modifier.height(16.dp))
           Surface(
@@ -143,8 +122,8 @@ fun CloudServicesScreen(
             Column(modifier = Modifier.padding(20.dp)) {
               ServiceRow(
                 title = stringResource(R.string.google_tasks),
-                isLoggedIn = isGoogleTasksLoggedIn,
-                enabled = !isLoading,
+                isLoggedIn = state.isGoogleTasksLoggedIn,
+                enabled = !state.isLoading,
                 onClick = onGoogleTasksClick,
               )
             }
@@ -192,13 +171,7 @@ private fun ServiceRow(
 @Composable
 private fun CloudServicesScreenPreview() {
   CloudServicesScreen(
-    isLoading = false,
-    isDropboxVisible = true,
-    isDropboxLoggedIn = false,
-    isGoogleDriveVisible = true,
-    isGoogleDriveLoggedIn = true,
-    isGoogleTasksVisible = true,
-    isGoogleTasksLoggedIn = false,
+    state = CloudServicesState(),
     onBackClick = {},
     onDropboxClick = {},
     onGoogleDriveClick = {},

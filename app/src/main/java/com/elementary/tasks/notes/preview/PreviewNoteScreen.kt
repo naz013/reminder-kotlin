@@ -10,15 +10,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -47,16 +43,14 @@ private const val OVERFLOW_ITEM_DELETE = 2
 fun PreviewNoteScreen(
   modifier: Modifier = Modifier,
   state: PreviewNoteState,
-  colors: NotePreviewColors,
   actions: PreviewNoteActions,
   adsBanner: (@Composable () -> Unit)? = null,
-  snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
   Column(
     modifier =
       modifier
         .fillMaxSize()
-        .background(colors.background),
+        .background(state.background),
   ) {
     TopAppBar(
       title = { },
@@ -65,7 +59,7 @@ fun PreviewNoteScreen(
           Icon(
             painter = painterResource(R.drawable.ic_builder_arrow_left),
             contentDescription = stringResource(R.string.cd_back),
-            tint = colors.content,
+            tint = state.content,
           )
         }
       },
@@ -74,14 +68,14 @@ fun PreviewNoteScreen(
           Icon(
             painter = painterResource(R.drawable.ic_fluent_edit),
             contentDescription = stringResource(R.string.edit),
-            tint = colors.content,
+            tint = state.content,
           )
         }
         IconButton(onClick = actions.onStatusClick) {
           Icon(
             painter = painterResource(R.drawable.ic_fluent_heart),
             contentDescription = stringResource(R.string.show_in_status_bar),
-            tint = colors.content,
+            tint = state.content,
           )
         }
         var overflowExpanded by remember { mutableStateOf(false) }
@@ -89,7 +83,7 @@ fun PreviewNoteScreen(
           Icon(
             imageVector = Icons.Default.MoreVert,
             contentDescription = null,
-            tint = colors.content,
+            tint = state.content,
           )
         }
         AppDropdownMenu(
@@ -133,8 +127,6 @@ fun PreviewNoteScreen(
       modifier = Modifier.statusBarsPadding(),
     )
 
-    SnackbarHost(hostState = snackbarHostState)
-
     Column(
       modifier =
         Modifier
@@ -146,7 +138,7 @@ fun PreviewNoteScreen(
           text = state.title,
           style =
             MaterialTheme.typography.bodyLarge.copy(
-              color = colors.content,
+              color = state.content,
               fontSize = state.titleTextSize.sp,
               fontFamily = state.titleTypeface?.let { FontFamily(it) } ?: FontFamily.Default,
               lineHeight = TextUnit.Unspecified,
@@ -158,7 +150,7 @@ fun PreviewNoteScreen(
         text = state.text,
         style =
           MaterialTheme.typography.bodyLarge.copy(
-            color = colors.content,
+            color = state.content,
             fontSize = state.textSize.sp,
             fontFamily = state.typeface?.let { FontFamily(it) } ?: FontFamily.Default,
             lineHeight = TextUnit.Unspecified,
@@ -190,22 +182,5 @@ fun PreviewNoteScreen(
         modifier = Modifier.padding(top = 16.dp),
       )
     }
-  }
-
-  if (state.activeDialog == PreviewNoteDialog.DELETE) {
-    AlertDialog(
-      onDismissRequest = actions.onDialogDismiss,
-      text = { Text(stringResource(R.string.delete_this_note)) },
-      confirmButton = {
-        TextButton(onClick = actions.onDeleteConfirmed) {
-          Text(stringResource(R.string.yes))
-        }
-      },
-      dismissButton = {
-        TextButton(onClick = actions.onDialogDismiss) {
-          Text(stringResource(R.string.no))
-        }
-      },
-    )
   }
 }

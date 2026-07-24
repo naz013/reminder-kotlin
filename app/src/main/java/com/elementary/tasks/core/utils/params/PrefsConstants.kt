@@ -100,4 +100,6 @@ object PrefsConstants {
   const val GOOGLE_CALENDAR_SYNC = "google_calendar_sync"
   const val GOOGLE_CALENDAR_ID = "google_calendar_id"
   const val GOOGLE_CALENDAR_ADD_REMINDERS = "google_calendar_add_reminders"
+
+  const val GENERAL_HAPTICS = "settings.general.haptics"
 }

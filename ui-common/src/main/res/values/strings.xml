@@ -281,7 +281,7 @@
     <string name="delete_completed_tasks">Delete completed tasks</string>
     <string name="trash_cleared">Trash cleared</string>
     <string name="trash_is_empty">Trash is empty</string>
-    <string name="reminder_is_outdated">Reminder is outdated, edit it first</string>
+    <string name="reminder_is_outdated">Reminder is outdated, edit it first!</string>
     <string name="everyday">Everyday</string>
     <string name="reminder">Reminder</string>
     <string name="other">Other</string>
@@ -929,4 +929,19 @@
     <string name="cd_back">Move back</string>
     <string name="how_to_create_a_reminder">How to Create a Reminder</string>
     <string name="copy_of">"Copy of: %s"</string>
+
+    <string name="delete_reminder_permanently">Delete reminder permanently?</string>
+    <string name="delete_birthday_permanently">Delete birthday permanently?</string>
+    <string name="delete_note_permanently">Delete note permanently?</string>
+    <string name="delete_group_permanently">Delete group permanently?</string>
+
+    <string name="share_send_note">Send note…</string>
+
+    <string name="note_moved_to_archive">Note moved to archive</string>
+    <string name="note_reverted_from_archive">Note reverted from archive</string>
+    <string name="show_note_in_notifications">Show note in notifications</string>
+
+    <string name="share_intent_title">Share...</string>
+    <string name="error_reminder_not_found">Reminder not found!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">Reminder is already removed! Edit it first.</string>
 </resources>

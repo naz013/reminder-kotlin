@@ -18,7 +18,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -48,6 +47,7 @@ import com.elementary.tasks.home.eventsview.ReminderEventRow
 import com.elementary.tasks.home.eventsview.UiEventBirthday
 import com.elementary.tasks.home.eventsview.UiEventItem
 import com.elementary.tasks.home.eventsview.UiEventReminder
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
@@ -101,6 +101,12 @@ fun WeekViewScreen(
               onClick = onBackClick,
             )
           },
+          actions = {
+            AddMenuButton(
+              onAddReminderClick = onAddReminderClick,
+              onAddBirthdayClick = onAddBirthdayClick,
+            )
+          },
           colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
         )
         WeekDayHeaderRow(
@@ -109,10 +115,7 @@ fun WeekViewScreen(
           modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
         )
       }
-    },
-    floatingActionButton = {
-      AddActionFab(onAddReminderClick = onAddReminderClick, onAddBirthdayClick = onAddBirthdayClick)
-    },
+    }
   ) { padding ->
     HorizontalPager(
       state = pagerState,
@@ -126,6 +129,37 @@ fun WeekViewScreen(
         onEventMenuAction = onEventMenuAction,
       )
     }
+  }
+}
+
+@Composable
+private fun AddMenuButton(
+  onAddReminderClick: () -> Unit,
+  onAddBirthdayClick: () -> Unit,
+) {
+  var expanded by remember { mutableStateOf(false) }
+  Box {
+    MenuIconButton(
+      icon = AppIcons.Fluent.Add,
+      contentDescription = stringResource(R.string.acc_add),
+      onClick = { expanded = true },
+      iconColor = MaterialTheme.colorScheme.primary,
+    )
+    AppDropdownMenu(
+      expanded = expanded,
+      onDismissRequest = { expanded = false },
+      items =
+        listOf(
+          PopupMenuItem(id = 0, title = stringResource(R.string.new_reminder), iconRes = R.drawable.ic_fluent_alert),
+          PopupMenuItem(id = 2, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake),
+        ),
+      onItemClick = { id ->
+        when (id) {
+          0 -> onAddReminderClick()
+          1 -> onAddBirthdayClick()
+        }
+      },
+    )
   }
 }
 
@@ -265,37 +299,6 @@ private fun DayEmptyState(modifier: Modifier = Modifier) {
       style = MaterialTheme.typography.bodyLarge,
       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
       modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
-    )
-  }
-}
-
-@Composable
-private fun AddActionFab(
-  onAddReminderClick: () -> Unit,
-  onAddBirthdayClick: () -> Unit,
-) {
-  var expanded by remember { mutableStateOf(false) }
-  Box {
-    FloatingActionButton(onClick = { expanded = true }) {
-      Icon(
-        painter = painterResource(R.drawable.ic_fluent_add),
-        contentDescription = stringResource(R.string.acc_add_reminder),
-      )
-    }
-    AppDropdownMenu(
-      expanded = expanded,
-      onDismissRequest = { expanded = false },
-      items =
-        listOf(
-          PopupMenuItem(id = 0, title = stringResource(R.string.add_reminder_menu), iconRes = R.drawable.ic_fluent_alert),
-          PopupMenuItem(id = 1, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake),
-        ),
-      onItemClick = { id ->
-        when (id) {
-          0 -> onAddReminderClick()
-          1 -> onAddBirthdayClick()
-        }
-      },
     )
   }
 }

@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
-import android.content.Context
 import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesTask
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
@@ -10,7 +9,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTr
 import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePermanentReminderNotificationUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
-import com.github.naz013.common.Module
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
@@ -20,7 +19,6 @@ import com.github.naz013.workapi.WorkScheduler
  * Activates a reminder based on its behavior strategy.
  */
 class ActivateReminderUseCase(
-  private val context: Context,
   private val behaviorStrategyResolver: BehaviorStrategyResolver,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val startLocationTrackingUseCase: StartLocationTrackingUseCase,
@@ -30,6 +28,7 @@ class ActivateReminderUseCase(
   private val saveReminderToGoogleTasksUseCase: SaveReminderToGoogleTasksUseCase,
   private val saveReminderToGoogleCalendarUseCase: SaveReminderToGoogleCalendarUseCase,
   private val workScheduler: WorkScheduler,
+  private val systemInfo: SystemInfo,
 ) {
   suspend operator fun invoke(
     reminder: Reminder,
@@ -38,7 +37,7 @@ class ActivateReminderUseCase(
     val strategy = behaviorStrategyResolver.resolve(reminder)
 
     if (strategy.requiresBackgroundService(reminder) || !strategy.requiresTimeScheduling(reminder)) {
-      if (!Module.hasLocation(context)) {
+      if (!systemInfo.hasLocation) {
         deleteReminderUseCase(reminder)
         Logger.w(TAG, "Deleting location-based reminder id=${reminder.uuId} due to missing location module.")
         return reminder

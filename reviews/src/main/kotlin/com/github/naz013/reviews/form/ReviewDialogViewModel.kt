@@ -23,7 +23,7 @@ import java.util.Locale
 import java.util.UUID
 
 /**
- * ViewModel for managing review submission in ReviewDialog.
+ * ViewModel for managing review submission in the feedback form ([ReviewsApiImpl.showFeedbackForm]).
  *
  * Handles form state, validation, and submission including:
  * - Firebase anonymous authentication

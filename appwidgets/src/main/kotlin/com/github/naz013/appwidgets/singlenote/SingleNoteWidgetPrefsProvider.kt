@@ -56,7 +56,7 @@ internal class SingleNoteWidgetPrefsProvider(
   }
 
   fun getTextColorPosition(): Int {
-    return getInt(WIDGET_TEXT_COLOR_POSITION, def = ThemeProvider.Color.BLACK).also {
+    return getInt(WIDGET_TEXT_COLOR_POSITION, def = ThemeProvider.AppColorIndex.BLACK).also {
       Logger.d(TAG, "getTextColorPosition: $it")
     }
   }
@@ -74,7 +74,7 @@ internal class SingleNoteWidgetPrefsProvider(
   }
 
   fun getOverlayColorPosition(): Int {
-    return getInt(WIDGET_OVERLAY_COLOR_POSITION, def = ThemeProvider.Color.WHITE).also {
+    return getInt(WIDGET_OVERLAY_COLOR_POSITION, def = ThemeProvider.AppColorIndex.WHITE).also {
       Logger.d(TAG, "getOverlayColorPosition: $it")
     }
   }

@@ -39,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -267,9 +268,13 @@ private fun HeaderNavigationTile(
   index: Int,
   onClick: () -> Unit,
 ) {
-  val visibleState = remember { MutableTransitionState(false) }
+  var hasAnimated by rememberSaveable { mutableStateOf(false) }
+  val visibleState = remember { MutableTransitionState(hasAnimated) }
   LaunchedEffect(Unit) {
-    delay((index * TILE_STAGGER_DELAY_MS).coerceAtMost(TILE_MAX_STAGGER_DELAY_MS))
+    if (!hasAnimated) {
+      delay((index * TILE_STAGGER_DELAY_MS).coerceAtMost(TILE_MAX_STAGGER_DELAY_MS))
+      hasAnimated = true
+    }
     visibleState.targetState = true
   }
   AnimatedVisibility(
@@ -708,28 +713,28 @@ private fun HeaderNavigationGridPreview() {
           titleRes = R.string.calendar,
           iconRes = R.drawable.ic_fluent_calendar,
           color = Color(0xFF4CAF50),
-          navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
           subtitle = "12",
         ),
         HeaderNavigationItem(
           titleRes = R.string.events,
           iconRes = R.drawable.ic_fluent_timeline,
           color = Color(0xFF2196F3),
-          navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
           subtitle = "5",
         ),
         HeaderNavigationItem(
           titleRes = R.string.notes,
           iconRes = R.drawable.ic_fluent_note,
           color = Color(0xFFFFA726),
-          navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
           subtitle = "0",
         ),
         HeaderNavigationItem(
           titleRes = R.string.google_tasks,
           iconRes = R.drawable.ic_builder_google_task_list,
           color = Color(0xFFE53935),
-          navigationEvent = ScheduleHomeViewModel.NavigationEvent.OpenNotes,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
           subtitle = "3",
         ),
       ),

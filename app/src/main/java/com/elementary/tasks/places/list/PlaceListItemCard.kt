@@ -1,6 +1,5 @@
 package com.elementary.tasks.places.list
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,27 +17,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 @Composable
 fun PlaceListItemCard(
-  place: UiPlaceList,
+  place: PlaceState,
   onClick: () -> Unit,
   onMenuAction: (PlaceMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   var menuExpanded by remember { mutableStateOf(false) }
-  val markerBitmap = remember(place.marker) { place.marker.toBitmap().asImageBitmap() }
 
   Card(
     modifier =
@@ -52,9 +48,10 @@ fun PlaceListItemCard(
           .fillMaxWidth()
           .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
-      Image(
-        bitmap = markerBitmap,
+      Icon(
+        painter = painterResource(R.drawable.ic_fluent_place),
         contentDescription = null,
+        tint = place.markerColor,
         modifier =
           Modifier
             .padding(start = 8.dp)

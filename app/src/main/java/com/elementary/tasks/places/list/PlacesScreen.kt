@@ -1,6 +1,5 @@
 package com.elementary.tasks.places.list
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -56,15 +54,15 @@ fun PlacesScreen(
           )
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        actions = {
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_fluent_add),
+            contentDescription = stringResource(R.string.acc_add),
+            onClick = onAddClick,
+            iconColor = MaterialTheme.colorScheme.primary
+          )
+        }
       )
-    },
-    floatingActionButton = {
-      FloatingActionButton(onClick = onAddClick) {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_add),
-          contentDescription = stringResource(R.string.new_place),
-        )
-      }
     },
   ) { padding ->
     Column(

@@ -15,16 +15,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppTheme
+import kotlin.math.abs
 import kotlinx.coroutines.launch
 
 private const val DISABLED_ALPHA = 0.38f
@@ -42,6 +47,8 @@ private const val DISABLED_ALPHA = 0.38f
  * centered.
  * @param itemHeight Height of a single row; also used to size the centered selection window.
  * @param enabled When false, scrolling/tapping is disabled and the wheel is dimmed.
+ * @param hapticFeedbackEnabled When true, a tick is played whenever scrolling settles on a new
+ * index, or a tap selects a different item.
  */
 @Composable
 fun WheelPicker(
@@ -52,6 +59,7 @@ fun WheelPicker(
   visibleItemCount: Int = 3,
   itemHeight: Dp = 40.dp,
   enabled: Boolean = true,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   require(visibleItemCount % 2 == 1) { "visibleItemCount must be odd, was $visibleItemCount" }
   if (items.isEmpty()) return
@@ -60,6 +68,18 @@ fun WheelPicker(
   val flingBehavior = rememberSnapFlingBehavior(listState)
   val coroutineScope = rememberCoroutineScope()
   val sidePadding = itemHeight * (visibleItemCount / 2)
+  val hapticFeedback = LocalHapticFeedback.current
+
+  // The item whose center is closest to the viewport's center - i.e. the one currently sitting in
+  // the centered selection row, kept live while dragging/flinging instead of only once scrolling
+  // settles and onSelectedIndexChange commits a new selectedIndex.
+  val centeredIndex by remember {
+    derivedStateOf {
+      val layoutInfo = listState.layoutInfo
+      val viewportCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
+      layoutInfo.visibleItemsInfo.minByOrNull { abs(it.offset + it.size / 2 - viewportCenter) }?.index
+    }
+  }
 
   LaunchedEffect(selectedIndex, items.size) {
     val target = selectedIndex.coerceIn(items.indices)
@@ -73,6 +93,7 @@ fun WheelPicker(
       if (!scrolling) {
         val settledIndex = listState.firstVisibleItemIndex.coerceIn(items.indices)
         if (settledIndex != selectedIndex) {
+          if (hapticFeedbackEnabled) hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
           onSelectedIndexChange(settledIndex)
         }
       }
@@ -92,13 +113,16 @@ fun WheelPicker(
       userScrollEnabled = enabled,
     ) {
       itemsIndexed(items) { index, label ->
-        val selected = index == selectedIndex
+        val selected = index == (centeredIndex ?: selectedIndex)
         Box(
           modifier = Modifier
             .fillMaxWidth()
             .height(itemHeight)
             .clickable(enabled = enabled) {
               coroutineScope.launch { listState.animateScrollToItem(index) }
+              if (hapticFeedbackEnabled && index != selectedIndex) {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+              }
               onSelectedIndexChange(index)
             },
           contentAlignment = Alignment.Center,

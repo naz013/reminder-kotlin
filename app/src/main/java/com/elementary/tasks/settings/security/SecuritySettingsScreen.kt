@@ -17,8 +17,6 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchIt
 @Composable
 fun SecuritySettingsScreen(
   state: SecuritySettingsState,
-  hasBiometricHardware: Boolean,
-  hasTelephony: Boolean,
   onPinRowClick: () -> Unit,
   onChangePinClick: () -> Unit,
   onFingerprintClick: () -> Unit,
@@ -49,7 +47,7 @@ fun SecuritySettingsScreen(
       dividerBottom = true,
       onClick = onChangePinClick,
     )
-    if (hasBiometricHardware) {
+    if (state.hasBiometricHardware) {
       SettingsSwitchItem(
         title = stringResource(R.string.fingerprint),
         checked = state.isFingerprintChecked,
@@ -77,7 +75,7 @@ fun SecuritySettingsScreen(
       subtitleOn = stringResource(R.string.allow_phone_call_and_sms_func),
       subtitleOff = stringResource(R.string.hide_that_functionality),
       icon = painterResource(R.drawable.ic_fluent_phone),
-      enabled = hasTelephony,
+      enabled = state.hasTelephony,
       dividerBottom = true,
     )
   }

@@ -88,6 +88,7 @@ fun OtherParamsValueEditor(
 fun GoogleCalendarDurationValueEditor(
   builderItem: GoogleCalendarDurationBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   val items = stringArrayResource(R.array.repeat_times).toList()
   val initial = builderItem.modifier.getValue()
@@ -129,6 +130,7 @@ fun GoogleCalendarDurationValueEditor(
         selectedTypeIndex = typeIndex,
         onTypeIndexChange = { typeIndex = it; commit() },
         enabled = !allDay,
+        hapticFeedbackEnabled = hapticFeedbackEnabled,
         modifier = Modifier.fillMaxWidth(),
       )
     }

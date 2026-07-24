@@ -24,8 +24,6 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 @Composable
 fun SettingsHubScreen(
   state: SettingsHubState,
-  isBuyProBadgeVisible: Boolean,
-  isPlayServicesWarningVisible: Boolean,
   onBuyProClick: () -> Unit,
   onUpdateClick: () -> Unit,
   onGeneralClick: () -> Unit,
@@ -46,7 +44,7 @@ fun SettingsHubScreen(
         .background(MaterialTheme.colorScheme.background)
         .verticalScroll(rememberScrollState()),
   ) {
-    if (isBuyProBadgeVisible) {
+    if (state.isBuyProBadgeVisible) {
       Text(
         text = stringResource(R.string.pro_version),
         style = MaterialTheme.typography.titleMedium,
@@ -91,7 +89,7 @@ fun SettingsHubScreen(
             .padding(8.dp),
       )
     }
-    if (isPlayServicesWarningVisible) {
+    if (state.isPlayServicesWarningVisible) {
       Text(
         text = stringResource(R.string.google_play_services_not_found_some_functionality_is_disabled),
         style = MaterialTheme.typography.titleSmall,

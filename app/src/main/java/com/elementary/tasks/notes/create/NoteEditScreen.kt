@@ -22,8 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -58,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.github.naz013.common.uri.UriUtil
+import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.dragAndDropHighlight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,15 +66,13 @@ fun NoteEditScreen(
   onTextFieldValueChange: (TextFieldValue) -> Unit,
   onTitleFieldValueChange: (TextFieldValue) -> Unit,
   supportsSpeech: Boolean,
-  colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
-  snackbarHostState: SnackbarHostState,
   modifier: Modifier = Modifier,
 ) {
   val focusManager = LocalFocusManager.current
   val backgroundColor = state.noteColors.background
   val contentColor = state.noteColors.content
-  val sliderColors = state.noteColors.sliderColors
+  val sliderColors = state.sliderColors
   val dropHighlightColor = MaterialTheme.colorScheme.primary
 
   BoxWithConstraints(
@@ -103,13 +100,11 @@ fun NoteEditScreen(
         },
         title = {},
         actions = {
-          IconButton(onClick = actions.onSaveClick) {
-            Icon(
-              painter = painterResource(R.drawable.ic_fluent_checkmark),
-              contentDescription = stringResource(R.string.save),
-              tint = contentColor,
-            )
-          }
+          MenuTextButton(
+            text = stringResource(R.string.save),
+            color = contentColor,
+            onClick = actions.onSaveClick,
+          )
           IconButton(onClick = actions.onShareClick) {
             Icon(
               painter = painterResource(R.drawable.ic_fluent_share_android),
@@ -135,8 +130,6 @@ fun NoteEditScreen(
             titleContentColor = contentColor,
           ),
       )
-
-      SnackbarHost(hostState = snackbarHostState)
 
       Column(
         modifier =
@@ -245,7 +238,6 @@ fun NoteEditScreen(
           barColor = barContainerColor,
           barMaxWidth = barMaxWidth,
           sliderColors = sliderColors,
-          colorsForPalette = colorsForPalette,
           actions = actions,
         ),
       containerColor = barContainerColor,
@@ -290,7 +282,6 @@ private fun noteEditBarItems(
   barColor: Color,
   barMaxWidth: Dp,
   sliderColors: List<Color>,
-  colorsForPalette: (Int) -> IntArray,
   actions: NoteEditActions,
 ): List<NoteEditBarItem> =
   buildList {
@@ -327,7 +318,7 @@ private fun noteEditBarItems(
         },
         bubbleContent = {
           ColorPanel(
-            colors = state.noteColors.sliderColors,
+            colors = state.sliderColors,
             selectedIndex = state.colorIndex,
             opacity = state.opacity,
             contentColor = contentColor,

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.note.Note
@@ -30,6 +31,7 @@ import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.repository.UsedTimeRepository
 import com.github.naz013.repository.table.Table
+import com.github.naz013.reviews.AppSource
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -58,17 +60,16 @@ class DeveloperViewModel(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val usedTimeRepository: UsedTimeRepository,
+  private val buildInfo: BuildInfo,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
-  val bannersReset: LiveData<Event<Unit>> field = mutableLiveEventOf()
-  val actionMessage: LiveData<Event<String>> field = mutableLiveEventOf()
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
 
   fun onResetBannersClick() {
     legalDocumentRepository.resetSeen(LegalDocumentType.PRIVACY_POLICY)
     prefs.isUserLogged = false
     prefs.lastVersionCode = 0
-    bannersReset.value = Event(Unit)
+    navigationEvent.value = Event(DeveloperEvent.BannersReset)
   }
 
   fun onReminderDialogClick() {
@@ -103,7 +104,7 @@ class DeveloperViewModel(
     state.update { it.copy(clearAllTablesConfirmation = false) }
     viewModelScope.launch(dispatcherProvider.io()) {
       Table.entries.forEach { clearTable(it) }
-      actionMessage.postValue(Event("All tables have been cleared"))
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("All tables have been cleared")))
     }
   }
 
@@ -116,7 +117,7 @@ class DeveloperViewModel(
       insertDemoReminders()
       insertDemoBirthdays()
       insertDemoNotes()
-      actionMessage.postValue(Event("Demo data has been inserted"))
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("Demo data has been inserted")))
     }
   }
 
@@ -146,7 +147,11 @@ class DeveloperViewModel(
   }
 
   fun onReviewDialogClick() {
-    navigationEvent.value = Event(DeveloperEvent.OpenReviewDialog)
+    navigationEvent.value = Event(
+      DeveloperEvent.OpenReviewDialog(
+        appSource = if (buildInfo.isPro) AppSource.PRO else AppSource.FREE
+      )
+    )
   }
 
   fun onProVersionClick() {
@@ -177,7 +182,7 @@ class DeveloperViewModel(
     val table = Table.entries[selectedIndex]
     viewModelScope.launch(dispatcherProvider.io()) {
       clearTable(table)
-      actionMessage.postValue(Event("${table.tableName} table has been cleared"))
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("${table.tableName} table has been cleared")))
     }
   }
 
@@ -281,29 +286,29 @@ class DeveloperViewModel(
         DemoNote(
           title = "Grocery List",
           summary = "Milk, eggs, bread, fresh basil, olive oil, and don't forget the candles for Saturday!",
-          color = ThemeProvider.Color.GREEN,
+          color = ThemeProvider.AppColorIndex.GREEN,
         ),
         DemoNote(
           title = "Weekend Trip Ideas",
           summary =
             "1. Hike the coastal trail\n2. Visit the farmers market\n3. Try that new ramen place downtown\n4. Sunset photos at the pier",
-          color = ThemeProvider.Color.LIGHT_BLUE,
+          color = ThemeProvider.AppColorIndex.LIGHT_BLUE,
         ),
         DemoNote(
           title = "Meeting Notes - Product Sync",
           summary =
             "Discussed Q3 roadmap. Action items: finalize onboarding flow, review pricing page copy, schedule user interviews for next sprint.",
-          color = ThemeProvider.Color.AMBER,
+          color = ThemeProvider.AppColorIndex.AMBER,
         ),
         DemoNote(
           title = "Book Recommendations",
           summary = "- Atomic Habits\n- Project Hail Mary\n- The Midnight Library\n- Deep Work",
-          color = ThemeProvider.Color.DEEP_PURPLE,
+          color = ThemeProvider.AppColorIndex.DEEP_PURPLE,
         ),
         DemoNote(
           title = "Favorite Quote",
           summary = "\"The secret of getting ahead is getting started.\" - Mark Twain",
-          color = ThemeProvider.Color.PINK,
+          color = ThemeProvider.AppColorIndex.PINK,
         ),
       )
     notes.forEach { demoNote ->

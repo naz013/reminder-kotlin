@@ -16,29 +16,43 @@ import com.elementary.tasks.settings.security.ChangePinViewModel
 import com.elementary.tasks.settings.security.DisablePinViewModel
 import com.elementary.tasks.settings.security.SecuritySettingsViewModel
 import com.github.naz013.workapi.BackgroundTask
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val settingsModule =
-  module {
-    factory { ScanGoogleCalendarForNewEventsUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
-    factory { GetContactsWithMetadataUseCase(get()) }
+val settingsModule = module {
+  factoryOf(::ScanGoogleCalendarForNewEventsUseCase)
+  factoryOf(::GetContactsWithMetadataUseCase)
 
-    factory<BackgroundTask>(named(ScanGoogleCalendarEventsTask.TASK_KEY)) { ScanGoogleCalendarEventsTask(get(), get()) }
-    factory<BackgroundTask>(named(CheckBirthdaysTask.TASK_KEY)) { CheckBirthdaysTask(get(), get(), get(), get(), get()) }
-
-    viewModel { CalendarSettingsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { BirthdaySettingsViewModel(get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { GeneralSettingsViewModel(get(), get(), get()) }
-    viewModel { NoteSettingsViewModel(get(), get()) }
-    viewModel { SecuritySettingsViewModel(get(), get()) }
-    viewModel { AddPinViewModel(get()) }
-    viewModel { ChangePinViewModel(get()) }
-    viewModel { DisablePinViewModel(get()) }
-    viewModel { LocationSettingsViewModel(get(), get(), get(), get()) }
-    viewModel { MapStyleViewModel(get()) }
-    viewModel { OtherSettingsViewModel(get(), get(), get()) }
-    viewModel { RemindersSettingsViewModel(get(), get(), get(), get()) }
-    viewModel { SettingsHubViewModel(get(), get(), get(), get(), get()) }
+  factory<BackgroundTask>(named(ScanGoogleCalendarEventsTask.TASK_KEY)) {
+    ScanGoogleCalendarEventsTask(
+      get(),
+      get()
+    )
   }
+  factory<BackgroundTask>(named(CheckBirthdaysTask.TASK_KEY)) {
+    CheckBirthdaysTask(
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
+
+  viewModelOf(::CalendarSettingsViewModel)
+  viewModelOf(::BirthdaySettingsViewModel)
+  viewModelOf(::GeneralSettingsViewModel)
+  viewModelOf(::NoteSettingsViewModel)
+  viewModelOf(::SecuritySettingsViewModel)
+  viewModelOf(::AddPinViewModel)
+  viewModelOf(::ChangePinViewModel)
+  viewModelOf(::DisablePinViewModel)
+  viewModelOf(::LocationSettingsViewModel)
+  viewModelOf(::MapStyleViewModel)
+  viewModelOf(::OtherSettingsViewModel)
+  viewModelOf(::RemindersSettingsViewModel)
+  viewModelOf(::SettingsHubViewModel)
+}

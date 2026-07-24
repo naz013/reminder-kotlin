@@ -21,16 +21,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.os.data.UiPermissionDialogData
-import com.github.naz013.common.Module
 import com.github.naz013.common.Permissions
+import com.github.naz013.common.system.Module
 
-/**
- * Compose replacement for [com.elementary.tasks.core.os.PermissionFlow]: requests one or more
- * permissions in sequence, silently skipping permissions that don't apply on the current SDK
- * version or are already granted, and surfacing [rationale] for [PermissionRationaleDialog] to
- * render before re-prompting a previously-denied permission. Needs no Fragment/Activity reference
- * from the caller — obtains the [Activity] from the current composition's [LocalContext].
- */
 @Stable
 class PermissionRequester internal constructor(
   private val activity: Activity,
@@ -143,7 +136,7 @@ class PermissionRequester internal constructor(
 }
 
 @Composable
-fun rememberPermissionRequester(): PermissionRequester {
+fun rememberPermissionRequesterRationale(): PermissionRequester {
   val context = LocalContext.current
   val activity = remember(context) { context.findActivity() }
   requireNotNull(activity) { "rememberPermissionRequester must be called from an Activity-backed composition" }
@@ -155,12 +148,13 @@ fun rememberPermissionRequester(): PermissionRequester {
       requester.onSystemResult(permission, isGranted)
     }
   requester.launchSystemPrompt = { permission -> launcher.launch(arrayOf(permission)) }
+  PermissionRationaleDialog(requester)
   return requester
 }
 
 /** Renders [PermissionRequester.rationale] as an explanation dialog; no-op while there's none pending. */
 @Composable
-fun PermissionRationaleDialog(state: PermissionRequester) {
+private fun PermissionRationaleDialog(state: PermissionRequester) {
   val data = state.rationale ?: return
   AlertDialog(
     onDismissRequest = state::onRationaleDismissed,

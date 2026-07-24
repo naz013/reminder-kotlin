@@ -2,36 +2,29 @@ package com.elementary.tasks.settings.reminders
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.DisabledAlpha
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
+import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
 fun RemindersSettingsScreen(
   state: RemindersSettingsState,
-  hasLocation: Boolean,
   onPresetsClick: () -> Unit,
   onLocationClick: () -> Unit,
   onPriorityClick: () -> Unit,
@@ -68,7 +61,7 @@ fun RemindersSettingsScreen(
       dividerBottom = true,
       onClick = onPresetsClick,
     )
-    if (hasLocation) {
+    if (state.hasLocation) {
       SettingsItem(
         title = stringResource(R.string.location),
         icon = painterResource(R.drawable.ic_builder_map_my_location),
@@ -175,13 +168,25 @@ fun RemindersSettingsScreen(
       icon = painterResource(R.drawable.ic_fluent_sleep),
       dividerBottom = true,
     )
+
+    val dndValueColor = MaterialTheme.colorScheme.onSurface.copy(
+      alpha = if (state.isDoNotDisturbDependentEnabled) {
+        1f
+      } else DisabledAlpha
+    )
     SettingsItem(
       title = stringResource(R.string.from),
       icon = painterResource(R.drawable.ic_builder_timer),
       enabled = state.isDoNotDisturbDependentEnabled,
       dividerBottom = true,
       onClick = onDndFromClick,
-      trailing = { Text(state.doNotDisturbFromText, style = MaterialTheme.typography.titleLarge) },
+      trailing = {
+        Text(
+          text = state.doNotDisturbFromText,
+          style = MaterialTheme.typography.titleLarge,
+          color = dndValueColor
+        )
+      },
     )
     SettingsItem(
       title = stringResource(R.string.to),
@@ -189,7 +194,13 @@ fun RemindersSettingsScreen(
       enabled = state.isDoNotDisturbDependentEnabled,
       dividerBottom = true,
       onClick = onDndToClick,
-      trailing = { Text(state.doNotDisturbToText, style = MaterialTheme.typography.titleLarge) },
+      trailing = {
+        Text(
+          text = state.doNotDisturbToText,
+          style = MaterialTheme.typography.titleLarge,
+          color = dndValueColor
+        )
+      },
     )
     SettingsItem(
       title = stringResource(R.string.events_that_occured_during),
@@ -240,41 +251,4 @@ fun RemindersSettingsScreen(
 
     null -> Unit
   }
-}
-
-@Composable
-private fun SingleChoiceDialog(
-  title: String,
-  options: List<String>,
-  selectedIndex: Int,
-  onOptionSelected: (Int) -> Unit,
-  onDismiss: () -> Unit,
-) {
-  AlertDialog(
-    onDismissRequest = onDismiss,
-    title = { Text(title) },
-    text = {
-      Column(modifier = Modifier.selectableGroup()) {
-        options.forEachIndexed { index, option ->
-          val selected = index == selectedIndex
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier =
-              Modifier
-                .fillMaxWidth()
-                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
-                .padding(vertical = 8.dp),
-          ) {
-            RadioButton(selected = selected, onClick = null)
-            Text(
-              text = option,
-              style = MaterialTheme.typography.bodyLarge,
-              modifier = Modifier.padding(start = 8.dp),
-            )
-          }
-        }
-      }
-    },
-    confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
-  )
 }

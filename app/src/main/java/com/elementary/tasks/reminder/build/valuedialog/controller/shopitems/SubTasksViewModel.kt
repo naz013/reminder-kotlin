@@ -130,15 +130,11 @@ class SubTasksViewModel(
   }
 
   fun onCheckPressed(position: Int) {
-    val items = internalItems.toMutableList()
+    val items = internalItems
     if (position >= items.size) {
       return
     }
     items[position].isChecked = !items[position].isChecked
-    items.sortWith(ShopItemComparator())
-    items.forEachIndexed { index, shopItem ->
-      shopItem.position = index
-    }
     postUpdate(items)
   }
 
@@ -146,22 +142,5 @@ class SubTasksViewModel(
     this.internalItems = items
     _showItems.postValue(items)
     _saveItems.postValue(items)
-  }
-
-  private class ShopItemComparator : Comparator<ShopItem> {
-    override fun compare(
-      o1: ShopItem,
-      o2: ShopItem,
-    ): Int {
-      val checkCompare = o1.isChecked.compareTo(o2.isChecked)
-      if (checkCompare != 0) {
-        return checkCompare
-      }
-      val dateCompare = o1.createTime.compareTo(o2.createTime)
-      if (dateCompare != 0) {
-        return dateCompare
-      }
-      return o1.position.compareTo(o2.position)
-    }
   }
 }

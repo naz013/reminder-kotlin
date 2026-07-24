@@ -23,7 +23,6 @@ enum class NoteMenuAction {
   EDIT,
   SHARE,
   SHOW_IN_STATUS_BAR,
-  CHANGE_COLOR,
   ARCHIVE,
   UNARCHIVE,
   DELETE,

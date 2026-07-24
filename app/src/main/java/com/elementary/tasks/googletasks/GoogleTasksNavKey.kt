@@ -19,12 +19,12 @@ sealed interface GoogleTasksNavKey : NavKey {
 
   @Serializable
   data class TaskEdit(
-    val id: String = "",
+    val id: String? = null,
     val listId: String = "",
   ) : GoogleTasksNavKey
 
   @Serializable
   data class ListEdit(
-    val id: String = "",
+    val id: String? = null,
   ) : GoogleTasksNavKey
 }

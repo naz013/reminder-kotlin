@@ -1,8 +1,9 @@
 package com.elementary.tasks.eventaction
 
-import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.PhoneNumberValidator
 import com.github.naz013.domain.Reminder
 import com.github.naz013.logging.Logger
+import java.io.File
 
 class ResolveReminderEventActionUseCase {
   operator fun invoke(reminder: Reminder): ResolvedEventAction? {
@@ -26,15 +27,16 @@ class ResolveReminderEventActionUseCase {
         }
       }
       Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> {
+        val file = File(reminder.attachmentFile).takeIf { it.exists() && it.canRead() }
         ResolvedEventAction.SendEmail(
           email = reminder.to,
           subject = reminder.subject,
           body = reminder.summary,
-          attachmentPath = reminder.attachmentFile,
+          attachmentFile = file,
         )
       }
       else -> {
-        if (TelephonyUtil.isPhoneNumber(reminder.target)) {
+        if (PhoneNumberValidator.isPhoneNumber(reminder.target)) {
           ResolvedEventAction.MakeCall(reminder.target)
         } else {
           null

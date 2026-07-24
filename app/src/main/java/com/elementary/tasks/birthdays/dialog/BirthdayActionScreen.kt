@@ -26,8 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +46,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.birthdays.actions.BirthdayAction
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.telephony.rememberPhoneCaller
+import com.elementary.tasks.telephony.rememberSmsSender
+import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.DeviceScreenConfiguration
@@ -55,7 +58,9 @@ import com.github.naz013.ui.common.compose.foundation.SplitButton
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 /**
  * Main composable for the birthday action screen.
@@ -70,16 +75,46 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun BirthdayActionScreen(
   modifier: Modifier = Modifier,
-  viewModel: BirthdayActionViewModel = koinViewModel(),
+  id: String,
+  onFinish: () -> Unit = {}
 ) {
-  val snackbarHostState = remember { SnackbarHostState() }
-  val state by viewModel.state.observeAsState()
+  val viewModel = koinViewModel<BirthdayActionViewModel> { parametersOf(id) }
 
   val screenConfiguration = deviceScreenConfiguration()
+  val toastDispatcher = rememberToastDispatcher()
+  val phoneCaller = rememberPhoneCaller()
+  val smsSender = rememberSmsSender()
+  val permissionRequester = rememberPermissionRequesterRationale()
 
-  Scaffold(
-    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-  ) { paddingValues ->
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      BirthdayActionViewModel.ViewModelEvent.Finish -> {
+        onFinish()
+      }
+
+      is BirthdayActionViewModel.ViewModelEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is BirthdayActionViewModel.ViewModelEvent.MakeCall -> {
+        permissionRequester.request(
+          Permissions.CALL_PHONE,
+          onGranted = {
+            phoneCaller.call(event.phoneNumber)
+            onFinish()
+          }
+        )
+      }
+
+      is BirthdayActionViewModel.ViewModelEvent.SendSms -> {
+        smsSender.send(event.phoneNumber, null)
+        onFinish()
+      }
+    }
+  }
+
+  val state by viewModel.state.observeAsState()
+  Scaffold { paddingValues ->
     Surface(
       modifier =
         modifier

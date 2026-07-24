@@ -10,11 +10,8 @@ import androidx.compose.material3.TimePickerDialog
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
 import org.threeten.bp.LocalDate
@@ -22,79 +19,69 @@ import org.threeten.bp.LocalTime
 
 private const val MILLIS_PER_DAY = 86_400_000L
 
-/**
- * Compose replacement for [com.elementary.tasks.core.utils.ui.DateTimePickerProvider]'s
- * `FragmentManager`-based `showDatePicker`/`showTimePicker`: queues a picker request that
- * [DateTimePickerDialogs] renders as a Material3 [DatePickerDialog]/[TimePickerDialog]. Needs no
- * Fragment/Activity/FragmentManager reference.
- *
- * Note: unlike [com.elementary.tasks.core.utils.ui.DateTimePickerProvider], the calendar's first
- * day of week always follows the platform locale — Material3's [DatePicker] has no public hook for
- * overriding it with the app's `Prefs.startDay` preference.
- */
-@Stable
-class DateTimePickerState internal constructor(
-  internal val is24Hour: Boolean,
-) {
-  internal var datePickerRequest: DatePickerRequest? by mutableStateOf(null)
-    private set
-
-  internal var timePickerRequest: TimePickerRequest? by mutableStateOf(null)
-    private set
-
+interface DateTimePicker {
   fun showDatePicker(
     date: LocalDate,
     title: String,
     onDateSelected: (LocalDate) -> Unit,
-  ) {
-    datePickerRequest = DatePickerRequest(date, title, onDateSelected)
-  }
+  )
 
   fun showTimePicker(
     time: LocalTime,
     title: String,
+    is24Hour: Boolean = true,
     onTimeSelected: (LocalTime) -> Unit,
-  ) {
-    timePickerRequest = TimePickerRequest(time, title, onTimeSelected)
-  }
-
-  internal fun dismissDatePicker() {
-    datePickerRequest = null
-  }
-
-  internal fun dismissTimePicker() {
-    timePickerRequest = null
-  }
-
-  internal class DatePickerRequest(
-    val initialDate: LocalDate,
-    val title: String,
-    val onDateSelected: (LocalDate) -> Unit,
-  )
-
-  internal class TimePickerRequest(
-    val initialTime: LocalTime,
-    val title: String,
-    val onTimeSelected: (LocalTime) -> Unit,
   )
 }
 
 @Composable
-fun rememberDateTimePickerState(is24Hour: Boolean): DateTimePickerState =
-  remember(is24Hour) { DateTimePickerState(is24Hour) }
+fun rememberDateTimePicker(): DateTimePicker {
+  val dateRequest = remember { mutableStateOf<DatePickerRequest?>(null) }
+  val timeRequest = remember { mutableStateOf<TimePickerRequest?>(null) }
 
-/** Renders whichever picker is currently requested on [state]; no-op while neither is pending. */
-@Composable
-fun DateTimePickerDialogs(state: DateTimePickerState) {
-  state.datePickerRequest?.let { request -> DatePickerRequestDialog(request, onDismiss = state::dismissDatePicker) }
-  state.timePickerRequest?.let { request ->
-    TimePickerRequestDialog(request, is24Hour = state.is24Hour, onDismiss = state::dismissTimePicker)
+  dateRequest.value?.let {
+    DatePickerRequestDialog(it, onDismiss = { dateRequest.value = null })
+  }
+  timeRequest.value?.let {
+    TimePickerRequestDialog(it, onDismiss = { timeRequest.value = null })
+  }
+
+  return object : DateTimePicker {
+    override fun showDatePicker(
+      date: LocalDate,
+      title: String,
+      onDateSelected: (LocalDate) -> Unit
+    ) {
+      dateRequest.value = DatePickerRequest(date, title, onDateSelected)
+    }
+
+    override fun showTimePicker(
+      time: LocalTime,
+      title: String,
+      is24Hour: Boolean,
+      onTimeSelected: (LocalTime) -> Unit
+    ) {
+      timeRequest.value = TimePickerRequest(time, title, is24Hour, onTimeSelected)
+    }
   }
 }
+
+private class DatePickerRequest(
+  val initialDate: LocalDate,
+  val title: String,
+  val onDateSelected: (LocalDate) -> Unit,
+)
+
+private class TimePickerRequest(
+  val initialTime: LocalTime,
+  val title: String,
+  val is24Hour: Boolean = true,
+  val onTimeSelected: (LocalTime) -> Unit,
+)
 
 @Composable
 private fun DatePickerRequestDialog(
-  request: DateTimePickerState.DatePickerRequest,
+  request: DatePickerRequest,
   onDismiss: () -> Unit,
 ) {
   val datePickerState =
@@ -121,15 +108,14 @@ private fun DatePickerRequestDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TimePickerRequestDialog(
-  request: DateTimePickerState.TimePickerRequest,
-  is24Hour: Boolean,
+  request: TimePickerRequest,
   onDismiss: () -> Unit,
 ) {
   val timePickerState =
     rememberTimePickerState(
       initialHour = request.initialTime.hour,
       initialMinute = request.initialTime.minute,
-      is24Hour = is24Hour,
+      is24Hour = request.is24Hour,
     )
   TimePickerDialog(
     onDismissRequest = onDismiss,

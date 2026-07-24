@@ -25,6 +25,8 @@ import com.github.naz013.ui.common.compose.AppTheme
  * @param onTypeIndexChange Invoked once the wheel settles on a new unit index.
  * @param enabled When false, both the stepper and the wheel are disabled and dimmed - e.g. for an
  * "all day" toggle that makes the duration irrelevant.
+ * @param hapticFeedbackEnabled When true, both the stepper's +/- buttons and the wheel play a
+ * tick whenever they actually change the value (see [NumberStepperField] and [WheelPicker]).
  */
 @Composable
 fun ValueAndTypePicker(
@@ -37,6 +39,7 @@ fun ValueAndTypePicker(
   minValue: Long = 0,
   maxValue: Long = 999,
   enabled: Boolean = true,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
     NumberStepperField(
@@ -45,6 +48,7 @@ fun ValueAndTypePicker(
       minValue = minValue,
       maxValue = maxValue,
       enabled = enabled,
+      hapticFeedbackEnabled = hapticFeedbackEnabled,
       modifier = Modifier.weight(1f),
     )
     Spacer(modifier = Modifier.width(8.dp))
@@ -53,6 +57,7 @@ fun ValueAndTypePicker(
       selectedIndex = selectedTypeIndex,
       onSelectedIndexChange = onTypeIndexChange,
       enabled = enabled,
+      hapticFeedbackEnabled = hapticFeedbackEnabled,
       modifier = Modifier.weight(1f),
     )
   }

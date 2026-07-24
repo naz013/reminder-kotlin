@@ -94,7 +94,7 @@
         android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.Reminder"
         android:usesCleartextTraffic="true"
         tools:targetApi="tiramisu">
 
@@ -110,8 +110,9 @@
 
         <activity
             android:name=".navigation.BottomNavActivity"
-            android:configChanges="orientation|screenSize|screenLayout"
+            android:configChanges="orientation|screenSize|screenLayout|uiMode"
             android:launchMode="singleInstance"
+            android:theme="@style/Theme.Reminder"
             android:exported="false" />
         <activity
             android:name=".core.arch.CreateReminderIntentActivity"
@@ -269,11 +270,6 @@
             android:name=".reminder.dialog.ReminderActionActivity"
             android:excludeFromRecents="true"
             android:exported="false" />
-        <activity
-            android:name=".core.apps.SelectApplicationActivity"
-            android:excludeFromRecents="true"
-            android:exported="false"
-            android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".birthdays.dialog.BirthdayActionActivity"
             android:excludeFromRecents="true"

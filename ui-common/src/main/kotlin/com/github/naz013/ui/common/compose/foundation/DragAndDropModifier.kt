@@ -20,12 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.github.naz013.common.uri.UriUtil
 
-/**
- * Compose analogue of [com.github.naz013.ui.common.view.ViewUtils.registerDragAndDrop] — highlights
- * this element while a drag-and-drop session carrying one of [mimeTypes] hovers over it, requests
- * the transient read permission a dropped [ClipData] needs, and forwards it to [onDrop]. Needs no
- * Fragment/Activity reference from the caller — resolves the [Activity] from [LocalContext] itself.
- */
 @Composable
 fun Modifier.dragAndDropHighlight(
   color: Color,

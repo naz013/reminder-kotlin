@@ -17,4 +17,9 @@ dependencies {
   implementation(libs.play.services.auth)
 
   implementation(libs.threetenbp)
+
+  implementation(libs.androidx.biometric)
+
+  testImplementation(libs.junit)
+  testImplementation(libs.mockk)
 }

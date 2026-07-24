@@ -1,27 +1,18 @@
 package com.elementary.tasks.reminder.lists.removed
 
-import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.navigation.nav3.AppNavBridge
+import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.github.naz013.ui.common.Dialogues
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the reminders archive screen (Nav3 entry) into the app's single, shared
- * [androidx.navigation3.ui.NavDisplay] (see [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.remindersArchiveEntries(backStack: MutableList<NavKey>) {
   entry<RemindersArchiveNavKey.List> { ListEntry(backStack) }
 }
@@ -29,40 +20,43 @@ fun EntryProviderScope<NavKey>.remindersArchiveEntries(backStack: MutableList<Na
 @Composable
 private fun ListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<RemindersArchiveViewModel>()
-  bindLifecycle(viewModel)
-  val context = LocalContext.current
-  val dialogues = koinInject<Dialogues>()
-  val appNavBridge = koinInject<AppNavBridge>()
 
-  viewModel.navigationEvent.ObserveEvent { event ->
+  val dialogDispatcher = rememberDialogDispatcher()
+  val appNavBridge = rememberAppNavBridge()
+  val toastDispatcher = rememberToastDispatcher()
+
+  viewModel.event.ObserveEvent { event ->
     when (event) {
       is RemindersArchiveViewModel.NavigationEvent.OpenEdit -> {
         appNavBridge.navigate(BuildReminderNavKey.Main(id = event.id))
       }
 
       is RemindersArchiveViewModel.NavigationEvent.ConfirmDeleteReminder -> {
-        dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
-          if (confirmed) viewModel.deleteReminder(event.id)
-        }
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete,
+          textRes = R.string.are_you_sure,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.no,
+          onPositive = { viewModel.deleteReminder(event.id) },
+        )
       }
 
       RemindersArchiveViewModel.NavigationEvent.ConfirmDeleteAll -> {
-        dialogues.askConfirmation(
-          context = context,
-          title = context.getString(R.string.delete_all_archived_reminders),
-          positiveText = context.getString(R.string.yes_delete_all),
-          negativeText = context.getString(R.string.cancel),
-          onAction = { confirmed -> if (confirmed) viewModel.deleteAll() },
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete_all_archived_reminders,
+          positiveButtonRes = R.string.yes_delete_all,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.deleteAll() },
         )
       }
 
       RemindersArchiveViewModel.NavigationEvent.ArchiveEmptied -> {
-        Toast.makeText(context, R.string.archive_was_emptied, Toast.LENGTH_SHORT).show()
+        toastDispatcher.showToast(messageRes = R.string.archive_was_emptied)
       }
     }
   }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(RemindersArchiveScreenState())
   RemindersArchiveScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -71,13 +65,4 @@ private fun ListEntry(backStack: MutableList<NavKey>) {
     onItemClick = viewModel::onItemClick,
     onMenuAction = viewModel::onMenuAction,
   )
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 }

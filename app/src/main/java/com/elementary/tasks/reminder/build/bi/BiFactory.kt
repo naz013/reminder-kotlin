@@ -5,7 +5,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
+import com.elementary.tasks.simplemap.DefaultRadiusFormatter
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem

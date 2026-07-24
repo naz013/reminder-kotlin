@@ -1,5 +1,7 @@
 package com.elementary.tasks.settings.location
 
+import androidx.compose.ui.graphics.Color
+
 data class LocationSettingsState(
   val isNotificationChecked: Boolean = false,
   val radiusText: String = "",
@@ -10,6 +12,7 @@ data class LocationSettingsState(
   val isMarkerStyleVisible: Boolean = false,
   val markerColor: Int = 0,
   val dialog: LocationSettingsDialog? = null,
+  val hasLocation: Boolean = false,
 )
 
 sealed class LocationSettingsDialog {
@@ -35,6 +38,11 @@ sealed class LocationSettingsEvent {
   data object OpenPlaces : LocationSettingsEvent()
 
   data class ShowMarkerColorPicker(
+    val title: String,
     val currentColorIndex: Int,
+    val colors: List<Color>,
+    val hapticFeedbackEnabled: Boolean,
   ) : LocationSettingsEvent()
+
+  data object HapticFeedback : LocationSettingsEvent()
 }

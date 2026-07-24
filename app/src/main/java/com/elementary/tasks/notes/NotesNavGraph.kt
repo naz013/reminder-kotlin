@@ -1,8 +1,6 @@
 package com.elementary.tasks.notes
 
-import android.app.Activity
 import android.widget.FrameLayout
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.SnackbarHostState
@@ -11,31 +9,22 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.Commands
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
 import com.elementary.tasks.core.os.compose.PermissionRequester
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.os.datapicker.compose.rememberCameraPicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberGalleryPicker
 import com.elementary.tasks.core.speech.SpeechEngine
 import com.elementary.tasks.core.speech.SpeechEngineCallback
 import com.elementary.tasks.core.speech.SpeechError
 import com.elementary.tasks.core.speech.SpeechText
-import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.ui.compose.DateTimePickerDialogs
-import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePickerState
-import com.elementary.tasks.navigation.nav3.AppNavBridge
+import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.notes.create.EditTab
 import com.elementary.tasks.notes.create.NoteEditActions
 import com.elementary.tasks.notes.create.NoteEditScreen
@@ -43,6 +32,7 @@ import com.elementary.tasks.notes.create.NoteEditViewModel
 import com.elementary.tasks.notes.create.UrlImagePickerDialogs
 import com.elementary.tasks.notes.create.rememberUrlImagePickerState
 import com.elementary.tasks.notes.list.NotesScreen
+import com.elementary.tasks.notes.list.NotesScreenState
 import com.elementary.tasks.notes.list.NotesViewModel
 import com.elementary.tasks.notes.preview.ImagePreviewScreen
 import com.elementary.tasks.notes.preview.ImagePreviewState
@@ -54,19 +44,13 @@ import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.Dialogues
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.ToastDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Contributes the Notes island's screens (Nav3 entries) and the routing between them into the
- * app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]). None of these entries depend on a Fragment
- * beyond what Compose itself exposes ([LocalActivity]) plus [AppNavBridge] for the handful of
- * destinations (Settings, the reminder builder) not yet promoted out of the legacy Fragment graph.
- */
 fun EntryProviderScope<NavKey>.notesEntries(backStack: MutableList<NavKey>) {
   entry<NotesNavKey.List> { NotesListEntry(backStack) }
   entry<NotesNavKey.Archive> { NotesArchiveEntry(backStack) }
@@ -75,56 +59,14 @@ fun EntryProviderScope<NavKey>.notesEntries(backStack: MutableList<NavKey>) {
   entry<NotesNavKey.ImagePreview> { key -> NoteImagePreviewEntry(key, backStack) }
 }
 
-/**
- * Bundles the framework-level dependencies [handleNotesNavigationEvent] needs so [NotesListEntry]
- * and [NotesArchiveEntry] don't have to repeat a long parameter list — resolved once via
- * [rememberNotesHostDependencies], none of it via a Fragment/Activity reference held by the caller.
- */
-private class NotesHostDependencies(
-  val activity: Activity,
-  val appNavBridge: AppNavBridge,
-  val dialogues: Dialogues,
-  val permissionRequester: PermissionRequester,
-  val settingsTitle: String,
-  val colorDialogTitle: String,
-  val deleteDialogTitle: String,
-)
-
-@Composable
-private fun rememberNotesHostDependencies(permissionRequester: PermissionRequester): NotesHostDependencies {
-  val activity =
-    requireNotNull(LocalActivity.current) { "Notes screens require an Activity-backed composition" }
-  val appNavBridge = koinInject<AppNavBridge>()
-  val dialogues = koinInject<Dialogues>()
-  val settingsTitle = stringResource(R.string.action_settings)
-  val colorDialogTitle = stringResource(R.string.color)
-  val deleteDialogTitle = stringResource(R.string.delete)
-  return remember(
-    activity,
-    appNavBridge,
-    dialogues,
-    permissionRequester,
-    settingsTitle,
-    colorDialogTitle,
-    deleteDialogTitle,
-  ) {
-    NotesHostDependencies(
-      activity = activity,
-      appNavBridge = appNavBridge,
-      dialogues = dialogues,
-      permissionRequester = permissionRequester,
-      settingsTitle = settingsTitle,
-      colorDialogTitle = colorDialogTitle,
-      deleteDialogTitle = deleteDialogTitle,
-    )
-  }
-}
-
 private fun handleNotesNavigationEvent(
   event: NotesViewModel.NavigationEvent,
   viewModel: NotesViewModel,
   backStack: MutableList<NavKey>,
-  deps: NotesHostDependencies,
+  dialogDispatcher: DialogDispatcher,
+  toastDispatcher: ToastDispatcher,
+  noteIntentSender: NoteIntentSender,
+  permissionRequester: PermissionRequester,
 ) {
   when (event) {
     is NotesViewModel.NavigationEvent.OpenNotePreview -> {
@@ -142,7 +84,7 @@ private fun handleNotesNavigationEvent(
     is NotesViewModel.NavigationEvent.OpenArchive -> backStack.add(NotesNavKey.Archive)
 
     is NotesViewModel.NavigationEvent.OpenSettings -> {
-      backStack.add(SettingsNavKey.Note(deps.settingsTitle))
+      backStack.add(SettingsNavKey.Note(event.title))
     }
 
     is NotesViewModel.NavigationEvent.OpenImagePreview -> {
@@ -150,29 +92,27 @@ private fun handleNotesNavigationEvent(
     }
 
     is NotesViewModel.NavigationEvent.ShareNote -> {
-      TelephonyUtil.sendNote(event.file, deps.activity, event.summary)
+      noteIntentSender.send(event.summary, event.file)
     }
 
     is NotesViewModel.NavigationEvent.RequestNotificationPermission -> {
-      deps.permissionRequester.request(
+      permissionRequester.request(
         Permissions.POST_NOTIFICATION,
         onGranted = { viewModel.showNoteInNotification(event.id) },
       )
     }
 
-    is NotesViewModel.NavigationEvent.PickColor -> {
-      deps.dialogues.showColorDialog(
-        deps.activity,
-        event.colorPosition,
-        deps.colorDialogTitle,
-        event.sliderColors,
-      ) { color -> viewModel.saveNoteColor(event.id, color) }
+    is NotesViewModel.NavigationEvent.ConfirmDelete -> {
+      dialogDispatcher.showDialog(
+        titleRes = R.string.delete_note_permanently,
+        positiveButtonRes = R.string.yes,
+        negativeButtonRes = R.string.cancel,
+        onPositive = { viewModel.deleteNote(event.id) }
+      )
     }
 
-    is NotesViewModel.NavigationEvent.ConfirmDelete -> {
-      deps.dialogues.askConfirmation(deps.activity, deps.deleteDialogTitle) { confirmed ->
-        if (confirmed) viewModel.deleteNote(event.id)
-      }
+    is NotesViewModel.NavigationEvent.Error -> {
+      toastDispatcher.showToast(message = event.message)
     }
   }
 }
@@ -180,17 +120,26 @@ private fun handleNotesNavigationEvent(
 @Composable
 private fun NotesListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<NotesViewModel> { parametersOf(false) }
-  bindLifecycle(viewModel)
-  val permissionRequester = rememberPermissionRequester()
-  val hostDeps = rememberNotesHostDependencies(permissionRequester)
-  viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, viewModel, backStack, hostDeps) }
+
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val dialogDispatcher = rememberDialogDispatcher()
+  val toastDispatcher = rememberToastDispatcher()
+  val noteIntentSender = rememberNoteIntentSender()
+
+  viewModel.navigationEvent.ObserveEvent {
+    handleNotesNavigationEvent(
+      event = it,
+      viewModel = viewModel,
+      backStack = backStack,
+      dialogDispatcher = dialogDispatcher,
+      toastDispatcher = toastDispatcher,
+      noteIntentSender = noteIntentSender,
+      permissionRequester = permissionRequester,
+    )
+  }
 
   val snackbarHostState = remember { SnackbarHostState() }
-  val scope = rememberCoroutineScope()
-  viewModel.errorEvent.ObserveEvent { message -> scope.launch { snackbarHostState.showSnackbar(message) } }
-
-  PermissionRationaleDialog(permissionRequester)
-  val state by viewModel.notesScreenState.collectAsState()
+  val state by viewModel.notesScreenState.collectAsState(NotesScreenState())
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
@@ -211,17 +160,26 @@ private fun NotesListEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun NotesArchiveEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<NotesViewModel> { parametersOf(true) }
-  bindLifecycle(viewModel)
-  val permissionRequester = rememberPermissionRequester()
-  val hostDeps = rememberNotesHostDependencies(permissionRequester)
-  viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, viewModel, backStack, hostDeps) }
+
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val dialogDispatcher = rememberDialogDispatcher()
+  val toastDispatcher = rememberToastDispatcher()
+  val noteIntentSender = rememberNoteIntentSender()
+
+  viewModel.navigationEvent.ObserveEvent {
+    handleNotesNavigationEvent(
+      event = it,
+      viewModel = viewModel,
+      backStack = backStack,
+      dialogDispatcher = dialogDispatcher,
+      toastDispatcher = toastDispatcher,
+      noteIntentSender = noteIntentSender,
+      permissionRequester = permissionRequester,
+    )
+  }
 
   val snackbarHostState = remember { SnackbarHostState() }
-  val scope = rememberCoroutineScope()
-  viewModel.errorEvent.ObserveEvent { message -> scope.launch { snackbarHostState.showSnackbar(message) } }
-
-  PermissionRationaleDialog(permissionRequester)
-  val state by viewModel.notesScreenState.collectAsState()
+  val state by viewModel.notesScreenState.collectAsState(NotesScreenState())
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
@@ -245,50 +203,54 @@ private fun NotePreviewEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<PreviewNoteViewModel> { parametersOf(key.id) }
-  bindLifecycle(viewModel)
 
-  val activity =
-    requireNotNull(LocalActivity.current) { "NotePreviewEntry requires an Activity-backed composition" }
-  val permissionRequester = rememberPermissionRequester()
-  val snackbarHostState = remember { SnackbarHostState() }
-  val scope = rememberCoroutineScope()
-  val errorSendingMessage = stringResource(R.string.error_sending)
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val noteIntentSender = rememberNoteIntentSender()
+  val toastDispatcher = rememberToastDispatcher()
+  val dialogDispatcher = rememberDialogDispatcher()
 
-  viewModel.navigationEvent.ObserveEvent { event ->
+  viewModel.event.ObserveEvent { event ->
     when (event) {
-      is PreviewNoteViewModel.NavigationEvent.EditNote -> {
+      is PreviewNoteViewModel.ViewModelEvent.EditNote -> {
         backStack.add(NotesNavKey.Edit(event.id))
       }
 
-      is PreviewNoteViewModel.NavigationEvent.EditReminder -> {
+      is PreviewNoteViewModel.ViewModelEvent.EditReminder -> {
         backStack.add(BuildReminderNavKey.Main(id = event.id))
       }
 
-      is PreviewNoteViewModel.NavigationEvent.OpenImagePreview -> {
+      is PreviewNoteViewModel.ViewModelEvent.OpenImagePreview -> {
         backStack.add(
           NotesNavKey.ImagePreview(event.position),
         )
       }
-    }
-  }
-  viewModel.resultEvent.ObserveEvent { if (it == Commands.DELETED) backStack.removeLastOrNull() }
-  viewModel.errorEvent.ObserveEvent { scope.launch { snackbarHostState.showSnackbar(errorSendingMessage) } }
-  viewModel.sharedFile.ObserveNonNull { (note, file) ->
-    if (file.exists() && file.canRead()) {
-      TelephonyUtil.sendNote(file, activity, note.note?.summary)
-    } else {
-      scope.launch { snackbarHostState.showSnackbar(errorSendingMessage) }
+
+      is PreviewNoteViewModel.ViewModelEvent.Message -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is PreviewNoteViewModel.ViewModelEvent.MoveBack -> {
+        backStack.removeLastOrNull()
+      }
+
+      is PreviewNoteViewModel.ViewModelEvent.ShareNote -> {
+        noteIntentSender.send(event.text, event.file)
+      }
+
+      is PreviewNoteViewModel.ViewModelEvent.Delete -> {
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete_this_note,
+          positiveButtonRes = R.string.delete,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.onDeleteConfirmed() }
+        )
+      }
     }
   }
 
   val state by viewModel.state.collectAsState(PreviewNoteState())
-  val colors = remember(state.backgroundColor, state.opacity) { viewModel.colorsFor(state) }
-
-  PermissionRationaleDialog(permissionRequester)
   PreviewNoteScreen(
     state = state,
-    colors = colors,
-    snackbarHostState = snackbarHostState,
     actions =
       PreviewNoteActions(
         onBackClick = { backStack.removeLastOrNull() },
@@ -299,8 +261,6 @@ private fun NotePreviewEntry(
         onShareClick = viewModel::onShareClick,
         onArchiveClick = viewModel::onArchiveClick,
         onDeleteClick = viewModel::onDeleteClick,
-        onDeleteConfirmed = viewModel::onDeleteConfirmed,
-        onDialogDismiss = viewModel::onDialogDismiss,
         onImageOpen = viewModel::onImageOpen,
         onReminderEditClick = viewModel::onReminderEditClick,
         onReminderDetachClick = viewModel::onReminderDetachClick,
@@ -319,12 +279,20 @@ private fun NoteEditEntry(
   key: NotesNavKey.Edit,
   backStack: MutableList<NavKey>,
 ) {
-  val viewModel =
-    koinViewModel<NoteEditViewModel> {
-      parametersOf(key.id, key.sharedText, key.sharedImageUris, key.fromIntentData)
-    }
+  val viewModel = koinViewModel<NoteEditViewModel> {
+    parametersOf(key.id, key.sharedText, key.sharedImageUris, key.fromIntentData)
+  }
 
+  val toastDispatcher = rememberToastDispatcher()
+  val noteIntentSender = rememberNoteIntentSender()
   val context = LocalContext.current
+  val galleryPicker = rememberGalleryPicker { uris -> viewModel.addMultiple(uris) }
+  val cameraPicker = rememberCameraPicker { uri -> viewModel.addMultiple(listOf(uri)) }
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val dateTimePicker = rememberDateTimePicker()
+  val urlImagePickerState = rememberUrlImagePickerState()
+  UrlImagePickerDialogs(urlImagePickerState, onUrlConfirmed = viewModel::downloadImageFromUrl)
+
   val speechEngine = remember(viewModel) { SpeechEngine(context) }
   val speechCallback =
     remember(viewModel) {
@@ -367,52 +335,45 @@ private fun NoteEditEntry(
     onDispose { speechEngine.stopListening() }
   }
   viewModel.textUpdate.ObserveEvent { update -> speechEngine.setText(update.text) }
-
-  val snackbarHostState = remember { SnackbarHostState() }
-  val scope = rememberCoroutineScope()
-  val errorSendingMessage = stringResource(R.string.error_sending)
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      is NoteEditViewModel.Action.Finish -> {
+      is NoteEditViewModel.ViewModelEvent.MoveBack -> {
         backStack.removeLastOrNull()
       }
-      is NoteEditViewModel.Action.Error -> {
-        scope.launch { snackbarHostState.showSnackbar(event.message) }
+
+      is NoteEditViewModel.ViewModelEvent.Error -> {
+        toastDispatcher.showToast(message = event.message)
       }
-      is NoteEditViewModel.Action.OpenImagePreview -> {
+
+      is NoteEditViewModel.ViewModelEvent.OpenImagePreview -> {
         backStack.add(NotesNavKey.ImagePreview(event.position))
       }
-      is NoteEditViewModel.Action.ShareNote -> {
-        if (event.file.exists() && event.file.canRead()) {
-          TelephonyUtil.sendNote(event.file, context, event.text)
-        } else {
-          scope.launch { snackbarHostState.showSnackbar(errorSendingMessage) }
-        }
+
+      is NoteEditViewModel.ViewModelEvent.ShareNote -> {
+        noteIntentSender.send(event.text, event.file)
+      }
+
+      is NoteEditViewModel.ViewModelEvent.ShowDatePicker -> {
+        dateTimePicker.showDatePicker(event.date, event.title, viewModel::onNewDate)
+      }
+
+      is NoteEditViewModel.ViewModelEvent.ShowTimePicker -> {
+        dateTimePicker.showTimePicker(
+          time = event.time,
+          title = event.title,
+          is24Hour = viewModel.is24HourFormat,
+          onTimeSelected = viewModel::onNewTime
+        )
       }
     }
   }
 
   val state by viewModel.state.collectAsState()
-
-  val galleryPicker = rememberGalleryPicker { uris -> viewModel.addMultiple(uris) }
-  val cameraPicker = rememberCameraPicker { uri -> viewModel.addMultiple(listOf(uri)) }
-  val permissionRequester = rememberPermissionRequester()
-  val dateTimePickerState = rememberDateTimePickerState(is24Hour = viewModel.is24HourFormat)
-  val urlImagePickerState = rememberUrlImagePickerState()
-  val selectDateTitle = stringResource(R.string.select_date)
-  val selectTimeTitle = stringResource(R.string.select_time)
-
-  PermissionRationaleDialog(permissionRequester)
-  DateTimePickerDialogs(dateTimePickerState)
-  UrlImagePickerDialogs(urlImagePickerState, onUrlConfirmed = viewModel::downloadImageFromUrl)
-
   NoteEditScreen(
     state = state,
     supportsSpeech = remember { speechEngine.supportsRecognition() },
     onTextFieldValueChange = viewModel::onTextFieldValueChange,
     onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
-    colorsForPalette = viewModel::sliderColorsForPalette,
-    snackbarHostState = snackbarHostState,
     actions =
       NoteEditActions(
         onBackClick = { backStack.removeLastOrNull() },
@@ -450,12 +411,8 @@ private fun NoteEditEntry(
         onColorSelected = viewModel::onColorSelected,
         onOpacityChanged = viewModel::onOpacityChanged,
         onReminderAttachedChanged = viewModel::onReminderAttachedChanged,
-        onDateClick = {
-          dateTimePickerState.showDatePicker(state.date, selectDateTitle, viewModel::onNewDate)
-        },
-        onTimeClick = {
-          dateTimePickerState.showTimePicker(state.time, selectTimeTitle, viewModel::onNewTime)
-        },
+        onDateClick = viewModel::onDateClicked,
+        onTimeClick = viewModel::onTimeClicked,
         onFontSizeChanged = viewModel::onFontSizeChanged,
         onFieldFocused = viewModel::onFieldFocused,
         onImageOpen = { position -> viewModel.onImageOpen(position) },
@@ -477,23 +434,12 @@ private fun NoteImagePreviewEntry(
 ) {
   val viewModel = koinViewModel<ImagePreviewViewModel> { parametersOf(key.position) }
   val state by viewModel.state.collectAsState(ImagePreviewState())
-  val colors = viewModel.colorsFor(state)
 
   ImagePreviewScreen(
     state = state,
-    colors = colors,
     onBackClick = { backStack.removeLastOrNull() },
     onPageChanged = viewModel::onPageChanged,
   )
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 }
 
 @Composable

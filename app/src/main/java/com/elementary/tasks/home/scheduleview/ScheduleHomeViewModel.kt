@@ -1,14 +1,12 @@
 package com.elementary.tasks.home.scheduleview
 
-import android.content.Context
 import androidx.annotation.StringRes
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.eventaction.DispatchEventActionUseCase
+import com.elementary.tasks.eventaction.ResolvedEventAction
 import com.elementary.tasks.home.BannerState
 import com.elementary.tasks.home.HeaderNavigationItem
 import com.elementary.tasks.home.HomeEvent
@@ -21,56 +19,64 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 
 class ScheduleHomeViewModel(
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val getActiveEventsForTheDayUseCase: GetActiveEventsForTheDayUseCase,
   private val getTimeSectionsUseCase: GetTimeSectionsUseCase,
   private val getGreetingTextUseCase: GetGreetingTextUseCase,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val getNavigationItemsUseCase: GetNavigationItemsUseCase,
-  private val dispatchEventActionUseCase: DispatchEventActionUseCase,
   private val prefs: Prefs,
   private val featureManager: FeatureManager,
   private val whatsNewManager: WhatsNewManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val legalDocumentRepository: LegalDocumentRepository,
-) : BaseProgressViewModel(dispatcherProvider) {
-  val homeScreenState: StateFlow<HomeScreenState> field = MutableStateFlow(HomeScreenState())
-  val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
+) : ViewModel() {
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    loadData()
+  private val _state = MutableStateFlow(HomeScreenState())
+  val state = _state.stateInWhileSubscribed(HomeScreenState())
+    .onStart { loadData() }
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
+
+  init {
+    Logger.d(TAG, "ScheduleHomeViewModel init")
+  }
+
+  override fun onCleared() {
+    super.onCleared()
+    Logger.d(TAG, "ScheduleHomeViewModel onCleared")
   }
 
   fun onEventTypeSelected(eventType: EventType) {
     Logger.i(TAG, "On event type selected: type=$eventType")
     when (eventType) {
       EventType.Reminder -> {
-        navigationEvent.value = Event(NavigationEvent.OpenCreateReminder)
+        event.emit(ViewModelEvent.OpenCreateReminder)
       }
 
       EventType.Birthday -> {
-        navigationEvent.value = Event(NavigationEvent.OpenCreateBirthday)
+        event.emit(ViewModelEvent.OpenCreateBirthday)
       }
 
       EventType.GoogleTask -> {
-        navigationEvent.value = Event(NavigationEvent.OpenCreateGoogleTask)
+        event.emit(ViewModelEvent.OpenCreateGoogleTask)
       }
 
       EventType.Note -> {
-        navigationEvent.value = Event(NavigationEvent.OpenCreateNote)
+        event.emit(ViewModelEvent.OpenCreateNote)
       }
     }
   }
@@ -78,8 +84,8 @@ class ScheduleHomeViewModel(
   fun onPrivacyPolicyClick() {
     Logger.i(TAG, "On privacy policy click.")
     legalDocumentRepository.markSeen(LegalDocumentType.PRIVACY_POLICY)
-    navigationEvent.value = Event(NavigationEvent.OpenPrivacy)
-    homeScreenState.update {
+    event.value = Event(ViewModelEvent.OpenPrivacy)
+    _state.update {
       it.copy(bannerState = getBannerState())
     }
   }
@@ -87,7 +93,7 @@ class ScheduleHomeViewModel(
   fun onPrivacyAcceptClick() {
     Logger.i(TAG, "On privacy accept click")
     legalDocumentRepository.markSeen(LegalDocumentType.PRIVACY_POLICY)
-    homeScreenState.update {
+    _state.update {
       it.copy(bannerState = getBannerState())
     }
   }
@@ -95,7 +101,7 @@ class ScheduleHomeViewModel(
   fun onLoginDismissClick() {
     Logger.i(TAG, "On login dismiss click")
     prefs.isUserLogged = true
-    homeScreenState.update {
+    _state.update {
       it.copy(bannerState = getBannerState())
     }
   }
@@ -103,68 +109,65 @@ class ScheduleHomeViewModel(
   fun onLoginClick() {
     Logger.i(TAG, "On login click")
     prefs.isUserLogged = true
-    homeScreenState.update {
+    _state.update {
       it.copy(bannerState = getBannerState())
     }
-    navigationEvent.value = Event(NavigationEvent.OpenCloudDrives)
+    event.emit(ViewModelEvent.OpenCloudDrives)
   }
 
   fun onWhatsNewDetailsClick() {
     Logger.i(TAG, "On whats new details click")
     whatsNewManager.hideWhatsNew()
     analyticsEventSender.send(ScreenUsedEvent(Screen.WHATS_NEW))
-    homeScreenState.update {
+    _state.update {
       it.copy(bannerState = getBannerState())
     }
-    navigationEvent.value = Event(NavigationEvent.OpenWhatsNew)
+    event.emit(ViewModelEvent.OpenWhatsNew)
   }
 
   fun onWhatsNewDismissClick() {
     Logger.i(TAG, "On whats new dismiss click")
     whatsNewManager.hideWhatsNew()
-    homeScreenState.update {
+    _state.update {
       it.copy(bannerState = getBannerState())
     }
   }
 
   fun onSettingsClicked() {
     Logger.i(TAG, "On settings clicked")
-    navigationEvent.value = Event(NavigationEvent.OpenSettings)
+    event.emit(ViewModelEvent.OpenSettings)
   }
 
   fun onEventClicked(homeEvent: HomeEvent) {
     Logger.i(TAG, "On event clicked: id=${homeEvent.id}")
     when (homeEvent.type) {
       HomeEvent.EventType.Reminder -> {
-        navigationEvent.value = Event(NavigationEvent.OpenReminderDetails(homeEvent.id))
+        event.emit(ViewModelEvent.OpenReminderDetails(homeEvent.id))
       }
 
       HomeEvent.EventType.Birthday -> {
-        navigationEvent.value = Event(NavigationEvent.OpenBirthdayDetails(homeEvent.id))
+        event.emit(ViewModelEvent.OpenBirthdayDetails(homeEvent.id))
       }
     }
   }
 
-  fun onEventActionClicked(
-    context: Context,
-    eventAction: HomeEvent.EventAction,
-  ) {
+  fun onEventActionClicked(eventAction: HomeEvent.EventAction) {
     Logger.i(
       TAG,
       "On event action clicked: type=${eventAction::class.java.simpleName}, target=${
         Logger.private(eventAction.toString())
       }",
     )
-    dispatchEventActionUseCase(context, eventAction.value)
+    event.emit(ViewModelEvent.EventAction(eventAction.value))
   }
 
   fun onHeaderNavigationItemClicked(item: HeaderNavigationItem) {
     Logger.i(TAG, "On header navigation item clicked: ${item.navigationEvent}")
-    navigationEvent.value = Event(item.navigationEvent)
+    event.emit(item.navigationEvent)
   }
 
   private fun loadData() {
-    homeScreenState.update {
+    _state.update {
       it.copy(
         greeting = getGreetingTextUseCase(),
         headerNavigationItems = emptyList(),
@@ -179,7 +182,7 @@ class ScheduleHomeViewModel(
     }
     viewModelScope.launch(dispatcherProvider.io()) {
       val items = getNavigationItemsUseCase(this, LocalDateTime.now())
-      homeScreenState.update {
+      _state.update {
         it.copy(
           headerNavigationItems = items,
         )
@@ -190,7 +193,7 @@ class ScheduleHomeViewModel(
       val events = getActiveEventsForTheDayUseCase(this, now)
       val sections = getTimeSectionsUseCase(events)
       Logger.d(TAG, "Loaded ${sections.size} sections")
-      homeScreenState.update {
+      _state.update {
         it.copy(
           listState = if (sections.isEmpty()) ListState.Empty else ListState.Ready(sections),
         )
@@ -214,44 +217,48 @@ class ScheduleHomeViewModel(
     return null
   }
 
-  sealed interface NavigationEvent {
+  sealed interface ViewModelEvent {
     data class OpenReminderDetails(
       val uuid: String,
-    ) : NavigationEvent
+    ) : ViewModelEvent
 
     data class OpenBirthdayDetails(
       val uuid: String,
-    ) : NavigationEvent
+    ) : ViewModelEvent
 
-    data object OpenSettings : NavigationEvent
+    data object OpenSettings : ViewModelEvent
 
     data class ShowEventTypeSelection(
       val types: List<EventType>,
-    ) : NavigationEvent
+    ) : ViewModelEvent
 
-    data object OpenCreateReminder : NavigationEvent
+    data object OpenCreateReminder : ViewModelEvent
 
-    data object OpenCreateBirthday : NavigationEvent
+    data object OpenCreateBirthday : ViewModelEvent
 
-    data object OpenCreateGoogleTask : NavigationEvent
+    data object OpenCreateGoogleTask : ViewModelEvent
 
-    data object OpenCreateNote : NavigationEvent
+    data object OpenCreateNote : ViewModelEvent
 
-    data object OpenEvents : NavigationEvent
+    data object OpenEvents : ViewModelEvent
 
-    data object OpenCalendar : NavigationEvent
+    data object OpenCalendar : ViewModelEvent
 
-    data object OpenNotes : NavigationEvent
+    data object OpenNotes : ViewModelEvent
 
-    data object OpenGoogleTasks : NavigationEvent
+    data object OpenGoogleTasks : ViewModelEvent
 
-    data object OpenGroups : NavigationEvent
+    data object OpenGroups : ViewModelEvent
 
-    data object OpenPrivacy : NavigationEvent
+    data object OpenPrivacy : ViewModelEvent
 
-    data object OpenCloudDrives : NavigationEvent
+    data object OpenCloudDrives : ViewModelEvent
 
-    data object OpenWhatsNew : NavigationEvent
+    data object OpenWhatsNew : ViewModelEvent
+
+    data class EventAction(
+      val value: ResolvedEventAction,
+    ) : ViewModelEvent
   }
 
   enum class EventType(

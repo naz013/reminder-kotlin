@@ -119,11 +119,12 @@ fun ValueEditorSheet(
   packageManagerWrapper: PackageManagerWrapper,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
   dateTimeManager: DateTimeManager,
-  onPickApplication: (onResult: (String) -> Unit) -> Unit,
+  onPickApplication: () -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
   modifier: Modifier = Modifier,
   is24HourFormat: Boolean = false,
+  hapticFeedbackEnabled: Boolean = true,
   onHelpClick: (() -> Unit)? = null,
 ) {
   AppModalBottomSheet(onDismissRequest = onDismissRequest, modifier = modifier) {
@@ -178,6 +179,7 @@ fun ValueEditorSheet(
         builderItem = builderItem,
         onValueChange = onValueChange,
         is24HourFormat = is24HourFormat,
+        hapticFeedbackEnabled = hapticFeedbackEnabled,
         paramToTextAdapter = paramToTextAdapter,
         googleCalendarUtils = googleCalendarUtils,
         packageManagerWrapper = packageManagerWrapper,
@@ -198,12 +200,13 @@ private fun ValueEditorContent(
   builderItem: BuilderItem<*>,
   onValueChange: (BuilderItem<*>) -> Unit,
   is24HourFormat: Boolean,
+  hapticFeedbackEnabled: Boolean,
   paramToTextAdapter: ParamToTextAdapter,
   googleCalendarUtils: GoogleCalendarUtils,
   packageManagerWrapper: PackageManagerWrapper,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
   dateTimeManager: DateTimeManager,
-  onPickApplication: (onResult: (String) -> Unit) -> Unit,
+  onPickApplication: () -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
 ) {
@@ -216,7 +219,7 @@ private fun ValueEditorContent(
     is ICalUntilTimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
     is ICalFrequencyBuilderItem -> ICalFreqValueEditor(builderItem, paramToTextAdapter, onValueChange)
     is ICalWeekStartBuilderItem -> ICalWeekStartValueEditor(builderItem, paramToTextAdapter, onValueChange)
-    is ICalIntBuilderItem -> ICalIntValueEditor(builderItem, onValueChange)
+    is ICalIntBuilderItem -> ICalIntValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is ICalListIntBuilderItem -> ICalIntListValueEditor(builderItem, onValueChange)
     is ICalByDayBuilderItem -> ICalDayValueListValueEditor(builderItem, paramToTextAdapter, onValueChange)
     is TimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
@@ -228,12 +231,13 @@ private fun ValueEditorContent(
     is DayOfYearBuilderItem -> DayOfYearValueEditor(builderItem, onValueChange)
     is DaysOfWeekBuilderItem -> DaysOfWeekValueEditor(builderItem, onValueChange)
     is PriorityBuilderItem -> PriorityValueEditor(builderItem, onValueChange)
-    is RepeatLimitBuilderItem -> RepeatLimitValueEditor(builderItem, onValueChange)
-    is BeforeTimeBuilderItem -> BeforeTimeValueEditor(builderItem, onValueChange)
-    is RepeatTimeBuilderItem -> RepeatTimeValueEditor(builderItem, onValueChange)
-    is RepeatIntervalBuilderItem -> RepeatIntervalValueEditor(builderItem, onValueChange)
+    is RepeatLimitBuilderItem -> RepeatLimitValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
+    is BeforeTimeBuilderItem -> BeforeTimeValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
+    is RepeatTimeBuilderItem -> RepeatTimeValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
+    is RepeatIntervalBuilderItem -> RepeatIntervalValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is TimerBuilderItem -> CountdownTimeValueEditor(builderItem, onValueChange)
-    is GoogleCalendarDurationBuilderItem -> GoogleCalendarDurationValueEditor(builderItem, onValueChange)
+    is GoogleCalendarDurationBuilderItem ->
+      GoogleCalendarDurationValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is OtherParamsBuilderItem -> OtherParamsValueEditor(builderItem, onValueChange)
     is EmailBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Email)
     is WebAddressBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Uri)
@@ -241,7 +245,7 @@ private fun ValueEditorContent(
     is SummaryBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     is DescriptionBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     is EmailSubjectBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
-    is ApplicationBuilderItem -> ApplicationValueEditor(builderItem, packageManagerWrapper, onPickApplication, onValueChange)
+    is ApplicationBuilderItem -> ApplicationValueEditor(builderItem, packageManagerWrapper, onPickApplication)
     is PhoneCallBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     is SmsBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     is AttachmentsBuilderItem -> AttachmentsValueEditor(builderItem, attachmentFileAdapter, onPickFiles, onValueChange)

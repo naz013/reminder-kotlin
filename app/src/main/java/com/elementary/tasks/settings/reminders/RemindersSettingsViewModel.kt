@@ -3,13 +3,14 @@ package com.elementary.tasks.settings.reminders
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,10 @@ class RemindersSettingsViewModel(
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val systemInfo: SystemInfo,
+  private val buildInfo: BuildInfo,
 ) : ViewModel() {
+
   val state: StateFlow<RemindersSettingsState> field = MutableStateFlow(buildState())
   val navigationEvent: LiveData<Event<RemindersSettingsEvent>> field = mutableLiveEventOf()
 
@@ -79,9 +83,13 @@ class RemindersSettingsViewModel(
   }
 
   fun onSeekValueChange(value: Int) {
+    val dialog = state.value.dialog as? RemindersSettingsDialog.Seek ?: return
+    if (dialog.previewValue != value && prefs.hapticsEnabled) {
+      navigationEvent.value = Event(RemindersSettingsEvent.HapticFeedback)
+    }
     state.update { current ->
-      val dialog = current.dialog as? RemindersSettingsDialog.Seek ?: return@update current
-      current.copy(dialog = dialog.copy(previewValue = value, formattedValue = minutesText(value)))
+      val currentDialog = current.dialog as? RemindersSettingsDialog.Seek ?: return@update current
+      current.copy(dialog = currentDialog.copy(previewValue = value, formattedValue = minutesText(value)))
     }
   }
 
@@ -146,12 +154,26 @@ class RemindersSettingsViewModel(
 
   fun onDndFromClick() {
     val time = dateTimeManager.toLocalTime(prefs.doNotDisturbFrom) ?: LocalTime.now()
-    navigationEvent.value = Event(RemindersSettingsEvent.ShowTimePicker(DndTimeTarget.FROM, time))
+    navigationEvent.value = Event(
+      RemindersSettingsEvent.ShowTimePicker(
+        DndTimeTarget.FROM,
+        time,
+        textProvider.getString(R.string.from),
+        prefs.is24HourFormat,
+      )
+    )
   }
 
   fun onDndToClick() {
     val time = dateTimeManager.toLocalTime(prefs.doNotDisturbTo) ?: LocalTime.now()
-    navigationEvent.value = Event(RemindersSettingsEvent.ShowTimePicker(DndTimeTarget.TO, time))
+    navigationEvent.value = Event(
+      RemindersSettingsEvent.ShowTimePicker(
+        DndTimeTarget.TO,
+        time,
+        textProvider.getString(R.string.to),
+        prefs.is24HourFormat,
+      )
+    )
   }
 
   fun onTimeSelected(
@@ -245,7 +267,7 @@ class RemindersSettingsViewModel(
       isRepeatChecked = isRepeatChecked,
       repeatIntervalText = minutesText(prefs.notificationRepeatTime),
       isRepeatIntervalRowEnabled = isRepeatChecked,
-      isLedVisible = BuildParams.isPro,
+      isLedVisible = buildInfo.isPro && systemInfo.hasLedIndication,
       isLedChecked = isLedChecked,
       ledColorName = ledColorOptions()[prefs.ledColor.coerceIn(0, 6)],
       isLedColorRowEnabled = isLedChecked,
@@ -264,10 +286,12 @@ class RemindersSettingsViewModel(
       doNotDisturbActionName = actionOptions()[prefs.doNotDisturbAction.coerceIn(0, 1)],
       doNotDisturbIgnoreName = ignoreOptions()[prefs.doNotDisturbIgnore.coerceIn(0, 5)],
       isDoNotDisturbDependentEnabled = isDoNotDisturbChecked,
+      hasLocation = systemInfo.hasLocation,
     )
   }
 
-  private fun minutesText(minutes: Int): String = textProvider.getString(R.string.x_minutes, minutes.toString())
+  private fun minutesText(minutes: Int): String =
+    textProvider.getString(R.string.x_minutes, minutes.toString())
 
   private fun priorityOptions(): List<String> =
     listOf(

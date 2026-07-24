@@ -1,28 +1,27 @@
 package com.elementary.tasks.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
 import com.elementary.tasks.home.eventsview.EventsScreen
+import com.elementary.tasks.home.eventsview.EventsScreenState
 import com.elementary.tasks.home.eventsview.EventsViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
-import com.elementary.tasks.navigation.nav3.AppNavBridge
+import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
@@ -32,16 +31,9 @@ import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.other.OtherNavKey
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.Dialogues
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Contributes the Home island's screen (Nav3 entry) into the app's single, shared
- * [androidx.navigation3.ui.NavDisplay] (see [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- * [HomeNavKey.Main] is the graph's own start destination - the `LegacyHomeNavKey`/`home_nav.xml`
- * shim no longer occupies that role once Home is promoted.
- */
 fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
   entry<HomeNavKey.Main> { HomeEntry(backStack) }
   entry<HomeNavKey.Events> { EventsEntry(backStack) }
@@ -50,79 +42,84 @@ fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
 @Composable
 private fun HomeEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<ScheduleHomeViewModel>()
-  bindLifecycle(viewModel)
-  val context = LocalContext.current
-  val appNavBridge = koinInject<AppNavBridge>()
+  val appNavBridge = rememberAppNavBridge()
+  val eventActionDispatcher = rememberEventActionDispatcher()
 
-  viewModel.navigationEvent.ObserveEvent { event ->
+  viewModel.event.ObserveEvent { event ->
     when (event) {
-      is ScheduleHomeViewModel.NavigationEvent.OpenReminderDetails -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenReminderDetails -> {
         backStack.add(ReminderPreviewNavKey.Preview(event.uuid))
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenBirthdayDetails -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenBirthdayDetails -> {
         appNavBridge.navigate(BirthdaysNavKey.Preview(event.uuid))
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.ShowEventTypeSelection -> Unit
+      is ScheduleHomeViewModel.ViewModelEvent.ShowEventTypeSelection -> Unit
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenSettings -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenSettings -> {
         backStack.add(SettingsNavKey.Hub)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenCreateReminder -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenCreateReminder -> {
         appNavBridge.navigate(BuildReminderNavKey.Main())
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenCreateBirthday -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenCreateBirthday -> {
         appNavBridge.navigate(BirthdaysNavKey.Edit())
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenCreateGoogleTask -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenCreateGoogleTask -> {
         appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit())
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenCalendar -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenCalendar -> {
         backStack.add(CalendarNavKey.Month)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenEvents -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenEvents -> {
         backStack.add(HomeNavKey.Events)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenNotes -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenNotes -> {
         appNavBridge.navigate(NotesNavKey.List)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenGoogleTasks -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks -> {
         appNavBridge.navigate(GoogleTasksNavKey.List)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenGroups -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenGroups -> {
         appNavBridge.navigate(GroupsNavKey.List)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenPrivacy -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenPrivacy -> {
         backStack.add(OtherNavKey.PrivacyPolicy)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenCloudDrives -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenCloudDrives -> {
         backStack.add(ExportNavKey.CloudServices)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenWhatsNew -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenWhatsNew -> {
         backStack.add(OtherNavKey.WhatsNew)
       }
 
-      is ScheduleHomeViewModel.NavigationEvent.OpenCreateNote -> {
+      is ScheduleHomeViewModel.ViewModelEvent.OpenCreateNote -> {
         appNavBridge.navigate(NotesNavKey.List, NotesNavKey.Edit())
+      }
+
+      is ScheduleHomeViewModel.ViewModelEvent.EventAction -> {
+        eventActionDispatcher.dispatch(event.value)
       }
     }
   }
 
-  val state by viewModel.homeScreenState.collectAsState()
+  val state by viewModel.state.collectAsState(HomeScreenState())
   HomeScreen(
-    modifier = Modifier.fillMaxSize(),
+    modifier = Modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background),
     bannerState = state.bannerState,
     onPrivacyPolicyClick = { viewModel.onPrivacyPolicyClick() },
     onPrivacyAcceptClick = { viewModel.onPrivacyAcceptClick() },
@@ -140,7 +137,7 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
         onSettingsClick = { viewModel.onSettingsClicked() },
         onHeaderNavigationItemClick = { viewModel.onHeaderNavigationItemClicked(it) },
         onEventClick = { viewModel.onEventClicked(it) },
-        onEventActionClick = { viewModel.onEventActionClicked(context, it) },
+        onEventActionClick = { viewModel.onEventActionClicked(it) },
         onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },
       )
     },
@@ -150,11 +147,9 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun EventsEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<EventsViewModel>()
-  bindLifecycle(viewModel)
-  val context = LocalContext.current
-  val dialogues = koinInject<Dialogues>()
-  val appNavBridge = koinInject<AppNavBridge>()
-  val permissionRequester = rememberPermissionRequester()
+  val appNavBridge = rememberAppNavBridge()
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val dialogDispatcher = rememberDialogDispatcher()
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
@@ -202,27 +197,39 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
       }
 
       is EventsViewModel.NavigationEvent.ConfirmArchiveReminder -> {
-        dialogues.askConfirmation(context, context.getString(R.string.move_to_archive)) { confirmed ->
-          if (confirmed) viewModel.moveReminderToArchive(event.id)
-        }
+        dialogDispatcher.showDialog(
+          titleRes = R.string.move_to_archive,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = {
+            viewModel.moveReminderToArchive(event.id)
+          }
+        )
       }
 
       is EventsViewModel.NavigationEvent.ConfirmDeleteReminder -> {
-        dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
-          if (confirmed) viewModel.deleteReminder(event.id)
-        }
+        dialogDispatcher.showDialog(
+          textRes = R.string.delete_reminder_permanently,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = {
+            viewModel.deleteReminder(event.id)
+          }
+        )
       }
 
       is EventsViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
-        dialogues.askConfirmation(context, context.getString(R.string.delete)) { confirmed ->
-          if (confirmed) viewModel.deleteBirthday(event.id)
-        }
+        dialogDispatcher.showDialog(
+          textRes = R.string.delete_birthday_permanently,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.deleteBirthday(event.id) }
+        )
       }
     }
   }
 
-  val state by viewModel.eventsScreenState.collectAsState()
-  PermissionRationaleDialog(permissionRequester)
+  val state by viewModel.eventsScreenState.collectAsState(EventsScreenState())
   EventsScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -236,13 +243,4 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
     onItemClick = viewModel::onItemClick,
     onEventMenuAction = viewModel::onEventMenuAction,
   )
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 }

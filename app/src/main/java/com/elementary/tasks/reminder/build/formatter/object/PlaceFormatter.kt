@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.formatter.`object`
 
-import com.elementary.tasks.core.utils.ui.radius.DefaultRadiusFormatter
+import com.elementary.tasks.simplemap.DefaultRadiusFormatter
 import com.elementary.tasks.reminder.build.formatter.Formatter
 import com.github.naz013.domain.Place
 

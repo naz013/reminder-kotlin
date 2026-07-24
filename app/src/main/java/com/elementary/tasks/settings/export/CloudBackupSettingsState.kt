@@ -3,6 +3,8 @@ package com.elementary.tasks.settings.export
 data class CloudBackupSettingsState(
   val autoBackupStateName: String = "",
   val networkTypeName: String = "",
+  val hasAnyCloudApi: Boolean = false,
+  val isInProgress: Boolean = false,
   val dialog: CloudBackupDialog? = null,
 )
 

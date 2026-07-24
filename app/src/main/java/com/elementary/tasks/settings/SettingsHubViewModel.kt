@@ -1,7 +1,5 @@
 package com.elementary.tasks.settings
 
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
@@ -13,8 +11,11 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 
 class SettingsHubViewModel(
@@ -22,22 +23,44 @@ class SettingsHubViewModel(
   private val prefs: Prefs,
   private val doNotDisturbManager: DoNotDisturbManager,
   private val textProvider: TextProvider,
-  private val analyticsEventSender: AnalyticsEventSender,
+  private val buildInfo: BuildInfo,
+  private val systemInfo: SystemInfo,
+  analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel(),
-  DefaultLifecycleObserver,
   RemotePrefs.SaleObserver,
   RemotePrefs.UpdateObserver,
   RemotePrefs.MessageObserver {
-  val state: StateFlow<SettingsHubState> field = MutableStateFlow(SettingsHubState())
+
+  private val _state = MutableStateFlow(SettingsHubState())
+  val state = _state.stateInWhileSubscribed(SettingsHubState())
+    .onStart { addObservers() }
 
   private val prefsObserver: (String) -> Unit = { checkDoNotDisturb() }
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.SETTINGS))
+    _state.update {
+      it.copy(
+        isBuyProBadgeVisible = !buildInfo.isPro && !systemInfo.isProAppInstalled,
+        isPlayServicesWarningVisible = !systemInfo.googlePlayServicesAvailable,
+        hasPinCode = prefs.hasPinCode,
+      )
+    }
   }
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
+  override fun onCleared() {
+    prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
+    prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
+    prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
+    prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
+    if (!BuildParams.isPro) {
+      remotePrefs.removeSaleObserver(this)
+    }
+    remotePrefs.removeUpdateObserver(this)
+    remotePrefs.removeMessageObserver(this)
+  }
+
+  private fun addObservers() {
     prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
     prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
     prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
@@ -50,25 +73,17 @@ class SettingsHubViewModel(
     checkDoNotDisturb()
   }
 
-  override fun onPause(owner: LifecycleOwner) {
-    super.onPause(owner)
-    prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
-    prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
-    prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
-    prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
-    if (!BuildParams.isPro) {
-      remotePrefs.removeSaleObserver(this)
-    }
-    remotePrefs.removeUpdateObserver(this)
-    remotePrefs.removeMessageObserver(this)
-  }
-
   override fun onUpdateChanged(
     hasUpdate: Boolean,
     version: String,
   ) {
-    state.update {
-      it.copy(updateMessage = if (hasUpdate) textProvider.getString(R.string.new_update_message, version) else null)
+    _state.update {
+      it.copy(
+        updateMessage = if (hasUpdate) textProvider.getString(
+          R.string.new_update_message,
+          version
+        ) else null
+      )
     }
   }
 
@@ -77,7 +92,7 @@ class SettingsHubViewModel(
     discount: String,
     until: String,
   ) {
-    state.update {
+    _state.update {
       it.copy(
         saleMessage =
           if (showDiscount) {
@@ -93,10 +108,10 @@ class SettingsHubViewModel(
     showMessage: Boolean,
     message: String,
   ) {
-    state.update { it.copy(internalMessage = if (showMessage) message else null) }
+    _state.update { it.copy(internalMessage = if (showMessage) message else null) }
   }
 
   private fun checkDoNotDisturb() {
-    state.update { it.copy(isDoNotDisturbActive = doNotDisturbManager.applyDoNotDisturb(0)) }
+    _state.update { it.copy(isDoNotDisturbActive = doNotDisturbManager.applyDoNotDisturb(0)) }
   }
 }

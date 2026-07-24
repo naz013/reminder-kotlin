@@ -13,6 +13,7 @@ import com.elementary.tasks.core.services.action.actionModule
 import com.elementary.tasks.core.services.servicesModule
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.newUtilsModule
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.ui.uiUtilsModule
@@ -23,6 +24,7 @@ import com.elementary.tasks.eventaction.eventActionModule
 import com.elementary.tasks.googletasks.googleTaskModule
 import com.elementary.tasks.groups.reminderGroupModule
 import com.elementary.tasks.home.homeModule
+import com.elementary.tasks.module.libModule
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcherFactory
 import com.elementary.tasks.navigation.NavigationObservable
@@ -32,9 +34,12 @@ import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.settings.export.syncSettingsModule
 import com.elementary.tasks.settings.settingsModule
+import com.elementary.tasks.simplemap.simpleMapKoinModule
+import com.elementary.tasks.telephony.intentModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
+import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.icalendar.iCalendarModule
@@ -50,6 +55,7 @@ import com.github.naz013.reviews.ReviewSdk
 import com.github.naz013.reviews.config.SecondaryFirebaseConfig
 import com.github.naz013.reviews.reviewsKoinModule
 import com.github.naz013.sync.syncApiModule
+import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
 import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
@@ -144,12 +150,16 @@ class ReminderApp :
           syncApiModule,
           reminderGroupModule,
           placeKoinModule,
+          simpleMapKoinModule,
           reviewsKoinModule,
           syncSettingsModule,
           settingsModule,
           eventActionModule,
           legalModule,
           workModule,
+          dateTimeCalculationsModule,
+          libModule,
+          intentModule,
         ),
       )
     }
@@ -172,6 +182,11 @@ class ReminderApp :
           .e("App", "❌ Reviews init failed", error)
       },
     )
+
+    // Migration continuity: AppCompatDelegate's own per-app language storage doesn't know about
+    // a locale the user picked under the old attachBaseContext-based mechanism until we tell it
+    // once - after that it persists this itself and this call is just a harmless no-op resync.
+    AppCompatDelegate.setApplicationLocales(Language.getLocaleList(get<Prefs>().appLanguage))
 
     get<NavigationObservable>().subscribeGlobal(navigationConsumer)
 

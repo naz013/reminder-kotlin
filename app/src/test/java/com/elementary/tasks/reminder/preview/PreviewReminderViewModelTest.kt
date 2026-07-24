@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.preview
 
+import android.net.Uri
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
@@ -21,6 +21,7 @@ import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.domain.sync.SyncState
@@ -34,6 +35,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -42,6 +45,7 @@ import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+import java.io.File
 
 class PreviewReminderViewModelTest : BaseTest() {
   private val reminderRepository = mockk<ReminderRepository>()
@@ -64,6 +68,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>(relaxed = true)
   private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
+  private val buildInfo = mockk<BuildInfo>(relaxed = true)
 
   @Before
   override fun setUp() {
@@ -93,13 +98,14 @@ class PreviewReminderViewModelTest : BaseTest() {
     id: String = "42",
     type: Int = Reminder.BY_DATE,
     isRemoved: Boolean = false,
+    isActive: Boolean = true,
     shoppings: List<ShopItem> = emptyList(),
   ): Reminder =
     Reminder(
       uuId = id,
       summary = "Buy milk",
       type = type,
-      isActive = true,
+      isActive = isActive,
       isRemoved = isRemoved,
       shoppings = shoppings,
       syncState = SyncState.Synced,
@@ -129,16 +135,16 @@ class PreviewReminderViewModelTest : BaseTest() {
       moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
       activateReminderUseCase = activateReminderUseCase,
       toggleReminderStateUseCase = toggleReminderStateUseCase,
+      buildInfo = buildInfo,
     )
 
   @Test
-  fun `onResume loads status, details, and target info into state`() =
+  fun `loads status, details, and target info into state`() =
     runTest {
       coEvery { reminderRepository.getById("42") } returns reminder()
       val viewModel = createViewModel()
 
-      viewModel.onResume(mockk(relaxed = true))
-      val state = viewModel.state.value
+      val state = viewModel.state.first()
 
       assertEquals("Buy milk", state.summary)
       assertEquals(true, state.status?.active)
@@ -148,14 +154,25 @@ class PreviewReminderViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `re-collecting state after a config change reloads it from the repository`() =
+    runTest {
+      coEvery { reminderRepository.getById("42") } returns reminder()
+      val viewModel = createViewModel()
+      viewModel.state.first()
+      coEvery { reminderRepository.getById("42") } returns reminder().copy(summary = "Buy bread")
+
+      val state = viewModel.state.first()
+
+      assertEquals("Buy bread", state.summary)
+    }
+
+  @Test
   fun `canCopy is true for a date-type reminder`() =
     runTest {
       coEvery { reminderRepository.getById("42") } returns reminder(type = Reminder.BY_DATE)
       val viewModel = createViewModel()
 
-      viewModel.onResume(mockk(relaxed = true))
-
-      assertTrue(viewModel.state.value.canCopy)
+      assertTrue(viewModel.state.first().canCopy)
     }
 
   @Test
@@ -164,9 +181,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       coEvery { reminderRepository.getById("42") } returns reminder(type = Reminder.BY_TIME)
       val viewModel = createViewModel()
 
-      viewModel.onResume(mockk(relaxed = true))
-
-      assertFalse(viewModel.state.value.canCopy)
+      assertFalse(viewModel.state.first().canCopy)
     }
 
   @Test
@@ -175,37 +190,64 @@ class PreviewReminderViewModelTest : BaseTest() {
       coEvery { reminderRepository.getById("42") } returns reminder(isRemoved = true)
       val viewModel = createViewModel()
 
-      viewModel.onResume(mockk(relaxed = true))
-
-      assertTrue(viewModel.state.value.canDelete)
+      assertTrue(viewModel.state.first().canDelete)
     }
 
   @Test
-  fun `onToggleClick posts SAVED when the toggle succeeds`() =
+  fun `onToggleClick reloads state after a successful toggle`() =
     runTest {
-      val activeReminder = reminder()
+      val activeReminder = reminder(isActive = true)
       coEvery { reminderRepository.getById("42") } returns activeReminder
-      coEvery { toggleReminderStateUseCase(activeReminder) } returns (true to activeReminder)
+      coEvery { toggleReminderStateUseCase(activeReminder) } returns ToggleReminderStateUseCase.Result(true , activeReminder.copy(isActive = false))
       val viewModel = createViewModel()
 
       viewModel.onToggleClick()
 
-      val event = viewModel.resultEvent.getOrAwaitValue()
-      assertEquals(Commands.SAVED, event?.getContentIfNotHandled())
+      coVerify(exactly = 1) { toggleReminderStateUseCase(activeReminder) }
+      assertEquals(null, viewModel.event.value?.peekContent())
     }
 
   @Test
-  fun `onToggleClick posts OUTDATED when the toggle fails`() =
+  fun `onToggleClick shows an error when the toggle fails`() =
     runTest {
+      every { textProvider.getString(any()) } returns "Reminder is outdated"
       val activeReminder = reminder()
       coEvery { reminderRepository.getById("42") } returns activeReminder
-      coEvery { toggleReminderStateUseCase(activeReminder) } returns (false to activeReminder)
+      coEvery { toggleReminderStateUseCase(activeReminder) } returns ToggleReminderStateUseCase.Result(false, activeReminder)
       val viewModel = createViewModel()
 
       viewModel.onToggleClick()
 
-      val event = viewModel.resultEvent.getOrAwaitValue()
-      assertEquals(Commands.OUTDATED, event?.getContentIfNotHandled())
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.ShowError("Reminder is outdated"), event)
+    }
+
+  @Test
+  fun `onToggleClick does nothing when the reminder is not found`() =
+    runTest {
+      coEvery { reminderRepository.getById("42") } returns null
+      val viewModel = createViewModel()
+
+      viewModel.onToggleClick()
+
+      coVerify(exactly = 0) { toggleReminderStateUseCase(any()) }
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.MoveBack, viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `onToggleClick does nothing when the reminder is already removed`() =
+    runTest {
+      every { textProvider.getString(any()) } returns "Error"
+      coEvery { reminderRepository.getById("42") } returns reminder(isRemoved = true)
+      val viewModel = createViewModel()
+
+      viewModel.onToggleClick()
+
+      coVerify(exactly = 0) { toggleReminderStateUseCase(any()) }
+
+      val event = viewModel.event.value?.peekContent()
+      assertTrue(event is PreviewReminderViewModel.ViewModelEvent.ShowError)
+      assertEquals("Error", (event as? PreviewReminderViewModel.ViewModelEvent.ShowError)?.message)
     }
 
   @Test
@@ -246,7 +288,7 @@ class PreviewReminderViewModelTest : BaseTest() {
 
       viewModel.onDeleteClick()
 
-      assertTrue(viewModel.state.value.showDeleteConfirm)
+      assertTrue(viewModel.state.first().showDeleteConfirm)
     }
 
   @Test
@@ -258,7 +300,7 @@ class PreviewReminderViewModelTest : BaseTest() {
 
       viewModel.onDeleteDismiss()
 
-      assertFalse(viewModel.state.value.showDeleteConfirm)
+      assertFalse(viewModel.state.first().showDeleteConfirm)
     }
 
   @Test
@@ -267,14 +309,14 @@ class PreviewReminderViewModelTest : BaseTest() {
       val removedReminder = reminder(isRemoved = true)
       coEvery { reminderRepository.getById("42") } returns removedReminder
       val viewModel = createViewModel()
-      viewModel.onResume(mockk(relaxed = true))
+      viewModel.state.first()
 
       viewModel.onDeleteConfirmed()
 
       coVerify(exactly = 1) { deleteReminderUseCase(removedReminder) }
       coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
-      val event = viewModel.resultEvent.getOrAwaitValue()
-      assertEquals(Commands.DELETED, event?.getContentIfNotHandled())
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.MoveBack, event)
     }
 
   @Test
@@ -282,31 +324,43 @@ class PreviewReminderViewModelTest : BaseTest() {
     runTest {
       coEvery { reminderRepository.getById("42") } returns reminder(isRemoved = false)
       val viewModel = createViewModel()
-      viewModel.onResume(mockk(relaxed = true))
+      viewModel.state.first()
 
       viewModel.onDeleteConfirmed()
 
       coVerify(exactly = 1) { moveReminderToArchiveUseCase("42") }
       coVerify(exactly = 0) { deleteReminderUseCase(any()) }
-      val event = viewModel.resultEvent.getOrAwaitValue()
-      assertEquals(Commands.DELETED, event?.getContentIfNotHandled())
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.MoveBack, event)
     }
 
   @Test
-  fun `copyReminder activates a new reminder and posts SAVED`() =
+  fun `copyReminder activates a new reminder with a fresh id`() =
     runTest {
       coEvery { reminderRepository.getById("42") } returns reminder()
       val viewModel = createViewModel()
 
       viewModel.copyReminder(LocalTime.of(9, 0))
 
-      coVerify(exactly = 1) { activateReminderUseCase(any()) }
-      val event = viewModel.resultEvent.getOrAwaitValue()
-      assertEquals(Commands.SAVED, event?.getContentIfNotHandled())
+      coVerify(exactly = 1) { activateReminderUseCase(match { it.uuId != "42" }) }
     }
 
   @Test
-  fun `shareReminder posts a UiShareData event`() =
+  fun `shareReminder posts a ShareData event when the backup file is created`() =
+    runTest {
+      coEvery { reminderRepository.getById("42") } returns reminder()
+      val file = File("reminder.ics")
+      every { backupTool.reminderToFile(any()) } returns file
+      val viewModel = createViewModel()
+
+      viewModel.shareReminder()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.ShareData(file, "Buy milk"), event)
+    }
+
+  @Test
+  fun `shareReminder emits nothing when the backup file cannot be created`() =
     runTest {
       coEvery { reminderRepository.getById("42") } returns reminder()
       every { backupTool.reminderToFile(any()) } returns null
@@ -314,8 +368,7 @@ class PreviewReminderViewModelTest : BaseTest() {
 
       viewModel.shareReminder()
 
-      val shared = viewModel.sharedFile.getOrAwaitValue()
-      assertEquals("Buy milk", shared?.name)
+      assertEquals(null, viewModel.event.value?.peekContent())
     }
 
   @Test
@@ -338,5 +391,50 @@ class PreviewReminderViewModelTest : BaseTest() {
 
       coVerify(exactly = 1) { calendarEventRepository.delete("local-7") }
       coVerify(exactly = 1) { googleCalendarUtils.deleteEvent(7L) }
+    }
+
+  @Test
+  fun `onOpenCalendarClicked posts OpenCalendar for a valid event id`() =
+    runTest {
+      // toUri() delegates to the real Uri.parse(), which isn't mockable-by-default under the
+      // JVM unit test android.jar stub - mock the underlying static call it wraps instead.
+      mockkStatic(Uri::class)
+      every { Uri.parse(any()) } returns mockk(relaxed = true)
+      coEvery { reminderRepository.getById("42") } returns reminder()
+      every { textProvider.getString(any()) } returns "Calendar"
+      val viewModel = createViewModel()
+
+      viewModel.onOpenCalendarClicked(7L)
+
+      val event = viewModel.event.getOrAwaitValue()?.getContentIfNotHandled()
+      assertTrue(event is PreviewReminderViewModel.ViewModelEvent.OpenCalendar)
+      assertEquals("Calendar", (event as PreviewReminderViewModel.ViewModelEvent.OpenCalendar).title)
+    }
+
+  @Test
+  fun `onOpenCalendarClicked does nothing for a non-positive event id`() =
+    runTest {
+      coEvery { reminderRepository.getById("42") } returns reminder()
+      val viewModel = createViewModel()
+
+      viewModel.onOpenCalendarClicked(0L)
+
+      assertEquals(null, viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `onCopyClicked posts a ShowCopyTimeDialog event with half-hour slots`() =
+    runTest {
+      coEvery { reminderRepository.getById("42") } returns reminder()
+      val viewModel = createViewModel()
+
+      viewModel.onCopyClicked()
+
+      val event = viewModel.event.value?.peekContent()
+      assertTrue(event is PreviewReminderViewModel.ViewModelEvent.ShowCopyTimeDialog)
+      // Slots run from 00:00 up to (but excluding) 23:30 in 30-minute steps: 47 entries, last one 23:00.
+      assertEquals(47, (event as PreviewReminderViewModel.ViewModelEvent.ShowCopyTimeDialog).times.size)
+      assertEquals(LocalTime.of(0, 0), event.times.first())
+      assertEquals(LocalTime.of(23, 0), event.times.last())
     }
 }

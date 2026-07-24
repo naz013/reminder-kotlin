@@ -1,6 +1,8 @@
 package com.elementary.tasks.navigation.nav3
 
+import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavKey
+import org.koin.compose.koinInject
 
 /**
  * Koin singleton letting any composable reach the app's single, shared outer Nav3 backstack (see
@@ -23,3 +25,6 @@ class AppNavBridge {
     keys.forEach { stack.add(it) }
   }
 }
+
+@Composable
+fun rememberAppNavBridge(): AppNavBridge = koinInject()

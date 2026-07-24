@@ -1,66 +1,42 @@
 package com.elementary.tasks.googletasks
 
-import android.app.Activity
 import android.widget.FrameLayout
-import android.widget.Toast
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
-import com.elementary.tasks.core.os.compose.PermissionRationaleDialog
-import com.elementary.tasks.core.os.compose.rememberPermissionRequester
-import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ui.DateTimePickerProvider
-import com.elementary.tasks.googletasks.list.TaskListEvent
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.googletasks.list.TaskListScreen
+import com.elementary.tasks.googletasks.list.TaskListState
 import com.elementary.tasks.googletasks.list.TaskListViewModel
-import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskEvent
 import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskScreen
+import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskState
 import com.elementary.tasks.googletasks.preview.PreviewGoogleTaskViewModel
-import com.elementary.tasks.googletasks.task.EditGoogleTaskEvent
 import com.elementary.tasks.googletasks.task.EditGoogleTaskScreen
+import com.elementary.tasks.googletasks.task.EditGoogleTaskState
 import com.elementary.tasks.googletasks.task.EditGoogleTaskViewModel
-import com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListEvent
 import com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListScreen
+import com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListState
 import com.elementary.tasks.googletasks.tasklist.EditGoogleTaskListViewModel
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
-import com.github.naz013.analytics.AnalyticsEventSender
-import com.github.naz013.analytics.Screen
-import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.Permissions
-import org.koin.compose.koinInject
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Contributes the Google Tasks island's screens (Nav3 entries) and the routing between them into
- * the app's single, shared [androidx.navigation3.ui.NavDisplay] (see
- * [com.elementary.tasks.navigation.nav3.AppNavGraph]).
- */
 fun EntryProviderScope<NavKey>.googleTasksEntries(backStack: MutableList<NavKey>) {
   entry<GoogleTasksNavKey.List> { GoogleTasksListEntry(backStack) }
   entry<GoogleTasksNavKey.TaskList> { key -> TaskListEntry(key, backStack) }
@@ -72,46 +48,45 @@ fun EntryProviderScope<NavKey>.googleTasksEntries(backStack: MutableList<NavKey>
 @Composable
 private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GoogleTasksViewModel>()
-  bindLifecycle(viewModel)
-  val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
-  val analyticsEventSender = koinInject<AnalyticsEventSender>()
-  val permissionRequester = rememberPermissionRequester()
-  var showLoginError by remember { mutableStateOf(false) }
-  val googleTasksLogin =
-    rememberGoogleTasksLogin(
-      onResult = { isLogged ->
-        viewModel.updateLoginStatus(isLogged)
-        if (!isLogged) showLoginError = true
-      },
-      onFail = { showLoginError = true },
-    )
 
-  LaunchedEffect(Unit) {
-    viewModel.updateLoginStatus(googleTasksLogin.isLogged)
-    analyticsEventSender.send(ScreenUsedEvent(Screen.GOOGLE_TASKS_LIST))
+  val googleTasksLogin = rememberGoogleTasksLogin(
+    onResult = { viewModel.onGoogleTasksLoginStateChanged(it) },
+    onFail = { viewModel.onGoogleTasksAuthFailed() },
+  )
+
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val toastDispatcher = rememberToastDispatcher()
+  val dialogDispatcher = rememberDialogDispatcher()
+
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      GoogleTasksViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+
+      GoogleTasksViewModel.ViewModelEvent.Login -> {
+        permissionRequester.request(
+          Permissions.GET_ACCOUNTS,
+          onGranted = { googleTasksLogin.login() },
+        )
+      }
+
+      GoogleTasksViewModel.ViewModelEvent.ShowLoginError -> {
+        dialogDispatcher.showDialog(
+          textRes = R.string.failed_to_login,
+          positiveButtonRes = R.string.ok,
+        )
+      }
+
+      is GoogleTasksViewModel.ViewModelEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+    }
   }
 
-  val state by viewModel.state.collectAsState()
-  PermissionRationaleDialog(permissionRequester)
-  if (showLoginError) {
-    AlertDialog(
-      onDismissRequest = { showLoginError = false },
-      text = { Text(stringResource(R.string.failed_to_login)) },
-      confirmButton = {
-        TextButton(onClick = { showLoginError = false }) { Text(stringResource(R.string.ok)) }
-      },
-    )
-  }
+  val state by viewModel.state.collectAsState(GoogleTasksState())
   GoogleTasksScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
-    onConnectClick = {
-      permissionRequester.request(
-        Permissions.GET_ACCOUNTS,
-        onGranted = { withActivityCheck(activity) { googleTasksLogin.login() } },
-      )
-    },
+    onBackClick = { viewModel.onBackPressed() },
+    onConnectClick = { viewModel.onLoginClicked() },
     onAddListClick = { backStack.add(GoogleTasksNavKey.ListEdit()) },
     onAddTaskClick = { backStack.add(GoogleTasksNavKey.TaskEdit()) },
     onTaskListClick = { listId -> backStack.add(GoogleTasksNavKey.TaskList(listId)) },
@@ -127,22 +102,28 @@ private fun TaskListEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<TaskListViewModel> { parametersOf(key.listId) }
-  bindLifecycle(viewModel)
-  val context = LocalContext.current
-  viewModel.navigationEvent.ObserveEvent { event ->
+
+  val toastDispatcher = rememberToastDispatcher()
+
+  viewModel.event.ObserveEvent { event ->
     when (event) {
-      TaskListEvent.Deleted -> backStack.removeLastOrNull()
+      TaskListViewModel.TaskListEvent.MoveBack -> backStack.removeLastOrNull()
+
+      is TaskListViewModel.TaskListEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is TaskListViewModel.TaskListEvent.EditTaskList -> {
+        backStack.add(GoogleTasksNavKey.ListEdit(event.listId))
+      }
     }
   }
-  viewModel.errorEvent.ObserveEvent { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(TaskListState())
   TaskListScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
-    onEditListClick = {
-      viewModel.currentTaskList?.also { backStack.add(GoogleTasksNavKey.ListEdit(it.listId)) }
-    },
+    onEditListClick = { viewModel.onEditClicked() },
     onDeleteListClick = viewModel::onDeleteListClick,
     onDeleteConfirmed = viewModel::deleteGoogleTaskList,
     onDeleteDismiss = viewModel::onDeleteDismiss,
@@ -160,17 +141,20 @@ private fun TaskPreviewEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<PreviewGoogleTaskViewModel> { parametersOf(key.id) }
-  bindLifecycle(viewModel)
-  val context = LocalContext.current
+
+  val toastDispatcher = rememberToastDispatcher()
   val adsProvider = remember { AdsProvider() }
-  viewModel.navigationEvent.ObserveEvent { event ->
+
+  viewModel.event.ObserveEvent { event ->
     when (event) {
-      PreviewGoogleTaskEvent.Deleted -> backStack.removeLastOrNull()
+      PreviewGoogleTaskViewModel.PreviewGoogleTaskEvent.MoveBack -> backStack.removeLastOrNull()
+      is PreviewGoogleTaskViewModel.PreviewGoogleTaskEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
     }
   }
-  viewModel.errorEvent.ObserveEvent { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(PreviewGoogleTaskState())
   PreviewGoogleTaskScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -179,7 +163,7 @@ private fun TaskPreviewEntry(
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,
     onCompleteClick = viewModel::onComplete,
-    adsContent = { GoogleTaskAdBanner(adsProvider) },
+    adsContent = { if (state.hasAdsBanner) { GoogleTaskAdBanner(adsProvider) } },
   )
 }
 
@@ -189,42 +173,46 @@ private fun TaskEditEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<EditGoogleTaskViewModel> { parametersOf(key.id, key.listId) }
-  bindLifecycle(viewModel)
+
   val context = LocalContext.current
-  val activity = LocalActivity.current as FragmentActivity
-  val dateTimePickerProvider = koinInject<DateTimePickerProvider>()
-  val appWidgetUpdater = koinInject<AppWidgetUpdater>()
+  val dateTimePicker = rememberDateTimePicker()
+  val toastDispatcher = rememberToastDispatcher()
+
   DisposableEffect(viewModel) {
     onDispose {
       context.hideKeyboard()
-      appWidgetUpdater.updateScheduleWidget()
     }
   }
 
-  viewModel.navigationEvent.ObserveEvent { event ->
+  viewModel.event.ObserveEvent { event ->
     when (event) {
-      is EditGoogleTaskEvent.ShowDatePicker -> {
-        dateTimePickerProvider.showDatePicker(
-          fragmentManager = activity.supportFragmentManager,
+      is EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowDatePicker -> {
+        dateTimePicker.showDatePicker(
           date = event.date,
-          title = context.getString(R.string.select_date),
-        ) { viewModel.onDateSet(it) }
+          title = event.title,
+          onDateSelected = { viewModel.onDateSet(it) },
+        )
       }
 
-      is EditGoogleTaskEvent.ShowTimePicker -> {
-        dateTimePickerProvider.showTimePicker(
-          fragmentManager = activity.supportFragmentManager,
+      is EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowTimePicker -> {
+        dateTimePicker.showTimePicker(
           time = event.time,
-          title = context.getString(R.string.select_time),
-        ) { viewModel.onTimeSet(it) }
+          title = event.title,
+          is24Hour = event.is24Hour,
+          onTimeSelected = { viewModel.onTimeSet(it) },
+        )
       }
 
-      EditGoogleTaskEvent.Saved, EditGoogleTaskEvent.Deleted -> backStack.removeLastOrNull()
+      EditGoogleTaskViewModel.EditGoogleTaskEvent.MoveBack -> backStack.removeLastOrNull()
+
+      is EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
     }
   }
-  viewModel.errorEvent.ObserveEvent { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(EditGoogleTaskState())
+
   EditGoogleTaskScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -250,24 +238,29 @@ private fun ListEditEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<EditGoogleTaskListViewModel> { parametersOf(key.id) }
-  bindLifecycle(viewModel)
+
   val context = LocalContext.current
-  val appWidgetUpdater = koinInject<AppWidgetUpdater>()
+  val toastDispatcher = rememberToastDispatcher()
+
   DisposableEffect(viewModel) {
     onDispose {
       context.hideKeyboard()
-      appWidgetUpdater.updateScheduleWidget()
     }
   }
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      EditGoogleTaskListEvent.Saved, EditGoogleTaskListEvent.Deleted -> backStack.removeLastOrNull()
+      EditGoogleTaskListViewModel.EditGoogleTaskListEvent.MoveBack -> {
+        backStack.removeLastOrNull()
+      }
+
+      is EditGoogleTaskListViewModel.EditGoogleTaskListEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
     }
   }
-  viewModel.errorEvent.ObserveEvent { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
 
-  val state by viewModel.state.collectAsState()
+  val state by viewModel.state.collectAsState(EditGoogleTaskListState())
   EditGoogleTaskListScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
@@ -281,29 +274,8 @@ private fun ListEditEntry(
   )
 }
 
-private fun withActivityCheck(
-  activity: Activity,
-  action: () -> Unit,
-) {
-  if (!SuperUtil.checkGooglePlayServicesAvailability(activity)) {
-    Toast.makeText(activity, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
-    return
-  }
-  action()
-}
-
-@Composable
-private fun bindLifecycle(observer: DefaultLifecycleObserver) {
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(observer, lifecycleOwner) {
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
-}
-
 @Composable
 private fun GoogleTaskAdBanner(adsProvider: AdsProvider) {
-  if (BuildParams.isPro || !AdsProvider.hasAds()) return
   val context = LocalContext.current
   AndroidView(
     modifier = Modifier.fillMaxWidth(),

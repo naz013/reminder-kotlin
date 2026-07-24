@@ -70,7 +70,7 @@ fun TimeValueEditor(
     }
   }
 
-  TimePicker(state = state)
+  TimePicker(state = state, modifier = Modifier.fillMaxWidth())
 }
 
 private fun LocalDate.toUtcMillis(): Long = atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()

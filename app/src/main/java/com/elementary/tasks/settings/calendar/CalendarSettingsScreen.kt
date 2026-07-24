@@ -3,35 +3,26 @@ package com.elementary.tasks.settings.calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
-import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 
 @Composable
 fun CalendarSettingsScreen(
@@ -41,14 +32,16 @@ fun CalendarSettingsScreen(
   onTodayColorClick: () -> Unit,
   onReminderColorClick: () -> Unit,
   onBirthdayColorClick: () -> Unit,
+  onColorOptionSelected: (Int) -> Unit,
   onSelectCalendarClick: () -> Unit,
+  onGoogleCalendarOptionSelected: (Int) -> Unit,
   onCalendarResetClick: () -> Unit,
   onExportToggle: () -> Unit,
   onScanToggle: () -> Unit,
   onDialogDismiss: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val context = LocalContext.current
+  val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
 
   Column(
     modifier =
@@ -72,21 +65,21 @@ fun CalendarSettingsScreen(
       icon = painterResource(R.drawable.ic_fluent_color),
       dividerBottom = true,
       onClick = onTodayColorClick,
-      trailing = { ColorSwatch(Color(ThemeProvider.colorTodayCalendar(context, state.todayColorIndex))) },
+      trailing = { ColorSwatch(state.todayColor) },
     )
     SettingsItem(
       title = stringResource(R.string.reminders_color),
       icon = painterResource(R.drawable.ic_fluent_color_fill),
       dividerBottom = true,
       onClick = onReminderColorClick,
-      trailing = { ColorSwatch(Color(ThemeProvider.colorReminderCalendar(context, state.reminderColorIndex))) },
+      trailing = { ColorSwatch(state.reminderColor) },
     )
     SettingsItem(
       title = stringResource(R.string.birthdays_color),
       icon = painterResource(R.drawable.ic_fluent_food_cake),
       dividerBottom = true,
       onClick = onBirthdayColorClick,
-      trailing = { ColorSwatch(Color(ThemeProvider.colorBirthdayCalendar(context, state.birthdayColorIndex))) },
+      trailing = { ColorSwatch(state.birthdayColor) },
     )
 
     SettingsSectionHeader(stringResource(R.string.google_calendar))
@@ -122,35 +115,39 @@ fun CalendarSettingsScreen(
     )
   }
 
-  val dialog = state.dialog
-  if (dialog is CalendarSettingsDialog.FirstDay) {
-    AlertDialog(
-      onDismissRequest = onDialogDismiss,
-      title = { Text(stringResource(R.string.first_day_of_the_week)) },
-      text = {
-        Column(modifier = Modifier.selectableGroup()) {
-          dialog.options.forEachIndexed { index, option ->
-            val selected = index == dialog.selectedIndex
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              modifier =
-                Modifier
-                  .fillMaxWidth()
-                  .selectable(selected = selected, onClick = { onFirstDayOptionSelected(index) }, role = Role.RadioButton)
-                  .padding(vertical = 8.dp),
-            ) {
-              RadioButton(selected = selected, onClick = null)
-              Text(
-                text = option,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(start = 8.dp),
-              )
-            }
-          }
-        }
-      },
-      confirmButton = { TextButton(onClick = onDialogDismiss) { Text(stringResource(R.string.cancel)) } },
-    )
+  when (val dialog = state.dialog) {
+    is CalendarSettingsDialog.FirstDay -> {
+      SingleChoiceDialog(
+        title = stringResource(R.string.first_day_of_the_week),
+        options = dialog.options,
+        selectedIndex = dialog.selectedIndex,
+        onOptionSelected = onFirstDayOptionSelected,
+        onDismiss = onDialogDismiss,
+      )
+    }
+
+    is CalendarSettingsDialog.SelectGoogleCalendar -> {
+      SingleChoiceDialog(
+        title = stringResource(R.string.choose_calendar),
+        options = dialog.calendars.map { it.name.orEmpty() },
+        selectedIndex = dialog.selectedPosition,
+        onOptionSelected = onGoogleCalendarOptionSelected,
+        onDismiss = onDialogDismiss,
+      )
+    }
+
+    is CalendarSettingsDialog.ColorPicker -> {
+      colorPickerDialogDispatcher.showDialog(
+        title = dialog.title,
+        colors = dialog.colors,
+        selectedIndex = dialog.selectedIndex,
+        onColorSelected = onColorOptionSelected,
+        hapticFeedbackEnabled = dialog.hapticFeedback,
+        onDismissRequest = onDialogDismiss,
+      )
+    }
+
+    null -> Unit
   }
 }
 

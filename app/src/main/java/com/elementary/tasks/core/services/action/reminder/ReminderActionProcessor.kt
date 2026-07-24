@@ -74,7 +74,7 @@ class ReminderActionProcessor(
         val canShowWindow = !SuperUtil.isPhoneCallActive(contextProvider.context)
         analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
         val handler = reminderHandlerFactory.createAction(canShowWindow)
-        Logger.d(TAG, "Processing reminder id=${reminder.uuId} with handler ${handler.javaClass.simpleName}")
+        Logger.d(TAG, "Processing reminder id=${reminder.uuId} with handler $handler")
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)
         }

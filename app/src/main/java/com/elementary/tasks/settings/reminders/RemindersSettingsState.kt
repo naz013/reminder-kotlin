@@ -24,6 +24,7 @@ data class RemindersSettingsState(
   val doNotDisturbIgnoreName: String = "",
   val isDoNotDisturbDependentEnabled: Boolean = false,
   val dialog: RemindersSettingsDialog? = null,
+  val hasLocation: Boolean = false,
 )
 
 enum class ChoiceDialogKind { PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE }
@@ -56,9 +57,13 @@ sealed class RemindersSettingsEvent {
   data class ShowTimePicker(
     val target: DndTimeTarget,
     val time: LocalTime,
+    val title: String,
+    val is24Hour: Boolean,
   ) : RemindersSettingsEvent()
 
   data object ShowPermanentNotification : RemindersSettingsEvent()
 
   data object HidePermanentNotification : RemindersSettingsEvent()
+
+  data object HapticFeedback : RemindersSettingsEvent()
 }
