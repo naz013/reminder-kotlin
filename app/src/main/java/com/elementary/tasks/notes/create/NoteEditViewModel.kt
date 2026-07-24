@@ -409,7 +409,8 @@ class NoteEditViewModel(
       val colorCode = noteColorEngine.getColorCode(uiNoteEdit.colorPalette, uiNoteEdit.colorPosition)
       _state.update {
         it.copy(
-          colorIndex = uiNoteEdit.colorPosition,
+          canDelete = true,
+          colorIndex = colorCode,
           opacity = uiNoteEdit.opacity,
           noteColors = noteColorEngine.colorsFor(colorCode, uiNoteEdit.opacity),
           fontStyle = uiNoteEdit.typeface,

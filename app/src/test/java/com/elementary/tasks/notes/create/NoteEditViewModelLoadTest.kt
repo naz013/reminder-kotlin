@@ -98,12 +98,19 @@ class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
   // it stays false even when editing an existing note below. This pins down that (suspected bug)
   // behavior; see the final report.
   @Test
-  fun `canDelete stays false even after loading an existing note - suspected bug, delete action is never shown`() {
+  fun `canDelete becomes true after loading an existing note`() {
     val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
     coEvery { noteRepository.getById("42") } returns noteWithImages
     every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
 
     val state = buildViewModel(id = "42").state.value
+
+    assertEquals(true, state.canDelete)
+  }
+
+  @Test
+  fun `canDelete stays false for a brand-new note`() {
+    val state = buildViewModel(id = null).state.value
 
     assertEquals(false, state.canDelete)
   }
@@ -211,14 +218,9 @@ class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
     assertEquals(18, state.fontSize)
     assertEquals(6, state.titleFontStyle)
     assertEquals(24, state.titleFontSize)
-    // Suspected bug: onNoteLoaded() sets `colorIndex = uiNoteEdit.colorPosition` directly (the
-    // raw in-palette position, 3 here) instead of the combined
-    // `noteColorEngine.getColorCode(colorPalette, colorPosition)` it computes on the very next
-    // line (used only for `noteColors`) and that the brand-new-note init path uses for this same
-    // field. For a note saved under a non-zero palette this makes the color slider/highlight land
-    // on the wrong swatch when re-opening the note for editing. Pinning down the actual (buggy)
-    // behavior here; see the final report.
-    assertEquals(3, state.colorIndex)
+    // colorIndex is the combined code (palette*100 + position per the test stub), matching the
+    // brand-new-note init path's convention for this field - not the raw in-palette position.
+    assertEquals(103, state.colorIndex)
     assertEquals(60, state.opacity)
     assertEquals("42", state.noteId)
   }
