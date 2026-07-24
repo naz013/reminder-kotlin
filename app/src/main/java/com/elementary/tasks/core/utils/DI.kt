@@ -33,14 +33,11 @@ import com.elementary.tasks.settings.test.ObjectExportViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.cloudapi.CloudKeysStorage
-import com.github.naz013.common.datetime.DateTimePreferences
-import com.github.naz013.ui.common.locale.LocalePreferences
-import com.github.naz013.ui.common.login.AuthPreferences
-import com.github.naz013.ui.common.theme.ThemePreferences
 import com.github.naz013.repository.ReminderSettingsRepository
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -64,7 +61,33 @@ val viewModelModule =
     viewModelOf(::PrivacyPolicyViewModel)
     viewModelOf(::TermsViewModel)
     viewModelOf(::WhatsNewViewModel)
-    viewModelOf(::DeveloperViewModel)
+    viewModel {
+      DeveloperViewModel(
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
     viewModelOf(::ObjectExportViewModel)
   }
 

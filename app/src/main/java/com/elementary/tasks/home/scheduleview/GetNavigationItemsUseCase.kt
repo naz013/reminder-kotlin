@@ -94,7 +94,7 @@ class GetNavigationItemsUseCase(
           titleRes = R.string.workflow_automations,
           iconRes = R.drawable.ic_fluent_arrow_repeat_all,
           color = Color.Green,
-          navigationEvent = NavigationEvent.OpenWorkflowGallery,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery,
           subtitle = "${workflowRuleRepository.getEnabled().size}",
         )
       }.await()
