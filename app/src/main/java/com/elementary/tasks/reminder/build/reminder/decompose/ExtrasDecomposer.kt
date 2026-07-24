@@ -18,8 +18,11 @@ import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderPriority
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.GoogleTaskListRepository
 
 class ExtrasDecomposer(
@@ -27,7 +30,10 @@ class ExtrasDecomposer(
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleCalendarUtils: GoogleCalendarUtils,
 ) {
-  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
+  suspend operator fun invoke(reminder: ReminderV2): List<BuilderItem<*>> {
+    val notification = reminder.notification
+    val calendarExport = reminder.calendarExport
+
     val summary =
       reminder.summary
         .takeIf { it.isNotBlank() }
@@ -45,39 +51,38 @@ class ExtrasDecomposer(
         }
 
     val beforeTime =
-      reminder.remindBefore
-        .takeIf { it > 0 }
+      notification.remindBefore
+        ?.takeIf { it > 0 }
         ?.let { biFactory.createWithValue(BiType.BEFORE_TIME, it, BeforeTimeBuilderItem::class.java) }
 
     val repeatLimit =
-      reminder.repeatLimit
+      reminder.recurrence
+        .repeatLimitOrDefault()
         .takeIf { it > 0 }
         ?.let {
           biFactory.createWithValue(BiType.REPEAT_LIMIT, it, RepeatLimitBuilderItem::class.java)
         }
 
     val priority =
-      reminder.priority.let {
+      (notification.priority ?: ReminderPriority.NORMAL).ordinal.let {
         biFactory.createWithValue(BiType.PRIORITY, it, PriorityBuilderItem::class.java)
       }
 
     val ledColor =
-      reminder.color.takeIf { BuildParams.isPro }?.let {
+      notification.color?.takeIf { BuildParams.isPro }?.let {
         biFactory.createWithValue(BiType.LED_COLOR, it, LedColorBuilderItem::class.java)
       }
 
     val attachments =
       reminder.attachmentFiles
-        .ifEmpty {
-          reminder.attachmentFile.takeIf { it.isNotEmpty() }?.let { listOf(it) }
-        }?.takeIf { it.isNotEmpty() }
+        .takeIf { it.isNotEmpty() }
         ?.let {
           biFactory.createWithValue(BiType.ATTACHMENTS, it, AttachmentsBuilderItem::class.java)
         }
 
     val googleTaskList =
-      reminder.taskListId
-        .takeIf { !it.isNullOrEmpty() }
+      reminder.taskExport?.taskListId
+        ?.takeIf { it.isNotEmpty() }
         ?.let { googleTaskListRepository.getById(it) }
         ?.let {
           biFactory.createWithValue(
@@ -88,8 +93,8 @@ class ExtrasDecomposer(
         }
 
     val googleCalendar =
-      reminder.calendarId
-        .takeIf { it > 0 }
+      calendarExport?.calendarId
+        ?.takeIf { it > 0 }
         ?.let { calendarId ->
           googleCalendarUtils.getCalendarsList().firstOrNull { it.id == calendarId }
         }?.let {
@@ -97,8 +102,8 @@ class ExtrasDecomposer(
         }
 
     val googleCalendarDuration =
-      reminder
-        .takeIf { it.duration > 0 || it.allDay }
+      calendarExport
+        ?.takeIf { it.duration > 0 || it.allDay }
         ?.let { CalendarDuration(it.allDay, it.duration) }
         ?.let {
           biFactory.createWithValue(
@@ -109,7 +114,8 @@ class ExtrasDecomposer(
         }
 
     val emailSubject =
-      reminder.subject
+      reminder.action
+        .subjectOrEmpty()
         .takeIf { it.isNotEmpty() }
         ?.let {
           biFactory.createWithValue(
@@ -121,14 +127,13 @@ class ExtrasDecomposer(
 
     val otherParams =
       reminder
-        .takeIf {
-          it.vibrate || it.notifyByVoice || it.repeatNotification || it.unlock
-        }?.let {
+        .takeIf { notification.vibrate == true || notification.repeatNotification == true }
+        ?.let {
           OtherParams(
             useGlobal = false,
-            notifyByVoice = it.notifyByVoice,
-            vibrate = it.vibrate,
-            repeatNotification = it.repeatNotification,
+            notifyByVoice = false,
+            vibrate = notification.vibrate == true,
+            repeatNotification = notification.repeatNotification == true,
           )
         }?.let {
           biFactory.createWithValue(
@@ -152,5 +157,25 @@ class ExtrasDecomposer(
       emailSubject,
       otherParams,
     )
+  }
+
+  private fun RecurrenceRule.repeatLimitOrDefault(): Int = when (this) {
+    is RecurrenceRule.Daily -> repeatLimit
+    is RecurrenceRule.Weekly -> repeatLimit
+    is RecurrenceRule.Monthly -> repeatLimit
+    is RecurrenceRule.RelativeMonthly -> repeatLimit
+    is RecurrenceRule.Yearly -> repeatLimit
+    is RecurrenceRule.Countdown -> repeatLimit
+    RecurrenceRule.Once,
+    RecurrenceRule.LocationEnter,
+    RecurrenceRule.LocationExit,
+    is RecurrenceRule.ICalendar,
+    -> -1
+  }
+
+  private fun ReminderAction.subjectOrEmpty(): String = when (this) {
+    is ReminderAction.Sms -> subject
+    is ReminderAction.Email -> subject
+    else -> ""
   }
 }

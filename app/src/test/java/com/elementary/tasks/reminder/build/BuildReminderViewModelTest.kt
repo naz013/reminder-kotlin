@@ -41,13 +41,16 @@ import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -75,6 +78,7 @@ class BuildReminderViewModelTest : BaseTest() {
   private val biToReminderAdapter = mockk<BiToReminderAdapter>()
   private val permissionValidator = mockk<PermissionValidator>()
   private val reminderToBiDecomposer = mockk<ReminderToBiDecomposer>()
+  private val getReminderV2ByIdUseCase = mockk<GetReminderV2ByIdUseCase>()
   private val biFilter = mockk<BiFilter>()
   private val uiPresetListAdapter = mockk<UiPresetListAdapter>(relaxed = true)
   private val recurPresetRepository = mockk<RecurPresetRepository>(relaxed = true)
@@ -106,6 +110,11 @@ class BuildReminderViewModelTest : BaseTest() {
     coEvery { biFactory.create(any()) } returns summaryItem()
     every { biFilter(any()) } returns true
     coEvery { recurPresetRepository.getAllByType(any()) } returns emptyList()
+    // Falls back to reminder.toReminderV2() when there's no V2 row (which is what happens by
+    // default here); its output is non-deterministic when the V1 fixture has no explicit
+    // startTime (falls back to LocalDateTime.now()), so reminderToBiDecomposer stubs below match
+    // on any() rather than an exact value.
+    coEvery { getReminderV2ByIdUseCase(any()) } returns null
     every { builderItemsLogic.getUsed() } returns emptyList()
     every { builderItemsLogic.getAvailable() } returns listOf(summaryItem())
     // updateSelector() -> updateBuilderState() runs after almost every action; default it to a
@@ -149,6 +158,7 @@ class BuildReminderViewModelTest : BaseTest() {
       biToReminderAdapter = biToReminderAdapter,
       permissionValidator = permissionValidator,
       reminderToBiDecomposer = reminderToBiDecomposer,
+      getReminderV2ByIdUseCase = getReminderV2ByIdUseCase,
       biFilter = biFilter,
       uiPresetListAdapter = uiPresetListAdapter,
       recurPresetRepository = recurPresetRepository,
@@ -207,7 +217,7 @@ class BuildReminderViewModelTest : BaseTest() {
   fun `init with an id deep link edits the existing reminder`() {
     val reminder = Reminder(uuId = "42", type = Reminder.BY_DATE, isRemoved = false, syncState = SyncState.Synced)
     coEvery { reminderRepository.getById("42") } returns reminder
-    coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem())
+    coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
 
     val viewModel = createViewModel(initialId = "42")
 
@@ -215,6 +225,25 @@ class BuildReminderViewModelTest : BaseTest() {
     assertEquals(true, viewModel.state.value.canRemove)
     verify { builderItemsLogic.setAll(listOf(summaryItem())) }
     coVerify(exactly = 1) { pauseReminderUseCase(reminder) }
+  }
+
+  @Test
+  fun `fromIntentItem deep link converts the imported V1 reminder to V2 for decompose`() {
+    val imported =
+      Reminder(
+        uuId = "from-file",
+        summary = "Imported",
+        type = Reminder.BY_DATE,
+        startTime = "2026-07-22 09:00:00.000+0000",
+        syncState = SyncState.Synced,
+      )
+    every { intentDataReader.get(IntentKeys.INTENT_ITEM, Reminder::class.java) } returns imported
+    coEvery { reminderToBiDecomposer(imported.toReminderV2()) } returns listOf(summaryItem())
+
+    val viewModel = createViewModel(fromIntentItem = true)
+
+    assertEquals(false, viewModel.state.value.canRemove)
+    verify { builderItemsLogic.setAll(listOf(summaryItem())) }
   }
 
   @Test
@@ -551,7 +580,7 @@ class BuildReminderViewModelTest : BaseTest() {
     runTest {
       val reminder = Reminder(uuId = "42", syncState = SyncState.Synced)
       coEvery { reminderRepository.getById("42") } returns reminder
-      coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem())
+      coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       val viewModel = createViewModel(initialId = "42")
 
       viewModel.moveToTrash()
@@ -575,7 +604,7 @@ class BuildReminderViewModelTest : BaseTest() {
     runTest {
       val reminder = Reminder(uuId = "42", syncState = SyncState.Synced)
       coEvery { reminderRepository.getById("42") } returns reminder
-      coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem())
+      coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       val viewModel = createViewModel(initialId = "42")
 
       viewModel.deleteReminder(showMessage = true)
@@ -589,7 +618,7 @@ class BuildReminderViewModelTest : BaseTest() {
     runTest {
       val reminder = Reminder(uuId = "42", syncState = SyncState.Synced)
       coEvery { reminderRepository.getById("42") } returns reminder
-      coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem())
+      coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       val viewModel = createViewModel(initialId = "42")
 
       viewModel.deleteReminder(showMessage = false)
@@ -616,7 +645,7 @@ class BuildReminderViewModelTest : BaseTest() {
   fun `onCleared resumes the reminder when it was paused and not saving`() {
     val reminder = Reminder(uuId = "42", syncState = SyncState.Synced)
     coEvery { reminderRepository.getById("42") } returns reminder
-    coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem())
+    coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
     val viewModel = createViewModel(initialId = "42")
     val store = ViewModelStore()
     store.put("build", viewModel)
@@ -631,7 +660,7 @@ class BuildReminderViewModelTest : BaseTest() {
     runTest {
       val reminder = Reminder(uuId = "42", syncState = SyncState.Synced)
       coEvery { reminderRepository.getById("42") } returns reminder
-      coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem())
+      coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       every { biToReminderAdapter(any(), any(), any()) } returns
         BiToReminderAdapter.BuildResult.Success(reminder)
       val viewModel = createViewModel(initialId = "42")

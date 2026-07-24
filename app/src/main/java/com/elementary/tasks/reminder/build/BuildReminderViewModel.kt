@@ -50,6 +50,8 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.migration.toReminderV2
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -67,6 +69,7 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.sync.DataType
+import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -101,6 +104,7 @@ class BuildReminderViewModel(
   private val biToReminderAdapter: BiToReminderAdapter,
   private val permissionValidator: PermissionValidator,
   private val reminderToBiDecomposer: ReminderToBiDecomposer,
+  private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
   private val biFilter: BiFilter,
   private val uiPresetListAdapter: UiPresetListAdapter,
   private val recurPresetRepository: RecurPresetRepository,
@@ -480,7 +484,7 @@ class BuildReminderViewModel(
       Logger.logEvent("Reminder loaded from intent")
       isFromFile = true
       _state.update { it.copy(isFromFile = true) }
-      editReminder(this)
+      editReminder(reminderV2 = toReminderV2(), reminder = this)
     }
   }
 
@@ -539,15 +543,22 @@ class BuildReminderViewModel(
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminderV2 = getReminderV2ByIdUseCase(id) ?: reminder.toReminderV2()
 
       Logger.i(TAG, "Edit reminder by ID Deep Link, id = $id")
 
-      editReminder(reminder)
+      editReminder(reminderV2 = reminderV2, reminder = reminder)
       pauseReminder(reminder)
     }
   }
 
-  private suspend fun editReminder(reminder: Reminder) {
+  /** [reminder] (V1) is kept as [original] purely for the save path - the composer
+   * (`BiToReminderAdapter`) still builds/persists a V1 `Reminder` (Phase B3 will retarget it).
+   * [reminderV2] drives everything the user actually edits. */
+  private suspend fun editReminder(
+    reminderV2: ReminderV2,
+    reminder: Reminder,
+  ) {
     Logger.i(TAG, "Edit reminder, id = ${reminder.uuId}")
 
     isEdited = true
@@ -557,7 +568,7 @@ class BuildReminderViewModel(
       findSame(reminder.uuId)
     }
 
-    val builderItems = reminderToBiDecomposer(reminder)
+    val builderItems = reminderToBiDecomposer(reminderV2)
 
     Logger.d(TAG, "Edit reminder with builder items: $builderItems")
 

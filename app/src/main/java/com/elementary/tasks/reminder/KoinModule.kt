@@ -162,6 +162,7 @@ val reminderModule =
         get(),
         get(),
         get(),
+        get(),
         get()
       )
     }
@@ -289,7 +290,7 @@ val reminderModule =
     factory { ByLocationDecomposer(get(), get()) }
     factory { ICalDecomposer(get(), get(), get()) }
 
-    factory { ActionDecomposer(get()) }
+    factory { ActionDecomposer(get(), get()) }
 
     factory { ExtrasDecomposer(get(), get(), get()) }
 

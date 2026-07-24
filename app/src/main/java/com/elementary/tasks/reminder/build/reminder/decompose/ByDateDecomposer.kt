@@ -6,19 +6,20 @@ import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class ByDateDecomposer(
   private val dateTimeManager: DateTimeManager,
   private val biFactory: BiFactory,
 ) {
-  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
-    val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: return emptyList()
+  suspend operator fun invoke(reminder: ReminderV2): List<BuilderItem<*>> {
+    val dateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) } ?: return emptyList()
 
     val repeatTime =
-      reminder.repeatInterval
-        .takeIf { it > 0 }
+      (reminder.recurrence as? RecurrenceRule.Daily)
+        ?.repeatInterval
         ?.let { biFactory.createWithValue(BiType.REPEAT_TIME, it, RepeatTimeBuilderItem::class.java) }
 
     return listOfNotNull(
