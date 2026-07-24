@@ -250,6 +250,7 @@ class UiReminderListAdapter(
     when (reminder.action) {
       is ReminderAction.Shopping -> textProvider.getText(R.string.builder_sub_tasks)
       is ReminderAction.Link -> textProvider.getText(R.string.open_link)
+      is ReminderAction.App -> textProvider.getText(R.string.application)
       is ReminderAction.Email -> textProvider.getText(R.string.e_mail)
       is ReminderAction.Sms -> textProvider.getText(R.string.send_sms)
       is ReminderAction.Call -> textProvider.getText(R.string.make_call)
@@ -268,6 +269,7 @@ class UiReminderListAdapter(
       is ReminderAction.Sms -> action.target
       is ReminderAction.Call -> action.target
       is ReminderAction.Link -> action.target
+      is ReminderAction.App -> action.target
       is ReminderAction.Email -> "${action.target}\n${action.subject}"
       ReminderAction.Shopping, ReminderAction.None -> null
     }

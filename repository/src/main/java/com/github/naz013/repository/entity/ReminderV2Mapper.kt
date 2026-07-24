@@ -198,6 +198,7 @@ private fun ReminderAction.toColumns(): Triple<String, String, String> = when (t
   is ReminderAction.Call -> Triple("CALL", target, "")
   is ReminderAction.Sms -> Triple("SMS", target, subject)
   is ReminderAction.Link -> Triple("LINK", target, "")
+  is ReminderAction.App -> Triple("APP", target, "")
   is ReminderAction.Email -> Triple("EMAIL", target, subject)
   is ReminderAction.Shopping -> Triple("SHOPPING", "", "")
 }
@@ -208,6 +209,7 @@ private fun toReminderAction(type: String, target: String, subject: String): Rem
     "CALL" -> ReminderAction.Call(target)
     "SMS" -> ReminderAction.Sms(target, subject)
     "LINK" -> ReminderAction.Link(target)
+    "APP" -> ReminderAction.App(target)
     "EMAIL" -> ReminderAction.Email(target, subject)
     "SHOPPING" -> ReminderAction.Shopping
     else -> ReminderAction.None

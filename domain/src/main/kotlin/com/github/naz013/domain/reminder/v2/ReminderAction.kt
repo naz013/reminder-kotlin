@@ -16,6 +16,10 @@ sealed class ReminderAction {
     val target: String
   ) : ReminderAction()
 
+  data class App(
+    val target: String
+  ) : ReminderAction()
+
   data class Email(
     val target: String,
     val subject: String

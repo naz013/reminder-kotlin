@@ -106,6 +106,12 @@ class UiReminderCommonAdapter(
 
       is ReminderAction.Link -> UiLinkTarget(action.target)
 
+      is ReminderAction.App ->
+        UiAppTarget(
+          action.target,
+          packageManagerWrapper.getApplicationName(action.target),
+        )
+
       is ReminderAction.Email ->
         UiEmailTarget(
           reminder.summary,
@@ -211,7 +217,7 @@ class UiReminderCommonAdapter(
       is RecurrenceRule.Yearly -> textProvider.getText(R.string.yearly)
       is RecurrenceRule.ICalendar -> textProvider.getText(R.string.recur_custom)
       is RecurrenceRule.Daily -> {
-        IntervalUtil.getInterval(recurrence.repeatInterval * DateTimeManager.DAY) { getIntervalPattern(it) }
+        IntervalUtil.getInterval(recurrence.repeatInterval) { getIntervalPattern(it) }
           ?: textProvider.getText(R.string.repeat_once)
       }
 

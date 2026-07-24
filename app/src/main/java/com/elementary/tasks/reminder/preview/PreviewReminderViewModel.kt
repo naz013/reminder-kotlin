@@ -405,6 +405,7 @@ class PreviewReminderViewModel(
       is ReminderAction.Call -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.CALL)
       is ReminderAction.Sms -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.SMS)
       is ReminderAction.Link -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.LINK)
+      is ReminderAction.App -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.APP)
       is ReminderAction.Email -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.EMAIL)
       ReminderAction.Shopping, ReminderAction.None -> null
     }
@@ -414,6 +415,7 @@ class PreviewReminderViewModel(
       is ReminderAction.Call -> action.target
       is ReminderAction.Sms -> action.target
       is ReminderAction.Link -> action.target
+      is ReminderAction.App -> action.target
       is ReminderAction.Email -> action.target
       ReminderAction.Shopping, ReminderAction.None -> ""
     }

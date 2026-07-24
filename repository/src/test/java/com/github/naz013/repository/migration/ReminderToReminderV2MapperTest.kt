@@ -20,6 +20,33 @@ class ReminderToReminderV2MapperTest {
   }
 
   @Test
+  fun `maps a repeating by-date reminder to RecurrenceRule Daily carrying the raw millis interval`() {
+    val reminder = Reminder(
+      type = Reminder.BY_DATE,
+      repeatInterval = 21_600_000L, // every 6 hours - not a whole-day multiple
+      repeatLimit = 5,
+      startTime = GMT_TIME
+    )
+
+    val result = reminder.toReminderV2()
+
+    assertEquals(RecurrenceRule.Daily(repeatInterval = 21_600_000L, repeatLimit = 5), result.recurrence)
+  }
+
+  @Test
+  fun `maps an app-launch reminder`() {
+    val reminder = Reminder(
+      type = Reminder.BY_DATE + Reminder.Action.APP,
+      target = "com.example.app",
+      startTime = GMT_TIME
+    )
+
+    val result = reminder.toReminderV2()
+
+    assertEquals(ReminderAction.App(target = "com.example.app"), result.action)
+  }
+
+  @Test
   fun `maps a countdown reminder with a call action`() {
     val reminder = Reminder(
       type = Reminder.BY_TIME + Reminder.Action.CALL,

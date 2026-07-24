@@ -93,7 +93,12 @@ internal fun Reminder.toReminderV2(): ReminderV2 {
 }
 
 private fun Reminder.toRecurrenceRule(): RecurrenceRule = when {
-  Reminder.isBase(type, Reminder.BY_DATE) -> RecurrenceRule.Once
+  Reminder.isBase(type, Reminder.BY_DATE) ->
+    if (repeatInterval > 0) {
+      RecurrenceRule.Daily(repeatInterval = repeatInterval, repeatLimit = repeatLimit)
+    } else {
+      RecurrenceRule.Once
+    }
   Reminder.isBase(type, Reminder.BY_TIME) -> RecurrenceRule.Countdown(after)
   Reminder.isBase(type, Reminder.BY_WEEK) ->
     RecurrenceRule.Weekly(
@@ -127,6 +132,7 @@ private fun normalizeInterval(repeatInterval: Long): Long = if (repeatInterval >
 private fun Reminder.toReminderAction(): ReminderAction = when (type % Reminder.BY_DATE) {
   Reminder.Action.CALL -> ReminderAction.Call(target)
   Reminder.Action.SMS -> ReminderAction.Sms(target, subject)
+  Reminder.Action.APP -> ReminderAction.App(target)
   Reminder.Action.LINK -> ReminderAction.Link(target)
   Reminder.Action.EMAIL -> ReminderAction.Email(target, subject)
   Reminder.Action.SHOP -> ReminderAction.Shopping

@@ -105,17 +105,17 @@ class GetActiveEventsForTheDayUseCase(
       is ReminderAction.Call -> action.target
       is ReminderAction.Sms -> action.target
       is ReminderAction.Link -> action.target
+      is ReminderAction.App -> action.target
       is ReminderAction.Email -> "${action.target}\n${action.subject}"
       ReminderAction.Shopping, ReminderAction.None -> null
     }
 
-  /** `ReminderAction` has no `OpenApp` case yet (a known V1-only gap, not addressed by this
-   * migration) — every other action maps 1:1 onto [ResolvedEventAction]. */
   private fun getActionFromReminderAction(action: ReminderAction): HomeEvent.EventAction? {
     val resolvedEventAction = when (action) {
       is ReminderAction.Call -> ResolvedEventAction.MakeCall(action.target)
       is ReminderAction.Sms -> ResolvedEventAction.SendSms(action.target, action.subject)
       is ReminderAction.Link -> ResolvedEventAction.OpenLink(action.target)
+      is ReminderAction.App -> ResolvedEventAction.OpenApp(action.target)
       is ReminderAction.Email -> ResolvedEventAction.SendEmail(action.target, action.subject, body = "", attachmentFile = null)
       ReminderAction.Shopping, ReminderAction.None -> null
     } ?: return null

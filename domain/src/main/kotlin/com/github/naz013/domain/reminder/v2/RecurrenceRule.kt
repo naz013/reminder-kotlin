@@ -9,6 +9,10 @@ sealed class RecurrenceRule {
     val after: Long
   ) : RecurrenceRule()
 
+  /** Plain "repeat every X" reminder with no calendar-unit meaning. Unlike [Weekly]/[Monthly]/
+   * [Yearly]'s [repeatInterval] (a small integer count of that unit), [repeatInterval] here is a
+   * raw millisecond duration - it can express sub-day granularity (seconds/minutes/hours), not
+   * just whole days, matching how V1's plain by-date repeat picker stores its value. */
   data class Daily(
     val repeatInterval: Long = 1,
     val repeatLimit: Int = -1,
