@@ -19,10 +19,14 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecentQueryRepository
 import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.repository.UsedTimeRepository
+import com.github.naz013.repository.WorkflowRuleRepository
+import com.github.naz013.repository.WorkflowTemplateRepository
 import com.github.naz013.reviews.AppSource
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -58,6 +62,10 @@ class DeveloperViewModelTest : BaseTest() {
   private val reminderGroupRepository = mockk<ReminderGroupRepository>(relaxed = true)
   private val remoteFileMetadataRepository = mockk<RemoteFileMetadataRepository>(relaxed = true)
   private val usedTimeRepository = mockk<UsedTimeRepository>(relaxed = true)
+  private val reminderV2Repository = mockk<ReminderV2Repository>(relaxed = true)
+  private val groupV2Repository = mockk<GroupV2Repository>(relaxed = true)
+  private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
+  private val workflowTemplateRepository = mockk<WorkflowTemplateRepository>(relaxed = true)
   private val buildInfo = mockk<BuildInfo>()
 
   private lateinit var viewModel: DeveloperViewModel
@@ -93,6 +101,10 @@ class DeveloperViewModelTest : BaseTest() {
         reminderGroupRepository = reminderGroupRepository,
         remoteFileMetadataRepository = remoteFileMetadataRepository,
         usedTimeRepository = usedTimeRepository,
+        reminderV2Repository = reminderV2Repository,
+        groupV2Repository = groupV2Repository,
+        workflowRuleRepository = workflowRuleRepository,
+        workflowTemplateRepository = workflowTemplateRepository,
         buildInfo = buildInfo,
       )
   }

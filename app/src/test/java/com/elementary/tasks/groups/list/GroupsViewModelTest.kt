@@ -3,12 +3,12 @@ package com.elementary.tasks.groups.list
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.ui.group.UiGroupList
-import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
+import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.MakeGroupDefaultUseCase
 import com.elementary.tasks.mockDispatcherProvider
-import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -20,23 +20,22 @@ import org.junit.Before
 import org.junit.Test
 
 class GroupsViewModelTest : BaseTest() {
-  private val reminderGroupRepository = mockk<ReminderGroupRepository>()
+  private val groupV2Repository = mockk<GroupV2Repository>()
   private val uiGroupListAdapter = mockk<UiGroupListAdapter>()
-  private val deleteReminderGroupUseCase = mockk<DeleteReminderGroupUseCase>(relaxed = true)
+  private val deleteGroupUseCase = mockk<DeleteGroupUseCase>(relaxed = true)
   private val makeGroupDefaultUseCase = mockk<MakeGroupDefaultUseCase>(relaxed = true)
 
   private lateinit var viewModel: GroupsViewModel
 
-  private fun reminderGroup(
+  private fun groupV2(
     id: String = "1",
     title: String = "Work",
     isDefault: Boolean = false,
-  ) = ReminderGroup(
-    groupTitle = title,
-    groupUuId = id,
-    groupColor = 0,
-    groupDateTime = "2026-07-23T10:00:00",
-    isDefaultGroup = isDefault,
+  ) = GroupV2(
+    uuId = id,
+    title = title,
+    color = 0,
+    isDefault = isDefault,
     syncState = SyncState.Synced,
   )
 
@@ -58,15 +57,15 @@ class GroupsViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { reminderGroupRepository.getAll() } returns emptyList()
-    every { uiGroupListAdapter.convert(any<ReminderGroup>()) } returns uiGroupList()
+    coEvery { groupV2Repository.getAll() } returns emptyList()
+    every { uiGroupListAdapter.convert(any<GroupV2>()) } returns uiGroupList()
 
     viewModel =
       GroupsViewModel(
         dispatcherProvider = mockDispatcherProvider(),
-        reminderGroupRepository = reminderGroupRepository,
+        groupV2Repository = groupV2Repository,
         uiGroupListAdapter = uiGroupListAdapter,
-        deleteReminderGroupUseCase = deleteReminderGroupUseCase,
+        deleteGroupUseCase = deleteGroupUseCase,
         makeGroupDefaultUseCase = makeGroupDefaultUseCase,
       )
   }
@@ -82,9 +81,9 @@ class GroupsViewModelTest : BaseTest() {
   @Test
   fun `loads groups sorted with default group first then alphabetically`() =
     runTest {
-      val defaultGroup = reminderGroup(id = "2", title = "Zeta", isDefault = true)
-      val otherGroup = reminderGroup(id = "1", title = "Alpha", isDefault = false)
-      coEvery { reminderGroupRepository.getAll() } returns listOf(otherGroup, defaultGroup)
+      val defaultGroup = groupV2(id = "2", title = "Zeta", isDefault = true)
+      val otherGroup = groupV2(id = "1", title = "Alpha", isDefault = false)
+      coEvery { groupV2Repository.getAll() } returns listOf(otherGroup, defaultGroup)
       every { uiGroupListAdapter.convert(defaultGroup) } returns uiGroupList(id = "2", title = "Zeta", isDefault = true)
       every { uiGroupListAdapter.convert(otherGroup) } returns uiGroupList(id = "1", title = "Alpha", isDefault = false)
 
@@ -100,7 +99,7 @@ class GroupsViewModelTest : BaseTest() {
       viewModel.state.first()
       viewModel.state.first()
 
-      coVerify(exactly = 2) { reminderGroupRepository.getAll() }
+      coVerify(exactly = 2) { groupV2Repository.getAll() }
     }
 
   @Test
@@ -146,20 +145,20 @@ class GroupsViewModelTest : BaseTest() {
   @Test
   fun `deleteGroup does nothing when group is not found`() =
     runTest {
-      coEvery { reminderGroupRepository.getById("missing") } returns null
+      coEvery { groupV2Repository.getById("missing") } returns null
 
       viewModel.deleteGroup("missing")
 
-      coVerify(exactly = 0) { deleteReminderGroupUseCase(any()) }
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
     }
 
   @Test
   fun `deleteGroup deletes the group when it exists`() =
     runTest {
-      coEvery { reminderGroupRepository.getById("1") } returns reminderGroup(id = "1")
+      coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
 
       viewModel.deleteGroup("1")
 
-      coVerify(exactly = 1) { deleteReminderGroupUseCase("1") }
+      coVerify(exactly = 1) { deleteGroupUseCase("1") }
     }
 }
