@@ -485,6 +485,7 @@ class EditGoogleTaskViewModel(
         Logger.d(TAG, "Editing Google Task id=${task.taskId}, listId=${task.listId}")
         _state.update {
           it.copy(
+            taskId = task.taskId,
             title = task.title,
             notes = task.notes
           )

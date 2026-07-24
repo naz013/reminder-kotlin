@@ -139,6 +139,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
       val state = vm.state.first()
 
+      assertEquals("g1", state.taskId)
       assertEquals("Buy milk", state.title)
       assertEquals("2%", state.notes)
       assertEquals("list2", state.listId)
@@ -383,17 +384,20 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `onListPicked moves the task to a different list`() =
     runTest {
       val existingTask = GoogleTask(taskId = "g1", listId = "list1")
-      coEvery { googleTaskRepository.getById(any()) } returns existingTask
+      coEvery { getGoogleTaskByIdUseCase("g1") } returns existingTask
+      coEvery { googleTaskRepository.getById("g1") } returns existingTask
       val movedTask = existingTask.copy(listId = "list2")
       coEvery { googleTasksApi.moveTask(any(), "list1") } returns movedTask
       coEvery { googleTaskRepository.save(movedTask) } returns Unit
-      viewModel.state.first()
-      viewModel.onMoveMenuClick()
+      val vm = buildViewModel(id = "g1")
+      vm.state.first()
+      vm.onMoveMenuClick()
 
-      viewModel.onListPicked("list2")
+      vm.onListPicked("list2")
 
+      coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTaskRepository.save(movedTask) }
-      val event = viewModel.event.getOrAwaitValue()
+      val event = vm.event.getOrAwaitValue()
       assertEquals(EditGoogleTaskViewModel.EditGoogleTaskEvent.MoveBack, event?.getContentIfNotHandled())
     }
 
@@ -433,14 +437,18 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `onDeleteConfirmed deletes the task and navigates back`() =
     runTest {
       val existingTask = GoogleTask(taskId = "g1")
-      coEvery { googleTaskRepository.getById(any()) } returns existingTask
+      coEvery { getGoogleTaskByIdUseCase("g1") } returns existingTask
+      coEvery { googleTaskRepository.getById("g1") } returns existingTask
       coEvery { googleTasksApi.deleteTask(existingTask) } returns true
       coEvery { googleTaskRepository.delete("g1") } returns Unit
+      val vm = buildViewModel(id = "g1")
+      vm.state.first()
 
-      viewModel.onDeleteConfirmed()
+      vm.onDeleteConfirmed()
 
+      coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTaskRepository.delete("g1") }
-      val event = viewModel.event.getOrAwaitValue()
+      val event = vm.event.getOrAwaitValue()
       assertEquals(EditGoogleTaskViewModel.EditGoogleTaskEvent.MoveBack, event?.getContentIfNotHandled())
     }
 
@@ -448,13 +456,16 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `onDeleteConfirmed shows an error when the delete api call fails`() =
     runTest {
       val existingTask = GoogleTask(taskId = "g1")
-      coEvery { googleTaskRepository.getById(any()) } returns existingTask
+      coEvery { getGoogleTaskByIdUseCase("g1") } returns existingTask
+      coEvery { googleTaskRepository.getById("g1") } returns existingTask
       coEvery { googleTasksApi.deleteTask(existingTask) } returns false
       every { textProvider.getString(R.string.failed_to_update_task) } returns "Failed"
+      val vm = buildViewModel(id = "g1")
+      vm.state.first()
 
-      viewModel.onDeleteConfirmed()
+      vm.onDeleteConfirmed()
 
-      val event = viewModel.event.getOrAwaitValue()
+      val event = vm.event.getOrAwaitValue()
       assertEquals(EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowError("Failed"), event?.getContentIfNotHandled())
     }
 
@@ -541,7 +552,8 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `save updates an existing task in place`() =
     runTest {
       val editingTask = GoogleTask(taskId = "g1", listId = "list1", title = "Old")
-      coEvery { googleTaskRepository.getById(any()) } returns editingTask
+      coEvery { getGoogleTaskByIdUseCase("g1") } returns editingTask
+      coEvery { googleTaskRepository.getById("g1") } returns editingTask
       val vm = buildViewModel(id = "g1")
       vm.state.first()
       vm.onTitleChange("Buy milk")
@@ -551,6 +563,10 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
       vm.save()
 
+      // Tightened from getById(any()): loadInternal() must have copied the real task id into
+      // state (regression test for a bug where it never did, causing save() to always look up
+      // by the freshly-generated default id and silently create a duplicate task instead).
+      coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTaskRepository.save(updated) }
       coVerify(exactly = 0) { googleTasksApi.moveTask(any(), any()) }
       val event = vm.event.getOrAwaitValue()
@@ -561,7 +577,8 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `save updates and moves an existing task to a different list`() =
     runTest {
       val editingTask = GoogleTask(taskId = "g1", listId = "list1", title = "Old")
-      coEvery { googleTaskRepository.getById(any()) } returns editingTask
+      coEvery { getGoogleTaskByIdUseCase("g1") } returns editingTask
+      coEvery { googleTaskRepository.getById("g1") } returns editingTask
       val vm = buildViewModel(id = "g1")
       vm.state.first()
       vm.onTitleChange("Buy milk")
@@ -574,6 +591,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
       vm.save()
 
+      coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTasksApi.moveTask(updated, "list1") }
       coVerify(exactly = 1) { googleTaskRepository.save(updated) }
     }
@@ -582,7 +600,8 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `save shows an error when updating a task fails`() =
     runTest {
       val editingTask = GoogleTask(taskId = "g1", listId = "list1")
-      coEvery { googleTaskRepository.getById(any()) } returns editingTask
+      coEvery { getGoogleTaskByIdUseCase("g1") } returns editingTask
+      coEvery { googleTaskRepository.getById("g1") } returns editingTask
       val vm = buildViewModel(id = "g1")
       vm.state.first()
       vm.onTitleChange("Buy milk")
