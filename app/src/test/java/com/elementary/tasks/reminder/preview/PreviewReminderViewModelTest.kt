@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.preview
 
+import android.net.Uri
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
@@ -30,7 +31,6 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.repository.ReminderRepository
-import android.net.Uri
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -198,7 +198,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     runTest {
       val activeReminder = reminder(isActive = true)
       coEvery { reminderRepository.getById("42") } returns activeReminder
-      coEvery { toggleReminderStateUseCase(activeReminder) } returns (true to activeReminder.copy(isActive = false))
+      coEvery { toggleReminderStateUseCase(activeReminder) } returns ToggleReminderStateUseCase.Result(true , activeReminder.copy(isActive = false))
       val viewModel = createViewModel()
 
       viewModel.onToggleClick()
@@ -213,7 +213,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       every { textProvider.getString(any()) } returns "Reminder is outdated"
       val activeReminder = reminder()
       coEvery { reminderRepository.getById("42") } returns activeReminder
-      coEvery { toggleReminderStateUseCase(activeReminder) } returns (false to activeReminder)
+      coEvery { toggleReminderStateUseCase(activeReminder) } returns ToggleReminderStateUseCase.Result(false, activeReminder)
       val viewModel = createViewModel()
 
       viewModel.onToggleClick()
@@ -231,19 +231,23 @@ class PreviewReminderViewModelTest : BaseTest() {
       viewModel.onToggleClick()
 
       coVerify(exactly = 0) { toggleReminderStateUseCase(any()) }
-      assertEquals(null, viewModel.event.value?.peekContent())
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.MoveBack, viewModel.event.value?.peekContent())
     }
 
   @Test
   fun `onToggleClick does nothing when the reminder is already removed`() =
     runTest {
+      every { textProvider.getString(any()) } returns "Error"
       coEvery { reminderRepository.getById("42") } returns reminder(isRemoved = true)
       val viewModel = createViewModel()
 
       viewModel.onToggleClick()
 
       coVerify(exactly = 0) { toggleReminderStateUseCase(any()) }
-      assertEquals(null, viewModel.event.value?.peekContent())
+
+      val event = viewModel.event.value?.peekContent()
+      assertTrue(event is PreviewReminderViewModel.ViewModelEvent.ShowError)
+      assertEquals("Error", (event as? PreviewReminderViewModel.ViewModelEvent.ShowError)?.message)
     }
 
   @Test

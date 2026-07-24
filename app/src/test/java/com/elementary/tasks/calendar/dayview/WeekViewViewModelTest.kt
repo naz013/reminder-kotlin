@@ -12,7 +12,6 @@ import com.elementary.tasks.home.eventsview.UiEventReminder
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.lists.data.UiReminderListState
-import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.datetime.DateTimeManager
@@ -37,7 +36,6 @@ class WeekViewViewModelTest : BaseTest() {
   private val getDayEventItemsUseCase = mockk<GetDayEventItemsUseCase>()
   private val reminderRepository = mockk<ReminderRepository>()
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>(relaxed = true)
-  private val skipReminderUseCase = mockk<SkipReminderUseCase>(relaxed = true)
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>(relaxed = true)
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>(relaxed = true)
 
@@ -62,7 +60,6 @@ class WeekViewViewModelTest : BaseTest() {
         getDayEventItemsUseCase = getDayEventItemsUseCase,
         reminderRepository = reminderRepository,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
-        skipReminderUseCase = skipReminderUseCase,
         toggleReminderStateUseCase = toggleReminderStateUseCase,
         deleteBirthdayUseCase = deleteBirthdayUseCase,
       )
@@ -209,17 +206,6 @@ class WeekViewViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onEventMenuAction SKIP on a reminder skips it and bumps the refresh signal`() {
-    val reminder = Reminder(uuId = "r1", syncState = SyncState.Synced)
-    coEvery { reminderRepository.getById("r1") } returns reminder
-
-    viewModel.onEventMenuAction(reminderItem("r1"), EventMenuAction.SKIP)
-
-    coVerify(exactly = 1) { skipReminderUseCase(reminder) }
-    assertEquals(2, viewModel.refreshSignal.value)
-  }
-
-  @Test
   fun `onEventMenuAction TURN_OFF on a non-gps reminder toggles it directly`() {
     val reminder = Reminder(uuId = "r1", syncState = SyncState.Synced)
     coEvery { reminderRepository.getById("r1") } returns reminder
@@ -293,17 +279,6 @@ class WeekViewViewModelTest : BaseTest() {
     viewModel.toggleReminder("missing")
 
     coVerify(exactly = 0) { toggleReminderStateUseCase(any()) }
-    assertEquals(2, viewModel.refreshSignal.value)
-  }
-
-  @Test
-  fun `skipReminder skips the reminder and bumps the refresh signal`() {
-    val reminder = Reminder(uuId = "r1", syncState = SyncState.Synced)
-    coEvery { reminderRepository.getById("r1") } returns reminder
-
-    viewModel.skipReminder("r1")
-
-    coVerify(exactly = 1) { skipReminderUseCase(reminder) }
     assertEquals(2, viewModel.refreshSignal.value)
   }
 
