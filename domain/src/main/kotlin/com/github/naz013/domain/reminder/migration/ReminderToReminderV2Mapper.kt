@@ -1,4 +1,4 @@
-package com.github.naz013.repository.migration
+package com.github.naz013.domain.reminder.migration
 
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2
@@ -20,13 +20,14 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 
 /**
- * V1 -> V2 field mapping. Originally written as a one-time backfill mapper; now also used by
- * [com.github.naz013.repository.impl.ReminderRepositoryImpl] to mirror every V1 write into
- * `ReminderV2Repository`, keeping `ReminderV2` rows fresh while `ReminderV2` isn't yet the
- * write-of-record anywhere in the app. Not part of ReminderV2's steady-state entity<->domain
- * mapping (see [com.github.naz013.repository.entity.toEntity]/[com.github.naz013.repository.entity.toDomain]).
+ * V1 -> V2 field mapping. Originally written as a one-time backfill mapper; also used by
+ * `ReminderRepositoryImpl` to mirror every V1 write into `ReminderV2Repository`, keeping
+ * `ReminderV2` rows fresh while `ReminderV2` isn't yet the write-of-record anywhere in the app,
+ * and by the reminder builder to convert an in-memory `Reminder` (e.g. one deserialized from an
+ * import/share Intent with no repository row yet) for display. Not part of ReminderV2's
+ * steady-state entity<->domain mapping (that lives in the `repository` module's entity mappers).
  */
-internal fun Reminder.toReminderV2(): ReminderV2 {
+fun Reminder.toReminderV2(): ReminderV2 {
   val startDateTime = parseGmtToUtc(startTime) ?: LocalDateTime.now(ZoneOffset.UTC)
   return ReminderV2(
     uuId = uuId,

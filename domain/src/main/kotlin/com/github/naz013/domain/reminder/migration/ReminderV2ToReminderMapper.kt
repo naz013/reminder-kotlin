@@ -1,4 +1,4 @@
-package com.github.naz013.repository.migration
+package com.github.naz013.domain.reminder.migration
 
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
@@ -24,7 +24,7 @@ import java.util.Locale
  * with no day set (see [RecurrenceRule.toFields]) - a documented, currently-unreachable gap, since
  * nothing produces `RelativeMonthly` until Phase B3 adds a builder path for it.
  */
-internal fun ReminderV2.toReminder(): Reminder {
+fun ReminderV2.toReminder(): Reminder {
   val recurrenceFields = recurrence.toFields()
   val notif = notification
   return Reminder(

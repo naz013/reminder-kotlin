@@ -12,7 +12,7 @@ import java.util.Locale
 /**
  * One-time V1 ReminderGroup -> GroupV2 backfill mapper. Preserves [ReminderGroup.groupUuId] as
  * [GroupV2.uuId] so existing ReminderV2.groupId references (copied from V1 Reminder.groupUuId by
- * [Reminder.toReminderV2]) keep resolving to the same group after both backfills have run.
+ * `Reminder.toReminderV2`) keep resolving to the same group after both backfills have run.
  */
 internal fun ReminderGroup.toGroupV2(): GroupV2 = GroupV2(
   uuId = groupUuId,

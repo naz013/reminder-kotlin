@@ -1,13 +1,13 @@
 package com.github.naz013.repository.impl
 
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.dao.ReminderDao
 import com.github.naz013.repository.entity.ReminderEntity
-import com.github.naz013.repository.migration.toReminderV2
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
 

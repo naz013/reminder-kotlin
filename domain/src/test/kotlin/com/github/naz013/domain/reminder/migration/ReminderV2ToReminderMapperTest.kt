@@ -1,4 +1,4 @@
-package com.github.naz013.repository.migration
+package com.github.naz013.domain.reminder.migration
 
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride

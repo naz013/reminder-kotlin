@@ -1,5 +1,6 @@
 package com.github.naz013.repository.migration
 
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.ReminderV2Repository
