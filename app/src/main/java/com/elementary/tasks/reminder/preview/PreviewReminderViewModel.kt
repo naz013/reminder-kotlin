@@ -25,6 +25,9 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderPriority
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -37,6 +40,7 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -51,6 +55,7 @@ import java.util.UUID
 class PreviewReminderViewModel(
   private val id: String,
   private val reminderRepository: ReminderRepository,
+  private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val dispatcherProvider: DispatcherProvider,
   private val uiReminderPlaceAdapter: UiReminderPlaceAdapter,
@@ -283,24 +288,21 @@ class PreviewReminderViewModel(
   private fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)
+        getReminderV2ByIdUseCase(id)
       } ?: return@launch
       val reminderGroup = withContext(dispatcherProvider.io()) {
-        groupV2Repository.getById(reminder.groupUuId)
+        reminder.groupId?.let { groupV2Repository.getById(it) }
       }
-      val type = UiReminderType(reminder.type)
 
       val status = uiReminderCommonAdapter.getReminderStatus(reminder.isActive, reminder.isRemoved)
-      val due = uiReminderCommonAdapter.getDue(reminder, type)
-      val target = uiReminderCommonAdapter.getTarget(reminder, type)
-      val group =
-        reminderGroup?.let { uiGroupListAdapter.convert(it) }
-          ?: uiGroupListAdapter.convert(reminder.groupUuId, reminder.groupColor, reminder.groupTitle)
-      val places = if (type.isGpsType()) reminder.places.map { uiReminderPlaceAdapter.create(it) } else emptyList()
+      val due = uiReminderCommonAdapter.getDueV2(reminder)
+      val target = uiReminderCommonAdapter.getTargetV2(reminder)
+      val group = reminderGroup?.let { uiGroupListAdapter.convert(it) }
+      val places = reminder.places.map { uiReminderPlaceAdapter.create(it) }
       val attachments = reminder.attachmentFiles.map { uriToAttachmentFileAdapter(it.toUri()) }
       val subTasks =
-        if (type.isSubTasks()) {
-          reminder.shoppings
+        if (reminder.action is ReminderAction.Shopping) {
+          reminder.shoppingItems
             .filterNot { it.isDeleted }
             .sortedByDescending { !it.isChecked }
             .map { UiPreviewSubTask(id = it.uuId, text = it.summary, isChecked = it.isChecked) }
@@ -321,18 +323,18 @@ class PreviewReminderViewModel(
             repeat = due.repeat,
             remaining = due.remaining,
             groupTitle = group?.title,
-            priorityTitle = uiReminderCommonAdapter.getPriorityTitle(reminder.priority),
+            priorityTitle =
+              uiReminderCommonAdapter.getPriorityTitle(
+                (reminder.notification.priority ?: ReminderPriority.NORMAL).ordinal,
+              ),
             target = target,
-            targetType =
-              type.takeIf { t ->
-                t.isCall() || t.isSms() || t.isApp() || t.isLink() || t.isEmail()
-              },
-            rawTarget = reminder.target,
+            targetType = targetTypeV2(reminder.action),
+            rawTarget = rawTargetV2(reminder.action),
             attachments = attachments,
             subTasks = subTasks,
             places = places,
-            placesHeader = placesHeader(type, places.size),
-            canCopy = type.isBase(UiReminderType.Base.DATE),
+            placesHeader = placesHeaderV2(reminder.recurrence, places.size),
+            canCopy = canCopyV2(reminder.recurrence),
             canDelete = reminder.isRemoved,
             hasAds = !buildInfo.isPro && AdsProvider.hasAds()
           )
@@ -382,17 +384,38 @@ class PreviewReminderViewModel(
     }
   }
 
-  private fun placesHeader(
-    type: UiReminderType,
+  private fun placesHeaderV2(
+    recurrence: RecurrenceRule,
     placesCount: Int,
   ): String =
     when (placesCount) {
       0 -> ""
-      1 if type.isBase(UiReminderType.Base.LOCATION_IN) ->
+      1 if recurrence is RecurrenceRule.LocationEnter ->
         textProvider.getText(R.string.builder_arriving_destination)
 
       1 -> textProvider.getText(R.string.builder_leaving_place)
       else -> textProvider.getText(R.string.places)
+    }
+
+  private fun canCopyV2(recurrence: RecurrenceRule): Boolean =
+    recurrence is RecurrenceRule.Once || recurrence is RecurrenceRule.Daily
+
+  private fun targetTypeV2(action: ReminderAction): UiReminderType? =
+    when (action) {
+      is ReminderAction.Call -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.CALL)
+      is ReminderAction.Sms -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.SMS)
+      is ReminderAction.Link -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.LINK)
+      is ReminderAction.Email -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.EMAIL)
+      ReminderAction.Shopping, ReminderAction.None -> null
+    }
+
+  private fun rawTargetV2(action: ReminderAction): String =
+    when (action) {
+      is ReminderAction.Call -> action.target
+      is ReminderAction.Sms -> action.target
+      is ReminderAction.Link -> action.target
+      is ReminderAction.Email -> action.target
+      ReminderAction.Shopping, ReminderAction.None -> ""
     }
 
   sealed interface ViewModelEvent {
