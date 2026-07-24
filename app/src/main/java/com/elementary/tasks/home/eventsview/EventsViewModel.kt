@@ -16,6 +16,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCa
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
@@ -49,6 +50,7 @@ class EventsViewModel(
   private val birthdayRepository: BirthdayRepository,
   private val uiEventItemAdapter: UiEventItemAdapter,
   private val textProvider: TextProvider,
+  private val dateTimeManager: DateTimeManager,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val skipReminderUseCase: SkipReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
@@ -133,7 +135,7 @@ class EventsViewModel(
       var minDate = LocalDate.now()
       var maxDate = LocalDate.now()
       reminders.forEach {
-        val reminderDate = it.schedule.eventDateTime?.toLocalDate() ?: return@forEach
+        val reminderDate = it.schedule.eventDateTime?.let { dt -> dateTimeManager.utcToLocal(dt) }?.toLocalDate() ?: return@forEach
         if (reminderDate.isBefore(minDate)) {
           minDate = reminderDate
         } else if (reminderDate.isAfter(maxDate)) {

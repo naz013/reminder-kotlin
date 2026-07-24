@@ -9,6 +9,8 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
 
 /**
  * Evaluates enabled [WorkflowRule]s against current ReminderV2/GroupV2 state and runs their
@@ -25,17 +27,21 @@ class WorkflowEngine(
 
   /** Archives every completed reminder older than the threshold of any enabled
    * [WorkflowTrigger.ReminderAgeExceeded] rule in scope for it. [now] defaults to the real
-   * current time; tests inject a fixed value instead. */
+   * current time (this device's local zone); tests inject a fixed value instead. Converted to
+   * UTC before comparing, since [referenceDateTime] reads `ReminderV2.schedule` fields, which are
+   * stored UTC-zoned - this module has no `DateTimeManager` dependency (pure Kotlin/JVM), so the
+   * zone conversion is done directly here rather than via that shared helper. */
   suspend fun runAgeBasedRules(now: LocalDateTime = LocalDateTime.now()) {
     val rules = workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_REMINDER_AGE_EXCEEDED)
       .filter { it.isEnabled }
     if (rules.isEmpty()) return
 
     val completedReminders = reminderV2Repository.getAll(active = false, removed = false)
+    val nowUtc = now.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()
 
     for (rule in rules) {
       val trigger = rule.trigger as? WorkflowTrigger.ReminderAgeExceeded ?: continue
-      val cutoff = now.minusDays(trigger.days.toLong())
+      val cutoff = nowUtc.minusDays(trigger.days.toLong())
       completedReminders
         .asSequence()
         .filter { isInScope(it, rule.scope) }

@@ -148,6 +148,26 @@ class DateTimeManagerTest {
   }
 
   @Test
+  fun `localToUtc round trips through utcToLocal`() {
+    val dateTime = LocalDateTime.of(2026, 7, 22, 9, 30, 0)
+
+    val utc = manager.localToUtc(dateTime)
+    val restored = manager.utcToLocal(utc)
+
+    assertEquals(dateTime, restored)
+  }
+
+  @Test
+  fun `utcToLocal round trips through localToUtc`() {
+    val dateTime = LocalDateTime.of(2026, 7, 22, 9, 30, 0)
+
+    val local = manager.utcToLocal(dateTime)
+    val restored = manager.localToUtc(local)
+
+    assertEquals(dateTime, restored)
+  }
+
+  @Test
   fun `getMillisToBirthdayTime returns the gap to today's birthday time when it has not passed yet`() {
     val today = LocalDate.of(2023, 6, 17)
     val now = LocalDateTime.of(today, LocalTime.of(9, 0))

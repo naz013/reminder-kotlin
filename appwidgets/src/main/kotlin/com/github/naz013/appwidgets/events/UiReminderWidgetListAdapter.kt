@@ -20,7 +20,7 @@ internal class UiReminderWidgetListAdapter(
   fun createV2(data: ReminderV2): DateSorted {
     return when {
       data.action is ReminderAction.Shopping -> {
-        val due = getDueV2(data.schedule.eventDateTime)
+        val due = getDueV2(data.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) })
         UiReminderWidgetShopList(
           uuId = data.uuId,
           text = data.summary,
@@ -53,7 +53,7 @@ internal class UiReminderWidgetListAdapter(
       }
 
       else -> {
-        val due = getDueV2(data.schedule.eventDateTime)
+        val due = getDueV2(data.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) })
         UiReminderWidgetList(
           uuId = data.uuId,
           text = data.summary,
@@ -64,6 +64,8 @@ internal class UiReminderWidgetListAdapter(
     }
   }
 
+  /** [dateTime] must already be converted to local time (via [DateTimeManager.utcToLocal]) -
+   * `ReminderV2.schedule.eventDateTime` is stored UTC-zoned. */
   private fun getDueV2(dateTime: LocalDateTime?): UiReminderDueData {
     val due = dateTime?.let { dateTimeManager.getFullDateTime(it) }
     val dueMillis = dateTime?.let { dateTimeManager.toMillis(it) } ?: 0L

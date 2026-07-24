@@ -49,7 +49,10 @@ class GetActiveEventsForTheDayUseCase(
   private suspend fun loadReminders(day: LocalDateTime): List<HomeEvent> {
     val groupsMap = groupV2Repository.getAll().associateBy { it.uuId }
     val dayStart = day.toLocalDate().atStartOfDay()
-    val reminders = getRemindersV2InRangeUseCase(dayStart, dayStart.plusDays(1))
+    val reminders = getRemindersV2InRangeUseCase(
+      dateTimeManager.localToUtc(dayStart),
+      dateTimeManager.localToUtc(dayStart.plusDays(1)),
+    )
     return reminders.mapNotNull { toHomeEvent(it, it.groupId?.let { groupId -> groupsMap[groupId] }) }
   }
 
@@ -62,7 +65,7 @@ class GetActiveEventsForTheDayUseCase(
     reminder: ReminderV2,
     group: GroupV2?,
   ): HomeEvent? {
-    val dueDateTime = reminder.schedule.eventDateTime ?: return null
+    val dueDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) } ?: return null
 
     val color =
       group

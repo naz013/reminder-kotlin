@@ -24,6 +24,7 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
+import org.threeten.bp.LocalDateTime
 
 class UiReminderCommonAdapter(
   private val textProvider: TextProvider,
@@ -189,14 +190,14 @@ class UiReminderCommonAdapter(
       } else {
         IntervalUtil.getBeforeTime(remindBefore) { getBeforePattern(it) }
       }
-    val dateTime = reminder.schedule.eventDateTime
+    val dateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
     val dueMillis = dateTime?.let { dateTimeManager.toMillis(it) } ?: 0L
     val due = dateTime?.let { dateTimeManager.getFullDateTime(it) }
     return UiReminderDueData(
       before = before,
       repeat = getRepeatValueV2(reminder.recurrence),
       dateTime = due,
-      remaining = getRemainingV2(reminder),
+      remaining = getRemainingV2(dateTime),
       millis = dueMillis,
       localDateTime = dateTime,
       recurRule = getRecurRulesV2(reminder.recurrence),
@@ -238,8 +239,8 @@ class UiReminderCommonAdapter(
         ?.buildString()
     }
 
-  private fun getRemainingV2(reminder: ReminderV2): String =
-    modelDateTimeFormatter.getRemaining(reminder.schedule.eventDateTime)
+  private fun getRemainingV2(localEventDateTime: LocalDateTime?): String =
+    modelDateTimeFormatter.getRemaining(localEventDateTime, dateTimeManager.getCurrentDateTime())
 
   fun getTypeString(type: UiReminderType): String =
     when {

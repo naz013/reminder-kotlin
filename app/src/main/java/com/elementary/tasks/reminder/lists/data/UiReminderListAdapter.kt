@@ -140,7 +140,10 @@ class UiReminderListAdapter(
   private fun hasNextRecurV2(
     reminder: ReminderV2,
     rule: RecurrenceRule.ICalendar,
-  ): Boolean = recurEventManager.getNextAfterDateTime(reminder.schedule.eventDateTime, rule.rrule) != null
+  ): Boolean {
+    val localEventDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
+    return recurEventManager.getNextAfterDateTime(localEventDateTime, rule.rrule) != null
+  }
 
   private fun createGroupBadgeV2(group: GroupV2?): UiTextElement? =
     group?.let { uiGroupListAdapter.convert(it) }?.let {

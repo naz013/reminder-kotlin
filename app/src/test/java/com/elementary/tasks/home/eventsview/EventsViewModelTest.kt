@@ -11,6 +11,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCa
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -44,6 +45,7 @@ class EventsViewModelTest {
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val uiEventItemAdapter = mockk<UiEventItemAdapter>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>()
   private val skipReminderUseCase = mockk<SkipReminderUseCase>()
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
@@ -61,6 +63,7 @@ class EventsViewModelTest {
     // doesn't crash on unmocked calls; individual tests override these as needed.
     coEvery { getRemindersV2ByRemovedStatusUseCase(any()) } returns emptyList()
     coEvery { birthdayRepository.getAll() } returns emptyList()
+    every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     // Echoes the filtered reminders/birthdays back as bare UiEventItems keyed by id, so tests can
     // assert on which domain objects survived filtering without depending on real UI formatting.
     every { uiEventItemAdapter.convertV2(any(), any(), any()) } answers {
@@ -78,6 +81,7 @@ class EventsViewModelTest {
         birthdayRepository = birthdayRepository,
         uiEventItemAdapter = uiEventItemAdapter,
         textProvider = textProvider,
+        dateTimeManager = dateTimeManager,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
         skipReminderUseCase = skipReminderUseCase,
         toggleReminderStateUseCase = toggleReminderStateUseCase,
