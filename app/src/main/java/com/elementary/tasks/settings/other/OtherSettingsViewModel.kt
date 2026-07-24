@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.FeatureManager
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
@@ -13,6 +12,7 @@ import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -31,6 +31,7 @@ class OtherSettingsViewModel(
   private val contextProvider: ContextProvider,
   private val systemInfo: SystemInfo,
   private val featureManager: FeatureManager,
+  private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(OtherSettingsState())
@@ -61,7 +62,7 @@ class OtherSettingsViewModel(
     event.emit(
       ViewModelEvent.ShowFeedbackDialog(
         title = textProvider.getString(R.string.share_your_experience),
-        appSource = if (BuildParams.isPro) AppSource.PRO else AppSource.FREE,
+        appSource = if (buildInfo.isPro) AppSource.PRO else AppSource.FREE,
         allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
       )
     )
@@ -79,7 +80,7 @@ class OtherSettingsViewModel(
 
   fun onAboutClick() {
     val appName =
-      if (BuildParams.isPro) {
+      if (buildInfo.isPro) {
         textProvider.getString(R.string.app_name_pro)
       } else {
         textProvider.getString(R.string.app_name)

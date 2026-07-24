@@ -92,6 +92,8 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
   @Test
   fun `hasAdsBanner is false in the pro build`() =
     runTest {
+      every { buildInfo.isPro } returns true
+
       val state = viewModel.state.first()
 
       assertEquals(false, state.hasAdsBanner)

@@ -9,6 +9,7 @@ import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.reviews.AppSource
 import io.mockk.every
@@ -31,6 +32,7 @@ class OtherSettingsViewModelTest : BaseTest() {
   private val contextProvider = mockk<ContextProvider>()
   private val systemInfo = mockk<SystemInfo>()
   private val featureManager = mockk<FeatureManager>()
+  private val buildInfo = mockk<BuildInfo>(relaxed = true)
 
   private lateinit var viewModel: OtherSettingsViewModel
 
@@ -55,6 +57,7 @@ class OtherSettingsViewModelTest : BaseTest() {
         contextProvider = contextProvider,
         systemInfo = systemInfo,
         featureManager = featureManager,
+        buildInfo = buildInfo,
       )
   }
 
@@ -119,6 +122,7 @@ class OtherSettingsViewModelTest : BaseTest() {
   @Test
   fun `onFeedbackClicked emits ShowFeedbackDialog with pro app source`() {
     every { featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS) } returns true
+    every { buildInfo.isPro } returns true
 
     viewModel.onFeedbackClicked()
 
