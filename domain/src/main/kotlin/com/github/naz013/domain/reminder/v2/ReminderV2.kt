@@ -30,13 +30,9 @@ data class ReminderV2(
   val sync: SyncMetadata = SyncMetadata()
 ) {
 
-  fun isLimited(): Boolean =
-    (recurrence as? RecurrenceRule.Monthly)?.let { it.repeatLimit > 0 } ?: false
+  fun isLimited(): Boolean = recurrence.repeatLimitOrDefault() > 0
 
-  fun isLimitExceed(): Boolean {
-    val monthly = recurrence as? RecurrenceRule.Monthly ?: return false
-    return isLimited() && (monthly.repeatLimit - eventCount - 1) < 0
-  }
+  fun isLimitExceed(): Boolean = isLimited() && (recurrence.repeatLimitOrDefault() - eventCount - 1) < 0
 }
 
 data class ReminderSchedule(

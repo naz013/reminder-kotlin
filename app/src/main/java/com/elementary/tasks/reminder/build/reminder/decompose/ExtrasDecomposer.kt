@@ -20,9 +20,9 @@ import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.ReminderAction
-import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.repeatLimitOrDefault
 import com.github.naz013.repository.GoogleTaskListRepository
 
 class ExtrasDecomposer(
@@ -157,20 +157,6 @@ class ExtrasDecomposer(
       emailSubject,
       otherParams,
     )
-  }
-
-  private fun RecurrenceRule.repeatLimitOrDefault(): Int = when (this) {
-    is RecurrenceRule.Daily -> repeatLimit
-    is RecurrenceRule.Weekly -> repeatLimit
-    is RecurrenceRule.Monthly -> repeatLimit
-    is RecurrenceRule.RelativeMonthly -> repeatLimit
-    is RecurrenceRule.Yearly -> repeatLimit
-    is RecurrenceRule.Countdown -> repeatLimit
-    RecurrenceRule.Once,
-    RecurrenceRule.LocationEnter,
-    RecurrenceRule.LocationExit,
-    is RecurrenceRule.ICalendar,
-    -> -1
   }
 
   private fun ReminderAction.subjectOrEmpty(): String = when (this) {

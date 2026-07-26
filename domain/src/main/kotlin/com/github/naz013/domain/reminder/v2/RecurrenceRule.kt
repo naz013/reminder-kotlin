@@ -63,3 +63,19 @@ sealed class RecurrenceRule {
     val rrule: String
   ) : RecurrenceRule()
 }
+
+/** The repeat-limit count for whichever variant is active, or -1 (V1's "unlimited" convention) for
+ * variants that don't carry one ([Once]/[LocationEnter]/[LocationExit]/[ICalendar]). */
+fun RecurrenceRule.repeatLimitOrDefault(): Int = when (this) {
+  is RecurrenceRule.Daily -> repeatLimit
+  is RecurrenceRule.Weekly -> repeatLimit
+  is RecurrenceRule.Monthly -> repeatLimit
+  is RecurrenceRule.RelativeMonthly -> repeatLimit
+  is RecurrenceRule.Yearly -> repeatLimit
+  is RecurrenceRule.Countdown -> repeatLimit
+  RecurrenceRule.Once,
+  RecurrenceRule.LocationEnter,
+  RecurrenceRule.LocationExit,
+  is RecurrenceRule.ICalendar,
+  -> -1
+}
