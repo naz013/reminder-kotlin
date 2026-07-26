@@ -64,10 +64,10 @@ class ActionDecomposer(
     return listOfNotNull(mainItem)
   }
 
-  /** [SubTasksBuilderItem]/its formatter and modifier are still typed against V1's [ShopItem] -
-   * this is a display-only conversion (Phase B2 doesn't touch the composer), so [ShopItem.createTime]
-   * is round-tripped through the same UTC->local->GMT-string path the reverse mapper uses, keeping
-   * it correct if the user saves without editing the sub-tasks list. */
+  /** [SubTasksBuilderItem]/its formatter and modifier are still typed against V1's [ShopItem],
+   * so [ShopItem.createTime] is round-tripped through the same UTC->local->GMT-string path the
+   * reverse mapper uses. The composer's `ShopItemsModifier.toShopItemV2()` is this function's
+   * exact inverse. */
   private fun ShopItemV2.toShopItem(): ShopItem = ShopItem(
     summary = summary,
     isDeleted = isDeleted,

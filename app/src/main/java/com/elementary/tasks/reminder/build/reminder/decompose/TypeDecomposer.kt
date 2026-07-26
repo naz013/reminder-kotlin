@@ -19,8 +19,8 @@ class TypeDecomposer(
       is RecurrenceRule.Countdown -> byTimerDecomposer(reminder)
       is RecurrenceRule.Weekly -> byWeekdaysDecomposer(reminder)
       is RecurrenceRule.Monthly -> byDayOfMonthDecomposer(reminder)
-      // No builder field support yet for "nth weekday of month" - unreachable until Phase B3
-      // adds one; nothing produces this recurrence shape before then.
+      // No builder field support yet for "nth weekday of month" - unreachable today; nothing in
+      // the composer (RecurrenceRuleCalculator) produces this recurrence shape yet either.
       is RecurrenceRule.RelativeMonthly -> emptyList()
       is RecurrenceRule.Yearly -> byDayOfYearDecomposer(reminder)
       RecurrenceRule.LocationEnter, RecurrenceRule.LocationExit -> byLocationDecomposer(reminder)
