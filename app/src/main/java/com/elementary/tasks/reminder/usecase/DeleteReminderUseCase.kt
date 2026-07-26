@@ -9,11 +9,11 @@ import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.sync.DataType
 
 class DeleteReminderUseCase(
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
@@ -22,7 +22,7 @@ class DeleteReminderUseCase(
 ) {
   suspend operator fun invoke(reminder: Reminder) {
     deactivateReminderUseCase(reminder.toReminderV2())
-    reminderRepository.delete(reminder.uuId)
+    reminderV2Repository.delete(reminder.uuId)
     googleCalendarUtils.deleteEvents(reminder.uuId)
     eventHistoryRepository.deleteByEventId(reminder.uuId)
     eventOccurrenceRepository.deleteByEventId(reminder.uuId)

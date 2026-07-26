@@ -9,11 +9,11 @@ import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.sync.DataType
 
 class DeleteAllReminderUseCase(
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
@@ -23,7 +23,7 @@ class DeleteAllReminderUseCase(
   suspend operator fun invoke(reminders: List<Reminder>) {
     reminders.forEach { deactivateReminderUseCase(it.toReminderV2()) }
     val ids = reminders.map { it.uuId }
-    reminderRepository.deleteAll(ids)
+    reminderV2Repository.deleteAll(ids)
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Delete,
       dataType = DataType.Reminders,

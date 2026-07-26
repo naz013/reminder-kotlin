@@ -8,7 +8,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCas
 import com.github.naz013.domain.Reminder
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.sync.DataType
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -25,7 +25,7 @@ import org.junit.Test
  * Covers core behavior, call order, error propagation, and edge cases.
  */
 class DeleteReminderUseCaseTest : BaseTest() {
-  private lateinit var reminderRepository: ReminderRepository
+  private lateinit var reminderV2Repository: ReminderV2Repository
   private lateinit var googleCalendarUtils: GoogleCalendarUtils
   private lateinit var scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
   private lateinit var deactivateReminderUseCase: DeactivateReminderUseCase
@@ -37,7 +37,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    reminderRepository = mockk(relaxed = true)
+    reminderV2Repository = mockk(relaxed = true)
     googleCalendarUtils = mockk(relaxed = true)
     scheduleBackgroundWorkUseCase = mockk(relaxed = true)
     deactivateReminderUseCase = mockk(relaxed = true)
@@ -46,7 +46,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
 
     useCase =
       DeleteReminderUseCase(
-        reminderRepository = reminderRepository,
+        reminderV2Repository = reminderV2Repository,
         googleCalendarUtils = googleCalendarUtils,
         scheduleBackgroundWorkUseCase = scheduleBackgroundWorkUseCase,
         deactivateReminderUseCase = deactivateReminderUseCase,
@@ -66,7 +66,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
 
       // Assert
       coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminder.uuId }) }
-      coVerify(exactly = 1) { reminderRepository.delete("id-123") }
+      coVerify(exactly = 1) { reminderV2Repository.delete("id-123") }
       coVerify(exactly = 1) { googleCalendarUtils.deleteEvents("id-123") }
       coVerify(exactly = 1) { eventHistoryRepository.deleteByEventId("id-123") }
       coVerify(exactly = 1) { eventOccurrenceRepository.deleteByEventId("id-123") }
@@ -91,7 +91,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
       // Assert - Verify the exact order of side-effect calls
       coVerifyOrder {
         deactivateReminderUseCase(match { it.uuId == reminder.uuId })
-        reminderRepository.delete("id-456")
+        reminderV2Repository.delete("id-456")
         googleCalendarUtils.deleteEvents("id-456")
         eventHistoryRepository.deleteByEventId("id-456")
         eventOccurrenceRepository.deleteByEventId("id-456")
@@ -128,7 +128,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
       // Arrange
       val reminder = Reminder(uuId = "fail-001", summary = "Failure")
       coJustRun { deactivateReminderUseCase(match { it.uuId == reminder.uuId }) }
-      coEvery { reminderRepository.delete("fail-001") } throws IllegalStateException("DB error")
+      coEvery { reminderV2Repository.delete("fail-001") } throws IllegalStateException("DB error")
 
       // Act
       try {
@@ -138,7 +138,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
         // Assert
         // Deactivate was called and delete threw an exception
         coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminder.uuId }) }
-        coVerify(exactly = 1) { reminderRepository.delete("fail-001") }
+        coVerify(exactly = 1) { reminderV2Repository.delete("fail-001") }
         // No further calls were made
         coVerify(exactly = 0) { googleCalendarUtils.deleteEvents(any()) }
         coVerify(exactly = 0) { eventHistoryRepository.deleteByEventId(any()) }
@@ -158,7 +158,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
 
       // Assert - All calls still happen with empty id string
       coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminder.uuId }) }
-      coVerify(exactly = 1) { reminderRepository.delete("") }
+      coVerify(exactly = 1) { reminderV2Repository.delete("") }
       coVerify(exactly = 1) { googleCalendarUtils.deleteEvents("") }
       coVerify(exactly = 1) { eventHistoryRepository.deleteByEventId("") }
       coVerify(exactly = 1) { eventOccurrenceRepository.deleteByEventId("") }
@@ -183,7 +183,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
       // Assert a partial order: deactivate called before repository delete
       coVerifyOrder {
         deactivateReminderUseCase(match { it.uuId == reminder.uuId })
-        reminderRepository.delete("seq-002")
+        reminderV2Repository.delete("seq-002")
       }
     }
 }

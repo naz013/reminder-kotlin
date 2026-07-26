@@ -9,7 +9,7 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.sync.DataType
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,7 +26,7 @@ import org.junit.Test
  * deactivation, repository cleanup, calendar sync, and background work scheduling.
  */
 class DeleteAllReminderUseCaseTest : BaseTest() {
-  private lateinit var reminderRepository: ReminderRepository
+  private lateinit var reminderV2Repository: ReminderV2Repository
   private lateinit var googleCalendarUtils: GoogleCalendarUtils
   private lateinit var scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
   private lateinit var deactivateReminderUseCase: DeactivateReminderUseCase
@@ -38,7 +38,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    reminderRepository = mockk(relaxed = true)
+    reminderV2Repository = mockk(relaxed = true)
     googleCalendarUtils = mockk(relaxed = true)
     scheduleBackgroundWorkUseCase = mockk(relaxed = true)
     deactivateReminderUseCase = mockk(relaxed = true)
@@ -47,7 +47,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
 
     useCase =
       DeleteAllReminderUseCase(
-        reminderRepository = reminderRepository,
+        reminderV2Repository = reminderV2Repository,
         googleCalendarUtils = googleCalendarUtils,
         scheduleBackgroundWorkUseCase = scheduleBackgroundWorkUseCase,
         deactivateReminderUseCase = deactivateReminderUseCase,
@@ -74,7 +74,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[0].uuId }) }
       coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[1].uuId }) }
       coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[2].uuId }) }
-      coVerify(exactly = 1) { reminderRepository.deleteAll(listOf("rem-001", "rem-002", "rem-003")) }
+      coVerify(exactly = 1) { reminderV2Repository.deleteAll(listOf("rem-001", "rem-002", "rem-003")) }
     }
 
   @Test
@@ -146,7 +146,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         deactivateReminderUseCase(match { it.uuId == reminders[1].uuId })
 
         // Second: delete from repository
-        reminderRepository.deleteAll(listOf("order-301", "order-302"))
+        reminderV2Repository.deleteAll(listOf("order-301", "order-302"))
 
         // Third: schedule background work
         scheduleBackgroundWorkUseCase(
@@ -176,7 +176,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
 
       // Assert - No deactivation or deletion should occur
       coVerify(exactly = 0) { deactivateReminderUseCase(any()) }
-      coVerify(exactly = 1) { reminderRepository.deleteAll(emptyList()) }
+      coVerify(exactly = 1) { reminderV2Repository.deleteAll(emptyList()) }
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
@@ -203,7 +203,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
 
       // Assert
       coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == singleReminder[0].uuId }) }
-      coVerify(exactly = 1) { reminderRepository.deleteAll(listOf("single-401")) }
+      coVerify(exactly = 1) { reminderV2Repository.deleteAll(listOf("single-401")) }
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
@@ -237,7 +237,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         // Second deactivation should not be reached
         coVerify(exactly = 0) { deactivateReminderUseCase(match { it.uuId == reminders[1].uuId }) }
         // No further operations should occur
-        coVerify(exactly = 0) { reminderRepository.deleteAll(any()) }
+        coVerify(exactly = 0) { reminderV2Repository.deleteAll(any()) }
         coVerify(exactly = 0) { scheduleBackgroundWorkUseCase(any(), any(), any()) }
       }
     }
@@ -250,7 +250,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         listOf(
           Reminder(uuId = "repo-601", summary = "Repository fail", syncState = SyncState.Synced),
         )
-      coEvery { reminderRepository.deleteAll(any()) } throws IllegalStateException("Repository error")
+      coEvery { reminderV2Repository.deleteAll(any()) } throws IllegalStateException("Repository error")
 
       // Act & Assert
       try {
@@ -260,7 +260,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         // Deactivation should complete
         coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[0].uuId }) }
         // Repository delete was attempted
-        coVerify(exactly = 1) { reminderRepository.deleteAll(listOf("repo-601")) }
+        coVerify(exactly = 1) { reminderV2Repository.deleteAll(listOf("repo-601")) }
         // No further cleanup operations
         coVerify(exactly = 0) { scheduleBackgroundWorkUseCase(any(), any(), any()) }
         coVerify(exactly = 0) { googleCalendarUtils.deleteEvents(any()) }
@@ -289,7 +289,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Each reminder should be deactivated once
       coVerify(exactly = 100) { deactivateReminderUseCase(any()) }
       // Repository deleteAll called once with all IDs
-      coVerify(exactly = 1) { reminderRepository.deleteAll(expectedIds) }
+      coVerify(exactly = 1) { reminderV2Repository.deleteAll(expectedIds) }
       // Background work scheduled once with all IDs
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
