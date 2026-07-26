@@ -11,6 +11,7 @@ import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.workapi.WorkScheduler
@@ -53,7 +54,7 @@ class ActivateReminderUseCase(
           syncState = SyncState.WaitingForUpload,
           version = reminder.version + 1,
         )
-      saveReminderUseCase(reminder)
+      saveReminderUseCase(reminder.toReminderV2())
       startLocationTrackingUseCase(reminder)
       return reminder
     }
@@ -69,7 +70,7 @@ class ActivateReminderUseCase(
           syncState = SyncState.WaitingForUpload,
           version = reminder.version + 1,
         )
-      saveReminderUseCase(reminder)
+      saveReminderUseCase(reminder.toReminderV2())
       if (jobScheduler.scheduleGpsDelay(reminder)) {
         Logger.d(TAG, "Scheduled GPS delay for reminder id=${reminder.uuId}.")
       } else {
@@ -89,7 +90,7 @@ class ActivateReminderUseCase(
           syncState = SyncState.WaitingForUpload,
           version = reminder.version + 1,
         )
-      saveReminderUseCase(reminder)
+      saveReminderUseCase(reminder.toReminderV2())
       updatePermanentReminderNotificationUseCase()
       jobScheduler.scheduleReminder(reminder)
       saveReminderToGoogleTasksUseCase(reminder)
@@ -104,7 +105,7 @@ class ActivateReminderUseCase(
           syncState = SyncState.WaitingForUpload,
           version = reminder.version + 1,
         )
-      saveReminderUseCase(reminder)
+      saveReminderUseCase(reminder.toReminderV2())
       return reminder
     }
   }

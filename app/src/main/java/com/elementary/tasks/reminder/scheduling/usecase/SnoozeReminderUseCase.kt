@@ -6,6 +6,7 @@ import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolve
 import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 
@@ -45,7 +46,7 @@ class SnoozeReminderUseCase(
         delay = timeInMinutes,
         syncState = SyncState.WaitingForUpload,
       )
-    saveReminderUseCase(reminder)
+    saveReminderUseCase(reminder.toReminderV2())
     jobScheduler.scheduleReminderDelay(timeInMinutes, reminder.uuId, reminder.uniqueId)
     Logger.i(TAG, "Snoozed reminder id=${reminder.uuId} for $timeInMinutes minutes")
     return reminder

@@ -4,6 +4,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.google.CompleteRelatedGo
 import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePermanentReminderNotificationUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventOccurrenceRepository
@@ -33,8 +34,8 @@ class DeactivateReminderUseCase(
         syncState = SyncState.WaitingForUpload,
         version = reminder.version + 1,
       )
-    saveReminderUseCase(reminder)
-    pauseReminderUseCase(reminder)
+    saveReminderUseCase(reminder.toReminderV2())
+    pauseReminderUseCase(reminder.toReminderV2())
     updatePermanentReminderNotificationUseCase()
 
     if (reminder.exportToTasks) {

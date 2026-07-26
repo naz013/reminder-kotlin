@@ -229,7 +229,7 @@ class BuildReminderViewModelTest : BaseTest() {
     assertEquals(false, viewModel.state.value.isRemoved)
     assertEquals(true, viewModel.state.value.canRemove)
     verify { builderItemsLogic.setAll(listOf(summaryItem())) }
-    coVerify(exactly = 1) { pauseReminderUseCase(reminder) }
+    coVerify(exactly = 1) { pauseReminderUseCase(match { it.uuId == "42" }) }
   }
 
   @Test
@@ -685,7 +685,7 @@ class BuildReminderViewModelTest : BaseTest() {
 
     store.clear()
 
-    coVerify(exactly = 1) { resumeReminderUseCase(reminder) }
+    coVerify(exactly = 1) { resumeReminderUseCase(match { it.uuId == "42" }) }
   }
 
   @Test

@@ -337,7 +337,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
       viewModel.onTodoItemClick("s1")
 
-      coVerify(exactly = 1) { saveReminderUseCase(match { it.shoppings.first().isChecked }) }
+      coVerify(exactly = 1) { saveReminderUseCase(match { it.shoppingItems.first().isChecked }) }
       assertEquals(refreshedState, viewModel.state.getOrAwaitValue())
     }
 }

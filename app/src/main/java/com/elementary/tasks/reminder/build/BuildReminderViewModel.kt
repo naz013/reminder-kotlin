@@ -172,7 +172,7 @@ class BuildReminderViewModel(
     Logger.i(TAG, "View model cleared")
     selectorDialogDataHolder.selectorBuilderItems = emptyList()
     if (isPaused && !isSaving) {
-      original?.let { resumeReminder(it) }
+      originalV2?.let { resumeReminder(it) }
     }
     appWidgetUpdater.updateAllWidgets()
     appWidgetUpdater.updateCalendarWidget()
@@ -555,13 +555,14 @@ class BuildReminderViewModel(
       Logger.i(TAG, "Edit reminder by ID Deep Link, id = $id")
 
       editReminder(reminderV2 = reminderV2, reminder = reminder)
-      pauseReminder(reminder)
+      pauseReminder(reminderV2)
     }
   }
 
-  /** [reminder] (V1) is kept as [original] for the action handlers (snooze/pause/resume/delete/
-   * archive), which still operate on V1 `Reminder`. [reminderV2] drives everything the user
-   * actually edits, including the save path via [BiToReminderAdapter]. */
+  /** [reminder] (V1) is kept as [original] for the action handlers that still operate on V1
+   * `Reminder` (delete/archive - Phase C hasn't reached them yet); [pauseReminder]/[resumeReminder]
+   * already read [originalV2] (Phase C2). [reminderV2] drives everything the user actually edits,
+   * including the save path via [BiToReminderAdapter]. */
   private suspend fun editReminder(
     reminderV2: ReminderV2,
     reminder: Reminder,
@@ -596,7 +597,7 @@ class BuildReminderViewModel(
   private suspend fun findSame(id: String) {
     val reminder = reminderRepository.getById(id)
     _state.update { it.copy(hasSameInDb = reminder != null) }
-    reminder?.also { pauseReminder(it) }
+    reminder?.also { pauseReminder(it.toReminderV2()) }
   }
 
   private suspend fun useBuilderPreset(preset: RecurPreset) {
@@ -927,13 +928,13 @@ class BuildReminderViewModel(
     )
   }
 
-  private suspend fun pauseReminder(reminder: Reminder) {
+  private suspend fun pauseReminder(reminder: ReminderV2) {
     Logger.i(TAG, "Pause reminder, id = ${reminder.uuId}")
     isPaused = true
     pauseReminderUseCase(reminder)
   }
 
-  private fun resumeReminder(reminder: Reminder) {
+  private fun resumeReminder(reminder: ReminderV2) {
     Logger.i(TAG, "Resume reminder, id = ${reminder.uuId}")
     cleanupScope.launch {
       isPaused = false

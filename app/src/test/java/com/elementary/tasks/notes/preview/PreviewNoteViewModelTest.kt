@@ -396,7 +396,9 @@ class PreviewNoteViewModelTest : BaseTest() {
 
       coVerify(exactly = 1) {
         saveReminderUseCase(
-          match { it.noteId == "" && it.version == attached.version + 1 && it.syncState == SyncState.WaitingForUpload },
+          match {
+            it.noteId == "" && it.sync.version == attached.version + 1 && it.sync.syncState == SyncState.WaitingForUpload
+          },
         )
       }
       coVerify(atLeast = 1) { reminderRepository.getByNoteKey(key) }
