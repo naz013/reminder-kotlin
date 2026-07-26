@@ -5,7 +5,6 @@ import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
 
 /**
- * `ReminderV2`-typed mirror of [com.elementary.tasks.reminder.scheduling.occurrence.NoReminderOccurrenceCalculator].
  * Reminders with no date/time dependencies have no future occurrences.
  */
 class NoReminderOccurrenceCalculatorV2 : ReminderOccurrenceCalculatorV2 {

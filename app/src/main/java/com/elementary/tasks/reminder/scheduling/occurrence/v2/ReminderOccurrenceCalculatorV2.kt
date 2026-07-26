@@ -4,7 +4,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import org.threeten.bp.LocalDateTime
 
 /**
- * `ReminderV2`-typed mirror of [com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculator].
+ * Calculates future occurrence times for a `ReminderV2`'s recurrence pattern.
  */
 interface ReminderOccurrenceCalculatorV2 {
   suspend fun calculateOccurrences(

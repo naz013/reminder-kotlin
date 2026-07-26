@@ -12,7 +12,6 @@ import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskTask
 import com.elementary.tasks.googletasks.work.UpdateTaskTask
-import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.elementary.tasks.workflow.RunWorkflowRulesTask
@@ -20,7 +19,6 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.GoogleTask
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.logging.Logger
@@ -37,7 +35,6 @@ class JobScheduler(
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
   private val systemServiceProvider: SystemServiceProvider,
-  private val eventDateTimeCalculator: EventDateTimeCalculator,
   private val eventDateTimeCalculatorV2: EventDateTimeCalculatorV2,
   private val workScheduler: WorkScheduler,
 ) {
@@ -135,29 +132,6 @@ class JobScheduler(
     )
   }
 
-  fun scheduleReminderRepeat(reminder: Reminder): Boolean {
-    val minutes = prefs.notificationRepeatTime
-    val millis = System.currentTimeMillis() + (minutes * INTERVAL_MINUTE)
-    if (millis <= 0) {
-      return false
-    }
-    Logger.d(TAG, "scheduleReminderRepeat: $millis, ${reminder.uuId}")
-
-    scheduleWithAlarm(
-      action = AlarmReceiver.ACTION_REMINDER_REPEAT,
-      bundle =
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, reminder.uuId)
-        },
-      millis = millis,
-      requestCode = reminder.uniqueId,
-    )
-    return true
-  }
-
-  /** `ReminderV2`-typed twin of [scheduleReminderRepeat] - reads the same two identity fields
-   * and delegates to the same [scheduleWithAlarm] primitive. Not yet wired to any production call
-   * site (Phase C sub-phase C1). */
   fun scheduleReminderRepeat(reminderV2: ReminderV2): Boolean {
     val minutes = prefs.notificationRepeatTime
     val millis = System.currentTimeMillis() + (minutes * INTERVAL_MINUTE)
@@ -207,27 +181,6 @@ class JobScheduler(
     )
   }
 
-  fun scheduleGpsDelay(reminder: Reminder): Boolean {
-    val millis = dateTimeManager.toMillis(reminder.eventTime)
-    if (millis <= 0) {
-      return false
-    }
-    Logger.d(TAG, "scheduleGpsDelay: $millis, ${reminder.uuId}")
-
-    scheduleWithAlarm(
-      action = AlarmReceiver.ACTION_REMINDER_GPS,
-      bundle =
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, reminder.uuId)
-        },
-      millis = millis,
-      requestCode = reminder.uniqueId,
-    )
-    return true
-  }
-
-  /** `ReminderV2`-typed twin of [scheduleGpsDelay]. Not yet wired to any production call site
-   * (Phase C sub-phase C1). */
   fun scheduleGpsDelay(reminderV2: ReminderV2): Boolean {
     val millis = reminderV2.schedule.eventDateTime?.let { dateTimeManager.toMillis(dateTimeManager.utcToLocal(it)) } ?: 0L
     if (millis <= 0) {
@@ -247,30 +200,6 @@ class JobScheduler(
     return true
   }
 
-  fun scheduleReminder(reminder: Reminder?) {
-    if (reminder == null) {
-      Logger.w(TAG, "Cannot schedule null reminder")
-      return
-    }
-    val millis =
-      eventDateTimeCalculator.calculateEventDateTime(reminder) ?: run {
-        Logger.e(TAG, "Cannot calculate event date time for reminder: ${reminder.uuId}")
-        return
-      }
-
-    scheduleWithAlarm(
-      action = AlarmReceiver.ACTION_REMINDER,
-      bundle =
-        Bundle().apply {
-          putString(IntentKeys.INTENT_ID, reminder.uuId)
-        },
-      millis = millis,
-      requestCode = reminder.uniqueId,
-    )
-  }
-
-  /** `ReminderV2`-typed twin of [scheduleReminder]. Not yet wired to any production call site
-   * (Phase C sub-phase C1). */
   fun scheduleReminder(reminderV2: ReminderV2?) {
     if (reminderV2 == null) {
       Logger.w(TAG, "Cannot schedule null reminder")

@@ -71,11 +71,9 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.removed.RemindersArchiveViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
-import com.elementary.tasks.reminder.scheduling.alarmmanager.EventDateTimeCalculator
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
-import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
 import com.elementary.tasks.reminder.scheduling.occurrence.v2.ReminderOccurrenceCalculatorFactoryV2
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
@@ -344,10 +342,8 @@ val reminderModule =
     factory { SaveReminderToGoogleTasksUseCase(get(), get(), get()) }
     factory { SaveReminderToGoogleCalendarUseCase(get(), get()) }
 
-    factory { ReminderOccurrenceCalculatorFactory(get(), get()) }
     factory { ReminderOccurrenceCalculatorFactoryV2(get(), get()) }
 
-    factory { EventDateTimeCalculator(get(), get()) }
     factory { EventDateTimeCalculatorV2(get(), get()) }
 
     factory<RecurrenceCalculator> { RecurrenceCalculatorImpl() }

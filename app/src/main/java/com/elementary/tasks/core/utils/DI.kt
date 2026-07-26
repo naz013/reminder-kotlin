@@ -112,7 +112,7 @@ val utilModule =
     singleOf(::RemotePrefs)
 
     factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
-    factory { JobScheduler(get(), get(), get(), get(), get(), get(), get()) }
+    factory { JobScheduler(get(), get(), get(), get(), get(), get()) }
 
     factory { ActivateAllActiveRemindersUseCase(get(), get()) }
     factory { NoteImageMigration(get(), get()) }
