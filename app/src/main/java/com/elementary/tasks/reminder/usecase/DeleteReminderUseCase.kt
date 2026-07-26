@@ -5,6 +5,7 @@ import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
@@ -20,7 +21,7 @@ class DeleteReminderUseCase(
   private val eventHistoryRepository: EventHistoryRepository,
 ) {
   suspend operator fun invoke(reminder: Reminder) {
-    deactivateReminderUseCase(reminder)
+    deactivateReminderUseCase(reminder.toReminderV2())
     reminderRepository.delete(reminder.uuId)
     googleCalendarUtils.deleteEvents(reminder.uuId)
     eventHistoryRepository.deleteByEventId(reminder.uuId)

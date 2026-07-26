@@ -5,6 +5,8 @@ import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.datecalc.plusMillis
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
 
 /**
@@ -37,7 +39,7 @@ class SkipReminderUseCase(
           eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime),
           eventCount = reminder.eventCount + 1,
         )
-      activateReminderUseCase(reminder)
+      activateReminderUseCase(reminder.toReminderV2()).toReminder()
     } else {
       Logger.w(TAG, "Cannot skip reminder id=${reminder.uuId}.")
       reminder

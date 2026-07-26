@@ -134,7 +134,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
       viewModel.onActionClick(ReminderAction.Dismiss)
 
-      coVerify(exactly = 1) { deactivateReminderUseCase(r) }
+      coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == r.uuId }) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
         viewModel.event.value?.peekContent(),

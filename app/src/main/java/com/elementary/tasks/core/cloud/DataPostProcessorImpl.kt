@@ -5,6 +5,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderGroupRepository
 import com.github.naz013.sync.DataPostProcessor
@@ -69,7 +70,7 @@ class DataPostProcessorImpl(
     if (reminder.isRemoved) {
       reminder.isActive = false
     }
-    activateReminderUseCase(reminder)
+    activateReminderUseCase(reminder.toReminderV2())
     Logger.i(TAG, "Post processed reminder with id = ${reminder.uuId}")
   }
 

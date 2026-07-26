@@ -1,6 +1,8 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
 
 /**
@@ -31,14 +33,14 @@ class ToggleReminderStateUseCase(
 
     return if (reminder.isActive) {
       Logger.i(TAG, "Deactivating reminder id=${reminder.uuId}")
-      val newReminder = deactivateReminderUseCase(reminder)
+      val newReminder = deactivateReminderUseCase(reminder.toReminderV2()).toReminder()
       Result(
         success = !newReminder.isActive,
         newReminder = newReminder
       )
     } else {
       Logger.i(TAG, "Activating reminder id=${reminder.uuId}")
-      val newReminder = activateReminderUseCase(reminder)
+      val newReminder = activateReminderUseCase(reminder.toReminderV2()).toReminder()
       Result(
         success = newReminder.isActive,
         newReminder = newReminder

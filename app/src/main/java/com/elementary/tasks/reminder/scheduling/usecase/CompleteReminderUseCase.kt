@@ -4,6 +4,8 @@ import com.elementary.tasks.calendar.history.AddReminderToHistoryUseCase
 import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
 
 /**
@@ -28,7 +30,7 @@ class CompleteReminderUseCase(
       val nextDateTime = strategy.calculateNextOccurrence(reminder, fromDateTime)
       if (nextDateTime == null) {
         Logger.i(TAG, "No next occurrence found, deactivating reminder id=${reminder.uuId}")
-        deactivateReminderUseCase(reminder)
+        deactivateReminderUseCase(reminder.toReminderV2())
         return reminder
       }
       Logger.i(TAG, "Scheduling next occurrence for reminder id=${reminder.uuId} at $nextDateTime")
@@ -37,10 +39,10 @@ class CompleteReminderUseCase(
           eventTime = dateTimeManager.getGmtFromDateTime(nextDateTime),
           eventCount = reminder.eventCount + 1,
         )
-      activateReminderUseCase(reminder)
+      activateReminderUseCase(reminder.toReminderV2()).toReminder()
     } else {
       Logger.i(TAG, "Going to deactivate reminder id=${reminder.uuId}")
-      deactivateReminderUseCase(reminder)
+      deactivateReminderUseCase(reminder.toReminderV2()).toReminder()
     }
   }
 

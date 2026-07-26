@@ -48,6 +48,7 @@ import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -776,7 +777,7 @@ class NoteEditViewModel(
         reminder.groupColor = group.color
         reminder.groupTitle = group.title
         reminder.groupUuId = group.uuId
-        activateReminderUseCase(reminder)
+        activateReminderUseCase(reminder.toReminderV2())
       }
     }
   }

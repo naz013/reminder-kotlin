@@ -25,6 +25,7 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
@@ -217,7 +218,7 @@ class PreviewReminderViewModel(
       }
       newItem.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
       newItem.startTime = dateTimeManager.getGmtFromDateTime(dateTime)
-      activateReminderUseCase(newItem)
+      activateReminderUseCase(newItem.toReminderV2())
     }
   }
 

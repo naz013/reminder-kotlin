@@ -216,7 +216,7 @@ class ReminderActionActivityViewModel(
     Logger.i(TAG, "Cancel clicked for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
-      deactivateReminderUseCase(reminder)
+      deactivateReminderUseCase(reminder.toReminderV2())
       withContext(dispatcherProvider.main()) {
         event.emit(ViewModelEvent.Finish)
       }

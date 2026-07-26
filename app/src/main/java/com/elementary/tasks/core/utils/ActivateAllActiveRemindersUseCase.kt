@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils
 
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.repository.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,7 @@ class ActivateAllActiveRemindersUseCase(
   fun run() {
     coroutineScope.launch {
       reminderRepository.getAll(active = true, removed = false).forEach {
-        activateReminderUseCase(it)
+        activateReminderUseCase(it.toReminderV2())
       }
     }
   }

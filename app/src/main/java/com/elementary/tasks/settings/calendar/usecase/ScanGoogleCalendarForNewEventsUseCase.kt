@@ -8,6 +8,7 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.CalendarEvent
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
@@ -145,7 +146,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
         this.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
         this.allDay = allDay
       }
-    activateReminderUseCase(reminder)
+    activateReminderUseCase(reminder.toReminderV2())
     calendarEventRepository.save(
       CalendarEvent(
         reminderId = reminder.uuId,

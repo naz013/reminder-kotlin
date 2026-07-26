@@ -71,9 +71,9 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       useCase.invoke(reminders)
 
       // Assert
-      coVerify(exactly = 1) { deactivateReminderUseCase(reminders[0]) }
-      coVerify(exactly = 1) { deactivateReminderUseCase(reminders[1]) }
-      coVerify(exactly = 1) { deactivateReminderUseCase(reminders[2]) }
+      coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[0].uuId }) }
+      coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[1].uuId }) }
+      coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[2].uuId }) }
       coVerify(exactly = 1) { reminderRepository.deleteAll(listOf("rem-001", "rem-002", "rem-003")) }
     }
 
@@ -142,8 +142,8 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Assert - Verify operations happen in the expected sequence
       coVerifyOrder {
         // First: deactivate all reminders
-        deactivateReminderUseCase(reminders[0])
-        deactivateReminderUseCase(reminders[1])
+        deactivateReminderUseCase(match { it.uuId == reminders[0].uuId })
+        deactivateReminderUseCase(match { it.uuId == reminders[1].uuId })
 
         // Second: delete from repository
         reminderRepository.deleteAll(listOf("order-301", "order-302"))
@@ -202,7 +202,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       useCase.invoke(singleReminder)
 
       // Assert
-      coVerify(exactly = 1) { deactivateReminderUseCase(singleReminder[0]) }
+      coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == singleReminder[0].uuId }) }
       coVerify(exactly = 1) { reminderRepository.deleteAll(listOf("single-401")) }
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
@@ -225,7 +225,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
           Reminder(uuId = "fail-501", summary = "Will fail", syncState = SyncState.Synced),
           Reminder(uuId = "fail-502", summary = "Never reached", syncState = SyncState.Synced),
         )
-      coEvery { deactivateReminderUseCase(reminders[0]) } throws IllegalStateException("Deactivation error")
+      coEvery { deactivateReminderUseCase(match { it.uuId == reminders[0].uuId }) } throws IllegalStateException("Deactivation error")
 
       // Act & Assert
       try {
@@ -233,9 +233,9 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         assert(false) { "Exception expected but not thrown" }
       } catch (e: IllegalStateException) {
         // Verify first deactivation was attempted
-        coVerify(exactly = 1) { deactivateReminderUseCase(reminders[0]) }
+        coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[0].uuId }) }
         // Second deactivation should not be reached
-        coVerify(exactly = 0) { deactivateReminderUseCase(reminders[1]) }
+        coVerify(exactly = 0) { deactivateReminderUseCase(match { it.uuId == reminders[1].uuId }) }
         // No further operations should occur
         coVerify(exactly = 0) { reminderRepository.deleteAll(any()) }
         coVerify(exactly = 0) { scheduleBackgroundWorkUseCase(any(), any(), any()) }
@@ -258,7 +258,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         assert(false) { "Exception expected but not thrown" }
       } catch (e: IllegalStateException) {
         // Deactivation should complete
-        coVerify(exactly = 1) { deactivateReminderUseCase(reminders[0]) }
+        coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminders[0].uuId }) }
         // Repository delete was attempted
         coVerify(exactly = 1) { reminderRepository.deleteAll(listOf("repo-601")) }
         // No further cleanup operations

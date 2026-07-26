@@ -893,7 +893,7 @@ class BuildReminderViewModel(
         }
       }
     }
-    activateReminderUseCase(reminder, startAnyway = true)
+    activateReminderUseCase(reminder.toReminderV2(), startAnyway = true)
     Logger.i(TAG, "Reminder saved, id = ${reminder.uuId}")
 
     if (!isEdit) {

@@ -8,6 +8,8 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import io.mockk.coEvery
@@ -107,11 +109,11 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
 
     viewModel.saveNote()
 
-    val reminderSlot = slot<Reminder>()
+    val reminderSlot = slot<ReminderV2>()
     coVerify(exactly = 1) { activateReminderUseCase(capture(reminderSlot), any()) }
-    assertEquals(Reminder.BY_DATE, reminderSlot.captured.type)
+    assertEquals(RecurrenceRule.Once, reminderSlot.captured.recurrence)
     assertEquals(true, reminderSlot.captured.isActive)
-    assertEquals("group-1", reminderSlot.captured.groupUuId)
+    assertEquals("group-1", reminderSlot.captured.groupId)
   }
 
   @Test
@@ -143,7 +145,7 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
 
     viewModel.saveNote()
 
-    val reminderSlot = slot<Reminder>()
+    val reminderSlot = slot<ReminderV2>()
     coVerify(exactly = 1) { activateReminderUseCase(capture(reminderSlot), any()) }
     assertEquals("r1", reminderSlot.captured.uuId)
   }

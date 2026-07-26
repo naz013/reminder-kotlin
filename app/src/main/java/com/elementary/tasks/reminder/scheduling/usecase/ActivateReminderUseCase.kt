@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.scheduling.usecase
 
 import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurrencesTask
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
+import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTrackingUseCase
@@ -10,8 +10,9 @@ import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePerma
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.system.SystemInfo
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.migration.toReminderV2
+import com.github.naz013.domain.reminder.migration.toReminder
+import com.github.naz013.domain.reminder.v2.LocationSettings
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.workapi.WorkScheduler
@@ -20,7 +21,7 @@ import com.github.naz013.workapi.WorkScheduler
  * Activates a reminder based on its behavior strategy.
  */
 class ActivateReminderUseCase(
-  private val behaviorStrategyResolver: BehaviorStrategyResolver,
+  private val behaviorStrategyResolver: BehaviorStrategyResolverV2,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val startLocationTrackingUseCase: StartLocationTrackingUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
@@ -32,14 +33,15 @@ class ActivateReminderUseCase(
   private val systemInfo: SystemInfo,
 ) {
   suspend operator fun invoke(
-    reminder: Reminder,
+    reminder: ReminderV2,
     startAnyway: Boolean = false,
-  ): Reminder {
+  ): ReminderV2 {
     val strategy = behaviorStrategyResolver.resolve(reminder)
 
     if (strategy.requiresBackgroundService(reminder) || !strategy.requiresTimeScheduling(reminder)) {
       if (!systemInfo.hasLocation) {
-        deleteReminderUseCase(reminder)
+        // DeleteReminderUseCase not yet ported (Phase C5) - shim.
+        deleteReminderUseCase(reminder.toReminder())
         Logger.w(TAG, "Deleting location-based reminder id=${reminder.uuId} due to missing location module.")
         return reminder
       }
@@ -49,13 +51,12 @@ class ActivateReminderUseCase(
           isActive = true,
           isRemoved = false,
           eventCount = reminder.eventCount + 1,
-          isNotificationShown = false,
-          isLocked = false,
-          syncState = SyncState.WaitingForUpload,
-          version = reminder.version + 1,
+          location = (reminder.location ?: LocationSettings()).copy(isNotificationShown = false, isLocked = false),
+          sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
         )
-      saveReminderUseCase(reminder.toReminderV2())
-      startLocationTrackingUseCase(reminder)
+      saveReminderUseCase(reminder)
+      // StartLocationTrackingUseCase not yet ported - shim.
+      startLocationTrackingUseCase(reminder.toReminder())
       return reminder
     }
 
@@ -65,17 +66,15 @@ class ActivateReminderUseCase(
           isActive = true,
           isRemoved = false,
           eventCount = reminder.eventCount + 1,
-          isNotificationShown = false,
-          isLocked = false,
-          syncState = SyncState.WaitingForUpload,
-          version = reminder.version + 1,
+          location = (reminder.location ?: LocationSettings()).copy(isNotificationShown = false, isLocked = false),
+          sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
         )
-      saveReminderUseCase(reminder.toReminderV2())
+      saveReminderUseCase(reminder)
       if (jobScheduler.scheduleGpsDelay(reminder)) {
         Logger.d(TAG, "Scheduled GPS delay for reminder id=${reminder.uuId}.")
       } else {
         Logger.d(TAG, "Starting GPS tracking immediately for reminder id=${reminder.uuId}.")
-        startLocationTrackingUseCase(reminder)
+        startLocationTrackingUseCase(reminder.toReminder())
       }
       return reminder
     }
@@ -87,25 +86,24 @@ class ActivateReminderUseCase(
           isActive = true,
           isRemoved = false,
           eventCount = reminder.eventCount + 1,
-          syncState = SyncState.WaitingForUpload,
-          version = reminder.version + 1,
+          sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
         )
-      saveReminderUseCase(reminder.toReminderV2())
+      saveReminderUseCase(reminder)
       updatePermanentReminderNotificationUseCase()
       jobScheduler.scheduleReminder(reminder)
-      saveReminderToGoogleTasksUseCase(reminder)
-      saveReminderToGoogleCalendarUseCase(reminder)
+      // Both small, pure-V1-consumer Google sync use cases - out of scope for Phase C3, shim.
+      saveReminderToGoogleTasksUseCase(reminder.toReminder())
+      saveReminderToGoogleCalendarUseCase(reminder.toReminder())
       workScheduler.enqueue(CalculateReminderOccurrencesTask.prepareWorkRequest(reminder.uuId))
       return reminder
     } else {
-      Logger.w(TAG, "Cannot start reminder id=${reminder.uuId} now, outdated eventTime=${reminder.eventTime}.")
+      Logger.w(TAG, "Cannot start reminder id=${reminder.uuId} now, outdated eventTime=${reminder.schedule.eventDateTime}.")
       val reminder =
         reminder.copy(
           isActive = false,
-          syncState = SyncState.WaitingForUpload,
-          version = reminder.version + 1,
+          sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
         )
-      saveReminderUseCase(reminder.toReminderV2())
+      saveReminderUseCase(reminder)
       return reminder
     }
   }

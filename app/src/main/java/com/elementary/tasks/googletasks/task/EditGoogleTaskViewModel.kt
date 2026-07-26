@@ -17,6 +17,7 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -343,7 +344,7 @@ class EditGoogleTaskViewModel(
     }
 
     withContext(dispatcherProvider.io()) {
-      activateReminderUseCase(reminder)
+      activateReminderUseCase(reminder.toReminderV2())
       appWidgetUpdater.updateScheduleWidget()
     }
   }
