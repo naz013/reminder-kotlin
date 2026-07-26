@@ -141,7 +141,7 @@ class ReminderActionActivityViewModel(
     Logger.i(TAG, "OK clicked for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
-      completeReminderUseCase(reminder)
+      completeReminderUseCase(reminder.toReminderV2())
       withContext(dispatcherProvider.main()) {
         event.emit(ViewModelEvent.Finish)
       }
@@ -152,7 +152,7 @@ class ReminderActionActivityViewModel(
     Logger.i(TAG, "Favorite clicked for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
-      completeReminderUseCase(reminder)
+      completeReminderUseCase(reminder.toReminderV2())
       withContext(dispatcherProvider.main()) {
         showFavouriteNotification(
           text = reminder.summary,
@@ -234,7 +234,7 @@ class ReminderActionActivityViewModel(
     Logger.i(TAG, "Snooze clicked for reminder id=$id for $timeInMinutes minutes")
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
-      snoozeReminderUseCase(reminder, timeInMinutes)
+      snoozeReminderUseCase(reminder.toReminderV2(), timeInMinutes)
       withContext(dispatcherProvider.main()) {
         event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.reminder_snoozed)))
         event.emit(ViewModelEvent.Finish)
@@ -246,7 +246,7 @@ class ReminderActionActivityViewModel(
     Logger.i(TAG, "Action button clicked for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderRepository.getById(id) ?: return@launch
-      completeReminderUseCase(reminder)
+      completeReminderUseCase(reminder.toReminderV2())
       withContext(dispatcherProvider.main()) {
         when {
           reminder.readType().hasSmsAction() -> {

@@ -2,11 +2,10 @@ package com.elementary.tasks.reminder.scheduling.usecase
 
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
-import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
+import com.elementary.tasks.reminder.scheduling.behavior.v2.LocationBasedStrategyV2
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.migration.toReminderV2
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 
@@ -22,17 +21,17 @@ import com.github.naz013.logging.Logger
  */
 class SnoozeReminderUseCase(
   private val jobScheduler: JobScheduler,
-  private val strategyResolver: BehaviorStrategyResolver,
+  private val strategyResolver: BehaviorStrategyResolverV2,
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val notifier: Notifier,
 ) {
   suspend operator fun invoke(
-    reminder: Reminder,
+    reminder: ReminderV2,
     timeInMinutes: Int,
-  ): Reminder {
+  ): ReminderV2 {
     val strategy = strategyResolver.resolve(reminder)
-    if (strategy is LocationBasedStrategy || strategy.requiresBackgroundService(reminder)) {
+    if (strategy is LocationBasedStrategyV2 || strategy.requiresBackgroundService(reminder)) {
       Logger.w(TAG, "Cannot snooze location-based reminder id=${reminder.uuId}")
       return reminder
     }
@@ -43,10 +42,10 @@ class SnoozeReminderUseCase(
     notifier.cancel(reminder.uniqueId)
     val reminder =
       reminder.copy(
-        delay = timeInMinutes,
-        syncState = SyncState.WaitingForUpload,
+        notification = reminder.notification.copy(delayMinutes = timeInMinutes),
+        sync = reminder.sync.copy(syncState = SyncState.WaitingForUpload),
       )
-    saveReminderUseCase(reminder.toReminderV2())
+    saveReminderUseCase(reminder)
     jobScheduler.scheduleReminderDelay(timeInMinutes, reminder.uuId, reminder.uniqueId)
     Logger.i(TAG, "Snoozed reminder id=${reminder.uuId} for $timeInMinutes minutes")
     return reminder

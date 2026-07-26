@@ -3,13 +3,13 @@ package com.elementary.tasks.core.services.action.reminder
 import com.elementary.tasks.core.services.JobScheduler
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class ReminderRepeatProcessor(
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val jobScheduler: JobScheduler,
   private val reminderActionProcessor: ReminderActionProcessor,
 ) {
@@ -18,7 +18,7 @@ class ReminderRepeatProcessor(
   fun process(id: String) {
     Logger.d(TAG, "process: $id")
     scope.launch {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       reminderActionProcessor.process(reminder.uuId)
       jobScheduler.scheduleReminderRepeat(reminder)
     }

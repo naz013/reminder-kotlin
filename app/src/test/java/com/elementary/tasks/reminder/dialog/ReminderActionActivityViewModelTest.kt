@@ -118,7 +118,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
       viewModel.onActionClick(ReminderAction.Complete)
 
-      coVerify(exactly = 1) { completeReminderUseCase(r) }
+      coVerify(exactly = 1) { completeReminderUseCase(match { it.uuId == r.uuId }) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
         viewModel.event.value?.peekContent(),
@@ -165,7 +165,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
       viewModel.onActionClick(ReminderAction.Snooze)
 
-      coVerify(exactly = 1) { snoozeReminderUseCase(r, 15) }
+      coVerify(exactly = 1) { snoozeReminderUseCase(match { it.uuId == r.uuId }, 15) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
         viewModel.event.value?.peekContent(),
@@ -182,7 +182,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
       viewModel.onActionClick(ReminderAction.Snooze)
 
-      coVerify(exactly = 1) { snoozeReminderUseCase(r, 30) }
+      coVerify(exactly = 1) { snoozeReminderUseCase(match { it.uuId == r.uuId }, 30) }
     }
 
   @Test
@@ -194,7 +194,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
       viewModel.onCustomSnooze(45)
 
-      coVerify(exactly = 1) { snoozeReminderUseCase(r, 45) }
+      coVerify(exactly = 1) { snoozeReminderUseCase(match { it.uuId == r.uuId }, 45) }
     }
 
   @Test
@@ -206,7 +206,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
       viewModel.onActionClick(ReminderAction.ShowNotification)
 
-      coVerify(exactly = 1) { completeReminderUseCase(r) }
+      coVerify(exactly = 1) { completeReminderUseCase(match { it.uuId == r.uuId }) }
       coVerify(exactly = 1) { notifier.notify(any(), any()) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
