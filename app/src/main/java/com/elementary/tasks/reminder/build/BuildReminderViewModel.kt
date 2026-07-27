@@ -51,7 +51,6 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
-import com.github.naz013.domain.reminder.migration.toReminder
 import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
@@ -143,7 +142,6 @@ class BuildReminderViewModel(
   private var isEdited: Boolean = false
   private var isPaused: Boolean = false
   private var isSaving: Boolean = false
-  private var original: Reminder? = null
   private var originalV2: ReminderV2? = null
   private var isFromFile: Boolean = false
 
@@ -491,7 +489,7 @@ class BuildReminderViewModel(
       Logger.logEvent("Reminder loaded from intent")
       isFromFile = true
       _state.update { it.copy(isFromFile = true) }
-      editReminder(reminderV2 = toReminderV2(), reminder = this)
+      editReminder(reminderV2 = toReminderV2())
     }
   }
 
@@ -553,27 +551,19 @@ class BuildReminderViewModel(
 
       Logger.i(TAG, "Edit reminder by ID Deep Link, id = $id")
 
-      editReminder(reminderV2 = reminderV2, reminder = reminderV2.toReminder())
+      editReminder(reminderV2 = reminderV2)
       pauseReminder(reminderV2)
     }
   }
 
-  /** [reminder] (V1) is kept as [original] for the action handlers that still operate on V1
-   * `Reminder` (delete/archive - Phase C hasn't reached them yet); [pauseReminder]/[resumeReminder]
-   * already read [originalV2] (Phase C2). [reminderV2] drives everything the user actually edits,
-   * including the save path via [BiToReminderAdapter]. */
-  private suspend fun editReminder(
-    reminderV2: ReminderV2,
-    reminder: Reminder,
-  ) {
-    Logger.i(TAG, "Edit reminder, id = ${reminder.uuId}")
+  private suspend fun editReminder(reminderV2: ReminderV2) {
+    Logger.i(TAG, "Edit reminder, id = ${reminderV2.uuId}")
 
     isEdited = true
-    original = reminder
     originalV2 = reminderV2
 
     if (isFromFile) {
-      findSame(reminder.uuId)
+      findSame(reminderV2.uuId)
     }
 
     val builderItems = reminderToBiDecomposer(reminderV2)
@@ -583,7 +573,7 @@ class BuildReminderViewModel(
     _state.update {
       it.copy(
         canRemove = !isFromFile,
-        isRemoved = reminder.isRemoved,
+        isRemoved = reminderV2.isRemoved,
       )
     }
 
@@ -953,7 +943,7 @@ class BuildReminderViewModel(
   }
 
   fun moveToTrash() {
-    val reminder = original
+    val reminder = originalV2
     if (reminder == null) {
       event.emit(ViewModelEvent.MoveBack)
       return
