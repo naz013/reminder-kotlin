@@ -1,34 +1,23 @@
 package com.elementary.tasks.workflow
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
@@ -47,10 +36,6 @@ fun WorkflowRulesForGroupScreen(
   onSaveRuleAsTemplateClick: (String) -> Unit,
   onApplyTemplateClick: (String) -> Unit,
   onCreateRuleClick: () -> Unit,
-  onCreateRuleOptionSelected: (CreateGroupRuleOption) -> Unit,
-  onCreateRuleDaysChange: (String) -> Unit,
-  onCreateRuleConfirm: () -> Unit,
-  onCreateRuleDismiss: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -116,56 +101,6 @@ fun WorkflowRulesForGroupScreen(
       }
     }
   }
-
-  if (state.isCreateRuleDialogVisible) {
-    AlertDialog(
-      onDismissRequest = onCreateRuleDismiss,
-      title = { Text(stringResource(R.string.workflow_create_custom_rule)) },
-      text = {
-        Column(modifier = Modifier.selectableGroup()) {
-          CreateGroupRuleOptionRow(
-            label = stringResource(R.string.workflow_archive_after_days_title),
-            selected = state.createRuleOption == CreateGroupRuleOption.ARCHIVE_BY_AGE,
-            onClick = { onCreateRuleOptionSelected(CreateGroupRuleOption.ARCHIVE_BY_AGE) },
-          )
-          if (state.createRuleOption == CreateGroupRuleOption.ARCHIVE_BY_AGE) {
-            OutlinedTextField(
-              value = state.createRuleDays,
-              onValueChange = onCreateRuleDaysChange,
-              label = { Text(stringResource(R.string.workflow_archive_after_days_hint)) },
-              singleLine = true,
-              modifier = Modifier.fillMaxWidth().padding(start = 40.dp, bottom = 8.dp),
-            )
-          }
-          CreateGroupRuleOptionRow(
-            label = stringResource(R.string.workflow_archive_group_on_completion_title),
-            selected = state.createRuleOption == CreateGroupRuleOption.ARCHIVE_ON_COMPLETION,
-            onClick = { onCreateRuleOptionSelected(CreateGroupRuleOption.ARCHIVE_ON_COMPLETION) },
-          )
-        }
-      },
-      confirmButton = { TextButton(onClick = onCreateRuleConfirm) { Text(stringResource(R.string.workflow_create)) } },
-      dismissButton = { TextButton(onClick = onCreateRuleDismiss) { Text(stringResource(R.string.cancel)) } },
-    )
-  }
-}
-
-@Composable
-private fun CreateGroupRuleOptionRow(
-  label: String,
-  selected: Boolean,
-  onClick: () -> Unit,
-) {
-  Row(
-    verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier
-      .fillMaxWidth()
-      .selectable(selected = selected, onClick = onClick, role = Role.RadioButton)
-      .padding(vertical = 8.dp),
-  ) {
-    RadioButton(selected = selected, onClick = null)
-    Text(text = label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 8.dp))
-  }
 }
 
 @Preview(showBackground = true)
@@ -196,10 +131,6 @@ private fun WorkflowRulesForGroupScreenPreview() {
       onSaveRuleAsTemplateClick = {},
       onApplyTemplateClick = {},
       onCreateRuleClick = {},
-      onCreateRuleOptionSelected = {},
-      onCreateRuleDaysChange = {},
-      onCreateRuleConfirm = {},
-      onCreateRuleDismiss = {},
     )
   }
 }

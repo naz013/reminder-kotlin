@@ -1,6 +1,7 @@
 package com.github.naz013.usecase.reminders
 
 import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTrigger
@@ -16,9 +17,10 @@ class CreateWorkflowRuleUseCase(
     title: String,
     scope: WorkflowScope,
     trigger: WorkflowTrigger,
+    conditions: List<WorkflowCondition> = emptyList(),
     action: WorkflowAction
   ): WorkflowRule {
-    val rule = WorkflowRule(title = title, scope = scope, trigger = trigger, action = action)
+    val rule = WorkflowRule(title = title, scope = scope, trigger = trigger, conditions = conditions, action = action)
     workflowRuleRepository.save(rule)
     return rule
   }

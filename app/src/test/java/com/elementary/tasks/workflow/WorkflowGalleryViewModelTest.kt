@@ -11,7 +11,6 @@ import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.usecase.reminders.ApplyWorkflowTemplateUseCase
-import com.github.naz013.usecase.reminders.CreateWorkflowRuleUseCase
 import com.github.naz013.usecase.reminders.GetGlobalWorkflowRulesUseCase
 import com.github.naz013.usecase.reminders.GetWorkflowTemplatesUseCase
 import com.github.naz013.usecase.reminders.SaveWorkflowRuleAsTemplateUseCase
@@ -28,7 +27,6 @@ class WorkflowGalleryViewModelTest : BaseTest() {
   private val getGlobalWorkflowRulesUseCase = mockk<GetGlobalWorkflowRulesUseCase>()
   private val getWorkflowTemplatesUseCase = mockk<GetWorkflowTemplatesUseCase>()
   private val applyWorkflowTemplateUseCase = mockk<ApplyWorkflowTemplateUseCase>(relaxed = true)
-  private val createWorkflowRuleUseCase = mockk<CreateWorkflowRuleUseCase>(relaxed = true)
   private val saveWorkflowRuleAsTemplateUseCase = mockk<SaveWorkflowRuleAsTemplateUseCase>(relaxed = true)
   private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
 
@@ -45,7 +43,6 @@ class WorkflowGalleryViewModelTest : BaseTest() {
       getGlobalWorkflowRulesUseCase = getGlobalWorkflowRulesUseCase,
       getWorkflowTemplatesUseCase = getWorkflowTemplatesUseCase,
       applyWorkflowTemplateUseCase = applyWorkflowTemplateUseCase,
-      createWorkflowRuleUseCase = createWorkflowRuleUseCase,
       saveWorkflowRuleAsTemplateUseCase = saveWorkflowRuleAsTemplateUseCase,
       workflowRuleRepository = workflowRuleRepository,
     )
@@ -132,24 +129,5 @@ class WorkflowGalleryViewModelTest : BaseTest() {
     viewModel.onApplyTemplateClick("template-1")
 
     coVerify { applyWorkflowTemplateUseCase(template, WorkflowScope.Global) }
-  }
-
-  @Test
-  fun `onCreateRuleConfirm creates a global archive-by-age rule and closes the dialog`() = runTest {
-    val viewModel = createViewModel()
-    viewModel.onCreateRuleClick()
-    viewModel.onCreateRuleDaysChange("45")
-
-    viewModel.onCreateRuleConfirm()
-
-    coVerify {
-      createWorkflowRuleUseCase(
-        title = any(),
-        scope = WorkflowScope.Global,
-        trigger = WorkflowTrigger.ReminderAgeExceeded(45),
-        action = WorkflowAction.ArchiveReminder,
-      )
-    }
-    assertFalse(viewModel.state.value.isCreateRuleDialogVisible)
   }
 }

@@ -25,6 +25,7 @@ internal data class WorkflowRuleEntity(
 
   val triggerType: String,
   val triggerPayload: String,
+  val conditionsPayload: String = "[]",
   val actionType: String,
   val actionPayload: String,
 

@@ -7,6 +7,7 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTrigger
@@ -455,6 +456,134 @@ class WorkflowEngineTest {
     val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
 
     engine(ruleRepository, reminderRepository).runUnacknowledgedRules(now)
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `does not fire a rule when a PriorityAtLeast condition is not met`() = runTest {
+    val lowPriorityReminder = ReminderV2(
+      uuId = "r1",
+      schedule = ReminderSchedule(startDateTime = now),
+      notification = NotificationSettingsOverride(priority = ReminderPriority.LOW),
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(lowPriorityReminder.uuId to lowPriorityReminder))
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.PriorityAtLeast(ReminderPriority.HIGH)),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `fires a rule when a PriorityAtLeast condition is met`() = runTest {
+    val highPriorityReminder = ReminderV2(
+      uuId = "r1",
+      schedule = ReminderSchedule(startDateTime = now),
+      notification = NotificationSettingsOverride(priority = ReminderPriority.HIGHEST),
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(highPriorityReminder.uuId to highPriorityReminder))
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.PriorityAtLeast(ReminderPriority.HIGH)),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `does not fire a rule when a GroupIs condition does not match`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now, groupId = "group-2")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.GroupIs("group-1")),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `fires a rule when the current time is within a WithinTimeWindow condition`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.WithinTimeWindow(fromMinuteOfDay = 0, toMinuteOfDay = 23 * 60 + 59)),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1", now)
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `does not fire a rule when the current time is outside a WithinTimeWindow condition`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    // `now` is midnight (00:00) - a window entirely within business hours must exclude it.
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.WithinTimeWindow(fromMinuteOfDay = 9 * 60, toMinuteOfDay = 17 * 60)),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1", now)
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `requires every condition to hold - an AND chain, not any one of them`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now, groupId = "group-1").copy(
+      notification = NotificationSettingsOverride(priority = ReminderPriority.HIGHEST)
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(
+        WorkflowCondition.PriorityAtLeast(ReminderPriority.HIGH),
+        WorkflowCondition.GroupIs("group-2"),
+      ),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
 
     assertEquals(0, reminderRepository.saved.size)
   }

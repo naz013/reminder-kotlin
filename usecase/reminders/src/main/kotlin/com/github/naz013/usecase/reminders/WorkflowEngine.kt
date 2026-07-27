@@ -1,7 +1,9 @@
 package com.github.naz013.usecase.reminders
 
+import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTrigger
@@ -30,11 +32,12 @@ data class PendingWorkflowAction(
 
 /**
  * Evaluates enabled [WorkflowRule]s against current ReminderV2/GroupV2 state and runs their
- * action for any reminder that qualifies. Each trigger gets its own `run*Rules()` method — see
- * docs/workflow-engine-research.md for the full catalog. [WorkflowAction.ArchiveReminder],
- * [WorkflowAction.ApplyNotificationOverride], and [WorkflowAction.RunBackgroundTask] are applied
- * directly; [WorkflowAction.CompleteReminder] and [WorkflowAction.ActivateReminder] are returned
- * as a [PendingWorkflowAction] for an app-module dispatcher to finish.
+ * action for any reminder that qualifies (in scope, and every one of the rule's [WorkflowCondition]s
+ * holds). Each trigger gets its own `run*Rules()` method — see docs/workflow-engine-research.md for
+ * the full catalog. [WorkflowAction.ArchiveReminder], [WorkflowAction.ApplyNotificationOverride],
+ * and [WorkflowAction.RunBackgroundTask] are applied directly; [WorkflowAction.CompleteReminder] and
+ * [WorkflowAction.ActivateReminder] are returned as a [PendingWorkflowAction] for an app-module
+ * dispatcher to finish.
  */
 class WorkflowEngine(
   private val workflowRuleRepository: WorkflowRuleRepository,
@@ -63,7 +66,7 @@ class WorkflowEngine(
       val cutoff = nowUtc.minusDays(trigger.days.toLong())
       completedReminders
         .asSequence()
-        .filter { isInScope(it, rule.scope) }
+        .filter { qualifies(it, rule, now) }
         .filter { referenceDateTime(it).isBefore(cutoff) }
         .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
     }
@@ -74,7 +77,7 @@ class WorkflowEngine(
    * active — only meaningful for rules scoped to a specific group; [WorkflowScope.Global] and
    * [WorkflowScope.ForReminder] rules of this trigger type are skipped since the trigger needs a
    * concrete group to check completion against. */
-  suspend fun runGroupCompletionRules(): List<PendingWorkflowAction> {
+  suspend fun runGroupCompletionRules(now: LocalDateTime = LocalDateTime.now()): List<PendingWorkflowAction> {
     val rules = workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_GROUP_ALL_COMPLETED)
       .filter { it.isEnabled }
 
@@ -83,27 +86,33 @@ class WorkflowEngine(
       val groupId = (rule.scope as? WorkflowScope.ForGroup)?.groupId ?: continue
       if (reminderV2Repository.countActiveByGroupId(groupId) > 0) continue
       reminderV2Repository.getByGroupId(groupId)
-        .filter { !it.isActive && !it.isRemoved }
+        .filter { !it.isActive && !it.isRemoved && matchesConditions(it, rule.conditions, now) }
         .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
     }
     return pending
   }
 
   /** Fires every enabled, in-scope [WorkflowTrigger.ReminderCompleted] rule for [reminderId]. */
-  suspend fun runReminderCompletedRules(reminderId: String): List<PendingWorkflowAction> {
+  suspend fun runReminderCompletedRules(
+    reminderId: String,
+    now: LocalDateTime = LocalDateTime.now()
+  ): List<PendingWorkflowAction> {
     val reminder = reminderV2Repository.getById(reminderId) ?: return emptyList()
     val rules = workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_REMINDER_COMPLETED)
-      .filter { it.isEnabled && isInScope(reminder, it.scope) }
+      .filter { it.isEnabled && qualifies(reminder, it, now) }
     return rules.mapNotNull { apply(it.action, reminder) }
   }
 
   /** Fires every enabled, in-scope [WorkflowTrigger.ReminderSnoozedNTimes] rule whose count
    * exactly matches [reminderId]'s current `snoozeCount` — an exact match (not `>=`) so a rule
    * fires once at the threshold snooze rather than on every subsequent snooze past it. */
-  suspend fun runSnoozeCountRules(reminderId: String): List<PendingWorkflowAction> {
+  suspend fun runSnoozeCountRules(
+    reminderId: String,
+    now: LocalDateTime = LocalDateTime.now()
+  ): List<PendingWorkflowAction> {
     val reminder = reminderV2Repository.getById(reminderId) ?: return emptyList()
     val rules = workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_REMINDER_SNOOZED_N_TIMES)
-      .filter { it.isEnabled && isInScope(reminder, it.scope) }
+      .filter { it.isEnabled && qualifies(reminder, it, now) }
       .filter { (it.trigger as? WorkflowTrigger.ReminderSnoozedNTimes)?.count?.toLong() == reminder.snoozeCount }
     return rules.mapNotNull { apply(it.action, reminder) }
   }
@@ -112,18 +121,27 @@ class WorkflowEngine(
    * [WorkflowScope.ForReminder] rules matching this exact reminder — location checks only ever
    * evaluate a reminder's own places (see `CheckLocationReminderUseCase`), so there is no
    * group/global geofence concept to fan out to yet. */
-  suspend fun runLocationEnteredRules(reminderId: String): List<PendingWorkflowAction> =
-    runLocationRules(reminderId, TRIGGER_TYPE_LOCATION_ENTERED)
+  suspend fun runLocationEnteredRules(
+    reminderId: String,
+    now: LocalDateTime = LocalDateTime.now()
+  ): List<PendingWorkflowAction> = runLocationRules(reminderId, TRIGGER_TYPE_LOCATION_ENTERED, now)
 
   /** Fires every enabled [WorkflowTrigger.LocationExited] rule for [reminderId]. Same
    * `ForReminder`-only scope restriction as [runLocationEnteredRules]. */
-  suspend fun runLocationExitedRules(reminderId: String): List<PendingWorkflowAction> =
-    runLocationRules(reminderId, TRIGGER_TYPE_LOCATION_EXITED)
+  suspend fun runLocationExitedRules(
+    reminderId: String,
+    now: LocalDateTime = LocalDateTime.now()
+  ): List<PendingWorkflowAction> = runLocationRules(reminderId, TRIGGER_TYPE_LOCATION_EXITED, now)
 
-  private suspend fun runLocationRules(reminderId: String, triggerType: String): List<PendingWorkflowAction> {
+  private suspend fun runLocationRules(
+    reminderId: String,
+    triggerType: String,
+    now: LocalDateTime
+  ): List<PendingWorkflowAction> {
     val reminder = reminderV2Repository.getById(reminderId) ?: return emptyList()
     val rules = workflowRuleRepository.getByTriggerType(triggerType)
       .filter { it.isEnabled && (it.scope as? WorkflowScope.ForReminder)?.reminderId == reminderId }
+      .filter { matchesConditions(reminder, it.conditions, now) }
     return rules.mapNotNull { apply(it.action, reminder) }
   }
 
@@ -145,7 +163,7 @@ class WorkflowEngine(
       val trigger = rule.trigger as? WorkflowTrigger.ReminderUnacknowledgedFor ?: continue
       shownReminders
         .asSequence()
-        .filter { isInScope(it, rule.scope) }
+        .filter { qualifies(it, rule, now) }
         .filter { reminder -> !reminder.lastShownAt!!.plusMinutes(trigger.minutes.toLong()).isAfter(nowUtc) }
         .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
     }
@@ -160,6 +178,30 @@ class WorkflowEngine(
     is WorkflowScope.ForGroup -> reminder.groupId == scope.groupId
     is WorkflowScope.ForReminder -> reminder.uuId == scope.reminderId
   }
+
+  /** Whether [reminder] is both in [WorkflowRule.scope] and passes every one of its
+   * [WorkflowRule.conditions] (an AND-chain). */
+  private fun qualifies(reminder: ReminderV2, rule: WorkflowRule, now: LocalDateTime): Boolean =
+    isInScope(reminder, rule.scope) && matchesConditions(reminder, rule.conditions, now)
+
+  private fun matchesConditions(reminder: ReminderV2, conditions: List<WorkflowCondition>, now: LocalDateTime): Boolean =
+    conditions.all { condition ->
+      when (condition) {
+        is WorkflowCondition.PriorityAtLeast ->
+          (reminder.notification.priority ?: ReminderPriority.NORMAL).ordinal >= condition.priority.ordinal
+
+        is WorkflowCondition.WithinTimeWindow -> {
+          val minuteOfDay = now.hour * 60 + now.minute
+          if (condition.fromMinuteOfDay <= condition.toMinuteOfDay) {
+            minuteOfDay in condition.fromMinuteOfDay until condition.toMinuteOfDay
+          } else {
+            minuteOfDay >= condition.fromMinuteOfDay || minuteOfDay < condition.toMinuteOfDay
+          }
+        }
+
+        is WorkflowCondition.GroupIs -> reminder.groupId == condition.groupId
+      }
+    }
 
   private suspend fun apply(action: WorkflowAction, reminder: ReminderV2): PendingWorkflowAction? =
     when (action) {

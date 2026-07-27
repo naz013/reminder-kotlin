@@ -1,8 +1,10 @@
 package com.github.naz013.repository.entity
 
 import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 /**
  * Shared trigger/action (type, payload) encoding, reused by both [WorkflowRuleMapper] and
@@ -47,3 +49,29 @@ internal fun toWorkflowAction(type: String, payload: String): WorkflowAction = w
   "RUN_BACKGROUND_TASK" -> workflowGson.fromJson(payload, WorkflowAction.RunBackgroundTask::class.java)
   else -> WorkflowAction.ArchiveReminder
 }
+
+private data class ConditionColumns(val type: String, val payload: String)
+
+private fun WorkflowCondition.toColumns(): ConditionColumns = when (this) {
+  is WorkflowCondition.PriorityAtLeast -> ConditionColumns("PRIORITY_AT_LEAST", workflowGson.toJson(this))
+  is WorkflowCondition.WithinTimeWindow -> ConditionColumns("WITHIN_TIME_WINDOW", workflowGson.toJson(this))
+  is WorkflowCondition.GroupIs -> ConditionColumns("GROUP_IS", workflowGson.toJson(this))
+}
+
+private fun toWorkflowCondition(columns: ConditionColumns): WorkflowCondition? = when (columns.type) {
+  "PRIORITY_AT_LEAST" -> workflowGson.fromJson(columns.payload, WorkflowCondition.PriorityAtLeast::class.java)
+  "WITHIN_TIME_WINDOW" -> workflowGson.fromJson(columns.payload, WorkflowCondition.WithinTimeWindow::class.java)
+  "GROUP_IS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.GroupIs::class.java)
+  else -> null
+}
+
+private val conditionColumnsListType = object : TypeToken<List<ConditionColumns>>() {}.type
+
+internal fun List<WorkflowCondition>.toConditionsPayload(): String =
+  workflowGson.toJson(map { it.toColumns() })
+
+internal fun String.toWorkflowConditions(): List<WorkflowCondition> =
+  runCatching { workflowGson.fromJson<List<ConditionColumns>>(this, conditionColumnsListType) }
+    .getOrNull()
+    .orEmpty()
+    .mapNotNull { toWorkflowCondition(it) }

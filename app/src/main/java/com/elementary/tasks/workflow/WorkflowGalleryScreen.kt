@@ -6,15 +6,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -39,9 +36,6 @@ fun WorkflowGalleryScreen(
   onSaveRuleAsTemplateClick: (String) -> Unit,
   onApplyTemplateClick: (String) -> Unit,
   onCreateRuleClick: () -> Unit,
-  onCreateRuleDaysChange: (String) -> Unit,
-  onCreateRuleConfirm: () -> Unit,
-  onCreateRuleDismiss: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -107,23 +101,6 @@ fun WorkflowGalleryScreen(
       }
     }
   }
-
-  if (state.isCreateRuleDialogVisible) {
-    AlertDialog(
-      onDismissRequest = onCreateRuleDismiss,
-      title = { Text(stringResource(R.string.workflow_archive_after_days_title)) },
-      text = {
-        OutlinedTextField(
-          value = state.createRuleDays,
-          onValueChange = onCreateRuleDaysChange,
-          label = { Text(stringResource(R.string.workflow_archive_after_days_hint)) },
-          singleLine = true,
-        )
-      },
-      confirmButton = { TextButton(onClick = onCreateRuleConfirm) { Text(stringResource(R.string.workflow_create)) } },
-      dismissButton = { TextButton(onClick = onCreateRuleDismiss) { Text(stringResource(R.string.cancel)) } },
-    )
-  }
 }
 
 @Preview(showBackground = true)
@@ -154,9 +131,6 @@ private fun WorkflowGalleryScreenPreview() {
       onSaveRuleAsTemplateClick = {},
       onApplyTemplateClick = {},
       onCreateRuleClick = {},
-      onCreateRuleDaysChange = {},
-      onCreateRuleConfirm = {},
-      onCreateRuleDismiss = {},
     )
   }
 }

@@ -4,6 +4,7 @@ import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTrigger
@@ -66,5 +67,41 @@ class WorkflowRuleMapperTest {
     val roundTripped = rule.toEntity().toDomain()
 
     assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a rule with multiple conditions`() {
+    val rule = WorkflowRule(
+      uuId = "rule-4",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(
+        WorkflowCondition.PriorityAtLeast(ReminderPriority.HIGH),
+        WorkflowCondition.WithinTimeWindow(fromMinuteOfDay = 8 * 60, toMinuteOfDay = 22 * 60),
+        WorkflowCondition.GroupIs(groupId = "group-1")
+      ),
+      action = WorkflowAction.ArchiveReminder,
+      createdAt = LocalDateTime.of(2026, 6, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a rule with no conditions`() {
+    val rule = WorkflowRule(
+      uuId = "rule-5",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.ArchiveReminder,
+      createdAt = LocalDateTime.of(2026, 6, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+    assertEquals(emptyList<WorkflowCondition>(), roundTripped.conditions)
   }
 }

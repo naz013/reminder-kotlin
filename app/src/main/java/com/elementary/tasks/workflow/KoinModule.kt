@@ -1,5 +1,7 @@
 package com.elementary.tasks.workflow
 
+import com.elementary.tasks.workflow.builder.WorkflowRuleBuilderViewModel
+import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
@@ -18,6 +20,9 @@ val workflowModule = module {
 
   viewModelOf(::WorkflowGalleryViewModel)
   viewModel { (groupId: String) ->
-    WorkflowRulesForGroupViewModel(groupId, get(), get(), get(), get(), get(), get(), get())
+    WorkflowRulesForGroupViewModel(groupId, get(), get(), get(), get(), get(), get())
+  }
+  viewModel { (scopeType: WorkflowScopeType, scopeId: String?, editingRuleId: String?) ->
+    WorkflowRuleBuilderViewModel(scopeType, scopeId, editingRuleId, get(), get(), get(), get(), get())
   }
 }

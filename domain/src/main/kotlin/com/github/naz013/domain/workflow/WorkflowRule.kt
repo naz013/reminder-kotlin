@@ -10,6 +10,7 @@ data class WorkflowRule(
   val templateId: String? = null,
   val scope: WorkflowScope = WorkflowScope.Global,
   val trigger: WorkflowTrigger,
+  val conditions: List<WorkflowCondition> = emptyList(),
   val action: WorkflowAction,
   val isEnabled: Boolean = true,
   val createdAt: LocalDateTime = LocalDateTime.now(),

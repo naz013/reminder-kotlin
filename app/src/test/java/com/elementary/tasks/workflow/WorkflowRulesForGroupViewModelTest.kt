@@ -9,7 +9,6 @@ import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.usecase.reminders.ApplyWorkflowTemplateUseCase
-import com.github.naz013.usecase.reminders.CreateWorkflowRuleUseCase
 import com.github.naz013.usecase.reminders.GetWorkflowRulesForGroupUseCase
 import com.github.naz013.usecase.reminders.GetWorkflowTemplatesUseCase
 import com.github.naz013.usecase.reminders.SaveWorkflowRuleAsTemplateUseCase
@@ -17,7 +16,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 
@@ -26,7 +24,6 @@ class WorkflowRulesForGroupViewModelTest : BaseTest() {
   private val getWorkflowRulesForGroupUseCase = mockk<GetWorkflowRulesForGroupUseCase>()
   private val getWorkflowTemplatesUseCase = mockk<GetWorkflowTemplatesUseCase>()
   private val applyWorkflowTemplateUseCase = mockk<ApplyWorkflowTemplateUseCase>(relaxed = true)
-  private val createWorkflowRuleUseCase = mockk<CreateWorkflowRuleUseCase>(relaxed = true)
   private val saveWorkflowRuleAsTemplateUseCase = mockk<SaveWorkflowRuleAsTemplateUseCase>(relaxed = true)
   private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
 
@@ -44,7 +41,6 @@ class WorkflowRulesForGroupViewModelTest : BaseTest() {
       getWorkflowRulesForGroupUseCase = getWorkflowRulesForGroupUseCase,
       getWorkflowTemplatesUseCase = getWorkflowTemplatesUseCase,
       applyWorkflowTemplateUseCase = applyWorkflowTemplateUseCase,
-      createWorkflowRuleUseCase = createWorkflowRuleUseCase,
       saveWorkflowRuleAsTemplateUseCase = saveWorkflowRuleAsTemplateUseCase,
       workflowRuleRepository = workflowRuleRepository,
     )
@@ -62,45 +58,6 @@ class WorkflowRulesForGroupViewModelTest : BaseTest() {
     viewModel.onApplyTemplateClick("template-1")
 
     coVerify { applyWorkflowTemplateUseCase(template, WorkflowScope.ForGroup(groupId)) }
-  }
-
-  @Test
-  fun `onCreateRuleConfirm with the archive-by-age option creates a scoped age rule`() = runTest {
-    val viewModel = createViewModel()
-    viewModel.onCreateRuleClick()
-    viewModel.onCreateRuleOptionSelected(CreateGroupRuleOption.ARCHIVE_BY_AGE)
-    viewModel.onCreateRuleDaysChange("14")
-
-    viewModel.onCreateRuleConfirm()
-
-    coVerify {
-      createWorkflowRuleUseCase(
-        title = any(),
-        scope = WorkflowScope.ForGroup(groupId),
-        trigger = WorkflowTrigger.ReminderAgeExceeded(14),
-        action = WorkflowAction.ArchiveReminder,
-      )
-    }
-    assertFalse(viewModel.state.value.isCreateRuleDialogVisible)
-  }
-
-  @Test
-  fun `onCreateRuleConfirm with the archive-on-completion option creates a group-completion rule`() = runTest {
-    val viewModel = createViewModel()
-    viewModel.onCreateRuleClick()
-    viewModel.onCreateRuleOptionSelected(CreateGroupRuleOption.ARCHIVE_ON_COMPLETION)
-
-    viewModel.onCreateRuleConfirm()
-
-    coVerify {
-      createWorkflowRuleUseCase(
-        title = any(),
-        scope = WorkflowScope.ForGroup(groupId),
-        trigger = WorkflowTrigger.GroupAllCompleted,
-        action = WorkflowAction.ArchiveReminder,
-      )
-    }
-    assertFalse(viewModel.state.value.isCreateRuleDialogVisible)
   }
 
   @Test
