@@ -18,7 +18,6 @@ import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -28,7 +27,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -45,7 +44,7 @@ import org.threeten.bp.LocalDate
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class EventsViewModel(
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase,
   private val groupV2Repository: GroupV2Repository,
   private val birthdayRepository: BirthdayRepository,
@@ -206,7 +205,7 @@ class EventsViewModel(
 
   fun toggleReminder(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val item = reminderRepository.getById(id) ?: return@launch
+      val item = reminderV2Repository.getById(id) ?: return@launch
       toggleReminderStateUseCase(item)
       refresh()
     }
@@ -251,9 +250,9 @@ class EventsViewModel(
 
   fun skipReminder(id: String) {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val fromDb = reminderRepository.getById(id)
+      val fromDb = reminderV2Repository.getById(id)
       if (fromDb != null) {
-        skipReminderUseCase(fromDb.toReminderV2())
+        skipReminderUseCase(fromDb)
         refresh()
       }
     }
@@ -268,7 +267,7 @@ class EventsViewModel(
 
   fun deleteReminder(id: String) {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val fromDb = reminderRepository.getById(id)
+      val fromDb = reminderV2Repository.getById(id)
       if (fromDb != null) {
         deleteReminderUseCase(fromDb)
         refresh()

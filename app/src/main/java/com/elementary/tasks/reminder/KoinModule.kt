@@ -161,7 +161,6 @@ val reminderModule =
         get(),
         get(),
         get(),
-        get(),
         get()
       )
     }
@@ -169,6 +168,8 @@ val reminderModule =
     viewModel { (id: String) ->
       PreviewReminderViewModel(
         id,
+        get(),
+        get(),
         get(),
         get(),
         get(),

@@ -76,7 +76,10 @@ class DeveloperViewModelTest : BaseTest() {
     every { dateTimeManager.getGmtFromDateTime(any<LocalDateTime>()) } returns "gmt"
     every { dateTimeManager.formatBirthdayDate(any()) } returns "1990-01-01"
     every { dateTimeManager.getNowGmtDateTime() } returns "now"
+    every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
+    every { dateTimeManager.getCurrentDateTime() } returns LocalDateTime.now()
     coEvery { reminderGroupRepository.defaultGroup() } returns null
+    coEvery { groupV2Repository.defaultGroup() } returns null
     every { buildInfo.isPro } returns true
     every { prefs.isUserLogged = any() } just Runs
     every { prefs.lastVersionCode = any() } just Runs
@@ -200,7 +203,7 @@ class DeveloperViewModelTest : BaseTest() {
     runTest {
       viewModel.onInsertDemoDataClick()
 
-      coVerify(exactly = 6) { reminderRepository.save(any()) }
+      coVerify(exactly = 6) { reminderV2Repository.save(any()) }
       coVerify(exactly = 4) { birthdayRepository.save(any()) }
       coVerify(exactly = 5) { noteRepository.save(any<Note>()) }
       val event =
@@ -232,7 +235,7 @@ class DeveloperViewModelTest : BaseTest() {
 
       viewModel.onDialogConfirm()
 
-      coVerify { reminderRepository.save(any()) }
+      coVerify { reminderV2Repository.save(any()) }
       assertNull(viewModel.state.value.dialog)
       val event =
         viewModel.navigationEvent.getOrAwaitValue()?.getContentIfNotHandled()

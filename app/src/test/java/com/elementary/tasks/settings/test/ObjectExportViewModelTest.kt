@@ -12,15 +12,16 @@ import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -29,17 +30,18 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 import java.io.OutputStream
 
 class ObjectExportViewModelTest : BaseTest() {
   private val contextProvider = mockk<ContextProvider>()
   private val context = mockk<Context>()
   private val contentResolver = mockk<ContentResolver>()
-  private val reminderRepository = mockk<ReminderRepository>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val noteRepository = mockk<NoteRepository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val placeRepository = mockk<PlaceRepository>()
-  private val reminderGroupRepository = mockk<ReminderGroupRepository>()
+  private val groupV2Repository = mockk<GroupV2Repository>()
   private val memoryUtil = mockk<MemoryUtil>()
   private val noteToOldNoteConverter = mockk<NoteToOldNoteConverter>()
 
@@ -50,7 +52,7 @@ class ObjectExportViewModelTest : BaseTest() {
     super.setUp()
     every { context.contentResolver } returns contentResolver
     every { contextProvider.context } returns context
-    coEvery { reminderRepository.getAll() } returns emptyList()
+    coEvery { reminderV2Repository.getAll() } returns emptyList()
 
     viewModel = newViewModel()
   }
@@ -59,19 +61,22 @@ class ObjectExportViewModelTest : BaseTest() {
     ObjectExportViewModel(
       dispatcherProvider = mockDispatcherProvider(),
       contextProvider = contextProvider,
-      reminderRepository = reminderRepository,
+      reminderV2Repository = reminderV2Repository,
       noteRepository = noteRepository,
       birthdayRepository = birthdayRepository,
       placeRepository = placeRepository,
-      reminderGroupRepository = reminderGroupRepository,
+      groupV2Repository = groupV2Repository,
       memoryUtil = memoryUtil,
       noteToOldNoteConverter = noteToOldNoteConverter,
     )
 
+  private fun reminder(summary: String) =
+    ReminderV2(summary = summary, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
+
   @Test
   fun `loads reminder items by default on creation`() {
-    val reminder = Reminder(summary = "Buy milk")
-    coEvery { reminderRepository.getAll() } returns listOf(reminder)
+    val reminder = reminder("Buy milk")
+    coEvery { reminderV2Repository.getAll() } returns listOf(reminder)
 
     val vm = newViewModel()
 
@@ -118,16 +123,8 @@ class ObjectExportViewModelTest : BaseTest() {
 
   @Test
   fun `onObjectTypeSelected Group reloads items from the group repository`() {
-    val group =
-      ReminderGroup(
-        groupTitle = "Work",
-        groupUuId = "g1",
-        groupColor = 0,
-        groupDateTime = "",
-        isDefaultGroup = false,
-        syncState = SyncState.Synced,
-      )
-    coEvery { reminderGroupRepository.getAll() } returns listOf(group)
+    val group = GroupV2(uuId = "g1", title = "Work", createdAt = LocalDateTime.now())
+    coEvery { groupV2Repository.getAll() } returns listOf(group)
 
     viewModel.onObjectTypeSelected(ObjectExportType.Group)
 
@@ -164,7 +161,7 @@ class ObjectExportViewModelTest : BaseTest() {
   @Test
   fun `onSaveLocationPicked does not emit when the object is missing`() =
     runTest {
-      coEvery { reminderRepository.getById("missing") } returns null
+      coEvery { reminderV2Repository.getById("missing") } returns null
 
       viewModel.onSaveLocationPicked("missing", mockk<Uri>())
 
@@ -174,8 +171,8 @@ class ObjectExportViewModelTest : BaseTest() {
   @Test
   fun `onSaveLocationPicked does not emit when the output stream cannot be opened`() =
     runTest {
-      val reminder = Reminder(summary = "Buy milk")
-      coEvery { reminderRepository.getById(reminder.uuId) } returns reminder
+      val reminder = reminder("Buy milk")
+      coEvery { reminderV2Repository.getById(reminder.uuId) } returns reminder
       val uri = mockk<Uri>()
       every { contentResolver.openOutputStream(uri) } returns null
 
@@ -187,8 +184,8 @@ class ObjectExportViewModelTest : BaseTest() {
   @Test
   fun `onSaveLocationPicked saves a non-note object and emits ObjectSaved`() =
     runTest {
-      val reminder = Reminder(summary = "Buy milk")
-      coEvery { reminderRepository.getById(reminder.uuId) } returns reminder
+      val reminder = reminder("Buy milk")
+      coEvery { reminderV2Repository.getById(reminder.uuId) } returns reminder
       val uri = mockk<Uri>()
       val outputStream = mockk<OutputStream>(relaxed = true)
       every { contentResolver.openOutputStream(uri) } returns outputStream
@@ -202,8 +199,8 @@ class ObjectExportViewModelTest : BaseTest() {
   @Test
   fun `onSaveLocationPicked does not emit when saving the stream fails`() =
     runTest {
-      val reminder = Reminder(summary = "Buy milk")
-      coEvery { reminderRepository.getById(reminder.uuId) } returns reminder
+      val reminder = reminder("Buy milk")
+      coEvery { reminderV2Repository.getById(reminder.uuId) } returns reminder
       val uri = mockk<Uri>()
       val outputStream = mockk<OutputStream>(relaxed = true)
       every { contentResolver.openOutputStream(uri) } returns outputStream

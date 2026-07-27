@@ -21,13 +21,14 @@ import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -41,6 +42,7 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
@@ -56,6 +58,7 @@ import java.util.UUID
 class PreviewReminderViewModel(
   private val id: String,
   private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val dispatcherProvider: DispatcherProvider,
@@ -77,6 +80,7 @@ class PreviewReminderViewModel(
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
+  private val saveReminderUseCase: SaveReminderUseCase,
   private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
@@ -123,7 +127,7 @@ class PreviewReminderViewModel(
   fun onToggleClick() {
     viewModelScope.launch(dispatcherProvider.main()) {
       val reminder = withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)
+        reminderV2Repository.getById(id)
       } ?: run {
         event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.error_reminder_not_found)))
         event.emit(ViewModelEvent.MoveBack)
@@ -149,10 +153,10 @@ class PreviewReminderViewModel(
   fun onSubTaskRemoved(subTaskId: String) {
     viewModelScope.launch(dispatcherProvider.main()) {
       val reminder = withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)
+        reminderV2Repository.getById(id)
       } ?: return@launch
       val subTasks = withContext(dispatcherProvider.default()) {
-        reminder.shoppings.toMutableList().let { list ->
+        reminder.shoppingItems.toMutableList().let { list ->
           val index = list.indexOfFirst { subtask -> subtask.uuId == subTaskId }
           if (index != -1) {
             list.removeAt(index)
@@ -162,18 +166,19 @@ class PreviewReminderViewModel(
         }
 
       }
-      saveReminder(reminder.copy(shoppings = subTasks.toList()))
+      saveReminder(reminder.copy(shoppingItems = subTasks.toList()))
     }
   }
 
   fun onSubTaskChecked(subTaskId: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
-      val subTasks = reminder.shoppings
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
+      val subTasks = reminder.shoppingItems
       val index = subTasks.indexOfFirst { it.uuId == subTaskId }
       if (index != -1) {
-        subTasks[index].isChecked = !subTasks[index].isChecked
-        saveReminder(reminder.copy(shoppings = subTasks.toList()))
+        val updated = subTasks.toMutableList()
+        updated[index] = updated[index].copy(isChecked = !updated[index].isChecked)
+        saveReminder(reminder.copy(shoppingItems = updated.toList()))
       }
     }
   }
@@ -192,33 +197,33 @@ class PreviewReminderViewModel(
   fun copyReminder(time: LocalTime) {
     Logger.i(TAG, "Copying reminder, id: $id, time: $time")
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
 
-      if (reminder.groupUuId == "") {
-        val group = groupV2Repository.defaultGroup()
-        if (group != null) {
-          reminder.groupColor = group.color
-          reminder.groupTitle = group.title
-          reminder.groupUuId = group.uuId
+      val groupId =
+        if (reminder.groupId.isNullOrEmpty()) {
+          groupV2Repository.defaultGroup()?.uuId ?: reminder.groupId
+        } else {
+          reminder.groupId
         }
-      }
-      val newItem =
-        reminder.copy().apply {
-          this.uuId = UUID.randomUUID().toString()
-        }
-      newItem.summary = textProvider.getText(R.string.copy_of, reminder.summary)
 
       val date =
-        dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
+        reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }?.toLocalDate()
           ?: LocalDate.now()
       var dateTime = LocalDateTime.of(date, time)
 
       while (dateTime < LocalDateTime.now()) {
         dateTime = dateTime.plusDays(1)
       }
-      newItem.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
-      newItem.startTime = dateTimeManager.getGmtFromDateTime(dateTime)
-      activateReminderUseCase(newItem.toReminderV2())
+      val eventDateTime = dateTimeManager.localToUtc(dateTime)
+
+      val newItem =
+        reminder.copy(
+          uuId = UUID.randomUUID().toString(),
+          groupId = groupId,
+          summary = textProvider.getText(R.string.copy_of, reminder.summary),
+          schedule = ReminderSchedule(startDateTime = eventDateTime, eventDateTime = eventDateTime),
+        )
+      activateReminderUseCase(newItem)
     }
   }
 
@@ -257,7 +262,7 @@ class PreviewReminderViewModel(
   private fun deleteReminder() {
     Logger.i(TAG, "Deleting reminder, id: $id")
     viewModelScope.launch(dispatcherProvider.io()) {
-      reminderRepository.getById(id)?.also { reminder ->
+      reminderV2Repository.getById(id)?.also { reminder ->
         deleteReminderUseCase(reminder)
         withContext(dispatcherProvider.main()) {
           event.emit(ViewModelEvent.MoveBack)
@@ -276,11 +281,11 @@ class PreviewReminderViewModel(
     }
   }
 
-  private fun saveReminder(reminder: Reminder) {
+  private fun saveReminder(reminder: ReminderV2) {
     Logger.i(TAG, "Saving reminder, id: ${reminder.uuId}")
     viewModelScope.launch(dispatcherProvider.main()) {
       withContext(dispatcherProvider.io()) {
-        reminderRepository.save(reminder)
+        saveReminderUseCase(reminder)
       }
       load()
     }

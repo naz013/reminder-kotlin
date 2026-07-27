@@ -8,12 +8,10 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderListState
 import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,7 +26,7 @@ import org.junit.Test
 import org.threeten.bp.LocalDateTime
 
 class RemindersArchiveViewModelTest : BaseTest() {
-  private val reminderRepository = mockk<ReminderRepository>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val getRemindersV2ByRemovedStatusUseCase = mockk<GetRemindersV2ByRemovedStatusUseCase>()
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val uiReminderListAdapter = mockk<UiReminderListAdapter>()
@@ -48,7 +46,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
 
     viewModel =
       RemindersArchiveViewModel(
-        reminderRepository = reminderRepository,
+        reminderV2Repository = reminderV2Repository,
         getRemindersV2ByRemovedStatusUseCase = getRemindersV2ByRemovedStatusUseCase,
         groupV2Repository = groupV2Repository,
         dispatcherProvider = mockDispatcherProvider(),
@@ -57,11 +55,6 @@ class RemindersArchiveViewModelTest : BaseTest() {
         deleteAllReminderUseCase = deleteAllReminderUseCase,
       )
   }
-
-  private fun reminder(
-    id: String,
-    summary: String = "",
-  ) = Reminder(uuId = id, summary = summary, syncState = SyncState.Synced)
 
   private fun reminderV2(
     id: String,
@@ -158,8 +151,8 @@ class RemindersArchiveViewModelTest : BaseTest() {
   @Test
   fun `deleteReminder deletes the found reminder and reloads the archive`() =
     runTest {
-      val target = reminder("1")
-      coEvery { reminderRepository.getById("1") } returns target
+      val target = reminderV2("1")
+      coEvery { reminderV2Repository.getById("1") } returns target
       coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns listOf(reminderV2("1"))
 
       viewModel.deleteReminder("1")
@@ -171,7 +164,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
   @Test
   fun `deleteReminder does nothing when the reminder is not found`() =
     runTest {
-      coEvery { reminderRepository.getById("missing") } returns null
+      coEvery { reminderV2Repository.getById("missing") } returns null
 
       viewModel.deleteReminder("missing")
 
@@ -180,18 +173,17 @@ class RemindersArchiveViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deleteAll re-fetches the V1 reminders by id, deletes them, reloads and emits ArchiveEmptied`() =
+  fun `deleteAll re-fetches the reminders by id, deletes them, reloads and emits ArchiveEmptied`() =
     runTest {
       val remindersV2 = listOf(reminderV2("1"), reminderV2("2"))
-      val remindersV1 = listOf(reminder("1"), reminder("2"))
       coEvery { getRemindersV2ByRemovedStatusUseCase(removed = true) } returns remindersV2
-      coEvery { reminderRepository.getById("1") } returns remindersV1[0]
-      coEvery { reminderRepository.getById("2") } returns remindersV1[1]
+      coEvery { reminderV2Repository.getById("1") } returns remindersV2[0]
+      coEvery { reminderV2Repository.getById("2") } returns remindersV2[1]
       viewModel.state.first()
 
       viewModel.deleteAll()
 
-      coVerify(exactly = 1) { deleteAllReminderUseCase(remindersV1) }
+      coVerify(exactly = 1) { deleteAllReminderUseCase(remindersV2) }
       coVerify(exactly = 2) { getRemindersV2ByRemovedStatusUseCase(removed = true) }
       val event = viewModel.event.value?.peekContent()
       assertEquals(RemindersArchiveViewModel.NavigationEvent.ArchiveEmptied, event)

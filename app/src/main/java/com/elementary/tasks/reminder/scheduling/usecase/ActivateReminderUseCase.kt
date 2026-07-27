@@ -40,8 +40,7 @@ class ActivateReminderUseCase(
 
     if (strategy.requiresBackgroundService(reminder) || !strategy.requiresTimeScheduling(reminder)) {
       if (!systemInfo.hasLocation) {
-        // DeleteReminderUseCase not yet ported (Phase C5) - shim.
-        deleteReminderUseCase(reminder.toReminder())
+        deleteReminderUseCase(reminder)
         Logger.w(TAG, "Deleting location-based reminder id=${reminder.uuId} due to missing location module.")
         return reminder
       }

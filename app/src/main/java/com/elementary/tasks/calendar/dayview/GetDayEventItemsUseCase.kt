@@ -10,11 +10,14 @@ import com.elementary.tasks.home.eventsview.UiEventReminder
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.history.EventHistoricalRecordType
 import com.github.naz013.domain.occurance.OccurrenceType
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.BirthdayRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
@@ -28,21 +31,23 @@ class GetDayEventItemsUseCase(
   private val getOccurrencesByDayUseCase: GetOccurrencesByDayUseCase,
   private val getHistoryByDayUseCase: GetHistoryByDayUseCase,
   private val birthdayRepository: BirthdayRepository,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val groupV2Repository: GroupV2Repository,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val dateTimeManager: DateTimeManager,
 ) {
   suspend operator fun invoke(date: LocalDate): List<UiEventItem> {
     val birthdays = birthdayRepository.getAll().associateBy { it.uuId }
-    val reminders = reminderRepository.getActive().associateBy { it.uuId }
+    val reminders = reminderV2Repository.getAll(active = true, removed = false).associateBy { it.uuId }
+    val groupsById = groupV2Repository.getAll().associateBy { it.uuId }
 
     val occurrences =
       getOccurrencesByDayUseCase(date).mapNotNull {
         val dateTime = LocalDateTime.of(it.date, it.time)
         when (it.type) {
           OccurrenceType.Birthday -> birthdays[it.eventId]?.let { birthday -> toUiEventBirthday(birthday, dateTime) }
-          OccurrenceType.Reminder -> reminders[it.eventId]?.let { reminder -> toUiEventReminder(reminder, dateTime) }
+          OccurrenceType.Reminder -> reminders[it.eventId]?.let { reminder -> toUiEventReminder(reminder, dateTime, groupsById) }
           else -> null
         }
       }
@@ -52,7 +57,7 @@ class GetDayEventItemsUseCase(
         val dateTime = LocalDateTime.of(record.date, record.time)
         when (record.type) {
           EventHistoricalRecordType.Birthday -> birthdays[record.eventId]?.let { toUiEventBirthday(it, dateTime) }
-          EventHistoricalRecordType.Reminder -> reminders[record.eventId]?.let { toUiEventReminder(it, dateTime) }
+          EventHistoricalRecordType.Reminder -> reminders[record.eventId]?.let { toUiEventReminder(it, dateTime, groupsById) }
           else -> null
         }
       }
@@ -61,15 +66,16 @@ class GetDayEventItemsUseCase(
   }
 
   private fun toUiEventReminder(
-    reminder: Reminder,
+    reminder: ReminderV2,
     dateTime: LocalDateTime,
+    groupsById: Map<String, GroupV2>,
   ): UiEventReminder {
-    reminder.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
-    val uiReminderList = uiReminderListAdapter.create(reminder)
+    val projected = reminder.copy(schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.localToUtc(dateTime)))
+    val uiReminderList = uiReminderListAdapter.createV2(projected, projected.groupId?.let { groupsById[it] })
     return UiEventReminder(
       id = uiReminderList.id,
       dateTime = dateTime,
-      category = if (reminder.type == Reminder.BY_DATE_SHOP) EventCategory.SHOPPING else EventCategory.REMINDERS,
+      category = if (reminder.action is ReminderAction.Shopping) EventCategory.SHOPPING else EventCategory.REMINDERS,
       mainText = uiReminderList.mainText,
       secondaryText = uiReminderList.secondaryText,
       tertiaryText = uiReminderList.tertiaryText,

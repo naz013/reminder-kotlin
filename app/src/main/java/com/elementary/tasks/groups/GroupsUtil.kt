@@ -101,11 +101,4 @@ class GroupsUtil(
   }
 
   private fun getGroupId(index: Int): String = "default_group_$index"
-
-  suspend fun mapAll(): Map<String, ReminderGroup> {
-    val list = reminderGroupRepository.getAll()
-    val map = mutableMapOf<String, ReminderGroup>()
-    for (group in list) map[group.groupUuId] = group
-    return map
-  }
 }

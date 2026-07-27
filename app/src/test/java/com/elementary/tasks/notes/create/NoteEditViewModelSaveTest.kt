@@ -5,10 +5,10 @@ import com.elementary.tasks.R
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
@@ -136,10 +136,18 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
     coEvery { noteRepository.getById("42") } returns noteWithImages
     every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
-    val existingReminder = Reminder(uuId = "r1", noteId = "42", isActive = true, isRemoved = false, eventTime = "2026-07-01 09:00:00.000+0000")
-    coEvery { reminderRepository.getByNoteKey("42") } returns listOf(existingReminder)
-    every { dateTimeManager.fromGmtToLocal(existingReminder.eventTime) } returns LocalDateTime.of(2026, 7, 1, 9, 0)
-    coEvery { reminderRepository.getById("r1") } returns existingReminder
+    val existingReminder = ReminderV2(
+      uuId = "r1",
+      noteId = "42",
+      isActive = true,
+      isRemoved = false,
+      schedule = ReminderSchedule(
+        startDateTime = LocalDateTime.of(2026, 7, 1, 9, 0),
+        eventDateTime = LocalDateTime.of(2026, 7, 1, 9, 0),
+      ),
+    )
+    coEvery { reminderV2Repository.getByNoteId("42") } returns listOf(existingReminder)
+    coEvery { reminderV2Repository.getById("r1") } returns existingReminder
     coEvery { groupV2Repository.defaultGroup() } returns defaultGroup()
     val viewModel = buildViewModel(id = "42")
 
@@ -155,9 +163,15 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
     coEvery { noteRepository.getById("42") } returns noteWithImages
     every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
-    val existingReminder = Reminder(uuId = "r1", noteId = "42", isActive = true, isRemoved = false)
-    coEvery { reminderRepository.getByNoteKey("42") } returns listOf(existingReminder)
-    coEvery { reminderRepository.getById("r1") } returns existingReminder
+    val existingReminder = ReminderV2(
+      uuId = "r1",
+      noteId = "42",
+      isActive = true,
+      isRemoved = false,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+    )
+    coEvery { reminderV2Repository.getByNoteId("42") } returns listOf(existingReminder)
+    coEvery { reminderV2Repository.getById("r1") } returns existingReminder
     val viewModel = buildViewModel(id = "42")
     // Loading the note attached the reminder; the user now turns the switch off before saving.
     assertEquals(true, viewModel.state.value.isReminderAttached)
@@ -195,6 +209,6 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     viewModel.saveNote(newId = true)
 
     assertNotEquals("42", saved.captured.note?.key)
-    coVerify(exactly = 0) { reminderRepository.getById(any()) }
+    coVerify(exactly = 0) { reminderV2Repository.getById(any()) }
   }
 }

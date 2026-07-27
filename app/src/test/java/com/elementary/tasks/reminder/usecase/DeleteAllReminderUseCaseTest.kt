@@ -5,8 +5,8 @@ import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.ReminderV2Repository
@@ -18,6 +18,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 
 /**
  * Unit tests for DeleteAllReminderUseCase.
@@ -34,6 +35,9 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
   private lateinit var eventHistoryRepository: EventHistoryRepository
 
   private lateinit var useCase: DeleteAllReminderUseCase
+
+  private fun reminderV2(id: String, summary: String) =
+    ReminderV2(uuId = id, summary = summary, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 
   @Before
   override fun setUp() {
@@ -62,9 +66,9 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange
       val reminders =
         listOf(
-          Reminder(uuId = "rem-001", summary = "Meeting", syncState = SyncState.Synced),
-          Reminder(uuId = "rem-002", summary = "Call", syncState = SyncState.Synced),
-          Reminder(uuId = "rem-003", summary = "Task", syncState = SyncState.Synced),
+          reminderV2("rem-001", "Meeting"),
+          reminderV2("rem-002", "Call"),
+          reminderV2("rem-003", "Task"),
         )
 
       // Act
@@ -83,8 +87,8 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange
       val reminders =
         listOf(
-          Reminder(uuId = "work-101", summary = "Reminder 1", syncState = SyncState.Synced),
-          Reminder(uuId = "work-102", summary = "Reminder 2", syncState = SyncState.Synced),
+          reminderV2("work-101", "Reminder 1"),
+          reminderV2("work-102", "Reminder 2"),
         )
 
       // Act
@@ -94,7 +98,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           ids = listOf("work-101", "work-102"),
         )
       }
@@ -106,9 +110,9 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange
       val reminders =
         listOf(
-          Reminder(uuId = "cal-201", summary = "Calendar reminder 1", syncState = SyncState.Synced),
-          Reminder(uuId = "cal-202", summary = "Calendar reminder 2", syncState = SyncState.Synced),
-          Reminder(uuId = "cal-203", summary = "Calendar reminder 3", syncState = SyncState.Synced),
+          reminderV2("cal-201", "Calendar reminder 1"),
+          reminderV2("cal-202", "Calendar reminder 2"),
+          reminderV2("cal-203", "Calendar reminder 3"),
         )
 
       // Act
@@ -132,8 +136,8 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange
       val reminders =
         listOf(
-          Reminder(uuId = "order-301", summary = "Order test 1", syncState = SyncState.Synced),
-          Reminder(uuId = "order-302", summary = "Order test 2", syncState = SyncState.Synced),
+          reminderV2("order-301", "Order test 1"),
+          reminderV2("order-302", "Order test 2"),
         )
 
       // Act
@@ -151,7 +155,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         // Third: schedule background work
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           ids = listOf("order-301", "order-302"),
         )
 
@@ -169,7 +173,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
   fun `invoke handles empty reminder list without errors`() =
     runTest {
       // Arrange
-      val emptyList = emptyList<Reminder>()
+      val emptyList = emptyList<ReminderV2>()
 
       // Act
       useCase.invoke(emptyList)
@@ -180,7 +184,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           ids = emptyList(),
         )
       }
@@ -195,7 +199,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange
       val singleReminder =
         listOf(
-          Reminder(uuId = "single-401", summary = "Only one", syncState = SyncState.Synced),
+          reminderV2("single-401", "Only one"),
         )
 
       // Act
@@ -207,7 +211,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           ids = listOf("single-401"),
         )
       }
@@ -222,8 +226,8 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange
       val reminders =
         listOf(
-          Reminder(uuId = "fail-501", summary = "Will fail", syncState = SyncState.Synced),
-          Reminder(uuId = "fail-502", summary = "Never reached", syncState = SyncState.Synced),
+          reminderV2("fail-501", "Will fail"),
+          reminderV2("fail-502", "Never reached"),
         )
       coEvery { deactivateReminderUseCase(match { it.uuId == reminders[0].uuId }) } throws IllegalStateException("Deactivation error")
 
@@ -248,7 +252,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange
       val reminders =
         listOf(
-          Reminder(uuId = "repo-601", summary = "Repository fail", syncState = SyncState.Synced),
+          reminderV2("repo-601", "Repository fail"),
         )
       coEvery { reminderV2Repository.deleteAll(any()) } throws IllegalStateException("Repository error")
 
@@ -274,11 +278,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange - Create 100 reminders
       val largeReminderList =
         (1..100).map { index ->
-          Reminder(
-            uuId = "batch-${index.toString().padStart(3, '0')}",
-            summary = "Reminder $index",
-            syncState = SyncState.Synced,
-          )
+          reminderV2("batch-${index.toString().padStart(3, '0')}", "Reminder $index")
         }
       val expectedIds = (1..100).map { "batch-${it.toString().padStart(3, '0')}" }
 
@@ -294,7 +294,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           ids = expectedIds,
         )
       }
@@ -310,9 +310,9 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       // Arrange
       val reminders =
         listOf(
-          Reminder(uuId = "special-@#\$%", summary = "Special chars", syncState = SyncState.Synced),
-          Reminder(uuId = "unicode-日本語", summary = "Unicode", syncState = SyncState.Synced),
-          Reminder(uuId = "spaces in id", summary = "Has spaces", syncState = SyncState.Synced),
+          reminderV2("special-@#\$%", "Special chars"),
+          reminderV2("unicode-日本語", "Unicode"),
+          reminderV2("spaces in id", "Has spaces"),
         )
 
       // Act

@@ -18,7 +18,7 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -35,7 +35,7 @@ class WeekViewViewModel(
   private val weekHeaderController: WeekHeaderController,
   private val dateTimeManager: DateTimeManager,
   private val getDayEventItemsUseCase: GetDayEventItemsUseCase,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
@@ -148,7 +148,7 @@ class WeekViewViewModel(
   fun toggleReminder(id: String) {
     viewModelScope.launch(dispatcherProvider.main()) {
       withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)?.let {
+        reminderV2Repository.getById(id)?.let {
           toggleReminderStateUseCase(it)
         }
       }

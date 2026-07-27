@@ -7,9 +7,12 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.note.Note
-import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.ShopItemV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -173,7 +176,7 @@ class DeveloperViewModel(
   private fun saveAndOpenReminder(selectedItem: Int) {
     val reminder = prepareReminder(selectedItem)
     viewModelScope.launch(dispatcherProvider.io()) {
-      reminderRepository.save(reminder)
+      reminderV2Repository.save(reminder)
       navigationEvent.postValue(Event(DeveloperEvent.OpenReminderAction(reminder.uuId)))
     }
   }
@@ -221,52 +224,54 @@ class DeveloperViewModel(
   private suspend fun insertDemoReminders() {
     val today = LocalDate.now()
     val tomorrow = today.plusDays(1)
-    val groupUuId = reminderGroupRepository.defaultGroup()?.groupUuId ?: ""
+    val groupId = groupV2Repository.defaultGroup()?.uuId
+    val startDateTime = dateTimeManager.getCurrentDateTime()
+    fun schedule(dateTime: LocalDateTime) =
+      ReminderSchedule(startDateTime = startDateTime, eventDateTime = dateTimeManager.localToUtc(dateTime))
     val reminders =
       listOf(
-        Reminder(
+        ReminderV2(
           summary = "Team standup meeting",
-          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(9, 0))),
-          groupUuId = groupUuId,
+          schedule = schedule(LocalDateTime.of(today, LocalTime.of(9, 0))),
+          groupId = groupId,
         ),
-        Reminder(
+        ReminderV2(
           summary = "Weekly grocery shopping",
-          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(18, 30))),
-          shoppings =
+          schedule = schedule(LocalDateTime.of(today, LocalTime.of(18, 30))),
+          action = ReminderAction.Shopping,
+          shoppingItems =
             listOf(
-              ShopItem(summary = "Milk", createTime = "", isChecked = false),
-              ShopItem(summary = "Fresh vegetables", createTime = "", isChecked = false),
-              ShopItem(summary = "Coffee beans", createTime = "", isChecked = false),
-              ShopItem(summary = "Birthday candles", createTime = "", isChecked = true),
+              ShopItemV2(summary = "Milk", isChecked = false, createdAt = startDateTime),
+              ShopItemV2(summary = "Fresh vegetables", isChecked = false, createdAt = startDateTime),
+              ShopItemV2(summary = "Coffee beans", isChecked = false, createdAt = startDateTime),
+              ShopItemV2(summary = "Birthday candles", isChecked = true, createdAt = startDateTime),
             ),
-          groupUuId = groupUuId,
+          groupId = groupId,
         ),
-        Reminder(
+        ReminderV2(
           summary = "Call Mom",
-          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(today, LocalTime.of(20, 0))),
-          type = 10 + Reminder.Action.CALL,
-          target = "+1234567890",
-          groupUuId = groupUuId,
+          schedule = schedule(LocalDateTime.of(today, LocalTime.of(20, 0))),
+          action = ReminderAction.Call(target = "+1234567890"),
+          groupId = groupId,
         ),
-        Reminder(
+        ReminderV2(
           summary = "Doctor's appointment",
-          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(10, 30))),
-          groupUuId = groupUuId,
+          schedule = schedule(LocalDateTime.of(tomorrow, LocalTime.of(10, 30))),
+          groupId = groupId,
         ),
-        Reminder(
+        ReminderV2(
           summary = "Submit quarterly report",
-          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(14, 0))),
-          groupUuId = groupUuId,
+          schedule = schedule(LocalDateTime.of(tomorrow, LocalTime.of(14, 0))),
+          groupId = groupId,
         ),
-        Reminder(
+        ReminderV2(
           summary = "Flight check-in",
-          eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(tomorrow, LocalTime.of(7, 0))),
-          type = 10 + Reminder.Action.LINK,
-          target = "https://www.google.com/travel/flights",
-          groupUuId = groupUuId,
+          schedule = schedule(LocalDateTime.of(tomorrow, LocalTime.of(7, 0))),
+          action = ReminderAction.Link(target = "https://www.google.com/travel/flights"),
+          groupId = groupId,
         ),
       )
-    reminders.forEach { reminderRepository.save(it) }
+    reminders.forEach { reminderV2Repository.save(it) }
   }
 
   private suspend fun insertDemoBirthdays() {
@@ -336,60 +341,70 @@ class DeveloperViewModel(
     }
   }
 
-  private fun prepareReminder(selectedItem: Int): Reminder {
-    val reminder = Reminder()
-    reminder.eventTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.now())
-    when (selectedItem) {
-      0 -> reminder.summary = "This is a simple reminder."
+  private fun prepareReminder(selectedItem: Int): ReminderV2 {
+    val now = LocalDateTime.now()
+    val schedule = ReminderSchedule(startDateTime = now, eventDateTime = dateTimeManager.localToUtc(now))
+    return when (selectedItem) {
+      0 -> ReminderV2(summary = "This is a simple reminder.", schedule = schedule)
 
-      1 -> {
-        reminder.summary = "This is a recurring daily reminder."
-        reminder.repeatInterval = 24 * 60 * 60 * 1000L
-      }
+      1 ->
+        ReminderV2(
+          summary = "This is a recurring daily reminder.",
+          schedule = schedule,
+          recurrence = RecurrenceRule.Daily(repeatInterval = 24 * 60 * 60 * 1000L),
+        )
 
-      2 -> {
-        reminder.summary = "This is a reminder with todo."
-        reminder.shoppings =
-          listOf(
-            ShopItem(summary = "Milk", createTime = "", isChecked = false),
-            ShopItem(summary = "Bread", createTime = "", isChecked = false),
-            ShopItem(summary = "Eggs", createTime = "", isChecked = false),
-            ShopItem(summary = "Butter", createTime = "", isChecked = true),
-          )
-      }
+      2 ->
+        ReminderV2(
+          summary = "This is a reminder with todo.",
+          schedule = schedule,
+          action = ReminderAction.Shopping,
+          shoppingItems =
+            listOf(
+              ShopItemV2(summary = "Milk", isChecked = false, createdAt = now),
+              ShopItemV2(summary = "Bread", isChecked = false, createdAt = now),
+              ShopItemV2(summary = "Eggs", isChecked = false, createdAt = now),
+              ShopItemV2(summary = "Butter", isChecked = true, createdAt = now),
+            ),
+        )
 
-      3 -> {
-        reminder.summary = "This is a reminder with call action."
-        reminder.type = 10 + Reminder.Action.CALL
-        reminder.target = "+1234567890"
-      }
+      3 ->
+        ReminderV2(
+          summary = "This is a reminder with call action.",
+          schedule = schedule,
+          action = ReminderAction.Call(target = "+1234567890"),
+        )
 
-      4 -> {
-        reminder.summary = "This is a reminder with SMS action."
-        reminder.type = 10 + Reminder.Action.SMS
-        reminder.target = "+1234567890"
-      }
+      4 ->
+        ReminderV2(
+          summary = "This is a reminder with SMS action.",
+          schedule = schedule,
+          action = ReminderAction.Sms(target = "+1234567890", subject = ""),
+        )
 
-      5 -> {
-        reminder.type = 10 + Reminder.Action.EMAIL
-        reminder.target = "some@mail.com"
-        reminder.subject = "Test Subject"
-        reminder.summary = "This is a test email from Tasks app."
-      }
+      5 ->
+        ReminderV2(
+          summary = "This is a test email from Tasks app.",
+          schedule = schedule,
+          action = ReminderAction.Email(target = "some@mail.com", subject = "Test Subject"),
+        )
 
-      6 -> {
-        reminder.summary = "This is a reminder with open link action."
-        reminder.type = 10 + Reminder.Action.LINK
-        reminder.target = "https://www.google.com"
-      }
+      6 ->
+        ReminderV2(
+          summary = "This is a reminder with open link action.",
+          schedule = schedule,
+          action = ReminderAction.Link(target = "https://www.google.com"),
+        )
 
-      7 -> {
-        reminder.summary = "This is a reminder with open Chrome action."
-        reminder.type = 10 + Reminder.Action.APP
-        reminder.target = "com.android.chrome"
-      }
+      7 ->
+        ReminderV2(
+          summary = "This is a reminder with open Chrome action.",
+          schedule = schedule,
+          action = ReminderAction.App(target = "com.android.chrome"),
+        )
+
+      else -> ReminderV2(schedule = schedule)
     }
-    return reminder
   }
 
   private fun prepareBirthday(selectedItem: Int): Birthday =

@@ -29,7 +29,7 @@ val calendarModule =
 
     viewModel { (dateMillis: Long) -> WeekViewViewModel(dateMillis, get(), get(), get(), get(), get(), get(), get(), get()) }
 
-    factory { GetDayEventItemsUseCase(get(), get(), get(), get(), get(), get(), get()) }
+    factory { GetDayEventItemsUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
 
     factory { MonthGridFactory(get()) }
     factory { LoadMonthEventsUseCase(get(), get(), get(), get(), get()) }

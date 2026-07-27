@@ -4,10 +4,11 @@ import android.net.Uri
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import io.mockk.coEvery
 import io.mockk.every
@@ -239,9 +240,17 @@ class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
     val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
     coEvery { noteRepository.getById("42") } returns noteWithImages
     every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
-    val reminder = Reminder(uuId = "r1", noteId = "42", isActive = true, isRemoved = false, eventTime = "2026-08-01 09:00:00.000+0000")
-    coEvery { reminderRepository.getByNoteKey("42") } returns listOf(reminder)
-    every { dateTimeManager.fromGmtToLocal(reminder.eventTime) } returns LocalDateTime.of(2026, 8, 1, 9, 0)
+    val reminder = ReminderV2(
+      uuId = "r1",
+      noteId = "42",
+      isActive = true,
+      isRemoved = false,
+      schedule = ReminderSchedule(
+        startDateTime = LocalDateTime.of(2026, 8, 1, 9, 0),
+        eventDateTime = LocalDateTime.of(2026, 8, 1, 9, 0),
+      ),
+    )
+    coEvery { reminderV2Repository.getByNoteId("42") } returns listOf(reminder)
 
     val state = buildViewModel(id = "42").state.value
 
@@ -256,8 +265,13 @@ class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
     val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
     coEvery { noteRepository.getById("42") } returns noteWithImages
     every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
-    val inactiveReminder = Reminder(uuId = "r2", noteId = "42", isActive = false)
-    coEvery { reminderRepository.getByNoteKey("42") } returns listOf(inactiveReminder)
+    val inactiveReminder = ReminderV2(
+      uuId = "r2",
+      noteId = "42",
+      isActive = false,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+    )
+    coEvery { reminderV2Repository.getByNoteId("42") } returns listOf(inactiveReminder)
 
     val state = buildViewModel(id = "42").state.value
 

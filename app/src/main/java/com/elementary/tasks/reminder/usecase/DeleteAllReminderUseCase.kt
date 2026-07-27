@@ -4,8 +4,7 @@ import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.migration.toReminderV2
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
@@ -20,13 +19,13 @@ class DeleteAllReminderUseCase(
   private val eventOccurrenceRepository: EventOccurrenceRepository,
   private val eventHistoryRepository: EventHistoryRepository,
 ) {
-  suspend operator fun invoke(reminders: List<Reminder>) {
-    reminders.forEach { deactivateReminderUseCase(it.toReminderV2()) }
+  suspend operator fun invoke(reminders: List<ReminderV2>) {
+    reminders.forEach { deactivateReminderUseCase(it) }
     val ids = reminders.map { it.uuId }
     reminderV2Repository.deleteAll(ids)
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Delete,
-      dataType = DataType.Reminders,
+      dataType = DataType.RemindersV2,
       ids = ids,
     )
     for (id in ids) {

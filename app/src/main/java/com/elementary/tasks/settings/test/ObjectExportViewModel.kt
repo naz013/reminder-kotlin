@@ -15,10 +15,10 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -28,11 +28,11 @@ import kotlinx.coroutines.withContext
 class ObjectExportViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val contextProvider: ContextProvider,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val noteRepository: NoteRepository,
   private val birthdayRepository: BirthdayRepository,
   private val placeRepository: PlaceRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val memoryUtil: MemoryUtil,
   private val noteToOldNoteConverter: NoteToOldNoteConverter,
 ) : ViewModel() {
@@ -104,7 +104,7 @@ class ObjectExportViewModel(
   private suspend fun loadItems(objectType: ObjectExportType): List<ObjectExportItem> =
     when (objectType) {
       ObjectExportType.Reminder ->
-        reminderRepository.getAll().map {
+        reminderV2Repository.getAll().map {
           ObjectExportItem(it.uuId, it.summary + "\nID: " + it.uuId)
         }
 
@@ -124,8 +124,8 @@ class ObjectExportViewModel(
         }
 
       ObjectExportType.Group ->
-        reminderGroupRepository.getAll().map {
-          ObjectExportItem(it.groupUuId, it.groupTitle + "\nID: " + it.groupUuId)
+        groupV2Repository.getAll().map {
+          ObjectExportItem(it.uuId, it.title + "\nID: " + it.uuId)
         }
     }
 
@@ -134,11 +134,11 @@ class ObjectExportViewModel(
     itemId: String,
   ): Any? =
     when (objectType) {
-      ObjectExportType.Reminder -> reminderRepository.getById(itemId)
+      ObjectExportType.Reminder -> reminderV2Repository.getById(itemId)
       ObjectExportType.Note -> noteRepository.getById(itemId)
       ObjectExportType.Birthday -> birthdayRepository.getById(itemId)
       ObjectExportType.Place -> placeRepository.getById(itemId)
-      ObjectExportType.Group -> reminderGroupRepository.getById(itemId)
+      ObjectExportType.Group -> groupV2Repository.getById(itemId)
     }
 
   private fun getFileExt(objectType: ObjectExportType): String =

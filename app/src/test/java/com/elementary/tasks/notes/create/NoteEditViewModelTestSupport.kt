@@ -31,7 +31,7 @@ import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -55,7 +55,7 @@ open class NoteEditViewModelTestSupport : BaseTest() {
   protected val imageDecoder = mockk<ImageDecoder>()
   protected val noteRepository = mockk<NoteRepository>()
   protected val groupV2Repository = mockk<GroupV2Repository>()
-  protected val reminderRepository = mockk<ReminderRepository>()
+  protected val reminderV2Repository = mockk<ReminderV2Repository>()
   protected val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
   protected val prefs = mockk<Prefs>(relaxed = true)
   protected val dateTimeManager = mockk<DateTimeManager>()
@@ -96,8 +96,8 @@ open class NoteEditViewModelTestSupport : BaseTest() {
     every { contextProvider.context } returns fakeContext
 
     coEvery { noteRepository.getById(any()) } returns null
-    coEvery { reminderRepository.getByNoteKey(any()) } returns emptyList()
-    coEvery { reminderRepository.getById(any()) } returns null
+    coEvery { reminderV2Repository.getByNoteId(any()) } returns emptyList()
+    coEvery { reminderV2Repository.getById(any()) } returns null
     coEvery { groupV2Repository.defaultGroup() } returns null
 
     every { dateTimeManager.getTime(any<LocalTime>()) } returns "10:00"
@@ -106,6 +106,8 @@ open class NoteEditViewModelTestSupport : BaseTest() {
     every { dateTimeManager.fromGmtToLocal(any()) } returns null
     every { dateTimeManager.isCurrent(any<LocalDateTime>()) } returns true
     every { dateTimeManager.getGmtFromDateTime(any<LocalDateTime>()) } returns "2026-07-24 10:00:00.000+0000"
+    every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
+    every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
 
     // Deterministic, internally-consistent fake color math - real blend/luminance computation is
     // NoteColorEngine's own concern, not this ViewModel's.
@@ -202,7 +204,7 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       dispatcherProvider = mockDispatcherProvider(),
       noteRepository = noteRepository,
       groupV2Repository = groupV2Repository,
-      reminderRepository = reminderRepository,
+      reminderV2Repository = reminderV2Repository,
       deleteReminderUseCase = deleteReminderUseCase,
       prefs = prefs,
       dateTimeManager = dateTimeManager,

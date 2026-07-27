@@ -19,7 +19,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import io.mockk.clearMocks
 import io.mockk.coEvery
@@ -39,7 +39,7 @@ import org.threeten.bp.LocalDateTime
  * separately by [UiEventItemAdapterTest]).
  */
 class EventsViewModelTest {
-  private val reminderRepository = mockk<ReminderRepository>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val getRemindersV2ByRemovedStatusUseCase = mockk<GetRemindersV2ByRemovedStatusUseCase>()
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
@@ -75,7 +75,7 @@ class EventsViewModelTest {
     viewModel =
       EventsViewModel(
         dispatcherProvider = mockDispatcherProvider(),
-        reminderRepository = reminderRepository,
+        reminderV2Repository = reminderV2Repository,
         getRemindersV2ByRemovedStatusUseCase = getRemindersV2ByRemovedStatusUseCase,
         groupV2Repository = groupV2Repository,
         birthdayRepository = birthdayRepository,

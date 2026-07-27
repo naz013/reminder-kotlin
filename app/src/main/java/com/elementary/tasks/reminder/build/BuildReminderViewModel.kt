@@ -68,7 +68,6 @@ import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.sync.DataType
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
@@ -94,7 +93,6 @@ class BuildReminderViewModel(
   private val deepLinkText: String?,
   private val dispatcherProvider: DispatcherProvider,
   private val groupV2Repository: GroupV2Repository,
-  private val reminderRepository: ReminderRepository,
   private val placeRepository: PlaceRepository,
   private val analyticsEventSender: AnalyticsEventSender,
   private val reminderAnalyticsTracker: ReminderAnalyticsTracker,
@@ -549,12 +547,11 @@ class BuildReminderViewModel(
 
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
-      val reminderV2 = getReminderV2ByIdUseCase(id) ?: reminder.toReminderV2()
+      val reminderV2 = getReminderV2ByIdUseCase(id) ?: return@launch
 
       Logger.i(TAG, "Edit reminder by ID Deep Link, id = $id")
 
-      editReminder(reminderV2 = reminderV2, reminder = reminder)
+      editReminder(reminderV2 = reminderV2, reminder = reminderV2.toReminder())
       pauseReminder(reminderV2)
     }
   }
@@ -595,9 +592,9 @@ class BuildReminderViewModel(
   }
 
   private suspend fun findSame(id: String) {
-    val reminder = reminderRepository.getById(id)
+    val reminder = getReminderV2ByIdUseCase(id)
     _state.update { it.copy(hasSameInDb = reminder != null) }
-    reminder?.also { pauseReminder(it.toReminderV2()) }
+    reminder?.also { pauseReminder(it) }
   }
 
   private suspend fun useBuilderPreset(preset: RecurPreset) {
@@ -961,7 +958,7 @@ class BuildReminderViewModel(
   }
 
   fun deleteReminder(showMessage: Boolean) {
-    val reminder = original
+    val reminder = originalV2
     if (reminder == null) {
       event.emit(ViewModelEvent.MoveBack)
       return

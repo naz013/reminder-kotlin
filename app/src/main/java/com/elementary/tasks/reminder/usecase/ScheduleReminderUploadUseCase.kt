@@ -11,7 +11,7 @@ class ScheduleReminderUploadUseCase(
   suspend operator fun invoke(id: String) {
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
-      dataType = DataType.Reminders,
+      dataType = DataType.RemindersV2,
       id = id,
     )
     Logger.i(TAG, "Scheduled upload for reminder with id = $id")

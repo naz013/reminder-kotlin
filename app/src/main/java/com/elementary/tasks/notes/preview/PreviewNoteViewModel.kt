@@ -19,7 +19,6 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
-import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -28,7 +27,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -40,7 +39,7 @@ class PreviewNoteViewModel(
   val key: String,
   private val dispatcherProvider: DispatcherProvider,
   private val noteRepository: NoteRepository,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val uiNotePreviewAdapter: UiNotePreviewAdapter,
   private val textProvider: TextProvider,
   analyticsEventSender: AnalyticsEventSender,
@@ -100,7 +99,7 @@ class PreviewNoteViewModel(
 
   private suspend fun loadReminders() {
     val reminders =
-      reminderRepository.getByNoteKey(key).map {
+      reminderV2Repository.getByNoteId(key).map {
         reminderToUiNoteAttachedReminder(it)
       }
     _state.update { it.copy(reminders = reminders) }
@@ -178,14 +177,13 @@ class PreviewNoteViewModel(
 
   fun onReminderDetachClick(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
 
       saveReminderUseCase(
         reminder.copy(
           noteId = "",
-          version = reminder.version + 1,
-          syncState = SyncState.WaitingForUpload,
-        ).toReminderV2(),
+          sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
+        ),
       )
 
       loadReminders()

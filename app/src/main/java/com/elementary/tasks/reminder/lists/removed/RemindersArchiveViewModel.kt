@@ -16,7 +16,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 class RemindersArchiveViewModel(
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase,
   private val groupV2Repository: GroupV2Repository,
   private val dispatcherProvider: DispatcherProvider,
@@ -81,7 +81,7 @@ class RemindersArchiveViewModel(
     Logger.i(TAG, "Deleting reminder: $id")
     viewModelScope.launch(dispatcherProvider.main()) {
       withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)?.also {
+        reminderV2Repository.getById(id)?.also {
           deleteReminderUseCase(it)
         }
       } ?: run {
@@ -99,7 +99,7 @@ class RemindersArchiveViewModel(
       if (toDeleteIds.isEmpty()) return@launch
       Logger.i(TAG, "Deleting all reminders: ${toDeleteIds.size}")
       withContext(dispatcherProvider.io()) {
-        val toDelete = toDeleteIds.mapNotNull { reminderRepository.getById(it) }
+        val toDelete = toDeleteIds.mapNotNull { reminderV2Repository.getById(it) }
         deleteAllReminderUseCase(toDelete)
       }
       loadReminders()

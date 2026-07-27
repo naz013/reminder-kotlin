@@ -35,7 +35,7 @@ import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.repository.BirthdayRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.threeten.bp.LocalDateTime
@@ -46,7 +46,7 @@ class Notifier(
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
   private val systemServiceProvider: SystemServiceProvider,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
 ) {
@@ -239,12 +239,11 @@ class Notifier(
       }
     remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt)
     remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt)
-    val reminders = invokeSuspend { reminderRepository.getActive() }.toMutableList()
+    val reminders = invokeSuspend { reminderV2Repository.getAll(active = true, removed = false) }.toMutableList()
     val count = reminders.size
 
     for (i in reminders.indices.reversed()) {
-      val reminder = reminders[i]
-      val eventTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
+      val eventTime = reminders[i].schedule.eventDateTime
       if (eventTime == null) {
         reminders.removeAt(i)
       }
@@ -252,7 +251,7 @@ class Notifier(
     var event: String? = ""
     var prevTime: LocalDateTime? = null
     reminders.forEach { reminder ->
-      val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
+      val dateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
       if (dateTime != null && dateTimeManager.isCurrent(dateTime)) {
         if (prevTime == null) {
           prevTime = dateTime

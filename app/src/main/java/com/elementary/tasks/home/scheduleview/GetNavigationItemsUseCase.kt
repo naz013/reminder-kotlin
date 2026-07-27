@@ -7,7 +7,7 @@ import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +16,7 @@ import org.threeten.bp.LocalDateTime
 
 class GetNavigationItemsUseCase(
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val groupV2Repository: GroupV2Repository,
   private val noteRepository: NoteRepository,
@@ -37,7 +37,7 @@ class GetNavigationItemsUseCase(
     )
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
-    val remindersCount = reminderRepository.countAllTypesInState(active = true, removed = false)
+    val remindersCount = reminderV2Repository.getAll(active = true, removed = false).size
     val birthdaysCount = birthdayRepository.countAll()
     return scope
       .async(dispatcherProvider.io()) {
@@ -59,7 +59,7 @@ class GetNavigationItemsUseCase(
           iconRes = R.drawable.ic_fluent_timeline,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenEvents,
-          subtitle = "${reminderRepository.countAllTypesInState(active = true, removed = false)}",
+          subtitle = "${reminderV2Repository.getAll(active = true, removed = false).size}",
         )
       }.await()
 

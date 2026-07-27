@@ -1,22 +1,20 @@
 package com.elementary.tasks.reminder.usecase
 
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
-import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 
 class MoveReminderToArchiveUseCase(
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
 ) {
   suspend operator fun invoke(id: String) {
     val reminder =
-      reminderRepository.getById(id) ?: run {
+      reminderV2Repository.getById(id) ?: run {
         Logger.w(TAG, "Reminder with id = $id not found")
         return
       }
-    reminder.isRemoved = true
-    deactivateReminderUseCase(reminder.toReminderV2())
+    deactivateReminderUseCase(reminder.copy(isRemoved = true))
     Logger.i(TAG, "Moved reminder with id = $id to archive")
   }
 

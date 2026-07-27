@@ -16,8 +16,8 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.GoogleTask
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.migration.toReminderV2
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -26,7 +26,7 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +44,7 @@ class EditGoogleTaskViewModel(
   private val googleTasksApi: GoogleTasksApi,
   private val dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -313,10 +313,10 @@ class EditGoogleTaskViewModel(
 
   private suspend fun loadReminder(uuId: String) {
     val reminder = withContext(dispatcherProvider.io()) {
-      reminderRepository.getById(uuId)
+      reminderV2Repository.getById(uuId)
     }
     if (reminder == null) return
-    val time = dateTimeManager.fromGmtToLocal(reminder.eventTime)?.toLocalTime() ?: LocalTime.now()
+    val time = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }?.toLocalTime() ?: LocalTime.now()
     _state.update {
       it.copy(
         reminderId = uuId,
@@ -326,30 +326,28 @@ class EditGoogleTaskViewModel(
     onTimeStateChanged(true)
   }
 
-  private suspend fun saveReminder(reminder: Reminder?) {
+  private suspend fun saveReminder(reminder: ReminderV2?) {
     if (reminder == null) return
     Logger.d(TAG, "Saving reminder: $reminder")
     val group = withContext(dispatcherProvider.io()) {
       groupV2Repository.defaultGroup()
     }
 
-    if (group != null) {
-      reminder.groupColor = group.color
-      reminder.groupTitle = group.title
-      reminder.groupUuId = group.uuId
-
+    val toSave = if (group != null) {
       Logger.v(TAG, "Reminder saved with the Group id = ${group.uuId}")
+      reminder.copy(groupId = group.uuId)
     } else {
       Logger.v(TAG, "Reminder saved without the Group")
+      reminder
     }
 
     withContext(dispatcherProvider.io()) {
-      activateReminderUseCase(reminder.toReminderV2())
+      activateReminderUseCase(toSave)
       appWidgetUpdater.updateScheduleWidget()
     }
   }
 
-  private suspend fun newGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
+  private suspend fun newGoogleTask(googleTask: GoogleTask, reminder: ReminderV2?) {
     Logger.i(TAG, "Creating Google Task (${googleTask.taskId}), listId=${googleTask.listId}")
     val savedGoogleTask = withContext(dispatcherProvider.io()) {
       googleTasksApi.saveTask(googleTask)?.also {
@@ -364,7 +362,7 @@ class EditGoogleTaskViewModel(
     }
   }
 
-  private suspend fun updateGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
+  private suspend fun updateGoogleTask(googleTask: GoogleTask, reminder: ReminderV2?) {
     Logger.i(TAG, "Updating Google Task (${googleTask.taskId}), listId=${googleTask.listId}")
     val savedGoogleTask = withContext(dispatcherProvider.io()) {
       googleTasksApi.updateTask(googleTask)?.also {
@@ -382,7 +380,7 @@ class EditGoogleTaskViewModel(
   private suspend fun updateAndMoveGoogleTask(
     googleTask: GoogleTask,
     oldListId: String,
-    reminder: Reminder?,
+    reminder: ReminderV2?,
   ) {
     Logger.i(
       TAG,
@@ -404,24 +402,19 @@ class EditGoogleTaskViewModel(
     }
   }
 
-  private fun createReminder(task: String) =
-    Reminder().apply {
-      type = Reminder.BY_DATE
-      delay = 0
-      eventCount = 0
-      useGlobal = true
-      isActive = true
-      isRemoved = false
-      summary = task.normalizeSummary()
-      startTime = dateTimeManager.getGmtFromDateTime(LocalDateTime.of(_state.value.date, _state.value.time))
-      eventTime = startTime
-    }
+  private fun createReminder(task: String): ReminderV2 {
+    val startDateTime = dateTimeManager.localToUtc(LocalDateTime.of(_state.value.date, _state.value.time))
+    return ReminderV2(
+      summary = task.normalizeSummary(),
+      schedule = ReminderSchedule(startDateTime = startDateTime, eventDateTime = startDateTime),
+    )
+  }
 
   private fun update(
     googleTask: GoogleTask,
     summary: String,
     note: String,
-    reminder: Reminder?,
+    reminder: ReminderV2?,
   ): GoogleTask =
     googleTask.copy(
       listId = _state.value.listId,
