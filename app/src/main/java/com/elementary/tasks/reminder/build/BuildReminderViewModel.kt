@@ -37,6 +37,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.AnalyticsReminderType
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.PresetAction
@@ -52,6 +53,8 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.migration.toReminder
 import com.github.naz013.domain.reminder.migration.toReminderV2
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
@@ -262,10 +265,9 @@ class BuildReminderViewModel(
             } else {
               buildResult.reminderV2
             }
-          val reminder = finalV2.toReminder().apply { jsonSchemaVersion = Reminder.Version.V3 }
 
           isSaving = true
-          saveAndStartReminder(reminder, isEdit = isEdited)
+          saveAndStartReminder(finalV2, isEdit = isEdited)
 
           if (_state.value.saveAsPresetChecked && _state.value.presetName.isNotEmpty()) {
             savePreset(builderItems)
@@ -866,36 +868,29 @@ class BuildReminderViewModel(
   }
 
   private suspend fun saveAndStartReminder(
-    reminder: Reminder,
+    reminder: ReminderV2,
     isEdit: Boolean = true,
   ) {
     Logger.i(
       TAG,
-      "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupUuId}",
+      "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupId}",
     )
-    if (reminder.groupUuId.isEmpty()) {
+    val reminder = if (reminder.groupId.isNullOrEmpty()) {
       val group = groupV2Repository.defaultGroup()
       Logger.i(TAG, "Reminder does not have a group, get default = $group")
-      if (group != null) {
-        reminder.groupColor = group.color
-        reminder.groupTitle = group.title
-        reminder.groupUuId = group.uuId
-      }
+      if (group != null) reminder.copy(groupId = group.uuId) else reminder
+    } else {
+      reminder
     }
-    if (!isEdit) {
-      if (Reminder.isGpsType(reminder.type)) {
-        val places = reminder.places
-        if (places.isNotEmpty()) {
-          placeRepository.save(places[0])
-        }
-      }
+    if (!isEdit && reminder.places.isNotEmpty()) {
+      placeRepository.save(reminder.places[0])
     }
-    activateReminderUseCase(reminder.toReminderV2(), startAnyway = true)
+    activateReminderUseCase(reminder, startAnyway = true)
     Logger.i(TAG, "Reminder saved, id = ${reminder.uuId}")
 
     if (!isEdit) {
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
-      reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
+      reminderAnalyticsTracker.sendEvent(reminder.toAnalyticsReminderType())
     }
 
     // Track reminder creation and show review dialog after 4 reminders
@@ -913,6 +908,24 @@ class BuildReminderViewModel(
         prefs.reviewDialogShown = true
       }
     }
+  }
+
+  /** Mirrors [UiReminderType.getEventType]'s priority order, reading straight off [ReminderV2]'s
+   * sealed fields instead of a derived V1 type int. */
+  private fun ReminderV2.toAnalyticsReminderType(): AnalyticsReminderType = when {
+    recurrence is RecurrenceRule.ICalendar -> AnalyticsReminderType.Recur
+    action is ReminderAction.Email -> AnalyticsReminderType.Email
+    action is ReminderAction.Link -> AnalyticsReminderType.WebLink
+    action is ReminderAction.App -> AnalyticsReminderType.App
+    action is ReminderAction.Call -> AnalyticsReminderType.Call
+    action is ReminderAction.Sms -> AnalyticsReminderType.Sms
+    places.isNotEmpty() -> AnalyticsReminderType.Gps
+    recurrence is RecurrenceRule.Monthly -> AnalyticsReminderType.Monthly
+    recurrence is RecurrenceRule.Weekly -> AnalyticsReminderType.Weekday
+    recurrence is RecurrenceRule.Countdown -> AnalyticsReminderType.Timer
+    recurrence is RecurrenceRule.Yearly -> AnalyticsReminderType.Yearly
+    recurrence is RecurrenceRule.Once || recurrence is RecurrenceRule.Daily -> AnalyticsReminderType.ByDate
+    else -> AnalyticsReminderType.Other
   }
 
   private fun askReview(titleRes: Int) {
