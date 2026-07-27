@@ -20,7 +20,6 @@ import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
-import com.elementary.tasks.eventaction.eventActionModule
 import com.elementary.tasks.googletasks.googleTaskModule
 import com.elementary.tasks.groups.groupModule
 import com.elementary.tasks.home.homeModule
@@ -155,7 +154,6 @@ class ReminderApp :
           reviewsKoinModule,
           syncSettingsModule,
           settingsModule,
-          eventActionModule,
           legalModule,
           workModule,
           dateTimeCalculationsModule,

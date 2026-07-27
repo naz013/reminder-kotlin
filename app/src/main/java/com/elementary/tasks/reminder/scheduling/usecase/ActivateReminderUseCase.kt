@@ -10,7 +10,6 @@ import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePerma
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.system.SystemInfo
-import com.github.naz013.domain.reminder.migration.toReminder
 import com.github.naz013.domain.reminder.v2.LocationSettings
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
@@ -89,9 +88,8 @@ class ActivateReminderUseCase(
       saveReminderUseCase(reminder)
       updatePermanentReminderNotificationUseCase()
       jobScheduler.scheduleReminder(reminder)
-      // Both small, pure-V1-consumer Google sync use cases - out of scope for Phase C3, shim.
-      saveReminderToGoogleTasksUseCase(reminder.toReminder())
-      saveReminderToGoogleCalendarUseCase(reminder.toReminder())
+      saveReminderToGoogleTasksUseCase(reminder)
+      saveReminderToGoogleCalendarUseCase(reminder)
       workScheduler.enqueue(CalculateReminderOccurrencesTask.prepareWorkRequest(reminder.uuId))
       return reminder
     } else {

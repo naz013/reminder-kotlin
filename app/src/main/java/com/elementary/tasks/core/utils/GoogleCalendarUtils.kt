@@ -12,7 +12,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.CalendarEvent
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.readInt
 import com.github.naz013.feature.common.readLong
 import com.github.naz013.feature.common.readString
@@ -30,21 +30,22 @@ class GoogleCalendarUtils(
   /**
    * Add event to calendar.
    */
-  suspend fun addEvent(reminder: Reminder) {
-    val mId = reminder.calendarId
+  suspend fun addEvent(reminder: ReminderV2) {
+    val export = reminder.calendarExport ?: return
+    val mId = export.calendarId
     if (mId != 0L) {
       val tz = TimeZone.getDefault()
       val timeZone = tz.displayName
       val cr = context.contentResolver
       val values = ContentValues()
       val startTime =
-        dateTimeManager.fromGmtToLocal(reminder.eventTime)?.let {
-          dateTimeManager.toMillis(it)
+        reminder.schedule.eventDateTime?.let {
+          dateTimeManager.toMillis(dateTimeManager.utcToLocal(it))
         } ?: return
       values.put(CalendarContract.Events.DTSTART, startTime)
-      if (reminder.duration > 0L || reminder.allDay) {
-        values.put(CalendarContract.Events.ALL_DAY, if (reminder.allDay) 1 else 0)
-        values.put(CalendarContract.Events.DTEND, startTime + reminder.duration)
+      if (export.duration > 0L || export.allDay) {
+        values.put(CalendarContract.Events.ALL_DAY, if (export.allDay) 1 else 0)
+        values.put(CalendarContract.Events.DTEND, startTime + export.duration)
       } else {
         values.put(CalendarContract.Events.ALL_DAY, 0)
         values.put(
