@@ -6,7 +6,6 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -14,12 +13,9 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 /**
- * Converts already-filtered [Reminder]/[Birthday] domain lists into the flat, chronologically
+ * Converts already-filtered [ReminderV2]/[Birthday] domain lists into the flat, chronologically
  * sorted [UiEventItem] list the Events screen renders, inserting a [UiEventHeader] at every day
  * boundary (or "Permanent"/"Disabled" bucket for reminders without a due date).
- *
- * Mirrors [com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter]'s header-bucketing
- * idiom, extended to interleave birthdays into the same day groups.
  */
 class UiEventItemAdapter(
   private val uiReminderListAdapter: UiReminderListAdapter,
@@ -27,16 +23,6 @@ class UiEventItemAdapter(
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
 ) {
-  fun convert(
-    reminders: List<Reminder>,
-    birthdays: List<Birthday>,
-  ): List<UiEventItem> {
-    val reminderItems = reminders.map { toUiEventReminder(it) }
-    val birthdayItems = birthdays.map { toUiEventBirthday(it) }
-    val merged = (reminderItems + birthdayItems).sortedBy { it.dateTime }
-    return insertHeaders(merged)
-  }
-
   fun convertV2(
     reminders: List<ReminderV2>,
     groupsById: Map<String, GroupV2>,
@@ -57,21 +43,6 @@ class UiEventItemAdapter(
       id = uiReminderList.id,
       dateTime = resolveReminderDateTime(uiReminderList.dueDateTime, uiReminderList.state.isActive),
       category = if (reminder.action is ReminderAction.Shopping) EventCategory.SHOPPING else EventCategory.REMINDERS,
-      mainText = uiReminderList.mainText,
-      secondaryText = uiReminderList.secondaryText,
-      tertiaryText = uiReminderList.tertiaryText,
-      tags = uiReminderList.tags,
-      actions = uiReminderList.actions,
-      state = uiReminderList.state,
-    )
-  }
-
-  private fun toUiEventReminder(reminder: Reminder): UiEventReminder {
-    val uiReminderList = uiReminderListAdapter.create(reminder)
-    return UiEventReminder(
-      id = uiReminderList.id,
-      dateTime = resolveReminderDateTime(uiReminderList.dueDateTime, uiReminderList.state.isActive),
-      category = if (reminder.type == Reminder.BY_DATE_SHOP) EventCategory.SHOPPING else EventCategory.REMINDERS,
       mainText = uiReminderList.mainText,
       secondaryText = uiReminderList.secondaryText,
       tertiaryText = uiReminderList.tertiaryText,

@@ -12,7 +12,9 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListState
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.sync.SyncState
 import io.mockk.every
 import io.mockk.mockk
@@ -45,23 +47,30 @@ class UiEventItemAdapterTest {
     adapter = UiEventItemAdapter(uiReminderListAdapter, uiBirthdayListAdapter, dateTimeManager, textProvider)
   }
 
+  private fun reminderV2(uuId: String) =
+    ReminderV2(
+      uuId = uuId,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+      sync = SyncMetadata(syncState = SyncState.Synced),
+    )
+
   @Test
   fun `returns empty list when there are no reminders or birthdays`() {
-    val result = adapter.convert(emptyList(), emptyList())
+    val result = adapter.convertV2(emptyList(), emptyMap(), emptyList())
 
     assertEquals(emptyList<UiEventItem>(), result)
   }
 
   @Test
   fun `merges and sorts reminders and birthdays chronologically under a shared day header`() {
-    val laterReminder = Reminder(uuId = "later-reminder")
+    val laterReminder = reminderV2("later-reminder")
     val earlierBirthday = Birthday(uuId = "earlier-birthday", syncState = SyncState.Synced)
-    every { uiReminderListAdapter.create(laterReminder) } returns
+    every { uiReminderListAdapter.createV2(laterReminder, null) } returns
       uiReminderList(id = "r1", dueDateTime = today.atTime(18, 0))
     every { uiBirthdayListAdapter.convert(earlierBirthday, any()) } returns
       uiBirthdayList(id = "b1", nextBirthdayDate = today.atTime(9, 0))
 
-    val result = adapter.convert(listOf(laterReminder), listOf(earlierBirthday))
+    val result = adapter.convertV2(listOf(laterReminder), emptyMap(), listOf(earlierBirthday))
 
     assertEquals(3, result.size)
     assertTrue(result[0] is UiEventHeader)
@@ -72,14 +81,14 @@ class UiEventItemAdapterTest {
 
   @Test
   fun `inserts a new header only when the day bucket changes`() {
-    val todayReminder = Reminder(uuId = "today-reminder")
-    val tomorrowReminder = Reminder(uuId = "tomorrow-reminder")
-    every { uiReminderListAdapter.create(todayReminder) } returns
+    val todayReminder = reminderV2("today-reminder")
+    val tomorrowReminder = reminderV2("tomorrow-reminder")
+    every { uiReminderListAdapter.createV2(todayReminder, null) } returns
       uiReminderList(id = "today-item", dueDateTime = today.atTime(9, 0))
-    every { uiReminderListAdapter.create(tomorrowReminder) } returns
+    every { uiReminderListAdapter.createV2(tomorrowReminder, null) } returns
       uiReminderList(id = "tomorrow-item", dueDateTime = tomorrow.atTime(9, 0))
 
-    val result = adapter.convert(listOf(todayReminder, tomorrowReminder), emptyList())
+    val result = adapter.convertV2(listOf(todayReminder, tomorrowReminder), emptyMap(), emptyList())
 
     assertEquals(4, result.size)
     assertEquals("Today", (result[0] as UiEventHeader).text)
@@ -90,14 +99,14 @@ class UiEventItemAdapterTest {
 
   @Test
   fun `buckets active reminders without a due date under a Permanent header after dated items`() {
-    val datedReminder = Reminder(uuId = "dated-reminder")
-    val permanentReminder = Reminder(uuId = "permanent-reminder")
-    every { uiReminderListAdapter.create(datedReminder) } returns
+    val datedReminder = reminderV2("dated-reminder")
+    val permanentReminder = reminderV2("permanent-reminder")
+    every { uiReminderListAdapter.createV2(datedReminder, null) } returns
       uiReminderList(id = "dated", dueDateTime = today.atTime(10, 0))
-    every { uiReminderListAdapter.create(permanentReminder) } returns
+    every { uiReminderListAdapter.createV2(permanentReminder, null) } returns
       uiReminderList(id = "permanent", dueDateTime = null, isActive = true)
 
-    val result = adapter.convert(listOf(datedReminder, permanentReminder), emptyList())
+    val result = adapter.convertV2(listOf(datedReminder, permanentReminder), emptyMap(), emptyList())
 
     assertEquals(4, result.size)
     assertEquals("Today", (result[0] as UiEventHeader).text)
@@ -108,11 +117,11 @@ class UiEventItemAdapterTest {
 
   @Test
   fun `buckets disabled reminders without a due date under a Disabled header`() {
-    val disabledReminder = Reminder(uuId = "disabled-reminder")
-    every { uiReminderListAdapter.create(disabledReminder) } returns
+    val disabledReminder = reminderV2("disabled-reminder")
+    every { uiReminderListAdapter.createV2(disabledReminder, null) } returns
       uiReminderList(id = "disabled", dueDateTime = null, isActive = false)
 
-    val result = adapter.convert(listOf(disabledReminder), emptyList())
+    val result = adapter.convertV2(listOf(disabledReminder), emptyMap(), emptyList())
 
     assertEquals(2, result.size)
     assertEquals("Turned off", (result[0] as UiEventHeader).text)

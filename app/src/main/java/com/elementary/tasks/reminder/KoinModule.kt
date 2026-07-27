@@ -66,7 +66,6 @@ import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.Ur
 import com.elementary.tasks.reminder.dialog.CreateReminderActionScreenStateUseCase
 import com.elementary.tasks.reminder.dialog.ReminderActionActivityViewModel
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
-import com.elementary.tasks.reminder.lists.data.UiReminderListsAdapter
 import com.elementary.tasks.reminder.lists.removed.RemindersArchiveViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
@@ -311,7 +310,6 @@ val reminderModule =
     single { RadiusFormatterFactory(get(), get()) }
     single { PlaceFormatterFactory(get()) }
 
-    factoryOf(::UiReminderListsAdapter)
     factoryOf(::UiReminderListAdapter)
 
     factoryOf(::BehaviorStrategyResolverV2)
