@@ -36,7 +36,7 @@ val calendarModule =
     viewModelOf(::CalendarViewModel)
 
     factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get()) }
-    factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get(), get()) }
+    factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get()) }
     factory { CalculateReminderOccurrencesUseCase(get(), get(), get(), get(), get(), get()) }
 
     factory<BackgroundTask>(named(CalculateBirthdayOccurrencesTask.TASK_KEY)) { CalculateBirthdayOccurrencesTask(get()) }

@@ -44,7 +44,6 @@ import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.compose.CalendarExportCalculator
 import com.elementary.tasks.reminder.build.reminder.compose.ReminderActionCalculator
 import com.elementary.tasks.reminder.build.reminder.compose.RecurrenceRuleCalculator
-import com.elementary.tasks.reminder.build.reminder.compose.ReminderDateTimeCleaner
 import com.elementary.tasks.reminder.build.reminder.decompose.ActionDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ByDateDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ByDayOfMonthDecomposer
@@ -85,7 +84,6 @@ import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCa
 import com.elementary.tasks.reminder.scheduling.usecase.google.CompleteRelatedGoogleTaskUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.legacy.MigrateRecurringParamsUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTrackingUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.location.StopLocationTrackingUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePermanentReminderNotificationUseCase
@@ -272,7 +270,6 @@ val reminderModule =
     factory { PermissionValidator(get()) }
 
     factory { ICalDateTimeCalculator(get(), get()) }
-    factory { ReminderDateTimeCleaner() }
 
     factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get()) }
 
@@ -345,8 +342,6 @@ val reminderModule =
     factory { EventDateTimeCalculatorV2(get(), get()) }
 
     factory<RecurrenceCalculator> { RecurrenceCalculatorImpl() }
-
-    factory { MigrateRecurringParamsUseCase(get(), get()) }
 
     factory { GetReminderActionsUseCase() }
 

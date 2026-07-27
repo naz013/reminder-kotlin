@@ -122,7 +122,7 @@ val utilModule =
     factory<BackgroundTask>(named(BirthdayPermanentEventTask.TASK_KEY)) { BirthdayPermanentEventTask(get(), get()) }
 
     factory { FeatureManager(get()) }
-    factory { GroupsUtil(get(), get(), get(), get()) }
+    factory { GroupsUtil(get(), get(), get()) }
     factory { ImageDecoder(get(), get(), get()) }
     factory { DroppedContentParser(get()) }
 
