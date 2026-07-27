@@ -25,6 +25,7 @@ import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.domain.reminder.migration.toReminder
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -41,7 +42,6 @@ import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,7 +57,6 @@ import java.util.UUID
 
 class PreviewReminderViewModel(
   private val id: String,
-  private val reminderRepository: ReminderRepository,
   private val reminderV2Repository: ReminderV2Repository,
   private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
   private val googleCalendarUtils: GoogleCalendarUtils,
@@ -247,7 +246,7 @@ class PreviewReminderViewModel(
 
   fun shareReminder() {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id)?.toReminder() ?: return@launch
       val file = backupTool.reminderToFile(reminder) ?: return@launch
       Logger.i(TAG, "Sharing reminder ${file.name}")
       event.emit(

@@ -10,6 +10,8 @@ import com.elementary.tasks.notes.SharedNote
 import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.reminder.migration.toReminder
+import com.github.naz013.domain.reminder.migration.toReminderGroup
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -134,11 +136,11 @@ class ObjectExportViewModel(
     itemId: String,
   ): Any? =
     when (objectType) {
-      ObjectExportType.Reminder -> reminderV2Repository.getById(itemId)
+      ObjectExportType.Reminder -> reminderV2Repository.getById(itemId)?.toReminder()
       ObjectExportType.Note -> noteRepository.getById(itemId)
       ObjectExportType.Birthday -> birthdayRepository.getById(itemId)
       ObjectExportType.Place -> placeRepository.getById(itemId)
-      ObjectExportType.Group -> groupV2Repository.getById(itemId)
+      ObjectExportType.Group -> groupV2Repository.getById(itemId)?.toReminderGroup()
     }
 
   private fun getFileExt(objectType: ObjectExportType): String =

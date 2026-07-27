@@ -72,7 +72,6 @@ import com.elementary.tasks.reminder.lists.removed.RemindersArchiveViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
-import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
 import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
 import com.elementary.tasks.reminder.scheduling.occurrence.v2.ReminderOccurrenceCalculatorFactoryV2
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
@@ -168,7 +167,6 @@ val reminderModule =
     viewModel { (id: String) ->
       PreviewReminderViewModel(
         id,
-        get(),
         get(),
         get(),
         get(),
@@ -319,7 +317,6 @@ val reminderModule =
     factoryOf(::UiReminderListsAdapter)
     factoryOf(::UiReminderListAdapter)
 
-    factoryOf(::BehaviorStrategyResolver)
     factoryOf(::BehaviorStrategyResolverV2)
 
     factoryOf(::ActivateReminderUseCase)

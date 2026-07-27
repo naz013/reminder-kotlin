@@ -25,6 +25,20 @@ internal fun ReminderGroup.toGroupV2(): GroupV2 = GroupV2(
   syncState = syncState
 )
 
+/**
+ * Reverse of [toGroupV2] - used where a real, non-Room V1 [ReminderGroup] object is still needed
+ * on demand (e.g. the local share/export-file format), now that [GroupV2] is the write-of-record.
+ */
+fun GroupV2.toReminderGroup(): ReminderGroup = ReminderGroup(
+  groupTitle = title,
+  groupUuId = uuId,
+  groupColor = color,
+  groupDateTime = createdAt.atZone(ZoneOffset.UTC).format(GROUP_GMT_FORMATTER),
+  isDefaultGroup = isDefault,
+  version = version,
+  syncState = syncState
+)
+
 private val GROUP_GMT_FORMATTER: DateTimeFormatter =
   DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
 

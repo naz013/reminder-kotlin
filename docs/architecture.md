@@ -30,7 +30,7 @@ The project follows a **multi-module Clean Architecture** approach. Concerns are
 | `platform-common` | Android library | Android-platform-level helpers: biometric auth, permission helpers, Google sign-in wrappers. |
 | `ui-common` | Android library | Shared Compose components, Material 3 theme tokens, reusable composables, and color-picker utilities. |
 | `appwidgets` | Android library | All home-screen widget implementations (reminders, notes, birthdays, Google Tasks). Aggregates usecase modules. |
-| `usecase:reminders` | Android library | Reminder-specific use cases (`GetActiveRemindersV2UseCase`, `GetReminderByIdUseCase`, …). |
+| `usecase:reminders` | Android library | Reminder-specific use cases (`GetActiveRemindersV2UseCase`, `GetReminderV2ByIdUseCase`, …). |
 | `usecase:notes` | Android library | Note-specific use cases (`GetAllNotesUseCase`, `GetNoteByIdUseCase`, `SearchNotesByTextUseCase`, …). |
 | `usecase:birthdays` | Android library | Birthday-specific use cases (`GetAllBirthdaysUseCase`, `GetBirthdaysByDayMonthUseCase`). |
 | `usecase:googletasks` | Android library | Google-Tasks-specific use cases (`GetAllGoogleTasksUseCase`, `GetGoogleTaskByIdUseCase`, …). |

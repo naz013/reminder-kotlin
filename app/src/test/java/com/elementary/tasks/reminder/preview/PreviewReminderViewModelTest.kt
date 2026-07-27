@@ -23,18 +23,15 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
-import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
@@ -54,7 +51,6 @@ import org.threeten.bp.LocalTime
 import java.io.File
 
 class PreviewReminderViewModelTest : BaseTest() {
-  private val reminderRepository = mockk<ReminderRepository>()
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val getReminderV2ByIdUseCase = mockk<GetReminderV2ByIdUseCase>()
   private val googleCalendarUtils = mockk<GoogleCalendarUtils>(relaxed = true)
@@ -103,19 +99,6 @@ class PreviewReminderViewModelTest : BaseTest() {
     coEvery { googleTaskRepository.getByReminderId(any()) } returns null
   }
 
-  private fun reminder(
-    id: String = "42",
-    type: Int = Reminder.BY_DATE,
-  ): Reminder =
-    Reminder(
-      uuId = id,
-      summary = "Buy milk",
-      type = type,
-      isActive = true,
-      isRemoved = false,
-      syncState = SyncState.Synced,
-    )
-
   private fun reminderV2(
     id: String = "42",
     recurrence: RecurrenceRule = RecurrenceRule.Once,
@@ -134,7 +117,6 @@ class PreviewReminderViewModelTest : BaseTest() {
   private fun createViewModel(id: String = "42"): PreviewReminderViewModel =
     PreviewReminderViewModel(
       id = id,
-      reminderRepository = reminderRepository,
       reminderV2Repository = reminderV2Repository,
       getReminderV2ByIdUseCase = getReminderV2ByIdUseCase,
       googleCalendarUtils = googleCalendarUtils,
@@ -373,7 +355,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   @Test
   fun `shareReminder posts a ShareData event when the backup file is created`() =
     runTest {
-      coEvery { reminderRepository.getById("42") } returns reminder()
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
       val file = File("reminder.ics")
       every { backupTool.reminderToFile(any()) } returns file
       val viewModel = createViewModel()
@@ -387,7 +369,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   @Test
   fun `shareReminder emits nothing when the backup file cannot be created`() =
     runTest {
-      coEvery { reminderRepository.getById("42") } returns reminder()
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
       every { backupTool.reminderToFile(any()) } returns null
       val viewModel = createViewModel()
 

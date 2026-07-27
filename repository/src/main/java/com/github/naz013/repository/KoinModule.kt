@@ -66,8 +66,8 @@ val repositoryModule = module {
   }
   factory { GoogleTaskRepositoryImpl(get<AppDb>().googleTasksDao(), get()) as GoogleTaskRepository }
   factory { NoteRepositoryImpl(get<AppDb>().notesDao(), get()) as NoteRepository }
-  factory { ReminderRepositoryImpl(get<AppDb>().reminderDao(), get(), get()) as ReminderRepository }
-  factory { ReminderV2RepositoryImpl(get<AppDb>().reminderV2Dao(), get(), get<AppDb>().reminderDao()) as ReminderV2Repository }
+  factory { ReminderRepositoryImpl(get<AppDb>().reminderDao(), get()) as ReminderRepository }
+  factory { ReminderV2RepositoryImpl(get<AppDb>().reminderV2Dao(), get()) as ReminderV2Repository }
   factory { ReminderV2BackfillUseCase(get(), get()) }
   factory { GroupV2RepositoryImpl(get<AppDb>().groupV2Dao(), get()) as GroupV2Repository }
   factory { GroupV2BackfillUseCase(get(), get()) }

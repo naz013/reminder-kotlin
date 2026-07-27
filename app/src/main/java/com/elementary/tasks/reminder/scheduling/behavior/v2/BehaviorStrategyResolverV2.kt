@@ -6,16 +6,12 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
 /**
- * `ReminderV2`-typed mirror of [com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver].
- * Not yet wired to any production call site (Phase C sub-phase C1) - see the migration plan.
+ * Resolves the scheduling behavior strategy for a [ReminderV2].
  *
- * Deliberately switches on [ReminderV2.recurrence] (the sealed `RecurrenceRule`) rather than
- * re-deriving V1's raw-field heuristics, EXCEPT where the underlying V1 signal is not actually
- * type-derived to begin with (the location/shopping/timer-exclusion checks below) - those are
- * kept exactly as raw-field reads to match V1 byte-for-byte, since `recurrence` alone would not
- * distinguish what V1 distinguishes there. See [BehaviorStrategyResolverParityTest] - this class
- * must not be treated as safe to wire up until that harness passes with zero mismatches against
- * real data.
+ * Switches on [ReminderV2.recurrence] (the sealed `RecurrenceRule`) rather than raw-field
+ * heuristics, EXCEPT where the underlying signal is not actually type-derived to begin with (the
+ * location/shopping/timer-exclusion checks below) - those are kept as raw-field reads since
+ * `recurrence` alone would not distinguish what's needed there.
  *
  * Priority order (matches V1 exactly):
  * 1. Location-based, but with a current delayed event time (if has places + event time + current) - SimpleDate

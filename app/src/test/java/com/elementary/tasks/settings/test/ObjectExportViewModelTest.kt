@@ -189,7 +189,7 @@ class ObjectExportViewModelTest : BaseTest() {
       val uri = mockk<Uri>()
       val outputStream = mockk<OutputStream>(relaxed = true)
       every { contentResolver.openOutputStream(uri) } returns outputStream
-      every { memoryUtil.toStream(reminder, outputStream) } returns true
+      every { memoryUtil.toStream(any<Any>(), outputStream) } returns true
 
       viewModel.onSaveLocationPicked(reminder.uuId, uri)
 
@@ -204,7 +204,7 @@ class ObjectExportViewModelTest : BaseTest() {
       val uri = mockk<Uri>()
       val outputStream = mockk<OutputStream>(relaxed = true)
       every { contentResolver.openOutputStream(uri) } returns outputStream
-      every { memoryUtil.toStream(reminder, outputStream) } returns false
+      every { memoryUtil.toStream(any<Any>(), outputStream) } returns false
 
       viewModel.onSaveLocationPicked(reminder.uuId, uri)
 

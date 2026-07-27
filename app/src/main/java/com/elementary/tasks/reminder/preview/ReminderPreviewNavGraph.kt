@@ -30,7 +30,7 @@ import com.elementary.tasks.simplemap.MapCustomButton
 import com.elementary.tasks.simplemap.MapParams
 import com.elementary.tasks.simplemap.SimpleMapController
 import com.elementary.tasks.simplemap.SimpleMapView
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.google.android.gms.maps.model.LatLng
@@ -181,7 +181,7 @@ private fun EmbeddedMap(
 
 @Composable
 private fun FullscreenEmbeddedMap(
-  reminder: Reminder,
+  reminder: ReminderV2,
   onBackClick: () -> Unit,
   onControllerReady: (SimpleMapController) -> Unit,
 ) {

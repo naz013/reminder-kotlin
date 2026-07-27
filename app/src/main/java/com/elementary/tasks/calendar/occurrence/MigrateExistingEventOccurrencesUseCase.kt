@@ -5,13 +5,13 @@ import com.elementary.tasks.calendar.occurrence.worker.CalculateReminderOccurren
 import com.elementary.tasks.reminder.scheduling.usecase.legacy.MigrateRecurringParamsUseCase
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.workapi.WorkScheduler
 
 class MigrateExistingEventOccurrencesUseCase(
   private val birthdayRepository: BirthdayRepository,
   private val workScheduler: WorkScheduler,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val migrateRecurringParamsUseCase: MigrateRecurringParamsUseCase,
 ) {
   suspend operator fun invoke() {
@@ -23,7 +23,7 @@ class MigrateExistingEventOccurrencesUseCase(
         workScheduler.enqueue(CalculateBirthdayOccurrencesTask.prepareWorkRequest(id))
       }
 
-    reminderRepository
+    reminderV2Repository
       .getAllIds()
       .also { Logger.i(TAG, "Going to migrate ${it.size} reminders occurrences.") }
       .forEach { id ->

@@ -3,8 +3,6 @@ package com.github.naz013.usecase.reminders
 import org.koin.dsl.module
 
 val remindersUseCaseModule = module {
-  factory { GetReminderByIdUseCase(get()) }
-
   factory { GetActiveRemindersV2UseCase(get()) }
   factory { GetReminderV2ByIdUseCase(get()) }
   factory { GetRemindersV2ByGroupIdUseCase(get()) }
