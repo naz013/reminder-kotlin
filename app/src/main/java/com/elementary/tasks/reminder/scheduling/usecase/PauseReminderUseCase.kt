@@ -5,7 +5,6 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
 import com.elementary.tasks.reminder.scheduling.behavior.v2.LocationBasedStrategyV2
 import com.elementary.tasks.reminder.scheduling.usecase.location.StopLocationTrackingUseCase
-import com.github.naz013.domain.reminder.migration.toReminder
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 
@@ -23,9 +22,7 @@ class PauseReminderUseCase(
     jobScheduler.cancelReminder(reminder.uniqueId)
     val strategy = strategyResolver.resolve(reminder)
     if (strategy is LocationBasedStrategyV2) {
-      // StopLocationTrackingUseCase still reads the V1 repository's GPS-type filter query, which
-      // has no ReminderV2Repository equivalent yet (deferred to Phase C3) - shim at this boundary.
-      stopLocationTrackingUseCase(reminder = reminder.toReminder(), isPaused = true)
+      stopLocationTrackingUseCase(reminder = reminder, isPaused = true)
     }
     Logger.i(TAG, "Paused reminder with id=${reminder.uuId}, strategy=${strategy::class.simpleName}")
   }

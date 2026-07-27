@@ -1,14 +1,15 @@
 package com.elementary.tasks.calendar.history
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
-import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
-import com.elementary.tasks.reminder.scheduling.behavior.SimpleDateStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
+import com.elementary.tasks.reminder.scheduling.behavior.v2.LocationBasedStrategyV2
+import com.elementary.tasks.reminder.scheduling.behavior.v2.NoReminderStrategyV2
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.history.EventHistoricalRecord
 import com.github.naz013.domain.history.EventHistoricalRecordType
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.EventHistoryRepository
 import io.mockk.coEvery
@@ -33,7 +34,7 @@ import org.threeten.bp.LocalTime
  */
 class AddReminderToHistoryUseCaseTest : BaseTest() {
   private lateinit var dateTimeManager: DateTimeManager
-  private lateinit var strategyResolver: BehaviorStrategyResolver
+  private lateinit var strategyResolver: BehaviorStrategyResolverV2
   private lateinit var eventHistoryRepository: EventHistoryRepository
   private lateinit var useCase: AddReminderToHistoryUseCase
 
@@ -51,31 +52,31 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
       )
   }
 
+  private fun placeReminder(uuId: String, summary: String, name: String = "Office") =
+    ReminderV2(
+      uuId = uuId,
+      summary = summary,
+      places = listOf(Place(latitude = 40.7128, longitude = -74.0060, name = name, syncState = SyncState.Synced)),
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+    )
+
+  private fun timeReminder(uuId: String, summary: String, eventDateTime: LocalDateTime?) =
+    ReminderV2(
+      uuId = uuId,
+      summary = summary,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.now(), eventDateTime = eventDateTime),
+    )
+
   @Test
   fun `invoke saves location-based reminder with current datetime`() =
     runTest {
       // Arrange
       val reminderId = "reminder-location-123"
       val currentDateTime = LocalDateTime.of(2025, 11, 16, 14, 30)
-      val reminder =
-        Reminder(
-          uuId = reminderId,
-          summary = "Reminder at office",
-          places =
-            listOf(
-              Place(
-                latitude = 40.7128,
-                longitude = -74.0060,
-                name = "Office",
-                syncState = SyncState.Synced,
-              ),
-            ),
-          syncState = SyncState.Synced,
-        )
-      val locationStrategy = mockk<LocationBasedStrategy>()
+      val reminder = placeReminder(reminderId, "Reminder at office")
       val recordSlot = slot<EventHistoricalRecord>()
 
-      every { strategyResolver.resolve(reminder) } returns locationStrategy
+      every { strategyResolver.resolve(reminder) } returns LocationBasedStrategyV2
       every { dateTimeManager.getCurrentDateTime() } returns currentDateTime
       coEvery { eventHistoryRepository.save(capture(recordSlot)) } returns Unit
 
@@ -97,20 +98,13 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
     runTest {
       // Arrange
       val reminderId = "reminder-time-456"
-      val eventTimeGmt = "2025-11-20T18:00:00"
+      val eventDateTime = LocalDateTime.of(2025, 11, 20, 18, 0, 0)
       val convertedDateTime = LocalDateTime.of(2025, 11, 20, 20, 0)
-      val reminder =
-        Reminder(
-          uuId = reminderId,
-          summary = "Meeting reminder",
-          eventTime = eventTimeGmt,
-          syncState = SyncState.Synced,
-        )
-      val dateStrategy = mockk<SimpleDateStrategy>()
+      val reminder = timeReminder(reminderId, "Meeting reminder", eventDateTime)
       val recordSlot = slot<EventHistoricalRecord>()
 
-      every { strategyResolver.resolve(reminder) } returns dateStrategy
-      every { dateTimeManager.fromGmtToLocal(eventTimeGmt) } returns convertedDateTime
+      every { strategyResolver.resolve(reminder) } returns NoReminderStrategyV2
+      every { dateTimeManager.utcToLocal(eventDateTime) } returns convertedDateTime
       coEvery { eventHistoryRepository.save(capture(recordSlot)) } returns Unit
 
       // Act
@@ -127,46 +121,12 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
     }
 
   @Test
-  fun `invoke does not save when time conversion fails for time-based reminder`() =
+  fun `invoke does not save when time-based reminder has no event time`() =
     runTest {
       // Arrange
-      val reminderId = "reminder-invalid-time-789"
-      val invalidEventTime = "invalid-time-format"
-      val reminder =
-        Reminder(
-          uuId = reminderId,
-          summary = "Reminder with invalid time",
-          eventTime = invalidEventTime,
-          syncState = SyncState.Synced,
-        )
-      val dateStrategy = mockk<SimpleDateStrategy>()
+      val reminder = timeReminder("reminder-no-time-789", "Reminder with no event time", null)
 
-      every { strategyResolver.resolve(reminder) } returns dateStrategy
-      every { dateTimeManager.fromGmtToLocal(invalidEventTime) } returns null
-
-      // Act
-      useCase.invoke(reminder)
-
-      // Assert
-      coVerify(exactly = 0) { eventHistoryRepository.save(any()) }
-    }
-
-  @Test
-  fun `invoke handles reminder with empty event time gracefully`() =
-    runTest {
-      // Arrange
-      val reminderId = "reminder-empty-time-101"
-      val reminder =
-        Reminder(
-          uuId = reminderId,
-          summary = "Reminder with empty time",
-          eventTime = "",
-          syncState = SyncState.Synced,
-        )
-      val dateStrategy = mockk<SimpleDateStrategy>()
-
-      every { strategyResolver.resolve(reminder) } returns dateStrategy
-      every { dateTimeManager.fromGmtToLocal("") } returns null
+      every { strategyResolver.resolve(reminder) } returns NoReminderStrategyV2
 
       // Act
       useCase.invoke(reminder)
@@ -181,25 +141,10 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
       // Arrange
       val reminderId = "reminder-midnight-202"
       val midnightDateTime = LocalDateTime.of(2025, 11, 16, 0, 0, 0)
-      val reminder =
-        Reminder(
-          uuId = reminderId,
-          summary = "Midnight location reminder",
-          places =
-            listOf(
-              Place(
-                latitude = 51.5074,
-                longitude = -0.1278,
-                name = "London Office",
-                syncState = SyncState.Synced,
-              ),
-            ),
-          syncState = SyncState.Synced,
-        )
-      val locationStrategy = mockk<LocationBasedStrategy>()
+      val reminder = placeReminder(reminderId, "Midnight location reminder", "London Office")
       val recordSlot = slot<EventHistoricalRecord>()
 
-      every { strategyResolver.resolve(reminder) } returns locationStrategy
+      every { strategyResolver.resolve(reminder) } returns LocationBasedStrategyV2
       every { dateTimeManager.getCurrentDateTime() } returns midnightDateTime
       coEvery { eventHistoryRepository.save(capture(recordSlot)) } returns Unit
 
@@ -223,25 +168,10 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
           "could potentially cause issues with database storage or processing. " +
           "The system should handle this gracefully without errors."
       val currentDateTime = LocalDateTime.of(2025, 11, 16, 10, 15)
-      val reminder =
-        Reminder(
-          uuId = reminderId,
-          summary = longSummary,
-          places =
-            listOf(
-              Place(
-                latitude = 34.0522,
-                longitude = -118.2437,
-                name = "LA Office",
-                syncState = SyncState.Synced,
-              ),
-            ),
-          syncState = SyncState.Synced,
-        )
-      val locationStrategy = mockk<LocationBasedStrategy>()
+      val reminder = placeReminder(reminderId, longSummary, "LA Office")
       val recordSlot = slot<EventHistoricalRecord>()
 
-      every { strategyResolver.resolve(reminder) } returns locationStrategy
+      every { strategyResolver.resolve(reminder) } returns LocationBasedStrategyV2
       every { dateTimeManager.getCurrentDateTime() } returns currentDateTime
       coEvery { eventHistoryRepository.save(capture(recordSlot)) } returns Unit
 
@@ -259,20 +189,13 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
     runTest {
       // Arrange
       val reminderId = "reminder-year-end-404"
-      val eventTimeGmt = "2025-12-31T23:59:00"
+      val eventDateTime = LocalDateTime.of(2025, 12, 31, 23, 59, 0)
       val convertedDateTime = LocalDateTime.of(2025, 12, 31, 23, 59)
-      val reminder =
-        Reminder(
-          uuId = reminderId,
-          summary = "New Year's Eve reminder",
-          eventTime = eventTimeGmt,
-          syncState = SyncState.Synced,
-        )
-      val dateStrategy = mockk<SimpleDateStrategy>()
+      val reminder = timeReminder(reminderId, "New Year's Eve reminder", eventDateTime)
       val recordSlot = slot<EventHistoricalRecord>()
 
-      every { strategyResolver.resolve(reminder) } returns dateStrategy
-      every { dateTimeManager.fromGmtToLocal(eventTimeGmt) } returns convertedDateTime
+      every { strategyResolver.resolve(reminder) } returns NoReminderStrategyV2
+      every { dateTimeManager.utcToLocal(eventDateTime) } returns convertedDateTime
       coEvery { eventHistoryRepository.save(capture(recordSlot)) } returns Unit
 
       // Act
@@ -289,41 +212,12 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
   fun `invoke generates unique IDs for multiple reminders`() =
     runTest {
       // Arrange
-      val reminder1 =
-        Reminder(
-          uuId = "reminder-unique-1",
-          summary = "First reminder",
-          places =
-            listOf(
-              Place(
-                latitude = 40.7128,
-                longitude = -74.0060,
-                name = "Office 1",
-                syncState = SyncState.Synced,
-              ),
-            ),
-          syncState = SyncState.Synced,
-        )
-      val reminder2 =
-        Reminder(
-          uuId = "reminder-unique-2",
-          summary = "Second reminder",
-          places =
-            listOf(
-              Place(
-                latitude = 51.5074,
-                longitude = -0.1278,
-                name = "Office 2",
-                syncState = SyncState.Synced,
-              ),
-            ),
-          syncState = SyncState.Synced,
-        )
+      val reminder1 = placeReminder("reminder-unique-1", "First reminder", "Office 1")
+      val reminder2 = placeReminder("reminder-unique-2", "Second reminder", "Office 2")
       val currentDateTime = LocalDateTime.of(2025, 11, 16, 12, 0)
-      val locationStrategy = mockk<LocationBasedStrategy>()
       val recordSlots = mutableListOf<EventHistoricalRecord>()
 
-      every { strategyResolver.resolve(any()) } returns locationStrategy
+      every { strategyResolver.resolve(any()) } returns LocationBasedStrategyV2
       every { dateTimeManager.getCurrentDateTime() } returns currentDateTime
       coEvery { eventHistoryRepository.save(capture(recordSlots)) } returns Unit
 
@@ -345,20 +239,13 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
     runTest {
       // Arrange
       val reminderId = "reminder-timezone-505"
-      val eventTimeGmt = "2025-11-16T12:00:00" // Noon GMT
-      val convertedDateTime = LocalDateTime.of(2025, 11, 16, 17, 0) // 5 PM local (GMT+5)
-      val reminder =
-        Reminder(
-          uuId = reminderId,
-          summary = "Timezone test reminder",
-          eventTime = eventTimeGmt,
-          syncState = SyncState.Synced,
-        )
-      val dateStrategy = mockk<SimpleDateStrategy>()
+      val eventDateTime = LocalDateTime.of(2025, 11, 16, 12, 0, 0) // Noon UTC
+      val convertedDateTime = LocalDateTime.of(2025, 11, 16, 17, 0) // 5 PM local (UTC+5)
+      val reminder = timeReminder(reminderId, "Timezone test reminder", eventDateTime)
       val recordSlot = slot<EventHistoricalRecord>()
 
-      every { strategyResolver.resolve(reminder) } returns dateStrategy
-      every { dateTimeManager.fromGmtToLocal(eventTimeGmt) } returns convertedDateTime
+      every { strategyResolver.resolve(reminder) } returns NoReminderStrategyV2
+      every { dateTimeManager.utcToLocal(eventDateTime) } returns convertedDateTime
       coEvery { eventHistoryRepository.save(capture(recordSlot)) } returns Unit
 
       // Act
@@ -374,25 +261,10 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
   fun `invoke resolves correct strategy type and uses appropriate datetime source`() =
     runTest {
       // Arrange - Location-based reminder
-      val locationReminder =
-        Reminder(
-          uuId = "reminder-strategy-606",
-          summary = "Strategy test",
-          places =
-            listOf(
-              Place(
-                latitude = 35.6762,
-                longitude = 139.6503,
-                name = "Tokyo Office",
-                syncState = SyncState.Synced,
-              ),
-            ),
-          syncState = SyncState.Synced,
-        )
-      val locationStrategy = mockk<LocationBasedStrategy>()
+      val locationReminder = placeReminder("reminder-strategy-606", "Strategy test", "Tokyo Office")
       val currentDateTime = LocalDateTime.of(2025, 11, 16, 9, 30)
 
-      every { strategyResolver.resolve(locationReminder) } returns locationStrategy
+      every { strategyResolver.resolve(locationReminder) } returns LocationBasedStrategyV2
       every { dateTimeManager.getCurrentDateTime() } returns currentDateTime
       coEvery { eventHistoryRepository.save(any()) } returns Unit
 
@@ -402,6 +274,6 @@ class AddReminderToHistoryUseCaseTest : BaseTest() {
       // Assert
       // Verify getCurrentDateTime was called for location-based strategy
       coVerify(exactly = 1) { dateTimeManager.getCurrentDateTime() }
-      coVerify(exactly = 0) { dateTimeManager.fromGmtToLocal(any()) }
+      coVerify(exactly = 0) { dateTimeManager.utcToLocal(any()) }
     }
 }

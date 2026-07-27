@@ -55,8 +55,7 @@ class ActivateReminderUseCase(
           sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
         )
       saveReminderUseCase(reminder)
-      // StartLocationTrackingUseCase not yet ported - shim.
-      startLocationTrackingUseCase(reminder.toReminder())
+      startLocationTrackingUseCase(reminder)
       return reminder
     }
 
@@ -74,7 +73,7 @@ class ActivateReminderUseCase(
         Logger.d(TAG, "Scheduled GPS delay for reminder id=${reminder.uuId}.")
       } else {
         Logger.d(TAG, "Starting GPS tracking immediately for reminder id=${reminder.uuId}.")
-        startLocationTrackingUseCase(reminder.toReminder())
+        startLocationTrackingUseCase(reminder)
       }
       return reminder
     }

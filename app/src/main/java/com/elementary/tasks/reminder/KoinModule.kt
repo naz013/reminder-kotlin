@@ -335,7 +335,7 @@ val reminderModule =
 
     factoryOf(::UpdatePermanentReminderNotificationUseCase)
 
-    factory { StopLocationTrackingUseCase(get(), get(), get()) }
+    factory { StopLocationTrackingUseCase(get(), get()) }
     factory { StartLocationTrackingUseCase(get(), get()) }
 
     factory { CompleteRelatedGoogleTaskUseCase(get(), get()) }

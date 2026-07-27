@@ -18,6 +18,7 @@ import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -252,7 +253,7 @@ class EventsViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       val fromDb = reminderRepository.getById(id)
       if (fromDb != null) {
-        skipReminderUseCase(fromDb)
+        skipReminderUseCase(fromDb.toReminderV2())
         refresh()
       }
     }

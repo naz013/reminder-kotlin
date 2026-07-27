@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.scheduling.usecase
 import com.elementary.tasks.calendar.history.AddReminderToHistoryUseCase
 import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.reminder.migration.toReminder
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 
@@ -21,7 +20,7 @@ class CompleteReminderUseCase(
     val reminder = reminder.copy(notification = reminder.notification.copy(delayMinutes = 0))
     val strategy = strategyResolver.resolve(reminder)
     Logger.v(TAG, "Completing reminder id=${reminder.uuId} with strategy=$strategy")
-    addReminderToHistoryUseCase(reminder.toReminder())
+    addReminderToHistoryUseCase(reminder)
     return if (strategy.canSkip(reminder)) {
       val fromDateTime =
         reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
