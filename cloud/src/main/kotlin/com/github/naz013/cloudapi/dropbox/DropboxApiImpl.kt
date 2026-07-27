@@ -8,9 +8,9 @@ import com.dropbox.core.v2.files.FileMetadata
 import com.dropbox.core.v2.files.WriteMode
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileSearchParams
-import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.cloudapi.GetFileExtensionFromNameUseCase
 import com.github.naz013.cloudapi.Source
+import com.github.naz013.files.FileConfig
 import com.github.naz013.logging.Logger
 import okhttp3.OkHttpClient
 import java.io.InputStream
@@ -267,10 +267,12 @@ internal class DropboxApiImpl(
   private fun folderFromExt(ext: String): String {
     return when (ext) {
       FileConfig.FILE_NAME_REMINDER -> REMINDER_FOLDER
+      FileConfig.FILE_NAME_REMINDER_V2 -> REMINDER_FOLDER
       FileConfig.FILE_NAME_NOTE -> NOTE_FOLDER
       FileConfig.FILE_NAME_NOTE_V3 -> NOTE_FOLDER
       FileConfig.FILE_NAME_NOTE_IMAGE -> IMAGES_FOLDER
       FileConfig.FILE_NAME_GROUP -> GROUP_FOLDER
+      FileConfig.FILE_NAME_GROUP_V2 -> GROUP_FOLDER
       FileConfig.FILE_NAME_BIRTHDAY -> BIRTH_FOLDER
       FileConfig.FILE_NAME_PLACE -> PLACE_FOLDER
       FileConfig.FILE_NAME_SETTINGS_EXT -> SETTINGS_FOLDER

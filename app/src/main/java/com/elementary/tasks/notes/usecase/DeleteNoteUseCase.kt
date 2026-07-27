@@ -5,7 +5,7 @@ import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 
 class DeleteNoteUseCase(
   private val noteRepository: NoteRepository,

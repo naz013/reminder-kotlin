@@ -357,7 +357,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     runTest {
       coEvery { reminderV2Repository.getById("42") } returns reminderV2()
       val file = File("reminder.ics")
-      every { backupTool.reminderToFile(any()) } returns file
+      coEvery { backupTool.reminderToFile(any()) } returns file
       val viewModel = createViewModel()
 
       viewModel.shareReminder()
@@ -370,7 +370,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   fun `shareReminder emits nothing when the backup file cannot be created`() =
     runTest {
       coEvery { reminderV2Repository.getById("42") } returns reminderV2()
-      every { backupTool.reminderToFile(any()) } returns null
+      coEvery { backupTool.reminderToFile(any()) } returns null
       val viewModel = createViewModel()
 
       viewModel.shareReminder()

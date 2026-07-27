@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.cloud.worker
 
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.SyncApi
 import com.github.naz013.workapi.BackgroundTask
 import com.github.naz013.workapi.TaskData

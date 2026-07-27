@@ -8,8 +8,8 @@ import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.module.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.mockDispatcherProvider
+import com.elementary.tasks.module.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.reminder.build.adapter.BuilderErrorToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiFilter
@@ -40,17 +40,13 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.navigation.intent.IntentDataReader
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -227,25 +223,6 @@ class BuildReminderViewModelTest : BaseTest() {
     assertEquals(true, viewModel.state.value.canRemove)
     verify { builderItemsLogic.setAll(listOf(summaryItem())) }
     coVerify(exactly = 1) { pauseReminderUseCase(match { it.uuId == "42" }) }
-  }
-
-  @Test
-  fun `fromIntentItem deep link converts the imported V1 reminder to V2 for decompose`() {
-    val imported =
-      Reminder(
-        uuId = "from-file",
-        summary = "Imported",
-        type = Reminder.BY_DATE,
-        startTime = "2026-07-22 09:00:00.000+0000",
-        syncState = SyncState.Synced,
-      )
-    every { intentDataReader.get(IntentKeys.INTENT_ITEM, Reminder::class.java) } returns imported
-    coEvery { reminderToBiDecomposer(imported.toReminderV2()) } returns listOf(summaryItem())
-
-    val viewModel = createViewModel(fromIntentItem = true)
-
-    assertEquals(false, viewModel.state.value.canRemove)
-    verify { builderItemsLogic.setAll(listOf(summaryItem())) }
   }
 
   @Test

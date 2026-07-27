@@ -1,5 +1,6 @@
 package com.github.naz013.sync
 
+import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.cache.SyncApiSessionCache
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory

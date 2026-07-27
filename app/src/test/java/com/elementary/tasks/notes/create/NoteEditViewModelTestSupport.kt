@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
@@ -64,7 +63,6 @@ open class NoteEditViewModelTestSupport : BaseTest() {
   protected val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   protected val uiNoteEditAdapter = mockk<UiNoteEditAdapter>()
   protected val noteImageRepository = mockk<NoteImageRepository>()
-  protected val noteToOldNoteConverter = mockk<NoteToOldNoteConverter>()
   protected val intentDataReader = mockk<IntentDataReader>()
   protected val deleteNoteUseCase = mockk<DeleteNoteUseCase>(relaxed = true)
   protected val saveNoteUseCase = mockk<SaveNoteUseCase>(relaxed = true)
@@ -213,7 +211,6 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       analyticsEventSender = analyticsEventSender,
       uiNoteEditAdapter = uiNoteEditAdapter,
       noteImageRepository = noteImageRepository,
-      noteToOldNoteConverter = noteToOldNoteConverter,
       intentDataReader = intentDataReader,
       deleteNoteUseCase = deleteNoteUseCase,
       saveNoteUseCase = saveNoteUseCase,

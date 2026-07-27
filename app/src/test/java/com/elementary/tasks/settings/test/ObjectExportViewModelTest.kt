@@ -5,18 +5,18 @@ import android.content.Context
 import android.net.Uri
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.mockDispatcherProvider
-import com.elementary.tasks.notes.SharedNote
-import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
+import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.files.DataConverter
+import com.github.naz013.files.FileConfig
+import com.github.naz013.files.model.SharedNote
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
@@ -31,6 +31,7 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
+import java.io.IOException
 import java.io.OutputStream
 
 class ObjectExportViewModelTest : BaseTest() {
@@ -42,8 +43,8 @@ class ObjectExportViewModelTest : BaseTest() {
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val placeRepository = mockk<PlaceRepository>()
   private val groupV2Repository = mockk<GroupV2Repository>()
-  private val memoryUtil = mockk<MemoryUtil>()
   private val noteToOldNoteConverter = mockk<NoteToOldNoteConverter>()
+  private val dataConverter = mockk<DataConverter>()
 
   private lateinit var viewModel: ObjectExportViewModel
 
@@ -66,8 +67,8 @@ class ObjectExportViewModelTest : BaseTest() {
       birthdayRepository = birthdayRepository,
       placeRepository = placeRepository,
       groupV2Repository = groupV2Repository,
-      memoryUtil = memoryUtil,
       noteToOldNoteConverter = noteToOldNoteConverter,
+      dataConverter = dataConverter,
     )
 
   private fun reminder(summary: String) =
@@ -141,7 +142,7 @@ class ObjectExportViewModelTest : BaseTest() {
 
     val event =
       viewModel.navigationEvent.value?.peekContent() as ObjectExportEvent.RequestSaveLocation
-    assertEquals("Buy milk" + FileConfig.FILE_NAME_REMINDER, event.fileName)
+    assertEquals("Buy milk" + FileConfig.FILE_NAME_REMINDER_V2, event.fileName)
     assertEquals("r1", event.itemId)
   }
 
@@ -189,7 +190,7 @@ class ObjectExportViewModelTest : BaseTest() {
       val uri = mockk<Uri>()
       val outputStream = mockk<OutputStream>(relaxed = true)
       every { contentResolver.openOutputStream(uri) } returns outputStream
-      every { memoryUtil.toStream(any<Any>(), outputStream) } returns true
+      coEvery { dataConverter.toOutputStream(reminder, outputStream) } returns Unit
 
       viewModel.onSaveLocationPicked(reminder.uuId, uri)
 
@@ -204,7 +205,7 @@ class ObjectExportViewModelTest : BaseTest() {
       val uri = mockk<Uri>()
       val outputStream = mockk<OutputStream>(relaxed = true)
       every { contentResolver.openOutputStream(uri) } returns outputStream
-      every { memoryUtil.toStream(any<Any>(), outputStream) } returns false
+      coEvery { dataConverter.toOutputStream(reminder, outputStream) } throws IOException("disk full")
 
       viewModel.onSaveLocationPicked(reminder.uuId, uri)
 
@@ -240,7 +241,7 @@ class ObjectExportViewModelTest : BaseTest() {
       val outputStream = mockk<OutputStream>(relaxed = true)
       every { contentResolver.openOutputStream(uri) } returns outputStream
       every { noteToOldNoteConverter.toSharedNote(note) } returns sharedNote
-      every { memoryUtil.toStream(sharedNote, outputStream) } returns true
+      coEvery { dataConverter.toOutputStream(sharedNote, outputStream) } returns Unit
 
       viewModel.onSaveLocationPicked("n1", uri)
 

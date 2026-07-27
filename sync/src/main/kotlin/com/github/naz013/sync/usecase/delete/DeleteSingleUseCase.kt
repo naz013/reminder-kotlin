@@ -1,7 +1,7 @@
 package com.github.naz013.sync.usecase.delete
 
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.usecase.GetAllowedCloudApisUseCase
 import com.github.naz013.sync.usecase.GetCloudFileNameUseCase
 

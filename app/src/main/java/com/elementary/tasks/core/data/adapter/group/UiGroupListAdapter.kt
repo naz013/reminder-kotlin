@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
@@ -13,24 +12,6 @@ import com.github.naz013.ui.common.theme.ThemeProvider
 class UiGroupListAdapter(
   private val contextProvider: ContextProvider,
 ) {
-  fun convert(reminderGroup: ReminderGroup): UiGroupList {
-    val groupColor =
-      ThemeProvider.themedColor(
-        contextProvider.themedContext,
-        reminderGroup.groupColor,
-      )
-    return UiGroupList(
-      id = reminderGroup.groupUuId,
-      color = groupColor,
-      title = reminderGroup.groupTitle,
-      colorPosition = reminderGroup.groupColor,
-      contrastColor = getContrastColor(groupColor),
-      isDefaultGroup = reminderGroup.isDefaultGroup,
-      canDelete = !reminderGroup.isDefaultGroup,
-      canSetAsDefault = !reminderGroup.isDefaultGroup,
-    )
-  }
-
   fun convert(group: GroupV2): UiGroupList {
     val groupColor = ThemeProvider.themedColor(contextProvider.themedContext, group.color)
     return UiGroupList(

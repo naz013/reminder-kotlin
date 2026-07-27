@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.cloud.converters
 
-import com.elementary.tasks.notes.SharedNote
+import com.github.naz013.files.model.SharedNote
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState

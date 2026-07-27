@@ -15,13 +15,11 @@ import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecentQueryRepository
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.repository.UsedTimeRepository
@@ -47,7 +45,6 @@ import org.threeten.bp.LocalDateTime
 class DeveloperViewModelTest : BaseTest() {
   private val legalDocumentRepository = mockk<LegalDocumentRepository>(relaxed = true)
   private val prefs = mockk<Prefs>()
-  private val reminderRepository = mockk<ReminderRepository>(relaxed = true)
   private val birthdayRepository = mockk<BirthdayRepository>(relaxed = true)
   private val dateTimeManager = mockk<DateTimeManager>()
   private val calendarEventRepository = mockk<CalendarEventRepository>(relaxed = true)
@@ -59,7 +56,6 @@ class DeveloperViewModelTest : BaseTest() {
   private val placeRepository = mockk<PlaceRepository>(relaxed = true)
   private val recentQueryRepository = mockk<RecentQueryRepository>(relaxed = true)
   private val recurPresetRepository = mockk<RecurPresetRepository>(relaxed = true)
-  private val reminderGroupRepository = mockk<ReminderGroupRepository>(relaxed = true)
   private val remoteFileMetadataRepository = mockk<RemoteFileMetadataRepository>(relaxed = true)
   private val usedTimeRepository = mockk<UsedTimeRepository>(relaxed = true)
   private val reminderV2Repository = mockk<ReminderV2Repository>(relaxed = true)
@@ -78,7 +74,6 @@ class DeveloperViewModelTest : BaseTest() {
     every { dateTimeManager.getNowGmtDateTime() } returns "now"
     every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
     every { dateTimeManager.getCurrentDateTime() } returns LocalDateTime.now()
-    coEvery { reminderGroupRepository.defaultGroup() } returns null
     coEvery { groupV2Repository.defaultGroup() } returns null
     every { buildInfo.isPro } returns true
     every { prefs.isUserLogged = any() } just Runs
@@ -89,7 +84,6 @@ class DeveloperViewModelTest : BaseTest() {
         legalDocumentRepository = legalDocumentRepository,
         prefs = prefs,
         dispatcherProvider = mockDispatcherProvider(),
-        reminderRepository = reminderRepository,
         birthdayRepository = birthdayRepository,
         dateTimeManager = dateTimeManager,
         calendarEventRepository = calendarEventRepository,
@@ -101,7 +95,6 @@ class DeveloperViewModelTest : BaseTest() {
         placeRepository = placeRepository,
         recentQueryRepository = recentQueryRepository,
         recurPresetRepository = recurPresetRepository,
-        reminderGroupRepository = reminderGroupRepository,
         remoteFileMetadataRepository = remoteFileMetadataRepository,
         usedTimeRepository = usedTimeRepository,
         reminderV2Repository = reminderV2Repository,
@@ -182,8 +175,6 @@ class DeveloperViewModelTest : BaseTest() {
       coVerify { recurPresetRepository.deleteAll() }
       coVerify { usedTimeRepository.deleteAll() }
       coVerify { calendarEventRepository.deleteAll() }
-      coVerify { reminderGroupRepository.deleteAll() }
-      coVerify { reminderRepository.deleteAll() }
       coVerify { placeRepository.deleteAll() }
       coVerify { noteRepository.deleteAllNotes() }
       coVerify { noteRepository.deleteAllImages() }

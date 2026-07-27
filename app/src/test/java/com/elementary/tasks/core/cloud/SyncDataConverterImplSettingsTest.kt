@@ -1,6 +1,10 @@
 package com.elementary.tasks.core.cloud
 
-import com.github.naz013.sync.settings.SettingsModel
+import com.elementary.tasks.module.sync.SyncDataConverterImpl
+import com.github.naz013.files.DataConverter
+import com.github.naz013.files.DataType
+import com.github.naz013.files.model.SettingsModel
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -13,7 +17,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [SyncDataConverterImpl] SettingsModel encoding/decoding.
+ * Unit tests for [com.elementary.tasks.module.sync.SyncDataConverterImpl] SettingsModel encoding/decoding.
  *
  * Tests the complete SettingsModel serialization workflow including:
  * - Encoding to Base64-encoded ObjectOutputStream
@@ -37,7 +41,7 @@ class SyncDataConverterImplSettingsTest {
 
   @Before
   fun setUp() {
-    converter = SyncDataConverterImpl()
+    converter = SyncDataConverterImpl(mockk<DataConverter>())
   }
 
   // ========================================
@@ -55,7 +59,7 @@ class SyncDataConverterImplSettingsTest {
       assertNotNull("Input stream should not be null", inputStream)
 
       // Act - Decode
-      val decodedSettings = converter.parse(inputStream, SettingsModel::class.java)
+      val decodedSettings = converter.parse(inputStream, DataType.Settings) as SettingsModel
 
       // Assert
       assertNotNull("Decoded settings should not be null", decodedSettings)
@@ -78,7 +82,7 @@ class SyncDataConverterImplSettingsTest {
       val inputStream = converter.create(originalSettings)
 
       // Act - Decode
-      val decodedSettings = converter.parse(inputStream, SettingsModel::class.java)
+      val decodedSettings = converter.parse(inputStream, DataType.Settings) as SettingsModel
 
       // Assert
       assertEquals("Settings data size should match", 3, decodedSettings.data.size)
@@ -105,7 +109,7 @@ class SyncDataConverterImplSettingsTest {
       val inputStream = converter.create(originalSettings)
 
       // Act - Decode
-      val decodedSettings = converter.parse(inputStream, SettingsModel::class.java)
+      val decodedSettings = converter.parse(inputStream, DataType.Settings) as SettingsModel
 
       // Assert
       assertEquals("Settings data size should match", 5, decodedSettings.data.size)
@@ -137,7 +141,7 @@ class SyncDataConverterImplSettingsTest {
       val inputStream = converter.create(originalSettings)
 
       // Act - Decode
-      val decodedSettings = converter.parse(inputStream, SettingsModel::class.java)
+      val decodedSettings = converter.parse(inputStream, DataType.Settings) as SettingsModel
 
       // Assert
       assertEquals(
@@ -177,7 +181,7 @@ class SyncDataConverterImplSettingsTest {
       val inputStream = converter.create(originalSettings)
 
       // Act - Decode
-      val decodedSettings = converter.parse(inputStream, SettingsModel::class.java)
+      val decodedSettings = converter.parse(inputStream, DataType.Settings) as SettingsModel
 
       // Assert
       assertEquals("Settings data size should match", 2, decodedSettings.data.size)
@@ -200,7 +204,7 @@ class SyncDataConverterImplSettingsTest {
       val inputStream = converter.create(originalSettings)
 
       // Act - Decode
-      val decodedSettings = converter.parse(inputStream, SettingsModel::class.java)
+      val decodedSettings = converter.parse(inputStream, DataType.Settings) as SettingsModel
 
       // Assert
       assertEquals("long_string should match", longString, decodedSettings.data["long_string"])
@@ -217,7 +221,7 @@ class SyncDataConverterImplSettingsTest {
       val inputStream = converter.create(originalSettings)
 
       // Act - Decode
-      val decodedSettings = converter.parse(inputStream, SettingsModel::class.java)
+      val decodedSettings = converter.parse(inputStream, DataType.Settings) as SettingsModel
 
       // Assert
       assertEquals("Settings data size should match", 100, decodedSettings.data.size)
@@ -269,7 +273,7 @@ class SyncDataConverterImplSettingsTest {
       // Act - Perform 5 encode/decode cycles
       repeat(5) {
         val inputStream = converter.create(settings)
-        settings = converter.parse(inputStream, SettingsModel::class.java)
+        settings = converter.parse(inputStream, DataType.Settings) as SettingsModel
       }
 
       // Assert - Data should remain unchanged after multiple cycles
@@ -342,7 +346,7 @@ class SyncDataConverterImplSettingsTest {
       val inputStream = converter.create(originalSettings)
 
       // Act - Decode
-      val decodedSettings = converter.parse(inputStream, SettingsModel::class.java)
+      val decodedSettings = converter.parse(inputStream, DataType.Settings) as SettingsModel
 
       // Assert - All settings should be preserved
       assertEquals("All settings should be present", testData.size, decodedSettings.data.size)

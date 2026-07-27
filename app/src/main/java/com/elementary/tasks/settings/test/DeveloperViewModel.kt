@@ -8,8 +8,8 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.note.Note
-import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
@@ -30,8 +30,6 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecentQueryRepository
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RemoteFileMetadataRepository
 import com.github.naz013.repository.UsedTimeRepository
@@ -52,7 +50,6 @@ class DeveloperViewModel(
   private val legalDocumentRepository: LegalDocumentRepository,
   private val prefs: Prefs,
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderRepository: ReminderRepository,
   private val birthdayRepository: BirthdayRepository,
   private val dateTimeManager: DateTimeManager,
   private val calendarEventRepository: CalendarEventRepository,
@@ -64,7 +61,6 @@ class DeveloperViewModel(
   private val placeRepository: PlaceRepository,
   private val recentQueryRepository: RecentQueryRepository,
   private val recurPresetRepository: RecurPresetRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
   private val remoteFileMetadataRepository: RemoteFileMetadataRepository,
   private val usedTimeRepository: UsedTimeRepository,
   private val buildInfo: BuildInfo,
@@ -204,8 +200,8 @@ class DeveloperViewModel(
       Table.RecurPreset -> recurPresetRepository.deleteAll()
       Table.UsedTime -> usedTimeRepository.deleteAll()
       Table.CalendarEvent -> calendarEventRepository.deleteAll()
-      Table.ReminderGroup -> reminderGroupRepository.deleteAll()
-      Table.Reminder -> reminderRepository.deleteAll()
+      Table.ReminderGroup -> { }
+      Table.Reminder -> { }
       Table.Place -> placeRepository.deleteAll()
       Table.Note -> noteRepository.deleteAllNotes()
       Table.ImageFile -> noteRepository.deleteAllImages()

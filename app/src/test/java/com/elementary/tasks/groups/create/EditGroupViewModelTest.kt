@@ -9,7 +9,6 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.navigation.intent.IntentDataReader
@@ -51,18 +50,11 @@ class EditGroupViewModelTest : BaseTest() {
     syncState = SyncState.Synced,
   )
 
-  private fun reminderGroupFromFile(
+  private fun groupV2FromFile(
     id: String = "9",
     title: String = "From File",
     isDefault: Boolean = false,
-  ) = ReminderGroup(
-    groupTitle = title,
-    groupUuId = id,
-    groupColor = 0,
-    groupDateTime = "2026-07-23T10:00:00",
-    isDefaultGroup = isDefault,
-    syncState = SyncState.Synced,
-  )
+  ) = groupV2(id = id, title = title, isDefault = isDefault)
 
   private fun buildViewModel(
     id: String = "1",
@@ -133,8 +125,8 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `loads from intent data and detects a matching group already in db`() =
     runTest {
-      val fromFile = reminderGroupFromFile(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
       coEvery { groupV2Repository.getById("9") } returns groupV2(id = "9", title = "From File")
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
 
@@ -149,8 +141,8 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `loads from intent data when no matching group exists in db`() =
     runTest {
-      val fromFile = reminderGroupFromFile(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
       coEvery { groupV2Repository.getById("9") } returns null
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
 
@@ -221,8 +213,8 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `onSaveClick shows copy conflict dialog when from file and already in db`() =
     runTest {
-      val fromFile = reminderGroupFromFile(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
       coEvery { groupV2Repository.getById("9") } returns groupV2(id = "9", title = "From File")
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
       fileViewModel.state.first()
@@ -247,8 +239,8 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `onCopyKeepClick dismisses dialog and saves a copy under a new id`() =
     runTest {
-      val fromFile = reminderGroupFromFile(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
       coEvery { groupV2Repository.getById("9") } returns groupV2(id = "9", title = "From File")
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
       fileViewModel.state.first()
@@ -263,8 +255,8 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `onCopyReplaceClick dismisses dialog and saves replacing the same id`() =
     runTest {
-      val fromFile = reminderGroupFromFile(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
       coEvery { groupV2Repository.getById("9") } returns groupV2(id = "9", title = "From File")
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
       fileViewModel.state.first()

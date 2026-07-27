@@ -6,7 +6,7 @@ import com.github.naz013.domain.Place
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.PlaceRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 
 class SavePlaceUseCase(
   private val placeRepository: PlaceRepository,

@@ -10,6 +10,7 @@ dependencies {
   implementation(project(":domain"))
   implementation(project(":logging-api"))
   implementation(project(":cloud-api"))
+  implementation(project(":files-api"))
   implementation(project(":ui-common"))
 
   implementation(libs.google.api.services.tasks)

@@ -15,7 +15,6 @@ import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskTask
@@ -42,96 +41,89 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val workerModule =
-  module {
-    factory<BackgroundTask>(named(SaveNewTaskTask.TASK_KEY)) { SaveNewTaskTask(get(), get()) }
-    factory<BackgroundTask>(named(UpdateTaskTask.TASK_KEY)) { UpdateTaskTask(get(), get()) }
+val workerModule = module {
+  factory<BackgroundTask>(named(SaveNewTaskTask.TASK_KEY)) { SaveNewTaskTask(get(), get()) }
+  factory<BackgroundTask>(named(UpdateTaskTask.TASK_KEY)) { UpdateTaskTask(get(), get()) }
+}
+
+val viewModelModule = module {
+  viewModelOf(::SelectApplicationViewModel)
+  viewModelOf(::BuilderConfigureViewModel)
+  viewModelOf(::ProVersionViewModel)
+
+  viewModelOf(::SplashViewModel)
+
+  viewModelOf(::TroubleshootingViewModel)
+
+  viewModelOf(::PrivacyPolicyViewModel)
+  viewModelOf(::TermsViewModel)
+  viewModelOf(::WhatsNewViewModel)
+  viewModel {
+    DeveloperViewModel(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    )
   }
+  viewModelOf(::ObjectExportViewModel)
+}
 
-val viewModelModule =
-  module {
-    viewModelOf(::SelectApplicationViewModel)
-    viewModelOf(::BuilderConfigureViewModel)
-    viewModelOf(::ProVersionViewModel)
+val storageModule = module {
+  factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
+  factory { ReminderSettingsRepositoryImpl(get()) as ReminderSettingsRepository }
+}
 
-    viewModelOf(::SplashViewModel)
+val utilModule = module {
+  factoryOf(::PresetInitProcessor)
+  factoryOf(::GoogleCalendarUtils)
 
-    viewModelOf(::TroubleshootingViewModel)
+  singleOf(::BackupTool)
+  singleOf(::CacheUtil)
 
-    viewModelOf(::PrivacyPolicyViewModel)
-    viewModelOf(::TermsViewModel)
-    viewModelOf(::WhatsNewViewModel)
-    viewModel {
-      DeveloperViewModel(
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
-    viewModelOf(::ObjectExportViewModel)
+  factoryOf(::RecurEventManager)
+
+  singleOf(::Prefs)
+  singleOf(::RemotePrefs)
+
+  factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
+  factory { JobScheduler(get(), get(), get(), get(), get(), get()) }
+
+  factory { ActivateAllActiveRemindersUseCase(get(), get()) }
+  factory { NoteImageMigration(get(), get()) }
+
+  factory<BackgroundTask>(named(AutoBackupEventTask.TASK_KEY)) { AutoBackupEventTask(get(), get()) }
+  factory<BackgroundTask>(named(BirthdayEventTask.TASK_KEY)) { BirthdayEventTask(get()) }
+  factory<BackgroundTask>(named(BirthdayPermanentEventTask.TASK_KEY)) { BirthdayPermanentEventTask(get(), get()) }
+
+  factory { FeatureManager(get()) }
+  factory { GroupsUtil(get(), get(), get()) }
+  factory { ImageDecoder(get(), get(), get()) }
+  factory { DroppedContentParser(get()) }
+
+  factory { DoNotDisturbManager(get(), get()) }
+
+  factory { (context: Context) ->
+    DropboxLogin(context, get(), get(), get(), get(), get())
   }
-
-val storageModule =
-  module {
-    factory { CloudKeysStorageImpl(get()) as CloudKeysStorage }
-    factory { ReminderSettingsRepositoryImpl(get()) as ReminderSettingsRepository }
+  factory { (listener: LocationTracker.Listener) ->
+    LocationTracker(listener, get(), get(), get())
   }
-
-val utilModule =
-  module {
-    factoryOf(::PresetInitProcessor)
-    factoryOf(::GoogleCalendarUtils)
-
-    singleOf(::MemoryUtil)
-    singleOf(::BackupTool)
-    singleOf(::CacheUtil)
-
-    factoryOf(::RecurEventManager)
-
-    singleOf(::Prefs)
-    singleOf(::RemotePrefs)
-
-    factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
-    factory { JobScheduler(get(), get(), get(), get(), get(), get()) }
-
-    factory { ActivateAllActiveRemindersUseCase(get(), get()) }
-    factory { NoteImageMigration(get(), get()) }
-
-    factory<BackgroundTask>(named(AutoBackupEventTask.TASK_KEY)) { AutoBackupEventTask(get(), get()) }
-    factory<BackgroundTask>(named(BirthdayEventTask.TASK_KEY)) { BirthdayEventTask(get()) }
-    factory<BackgroundTask>(named(BirthdayPermanentEventTask.TASK_KEY)) { BirthdayPermanentEventTask(get(), get()) }
-
-    factory { FeatureManager(get()) }
-    factory { GroupsUtil(get(), get(), get()) }
-    factory { ImageDecoder(get(), get(), get()) }
-    factory { DroppedContentParser(get()) }
-
-    factory { DoNotDisturbManager(get(), get()) }
-
-    factory { (context: Context) ->
-      DropboxLogin(context, get(), get(), get(), get(), get())
-    }
-    factory { (listener: LocationTracker.Listener) ->
-      LocationTracker(listener, get(), get(), get())
-    }
-  }
+}

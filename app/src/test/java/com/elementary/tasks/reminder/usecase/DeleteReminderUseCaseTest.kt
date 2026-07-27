@@ -10,7 +10,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify

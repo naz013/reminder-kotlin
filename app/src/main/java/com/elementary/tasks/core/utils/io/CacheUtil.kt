@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils.io
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -13,10 +12,11 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 
 class CacheUtil(
   val context: Context,
-  private val memoryUtil: MemoryUtil,
 ) {
   private val sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -33,7 +33,7 @@ class CacheUtil(
     }
     return try {
       val outputStream = FileOutputStream(file)
-      return if (memoryUtil.toStream(FileInputStream(f), outputStream)) {
+      return if (toStream(FileInputStream(f), outputStream)) {
         outputStream.flush()
         outputStream.close()
         file
@@ -48,17 +48,19 @@ class CacheUtil(
     }
   }
 
-  fun removeFromCache(path: String) {
-    val file = File(path)
-    if (file.exists()) {
-      file.delete()
-      sp.edit().remove(path).apply()
+  private fun toStream(
+    inputStream: InputStream,
+    outputStream: OutputStream,
+  ): Boolean {
+    try {
+      inputStream.copyTo(outputStream)
+      return true
+    } catch (e: Exception) {
+      e.printStackTrace()
+      return false
+    } finally {
+      inputStream.close()
     }
-  }
-
-  fun cacheFile(intent: Intent?): String? {
-    val uri = intent?.data ?: return null
-    return cacheFile(uri)
   }
 
   @SuppressLint("Range")

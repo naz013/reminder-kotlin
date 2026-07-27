@@ -6,9 +6,9 @@ import android.os.Bundle
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.DeepLinkDestination
@@ -63,7 +63,7 @@ class DataNavigationDispatcher(
         }
       }
 
-      is ReminderGroup -> {
+      is GroupV2 -> {
         Bundle().apply {
           putParcelable(
             DeepLinkDestination.KEY,
@@ -91,7 +91,7 @@ class DataNavigationDispatcher(
         }
       }
 
-      is Reminder -> {
+      is ReminderV2 -> {
         Bundle().apply {
           putParcelable(
             DeepLinkDestination.KEY,
@@ -125,15 +125,15 @@ class DataNavigationDispatcher(
 
   private fun getAction(data: Any): String? =
     when (data) {
-      is Birthday, is ReminderGroup, is Place, is Reminder, is NoteWithImages -> Intent.ACTION_VIEW
+      is Birthday, is GroupV2, is Place, is ReminderV2, is NoteWithImages -> Intent.ACTION_VIEW
       else -> null
     }
 
   private fun getClass(data: Any): Class<*>? =
     when (data) {
       is Birthday -> BottomNavActivity::class.java
-      is Reminder -> BottomNavActivity::class.java
-      is ReminderGroup -> BottomNavActivity::class.java
+      is ReminderV2 -> BottomNavActivity::class.java
+      is GroupV2 -> BottomNavActivity::class.java
       is NoteWithImages -> BottomNavActivity::class.java
       is Place -> BottomNavActivity::class.java
       else -> null

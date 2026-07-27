@@ -68,6 +68,7 @@ dependencies {
   implementation(project(":platform-common"))
   implementation(project(":ui-common"))
   implementation(project(":sync"))
+  implementation(project(":files-api"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)

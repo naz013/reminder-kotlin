@@ -25,7 +25,6 @@ import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.domain.reminder.migration.toReminder
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -246,7 +245,7 @@ class PreviewReminderViewModel(
 
   fun shareReminder() {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderV2Repository.getById(id)?.toReminder() ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       val file = backupTool.reminderToFile(reminder) ?: return@launch
       Logger.i(TAG, "Sharing reminder ${file.name}")
       event.emit(

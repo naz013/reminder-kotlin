@@ -7,8 +7,8 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.sync.DataPostProcessor
-import com.github.naz013.sync.DataType
-import com.github.naz013.sync.settings.SettingsModel
+import com.github.naz013.files.DataType
+import com.github.naz013.files.model.SettingsModel
 
 class DataPostProcessorImpl(
   private val groupV2Repository: GroupV2Repository,

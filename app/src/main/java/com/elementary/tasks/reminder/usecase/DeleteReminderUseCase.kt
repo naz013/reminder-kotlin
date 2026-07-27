@@ -9,7 +9,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 
 class DeleteReminderUseCase(
   private val reminderV2Repository: ReminderV2Repository,

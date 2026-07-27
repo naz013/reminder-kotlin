@@ -3,7 +3,7 @@ package com.elementary.tasks.notes.usecase
 import android.content.Context
 import android.util.Base64
 import android.util.Base64OutputStream
-import com.elementary.tasks.notes.SharedNote
+import com.github.naz013.files.model.SharedNote
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson

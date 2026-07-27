@@ -2,15 +2,17 @@ package com.github.naz013.sync.usecase
 
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 
 /**
  * Unit tests for [GetLocalUuIdUseCase].
@@ -31,8 +33,7 @@ class GetLocalUuIdUseCaseTest {
   fun `invoke with reminder should return uuId`() {
     // Arrange
     val reminderId = "reminder-uuid-12345"
-    val reminder = mockk<Reminder>()
-    every { reminder.uuId } returns reminderId
+    val reminder = reminderV2(uuId = reminderId)
 
     // Act
     val result = getLocalUuIdUseCase(reminder)
@@ -71,14 +72,13 @@ class GetLocalUuIdUseCaseTest {
   }
 
   @Test
-  fun `invoke with reminder group should return groupUuId`() {
+  fun `invoke with group should return uuId`() {
     // Arrange
     val groupId = "group-uuid-xyz789"
-    val reminderGroup = mockk<ReminderGroup>()
-    every { reminderGroup.groupUuId } returns groupId
+    val group = GroupV2(uuId = groupId, createdAt = LocalDateTime.now())
 
     // Act
-    val result = getLocalUuIdUseCase(reminderGroup)
+    val result = getLocalUuIdUseCase(group)
 
     // Assert
     assertEquals(groupId, result)
@@ -163,8 +163,7 @@ class GetLocalUuIdUseCaseTest {
   fun `invoke with reminder having uuid with hyphens should preserve format`() {
     // Arrange - Standard UUID format
     val uuidWithHyphens = "550e8400-e29b-41d4-a716-446655440000"
-    val reminder = mockk<Reminder>()
-    every { reminder.uuId } returns uuidWithHyphens
+    val reminder = reminderV2(uuId = uuidWithHyphens)
 
     // Act
     val result = getLocalUuIdUseCase(reminder)
@@ -201,14 +200,13 @@ class GetLocalUuIdUseCaseTest {
   }
 
   @Test
-  fun `invoke with reminder group having special characters in id should preserve them`() {
+  fun `invoke with group having special characters in id should preserve them`() {
     // Arrange - Group with special characters in ID
     val specialGroupId = "group_2024.backup-v2"
-    val reminderGroup = mockk<ReminderGroup>()
-    every { reminderGroup.groupUuId } returns specialGroupId
+    val group = GroupV2(uuId = specialGroupId, createdAt = LocalDateTime.now())
 
     // Act
-    val result = getLocalUuIdUseCase(reminderGroup)
+    val result = getLocalUuIdUseCase(group)
 
     // Assert
     assertEquals(specialGroupId, result)
@@ -223,8 +221,7 @@ class GetLocalUuIdUseCaseTest {
     val groupId = "group-1"
     val placeId = "place-1"
 
-    val reminder = mockk<Reminder>()
-    every { reminder.uuId } returns reminderId
+    val reminder = reminderV2(uuId = reminderId)
 
     val birthday = mockk<Birthday>()
     every { birthday.uuId } returns birthdayId
@@ -233,8 +230,7 @@ class GetLocalUuIdUseCaseTest {
     every { note.key } returns noteKey
     val noteWithImages = NoteWithImages(note = note, images = emptyList())
 
-    val reminderGroup = mockk<ReminderGroup>()
-    every { reminderGroup.groupUuId } returns groupId
+    val group = GroupV2(uuId = groupId, createdAt = LocalDateTime.now())
 
     val place = mockk<Place>()
     every { place.id } returns placeId
@@ -243,7 +239,7 @@ class GetLocalUuIdUseCaseTest {
     assertEquals(reminderId, getLocalUuIdUseCase(reminder))
     assertEquals(birthdayId, getLocalUuIdUseCase(birthday))
     assertEquals(noteKey, getLocalUuIdUseCase(noteWithImages))
-    assertEquals(groupId, getLocalUuIdUseCase(reminderGroup))
+    assertEquals(groupId, getLocalUuIdUseCase(group))
     assertEquals(placeId, getLocalUuIdUseCase(place))
   }
 
@@ -251,8 +247,7 @@ class GetLocalUuIdUseCaseTest {
   fun `invoke multiple times with same object should return same id`() {
     // Arrange
     val reminderId = "consistent-reminder-id"
-    val reminder = mockk<Reminder>()
-    every { reminder.uuId } returns reminderId
+    val reminder = reminderV2(uuId = reminderId)
 
     // Act - Call multiple times
     val result1 = getLocalUuIdUseCase(reminder)
@@ -264,5 +259,8 @@ class GetLocalUuIdUseCaseTest {
     assertEquals(result1, result2)
     assertEquals(result2, result3)
   }
+
+  private fun reminderV2(uuId: String): ReminderV2 =
+    ReminderV2(uuId = uuId, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 }
 

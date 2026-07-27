@@ -10,7 +10,7 @@ import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.logging.Logger
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -261,7 +261,7 @@ class CloudTestViewModel(
   /**
    * Parses SettingsModel from Base64-encoded stream.
    */
-  private fun parseSettingsModel(stream: InputStream): com.github.naz013.sync.settings.SettingsModel {
+  private fun parseSettingsModel(stream: InputStream): com.github.naz013.files.model.SettingsModel {
     val base64Input = android.util.Base64InputStream(stream, android.util.Base64.DEFAULT)
     val objectInput = java.io.ObjectInputStream(base64Input)
 
@@ -274,14 +274,14 @@ class CloudTestViewModel(
 
       @Suppress("UNCHECKED_CAST")
       val entries = obj as Map<String, *>
-      com.github.naz013.sync.settings.SettingsModel(entries)
+      com.github.naz013.files.model.SettingsModel(entries)
     }
   }
 
   /**
    * Converts SettingsModel to prettified XML format.
    */
-  private fun convertSettingsToXml(settings: com.github.naz013.sync.settings.SettingsModel): String {
+  private fun convertSettingsToXml(settings: com.github.naz013.files.model.SettingsModel): String {
     val sb = StringBuilder()
     sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
     sb.append("<settings>\n")

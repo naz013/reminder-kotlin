@@ -1,15 +1,15 @@
 package com.github.naz013.repository.migration
 
+import com.github.naz013.domain.reminder.migration.toGroupV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderGroupRepository
 
 /**
  * One-time migration step: populates the GroupV2 table from existing V1 ReminderGroup rows,
  * preserving group ids so ReminderV2.groupId references keep resolving correctly. Intended to be
  * invoked once at app startup, same as [ReminderV2BackfillUseCase].
  */
-class GroupV2BackfillUseCase(
+class GroupV2BackfillUseCase internal constructor(
   private val reminderGroupRepository: ReminderGroupRepository,
   private val groupV2Repository: GroupV2Repository
 ) {

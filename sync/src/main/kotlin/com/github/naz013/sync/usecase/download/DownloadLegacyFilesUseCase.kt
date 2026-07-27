@@ -3,7 +3,7 @@ package com.github.naz013.sync.usecase.download
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.DataPostProcessor
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.usecase.FindAllFilesToDeleteUseCase
 import com.github.naz013.sync.usecase.GetLocalUuIdUseCase

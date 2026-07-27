@@ -1,7 +1,6 @@
 package com.elementary.tasks.notes.create
 
 import android.content.ClipData
-import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
@@ -14,18 +13,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.request.ImageRequest
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.utils.ImageLoader
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.NoteColorEngine
-import com.elementary.tasks.notes.SharedNote
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -59,8 +55,8 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
-import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -94,7 +90,6 @@ class NoteEditViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiNoteEditAdapter: UiNoteEditAdapter,
   private val noteImageRepository: NoteImageRepository,
-  private val noteToOldNoteConverter: NoteToOldNoteConverter,
   private val intentDataReader: IntentDataReader,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val saveNoteUseCase: SaveNoteUseCase,
@@ -304,23 +299,6 @@ class NoteEditViewModel(
       _state.update { it.copy(expandedTab = null) }
     }
     return wasExpanded
-  }
-
-  fun loadFromFile(uri: Uri) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      runCatching {
-        if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
-          val any = MemoryUtil.readFromUri(contextProvider.context, uri, SharedNote.FILE_EXTENSION)
-          if (any != null && any is SharedNote) {
-            noteToOldNoteConverter.toNote(any)?.also {
-              _state.update { s -> s.copy(isFromFile = true) }
-              onNoteLoaded(it)
-              findSame(it.getKey())
-            }
-          }
-        }
-      }
-    }
   }
 
   fun onShareClick() {

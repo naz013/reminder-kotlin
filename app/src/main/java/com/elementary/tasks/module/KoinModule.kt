@@ -5,6 +5,7 @@ import com.elementary.tasks.module.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.module.appwidgets.AppWidgetPreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
 import com.elementary.tasks.module.platform.DateTimePreferencesImpl
+import com.elementary.tasks.module.sync.SyncDataConverterImpl
 import com.elementary.tasks.module.uicommon.AuthPreferencesImpl
 import com.elementary.tasks.module.uicommon.FontApiImpl
 import com.elementary.tasks.module.uicommon.ThemePreferencesImpl
@@ -13,6 +14,7 @@ import com.github.naz013.analytics.initializeAnalytics
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.common.datetime.DateTimePreferences
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.ui.common.font.FontApi
 import com.github.naz013.ui.common.login.AuthPreferences
 import com.github.naz013.ui.common.theme.ThemePreferences
@@ -36,4 +38,7 @@ val libModule = module {
   single { initializeAnalytics(get(), get()) }
   factory { ReminderAnalyticsTracker(get()) }
   factory { AnalyticsStateProviderImpl(get()) as AnalyticsStateProvider }
+
+  // sync
+  factory { SyncDataConverterImpl(get()) as SyncDataConverter }
 }

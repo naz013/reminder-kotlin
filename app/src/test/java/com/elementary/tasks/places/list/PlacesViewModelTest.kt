@@ -152,7 +152,7 @@ class PlacesViewModelTest : BaseTest() {
     runTest {
       val target = place(id = "1")
       coEvery { placeRepository.getById("1") } returns target
-      every { backupTool.placeToFile(target) } returns null
+      coEvery { backupTool.placeToFile(target) } returns null
 
       viewModel.onPlaceMenuAction("1", PlaceMenuAction.SHARE)
 
@@ -167,7 +167,7 @@ class PlacesViewModelTest : BaseTest() {
       coEvery { placeRepository.getById("1") } returns target
       val tempFile = File.createTempFile("place", ".txt").apply { writeText("data") }
       tempFile.deleteOnExit()
-      every { backupTool.placeToFile(target) } returns tempFile
+      coEvery { backupTool.placeToFile(target) } returns tempFile
       every { intentFactory.createFileUriIntent(file = tempFile) } returns android.content.Intent()
       every { textProvider.getString(R.string.share_send_email) } returns "Send via email"
 

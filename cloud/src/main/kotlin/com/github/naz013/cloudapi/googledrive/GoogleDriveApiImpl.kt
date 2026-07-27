@@ -3,8 +3,8 @@ package com.github.naz013.cloudapi.googledrive
 import android.content.Context
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileSearchParams
-import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.cloudapi.Source
+import com.github.naz013.files.FileConfig
 import com.github.naz013.logging.Logger
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent

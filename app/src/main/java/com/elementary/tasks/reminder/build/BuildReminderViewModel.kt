@@ -51,7 +51,6 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
-import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -61,17 +60,17 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.files.DataType
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.RecurParamType
 import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.reviews.AppSource
-import com.github.naz013.sync.DataType
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -485,11 +484,11 @@ class BuildReminderViewModel(
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
-    intentDataReader.get(IntentKeys.INTENT_ITEM, Reminder::class.java)?.run {
+    intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderV2::class.java)?.run {
       Logger.logEvent("Reminder loaded from intent")
       isFromFile = true
       _state.update { it.copy(isFromFile = true) }
-      editReminder(reminderV2 = toReminderV2())
+      editReminder(reminderV2 = this)
     }
   }
 

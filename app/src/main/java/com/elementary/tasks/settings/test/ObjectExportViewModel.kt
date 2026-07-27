@@ -5,16 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.notes.SharedNote
-import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.reminder.migration.toReminder
-import com.github.naz013.domain.reminder.migration.toReminderGroup
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.files.DataConverter
+import com.github.naz013.files.FileConfig
+import com.github.naz013.files.model.SharedNote
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
@@ -35,8 +33,8 @@ class ObjectExportViewModel(
   private val birthdayRepository: BirthdayRepository,
   private val placeRepository: PlaceRepository,
   private val groupV2Repository: GroupV2Repository,
-  private val memoryUtil: MemoryUtil,
   private val noteToOldNoteConverter: NoteToOldNoteConverter,
+  private val dataConverter: DataConverter,
 ) : ViewModel() {
   val state: StateFlow<ObjectExportState> field = MutableStateFlow(ObjectExportState())
   val navigationEvent: LiveData<Event<ObjectExportEvent>> field = mutableLiveEventOf()
@@ -73,22 +71,24 @@ class ObjectExportViewModel(
         return@launch
       }
 
-      val saved =
+      try {
         if (objectType == ObjectExportType.Note) {
           val oldNote = noteToOldNoteConverter.toSharedNote(obj as NoteWithImages)
           if (oldNote == null) {
             Logger.d(TAG, "OldNote is NULL")
             return@launch
           }
-          memoryUtil.toStream(oldNote, outputStream)
+          dataConverter.toOutputStream(oldNote, outputStream)
         } else {
-          memoryUtil.toStream(obj, outputStream)
+          dataConverter.toOutputStream(obj, outputStream)
         }
+      } catch (e: Exception) {
+        Logger.e(TAG, "Failed to save object to stream: $e")
+        return@launch
+      }
 
-      if (saved) {
-        withContext(dispatcherProvider.main()) {
-          navigationEvent.value = Event(ObjectExportEvent.ObjectSaved)
-        }
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.value = Event(ObjectExportEvent.ObjectSaved)
       }
     }
   }
@@ -136,20 +136,20 @@ class ObjectExportViewModel(
     itemId: String,
   ): Any? =
     when (objectType) {
-      ObjectExportType.Reminder -> reminderV2Repository.getById(itemId)?.toReminder()
+      ObjectExportType.Reminder -> reminderV2Repository.getById(itemId)
       ObjectExportType.Note -> noteRepository.getById(itemId)
       ObjectExportType.Birthday -> birthdayRepository.getById(itemId)
       ObjectExportType.Place -> placeRepository.getById(itemId)
-      ObjectExportType.Group -> groupV2Repository.getById(itemId)?.toReminderGroup()
+      ObjectExportType.Group -> groupV2Repository.getById(itemId)
     }
 
   private fun getFileExt(objectType: ObjectExportType): String =
     when (objectType) {
-      ObjectExportType.Reminder -> FileConfig.FILE_NAME_REMINDER
+      ObjectExportType.Reminder -> FileConfig.FILE_NAME_REMINDER_V2
       ObjectExportType.Note -> SharedNote.FILE_EXTENSION
       ObjectExportType.Birthday -> FileConfig.FILE_NAME_BIRTHDAY
       ObjectExportType.Place -> FileConfig.FILE_NAME_PLACE
-      ObjectExportType.Group -> FileConfig.FILE_NAME_GROUP
+      ObjectExportType.Group -> FileConfig.FILE_NAME_GROUP_V2
     }
 
   companion object {

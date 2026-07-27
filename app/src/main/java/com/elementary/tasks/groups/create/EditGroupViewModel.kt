@@ -11,7 +11,6 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -130,19 +129,19 @@ class EditGroupViewModel(
         withContext(dispatcherProvider.main()) {
           _state.update {
             it.copy(
-              title = groupFromFile.groupTitle,
-              colorPosition = groupFromFile.groupColor,
-              isDefault = groupFromFile.isDefaultGroup,
-              defaultCheckEnabled = !groupFromFile.isDefaultGroup,
+              title = groupFromFile.title,
+              colorPosition = groupFromFile.color,
+              isDefault = groupFromFile.isDefault,
+              defaultCheckEnabled = !groupFromFile.isDefault,
               canDelete = false,
+              id = groupFromFile.uuId,
+              isEdited = false,
               isFromFile = true,
               hasSameInDb = groupInDb != null,
-              id = groupFromFile.groupUuId,
-              isEdited = false,
             )
           }
         }
-        Logger.i(TAG, "Editing group from file, id: ${groupFromFile.groupUuId}")
+        Logger.i(TAG, "Editing group from file, id: ${groupFromFile.uuId}")
         return@launch
       }
 
@@ -171,11 +170,9 @@ class EditGroupViewModel(
     }
   }
 
-  /** Shared/exported group files still use the V1 [ReminderGroup] wire format (`.gr2`), so the
-   * import path reads that shape and maps only the flat fields the edit form needs. */
-  private fun getFromIntentIfAvailable(): ReminderGroup? {
+  private fun getFromIntentIfAvailable(): GroupV2? {
     if (!fromIntentData) return null
-    return intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java)
+    return intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java)
   }
 
   private fun performSave(newId: Boolean = false) {
