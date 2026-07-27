@@ -6,19 +6,19 @@ import com.github.naz013.workapi.TaskData
 import com.github.naz013.workapi.TaskProgressReporter
 import com.github.naz013.workapi.TaskResult
 
-class RunWorkflowRulesTask(
+class RunWorkflowUnacknowledgedRulesTask(
   private val workflowTriggerRunner: WorkflowTriggerRunner
 ) : BackgroundTask {
   override suspend fun run(
     input: TaskData,
     progress: TaskProgressReporter
   ): TaskResult {
-    workflowTriggerRunner.runDailyPolling()
-    Logger.i(TASK_KEY, "Ran age-based and group-completion workflow rules.")
+    workflowTriggerRunner.runUnacknowledgedPolling()
+    Logger.i(TASK_KEY, "Ran unacknowledged-reminder workflow rules.")
     return TaskResult.Success
   }
 
   companion object {
-    const val TASK_KEY = "run_workflow_rules"
+    const val TASK_KEY = "run_workflow_unacknowledged_rules"
   }
 }

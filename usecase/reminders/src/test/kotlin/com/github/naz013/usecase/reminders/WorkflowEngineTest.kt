@@ -1,6 +1,8 @@
 package com.github.naz013.usecase.reminders
 
 import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
+import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
@@ -11,6 +13,12 @@ import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
+import com.github.naz013.workapi.ExistingWorkPolicy
+import com.github.naz013.workapi.PeriodicWorkRequest
+import com.github.naz013.workapi.WorkRequest
+import com.github.naz013.workapi.WorkScheduler
+import com.github.naz013.workapi.WorkState
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -21,6 +29,14 @@ import org.threeten.bp.LocalDateTime
 class WorkflowEngineTest {
 
   private val now = LocalDateTime.of(2026, 6, 1, 0, 0)
+
+  /** [WorkflowEngine.runUnacknowledgedRules] converts its `now` param from the system default
+   * zone to UTC before comparing against `lastShownAt` (which is stored UTC, per the write side
+   * in `ReminderActionProcessor`) - fixtures must be built relative to this same converted value,
+   * not the raw [now], so the tests pass regardless of the host machine's time zone. */
+  private val nowUtc = now.atZone(org.threeten.bp.ZoneId.systemDefault())
+    .withZoneSameInstant(org.threeten.bp.ZoneOffset.UTC)
+    .toLocalDateTime()
 
   private fun completedReminder(
     id: String,
@@ -34,6 +50,12 @@ class WorkflowEngineTest {
     isRemoved = false
   )
 
+  private fun engine(
+    ruleRepository: WorkflowRuleRepository,
+    reminderRepository: ReminderV2Repository,
+    workScheduler: WorkScheduler = FakeWorkScheduler()
+  ) = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository(), workScheduler)
+
   @Test
   fun `archives a completed reminder older than the cutoff`() = runTest {
     val old = completedReminder("old", updatedAt = now.minusDays(40))
@@ -41,11 +63,10 @@ class WorkflowEngineTest {
     val ruleRepository = FakeWorkflowRuleRepository(
       listOf(archiveRule(days = 30))
     )
-    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
-
-    engine.runAgeBasedRules(now)
+    val result = engine(ruleRepository, reminderRepository).runAgeBasedRules(now)
 
     assertTrue(reminderRepository.saved.getValue("old").isRemoved)
+    assertTrue(result.isEmpty())
   }
 
   @Test
@@ -53,9 +74,8 @@ class WorkflowEngineTest {
     val recent = completedReminder("recent", updatedAt = now.minusDays(2))
     val reminderRepository = FakeReminderV2Repository(mutableMapOf(recent.uuId to recent))
     val ruleRepository = FakeWorkflowRuleRepository(listOf(archiveRule(days = 30)))
-    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
 
-    engine.runAgeBasedRules(now)
+    engine(ruleRepository, reminderRepository).runAgeBasedRules(now)
 
     assertFalse(reminderRepository.saved.containsKey("recent"))
   }
@@ -70,9 +90,8 @@ class WorkflowEngineTest {
     val ruleRepository = FakeWorkflowRuleRepository(
       listOf(archiveRule(days = 30, scope = WorkflowScope.ForGroup("group-1")))
     )
-    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
 
-    engine.runAgeBasedRules(now)
+    engine(ruleRepository, reminderRepository).runAgeBasedRules(now)
 
     assertTrue(reminderRepository.saved.containsKey("in-scope"))
     assertFalse(reminderRepository.saved.containsKey("out-of-scope"))
@@ -85,9 +104,8 @@ class WorkflowEngineTest {
     val ruleRepository = FakeWorkflowRuleRepository(
       listOf(archiveRule(days = 30).let { WorkflowRuleFixture.disabled(it) })
     )
-    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
 
-    engine.runAgeBasedRules(now)
+    engine(ruleRepository, reminderRepository).runAgeBasedRules(now)
 
     assertEquals(0, reminderRepository.saved.size)
   }
@@ -115,9 +133,8 @@ class WorkflowEngineTest {
     val ruleRepository = FakeWorkflowRuleRepository(
       listOf(groupCompletionRule(WorkflowScope.ForGroup("group-1")))
     )
-    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
 
-    engine.runGroupCompletionRules()
+    engine(ruleRepository, reminderRepository).runGroupCompletionRules()
 
     assertTrue(reminderRepository.saved.getValue("completed").isRemoved)
   }
@@ -132,9 +149,8 @@ class WorkflowEngineTest {
     val ruleRepository = FakeWorkflowRuleRepository(
       listOf(groupCompletionRule(WorkflowScope.ForGroup("group-1")))
     )
-    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
 
-    engine.runGroupCompletionRules()
+    engine(ruleRepository, reminderRepository).runGroupCompletionRules()
 
     assertEquals(0, reminderRepository.saved.size)
   }
@@ -146,9 +162,299 @@ class WorkflowEngineTest {
     val ruleRepository = FakeWorkflowRuleRepository(
       listOf(groupCompletionRule(WorkflowScope.Global))
     )
-    val engine = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository())
 
-    engine.runGroupCompletionRules()
+    engine(ruleRepository, reminderRepository).runGroupCompletionRules()
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `applies a notification override inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val override = NotificationSettingsOverride(priority = ReminderPriority.HIGH)
+    val rule = WorkflowRule(
+      uuId = "rule-notify",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.ApplyNotificationOverride(override),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(override, reminderRepository.saved.getValue("r1").notification)
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `enqueues a background task inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-task",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.RunBackgroundTask("some_task"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val workScheduler = FakeWorkScheduler()
+
+    val result = engine(ruleRepository, reminderRepository, workScheduler).runReminderCompletedRules("r1")
+
+    assertEquals(1, workScheduler.enqueued.size)
+    assertEquals("some_task", workScheduler.enqueued.single().taskKey)
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `returns a pending action for CompleteReminder`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-complete",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.CompleteReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(1, result.size)
+    assertEquals(WorkflowAction.CompleteReminder, result.single().action)
+    assertEquals("r1", result.single().contextReminderId)
+  }
+
+  @Test
+  fun `returns a pending action for ActivateReminder with its own target id, distinct from the trigger`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-activate",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.ActivateReminder(reminderId = "other-reminder"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(1, result.size)
+    assertEquals(WorkflowAction.ActivateReminder("other-reminder"), result.single().action)
+    assertEquals("r1", result.single().contextReminderId)
+  }
+
+  @Test
+  fun `returns nothing for a missing reminder id`() = runTest {
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val ruleRepository = FakeWorkflowRuleRepository(
+      listOf(
+        WorkflowRule(
+          uuId = "rule-complete",
+          trigger = WorkflowTrigger.ReminderCompleted,
+          action = WorkflowAction.CompleteReminder,
+          scope = WorkflowScope.Global,
+          createdAt = now
+        )
+      )
+    )
+
+    val result = engine(ruleRepository, reminderRepository).runReminderCompletedRules("missing")
+
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `fires a snooze-count rule only at the exact matching count`() = runTest {
+    val snoozedTwice = ReminderV2(
+      uuId = "r1",
+      schedule = ReminderSchedule(startDateTime = now),
+      snoozeCount = 2
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(snoozedTwice.uuId to snoozedTwice))
+    val rule = WorkflowRule(
+      uuId = "rule-snooze",
+      trigger = WorkflowTrigger.ReminderSnoozedNTimes(count = 2),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository).runSnoozeCountRules("r1")
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `does not fire a snooze-count rule before its threshold`() = runTest {
+    val snoozedOnce = ReminderV2(
+      uuId = "r1",
+      schedule = ReminderSchedule(startDateTime = now),
+      snoozeCount = 1
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(snoozedOnce.uuId to snoozedOnce))
+    val rule = WorkflowRule(
+      uuId = "rule-snooze",
+      trigger = WorkflowTrigger.ReminderSnoozedNTimes(count = 2),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runSnoozeCountRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `does not re-fire a snooze-count rule past its threshold`() = runTest {
+    val snoozedFiveTimes = ReminderV2(
+      uuId = "r1",
+      schedule = ReminderSchedule(startDateTime = now),
+      snoozeCount = 5
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(snoozedFiveTimes.uuId to snoozedFiveTimes))
+    val rule = WorkflowRule(
+      uuId = "rule-snooze",
+      trigger = WorkflowTrigger.ReminderSnoozedNTimes(count = 2),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runSnoozeCountRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `fires a location-entered rule scoped to the exact reminder`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-loc",
+      trigger = WorkflowTrigger.LocationEntered,
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.ForReminder("r1"),
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runLocationEnteredRules("r1")
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `skips location rules scoped globally or to a group`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val globalRule = WorkflowRule(
+      uuId = "rule-loc-global",
+      trigger = WorkflowTrigger.LocationEntered,
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(globalRule))
+
+    engine(ruleRepository, reminderRepository).runLocationEnteredRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `fires a location-exited rule for the matching reminder`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-loc-exit",
+      trigger = WorkflowTrigger.LocationExited,
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.ForReminder("r1"),
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runLocationExitedRules("r1")
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `fires an unacknowledged rule once the threshold has elapsed`() = runTest {
+    val unacknowledged = ReminderV2(
+      uuId = "r1",
+      schedule = ReminderSchedule(startDateTime = now),
+      isActive = true,
+      lastShownAt = nowUtc.minusMinutes(30)
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(unacknowledged.uuId to unacknowledged))
+    val rule = WorkflowRule(
+      uuId = "rule-unack",
+      trigger = WorkflowTrigger.ReminderUnacknowledgedFor(minutes = 20),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runUnacknowledgedRules(now)
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `does not fire an unacknowledged rule before its threshold elapses`() = runTest {
+    val recentlyShown = ReminderV2(
+      uuId = "r1",
+      schedule = ReminderSchedule(startDateTime = now),
+      isActive = true,
+      lastShownAt = nowUtc.minusMinutes(5)
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(recentlyShown.uuId to recentlyShown))
+    val rule = WorkflowRule(
+      uuId = "rule-unack",
+      trigger = WorkflowTrigger.ReminderUnacknowledgedFor(minutes = 20),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runUnacknowledgedRules(now)
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `skips reminders that have not been shown yet for unacknowledged rules`() = runTest {
+    val neverShown = ReminderV2(
+      uuId = "r1",
+      schedule = ReminderSchedule(startDateTime = now),
+      isActive = true,
+      lastShownAt = null
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(neverShown.uuId to neverShown))
+    val rule = WorkflowRule(
+      uuId = "rule-unack",
+      trigger = WorkflowTrigger.ReminderUnacknowledgedFor(minutes = 20),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runUnacknowledgedRules(now)
 
     assertEquals(0, reminderRepository.saved.size)
   }
@@ -215,8 +521,13 @@ private class FakeWorkflowRuleRepository(
   override suspend fun getByTriggerType(triggerType: String): List<WorkflowRule> =
     rules.filter {
       when (triggerType) {
-        "REMINDER_AGE_EXCEEDED" -> it.trigger is WorkflowTrigger.ReminderAgeExceeded
+        "REMINDER_COMPLETED" -> it.trigger is WorkflowTrigger.ReminderCompleted
+        "REMINDER_SNOOZED_N_TIMES" -> it.trigger is WorkflowTrigger.ReminderSnoozedNTimes
         "GROUP_ALL_COMPLETED" -> it.trigger is WorkflowTrigger.GroupAllCompleted
+        "LOCATION_ENTERED" -> it.trigger is WorkflowTrigger.LocationEntered
+        "LOCATION_EXITED" -> it.trigger is WorkflowTrigger.LocationExited
+        "REMINDER_AGE_EXCEEDED" -> it.trigger is WorkflowTrigger.ReminderAgeExceeded
+        "REMINDER_UNACKNOWLEDGED_FOR" -> it.trigger is WorkflowTrigger.ReminderUnacknowledgedFor
         else -> false
       }
     }
@@ -226,4 +537,23 @@ private class FakeWorkflowRuleRepository(
   override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> = emptyList()
   override suspend fun getAllIds(): List<String> = emptyList()
   override suspend fun countAll(): Int = rules.size
+}
+
+private class FakeWorkScheduler : WorkScheduler {
+  val enqueued = mutableListOf<WorkRequest>()
+
+  override fun enqueue(request: WorkRequest): String {
+    enqueued.add(request)
+    return request.tag
+  }
+
+  override fun enqueueUnique(uniqueName: String, policy: ExistingWorkPolicy, request: WorkRequest): String {
+    enqueued.add(request)
+    return uniqueName
+  }
+
+  override fun enqueuePeriodic(request: PeriodicWorkRequest): String = request.tag
+  override fun cancelByTag(tag: String) = Unit
+  override fun cancelUniqueWork(uniqueName: String) = Unit
+  override fun observeUniqueWork(uniqueName: String) = emptyFlow<WorkState>()
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Location
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DefaultDistanceFormatter
+import com.elementary.tasks.workflow.WorkflowTriggerRunner
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.reminder.v2.LocationSettings
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
@@ -15,6 +16,7 @@ class CheckLocationReminderUseCase(
   context: Context,
   private val reminderV2Repository: ReminderV2Repository,
   private val dateTimeManager: DateTimeManager,
+  private val workflowTriggerRunner: WorkflowTriggerRunner,
   prefs: Prefs,
 ) {
   private val distanceFormatter: DefaultDistanceFormatter =
@@ -39,6 +41,11 @@ class CheckLocationReminderUseCase(
               reminder.copy(location = (reminder.location ?: LocationSettings()).copy(isNotificationShown = true)),
             )
             showReminderNotifications.add(ShowReminderNotification(reminder.uuId))
+            if (reminder.isLeavingType()) {
+              workflowTriggerRunner.onLocationExited(reminder.uuId)
+            } else {
+              workflowTriggerRunner.onLocationEntered(reminder.uuId)
+            }
           }
 
           shouldShowDistanceNotification(reminder) -> {

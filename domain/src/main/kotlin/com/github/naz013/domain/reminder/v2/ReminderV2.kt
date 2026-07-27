@@ -27,6 +27,11 @@ data class ReminderV2(
   val isActive: Boolean = true,
   val isRemoved: Boolean = false,
   val eventCount: Long = 0,
+  /** Number of times this reminder has been snoozed; powers `WorkflowTrigger.ReminderSnoozedNTimes`. */
+  val snoozeCount: Long = 0,
+  /** When the notification for this reminder was last actually shown to the user; cleared on
+   * complete/snooze. Powers `WorkflowTrigger.ReminderUnacknowledgedFor`. */
+  val lastShownAt: LocalDateTime? = null,
   val sync: SyncMetadata = SyncMetadata()
 ) {
 

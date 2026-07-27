@@ -5,6 +5,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
 import com.elementary.tasks.reminder.scheduling.behavior.v2.LocationBasedStrategyV2
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
+import com.elementary.tasks.workflow.WorkflowTriggerRunner
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
@@ -25,6 +26,7 @@ class SnoozeReminderUseCase(
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val notifier: Notifier,
+  private val workflowTriggerRunner: WorkflowTriggerRunner,
 ) {
   suspend operator fun invoke(
     reminder: ReminderV2,
@@ -44,9 +46,12 @@ class SnoozeReminderUseCase(
       reminder.copy(
         notification = reminder.notification.copy(delayMinutes = timeInMinutes),
         sync = reminder.sync.copy(syncState = SyncState.WaitingForUpload),
+        snoozeCount = reminder.snoozeCount + 1,
+        lastShownAt = null,
       )
     saveReminderUseCase(reminder)
     jobScheduler.scheduleReminderDelay(timeInMinutes, reminder.uuId, reminder.uniqueId)
+    workflowTriggerRunner.onReminderSnoozed(reminder.uuId)
     Logger.i(TAG, "Snoozed reminder id=${reminder.uuId} for $timeInMinutes minutes")
     return reminder
   }

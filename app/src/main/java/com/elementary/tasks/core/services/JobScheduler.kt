@@ -15,6 +15,7 @@ import com.elementary.tasks.googletasks.work.UpdateTaskTask
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.elementary.tasks.workflow.RunWorkflowRulesTask
+import com.elementary.tasks.workflow.RunWorkflowUnacknowledgedRulesTask
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
@@ -65,6 +66,18 @@ class JobScheduler(
       ),
     )
     Logger.i(TAG, "Scheduled workflow rules check.")
+  }
+
+  fun scheduleWorkflowUnacknowledgedCheck() {
+    workScheduler.enqueuePeriodic(
+      PeriodicWorkRequest(
+        taskKey = RunWorkflowUnacknowledgedRulesTask.TASK_KEY,
+        tag = EVENT_WORKFLOW_UNACKNOWLEDGED_RULES_CHECK,
+        repeatIntervalMillis = TimeUnit.MINUTES.toMillis(30),
+        flexIntervalMillis = TimeUnit.MINUTES.toMillis(5),
+      ),
+    )
+    Logger.i(TAG, "Scheduled workflow unacknowledged-reminder rules check.")
   }
 
   fun scheduleBirthdayPermanent() {
@@ -302,6 +315,7 @@ class JobScheduler(
     private const val EVENT_AUTO_BACKUP = "event_auto_backup"
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
     private const val EVENT_WORKFLOW_RULES_CHECK = "event_workflow_rules_check"
+    private const val EVENT_WORKFLOW_UNACKNOWLEDGED_RULES_CHECK = "event_workflow_unacknowledged_rules_check"
     private const val TAG = "JobScheduler"
 
     private const val INTERVAL_MINUTE = 60 * 1000L

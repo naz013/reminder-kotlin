@@ -116,4 +116,5 @@ object PrefsConstants {
   const val REMINDER_V2_BACKFILL_DONE = "reminder_v2_backfill_done"
   const val GROUP_V2_BACKFILL_DONE = "group_v2_backfill_done"
   const val WORKFLOW_RULES_SCHEDULED = "workflow_rules_scheduled"
+  const val WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED = "workflow_unacknowledged_rules_scheduled"
 }

@@ -477,6 +477,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, false)
     set(value) = putBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, value)
 
+  var workflowUnacknowledgedRulesScheduled: Boolean
+    get() = getBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, false)
+    set(value) = putBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, value)
+
   var reminderCreatorParams: ReminderCreatorConfig
     get() =
       ReminderCreatorConfig(

@@ -59,6 +59,7 @@ import com.github.naz013.repository.migrations.MIGRATION_23_24
 import com.github.naz013.repository.migrations.MIGRATION_24_25
 import com.github.naz013.repository.migrations.MIGRATION_25_26
 import com.github.naz013.repository.migrations.MIGRATION_26_27
+import com.github.naz013.repository.migrations.MIGRATION_27_28
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
@@ -90,7 +91,7 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     WorkflowRuleEntity::class,
     WorkflowTemplateEntity::class
   ],
-  version = 27,
+  version = 28,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -148,7 +149,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_23_24,
             MIGRATION_24_25,
             MIGRATION_25_26,
-            MIGRATION_26_27
+            MIGRATION_26_27,
+            MIGRATION_27_28
           )
           .allowMainThreadQueries()
           .build()

@@ -70,6 +70,8 @@ internal data class ReminderV2Entity(
   val isActive: Boolean = true,
   val isRemoved: Boolean = false,
   val eventCount: Long = 0,
+  val snoozeCount: Long = 0,
+  val lastShownAt: Long? = null,
 
   val version: Long = 0L,
   val syncState: String

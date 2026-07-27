@@ -17,7 +17,7 @@ class CompleteReminderUseCase(
   private val addReminderToHistoryUseCase: AddReminderToHistoryUseCase,
 ) {
   suspend operator fun invoke(reminder: ReminderV2): ReminderV2 {
-    val reminder = reminder.copy(notification = reminder.notification.copy(delayMinutes = 0))
+    val reminder = reminder.copy(notification = reminder.notification.copy(delayMinutes = 0), lastShownAt = null)
     val strategy = strategyResolver.resolve(reminder)
     Logger.v(TAG, "Completing reminder id=${reminder.uuId} with strategy=$strategy")
     addReminderToHistoryUseCase(reminder)

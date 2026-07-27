@@ -132,4 +132,38 @@ class ReminderV2MapperTest {
     assertEquals(null, roundTripped.calendarExport)
     assertEquals(null, roundTripped.taskExport)
   }
+
+  @Test
+  fun `toEntity then toDomain round trips snoozeCount and lastShownAt`() {
+    val reminder = ReminderV2(
+      uuId = "id-7",
+      summary = "Renew passport",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None,
+      snoozeCount = 3,
+      lastShownAt = LocalDateTime.of(2026, 7, 22, 9, 5)
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a null lastShownAt`() {
+    val reminder = ReminderV2(
+      uuId = "id-8",
+      summary = "No notification shown yet",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+    assertEquals(0L, roundTripped.snoozeCount)
+    assertEquals(null, roundTripped.lastShownAt)
+  }
 }

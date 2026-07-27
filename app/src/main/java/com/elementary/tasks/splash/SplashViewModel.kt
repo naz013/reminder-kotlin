@@ -94,6 +94,10 @@ class SplashViewModel(
         jobScheduler.scheduleWorkflowRulesCheck()
         prefs.workflowRulesScheduled = true
       }
+      if (!prefs.workflowUnacknowledgedRulesScheduled) {
+        jobScheduler.scheduleWorkflowUnacknowledgedCheck()
+        prefs.workflowUnacknowledgedRulesScheduled = true
+      }
     }
   }
 

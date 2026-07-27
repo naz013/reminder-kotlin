@@ -4,6 +4,7 @@ import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.workflow.WorkflowTriggerRunner
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -28,6 +29,7 @@ class ReminderActionProcessor(
   private val jobScheduler: JobScheduler,
   private val contextProvider: ContextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val workflowTriggerRunner: WorkflowTriggerRunner,
 ) {
   private val scope = CoroutineScope(dispatcherProvider.default())
 
@@ -49,6 +51,7 @@ class ReminderActionProcessor(
       withContext(dispatcherProvider.main()) {
         reminderHandlerFactory.createComplete().handle(reminder)
       }
+      workflowTriggerRunner.onReminderCompleted(id)
     }
   }
 
@@ -80,6 +83,7 @@ class ReminderActionProcessor(
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)
         }
+        reminderV2Repository.save(reminder.copy(lastShownAt = dateTimeManager.localToUtc(LocalDateTime.now())))
       }
     }
   }

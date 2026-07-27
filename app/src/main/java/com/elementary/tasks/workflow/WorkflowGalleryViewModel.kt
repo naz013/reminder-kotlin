@@ -13,6 +13,7 @@ import com.github.naz013.usecase.reminders.CreateWorkflowRuleUseCase
 import com.github.naz013.usecase.reminders.GetGlobalWorkflowRulesUseCase
 import com.github.naz013.usecase.reminders.GetWorkflowTemplatesUseCase
 import com.github.naz013.usecase.reminders.SaveWorkflowRuleAsTemplateUseCase
+import com.github.naz013.usecase.reminders.isExecutable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -67,7 +68,7 @@ class WorkflowGalleryViewModel(
 
   fun onApplyTemplateClick(templateId: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val template = getWorkflowTemplatesUseCase().firstOrNull { it.id == templateId } ?: return@launch
+      val template = getWorkflowTemplatesUseCase().firstOrNull { it.id == templateId && it.isExecutable() } ?: return@launch
       applyWorkflowTemplateUseCase(template, WorkflowScope.Global)
       loadData()
     }
@@ -104,6 +105,7 @@ class WorkflowGalleryViewModel(
   private suspend fun loadData() {
     val rules = getGlobalWorkflowRulesUseCase().map { it.toUi() }
     val templates = getWorkflowTemplatesUseCase()
+      .filter { it.isExecutable() }
       .map { it.toUi(WorkflowScopeType.GLOBAL) }
       .groupBy { it.category }
     withContext(dispatcherProvider.main()) {
