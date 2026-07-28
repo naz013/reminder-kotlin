@@ -244,6 +244,150 @@ class RecurrenceRuleCalculatorTest : BaseTest() {
     assertNull(result)
   }
 
+  @Test
+  fun `date and time with a zero repeat interval still produces Once`() {
+    val items = itemsOf(dateItem(NOW.toLocalDate()), timeItem(NOW.toLocalTime()), repeatTimeItem(0L))
+
+    val result = calculator(items)
+
+    assertEquals(RecurrenceRule.Once, result?.rule)
+  }
+
+  @Test
+  fun `date and time with only a repeat limit and no repeat interval stays Once`() {
+    val items = itemsOf(dateItem(NOW.toLocalDate()), timeItem(NOW.toLocalTime()), repeatLimitItem(5))
+
+    val result = calculator(items)
+
+    assertEquals(RecurrenceRule.Once, result?.rule)
+  }
+
+  @Test
+  fun `countdown timer with a zero duration produces no recurrence`() {
+    val items = itemsOf(timerItem(0L))
+
+    val result = calculator(items)
+
+    assertNull(result)
+  }
+
+  @Test
+  fun `weekdays with no day actually checked produces no recurrence`() {
+    val items = itemsOf(timeItem(NOW.toLocalTime()), weekdaysItem(emptyList()))
+
+    val result = calculator(items)
+
+    assertNull(result)
+  }
+
+  @Test
+  fun `weekdays with a repeat limit carries the limit onto Weekly`() {
+    every {
+      recurrenceCalculator.findNextDayOfWeekDateTime(any(), any(), any())
+    } returns NOW
+
+    val items = itemsOf(timeItem(NOW.toLocalTime()), weekdaysItem(listOf(1, 0, 1)), repeatLimitItem(3))
+
+    val result = calculator(items)
+
+    assertEquals(RecurrenceRule.Weekly(weekdays = listOf(1, 0, 1), repeatLimit = 3), result?.rule)
+  }
+
+  @Test
+  fun `day of month without a time produces no recurrence`() {
+    val items = itemsOf(dayOfMonthItem(15))
+
+    val result = calculator(items)
+
+    assertNull(result)
+  }
+
+  @Test
+  fun `day of year with an out-of-range value produces no recurrence`() {
+    // 367 is never a valid day-of-year, regardless of leap years, so this can't flake.
+    val items = itemsOf(timeItem(NOW.toLocalTime()), dayOfYearItem(367))
+
+    val result = calculator(items)
+
+    assertNull(result)
+  }
+
+  @Test
+  fun `arriving coordinates with a complete delay in the past is not treated as scheduled`() {
+    every { dateTimeManager.isCurrent(any<LocalDateTime>()) } returns false
+    val place = Place(syncState = SyncState.Synced)
+
+    val items =
+      itemsOf(
+        arrivingItem(place),
+        locationDelayDateItem(NOW.toLocalDate()),
+        locationDelayTimeItem(NOW.toLocalTime()),
+      )
+
+    val result = calculator(items)
+
+    assertEquals(RecurrenceRule.LocationEnter, result?.rule)
+    assertEquals(true, result?.location?.hasDelayedReminder)
+    assertEquals(NOW, result?.schedule?.startDateTime)
+    assertNull(result?.schedule?.eventDateTime)
+  }
+
+  @Test
+  fun `location delay alone without a place still resolves via the delay branch`() {
+    every { dateTimeManager.isCurrent(any<LocalDateTime>()) } returns true
+
+    val items = itemsOf(locationDelayDateItem(NOW.toLocalDate()), locationDelayTimeItem(NOW.toLocalTime()))
+
+    val result = calculator(items)
+
+    assertEquals(RecurrenceRule.LocationEnter, result?.rule)
+    assertTrue(result?.places?.isEmpty() == true)
+    assertEquals(NOW, result?.schedule?.eventDateTime)
+  }
+
+  @Test
+  fun `both arriving and leaving coordinates present resolves to LocationEnter`() {
+    val arrivingPlace = Place(syncState = SyncState.Synced)
+    val leavingPlace = Place(syncState = SyncState.Synced)
+
+    val items = itemsOf(arrivingItem(arrivingPlace), leavingItem(leavingPlace))
+
+    val result = calculator(items)
+
+    assertEquals(RecurrenceRule.LocationEnter, result?.rule)
+    assertEquals(listOf(arrivingPlace), result?.places)
+  }
+
+  @Test
+  fun `iCalendar recurrence returning no event data produces no recurrence`() {
+    every { iCalDateTimeCalculator(any()) } returns null
+
+    val withIcalGroup = ProcessedBuilderItems(emptyList()).copy(groupMap = mapOf(BiGroup.ICAL to emptyList()))
+
+    val result = calculator(withIcalGroup)
+
+    assertNull(result)
+  }
+
+  @Test
+  fun `a lone time with no date is not a valid recurrence but still produces a schedule`() {
+    val items = itemsOf(timeItem(NOW.toLocalTime()))
+
+    val result = calculator(items)
+
+    assertEquals(RecurrenceRule.Once, result?.rule)
+    assertNull(result?.schedule?.eventDateTime)
+  }
+
+  @Test
+  fun `countdown timer combined with day of month produces no recurrence`() {
+    val items = itemsOf(timerItem(60_000L), dayOfMonthItem(10))
+
+    val result = calculator(items)
+
+    assertNull(result)
+  }
+
   private fun itemsOf(vararg items: BuilderItem<*>) = ProcessedBuilderItems(items.toList())
 
   private fun dateItem(value: LocalDate) =

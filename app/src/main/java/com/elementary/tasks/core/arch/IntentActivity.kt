@@ -2,6 +2,7 @@ package com.elementary.tasks.core.arch
 
 import android.content.ContentResolver
 import android.os.Bundle
+import androidx.compose.runtime.Composable
 import com.elementary.tasks.R
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
@@ -12,12 +13,12 @@ import com.github.naz013.files.AndroidDataConverter
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Navigator
-import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.compose.ComposeActivity
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
-class IntentActivity : LightThemedActivity() {
+class IntentActivity : ComposeActivity() {
 
   private val navigator by inject<Navigator>()
   private val androidDataConverter by inject<AndroidDataConverter>()
@@ -96,6 +97,11 @@ class IntentActivity : LightThemedActivity() {
       toast(getString(R.string.unsupported_file_format))
       finish()
     }
+  }
+
+  @Composable
+  override fun ActivityContent() {
+
   }
 
   private fun NoteWithImages.isValid(): Boolean {
