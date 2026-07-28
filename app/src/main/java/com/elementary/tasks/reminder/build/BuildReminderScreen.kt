@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.build
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -18,9 +17,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -58,6 +59,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
+import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
@@ -88,6 +90,7 @@ fun BuildReminderScreen(
   canSaveAsPreset: Boolean,
   saveAsPresetChecked: Boolean,
   presetName: String,
+  quickStartOptions: List<QuickStartOption>,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
@@ -99,6 +102,7 @@ fun BuildReminderScreen(
   onItemClick: (Int, BuilderItem<*>) -> Unit,
   onItemRemove: (Int, BuilderItem<*>) -> Unit,
   onAddClick: () -> Unit,
+  onQuickStartClick: (QuickStartOption) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -165,7 +169,12 @@ fun BuildReminderScreen(
     },
   ) { padding ->
     if (builderItems.isEmpty()) {
-      BuilderEmptyState(modifier = Modifier.fillMaxSize().padding(padding))
+      BuilderEmptyState(
+        quickStartOptions = quickStartOptions,
+        onQuickStartClick = onQuickStartClick,
+        onMoreOptionsClick = onAddClick,
+        modifier = Modifier.fillMaxSize().padding(padding),
+      )
     } else {
       LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -395,33 +404,60 @@ private fun SaveAsPresetRow(
 }
 
 @Composable
-private fun BuilderEmptyState(modifier: Modifier = Modifier) {
-  Box(modifier = modifier, contentAlignment = Alignment.Center) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cat_empty_state))
-      LottieAnimation(
-        composition = composition,
-        iterations = LottieConstants.IterateForever,
-        modifier = Modifier.size(dimensionResource(R.dimen.empty_animation_size)),
-      )
-      Text(
-        text = stringResource(R.string.builder_empty_message),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onBackground,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(horizontal = 24.dp),
+private fun BuilderEmptyState(
+  quickStartOptions: List<QuickStartOption>,
+  onQuickStartClick: (QuickStartOption) -> Unit,
+  onMoreOptionsClick: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Column(
+    modifier = modifier.verticalScroll(rememberScrollState()),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cat_empty_state))
+    LottieAnimation(
+      composition = composition,
+      iterations = LottieConstants.IterateForever,
+      modifier = Modifier.size(dimensionResource(R.dimen.empty_animation_size)),
+    )
+    Text(
+      text = stringResource(R.string.builder_empty_message),
+      style = MaterialTheme.typography.titleLarge,
+      color = MaterialTheme.colorScheme.onBackground,
+      textAlign = TextAlign.Center,
+      modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+    )
+    Column(
+      modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+      verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+      quickStartOptions.forEach { option ->
+        QuickStartButton(
+          text = stringResource(option.labelRes),
+          onClick = { onQuickStartClick(option) },
+        )
+      }
+      QuickStartButton(
+        text = stringResource(R.string.builder_quick_start_more_options),
+        onClick = onMoreOptionsClick,
       )
     }
-    Image(
-      painter = painterResource(R.drawable.ic_builder_pointer_arrow),
-      contentDescription = null,
-      modifier =
-        Modifier
-          .align(Alignment.BottomEnd)
-          .padding(end = 84.dp, bottom = 88.dp)
-          .size(44.dp)
-          .rotate(240f),
-    )
+    Spacer(modifier = Modifier.height(24.dp))
+  }
+}
+
+@Composable
+private fun QuickStartButton(
+  text: String,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  FilledTonalButton(
+    onClick = onClick,
+    shape = RoundedCornerShape(24.dp),
+    modifier = modifier,
+  ) {
+    Text(text = text)
   }
 }
 
@@ -440,6 +476,7 @@ private fun PreviewBuildReminderScreenEmpty() {
       canSaveAsPreset = false,
       saveAsPresetChecked = false,
       presetName = "",
+      quickStartOptions = QuickStartOption.entries,
       onBackClick = {},
       onSaveClick = {},
       onDeleteClick = {},
@@ -451,6 +488,7 @@ private fun PreviewBuildReminderScreenEmpty() {
       onItemClick = { _, _ -> },
       onItemRemove = { _, _ -> },
       onAddClick = {},
+      onQuickStartClick = {},
     )
   }
 }

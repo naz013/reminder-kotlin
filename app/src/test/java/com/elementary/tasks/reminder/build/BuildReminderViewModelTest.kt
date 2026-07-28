@@ -22,6 +22,8 @@ import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
 import com.elementary.tasks.reminder.build.preset.BuilderPresetToBiAdapter
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
+import com.elementary.tasks.reminder.build.quickstart.QuickStartItemsProvider
+import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
@@ -98,6 +100,7 @@ class BuildReminderViewModelTest : BaseTest() {
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val featureManager = mockk<FeatureManager>(relaxed = true)
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
+  private val quickStartItemsProvider = mockk<QuickStartItemsProvider>()
 
   @Before
   override fun setUp() {
@@ -180,6 +183,7 @@ class BuildReminderViewModelTest : BaseTest() {
       textProvider = textProvider,
       featureManager = featureManager,
       buildInfo = buildInfo,
+      quickStartItemsProvider = quickStartItemsProvider,
     )
 
   @Test
@@ -481,6 +485,31 @@ class BuildReminderViewModelTest : BaseTest() {
       viewModel.onPresetSelected(mockk<UiPresetList>(relaxed = true).also { every { it.id } returns "missing" })
 
       verify(exactly = 0) { analyticsEventSender.send(any<PresetUsed>()) }
+    }
+
+  @Test
+  fun `onQuickStartSelected populates the builder list with the option's items`() =
+    runTest {
+      val items = listOf(summaryItem(), groupItem())
+      coEvery { quickStartItemsProvider.itemsFor(QuickStartOption.EVERY_WEEKDAY) } returns items
+      val viewModel = createViewModel()
+
+      viewModel.onQuickStartSelected(QuickStartOption.EVERY_WEEKDAY)
+
+      verify { builderItemsLogic.setAll(items) }
+    }
+
+  @Test
+  fun `onQuickStartSelected replaces whatever was previously in the builder list`() =
+    runTest {
+      coEvery { quickStartItemsProvider.itemsFor(QuickStartOption.ONE_TIME) } returns listOf(summaryItem())
+      coEvery { quickStartItemsProvider.itemsFor(QuickStartOption.SHOPPING_LIST) } returns listOf(groupItem())
+      val viewModel = createViewModel()
+
+      viewModel.onQuickStartSelected(QuickStartOption.ONE_TIME)
+      viewModel.onQuickStartSelected(QuickStartOption.SHOPPING_LIST)
+
+      verify { builderItemsLogic.setAll(listOf(groupItem())) }
     }
 
   @Test

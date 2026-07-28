@@ -27,6 +27,8 @@ import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
 import com.elementary.tasks.reminder.build.preset.BuilderPresetToBiAdapter
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
+import com.elementary.tasks.reminder.build.quickstart.QuickStartItemsProvider
+import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
@@ -128,6 +130,7 @@ class BuildReminderViewModel(
   private val textProvider: TextProvider,
   private val featureManager: FeatureManager,
   private val buildInfo: BuildInfo,
+  private val quickStartItemsProvider: QuickStartItemsProvider,
 ) : ViewModel() {
 
   val id: String = initialId
@@ -353,6 +356,14 @@ class BuildReminderViewModel(
       }
     } else {
       _state.update { it.copy(editingItem = pair) }
+    }
+  }
+
+  fun onQuickStartSelected(option: QuickStartOption) {
+    Logger.i(TAG, "Quick start option selected: $option")
+    viewModelScope.launch(dispatcherProvider.default()) {
+      builderItemsLogic.setAll(quickStartItemsProvider.itemsFor(option))
+      updateSelector()
     }
   }
 

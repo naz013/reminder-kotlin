@@ -798,7 +798,14 @@
     <string name="builder_count_description">The COUNT rule part defines the number of occurrences at which to range-bound the recurrence</string>
     <string name="builder_interval_description">The INTERVAL rule part contains a positive integer representing at which intervals the recurrence rule repeats</string>
     <string name="builder_frequency_description">The Frequency rule part identifies the type of recurrence rule. This rule part MUST be specified in the recurrence rule</string>
-    <string name="builder_empty_message">Start building your Reminder by adding elements to it</string>
+    <string name="builder_empty_message">Choose how you\'d like to get started</string>
+    <string name="builder_quick_start_one_time">One-time reminder</string>
+    <string name="builder_quick_start_every_weekday">Every weekday</string>
+    <string name="builder_quick_start_every_month_day">Every month on this day</string>
+    <string name="builder_quick_start_every_year">Every year on this day</string>
+    <string name="builder_quick_start_timer">Countdown timer</string>
+    <string name="builder_quick_start_shopping_list">Shopping list</string>
+    <string name="builder_quick_start_more_options">More options…</string>
     <string name="builder_selector_tab_parameters">Parameters</string>
     <string name="builder_selector_tab_presets">@string/recur_presets</string>
     <string name="builder_selector_tab_recur_presets">iCalendar presets</string>

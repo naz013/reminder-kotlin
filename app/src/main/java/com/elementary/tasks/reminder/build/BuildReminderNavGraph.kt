@@ -24,6 +24,7 @@ import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.adapter.rememberParamToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.help.ReminderHelpScreen
+import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.selectordialog.BuilderSelectorSheet
 import com.elementary.tasks.reminder.build.selectordialog.rememberSelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
@@ -152,6 +153,7 @@ private fun MainEntry(
     canSaveAsPreset = state.canSaveAsPreset,
     saveAsPresetChecked = state.saveAsPresetChecked,
     presetName = state.presetName,
+    quickStartOptions = QuickStartOption.entries,
     onBackClick = { backStack.removeLastOrNull() },
     onSaveClick = {
       askNotificationPermissionIfNeeded(permissionRequester) {
@@ -170,6 +172,7 @@ private fun MainEntry(
     onItemClick = { position, item -> viewModel.onItemEditedClicked(position, item) },
     onItemRemove = { position, item -> viewModel.removeItem(position, item) },
     onAddClick = { showSelector = true },
+    onQuickStartClick = viewModel::onQuickStartSelected,
   )
 
   if (showSelector) {

@@ -410,9 +410,11 @@ private fun DeveloperEntry(backStack: MutableList<NavKey>) {
   ) { padding ->
     DeveloperScreen(
       state = state,
+      modifier = Modifier.padding(padding),
       onResetBannersClick = viewModel::onResetBannersClick,
       onBirthdayDialogClick = viewModel::onBirthdayDialogClick,
       onReminderDialogClick = viewModel::onReminderDialogClick,
+      onRecurrenceTestClick = viewModel::onRecurrenceTestClick,
       onObjectExportClick = viewModel::onObjectExportClick,
       onReviewDialogClick = viewModel::onReviewDialogClick,
       onProVersionClick = viewModel::onProVersionClick,

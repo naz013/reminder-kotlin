@@ -5,9 +5,10 @@ import com.github.naz013.reviews.AppSource
 data class DeveloperState(
   val dialog: DeveloperChoiceDialog? = null,
   val clearAllTablesConfirmation: Boolean = false,
+  val pendingRecurrenceTestMinutes: Int? = null,
 )
 
-enum class DeveloperDialogKind { BIRTHDAY, REMINDER, CLEAR_TABLE }
+enum class DeveloperDialogKind { BIRTHDAY, REMINDER, CLEAR_TABLE, RECURRENCE_TEST, RECURRENCE_TEST_TYPE }
 
 data class DeveloperChoiceDialog(
   val kind: DeveloperDialogKind,
