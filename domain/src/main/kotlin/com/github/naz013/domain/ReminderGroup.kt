@@ -4,6 +4,7 @@ import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
+@Deprecated("Use GroupV2")
 data class ReminderGroup(
   @SerializedName("title")
   val groupTitle: String,

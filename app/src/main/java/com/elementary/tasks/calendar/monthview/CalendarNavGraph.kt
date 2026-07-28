@@ -23,7 +23,6 @@ import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.github.naz013.common.Permissions
-import com.github.naz013.domain.Reminder
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -66,7 +65,7 @@ private fun MonthEntry(backStack: MutableList<NavKey>) {
       is CalendarViewModel.NavigationEvent.OpenNewReminder -> {
         appNavBridge.navigate(
           BuildReminderNavKey.Main(
-            deepLinkDateTimeType = Reminder.BY_DATE,
+            deepLinkDateTimeType = BuildReminderNavKey.Main.DateTimeType.Date,
             deepLinkDateTimeMillis = event.dateMillis,
           ),
         )
@@ -143,7 +142,7 @@ private fun DayEntry(
       is WeekViewViewModel.NavigationEvent.OpenNewReminder -> {
         appNavBridge.navigate(
           BuildReminderNavKey.Main(
-            deepLinkDateTimeType = Reminder.BY_DATE,
+            deepLinkDateTimeType = BuildReminderNavKey.Main.DateTimeType.Date,
             deepLinkDateTimeMillis = event.dateMillis,
           ),
         )

@@ -8,11 +8,16 @@ sealed interface BuildReminderNavKey : NavKey {
   data class Main(
     val id: String = "",
     val fromIntentItem: Boolean = false,
-    val deepLinkDateTimeType: Int? = null,
+    val deepLinkDateTimeType: DateTimeType? = null,
     val deepLinkDateTimeMillis: Long? = null,
     val deepLinkTodo: Boolean = false,
     val deepLinkText: String? = null,
-  ) : BuildReminderNavKey
+  ) : BuildReminderNavKey {
+
+    enum class DateTimeType {
+      Date
+    }
+  }
 
   @Serializable
   data object Configure : BuildReminderNavKey

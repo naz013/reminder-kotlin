@@ -131,7 +131,7 @@ class BuildReminderViewModelTest : BaseTest() {
   private fun createViewModel(
     initialId: String = "",
     fromIntentItem: Boolean = false,
-    deepLinkDateTimeType: Int? = null,
+    deepLinkDateTimeType: BuildReminderNavKey.Main.DateTimeType? = null,
     deepLinkDateTimeMillis: Long? = null,
     deepLinkTodo: Boolean = false,
     deepLinkText: String? = null,

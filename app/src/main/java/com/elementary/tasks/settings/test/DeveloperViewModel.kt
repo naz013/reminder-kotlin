@@ -437,7 +437,10 @@ class DeveloperViewModel(
         "Birthday with number",
         "Birthday without age",
       )
-    private val TABLE_OPTIONS = Table.entries.map { it.tableName }
+    private val TABLE_OPTIONS = Table.entries
+      .filterNot { it == Table.Reminder }
+      .filterNot { it == Table.ReminderGroup }
+      .map { it.tableName }
   }
 
   private data class DemoNote(

@@ -9,6 +9,7 @@ import java.io.Serializable
 import java.util.Random
 import java.util.UUID
 
+@Deprecated("Use ReminderV2")
 data class Reminder(
   @SerializedName("summary")
   var summary: String = "",

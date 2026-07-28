@@ -49,7 +49,6 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
@@ -88,7 +87,7 @@ import java.util.UUID
 class BuildReminderViewModel(
   initialId: String,
   private val fromIntentItem: Boolean,
-  private val deepLinkDateTimeType: Int?,
+  private val deepLinkDateTimeType: BuildReminderNavKey.Main.DateTimeType?,
   private val deepLinkDateTimeMillis: Long?,
   private val deepLinkTodo: Boolean,
   private val deepLinkText: String?,
@@ -411,13 +410,13 @@ class BuildReminderViewModel(
   }
 
   private suspend fun readDateTimeDeepLink(
-    type: Int,
+    type: BuildReminderNavKey.Main.DateTimeType,
     millis: Long,
   ) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
-    if (type == Reminder.BY_DATE) {
+    if (type == BuildReminderNavKey.Main.DateTimeType.Date) {
       Logger.i(TAG, "Handle reminder date/time Deep Link")
       val dateTime = dateTimeManager.fromMillis(millis)
       addDateItemToBuilder(dateTime.toLocalDate())
