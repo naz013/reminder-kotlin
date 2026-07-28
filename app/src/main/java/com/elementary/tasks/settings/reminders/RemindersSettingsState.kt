@@ -1,5 +1,6 @@
 package com.elementary.tasks.settings.reminders
 
+import com.elementary.tasks.workflow.WorkflowConfig
 import org.threeten.bp.LocalTime
 
 data class RemindersSettingsState(
@@ -30,6 +31,7 @@ data class RemindersSettingsState(
   val defaultLockScreenVisibilityName: String = "",
   val dialog: RemindersSettingsDialog? = null,
   val hasLocation: Boolean = false,
+  val workflowsVisible: Boolean = WorkflowConfig.isEnabled,
 )
 
 enum class ChoiceDialogKind { PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE, CATEGORY, LOCK_SCREEN_VISIBILITY }

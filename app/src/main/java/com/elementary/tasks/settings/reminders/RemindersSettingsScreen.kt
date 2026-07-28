@@ -67,12 +67,14 @@ fun RemindersSettingsScreen(
       dividerBottom = true,
       onClick = onPresetsClick,
     )
-    SettingsItem(
-      title = stringResource(R.string.workflow_rules),
-      icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
-      dividerBottom = true,
-      onClick = onWorkflowRulesClick,
-    )
+    if (state.workflowsVisible) {
+      SettingsItem(
+        title = stringResource(R.string.workflow_rules),
+        icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
+        dividerBottom = true,
+        onClick = onWorkflowRulesClick,
+      )
+    }
     if (state.hasLocation) {
       SettingsItem(
         title = stringResource(R.string.location),

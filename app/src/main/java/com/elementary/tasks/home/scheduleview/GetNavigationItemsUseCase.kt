@@ -2,6 +2,7 @@ package com.elementary.tasks.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.home.HeaderNavigationItem
+import com.elementary.tasks.workflow.WorkflowConfig
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -26,15 +27,16 @@ class GetNavigationItemsUseCase(
   suspend operator fun invoke(
     scope: CoroutineScope,
     day: LocalDateTime,
-  ): List<HeaderNavigationItem> =
-    listOfNotNull(
-      getCalendarItem(scope = scope),
-      getEventsItem(scope = scope),
-      getNoteItem(scope = scope),
-      getGoogleTasksItem(scope = scope),
-//      getGroupItem(scope = scope),
-      getWorkflowItem(scope = scope),
-    )
+  ): List<HeaderNavigationItem> = buildList {
+    add(getCalendarItem(scope = scope))
+    add(getEventsItem(scope = scope))
+    add(getNoteItem(scope = scope))
+    add(getGoogleTasksItem(scope = scope))
+    if (WorkflowConfig.isEnabled) {
+      add(getWorkflowItem(scope = scope))
+      add(getGroupItem(scope = scope))
+    }
+  }
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
     val remindersCount = reminderV2Repository.getAll(active = true, removed = false).size
