@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
@@ -55,6 +59,22 @@ private fun PreviewEntry(
   val fileIntentSender = rememberFileIntentSender()
   val intentResolver = rememberSendIntentResolver()
   val adsProvider = remember { AdsProvider() }
+
+  // ReminderActionActivity (the full-screen alarm popup) is a separate Activity launched on
+  // top of this screen, so the composable is never disposed and the state flow's
+  // WhileSubscribed subscription never restarts. Reload explicitly on every ON_RESUME so
+  // snoozing/completing/deleting from the popup is reflected when we come back.
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(viewModel, lifecycleOwner) {
+    val observer =
+      LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+          viewModel.refresh()
+        }
+      }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
 
   viewModel.event.ObserveEvent { event ->
     when (event) {

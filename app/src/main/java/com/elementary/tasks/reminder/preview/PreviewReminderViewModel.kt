@@ -88,6 +88,10 @@ class PreviewReminderViewModel(
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
+  fun refresh() {
+    load()
+  }
+
   fun onCopyClicked() {
     viewModelScope.launch(dispatcherProvider.default()) {
       var time = LocalTime.of(0, 0)

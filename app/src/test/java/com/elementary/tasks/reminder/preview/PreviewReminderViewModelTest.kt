@@ -172,6 +172,20 @@ class PreviewReminderViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `refresh reloads state from the repository`() =
+    runTest {
+      coEvery { getReminderV2ByIdUseCase("42") } returns reminderV2()
+      val viewModel = createViewModel()
+      viewModel.state.first()
+      coEvery { getReminderV2ByIdUseCase("42") } returns reminderV2().copy(summary = "Buy bread")
+
+      viewModel.refresh()
+      val state = viewModel.state.first()
+
+      assertEquals("Buy bread", state.summary)
+    }
+
+  @Test
   fun `canCopy is true for a date-type reminder`() =
     runTest {
       coEvery { getReminderV2ByIdUseCase("42") } returns reminderV2(recurrence = RecurrenceRule.Once)

@@ -2,11 +2,9 @@ package com.github.naz013.ui.common.compose
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import com.github.naz013.ui.common.theme.ThemeModeHolder
 import org.koin.android.ext.android.inject
 
@@ -22,11 +20,6 @@ internal fun ThemeModeHolder.resolveDarkTheme(): Boolean =
     AppCompatDelegate.MODE_NIGHT_YES -> true
     else -> isSystemInDarkTheme()
   }
-
-fun AppCompatActivity.composeView(content: @Composable () -> Unit) {
-  val themeModeHolder: ThemeModeHolder by inject()
-  setContent { AppTheme(darkTheme = themeModeHolder.resolveDarkTheme()) { content() } }
-}
 
 fun ComponentActivity.composeView(content: @Composable () -> Unit) {
   val themeModeHolder: ThemeModeHolder by inject()
