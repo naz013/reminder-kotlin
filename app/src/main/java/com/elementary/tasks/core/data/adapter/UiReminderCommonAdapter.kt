@@ -8,7 +8,6 @@ import com.elementary.tasks.core.data.ui.reminder.UiLinkTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
 import com.elementary.tasks.core.data.ui.reminder.UiReminderTarget
-import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.data.ui.reminder.UiSmsTarget
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.datetime.IntervalUtil
@@ -17,10 +16,13 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
+import org.threeten.bp.LocalDateTime
 
 class UiReminderCommonAdapter(
   private val textProvider: TextProvider,
@@ -41,129 +43,106 @@ class UiReminderCommonAdapter(
       else -> textProvider.getText(R.string.priority_normal)
     }
 
-  fun getTarget(
-    reminder: Reminder,
-    type: UiReminderType,
-  ): UiReminderTarget? {
-    val actionTarget: UiReminderTarget? =
-      if (reminder.isActive && !reminder.isRemoved && reminder.target.isNotEmpty()) {
-        when {
-          type.isSms() ->
-            UiSmsTarget(
-              reminder.summary,
-              reminder.target,
-              contactsReader.getNameFromNumber(reminder.target),
-            ).takeIf { reminder.summary.isNotEmpty() }
+  fun getTargetV2(reminder: ReminderV2): UiReminderTarget? {
+    if (!reminder.isActive || reminder.isRemoved) return null
+    return when (val action = reminder.action) {
+      is ReminderAction.Sms ->
+        UiSmsTarget(
+          reminder.summary,
+          action.target,
+          contactsReader.getNameFromNumber(action.target),
+        ).takeIf { reminder.summary.isNotEmpty() }
 
-          type.isCall() ->
-            UiCallTarget(
-              reminder.summary,
-              contactsReader.getNameFromNumber(reminder.target),
-            )
+      is ReminderAction.Call ->
+        UiCallTarget(
+          reminder.summary,
+          contactsReader.getNameFromNumber(action.target),
+        )
 
-          type.isApp() ->
-            UiAppTarget(
-              reminder.target,
-              packageManagerWrapper.getApplicationName(reminder.target),
-            )
+      is ReminderAction.Link -> UiLinkTarget(action.target)
 
-          type.isLink() -> UiLinkTarget(reminder.target)
-          type.isEmail() ->
-            UiEmailTarget(
-              reminder.summary,
-              reminder.target,
-              reminder.subject,
-              reminder.attachmentFile,
-              contactsReader.getNameFromMail(reminder.target),
-            )
+      is ReminderAction.App ->
+        UiAppTarget(
+          action.target,
+          packageManagerWrapper.getApplicationName(action.target),
+        )
 
-          else -> null
-        }
-      } else {
-        null
-      }
-    return actionTarget
+      is ReminderAction.Email ->
+        UiEmailTarget(
+          reminder.summary,
+          action.target,
+          action.subject,
+          "",
+          contactsReader.getNameFromMail(action.target),
+        )
+
+      ReminderAction.Shopping, ReminderAction.None -> null
+    }
   }
 
-  fun getDue(
-    data: Reminder,
-    type: UiReminderType,
-  ): UiReminderDueData {
+  fun getDueV2(reminder: ReminderV2): UiReminderDueData {
+    val remindBefore = reminder.notification.remindBefore
     val before =
-      if (data.remindBefore == 0L) {
+      if (remindBefore == null || remindBefore == 0L) {
         null
       } else {
-        IntervalUtil.getBeforeTime(data.remindBefore) { getBeforePattern(it) }
+        IntervalUtil.getBeforeTime(remindBefore) { getBeforePattern(it) }
       }
-    val dateTime = dateTimeManager.fromGmtToLocal(data.eventTime)
-    val dueMillis = dateTimeManager.toMillis(data.eventTime)
+    val dateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
+    val dueMillis = dateTime?.let { dateTimeManager.toMillis(it) } ?: 0L
     val due = dateTime?.let { dateTimeManager.getFullDateTime(it) }
-    val repeatValue =
-      when {
-        type.isBase(UiReminderType.Base.MONTHLY) ->
-          String.format(textProvider.getText(R.string.xM), data.repeatInterval.toString())
-
-        type.isBase(UiReminderType.Base.WEEKDAY) -> getRepeatString(data.weekdays)
-        type.isBase(UiReminderType.Base.YEARLY) -> textProvider.getText(R.string.yearly)
-        type.isBase(UiReminderType.Base.RECUR) -> textProvider.getText(R.string.recur_custom)
-        else -> {
-          IntervalUtil.getInterval(data.repeatInterval) { getIntervalPattern(it) }
-            ?: textProvider.getText(R.string.repeat_once)
-        }
-      }
     return UiReminderDueData(
       before = before,
-      repeat = repeatValue,
+      repeat = getRepeatValueV2(reminder.recurrence),
       dateTime = due,
-      remaining = getRemaining(data),
+      remaining = getRemainingV2(dateTime),
       millis = dueMillis,
       localDateTime = dateTime,
-      recurRule = getRecurRules(data, type),
+      recurRule = getRecurRulesV2(reminder.recurrence),
       formattedTime = dateTime?.let { dateTimeManager.getTime(it.toLocalTime()) },
-      formattedDateTime = dateTime?.let { dateTimeManager.getFullDateTime(it) },
+      formattedDateTime = due,
     )
   }
 
-  private fun getRecurRules(
-    reminder: Reminder,
-    type: UiReminderType,
-  ): String? =
-    if (type.isRecur()) {
-      runCatching { iCalendarApi.parseObject(reminder.recurDataObject) }
+  private fun getRepeatValueV2(recurrence: RecurrenceRule): String =
+    when (recurrence) {
+      is RecurrenceRule.Monthly ->
+        String.format(textProvider.getText(R.string.xM), recurrence.repeatInterval.toString())
+
+      is RecurrenceRule.RelativeMonthly ->
+        String.format(textProvider.getText(R.string.xM), recurrence.repeatInterval.toString())
+
+      is RecurrenceRule.Weekly -> getRepeatString(recurrence.weekdays)
+      is RecurrenceRule.Yearly -> textProvider.getText(R.string.yearly)
+      is RecurrenceRule.ICalendar -> textProvider.getText(R.string.recur_custom)
+      is RecurrenceRule.Daily -> {
+        IntervalUtil.getInterval(recurrence.repeatInterval) { getIntervalPattern(it) }
+          ?: textProvider.getText(R.string.repeat_once)
+      }
+
+      is RecurrenceRule.Countdown -> {
+        IntervalUtil.getInterval(recurrence.repeatInterval) { getIntervalPattern(it) }
+          ?: textProvider.getText(R.string.repeat_once)
+      }
+
+      RecurrenceRule.Once,
+      RecurrenceRule.LocationEnter,
+      RecurrenceRule.LocationExit,
+      -> textProvider.getText(R.string.repeat_once)
+    }
+
+  private fun getRecurRulesV2(recurrence: RecurrenceRule): String? =
+    (recurrence as? RecurrenceRule.ICalendar)?.let { rule ->
+      runCatching { iCalendarApi.parseObject(rule.rrule) }
         .getOrNull()
         ?.map
         ?.values
         ?.firstOrNull { it.tagType == TagType.RRULE }
         ?.buildString()
-    } else {
-      null
     }
 
-  private fun getRemaining(reminder: Reminder): String = modelDateTimeFormatter.getRemaining(reminder.eventTime, reminder.delay)
-
-  fun getTypeString(type: UiReminderType): String =
-    when {
-      type.isCall() -> textProvider.getText(R.string.make_call)
-      type.isSms() -> textProvider.getText(R.string.message)
-      type.isApp() -> textProvider.getText(R.string.application)
-      type.isLink() -> textProvider.getText(R.string.open_link)
-      type.isSubTasks() -> textProvider.getText(R.string.builder_sub_tasks)
-      type.isEmail() -> textProvider.getText(R.string.e_mail)
-      else -> getType(type)
-    }
-
-  private fun getType(type: UiReminderType): String =
-    when {
-      type.isBase(UiReminderType.Base.MONTHLY) -> textProvider.getText(R.string.day_of_month)
-      type.isBase(UiReminderType.Base.WEEKDAY) -> textProvider.getText(R.string.alarm)
-      type.isBase(UiReminderType.Base.LOCATION_IN) -> textProvider.getText(R.string.entering_place)
-      type.isBase(UiReminderType.Base.LOCATION_OUT) -> textProvider.getText(R.string.leaving_place)
-      type.isBase(UiReminderType.Base.TIMER) -> textProvider.getText(R.string.timer)
-      type.isBase(UiReminderType.Base.PLACE) -> textProvider.getText(R.string.places)
-      type.isBase(UiReminderType.Base.YEARLY) -> textProvider.getText(R.string.yearly)
-      type.isBase(UiReminderType.Base.RECUR) -> textProvider.getText(R.string.recur_custom)
-      else -> textProvider.getText(R.string.by_date)
-    }
+  private fun getRemainingV2(localEventDateTime: LocalDateTime?): String =
+    modelDateTimeFormatter.getRemaining(localEventDateTime, dateTimeManager.getCurrentDateTime())
 
   fun getReminderStatus(
     isActive: Boolean,

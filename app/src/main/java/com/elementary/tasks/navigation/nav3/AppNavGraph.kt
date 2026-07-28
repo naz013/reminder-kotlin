@@ -35,6 +35,8 @@ import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
 import com.github.naz013.reviews.rememberReviewsFormLauncher
+import com.elementary.tasks.workflow.workflowEntries
+import org.koin.compose.koinInject
 
 /**
  * Root of the app's single Nav3 graph, hosted directly by
@@ -107,6 +109,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         locationEntries(backStack)
         otherEntries(backStack)
         exportEntries(backStack)
+        workflowEntries(backStack)
       },
   )
 }

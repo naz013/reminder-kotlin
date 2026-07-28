@@ -15,7 +15,8 @@ import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.PendingIntentWrapper
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderPriority
+import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class ReminderNotificationHandler(
   private val reminderDataProvider: ReminderDataProvider,
@@ -25,7 +26,7 @@ class ReminderNotificationHandler(
   prefs: Prefs,
   wearNotification: WearNotification,
   style: NotificationStyle,
-) : NotificationAlertActionHandler<Reminder>(
+) : NotificationAlertActionHandler<ReminderV2>(
     contextProvider = contextProvider,
     textProvider = textProvider,
     notifier = notifier,
@@ -41,8 +42,8 @@ class ReminderNotificationHandler(
 
   override fun dismissActionKey(): String = ReminderActionReceiver.ACTION_HIDE
 
-  override fun extraActions(data: Reminder): List<NotificationAction> =
-    if (!Reminder.isGpsType(data.type)) {
+  override fun extraActions(data: ReminderV2): List<NotificationAction> =
+    if (data.places.isEmpty()) {
       listOf(
         NotificationAction(
           icon = R.drawable.ic_fluent_snooze,
@@ -54,25 +55,26 @@ class ReminderNotificationHandler(
       emptyList()
     }
 
-  override fun uniqueId(data: Reminder): Int = data.uniqueId
+  override fun uniqueId(data: ReminderV2): Int = data.uniqueId
 
-  override fun uuId(data: Reminder): String = data.uuId
+  override fun uuId(data: ReminderV2): String = data.uuId
 
-  override fun contentTitle(data: Reminder): String = data.summary
+  override fun contentTitle(data: ReminderV2): String = data.summary
 
-  override fun contentText(data: Reminder): String = reminderDataProvider.getAppName()
+  override fun contentText(data: ReminderV2): String = reminderDataProvider.getAppName()
 
-  override fun domainIcon(data: Reminder): Int = R.drawable.ic_fluent_alert
+  override fun domainIcon(data: ReminderV2): Int = R.drawable.ic_fluent_alert
 
-  override fun defaultPriority(data: Reminder): Int = reminderDataProvider.priority(data.priority)
+  override fun defaultPriority(data: ReminderV2): Int =
+    reminderDataProvider.priority((data.notification.priority ?: ReminderPriority.NORMAL).ordinal)
 
-  override fun vibrationPattern(data: Reminder): LongArray? = reminderDataProvider.getVibrationPattern()
+  override fun vibrationPattern(data: ReminderV2): LongArray? = reminderDataProvider.getVibrationPattern()
 
-  override fun ledColor(data: Reminder): Int? = reminderDataProvider.getLedColor(data.color)
+  override fun ledColor(data: ReminderV2): Int? = reminderDataProvider.getLedColor(data.notification.color ?: 0)
 
-  override fun appName(data: Reminder): String = reminderDataProvider.getAppName()
+  override fun appName(data: ReminderV2): String = reminderDataProvider.getAppName()
 
-  override fun contentPendingIntent(data: Reminder): PendingIntent =
+  override fun contentPendingIntent(data: ReminderV2): PendingIntent =
     PendingIntentWrapper.getActivity(
       contextProvider.context,
       data.uniqueId,

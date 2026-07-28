@@ -5,11 +5,12 @@ import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
-import com.github.naz013.repository.ReminderRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.files.DataType
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -18,6 +19,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 
 /**
  * Unit tests for DeleteReminderUseCase.
@@ -25,7 +27,7 @@ import org.junit.Test
  * Covers core behavior, call order, error propagation, and edge cases.
  */
 class DeleteReminderUseCaseTest : BaseTest() {
-  private lateinit var reminderRepository: ReminderRepository
+  private lateinit var reminderV2Repository: ReminderV2Repository
   private lateinit var googleCalendarUtils: GoogleCalendarUtils
   private lateinit var scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
   private lateinit var deactivateReminderUseCase: DeactivateReminderUseCase
@@ -37,7 +39,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    reminderRepository = mockk(relaxed = true)
+    reminderV2Repository = mockk(relaxed = true)
     googleCalendarUtils = mockk(relaxed = true)
     scheduleBackgroundWorkUseCase = mockk(relaxed = true)
     deactivateReminderUseCase = mockk(relaxed = true)
@@ -46,7 +48,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
 
     useCase =
       DeleteReminderUseCase(
-        reminderRepository = reminderRepository,
+        reminderV2Repository = reminderV2Repository,
         googleCalendarUtils = googleCalendarUtils,
         scheduleBackgroundWorkUseCase = scheduleBackgroundWorkUseCase,
         deactivateReminderUseCase = deactivateReminderUseCase,
@@ -59,21 +61,21 @@ class DeleteReminderUseCaseTest : BaseTest() {
   fun `invoke performs all deletion steps and schedules background work`() =
     runTest {
       // Arrange
-      val reminder = Reminder(uuId = "id-123", summary = "Test")
+      val reminder = ReminderV2(uuId = "id-123", summary = "Test", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 
       // Act
       useCase.invoke(reminder)
 
       // Assert
-      coVerify(exactly = 1) { deactivateReminderUseCase(reminder) }
-      coVerify(exactly = 1) { reminderRepository.delete("id-123") }
+      coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminder.uuId }) }
+      coVerify(exactly = 1) { reminderV2Repository.delete("id-123") }
       coVerify(exactly = 1) { googleCalendarUtils.deleteEvents("id-123") }
       coVerify(exactly = 1) { eventHistoryRepository.deleteByEventId("id-123") }
       coVerify(exactly = 1) { eventOccurrenceRepository.deleteByEventId("id-123") }
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           id = "id-123",
         )
       }
@@ -83,21 +85,21 @@ class DeleteReminderUseCaseTest : BaseTest() {
   fun `invoke calls methods in correct order`() =
     runTest {
       // Arrange
-      val reminder = Reminder(uuId = "id-456", summary = "Order Test")
+      val reminder = ReminderV2(uuId = "id-456", summary = "Order Test", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 
       // Act
       useCase.invoke(reminder)
 
       // Assert - Verify the exact order of side-effect calls
       coVerifyOrder {
-        deactivateReminderUseCase(reminder)
-        reminderRepository.delete("id-456")
+        deactivateReminderUseCase(match { it.uuId == reminder.uuId })
+        reminderV2Repository.delete("id-456")
         googleCalendarUtils.deleteEvents("id-456")
         eventHistoryRepository.deleteByEventId("id-456")
         eventOccurrenceRepository.deleteByEventId("id-456")
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           id = "id-456",
         )
       }
@@ -107,7 +109,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
   fun `invoke schedules delete work with correct parameters`() =
     runTest {
       // Arrange
-      val reminder = Reminder(uuId = "work-789", summary = "Work Params")
+      val reminder = ReminderV2(uuId = "work-789", summary = "Work Params", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 
       // Act
       useCase.invoke(reminder)
@@ -116,7 +118,7 @@ class DeleteReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           id = "work-789",
         )
       }
@@ -126,9 +128,9 @@ class DeleteReminderUseCaseTest : BaseTest() {
   fun `invoke propagates exception when repository delete fails and stops subsequent calls`() =
     runTest {
       // Arrange
-      val reminder = Reminder(uuId = "fail-001", summary = "Failure")
-      coJustRun { deactivateReminderUseCase(reminder) }
-      coEvery { reminderRepository.delete("fail-001") } throws IllegalStateException("DB error")
+      val reminder = ReminderV2(uuId = "fail-001", summary = "Failure", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
+      coJustRun { deactivateReminderUseCase(match { it.uuId == reminder.uuId }) }
+      coEvery { reminderV2Repository.delete("fail-001") } throws IllegalStateException("DB error")
 
       // Act
       try {
@@ -137,8 +139,8 @@ class DeleteReminderUseCaseTest : BaseTest() {
       } catch (e: IllegalStateException) {
         // Assert
         // Deactivate was called and delete threw an exception
-        coVerify(exactly = 1) { deactivateReminderUseCase(reminder) }
-        coVerify(exactly = 1) { reminderRepository.delete("fail-001") }
+        coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminder.uuId }) }
+        coVerify(exactly = 1) { reminderV2Repository.delete("fail-001") }
         // No further calls were made
         coVerify(exactly = 0) { googleCalendarUtils.deleteEvents(any()) }
         coVerify(exactly = 0) { eventHistoryRepository.deleteByEventId(any()) }
@@ -151,21 +153,21 @@ class DeleteReminderUseCaseTest : BaseTest() {
   fun `invoke works with empty reminder id and still calls collaborators`() =
     runTest {
       // Arrange
-      val reminder = Reminder(uuId = "", summary = "Empty ID")
+      val reminder = ReminderV2(uuId = "", summary = "Empty ID", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 
       // Act
       useCase.invoke(reminder)
 
       // Assert - All calls still happen with empty id string
-      coVerify(exactly = 1) { deactivateReminderUseCase(reminder) }
-      coVerify(exactly = 1) { reminderRepository.delete("") }
+      coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == reminder.uuId }) }
+      coVerify(exactly = 1) { reminderV2Repository.delete("") }
       coVerify(exactly = 1) { googleCalendarUtils.deleteEvents("") }
       coVerify(exactly = 1) { eventHistoryRepository.deleteByEventId("") }
       coVerify(exactly = 1) { eventOccurrenceRepository.deleteByEventId("") }
       coVerify(exactly = 1) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.Delete,
-          dataType = DataType.Reminders,
+          dataType = DataType.RemindersV2,
           id = "",
         )
       }
@@ -175,15 +177,15 @@ class DeleteReminderUseCaseTest : BaseTest() {
   fun `invoke deactivates reminder before deletion`() =
     runTest {
       // Arrange
-      val reminder = Reminder(uuId = "seq-002", summary = "Sequence Test")
+      val reminder = ReminderV2(uuId = "seq-002", summary = "Sequence Test", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 
       // Act
       useCase.invoke(reminder)
 
       // Assert a partial order: deactivate called before repository delete
       coVerifyOrder {
-        deactivateReminderUseCase(reminder)
-        reminderRepository.delete("seq-002")
+        deactivateReminderUseCase(match { it.uuId == reminder.uuId })
+        reminderV2Repository.delete("seq-002")
       }
     }
 }

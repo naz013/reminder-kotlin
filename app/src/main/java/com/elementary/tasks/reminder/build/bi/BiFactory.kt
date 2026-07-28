@@ -68,14 +68,14 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
 
 class BiFactory(
   private val contextProvider: ContextProvider,
   private val biTypeForUiAdapter: BiTypeForUiAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
@@ -183,9 +183,9 @@ class BiFactory(
         GroupBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.choose_group),
-          groups = reminderGroupRepository.getAll().map { uiGroupListAdapter.convert(it) },
+          groups = groupV2Repository.getAll().map { uiGroupListAdapter.convert(it) },
           defaultGroup =
-            reminderGroupRepository
+            groupV2Repository
               .defaultGroup()
               ?.let { uiGroupListAdapter.convert(it) },
         )
@@ -342,6 +342,7 @@ class BiFactory(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_add_list_of_subtasks_to_the_reminder),
           shopItemsFormatter = ShopItemsFormatter(context),
+          dateTimeManager = dateTimeManager,
         )
       }
 

@@ -22,8 +22,6 @@ import org.koin.dsl.module
 val adapterModule = module {
   factory { UiReminderPlaceAdapter() }
   factory { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get(), get()) }
-  factory { UiReminderListAdapter(get(), get(), get(), get(), get()) }
-  factory { UiReminderListsAdapter(get(), get(), get()) }
 
   factory { UiBirthdayListAdapter(get(), get(), get()) }
   factory { UiBirthdayShowAdapter(get(), get()) }

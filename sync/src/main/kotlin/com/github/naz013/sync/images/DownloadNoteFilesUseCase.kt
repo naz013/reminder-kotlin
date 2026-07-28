@@ -3,7 +3,7 @@ package com.github.naz013.sync.images
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.domain.note.ImageFile
-import com.github.naz013.domain.sync.NoteV3Image
+import com.github.naz013.files.model.NoteV3Image
 import com.github.naz013.logging.Logger
 
 internal class DownloadNoteFilesUseCase(

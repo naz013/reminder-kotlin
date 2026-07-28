@@ -2,18 +2,18 @@ package com.elementary.tasks.groups
 
 import com.elementary.tasks.groups.create.EditGroupViewModel
 import com.elementary.tasks.groups.list.GroupsViewModel
-import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
+import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.MakeGroupDefaultUseCase
-import com.elementary.tasks.groups.usecase.SaveReminderGroupUseCase
+import com.elementary.tasks.groups.usecase.SaveGroupUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val reminderGroupModule =
+val groupModule =
   module {
-    factoryOf(::DeleteReminderGroupUseCase)
-    factoryOf(::SaveReminderGroupUseCase)
+    factoryOf(::DeleteGroupUseCase)
+    factoryOf(::SaveGroupUseCase)
     factoryOf(::MakeGroupDefaultUseCase)
 
     viewModelOf(::GroupsViewModel)

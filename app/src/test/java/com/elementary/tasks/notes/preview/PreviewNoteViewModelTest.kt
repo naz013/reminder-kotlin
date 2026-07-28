@@ -20,12 +20,13 @@ import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -37,13 +38,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 import java.io.File
 
 class PreviewNoteViewModelTest : BaseTest() {
   private val key = "42"
 
   private val noteRepository = mockk<NoteRepository>()
-  private val reminderRepository = mockk<ReminderRepository>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val uiNotePreviewAdapter = mockk<UiNotePreviewAdapter>()
   private val textProvider = mockk<com.github.naz013.common.TextProvider>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
@@ -64,7 +66,7 @@ class PreviewNoteViewModelTest : BaseTest() {
     // on every collection - default stubs avoid unstubbed-call failures for tests that don't care
     // about note/reminder details but still collect state at least once.
     coEvery { noteRepository.getById(key) } returns null
-    coEvery { reminderRepository.getByNoteKey(key) } returns emptyList()
+    coEvery { reminderV2Repository.getByNoteId(key) } returns emptyList()
   }
 
   private fun note(
@@ -100,14 +102,19 @@ class PreviewNoteViewModelTest : BaseTest() {
     id: String = "r1",
     noteId: String = key,
     summary: String = "Buy milk",
-  ) = Reminder(uuId = id, noteId = noteId, summary = summary, syncState = SyncState.Synced)
+  ) = ReminderV2(
+    uuId = id,
+    noteId = noteId,
+    summary = summary,
+    schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+  )
 
   private fun createViewModel(): PreviewNoteViewModel =
     PreviewNoteViewModel(
       key = key,
       dispatcherProvider = mockDispatcherProvider(),
       noteRepository = noteRepository,
-      reminderRepository = reminderRepository,
+      reminderV2Repository = reminderV2Repository,
       uiNotePreviewAdapter = uiNotePreviewAdapter,
       textProvider = textProvider,
       analyticsEventSender = analyticsEventSender,
@@ -159,7 +166,7 @@ class PreviewNoteViewModelTest : BaseTest() {
         noteColorEngine.colorsForLegacy(any(), any(), any())
       } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
       val r = reminder(id = "r1")
-      coEvery { reminderRepository.getByNoteKey(key) } returns listOf(r)
+      coEvery { reminderV2Repository.getByNoteId(key) } returns listOf(r)
       every { reminderToUiNoteAttachedReminder(r) } returns
         UiNoteAttachedReminder(id = "r1", summary = "Buy milk", dateTime = "1 Jan 2026")
       val viewModel = createViewModel()
@@ -175,7 +182,7 @@ class PreviewNoteViewModelTest : BaseTest() {
     runTest {
       coEvery { noteRepository.getById(key) } returns null
       val r = reminder(id = "r1")
-      coEvery { reminderRepository.getByNoteKey(key) } returns listOf(r)
+      coEvery { reminderV2Repository.getByNoteId(key) } returns listOf(r)
       every { reminderToUiNoteAttachedReminder(r) } returns
         UiNoteAttachedReminder(id = "r1", summary = "Buy milk", dateTime = null)
       val viewModel = createViewModel()
@@ -387,25 +394,27 @@ class PreviewNoteViewModelTest : BaseTest() {
   fun `onReminderDetachClick detaches the reminder and reloads the reminder list`() =
     runTest {
       val attached = reminder(id = "r1", noteId = key)
-      coEvery { reminderRepository.getById("r1") } returns attached
+      coEvery { reminderV2Repository.getById("r1") } returns attached
       coEvery { saveReminderUseCase(any()) } returns Unit
-      coEvery { reminderRepository.getByNoteKey(key) } returns emptyList()
+      coEvery { reminderV2Repository.getByNoteId(key) } returns emptyList()
       val viewModel = createViewModel()
 
       viewModel.onReminderDetachClick("r1")
 
       coVerify(exactly = 1) {
         saveReminderUseCase(
-          match { it.noteId == "" && it.version == attached.version + 1 && it.syncState == SyncState.WaitingForUpload },
+          match {
+            it.noteId == "" && it.sync.version == attached.sync.version + 1 && it.sync.syncState == SyncState.WaitingForUpload
+          },
         )
       }
-      coVerify(atLeast = 1) { reminderRepository.getByNoteKey(key) }
+      coVerify(atLeast = 1) { reminderV2Repository.getByNoteId(key) }
     }
 
   @Test
   fun `onReminderDetachClick does nothing when the reminder is not found`() =
     runTest {
-      coEvery { reminderRepository.getById("missing") } returns null
+      coEvery { reminderV2Repository.getById("missing") } returns null
       val viewModel = createViewModel()
 
       viewModel.onReminderDetachClick("missing")

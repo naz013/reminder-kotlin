@@ -4,15 +4,19 @@ import android.content.Context
 import android.location.Location
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DefaultDistanceFormatter
+import com.elementary.tasks.workflow.WorkflowTriggerRunner
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.Reminder
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.domain.reminder.v2.LocationSettings
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.repository.ReminderV2Repository
 import kotlin.math.roundToInt
 
 class CheckLocationReminderUseCase(
   context: Context,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val dateTimeManager: DateTimeManager,
+  private val workflowTriggerRunner: WorkflowTriggerRunner,
   prefs: Prefs,
 ) {
   private val distanceFormatter: DefaultDistanceFormatter =
@@ -27,14 +31,21 @@ class CheckLocationReminderUseCase(
     val showDistanceNotifications = mutableListOf<ShowDistanceNotification>()
     val showReminderNotifications = mutableListOf<ShowReminderNotification>()
 
-    for (reminder in reminderRepository.getActiveGpsTypes()) {
-      if (reminder.isNotificationShown) continue
+    val gpsReminders = reminderV2Repository.getAll(active = true, removed = false).filter { it.places.isNotEmpty() }
+    for (reminder in gpsReminders) {
+      if (reminder.location?.isNotificationShown == true) continue
       if (shouldCheckDistance(reminder)) {
         when {
           destinationReached(location, reminder) -> {
-            reminder.isNotificationShown = true
-            reminderRepository.save(reminder)
+            reminderV2Repository.save(
+              reminder.copy(location = (reminder.location ?: LocationSettings()).copy(isNotificationShown = true)),
+            )
             showReminderNotifications.add(ShowReminderNotification(reminder.uuId))
+            if (reminder.isLeavingType()) {
+              workflowTriggerRunner.onLocationExited(reminder.uuId)
+            } else {
+              workflowTriggerRunner.onLocationEntered(reminder.uuId)
+            }
           }
 
           shouldShowDistanceNotification(reminder) -> {
@@ -48,8 +59,9 @@ class CheckLocationReminderUseCase(
           }
 
           shouldLockReminder(location, reminder) -> {
-            reminder.isLocked = true
-            reminderRepository.save(reminder)
+            reminderV2Repository.save(
+              reminder.copy(location = (reminder.location ?: LocationSettings()).copy(isLocked = true)),
+            )
           }
         }
       }
@@ -60,25 +72,25 @@ class CheckLocationReminderUseCase(
 
   private fun getDistanceText(
     location: Location,
-    reminder: Reminder,
+    reminder: ReminderV2,
   ): String = distanceFormatter.format(getDistance(location, reminder))
 
   private fun shouldLockReminder(
     location: Location,
-    reminder: Reminder,
+    reminder: ReminderV2,
   ): Boolean =
     if (reminder.isLeavingType()) {
       val distance = getDistance(location, reminder)
       val place = reminder.places[0]
-      !reminder.isLocked && distance < getRadius(place.radius)
+      reminder.location?.isLocked != true && distance < getRadius(place.radius)
     } else {
       false
     }
 
-  private fun shouldShowDistanceNotification(reminder: Reminder): Boolean {
+  private fun shouldShowDistanceNotification(reminder: ReminderV2): Boolean {
     if (!isNotificationEnabled) return false
     return if (reminder.isLeavingType()) {
-      reminder.isLocked
+      reminder.location?.isLocked == true
     } else {
       true
     }
@@ -86,12 +98,12 @@ class CheckLocationReminderUseCase(
 
   private fun destinationReached(
     location: Location,
-    reminder: Reminder,
+    reminder: ReminderV2,
   ): Boolean {
     val distance = getDistance(location, reminder)
     val place = reminder.places[0]
     return if (reminder.isLeavingType()) {
-      reminder.isLocked && distance > getRadius(place.radius)
+      reminder.location?.isLocked == true && distance > getRadius(place.radius)
     } else {
       distance <= getRadius(place.radius)
     }
@@ -105,7 +117,7 @@ class CheckLocationReminderUseCase(
 
   private fun getDistance(
     location: Location,
-    reminder: Reminder,
+    reminder: ReminderV2,
   ): Int =
     if (reminder.isLeavingType()) {
       val place = reminder.places[0]
@@ -129,14 +141,12 @@ class CheckLocationReminderUseCase(
       distance.roundToInt()
     }
 
-  private fun shouldCheckDistance(reminder: Reminder): Boolean =
-    if (reminder.eventTime.isEmpty()) {
-      true
-    } else {
-      dateTimeManager.isCurrent(reminder.eventTime)
-    }
+  private fun shouldCheckDistance(reminder: ReminderV2): Boolean {
+    val eventDateTime = reminder.schedule.eventDateTime ?: return true
+    return dateTimeManager.isCurrent(dateTimeManager.utcToLocal(eventDateTime))
+  }
 
-  private fun Reminder.isLeavingType(): Boolean = Reminder.isBase(type, Reminder.BY_OUT)
+  private fun ReminderV2.isLeavingType(): Boolean = recurrence is RecurrenceRule.LocationExit
 
   data class Result(
     val showDistanceNotifications: List<ShowDistanceNotification>,

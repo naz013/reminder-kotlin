@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.usecase
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.github.naz013.logging.Logger
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 
 class ScheduleReminderUploadUseCase(
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
@@ -11,7 +11,7 @@ class ScheduleReminderUploadUseCase(
   suspend operator fun invoke(id: String) {
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
-      dataType = DataType.Reminders,
+      dataType = DataType.RemindersV2,
       id = id,
     )
     Logger.i(TAG, "Scheduled upload for reminder with id = $id")

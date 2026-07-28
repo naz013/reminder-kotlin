@@ -16,6 +16,7 @@ import com.elementary.tasks.groups.list.GroupsScreenState
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -81,6 +82,9 @@ private fun GroupsEditEntry(
     onNameChange = viewModel::onNameChanged,
     onColorSelected = viewModel::onColorSelected,
     onDefaultCheckChanged = viewModel::onDefaultCheckChanged,
+    onWorkflowRulesClick = {
+      state.id?.let { groupId -> backStack.add(WorkflowNavKey.RulesForGroup(groupId)) }
+    },
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onCopyKeepClick = viewModel::onCopyKeepClick,
     onCopyReplaceClick = viewModel::onCopyReplaceClick,

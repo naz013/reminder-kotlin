@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.cloud.usecase
 
 import com.elementary.tasks.core.cloud.worker.WorkType
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 
 class GetWorkerTagUseCase {
   operator fun invoke(

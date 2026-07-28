@@ -21,10 +21,15 @@ import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderPriority
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -35,8 +40,9 @@ import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -50,7 +56,8 @@ import java.util.UUID
 
 class PreviewReminderViewModel(
   private val id: String,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val dispatcherProvider: DispatcherProvider,
   private val uiReminderPlaceAdapter: UiReminderPlaceAdapter,
@@ -64,13 +71,14 @@ class PreviewReminderViewModel(
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val calendarEventRepository: CalendarEventRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
+  private val saveReminderUseCase: SaveReminderUseCase,
   private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
@@ -79,6 +87,10 @@ class PreviewReminderViewModel(
     .onStart { load() }
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
+
+  fun refresh() {
+    load()
+  }
 
   fun onCopyClicked() {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -117,7 +129,7 @@ class PreviewReminderViewModel(
   fun onToggleClick() {
     viewModelScope.launch(dispatcherProvider.main()) {
       val reminder = withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)
+        reminderV2Repository.getById(id)
       } ?: run {
         event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.error_reminder_not_found)))
         event.emit(ViewModelEvent.MoveBack)
@@ -143,10 +155,10 @@ class PreviewReminderViewModel(
   fun onSubTaskRemoved(subTaskId: String) {
     viewModelScope.launch(dispatcherProvider.main()) {
       val reminder = withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)
+        reminderV2Repository.getById(id)
       } ?: return@launch
       val subTasks = withContext(dispatcherProvider.default()) {
-        reminder.shoppings.toMutableList().let { list ->
+        reminder.shoppingItems.toMutableList().let { list ->
           val index = list.indexOfFirst { subtask -> subtask.uuId == subTaskId }
           if (index != -1) {
             list.removeAt(index)
@@ -156,18 +168,19 @@ class PreviewReminderViewModel(
         }
 
       }
-      saveReminder(reminder.copy(shoppings = subTasks.toList()))
+      saveReminder(reminder.copy(shoppingItems = subTasks.toList()))
     }
   }
 
   fun onSubTaskChecked(subTaskId: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
-      val subTasks = reminder.shoppings
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
+      val subTasks = reminder.shoppingItems
       val index = subTasks.indexOfFirst { it.uuId == subTaskId }
       if (index != -1) {
-        subTasks[index].isChecked = !subTasks[index].isChecked
-        saveReminder(reminder.copy(shoppings = subTasks.toList()))
+        val updated = subTasks.toMutableList()
+        updated[index] = updated[index].copy(isChecked = !updated[index].isChecked)
+        saveReminder(reminder.copy(shoppingItems = updated.toList()))
       }
     }
   }
@@ -186,32 +199,32 @@ class PreviewReminderViewModel(
   fun copyReminder(time: LocalTime) {
     Logger.i(TAG, "Copying reminder, id: $id, time: $time")
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
 
-      if (reminder.groupUuId == "") {
-        val group = reminderGroupRepository.defaultGroup()
-        if (group != null) {
-          reminder.groupColor = group.groupColor
-          reminder.groupTitle = group.groupTitle
-          reminder.groupUuId = group.groupUuId
+      val groupId =
+        if (reminder.groupId.isNullOrEmpty()) {
+          groupV2Repository.defaultGroup()?.uuId ?: reminder.groupId
+        } else {
+          reminder.groupId
         }
-      }
-      val newItem =
-        reminder.copy().apply {
-          this.uuId = UUID.randomUUID().toString()
-        }
-      newItem.summary = textProvider.getText(R.string.copy_of, reminder.summary)
 
       val date =
-        dateTimeManager.fromGmtToLocal(newItem.eventTime)?.toLocalDate()
+        reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }?.toLocalDate()
           ?: LocalDate.now()
       var dateTime = LocalDateTime.of(date, time)
 
       while (dateTime < LocalDateTime.now()) {
         dateTime = dateTime.plusDays(1)
       }
-      newItem.eventTime = dateTimeManager.getGmtFromDateTime(dateTime)
-      newItem.startTime = dateTimeManager.getGmtFromDateTime(dateTime)
+      val eventDateTime = dateTimeManager.localToUtc(dateTime)
+
+      val newItem =
+        reminder.copy(
+          uuId = UUID.randomUUID().toString(),
+          groupId = groupId,
+          summary = textProvider.getText(R.string.copy_of, reminder.summary),
+          schedule = ReminderSchedule(startDateTime = eventDateTime, eventDateTime = eventDateTime),
+        )
       activateReminderUseCase(newItem)
     }
   }
@@ -236,7 +249,7 @@ class PreviewReminderViewModel(
 
   fun shareReminder() {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       val file = backupTool.reminderToFile(reminder) ?: return@launch
       Logger.i(TAG, "Sharing reminder ${file.name}")
       event.emit(
@@ -251,7 +264,7 @@ class PreviewReminderViewModel(
   private fun deleteReminder() {
     Logger.i(TAG, "Deleting reminder, id: $id")
     viewModelScope.launch(dispatcherProvider.io()) {
-      reminderRepository.getById(id)?.also { reminder ->
+      reminderV2Repository.getById(id)?.also { reminder ->
         deleteReminderUseCase(reminder)
         withContext(dispatcherProvider.main()) {
           event.emit(ViewModelEvent.MoveBack)
@@ -270,11 +283,11 @@ class PreviewReminderViewModel(
     }
   }
 
-  private fun saveReminder(reminder: Reminder) {
+  private fun saveReminder(reminder: ReminderV2) {
     Logger.i(TAG, "Saving reminder, id: ${reminder.uuId}")
     viewModelScope.launch(dispatcherProvider.main()) {
       withContext(dispatcherProvider.io()) {
-        reminderRepository.save(reminder)
+        saveReminderUseCase(reminder)
       }
       load()
     }
@@ -283,24 +296,21 @@ class PreviewReminderViewModel(
   private fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)
+        getReminderV2ByIdUseCase(id)
       } ?: return@launch
       val reminderGroup = withContext(dispatcherProvider.io()) {
-        reminderGroupRepository.getById(reminder.groupUuId)
+        reminder.groupId?.let { groupV2Repository.getById(it) }
       }
-      val type = UiReminderType(reminder.type)
 
       val status = uiReminderCommonAdapter.getReminderStatus(reminder.isActive, reminder.isRemoved)
-      val due = uiReminderCommonAdapter.getDue(reminder, type)
-      val target = uiReminderCommonAdapter.getTarget(reminder, type)
-      val group =
-        reminderGroup?.let { uiGroupListAdapter.convert(it) }
-          ?: uiGroupListAdapter.convert(reminder.groupUuId, reminder.groupColor, reminder.groupTitle)
-      val places = if (type.isGpsType()) reminder.places.map { uiReminderPlaceAdapter.create(it) } else emptyList()
+      val due = uiReminderCommonAdapter.getDueV2(reminder)
+      val target = uiReminderCommonAdapter.getTargetV2(reminder)
+      val group = reminderGroup?.let { uiGroupListAdapter.convert(it) }
+      val places = reminder.places.map { uiReminderPlaceAdapter.create(it) }
       val attachments = reminder.attachmentFiles.map { uriToAttachmentFileAdapter(it.toUri()) }
       val subTasks =
-        if (type.isSubTasks()) {
-          reminder.shoppings
+        if (reminder.action is ReminderAction.Shopping) {
+          reminder.shoppingItems
             .filterNot { it.isDeleted }
             .sortedByDescending { !it.isChecked }
             .map { UiPreviewSubTask(id = it.uuId, text = it.summary, isChecked = it.isChecked) }
@@ -321,18 +331,18 @@ class PreviewReminderViewModel(
             repeat = due.repeat,
             remaining = due.remaining,
             groupTitle = group?.title,
-            priorityTitle = uiReminderCommonAdapter.getPriorityTitle(reminder.priority),
+            priorityTitle =
+              uiReminderCommonAdapter.getPriorityTitle(
+                (reminder.notification.priority ?: ReminderPriority.NORMAL).ordinal,
+              ),
             target = target,
-            targetType =
-              type.takeIf { t ->
-                t.isCall() || t.isSms() || t.isApp() || t.isLink() || t.isEmail()
-              },
-            rawTarget = reminder.target,
+            targetType = targetTypeV2(reminder.action),
+            rawTarget = rawTargetV2(reminder.action),
             attachments = attachments,
             subTasks = subTasks,
             places = places,
-            placesHeader = placesHeader(type, places.size),
-            canCopy = type.isBase(UiReminderType.Base.DATE),
+            placesHeader = placesHeaderV2(reminder.recurrence, places.size),
+            canCopy = canCopyV2(reminder.recurrence),
             canDelete = reminder.isRemoved,
             hasAds = !buildInfo.isPro && AdsProvider.hasAds()
           )
@@ -382,17 +392,40 @@ class PreviewReminderViewModel(
     }
   }
 
-  private fun placesHeader(
-    type: UiReminderType,
+  private fun placesHeaderV2(
+    recurrence: RecurrenceRule,
     placesCount: Int,
   ): String =
     when (placesCount) {
       0 -> ""
-      1 if type.isBase(UiReminderType.Base.LOCATION_IN) ->
+      1 if recurrence is RecurrenceRule.LocationEnter ->
         textProvider.getText(R.string.builder_arriving_destination)
 
       1 -> textProvider.getText(R.string.builder_leaving_place)
       else -> textProvider.getText(R.string.places)
+    }
+
+  private fun canCopyV2(recurrence: RecurrenceRule): Boolean =
+    recurrence is RecurrenceRule.Once || recurrence is RecurrenceRule.Daily
+
+  private fun targetTypeV2(action: ReminderAction): UiReminderType? =
+    when (action) {
+      is ReminderAction.Call -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.CALL)
+      is ReminderAction.Sms -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.SMS)
+      is ReminderAction.Link -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.LINK)
+      is ReminderAction.App -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.APP)
+      is ReminderAction.Email -> UiReminderType(UiReminderType.Base.DATE, UiReminderType.Kind.EMAIL)
+      ReminderAction.Shopping, ReminderAction.None -> null
+    }
+
+  private fun rawTargetV2(action: ReminderAction): String =
+    when (action) {
+      is ReminderAction.Call -> action.target
+      is ReminderAction.Sms -> action.target
+      is ReminderAction.Link -> action.target
+      is ReminderAction.App -> action.target
+      is ReminderAction.Email -> action.target
+      ReminderAction.Shopping, ReminderAction.None -> ""
     }
 
   sealed interface ViewModelEvent {

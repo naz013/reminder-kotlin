@@ -2,15 +2,7 @@ package com.elementary.tasks.core.utils.params
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.github.naz013.cloudapi.FileConfig
 import com.google.gson.Gson
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 
 abstract class SharedPrefs(
   protected val context: Context,
@@ -114,12 +106,6 @@ abstract class SharedPrefs(
     def: String = "",
   ): String = prefs.getString(stringToLoad, def) ?: def
 
-  fun hasKey(checkString: String): Boolean = prefs.contains(checkString)
-
-  fun removeKey(checkString: String) {
-    prefs.edit().remove(checkString).apply()
-  }
-
   fun putBoolean(
     stringToSave: String,
     value: Boolean,
@@ -151,70 +137,4 @@ abstract class SharedPrefs(
   fun all(): Map<String, *> = prefs.all
 
   fun sharedPrefs(): SharedPreferences = prefs
-
-  fun savePrefsBackup() {
-    val dir = MemoryUtil.prefsDir
-    if (dir != null) {
-      val prefsFile = File("$dir/" + FileConfig.FILE_NAME_SETTINGS)
-      if (prefsFile.exists()) {
-        prefsFile.delete()
-      }
-      var output: ObjectOutputStream? = null
-      try {
-        output = ObjectOutputStream(FileOutputStream(prefsFile))
-        val list = prefs.all
-        if (list.containsKey(PrefsConstants.DRIVE_USER)) {
-          list.remove(PrefsConstants.DRIVE_USER)
-        }
-        if (list.containsKey(PrefsConstants.TASKS_USER)) {
-          list.remove(PrefsConstants.TASKS_USER)
-        }
-        output.writeObject(list)
-      } catch (e: IOException) {
-        e.printStackTrace()
-      } finally {
-        try {
-          if (output != null) {
-            output.flush()
-            output.close()
-          }
-        } catch (ex: IOException) {
-          ex.printStackTrace()
-        }
-      }
-    }
-  }
-
-  fun loadPrefsFromFile() {
-    val dir = MemoryUtil.prefsDir ?: return
-    val prefsFile = File("$dir/" + FileConfig.FILE_NAME_SETTINGS)
-    if (prefsFile.exists()) {
-      var input: ObjectInputStream? = null
-      try {
-        input = ObjectInputStream(FileInputStream(prefsFile))
-        val prefEdit = prefs.edit()
-        val entries = input.readObject() as Map<String, *>
-        for ((key, v) in entries) {
-          when (v) {
-            is Boolean -> prefEdit.putBoolean(key, v)
-            is Float -> prefEdit.putFloat(key, v)
-            is Int -> prefEdit.putInt(key, v)
-            is Long -> prefEdit.putLong(key, v)
-            is String -> prefEdit.putString(key, v)
-          }
-        }
-        prefEdit.apply()
-      } catch (e: ClassNotFoundException) {
-        e.printStackTrace()
-      } catch (e: IOException) {
-        e.printStackTrace()
-      } finally {
-        try {
-          input?.close()
-        } catch (ex: IOException) {
-          ex.printStackTrace()
-        }
-      }
-    }
-  }
 }

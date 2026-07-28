@@ -2,7 +2,7 @@ package com.github.naz013.sync.usecase.upload
 
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.settings.UploadSettingsUseCase
 

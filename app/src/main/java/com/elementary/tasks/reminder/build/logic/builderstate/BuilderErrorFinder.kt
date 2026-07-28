@@ -5,42 +5,44 @@ import com.elementary.tasks.reminder.build.EmptyState
 import com.elementary.tasks.reminder.build.ErrorState
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
-import com.elementary.tasks.reminder.build.reminder.compose.DateTimeInjector
-import com.elementary.tasks.reminder.build.reminder.compose.ReminderDateTimeCleaner
-import com.elementary.tasks.reminder.build.reminder.compose.TypeCalculator
+import com.elementary.tasks.reminder.build.reminder.compose.ReminderActionCalculator
+import com.elementary.tasks.reminder.build.reminder.compose.RecurrenceRuleCalculator
 import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 
 class BuilderErrorFinder(
   private val builderStateCalculator: BuilderStateCalculator,
   private val reminderValidator: ReminderValidator,
-  private val typeCalculator: TypeCalculator,
-  private val dateTimeInjector: DateTimeInjector,
-  private val reminderDateTimeCleaner: ReminderDateTimeCleaner,
+  private val recurrenceRuleCalculator: RecurrenceRuleCalculator,
+  private val reminderActionCalculator: ReminderActionCalculator,
 ) {
   operator fun invoke(
-    reminder: Reminder,
+    reminder: ReminderV2,
     items: List<BuilderItem<*>>,
   ): BuilderError {
     val processedBuilderItems = ProcessedBuilderItems(items)
 
-    val type = typeCalculator(processedBuilderItems)
+    val recurrence = recurrenceRuleCalculator(processedBuilderItems)
 
-    val builderState = builderStateCalculator(type)
-    if (builderState is EmptyState || builderState is ErrorState) {
+    val builderState = builderStateCalculator(recurrence)
+    if (builderState is EmptyState || builderState is ErrorState || recurrence == null) {
       Logger.e(TAG, "Builder state is not valid")
       return BuilderError.InvalidState
     }
 
-    reminder.type = type
-    items.forEach { it.modifier.putInto(reminder) }
+    var updated =
+      reminder.copy(
+        recurrence = recurrence.rule,
+        schedule = recurrence.schedule,
+        places = recurrence.places,
+        location = recurrence.location,
+        action = reminderActionCalculator(processedBuilderItems.typeMap),
+      )
+    updated = items.fold(updated) { acc, item -> item.modifier.putInto(acc) }
 
-    reminderDateTimeCleaner(reminder)
-    dateTimeInjector(reminder, processedBuilderItems)
-
-    when (reminderValidator(reminder)) {
+    when (reminderValidator(updated)) {
       is ReminderValidator.ValidationResult.Failed -> {
         return findError(processedBuilderItems)
       }

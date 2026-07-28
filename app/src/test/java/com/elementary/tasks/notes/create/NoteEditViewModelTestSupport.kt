@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
@@ -30,8 +29,8 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -54,8 +53,8 @@ import java.util.regex.Pattern
 open class NoteEditViewModelTestSupport : BaseTest() {
   protected val imageDecoder = mockk<ImageDecoder>()
   protected val noteRepository = mockk<NoteRepository>()
-  protected val reminderGroupRepository = mockk<ReminderGroupRepository>()
-  protected val reminderRepository = mockk<ReminderRepository>()
+  protected val groupV2Repository = mockk<GroupV2Repository>()
+  protected val reminderV2Repository = mockk<ReminderV2Repository>()
   protected val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
   protected val prefs = mockk<Prefs>(relaxed = true)
   protected val dateTimeManager = mockk<DateTimeManager>()
@@ -64,7 +63,6 @@ open class NoteEditViewModelTestSupport : BaseTest() {
   protected val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   protected val uiNoteEditAdapter = mockk<UiNoteEditAdapter>()
   protected val noteImageRepository = mockk<NoteImageRepository>()
-  protected val noteToOldNoteConverter = mockk<NoteToOldNoteConverter>()
   protected val intentDataReader = mockk<IntentDataReader>()
   protected val deleteNoteUseCase = mockk<DeleteNoteUseCase>(relaxed = true)
   protected val saveNoteUseCase = mockk<SaveNoteUseCase>(relaxed = true)
@@ -96,9 +94,9 @@ open class NoteEditViewModelTestSupport : BaseTest() {
     every { contextProvider.context } returns fakeContext
 
     coEvery { noteRepository.getById(any()) } returns null
-    coEvery { reminderRepository.getByNoteKey(any()) } returns emptyList()
-    coEvery { reminderRepository.getById(any()) } returns null
-    coEvery { reminderGroupRepository.defaultGroup() } returns null
+    coEvery { reminderV2Repository.getByNoteId(any()) } returns emptyList()
+    coEvery { reminderV2Repository.getById(any()) } returns null
+    coEvery { groupV2Repository.defaultGroup() } returns null
 
     every { dateTimeManager.getTime(any<LocalTime>()) } returns "10:00"
     every { dateTimeManager.getDate(any<LocalDate>()) } returns "24 Jul 2026"
@@ -106,6 +104,8 @@ open class NoteEditViewModelTestSupport : BaseTest() {
     every { dateTimeManager.fromGmtToLocal(any()) } returns null
     every { dateTimeManager.isCurrent(any<LocalDateTime>()) } returns true
     every { dateTimeManager.getGmtFromDateTime(any<LocalDateTime>()) } returns "2026-07-24 10:00:00.000+0000"
+    every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
+    every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
 
     // Deterministic, internally-consistent fake color math - real blend/luminance computation is
     // NoteColorEngine's own concern, not this ViewModel's.
@@ -201,8 +201,8 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       imageDecoder = imageDecoder,
       dispatcherProvider = mockDispatcherProvider(),
       noteRepository = noteRepository,
-      reminderGroupRepository = reminderGroupRepository,
-      reminderRepository = reminderRepository,
+      groupV2Repository = groupV2Repository,
+      reminderV2Repository = reminderV2Repository,
       deleteReminderUseCase = deleteReminderUseCase,
       prefs = prefs,
       dateTimeManager = dateTimeManager,
@@ -211,7 +211,6 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       analyticsEventSender = analyticsEventSender,
       uiNoteEditAdapter = uiNoteEditAdapter,
       noteImageRepository = noteImageRepository,
-      noteToOldNoteConverter = noteToOldNoteConverter,
       intentDataReader = intentDataReader,
       deleteNoteUseCase = deleteNoteUseCase,
       saveNoteUseCase = saveNoteUseCase,

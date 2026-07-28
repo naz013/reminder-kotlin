@@ -1,7 +1,6 @@
 package com.elementary.tasks.notes.create
 
 import android.content.ClipData
-import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
@@ -14,18 +13,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.request.ImageRequest
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.core.data.ui.note.UiNoteImageState
 import com.elementary.tasks.core.utils.ImageLoader
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.io.MemoryUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.NoteColorEngine
-import com.elementary.tasks.notes.SharedNote
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -43,11 +39,13 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.SystemInfo
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -57,9 +55,9 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -82,8 +80,8 @@ class NoteEditViewModel(
   private val imageDecoder: ImageDecoder,
   private val dispatcherProvider: DispatcherProvider,
   private val noteRepository: NoteRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
-  private val reminderRepository: ReminderRepository,
+  private val groupV2Repository: GroupV2Repository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val prefs: Prefs,
   private val dateTimeManager: DateTimeManager,
@@ -92,7 +90,6 @@ class NoteEditViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiNoteEditAdapter: UiNoteEditAdapter,
   private val noteImageRepository: NoteImageRepository,
-  private val noteToOldNoteConverter: NoteToOldNoteConverter,
   private val intentDataReader: IntentDataReader,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val saveNoteUseCase: SaveNoteUseCase,
@@ -304,23 +301,6 @@ class NoteEditViewModel(
     return wasExpanded
   }
 
-  fun loadFromFile(uri: Uri) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      runCatching {
-        if (ContentResolver.SCHEME_CONTENT != uri.scheme) {
-          val any = MemoryUtil.readFromUri(contextProvider.context, uri, SharedNote.FILE_EXTENSION)
-          if (any != null && any is SharedNote) {
-            noteToOldNoteConverter.toNote(any)?.also {
-              _state.update { s -> s.copy(isFromFile = true) }
-              onNoteLoaded(it)
-              findSame(it.getKey())
-            }
-          }
-        }
-      }
-    }
-  }
-
   fun onShareClick() {
     viewModelScope.launch(dispatcherProvider.io()) {
       val note = createObject()
@@ -440,12 +420,12 @@ class NoteEditViewModel(
 
   private suspend fun loadLinkedReminder(noteKey: String) {
     val reminder =
-      reminderRepository
-        .getByNoteKey(noteKey)
+      reminderV2Repository
+        .getByNoteId(noteKey)
         .firstOrNull { it.isActive && !it.isRemoved }
 
     if (reminder != null) {
-      dateTimeManager.fromGmtToLocal(reminder.eventTime)?.also { localDateTime ->
+      reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }?.also { localDateTime ->
         onNewDate(localDateTime.toLocalDate())
         onNewTime(localDateTime.toLocalTime())
       }
@@ -641,8 +621,8 @@ class NoteEditViewModel(
     viewModelScope.launch(dispatcherProvider.main()) {
       val noteWithImages = createObject()
       val hasReminder = _state.value.isReminderAttached
-      var reminder: Reminder? = null
-      var reminderToDelete: Reminder? = null
+      var reminder: ReminderV2? = null
+      var reminderToDelete: ReminderV2? = null
       val note = noteWithImages.note
       if (hasReminder && note != null) {
         // Reuse the existing linked reminder's identity so saving updates it in place instead
@@ -659,7 +639,7 @@ class NoteEditViewModel(
 
       if (newId) {
         noteWithImages.note?.key = UUID.randomUUID().toString()
-        reminder?.noteId = noteWithImages.getKey()
+        reminder = reminder?.copy(noteId = noteWithImages.getKey())
       }
       noteWithImages.note?.archived = false
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_NOTE))
@@ -670,8 +650,8 @@ class NoteEditViewModel(
 
   private suspend fun saveNote(
     note: NoteWithImages,
-    reminder: Reminder?,
-    reminderToDelete: Reminder?,
+    reminder: ReminderV2?,
+    reminderToDelete: ReminderV2?,
   ) {
     val v = note.note ?: return
     withContext(dispatcherProvider.default()) {
@@ -692,17 +672,17 @@ class NoteEditViewModel(
     }
   }
 
-  private suspend fun getLinkedReminder(reminderId: String?): Reminder? {
+  private suspend fun getLinkedReminder(reminderId: String?): ReminderV2? {
     reminderId ?: return null
     return withContext(dispatcherProvider.io()) {
-      reminderRepository.getById(reminderId)
+      reminderV2Repository.getById(reminderId)
     }
   }
 
   private suspend fun createReminder(
     note: Note,
     reuseExisting: Boolean,
-  ): Reminder? {
+  ): ReminderV2? {
     val reminderId = _state.value.reminderId
     val existing =
       if (reuseExisting && reminderId != null) {
@@ -710,26 +690,23 @@ class NoteEditViewModel(
       } else {
         null
       }
-    val reminder = existing?.copy() ?: Reminder()
-    if (existing == null) {
-      reminder.delay = 0
-      reminder.eventCount = 0
-      reminder.useGlobal = true
-    }
-    reminder.type = Reminder.BY_DATE
-    reminder.noteId = note.key
-    reminder.isActive = true
-    reminder.isRemoved = false
-    reminder.summary = SuperUtil.normalizeSummary(note.title.ifBlank { note.summary })
 
     val startTime = LocalDateTime.of(_state.value.date, _state.value.time)
     if (!dateTimeManager.isCurrent(startTime)) {
       event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.reminder_is_outdated)))
       return null
     }
-    reminder.startTime = dateTimeManager.getGmtFromDateTime(startTime)
-    reminder.eventTime = reminder.startTime
-    return reminder
+    val eventDateTime = dateTimeManager.localToUtc(startTime)
+    val summary = SuperUtil.normalizeSummary(note.title.ifBlank { note.summary })
+
+    return (existing ?: ReminderV2(schedule = ReminderSchedule(startDateTime = eventDateTime))).copy(
+      recurrence = RecurrenceRule.Once,
+      noteId = note.key,
+      isActive = true,
+      isRemoved = false,
+      summary = summary,
+      schedule = ReminderSchedule(startDateTime = eventDateTime, eventDateTime = eventDateTime),
+    )
   }
 
   private suspend fun createObject(): NoteWithImages {
@@ -769,14 +746,11 @@ class NoteEditViewModel(
     )
   }
 
-  private fun saveReminder(reminder: Reminder) {
+  private fun saveReminder(reminder: ReminderV2) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val group = reminderGroupRepository.defaultGroup()
+      val group = groupV2Repository.defaultGroup()
       if (group != null) {
-        reminder.groupColor = group.groupColor
-        reminder.groupTitle = group.groupTitle
-        reminder.groupUuId = group.groupUuId
-        activateReminderUseCase(reminder)
+        activateReminderUseCase(reminder.copy(groupId = group.uuId))
       }
     }
   }

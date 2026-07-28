@@ -4,7 +4,7 @@ import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.PlaceRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 
 class DeletePlaceUseCase(
   private val placeRepository: PlaceRepository,

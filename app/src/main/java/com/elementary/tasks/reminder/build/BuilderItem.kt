@@ -64,11 +64,13 @@ import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.system.Module
 import com.github.naz013.common.Permissions
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.domain.reminder.v2.ReminderPriority
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.icalendar.ByDayRecurParam
 import com.github.naz013.icalendar.ByHourRecurParam
 import com.github.naz013.icalendar.ByMinuteRecurParam
@@ -124,9 +126,7 @@ data class DescriptionBuilderItem(
   override val isForPro: Boolean = false
   override val modifier: BuilderModifier<String> =
     object : StringModifier() {
-      override fun putInto(reminder: Reminder) {
-        reminder.description = storage.value
-      }
+      override fun putInto(reminder: ReminderV2): ReminderV2 = reminder.copy(description = storage.value)
     }
   override val biType: BiType = BiType.DESCRIPTION
   override val biGroup: BiGroup = BiGroup.EXTRA
@@ -195,12 +195,7 @@ data class DaysOfWeekBuilderItem(
 ) : BuilderItem<List<Int>>() {
   override val iconRes: Int = R.drawable.ic_builder_weekday
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<List<Int>> =
-    object : ListIntModifier(weekdayArrayFormatter) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.weekdays = it }
-      }
-    }
+  override val modifier: BuilderModifier<List<Int>> = ListIntModifier(weekdayArrayFormatter)
   override val biType: BiType = BiType.DAYS_OF_WEEK
   override val biGroup: BiGroup = BiGroup.CORE
   override val constraints: List<BiConstraint<*>> =
@@ -228,12 +223,7 @@ data class DayOfMonthBuilderItem(
 ) : BuilderItem<Int>() {
   override val iconRes: Int = R.drawable.ic_builder_by_monthday
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<Int> =
-    object : IntModifier(dayOfMonthFormatter) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.dayOfMonth = it }
-      }
-    }
+  override val modifier: BuilderModifier<Int> = IntModifier(dayOfMonthFormatter)
   override val biType: BiType = BiType.DAY_OF_MONTH
   override val biGroup: BiGroup = BiGroup.CORE
   override val constraints: List<BiConstraint<*>> =
@@ -261,15 +251,7 @@ data class DayOfYearBuilderItem(
 ) : BuilderItem<Int>() {
   override val iconRes: Int = R.drawable.ic_builder_by_yearday
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<Int> =
-    object : IntModifier(dayOfYearFormatter) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { LocalDate.now().withDayOfYear(it) }?.let {
-          reminder.monthOfYear = it.monthValue - 1
-          reminder.dayOfMonth = it.dayOfMonth
-        }
-      }
-    }
+  override val modifier: BuilderModifier<Int> = IntModifier(dayOfYearFormatter)
   override val biType: BiType = BiType.DAY_OF_YEAR
   override val biGroup: BiGroup = BiGroup.CORE
   override val constraints: List<BiConstraint<*>> =
@@ -297,12 +279,7 @@ data class TimerBuilderItem(
 ) : BuilderItem<Long>() {
   override val iconRes: Int = R.drawable.ic_builder_timer
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<Long> =
-    object : LongModifier(timerFormatter) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.after = it }
-      }
-    }
+  override val modifier: BuilderModifier<Long> = LongModifier(timerFormatter)
   override val biType: BiType = BiType.COUNTDOWN_TIMER
   override val biGroup: BiGroup = BiGroup.CORE
   override val constraints: List<BiConstraint<*>> =
@@ -373,9 +350,8 @@ data class BeforeTimeBuilderItem(
   override val isForPro: Boolean = false
   override val modifier: BuilderModifier<Long> =
     object : LongModifier(beforeTimeFormatter) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.remindBefore = it }
-      }
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let { reminder.copy(notification = reminder.notification.copy(remindBefore = it)) } ?: reminder
     }
   override val biType: BiType = BiType.BEFORE_TIME
   override val biGroup: BiGroup = BiGroup.PARAMS
@@ -406,12 +382,7 @@ data class RepeatTimeBuilderItem(
 ) : BuilderItem<Long>() {
   override val iconRes: Int = R.drawable.ic_fluent_arrow_repeat_all
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<Long> =
-    object : LongModifier(repeatTimeFormatter) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.repeatInterval = it }
-      }
-    }
+  override val modifier: BuilderModifier<Long> = LongModifier(repeatTimeFormatter)
   override val biType: BiType = BiType.REPEAT_TIME
   override val biGroup: BiGroup = BiGroup.PARAMS
   override val constraints: List<BiConstraint<*>> =
@@ -441,12 +412,7 @@ data class RepeatIntervalBuilderItem(
 ) : BuilderItem<Long>() {
   override val iconRes: Int = R.drawable.ic_builder_interval
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<Long> =
-    object : LongModifier(repeatIntervalFormatter, 1L) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.repeatInterval = it }
-      }
-    }
+  override val modifier: BuilderModifier<Long> = LongModifier(repeatIntervalFormatter, 1L)
   override val biType: BiType = BiType.REPEAT_INTERVAL
   override val biGroup: BiGroup = BiGroup.PARAMS
   override val constraints: List<BiConstraint<*>> =
@@ -475,12 +441,7 @@ data class RepeatLimitBuilderItem(
 ) : BuilderItem<Int>() {
   override val iconRes: Int = R.drawable.ic_builder_repeat_limit
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<Int> =
-    object : IntModifier(repeatLimitFormatter) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.repeatLimit = it }
-      }
-    }
+  override val modifier: BuilderModifier<Int> = IntModifier(repeatLimitFormatter)
   override val biType: BiType = BiType.REPEAT_LIMIT
   override val biGroup: BiGroup = BiGroup.EXTRA
   override val constraints: List<BiConstraint<*>> =
@@ -510,9 +471,15 @@ data class PriorityBuilderItem(
   override val isForPro: Boolean = false
   override val modifier: BuilderModifier<Int> =
     object : IntModifier(priorityFormatter, 2) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.priority = it }
-      }
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let {
+          reminder.copy(
+            notification =
+              reminder.notification.copy(
+                priority = ReminderPriority.entries.getOrNull(it) ?: ReminderPriority.NORMAL,
+              ),
+          )
+        } ?: reminder
     }
   override val biType: BiType = BiType.PRIORITY
   override val biGroup: BiGroup = BiGroup.EXTRA
@@ -527,9 +494,8 @@ data class LedColorBuilderItem(
   override val isForPro: Boolean = true
   override val modifier: BuilderModifier<Int> =
     object : IntModifier(ledColorFormatter, LED.BLUE) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.color = it }
-      }
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let { reminder.copy(notification = reminder.notification.copy(color = it)) } ?: reminder
     }
   override val biType: BiType = BiType.LED_COLOR
   override val biGroup: BiGroup = BiGroup.EXTRA
@@ -544,9 +510,8 @@ data class AttachmentsBuilderItem(
   override val isForPro: Boolean = false
   override val modifier: BuilderModifier<List<String>> =
     object : ListStringModifier(attachmentsFormatter) {
-      override fun putInto(reminder: Reminder) {
-        storage.value?.let { reminder.attachmentFiles = it }
-      }
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let { reminder.copy(attachmentFiles = it) } ?: reminder
     }
   override val biType: BiType = BiType.ATTACHMENTS
   override val biGroup: BiGroup = BiGroup.EXTRA
@@ -743,12 +708,7 @@ data class EmailSubjectBuilderItem(
 ) : StringBuilderItem() {
   override val iconRes: Int = R.drawable.ic_builder_email_subject
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<String> =
-    object : DefaultStringModifier() {
-      override fun putInto(reminder: Reminder) {
-        reminder.subject = storage.value ?: ""
-      }
-    }
+  override val modifier: BuilderModifier<String> = DefaultStringModifier()
   override val biType: BiType = BiType.EMAIL_SUBJECT
   override val biGroup: BiGroup = BiGroup.PARAMS
   override val constraints: List<BiConstraint<*>> =
@@ -803,17 +763,7 @@ data class ApplicationBuilderItem(
   override val iconRes: Int = R.drawable.ic_builder_add_app
   override val isForPro: Boolean = false
   override val maxSdk: Int = Build.VERSION_CODES.S
-  override val modifier: BuilderModifier<String> =
-    object : FormattedStringModifier(
-      applicationFormatter,
-    ) {
-      override fun putInto(reminder: Reminder) {
-        super.putInto(reminder)
-        storage.value?.also {
-          reminder.target = it
-        }
-      }
-    }
+  override val modifier: BuilderModifier<String> = FormattedStringModifier(applicationFormatter)
   override val biType: BiType = BiType.APPLICATION
   override val biGroup: BiGroup = BiGroup.ACTION
   override val constraints: List<BiConstraint<*>> =
@@ -854,10 +804,11 @@ data class SubTasksBuilderItem(
   override val title: String,
   override val description: String?,
   private val shopItemsFormatter: ShopItemsFormatter,
+  private val dateTimeManager: DateTimeManager,
 ) : BuilderItem<List<ShopItem>>() {
   override val iconRes: Int = R.drawable.ic_builder_sub_task_list
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<List<ShopItem>> = ShopItemsModifier(shopItemsFormatter)
+  override val modifier: BuilderModifier<List<ShopItem>> = ShopItemsModifier(shopItemsFormatter, dateTimeManager)
   override val biType: BiType = BiType.SUB_TASKS
   override val biGroup: BiGroup = BiGroup.PARAMS
   override val constraints: List<BiConstraint<*>> =

@@ -8,12 +8,16 @@ import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PresetInitProcessor
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.mockDispatcherProvider
+import com.elementary.tasks.workflow.WorkflowRulesUtil
 import com.github.naz013.appwidgets.AppWidgetPreviewUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.repository.migration.GroupV2BackfillUseCase
+import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -38,6 +42,10 @@ class SplashViewModelTest : BaseTest() {
   private val appWidgetPreviewUpdater = mockk<AppWidgetPreviewUpdater>(relaxed = true)
   private val migrateExistingEventOccurrencesUseCase =
     mockk<MigrateExistingEventOccurrencesUseCase>(relaxed = true)
+  private val groupV2BackfillUseCase = mockk<GroupV2BackfillUseCase>(relaxed = true)
+  private val reminderV2BackfillUseCase = mockk<ReminderV2BackfillUseCase>(relaxed = true)
+  private val workflowRulesUtil = mockk<WorkflowRulesUtil>(relaxed = true)
+  private val jobScheduler = mockk<JobScheduler>(relaxed = true)
 
   private var occurrenceMigrated = false
   private var noteMigrationDone = false
@@ -80,6 +88,10 @@ class SplashViewModelTest : BaseTest() {
       presetInitProcessor = presetInitProcessor,
       appWidgetPreviewUpdater = appWidgetPreviewUpdater,
       migrateExistingEventOccurrencesUseCase = migrateExistingEventOccurrencesUseCase,
+      groupV2BackfillUseCase = groupV2BackfillUseCase,
+      reminderV2BackfillUseCase = reminderV2BackfillUseCase,
+      workflowRulesUtil = workflowRulesUtil,
+      jobScheduler = jobScheduler,
     )
 
   @Test

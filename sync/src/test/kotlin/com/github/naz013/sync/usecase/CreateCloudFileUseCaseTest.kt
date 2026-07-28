@@ -2,15 +2,15 @@ package com.github.naz013.sync.usecase
 
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.domain.note.OldNote
-import com.github.naz013.domain.sync.NoteV3Json
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.DataType
-import com.github.naz013.sync.settings.SettingsModel
+import com.github.naz013.files.DataType
+import com.github.naz013.files.model.SettingsModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -21,6 +21,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 
 /**
  * Unit tests for [CreateCloudFileUseCase].
@@ -48,21 +49,15 @@ class CreateCloudFileUseCaseTest {
   fun invoke_withReminder_shouldCreateCloudFileWithCorrectNameAndExtension() = runBlocking {
     // Arrange - Create a reminder with realistic data
     val reminderUuId = "reminder-uuid-12345"
-    val reminder = Reminder(
-      summary = "Doctor appointment",
-      uuId = reminderUuId,
-      groupUuId = "default-group",
-      eventTime = "2025-10-30 14:00",
-      reminderType = 0
-    )
+    val reminder = reminderV2(uuId = reminderUuId)
     val existingMetadata = RemoteFileMetadata(
       id = "cloud-id-123",
-      name = "$reminderUuId.ta2",
+      name = "$reminderUuId.ta3",
       lastModified = 123456789L,
       size = 1024,
       source = "GDRIVE",
       localUuId = reminderUuId,
-      fileExtension = ".ta2",
+      fileExtension = ".ta3",
       version = 1L,
       rev = "rev1"
     )
@@ -71,13 +66,13 @@ class CreateCloudFileUseCaseTest {
     coEvery { remoteFileMetadataRepository.getByLocalUuId(reminderUuId) } returns existingMetadata
 
     // Act
-    val result = createCloudFileUseCase(DataType.Reminders, reminder)
+    val result = createCloudFileUseCase(DataType.RemindersV2, reminder)
 
     // Assert
     assertNotNull(result)
     assertEquals("cloud-id-123", result.id)
-    assertEquals("$reminderUuId.ta2", result.name)
-    assertEquals(".ta2", result.fileExtension)
+    assertEquals("$reminderUuId.ta3", result.name)
+    assertEquals(".ta3", result.fileExtension)
     coVerify(exactly = 1) { remoteFileMetadataRepository.getByLocalUuId(reminderUuId) }
   }
 
@@ -148,24 +143,24 @@ class CreateCloudFileUseCaseTest {
   fun invoke_withReminderGroup_shouldCreateCloudFileWithGroupUuId() = runBlocking {
     // Arrange - Reminder group
     val groupUuId = "group-uuid-xyz789"
-    val reminderGroup = ReminderGroup(
-      groupTitle = "Work Reminders",
-      groupUuId = groupUuId,
-      groupColor = 0x00FF00,
-      groupDateTime = "2025-10-29 10:00",
-      isDefaultGroup = false,
+    val group = GroupV2(
+      uuId = groupUuId,
+      title = "Work Reminders",
+      color = 0x00FF00,
+      isDefault = false,
+      createdAt = LocalDateTime.now(),
       syncState = SyncState.Synced
     )
 
-    every { getLocalUuIdUseCase(reminderGroup) } returns groupUuId
+    every { getLocalUuIdUseCase(group) } returns groupUuId
     coEvery { remoteFileMetadataRepository.getByLocalUuId(groupUuId) } returns null
 
     // Act
-    val result = createCloudFileUseCase(DataType.Groups, reminderGroup)
+    val result = createCloudFileUseCase(DataType.GroupsV2, group)
 
     // Assert
-    assertEquals("$groupUuId.gr2", result.name)
-    assertEquals(".gr2", result.fileExtension)
+    assertEquals("$groupUuId.gr3", result.name)
+    assertEquals(".gr3", result.fileExtension)
     assertTrue(result.id.isEmpty())
   }
 
@@ -222,21 +217,15 @@ class CreateCloudFileUseCaseTest {
   fun invoke_withExistingMetadata_shouldReuseCloudFileId() = runBlocking {
     // Arrange - Test that existing cloud file ID is preserved
     val reminderUuId = "existing-reminder-uuid"
-    val reminder = Reminder(
-      summary = "Existing reminder",
-      uuId = reminderUuId,
-      groupUuId = "group1",
-      eventTime = "2025-11-01 09:00",
-      reminderType = 1
-    )
+    val reminder = reminderV2(uuId = reminderUuId)
     val existingMetadata = RemoteFileMetadata(
       id = "existing-cloud-id-999",
-      name = "$reminderUuId.ta2",
+      name = "$reminderUuId.ta3",
       lastModified = 555555555L,
       size = 2048,
       source = "GDRIVE",
       localUuId = reminderUuId,
-      fileExtension = ".ta2",
+      fileExtension = ".ta3",
       version = 5L,
       rev = "rev5"
     )
@@ -245,7 +234,7 @@ class CreateCloudFileUseCaseTest {
     coEvery { remoteFileMetadataRepository.getByLocalUuId(reminderUuId) } returns existingMetadata
 
     // Act
-    val result = createCloudFileUseCase(DataType.Reminders, reminder)
+    val result = createCloudFileUseCase(DataType.RemindersV2, reminder)
 
     // Assert - Should reuse the existing cloud ID
     assertEquals("existing-cloud-id-999", result.id)
@@ -277,7 +266,7 @@ class CreateCloudFileUseCaseTest {
   @Test
   fun invoke_withMultipleDifferentTypes_shouldGenerateCorrectExtensions() = runBlocking {
     // Arrange - Test that different data types get correct extensions
-    val reminder = Reminder(summary = "Test", uuId = "r1")
+    val reminder = reminderV2(uuId = "r1")
     val birthday = Birthday(name = "Test", uuId = "b1", syncState = SyncState.Synced)
     val note = NoteV3Json(summary = "Test", key = "n1")
 
@@ -285,13 +274,13 @@ class CreateCloudFileUseCaseTest {
     coEvery { remoteFileMetadataRepository.getByLocalUuId(any()) } returns null
 
     // Act
-    val reminderFile = createCloudFileUseCase(DataType.Reminders, reminder)
+    val reminderFile = createCloudFileUseCase(DataType.RemindersV2, reminder)
     val birthdayFile = createCloudFileUseCase(DataType.Birthdays, birthday)
     val noteFile = createCloudFileUseCase(DataType.Notes, note)
 
     // Assert - Each type should have correct extension
-    assertEquals(".ta2", reminderFile.fileExtension)
-    assertTrue(reminderFile.name.endsWith(".ta2"))
+    assertEquals(".ta3", reminderFile.fileExtension)
+    assertTrue(reminderFile.name.endsWith(".ta3"))
 
     assertEquals(".bi2", birthdayFile.fileExtension)
     assertTrue(birthdayFile.name.endsWith(".bi2"))
@@ -299,4 +288,7 @@ class CreateCloudFileUseCaseTest {
     assertEquals(".no3", noteFile.fileExtension)
     assertTrue(noteFile.name.endsWith(".no3"))
   }
+
+  private fun reminderV2(uuId: String): ReminderV2 =
+    ReminderV2(uuId = uuId, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
 }

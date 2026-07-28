@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
 import com.elementary.tasks.core.data.repository.NoteImageMigration
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
@@ -13,11 +14,14 @@ import com.elementary.tasks.core.utils.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.GroupsUtil
+import com.elementary.tasks.workflow.WorkflowRulesUtil
 import com.github.naz013.appwidgets.AppWidgetPreviewUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.repository.migration.GroupV2BackfillUseCase
+import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
@@ -33,6 +37,10 @@ class SplashViewModel(
   private val presetInitProcessor: PresetInitProcessor,
   private val appWidgetPreviewUpdater: AppWidgetPreviewUpdater,
   private val migrateExistingEventOccurrencesUseCase: MigrateExistingEventOccurrencesUseCase,
+  private val groupV2BackfillUseCase: GroupV2BackfillUseCase,
+  private val reminderV2BackfillUseCase: ReminderV2BackfillUseCase,
+  private val workflowRulesUtil: WorkflowRulesUtil,
+  private val jobScheduler: JobScheduler,
 ) : ViewModel(),
   DefaultLifecycleObserver {
   val isGoogleTasksEnabled =
@@ -72,6 +80,23 @@ class SplashViewModel(
       if (!prefs.noteMigrationDone) {
         prefs.noteMigrationDone = true
         noteImageMigration.migrate()
+      }
+      if (!prefs.groupV2BackfillDone) {
+        groupV2BackfillUseCase()
+        prefs.groupV2BackfillDone = true
+      }
+      if (!prefs.reminderV2BackfillDone) {
+        reminderV2BackfillUseCase()
+        prefs.reminderV2BackfillDone = true
+      }
+      workflowRulesUtil.initDefaultIfEmpty()
+      if (!prefs.workflowRulesScheduled) {
+        jobScheduler.scheduleWorkflowRulesCheck()
+        prefs.workflowRulesScheduled = true
+      }
+      if (!prefs.workflowUnacknowledgedRulesScheduled) {
+        jobScheduler.scheduleWorkflowUnacknowledgedCheck()
+        prefs.workflowUnacknowledgedRulesScheduled = true
       }
     }
   }

@@ -45,7 +45,7 @@ class ModelDateTimeFormatter(
       else -> getRemaining(futureBirthdayDateTime, nowDateTime)
     }
 
-  private fun getRemaining(
+  fun getRemaining(
     eventTime: LocalDateTime?,
     nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime(),
   ): String {

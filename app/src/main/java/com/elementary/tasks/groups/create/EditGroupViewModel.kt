@@ -3,15 +3,15 @@ package com.elementary.tasks.groups.create
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
-import com.elementary.tasks.groups.usecase.SaveReminderGroupUseCase
+import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
+import com.elementary.tasks.groups.usecase.SaveGroupUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -20,7 +20,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,13 +34,13 @@ class EditGroupViewModel(
   private val id: String,
   private val fromIntentData: Boolean,
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val intentDataReader: IntentDataReader,
   private val contextProvider: ContextProvider,
-  private val deleteReminderGroupUseCase: DeleteReminderGroupUseCase,
-  private val saveReminderGroupUseCase: SaveReminderGroupUseCase,
+  private val deleteGroupUseCase: DeleteGroupUseCase,
+  private val saveGroupUseCase: SaveGroupUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EditGroupState())
@@ -104,7 +104,7 @@ class EditGroupViewModel(
     }
     Logger.i(TAG, "Deleting group, id: $id")
     viewModelScope.launch(dispatcherProvider.io()) {
-      deleteReminderGroupUseCase(id)
+      deleteGroupUseCase(id)
       Logger.i(TAG, "Deleted group, id: $id")
 
       withContext(dispatcherProvider.main()) {
@@ -123,83 +123,81 @@ class EditGroupViewModel(
 
   private fun load() {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminderGroupFromFile = getFromIntentIfAvailable()
-      if (reminderGroupFromFile != null) {
-        val reminderGroupInDb = reminderGroupRepository.getById(id)
+      val groupFromFile = getFromIntentIfAvailable()
+      if (groupFromFile != null) {
+        val groupInDb = groupV2Repository.getById(id)
         withContext(dispatcherProvider.main()) {
           _state.update {
             it.copy(
-              title = reminderGroupFromFile.groupTitle,
-              colorPosition = reminderGroupFromFile.groupColor,
-              isDefault = reminderGroupFromFile.isDefaultGroup,
-              defaultCheckEnabled = !reminderGroupFromFile.isDefaultGroup,
+              title = groupFromFile.title,
+              colorPosition = groupFromFile.color,
+              isDefault = groupFromFile.isDefault,
+              defaultCheckEnabled = !groupFromFile.isDefault,
               canDelete = false,
-              isFromFile = true,
-              hasSameInDb = reminderGroupInDb != null,
-              id = reminderGroupFromFile.groupUuId,
+              id = groupFromFile.uuId,
               isEdited = false,
+              isFromFile = true,
+              hasSameInDb = groupInDb != null,
             )
           }
         }
-        Logger.i(TAG, "Editing group from file, id: ${reminderGroupFromFile.groupUuId}")
+        Logger.i(TAG, "Editing group from file, id: ${groupFromFile.uuId}")
         return@launch
       }
 
-      val reminderGroup =
-        reminderGroupRepository.getById(id) ?: run {
+      val group =
+        groupV2Repository.getById(id) ?: run {
           Logger.w(TAG, "Group not found, id: $id")
           return@launch
         }
-      val canBeDeleted = reminderGroupRepository.countAll() > 1 && !reminderGroup.isDefaultGroup
+      val canBeDeleted = groupV2Repository.countAll() > 1 && !group.isDefault
       withContext(dispatcherProvider.main()) {
         _state.update {
           it.copy(
-            title = reminderGroup.groupTitle,
-            colorPosition = reminderGroup.groupColor,
-            isDefault = reminderGroup.isDefaultGroup,
-            defaultCheckEnabled = !reminderGroup.isDefaultGroup,
+            title = group.title,
+            colorPosition = group.color,
+            isDefault = group.isDefault,
+            defaultCheckEnabled = !group.isDefault,
             canDelete = canBeDeleted,
-            id = reminderGroup.groupUuId,
+            id = group.uuId,
             isEdited = true,
             isFromFile = false,
             hasSameInDb = false,
           )
         }
       }
-      Logger.i(TAG, "Editing group, id: ${reminderGroup.groupUuId}")
+      Logger.i(TAG, "Editing group, id: ${group.uuId}")
     }
   }
 
-  private fun getFromIntentIfAvailable(): ReminderGroup? {
+  private fun getFromIntentIfAvailable(): GroupV2? {
     if (!fromIntentData) return null
-    return intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java)
+    return intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java)
   }
 
   private fun performSave(newId: Boolean = false) {
     val editState = _state.value
     val uuid = editState.id?.takeIf { !newId } ?: UUID.randomUUID().toString()
     viewModelScope.launch(dispatcherProvider.io()) {
-      val oldReminderGroup = reminderGroupRepository.getById(uuid)
-      val reminderGroup =
-        oldReminderGroup?.copy(
-          groupTitle = editState.title,
-          groupUuId = uuid,
-          groupColor = editState.colorPosition,
-          groupDateTime = dateTimeManager.getNowGmtDateTime(),
-          isDefaultGroup = editState.isDefault,
+      val oldGroup = groupV2Repository.getById(uuid)
+      val group =
+        oldGroup?.copy(
+          title = editState.title,
+          uuId = uuid,
+          color = editState.colorPosition,
+          isDefault = editState.isDefault,
           syncState = SyncState.WaitingForUpload,
-          version = oldReminderGroup.version + 1L,
-        ) ?: ReminderGroup(
-          groupTitle = editState.title,
-          groupUuId = uuid,
-          groupColor = editState.colorPosition,
-          groupDateTime = dateTimeManager.getNowGmtDateTime(),
-          isDefaultGroup = editState.isDefault,
+        ) ?: GroupV2(
+          uuId = uuid,
+          title = editState.title,
+          color = editState.colorPosition,
+          isDefault = editState.isDefault,
+          createdAt = dateTimeManager.getCurrentDateTime(),
           syncState = SyncState.WaitingForUpload,
         )
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GROUP))
-      saveReminderGroupUseCase(reminderGroup)
-      Logger.i(TAG, "Saved group, id: ${reminderGroup.groupUuId}")
+      saveGroupUseCase(group)
+      Logger.i(TAG, "Saved group, id: ${group.uuId}")
 
       withContext(dispatcherProvider.main()) {
         navigationEvent.emit(NavigationEvent.Back)

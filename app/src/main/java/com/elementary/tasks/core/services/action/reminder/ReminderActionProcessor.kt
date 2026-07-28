@@ -4,14 +4,16 @@ import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.workflow.WorkflowTriggerRunner
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,20 +22,21 @@ import org.threeten.bp.LocalDateTime
 class ReminderActionProcessor(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderHandlerFactory: ReminderHandlerFactory,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val prefs: Prefs,
   private val doNotDisturbManager: DoNotDisturbManager,
   private val dateTimeManager: DateTimeManager,
   private val jobScheduler: JobScheduler,
   private val contextProvider: ContextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val workflowTriggerRunner: WorkflowTriggerRunner,
 ) {
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun snooze(id: String) {
     Logger.i(TAG, "Snoozing reminder: $id")
     scope.launch {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       withContext(dispatcherProvider.main()) {
         reminderHandlerFactory.createSnooze().handle(reminder)
       }
@@ -43,19 +46,21 @@ class ReminderActionProcessor(
   fun complete(id: String) {
     Logger.i(TAG, "Completing reminder: $id")
     scope.launch {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       jobScheduler.cancelReminder(reminder.uniqueId)
       withContext(dispatcherProvider.main()) {
         reminderHandlerFactory.createComplete().handle(reminder)
       }
+      workflowTriggerRunner.onReminderCompleted(id)
     }
   }
 
   fun process(id: String) {
     Logger.i(TAG, "Going to process reminder: $id")
     scope.launch {
-      val reminder = reminderRepository.getById(id) ?: return@launch
-      if (doNotDisturbManager.applyDoNotDisturb(reminder.priority)) {
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
+      val priority = (reminder.notification.priority ?: ReminderPriority.NORMAL).ordinal
+      if (doNotDisturbManager.applyDoNotDisturb(priority)) {
         if (prefs.doNotDisturbAction == 0) {
           val delayTime =
             dateTimeManager.millisToEndDnd(
@@ -78,6 +83,7 @@ class ReminderActionProcessor(
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)
         }
+        reminderV2Repository.save(reminder.copy(lastShownAt = dateTimeManager.localToUtc(LocalDateTime.now())))
       }
     }
   }

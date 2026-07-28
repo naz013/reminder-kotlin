@@ -2,17 +2,17 @@ package com.elementary.tasks.groups.create
 
 import android.content.Context
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.groups.usecase.DeleteReminderGroupUseCase
-import com.elementary.tasks.groups.usecase.SaveReminderGroupUseCase
+import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
+import com.elementary.tasks.groups.usecase.SaveGroupUseCase
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.navigation.intent.IntentDataReader
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -28,28 +28,33 @@ import org.junit.Before
 import org.junit.Test
 
 class EditGroupViewModelTest : BaseTest() {
-  private val reminderGroupRepository = mockk<ReminderGroupRepository>()
+  private val groupV2Repository = mockk<GroupV2Repository>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val intentDataReader = mockk<IntentDataReader>()
   private val contextProvider = mockk<ContextProvider>()
-  private val deleteReminderGroupUseCase = mockk<DeleteReminderGroupUseCase>(relaxed = true)
-  private val saveReminderGroupUseCase = mockk<SaveReminderGroupUseCase>(relaxed = true)
+  private val deleteGroupUseCase = mockk<DeleteGroupUseCase>(relaxed = true)
+  private val saveGroupUseCase = mockk<SaveGroupUseCase>(relaxed = true)
 
   private lateinit var viewModel: EditGroupViewModel
 
-  private fun reminderGroup(
+  private fun groupV2(
     id: String = "1",
     title: String = "Work",
     isDefault: Boolean = false,
-  ) = ReminderGroup(
-    groupTitle = title,
-    groupUuId = id,
-    groupColor = 0,
-    groupDateTime = "2026-07-23T10:00:00",
-    isDefaultGroup = isDefault,
+  ) = GroupV2(
+    uuId = id,
+    title = title,
+    color = 0,
+    isDefault = isDefault,
     syncState = SyncState.Synced,
   )
+
+  private fun groupV2FromFile(
+    id: String = "9",
+    title: String = "From File",
+    isDefault: Boolean = false,
+  ) = groupV2(id = id, title = title, isDefault = isDefault)
 
   private fun buildViewModel(
     id: String = "1",
@@ -58,23 +63,23 @@ class EditGroupViewModelTest : BaseTest() {
     id = id,
     fromIntentData = fromIntentData,
     dispatcherProvider = mockDispatcherProvider(),
-    reminderGroupRepository = reminderGroupRepository,
+    groupV2Repository = groupV2Repository,
     dateTimeManager = dateTimeManager,
     analyticsEventSender = analyticsEventSender,
     intentDataReader = intentDataReader,
     contextProvider = contextProvider,
-    deleteReminderGroupUseCase = deleteReminderGroupUseCase,
-    saveReminderGroupUseCase = saveReminderGroupUseCase,
+    deleteGroupUseCase = deleteGroupUseCase,
+    saveGroupUseCase = saveGroupUseCase,
   )
 
   @Before
   override fun setUp() {
     super.setUp()
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
-    every { dateTimeManager.getNowGmtDateTime() } returns "2026-07-24T10:00:00"
-    coEvery { reminderGroupRepository.getById(any()) } returns null
-    coEvery { reminderGroupRepository.getById("1") } returns reminderGroup(id = "1")
-    coEvery { reminderGroupRepository.countAll() } returns 2
+    every { dateTimeManager.getCurrentDateTime() } returns org.threeten.bp.LocalDateTime.now()
+    coEvery { groupV2Repository.getById(any()) } returns null
+    coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
+    coEvery { groupV2Repository.countAll() } returns 2
 
     viewModel = buildViewModel()
   }
@@ -92,7 +97,7 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `canDelete is false when the group is the only one`() =
     runTest {
-      coEvery { reminderGroupRepository.countAll() } returns 1
+      coEvery { groupV2Repository.countAll() } returns 1
 
       val state = viewModel.state.first()
 
@@ -102,7 +107,7 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `canDelete is false when the group is the default group`() =
     runTest {
-      coEvery { reminderGroupRepository.getById("1") } returns reminderGroup(id = "1", isDefault = true)
+      coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1", isDefault = true)
 
       val state = viewModel.state.first()
 
@@ -120,9 +125,9 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `loads from intent data and detects a matching group already in db`() =
     runTest {
-      val fromFile = reminderGroup(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
-      coEvery { reminderGroupRepository.getById("9") } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
+      coEvery { groupV2Repository.getById("9") } returns groupV2(id = "9", title = "From File")
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
 
       val state = fileViewModel.state.first()
@@ -136,9 +141,9 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `loads from intent data when no matching group exists in db`() =
     runTest {
-      val fromFile = reminderGroup(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
-      coEvery { reminderGroupRepository.getById("9") } returns null
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
+      coEvery { groupV2Repository.getById("9") } returns null
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
 
       val state = fileViewModel.state.first()
@@ -152,7 +157,7 @@ class EditGroupViewModelTest : BaseTest() {
       viewModel.state.first()
       viewModel.state.first()
 
-      coVerify(exactly = 2) { reminderGroupRepository.getById("1") }
+      coVerify(exactly = 2) { groupV2Repository.getById("1") }
     }
 
   // `state` re-runs load() in onStart on every fresh collection (matching the confetti test in
@@ -202,15 +207,15 @@ class EditGroupViewModelTest : BaseTest() {
       viewModel.onSaveClick()
 
       assertEquals(true, viewModel.state.first().titleError)
-      coVerify(exactly = 0) { saveReminderGroupUseCase(any()) }
+      coVerify(exactly = 0) { saveGroupUseCase(any()) }
     }
 
   @Test
   fun `onSaveClick shows copy conflict dialog when from file and already in db`() =
     runTest {
-      val fromFile = reminderGroup(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
-      coEvery { reminderGroupRepository.getById("9") } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
+      coEvery { groupV2Repository.getById("9") } returns groupV2(id = "9", title = "From File")
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
       fileViewModel.state.first()
 
@@ -226,7 +231,7 @@ class EditGroupViewModelTest : BaseTest() {
 
       viewModel.onSaveClick()
 
-      coVerify(exactly = 1) { saveReminderGroupUseCase(any()) }
+      coVerify(exactly = 1) { saveGroupUseCase(any()) }
       val event = viewModel.navigationEvent.value?.peekContent()
       assertEquals(EditGroupViewModel.NavigationEvent.Back, event)
     }
@@ -234,9 +239,9 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `onCopyKeepClick dismisses dialog and saves a copy under a new id`() =
     runTest {
-      val fromFile = reminderGroup(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
-      coEvery { reminderGroupRepository.getById("9") } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
+      coEvery { groupV2Repository.getById("9") } returns groupV2(id = "9", title = "From File")
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
       fileViewModel.state.first()
       fileViewModel.onSaveClick()
@@ -244,15 +249,15 @@ class EditGroupViewModelTest : BaseTest() {
       fileViewModel.onCopyKeepClick()
 
       assertNull(fileViewModel.state.first().dialog)
-      coVerify(exactly = 1) { saveReminderGroupUseCase(match { it.groupUuId != "9" }) }
+      coVerify(exactly = 1) { saveGroupUseCase(match { it.uuId != "9" }) }
     }
 
   @Test
   fun `onCopyReplaceClick dismisses dialog and saves replacing the same id`() =
     runTest {
-      val fromFile = reminderGroup(id = "9", title = "From File")
-      every { intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderGroup::class.java) } returns fromFile
-      coEvery { reminderGroupRepository.getById("9") } returns fromFile
+      val fromFile = groupV2FromFile(id = "9", title = "From File")
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, GroupV2::class.java) } returns fromFile
+      coEvery { groupV2Repository.getById("9") } returns groupV2(id = "9", title = "From File")
       val fileViewModel = buildViewModel(id = "9", fromIntentData = true)
       fileViewModel.state.first()
       fileViewModel.onSaveClick()
@@ -260,7 +265,7 @@ class EditGroupViewModelTest : BaseTest() {
       fileViewModel.onCopyReplaceClick()
 
       assertNull(fileViewModel.state.first().dialog)
-      coVerify(exactly = 1) { saveReminderGroupUseCase(match { it.groupUuId == "9" }) }
+      coVerify(exactly = 1) { saveGroupUseCase(match { it.uuId == "9" }) }
     }
 
   @Test
@@ -287,12 +292,12 @@ class EditGroupViewModelTest : BaseTest() {
   @Test
   fun `onDeleteConfirmed does nothing when group cannot be deleted`() =
     runTest {
-      coEvery { reminderGroupRepository.countAll() } returns 1
+      coEvery { groupV2Repository.countAll() } returns 1
       viewModel.state.first()
 
       viewModel.onDeleteConfirmed()
 
-      coVerify(exactly = 0) { deleteReminderGroupUseCase(any()) }
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
     }
 
   @Test
@@ -302,7 +307,7 @@ class EditGroupViewModelTest : BaseTest() {
 
       viewModel.onDeleteConfirmed()
 
-      coVerify(exactly = 1) { deleteReminderGroupUseCase("1") }
+      coVerify(exactly = 1) { deleteGroupUseCase("1") }
       val event = viewModel.navigationEvent.value?.peekContent()
       assertEquals(EditGroupViewModel.NavigationEvent.Back, event)
     }

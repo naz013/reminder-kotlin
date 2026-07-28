@@ -2,40 +2,45 @@ package com.elementary.tasks.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.home.HeaderNavigationItem
+import com.elementary.tasks.workflow.WorkflowConfig
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 class GetNavigationItemsUseCase(
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderRepository: ReminderRepository,
-  private val birthdayRepository: BirthdayRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val groupV2Repository: GroupV2Repository,
   private val noteRepository: NoteRepository,
   private val googleTaskRepository: GoogleTaskRepository,
+  private val workflowRuleRepository: WorkflowRuleRepository,
+  private val dateTimeManager: DateTimeManager,
 ) {
   suspend operator fun invoke(
     scope: CoroutineScope,
     day: LocalDateTime,
-  ): List<HeaderNavigationItem> =
-    listOfNotNull(
-      getCalendarItem(scope = scope),
-      getEventsItem(scope = scope),
-      getNoteItem(scope = scope),
-      getGoogleTasksItem(scope = scope),
-//      getGroupItem(scope = scope),
-    )
+  ): List<HeaderNavigationItem> = buildList {
+    add(getCalendarItem(scope = scope))
+    add(getEventsItem(scope = scope))
+    add(getNoteItem(scope = scope))
+    add(getGoogleTasksItem(scope = scope))
+    if (WorkflowConfig.isEnabled) {
+      add(getWorkflowItem(scope = scope))
+      add(getGroupItem(scope = scope))
+    }
+  }
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
-    val remindersCount = reminderRepository.countAllTypesInState(active = true, removed = false)
-    val birthdaysCount = birthdayRepository.countAll()
     return scope
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
@@ -43,7 +48,7 @@ class GetNavigationItemsUseCase(
           iconRes = R.drawable.ic_fluent_calendar,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
-          subtitle = "${remindersCount + birthdaysCount}",
+          subtitle = dateTimeManager.formatDayMonth(LocalDate.now()),
         )
       }.await()
   }
@@ -56,7 +61,7 @@ class GetNavigationItemsUseCase(
           iconRes = R.drawable.ic_fluent_timeline,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenEvents,
-          subtitle = "${reminderRepository.countAllTypesInState(active = true, removed = false)}",
+          subtitle = "${reminderV2Repository.getAll(active = true, removed = false).size}",
         )
       }.await()
 
@@ -84,6 +89,18 @@ class GetNavigationItemsUseCase(
         )
       }.await()
 
+  private suspend fun getWorkflowItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.workflow_automations,
+          iconRes = R.drawable.ic_fluent_arrow_repeat_all,
+          color = Color.Green,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery,
+          subtitle = "${workflowRuleRepository.getEnabled().size}",
+        )
+      }.await()
+
   private suspend fun getGroupItem(scope: CoroutineScope): HeaderNavigationItem =
     scope
       .async(dispatcherProvider.io()) {
@@ -92,7 +109,7 @@ class GetNavigationItemsUseCase(
           iconRes = R.drawable.ic_builder_group,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
-          subtitle = "${reminderGroupRepository.countAll()}",
+          subtitle = "${groupV2Repository.countAll()}",
         )
       }.await()
 }

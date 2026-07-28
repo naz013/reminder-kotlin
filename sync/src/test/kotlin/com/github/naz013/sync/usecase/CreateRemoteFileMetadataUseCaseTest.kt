@@ -7,7 +7,7 @@ import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.OldNote
 import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.sync.settings.SettingsModel
+import com.github.naz013.files.model.SettingsModel
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

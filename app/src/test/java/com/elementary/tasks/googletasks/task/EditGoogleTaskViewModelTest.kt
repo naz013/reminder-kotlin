@@ -16,10 +16,11 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.GoogleTaskRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
 import io.mockk.coEvery
@@ -42,8 +43,8 @@ import org.threeten.bp.LocalTime
 class EditGoogleTaskViewModelTest : BaseTest() {
   private val googleTasksApi = mockk<GoogleTasksApi>()
   private val googleTaskRepository = mockk<GoogleTaskRepository>()
-  private val reminderRepository = mockk<ReminderRepository>()
-  private val reminderGroupRepository = mockk<ReminderGroupRepository>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
+  private val groupV2Repository = mockk<GroupV2Repository>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val getAllGoogleTaskListsUseCase = mockk<GetAllGoogleTaskListsUseCase>()
@@ -67,8 +68,8 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     googleTasksApi = googleTasksApi,
     dispatcherProvider = mockDispatcherProvider(),
     googleTaskRepository = googleTaskRepository,
-    reminderRepository = reminderRepository,
-    reminderGroupRepository = reminderGroupRepository,
+    reminderV2Repository = reminderV2Repository,
+    groupV2Repository = groupV2Repository,
     dateTimeManager = dateTimeManager,
     analyticsEventSender = analyticsEventSender,
     getAllGoogleTaskListsUseCase = getAllGoogleTaskListsUseCase,
@@ -85,7 +86,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     coEvery { getAllGoogleTaskListsUseCase() } returns listOf(listA, listB)
     coEvery { getGoogleTaskByIdUseCase(any()) } returns null
     coEvery { googleTaskRepository.getById(any()) } returns null
-    coEvery { reminderRepository.getById(any()) } returns null
+    coEvery { reminderV2Repository.getById(any()) } returns null
     every { prefs.is24HourFormat } returns true
     every { prefs.hasAdoptedGoogleTasks } returns false
     every { dateTimeManager.toGoogleTaskDate(any()) } returns "24 Jul"
@@ -94,6 +95,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     every { dateTimeManager.toMillis(any<LocalDateTime>()) } returns 1_700_000_000_000L
     every { dateTimeManager.fromMillis(any()) } returns LocalDateTime.of(2026, 7, 24, 9, 0)
     every { dateTimeManager.fromGmtToLocal(any()) } returns LocalDateTime.of(2026, 7, 24, 9, 30)
+    every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
 
     viewModel = buildViewModel()
   }
@@ -180,9 +182,13 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     runTest {
       val editedTask = GoogleTask(taskId = "g1", listId = "list2", uuId = "r1")
       coEvery { getGoogleTaskByIdUseCase("g1") } returns editedTask
-      val reminder = Reminder(uuId = "r1", eventTime = "2026-07-24 10:00:00.000+0000")
-      coEvery { reminderRepository.getById("r1") } returns reminder
-      every { dateTimeManager.fromGmtToLocal(reminder.eventTime) } returns LocalDateTime.of(2026, 7, 24, 10, 0)
+      val eventDateTime = LocalDateTime.of(2026, 7, 24, 10, 0)
+      val reminder = ReminderV2(
+        uuId = "r1",
+        schedule = ReminderSchedule(startDateTime = eventDateTime, eventDateTime = eventDateTime),
+      )
+      coEvery { reminderV2Repository.getById("r1") } returns reminder
+      every { dateTimeManager.utcToLocal(eventDateTime) } returns LocalDateTime.of(2026, 7, 24, 10, 0)
       val vm = buildViewModel(id = "g1")
 
       val state = vm.state.first()
@@ -197,7 +203,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     runTest {
       val editedTask = GoogleTask(taskId = "g1", listId = "list2", uuId = "r2")
       coEvery { getGoogleTaskByIdUseCase("g1") } returns editedTask
-      coEvery { reminderRepository.getById("r2") } returns null
+      coEvery { reminderV2Repository.getById("r2") } returns null
       val vm = buildViewModel(id = "g1")
 
       val state = vm.state.first()
@@ -526,7 +532,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
       val saved = GoogleTask(taskId = "new1")
       coEvery { googleTasksApi.saveTask(any()) } returns saved
       coEvery { googleTaskRepository.save(saved) } returns Unit
-      coEvery { reminderGroupRepository.defaultGroup() } returns null
+      coEvery { groupV2Repository.defaultGroup() } returns null
 
       viewModel.save()
 

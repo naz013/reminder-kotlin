@@ -250,6 +250,8 @@ class ScheduleHomeViewModel(
 
     data object OpenGroups : ViewModelEvent
 
+    data object OpenWorkflowGallery : ViewModelEvent
+
     data object OpenPrivacy : ViewModelEvent
 
     data object OpenCloudDrives : ViewModelEvent

@@ -5,10 +5,13 @@ import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.formatter.Formatter
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.ShopItemV2
+import com.github.naz013.domain.reminder.v2.TaskExportSettings
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -23,7 +26,7 @@ abstract class BuilderModifier<T>(
 
   abstract fun isCorrect(): Boolean
 
-  abstract fun putInto(reminder: Reminder)
+  abstract fun putInto(reminder: ReminderV2): ReminderV2
 
   abstract fun setDefault()
 }
@@ -41,9 +44,7 @@ abstract class DefaultModifier<T>(
 
   override fun isCorrect(): Boolean = true
 
-  override fun putInto(reminder: Reminder) {
-    // Do nothing
-  }
+  override fun putInto(reminder: ReminderV2): ReminderV2 = reminder
 
   override fun setDefault() {
     storage.value = null
@@ -58,13 +59,17 @@ class TimerExclusionModifier(
     return formatter.format(value)
   }
 
-  override fun putInto(reminder: Reminder) {
+  override fun putInto(reminder: ReminderV2): ReminderV2 =
     storage.value?.let {
-      reminder.hours = it.hours
-      reminder.from = it.from
-      reminder.to = it.to
-    }
-  }
+      reminder.copy(
+        notification =
+          reminder.notification.copy(
+            activeHours = it.hours,
+            quietHoursFrom = it.from,
+            quietHoursTo = it.to,
+          ),
+      )
+    } ?: reminder
 }
 
 open class IntModifier(
@@ -127,17 +132,11 @@ class TimeModifier(
 }
 
 class SummaryModifier : StringModifier() {
-  override fun putInto(reminder: Reminder) {
-    reminder.summary = getValue() ?: ""
-  }
+  override fun putInto(reminder: ReminderV2): ReminderV2 = reminder.copy(summary = getValue() ?: "")
 }
 
 class EmailModifier : StringModifier() {
   override fun isCorrect(): Boolean = getValue()?.matches(EMAIL_REGEX) == true
-
-  override fun putInto(reminder: Reminder) {
-    reminder.target = getValue() ?: ""
-  }
 
   companion object {
     private val EMAIL_REGEX = ".*@.*..*".toRegex()
@@ -146,10 +145,6 @@ class EmailModifier : StringModifier() {
 
 class WebAddressModifier : StringModifier() {
   override fun isCorrect(): Boolean = getValue()?.let { Patterns.WEB_URL.matcher(it).matches() } ?: false
-
-  override fun putInto(reminder: Reminder) {
-    reminder.target = getValue() ?: ""
-  }
 }
 
 abstract class StringModifier(
@@ -190,11 +185,8 @@ class GroupModifier(
     storage.value = initValue
   }
 
-  override fun putInto(reminder: Reminder) {
-    reminder.groupUuId = storage.value?.id ?: initValue?.id ?: ""
-    reminder.groupColor = storage.value?.color ?: initValue?.color ?: 0
-    reminder.groupTitle = storage.value?.title ?: initValue?.title ?: ""
-  }
+  override fun putInto(reminder: ReminderV2): ReminderV2 =
+    reminder.copy(groupId = storage.value?.id ?: initValue?.id)
 }
 
 class PhoneNumberModifier : StringModifier() {
@@ -202,10 +194,6 @@ class PhoneNumberModifier : StringModifier() {
     val value = getValue()
     if (value.isNullOrBlank()) return false
     return value.isNotEmpty()
-  }
-
-  override fun putInto(reminder: Reminder) {
-    reminder.target = getValue() ?: ""
   }
 }
 
@@ -221,15 +209,8 @@ class GoogleTaskListModifier(
     storage.value = initValue
   }
 
-  override fun putInto(reminder: Reminder) {
-    storage.value?.run {
-      reminder.taskListId = this.listId
-      reminder.exportToTasks = true
-    } ?: run {
-      reminder.taskListId = null
-      reminder.exportToTasks = false
-    }
-  }
+  override fun putInto(reminder: ReminderV2): ReminderV2 =
+    reminder.copy(taskExport = storage.value?.let { TaskExportSettings(taskListId = it.listId) })
 }
 
 class GoogleCalendarModifier(
@@ -242,11 +223,6 @@ class GoogleCalendarModifier(
 
   override fun setDefault() {
     storage.value = initValue
-  }
-
-  override fun putInto(reminder: Reminder) {
-    reminder.calendarId = storage.value?.id ?: 0L
-    reminder.exportToCalendar = storage.value?.id != 0L
   }
 }
 
@@ -261,13 +237,6 @@ class GoogleCalendarDurationModifier(
 
   override fun setDefault() {
     storage.value = initValue
-  }
-
-  override fun putInto(reminder: Reminder) {
-    storage.value?.also {
-      reminder.duration = it.millis
-      reminder.allDay = it.allDay
-    }
   }
 }
 
@@ -284,17 +253,21 @@ class OtherParamsModifier(
     storage.value = initValue
   }
 
-  override fun putInto(reminder: Reminder) {
-    storage.value?.takeIf { !it.useGlobal }?.also {
-      reminder.repeatNotification = it.repeatNotification
-      reminder.notifyByVoice = it.notifyByVoice
-      reminder.vibrate = it.vibrate
-    }
-  }
+  override fun putInto(reminder: ReminderV2): ReminderV2 =
+    storage.value?.takeIf { !it.useGlobal }?.let {
+      reminder.copy(
+        notification =
+          reminder.notification.copy(
+            repeatNotification = it.repeatNotification,
+            vibrate = it.vibrate,
+          ),
+      )
+    } ?: reminder
 }
 
 class ShopItemsModifier(
   private val formatter: Formatter<List<ShopItem>>,
+  private val dateTimeManager: DateTimeManager,
   private val initValue: List<ShopItem>? = emptyList(),
 ) : DefaultModifier<List<ShopItem>>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -306,13 +279,21 @@ class ShopItemsModifier(
     storage.value = initValue
   }
 
-  override fun putInto(reminder: Reminder) {
-    storage.value?.takeIf { it.isNotEmpty() }?.also {
-      reminder.shoppings = it
-    }
-  }
+  override fun putInto(reminder: ReminderV2): ReminderV2 =
+    storage.value?.takeIf { it.isNotEmpty() }?.let { items ->
+      reminder.copy(shoppingItems = items.map { it.toShopItemV2() })
+    } ?: reminder
 
   override fun isCorrect(): Boolean = storage.value?.isNotEmpty() ?: false
+
+  private fun ShopItem.toShopItemV2(): ShopItemV2 =
+    ShopItemV2(
+      uuId = uuId,
+      summary = summary,
+      isChecked = isChecked,
+      isDeleted = isDeleted,
+      createdAt = dateTimeManager.localToUtc(dateTimeManager.fromGmtToLocal(createTime) ?: dateTimeManager.getCurrentDateTime()),
+    )
 }
 
 class PlaceModifier(
@@ -326,12 +307,6 @@ class PlaceModifier(
 
   override fun setDefault() {
     storage.value = initValue
-  }
-
-  override fun putInto(reminder: Reminder) {
-    storage.value?.also {
-      reminder.places = listOf(it)
-    }
   }
 
   override fun isCorrect(): Boolean = storage.value != null
@@ -350,11 +325,7 @@ class NoteModifier(
     storage.value = initValue
   }
 
-  override fun putInto(reminder: Reminder) {
-    storage.value?.also {
-      reminder.noteId = it.id
-    }
-  }
+  override fun putInto(reminder: ReminderV2): ReminderV2 = reminder.copy(noteId = storage.value?.id ?: "")
 
   override fun isCorrect(): Boolean = storage.value != null
 }

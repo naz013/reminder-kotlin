@@ -29,14 +29,14 @@ val calendarModule =
 
     viewModel { (dateMillis: Long) -> WeekViewViewModel(dateMillis, get(), get(), get(), get(), get(), get(), get(), get()) }
 
-    factory { GetDayEventItemsUseCase(get(), get(), get(), get(), get(), get(), get()) }
+    factory { GetDayEventItemsUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
 
     factory { MonthGridFactory(get()) }
     factory { LoadMonthEventsUseCase(get(), get(), get(), get(), get()) }
     viewModelOf(::CalendarViewModel)
 
     factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get()) }
-    factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get(), get()) }
+    factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get()) }
     factory { CalculateReminderOccurrencesUseCase(get(), get(), get(), get(), get(), get()) }
 
     factory<BackgroundTask>(named(CalculateBirthdayOccurrencesTask.TASK_KEY)) { CalculateBirthdayOccurrencesTask(get()) }

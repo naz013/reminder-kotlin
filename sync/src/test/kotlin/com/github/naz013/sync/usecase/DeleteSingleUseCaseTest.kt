@@ -3,7 +3,7 @@ package com.github.naz013.sync.usecase
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.usecase.delete.DeleteSingleUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify

@@ -7,12 +7,15 @@ import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.CalendarEvent
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.RecurrenceRule as ReminderRecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
 import kotlinx.coroutines.withContext
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
@@ -24,7 +27,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
   private val googleCalendarUtils: GoogleCalendarUtils,
   private val dateTimeManager: DateTimeManager,
   private val calendarEventRepository: CalendarEventRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val dispatcherProvider: DispatcherProvider,
@@ -59,7 +62,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
     val alreadyImportedIds = calendarEventRepository.eventIds()
     val newEvents = events.filterNot { alreadyImportedIds.contains(it.id) }
 
-    val groupId = reminderGroupRepository.defaultGroup()?.groupUuId ?: ""
+    val groupId = groupV2Repository.defaultGroup()?.uuId ?: ""
     Logger.i(TAG, "Using reminder group ID: $groupId")
 
     for (item in newEvents) {
@@ -97,7 +100,6 @@ class ScanGoogleCalendarForNewEventsUseCase(
           dtStart = dtStart,
           repeat = repeat,
           categoryId = groupId,
-          calendarId = item.calendarId,
           allDay = item.allDay == 1,
         )
       } else {
@@ -113,7 +115,6 @@ class ScanGoogleCalendarForNewEventsUseCase(
             dtStart = dtStart,
             repeat = repeat,
             categoryId = groupId,
-            calendarId = item.calendarId,
             allDay = item.allDay == 1,
           )
         }
@@ -128,23 +129,16 @@ class ScanGoogleCalendarForNewEventsUseCase(
     dtStart: Long,
     repeat: Long,
     categoryId: String,
-    calendarId: Long,
     allDay: Boolean,
   ) {
-    val reminder =
-      Reminder(
-        syncState = SyncState.WaitingForUpload,
-        version = 0,
-      ).apply {
-        this.type = Reminder.BY_DATE
-        this.repeatInterval = repeat
-        this.groupUuId = categoryId
-        this.summary = summary
-        this.calendarId = calendarId
-        this.eventTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
-        this.startTime = dateTimeManager.getGmtFromDateTime(dateTimeManager.fromMillis(dtStart))
-        this.allDay = allDay
-      }
+    val eventDateTime = dateTimeManager.localToUtc(dateTimeManager.fromMillis(dtStart))
+    val reminder = ReminderV2(
+      groupId = categoryId,
+      summary = summary,
+      recurrence = if (repeat > 0) ReminderRecurrenceRule.Daily(repeatInterval = repeat) else ReminderRecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = eventDateTime, eventDateTime = eventDateTime),
+      sync = SyncMetadata(syncState = SyncState.WaitingForUpload),
+    )
     activateReminderUseCase(reminder)
     calendarEventRepository.save(
       CalendarEvent(

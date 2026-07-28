@@ -4,8 +4,8 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.NoteRepository
 
 class NoteDecomposer(
@@ -13,7 +13,7 @@ class NoteDecomposer(
   private val noteRepository: NoteRepository,
   private val uiNoteListAdapter: UiNoteListAdapter,
 ) {
-  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
+  suspend operator fun invoke(reminder: ReminderV2): List<BuilderItem<*>> {
     val note =
       reminder.noteId
         .takeIf { it.isNotEmpty() }

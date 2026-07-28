@@ -11,10 +11,12 @@ import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCas
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.reminder.ShopItem
-import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.ShopItemV2
+import com.github.naz013.domain.reminder.v2.ReminderAction as DomainReminderAction
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.theme.ColorProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -22,12 +24,12 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 
 class ReminderActionActivityViewModelTest : BaseTest() {
-  private val reminderRepository = mockk<ReminderRepository>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
   private val completeReminderUseCase = mockk<CompleteReminderUseCase>(relaxed = true)
   private val deactivateReminderUseCase = mockk<DeactivateReminderUseCase>(relaxed = true)
@@ -49,22 +51,20 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
   private fun reminder(
     id: String = "42",
-    type: Int = Reminder.BY_DATE,
-    to: String = "",
-    target: String = "",
+    action: DomainReminderAction = DomainReminderAction.None,
     summary: String = "Buy milk",
-    delay: Int = 0,
-    shoppings: List<ShopItem> = emptyList(),
-  ): Reminder =
-    Reminder(
+    delayMinutes: Int? = null,
+    shoppingItems: List<ShopItemV2> = emptyList(),
+    attachmentFiles: List<String> = emptyList(),
+  ): ReminderV2 =
+    ReminderV2(
       uuId = id,
-      type = type,
-      to = to,
-      target = target,
+      action = action,
       summary = summary,
-      delay = delay,
-      shoppings = shoppings,
-      syncState = SyncState.Synced,
+      notification = NotificationSettingsOverride(delayMinutes = delayMinutes),
+      shoppingItems = shoppingItems,
+      attachmentFiles = attachmentFiles,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
     )
 
   @Before
@@ -76,7 +76,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   private fun createViewModel(id: String = "42"): ReminderActionActivityViewModel =
     ReminderActionActivityViewModel(
       id = id,
-      reminderRepository = reminderRepository,
+      reminderV2Repository = reminderV2Repository,
       dispatcherProvider = mockDispatcherProvider(),
       saveReminderUseCase = saveReminderUseCase,
       completeReminderUseCase = completeReminderUseCase,
@@ -92,7 +92,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   @Test
   fun `loads the reminder into state on creation`() =
     runTest {
-      coEvery { reminderRepository.getById("42") } returns reminder()
+      coEvery { reminderV2Repository.getById("42") } returns reminder()
 
       val viewModel = createViewModel()
 
@@ -102,7 +102,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   @Test
   fun `state stays unset when the reminder is not found`() =
     runTest {
-      coEvery { reminderRepository.getById("42") } returns null
+      coEvery { reminderV2Repository.getById("42") } returns null
 
       val viewModel = createViewModel()
 
@@ -113,12 +113,12 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   fun `onActionClick Complete completes the reminder and posts Finish`() =
     runTest {
       val r = reminder()
-      coEvery { reminderRepository.getById("42") } returns r
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.Complete)
 
-      coVerify(exactly = 1) { completeReminderUseCase(r) }
+      coVerify(exactly = 1) { completeReminderUseCase(match { it.uuId == r.uuId }) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
         viewModel.event.value?.peekContent(),
@@ -129,12 +129,12 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   fun `onActionClick Dismiss deactivates the reminder and posts Finish`() =
     runTest {
       val r = reminder()
-      coEvery { reminderRepository.getById("42") } returns r
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.Dismiss)
 
-      coVerify(exactly = 1) { deactivateReminderUseCase(r) }
+      coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == r.uuId }) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
         viewModel.event.value?.peekContent(),
@@ -144,7 +144,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   @Test
   fun `onActionClick SnoozeCustom shows the snooze dialog without snoozing`() =
     runTest {
-      coEvery { reminderRepository.getById("42") } returns reminder()
+      coEvery { reminderV2Repository.getById("42") } returns reminder()
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.SnoozeCustom)
@@ -159,13 +159,13 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   @Test
   fun `onActionClick Snooze uses the reminder's own delay when non-zero`() =
     runTest {
-      val r = reminder(delay = 15)
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(delayMinutes = 15)
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.Snooze)
 
-      coVerify(exactly = 1) { snoozeReminderUseCase(r, 15) }
+      coVerify(exactly = 1) { snoozeReminderUseCase(match { it.uuId == r.uuId }, 15) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
         viewModel.event.value?.peekContent(),
@@ -176,37 +176,37 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   fun `onActionClick Snooze falls back to the default snooze time from prefs when delay is zero`() =
     runTest {
       every { prefs.snoozeTime } returns 30
-      val r = reminder(delay = 0)
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(delayMinutes = 0)
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.Snooze)
 
-      coVerify(exactly = 1) { snoozeReminderUseCase(r, 30) }
+      coVerify(exactly = 1) { snoozeReminderUseCase(match { it.uuId == r.uuId }, 30) }
     }
 
   @Test
   fun `onCustomSnooze snoozes for the given number of minutes`() =
     runTest {
       val r = reminder()
-      coEvery { reminderRepository.getById("42") } returns r
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onCustomSnooze(45)
 
-      coVerify(exactly = 1) { snoozeReminderUseCase(r, 45) }
+      coVerify(exactly = 1) { snoozeReminderUseCase(match { it.uuId == r.uuId }, 45) }
     }
 
   @Test
   fun `onActionClick ShowNotification completes the reminder, notifies, and posts Finish`() =
     runTest {
       val r = reminder()
-      coEvery { reminderRepository.getById("42") } returns r
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.ShowNotification)
 
-      coVerify(exactly = 1) { completeReminderUseCase(r) }
+      coVerify(exactly = 1) { completeReminderUseCase(match { it.uuId == r.uuId }) }
       coVerify(exactly = 1) { notifier.notify(any(), any()) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
@@ -217,9 +217,8 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   @Test
   fun `onActionClick SendSms with a message posts SendSms`() =
     runTest {
-      // Reminder.BY_DATE (10) + ReminderType.Kind.SMS (2) = SMS-flavored date reminder.
-      val r = reminder(type = Reminder.BY_DATE + 2, to = "555", summary = "Call me back")
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(action = DomainReminderAction.Sms(target = "555", subject = ""), summary = "Call me back")
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.SendSms)
@@ -233,8 +232,8 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   @Test
   fun `onActionClick SendSms with a blank message posts Finish instead`() =
     runTest {
-      val r = reminder(type = Reminder.BY_DATE + 2, to = "555", summary = "")
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(action = DomainReminderAction.Sms(target = "555", subject = ""), summary = "")
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.SendSms)
@@ -246,10 +245,10 @@ class ReminderActionActivityViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onActionClick OpenApp for a BY_DATE_APP reminder posts OpenApp`() =
+  fun `onActionClick OpenApp posts OpenApp for an App action reminder`() =
     runTest {
-      val r = reminder(type = Reminder.BY_DATE_APP, target = "com.example.app")
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(action = DomainReminderAction.App(target = "com.example.app"))
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.OpenApp)
@@ -261,10 +260,10 @@ class ReminderActionActivityViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onActionClick OpenUrl for a BY_DATE_LINK reminder posts OpenLink`() =
+  fun `onActionClick OpenUrl posts OpenLink for a Link action reminder`() =
     runTest {
-      val r = reminder(type = Reminder.BY_DATE_LINK, target = "https://example.com")
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(action = DomainReminderAction.Link(target = "https://example.com"))
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.OpenUrl)
@@ -276,14 +275,14 @@ class ReminderActionActivityViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onActionClick SendEmail for a BY_DATE_EMAIL reminder posts SendEmail`() =
+  fun `onActionClick SendEmail posts SendEmail with the attachment file path`() =
     runTest {
-      val r =
-        reminder(type = Reminder.BY_DATE_EMAIL, to = "a@b.com", summary = "Hi").apply {
-          subject = "Subject"
-          attachmentFile = "file.txt"
-        }
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(
+        action = DomainReminderAction.Email(target = "a@b.com", subject = "Subject"),
+        summary = "Hi",
+        attachmentFiles = listOf("file.txt"),
+      )
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.SendEmail)
@@ -295,10 +294,10 @@ class ReminderActionActivityViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onActionClick MakeCall posts MakeCall when the target is a phone number`() =
+  fun `onActionClick MakeCall posts MakeCall for a Call action reminder`() =
     runTest {
-      val r = reminder(type = Reminder.BY_DATE, target = "+1 555-0100")
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(action = DomainReminderAction.Call(target = "+1 555-0100"))
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.MakeCall)
@@ -310,10 +309,10 @@ class ReminderActionActivityViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onActionClick MakeCall posts Finish when the target is not a phone number`() =
+  fun `onActionClick MakeCall posts Finish when the reminder has no actionable action`() =
     runTest {
-      val r = reminder(type = Reminder.BY_DATE, target = "not-a-phone")
-      coEvery { reminderRepository.getById("42") } returns r
+      val r = reminder(action = DomainReminderAction.None)
+      coEvery { reminderV2Repository.getById("42") } returns r
       val viewModel = createViewModel()
 
       viewModel.onActionClick(ReminderAction.MakeCall)
@@ -327,17 +326,17 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   @Test
   fun `onTodoItemClick toggles the matching task, saves, and refreshes state`() =
     runTest {
-      val task = ShopItem(uuId = "s1", summary = "Milk", isChecked = false, createTime = "")
-      val r = reminder(shoppings = listOf(task))
-      coEvery { reminderRepository.getById("42") } returns r
+      val task = ShopItemV2(uuId = "s1", summary = "Milk", isChecked = false, createdAt = LocalDateTime.now())
+      val r = reminder(shoppingItems = listOf(task))
+      coEvery { reminderV2Repository.getById("42") } returns r
       val refreshedState = screenState.copy(id = "42-refreshed")
-      coEvery { getReminderActionScreenStateUseCase(match { it.shoppings.first().isChecked }) } returns
+      coEvery { getReminderActionScreenStateUseCase(match { it.shoppingItems.first().isChecked }) } returns
         refreshedState
       val viewModel = createViewModel()
 
       viewModel.onTodoItemClick("s1")
 
-      coVerify(exactly = 1) { saveReminderUseCase(match { it.shoppings.first().isChecked }) }
+      coVerify(exactly = 1) { saveReminderUseCase(match { it.shoppingItems.first().isChecked }) }
       assertEquals(refreshedState, viewModel.state.getOrAwaitValue())
     }
 }

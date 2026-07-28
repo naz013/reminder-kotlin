@@ -1,5 +1,7 @@
 package com.github.naz013.sync
 
+import com.github.naz013.files.DataType
+
 sealed class SyncResult {
   data class Success(
     val downloaded: List<Downloaded>,

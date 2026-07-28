@@ -10,7 +10,7 @@ import com.elementary.tasks.core.cloud.worker.toNetworkRequirement
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.CloudApiProvider
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.workapi.TaskData
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler

@@ -3,7 +3,7 @@ package com.elementary.tasks.core.cloud
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.github.naz013.sync.SyncSettings
-import com.github.naz013.sync.settings.SettingsModel
+import com.github.naz013.files.model.SettingsModel
 
 class SyncSettingsImpl(
   private val prefs: Prefs,

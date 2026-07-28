@@ -11,6 +11,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.domain.reminder.v2.LockScreenVisibility
+import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +42,10 @@ class RemindersSettingsViewModel(
 
   fun onLocationClick() {
     navigationEvent.value = Event(RemindersSettingsEvent.OpenLocationSettings)
+  }
+
+  fun onWorkflowRulesClick() {
+    navigationEvent.value = Event(RemindersSettingsEvent.OpenWorkflowRules)
   }
 
   fun onPriorityClick() {
@@ -123,6 +129,9 @@ class RemindersSettingsViewModel(
       ChoiceDialogKind.LED_COLOR -> prefs.ledColor = index
       ChoiceDialogKind.DND_ACTION -> prefs.doNotDisturbAction = index
       ChoiceDialogKind.DND_IGNORE -> prefs.doNotDisturbIgnore = index
+      ChoiceDialogKind.CATEGORY -> prefs.defaultNotificationCategory = categoryValues()[index]
+      ChoiceDialogKind.LOCK_SCREEN_VISIBILITY ->
+        prefs.defaultLockScreenVisibility = lockScreenVisibilityValues()[index]
     }
     dismissDialog()
   }
@@ -202,6 +211,39 @@ class RemindersSettingsViewModel(
       title = textProvider.getString(R.string.priority),
       options = ignoreOptions(),
       selectedIndex = prefs.doNotDisturbIgnore,
+    )
+  }
+
+  fun onDefaultVibrateToggle() {
+    prefs.isDefaultVibrateEnabled = !prefs.isDefaultVibrateEnabled
+    refreshState()
+  }
+
+  fun onDefaultBypassDoNotDisturbToggle() {
+    prefs.isDefaultBypassDoNotDisturbEnabled = !prefs.isDefaultBypassDoNotDisturbEnabled
+    refreshState()
+  }
+
+  fun onDefaultWakeScreenToggle() {
+    prefs.isDefaultWakeScreenEnabled = !prefs.isDefaultWakeScreenEnabled
+    refreshState()
+  }
+
+  fun onDefaultCategoryClick() {
+    showChoiceDialog(
+      kind = ChoiceDialogKind.CATEGORY,
+      title = textProvider.getString(R.string.notification_category),
+      options = categoryOptions(),
+      selectedIndex = categoryValues().indexOf(prefs.defaultNotificationCategory).coerceAtLeast(0),
+    )
+  }
+
+  fun onDefaultLockScreenVisibilityClick() {
+    showChoiceDialog(
+      kind = ChoiceDialogKind.LOCK_SCREEN_VISIBILITY,
+      title = textProvider.getString(R.string.lock_screen_visibility),
+      options = lockScreenVisibilityOptions(),
+      selectedIndex = lockScreenVisibilityValues().indexOf(prefs.defaultLockScreenVisibility).coerceAtLeast(0),
     )
   }
 
@@ -287,6 +329,15 @@ class RemindersSettingsViewModel(
       doNotDisturbIgnoreName = ignoreOptions()[prefs.doNotDisturbIgnore.coerceIn(0, 5)],
       isDoNotDisturbDependentEnabled = isDoNotDisturbChecked,
       hasLocation = systemInfo.hasLocation,
+      isDefaultVibrateChecked = prefs.isDefaultVibrateEnabled,
+      isDefaultBypassDoNotDisturbChecked = prefs.isDefaultBypassDoNotDisturbEnabled,
+      isDefaultWakeScreenChecked = prefs.isDefaultWakeScreenEnabled,
+      defaultCategoryName = categoryOptions()[
+        categoryValues().indexOf(prefs.defaultNotificationCategory).coerceAtLeast(0)
+      ],
+      defaultLockScreenVisibilityName = lockScreenVisibilityOptions()[
+        lockScreenVisibilityValues().indexOf(prefs.defaultLockScreenVisibility).coerceAtLeast(0)
+      ],
     )
   }
 
@@ -318,6 +369,25 @@ class RemindersSettingsViewModel(
       textProvider.getString(R.string.schedule_for_later),
       textProvider.getString(R.string.ignore),
     )
+
+  private fun categoryOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.notification_category_default),
+      textProvider.getString(R.string.notification_category_alarm),
+      textProvider.getString(R.string.notification_category_event),
+      textProvider.getString(R.string.notification_category_call),
+    )
+
+  private fun categoryValues(): List<String> = ReminderNotificationCategory.entries.map { it.name }
+
+  private fun lockScreenVisibilityOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.lock_screen_visibility_public),
+      textProvider.getString(R.string.lock_screen_visibility_private),
+      textProvider.getString(R.string.lock_screen_visibility_secret),
+    )
+
+  private fun lockScreenVisibilityValues(): List<String> = LockScreenVisibility.entries.map { it.name }
 
   private fun ignoreOptions(): List<String> {
     val andAbove = textProvider.getString(R.string.and_above)

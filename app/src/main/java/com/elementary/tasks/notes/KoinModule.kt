@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes
 
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.notes.create.NoteEditViewModel
 import com.elementary.tasks.notes.list.NotesViewModel
@@ -27,8 +26,6 @@ val noteModule =
 
     factoryOf(::ReminderToUiNoteAttachedReminder)
 
-    factoryOf(::NoteToOldNoteConverter)
-
     factoryOf(::NoteColorEngine)
 
     singleOf(::ImagesSingleton)
@@ -41,7 +38,6 @@ val noteModule =
         sharedText,
         sharedImageUris,
         fromIntentData,
-        get(),
         get(),
         get(),
         get(),

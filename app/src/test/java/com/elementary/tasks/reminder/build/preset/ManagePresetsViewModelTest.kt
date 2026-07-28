@@ -13,7 +13,7 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

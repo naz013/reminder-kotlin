@@ -14,7 +14,7 @@ import com.github.naz013.appwidgets.events.data.UiShopListWidget
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
 import com.github.naz013.usecase.birthdays.GetBirthdaysByDayMonthUseCase
-import com.github.naz013.usecase.reminders.GetActiveRemindersUseCase
+import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
 import java.text.SimpleDateFormat
 import java.util.GregorianCalendar
 import java.util.Locale
@@ -23,7 +23,7 @@ import java.util.UUID
 internal class EventsAppWidgetViewModel(
   private val prefsProvider: EventsWidgetPrefsProvider,
   private val dateTimeManager: DateTimeManager,
-  private val getActiveRemindersUseCase: GetActiveRemindersUseCase,
+  private val getActiveRemindersV2UseCase: GetActiveRemindersV2UseCase,
   private val getBirthdaysByDayMonthUseCase: GetBirthdaysByDayMonthUseCase,
   private val uiReminderWidgetListAdapter: UiReminderWidgetListAdapter,
   private val uiBirthdayWidgetListAdapter: UiBirthdayWidgetListAdapter,
@@ -56,8 +56,8 @@ internal class EventsAppWidgetViewModel(
   }
 
   private suspend fun getEvents(): List<DateSorted> {
-    val events = getActiveRemindersUseCase()
-      .map { uiReminderWidgetListAdapter.create(it) }
+    val events = getActiveRemindersV2UseCase()
+      .map { uiReminderWidgetListAdapter.createV2(it) }
       .toMutableList()
 
     if (appWidgetPreferences.isBirthdayInWidgetEnabled) {

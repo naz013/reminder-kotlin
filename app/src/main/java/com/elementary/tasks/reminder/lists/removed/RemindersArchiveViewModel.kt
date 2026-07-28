@@ -5,17 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
-import com.elementary.tasks.reminder.lists.filter.query.ReminderQueryFilterInstance
+import com.elementary.tasks.reminder.lists.filter.query.ReminderV2QueryFilterInstance
 import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -27,7 +29,9 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 class RemindersArchiveViewModel(
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase,
+  private val groupV2Repository: GroupV2Repository,
   private val dispatcherProvider: DispatcherProvider,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val deleteReminderUseCase: DeleteReminderUseCase,
@@ -77,7 +81,7 @@ class RemindersArchiveViewModel(
     Logger.i(TAG, "Deleting reminder: $id")
     viewModelScope.launch(dispatcherProvider.main()) {
       withContext(dispatcherProvider.io()) {
-        reminderRepository.getById(id)?.also {
+        reminderV2Repository.getById(id)?.also {
           deleteReminderUseCase(it)
         }
       } ?: run {
@@ -91,10 +95,11 @@ class RemindersArchiveViewModel(
 
   fun deleteAll() {
     viewModelScope.launch(dispatcherProvider.main()) {
-      val toDelete = _state.value.filteredReminders
-      if (toDelete.isEmpty()) return@launch
-      Logger.i(TAG, "Deleting all reminders: ${toDelete.size}")
+      val toDeleteIds = _state.value.filteredReminders.map { it.uuId }
+      if (toDeleteIds.isEmpty()) return@launch
+      Logger.i(TAG, "Deleting all reminders: ${toDeleteIds.size}")
       withContext(dispatcherProvider.io()) {
+        val toDelete = toDeleteIds.mapNotNull { reminderV2Repository.getById(it) }
         deleteAllReminderUseCase(toDelete)
       }
       loadReminders()
@@ -105,7 +110,7 @@ class RemindersArchiveViewModel(
   private fun loadReminders() {
     viewModelScope.launch(dispatcherProvider.main()) {
       val allReminders = withContext(dispatcherProvider.io()) {
-        reminderRepository.getByRemovedStatus(removed = true)
+        getRemindersV2ByRemovedStatusUseCase(removed = true)
       }
       _state.update {
         it.copy(allReminders = allReminders)
@@ -123,7 +128,8 @@ class RemindersArchiveViewModel(
       it.copy(filteredReminders = filtered)
     }
     val uiItems = withContext(dispatcherProvider.default()) {
-      filtered.map { uiReminderListAdapter.create(it) }
+      val groupsById = groupV2Repository.getAll().associateBy { it.uuId }
+      filtered.map { uiReminderListAdapter.createV2(it, it.groupId?.let { id -> groupsById[id] }) }
     }
     _state.update {
       it.copy(listState = if (uiItems.isEmpty()) ListState.Empty else ListState.Ready(uiItems))
@@ -131,11 +137,11 @@ class RemindersArchiveViewModel(
   }
 
   private fun filterByQuery(
-    reminders: List<Reminder>,
+    reminders: List<ReminderV2>,
     query: String,
-  ): List<Reminder> {
+  ): List<ReminderV2> {
     if (query.isBlank()) return reminders
-    return reminders.filter(ReminderQueryFilterInstance(query)).also {
+    return reminders.filter(ReminderV2QueryFilterInstance(query)).also {
       Logger.i(
         TAG,
         "Filtered by query: ${it.size} items left, was: ${reminders.size}. Query: ${Logger.private(query)}",

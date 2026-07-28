@@ -4,21 +4,20 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.notes.SharedNote
-import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.files.DataConverter
+import com.github.naz013.files.FileConfig
+import com.github.naz013.files.model.SharedNote
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -28,13 +27,12 @@ import kotlinx.coroutines.withContext
 class ObjectExportViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val contextProvider: ContextProvider,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val noteRepository: NoteRepository,
   private val birthdayRepository: BirthdayRepository,
   private val placeRepository: PlaceRepository,
-  private val reminderGroupRepository: ReminderGroupRepository,
-  private val memoryUtil: MemoryUtil,
-  private val noteToOldNoteConverter: NoteToOldNoteConverter,
+  private val groupV2Repository: GroupV2Repository,
+  private val dataConverter: DataConverter,
 ) : ViewModel() {
   val state: StateFlow<ObjectExportState> field = MutableStateFlow(ObjectExportState())
   val navigationEvent: LiveData<Event<ObjectExportEvent>> field = mutableLiveEventOf()
@@ -71,22 +69,20 @@ class ObjectExportViewModel(
         return@launch
       }
 
-      val saved =
+      try {
         if (objectType == ObjectExportType.Note) {
-          val oldNote = noteToOldNoteConverter.toSharedNote(obj as NoteWithImages)
-          if (oldNote == null) {
-            Logger.d(TAG, "OldNote is NULL")
-            return@launch
-          }
-          memoryUtil.toStream(oldNote, outputStream)
+          val oldNote = toSharedNote(obj as NoteWithImages)
+          dataConverter.toOutputStream(oldNote, outputStream)
         } else {
-          memoryUtil.toStream(obj, outputStream)
+          dataConverter.toOutputStream(obj, outputStream)
         }
+      } catch (e: Exception) {
+        Logger.e(TAG, "Failed to save object to stream: $e")
+        return@launch
+      }
 
-      if (saved) {
-        withContext(dispatcherProvider.main()) {
-          navigationEvent.value = Event(ObjectExportEvent.ObjectSaved)
-        }
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.value = Event(ObjectExportEvent.ObjectSaved)
       }
     }
   }
@@ -104,7 +100,7 @@ class ObjectExportViewModel(
   private suspend fun loadItems(objectType: ObjectExportType): List<ObjectExportItem> =
     when (objectType) {
       ObjectExportType.Reminder ->
-        reminderRepository.getAll().map {
+        reminderV2Repository.getAll().map {
           ObjectExportItem(it.uuId, it.summary + "\nID: " + it.uuId)
         }
 
@@ -124,8 +120,8 @@ class ObjectExportViewModel(
         }
 
       ObjectExportType.Group ->
-        reminderGroupRepository.getAll().map {
-          ObjectExportItem(it.groupUuId, it.groupTitle + "\nID: " + it.groupUuId)
+        groupV2Repository.getAll().map {
+          ObjectExportItem(it.uuId, it.title + "\nID: " + it.uuId)
         }
     }
 
@@ -134,21 +130,36 @@ class ObjectExportViewModel(
     itemId: String,
   ): Any? =
     when (objectType) {
-      ObjectExportType.Reminder -> reminderRepository.getById(itemId)
+      ObjectExportType.Reminder -> reminderV2Repository.getById(itemId)
       ObjectExportType.Note -> noteRepository.getById(itemId)
       ObjectExportType.Birthday -> birthdayRepository.getById(itemId)
       ObjectExportType.Place -> placeRepository.getById(itemId)
-      ObjectExportType.Group -> reminderGroupRepository.getById(itemId)
+      ObjectExportType.Group -> groupV2Repository.getById(itemId)
     }
 
   private fun getFileExt(objectType: ObjectExportType): String =
     when (objectType) {
-      ObjectExportType.Reminder -> FileConfig.FILE_NAME_REMINDER
+      ObjectExportType.Reminder -> FileConfig.FILE_NAME_REMINDER_V2
       ObjectExportType.Note -> SharedNote.FILE_EXTENSION
       ObjectExportType.Birthday -> FileConfig.FILE_NAME_BIRTHDAY
       ObjectExportType.Place -> FileConfig.FILE_NAME_PLACE
-      ObjectExportType.Group -> FileConfig.FILE_NAME_GROUP
+      ObjectExportType.Group -> FileConfig.FILE_NAME_GROUP_V2
     }
+
+  private fun toSharedNote(noteWithImages: NoteWithImages): SharedNote = SharedNote(
+    text = noteWithImages.note?.summary ?: "",
+    title = noteWithImages.note?.title ?: "",
+    titleFontSize = noteWithImages.note?.titleFontSize ?: -1,
+    titleFontStyle = noteWithImages.note?.titleFontStyle ?: -1,
+    id = noteWithImages.note?.key ?: "",
+    date = noteWithImages.note?.date ?: "",
+    color = noteWithImages.note?.color ?: 0,
+    style = noteWithImages.note?.style ?: 0,
+    palette = noteWithImages.note?.palette ?: 0,
+    updatedAt = noteWithImages.note?.updatedAt,
+    opacity = noteWithImages.note?.opacity ?: 100,
+    fontSize = noteWithImages.note?.fontSize ?: -1,
+  )
 
   companion object {
     private const val TAG = "OETest"

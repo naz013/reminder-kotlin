@@ -1,6 +1,7 @@
 package com.elementary.tasks.groups.create
 
 import androidx.compose.ui.graphics.Color
+import com.elementary.tasks.workflow.WorkflowConfig
 
 data class EditGroupState(
   val id: String? = null,
@@ -16,6 +17,7 @@ data class EditGroupState(
   val isEdited: Boolean = false,
   val isFromFile: Boolean = false,
   val hasSameInDb: Boolean = false,
+  val workflowsVisible: Boolean = WorkflowConfig.isEnabled,
 ) {
   val hasId: Boolean
     get() = id.isNullOrEmpty().not()

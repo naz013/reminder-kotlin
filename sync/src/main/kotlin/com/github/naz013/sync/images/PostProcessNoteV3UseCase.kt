@@ -3,7 +3,7 @@ package com.github.naz013.sync.images
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.sync.NoteV3Json
+import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 

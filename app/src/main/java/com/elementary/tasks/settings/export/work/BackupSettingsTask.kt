@@ -1,6 +1,6 @@
 package com.elementary.tasks.settings.export.work
 
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.SyncApi
 import com.github.naz013.workapi.BackgroundTask
 import com.github.naz013.workapi.TaskData

@@ -4,14 +4,14 @@ import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.RecurPreset
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.sync.NoteV3Json
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.files.DataType
+import com.github.naz013.files.model.NoteV3Json
+import com.github.naz013.files.model.SettingsModel
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.DataType
-import com.github.naz013.sync.settings.SettingsModel
 
 internal class CreateCloudFileUseCase(
   private val getLocalUuIdUseCase: GetLocalUuIdUseCase,
@@ -21,10 +21,10 @@ internal class CreateCloudFileUseCase(
     val localUuId = getLocalUuIdUseCase(any)
     val existingMetadata = remoteFileMetadataRepository.getByLocalUuId(localUuId)
     val name = when (any) {
-      is Reminder -> any.getFileNamePrefix()
+      is ReminderV2 -> any.getFileNamePrefix()
       is NoteWithImages -> any.getFileNamePrefix()
       is Birthday -> any.getFileNamePrefix()
-      is ReminderGroup -> any.getFileNamePrefix()
+      is GroupV2 -> any.getFileNamePrefix()
       is Place -> any.getFileNamePrefix()
       is SettingsModel -> "app"
       is RecurPreset -> any.getFileNamePrefix()
@@ -42,7 +42,7 @@ internal class CreateCloudFileUseCase(
     )
   }
 
-  private fun Reminder.getFileNamePrefix(): String {
+  private fun ReminderV2.getFileNamePrefix(): String {
     return uuId
   }
 
@@ -54,8 +54,8 @@ internal class CreateCloudFileUseCase(
     return uuId
   }
 
-  private fun ReminderGroup.getFileNamePrefix(): String {
-    return groupUuId
+  private fun GroupV2.getFileNamePrefix(): String {
+    return uuId
   }
 
   private fun Place.getFileNamePrefix(): String {

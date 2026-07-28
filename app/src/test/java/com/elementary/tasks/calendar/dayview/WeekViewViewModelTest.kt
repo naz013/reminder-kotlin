@@ -15,9 +15,9 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListState
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -34,7 +34,7 @@ class WeekViewViewModelTest : BaseTest() {
   private val weekHeaderController = mockk<WeekHeaderController>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val getDayEventItemsUseCase = mockk<GetDayEventItemsUseCase>()
-  private val reminderRepository = mockk<ReminderRepository>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>(relaxed = true)
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>(relaxed = true)
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>(relaxed = true)
@@ -58,7 +58,7 @@ class WeekViewViewModelTest : BaseTest() {
         weekHeaderController = weekHeaderController,
         dateTimeManager = dateTimeManager,
         getDayEventItemsUseCase = getDayEventItemsUseCase,
-        reminderRepository = reminderRepository,
+        reminderV2Repository = reminderV2Repository,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
         toggleReminderStateUseCase = toggleReminderStateUseCase,
         deleteBirthdayUseCase = deleteBirthdayUseCase,
@@ -207,8 +207,8 @@ class WeekViewViewModelTest : BaseTest() {
 
   @Test
   fun `onEventMenuAction TURN_OFF on a non-gps reminder toggles it directly`() {
-    val reminder = Reminder(uuId = "r1", syncState = SyncState.Synced)
-    coEvery { reminderRepository.getById("r1") } returns reminder
+    val reminder = ReminderV2(uuId = "r1", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
+    coEvery { reminderV2Repository.getById("r1") } returns reminder
 
     viewModel.onEventMenuAction(reminderItem("r1", isGps = false), EventMenuAction.TURN_OFF)
 
@@ -263,8 +263,8 @@ class WeekViewViewModelTest : BaseTest() {
 
   @Test
   fun `toggleReminder toggles the reminder state and bumps the refresh signal`() {
-    val reminder = Reminder(uuId = "r1", syncState = SyncState.Synced)
-    coEvery { reminderRepository.getById("r1") } returns reminder
+    val reminder = ReminderV2(uuId = "r1", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
+    coEvery { reminderV2Repository.getById("r1") } returns reminder
 
     viewModel.toggleReminder("r1")
 
@@ -274,7 +274,7 @@ class WeekViewViewModelTest : BaseTest() {
 
   @Test
   fun `toggleReminder does nothing when the reminder is not found`() {
-    coEvery { reminderRepository.getById("missing") } returns null
+    coEvery { reminderV2Repository.getById("missing") } returns null
 
     viewModel.toggleReminder("missing")
 

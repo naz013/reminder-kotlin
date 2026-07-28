@@ -178,7 +178,7 @@ class BottomNavActivity : BaseAuthActivity() {
     return when (val deepLinkData = extras?.let { DeepLinkDataParser().readDeepLinkData(it) }) {
       is ReminderDatetimeTypeDeepLinkData ->
         BuildReminderNavKey.Main(
-          deepLinkDateTimeType = deepLinkData.type,
+          deepLinkDateTimeType = BuildReminderNavKey.Main.DateTimeType.Date,
           deepLinkDateTimeMillis = dateTimeManager.toMillis(deepLinkData.dateTime),
         )
 

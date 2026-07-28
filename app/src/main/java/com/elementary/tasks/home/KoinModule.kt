@@ -11,14 +11,13 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val homeModule =
-  module {
-    factoryOf(::GetActiveEventsForTheDayUseCase)
-    factoryOf(::GetTimeSectionsUseCase)
-    factoryOf(::GetGreetingTextUseCase)
-    factoryOf(::GetNavigationItemsUseCase)
-    factoryOf(::UiEventItemAdapter)
+val homeModule = module {
+  factoryOf(::GetActiveEventsForTheDayUseCase)
+  factoryOf(::GetTimeSectionsUseCase)
+  factoryOf(::GetGreetingTextUseCase)
+  factoryOf(::GetNavigationItemsUseCase)
+  factoryOf(::UiEventItemAdapter)
 
-    viewModelOf(::ScheduleHomeViewModel)
-    viewModelOf(::EventsViewModel)
-  }
+  viewModelOf(::ScheduleHomeViewModel)
+  viewModelOf(::EventsViewModel)
+}

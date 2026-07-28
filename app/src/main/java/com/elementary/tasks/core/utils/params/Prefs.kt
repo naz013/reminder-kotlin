@@ -313,6 +313,39 @@ class Prefs(
     get() = getInt(PrefsConstants.LED_COLOR)
     set(value) = putInt(PrefsConstants.LED_COLOR, value)
 
+  // ReminderV2 notification-customization defaults (base of the Settings -> Group -> Reminder hierarchy)
+  var isDefaultVibrateEnabled: Boolean
+    get() = getBoolean(PrefsConstants.DEFAULT_VIBRATE, def = false)
+    set(value) = putBoolean(PrefsConstants.DEFAULT_VIBRATE, value)
+
+  var defaultVibrationPattern: Array<Long>
+    get() = getLongArray(PrefsConstants.DEFAULT_VIBRATION_PATTERN)
+    set(value) = putLongArray(PrefsConstants.DEFAULT_VIBRATION_PATTERN, value)
+
+  var defaultVolume: Int
+    get() = getInt(PrefsConstants.DEFAULT_VOLUME, def = -1)
+    set(value) = putInt(PrefsConstants.DEFAULT_VOLUME, value)
+
+  var defaultSoundUri: String
+    get() = getString(PrefsConstants.DEFAULT_SOUND_URI)
+    set(value) = putString(PrefsConstants.DEFAULT_SOUND_URI, value)
+
+  var defaultNotificationCategory: String
+    get() = getString(PrefsConstants.DEFAULT_NOTIFICATION_CATEGORY, def = "DEFAULT")
+    set(value) = putString(PrefsConstants.DEFAULT_NOTIFICATION_CATEGORY, value)
+
+  var isDefaultBypassDoNotDisturbEnabled: Boolean
+    get() = getBoolean(PrefsConstants.DEFAULT_BYPASS_DO_NOT_DISTURB, def = false)
+    set(value) = putBoolean(PrefsConstants.DEFAULT_BYPASS_DO_NOT_DISTURB, value)
+
+  var isDefaultWakeScreenEnabled: Boolean
+    get() = getBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, def = false)
+    set(value) = putBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, value)
+
+  var defaultLockScreenVisibility: String
+    get() = getString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, def = "PRIVATE")
+    set(value) = putString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, value)
+
   var calendarEventDuration: Int
     get() = getInt(PrefsConstants.EVENT_DURATION)
     set(value) = putInt(PrefsConstants.EVENT_DURATION, value)
@@ -431,6 +464,22 @@ class Prefs(
   var noteMigrationDone: Boolean
     get() = getBoolean("note_migration", false)
     set(value) = putBoolean("note_migration", value)
+
+  var reminderV2BackfillDone: Boolean
+    get() = getBoolean(PrefsConstants.REMINDER_V2_BACKFILL_DONE, false)
+    set(value) = putBoolean(PrefsConstants.REMINDER_V2_BACKFILL_DONE, value)
+
+  var groupV2BackfillDone: Boolean
+    get() = getBoolean(PrefsConstants.GROUP_V2_BACKFILL_DONE, false)
+    set(value) = putBoolean(PrefsConstants.GROUP_V2_BACKFILL_DONE, value)
+
+  var workflowRulesScheduled: Boolean
+    get() = getBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, false)
+    set(value) = putBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, value)
+
+  var workflowUnacknowledgedRulesScheduled: Boolean
+    get() = getBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, false)
+    set(value) = putBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, value)
 
   var reminderCreatorParams: ReminderCreatorConfig
     get() =

@@ -5,9 +5,11 @@ import com.elementary.tasks.R
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import io.mockk.coEvery
@@ -30,12 +32,11 @@ import org.threeten.bp.LocalTime
 class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
 
   private fun defaultGroup() =
-    ReminderGroup(
-      groupTitle = "Default",
-      groupUuId = "group-1",
-      groupColor = 0,
-      groupDateTime = "",
-      isDefaultGroup = true,
+    GroupV2(
+      title = "Default",
+      uuId = "group-1",
+      color = 0,
+      isDefault = true,
       syncState = SyncState.Synced,
     )
 
@@ -104,22 +105,22 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     viewModel.onReminderAttachedChanged(true)
     viewModel.onNewDate(LocalDate.of(2026, 8, 1))
     viewModel.onNewTime(LocalTime.of(9, 0))
-    coEvery { reminderGroupRepository.defaultGroup() } returns defaultGroup()
+    coEvery { groupV2Repository.defaultGroup() } returns defaultGroup()
 
     viewModel.saveNote()
 
-    val reminderSlot = slot<Reminder>()
+    val reminderSlot = slot<ReminderV2>()
     coVerify(exactly = 1) { activateReminderUseCase(capture(reminderSlot), any()) }
-    assertEquals(Reminder.BY_DATE, reminderSlot.captured.type)
+    assertEquals(RecurrenceRule.Once, reminderSlot.captured.recurrence)
     assertEquals(true, reminderSlot.captured.isActive)
-    assertEquals("group-1", reminderSlot.captured.groupUuId)
+    assertEquals("group-1", reminderSlot.captured.groupId)
   }
 
   @Test
   fun `saveNote does not activate a reminder when there is no default reminder group`() {
     val viewModel = buildViewModel()
     viewModel.onReminderAttachedChanged(true)
-    coEvery { reminderGroupRepository.defaultGroup() } returns null
+    coEvery { groupV2Repository.defaultGroup() } returns null
 
     viewModel.saveNote()
 
@@ -135,16 +136,24 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
     coEvery { noteRepository.getById("42") } returns noteWithImages
     every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
-    val existingReminder = Reminder(uuId = "r1", noteId = "42", isActive = true, isRemoved = false, eventTime = "2026-07-01 09:00:00.000+0000")
-    coEvery { reminderRepository.getByNoteKey("42") } returns listOf(existingReminder)
-    every { dateTimeManager.fromGmtToLocal(existingReminder.eventTime) } returns LocalDateTime.of(2026, 7, 1, 9, 0)
-    coEvery { reminderRepository.getById("r1") } returns existingReminder
-    coEvery { reminderGroupRepository.defaultGroup() } returns defaultGroup()
+    val existingReminder = ReminderV2(
+      uuId = "r1",
+      noteId = "42",
+      isActive = true,
+      isRemoved = false,
+      schedule = ReminderSchedule(
+        startDateTime = LocalDateTime.of(2026, 7, 1, 9, 0),
+        eventDateTime = LocalDateTime.of(2026, 7, 1, 9, 0),
+      ),
+    )
+    coEvery { reminderV2Repository.getByNoteId("42") } returns listOf(existingReminder)
+    coEvery { reminderV2Repository.getById("r1") } returns existingReminder
+    coEvery { groupV2Repository.defaultGroup() } returns defaultGroup()
     val viewModel = buildViewModel(id = "42")
 
     viewModel.saveNote()
 
-    val reminderSlot = slot<Reminder>()
+    val reminderSlot = slot<ReminderV2>()
     coVerify(exactly = 1) { activateReminderUseCase(capture(reminderSlot), any()) }
     assertEquals("r1", reminderSlot.captured.uuId)
   }
@@ -154,9 +163,15 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
     coEvery { noteRepository.getById("42") } returns noteWithImages
     every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
-    val existingReminder = Reminder(uuId = "r1", noteId = "42", isActive = true, isRemoved = false)
-    coEvery { reminderRepository.getByNoteKey("42") } returns listOf(existingReminder)
-    coEvery { reminderRepository.getById("r1") } returns existingReminder
+    val existingReminder = ReminderV2(
+      uuId = "r1",
+      noteId = "42",
+      isActive = true,
+      isRemoved = false,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+    )
+    coEvery { reminderV2Repository.getByNoteId("42") } returns listOf(existingReminder)
+    coEvery { reminderV2Repository.getById("r1") } returns existingReminder
     val viewModel = buildViewModel(id = "42")
     // Loading the note attached the reminder; the user now turns the switch off before saving.
     assertEquals(true, viewModel.state.value.isReminderAttached)
@@ -194,6 +209,6 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     viewModel.saveNote(newId = true)
 
     assertNotEquals("42", saved.captured.note?.key)
-    coVerify(exactly = 0) { reminderRepository.getById(any()) }
+    coVerify(exactly = 0) { reminderV2Repository.getById(any()) }
   }
 }

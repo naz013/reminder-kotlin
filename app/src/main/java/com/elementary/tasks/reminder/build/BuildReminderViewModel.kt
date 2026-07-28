@@ -37,6 +37,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.AnalyticsReminderType
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.PresetAction
@@ -48,25 +49,28 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
-import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.files.DataType
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.RecurParamType
 import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
 import com.github.naz013.reviews.AppSource
-import com.github.naz013.sync.DataType
+import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -83,13 +87,12 @@ import java.util.UUID
 class BuildReminderViewModel(
   initialId: String,
   private val fromIntentItem: Boolean,
-  private val deepLinkDateTimeType: Int?,
+  private val deepLinkDateTimeType: BuildReminderNavKey.Main.DateTimeType?,
   private val deepLinkDateTimeMillis: Long?,
   private val deepLinkTodo: Boolean,
   private val deepLinkText: String?,
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderGroupRepository: ReminderGroupRepository,
-  private val reminderRepository: ReminderRepository,
+  private val groupV2Repository: GroupV2Repository,
   private val placeRepository: PlaceRepository,
   private val analyticsEventSender: AnalyticsEventSender,
   private val reminderAnalyticsTracker: ReminderAnalyticsTracker,
@@ -101,6 +104,7 @@ class BuildReminderViewModel(
   private val biToReminderAdapter: BiToReminderAdapter,
   private val permissionValidator: PermissionValidator,
   private val reminderToBiDecomposer: ReminderToBiDecomposer,
+  private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
   private val biFilter: BiFilter,
   private val uiPresetListAdapter: UiPresetListAdapter,
   private val recurPresetRepository: RecurPresetRepository,
@@ -136,7 +140,7 @@ class BuildReminderViewModel(
   private var isEdited: Boolean = false
   private var isPaused: Boolean = false
   private var isSaving: Boolean = false
-  private var original: Reminder? = null
+  private var originalV2: ReminderV2? = null
   private var isFromFile: Boolean = false
 
   private var requestedNewId = false
@@ -165,7 +169,7 @@ class BuildReminderViewModel(
     Logger.i(TAG, "View model cleared")
     selectorDialogDataHolder.selectorBuilderItems = emptyList()
     if (isPaused && !isSaving) {
-      original?.let { resumeReminder(it) }
+      originalV2?.let { resumeReminder(it) }
     }
     appWidgetUpdater.updateAllWidgets()
     appWidgetUpdater.updateCalendarWidget()
@@ -246,17 +250,20 @@ class BuildReminderViewModel(
         }
       }
 
-      val reminder = original ?: Reminder()
-      when (val buildResult = biToReminderAdapter(reminder, builderItems, isEdited)) {
+      val baseV2 = originalV2 ?: newBlankReminderV2()
+      when (val buildResult = biToReminderAdapter(baseV2, builderItems, isEdited)) {
         is BiToReminderAdapter.BuildResult.Success -> {
           Logger.i(TAG, "Reminder build success")
 
-          if (newId) {
-            reminder.uuId = UUID.randomUUID().toString()
-          }
+          val finalV2 =
+            if (newId) {
+              buildResult.reminderV2.copy(uuId = UUID.randomUUID().toString())
+            } else {
+              buildResult.reminderV2
+            }
 
           isSaving = true
-          saveAndStartReminder(buildResult.reminder, isEdit = isEdited)
+          saveAndStartReminder(finalV2, isEdit = isEdited)
 
           if (_state.value.saveAsPresetChecked && _state.value.presetName.isNotEmpty()) {
             savePreset(builderItems)
@@ -403,13 +410,13 @@ class BuildReminderViewModel(
   }
 
   private suspend fun readDateTimeDeepLink(
-    type: Int,
+    type: BuildReminderNavKey.Main.DateTimeType,
     millis: Long,
   ) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
-    if (type == Reminder.BY_DATE) {
+    if (type == BuildReminderNavKey.Main.DateTimeType.Date) {
       Logger.i(TAG, "Handle reminder date/time Deep Link")
       val dateTime = dateTimeManager.fromMillis(millis)
       addDateItemToBuilder(dateTime.toLocalDate())
@@ -476,11 +483,11 @@ class BuildReminderViewModel(
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50)
     }
-    intentDataReader.get(IntentKeys.INTENT_ITEM, Reminder::class.java)?.run {
+    intentDataReader.get(IntentKeys.INTENT_ITEM, ReminderV2::class.java)?.run {
       Logger.logEvent("Reminder loaded from intent")
       isFromFile = true
       _state.update { it.copy(isFromFile = true) }
-      editReminder(this)
+      editReminder(reminderV2 = this)
     }
   }
 
@@ -538,33 +545,33 @@ class BuildReminderViewModel(
 
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminderV2 = getReminderV2ByIdUseCase(id) ?: return@launch
 
       Logger.i(TAG, "Edit reminder by ID Deep Link, id = $id")
 
-      editReminder(reminder)
-      pauseReminder(reminder)
+      editReminder(reminderV2 = reminderV2)
+      pauseReminder(reminderV2)
     }
   }
 
-  private suspend fun editReminder(reminder: Reminder) {
-    Logger.i(TAG, "Edit reminder, id = ${reminder.uuId}")
+  private suspend fun editReminder(reminderV2: ReminderV2) {
+    Logger.i(TAG, "Edit reminder, id = ${reminderV2.uuId}")
 
     isEdited = true
-    original = reminder
+    originalV2 = reminderV2
 
     if (isFromFile) {
-      findSame(reminder.uuId)
+      findSame(reminderV2.uuId)
     }
 
-    val builderItems = reminderToBiDecomposer(reminder)
+    val builderItems = reminderToBiDecomposer(reminderV2)
 
     Logger.d(TAG, "Edit reminder with builder items: $builderItems")
 
     _state.update {
       it.copy(
         canRemove = !isFromFile,
-        isRemoved = reminder.isRemoved,
+        isRemoved = reminderV2.isRemoved,
       )
     }
 
@@ -575,7 +582,7 @@ class BuildReminderViewModel(
   }
 
   private suspend fun findSame(id: String) {
-    val reminder = reminderRepository.getById(id)
+    val reminder = getReminderV2ByIdUseCase(id)
     _state.update { it.copy(hasSameInDb = reminder != null) }
     reminder?.also { pauseReminder(it) }
   }
@@ -776,12 +783,12 @@ class BuildReminderViewModel(
       return
     }
 
-    val reminder = Reminder()
-    when (val buildResult = biToReminderAdapter(reminder, builderItems, false)) {
+    val baseV2 = originalV2 ?: newBlankReminderV2()
+    when (val buildResult = biToReminderAdapter(baseV2, builderItems, false)) {
       is BiToReminderAdapter.BuildResult.Success -> {
         _state.update {
           it.copy(
-            prediction = reminderPredictionCalculator(reminder),
+            prediction = reminderPredictionCalculator(buildResult.reminderV2),
             canSaveAsPreset = true,
             canSave = true,
           )
@@ -794,7 +801,7 @@ class BuildReminderViewModel(
             prediction =
               ReminderPrediction.FailedPrediction(
                 icon = R.drawable.ic_fluent_error_circle,
-                message = builderErrorToTextAdapter(builderErrorFinder(reminder, builderItems)),
+                message = builderErrorToTextAdapter(builderErrorFinder(baseV2, builderItems)),
               ),
             canSaveAsPreset = false,
             canSave = false,
@@ -804,6 +811,9 @@ class BuildReminderViewModel(
       }
     }
   }
+
+  private fun newBlankReminderV2(): ReminderV2 =
+    ReminderV2(schedule = ReminderSchedule(startDateTime = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime())))
 
   private fun getGroupBuilderItem(): GroupBuilderItem? =
     builderItemsLogic
@@ -846,36 +856,29 @@ class BuildReminderViewModel(
   }
 
   private suspend fun saveAndStartReminder(
-    reminder: Reminder,
+    reminder: ReminderV2,
     isEdit: Boolean = true,
   ) {
     Logger.i(
       TAG,
-      "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupUuId}",
+      "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupId}",
     )
-    if (reminder.groupUuId.isEmpty()) {
-      val group = reminderGroupRepository.defaultGroup()
+    val reminder = if (reminder.groupId.isNullOrEmpty()) {
+      val group = groupV2Repository.defaultGroup()
       Logger.i(TAG, "Reminder does not have a group, get default = $group")
-      if (group != null) {
-        reminder.groupColor = group.groupColor
-        reminder.groupTitle = group.groupTitle
-        reminder.groupUuId = group.groupUuId
-      }
+      if (group != null) reminder.copy(groupId = group.uuId) else reminder
+    } else {
+      reminder
     }
-    if (!isEdit) {
-      if (Reminder.isGpsType(reminder.type)) {
-        val places = reminder.places
-        if (places.isNotEmpty()) {
-          placeRepository.save(places[0])
-        }
-      }
+    if (!isEdit && reminder.places.isNotEmpty()) {
+      placeRepository.save(reminder.places[0])
     }
     activateReminderUseCase(reminder, startAnyway = true)
     Logger.i(TAG, "Reminder saved, id = ${reminder.uuId}")
 
     if (!isEdit) {
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_REMINDER))
-      reminderAnalyticsTracker.sendEvent(UiReminderType(reminder.type).getEventType())
+      reminderAnalyticsTracker.sendEvent(reminder.toAnalyticsReminderType())
     }
 
     // Track reminder creation and show review dialog after 4 reminders
@@ -895,6 +898,24 @@ class BuildReminderViewModel(
     }
   }
 
+  /** Mirrors [UiReminderType.getEventType]'s priority order, reading straight off [ReminderV2]'s
+   * sealed fields instead of a derived V1 type int. */
+  private fun ReminderV2.toAnalyticsReminderType(): AnalyticsReminderType = when {
+    recurrence is RecurrenceRule.ICalendar -> AnalyticsReminderType.Recur
+    action is ReminderAction.Email -> AnalyticsReminderType.Email
+    action is ReminderAction.Link -> AnalyticsReminderType.WebLink
+    action is ReminderAction.App -> AnalyticsReminderType.App
+    action is ReminderAction.Call -> AnalyticsReminderType.Call
+    action is ReminderAction.Sms -> AnalyticsReminderType.Sms
+    places.isNotEmpty() -> AnalyticsReminderType.Gps
+    recurrence is RecurrenceRule.Monthly -> AnalyticsReminderType.Monthly
+    recurrence is RecurrenceRule.Weekly -> AnalyticsReminderType.Weekday
+    recurrence is RecurrenceRule.Countdown -> AnalyticsReminderType.Timer
+    recurrence is RecurrenceRule.Yearly -> AnalyticsReminderType.Yearly
+    recurrence is RecurrenceRule.Once || recurrence is RecurrenceRule.Daily -> AnalyticsReminderType.ByDate
+    else -> AnalyticsReminderType.Other
+  }
+
   private fun askReview(titleRes: Int) {
     event.emit(
       ViewModelEvent.ShowReviewDialog(
@@ -905,13 +926,13 @@ class BuildReminderViewModel(
     )
   }
 
-  private suspend fun pauseReminder(reminder: Reminder) {
+  private suspend fun pauseReminder(reminder: ReminderV2) {
     Logger.i(TAG, "Pause reminder, id = ${reminder.uuId}")
     isPaused = true
     pauseReminderUseCase(reminder)
   }
 
-  private fun resumeReminder(reminder: Reminder) {
+  private fun resumeReminder(reminder: ReminderV2) {
     Logger.i(TAG, "Resume reminder, id = ${reminder.uuId}")
     cleanupScope.launch {
       isPaused = false
@@ -920,7 +941,7 @@ class BuildReminderViewModel(
   }
 
   fun moveToTrash() {
-    val reminder = original
+    val reminder = originalV2
     if (reminder == null) {
       event.emit(ViewModelEvent.MoveBack)
       return
@@ -938,7 +959,7 @@ class BuildReminderViewModel(
   }
 
   fun deleteReminder(showMessage: Boolean) {
-    val reminder = original
+    val reminder = originalV2
     if (reminder == null) {
       event.emit(ViewModelEvent.MoveBack)
       return

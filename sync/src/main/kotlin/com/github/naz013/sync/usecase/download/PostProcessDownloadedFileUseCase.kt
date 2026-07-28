@@ -2,7 +2,7 @@ package com.github.naz013.sync.usecase.download
 
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.domain.note.OldNote
-import com.github.naz013.domain.sync.NoteV3Json
+import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.images.PostProcessNoteV3UseCase
 import com.github.naz013.sync.images.PostProcessOldNoteUseCase

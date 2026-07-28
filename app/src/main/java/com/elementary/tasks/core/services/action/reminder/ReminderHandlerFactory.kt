@@ -12,7 +12,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class ReminderHandlerFactory(
   private val reminderDataProvider: ReminderDataProvider,
@@ -24,7 +24,7 @@ class ReminderHandlerFactory(
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val snoozeReminderUseCase: SnoozeReminderUseCase,
 ) {
-  fun createAction(canShowWindow: Boolean): ActionHandler<Reminder> =
+  fun createAction(canShowWindow: Boolean): ActionHandler<ReminderV2> =
     ReminderNotificationHandler(
       reminderDataProvider = reminderDataProvider,
       contextProvider = contextProvider,
@@ -35,20 +35,20 @@ class ReminderHandlerFactory(
       style = if (canShowWindow) LoudNotificationStyle else SilentNotificationStyle,
     )
 
-  fun createComplete(): ActionHandler<Reminder> =
+  fun createComplete(): ActionHandler<ReminderV2> =
     CancelNotificationDecorator(
-      delegate = ActionHandler { reminder: Reminder -> completeReminderUseCase(reminder) },
+      delegate = ActionHandler { reminder: ReminderV2 -> completeReminderUseCase(reminder) },
       notifier = notifier,
-      uniqueId = Reminder::uniqueId,
+      uniqueId = ReminderV2::uniqueId,
     )
 
-  fun createSnooze(): ActionHandler<Reminder> =
+  fun createSnooze(): ActionHandler<ReminderV2> =
     CancelNotificationDecorator(
       delegate =
-        ActionHandler { reminder: Reminder ->
+        ActionHandler { reminder: ReminderV2 ->
           snoozeReminderUseCase(reminder = reminder, timeInMinutes = prefs.snoozeTime)
         },
       notifier = notifier,
-      uniqueId = Reminder::uniqueId,
+      uniqueId = ReminderV2::uniqueId,
     )
 }

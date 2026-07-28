@@ -5,5 +5,5 @@ import org.koin.dsl.module
 
 val servicesModule =
   module {
-    factory { CheckLocationReminderUseCase(get(), get(), get(), get()) }
+    factory { CheckLocationReminderUseCase(get(), get(), get(), get(), get()) }
   }

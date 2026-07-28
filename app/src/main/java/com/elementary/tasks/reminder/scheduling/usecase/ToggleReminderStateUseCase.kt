@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 
 /**
@@ -26,7 +26,7 @@ class ToggleReminderStateUseCase(
    * @param reminder The reminder to toggle
    * @return Pair of (new active state, updated reminder)
    */
-  suspend operator fun invoke(reminder: Reminder): Result {
+  suspend operator fun invoke(reminder: ReminderV2): Result {
     Logger.d(TAG, "Toggling reminder state for id=${reminder.uuId}, currentState=${reminder.isActive}")
 
     return if (reminder.isActive) {
@@ -48,7 +48,7 @@ class ToggleReminderStateUseCase(
 
   data class Result(
     val success: Boolean,
-    val newReminder: Reminder,
+    val newReminder: ReminderV2,
   )
 
   companion object {

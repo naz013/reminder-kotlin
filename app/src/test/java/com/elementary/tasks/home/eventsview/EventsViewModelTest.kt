@@ -13,11 +13,14 @@ import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
-import com.github.naz013.repository.ReminderGroupRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -36,12 +39,13 @@ import org.threeten.bp.LocalDateTime
  * separately by [UiEventItemAdapterTest]).
  */
 class EventsViewModelTest {
-  private val reminderRepository = mockk<ReminderRepository>()
-  private val groupRepository = mockk<ReminderGroupRepository>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
+  private val getRemindersV2ByRemovedStatusUseCase = mockk<GetRemindersV2ByRemovedStatusUseCase>()
+  private val groupV2Repository = mockk<GroupV2Repository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val uiEventItemAdapter = mockk<UiEventItemAdapter>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
-  private val dateTimeManager = mockk<DateTimeManager>()
+  private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>()
   private val skipReminderUseCase = mockk<SkipReminderUseCase>()
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
@@ -52,27 +56,28 @@ class EventsViewModelTest {
 
   @Before
   fun setUp() {
-    coEvery { groupRepository.getAll() } returns emptyList()
+    coEvery { groupV2Repository.getAll() } returns emptyList()
     // EventsViewModel's init{} eagerly runs the load pipeline once on construction, and
     // mockDispatcherProvider() uses Dispatchers.Unconfined, so that eager call executes
     // synchronously here in setUp() before any test body runs. Stub safe defaults so it
     // doesn't crash on unmocked calls; individual tests override these as needed.
-    coEvery { reminderRepository.getByRemovedStatus(any()) } returns emptyList()
+    coEvery { getRemindersV2ByRemovedStatusUseCase(any()) } returns emptyList()
     coEvery { birthdayRepository.getAll() } returns emptyList()
-    every { dateTimeManager.fromGmtToLocal(any()) } returns null
+    every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     // Echoes the filtered reminders/birthdays back as bare UiEventItems keyed by id, so tests can
     // assert on which domain objects survived filtering without depending on real UI formatting.
-    every { uiEventItemAdapter.convert(any(), any()) } answers {
-      val reminders = firstArg<List<Reminder>>()
-      val birthdays = secondArg<List<Birthday>>()
+    every { uiEventItemAdapter.convertV2(any(), any(), any()) } answers {
+      val reminders = firstArg<List<ReminderV2>>()
+      val birthdays = thirdArg<List<Birthday>>()
       reminders.map { fakeReminderItem(it.uuId) } + birthdays.map { fakeBirthdayItem(it.uuId) }
     }
 
     viewModel =
       EventsViewModel(
         dispatcherProvider = mockDispatcherProvider(),
-        reminderRepository = reminderRepository,
-        groupRepository = groupRepository,
+        reminderV2Repository = reminderV2Repository,
+        getRemindersV2ByRemovedStatusUseCase = getRemindersV2ByRemovedStatusUseCase,
+        groupV2Repository = groupV2Repository,
         birthdayRepository = birthdayRepository,
         uiEventItemAdapter = uiEventItemAdapter,
         textProvider = textProvider,
@@ -87,7 +92,7 @@ class EventsViewModelTest {
     // Construction above already triggered one eager load via init{}. Clear recorded
     // invocations (keeping the stubbed answers) so each test's coVerify(exactly = ...)
     // reflects only the calls it makes explicitly through loadMerged().
-    clearMocks(reminderRepository, birthdayRepository, answers = false, recordedCalls = true)
+    clearMocks(getRemindersV2ByRemovedStatusUseCase, birthdayRepository, answers = false, recordedCalls = true)
   }
 
   @Test
@@ -97,15 +102,15 @@ class EventsViewModelTest {
 
       val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS))
 
-      coVerify(exactly = 0) { reminderRepository.getByRemovedStatus(any()) }
+      coVerify(exactly = 0) { getRemindersV2ByRemovedStatusUseCase(any()) }
       assertEquals(listOf("b1"), result.items.map { it.id })
     }
 
   @Test
   fun `loads only reminders and skips birthday repository when only Reminders category selected`() =
     runTest {
-      coEvery { reminderRepository.getByRemovedStatus(removed = false) } returns
-        listOf(reminder(id = "r1", type = Reminder.BY_DATE))
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(reminderV2(id = "r1"))
 
       val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS))
 
@@ -116,10 +121,10 @@ class EventsViewModelTest {
   @Test
   fun `filters out shopping-type reminders when only Reminders category is selected`() =
     runTest {
-      coEvery { reminderRepository.getByRemovedStatus(removed = false) } returns
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
         listOf(
-          reminder(id = "normal", type = Reminder.BY_DATE),
-          reminder(id = "shopping", type = Reminder.BY_DATE_SHOP),
+          reminderV2(id = "normal"),
+          reminderV2(id = "shopping", isShopping = true),
         )
 
       val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS))
@@ -130,10 +135,10 @@ class EventsViewModelTest {
   @Test
   fun `filters out normal reminders when only Shopping category is selected`() =
     runTest {
-      coEvery { reminderRepository.getByRemovedStatus(removed = false) } returns
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
         listOf(
-          reminder(id = "normal", type = Reminder.BY_DATE),
-          reminder(id = "shopping", type = Reminder.BY_DATE_SHOP),
+          reminderV2(id = "normal"),
+          reminderV2(id = "shopping", isShopping = true),
         )
 
       val result = viewModel.loadMerged("", setOf(EventCategory.SHOPPING))
@@ -144,10 +149,10 @@ class EventsViewModelTest {
   @Test
   fun `search query filters reminders by summary and birthdays by name independently`() =
     runTest {
-      coEvery { reminderRepository.getByRemovedStatus(removed = false) } returns
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
         listOf(
-          reminder(id = "match", type = Reminder.BY_DATE, summary = "Buy milk"),
-          reminder(id = "no-match", type = Reminder.BY_DATE, summary = "Call mom"),
+          reminderV2(id = "match", summary = "Buy milk"),
+          reminderV2(id = "no-match", summary = "Call mom"),
         )
       coEvery { birthdayRepository.getAll() } returns
         listOf(
@@ -165,7 +170,7 @@ class EventsViewModelTest {
     runTest {
       val result = viewModel.loadMerged("", emptySet())
 
-      coVerify(exactly = 0) { reminderRepository.getByRemovedStatus(any()) }
+      coVerify(exactly = 0) { getRemindersV2ByRemovedStatusUseCase(any()) }
       coVerify(exactly = 0) { birthdayRepository.getAll() }
       assertEquals(emptyList<UiEventItem>(), result.items)
     }
@@ -173,8 +178,8 @@ class EventsViewModelTest {
   @Test
   fun `returns empty items when no reminders or birthdays match the search query`() =
     runTest {
-      coEvery { reminderRepository.getByRemovedStatus(removed = false) } returns
-        listOf(reminder(id = "r1", type = Reminder.BY_DATE, summary = "Call mom"))
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(reminderV2(id = "r1", summary = "Call mom"))
       coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday("b1", name = "John"))
 
       val result = viewModel.loadMerged("nonexistent-query", EventCategory.entries.toSet())
@@ -182,18 +187,17 @@ class EventsViewModelTest {
       assertEquals(emptyList<UiEventItem>(), result.items)
     }
 
-  private fun reminder(
+  private fun reminderV2(
     id: String,
-    type: Int,
     summary: String = "",
-    groupUuId: String = "",
-    eventTime: String = "",
-  ) = Reminder(
+    isShopping: Boolean = false,
+    groupId: String? = null,
+  ) = ReminderV2(
     uuId = id,
-    type = type,
     summary = summary,
-    groupUuId = groupUuId,
-    eventTime = eventTime,
+    groupId = groupId,
+    schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+    action = if (isShopping) ReminderAction.Shopping else ReminderAction.None,
   )
 
   private fun reminderBirthday(

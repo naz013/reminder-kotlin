@@ -5,8 +5,7 @@ import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.CloudApiProvider
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

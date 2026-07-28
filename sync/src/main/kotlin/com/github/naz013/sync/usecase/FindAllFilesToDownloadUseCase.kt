@@ -5,7 +5,7 @@ import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.repository.RemoteFileMetadataRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 
 internal class FindAllFilesToDownloadUseCase(
   private val getAllowedCloudApisUseCase: GetAllowedCloudApisUseCase,

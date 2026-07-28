@@ -6,7 +6,8 @@ import com.elementary.tasks.reminder.actions.ReminderAction
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.contacts.ContactsReader
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.ReminderAction as DomainReminderAction
 import com.github.naz013.logging.Logger
 
 class CreateReminderActionScreenStateUseCase(
@@ -15,7 +16,7 @@ class CreateReminderActionScreenStateUseCase(
   private val contactsReader: ContactsReader,
   private val packageManagerWrapper: PackageManagerWrapper,
 ) {
-  suspend operator fun invoke(reminder: Reminder): ReminderActionScreenState {
+  suspend operator fun invoke(reminder: ReminderV2): ReminderActionScreenState {
     val availableActions =
       getReminderActionsUseCase(
         reminder,
@@ -56,8 +57,8 @@ class CreateReminderActionScreenStateUseCase(
     )
   }
 
-  private fun getTodoList(reminder: Reminder): ReminderActionScreenTodoList? {
-    val todos = reminder.shoppings
+  private fun getTodoList(reminder: ReminderV2): ReminderActionScreenTodoList? {
+    val todos = reminder.shoppingItems
     return if (todos.isEmpty()) {
       null
     } else {
@@ -73,51 +74,50 @@ class CreateReminderActionScreenStateUseCase(
     }
   }
 
-  private fun getHeader(reminder: Reminder): ReminderActionScreenHeader {
-    val type = reminder.readType()
-    return when {
-      type.hasLinkAction() -> {
+  private fun getHeader(reminder: ReminderV2): ReminderActionScreenHeader {
+    return when (val action = reminder.action) {
+      is DomainReminderAction.Link -> {
         ReminderActionScreenHeader.OpenLink(
           text = reminder.summary,
-          url = reminder.target,
+          url = action.target,
         )
       }
-      type.hasApplicationAction() -> {
+      is DomainReminderAction.App -> {
         ReminderActionScreenHeader.OpenApplication(
           text = reminder.summary,
-          appName = packageManagerWrapper.getApplicationName(reminder.target),
-          appIcon = packageManagerWrapper.getAppInfo(reminder.target).loadIcon(packageManagerWrapper.packageManager),
+          appName = packageManagerWrapper.getApplicationName(action.target),
+          appIcon = packageManagerWrapper.getAppInfo(action.target).loadIcon(packageManagerWrapper.packageManager),
         )
       }
-      type.hasEmailAction() -> {
-        val contactId = contactsReader.getIdFromMail(reminder.target)
+      is DomainReminderAction.Email -> {
+        val contactId = contactsReader.getIdFromMail(action.target)
         ReminderActionScreenHeader.SendEmail(
           text = reminder.summary,
-          emailAddress = reminder.target,
-          contactName = contactsReader.getNameFromMail(reminder.target),
-          subject = reminder.subject,
+          emailAddress = action.target,
+          contactName = contactsReader.getNameFromMail(action.target),
+          subject = action.subject,
           contactPhoto = contactsReader.getPhotoBitmap(contactId),
         )
       }
-      type.hasCallAction() -> {
-        val contactId = contactsReader.getIdFromNumber(reminder.target)
+      is DomainReminderAction.Call -> {
+        val contactId = contactsReader.getIdFromNumber(action.target)
         ReminderActionScreenHeader.MakeCall(
           text = reminder.summary,
-          phoneNumber = reminder.target,
-          contactName = contactsReader.getNameFromNumber(reminder.target),
+          phoneNumber = action.target,
+          contactName = contactsReader.getNameFromNumber(action.target),
           contactPhoto = contactsReader.getPhotoBitmap(contactId),
         )
       }
-      type.hasSmsAction() -> {
-        val contactId = contactsReader.getIdFromNumber(reminder.target)
+      is DomainReminderAction.Sms -> {
+        val contactId = contactsReader.getIdFromNumber(action.target)
         ReminderActionScreenHeader.SendSms(
           text = reminder.summary,
-          phoneNumber = reminder.target,
-          contactName = contactsReader.getNameFromNumber(reminder.target),
+          phoneNumber = action.target,
+          contactName = contactsReader.getNameFromNumber(action.target),
           contactPhoto = contactsReader.getPhotoBitmap(contactId),
         )
       }
-      else -> {
+      DomainReminderAction.None, DomainReminderAction.Shopping -> {
         ReminderActionScreenHeader.SimpleWithSummary(text = reminder.summary)
       }
     }

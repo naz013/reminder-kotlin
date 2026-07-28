@@ -1,24 +1,27 @@
 package com.github.naz013.appwidgets.calendar
 
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.datecalc.RecurrenceCalculator
-import com.github.naz013.datecalc.RecurrenceCalculatorImpl
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.feature.common.coroutine.invokeSuspend
-import com.github.naz013.icalendar.ICalendarApi
-import com.github.naz013.icalendar.RecurrenceDateTimeTag
-import com.github.naz013.icalendar.TagType
 import com.github.naz013.usecase.birthdays.GetAllBirthdaysUseCase
-import com.github.naz013.usecase.reminders.GetActiveRemindersWithoutGpsUseCase
+import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
+import com.github.naz013.usecase.reminders.GetOccurrencesByDateRangeUseCase
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
+/**
+ * Reads pre-computed occurrence dates from the same model-agnostic `EventOccurrenceRepository`
+ * table the app module's Calendar month view uses (via `CalculateReminderOccurrencesUseCase`,
+ * still populated from V1 `Reminder` writes and already excluding GPS-type reminders at source)
+ * instead of duplicating recurrence evaluation with its own `RecurrenceCalculator` pass — this
+ * both migrates the widget to `ReminderV2` for its "still active" check and removes a second,
+ * divergent occurrence-computation code path.
+ */
 internal class WidgetDataProvider(
   private val dateTimeManager: DateTimeManager,
-  private val getActiveRemindersWithoutGpsUseCase: GetActiveRemindersWithoutGpsUseCase,
+  private val getOccurrencesByDateRangeUseCase: GetOccurrencesByDateRangeUseCase,
+  private val getActiveRemindersV2UseCase: GetActiveRemindersV2UseCase,
   private val getAllBirthdaysUseCase: GetAllBirthdaysUseCase,
-  private val iCalendarApi: ICalendarApi,
-  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculatorImpl(),
 ) {
   private val data: MutableList<Item> = ArrayList()
   private var birthdayTime: LocalTime = LocalTime.now()
@@ -76,69 +79,19 @@ internal class WidgetDataProvider(
   }
 
   private fun loadReminders() {
-    val reminders = invokeSuspend { getActiveRemindersWithoutGpsUseCase() }
-    for (item in reminders) {
-      val mType = item.type
-      var eventTime = dateTimeManager.fromGmtToLocal(item.eventTime) ?: continue
-      data.add(Item(eventTime.toLocalDate(), WidgetType.REMINDER))
-      val repeatTime = item.repeatInterval
-      val limit = item.repeatLimit.toLong()
-      val count = item.eventCount
-      val isLimited = limit > 0
-      if (isFeature) {
-        if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
-          var days: Long = 0
-          var max = MAX_DAYS_COUNT
-          if (isLimited) {
-            max = limit - count
-          }
-          do {
-            eventTime = recurrenceCalculator.getNextDayOfWeekDateTime(eventTime, item.weekdays)
-            days++
-            data.add(Item(eventTime.toLocalDate(), WidgetType.REMINDER))
-          } while (days < max)
-        } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
-          var days: Long = 0
-          var max = MAX_DAYS_COUNT
-          if (isLimited) {
-            max = limit - count
-          }
-          do {
-            eventTime = recurrenceCalculator.getNextMonthDayDateTime(eventTime, item.dayOfMonth, item.repeatInterval)
-            days++
-            data.add(Item(eventTime.toLocalDate(), WidgetType.REMINDER))
-          } while (days < max)
-        } else if (Reminder.isBase(mType, Reminder.BY_RECUR)) {
-          val dates =
-            runCatching {
-              iCalendarApi.parseObject(item.recurDataObject)
-            }.getOrNull()?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)?.values
+    val startDate = LocalDate.now()
+    val endDate = startDate.plusDays(MAX_DAYS_COUNT)
+    val activeIds = invokeSuspend { getActiveRemindersV2UseCase() }.mapTo(HashSet()) { it.uuId }
+    val occurrences = invokeSuspend { getOccurrencesByDateRangeUseCase(startDate, endDate) }
+      .filter { it.type == OccurrenceType.Reminder && it.eventId in activeIds }
+      .sortedBy { it.date }
 
-          val baseTime = dateTimeManager.fromGmtToLocal(item.eventTime)
-
-          dates
-            ?.mapNotNull { it.dateTime }
-            ?.forEach { localDateTime ->
-              if (baseTime != localDateTime) {
-                data.add(Item(localDateTime.toLocalDate(), WidgetType.REMINDER))
-              }
-            }
-        } else {
-          if (repeatTime == 0L) {
-            continue
-          }
-          var days: Long = 0
-          var max = MAX_DAYS_COUNT
-          if (isLimited) {
-            max = limit - count
-          }
-          do {
-            eventTime = recurrenceCalculator.getNextIntervalDateTime(eventTime, repeatTime)
-            days++
-            data.add(Item(eventTime.toLocalDate(), WidgetType.REMINDER))
-          } while (days < max)
-        }
-      }
+    if (isFeature) {
+      occurrences.forEach { data.add(Item(it.date, WidgetType.REMINDER)) }
+    } else {
+      // Only the single next occurrence per reminder when future events are disabled, matching
+      // the previous RecurrenceCalculator-based implementation's unconditional first-add.
+      occurrences.distinctBy { it.eventId }.forEach { data.add(Item(it.date, WidgetType.REMINDER)) }
     }
   }
 

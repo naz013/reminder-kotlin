@@ -9,6 +9,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -60,6 +61,17 @@ class DateTimeManager(
     }
 
   fun fromMillis(millis: Long): LocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault())
+
+  /** `ReminderV2`'s schedule fields are stored as UTC wall-clock [LocalDateTime]s (the same real
+   * instant as V1's GMT string, just expressed in the UTC zone instead of parsed on demand) -
+   * convert to this device's local wall-clock before displaying or comparing against [getCurrentDateTime]. */
+  fun utcToLocal(dateTime: LocalDateTime): LocalDateTime =
+    dateTime.atZone(ZoneOffset.UTC).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime()
+
+  /** Inverse of [utcToLocal] - converts a local wall-clock [LocalDateTime] into the UTC wall-clock
+   * form `ReminderV2`'s schedule fields (and range queries against them) expect. */
+  fun localToUtc(dateTime: LocalDateTime): LocalDateTime =
+    dateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()
 
   private fun gmtToLocal(
     gmt: String?,

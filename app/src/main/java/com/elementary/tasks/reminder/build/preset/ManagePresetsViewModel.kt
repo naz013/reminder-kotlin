@@ -10,7 +10,7 @@ import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

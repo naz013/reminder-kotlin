@@ -3,24 +3,24 @@ package com.elementary.tasks.core.arch
 import android.content.ContentResolver
 import android.os.Bundle
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.notes.SharedNote
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.files.AndroidDataConverter
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Navigator
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.toast
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 class IntentActivity : LightThemedActivity() {
-  private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
+
   private val navigator by inject<Navigator>()
+  private val androidDataConverter by inject<AndroidDataConverter>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class IntentActivity : LightThemedActivity() {
     Logger.i(TAG, "Incoming intent with data: $data, scheme: $scheme")
 
     if (ContentResolver.SCHEME_CONTENT == scheme) {
-      val any = MemoryUtil.readFromUri(this, data)
+      val any = runBlocking { androidDataConverter.toData(data) }
       if (any != null) {
         Logger.i(TAG, "Parsed object: $any")
         when (any) {
@@ -57,18 +57,6 @@ class IntentActivity : LightThemedActivity() {
             finish()
           }
 
-          is SharedNote -> {
-            val noteWithImages = noteToOldNoteConverter.toNote(any)
-            if (noteWithImages != null) {
-              Logger.i(TAG, "OLD Note is valid")
-              navigator.navigate(DataDestination(noteWithImages))
-            } else {
-              Logger.i(TAG, "OLD Note is Null")
-              toast(getString(R.string.unsupported_file_format))
-            }
-            finish()
-          }
-
           is Birthday -> {
             if (any.isValid()) {
               Logger.i(TAG, "Birthday is valid")
@@ -80,25 +68,15 @@ class IntentActivity : LightThemedActivity() {
             finish()
           }
 
-          is Reminder -> {
-            if (any.isValid()) {
-              Logger.i(TAG, "Reminder is valid")
-              navigator.navigate(DataDestination(any))
-            } else {
-              Logger.i(TAG, "Reminder is NOT valid, reason: ${any.getInvalidReason()}")
-              toast(getString(R.string.unsupported_file_format))
-            }
+          is ReminderV2 -> {
+            Logger.i(TAG, "Reminder is valid")
+            navigator.navigate(DataDestination(any))
             finish()
           }
 
-          is ReminderGroup -> {
-            if (any.isValid()) {
-              Logger.i(TAG, "Group is valid")
-              navigator.navigate(DataDestination(any))
-            } else {
-              Logger.i(TAG, "Group is NOT valid, reason: ${any.getInvalidReason()}")
-              toast(getString(R.string.unsupported_file_format))
-            }
+          is GroupV2 -> {
+            Logger.i(TAG, "Group is valid")
+            navigator.navigate(DataDestination(any))
             finish()
           }
 
@@ -125,15 +103,6 @@ class IntentActivity : LightThemedActivity() {
     return nt != null && nt.key.isNotEmpty()
   }
 
-  private fun ReminderGroup.isValid(): Boolean = groupTitle.isNotBlank() && groupUuId.isNotEmpty()
-
-  private fun ReminderGroup.getInvalidReason(): String =
-    when {
-      groupUuId.isBlank() -> "UUID is blank"
-      groupTitle.isBlank() -> "Title is blank"
-      else -> ""
-    }
-
   private fun Place.isValid(): Boolean = latitude != 0.0 && longitude != 0.0 && name.isNotBlank()
 
   private fun Place.getInvalidReason(): String =
@@ -141,15 +110,6 @@ class IntentActivity : LightThemedActivity() {
       latitude == 0.0 -> "Latitude is 0"
       longitude == 0.0 -> "Longitude is 0"
       name.isBlank() -> "Name is blank"
-      else -> ""
-    }
-
-  private fun Reminder.isValid(): Boolean = type > 0 && groupUuId.isNotBlank()
-
-  private fun Reminder.getInvalidReason(): String =
-    when {
-      type <= 0 -> "Type is not supported"
-      groupUuId.isBlank() -> "Group UUID is blank"
       else -> ""
     }
 

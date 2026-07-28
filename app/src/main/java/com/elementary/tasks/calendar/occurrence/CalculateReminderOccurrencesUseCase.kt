@@ -1,28 +1,28 @@
 package com.elementary.tasks.calendar.occurrence
 
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
-import com.elementary.tasks.reminder.scheduling.behavior.NoReminderStrategy
-import com.elementary.tasks.reminder.scheduling.occurrence.ReminderOccurrenceCalculatorFactory
+import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
+import com.elementary.tasks.reminder.scheduling.behavior.v2.NoReminderStrategyV2
+import com.elementary.tasks.reminder.scheduling.occurrence.v2.ReminderOccurrenceCalculatorFactoryV2
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.occurance.EventOccurrence
 import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventOccurrenceRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import java.util.UUID
 
 class CalculateReminderOccurrencesUseCase(
-  private val reminderRepository: ReminderRepository,
-  private val reminderStrategyResolver: BehaviorStrategyResolver,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val reminderStrategyResolver: BehaviorStrategyResolverV2,
   private val prefs: Prefs,
   private val eventOccurrenceRepository: EventOccurrenceRepository,
-  private val reminderOccurrenceCalculatorFactory: ReminderOccurrenceCalculatorFactory,
+  private val reminderOccurrenceCalculatorFactory: ReminderOccurrenceCalculatorFactoryV2,
   private val dateTimeManager: DateTimeManager,
 ) {
   suspend operator fun invoke(id: String) {
     val reminder =
-      reminderRepository.getById(id) ?: run {
+      reminderV2Repository.getById(id) ?: run {
         Logger.e(TAG, "Reminder with id=$id not found")
         return
       }
@@ -31,7 +31,7 @@ class CalculateReminderOccurrencesUseCase(
       return
     }
     val strategy = reminderStrategyResolver.resolve(reminder)
-    if (strategy is NoReminderStrategy) {
+    if (strategy is NoReminderStrategyV2) {
       Logger.i(TAG, "Reminder with id=$id uses NoReminderStrategy, skipping occurrence calculation")
       return
     }
@@ -41,7 +41,7 @@ class CalculateReminderOccurrencesUseCase(
     val numberOfOccurrences = prefs.numberOfReminderOccurrences
     val calculator = reminderOccurrenceCalculatorFactory.createCalculator(strategy)
     val eventDateTime =
-      dateTimeManager.fromGmtToLocal(reminder.eventTime) ?: run {
+      reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) } ?: run {
         Logger.e(TAG, "Failed to convert event time for reminder id=$id")
         return
       }

@@ -57,6 +57,7 @@ import com.elementary.tasks.settings.troubleshooting.TroubleshootingScreen
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingScreenState
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSettingsLauncher
+import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.reviews.rememberReviewsFormLauncher
@@ -166,6 +167,7 @@ private fun RemindersEntry(
     when (event) {
       RemindersSettingsEvent.OpenPresets -> backStack.add(SettingsNavKey.ManagePresets)
       RemindersSettingsEvent.OpenLocationSettings -> backStack.add(LocationNavKey.Location)
+      RemindersSettingsEvent.OpenWorkflowRules -> backStack.add(WorkflowNavKey.Gallery)
       is RemindersSettingsEvent.ShowTimePicker -> {
         dateTimePicker.showTimePicker(
           time = event.time,
@@ -191,6 +193,7 @@ private fun RemindersEntry(
       state = state,
       onPresetsClick = viewModel::onPresetsClick,
       onLocationClick = viewModel::onLocationClick,
+      onWorkflowRulesClick = viewModel::onWorkflowRulesClick,
       onPriorityClick = viewModel::onPriorityClick,
       onCompletedToggle = viewModel::onCompletedToggle,
       onWearToggle = viewModel::onWearToggle,
@@ -216,6 +219,11 @@ private fun RemindersEntry(
       onDndToClick = viewModel::onDndToClick,
       onDndActionClick = viewModel::onDndActionClick,
       onDndIgnoreClick = viewModel::onDndIgnoreClick,
+      onDefaultVibrateToggle = viewModel::onDefaultVibrateToggle,
+      onDefaultBypassDoNotDisturbToggle = viewModel::onDefaultBypassDoNotDisturbToggle,
+      onDefaultWakeScreenToggle = viewModel::onDefaultWakeScreenToggle,
+      onDefaultCategoryClick = viewModel::onDefaultCategoryClick,
+      onDefaultLockScreenVisibilityClick = viewModel::onDefaultLockScreenVisibilityClick,
       onChoiceOptionSelected = viewModel::onChoiceOptionSelected,
       onSeekValueChange = viewModel::onSeekValueChange,
       onSeekConfirm = viewModel::onSeekConfirm,

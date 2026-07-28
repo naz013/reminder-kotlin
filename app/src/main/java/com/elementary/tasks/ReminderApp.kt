@@ -20,9 +20,8 @@ import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
-import com.elementary.tasks.eventaction.eventActionModule
 import com.elementary.tasks.googletasks.googleTaskModule
-import com.elementary.tasks.groups.reminderGroupModule
+import com.elementary.tasks.groups.groupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
 import com.elementary.tasks.navigation.NavigationConsumer
@@ -36,12 +35,14 @@ import com.elementary.tasks.settings.export.syncSettingsModule
 import com.elementary.tasks.settings.settingsModule
 import com.elementary.tasks.simplemap.simpleMapKoinModule
 import com.elementary.tasks.telephony.intentModule
+import com.elementary.tasks.workflow.workflowModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
 import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
+import com.github.naz013.files.fileModule
 import com.github.naz013.icalendar.iCalendarModule
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.legalModule
@@ -148,18 +149,19 @@ class ReminderApp :
           navigationApiModule,
           cloudModule,
           syncApiModule,
-          reminderGroupModule,
+          groupModule,
           placeKoinModule,
           simpleMapKoinModule,
           reviewsKoinModule,
           syncSettingsModule,
           settingsModule,
-          eventActionModule,
           legalModule,
           workModule,
           dateTimeCalculationsModule,
           libModule,
           intentModule,
+          workflowModule,
+          fileModule,
         ),
       )
     }
