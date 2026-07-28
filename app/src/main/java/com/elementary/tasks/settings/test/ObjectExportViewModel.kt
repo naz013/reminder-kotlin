@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -33,7 +32,6 @@ class ObjectExportViewModel(
   private val birthdayRepository: BirthdayRepository,
   private val placeRepository: PlaceRepository,
   private val groupV2Repository: GroupV2Repository,
-  private val noteToOldNoteConverter: NoteToOldNoteConverter,
   private val dataConverter: DataConverter,
 ) : ViewModel() {
   val state: StateFlow<ObjectExportState> field = MutableStateFlow(ObjectExportState())
@@ -73,11 +71,7 @@ class ObjectExportViewModel(
 
       try {
         if (objectType == ObjectExportType.Note) {
-          val oldNote = noteToOldNoteConverter.toSharedNote(obj as NoteWithImages)
-          if (oldNote == null) {
-            Logger.d(TAG, "OldNote is NULL")
-            return@launch
-          }
+          val oldNote = toSharedNote(obj as NoteWithImages)
           dataConverter.toOutputStream(oldNote, outputStream)
         } else {
           dataConverter.toOutputStream(obj, outputStream)
@@ -151,6 +145,21 @@ class ObjectExportViewModel(
       ObjectExportType.Place -> FileConfig.FILE_NAME_PLACE
       ObjectExportType.Group -> FileConfig.FILE_NAME_GROUP_V2
     }
+
+  private fun toSharedNote(noteWithImages: NoteWithImages): SharedNote = SharedNote(
+    text = noteWithImages.note?.summary ?: "",
+    title = noteWithImages.note?.title ?: "",
+    titleFontSize = noteWithImages.note?.titleFontSize ?: -1,
+    titleFontStyle = noteWithImages.note?.titleFontStyle ?: -1,
+    id = noteWithImages.note?.key ?: "",
+    date = noteWithImages.note?.date ?: "",
+    color = noteWithImages.note?.color ?: 0,
+    style = noteWithImages.note?.style ?: 0,
+    palette = noteWithImages.note?.palette ?: 0,
+    updatedAt = noteWithImages.note?.updatedAt,
+    opacity = noteWithImages.note?.opacity ?: 100,
+    fontSize = noteWithImages.note?.fontSize ?: -1,
+  )
 
   companion object {
     private const val TAG = "OETest"

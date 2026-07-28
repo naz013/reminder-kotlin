@@ -58,21 +58,20 @@ internal class DataConverterImpl : DataConverter {
       val output64 = Base64OutputStream(outputStream, Base64.DEFAULT)
       val bufferedWriter = BufferedWriter(OutputStreamWriter(output64, StandardCharsets.UTF_8))
       val writer = JsonWriter(bufferedWriter)
-      val type =
-        when (any) {
-          is ReminderV2 -> object : TypeToken<ReminderV2Json>() {}.type
-          is Place -> object : TypeToken<Place>() {}.type
-          is Birthday -> object : TypeToken<Birthday>() {}.type
-          is GroupV2 -> object : TypeToken<GroupV2Json>() {}.type
-          is RecurPreset -> object : TypeToken<RecurPreset>() {}.type
-          is NoteV3Json -> object : TypeToken<NoteV3Json>() {}.type
-          is SharedNote -> object : TypeToken<SharedNote>() {}.type
-          else -> null
-        } ?: run {
-          throw IllegalArgumentException("Unsupported type: ${any::class.java}")
-        }
-      val wrappedAny = wrapAny(any)
-      Gson().toJson(wrappedAny, type, writer)
+      val data = any.toJson()
+      val type = when (data) {
+        is ReminderV2Json -> object : TypeToken<ReminderV2Json>() {}.type
+        is Place -> object : TypeToken<Place>() {}.type
+        is Birthday -> object : TypeToken<Birthday>() {}.type
+        is GroupV2Json -> object : TypeToken<GroupV2Json>() {}.type
+        is RecurPreset -> object : TypeToken<RecurPreset>() {}.type
+        is NoteV3Json -> object : TypeToken<NoteV3Json>() {}.type
+        is SharedNote -> object : TypeToken<SharedNote>() {}.type
+        else -> null
+      } ?: run {
+        throw IllegalArgumentException("Unsupported type: ${any::class.java}")
+      }
+      Gson().toJson(data, type, writer)
       writer.close()
       output64.close()
     } catch (e: Exception) {
@@ -105,16 +104,16 @@ internal class DataConverterImpl : DataConverter {
     return Gson().fromJson(jsonElement, clazz).toDomain()
   }
 
-  private fun wrapAny(any: Any): Any {
-    return when (any) {
-      is ReminderV2 -> any.toJson()
-      is GroupV2 -> any.toJson()
-      else -> any
-    }
-  }
-
   companion object {
     private const val TAG = "DataConverter"
+  }
+}
+
+private fun Any.toJson(): Any {
+  return when (this) {
+    is ReminderV2 -> this.toJson()
+    is GroupV2 -> this.toJson()
+    else -> this
   }
 }
 

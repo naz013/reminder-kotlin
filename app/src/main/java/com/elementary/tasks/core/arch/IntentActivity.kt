@@ -3,14 +3,12 @@ package com.elementary.tasks.core.arch
 import android.content.ContentResolver
 import android.os.Bundle
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.files.AndroidDataConverter
-import com.github.naz013.files.model.SharedNote
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Navigator
@@ -20,7 +18,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 class IntentActivity : LightThemedActivity() {
-  private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
+
   private val navigator by inject<Navigator>()
   private val androidDataConverter by inject<AndroidDataConverter>()
 
@@ -54,18 +52,6 @@ class IntentActivity : LightThemedActivity() {
               navigator.navigate(DataDestination(any))
             } else {
               Logger.i(TAG, "Note is NOT valid")
-              toast(getString(R.string.unsupported_file_format))
-            }
-            finish()
-          }
-
-          is SharedNote -> {
-            val noteWithImages = noteToOldNoteConverter.toNote(any)
-            if (noteWithImages != null) {
-              Logger.i(TAG, "OLD Note is valid")
-              navigator.navigate(DataDestination(noteWithImages))
-            } else {
-              Logger.i(TAG, "OLD Note is Null")
               toast(getString(R.string.unsupported_file_format))
             }
             finish()

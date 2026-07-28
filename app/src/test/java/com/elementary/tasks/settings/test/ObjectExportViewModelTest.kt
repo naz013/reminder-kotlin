@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.Birthday
@@ -43,7 +42,6 @@ class ObjectExportViewModelTest : BaseTest() {
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val placeRepository = mockk<PlaceRepository>()
   private val groupV2Repository = mockk<GroupV2Repository>()
-  private val noteToOldNoteConverter = mockk<NoteToOldNoteConverter>()
   private val dataConverter = mockk<DataConverter>()
 
   private lateinit var viewModel: ObjectExportViewModel
@@ -67,7 +65,6 @@ class ObjectExportViewModelTest : BaseTest() {
       birthdayRepository = birthdayRepository,
       placeRepository = placeRepository,
       groupV2Repository = groupV2Repository,
-      noteToOldNoteConverter = noteToOldNoteConverter,
       dataConverter = dataConverter,
     )
 
@@ -213,23 +210,6 @@ class ObjectExportViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onSaveLocationPicked does not emit for a note when the converter returns null`() =
-    runTest {
-      coEvery { noteRepository.getAll() } returns emptyList()
-      viewModel.onObjectTypeSelected(ObjectExportType.Note)
-      val note = NoteWithImages()
-      coEvery { noteRepository.getById("n1") } returns note
-      val uri = mockk<Uri>()
-      val outputStream = mockk<OutputStream>(relaxed = true)
-      every { contentResolver.openOutputStream(uri) } returns outputStream
-      every { noteToOldNoteConverter.toSharedNote(note) } returns null
-
-      viewModel.onSaveLocationPicked("n1", uri)
-
-      assertNull(viewModel.navigationEvent.value)
-    }
-
-  @Test
   fun `onSaveLocationPicked converts and saves a note, emitting ObjectSaved`() =
     runTest {
       coEvery { noteRepository.getAll() } returns emptyList()
@@ -240,7 +220,6 @@ class ObjectExportViewModelTest : BaseTest() {
       val uri = mockk<Uri>()
       val outputStream = mockk<OutputStream>(relaxed = true)
       every { contentResolver.openOutputStream(uri) } returns outputStream
-      every { noteToOldNoteConverter.toSharedNote(note) } returns sharedNote
       coEvery { dataConverter.toOutputStream(sharedNote, outputStream) } returns Unit
 
       viewModel.onSaveLocationPicked("n1", uri)
