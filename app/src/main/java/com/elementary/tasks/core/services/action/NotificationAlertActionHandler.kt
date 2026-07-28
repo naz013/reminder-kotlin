@@ -64,7 +64,9 @@ abstract class NotificationAlertActionHandler<T>(
 
     notifier.notify(uniqueId(data), builder.build())
     if (isWear) {
-      wearNotification.show(uniqueId(data), contentTitle(data), appName(data), groupKey)
+      // Distinct id so this companion post doesn't overwrite (same-id notify replaces) the
+      // richer notification above and wipe out its actions/content intent.
+      wearNotification.show(-uniqueId(data), contentTitle(data), appName(data), groupKey)
     }
   }
 

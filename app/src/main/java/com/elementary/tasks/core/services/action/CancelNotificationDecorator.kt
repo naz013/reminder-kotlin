@@ -15,5 +15,8 @@ class CancelNotificationDecorator<T>(
   override suspend fun handle(data: T) {
     delegate.handle(data)
     notifier.cancel(uniqueId(data))
+    // Also clear the wear companion notification (posted under the negated id, see
+    // NotificationAlertActionHandler) - a no-op if it was never shown.
+    notifier.cancel(-uniqueId(data))
   }
 }
