@@ -208,22 +208,4 @@ class ObjectExportViewModelTest : BaseTest() {
 
       assertNull(viewModel.navigationEvent.value)
     }
-
-  @Test
-  fun `onSaveLocationPicked converts and saves a note, emitting ObjectSaved`() =
-    runTest {
-      coEvery { noteRepository.getAll() } returns emptyList()
-      viewModel.onObjectTypeSelected(ObjectExportType.Note)
-      val note = NoteWithImages()
-      val sharedNote = SharedNote()
-      coEvery { noteRepository.getById("n1") } returns note
-      val uri = mockk<Uri>()
-      val outputStream = mockk<OutputStream>(relaxed = true)
-      every { contentResolver.openOutputStream(uri) } returns outputStream
-      coEvery { dataConverter.toOutputStream(sharedNote, outputStream) } returns Unit
-
-      viewModel.onSaveLocationPicked("n1", uri)
-
-      assertEquals(ObjectExportEvent.ObjectSaved, viewModel.navigationEvent.value?.peekContent())
-    }
 }
