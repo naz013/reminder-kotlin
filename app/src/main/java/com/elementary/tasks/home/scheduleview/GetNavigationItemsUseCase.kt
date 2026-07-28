@@ -3,6 +3,7 @@ package com.elementary.tasks.home.scheduleview
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.home.HeaderNavigationItem
 import com.elementary.tasks.workflow.WorkflowConfig
+import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -13,16 +14,17 @@ import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 class GetNavigationItemsUseCase(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderV2Repository: ReminderV2Repository,
-  private val birthdayRepository: BirthdayRepository,
   private val groupV2Repository: GroupV2Repository,
   private val noteRepository: NoteRepository,
   private val googleTaskRepository: GoogleTaskRepository,
   private val workflowRuleRepository: WorkflowRuleRepository,
+  private val dateTimeManager: DateTimeManager,
 ) {
   suspend operator fun invoke(
     scope: CoroutineScope,
@@ -39,8 +41,6 @@ class GetNavigationItemsUseCase(
   }
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
-    val remindersCount = reminderV2Repository.getAll(active = true, removed = false).size
-    val birthdaysCount = birthdayRepository.countAll()
     return scope
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
@@ -48,7 +48,7 @@ class GetNavigationItemsUseCase(
           iconRes = R.drawable.ic_fluent_calendar,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
-          subtitle = "${remindersCount + birthdaysCount}",
+          subtitle = dateTimeManager.formatDayMonth(LocalDate.now()),
         )
       }.await()
   }
