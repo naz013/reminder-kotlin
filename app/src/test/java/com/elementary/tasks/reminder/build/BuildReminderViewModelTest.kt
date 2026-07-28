@@ -18,6 +18,7 @@ import com.elementary.tasks.reminder.build.logic.BuilderItemsLogic
 import com.elementary.tasks.reminder.build.logic.UiBuilderItemsAdapter
 import com.elementary.tasks.reminder.build.logic.UiSelectorItemsAdapter
 import com.elementary.tasks.reminder.build.logic.builderstate.BuilderErrorFinder
+import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPredictionCalculator
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
 import com.elementary.tasks.reminder.build.preset.BuilderPresetToBiAdapter
@@ -292,7 +293,7 @@ class BuildReminderViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `saveReminder does nothing when a builder item is invalid`() =
+  fun `saveReminder does not save and shows a message when a builder item is invalid`() =
     runTest {
       val invalid = mockk<BuilderItem<Any>>(relaxed = true)
       every { invalid.modifier.isCorrect() } returns false
@@ -302,7 +303,10 @@ class BuildReminderViewModelTest : BaseTest() {
       viewModel.saveReminder(newId = false)
 
       coVerify(exactly = 0) { activateReminderUseCase(any(), any()) }
-      assertNull(viewModel.event.value?.peekContent())
+      assertEquals(
+        BuildReminderViewModel.ViewModelEvent.ShowMessage(R.string.builder_error_create_reminder),
+        viewModel.event.value?.peekContent(),
+      )
     }
 
   @Test
@@ -600,6 +604,46 @@ class BuildReminderViewModelTest : BaseTest() {
 
       verify(exactly = 1) { builderItemsLogic.update(4, item) }
     }
+
+  @Test
+  fun `updateValue marks canSave false and shows a failed prediction when the builder becomes invalid`() =
+    runTest {
+      val invalid = mockk<BuilderItem<Any>>(relaxed = true)
+      every { invalid.modifier.isCorrect() } returns false
+      val viewModel = createViewModel()
+      // Seed a prior success so a stale value would otherwise still read as valid.
+      primeCanSaveTrue(viewModel)
+      every { builderItemsLogic.getUsed() } returns listOf(invalid)
+
+      viewModel.updateValue(0, invalid)
+
+      assertEquals(false, viewModel.state.value.canSave)
+      assertEquals(false, viewModel.state.value.canSaveAsPreset)
+      assertTrue(viewModel.state.value.prediction is ReminderPrediction.FailedPrediction)
+    }
+
+  @Test
+  fun `updateValue marks canSave false and shows a permissions message when a permission is missing`() =
+    runTest {
+      val item = summaryItem()
+      every { builderItemsLogic.getUsed() } returns listOf(item)
+      every { permissionValidator(any()) } returns PermissionValidator.Result.Failure(listOf("perm.X"))
+      val viewModel = createViewModel()
+
+      viewModel.updateValue(0, item)
+
+      assertEquals(false, viewModel.state.value.canSave)
+      assertTrue(viewModel.state.value.prediction is ReminderPrediction.FailedPrediction)
+    }
+
+  /** Drives one successful [BuildReminderViewModel.updateValue] round-trip so `canSave` starts
+   *  true, matching what a previously-valid builder would look like before a field breaks it. */
+  private fun primeCanSaveTrue(viewModel: BuildReminderViewModel) {
+    val valid = summaryItem()
+    every { builderItemsLogic.getUsed() } returns listOf(valid)
+    viewModel.updateValue(0, valid)
+    assertEquals(true, viewModel.state.value.canSave)
+  }
 
   @Test
   fun `moveToTrash posts MoveBack immediately when there is no original reminder`() {

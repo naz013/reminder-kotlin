@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.build.quickstart
 
 import android.app.AlarmManager
+import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
@@ -11,6 +12,7 @@ import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.datecalc.WeekDaysProtocol
 import com.github.naz013.domain.reminder.BiType
@@ -28,6 +30,7 @@ import org.threeten.bp.LocalTime
 class QuickStartItemsProvider(
   private val biFactory: BiFactory,
   private val dateTimeManager: DateTimeManager,
+  private val textProvider: TextProvider,
 ) {
   suspend fun itemsFor(option: QuickStartOption): List<BuilderItem<*>> =
     when (option) {
@@ -83,14 +86,15 @@ class QuickStartItemsProvider(
 
       QuickStartOption.SHOPPING_LIST ->
         listOfNotNull(
-          biFactory.createWithValue(BiType.SUMMARY, "Buy groceries", SummaryBuilderItem::class.java),
+          biFactory.createWithValue(BiType.SUMMARY,
+            textProvider.getString(R.string.preset_buy_groceries), SummaryBuilderItem::class.java),
           biFactory.createWithValue(
             biType = BiType.SUB_TASKS,
             value =
               listOf(
-                ShopItem(summary = "Bread", position = 0, createTime = dateTimeManager.getNowGmtDateTime()),
-                ShopItem(summary = "Juice", position = 1, createTime = dateTimeManager.getNowGmtDateTime()),
-                ShopItem(summary = "Cookies", position = 2, createTime = dateTimeManager.getNowGmtDateTime()),
+                ShopItem(summary = textProvider.getString(R.string.preset_bread), position = 0, createTime = dateTimeManager.getNowGmtDateTime()),
+                ShopItem(summary = textProvider.getString(R.string.preset_juice), position = 1, createTime = dateTimeManager.getNowGmtDateTime()),
+                ShopItem(summary = textProvider.getString(R.string.preset_cookies), position = 2, createTime = dateTimeManager.getNowGmtDateTime()),
               ),
             clazz = SubTasksBuilderItem::class.java,
           ),

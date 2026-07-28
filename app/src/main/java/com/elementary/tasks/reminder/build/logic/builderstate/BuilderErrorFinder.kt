@@ -42,9 +42,9 @@ class BuilderErrorFinder(
       )
     updated = items.fold(updated) { acc, item -> item.modifier.putInto(acc) }
 
-    when (reminderValidator(updated)) {
+    when (val validationResult = reminderValidator(updated)) {
       is ReminderValidator.ValidationResult.Failed -> {
-        return findError(processedBuilderItems)
+        return findError(validationResult.error, processedBuilderItems)
       }
 
       else -> {
@@ -55,9 +55,29 @@ class BuilderErrorFinder(
     return BuilderError.Unknown
   }
 
-  private fun findError(processedBuilderItems: ProcessedBuilderItems): BuilderError {
+  /** Routes on the specific reason [reminderValidator] failed for, rather than re-guessing from
+   *  which [BiType]s happen to be present: TARGET and SUB_TASKS failures used to fall through the
+   *  EVENT_TIME-oriented checks below (or worse, accidentally match one of them, e.g. reporting a
+   *  missing Date/Time for what was actually an empty shopping list). */
+  private fun findError(
+    validationError: ReminderValidator.ValidationError,
+    processedBuilderItems: ProcessedBuilderItems,
+  ): BuilderError {
     val biTypeMap = BiTypeMap(processedBuilderItems.typeMap)
-    return when {
+    return when (validationError) {
+      ReminderValidator.ValidationError.TARGET -> findErrorTarget(biTypeMap)
+      ReminderValidator.ValidationError.SUB_TASKS -> {
+        BuilderError.RequiresBiType(BuilderError.BiTypeCollection.Single(BiType.SUB_TASKS))
+      }
+      ReminderValidator.ValidationError.EVENT_TIME -> findErrorEventTime(biTypeMap, processedBuilderItems)
+    }
+  }
+
+  private fun findErrorEventTime(
+    biTypeMap: BiTypeMap,
+    processedBuilderItems: ProcessedBuilderItems,
+  ): BuilderError =
+    when {
       biTypeMap.containsAny(BiType.DAYS_OF_WEEK) -> {
         findErrorDayOfWeek(biTypeMap)
       }
@@ -92,7 +112,31 @@ class BuilderErrorFinder(
 
       else -> BuilderError.Unknown
     }
-  }
+
+  private fun findErrorTarget(biTypeMap: BiTypeMap): BuilderError =
+    when {
+      biTypeMap.containsAny(BiType.EMAIL) -> {
+        BuilderError.RequiresBiType(BuilderError.BiTypeCollection.Single(BiType.EMAIL))
+      }
+
+      biTypeMap.containsAny(BiType.LINK) -> {
+        BuilderError.RequiresBiType(BuilderError.BiTypeCollection.Single(BiType.LINK))
+      }
+
+      biTypeMap.containsAny(BiType.PHONE_CALL) -> {
+        BuilderError.RequiresBiType(BuilderError.BiTypeCollection.Single(BiType.PHONE_CALL))
+      }
+
+      biTypeMap.containsAny(BiType.SMS) -> {
+        BuilderError.RequiresBiType(BuilderError.BiTypeCollection.Single(BiType.SMS))
+      }
+
+      biTypeMap.containsAny(BiType.APPLICATION) -> {
+        BuilderError.RequiresBiType(BuilderError.BiTypeCollection.Single(BiType.APPLICATION))
+      }
+
+      else -> BuilderError.Unknown
+    }
 
   private fun findErrorLocation(biTypeMap: BiTypeMap): BuilderError =
     when {

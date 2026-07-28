@@ -228,6 +228,9 @@ class BuildReminderViewModel(
       Logger.i(TAG, "Are all builder items valid = $allValid")
 
       if (!allValid) {
+        withContext(dispatcherProvider.main()) {
+          event.emit(ViewModelEvent.ShowMessage(R.string.builder_error_create_reminder))
+        }
         return@launch
       }
 
@@ -785,12 +788,14 @@ class BuildReminderViewModel(
 
     if (!allValid) {
       Logger.e(TAG, "Not all builder items are valid, skip updating builder state")
+      setFailedPrediction(textProvider.getString(R.string.builder_error_create_reminder))
       return
     }
 
     val permissionResult = permissionValidator(builderItems)
     if (permissionResult is PermissionValidator.Result.Failure) {
       Logger.i(TAG, "Not all permissions granted. Skip updating builder state")
+      setFailedPrediction(textProvider.getString(R.string.builder_permissions_required_message))
       return
     }
 
@@ -807,19 +812,23 @@ class BuildReminderViewModel(
       }
 
       is BiToReminderAdapter.BuildResult.Error -> {
-        _state.update {
-          it.copy(
-            prediction =
-              ReminderPrediction.FailedPrediction(
-                icon = R.drawable.ic_fluent_error_circle,
-                message = builderErrorToTextAdapter(builderErrorFinder(baseV2, builderItems)),
-              ),
-            canSaveAsPreset = false,
-            canSave = false,
-          )
-        }
+        setFailedPrediction(builderErrorToTextAdapter(builderErrorFinder(baseV2, builderItems)))
         Logger.i(TAG, "Failed to update builder state with error = ${buildResult.error}")
       }
+    }
+  }
+
+  /** Keeps `canSave`/`canSaveAsPreset`/`prediction` in sync with the current failure instead of
+   *  leaving them at whatever they were the last time [updateBuilderState] succeeded - otherwise
+   *  Save can look enabled and the forecast can show a stale success message while editing a
+   *  field has actually made the reminder unbuildable. */
+  private fun setFailedPrediction(message: String) {
+    _state.update {
+      it.copy(
+        prediction = ReminderPrediction.FailedPrediction(icon = R.drawable.ic_fluent_error_circle, message = message),
+        canSaveAsPreset = false,
+        canSave = false,
+      )
     }
   }
 
@@ -999,6 +1008,10 @@ class BuildReminderViewModel(
     ) : ViewModelEvent
 
     data object MoveBack : ViewModelEvent
+
+    data class ShowMessage(
+      val messageRes: Int,
+    ) : ViewModelEvent
 
     data class ShowReviewDialog(
       val title: String,

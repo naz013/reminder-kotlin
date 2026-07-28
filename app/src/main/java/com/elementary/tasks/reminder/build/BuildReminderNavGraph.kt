@@ -37,6 +37,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -77,6 +78,7 @@ private fun MainEntry(
 
   val dialogDispatcher = rememberDialogDispatcher()
   val reviewsFormLauncher = rememberReviewsFormLauncher()
+  val toastDispatcher = rememberToastDispatcher()
 
   val selectorDialogDataHolder = rememberSelectorDialogDataHolder()
   val paramToTextAdapter = rememberParamToTextAdapter()
@@ -142,6 +144,10 @@ private fun MainEntry(
       }
 
       BuildReminderViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+
+      is BuildReminderViewModel.ViewModelEvent.ShowMessage -> {
+        toastDispatcher.showToast(messageRes = event.messageRes)
+      }
     }
   }
 

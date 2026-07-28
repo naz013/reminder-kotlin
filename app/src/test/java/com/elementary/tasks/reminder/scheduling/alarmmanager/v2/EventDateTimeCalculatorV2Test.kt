@@ -32,6 +32,7 @@ class EventDateTimeCalculatorV2Test : BaseTest() {
     every { dateTimeManager.toMillis(any<LocalDateTime>()) } answers {
       (firstArg<LocalDateTime>()).toEpochSecond(org.threeten.bp.ZoneOffset.UTC) * 1000
     }
+    every { dateTimeManager.getCurrentDateTime() } returns now
     every { dateTimeManager.logDateTime(any()) } returns ""
     every { strategyResolver.resolve(any()) } returns mockk(relaxed = true)
     calculator = EventDateTimeCalculatorV2(strategyResolver, dateTimeManager)
@@ -72,11 +73,20 @@ class EventDateTimeCalculatorV2Test : BaseTest() {
   }
 
   @Test
-  fun `returns null when the calculated time is in the past`() {
-    every { dateTimeManager.toMillis(any<LocalDateTime>()) } returns 0L
+  fun `returns null when the calculated time is genuinely in the past`() {
+    val past = now.minusDays(1)
 
-    val result = calculator.calculateEventDateTime(reminderV2(eventDateTime = now.plusHours(1)))
+    val result = calculator.calculateEventDateTime(reminderV2(eventDateTime = past))
 
     assertNull(result)
+  }
+
+  @Test
+  fun `tolerates a due time earlier in the current minute after seconds are zeroed`() {
+    every { dateTimeManager.getCurrentDateTime() } returns now.plusSeconds(45)
+
+    val result = calculator.calculateEventDateTime(reminderV2(eventDateTime = now))
+
+    assertEquals(dateTimeManager.toMillis(now), result)
   }
 }

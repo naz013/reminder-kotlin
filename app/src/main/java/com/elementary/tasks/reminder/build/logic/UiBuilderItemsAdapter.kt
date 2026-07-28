@@ -25,18 +25,30 @@ class UiBuilderItemsAdapter(
     return items.map {
       val builderItemConstraints = BuilderItemConstraints(it.constraints)
       val errors = getErrors(builderItemConstraints, processedBuilderItems)
+      // A missing value (getValue() == null) takes priority over isCorrect(): most modifiers
+      // define isCorrect() as "has a value", so without this a freshly-added, untouched item
+      // (Date, Email, Place, ...) would render as an ERROR row instead of the neutral EMPTY one
+      // meant for exactly that case. Once a value is present, isCorrect() can still fail on its
+      // own merits (e.g. a malformed email, or an empty shopping list) - that's a real error, and
+      // needs its own message since no constraint was violated to supply one.
       val state =
         when {
-          errors.isNotEmpty() || !it.modifier.isCorrect() -> UiListBuilderItemState.ErrorState(errors)
+          errors.isNotEmpty() -> UiListBuilderItemState.ErrorState(errors)
           it.modifier.getValue() == null -> UiListBuilderItemState.EmptyState
-          it.modifier.isCorrect() -> UiListBuilderItemState.DoneState
-          else -> UiListBuilderItemState.EmptyState
+          !it.modifier.isCorrect() -> UiListBuilderItemState.ErrorState(errors)
+          else -> UiListBuilderItemState.DoneState
+        }
+      val errorText =
+        when {
+          errors.isNotEmpty() -> biErrorForUiAdapter.getUiString(errors)
+          state is UiListBuilderItemState.ErrorState -> biErrorForUiAdapter.getInvalidValueMessage(it.biType)
+          else -> ""
         }
       toUi(
         builderItem = it,
         state = state,
         value = biValueForUiAdapter.getUiRepresentation(it),
-        errorText = biErrorForUiAdapter.getUiString(errors),
+        errorText = errorText,
       )
     }
   }
