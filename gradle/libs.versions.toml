@@ -4,6 +4,11 @@ compileSdk = "37"
 targetSdk = "37"
 kotlinTargetJvm = "17"
 
+# Analysis & coverage
+detekt = "1.23.7"
+detekt-compose = "0.4.16"
+kover = "0.8.3"
+
 # Plugins
 agp = "9.3.1"
 kotlin = "2.4.10"
@@ -240,6 +245,12 @@ logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.
 # build-logic convention plugin classpath
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
+
+# Detekt plugins (added as detektPlugins dependency per module)
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detekt-compose = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detekt-compose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -252,3 +263,5 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 crashlytics-gradle = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-gradle" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }

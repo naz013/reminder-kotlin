@@ -15,6 +15,11 @@ concurrency:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+      security-events: write
     steps:
 
     - name: Clone repo
@@ -57,11 +62,37 @@ jobs:
         DATA: ${{ secrets.GOOGLE_SERVICES }}
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/cloudtestadmin/google-services.json
 
+    - name: Run Detekt static analysis
+      run: ./gradlew detekt --continue -x :cloudtestadmin:detekt -x :reviewsadmin:detekt
+      continue-on-error: true
+
+    - name: Upload Detekt SARIF to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: .
+        category: detekt
+
     - name: Run all unit tests (Android modules)
       run: ./gradlew testProDebugUnitTest --continue -x :cloudtestadmin:testDebugUnitTest -x :reviewsadmin:testDebugUnitTest
 
     - name: Run all unit tests (Kotlin modules)
       run: ./gradlew test --continue -x :cloudtestadmin:test -x :reviewsadmin:test -x :reviews:test
+
+    - name: Generate coverage report
+      run: ./gradlew koverXmlReport --continue
+      if: always()
+
+    - name: Publish coverage to PR comment
+      uses: mi-kas/kover-report@v1
+      if: always()
+      with:
+        path: ${{ github.workspace }}/build/reports/kover/xml/report.xml
+        token: ${{ secrets.GITHUB_TOKEN }}
+        title: Coverage Report
+        update-comment: true
+        min-coverage-overall: 0
+        min-coverage-changed-files: 0
 
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4

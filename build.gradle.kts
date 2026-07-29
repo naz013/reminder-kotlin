@@ -8,4 +8,25 @@ plugins {
   alias(libs.plugins.crashlytics.gradle) apply false
   alias(libs.plugins.ksp) apply false
   alias(libs.plugins.compose.compiler) apply false
+  alias(libs.plugins.detekt) apply false
+  alias(libs.plugins.kover)
+}
+
+// Aggregate coverage from JVM-only modules (Android modules are excluded to avoid
+// variant-selection complexity; per-module koverXmlReport tasks work for those).
+dependencies {
+  kover(project(":domain"))
+  kover(project(":date-calculations"))
+  kover(project(":logging-api"))
+  kover(project(":navigation-api"))
+  kover(project(":repository-api"))
+  kover(project(":cloud-api"))
+  kover(project(":work-api"))
+  kover(project(":legal-api"))
+  kover(project(":files-api"))
+  kover(project(":sync"))
+  kover(project(":usecase:reminders"))
+  kover(project(":usecase:notes"))
+  kover(project(":usecase:birthdays"))
+  kover(project(":usecase:googletasks"))
 }

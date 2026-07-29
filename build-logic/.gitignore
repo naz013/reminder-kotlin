@@ -2,3 +2,4 @@
 /convention/build
 .kotlin
 .gradle
+/detekt-baseline.xml

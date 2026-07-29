@@ -11,6 +11,8 @@ class ReminderAndroidLibraryConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       pluginManager.apply("com.android.library")
+      pluginManager.apply("reminder.detekt")
+      pluginManager.apply("reminder.kover")
 
       extensions.configure<LibraryExtension> {
         compileSdk = catalog.intVersion("compileSdk")
