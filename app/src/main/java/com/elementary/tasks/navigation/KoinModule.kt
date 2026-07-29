@@ -10,7 +10,7 @@ val navigationModule =
     single { get<NavigatorImpl>() as NavigationObservable }
     single { get<NavigatorImpl>() as Navigator }
 
-    single { NavigationDispatcherFactory(get(), get()) }
+    single { NavigationDispatcher(get(), get()) }
 
     single { AppNavBridge() }
   }

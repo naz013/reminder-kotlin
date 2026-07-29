@@ -27,7 +27,6 @@ import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DayViewScreen
 import com.github.naz013.navigation.DeepLinkDestination
-import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGoogleTaskScreen
 import com.github.naz013.navigation.EditGroupScreen
@@ -47,19 +46,10 @@ import com.github.naz013.workapi.WorkScheduler
 import org.koin.android.ext.android.inject
 
 class BottomNavActivity : BaseAuthActivity() {
-  private val navigationObservable by inject<NavigationObservable>()
-  private val navigationDispatcherFactory by inject<NavigationDispatcherFactory>()
   private val workScheduler by inject<WorkScheduler>()
   private val dateTimeManager by inject<DateTimeManager>()
 
   private val adsProvider = AdsProvider()
-
-  private val navigationConsumer =
-    object : NavigationConsumer {
-      override fun consume(destination: Destination) {
-        navigationDispatcherFactory.create(destination).dispatch(destination)
-      }
-    }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -186,16 +176,6 @@ class BottomNavActivity : BaseAuthActivity() {
       is ReminderTextDeepLinkData -> BuildReminderNavKey.Main(deepLinkText = deepLinkData.text)
       else -> BuildReminderNavKey.Main()
     }
-  }
-
-  override fun onResume() {
-    super.onResume()
-    navigationObservable.subscribe(navigationConsumer)
-  }
-
-  override fun onPause() {
-    super.onPause()
-    navigationObservable.unsubscribe(navigationConsumer)
   }
 
   override fun onDestroy() {
