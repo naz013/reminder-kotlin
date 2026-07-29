@@ -1,11 +1,23 @@
 package com.github.naz013.appwidgets
 
+import com.github.naz013.appwidgets.birthdays.BirthdaysWidgetConfigViewModel
+import com.github.naz013.appwidgets.birthdays.BirthdaysWidgetPrefsProvider
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetListAdapter
+import com.github.naz013.appwidgets.calendar.CalendarWidgetConfigViewModel
+import com.github.naz013.appwidgets.calendar.CalendarWidgetPrefsProvider
 import com.github.naz013.appwidgets.calendar.WidgetDataProvider
+import com.github.naz013.appwidgets.combinedbuttons.CombinedWidgetConfigViewModel
+import com.github.naz013.appwidgets.combinedbuttons.CombinedWidgetPrefsProvider
 import com.github.naz013.appwidgets.events.EventsAppWidgetViewModel
+import com.github.naz013.appwidgets.events.EventsWidgetConfigViewModel
 import com.github.naz013.appwidgets.events.EventsWidgetPrefsProvider
 import com.github.naz013.appwidgets.events.UiReminderWidgetListAdapter
+import com.github.naz013.appwidgets.googletasks.GoogleTasksWidgetPrefsProvider
+import com.github.naz013.appwidgets.googletasks.TasksWidgetConfigViewModel
+import com.github.naz013.appwidgets.notes.NotesWidgetConfigViewModel
+import com.github.naz013.appwidgets.notes.NotesWidgetPrefsProvider
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetConfigViewModel
+import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetPrefsProvider
 import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteImagesAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectableAdapter
@@ -30,9 +42,45 @@ val appWidgetsModule =
     factory { RecyclableUiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
     factory { UiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
 
-    viewModel { SingleNoteWidgetConfigViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { (widgetId: Int) ->
+      SingleNoteWidgetConfigViewModel(
+        get(),
+        get(),
+        SingleNoteWidgetPrefsProvider(get(), widgetId),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+
+    viewModel { (widgetId: Int) ->
+      NotesWidgetConfigViewModel(get(), NotesWidgetPrefsProvider(get(), widgetId), get())
+    }
+
+    viewModel { (widgetId: Int) ->
+      CalendarWidgetConfigViewModel(get(), CalendarWidgetPrefsProvider(get(), widgetId), get())
+    }
+
+    viewModel { (widgetId: Int) ->
+      BirthdaysWidgetConfigViewModel(get(), BirthdaysWidgetPrefsProvider(get(), widgetId), get())
+    }
+
+    viewModel { (widgetId: Int) ->
+      CombinedWidgetConfigViewModel(get(), CombinedWidgetPrefsProvider(get(), widgetId), get())
+    }
+
+    viewModel { (widgetId: Int) ->
+      TasksWidgetConfigViewModel(get(), GoogleTasksWidgetPrefsProvider(get(), widgetId), get(), get())
+    }
 
     factory { (prefs: EventsWidgetPrefsProvider) ->
       EventsAppWidgetViewModel(prefs, get(), get(), get(), get(), get(), get())
+    }
+
+    viewModel { (widgetId: Int) ->
+      EventsWidgetConfigViewModel(EventsWidgetPrefsProvider(get(), widgetId), get(), get())
     }
   }

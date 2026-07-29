@@ -22,10 +22,7 @@ internal class CalendarNextReceiver : BroadcastReceiver(), KoinComponent {
         AppWidgetManager.INVALID_APPWIDGET_ID
       )
 
-      val prefsProvider = widgetPrefsHolder.findOrCreate(
-        widgetId,
-        CalendarWidgetPrefsProvider::class.java
-      )
+      val prefsProvider = widgetPrefsHolder.findOrCreate(widgetId)
 
       val year = prefsProvider.getYear()
       val month = prefsProvider.getMonth() + 1

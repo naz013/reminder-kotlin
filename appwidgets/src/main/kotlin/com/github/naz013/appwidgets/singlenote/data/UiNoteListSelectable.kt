@@ -12,6 +12,4 @@ internal data class UiNoteListSelectable(
   val fontSize: Float,
   val images: List<UiNoteImage>,
   val dartIcon: Boolean
-) {
-  var isSelected: Boolean = false
-}
+)

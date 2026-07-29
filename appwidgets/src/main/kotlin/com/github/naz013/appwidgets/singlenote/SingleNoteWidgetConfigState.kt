@@ -1,0 +1,24 @@
+package com.github.naz013.appwidgets.singlenote
+
+import android.graphics.Bitmap
+import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectable
+import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
+import com.github.naz013.ui.common.theme.ThemeProvider
+
+internal data class SingleNoteWidgetConfigState(
+  val notes: List<UiNoteListSelectable> = emptyList(),
+  val selectedNoteId: String? = null,
+  val textSize: Float = 16f,
+  val horizontalAlignment: NoteDrawableParams.HorizontalAlignment = NoteDrawableParams.HorizontalAlignment.CENTER,
+  val verticalAlignment: NoteDrawableParams.VerticalAlignment = NoteDrawableParams.VerticalAlignment.CENTER,
+  val textColorIndex: Int = ThemeProvider.AppColorIndex.BLACK,
+  val textColorOpacity: Float = 100f,
+  val overlayColorIndex: Int = ThemeProvider.AppColorIndex.WHITE,
+  val overlayColorOpacity: Float = 0f,
+  val previewBitmap: Bitmap? = null,
+)
+
+internal sealed interface SingleNoteWidgetConfigEvent {
+  data object NoteNotSelected : SingleNoteWidgetConfigEvent
+  data object Saved : SingleNoteWidgetConfigEvent
+}

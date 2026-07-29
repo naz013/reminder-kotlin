@@ -8,36 +8,16 @@ internal class WidgetPrefsHolder(
   private val context: Context
 ) {
 
-  private val map = mutableMapOf<Key, WidgetPrefsProvider>()
+  private val map = mutableMapOf<Int, CalendarWidgetPrefsProvider>()
 
-  @Suppress("UNCHECKED_CAST")
-  fun <T : WidgetPrefsProvider> findOrCreate(widgetId: Int, clazz: Class<T>): T {
-    val key = Key(widgetId, clazz)
+  fun findOrCreate(widgetId: Int): CalendarWidgetPrefsProvider {
+    Logger.d(TAG, "findOrCreate: widgetId = $widgetId")
 
-    Logger.d(TAG, "findOrCreate: key = $key")
-
-    return if (map.containsKey(key)) {
-      Logger.d(TAG, "findOrCreate: has key = $key")
-      map[key]!! as T
-    } else {
-      val provider = when (clazz) {
-        CalendarWidgetPrefsProvider::class.java -> {
-          CalendarWidgetPrefsProvider(context, widgetId)
-        }
-        else -> {
-          CalendarWidgetPrefsProvider(context, widgetId)
-        }
-      }
-      Logger.d(TAG, "findOrCreate: create for key = $key, provider = $provider")
-      map[key] = provider
-      provider as T
+    return map.getOrPut(widgetId) {
+      Logger.d(TAG, "findOrCreate: create for widgetId = $widgetId")
+      CalendarWidgetPrefsProvider(context, widgetId)
     }
   }
-
-  data class Key(
-    val widgetId: Int,
-    val clazz: Class<*>
-  )
 
   companion object {
     private const val TAG = "WidgetPrefsHolder"
