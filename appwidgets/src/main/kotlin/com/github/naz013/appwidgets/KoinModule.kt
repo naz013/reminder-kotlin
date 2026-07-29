@@ -19,8 +19,6 @@ import com.github.naz013.appwidgets.notes.NotesWidgetPrefsProvider
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetConfigViewModel
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetPrefsProvider
 import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAdapter
-import com.github.naz013.appwidgets.singlenote.data.UiNoteImagesAdapter
-import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectableAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
@@ -37,8 +35,6 @@ val appWidgetsModule = module {
   factory { AppWidgetUpdaterImpl(get(), get()) as AppWidgetUpdater }
   factory { AppWidgetPreviewUpdaterImpl(get()) as AppWidgetPreviewUpdater }
 
-  factory { UiNoteListSelectableAdapter(get(), get(), get(), get()) }
-  factory { UiNoteImagesAdapter() }
   factory { RecyclableUiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
   factory { UiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
 

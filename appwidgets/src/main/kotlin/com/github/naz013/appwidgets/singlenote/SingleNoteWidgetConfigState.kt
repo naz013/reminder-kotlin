@@ -2,12 +2,12 @@ package com.github.naz013.appwidgets.singlenote
 
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
-import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectable
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
+import com.github.naz013.feature.note.UiNoteListItem
 import com.github.naz013.ui.common.theme.ThemeProvider
 
 internal data class SingleNoteWidgetConfigState(
-  val notes: List<UiNoteListSelectable> = emptyList(),
+  val notes: List<UiNoteListItem> = emptyList(),
   val selectedNoteId: String? = null,
   val textSize: Float = 16f,
   val horizontalAlignment: NoteDrawableParams.HorizontalAlignment = NoteDrawableParams.HorizontalAlignment.CENTER,

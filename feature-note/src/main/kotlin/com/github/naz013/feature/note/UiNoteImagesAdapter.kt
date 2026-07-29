@@ -1,8 +1,8 @@
-package com.github.naz013.appwidgets.singlenote.data
+package com.github.naz013.feature.note
 
 import com.github.naz013.domain.note.ImageFile
 
-internal class UiNoteImagesAdapter {
+class UiNoteImagesAdapter {
 
   fun convert(images: List<ImageFile>): List<UiNoteImage> {
     return images.map { convertImage(it) }

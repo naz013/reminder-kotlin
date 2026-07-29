@@ -12,8 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
@@ -26,13 +25,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.compose.WidgetConfigScaffold
-import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectable
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
+import com.github.naz013.feature.note.UiNoteImage
+import com.github.naz013.feature.note.UiNoteListItem
+import com.github.naz013.feature.note.compose.NoteListItemCard
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 import kotlin.math.roundToInt
@@ -213,27 +215,30 @@ private fun <T> AlignmentRow(
 
 @Composable
 private fun NoteRow(
-  note: UiNoteListSelectable,
+  note: UiNoteListItem,
   isSelected: Boolean,
   onClick: () -> Unit,
 ) {
-  Card(
+  NoteListItemCard(
+    note = note,
     onClick = onClick,
-    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-    colors = CardDefaults.cardColors(containerColor = Color(note.backgroundColor)),
+    modifier = Modifier.padding(top = 8.dp),
     border = if (isSelected) {
       BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
     } else {
       null
     },
-  ) {
-    Text(
-      text = note.text,
-      color = Color(note.textColor),
-      maxLines = 2,
-      modifier = Modifier.padding(12.dp),
-    )
-  }
+    trailingContent = {
+      Icon(
+        painter = painterResource(
+          if (isSelected) R.drawable.ic_builder_google_task_list else R.drawable.ic_fluent_radio_button,
+        ),
+        contentDescription = null,
+        tint = note.textColor,
+        modifier = Modifier.padding(8.dp).size(24.dp),
+      )
+    },
+  )
 }
 
 @Preview(showBackground = true)
@@ -243,15 +248,17 @@ private fun SingleNoteWidgetConfigScreenPreview() {
     SingleNoteWidgetConfigScreen(
       state = SingleNoteWidgetConfigState(
         notes = listOf(
-          UiNoteListSelectable(
+          UiNoteListItem(
             id = "1",
-            text = "Grocery list",
-            backgroundColor = android.graphics.Color.YELLOW,
-            textColor = android.graphics.Color.BLACK,
-            typeface = null,
+            title = "Shopping",
+            text = "Grocery list: milk, eggs, bread",
+            backgroundColor = Color(0xFFFFEB3B),
+            textColor = Color.Black,
+            fontStyle = 0,
             fontSize = 16f,
-            images = emptyList(),
-            dartIcon = false,
+            titleFontStyle = 0,
+            titleFontSize = 18f,
+            images = emptyList<UiNoteImage>(),
           ),
         ),
         selectedNoteId = "1",

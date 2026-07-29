@@ -42,6 +42,7 @@ import com.github.naz013.common.platformCommonModule
 import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
+import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.icalendar.iCalendarModule
 import com.github.naz013.legal.LegalDocumentRepository
@@ -120,6 +121,7 @@ class ReminderApp :
         listOf(
           utilModule,
           featureCommonModule,
+          featureNoteModule,
           storageModule,
           workerModule,
           viewModelModule,

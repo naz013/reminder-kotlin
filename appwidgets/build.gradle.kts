@@ -13,6 +13,7 @@ dependencies {
   implementation(project(":cloud-api"))
   implementation(project(":platform-common"))
   implementation(project(":feature-common"))
+  implementation(project(":feature-note"))
   implementation(project(":ui-common"))
   implementation(project(":usecase:googletasks"))
   implementation(project(":usecase:birthdays"))

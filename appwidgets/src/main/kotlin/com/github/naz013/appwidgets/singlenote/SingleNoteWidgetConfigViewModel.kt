@@ -10,10 +10,10 @@ import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.WidgetUpdater
 import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAdapter
-import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectableAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.note.UiNoteListItemAdapter
 import com.github.naz013.ui.common.adjustAlpha
 import com.github.naz013.usecase.notes.GetAllNotesUseCase
 import com.github.naz013.usecase.notes.GetNoteByIdUseCase
@@ -33,7 +33,7 @@ internal class SingleNoteWidgetConfigViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val getAllNotesUseCase: GetAllNotesUseCase,
   private val getNoteByIdUseCase: GetNoteByIdUseCase,
-  private val uiNoteListSelectableAdapter: UiNoteListSelectableAdapter,
+  private val uiNoteListItemAdapter: UiNoteListItemAdapter,
   private val previewAdapter: RecyclableUiNoteWidgetAdapter,
   private val uiNoteWidgetAdapter: UiNoteWidgetAdapter,
   appWidgetPreferences: AppWidgetPreferences,
@@ -62,7 +62,7 @@ internal class SingleNoteWidgetConfigViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val notes = getAllNotesUseCase(isArchived = false).map { uiNoteListSelectableAdapter.convert(it) }
+      val notes = getAllNotesUseCase(isArchived = false).map { uiNoteListItemAdapter.convert(it) }
       _state.update { it.copy(notes = notes) }
 
       val storedId = prefsProvider.getNoteId()
@@ -154,7 +154,14 @@ internal class SingleNoteWidgetConfigViewModel(
     }
   }
 
-  private fun colorForIndex(index: Int): Int = _state.value.palette[index].toArgb()
+  private fun colorForIndex(index: Int): Int {
+    val palette = _state.value.palette
+    if (palette.isEmpty()) return android.graphics.Color.BLACK
+    // A previously-persisted index can fall outside the current palette if the palette's size
+    // ever changes between saves (e.g. a widget saved under an older palette) - coerce rather
+    // than crash on stale prefs.
+    return palette[index.coerceIn(palette.indices)].toArgb()
+  }
 
   private fun updatePreview() {
     val s = state.value

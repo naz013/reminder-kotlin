@@ -1,14 +1,14 @@
 package com.elementary.tasks.module.appwidgets
 
 import androidx.compose.ui.graphics.Color
-import com.elementary.tasks.notes.NoteColorEngine
 import com.github.naz013.appwidgets.singlenote.NoteWidgetPreferences
+import com.github.naz013.ui.common.theme.ThemeProvider
 
 class NoteWidgetPreferencesImpl(
-  private val noteColorEngine: NoteColorEngine
+  private val themeProvider: ThemeProvider
 ) : NoteWidgetPreferences {
 
   override fun getNoteColors(): List<Color> {
-    return noteColorEngine.allColors()
+    return themeProvider.noteWidgetSliderColors()
   }
 }
