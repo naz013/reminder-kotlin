@@ -15,18 +15,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.compose.WidgetConfigScaffold
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
@@ -40,11 +40,7 @@ internal fun TasksWidgetConfigScreen(
   onItemColorSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val palette = remember { (0..13).map { WidgetUtils.getComposeColor(it) } }
-  val headerColor = palette[state.headerBackgroundIndex]
-  val headerContentColor = WidgetUtils.getContrastColor(state.headerBackgroundIndex)
-  val itemColor = palette[state.itemBackgroundIndex]
-  val itemContentColor = WidgetUtils.getContrastColor(state.itemBackgroundIndex)
+  val hapticFeedback = LocalHapticFeedback.current
 
   WidgetConfigScaffold(
     title = stringResource(R.string.google_tasks),
@@ -53,10 +49,10 @@ internal fun TasksWidgetConfigScreen(
     modifier = modifier,
   ) {
     TasksWidgetMockPreview(
-      headerColor = headerColor,
-      headerContentColor = headerContentColor,
-      itemColor = itemColor,
-      itemContentColor = itemContentColor,
+      headerColor = state.headerColor,
+      headerContentColor = state.headerContentColor,
+      itemColor = state.itemColor,
+      itemContentColor = state.itemContentColor,
     )
 
     Text(
@@ -70,9 +66,14 @@ internal fun TasksWidgetConfigScreen(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
       ColorSlider(
-        colors = palette,
+        colors = state.palette,
         selectedIndex = state.headerBackgroundIndex,
-        onColorSelected = onHeaderColorSelected,
+        onColorSelected = { index ->
+          if (state.hapticFeedbackEnabled && index != state.headerBackgroundIndex) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          }
+          onHeaderColorSelected(index)
+        },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
       )
     }
@@ -88,9 +89,14 @@ internal fun TasksWidgetConfigScreen(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
       ColorSlider(
-        colors = palette,
+        colors = state.palette,
         selectedIndex = state.itemBackgroundIndex,
-        onColorSelected = onItemColorSelected,
+        onColorSelected = { index ->
+          if (state.hapticFeedbackEnabled && index != state.itemBackgroundIndex) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          }
+          onItemColorSelected(index)
+        },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
       )
     }

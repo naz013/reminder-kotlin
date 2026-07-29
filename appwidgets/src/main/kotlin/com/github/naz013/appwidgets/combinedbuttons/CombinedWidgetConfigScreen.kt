@@ -16,17 +16,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.compose.WidgetConfigScaffold
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
@@ -39,9 +39,7 @@ internal fun CombinedWidgetConfigScreen(
   onBackgroundColorSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val palette = remember { (0..13).map { WidgetUtils.getComposeColor(it) } }
-  val backgroundColor = palette[state.backgroundIndex]
-  val contentColor = WidgetUtils.getContrastColor(state.backgroundIndex)
+  val hapticFeedback = LocalHapticFeedback.current
 
   WidgetConfigScaffold(
     title = stringResource(R.string.quick_buttons),
@@ -64,26 +62,26 @@ internal fun CombinedWidgetConfigScreen(
         modifier = Modifier
           .width(203.dp)
           .height(57.dp)
-          .background(backgroundColor, RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))),
+          .background(state.backgroundColor, RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Icon(
           painter = painterResource(R.drawable.ic_fluent_clock_alarm),
           contentDescription = null,
-          tint = contentColor,
+          tint = state.contentColor,
           modifier = Modifier.weight(1f).size(32.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_note),
           contentDescription = null,
-          tint = contentColor,
+          tint = state.contentColor,
           modifier = Modifier.weight(1f).size(32.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_food_cake),
           contentDescription = null,
-          tint = contentColor,
+          tint = state.contentColor,
           modifier = Modifier.weight(1f).size(32.dp),
         )
       }
@@ -100,9 +98,14 @@ internal fun CombinedWidgetConfigScreen(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
       ColorSlider(
-        colors = palette,
+        colors = state.palette,
         selectedIndex = state.backgroundIndex,
-        onColorSelected = onBackgroundColorSelected,
+        onColorSelected = { index ->
+          if (state.hapticFeedbackEnabled && index != state.backgroundIndex) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          }
+          onBackgroundColorSelected(index)
+        },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
       )
     }

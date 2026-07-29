@@ -19,13 +19,13 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,7 +35,6 @@ import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectable
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
-import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlin.math.roundToInt
 
 @Composable
@@ -53,10 +52,7 @@ internal fun SingleNoteWidgetConfigScreen(
   onOverlayColorOpacityChanged: (Float) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val context = LocalContext.current
-  val palette = remember(context) {
-    ThemeProvider.colorsForNoteWidgetSlider(context).map { Color(it) }
-  }
+  val hapticFeedback = LocalHapticFeedback.current
 
   WidgetConfigScaffold(
     title = stringResource(R.string.note),
@@ -89,23 +85,39 @@ internal fun SingleNoteWidgetConfigScreen(
       Text(text = state.textSize.roundToInt().toString(), style = MaterialTheme.typography.bodyLarge)
       Slider(
         value = state.textSize,
-        onValueChange = { onTextSizeChanged(it.roundToInt().toFloat()) },
+        onValueChange = {
+          val newSize = it.roundToInt().toFloat()
+          if (state.hapticFeedbackEnabled && newSize != state.textSize) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          }
+          onTextSizeChanged(newSize)
+        },
         valueRange = 6f..250f,
       )
     }
 
     SectionTitle(stringResource(R.string.text_color))
     ColorSlider(
-      colors = palette,
+      colors = state.palette,
       selectedIndex = state.textColorIndex,
-      onColorSelected = onTextColorSelected,
+      onColorSelected = { index ->
+        if (state.hapticFeedbackEnabled && index != state.textColorIndex) {
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        }
+        onTextColorSelected(index)
+      },
       modifier = Modifier.fillMaxWidth().height(36.dp).padding(top = 4.dp),
     )
 
     SectionTitle(stringResource(R.string.text_opacity))
     Slider(
       value = state.textColorOpacity,
-      onValueChange = onTextColorOpacityChanged,
+      onValueChange = {
+        if (state.hapticFeedbackEnabled && it.toInt() != state.textColorOpacity.toInt()) {
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        }
+        onTextColorOpacityChanged(it)
+      },
       valueRange = 0f..100f,
     )
 
@@ -133,16 +145,26 @@ internal fun SingleNoteWidgetConfigScreen(
 
     SectionTitle(stringResource(R.string.foreground_color))
     ColorSlider(
-      colors = palette,
+      colors = state.palette,
       selectedIndex = state.overlayColorIndex,
-      onColorSelected = onOverlayColorSelected,
+      onColorSelected = { index ->
+        if (state.hapticFeedbackEnabled && index != state.overlayColorIndex) {
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        }
+        onOverlayColorSelected(index)
+      },
       modifier = Modifier.fillMaxWidth().height(36.dp).padding(top = 4.dp),
     )
 
     SectionTitle(stringResource(R.string.foreground_opacity))
     Slider(
       value = state.overlayColorOpacity,
-      onValueChange = onOverlayColorOpacityChanged,
+      onValueChange = {
+        if (state.hapticFeedbackEnabled && it.toInt() != state.overlayColorOpacity.toInt()) {
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        }
+        onOverlayColorOpacityChanged(it)
+      },
       valueRange = 0f..100f,
     )
 

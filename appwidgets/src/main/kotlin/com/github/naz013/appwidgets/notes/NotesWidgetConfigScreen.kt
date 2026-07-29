@@ -15,18 +15,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.compose.WidgetConfigScaffold
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
@@ -39,9 +39,7 @@ internal fun NotesWidgetConfigScreen(
   onBackgroundColorSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val palette = remember { (0..13).map { WidgetUtils.getComposeColor(it) } }
-  val headerColor = palette[state.backgroundIndex]
-  val contentColor = WidgetUtils.getContrastColor(state.backgroundIndex)
+  val hapticFeedback = LocalHapticFeedback.current
 
   WidgetConfigScaffold(
     title = stringResource(R.string.notes),
@@ -49,7 +47,7 @@ internal fun NotesWidgetConfigScreen(
     onSaveClick = onSaveClick,
     modifier = modifier,
   ) {
-    NotesWidgetMockPreview(headerColor = headerColor, contentColor = contentColor)
+    NotesWidgetMockPreview(headerColor = state.headerColor, contentColor = state.contentColor)
 
     Text(
       text = stringResource(R.string.background),
@@ -62,9 +60,14 @@ internal fun NotesWidgetConfigScreen(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
       ColorSlider(
-        colors = palette,
+        colors = state.palette,
         selectedIndex = state.backgroundIndex,
-        onColorSelected = onBackgroundColorSelected,
+        onColorSelected = { index ->
+          if (state.hapticFeedbackEnabled && index != state.backgroundIndex) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          }
+          onBackgroundColorSelected(index)
+        },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
       )
     }

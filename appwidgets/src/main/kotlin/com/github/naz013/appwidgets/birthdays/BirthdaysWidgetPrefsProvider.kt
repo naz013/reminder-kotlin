@@ -13,7 +13,7 @@ internal class BirthdaysWidgetPrefsProvider(
   }
 
   fun getHeaderBackground(): Int {
-    return getInt(WIDGET_HEADER_BG)
+    return getInt(WIDGET_HEADER_BG, 2)
   }
 
   fun setItemBackground(value: Int) {
@@ -21,7 +21,7 @@ internal class BirthdaysWidgetPrefsProvider(
   }
 
   fun getItemBackground(): Int {
-    return getInt(WIDGET_ITEM_BG)
+    return getInt(WIDGET_ITEM_BG, 2)
   }
 
   companion object {

@@ -12,6 +12,8 @@ class AppWidgetPreferencesImpl(
     get() = true
   override val isFutureEventEnabled: Boolean
     get() = true
+  override val isHapticFeedbackEnabled: Boolean
+    get() = prefs.hapticsEnabled
   override val startDay: Int
     get() = prefs.startDay
   override val reminderColor: Int

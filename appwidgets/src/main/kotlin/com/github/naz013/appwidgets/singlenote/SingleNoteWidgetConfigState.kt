@@ -1,6 +1,7 @@
 package com.github.naz013.appwidgets.singlenote
 
 import android.graphics.Bitmap
+import androidx.compose.ui.graphics.Color
 import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectable
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
 import com.github.naz013.ui.common.theme.ThemeProvider
@@ -16,6 +17,8 @@ internal data class SingleNoteWidgetConfigState(
   val overlayColorIndex: Int = ThemeProvider.AppColorIndex.WHITE,
   val overlayColorOpacity: Float = 0f,
   val previewBitmap: Bitmap? = null,
+  val hapticFeedbackEnabled: Boolean = true,
+  val palette: List<Color> = emptyList(),
 )
 
 internal sealed interface SingleNoteWidgetConfigEvent {

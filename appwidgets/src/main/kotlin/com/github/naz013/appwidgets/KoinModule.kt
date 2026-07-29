@@ -22,65 +22,69 @@ import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAda
 import com.github.naz013.appwidgets.singlenote.data.UiNoteImagesAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectableAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val appWidgetsModule =
-  module {
-    single { WidgetPrefsHolder(get()) }
+val appWidgetsModule = module {
+  single { WidgetPrefsHolder(get()) }
 
-    factory { WidgetDataProvider(get(), get(), get(), get()) }
+  factory { WidgetDataProvider(get(), get(), get(), get()) }
 
-    factory { UiBirthdayWidgetListAdapter(get(), get()) }
-    factory { UiReminderWidgetListAdapter(get()) }
+  factory { UiBirthdayWidgetListAdapter(get(), get()) }
+  factory { UiReminderWidgetListAdapter(get()) }
 
-    factory { AppWidgetUpdaterImpl(get(), get()) as AppWidgetUpdater }
-    factory { AppWidgetPreviewUpdaterImpl(get()) as AppWidgetPreviewUpdater }
+  factory { AppWidgetUpdaterImpl(get(), get()) as AppWidgetUpdater }
+  factory { AppWidgetPreviewUpdaterImpl(get()) as AppWidgetPreviewUpdater }
 
-    factory { UiNoteListSelectableAdapter(get(), get(), get(), get()) }
-    factory { UiNoteImagesAdapter() }
-    factory { RecyclableUiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
-    factory { UiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
+  factory { UiNoteListSelectableAdapter(get(), get(), get(), get()) }
+  factory { UiNoteImagesAdapter() }
+  factory { RecyclableUiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
+  factory { UiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
 
-    viewModel { (widgetId: Int) ->
-      SingleNoteWidgetConfigViewModel(
-        get(),
-        get(),
-        SingleNoteWidgetPrefsProvider(get(), widgetId),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
-
-    viewModel { (widgetId: Int) ->
-      NotesWidgetConfigViewModel(get(), NotesWidgetPrefsProvider(get(), widgetId), get())
-    }
-
-    viewModel { (widgetId: Int) ->
-      CalendarWidgetConfigViewModel(get(), CalendarWidgetPrefsProvider(get(), widgetId), get())
-    }
-
-    viewModel { (widgetId: Int) ->
-      BirthdaysWidgetConfigViewModel(get(), BirthdaysWidgetPrefsProvider(get(), widgetId), get())
-    }
-
-    viewModel { (widgetId: Int) ->
-      CombinedWidgetConfigViewModel(get(), CombinedWidgetPrefsProvider(get(), widgetId), get())
-    }
-
-    viewModel { (widgetId: Int) ->
-      TasksWidgetConfigViewModel(get(), GoogleTasksWidgetPrefsProvider(get(), widgetId), get(), get())
-    }
-
-    factory { (prefs: EventsWidgetPrefsProvider) ->
-      EventsAppWidgetViewModel(prefs, get(), get(), get(), get(), get(), get())
-    }
-
-    viewModel { (widgetId: Int) ->
-      EventsWidgetConfigViewModel(EventsWidgetPrefsProvider(get(), widgetId), get(), get())
-    }
+  viewModel { (widgetId: Int) ->
+    SingleNoteWidgetConfigViewModel(
+      get(),
+      get(),
+      SingleNoteWidgetPrefsProvider(get(), widgetId),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
   }
+
+  viewModel { (widgetId: Int) ->
+    NotesWidgetConfigViewModel(get(), NotesWidgetPrefsProvider(get(), widgetId), get(), get())
+  }
+
+  viewModel { (widgetId: Int) ->
+    CalendarWidgetConfigViewModel(CalendarWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+  }
+
+  viewModel { (widgetId: Int) ->
+    BirthdaysWidgetConfigViewModel(BirthdaysWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+  }
+
+  viewModel { (widgetId: Int) ->
+    CombinedWidgetConfigViewModel(get(), CombinedWidgetPrefsProvider(get(), widgetId), get(), get())
+  }
+
+  viewModel { (widgetId: Int) ->
+    TasksWidgetConfigViewModel(get(), GoogleTasksWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+  }
+
+  factory { (prefs: EventsWidgetPrefsProvider) ->
+    EventsAppWidgetViewModel(prefs, get(), get(), get(), get(), get(), get())
+  }
+
+  viewModel { (widgetId: Int) ->
+    EventsWidgetConfigViewModel(EventsWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+  }
+
+  factoryOf(::WidgetUpdater)
+}

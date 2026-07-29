@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
+import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.appwidgets.WidgetUtils
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,26 +19,54 @@ internal class EventsWidgetConfigViewModel(
   private val prefsProvider: EventsWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val appWidgetUpdater: AppWidgetUpdater,
+  appWidgetPreferences: AppWidgetPreferences,
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(
-    EventsWidgetConfigState(
-      headerBackgroundIndex = prefsProvider.getHeaderBackground(),
-      itemBackgroundIndex = prefsProvider.getItemBackground(),
-      textSize = prefsProvider.getTextSize().takeIf { it != 0f }?.toInt() ?: 14,
-    )
-  )
+  private val _state = MutableStateFlow(EventsWidgetConfigState())
   val state = _state.asStateFlow()
 
   private val _saved = Channel<Unit>(Channel.CONFLATED)
   val saved = _saved.receiveAsFlow()
 
+  init {
+    _state.update {
+      it.copy(
+        headerBackgroundIndex = prefsProvider.getHeaderBackground(),
+        itemBackgroundIndex = prefsProvider.getItemBackground(),
+        textSize = prefsProvider.getTextSize().takeIf { it != 0f }?.toInt() ?: 14,
+        hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
+      )
+    }
+    val palette = (0..13).map { WidgetUtils.getComposeColor(it) }
+    _state.update {
+      it.copy(
+        palette = palette,
+        headerColor = palette[it.headerBackgroundIndex],
+        headerContentColor = WidgetUtils.getContrastColor(it.headerBackgroundIndex),
+        itemColor = palette[it.itemBackgroundIndex],
+        itemContentColor = WidgetUtils.getContrastColor(it.itemBackgroundIndex),
+      )
+    }
+  }
+
   fun onHeaderColorSelected(index: Int) {
-    _state.update { it.copy(headerBackgroundIndex = index) }
+    _state.update {
+      it.copy(
+        headerBackgroundIndex = index,
+        headerColor = it.palette[index],
+        headerContentColor = WidgetUtils.getContrastColor(index),
+      )
+    }
   }
 
   fun onItemColorSelected(index: Int) {
-    _state.update { it.copy(itemBackgroundIndex = index) }
+    _state.update {
+      it.copy(
+        itemBackgroundIndex = index,
+        itemColor = it.palette[index],
+        itemContentColor = WidgetUtils.getContrastColor(index),
+      )
+    }
   }
 
   fun onSaveClick() {

@@ -1,19 +1,20 @@
 package com.github.naz013.appwidgets.singlenote
 
 import android.appwidget.AppWidgetManager
-import android.content.Context
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
+import com.github.naz013.appwidgets.AppWidgetPreferences
+import com.github.naz013.appwidgets.WidgetUpdater
 import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteListSelectableAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.ui.common.adjustAlpha
-import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.usecase.notes.GetAllNotesUseCase
 import com.github.naz013.usecase.notes.GetNoteByIdUseCase
 import kotlinx.coroutines.Job
@@ -26,7 +27,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 internal class SingleNoteWidgetConfigViewModel(
-  private val context: Context,
+  private val widgetUpdater: WidgetUpdater,
   private val dispatcherProvider: DispatcherProvider,
   private val prefsProvider: SingleNoteWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -35,6 +36,8 @@ internal class SingleNoteWidgetConfigViewModel(
   private val uiNoteListSelectableAdapter: UiNoteListSelectableAdapter,
   private val previewAdapter: RecyclableUiNoteWidgetAdapter,
   private val uiNoteWidgetAdapter: UiNoteWidgetAdapter,
+  appWidgetPreferences: AppWidgetPreferences,
+  private val noteWidgetPreferences: NoteWidgetPreferences,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(
@@ -46,6 +49,8 @@ internal class SingleNoteWidgetConfigViewModel(
       textColorOpacity = prefsProvider.getTextColorOpacity(),
       overlayColorIndex = prefsProvider.getOverlayColorPosition(),
       overlayColorOpacity = prefsProvider.getOverlayColorOpacity(),
+      hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
+      palette = noteWidgetPreferences.getNoteColors(),
     )
   )
   val state = _state.asStateFlow()
@@ -68,7 +73,6 @@ internal class SingleNoteWidgetConfigViewModel(
   }
 
   override fun onCleared() {
-    super.onCleared()
     previewAdapter.clear()
   }
 
@@ -136,19 +140,21 @@ internal class SingleNoteWidgetConfigViewModel(
       analyticsEventSender.send(WidgetUsedEvent(Widget.SINGLE_NOTE))
 
       val noteWithImages = getNoteByIdUseCase(noteId)
-      SingleNoteWidget.updateWidget(
-        context = context,
-        appWidgetManager = AppWidgetManager.getInstance(context),
-        prefsProvider = prefsProvider,
-        uiNoteWidgetAdapter = uiNoteWidgetAdapter,
-        noteWithImages = noteWithImages,
-      )
+      widgetUpdater.update {
+        SingleNoteWidget.updateWidget(
+          context = this,
+          appWidgetManager = AppWidgetManager.getInstance(this),
+          prefsProvider = prefsProvider,
+          uiNoteWidgetAdapter = uiNoteWidgetAdapter,
+          noteWithImages = noteWithImages,
+        )
+      }
 
       _events.trySend(SingleNoteWidgetConfigEvent.Saved)
     }
   }
 
-  private fun colorForIndex(index: Int): Int = ThemeProvider.colorsForNoteWidgetSlider(context)[index]
+  private fun colorForIndex(index: Int): Int = _state.value.palette[index].toArgb()
 
   private fun updatePreview() {
     val s = state.value

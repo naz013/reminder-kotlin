@@ -18,18 +18,18 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.compose.WidgetConfigScaffold
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
@@ -47,11 +47,7 @@ internal fun EventsWidgetConfigScreen(
   onTextSizeDialogDismiss: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val palette = remember { (0..13).map { WidgetUtils.getComposeColor(it) } }
-  val headerColor = palette[state.headerBackgroundIndex]
-  val headerContentColor = WidgetUtils.getContrastColor(state.headerBackgroundIndex)
-  val itemColor = palette[state.itemBackgroundIndex]
-  val itemContentColor = WidgetUtils.getContrastColor(state.itemBackgroundIndex)
+  val hapticFeedback = LocalHapticFeedback.current
 
   WidgetConfigScaffold(
     title = stringResource(R.string.events),
@@ -60,10 +56,10 @@ internal fun EventsWidgetConfigScreen(
     modifier = modifier,
   ) {
     EventsWidgetMockPreview(
-      headerColor = headerColor,
-      headerContentColor = headerContentColor,
-      itemColor = itemColor,
-      itemContentColor = itemContentColor,
+      headerColor = state.headerColor,
+      headerContentColor = state.headerContentColor,
+      itemColor = state.itemColor,
+      itemContentColor = state.itemContentColor,
     )
 
     Text(
@@ -77,9 +73,14 @@ internal fun EventsWidgetConfigScreen(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
       ColorSlider(
-        colors = palette,
+        colors = state.palette,
         selectedIndex = state.headerBackgroundIndex,
-        onColorSelected = onHeaderColorSelected,
+        onColorSelected = { index ->
+          if (state.hapticFeedbackEnabled && index != state.headerBackgroundIndex) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          }
+          onHeaderColorSelected(index)
+        },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
       )
     }
@@ -95,9 +96,14 @@ internal fun EventsWidgetConfigScreen(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
       ColorSlider(
-        colors = palette,
+        colors = state.palette,
         selectedIndex = state.itemBackgroundIndex,
-        onColorSelected = onItemColorSelected,
+        onColorSelected = { index ->
+          if (state.hapticFeedbackEnabled && index != state.itemBackgroundIndex) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          }
+          onItemColorSelected(index)
+        },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
       )
     }
@@ -112,7 +118,13 @@ internal fun EventsWidgetConfigScreen(
           Text(text = state.textSize.toString(), style = MaterialTheme.typography.titleLarge)
           Slider(
             value = state.textSize.toFloat(),
-            onValueChange = { onTextSizeChanged(it.roundToInt()) },
+            onValueChange = {
+              val newSize = it.roundToInt()
+              if (state.hapticFeedbackEnabled && newSize != state.textSize) {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+              }
+              onTextSizeChanged(newSize)
+            },
             valueRange = 12f..25f,
             steps = 12,
           )
