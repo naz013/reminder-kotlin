@@ -1,8 +1,14 @@
-package com.github.naz013.appwidgets.singlenote.data
+package com.github.naz013.feature.note
 
-internal data class UiNoteImage(
+data class UiNoteImage(
   val id: Int,
   val fileName: String,
   val filePath: String = "",
   val state: UiNoteImageState = UiNoteImageState.READY
 )
+
+enum class UiNoteImageState {
+  LOADING,
+  READY,
+  ERROR
+}

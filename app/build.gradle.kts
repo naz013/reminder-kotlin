@@ -179,6 +179,7 @@ dependencies {
   implementation(project(":work-api"))
   implementation(project(":work"))
   implementation(project(":feature-common"))
+  implementation(project(":feature-note"))
   implementation(project(":appwidgets"))
   implementation(project(":navigation-api"))
   implementation(project(":platform-common"))

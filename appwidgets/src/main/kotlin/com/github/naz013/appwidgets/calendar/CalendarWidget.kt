@@ -38,10 +38,7 @@ internal class CalendarWidget : AppWidgetProvider(), KoinComponent {
       updateWidget(
         context = context,
         appWidgetManager = appWidgetManager,
-        sp = widgetPrefsHolder.findOrCreate(
-          id,
-          CalendarWidgetPrefsProvider::class.java
-        )
+        sp = widgetPrefsHolder.findOrCreate(id)
       )
     }
     super.onUpdate(context, appWidgetManager, appWidgetIds)
@@ -56,10 +53,7 @@ internal class CalendarWidget : AppWidgetProvider(), KoinComponent {
     updateWidget(
       context = context,
       appWidgetManager = appWidgetManager,
-      sp = widgetPrefsHolder.findOrCreate(
-        appWidgetId,
-        CalendarWidgetPrefsProvider::class.java
-      )
+      sp = widgetPrefsHolder.findOrCreate(appWidgetId)
     )
     super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
   }

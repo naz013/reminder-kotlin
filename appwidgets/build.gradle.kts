@@ -4,9 +4,6 @@ plugins {
 
 android {
   namespace = "com.github.naz013.appwidgets"
-  buildFeatures {
-    viewBinding = true
-  }
 }
 
 dependencies {
@@ -16,6 +13,7 @@ dependencies {
   implementation(project(":cloud-api"))
   implementation(project(":platform-common"))
   implementation(project(":feature-common"))
+  implementation(project(":feature-note"))
   implementation(project(":ui-common"))
   implementation(project(":usecase:googletasks"))
   implementation(project(":usecase:birthdays"))
@@ -33,10 +31,6 @@ dependencies {
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.android)
 
-  implementation(libs.androidx.recyclerview)
-  implementation(libs.material)
-
-  implementation(libs.colorslider)
   implementation(libs.coil)
 
   implementation(libs.androidx.lifecycle.extensions)

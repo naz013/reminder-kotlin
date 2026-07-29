@@ -478,7 +478,7 @@ class DeveloperViewModel(
       when (typeIndex) {
         0 -> RecurrenceRule.Once
         1 -> RecurrenceRule.Countdown(after = minutes * 60_000L)
-        2 -> RecurrenceRule.Daily()
+        2 -> RecurrenceRule.Daily(repeatInterval = 24 * 60 * 60_000L)
         3 -> RecurrenceRule.Weekly(weekdays = List(7) { if (it == weekdayIndex) 1 else 0 })
         4 -> RecurrenceRule.Monthly(dayOfMonth = fireAt.dayOfMonth)
         5 -> RecurrenceRule.RelativeMonthly(weekday = weekdayIndex, ordinal = (fireAt.dayOfMonth - 1) / 7 + 1)

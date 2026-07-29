@@ -25,7 +25,7 @@ import com.elementary.tasks.groups.groupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
 import com.elementary.tasks.navigation.NavigationConsumer
-import com.elementary.tasks.navigation.NavigationDispatcherFactory
+import com.elementary.tasks.navigation.NavigationDispatcher
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
 import com.elementary.tasks.notes.noteModule
@@ -42,6 +42,7 @@ import com.github.naz013.common.platformCommonModule
 import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
+import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.icalendar.iCalendarModule
 import com.github.naz013.legal.LegalDocumentRepository
@@ -83,7 +84,7 @@ class ReminderApp :
     object : NavigationConsumer {
       override fun consume(destination: Destination) {
         if (destination is ActivityDestination || destination is DataDestination) {
-          get<NavigationDispatcherFactory>().create(destination).dispatch(destination)
+          get<NavigationDispatcher>().dispatch(destination)
         } else {
           com.github.naz013.logging.Logger
             .i("App", "Unknown destination: $destination")
@@ -120,6 +121,7 @@ class ReminderApp :
         listOf(
           utilModule,
           featureCommonModule,
+          featureNoteModule,
           storageModule,
           workerModule,
           viewModelModule,

@@ -29,10 +29,7 @@ internal class CalendarWeekdayFactory(
     AppWidgetManager.EXTRA_APPWIDGET_ID,
     AppWidgetManager.INVALID_APPWIDGET_ID
   )
-  private val prefsProvider = widgetPrefsHolder.findOrCreate(
-    widgetId,
-    CalendarWidgetPrefsProvider::class.java
-  )
+  private val prefsProvider = widgetPrefsHolder.findOrCreate(widgetId)
 
   override fun onCreate() {
     weekdaysList.clear()

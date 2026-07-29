@@ -176,6 +176,16 @@ class ThemeProvider(
     ).map { it.toColor() }
   }
 
+  /**
+   * The 19-entry palette (accent colors plus true white/black at the end) used by the single-note
+   * widget's text/overlay color pickers - as opposed to [colorsForSliderThemed], which is only
+   * accent hues, this one guarantees a genuine black/white so [AppColorIndex.WHITE]/[AppColorIndex.BLACK]
+   * remain valid, high-contrast default indices.
+   */
+  fun noteWidgetSliderColors(): List<Color> {
+    return colorsForNoteWidgetSlider(context).map { it.toColor() }
+  }
+
   fun themedColor(code: Int = AppColorIndex.RED): Color {
     val color: Int
     when (code) {
