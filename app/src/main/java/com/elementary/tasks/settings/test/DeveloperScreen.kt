@@ -27,9 +27,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DeveloperScreen(
   state: DeveloperState,
+  modifier: Modifier = Modifier,
   onResetBannersClick: () -> Unit,
   onBirthdayDialogClick: () -> Unit,
   onReminderDialogClick: () -> Unit,
+  onRecurrenceTestClick: () -> Unit,
   onObjectExportClick: () -> Unit,
   onReviewDialogClick: () -> Unit,
   onProVersionClick: () -> Unit,
@@ -44,7 +46,7 @@ fun DeveloperScreen(
 ) {
   Column(
     modifier =
-      Modifier
+      modifier
         .fillMaxSize()
         .verticalScroll(rememberScrollState()),
   ) {
@@ -64,6 +66,12 @@ fun DeveloperScreen(
       title = "Open Reminder Screen",
       subtitle = "Save a mock reminder and open its action screen",
       onClick = onReminderDialogClick,
+    )
+    HorizontalDivider()
+    DeveloperOption(
+      title = "Start Recurrence Rule Test Reminders",
+      subtitle = "Pick a delay and a recurrence type, then create and activate a real test reminder",
+      onClick = onRecurrenceTestClick,
     )
     HorizontalDivider()
     DeveloperOption(
@@ -152,11 +160,15 @@ private fun DeveloperChoiceDialog(
     when (dialog.kind) {
       DeveloperDialogKind.CLEAR_TABLE -> "Select table to clear"
       DeveloperDialogKind.REMINDER, DeveloperDialogKind.BIRTHDAY -> "Select action to test"
+      DeveloperDialogKind.RECURRENCE_TEST -> "Select time until reminder fires"
+      DeveloperDialogKind.RECURRENCE_TEST_TYPE -> "Select recurrence type to test"
     }
   val confirmText =
     when (dialog.kind) {
       DeveloperDialogKind.CLEAR_TABLE -> "Clear"
       DeveloperDialogKind.REMINDER, DeveloperDialogKind.BIRTHDAY -> "Run"
+      DeveloperDialogKind.RECURRENCE_TEST -> "Next"
+      DeveloperDialogKind.RECURRENCE_TEST_TYPE -> "Start"
     }
   AlertDialog(
     onDismissRequest = onDismiss,

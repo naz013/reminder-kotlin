@@ -24,6 +24,7 @@ import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.adapter.rememberParamToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.help.ReminderHelpScreen
+import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.selectordialog.BuilderSelectorSheet
 import com.elementary.tasks.reminder.build.selectordialog.rememberSelectorDialogDataHolder
 import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
@@ -36,6 +37,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -76,6 +78,7 @@ private fun MainEntry(
 
   val dialogDispatcher = rememberDialogDispatcher()
   val reviewsFormLauncher = rememberReviewsFormLauncher()
+  val toastDispatcher = rememberToastDispatcher()
 
   val selectorDialogDataHolder = rememberSelectorDialogDataHolder()
   val paramToTextAdapter = rememberParamToTextAdapter()
@@ -141,6 +144,10 @@ private fun MainEntry(
       }
 
       BuildReminderViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+
+      is BuildReminderViewModel.ViewModelEvent.ShowMessage -> {
+        toastDispatcher.showToast(messageRes = event.messageRes)
+      }
     }
   }
 
@@ -152,6 +159,7 @@ private fun MainEntry(
     canSaveAsPreset = state.canSaveAsPreset,
     saveAsPresetChecked = state.saveAsPresetChecked,
     presetName = state.presetName,
+    quickStartOptions = QuickStartOption.entries,
     onBackClick = { backStack.removeLastOrNull() },
     onSaveClick = {
       askNotificationPermissionIfNeeded(permissionRequester) {
@@ -170,6 +178,7 @@ private fun MainEntry(
     onItemClick = { position, item -> viewModel.onItemEditedClicked(position, item) },
     onItemRemove = { position, item -> viewModel.removeItem(position, item) },
     onAddClick = { showSelector = true },
+    onQuickStartClick = viewModel::onQuickStartSelected,
   )
 
   if (showSelector) {

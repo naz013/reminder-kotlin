@@ -25,6 +25,13 @@ class ReminderV2Test {
   }
 
   @Test
+  fun `isLimited is false when repeatLimit is exactly zero, same as unlimited`() {
+    val reminder = reminderWith(RecurrenceRule.Daily(repeatLimit = 0))
+
+    assertFalse(reminder.isLimited())
+  }
+
+  @Test
   fun `isLimitExceed is true once a limited Weekly reminder uses up its limit`() {
     val reminder = reminderWith(RecurrenceRule.Weekly(weekdays = listOf(1, 3, 5), repeatLimit = 3), eventCount = 3)
 

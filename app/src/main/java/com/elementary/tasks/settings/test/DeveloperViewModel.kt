@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
@@ -68,6 +69,7 @@ class DeveloperViewModel(
   private val groupV2Repository: GroupV2Repository,
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val workflowTemplateRepository: WorkflowTemplateRepository,
+  private val activateReminderUseCase: ActivateReminderUseCase,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
@@ -99,6 +101,19 @@ class DeveloperViewModel(
     state.update {
       it.copy(
         dialog = DeveloperChoiceDialog(kind = DeveloperDialogKind.CLEAR_TABLE, options = TABLE_OPTIONS, selectedIndex = 0),
+      )
+    }
+  }
+
+  fun onRecurrenceTestClick() {
+    state.update {
+      it.copy(
+        dialog =
+          DeveloperChoiceDialog(
+            kind = DeveloperDialogKind.RECURRENCE_TEST,
+            options = RECURRENCE_TEST_OPTIONS,
+            selectedIndex = 0,
+          ),
       )
     }
   }
@@ -138,11 +153,25 @@ class DeveloperViewModel(
   fun onDialogConfirm() {
     val dialog = state.value.dialog ?: return
     when (dialog.kind) {
-      DeveloperDialogKind.REMINDER -> saveAndOpenReminder(dialog.selectedIndex)
-      DeveloperDialogKind.BIRTHDAY -> saveAndOpenBirthday(dialog.selectedIndex)
-      DeveloperDialogKind.CLEAR_TABLE -> clearSelectedTable(dialog.selectedIndex)
+      DeveloperDialogKind.REMINDER -> {
+        saveAndOpenReminder(dialog.selectedIndex)
+        dismissDialog()
+      }
+      DeveloperDialogKind.BIRTHDAY -> {
+        saveAndOpenBirthday(dialog.selectedIndex)
+        dismissDialog()
+      }
+      DeveloperDialogKind.CLEAR_TABLE -> {
+        clearSelectedTable(dialog.selectedIndex)
+        dismissDialog()
+      }
+      // Chains into RECURRENCE_TEST_TYPE instead of dismissing - it replaces the dialog itself.
+      DeveloperDialogKind.RECURRENCE_TEST -> onRecurrenceTestMinutesSelected(dialog.selectedIndex)
+      DeveloperDialogKind.RECURRENCE_TEST_TYPE -> {
+        startRecurrenceTest(dialog.selectedIndex)
+        dismissDialog()
+      }
     }
-    dismissDialog()
   }
 
   fun onDialogDismiss() {
@@ -182,6 +211,37 @@ class DeveloperViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       birthdayRepository.save(birthday)
       navigationEvent.postValue(Event(DeveloperEvent.OpenBirthdayAction(birthday.uuId)))
+    }
+  }
+
+  private fun onRecurrenceTestMinutesSelected(selectedIndex: Int) {
+    val minutes = RECURRENCE_TEST_MINUTES[selectedIndex]
+    state.update {
+      it.copy(
+        pendingRecurrenceTestMinutes = minutes,
+        dialog =
+          DeveloperChoiceDialog(
+            kind = DeveloperDialogKind.RECURRENCE_TEST_TYPE,
+            options = RECURRENCE_TEST_TYPES,
+            selectedIndex = 0,
+          ),
+      )
+    }
+  }
+
+  private fun startRecurrenceTest(typeIndex: Int) {
+    val minutes = state.value.pendingRecurrenceTestMinutes ?: RECURRENCE_TEST_MINUTES.first()
+    val reminder = prepareRecurrenceTestReminder(typeIndex, minutes)
+    state.update { it.copy(pendingRecurrenceTestMinutes = null) }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      activateReminderUseCase(reminder, startAnyway = true)
+      navigationEvent.postValue(
+        Event(
+          DeveloperEvent.ShowMessage(
+            "Started recurrence test reminder (${RECURRENCE_TEST_TYPES[typeIndex]}), firing in $minutes minute(s)",
+          ),
+        ),
+      )
     }
   }
 
@@ -403,6 +463,35 @@ class DeveloperViewModel(
     }
   }
 
+  private fun prepareRecurrenceTestReminder(typeIndex: Int, minutes: Int): ReminderV2 {
+    val now = LocalDateTime.now()
+    val fireAt = now.plusMinutes(minutes.toLong())
+    val schedule =
+      ReminderSchedule(
+        startDateTime = dateTimeManager.localToUtc(now),
+        eventDateTime = dateTimeManager.localToUtc(fireAt),
+      )
+    // java.time's DayOfWeek.value is MONDAY=1..SUNDAY=7; `% 7` remaps it to the app's
+    // 0=Sunday..6=Saturday convention (see WeekDaysProtocol.getSelectedDaysOfWeek).
+    val weekdayIndex = fireAt.dayOfWeek.value % 7
+    val recurrence =
+      when (typeIndex) {
+        0 -> RecurrenceRule.Once
+        1 -> RecurrenceRule.Countdown(after = minutes * 60_000L)
+        2 -> RecurrenceRule.Daily()
+        3 -> RecurrenceRule.Weekly(weekdays = List(7) { if (it == weekdayIndex) 1 else 0 })
+        4 -> RecurrenceRule.Monthly(dayOfMonth = fireAt.dayOfMonth)
+        5 -> RecurrenceRule.RelativeMonthly(weekday = weekdayIndex, ordinal = (fireAt.dayOfMonth - 1) / 7 + 1)
+        6 -> RecurrenceRule.Yearly(dayOfMonth = fireAt.dayOfMonth, monthOfYear = fireAt.monthValue - 1)
+        else -> RecurrenceRule.ICalendar(rrule = "RRULE:FREQ=DAILY;COUNT=1")
+      }
+    return ReminderV2(
+      summary = "Recurrence test: ${RECURRENCE_TEST_TYPES[typeIndex]}",
+      schedule = schedule,
+      recurrence = recurrence,
+    )
+  }
+
   private fun prepareBirthday(selectedItem: Int): Birthday =
     when (selectedItem) {
       0 -> Birthday(name = "John Doe", date = "1990-05-15", number = "", syncState = SyncState.Synced)
@@ -441,6 +530,10 @@ class DeveloperViewModel(
       .filterNot { it == Table.Reminder }
       .filterNot { it == Table.ReminderGroup }
       .map { it.tableName }
+    private val RECURRENCE_TEST_MINUTES = listOf(1, 2, 5, 10)
+    private val RECURRENCE_TEST_OPTIONS = RECURRENCE_TEST_MINUTES.map { "$it minute${if (it == 1) "" else "s"}" }
+    private val RECURRENCE_TEST_TYPES =
+      listOf("Once", "Countdown", "Daily", "Weekly", "Monthly", "RelativeMonthly", "Yearly", "ICalendar")
   }
 
   private data class DemoNote(

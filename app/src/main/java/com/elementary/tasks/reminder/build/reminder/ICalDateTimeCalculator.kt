@@ -71,6 +71,8 @@ class ICalDateTimeCalculator(
 
     Logger.i(TAG, "Calculated position = $position")
 
+    if (position < 0) return null
+
     return dates[position].dateTime?.let {
       Logger.i(TAG, "Calculated next event date time = $it")
       EventData(

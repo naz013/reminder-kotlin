@@ -17,6 +17,21 @@ class BiErrorForUiAdapter(
     return errorsStr
   }
 
+  /**
+   * Message for a builder item whose own value fails [com.elementary.tasks.reminder.build.bi
+   * .BuilderModifier.isCorrect] with no attached constraint (e.g. a malformed email, or an empty
+   * shopping list) - distinct from [getUiString], which only covers constraint violations and
+   * returns an empty string when there are none, leaving the item's error row blank.
+   */
+  fun getInvalidValueMessage(biType: BiType): String =
+    when (biType) {
+      BiType.EMAIL -> context.getString(R.string.builder_invalid_email_value)
+      BiType.LINK -> context.getString(R.string.builder_invalid_web_address_value)
+      BiType.PHONE_CALL, BiType.SMS -> context.getString(R.string.builder_invalid_phone_number_value)
+      BiType.SUB_TASKS -> context.getString(R.string.builder_shopping_list_empty_value)
+      else -> context.getString(R.string.builder_invalid_value_generic)
+    }
+
   private fun getErrorMessage(error: BuilderItemError): String =
     when (error) {
       is BuilderItemError.PermissionConstraintError -> getPermissionErrorMessage(error)

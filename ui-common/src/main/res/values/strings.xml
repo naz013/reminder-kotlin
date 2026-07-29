@@ -760,6 +760,12 @@
     <string name="builder_blocked_by_x">Blocked by: %s</string>
     <string name="builder_mandatory_if_x">Mandatory if: %s</string>
     <string name="builder_requires_permissions_x">Requires permissions: %s</string>
+    <string name="builder_invalid_email_value">Enter a valid email address</string>
+    <string name="builder_invalid_web_address_value">Enter a valid web address</string>
+    <string name="builder_invalid_phone_number_value">Enter a valid phone number</string>
+    <string name="builder_shopping_list_empty_value">Add at least one item to the list</string>
+    <string name="builder_invalid_value_generic">This value isn\'t valid</string>
+    <string name="builder_permissions_required_message">Grant the requested permissions to continue</string>
     <string name="builder_set_application_action_to_the_reminder">Set open the application as action to the reminder</string>
     <string name="builder_attachments">Attachments</string>
     <string name="builder_customize_additional_parameters_for_a_reminder">Customize additional parameters for a reminder</string>
@@ -798,7 +804,14 @@
     <string name="builder_count_description">The COUNT rule part defines the number of occurrences at which to range-bound the recurrence</string>
     <string name="builder_interval_description">The INTERVAL rule part contains a positive integer representing at which intervals the recurrence rule repeats</string>
     <string name="builder_frequency_description">The Frequency rule part identifies the type of recurrence rule. This rule part MUST be specified in the recurrence rule</string>
-    <string name="builder_empty_message">Start building your Reminder by adding elements to it</string>
+    <string name="builder_empty_message">Choose how you\'d like to get started</string>
+    <string name="builder_quick_start_one_time">One-time reminder</string>
+    <string name="builder_quick_start_every_weekday">Every weekday</string>
+    <string name="builder_quick_start_every_month_day">Every month on this day</string>
+    <string name="builder_quick_start_every_year">Every year on this day</string>
+    <string name="builder_quick_start_timer">Countdown timer</string>
+    <string name="builder_quick_start_shopping_list">Shopping list</string>
+    <string name="builder_quick_start_more_options">More options…</string>
     <string name="builder_selector_tab_parameters">Parameters</string>
     <string name="builder_selector_tab_presets">@string/recur_presets</string>
     <string name="builder_selector_tab_recur_presets">iCalendar presets</string>
@@ -1014,4 +1027,8 @@
     <string name="workflow_action_complete_reminder">Complete the reminder</string>
     <string name="workflow_action_apply_notification_override">Change notification settings</string>
     <string name="workflow_action_activate_reminder">Activate another reminder</string>
+    <string name="preset_buy_groceries">Buy groceries</string>
+    <string name="preset_bread">Bread</string>
+    <string name="preset_juice">Juice</string>
+    <string name="preset_cookies">Cookies</string>
 </resources>

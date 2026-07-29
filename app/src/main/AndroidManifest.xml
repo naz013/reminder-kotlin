@@ -110,7 +110,6 @@
 
         <activity
             android:name=".navigation.BottomNavActivity"
-            android:configChanges="orientation|screenSize|screenLayout|uiMode"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Reminder"
             android:exported="false" />
@@ -229,6 +228,15 @@
                     tools:ignore="AppLinkUrlError" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.bi2" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\..*\\.bi2" />
+                <data android:pathPattern=".*\\..*\\..*\\.bi2" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.bi2" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.bi2" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.bi2" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.bi2" />
             </intent-filter>
         </activity>
 

@@ -37,13 +37,14 @@ import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
 import com.elementary.tasks.reminder.build.preset.primitive.PrimitiveProtocol
+import com.elementary.tasks.reminder.build.quickstart.QuickStartItemsProvider
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.BiTypeToBiValue
 import com.elementary.tasks.reminder.build.reminder.ICalDateTimeCalculator
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.compose.CalendarExportCalculator
-import com.elementary.tasks.reminder.build.reminder.compose.ReminderActionCalculator
 import com.elementary.tasks.reminder.build.reminder.compose.RecurrenceRuleCalculator
+import com.elementary.tasks.reminder.build.reminder.compose.ReminderActionCalculator
 import com.elementary.tasks.reminder.build.reminder.decompose.ActionDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ByDateDecomposer
 import com.elementary.tasks.reminder.build.reminder.decompose.ByDayOfMonthDecomposer
@@ -121,6 +122,7 @@ val reminderModule =
         key.deepLinkDateTimeMillis,
         key.deepLinkTodo,
         key.deepLinkText,
+        get(),
         get(),
         get(),
         get(),
@@ -304,6 +306,8 @@ val reminderModule =
     factory { BuilderPresetsGenerateUseCase(get(), get(), get(), get()) }
 
     factory { DefaultPresetsGenerateUseCase(get(), get(), get(), get()) }
+
+    factoryOf(::QuickStartItemsProvider)
 
     factory { ShopItemsFormatter(get()) }
 

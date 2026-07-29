@@ -53,6 +53,10 @@ to build and already exist in this checkout — don't remove them.
 Release signing is controlled by an optional `keystore.properties` file at the repo root (`signApk=true` plus
 key paths/passwords). Without it, builds are unsigned and that's expected locally.
 
+Use only the `pro` flavor's debug variant for on-device verification and unit tests — `assembleProDebug` /
+`testProDebugUnitTest` (never `free`). Don't run `assembleFreeDebug` or `testFreeDebugUnitTest` unless the
+task specifically concerns free-flavor-only code.
+
 ## Architecture
 
 Multi-module Clean Architecture. The dependency rule that matters most: **lower layers never depend on
