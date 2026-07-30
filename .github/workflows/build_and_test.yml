@@ -85,7 +85,7 @@ jobs:
 
     - name: Publish coverage to PR comment
       uses: mi-kas/kover-report@v2
-      if: always()
+      if: always() && github.event.before != '0000000000000000000000000000000000000000'
       with:
         path: ${{ github.workspace }}/build/reports/kover/report.xml
         token: ${{ secrets.GITHUB_TOKEN }}
