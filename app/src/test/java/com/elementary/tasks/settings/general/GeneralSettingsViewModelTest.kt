@@ -34,6 +34,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
   private var useDynamicColors = false
   private var useMetric = false
   private var analyticsEnabled = false
+  private var hapticFeedbackEnabled = false
 
   private lateinit var viewModel: GeneralSettingsViewModel
 
@@ -53,6 +54,8 @@ class GeneralSettingsViewModelTest : BaseTest() {
     every { prefs.useMetric = any() } answers { useMetric = firstArg() }
     every { prefs.analyticsEnabled } answers { analyticsEnabled }
     every { prefs.analyticsEnabled = any() } answers { analyticsEnabled = firstArg() }
+    every { prefs.hapticsEnabled } answers { hapticFeedbackEnabled }
+    every { prefs.hapticsEnabled = any() } answers { hapticFeedbackEnabled = firstArg() }
 
     every { textProvider.getStringArray(R.array.app_languages) } returns
       arrayOf("System default", "English", "German")
