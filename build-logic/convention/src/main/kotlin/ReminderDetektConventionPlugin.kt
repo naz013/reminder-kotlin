@@ -28,9 +28,12 @@ class ReminderDetektConventionPlugin : Plugin<Project> {
         reports {
           html.required.set(false)
           xml.required.set(false)
-          sarif.required.set(true)
           txt.required.set(false)
           md.required.set(false)
+          sarif.required.set(true)
+          // detekt doesn't apply a default outputLocation convention on this version, so set it
+          // explicitly to keep it queryable when wiring modules into the root reportMerge task.
+          sarif.outputLocation.set(layout.buildDirectory.file("reports/detekt/${name}.sarif"))
         }
       }
     }

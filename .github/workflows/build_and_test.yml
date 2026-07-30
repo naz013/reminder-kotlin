@@ -63,14 +63,14 @@ jobs:
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/cloudtestadmin/google-services.json
 
     - name: Run Detekt static analysis
-      run: ./gradlew detekt --continue -x :cloudtestadmin:detekt -x :reviewsadmin:detekt
+      run: ./gradlew detekt detektReportMerge --continue -x :cloudtestadmin:detekt -x :reviewsadmin:detekt
       continue-on-error: true
 
     - name: Upload Detekt SARIF to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v4
       if: always()
       with:
-        sarif_file: .
+        sarif_file: build/reports/detekt/merge.sarif
         category: detekt
 
     - name: Run all unit tests (Android modules)
