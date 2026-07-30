@@ -160,6 +160,7 @@ private fun ServiceRow(
     Text(
       text = title,
       style = MaterialTheme.typography.titleMedium,
+      color = MaterialTheme.colorScheme.onSurface,
     )
     FilledTonalButton(onClick = onClick, enabled = enabled) {
       Text(text = stringResource(if (isLoggedIn) R.string.logout else R.string.log_in))

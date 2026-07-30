@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.AnimatedGradientBackground
 import com.github.naz013.ui.common.compose.withAlpha
 import com.elementary.tasks.R as AppR
@@ -94,6 +95,7 @@ fun ProVersionScreen(
               Text(
                 text = advantage,
                 style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
               )
             }
           }
@@ -114,9 +116,23 @@ fun ProVersionScreen(
 @Preview(showBackground = true)
 @Composable
 private fun ProVersionScreenPreview() {
-  ProVersionScreen(
-    advantages = listOf("- No Advertisement", "- LED notification"),
-    onBackClick = {},
-    onBuyClick = {},
-  )
+  AppTheme(darkTheme = false) {
+    ProVersionScreen(
+      advantages = listOf("- No Advertisement", "- LED notification"),
+      onBackClick = {},
+      onBuyClick = {},
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProVersionScreenPreview_DarkTheme() {
+  AppTheme(darkTheme = true) {
+    ProVersionScreen(
+      advantages = listOf("- No Advertisement", "- LED notification"),
+      onBackClick = {},
+      onBuyClick = {},
+    )
+  }
 }
