@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
@@ -132,6 +133,7 @@ internal class TasksFactory(
     val fillInIntent = Intent()
     fillInIntent.putExtra(AppWidgetActionActivity.DATA, data)
     fillInIntent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.GOOGLE_TASK)
+    fillInIntent.putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.GOOGLE_TASKS)
     rv.setOnClickFillInIntent(R.id.listItemCard, fillInIntent)
     return rv
   }

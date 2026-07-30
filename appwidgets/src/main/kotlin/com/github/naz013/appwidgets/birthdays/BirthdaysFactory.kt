@@ -9,6 +9,7 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
@@ -105,6 +106,7 @@ internal class BirthdaysFactory(
     val fillInIntent = Intent()
     fillInIntent.putExtra(AppWidgetActionActivity.DATA, data)
     fillInIntent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.BIRTHDAY_PREVIEW)
+    fillInIntent.putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.BIRTHDAYS)
     rv.setOnClickFillInIntent(R.id.itemBackgroundView, fillInIntent)
     return rv
   }

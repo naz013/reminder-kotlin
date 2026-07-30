@@ -10,6 +10,7 @@ import android.util.TypedValue
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.Direction
@@ -19,8 +20,8 @@ import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import com.github.naz013.logging.Logger
-import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.DayViewScreen
+import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.ui.common.context.dp2px
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.threeten.bp.LocalDate
@@ -227,6 +228,7 @@ internal class CalendarMonthFactory(
 
     val fillInIntent = Intent()
     fillInIntent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.HOME)
+    fillInIntent.putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.CALENDAR)
     fillInIntent.putExtra(DeepLinkDestination.KEY, DayViewScreen(bundle))
     rv.setOnClickFillInIntent(R.id.textView, fillInIntent)
     return rv

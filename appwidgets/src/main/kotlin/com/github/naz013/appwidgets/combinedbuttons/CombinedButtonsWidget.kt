@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
@@ -92,6 +93,7 @@ internal class CombinedButtonsWidget : AppWidgetProvider() {
     private fun createIntent(context: Context, direction: Direction): Intent {
       return AppWidgetActionActivity.createIntent(context).apply {
         putExtra(AppWidgetActionActivity.DIRECTION, direction)
+        putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.COMBINED)
       }
     }
   }

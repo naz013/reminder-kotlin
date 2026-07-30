@@ -33,11 +33,11 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 @Composable
 internal fun CombinedWidgetConfigScreen(
+  modifier: Modifier = Modifier,
   state: CombinedWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onBackgroundColorSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val hapticFeedback = LocalHapticFeedback.current
 
@@ -62,7 +62,10 @@ internal fun CombinedWidgetConfigScreen(
         modifier = Modifier
           .width(203.dp)
           .height(57.dp)
-          .background(state.backgroundColor, RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))),
+          .background(
+            state.backgroundColor,
+            RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))
+          ),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
       ) {
