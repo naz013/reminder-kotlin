@@ -5,9 +5,9 @@ targetSdk = "37"
 kotlinTargetJvm = "17"
 
 # Analysis & coverage
-detekt = "1.23.7"
-detekt-compose = "0.4.16"
-kover = "0.8.3"
+detekt = "1.23.8"
+detekt-compose = "0.6.3"
+kover = "0.9.9"
 
 # Plugins
 agp = "9.3.1"
@@ -36,7 +36,7 @@ androidx-work-runtime = "2.11.2"
 androidx-work-runtime-ktx = "2.11.2"
 androidx-localbroadcastmanager = "1.1.0"
 androidx-activity-compose = "1.13.0"
-androidx-compose-material3-adaptive-navigation-suite = "1.5.0-alpha24"
+androidx-compose-material3-adaptive-navigation-suite = "1.5.0-alpha25"
 androidx-compose-material3 = "1.4.0"
 
 glance = "1.1.1"
@@ -49,7 +49,7 @@ androidx-lifecycle = "2.11.0"
 
 androidx-room = "2.8.4"
 
-androidx-navigation3 = "1.1.4"
+androidx-navigation3 = "1.1.5"
 androidx-lifecycle-viewmodel-navigation3 = "2.11.0"
 
 kotlinx-serialization = "1.11.0"

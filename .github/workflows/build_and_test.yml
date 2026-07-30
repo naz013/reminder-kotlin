@@ -67,7 +67,7 @@ jobs:
       continue-on-error: true
 
     - name: Upload Detekt SARIF to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       if: always()
       with:
         sarif_file: .
@@ -80,11 +80,11 @@ jobs:
       run: ./gradlew test --continue -x :cloudtestadmin:test -x :reviewsadmin:test -x :reviews:test
 
     - name: Generate coverage report
-      run: ./gradlew koverXmlReport --continue
+      run: ./gradlew koverXmlReport --continue -x :cloudtestadmin:koverXmlReport -x :reviewsadmin:koverXmlReport
       if: always()
 
     - name: Publish coverage to PR comment
-      uses: mi-kas/kover-report@v1
+      uses: mi-kas/kover-report@v2
       if: always()
       with:
         path: ${{ github.workspace }}/build/reports/kover/xml/report.xml

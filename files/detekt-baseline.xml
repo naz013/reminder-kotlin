@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:DataConverterImpl.kt$private fun detectClass(json: JsonObject): Class&lt;*&gt;</ID>
+    <ID>Indentation:AndroidDataConverterImpl.kt$AndroidDataConverterImpl$ </ID>
+    <ID>ReturnCount:AndroidDataConverterImpl.kt$AndroidDataConverterImpl$override suspend fun toData(uri: Uri): Any?</ID>
+    <ID>TooGenericExceptionCaught:AndroidDataConverterImpl.kt$AndroidDataConverterImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DataConverterImpl.kt$DataConverterImpl$e: Exception</ID>
+    <ID>UseRequire:DataConverterImpl.kt$DataConverterImpl$throw IllegalArgumentException("Expected a JSON object but got: $jsonElement")</ID>
+  </CurrentIssues>
+</SmellBaseline>
