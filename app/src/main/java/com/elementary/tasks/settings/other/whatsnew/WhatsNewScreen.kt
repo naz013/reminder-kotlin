@@ -87,6 +87,7 @@ fun WhatsNewScreen(
             text = whatsNewText,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(20.dp),
+            color = MaterialTheme.colorScheme.onSurface,
           )
         }
         Spacer(modifier = Modifier.height(24.dp))
