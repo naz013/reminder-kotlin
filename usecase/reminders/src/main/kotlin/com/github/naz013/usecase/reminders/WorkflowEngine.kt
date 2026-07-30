@@ -83,13 +83,21 @@ class WorkflowEngine(
 
     val pending = mutableListOf<PendingWorkflowAction>()
     for (rule in rules) {
-      val groupId = (rule.scope as? WorkflowScope.ForGroup)?.groupId ?: continue
-      if (reminderV2Repository.countActiveByGroupId(groupId) > 0) continue
-      reminderV2Repository.getByGroupId(groupId)
-        .filter { !it.isActive && !it.isRemoved && matchesConditions(it, rule.conditions, now) }
-        .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
+      checkGroupCompletion(rule, now, pending)
     }
     return pending
+  }
+
+  private suspend fun checkGroupCompletion(
+    rule: WorkflowRule,
+    now: LocalDateTime,
+    pending: MutableList<PendingWorkflowAction>
+  ) {
+    val groupId = (rule.scope as? WorkflowScope.ForGroup)?.groupId ?: return
+    if (reminderV2Repository.countActiveByGroupId(groupId) > 0) return
+    reminderV2Repository.getByGroupId(groupId)
+      .filter { !it.isActive && !it.isRemoved && matchesConditions(it, rule.conditions, now) }
+      .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
   }
 
   /** Fires every enabled, in-scope [WorkflowTrigger.ReminderCompleted] rule for [reminderId]. */
@@ -184,24 +192,27 @@ class WorkflowEngine(
   private fun qualifies(reminder: ReminderV2, rule: WorkflowRule, now: LocalDateTime): Boolean =
     isInScope(reminder, rule.scope) && matchesConditions(reminder, rule.conditions, now)
 
-  private fun matchesConditions(reminder: ReminderV2, conditions: List<WorkflowCondition>, now: LocalDateTime): Boolean =
-    conditions.all { condition ->
-      when (condition) {
-        is WorkflowCondition.PriorityAtLeast ->
-          (reminder.notification.priority ?: ReminderPriority.NORMAL).ordinal >= condition.priority.ordinal
+  private fun matchesConditions(
+    reminder: ReminderV2,
+    conditions: List<WorkflowCondition>,
+    now: LocalDateTime
+  ): Boolean = conditions.all { condition ->
+    when (condition) {
+      is WorkflowCondition.PriorityAtLeast ->
+        (reminder.notification.priority ?: ReminderPriority.NORMAL).ordinal >= condition.priority.ordinal
 
-        is WorkflowCondition.WithinTimeWindow -> {
-          val minuteOfDay = now.hour * 60 + now.minute
-          if (condition.fromMinuteOfDay <= condition.toMinuteOfDay) {
-            minuteOfDay in condition.fromMinuteOfDay until condition.toMinuteOfDay
-          } else {
-            minuteOfDay >= condition.fromMinuteOfDay || minuteOfDay < condition.toMinuteOfDay
-          }
+      is WorkflowCondition.WithinTimeWindow -> {
+        val minuteOfDay = now.hour * 60 + now.minute
+        if (condition.fromMinuteOfDay <= condition.toMinuteOfDay) {
+          minuteOfDay in condition.fromMinuteOfDay until condition.toMinuteOfDay
+        } else {
+          minuteOfDay >= condition.fromMinuteOfDay || minuteOfDay < condition.toMinuteOfDay
         }
-
-        is WorkflowCondition.GroupIs -> reminder.groupId == condition.groupId
       }
+
+      is WorkflowCondition.GroupIs -> reminder.groupId == condition.groupId
     }
+  }
 
   private suspend fun apply(action: WorkflowAction, reminder: ReminderV2): PendingWorkflowAction? =
     when (action) {

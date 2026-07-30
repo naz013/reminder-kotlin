@@ -24,7 +24,10 @@ class ResolveReminderV2NotificationSettingsUseCaseTest {
     val group = GroupV2(uuId = "group-1", notification = NotificationSettingsOverride(priority = ReminderPriority.LOW))
     val groupRepository = FakeGroupV2Repository(mapOf(group.uuId to group))
     val useCase = ResolveReminderV2NotificationSettingsUseCase(groupRepository, settingsRepository)
-    val reminder = reminderWith(groupId = "group-1", override = NotificationSettingsOverride(priority = ReminderPriority.HIGH))
+    val reminder = reminderWith(
+      groupId = "group-1",
+      override = NotificationSettingsOverride(priority = ReminderPriority.HIGH)
+    )
 
     val result = useCase(reminder)
 
