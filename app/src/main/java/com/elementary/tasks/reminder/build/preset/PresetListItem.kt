@@ -29,7 +29,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 fun PresetListItem(
   modifier: Modifier = Modifier,
   preset: UiPresetList,
-  onClick: (() -> Unit)? = null,
+  onClick: () -> Unit = {},
   canDelete: Boolean = true,
   onDeleteClick: (() -> Unit)? = null,
   dividerBottom: Boolean = true,
@@ -39,13 +39,7 @@ fun PresetListItem(
       modifier =
         Modifier
           .fillMaxWidth()
-          .apply(
-            block = {
-              if (onClick != null) {
-                clickable(onClick = onClick)
-              }
-            }
-          )
+          .clickable(onClick = onClick)
           .padding(horizontal = 16.dp, vertical = 12.dp),
       verticalAlignment = Alignment.CenterVertically,
     ) {
