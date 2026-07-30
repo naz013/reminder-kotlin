@@ -1,11 +1,8 @@
 package com.github.naz013.appwidgets
 
-import android.content.Context
 import com.github.naz013.logging.Logger
 
-class AppWidgetPreviewUpdaterImpl(
-  private val context: Context
-) : AppWidgetPreviewUpdater {
+class AppWidgetPreviewUpdaterImpl : AppWidgetPreviewUpdater {
 
   override suspend fun updateEventsWidgetPreview() {
     Logger.d("AppWidgetPreviewUpdater", "Updating events widget preview")

@@ -20,8 +20,8 @@ import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import com.github.naz013.logging.Logger
-import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.DayViewScreen
+import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.ui.common.context.dp2px
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.threeten.bp.LocalDate

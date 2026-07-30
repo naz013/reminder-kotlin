@@ -32,12 +32,7 @@ internal class CalendarPreviousReceiver : BroadcastReceiver(), KoinComponent {
 
       val year = prefsProvider.getYear()
       val month = prefsProvider.getMonth() + 1
-
-      val date = LocalDate.of(
-        /* year = */ year,
-        /* month = */ month,
-        /* dayOfMonth = */ 15
-      ).minusMonths(1)
+      val date = LocalDate.of(year, month, 15).minusMonths(1)
 
       prefsProvider.setMonth(date.monthValue - 1)
       prefsProvider.setYear(date.year)
