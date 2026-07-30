@@ -34,6 +34,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
   private var useDynamicColors = false
   private var useMetric = false
   private var analyticsEnabled = false
+  private var hapticFeedbackEnabled = false
 
   private lateinit var viewModel: GeneralSettingsViewModel
 
@@ -53,6 +54,8 @@ class GeneralSettingsViewModelTest : BaseTest() {
     every { prefs.useMetric = any() } answers { useMetric = firstArg() }
     every { prefs.analyticsEnabled } answers { analyticsEnabled }
     every { prefs.analyticsEnabled = any() } answers { analyticsEnabled = firstArg() }
+    every { prefs.hapticsEnabled } answers { hapticFeedbackEnabled }
+    every { prefs.hapticsEnabled = any() } answers { hapticFeedbackEnabled = firstArg() }
 
     every { textProvider.getStringArray(R.array.app_languages) } returns
       arrayOf("System default", "English", "German")
@@ -150,7 +153,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
     assertEquals(2, appLanguage)
     assertNull(viewModel.state.value.dialog)
     assertEquals("German", viewModel.state.value.languageName)
-    val event = viewModel.navigationEvent.value?.peekContent()
+    val event = viewModel.event.value?.peekContent()
     assertEquals(GeneralSettingsEvent.RecreateActivity, event)
   }
 
@@ -162,7 +165,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
     viewModel.onDialogOptionSelected(0)
 
     assertEquals(0, appLanguage)
-    assertNull(viewModel.navigationEvent.value)
+    assertNull(viewModel.event.value)
   }
 
   @Test
@@ -204,7 +207,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
 
     assertEquals(true, useDynamicColors)
     assertEquals(true, viewModel.state.value.useDynamicColors)
-    val event = viewModel.navigationEvent.value?.peekContent()
+    val event = viewModel.event.value?.peekContent()
     assertEquals(GeneralSettingsEvent.ApplyDynamicColorsAndRecreate(true), event)
   }
 

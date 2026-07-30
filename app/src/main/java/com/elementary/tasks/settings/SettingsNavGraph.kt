@@ -120,14 +120,19 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
 private fun GeneralEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GeneralSettingsViewModel>()
 
+  val hapticFeedback = LocalHapticFeedback.current
   val appRestartController = rememberAppRestartController()
 
   val state by viewModel.state.collectAsState()
-  viewModel.navigationEvent.ObserveEvent { event ->
+  viewModel.event.ObserveEvent { event ->
     when (event) {
       GeneralSettingsEvent.RecreateActivity -> appRestartController.recreate()
       is GeneralSettingsEvent.ApplyDynamicColorsAndRecreate -> {
         appRestartController.applyDynamicColorsAndRecreate(event.useDynamicColors)
+      }
+
+      is GeneralSettingsEvent.HapticFeedback -> {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
       }
     }
   }
@@ -137,6 +142,7 @@ private fun GeneralEntry(backStack: MutableList<NavKey>) {
     onBackClick = { backStack.removeLastOrNull() },
   ) { padding ->
     GeneralSettingsScreen(
+      modifier = Modifier.padding(padding),
       state = state,
       onLanguageClick = viewModel::onLanguageClick,
       onThemeClick = viewModel::onThemeClick,
@@ -146,7 +152,7 @@ private fun GeneralEntry(backStack: MutableList<NavKey>) {
       onAnalyticsToggle = { viewModel.onAnalyticsToggle() },
       onDialogOptionSelected = viewModel::onDialogOptionSelected,
       onDialogDismiss = viewModel::onDialogDismiss,
-      modifier = Modifier.padding(padding),
+      onHapticToggle = { viewModel.onHapticToggle() }
     )
   }
 }

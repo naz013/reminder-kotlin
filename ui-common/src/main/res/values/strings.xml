@@ -1031,4 +1031,7 @@
     <string name="preset_bread">Bread</string>
     <string name="preset_juice">Juice</string>
     <string name="preset_cookies">Cookies</string>
+    <string name="haptic_feedback">Haptic feedback</string>
+    <string name="use_haptic_feedback_for_interactions">Use haptic feedback for interactions</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">Do not use haptic feedback for interactions</string>
 </resources>

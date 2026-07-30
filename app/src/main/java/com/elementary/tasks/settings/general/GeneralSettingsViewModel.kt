@@ -26,7 +26,7 @@ class GeneralSettingsViewModel(
   private val themeModeHolder: ThemeModeHolder,
 ) : ViewModel() {
   val state: StateFlow<GeneralSettingsState> field = MutableStateFlow(buildState())
-  val navigationEvent: LiveData<Event<GeneralSettingsEvent>> field = mutableLiveEventOf()
+  val event: LiveData<Event<GeneralSettingsEvent>> field = mutableLiveEventOf()
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.GENERAL_SETTINGS))
@@ -82,12 +82,20 @@ class GeneralSettingsViewModel(
   fun onDynamicColorsToggle() {
     prefs.useDynamicColors = !prefs.useDynamicColors
     refreshState()
-    navigationEvent.emit(GeneralSettingsEvent.ApplyDynamicColorsAndRecreate(prefs.useDynamicColors))
+    event.emit(GeneralSettingsEvent.ApplyDynamicColorsAndRecreate(prefs.useDynamicColors))
   }
 
   fun onMetricToggle() {
     prefs.useMetric = !prefs.useMetric
     refreshState()
+  }
+
+  fun onHapticToggle() {
+    prefs.hapticsEnabled = !prefs.hapticsEnabled
+    refreshState()
+    if (prefs.hapticsEnabled) {
+      event.emit(GeneralSettingsEvent.HapticFeedback)
+    }
   }
 
   fun onAnalyticsToggle() {
@@ -102,7 +110,7 @@ class GeneralSettingsViewModel(
     refreshState()
     if (changed) {
       AppCompatDelegate.setApplicationLocales(Language.getLocaleList(index))
-      navigationEvent.emit(GeneralSettingsEvent.RecreateActivity)
+      event.emit(GeneralSettingsEvent.RecreateActivity)
     }
   }
 
@@ -142,6 +150,7 @@ class GeneralSettingsViewModel(
       useDynamicColors = prefs.useDynamicColors,
       isMetricChecked = prefs.useMetric,
       isAnalyticsChecked = prefs.analyticsEnabled,
+      hapticFeedbackEnabled = prefs.hapticsEnabled,
     )
   }
 

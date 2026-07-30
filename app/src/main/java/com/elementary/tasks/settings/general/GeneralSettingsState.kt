@@ -9,6 +9,7 @@ data class GeneralSettingsState(
   val isAnalyticsChecked: Boolean = false,
   val dialog: GeneralSettingsDialog? = null,
   val useDynamicColors: Boolean = false,
+  val hapticFeedbackEnabled: Boolean = false,
 )
 
 sealed class GeneralSettingsDialog {
@@ -35,10 +36,12 @@ sealed class GeneralSettingsDialog {
   ) : GeneralSettingsDialog()
 }
 
-sealed class GeneralSettingsEvent {
-  data object RecreateActivity : GeneralSettingsEvent()
+sealed interface GeneralSettingsEvent {
+  data object RecreateActivity : GeneralSettingsEvent
 
   data class ApplyDynamicColorsAndRecreate(
     val useDynamicColors: Boolean,
-  ) : GeneralSettingsEvent()
+  ) : GeneralSettingsEvent
+
+  data object HapticFeedback : GeneralSettingsEvent
 }
