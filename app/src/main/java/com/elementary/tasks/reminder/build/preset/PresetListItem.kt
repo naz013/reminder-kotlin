@@ -27,9 +27,9 @@ import com.github.naz013.ui.common.compose.AppTheme
  */
 @Composable
 fun PresetListItem(
-  preset: UiPresetList,
-  onClick: () -> Unit,
   modifier: Modifier = Modifier,
+  preset: UiPresetList,
+  onClick: (() -> Unit)? = null,
   canDelete: Boolean = true,
   onDeleteClick: (() -> Unit)? = null,
   dividerBottom: Boolean = true,
@@ -39,6 +39,13 @@ fun PresetListItem(
       modifier =
         Modifier
           .fillMaxWidth()
+          .apply(
+            block = {
+              if (onClick != null) {
+                clickable(onClick = onClick)
+              }
+            }
+          )
           .padding(horizontal = 16.dp, vertical = 12.dp),
       verticalAlignment = Alignment.CenterVertically,
     ) {
