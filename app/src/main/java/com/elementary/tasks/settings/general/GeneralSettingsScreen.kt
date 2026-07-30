@@ -29,6 +29,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchIt
 
 @Composable
 fun GeneralSettingsScreen(
+  modifier: Modifier = Modifier,
   state: GeneralSettingsState,
   onLanguageClick: () -> Unit,
   onThemeClick: () -> Unit,
@@ -38,7 +39,7 @@ fun GeneralSettingsScreen(
   onAnalyticsToggle: (Boolean) -> Unit,
   onDialogOptionSelected: (Int) -> Unit,
   onDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
+  onHapticToggle: (Boolean) -> Unit,
 ) {
   Column(
     modifier =
@@ -97,6 +98,15 @@ fun GeneralSettingsScreen(
       icon = painterResource(R.drawable.ic_fluent_data_area),
       dividerBottom = true,
     )
+    SettingsSwitchItem(
+      title = stringResource(R.string.haptic_feedback),
+      checked = state.hapticFeedbackEnabled,
+      onCheckedChange = onHapticToggle,
+      subtitleOn = stringResource(R.string.use_haptic_feedback_for_interactions),
+      subtitleOff = stringResource(R.string.do_not_use_haptic_feedback_for_interactions),
+      icon = painterResource(R.drawable.ic_fluent_phone_vibrate),
+      dividerBottom = true,
+    )
   }
 
   val dialog = state.dialog
@@ -137,7 +147,8 @@ private fun SingleChoiceDialog(
                   selected = selected,
                   onClick = { onOptionSelected(index) },
                   role = Role.RadioButton,
-                ).padding(vertical = 8.dp),
+                )
+                .padding(vertical = 8.dp),
           ) {
             RadioButton(selected = selected, onClick = null)
             Text(

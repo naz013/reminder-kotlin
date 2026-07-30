@@ -150,7 +150,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
     assertEquals(2, appLanguage)
     assertNull(viewModel.state.value.dialog)
     assertEquals("German", viewModel.state.value.languageName)
-    val event = viewModel.navigationEvent.value?.peekContent()
+    val event = viewModel.event.value?.peekContent()
     assertEquals(GeneralSettingsEvent.RecreateActivity, event)
   }
 
@@ -162,7 +162,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
     viewModel.onDialogOptionSelected(0)
 
     assertEquals(0, appLanguage)
-    assertNull(viewModel.navigationEvent.value)
+    assertNull(viewModel.event.value)
   }
 
   @Test
@@ -204,7 +204,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
 
     assertEquals(true, useDynamicColors)
     assertEquals(true, viewModel.state.value.useDynamicColors)
-    val event = viewModel.navigationEvent.value?.peekContent()
+    val event = viewModel.event.value?.peekContent()
     assertEquals(GeneralSettingsEvent.ApplyDynamicColorsAndRecreate(true), event)
   }
 
