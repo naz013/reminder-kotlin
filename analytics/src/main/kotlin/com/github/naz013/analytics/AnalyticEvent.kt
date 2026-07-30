@@ -66,6 +66,20 @@ data class WidgetUsedEvent(
   }
 }
 
+/** Send on every real tap on a widget already placed on the home screen (item/button clicks),
+ *  as opposed to [WidgetUsedEvent] which fires when the widget is added/reconfigured. Lets GA
+ *  distinguish "most added" from "most actively used" widget types. */
+data class WidgetInteractedEvent(
+  val widget: Widget
+) : AnalyticEvent(Event.WIDGET_INTERACTED) {
+
+  override fun getParams(): Bundle {
+    return Bundle().apply {
+      putString(Parameter.TYPE, widget.value)
+    }
+  }
+}
+
 data class PresetUsed(
   val presetAction: PresetAction
 ) : AnalyticEvent(Event.PRESET_USED) {
@@ -138,7 +152,8 @@ enum class Event(val value: String) {
   REMINDER_USED("reminder_used"),
   SCREEN_OPENED("screen_opened"),
   PRESET_USED("preset_used"),
-  WIDGET_USED("widget_used")
+  WIDGET_USED("widget_used"),
+  WIDGET_INTERACTED("widget_interacted")
 }
 
 enum class PresetAction(val value: String) {

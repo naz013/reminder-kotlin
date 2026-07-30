@@ -4,6 +4,9 @@ import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Widget
+import com.github.naz013.analytics.WidgetInteractedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.appwidgets.WidgetPrefsHolder
 import com.github.naz013.logging.Logger
@@ -15,6 +18,7 @@ internal class CalendarPreviousReceiver : BroadcastReceiver(), KoinComponent {
 
   private val widgetPrefsHolder by inject<WidgetPrefsHolder>()
   private val appWidgetUpdater by inject<AppWidgetUpdater>()
+  private val analyticsEventSender by inject<AnalyticsEventSender>()
 
   override fun onReceive(context: Context?, intent: Intent?) {
     Logger.d(TAG, "onReceive: $intent")
@@ -38,6 +42,7 @@ internal class CalendarPreviousReceiver : BroadcastReceiver(), KoinComponent {
       prefsProvider.setMonth(date.monthValue - 1)
       prefsProvider.setYear(date.year)
       appWidgetUpdater.updateCalendarWidget()
+      analyticsEventSender.send(WidgetInteractedEvent(Widget.CALENDAR))
     }
   }
 

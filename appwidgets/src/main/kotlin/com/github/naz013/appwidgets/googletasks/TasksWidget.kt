@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
@@ -45,6 +46,7 @@ internal class TasksWidget : AppWidgetProvider() {
         val data = WidgetIntentProtocol(mapOf())
         putExtra(AppWidgetActionActivity.DATA, data)
         putExtra(AppWidgetActionActivity.DIRECTION, Direction.GOOGLE_TASK)
+        putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.GOOGLE_TASKS)
       }
       if (WidgetUtils.isDarkBg(headerBgColor)) {
         WidgetUtils.initButton(

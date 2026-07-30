@@ -39,6 +39,7 @@ import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
@@ -69,6 +70,9 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   )
   private val dataKey = ActionParameters.Key<WidgetIntentProtocol>(
     AppWidgetActionActivity.DATA
+  )
+  private val widgetTypeKey = ActionParameters.Key<Widget>(
+    AppWidgetActionActivity.WIDGET_TYPE
   )
 
   override val stateDefinition: GlanceStateDefinition<EventsAppWidgetState>
@@ -170,7 +174,10 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             .clickable(
               onClick = actionStartActivity(
                 intent = viewIntent,
-                parameters = actionParametersOf(directionKey to Direction.ADD_REMINDER)
+                parameters = actionParametersOf(
+                  directionKey to Direction.ADD_REMINDER,
+                  widgetTypeKey to Widget.EVENTS
+                )
               )
             ),
           provider = ImageProvider(R.drawable.ic_fluent_add),
@@ -264,7 +271,8 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             intent = viewIntent,
             parameters = actionParametersOf(
               directionKey to Direction.BIRTHDAY_PREVIEW,
-              dataKey to createData(data.uuId)
+              dataKey to createData(data.uuId),
+              widgetTypeKey to Widget.EVENTS
             )
           )
         ),
@@ -322,7 +330,8 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             intent = viewIntent,
             parameters = actionParametersOf(
               directionKey to Direction.REMINDER_PREVIEW,
-              dataKey to createData(data.uuId)
+              dataKey to createData(data.uuId),
+              widgetTypeKey to Widget.EVENTS
             )
           )
         ),
@@ -380,7 +389,8 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             intent = viewIntent,
             parameters = actionParametersOf(
               directionKey to Direction.REMINDER_PREVIEW,
-              dataKey to createData(data.uuId)
+              dataKey to createData(data.uuId),
+              widgetTypeKey to Widget.EVENTS
             )
           )
         ),

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
@@ -89,6 +90,7 @@ internal class NotesWidget : AppWidgetProvider() {
     private fun createIntent(context: Context): Intent {
       return AppWidgetActionActivity.createIntent(context).apply {
         putExtra(AppWidgetActionActivity.DIRECTION, Direction.ADD_NOTE)
+        putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.NOTES)
       }
     }
   }

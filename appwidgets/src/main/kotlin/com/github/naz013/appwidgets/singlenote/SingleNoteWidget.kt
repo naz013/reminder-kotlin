@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
@@ -120,6 +121,7 @@ internal class SingleNoteWidget : AppWidgetProvider(), KoinComponent {
         val intent = AppWidgetActionActivity.createIntent(context)
         intent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.NOTE_PREVIEW)
         intent.putExtra(AppWidgetActionActivity.DATA, data)
+        intent.putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.SINGLE_NOTE)
         val pendingIntent = PendingIntentWrapper.getActivity(
           context,
           uiNoteWidget.uniqueId,

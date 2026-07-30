@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
@@ -106,6 +107,7 @@ internal class NotesFactory(
     val fillInIntent = Intent().apply {
       putExtra(AppWidgetActionActivity.DIRECTION, Direction.NOTE_PREVIEW)
       putExtra(AppWidgetActionActivity.DATA, data)
+      putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.NOTES)
     }
     rv.setOnClickFillInIntent(R.id.note, fillInIntent)
     rv.setOnClickFillInIntent(R.id.noteImage, fillInIntent)

@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
+import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
@@ -235,6 +236,7 @@ internal class CalendarWidget : AppWidgetProvider(), KoinComponent {
     private fun createIntent(context: Context, direction: Direction): Intent {
       return AppWidgetActionActivity.createIntent(context).apply {
         putExtra(AppWidgetActionActivity.DIRECTION, direction)
+        putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.CALENDAR)
       }
     }
   }
