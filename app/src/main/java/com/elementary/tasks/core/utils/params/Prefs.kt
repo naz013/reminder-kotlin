@@ -5,9 +5,9 @@ import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
+import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.simplemap.MapConfig
-import com.github.naz013.common.system.Module
 import com.github.naz013.domain.font.FontParams
 
 typealias PrefsObserver = (String) -> Unit
@@ -172,21 +172,21 @@ class Prefs(
     }
 
   var doNotDisturbFrom: String
-    get() = getString(PrefsConstants.DO_NOT_DISTURB_FROM)
+    get() = getString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
     set(value) {
       putString(PrefsConstants.DO_NOT_DISTURB_FROM, value)
       notifyKey(PrefsConstants.DO_NOT_DISTURB_FROM)
     }
 
   var doNotDisturbTo: String
-    get() = getString(PrefsConstants.DO_NOT_DISTURB_TO)
+    get() = getString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
     set(value) {
       putString(PrefsConstants.DO_NOT_DISTURB_TO, value)
       notifyKey(PrefsConstants.DO_NOT_DISTURB_TO)
     }
 
   var doNotDisturbIgnore: Int
-    get() = getInt(PrefsConstants.DO_NOT_DISTURB_IGNORE)
+    get() = getInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
     set(value) {
       putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, value)
       notifyKey(PrefsConstants.DO_NOT_DISTURB_IGNORE)
@@ -197,15 +197,12 @@ class Prefs(
     set(value) = putInt(PrefsConstants.DO_NOT_DISTURB_ACTION, value)
 
   var defaultPriority: Int
-    get() = getInt(PrefsConstants.DEFAULT_PRIORITY)
+    get() = getInt(PrefsConstants.DEFAULT_PRIORITY, 2)
     set(value) = putInt(PrefsConstants.DEFAULT_PRIORITY, value)
 
   var birthdayPriority: Int
-    get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY)
+    get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
     set(value) = putInt(PrefsConstants.BIRTHDAY_PRIORITY, value)
-
-  val isTelephonyAllowed: Boolean
-    get() = Module.hasTelephony(context) && isTelephonyEnabled
 
   var isTelephonyEnabled: Boolean
     get() = getBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, true)
@@ -216,23 +213,23 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.MOVE_TO_TRASH, value)
 
   var appLanguage: Int
-    get() = getInt(PrefsConstants.APP_LANGUAGE)
+    get() = getInt(PrefsConstants.APP_LANGUAGE, 0)
     set(value) = putInt(PrefsConstants.APP_LANGUAGE, value)
 
   var markerStyle: Int
-    get() = getInt(PrefsConstants.MARKER_STYLE)
+    get() = getInt(PrefsConstants.MARKER_STYLE, MapConfig.DEFAULT_MARKER_STYLE)
     set(value) = putInt(PrefsConstants.MARKER_STYLE, value)
 
   var todayColor: Int
-    get() = getInt(PrefsConstants.TODAY_COLOR)
+    get() = getInt(PrefsConstants.TODAY_COLOR, 0)
     set(value) = putInt(PrefsConstants.TODAY_COLOR, value)
 
   var reminderColor: Int
-    get() = getInt(PrefsConstants.REMINDER_COLOR)
+    get() = getInt(PrefsConstants.REMINDER_COLOR, 4)
     set(value) = putInt(PrefsConstants.REMINDER_COLOR, value)
 
   var birthdayColor: Int
-    get() = getInt(PrefsConstants.BIRTH_COLOR)
+    get() = getInt(PrefsConstants.BIRTH_COLOR, 2)
     set(value) = putInt(PrefsConstants.BIRTH_COLOR, value)
 
   val is24HourFormat: Boolean
@@ -246,11 +243,11 @@ class Prefs(
     }
 
   var hourFormat: Int
-    get() = getInt(PrefsConstants.TIME_FORMAT)
+    get() = getInt(PrefsConstants.TIME_FORMAT, 0)
     set(value) = putInt(PrefsConstants.TIME_FORMAT, value)
 
   var isCalendarEnabled: Boolean
-    get() = getBoolean(PrefsConstants.EXPORT_TO_CALENDAR)
+    get() = getBoolean(PrefsConstants.EXPORT_TO_CALENDAR, false)
     set(value) = putBoolean(PrefsConstants.EXPORT_TO_CALENDAR, value)
 
   var isWearEnabled: Boolean
@@ -270,19 +267,19 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.TRACKING_NOTIFICATION, value)
 
   var mapType: Int
-    get() = getInt(PrefsConstants.MAP_TYPE)
+    get() = getInt(PrefsConstants.MAP_TYPE, MapConfig.DEFAULT_MAP_TYPE)
     set(value) = putInt(PrefsConstants.MAP_TYPE, value)
 
   var mapStyle: Int
-    get() = getInt(PrefsConstants.MAP_STYLE)
+    get() = getInt(PrefsConstants.MAP_STYLE, MapConfig.DEFAULT_MAP_STYLE)
     set(value) = putInt(PrefsConstants.MAP_STYLE, value)
 
   var trackTime: Int
-    get() = getInt(PrefsConstants.TRACK_TIME)
+    get() = getInt(PrefsConstants.TRACK_TIME, 1)
     set(value) = putInt(PrefsConstants.TRACK_TIME, value)
 
   var driveUser: String
-    get() = SuperUtil.decrypt(getString(PrefsConstants.DRIVE_USER))
+    get() = SuperUtil.decrypt(getString(PrefsConstants.DRIVE_USER, "none"))
     set(value) = putString(PrefsConstants.DRIVE_USER, SuperUtil.encrypt(value))
 
   var tasksUser: String
@@ -294,7 +291,7 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.STATUS_BAR_ICON, value)
 
   var snoozeTime: Int
-    get() = getInt(PrefsConstants.DELAY_TIME)
+    get() = getInt(PrefsConstants.DELAY_TIME, 5)
     set(value) = putInt(PrefsConstants.DELAY_TIME, value)
 
   var isNotificationRepeatEnabled: Boolean
@@ -302,15 +299,15 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.NOTIFICATION_REPEAT, value)
 
   var notificationRepeatTime: Int
-    get() = getInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL)
+    get() = getInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, 15)
     set(value) = putInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, value)
 
   var isLedEnabled: Boolean
-    get() = getBoolean(PrefsConstants.LED_STATUS)
+    get() = getBoolean(PrefsConstants.LED_STATUS, true)
     set(value) = putBoolean(PrefsConstants.LED_STATUS, value)
 
   var ledColor: Int
-    get() = getInt(PrefsConstants.LED_COLOR)
+    get() = getInt(PrefsConstants.LED_COLOR, LED.BLUE)
     set(value) = putInt(PrefsConstants.LED_COLOR, value)
 
   // ReminderV2 notification-customization defaults (base of the Settings -> Group -> Reminder hierarchy)
@@ -347,11 +344,11 @@ class Prefs(
     set(value) = putString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, value)
 
   var calendarEventDuration: Int
-    get() = getInt(PrefsConstants.EVENT_DURATION)
+    get() = getInt(PrefsConstants.EVENT_DURATION, 30)
     set(value) = putInt(PrefsConstants.EVENT_DURATION, value)
 
   var startDay: Int
-    get() = getInt(PrefsConstants.START_DAY)
+    get() = getInt(PrefsConstants.START_DAY, 1)
     set(value) = putInt(PrefsConstants.START_DAY, value)
 
   var isBirthdayReminderEnabled: Boolean
@@ -367,11 +364,11 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.WIDGET_BIRTHDAYS, value)
 
   var isBirthdayPermanentEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_PERMANENT)
+    get() = getBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, value)
 
   var daysToBirthday: Int
-    get() = getInt(PrefsConstants.DAYS_TO_BIRTHDAY)
+    get() = getInt(PrefsConstants.DAYS_TO_BIRTHDAY, 0)
     set(value) = putInt(PrefsConstants.DAYS_TO_BIRTHDAY, value)
 
   var birthdayDurationInDays: Int
@@ -379,23 +376,23 @@ class Prefs(
     set(value) = putInt(PrefsConstants.TO_BIRTHDAY_DAYS, value)
 
   var isContactBirthdaysEnabled: Boolean
-    get() = getBoolean(PrefsConstants.CONTACT_BIRTHDAYS)
+    get() = getBoolean(PrefsConstants.CONTACT_BIRTHDAYS, false)
     set(value) = putBoolean(PrefsConstants.CONTACT_BIRTHDAYS, value)
 
   var isContactAutoCheckEnabled: Boolean
-    get() = getBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS)
+    get() = getBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS, false)
     set(value) = putBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS, value)
 
   var isBirthdayGlobalEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL)
+    get() = getBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL, true)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL, value)
 
   var isBirthdayLedEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_LED_STATUS)
+    get() = getBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, false)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, value)
 
   var birthdayLedColor: Int
-    get() = getInt(PrefsConstants.BIRTHDAY_LED_COLOR)
+    get() = getInt(PrefsConstants.BIRTHDAY_LED_COLOR, LED.BLUE)
     set(value) = putInt(PrefsConstants.BIRTHDAY_LED_COLOR, value)
 
   var noteOrder: String
