@@ -1,7 +1,6 @@
 package com.github.naz013.domain
 
 import com.github.naz013.domain.reminder.BuilderSchemeItem
-import com.github.naz013.domain.reminder.ReminderType
 import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
@@ -220,11 +219,6 @@ data class Reminder(
     reminder.isActive = true
     reminder.isRemoved = false
     return reminder
-  }
-
-  @Deprecated("Types are not used anymore")
-  fun readType(): ReminderType {
-    return ReminderType(type)
   }
 
   object Action {

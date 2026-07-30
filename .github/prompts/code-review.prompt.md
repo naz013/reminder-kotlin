@@ -5,7 +5,7 @@ description: 'Review staged or recently changed code for correctness, style, and
 
 ## Task
 
-Perform a thorough code review of the changes described below. Focus on correctness, architecture compliance, and Kotlin best practices. Do **not** flag purely stylistic nits that are already handled by ktlint.
+Perform a thorough code review of the changes described below. Focus on correctness, architecture compliance, and Kotlin best practices. Do **not** flag purely stylistic nits that are already handled by detekt-formatting (indentation, spacing, import order, etc.).
 
 ## What to Review
 

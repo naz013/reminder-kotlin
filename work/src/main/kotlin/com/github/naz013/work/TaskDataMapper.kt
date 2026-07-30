@@ -22,7 +22,8 @@ internal fun TaskData.toWorkData(taskKey: String): Data {
   return builder.build()
 }
 
-internal fun taskKeyOnlyWorkData(taskKey: String): Data = Data.Builder().putString(GenericTaskWorker.KEY_TASK_KEY, taskKey).build()
+internal fun taskKeyOnlyWorkData(taskKey: String): Data =
+  Data.Builder().putString(GenericTaskWorker.KEY_TASK_KEY, taskKey).build()
 
 internal fun Data.toTaskData(): TaskData = TaskData.of(keyValueMap)
 

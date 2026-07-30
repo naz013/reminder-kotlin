@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:RecurParamParser.kt$RecurParamParser$private fun parseValue(input: String, type: RecurParamType): RecurParam?</ID>
+    <ID>ImportOrdering:RecurrenceDateTimeTagParser.kt$import com.github.naz013.icalendar.RecurrenceDateTimeTag import com.github.naz013.icalendar.TagType import com.github.naz013.icalendar.UtcDateTime import com.github.naz013.icalendar.ValueParam import com.github.naz013.icalendar.parser.common.ArrayParser import com.github.naz013.icalendar.parser.common.UtcDateTimeParser import com.github.naz013.icalendar.parser.common.ParamParser</ID>
+    <ID>NestedBlockDepth:Duration.kt$Duration$private fun parse()</ID>
+    <ID>NoUnusedImports:ArrayParserTest.kt$com.github.naz013.icalendar.parser.common.ArrayParserTest.kt</ID>
+    <ID>NoUnusedImports:DurationTagParserTest.kt$com.github.naz013.icalendar.parser.DurationTagParserTest.kt</ID>
+    <ID>NoUnusedImports:LinesParserTest.kt$com.github.naz013.icalendar.parser.common.LinesParserTest.kt</ID>
+    <ID>NoUnusedImports:ParamParserTest.kt$com.github.naz013.icalendar.parser.common.ParamParserTest.kt</ID>
+    <ID>NoUnusedImports:RecurrenceDateTimeTagParserTest.kt$com.github.naz013.icalendar.parser.RecurrenceDateTimeTagParserTest.kt</ID>
+    <ID>NoUnusedImports:RecurrenceRuleTagParserTest.kt$com.github.naz013.icalendar.parser.RecurrenceRuleTagParserTest.kt</ID>
+    <ID>NoUnusedImports:RepeatTagParserTest.kt$com.github.naz013.icalendar.parser.RepeatTagParserTest.kt</ID>
+    <ID>NoUnusedImports:TagParserTest.kt$com.github.naz013.icalendar.parser.TagParserTest.kt</ID>
+    <ID>NoUnusedImports:VersionTagParserTest.kt$com.github.naz013.icalendar.parser.VersionTagParserTest.kt</ID>
+    <ID>ReturnCount:ICalendarApiImpl.kt$ICalendarApiImpl$override fun generate(ruleMap: RuleMap): List&lt;UtcDateTime&gt;</ID>
+    <ID>ReturnCount:ParamParser.kt$ParamParser$private fun parsePart(input: String): Param?</ID>
+    <ID>ReturnCount:RecurParamParser.kt$RecurParamParser$private fun parsePart(input: String): RecurParam?</ID>
+    <ID>UseRequire:ICalendarApiImpl.kt$ICalendarApiImpl$throw IllegalArgumentException("Count should be present in RRULE")</ID>
+    <ID>UseRequire:RecurParam.kt$DayValue$throw IllegalArgumentException("Should contain one of: SU,MO,TU,WE,TH,FR,SA, but was $value")</ID>
+  </CurrentIssues>
+</SmellBaseline>

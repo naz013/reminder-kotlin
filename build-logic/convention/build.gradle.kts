@@ -7,6 +7,8 @@ group = "com.github.naz013.buildlogic"
 dependencies {
   compileOnly(libs.android.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
+  compileOnly(libs.detekt.gradlePlugin)
+  compileOnly(libs.kover.gradlePlugin)
 }
 
 kotlin {
@@ -36,6 +38,14 @@ gradlePlugin {
     register("androidApplicationCompose") {
       id = "reminder.android.application.compose"
       implementationClass = "com.github.naz013.buildlogic.ReminderAndroidApplicationComposeConventionPlugin"
+    }
+    register("detekt") {
+      id = "reminder.detekt"
+      implementationClass = "com.github.naz013.buildlogic.ReminderDetektConventionPlugin"
+    }
+    register("kover") {
+      id = "reminder.kover"
+      implementationClass = "com.github.naz013.buildlogic.ReminderKoverConventionPlugin"
     }
   }
 }

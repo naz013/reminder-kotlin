@@ -1,0 +1,116 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>AnnotationOnSeparateLine:Theme.kt$@Composable()</ID>
+    <ID>ArgumentListWrapping:DeviceScreenConfiguration.kt$DeviceScreenConfiguration.Companion$("DeviceScreenConfiguration", "fromWindowSizeClass: width=${windowSizeClass.minWidthDp}, height=${windowSizeClass.minHeightDp}")</ID>
+    <ID>CommentWrapping:ViewExtensions.kt$/* bottom = */</ID>
+    <ID>CommentWrapping:ViewExtensions.kt$/* left = */</ID>
+    <ID>CommentWrapping:ViewExtensions.kt$/* right = */</ID>
+    <ID>CommentWrapping:ViewExtensions.kt$/* top = */</ID>
+    <ID>CyclomaticComplexMethod:Dialog.kt$@Composable private fun Dialog(data: DialogData)</ID>
+    <ID>CyclomaticComplexMethod:Language.kt$Language.Companion$fun getScreenLanguage(code: Int): Locale</ID>
+    <ID>CyclomaticComplexMethod:ModelDateTimeFormatter.kt$ModelDateTimeFormatter$fun getRemaining( eventTime: LocalDateTime?, nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime(), ): String</ID>
+    <ID>CyclomaticComplexMethod:ThemeProvider.kt$ThemeProvider$@ColorInt fun getMarkerLightColor(code: Int = AppColorIndex.RED): Int</ID>
+    <ID>CyclomaticComplexMethod:ThemeProvider.kt$ThemeProvider$fun themedColor(code: Int = AppColorIndex.RED): Color</ID>
+    <ID>CyclomaticComplexMethod:ThemeProvider.kt$ThemeProvider.Companion$@ColorInt fun themedColor(context: Context, code: Int = AppColorIndex.RED): Int</ID>
+    <ID>Filename:ColorPickerDialog.kt$com.github.naz013.ui.common.compose.foundation.dialog.ColorPickerDialog.kt</ID>
+    <ID>Filename:Dialog.kt$com.github.naz013.ui.common.compose.foundation.dialog.Dialog.kt</ID>
+    <ID>Filename:ListDialog.kt$com.github.naz013.ui.common.compose.foundation.dialog.ListDialog.kt</ID>
+    <ID>ImportOrdering:LightThemedActivity.kt$import android.os.Build import android.os.Bundle import android.os.IBinder import android.view.inputmethod.InputMethodManager import android.window.OnBackInvokedDispatcher import androidx.activity.OnBackPressedCallback import androidx.appcompat.app.AppCompatActivity import androidx.appcompat.app.AppCompatDelegate import com.github.naz013.common.system.Module import com.github.naz013.common.intent.IntentKeys import com.github.naz013.logging.Logger import com.github.naz013.ui.common.login.AuthPreferences import com.github.naz013.ui.common.login.LoginApi.isLogged import com.github.naz013.ui.common.login.LoginLauncher import com.github.naz013.ui.common.login.LoginStateViewModel import com.github.naz013.ui.common.theme.ThemePreferences import com.github.naz013.ui.common.theme.ThemeProvider import com.google.android.material.color.DynamicColors import org.koin.android.ext.android.inject import org.koin.androidx.viewmodel.ext.android.viewModel</ID>
+    <ID>ImportOrdering:PopupMenu.kt$import androidx.compose.foundation.clickable import androidx.compose.foundation.layout.Arrangement import androidx.compose.foundation.layout.Box import androidx.compose.foundation.layout.Column import androidx.compose.foundation.layout.PaddingValues import androidx.compose.foundation.layout.Row import androidx.compose.foundation.layout.fillMaxWidth import androidx.compose.foundation.layout.padding import androidx.compose.foundation.layout.size import androidx.compose.foundation.layout.wrapContentSize import androidx.compose.foundation.shape.RoundedCornerShape import androidx.compose.material.icons.Icons import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight import androidx.compose.material.icons.filled.Delete import androidx.compose.material.icons.filled.Edit import androidx.compose.material.icons.filled.MoreVert import androidx.compose.material.icons.filled.Settings import androidx.compose.material.icons.filled.Share import androidx.compose.material3.DropdownMenu import androidx.compose.material3.DropdownMenuItem import androidx.compose.material3.HorizontalDivider import androidx.compose.material3.Icon import androidx.compose.material3.IconButton import androidx.compose.material3.LocalContentColor import androidx.compose.material3.MaterialTheme import androidx.compose.material3.Surface import androidx.compose.material3.Text import androidx.compose.runtime.Composable import androidx.compose.runtime.getValue import androidx.compose.runtime.mutableStateOf import androidx.compose.runtime.remember import androidx.compose.runtime.setValue import androidx.compose.ui.Alignment import androidx.compose.ui.Modifier import androidx.compose.ui.graphics.vector.ImageVector import androidx.compose.ui.res.painterResource import androidx.compose.ui.text.style.TextOverflow import androidx.compose.ui.platform.LocalDensity import androidx.compose.ui.tooling.preview.Preview import androidx.compose.ui.unit.DpOffset import androidx.compose.ui.unit.IntOffset import androidx.compose.ui.unit.IntRect import androidx.compose.ui.unit.IntSize import androidx.compose.ui.unit.LayoutDirection import androidx.compose.ui.unit.dp import androidx.compose.ui.window.Popup import androidx.compose.ui.window.PopupPositionProvider import androidx.compose.ui.window.PopupProperties import com.github.naz013.ui.common.compose.AppTheme</ID>
+    <ID>ImportOrdering:WheelPicker.kt$import androidx.compose.foundation.clickable import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior import androidx.compose.foundation.layout.Box import androidx.compose.foundation.layout.PaddingValues import androidx.compose.foundation.layout.fillMaxWidth import androidx.compose.foundation.layout.height import androidx.compose.foundation.layout.offset import androidx.compose.foundation.lazy.LazyColumn import androidx.compose.foundation.lazy.itemsIndexed import androidx.compose.foundation.lazy.rememberLazyListState import androidx.compose.material3.HorizontalDivider import androidx.compose.material3.MaterialTheme import androidx.compose.material3.Text import androidx.compose.runtime.Composable import androidx.compose.runtime.LaunchedEffect import androidx.compose.runtime.derivedStateOf import androidx.compose.runtime.getValue import androidx.compose.runtime.remember import androidx.compose.runtime.rememberCoroutineScope import androidx.compose.runtime.snapshotFlow import androidx.compose.ui.Alignment import androidx.compose.ui.Modifier import androidx.compose.ui.draw.alpha import androidx.compose.ui.hapticfeedback.HapticFeedbackType import androidx.compose.ui.platform.LocalHapticFeedback import androidx.compose.ui.tooling.preview.Preview import androidx.compose.ui.unit.Dp import androidx.compose.ui.unit.dp import com.github.naz013.ui.common.compose.AppTheme import kotlin.math.abs import kotlinx.coroutines.launch</ID>
+    <ID>Indentation:AnimatedGradientBackground.kt$ </ID>
+    <ID>Indentation:CloudBubble.kt$ </ID>
+    <ID>Indentation:DeviceScreenConfiguration.kt$ </ID>
+    <ID>Indentation:DeviceScreenConfiguration.kt$DeviceScreenConfiguration$ </ID>
+    <ID>Indentation:DeviceScreenConfiguration.kt$DeviceScreenConfiguration.Companion$ </ID>
+    <ID>Indentation:DynamicModifier.kt$ </ID>
+    <ID>Indentation:DynamicParameter.kt$ </ID>
+    <ID>Indentation:DynamicScreen.kt$ </ID>
+    <ID>Indentation:PopupMenu.kt$ </ID>
+    <ID>Indentation:SingleChoiceDialog.kt$ </ID>
+    <ID>LongMethod:ModelDateTimeFormatter.kt$ModelDateTimeFormatter$fun getRemaining( eventTime: LocalDateTime?, nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime(), ): String</ID>
+    <ID>LongParameterList:ColorPickerDialog.kt$ColorPickerDialogDispatcher$( titleRes: Int? = null, title: String? = null, colors: List&lt;Color&gt;, selectedIndex: Int, hapticFeedbackEnabled: Boolean = true, onColorSelected: (Int) -&gt; Unit, onDismissRequest: () -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:Dialog.kt$DialogDispatcher$( iconRes: Int? = null, iconContentDescription: String? = null, titleRes: Int? = null, title: String? = null, textRes: Int? = null, text: String? = null, positiveButtonRes: Int? = null, positiveButton: String? = null, negativeButtonRes: Int? = null, negativeButton: String? = null, neutralButtonRes: Int? = null, neutralButton: String? = null, onNegative: () -&gt; Unit = {}, onPositive: () -&gt; Unit = {}, onNeutral: () -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:Dialogues.kt$Dialogues$( context: Context, title: String, message: String = context.getString(R.string.are_you_sure), positiveText: String = context.getString(R.string.yes), negativeText: String = context.getString(R.string.no), onAction: (Boolean) -&gt; Unit )</ID>
+    <ID>LoopWithTooManyJumpStatements:ColorSlider.kt$while</ID>
+    <ID>MatchingDeclarationName:BuilderListItemCard.kt$BuilderItemStatus</ID>
+    <ID>MatchingDeclarationName:ColorPickerDialog.kt$ColorPickerDialogDispatcher</ID>
+    <ID>MatchingDeclarationName:Dialog.kt$DialogDispatcher</ID>
+    <ID>MatchingDeclarationName:GradientHighlightTextField.kt$TextHighlight</ID>
+    <ID>MatchingDeclarationName:ListDialog.kt$ListDialogDispatcher</ID>
+    <ID>MaxLineLength:DeviceScreenConfiguration.kt$DeviceScreenConfiguration.Companion$Logger.d("DeviceScreenConfiguration", "fromWindowSizeClass: width=${windowSizeClass.minWidthDp}, height=${windowSizeClass.minHeightDp}")</ID>
+    <ID>MaxLineLength:DeviceScreenConfiguration.kt$DeviceScreenConfiguration.Companion$windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND)</ID>
+    <ID>MaxLineLength:DeviceScreenConfiguration.kt$DeviceScreenConfiguration.Companion$windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)</ID>
+    <ID>NestedBlockDepth:UiGradientFrameLayout.kt$UiGradientFrameLayout$private fun init(context: Context, attrs: AttributeSet?)</ID>
+    <ID>NoConsecutiveBlankLines:BottomSheet.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:PopupMenu.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SplitButton.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:Toast.kt$ </ID>
+    <ID>NoUnusedImports:BuilderListItemCard.kt$com.github.naz013.ui.common.compose.foundation.component.BuilderListItemCard.kt</ID>
+    <ID>NoUnusedImports:ComposeActivity.kt$com.github.naz013.ui.common.compose.ComposeActivity.kt</ID>
+    <ID>NoUnusedImports:DeviceScreenConfiguration.kt$com.github.naz013.ui.common.compose.foundation.DeviceScreenConfiguration.kt</ID>
+    <ID>NoUnusedImports:SearchBar.kt$com.github.naz013.ui.common.compose.foundation.component.SearchBar.kt</ID>
+    <ID>NoUnusedImports:SplitButton.kt$com.github.naz013.ui.common.compose.foundation.SplitButton.kt</ID>
+    <ID>ReturnCount:ModelDateTimeFormatter.kt$ModelDateTimeFormatter$private fun getAge( dateOfBirth: String?, nowDate: LocalDate, ): Int</ID>
+    <ID>ReturnCount:ViewUtils.kt$ViewUtils$fun tintIcon(context: Context, @DrawableRes resource: Int, @ColorInt color: Int): Drawable?</ID>
+    <ID>ReturnCount:ViewUtils.kt$ViewUtils$fun tintIcon(context: Context, @DrawableRes resource: Int, isDark: Boolean): Drawable?</ID>
+    <ID>TooGenericExceptionCaught:UiGradientFrameLayout.kt$UiGradientFrameLayout$e: Exception</ID>
+    <ID>TooManyFunctions:ThemeProvider.kt$ThemeProvider$Companion</ID>
+    <ID>TooManyFunctions:ViewExtensions.kt$com.github.naz013.ui.common.view.ViewExtensions.kt</ID>
+    <ID>TopLevelPropertyNaming:Color.kt$const val DisabledAlpha = 0.38f</ID>
+    <ID>TopLevelPropertyNaming:ColorSlider.kt$private const val UnselectedItemVerticalInset = 0.1f</ID>
+    <ID>UnusedParameter:BottomSheet.kt$onClick: (Int) -&gt; Unit</ID>
+    <ID>UnusedParameter:SplitButton.kt$border: BorderStroke? = null</ID>
+    <ID>UnusedPrivateMember:AnimatedGradientBackground.kt$@Preview(showBackground = true) @Composable private fun AnimatedGradientBackgroundPreview()</ID>
+    <ID>UnusedPrivateMember:BottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Preview(showBackground = true, name = "Modal Bottom Sheet with Header and List") @Composable private fun PreviewAppModalBottomSheet()</ID>
+    <ID>UnusedPrivateMember:BottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Preview(showBackground = true, name = "Simple Bottom Sheet List") @Composable private fun PreviewBottomSheetList()</ID>
+    <ID>UnusedPrivateMember:BottomSheet.kt$@Preview(showBackground = true, name = "Bottom Sheet Header with Title Only") @Composable private fun PreviewBottomSheetHeaderTitleOnly()</ID>
+    <ID>UnusedPrivateMember:BottomSheet.kt$@Preview(showBackground = true, name = "Bottom Sheet Header with Title and Close") @Composable private fun PreviewBottomSheetHeaderWithClose()</ID>
+    <ID>UnusedPrivateMember:BottomSheet.kt$@Preview(showBackground = true, name = "Bottom Sheet List Item") @Composable private fun PreviewBottomSheetListItem()</ID>
+    <ID>UnusedPrivateMember:BuilderListItemCard.kt$@Preview(showBackground = true, name = "Builder item - done") @Composable private fun PreviewBuilderListItemCardDone()</ID>
+    <ID>UnusedPrivateMember:BuilderListItemCard.kt$@Preview(showBackground = true, name = "Builder item - empty") @Composable private fun PreviewBuilderListItemCardEmpty()</ID>
+    <ID>UnusedPrivateMember:BuilderListItemCard.kt$@Preview(showBackground = true, name = "Builder item - error") @Composable private fun PreviewBuilderListItemCardError()</ID>
+    <ID>UnusedPrivateMember:ColorSlider.kt$@Preview(showBackground = true) @Composable private fun ColorSliderPreview()</ID>
+    <ID>UnusedPrivateMember:GradientHighlightTextField.kt$@Preview(showBackground = true, name = "Gradient highlight text field") @Composable private fun PreviewGradientHighlightTextField()</ID>
+    <ID>UnusedPrivateMember:MenuIconButton.kt$@Preview(showBackground = true) @Composable private fun MenuIconButtonPreview()</ID>
+    <ID>UnusedPrivateMember:MenuIconButton.kt$@Preview(showBackground = true) @Composable private fun MenuIconButtonPreview_Disabled()</ID>
+    <ID>UnusedPrivateMember:MenuTextButton.kt$@Preview(showBackground = true) @Composable private fun MenuTextButtonPreview()</ID>
+    <ID>UnusedPrivateMember:MenuTextButton.kt$@Preview(showBackground = true) @Composable private fun MenuTextButtonPreview_Disabled()</ID>
+    <ID>UnusedPrivateMember:NumberStepperField.kt$@Preview(showBackground = true, name = "Number stepper field") @Composable private fun PreviewNumberStepperField()</ID>
+    <ID>UnusedPrivateMember:PinInput.kt$@Preview(showBackground = true) @Composable private fun PinInputPreview()</ID>
+    <ID>UnusedPrivateMember:PinLoginScreen.kt$@Preview(showBackground = true) @Composable private fun PinLoginScreenPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true) @Composable private fun AnchoredPopupMenuPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true) @Composable private fun PopupMenuWithDisabledItemsPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true) @Composable private fun PopupMenuWithIconsPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true) @Composable private fun PopupMenuWithSubmenusPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true) @Composable private fun PopupMenuWithoutIconsPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true, heightDp = 400) @Composable private fun AnchoredPopupMenuAboveAlignmentPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true, heightDp = 400) @Composable private fun PopupMenuWithAboveAlignmentPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true, widthDp = 360) @Composable private fun AnchoredPopupMenuEndAlignmentPreview()</ID>
+    <ID>UnusedPrivateMember:PopupMenu.kt$@Preview(showBackground = true, widthDp = 360) @Composable private fun PopupMenuWithEndAlignmentPreview()</ID>
+    <ID>UnusedPrivateMember:PrimaryIconButton.kt$@Preview(showBackground = true, name = "Primary Icon Button - Disabled") @Composable private fun PrimaryIconButtonPreview_Disabled()</ID>
+    <ID>UnusedPrivateMember:PrimaryIconButton.kt$@Preview(showBackground = true, name = "Primary Icon Button - Edit Icon") @Composable private fun PrimaryIconButtonPreview_Edit()</ID>
+    <ID>UnusedPrivateMember:PrimaryIconButton.kt$@Preview(showBackground = true, name = "Primary Icon Button - Enabled") @Composable private fun PrimaryIconButtonPreview_Enabled()</ID>
+    <ID>UnusedPrivateMember:SearchBar.kt$@Preview(showBackground = true, name = "Search bar - empty") @Composable private fun PreviewSearchBarEmpty()</ID>
+    <ID>UnusedPrivateMember:SearchBar.kt$@Preview(showBackground = true, name = "Search bar - with query") @Composable private fun PreviewSearchBarWithQuery()</ID>
+    <ID>UnusedPrivateMember:SelectableList.kt$@Preview(showBackground = true, name = "Selectable chip grid") @Composable private fun PreviewSelectableChipGrid()</ID>
+    <ID>UnusedPrivateMember:SettingsItem.kt$@Preview(showBackground = true, name = "Settings item - checkbox") @Composable private fun PreviewSettingsCheckbox()</ID>
+    <ID>UnusedPrivateMember:SettingsItem.kt$@Preview(showBackground = true, name = "Settings item - clickable") @Composable private fun PreviewSettingsItemClickable()</ID>
+    <ID>UnusedPrivateMember:SettingsItem.kt$@Preview(showBackground = true, name = "Settings item - custom button") @Composable private fun PreviewSettingsItemCustomButton()</ID>
+    <ID>UnusedPrivateMember:SettingsItem.kt$@Preview(showBackground = true, name = "Settings item - switch disabled") @Composable private fun PreviewSettingsSwitchDisabled()</ID>
+    <ID>UnusedPrivateMember:SettingsItem.kt$@Preview(showBackground = true, name = "Settings item - switch on") @Composable private fun PreviewSettingsSwitchOn()</ID>
+    <ID>UnusedPrivateMember:SettingsItem.kt$@Preview(showBackground = true, name = "Settings item - with value") @Composable private fun PreviewSettingsItemWithValue()</ID>
+    <ID>UnusedPrivateMember:SplitButton.kt$@Preview(showBackground = true, name = "Outlined Split Button - With Icon and Text") @Composable private fun OutlinedSplitButtonPreview_IconAndText()</ID>
+    <ID>UnusedPrivateMember:SplitButton.kt$@Preview(showBackground = true, name = "Split Button - Custom Colors") @Composable private fun SplitButtonPreview_CustomColors()</ID>
+    <ID>UnusedPrivateMember:SplitButton.kt$@Preview(showBackground = true, name = "Split Button - Disabled") @Composable private fun SplitButtonPreview_Disabled()</ID>
+    <ID>UnusedPrivateMember:SplitButton.kt$@Preview(showBackground = true, name = "Split Button - Filled") @Composable private fun SplitButtonPreview_Filled()</ID>
+    <ID>UnusedPrivateMember:SplitButton.kt$@Preview(showBackground = true, name = "Split Button - Outlined") @Composable private fun SplitButtonPreview_Outlined()</ID>
+    <ID>UnusedPrivateMember:SplitButton.kt$@Preview(showBackground = true, name = "Split Button - Text Only on Left") @Composable private fun SplitButtonPreview_TextOnly()</ID>
+    <ID>UnusedPrivateMember:SplitButton.kt$@Preview(showBackground = true, name = "Split Button - With Icon and Text") @Composable private fun SplitButtonPreview_IconAndText()</ID>
+    <ID>UnusedPrivateMember:ValueAndTypePicker.kt$@Preview(showBackground = true, name = "Value and type picker") @Composable private fun PreviewValueAndTypePicker()</ID>
+    <ID>UnusedPrivateMember:WheelPicker.kt$@Preview(showBackground = true, name = "Wheel picker") @Composable private fun PreviewWheelPicker()</ID>
+    <ID>Wrapping:PopupMenu.kt$(</ID>
+  </CurrentIssues>
+</SmellBaseline>

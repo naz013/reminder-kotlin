@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ReviewDialogViewModel.kt$ReviewDialogViewModel$error?.message?.contains("service account", ignoreCase = true) == true || error?.message?.contains("permissions", ignoreCase = true) == true || error?.message?.contains("App not registered", ignoreCase = true) == true || error?.message?.contains("not registered", ignoreCase = true) == true || error?.message?.contains("attestation", ignoreCase = true) == true || error?.message?.contains("App Check", ignoreCase = true) == true || error?.message?.contains("Firebase", ignoreCase = true) == true</ID>
+    <ID>CyclomaticComplexMethod:ReviewDialogViewModel.kt$ReviewDialogViewModel$private fun getErrorMessage(error: Throwable?): String</ID>
+    <ID>ImportOrdering:ReviewFormContent.kt$import androidx.compose.animation.AnimatedContent import androidx.compose.animation.core.Spring import androidx.compose.animation.core.spring import androidx.compose.animation.core.tween import androidx.compose.animation.scaleIn import androidx.compose.animation.scaleOut import androidx.compose.animation.togetherWith import androidx.compose.foundation.layout.Arrangement import androidx.compose.foundation.layout.Column import androidx.compose.foundation.layout.Row import androidx.compose.foundation.layout.Spacer import androidx.compose.foundation.layout.fillMaxSize import androidx.compose.foundation.layout.fillMaxWidth import androidx.compose.foundation.layout.height import androidx.compose.foundation.layout.padding import androidx.compose.foundation.layout.width import androidx.compose.foundation.rememberScrollState import androidx.compose.foundation.verticalScroll import androidx.compose.material3.CircularProgressIndicator import androidx.compose.material3.HorizontalDivider import androidx.compose.material3.MaterialTheme import androidx.compose.material3.OutlinedTextField import androidx.compose.material3.Slider import androidx.compose.material3.Switch import androidx.compose.material3.Text import androidx.compose.runtime.Composable import androidx.compose.runtime.mutableFloatStateOf import androidx.compose.runtime.mutableStateOf import androidx.compose.runtime.remember import androidx.compose.runtime.setValue import androidx.compose.runtime.getValue import androidx.compose.ui.Alignment import androidx.compose.ui.Modifier import androidx.compose.ui.res.stringResource import androidx.compose.ui.text.style.TextAlign import androidx.compose.ui.unit.dp import com.github.naz013.ui.common.R import com.github.naz013.ui.common.compose.AppIcons import com.github.naz013.ui.common.compose.foundation.PrimaryIconButton</ID>
+    <ID>LongMethod:ReviewDialogViewModel.kt$ReviewDialogViewModel$fun submitReview( rating: Float, comment: String, attachLog: Boolean, email: String?, appSource: AppSource, )</ID>
+    <ID>MultiLineIfElse:ReviewFormContent.kt$null</ID>
+    <ID>NestedBlockDepth:LogFileUploader.kt$LogFileUploader$private fun zipLogFile(logFile: File): File?</ID>
+    <ID>NoConsecutiveBlankLines:DateTimeMapperTest.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:FindLatestLogsFileUseCaseTest.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:FirebaseAppCheckManager.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:FirebaseAuthManagerTest.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ReviewMapperTest.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ReviewRepositoryImplTest.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ReviewsApiImplTest.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SecondaryFirebaseAppManager.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SecondaryFirebaseConfig.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SecondaryFirebaseConfigExample.kt$ </ID>
+    <ID>ReturnCount:FirestoreDatabase.kt$FirestoreDatabase$suspend fun readReview(reviewId: String): Result&lt;ReviewEntity&gt;</ID>
+    <ID>ReturnCount:LogFileUploader.kt$LogFileUploader$suspend fun upload(filePath: String): Result&lt;String&gt;</ID>
+    <ID>ReturnCount:ReviewDialogViewModel.kt$ReviewDialogViewModel$fun submitReview( rating: Float, comment: String, attachLog: Boolean, email: String?, appSource: AppSource, )</ID>
+    <ID>ReturnCount:ReviewRepositoryImpl.kt$ReviewRepositoryImpl$suspend fun deleteReview(reviewId: String): Result&lt;Unit&gt;</ID>
+    <ID>ReturnCount:ReviewRepositoryImpl.kt$ReviewRepositoryImpl$suspend fun getReview(reviewId: String): Result&lt;Review&gt;</ID>
+    <ID>ReturnCount:ReviewRepositoryImpl.kt$ReviewRepositoryImpl$suspend fun saveReview(review: Review): Result&lt;Unit&gt;</ID>
+    <ID>ReturnCount:ReviewRepositoryImpl.kt$ReviewRepositoryImpl$suspend fun updateReview(review: Review): Result&lt;Unit&gt;</ID>
+    <ID>ReturnCount:SecondaryFirebaseAppManager.kt$SecondaryFirebaseAppManager.Companion$fun initialize(context: Context, config: SecondaryFirebaseConfig): Result&lt;Unit&gt;</ID>
+    <ID>SwallowedException:LogFileUploader.kt$LogFileUploader$e: com.google.firebase.FirebaseException</ID>
+    <ID>SwallowedException:LogFileUploader.kt$LogFileUploader$e: com.google.firebase.storage.StorageException</ID>
+    <ID>SwallowedException:ReviewMapper.kt$e: Exception</ID>
+    <ID>ThrowsCount:LogFileUploader.kt$LogFileUploader$private suspend fun uploadToFirebase(file: File): String</ID>
+    <ID>TooGenericExceptionCaught:FindLatestLogsFileUseCase.kt$FindLatestLogsFileUseCase$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FirebaseAppCheckManager.kt$FirebaseAppCheckManager$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FirebaseAuthManager.kt$FirebaseAuthManager$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FirestoreDatabase.kt$FirestoreDatabase$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:KoinModule.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LogFileUploader.kt$LogFileUploader$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReviewDialogViewModel.kt$ReviewDialogViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReviewMapper.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReviewSdk.kt$ReviewSdk$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReviewsApiImpl.kt$ReviewsApiImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SecondaryFirebaseAppManager.kt$SecondaryFirebaseAppManager.Companion$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SecondaryFirebaseAppManager.kt$SecondaryFirebaseAppManager.Companion$settingsError: Exception</ID>
+    <ID>TooGenericExceptionThrown:LogFileUploader.kt$LogFileUploader$throw Exception("Firebase API error. Please check project configuration.")</ID>
+    <ID>TooGenericExceptionThrown:LogFileUploader.kt$LogFileUploader$throw Exception("Firebase App Check attestation failed. Please configure App Check properly.")</ID>
+    <ID>TooGenericExceptionThrown:LogFileUploader.kt$LogFileUploader$throw Exception("Firebase Storage error: ${e.message}")</ID>
+    <ID>TooGenericExceptionThrown:LogFileUploader.kt$LogFileUploader$throw Exception("Firebase Storage: Authentication required. Please sign in.")</ID>
+    <ID>TooGenericExceptionThrown:LogFileUploader.kt$LogFileUploader$throw Exception("Firebase Storage: Permission denied. Service account configuration required.")</ID>
+    <ID>TooGenericExceptionThrown:LogFileUploader.kt$LogFileUploader$throw Exception("Firebase Storage: Storage quota exceeded.")</ID>
+    <ID>TooGenericExceptionThrown:LogFileUploader.kt$LogFileUploader$throw Exception("Firebase app not registered. Please check Firebase Console configuration.")</ID>
+    <ID>TooGenericExceptionThrown:LogFileUploader.kt$LogFileUploader$throw Exception("Firebase error: ${e.message}")</ID>
+    <ID>UnusedPrivateProperty:FindLatestLogsFileUseCaseTest.kt$FindLatestLogsFileUseCaseTest$val newerFile = File(logDir, "2024-01-02.0.log").apply { createNewFile() setLastModified(2000L) }</ID>
+    <ID>UnusedPrivateProperty:FindLatestLogsFileUseCaseTest.kt$FindLatestLogsFileUseCaseTest$val oldFile = File(logDir, "2024-01-01.0.log").apply { createNewFile() setLastModified(1000L) }</ID>
+    <ID>UseCheckOrError:KoinModule.kt$throw IllegalStateException("Firebase not initialized. Call ReviewSdk.initialize() in Application.onCreate()")</ID>
+    <ID>UtilityClassWithPublicConstructor:SecondaryFirebaseAppManager.kt$SecondaryFirebaseAppManager</ID>
+    <ID>Wrapping:ReviewFormContent.kt$Text( text = "Please enter a valid email address", color = MaterialTheme.colorScheme.error )</ID>
+  </CurrentIssues>
+</SmellBaseline>

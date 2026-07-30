@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>TooManyFunctions:BirthdayRepository.kt$BirthdayRepository</ID>
+    <ID>TooManyFunctions:GoogleTaskRepository.kt$GoogleTaskRepository</ID>
+    <ID>TooManyFunctions:GroupV2Repository.kt$GroupV2Repository</ID>
+    <ID>TooManyFunctions:NoteRepository.kt$NoteRepository</ID>
+    <ID>TooManyFunctions:ReminderV2Repository.kt$ReminderV2Repository</ID>
+    <ID>TooManyFunctions:WorkflowRuleRepository.kt$WorkflowRuleRepository</ID>
+  </CurrentIssues>
+</SmellBaseline>

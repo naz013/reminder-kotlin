@@ -28,4 +28,5 @@
 ## Build System
 - Gradle Kotlin DSL (`.kts`).
 - Version catalog: `libs.versions.toml`.
-- Code style: `ktlint` (app module).
+- Code analysis: `detekt` (all modules via `reminder.detekt` convention plugin; config at `config/detekt/detekt.yml`).
+- Coverage: `kover` (all modules via `reminder.kover`; root aggregates JVM modules).
