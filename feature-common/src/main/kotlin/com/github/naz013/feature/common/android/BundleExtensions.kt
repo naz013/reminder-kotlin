@@ -17,6 +17,9 @@ fun <T : Serializable> Bundle.readSerializable(key: String, clazz: Class<T>): T?
 
 fun <T : Parcelable> Bundle.readParcelable(key: String, clazz: Class<T>): T? {
   return runCatching {
+    // See Intent.readParcelable() - same classloader gap applies to Bundles that crossed a
+    // process boundary without the app's classloader attached.
+    classLoader = clazz.classLoader
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       getParcelable(key, clazz)
     } else {

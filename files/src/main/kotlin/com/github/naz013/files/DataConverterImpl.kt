@@ -67,6 +67,9 @@ internal class DataConverterImpl : DataConverter {
         is RecurPreset -> object : TypeToken<RecurPreset>() {}.type
         is NoteV3Json -> object : TypeToken<NoteV3Json>() {}.type
         is SharedNote -> object : TypeToken<SharedNote>() {}.type
+        is Reminder -> object : TypeToken<Reminder>() {}.type
+        is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
+        is OldNote -> object : TypeToken<OldNote>() {}.type
         else -> null
       } ?: run {
         throw IllegalArgumentException("Unsupported type: ${any::class.java}")

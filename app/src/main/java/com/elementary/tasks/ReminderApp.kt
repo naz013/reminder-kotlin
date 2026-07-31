@@ -86,8 +86,7 @@ class ReminderApp :
         if (destination is ActivityDestination || destination is DataDestination) {
           get<NavigationDispatcher>().dispatch(destination)
         } else {
-          com.github.naz013.logging.Logger
-            .i("App", "Unknown destination: $destination")
+          com.github.naz013.logging.Logger.i("App", "Unknown destination: $destination")
         }
       }
     }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import android.os.Bundle
 import android.util.TypedValue
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
@@ -219,17 +218,13 @@ internal class CalendarMonthFactory(
       rv.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)
     }
 
-    val bundle = Bundle().apply {
-      putLong(
-        "date",
-        dateTimeManager.toMillis(LocalDateTime.of(selDate, LocalTime.now()))
-      )
-    }
-
     val fillInIntent = Intent()
     fillInIntent.putExtra(AppWidgetActionActivity.DIRECTION, Direction.HOME)
     fillInIntent.putExtra(AppWidgetActionActivity.WIDGET_TYPE, Widget.CALENDAR)
-    fillInIntent.putExtra(DeepLinkDestination.KEY, DayViewScreen(bundle))
+    fillInIntent.putExtra(
+      DeepLinkDestination.KEY,
+      DayViewScreen(dateTimeManager.toMillis(LocalDateTime.of(selDate, LocalTime.now())))
+    )
     rv.setOnClickFillInIntent(R.id.textView, fillInIntent)
     return rv
   }
