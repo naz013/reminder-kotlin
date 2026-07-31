@@ -14,6 +14,7 @@ interface SystemInfo {
   val googlePlayServicesAvailable: Boolean
   val isProAppInstalled: Boolean
 
+  val is17: Boolean
   val is16: Boolean
   val is15: Boolean
   val is14: Boolean

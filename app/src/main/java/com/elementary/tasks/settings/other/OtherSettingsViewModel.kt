@@ -105,7 +105,7 @@ class OtherSettingsViewModel(
     _state.update {
       it.copy(
         permissionItems = loadPermissionItems(),
-        isGeminiFunctionsVisible = buildInfo.isPro,
+        isGeminiFunctionsVisible = buildInfo.isPro && systemInfo.is16,
       )
     }
   }

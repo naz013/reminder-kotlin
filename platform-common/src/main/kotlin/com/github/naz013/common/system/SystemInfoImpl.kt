@@ -70,8 +70,9 @@ internal class SystemInfoImpl(
 
   override val currentSdkLevel: Int = Build.VERSION.SDK_INT
   override val minSdkLevel: Int = Build.VERSION_CODES.Q
-  override val maxSdkLevel: Int = Build.VERSION_CODES.BAKLAVA
+  override val maxSdkLevel: Int = Build.VERSION_CODES.CINNAMON_BUN
 
+  override val is17: Boolean = currentSdkLevel >= Build.VERSION_CODES.CINNAMON_BUN
   override val is16: Boolean = currentSdkLevel >= Build.VERSION_CODES.BAKLAVA
   override val is15: Boolean = currentSdkLevel >= Build.VERSION_CODES.VANILLA_ICE_CREAM
   override val is14: Boolean = currentSdkLevel >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
