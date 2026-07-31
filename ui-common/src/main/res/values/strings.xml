@@ -142,6 +142,7 @@
     <string name="allow_permission">Add permission</string>
     <string name="about">About</string>
     <string name="open_source_licenses">Open source software</string>
+    <string name="gemini_functions">Gemini functions</string>
     <string name="tell_friends">Tell friends</string>
     <string name="default_string">Default</string>
     <string name="morning">Morning</string>

@@ -31,6 +31,7 @@ fun OtherSettingsScreen(
   onOssClick: () -> Unit,
   onAboutClick: () -> Unit,
   onAboutDialogDismiss: () -> Unit,
+  onGeminiFunctionsClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
@@ -82,6 +83,14 @@ fun OtherSettingsScreen(
       dividerBottom = true,
       onClick = onWhatsNewClick,
     )
+    if (state.isGeminiFunctionsVisible) {
+      SettingsItem(
+        title = stringResource(R.string.gemini_functions),
+        icon = painterResource(R.drawable.ic_fluent_apps),
+        dividerBottom = true,
+        onClick = onGeminiFunctionsClick,
+      )
+    }
     SettingsItem(
       title = stringResource(R.string.permissions),
       dividerBottom = true,

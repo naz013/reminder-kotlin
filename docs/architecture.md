@@ -30,6 +30,7 @@ The project follows a **multi-module Clean Architecture** approach. Concerns are
 | `platform-common` | Android library | Android-platform-level helpers: biometric auth, permission helpers, Google sign-in wrappers. |
 | `ui-common` | Android library | Shared Compose components, Material 3 theme tokens, reusable composables, and color-picker utilities. |
 | `appwidgets` | Android library | All home-screen widget implementations (reminders, notes, birthdays, Google Tasks). Aggregates usecase modules. |
+| `appfunctions` | Android library | Exposes reminders/notes/birthdays/Google Tasks capabilities to Gemini and other on-device assistants via the Android `androidx.appfunctions` platform API. **PRO-only**: wired into `app` via `"proImplementation"(project(":appfunctions"))`, never a plain `implementation` — see "Flavor-gated modules" below. |
 | `usecase:reminders` | Android library | Reminder-specific use cases (`GetActiveRemindersV2UseCase`, `GetReminderV2ByIdUseCase`, …). |
 | `usecase:notes` | Android library | Note-specific use cases (`GetAllNotesUseCase`, `GetNoteByIdUseCase`, `SearchNotesByTextUseCase`, …). |
 | `usecase:birthdays` | Android library | Birthday-specific use cases (`GetAllBirthdaysUseCase`, `GetBirthdaysByDayMonthUseCase`). |
@@ -82,6 +83,11 @@ app
  │     ├── analytics / icalendar
  │     ├── feature-common / platform-common / ui-common
  │     └── usecase:reminders / usecase:notes / usecase:birthdays / usecase:googletasks
+ ├── appfunctions (PRO flavor only — see "Flavor-gated modules" below)
+ │     ├── domain / repository-api / logging-api / analytics
+ │     ├── platform-common / date-calculations
+ │     ├── cloud-api / cloud
+ │     └── usecase:reminders / usecase:notes / usecase:birthdays / usecase:googletasks
  ├── usecase:reminders ──┐
  ├── usecase:notes      ──┤── domain, repository-api, logging-api
  ├── usecase:birthdays  ──┤
@@ -97,6 +103,15 @@ app
 3. **`usecase:*` modules only depend on `repository-api` (not `repository`).** They never touch Room or the database directly.
 4. **`sync` is cloud-provider agnostic.** It operates through `cloud-api` interfaces and is never aware of whether storage is Google Drive or Dropbox.
 5. **`app` is the only module that wires concrete implementations** to their interfaces via Koin `KoinModule` objects.
+6. **Flavor-gated modules** (currently just `appfunctions`) are added in `app/build.gradle.kts` via `"proImplementation"(project(":x"))` / `"freeImplementation"(project(":x"))`, never a plain `implementation` — see "Flavor-gated modules" below for how `main`-sourceset code still references them.
+
+---
+
+### Flavor-gated modules
+
+A module needed by only one product flavor (e.g. `appfunctions`, PRO-only) is added with `"proImplementation"(project(":appfunctions"))` in `app/build.gradle.kts` instead of a plain `implementation`, so the `free` APK never contains its code, its manifest entries, or its transitive dependencies.
+
+Because `main`-sourceset code (e.g. `ReminderApp.kt`) can't reference types from a dependency that only one flavor sees, each flavor provides its own same-named shim class — e.g. `app/src/pro/.../AppFunctionsInitializer.kt` (real implementation, calls `loadKoinModules(appFunctionsModule)`) and `app/src/free/.../AppFunctionsInitializer.kt` (empty no-op) — mirroring the older `AdsProvider` free/pro split. `main` code calls the shim unconditionally; Gradle compiles whichever flavor's version is on the classpath for that variant. The flavor-gated module's own `KoinModule.kt` is therefore loaded at runtime via `loadKoinModules(...)` from the pro-flavor shim, not included in `ReminderApp.kt`'s static `startKoin { modules(listOf(...)) }` call like every other module's.
 
 ---
 
@@ -142,6 +157,7 @@ Modules that provide DI configuration:
 - `navigation-api/KoinModule.kt`
 - `feature-common/KoinModule.kt`
 - `app/core/utils/KoinModule.kt` (top-level wiring)
+- `appfunctions/KoinModule.kt` — the exception: loaded at runtime via `loadKoinModules(...)` from `app/src/pro`'s `AppFunctionsInitializer`, not added to `startKoin { modules(listOf(...)) }` (see "Flavor-gated modules" above)
 
 ---
 

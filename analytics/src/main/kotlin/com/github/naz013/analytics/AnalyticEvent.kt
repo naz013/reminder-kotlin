@@ -109,7 +109,22 @@ enum class Feature(val value: String) {
 
   GOOGLE_TASK("login_google_task"),
   GOOGLE_DRIVE("login_google_drive"),
-  DROPBOX("login_dropbox")
+  DROPBOX("login_dropbox"),
+
+  APP_FUNCTION_CREATE_REMINDER("app_function_create_reminder"),
+  APP_FUNCTION_LIST_REMINDERS("app_function_list_reminders"),
+  APP_FUNCTION_COMPLETE_REMINDER("app_function_complete_reminder"),
+  APP_FUNCTION_DELETE_REMINDER("app_function_delete_reminder"),
+
+  APP_FUNCTION_CREATE_NOTE("app_function_create_note"),
+  APP_FUNCTION_SEARCH_NOTES("app_function_search_notes"),
+
+  APP_FUNCTION_CREATE_BIRTHDAY("app_function_create_birthday"),
+  APP_FUNCTION_LIST_BIRTHDAYS("app_function_list_birthdays"),
+
+  APP_FUNCTION_CREATE_GOOGLE_TASK("app_function_create_google_task"),
+  APP_FUNCTION_LIST_GOOGLE_TASKS("app_function_list_google_tasks"),
+  APP_FUNCTION_COMPLETE_GOOGLE_TASK("app_function_complete_google_task")
 }
 
 enum class Screen(val value: String) {
