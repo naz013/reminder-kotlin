@@ -36,6 +36,7 @@ fun EntryProviderScope<NavKey>.otherEntries(backStack: MutableList<NavKey>) {
   entry<OtherNavKey.PrivacyPolicy> { PrivacyPolicyEntry(backStack) }
   entry<OtherNavKey.Terms> { TermsEntry(backStack) }
   entry<OtherNavKey.WhatsNew> { WhatsNewEntry(backStack) }
+  entry<OtherNavKey.GeminiFunctions> { GeminiFunctionsEntry(backStack) }
 }
 
 @Composable
@@ -98,6 +99,7 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
       onRateClick = { googlePlayMarketLauncher.launchSelf() },
       onTellFriendsClick = { viewModel.onShareClicked() },
       onWhatsNewClick = { backStack.add(OtherNavKey.WhatsNew) },
+      onGeminiFunctionsClick = { backStack.add(OtherNavKey.GeminiFunctions) },
       onPermissionsClick = { backStack.add(OtherNavKey.Permissions) },
       onAllowPermissionClick = { viewModel.onShowPermissionDialogClicked() },
       onOssClick = { backStack.add(OtherNavKey.Oss) },
@@ -153,6 +155,19 @@ private fun TermsEntry(backStack: MutableList<NavKey>) {
     onBackClick = { backStack.removeLastOrNull() },
   ) { padding ->
     SettingsWebView(url = viewModel.url, modifier = Modifier.padding(padding))
+  }
+}
+
+@Composable
+private fun GeminiFunctionsEntry(backStack: MutableList<NavKey>) {
+  SettingsScaffold(
+    title = stringResource(R.string.gemini_functions),
+    onBackClick = { backStack.removeLastOrNull() },
+  ) { padding ->
+    SettingsWebView(
+      url = "file:///android_asset/files/app_functions.html",
+      modifier = Modifier.padding(padding)
+    )
   }
 }
 

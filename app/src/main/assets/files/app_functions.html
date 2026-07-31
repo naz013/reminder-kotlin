@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini functions</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h1>What Gemini can do in this app</h1>
+  <p class="subtitle">This is a PRO feature. When enabled, Gemini can carry out these actions directly on your device - nothing is sent to any server to do it, and each action still respects your existing reminders, notes and birthdays.</p>
+
+  <div class="info-box tip">
+    <h4>Try asking Gemini things like...</h4>
+    <ul>
+      <li>"Remind me to call the dentist tomorrow at 9am"</li>
+      <li>"What's on my reminders for the next week?"</li>
+      <li>"Mark my rent reminder as done"</li>
+      <li>"Make a note titled Wi-Fi password with the text ..."</li>
+      <li>"Add my sister's birthday, March 3rd"</li>
+      <li>"Whose birthday is coming up this month?"</li>
+      <li>"Add buy milk to my Google Tasks"</li>
+      <li>"Mark the milk task as done"</li>
+    </ul>
+  </div>
+
+  <h2>Reminders</h2>
+
+  <details>
+    <summary><span class="summary-title">Create a reminder</span><span class="badge badge-action">Action</span></summary>
+    <div class="section-body">
+      <p>Creates a new one-time reminder from a title and a due date/time, with optional notes.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">List upcoming reminders</span><span class="badge badge-core">Lookup</span></summary>
+    <div class="section-body">
+      <p>Returns active reminders due within a number of days from now (7 by default), soonest first.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Complete a reminder</span><span class="badge badge-action">Action</span></summary>
+    <div class="section-body">
+      <p>Marks a reminder as done so it stops triggering, without deleting it.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Delete a reminder</span><span class="badge badge-action">Action</span></summary>
+    <div class="section-body">
+      <p>Permanently removes a reminder.</p>
+    </div>
+  </details>
+
+  <h2>Notes</h2>
+
+  <details>
+    <summary><span class="summary-title">Create a note</span><span class="badge badge-action">Action</span></summary>
+    <div class="section-body">
+      <p>Creates a new note from a title and body text.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Search notes</span><span class="badge badge-core">Lookup</span></summary>
+    <div class="section-body">
+      <p>Searches your existing notes by title and body text.</p>
+    </div>
+  </details>
+
+  <h2>Birthdays</h2>
+
+  <details>
+    <summary><span class="summary-title">Create a birthday</span><span class="badge badge-action">Action</span></summary>
+    <div class="section-body">
+      <p>Adds a birthday from a name and date, optionally hiding the birth year.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">List upcoming birthdays</span><span class="badge badge-core">Lookup</span></summary>
+    <div class="section-body">
+      <p>Returns birthdays coming up within a number of days from now (30 by default), soonest first.</p>
+    </div>
+  </details>
+
+  <h2>Google Tasks</h2>
+
+  <div class="info-box warning">
+    <p>Requires a Google account linked under Google Tasks in this app. If it isn't linked yet, ask Gemini to try again after you sign in.</p>
+  </div>
+
+  <details>
+    <summary><span class="summary-title">Create a Google Task</span><span class="badge badge-action">Action</span></summary>
+    <div class="section-body">
+      <p>Creates a task in your default Google Tasks list, with optional notes and a due date/time.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">List Google Tasks</span><span class="badge badge-core">Lookup</span></summary>
+    <div class="section-body">
+      <p>Returns your Google Tasks, excluding already-completed ones unless asked to include them.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Complete a Google Task</span><span class="badge badge-action">Action</span></summary>
+    <div class="section-body">
+      <p>Marks a Google Task as done.</p>
+    </div>
+  </details>
+
+  <footer>Gemini integration on Android is still rolling out and may not be available on every device yet.</footer>
+</div>
+</body>
+</html>

@@ -3,6 +3,7 @@ package com.elementary.tasks.settings.other
 data class OtherSettingsState(
   val aboutDialog: AboutDialogState? = null,
   val permissionItems: List<PermissionItem> = emptyList(),
+  val isGeminiFunctionsVisible: Boolean = false,
 )
 
 data class AboutDialogState(

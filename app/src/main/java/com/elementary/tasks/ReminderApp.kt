@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import com.elementary.tasks.appfunctions.AppFunctionsInitializer
 import com.elementary.tasks.birthdays.birthdaysModule
 import com.elementary.tasks.calendar.calendarModule
 import com.elementary.tasks.core.cloud.cloudModule
@@ -166,6 +167,8 @@ class ReminderApp :
         ),
       )
     }
+
+    AppFunctionsInitializer.init()
 
     val config =
       SecondaryFirebaseConfig(

@@ -245,6 +245,8 @@ dependencies {
   "freeImplementation"(libs.play.services.ads)
   "freeImplementation"(libs.user.messaging.platform)
 
+  "proImplementation"(project(":appfunctions"))
+
   implementation(libs.circleimageview)
   implementation(libs.retrofit)
   implementation(libs.retrofit.converter.gson)

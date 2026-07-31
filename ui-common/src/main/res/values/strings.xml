@@ -760,12 +760,6 @@
     <string name="builder_blocked_by_x">Blocked by: %s</string>
     <string name="builder_mandatory_if_x">Mandatory if: %s</string>
     <string name="builder_requires_permissions_x">Requires permissions: %s</string>
-    <string name="builder_invalid_email_value">Enter a valid email address</string>
-    <string name="builder_invalid_web_address_value">Enter a valid web address</string>
-    <string name="builder_invalid_phone_number_value">Enter a valid phone number</string>
-    <string name="builder_shopping_list_empty_value">Add at least one item to the list</string>
-    <string name="builder_invalid_value_generic">This value isn\'t valid</string>
-    <string name="builder_permissions_required_message">Grant the requested permissions to continue</string>
     <string name="builder_set_application_action_to_the_reminder">Set open the application as action to the reminder</string>
     <string name="builder_attachments">Attachments</string>
     <string name="builder_customize_additional_parameters_for_a_reminder">Customize additional parameters for a reminder</string>
@@ -805,13 +799,6 @@
     <string name="builder_interval_description">The INTERVAL rule part contains a positive integer representing at which intervals the recurrence rule repeats</string>
     <string name="builder_frequency_description">The Frequency rule part identifies the type of recurrence rule. This rule part MUST be specified in the recurrence rule</string>
     <string name="builder_empty_message">Choose how you\'d like to get started</string>
-    <string name="builder_quick_start_one_time">One-time reminder</string>
-    <string name="builder_quick_start_every_weekday">Every weekday</string>
-    <string name="builder_quick_start_every_month_day">Every month on this day</string>
-    <string name="builder_quick_start_every_year">Every year on this day</string>
-    <string name="builder_quick_start_timer">Countdown timer</string>
-    <string name="builder_quick_start_shopping_list">Shopping list</string>
-    <string name="builder_quick_start_more_options">More options…</string>
     <string name="builder_selector_tab_parameters">Parameters</string>
     <string name="builder_selector_tab_presets">@string/recur_presets</string>
     <string name="builder_selector_tab_recur_presets">iCalendar presets</string>
@@ -904,7 +891,6 @@
     <string name="select_network_type">Select the network type</string>
     <string name="report_an_issue">Report an Issue</string>
     <string name="move_to_archive">Move to archive</string>
-    <string name="turn_off">Turn off</string>
     <string name="share_send_email">Send email…</string>
 
     <string name="dark_mode">Dark Mode</string>
@@ -924,25 +910,6 @@
     <string name="led_indication_if_available">LED indication (if available)</string>
     <string name="led_indication_color">LED indication color</string>
     <string name="reminder_default_priority">Reminder default priority</string>
-    <string name="notification_defaults">Notification defaults</string>
-    <string name="default_vibrate">Vibrate</string>
-    <string name="vibrate_on_notification">Vibrate on notification</string>
-    <string name="do_not_vibrate_on_notification">Do not vibrate on notification</string>
-    <string name="bypass_do_not_disturb">Bypass Do Not Disturb</string>
-    <string name="bypass_do_not_disturb_enabled">Ring even during Do Not Disturb</string>
-    <string name="bypass_do_not_disturb_disabled">Respect Do Not Disturb</string>
-    <string name="wake_screen">Wake screen</string>
-    <string name="wake_screen_enabled">Turn on screen like an alarm</string>
-    <string name="wake_screen_disabled">Do not turn on screen</string>
-    <string name="notification_category">Notification category</string>
-    <string name="notification_category_default">Default</string>
-    <string name="notification_category_alarm">Alarm</string>
-    <string name="notification_category_event">Event</string>
-    <string name="notification_category_call">Call</string>
-    <string name="lock_screen_visibility">Lock screen visibility</string>
-    <string name="lock_screen_visibility_public">Show full content</string>
-    <string name="lock_screen_visibility_private">Hide sensitive content</string>
-    <string name="lock_screen_visibility_secret">Hide completely</string>
     <string name="birthdays_from_contacts">Birthdays from contacts</string>
     <string name="scan_contacts_automatically">Scan contacts automatically</string>
     <string name="delete_all_archived_reminders">Delete all archived reminders</string>
@@ -961,6 +928,8 @@
     <string name="cd_back">Move back</string>
     <string name="how_to_create_a_reminder">How to Create a Reminder</string>
     <string name="copy_of">"Copy of: %s"</string>
+
+    <string name="turn_off">Turn off</string>
 
     <string name="delete_reminder_permanently">Delete reminder permanently?</string>
     <string name="delete_birthday_permanently">Delete birthday permanently?</string>
@@ -1034,4 +1003,41 @@
     <string name="haptic_feedback">Haptic feedback</string>
     <string name="use_haptic_feedback_for_interactions">Use haptic feedback for interactions</string>
     <string name="do_not_use_haptic_feedback_for_interactions">Do not use haptic feedback for interactions</string>
+
+    <string name="notification_defaults">Notification defaults</string>
+    <string name="default_vibrate">Vibrate</string>
+    <string name="vibrate_on_notification">Vibrate on notification</string>
+    <string name="do_not_vibrate_on_notification">Do not vibrate on notification</string>
+    <string name="bypass_do_not_disturb">Bypass Do Not Disturb</string>
+    <string name="bypass_do_not_disturb_enabled">Ring even during Do Not Disturb</string>
+    <string name="bypass_do_not_disturb_disabled">Respect Do Not Disturb</string>
+    <string name="wake_screen">Wake screen</string>
+    <string name="wake_screen_enabled">Turn on screen like an alarm</string>
+    <string name="wake_screen_disabled">Do not turn on screen</string>
+    <string name="notification_category">Notification category</string>
+    <string name="notification_category_default">Default</string>
+    <string name="notification_category_alarm">Alarm</string>
+    <string name="notification_category_event">Event</string>
+    <string name="notification_category_call">Call</string>
+    <string name="lock_screen_visibility">Lock screen visibility</string>
+    <string name="lock_screen_visibility_public">Show full content</string>
+    <string name="lock_screen_visibility_private">Hide sensitive content</string>
+    <string name="lock_screen_visibility_secret">Hide completely</string>
+
+    <string name="builder_quick_start_one_time">One-time reminder</string>
+    <string name="builder_quick_start_every_weekday">Every weekday</string>
+    <string name="builder_quick_start_every_month_day">Every month on this day</string>
+    <string name="builder_quick_start_every_year">Every year on this day</string>
+    <string name="builder_quick_start_timer">Countdown timer</string>
+    <string name="builder_quick_start_shopping_list">Shopping list</string>
+    <string name="builder_quick_start_more_options">More options…</string>
+
+    <string name="builder_invalid_email_value">Enter a valid email address</string>
+    <string name="builder_invalid_web_address_value">Enter a valid web address</string>
+    <string name="builder_invalid_phone_number_value">Enter a valid phone number</string>
+    <string name="builder_shopping_list_empty_value">Add at least one item to the list</string>
+    <string name="builder_invalid_value_generic">This value isn\'t valid</string>
+    <string name="builder_permissions_required_message">Grant the requested permissions to continue</string>
+
+    <string name="gemini_functions">Gemini functions</string>
 </resources>

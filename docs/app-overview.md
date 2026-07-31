@@ -39,6 +39,11 @@ The app is available on [Google Play](https://play.google.com/store/apps/details
 - Browse and manage Google Task lists and individual tasks
 - Full two-way sync with the Google Tasks API
 
+### Gemini AppFunctions integration (PRO)
+
+- Exposes reminder, note, birthday, and Google Task actions (create, list, complete, search, delete) to Gemini and other on-device assistants via Android's `androidx.appfunctions` platform API — no network round trip, everything runs on-device
+- PRO-only; a "Gemini functions" screen under Settings → Other explains what's supported
+
 ### Calendar View
 
 - A combined calendar screen that surfaces reminders, birthdays, and Google Task due dates in a single timeline view
