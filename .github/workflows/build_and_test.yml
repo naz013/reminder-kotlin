@@ -5,11 +5,14 @@ on:
     branches:
       - 'master'
       - 'develop'
-      - 'feature/**'
       - 'release/**'
+  pull_request:
+    branches:
+      - 'master'
+      - 'develop'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 permissions:
