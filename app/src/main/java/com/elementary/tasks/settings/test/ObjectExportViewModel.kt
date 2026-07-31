@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.reminder.migration.toReminder
+import com.github.naz013.domain.reminder.migration.toReminderGroup
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -70,12 +73,7 @@ class ObjectExportViewModel(
       }
 
       try {
-        if (objectType == ObjectExportType.Note) {
-          val oldNote = toSharedNote(obj as NoteWithImages)
-          dataConverter.toOutputStream(oldNote, outputStream)
-        } else {
-          dataConverter.toOutputStream(obj, outputStream)
-        }
+        dataConverter.toOutputStream(obj, outputStream)
       } catch (e: Exception) {
         Logger.e(TAG, "Failed to save object to stream: $e")
         return@launch
@@ -99,12 +97,12 @@ class ObjectExportViewModel(
 
   private suspend fun loadItems(objectType: ObjectExportType): List<ObjectExportItem> =
     when (objectType) {
-      ObjectExportType.Reminder ->
+      ObjectExportType.ReminderV2, ObjectExportType.ReminderV1 ->
         reminderV2Repository.getAll().map {
           ObjectExportItem(it.uuId, it.summary + "\nID: " + it.uuId)
         }
 
-      ObjectExportType.Note ->
+      ObjectExportType.NoteV2, ObjectExportType.NoteV1 ->
         noteRepository.getAll().map {
           ObjectExportItem(it.getKey(), it.getSummary() + "\nID: " + it.getKey())
         }
@@ -119,7 +117,7 @@ class ObjectExportViewModel(
           ObjectExportItem(it.id, it.name + "\nID: " + it.id)
         }
 
-      ObjectExportType.Group ->
+      ObjectExportType.GroupV2, ObjectExportType.GroupV1 ->
         groupV2Repository.getAll().map {
           ObjectExportItem(it.uuId, it.title + "\nID: " + it.uuId)
         }
@@ -130,36 +128,61 @@ class ObjectExportViewModel(
     itemId: String,
   ): Any? =
     when (objectType) {
-      ObjectExportType.Reminder -> reminderV2Repository.getById(itemId)
-      ObjectExportType.Note -> noteRepository.getById(itemId)
+      ObjectExportType.ReminderV2 -> reminderV2Repository.getById(itemId)
+      ObjectExportType.ReminderV1 -> reminderV2Repository.getById(itemId)?.toReminder()
+      ObjectExportType.NoteV2 -> noteRepository.getById(itemId)?.toSharedNote()
+      ObjectExportType.NoteV1 -> noteRepository.getById(itemId)?.toOldNote()
       ObjectExportType.Birthday -> birthdayRepository.getById(itemId)
       ObjectExportType.Place -> placeRepository.getById(itemId)
-      ObjectExportType.Group -> groupV2Repository.getById(itemId)
+      ObjectExportType.GroupV2 -> groupV2Repository.getById(itemId)
+      ObjectExportType.GroupV1 -> groupV2Repository.getById(itemId)?.toReminderGroup()
     }
 
   private fun getFileExt(objectType: ObjectExportType): String =
     when (objectType) {
-      ObjectExportType.Reminder -> FileConfig.FILE_NAME_REMINDER_V2
-      ObjectExportType.Note -> SharedNote.FILE_EXTENSION
+      ObjectExportType.ReminderV2 -> FileConfig.FILE_NAME_REMINDER_V2
+      ObjectExportType.ReminderV1 -> FileConfig.FILE_NAME_REMINDER
+      ObjectExportType.NoteV2 -> SharedNote.FILE_EXTENSION
+      ObjectExportType.NoteV1 -> FileConfig.FILE_NAME_NOTE
       ObjectExportType.Birthday -> FileConfig.FILE_NAME_BIRTHDAY
       ObjectExportType.Place -> FileConfig.FILE_NAME_PLACE
-      ObjectExportType.Group -> FileConfig.FILE_NAME_GROUP_V2
+      ObjectExportType.GroupV2 -> FileConfig.FILE_NAME_GROUP_V2
+      ObjectExportType.GroupV1 -> FileConfig.FILE_NAME_GROUP
     }
 
-  private fun toSharedNote(noteWithImages: NoteWithImages): SharedNote = SharedNote(
-    text = noteWithImages.note?.summary ?: "",
-    title = noteWithImages.note?.title ?: "",
-    titleFontSize = noteWithImages.note?.titleFontSize ?: -1,
-    titleFontStyle = noteWithImages.note?.titleFontStyle ?: -1,
-    id = noteWithImages.note?.key ?: "",
-    date = noteWithImages.note?.date ?: "",
-    color = noteWithImages.note?.color ?: 0,
-    style = noteWithImages.note?.style ?: 0,
-    palette = noteWithImages.note?.palette ?: 0,
-    updatedAt = noteWithImages.note?.updatedAt,
-    opacity = noteWithImages.note?.opacity ?: 100,
-    fontSize = noteWithImages.note?.fontSize ?: -1,
-  )
+  private fun NoteWithImages.toSharedNote(): SharedNote {
+    return SharedNote(
+      text = this.note?.summary ?: "",
+      title = this.note?.title ?: "",
+      titleFontSize = this.note?.titleFontSize ?: -1,
+      titleFontStyle = this.note?.titleFontStyle ?: -1,
+      id = this.note?.key ?: "",
+      date = this.note?.date ?: "",
+      color = this.note?.color ?: 0,
+      style = this.note?.style ?: 0,
+      palette = this.note?.palette ?: 0,
+      updatedAt = this.note?.updatedAt,
+      opacity = this.note?.opacity ?: 100,
+      fontSize = this.note?.fontSize ?: -1,
+    )
+  }
+
+  private fun NoteWithImages.toOldNote(): OldNote {
+    return OldNote(
+      summary = this.getSummary(),
+      key = this.getKey(),
+      date = this.getGmtTime(),
+      color = this.getColor(),
+      palette = this.getPalette(),
+      style = this.getStyle(),
+      fontSize = this.getFontSize(),
+      updatedAt = this.note?.updatedAt,
+      images = emptyList(),
+      uniqueId = this.note?.uniqueId ?: 0,
+      archived = this.note?.archived ?: false,
+      version = this.note?.version ?: 0,
+    )
+  }
 
   companion object {
     private const val TAG = "OETest"

@@ -2,6 +2,8 @@ package com.elementary.tasks.navigation
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
@@ -52,38 +54,58 @@ class NavigationDispatcher(
       LoginApi.openLogged(context, BottomNavActivity::class.java) {
         destination.action?.also { setAction(it) }
         destination.flags?.also { addFlags(it) }
-        destination.extras?.also { putExtras(activityExtras(destination.screen, it)) }
+        destination.extras?.also { applyDeepLink(destination.screen, it) }
       }
     } else {
       context
         .buildIntent(BottomNavActivity::class.java) {
           destination.action?.also { setAction(it) }
           destination.flags?.also { addFlags(it) }
-          destination.extras?.also { putExtras(activityExtras(destination.screen, it)) }
+          destination.extras?.also { applyDeepLink(destination.screen, it) }
         }.also { context.startActivity(it) }
     }
   }
 
-  private fun activityExtras(
+  /**
+   * Forwards the producer's raw [bundle] as-is (it may already carry its own
+   * [DeepLinkDestination.KEY] extra, e.g. a home-screen widget's `fillInIntent`) and, if [screen]
+   * implies a typed deep link, adds/overwrites it on top.
+   */
+  private fun Intent.applyDeepLink(
     screen: DestinationScreen,
     bundle: Bundle,
-  ): Bundle =
+  ) {
+    putExtras(bundle)
+    deepLinkDestination(screen, bundle)?.also { putExtra(DeepLinkDestination.KEY, it) }
+  }
+
+  private fun deepLinkDestination(
+    screen: DestinationScreen,
+    bundle: Bundle,
+  ): DeepLinkDestination? =
     when (screen) {
-      DestinationScreen.BirthdayCreate -> withDeepLink(bundle, EditBirthdayScreen(bundle))
-      DestinationScreen.BirthdayPreview -> withDeepLink(bundle, ViewBirthdayScreen(bundle))
-      DestinationScreen.GoogleTaskPreview -> withDeepLink(bundle, ViewGoogleTaskScreen(bundle))
-      DestinationScreen.GoogleTaskCreate -> withDeepLink(bundle, EditGoogleTaskScreen(bundle))
-      DestinationScreen.ReminderPreview -> withDeepLink(bundle, ViewReminderScreen(bundle))
-      DestinationScreen.ReminderCreate -> withDeepLink(bundle, EditReminderScreen(bundle))
-      DestinationScreen.NotePreview -> withDeepLink(bundle, ViewNoteScreen(bundle))
-      DestinationScreen.NoteCreate -> withDeepLink(bundle, EditNoteScreen(bundle))
-      DestinationScreen.Main -> bundle
+      DestinationScreen.BirthdayCreate -> EditBirthdayScreen(id = bundle.getString(IntentKeys.INTENT_ID))
+      DestinationScreen.BirthdayPreview -> ViewBirthdayScreen(id = bundle.getString(IntentKeys.INTENT_ID))
+      DestinationScreen.GoogleTaskCreate -> EditGoogleTaskScreen
+      DestinationScreen.GoogleTaskPreview -> ViewGoogleTaskScreen(id = bundle.getString(IntentKeys.INTENT_ID))
+      DestinationScreen.ReminderCreate -> EditReminderScreen(deepLinkText = bundle.getString(Intent.EXTRA_TEXT))
+      DestinationScreen.ReminderPreview -> ViewReminderScreen(id = bundle.getString(IntentKeys.INTENT_ID))
+      DestinationScreen.NoteCreate ->
+        EditNoteScreen(
+          sharedText = bundle.getString(Intent.EXTRA_TEXT),
+          sharedImageUris = bundle.getUriList(Intent.EXTRA_STREAM)?.map { it.toString() },
+        )
+      DestinationScreen.NotePreview -> ViewNoteScreen(id = bundle.getString(IntentKeys.INTENT_ID))
+      DestinationScreen.Main -> null
     }
 
-  private fun withDeepLink(
-    bundle: Bundle,
-    deepLinkDestination: DeepLinkDestination,
-  ): Bundle = Bundle(bundle).apply { putParcelable(DeepLinkDestination.KEY, deepLinkDestination) }
+  private fun Bundle.getUriList(key: String): ArrayList<Uri>? =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      getParcelableArrayList(key, Uri::class.java)
+    } else {
+      @Suppress("DEPRECATION")
+      getParcelableArrayList(key)
+    }
 
   private fun dispatchData(destination: DataDestination) {
     val data = destination.data
@@ -100,30 +122,21 @@ class NavigationDispatcher(
       .buildIntent(BottomNavActivity::class.java) {
         setAction(Intent.ACTION_VIEW)
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        putExtras(dataExtras(data))
+        putExtra(DeepLinkDestination.KEY, deepLinkDestinationForData(data))
       }.also { context.startActivity(it) }
   }
 
   private fun isSupported(data: Any): Boolean =
     data is Birthday || data is GroupV2 || data is Place || data is ReminderV2 || data is NoteWithImages
 
-  private fun dataExtras(data: Any): Bundle {
-    val deepLinkDestination =
-      when (data) {
-        is Birthday -> EditBirthdayScreen(deepLinkItemBundle())
-        is GroupV2 -> EditGroupScreen(deepLinkItemBundle())
-        is Place -> EditPlaceScreen(deepLinkItemBundle())
-        is ReminderV2 -> EditReminderScreen(deepLinkItemBundle())
-        is NoteWithImages -> EditNoteScreen(Bundle().apply { putBoolean(IntentKeys.INTENT_ITEM, true) })
-        else -> error("Unsupported destination data: $data")
-      }
-    return Bundle().apply { putParcelable(DeepLinkDestination.KEY, deepLinkDestination) }
-  }
-
-  private fun deepLinkItemBundle(): Bundle =
-    Bundle().apply {
-      putBoolean(IntentKeys.INTENT_ITEM, true)
-      putBoolean(IntentKeys.INTENT_DEEP_LINK, true)
+  private fun deepLinkDestinationForData(data: Any): DeepLinkDestination =
+    when (data) {
+      is Birthday -> EditBirthdayScreen(fromIntentData = true)
+      is GroupV2 -> EditGroupScreen(fromIntentData = true)
+      is Place -> EditPlaceScreen(fromIntentData = true)
+      is ReminderV2 -> EditReminderScreen(fromIntentItem = true)
+      is NoteWithImages -> EditNoteScreen(fromIntentData = true)
+      else -> error("Unsupported destination data: $data")
     }
 
   companion object {

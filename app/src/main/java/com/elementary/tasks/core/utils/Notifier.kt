@@ -8,7 +8,6 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -201,7 +200,7 @@ class Notifier(
       Intent(context, BottomNavActivity::class.java)
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         .setAction(Intent.ACTION_VIEW)
-        .putExtra(DeepLinkDestination.KEY, EditReminderScreen(Bundle()))
+        .putExtra(DeepLinkDestination.KEY, EditReminderScreen())
     val stackBuilder = TaskStackBuilder.create(context)
     stackBuilder.addParentStack(BottomNavActivity::class.java)
     stackBuilder.addNextIntentWithParentStack(resultIntent)
@@ -216,7 +215,7 @@ class Notifier(
       Intent(context, BottomNavActivity::class.java)
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         .setAction(Intent.ACTION_VIEW)
-        .putExtra(DeepLinkDestination.KEY, EditNoteScreen(Bundle()))
+        .putExtra(DeepLinkDestination.KEY, EditNoteScreen())
     val noteBuilder = TaskStackBuilder.create(context)
     noteBuilder.addParentStack(BottomNavActivity::class.java)
     noteBuilder.addNextIntentWithParentStack(noteIntent)

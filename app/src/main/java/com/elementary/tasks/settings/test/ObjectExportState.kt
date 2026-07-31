@@ -1,7 +1,7 @@
 package com.elementary.tasks.settings.test
 
 data class ObjectExportState(
-  val objectType: ObjectExportType = ObjectExportType.Reminder,
+  val objectType: ObjectExportType = ObjectExportType.ReminderV2,
   val items: List<ObjectExportItem> = emptyList(),
 )
 
@@ -11,11 +11,14 @@ data class ObjectExportItem(
 )
 
 enum class ObjectExportType {
-  Reminder,
+  ReminderV2,
+  ReminderV1,
   Birthday,
-  Note,
+  NoteV2,
+  NoteV1,
   Place,
-  Group,
+  GroupV2,
+  GroupV1,
 }
 
 sealed class ObjectExportEvent {

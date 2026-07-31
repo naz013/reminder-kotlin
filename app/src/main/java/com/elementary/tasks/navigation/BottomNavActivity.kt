@@ -7,10 +7,6 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
-import com.elementary.tasks.core.deeplink.DeepLinkDataParser
-import com.elementary.tasks.core.deeplink.ReminderDatetimeTypeDeepLinkData
-import com.elementary.tasks.core.deeplink.ReminderTextDeepLinkData
-import com.elementary.tasks.core.deeplink.ReminderTodoTypeDeepLinkData
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
@@ -21,8 +17,6 @@ import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.work.BackupSettingsTask
 import com.elementary.tasks.splash.ShortcutDestination
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DayViewScreen
@@ -47,7 +41,6 @@ import org.koin.android.ext.android.inject
 
 class BottomNavActivity : BaseAuthActivity() {
   private val workScheduler by inject<WorkScheduler>()
-  private val dateTimeManager by inject<DateTimeManager>()
 
   private val adsProvider = AdsProvider()
 
@@ -72,11 +65,12 @@ class BottomNavActivity : BaseAuthActivity() {
    */
   private fun resolveInitialNavKeys(): List<NavKey> {
     if (intent.action == Intent.ACTION_VIEW) {
+      intent.setExtrasClassLoader(DeepLinkDestination::class.java.classLoader)
       val deepLinkDestination =
         intent.readParcelable(DeepLinkDestination.KEY, DeepLinkDestination::class.java)
       when (deepLinkDestination) {
         is ViewNoteScreen -> {
-          val id = deepLinkDestination.extras.getString(IntentKeys.INTENT_ID)
+          val id = deepLinkDestination.id
           return if (id != null) {
             listOf(NotesNavKey.List, NotesNavKey.Preview(id))
           } else {
@@ -84,28 +78,39 @@ class BottomNavActivity : BaseAuthActivity() {
           }
         }
 
-        is EditNoteScreen -> {
-          val id = deepLinkDestination.extras.getString(IntentKeys.INTENT_ID)
-          return listOf(NotesNavKey.List, NotesNavKey.Edit(id))
-        }
+        is EditNoteScreen ->
+          return listOf(
+            NotesNavKey.List,
+            NotesNavKey.Edit(
+              id = deepLinkDestination.id,
+              fromIntentData = deepLinkDestination.fromIntentData,
+              sharedText = deepLinkDestination.sharedText,
+              sharedImageUris = deepLinkDestination.sharedImageUris,
+            ),
+          )
 
-        is EditGroupScreen -> {
-          val id = deepLinkDestination.extras.getString(IntentKeys.INTENT_ID)
-          return listOf(GroupsNavKey.List, GroupsNavKey.Edit(id ?: ""))
-        }
+        is EditGroupScreen ->
+          return listOf(
+            GroupsNavKey.List,
+            GroupsNavKey.Edit(id = deepLinkDestination.id ?: "", fromIntentData = deepLinkDestination.fromIntentData),
+          )
 
-        is EditPlaceScreen -> {
-          val id = deepLinkDestination.extras.getString(IntentKeys.INTENT_ID)
-          return listOf(PlacesNavKey.List, PlacesNavKey.Edit(id ?: ""))
-        }
+        is EditPlaceScreen ->
+          return listOf(
+            PlacesNavKey.List,
+            PlacesNavKey.Edit(id = deepLinkDestination.id ?: "", fromIntentData = deepLinkDestination.fromIntentData),
+          )
 
-        is EditBirthdayScreen -> {
-          val id = deepLinkDestination.extras.getString(IntentKeys.INTENT_ID)
-          return listOf(BirthdaysNavKey.Edit(id ?: ""))
-        }
+        is EditBirthdayScreen ->
+          return listOf(
+            BirthdaysNavKey.Edit(
+              id = deepLinkDestination.id ?: "",
+              fromIntentData = deepLinkDestination.fromIntentData,
+            ),
+          )
 
         is ViewBirthdayScreen -> {
-          val id = deepLinkDestination.extras.getString(IntentKeys.INTENT_ID)
+          val id = deepLinkDestination.id
           return if (id != null) {
             listOf(BirthdaysNavKey.Preview(id))
           } else {
@@ -118,7 +123,7 @@ class BottomNavActivity : BaseAuthActivity() {
         }
 
         is ViewGoogleTaskScreen -> {
-          val id = deepLinkDestination.extras.getString(IntentKeys.INTENT_ID)
+          val id = deepLinkDestination.id
           return if (id != null) {
             listOf(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskPreview(id))
           } else {
@@ -126,18 +131,21 @@ class BottomNavActivity : BaseAuthActivity() {
           }
         }
 
-        is EditReminderScreen -> return listOf(resolveBuildReminderNavKey(deepLinkDestination.extras))
+        is EditReminderScreen ->
+          return listOf(
+            BuildReminderNavKey.Main(
+              fromIntentItem = deepLinkDestination.fromIntentItem,
+              deepLinkText = deepLinkDestination.deepLinkText,
+            ),
+          )
 
         is ViewReminderScreen -> {
-          val id = deepLinkDestination.extras.getString(IntentKeys.INTENT_ID)
+          val id = deepLinkDestination.id
           return if (id != null) listOf(ReminderPreviewNavKey.Preview(id)) else emptyList()
         }
 
-        is DayViewScreen -> {
-          val dateMillis = deepLinkDestination.extras.getLong("date", -1L)
-          return if (dateMillis >= 0L) listOf(CalendarNavKey.Month, CalendarNavKey.Day(dateMillis)) else listOf(
-            CalendarNavKey.Month)
-        }
+        is DayViewScreen ->
+          return listOf(CalendarNavKey.Month, CalendarNavKey.Day(deepLinkDestination.dateMillis))
 
         is SettingsScreen -> return listOf(SettingsNavKey.Hub)
 
@@ -152,30 +160,6 @@ class BottomNavActivity : BaseAuthActivity() {
       }
     }
     return emptyList()
-  }
-
-  /**
-   * Decomposes an [EditReminderScreen] deep link's `Bundle` extras - a widget click
-   * (`INTENT_ITEM`, read from [com.github.naz013.navigation.intent.IntentDataReader] by
-   * `BuildReminderViewModel`) or a share-text/new-reminder-with-date-or-todo deep link (still
-   * `Bundle`-encoded since it crosses an OS `Intent` boundary) - into [BuildReminderNavKey.Main]'s
-   * typed fields.
-   */
-  private fun resolveBuildReminderNavKey(extras: Bundle?): BuildReminderNavKey.Main {
-    if (extras?.getBoolean(IntentKeys.INTENT_ITEM, false) == true) {
-      return BuildReminderNavKey.Main(fromIntentItem = true)
-    }
-    return when (val deepLinkData = extras?.let { DeepLinkDataParser().readDeepLinkData(it) }) {
-      is ReminderDatetimeTypeDeepLinkData ->
-        BuildReminderNavKey.Main(
-          deepLinkDateTimeType = BuildReminderNavKey.Main.DateTimeType.Date,
-          deepLinkDateTimeMillis = dateTimeManager.toMillis(deepLinkData.dateTime),
-        )
-
-      is ReminderTodoTypeDeepLinkData -> BuildReminderNavKey.Main(deepLinkTodo = true)
-      is ReminderTextDeepLinkData -> BuildReminderNavKey.Main(deepLinkText = deepLinkData.text)
-      else -> BuildReminderNavKey.Main()
-    }
   }
 
   override fun onDestroy() {
