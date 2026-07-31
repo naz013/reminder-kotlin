@@ -1,5 +1,5 @@
 name: Setup build
-description: Checkout, JDK, gradlew permissions and google-services.json files shared by build_and_test jobs
+description: JDK, gradlew permissions and google-services.json files shared by build_and_test jobs. Requires actions/checkout to have already run in the calling job.
 
 inputs:
   google-services-pro:
@@ -15,9 +15,6 @@ inputs:
 runs:
   using: composite
   steps:
-
-    - name: Clone repo
-      uses: actions/checkout@v7
 
     - name: Validate Gradle wrapper
       uses: gradle/actions/wrapper-validation@v6

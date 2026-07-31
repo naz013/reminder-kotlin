@@ -26,6 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Clone repo
+      uses: actions/checkout@v7
+
     - name: Setup build
       uses: ./.github/actions/setup-build
       with:
@@ -47,6 +50,9 @@ jobs:
   test_android:
     runs-on: ubuntu-latest
     steps:
+
+    - name: Clone repo
+      uses: actions/checkout@v7
 
     - name: Setup build
       uses: ./.github/actions/setup-build
@@ -90,6 +96,9 @@ jobs:
   test_kotlin_and_coverage:
     runs-on: ubuntu-latest
     steps:
+
+    - name: Clone repo
+      uses: actions/checkout@v7
 
     - name: Setup build
       uses: ./.github/actions/setup-build
