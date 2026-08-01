@@ -12,4 +12,9 @@ sealed interface GroupsNavKey : NavKey {
     val id: String = "",
     val fromIntentData: Boolean = false,
   ) : GroupsNavKey
+
+  @Serializable
+  data class Details(
+    val id: String,
+  ) : GroupsNavKey
 }

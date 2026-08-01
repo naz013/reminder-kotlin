@@ -558,6 +558,7 @@
     <string name="acc_switch_to_map">Switch to map</string>
     <string name="application_data">Application Data</string>
     <string name="reminders">Reminders</string>
+    <string name="group_has_no_active_reminders">No active reminders in this group</string>
     <string name="logout">Logout</string>
     <string name="reminder_by_date_explanations">Set your reminder for exact date and time</string>
     <string name="reminder_by_timer_explanations">Set your reminder by countdown timer</string>

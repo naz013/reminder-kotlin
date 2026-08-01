@@ -11,11 +11,15 @@ import com.elementary.tasks.R
 import com.elementary.tasks.groups.create.EditGroupScreen
 import com.elementary.tasks.groups.create.EditGroupState
 import com.elementary.tasks.groups.create.EditGroupViewModel
+import com.elementary.tasks.groups.details.GroupDetailsScreen
+import com.elementary.tasks.groups.details.GroupDetailsState
+import com.elementary.tasks.groups.details.GroupDetailsViewModel
 import com.elementary.tasks.groups.list.GroupsScreen
 import com.elementary.tasks.groups.list.GroupsScreenState
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
@@ -24,6 +28,7 @@ import org.koin.core.parameter.parametersOf
 
 fun EntryProviderScope<NavKey>.groupsEntries(backStack: MutableList<NavKey>) {
   entry<GroupsNavKey.List> { GroupsListEntry(backStack) }
+  entry<GroupsNavKey.Details> { key -> GroupsDetailsEntry(key, backStack) }
   entry<GroupsNavKey.Edit> { key -> GroupsEditEntry(key, backStack) }
 }
 
@@ -37,6 +42,7 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
     when (event) {
       GroupsViewModel.NavigationEvent.AddGroup -> backStack.add(GroupsNavKey.Edit())
       is GroupsViewModel.NavigationEvent.OpenEdit -> backStack.add(GroupsNavKey.Edit(event.id))
+      is GroupsViewModel.NavigationEvent.OpenDetails -> backStack.add(GroupsNavKey.Details(event.id))
       is GroupsViewModel.NavigationEvent.ConfirmDelete -> {
         dialogDispatcher.showDialog(
           titleRes = R.string.delete_group_permanently,
@@ -55,6 +61,41 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
     onAddClick = viewModel::onAddClick,
     onGroupClick = viewModel::onGroupClick,
     onGroupMenuAction = viewModel::onGroupMenuAction,
+  )
+}
+
+@Composable
+private fun GroupsDetailsEntry(
+  key: GroupsNavKey.Details,
+  backStack: MutableList<NavKey>,
+) {
+  val viewModel = koinViewModel<GroupDetailsViewModel> { parametersOf(key.id) }
+  val dialogDispatcher = rememberDialogDispatcher()
+
+  viewModel.navigationEvent.ObserveEvent { event ->
+    when (event) {
+      is GroupDetailsViewModel.NavigationEvent.OpenEdit -> backStack.add(GroupsNavKey.Edit(event.id))
+      is GroupDetailsViewModel.NavigationEvent.OpenReminderPreview ->
+        backStack.add(ReminderPreviewNavKey.Preview(event.id))
+      is GroupDetailsViewModel.NavigationEvent.ConfirmDelete -> {
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete_group_permanently,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.onDeleteConfirmed() }
+        )
+      }
+      GroupDetailsViewModel.NavigationEvent.Deleted -> backStack.removeLastOrNull()
+    }
+  }
+
+  val state by viewModel.state.collectAsState(GroupDetailsState())
+  GroupDetailsScreen(
+    state = state,
+    onBackClick = { backStack.removeLastOrNull() },
+    onEditClick = viewModel::onEditClick,
+    onDeleteClick = viewModel::onDeleteClick,
+    onReminderClick = viewModel::onReminderClick,
   )
 }
 

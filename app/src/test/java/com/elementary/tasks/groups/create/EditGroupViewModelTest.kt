@@ -4,6 +4,8 @@ import android.content.Context
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.utils.VibrationPlayer
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.groups.NotificationOverrideSubtitleFormatter
+import com.elementary.tasks.groups.NotificationOverrideSubtitles
 import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.SaveGroupUseCase
 import com.elementary.tasks.mockDispatcherProvider
@@ -45,6 +47,7 @@ class EditGroupViewModelTest : BaseTest() {
   private val reminderSettingsRepository = mockk<ReminderSettingsRepository>()
   private val vibrationPlayer = mockk<VibrationPlayer>(relaxed = true)
   private val prefs = mockk<Prefs>(relaxed = true)
+  private val notificationOverrideSubtitleFormatter = mockk<NotificationOverrideSubtitleFormatter>(relaxed = true)
 
   private lateinit var viewModel: EditGroupViewModel
 
@@ -85,6 +88,7 @@ class EditGroupViewModelTest : BaseTest() {
     reminderSettingsRepository = reminderSettingsRepository,
     vibrationPlayer = vibrationPlayer,
     prefs = prefs,
+    notificationOverrideSubtitleFormatter = notificationOverrideSubtitleFormatter,
   )
 
   @Before
@@ -93,6 +97,7 @@ class EditGroupViewModelTest : BaseTest() {
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
     every { dateTimeManager.getCurrentDateTime() } returns org.threeten.bp.LocalDateTime.now()
     every { reminderSettingsRepository.getNotificationDefaults() } returns NotificationSettings()
+    every { notificationOverrideSubtitleFormatter.format(any()) } returns NotificationOverrideSubtitles()
     coEvery { groupV2Repository.getById(any()) } returns null
     coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
     coEvery { groupV2Repository.countAll() } returns 2

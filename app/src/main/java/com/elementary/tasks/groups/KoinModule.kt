@@ -1,6 +1,7 @@
 package com.elementary.tasks.groups
 
 import com.elementary.tasks.groups.create.EditGroupViewModel
+import com.elementary.tasks.groups.details.GroupDetailsViewModel
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.MakeGroupDefaultUseCase
@@ -15,6 +16,7 @@ val groupModule =
     factoryOf(::DeleteGroupUseCase)
     factoryOf(::SaveGroupUseCase)
     factoryOf(::MakeGroupDefaultUseCase)
+    factoryOf(::NotificationOverrideSubtitleFormatter)
 
     viewModelOf(::GroupsViewModel)
     viewModel { (id: String, fromIntentData: Boolean) ->
@@ -25,6 +27,19 @@ val groupModule =
         get(),
         get(),
         get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get()
+      )
+    }
+    viewModel { (id: String) ->
+      GroupDetailsViewModel(
+        id,
         get(),
         get(),
         get(),

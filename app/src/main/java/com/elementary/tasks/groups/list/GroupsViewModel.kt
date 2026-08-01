@@ -37,7 +37,7 @@ class GroupsViewModel(
   }
 
   fun onGroupClick(id: String) {
-    navigationEvent.postValue(Event(NavigationEvent.OpenEdit(id)))
+    navigationEvent.postValue(Event(NavigationEvent.OpenDetails(id)))
   }
 
   fun onGroupMenuAction(
@@ -93,6 +93,10 @@ class GroupsViewModel(
     data object AddGroup : NavigationEvent
 
     data class OpenEdit(
+      val id: String,
+    ) : NavigationEvent
+
+    data class OpenDetails(
       val id: String,
     ) : NavigationEvent
 

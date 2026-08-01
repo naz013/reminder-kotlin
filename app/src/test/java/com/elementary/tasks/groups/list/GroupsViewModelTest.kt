@@ -111,11 +111,11 @@ class GroupsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onGroupClick posts OpenEdit navigation event with the group id`() {
+  fun `onGroupClick posts OpenDetails navigation event with the group id`() {
     viewModel.onGroupClick("42")
 
     val event = viewModel.navigationEvent.value?.peekContent()
-    assertEquals(GroupsViewModel.NavigationEvent.OpenEdit("42"), event)
+    assertEquals(GroupsViewModel.NavigationEvent.OpenDetails("42"), event)
   }
 
   @Test
