@@ -42,6 +42,8 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
@@ -79,6 +81,7 @@ class PreviewReminderViewModel(
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
+  private val tableChangeListenerFactory: TableChangeListenerFactory,
   private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
@@ -87,6 +90,20 @@ class PreviewReminderViewModel(
     .onStart { load() }
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
+
+  // The reminder can also be completed/snoozed/toggled from the system notification's action
+  // buttons, which run through a BroadcastReceiver rather than an Activity - so this screen
+  // never gets an ON_RESUME to hook into. Listen for the underlying table write directly so the
+  // status shown here stays correct even when that happens while this screen is in the foreground.
+  private val reminderTableChangeListener = tableChangeListenerFactory.create(Table.ReminderV2) { refresh() }
+
+  init {
+    reminderTableChangeListener.register()
+  }
+
+  override fun onCleared() {
+    reminderTableChangeListener.unregister()
+  }
 
   fun refresh() {
     load()

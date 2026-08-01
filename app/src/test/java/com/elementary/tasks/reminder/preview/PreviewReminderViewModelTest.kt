@@ -33,12 +33,17 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.observer.TableChangeListener
+import com.github.naz013.repository.observer.TableChangeListenerFactory
+import com.github.naz013.repository.table.Table
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -73,6 +78,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
+  private val tableChangeListenerFactory = mockk<TableChangeListenerFactory>(relaxed = true)
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
 
   @Before
@@ -140,6 +146,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       activateReminderUseCase = activateReminderUseCase,
       toggleReminderStateUseCase = toggleReminderStateUseCase,
       saveReminderUseCase = saveReminderUseCase,
+      tableChangeListenerFactory = tableChangeListenerFactory,
       buildInfo = buildInfo,
     )
 
@@ -183,6 +190,24 @@ class PreviewReminderViewModelTest : BaseTest() {
       val state = viewModel.state.first()
 
       assertEquals("Buy bread", state.summary)
+    }
+
+  @Test
+  fun `reloads state when the ReminderV2 table changes externally`() =
+    runTest {
+      val listener = mockk<TableChangeListener>(relaxed = true)
+      val onChanged = slot<() -> Unit>()
+      every { tableChangeListenerFactory.create(Table.ReminderV2, capture(onChanged)) } returns listener
+      coEvery { getReminderV2ByIdUseCase("42") } returns reminderV2()
+      val viewModel = createViewModel()
+      viewModel.state.first()
+      coEvery { getReminderV2ByIdUseCase("42") } returns reminderV2().copy(summary = "Buy bread")
+
+      onChanged.captured.invoke()
+      val state = viewModel.state.first()
+
+      assertEquals("Buy bread", state.summary)
+      verify { listener.register() }
     }
 
   @Test
