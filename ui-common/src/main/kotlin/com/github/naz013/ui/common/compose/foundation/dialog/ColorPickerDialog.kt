@@ -13,8 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
@@ -97,7 +95,6 @@ private fun ColorPickerDialog(
   onSave: (Int) -> Unit,
 ) {
   var previewIndex by remember { mutableIntStateOf(data.selectedIndex) }
-  val hapticFeedback = LocalHapticFeedback.current
 
   AlertDialog(
     onDismissRequest = onDismissRequest,
@@ -109,14 +106,12 @@ private fun ColorPickerDialog(
         colors = data.colors,
         selectedIndex = previewIndex,
         onColorSelected = { index ->
-          if (index != previewIndex && data.hapticFeedbackEnabled) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-          }
           previewIndex = index
         },
         modifier = Modifier
           .fillMaxWidth()
           .height(40.dp),
+        hapticFeedbackEnabled = data.hapticFeedbackEnabled,
       )
     },
     confirmButton = { TextButton(onClick = { onSave(previewIndex) }) { Text(stringResource(R.string.save)) } },

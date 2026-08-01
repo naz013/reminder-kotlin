@@ -249,6 +249,7 @@ fun SimpleMapView(
               selectedIndex = uiState.selectedMarkerStyle,
               onStyleSelected = viewModel::onMarkerStyleSelected,
               modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
+              hapticFeedbackEnabled = uiState.hapticFeedbackEnabled,
             )
           }
 

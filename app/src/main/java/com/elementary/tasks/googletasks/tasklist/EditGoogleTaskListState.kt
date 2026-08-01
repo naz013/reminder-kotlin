@@ -17,4 +17,5 @@ data class EditGoogleTaskListState(
   val canDelete: Boolean = false,
   val showDeleteConfirm: Boolean = false,
   val screenTitleRes: Int = R.string.new_tasks_list,
+  val hapticFeedbackEnabled: Boolean = true,
 )

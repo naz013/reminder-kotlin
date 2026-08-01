@@ -18,7 +18,7 @@ ksp = "2.3.4"
 kotlinCompilerExtensionVersion = "1.5.15"
 
 # Libraries
-firebase-bom = "34.16.0"
+firebase-bom = "34.17.0"
 
 play-services-location = "21.4.0"
 play-services-maps = "20.0.0"
@@ -62,7 +62,6 @@ kotlinx-coroutines = "1.11.0"
 koin = "4.2.2"
 koin-android-ext = "3.0.2"
 
-circleimageview = "3.1.0"
 retrofit = "3.0.0"
 gson = "2.14.0"
 jsr305 = "3.0.2"
@@ -72,8 +71,6 @@ lib-recur = "0.17.1"
 commons-lang3 = "3.20.0"
 threetenbp = "1.7.4"
 threetenabp = "1.4.9"
-colorslider = "2.0.6"
-android-calendar-ext = "1.0.4"
 lottie = "6.7.1"
 coil = "2.7.0"
 telephoto = "0.19.0"
@@ -88,7 +85,7 @@ google-api-services-drive = "v3-rev20251210-2.0.0"
 google-http-client-gson = "2.2.0"
 google-api-client-android = "2.9.0"
 
-grpc = "1.83.0"
+grpc = "1.83.1"
 
 # Testing
 junit = "4.13.2"
@@ -195,7 +192,6 @@ user-messaging-platform = { group = "com.google.android.ump", name = "user-messa
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 
-circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
@@ -207,8 +203,6 @@ lib-recur = { group = "org.dmfs", name = "lib-recur", version.ref = "lib-recur" 
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
 threetenbp = { group = "org.threeten", name = "threetenbp", version.ref = "threetenbp" }
 threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threetenabp" }
-colorslider = { group = "com.github.naz013", name = "ColorSlider", version.ref = "colorslider" }
-android-calendar-ext = { group = "com.github.naz013", name = "android-calendar-ext", version.ref = "android-calendar-ext" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }

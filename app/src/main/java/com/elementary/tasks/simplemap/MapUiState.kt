@@ -23,6 +23,7 @@ data class MapUiState(
   val mapStyleOptions: MapStyleOptions? = null,
   val selectedMapStyle: Int = MapConfig.DEFAULT_MAP_STYLE,
   val markerStyleSliderColors: List<Color> = emptyList(),
+  val hapticFeedbackEnabled: Boolean = true,
 )
 
 /** Which single picker card (if any) is currently expanded - mutually exclusive by design. */

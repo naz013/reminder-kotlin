@@ -228,7 +228,7 @@ class SimpleMapViewViewModel(
   }
 
   fun onMarkerStyleSelected(style: Int) {
-    if (_state.value.selectedMarkerStyle != style && prefs.hapticsEnabled) {
+    if (style != _state.value.selectedMarkerStyle && prefs.hapticsEnabled) {
       event.emit(MapEvent.HapticFeedback)
     }
     if (mapParams.rememberMarkerStyle) prefs.markerStyle = style
@@ -321,6 +321,7 @@ class SimpleMapViewViewModel(
       radiusText = radiusFormatter.format(radiusRange.radius),
       mapStyleOptions = mapStyle.getMapStyleOptions(prefs.mapStyle, prefs.mapType),
       markerStyleSliderColors = mapStyle.colorsForSlider(),
+      hapticFeedbackEnabled = prefs.hapticsEnabled,
     )
   }
 

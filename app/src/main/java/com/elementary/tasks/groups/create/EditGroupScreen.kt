@@ -155,6 +155,7 @@ fun EditGroupScreen(
             onColorSelected = onColorSelected,
             enabled = !state.isLoading,
             modifier = Modifier.fillMaxWidth().height(40.dp).padding(top = 8.dp),
+            hapticFeedbackEnabled = state.hapticFeedbackEnabled,
           )
         }
       }

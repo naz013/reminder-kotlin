@@ -3,6 +3,7 @@ package com.elementary.tasks.groups.create
 import android.content.Context
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.utils.VibrationPlayer
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.SaveGroupUseCase
 import com.elementary.tasks.mockDispatcherProvider
@@ -43,6 +44,7 @@ class EditGroupViewModelTest : BaseTest() {
   private val saveGroupUseCase = mockk<SaveGroupUseCase>(relaxed = true)
   private val reminderSettingsRepository = mockk<ReminderSettingsRepository>()
   private val vibrationPlayer = mockk<VibrationPlayer>(relaxed = true)
+  private val prefs = mockk<Prefs>(relaxed = true)
 
   private lateinit var viewModel: EditGroupViewModel
 
@@ -82,6 +84,7 @@ class EditGroupViewModelTest : BaseTest() {
     saveGroupUseCase = saveGroupUseCase,
     reminderSettingsRepository = reminderSettingsRepository,
     vibrationPlayer = vibrationPlayer,
+    prefs = prefs,
   )
 
   @Before

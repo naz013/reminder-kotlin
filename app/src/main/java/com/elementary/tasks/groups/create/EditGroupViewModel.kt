@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.VibrationPlayer
 import com.elementary.tasks.core.utils.VibrationPresets
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.SaveGroupUseCase
 import com.elementary.tasks.reminder.build.formatter.CategoryFormatter
@@ -56,6 +57,7 @@ class EditGroupViewModel(
   private val saveGroupUseCase: SaveGroupUseCase,
   private val reminderSettingsRepository: ReminderSettingsRepository,
   private val vibrationPlayer: VibrationPlayer,
+  private val prefs: Prefs,
 ) : ViewModel() {
 
   private val context get() = contextProvider.themedContext
@@ -69,6 +71,7 @@ class EditGroupViewModel(
   init {
     _state.update {
       it.copy(
+        hapticFeedbackEnabled = prefs.hapticsEnabled,
         sliderColors = ThemeProvider.colorsForSliderThemed(contextProvider.themedContext)
           .map { color -> color.toColor() },
       )

@@ -37,6 +37,7 @@ data class NoteEditState(
   val reminderId: String? = null,
   val noteId: String = UUID.randomUUID().toString(),
   val sliderColors: List<Color> = emptyList(),
+  val hapticFeedbackEnabled: Boolean = true,
 )
 
 enum class EditTab { COLOR, FONT, REMINDER, IMAGE }

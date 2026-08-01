@@ -151,6 +151,7 @@ class NoteEditViewModel(
         hasCamera = systemInfo.hasCamera,
         sliderColors = noteColorEngine.allColors(),
         noteColors = noteColorEngine.colorsFor(colorCode, opacity),
+        hapticFeedbackEnabled = prefs.hapticsEnabled,
       )
     }
     onNewTime(LocalTime.now())

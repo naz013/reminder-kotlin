@@ -76,12 +76,10 @@ internal fun EventsWidgetConfigScreen(
         colors = state.palette,
         selectedIndex = state.headerBackgroundIndex,
         onColorSelected = { index ->
-          if (state.hapticFeedbackEnabled && index != state.headerBackgroundIndex) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-          }
           onHeaderColorSelected(index)
         },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
+        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
       )
     }
 
@@ -99,12 +97,10 @@ internal fun EventsWidgetConfigScreen(
         colors = state.palette,
         selectedIndex = state.itemBackgroundIndex,
         onColorSelected = { index ->
-          if (state.hapticFeedbackEnabled && index != state.itemBackgroundIndex) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-          }
           onItemColorSelected(index)
         },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
+        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
       )
     }
   }
