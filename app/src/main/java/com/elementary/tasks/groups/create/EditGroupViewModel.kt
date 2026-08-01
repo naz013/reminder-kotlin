@@ -21,6 +21,7 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.LockScreenVisibility
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.sync.SyncState
@@ -68,7 +69,8 @@ class EditGroupViewModel(
   init {
     _state.update {
       it.copy(
-        sliderColors = ThemeProvider.colorsForSliderThemed(contextProvider.themedContext).map { color -> color.toColor() },
+        sliderColors = ThemeProvider.colorsForSliderThemed(contextProvider.themedContext)
+          .map { color -> color.toColor() },
       )
     }
   }
@@ -143,23 +145,33 @@ class EditGroupViewModel(
   fun onPriorityClick() {
     val options = listOf(inheritLabel()) + priorityOptions()
     val selectedIndex = _state.value.notification.priority?.let { it.ordinal + 1 } ?: 0
-    showChoiceDialog(GroupNotificationDialogKind.PRIORITY, context.getString(R.string.reminder_default_priority), options, selectedIndex)
+    showChoiceDialog(
+      kind = GroupNotificationDialogKind.PRIORITY,
+      title = context.getString(R.string.reminder_default_priority),
+      options = options,
+      selectedIndex = selectedIndex
+    )
   }
 
   fun onCategoryClick() {
     val options = listOf(inheritLabel()) + categoryOptions()
     val selectedIndex = _state.value.notification.category?.let { it.ordinal + 1 } ?: 0
-    showChoiceDialog(GroupNotificationDialogKind.CATEGORY, context.getString(R.string.notification_category), options, selectedIndex)
+    showChoiceDialog(
+      kind = GroupNotificationDialogKind.CATEGORY,
+      title = context.getString(R.string.notification_category),
+      options = options,
+      selectedIndex = selectedIndex
+    )
   }
 
   fun onLockScreenVisibilityClick() {
     val options = listOf(inheritLabel()) + lockScreenVisibilityOptions()
     val selectedIndex = _state.value.notification.lockScreenVisibility?.let { it.ordinal + 1 } ?: 0
     showChoiceDialog(
-      GroupNotificationDialogKind.LOCK_SCREEN_VISIBILITY,
-      context.getString(R.string.lock_screen_visibility),
-      options,
-      selectedIndex,
+      kind = GroupNotificationDialogKind.LOCK_SCREEN_VISIBILITY,
+      title = context.getString(R.string.lock_screen_visibility),
+      options = options,
+      selectedIndex = selectedIndex,
     )
   }
 
@@ -170,34 +182,44 @@ class EditGroupViewModel(
       ?.let { pattern -> VibrationPresets.ALL.indexOfFirst { it.pattern == pattern } }
       ?.takeIf { it >= 0 }
       ?.let { it + 1 } ?: 0
-    showChoiceDialog(GroupNotificationDialogKind.VIBRATION_PATTERN, context.getString(R.string.vibration_pattern), options, selectedIndex)
+    showChoiceDialog(
+      kind = GroupNotificationDialogKind.VIBRATION_PATTERN,
+      title = context.getString(R.string.vibration_pattern),
+      options = options,
+      selectedIndex = selectedIndex
+    )
   }
 
   fun onNotificationChoiceSelected(index: Int) {
     val dialog = _state.value.dialog as? EditGroupDialog.NotificationChoice ?: return
+    if (dialog.kind == GroupNotificationDialogKind.VIBRATION_PATTERN && index > 0) {
+      VibrationPresets.ALL.getOrNull(index - 1)?.pattern?.let { vibrationPlayer.play(it) }
+    }
     _state.update { current ->
-      val n = current.notification
-      val updated = when (dialog.kind) {
-        GroupNotificationDialogKind.VIBRATE -> n.copy(vibrate = booleanFromIndex(index))
-        GroupNotificationDialogKind.REPEAT_NOTIFICATION -> n.copy(repeatNotification = booleanFromIndex(index))
-        GroupNotificationDialogKind.BYPASS_DND -> n.copy(bypassDoNotDisturb = booleanFromIndex(index))
-        GroupNotificationDialogKind.WAKE_SCREEN -> n.copy(wakeScreen = booleanFromIndex(index))
-        GroupNotificationDialogKind.PRIORITY ->
-          n.copy(priority = if (index == 0) null else ReminderPriority.entries.getOrNull(index - 1))
-        GroupNotificationDialogKind.CATEGORY ->
-          n.copy(category = if (index == 0) null else ReminderNotificationCategory.entries.getOrNull(index - 1))
-        GroupNotificationDialogKind.LOCK_SCREEN_VISIBILITY ->
-          n.copy(lockScreenVisibility = if (index == 0) null else LockScreenVisibility.entries.getOrNull(index - 1))
-        GroupNotificationDialogKind.VIBRATION_PATTERN -> {
-          val pattern = if (index == 0) null else VibrationPresets.ALL.getOrNull(index - 1)?.pattern
-          if (pattern != null) vibrationPlayer.play(pattern)
-          n.copy(vibrationPattern = pattern)
-        }
-      }
-      current.copy(notification = updated, dialog = null)
+      current.copy(notification = applyNotificationChoice(current.notification, dialog.kind, index), dialog = null)
     }
     refreshNotificationSubtitles()
   }
+
+  private fun applyNotificationChoice(
+    n: NotificationSettingsOverride,
+    kind: GroupNotificationDialogKind,
+    index: Int,
+  ): NotificationSettingsOverride =
+    when (kind) {
+      GroupNotificationDialogKind.VIBRATE -> n.copy(vibrate = booleanFromIndex(index))
+      GroupNotificationDialogKind.REPEAT_NOTIFICATION -> n.copy(repeatNotification = booleanFromIndex(index))
+      GroupNotificationDialogKind.BYPASS_DND -> n.copy(bypassDoNotDisturb = booleanFromIndex(index))
+      GroupNotificationDialogKind.WAKE_SCREEN -> n.copy(wakeScreen = booleanFromIndex(index))
+      GroupNotificationDialogKind.PRIORITY ->
+        n.copy(priority = if (index == 0) null else ReminderPriority.entries.getOrNull(index - 1))
+      GroupNotificationDialogKind.CATEGORY ->
+        n.copy(category = if (index == 0) null else ReminderNotificationCategory.entries.getOrNull(index - 1))
+      GroupNotificationDialogKind.LOCK_SCREEN_VISIBILITY ->
+        n.copy(lockScreenVisibility = if (index == 0) null else LockScreenVisibility.entries.getOrNull(index - 1))
+      GroupNotificationDialogKind.VIBRATION_PATTERN ->
+        n.copy(vibrationPattern = if (index == 0) null else VibrationPresets.ALL.getOrNull(index - 1)?.pattern)
+    }
 
   fun onDelayMinutesClick() {
     val current = _state.value.notification.delayMinutes
@@ -265,7 +287,12 @@ class EditGroupViewModel(
     _state.update { it.copy(dialog = null) }
   }
 
-  private fun booleanFromIndex(index: Int): Boolean? = when (index) { 1 -> true; 2 -> false; else -> null }
+  private fun booleanFromIndex(index: Int): Boolean? =
+    when (index) {
+      1 -> true
+      2 -> false
+      else -> null
+    }
 
   private fun showBooleanChoiceDialog(
     kind: GroupNotificationDialogKind,
@@ -273,7 +300,11 @@ class EditGroupViewModel(
     current: Boolean?,
   ) {
     val options = listOf(inheritLabel(), context.getString(R.string.on), context.getString(R.string.off))
-    val selectedIndex = when (current) { true -> 1; false -> 2; null -> 0 }
+    val selectedIndex = when (current) {
+      true -> 1
+      false -> 2
+      null -> 0
+    }
     showChoiceDialog(kind, title, options, selectedIndex)
   }
 
@@ -297,7 +328,9 @@ class EditGroupViewModel(
 
   private fun inheritLabel(): String = context.getString(R.string.inherit_from_settings)
 
-  private fun priorityOptions(): List<String> = ReminderPriority.entries.map { PriorityFormatter(context).format(it.ordinal) }
+  private fun priorityOptions(): List<String> = ReminderPriority.entries.map {
+    PriorityFormatter(context).format(it.ordinal)
+  }
 
   private fun categoryOptions(): List<String> =
     ReminderNotificationCategory.entries.map { CategoryFormatter(context).format(it.ordinal) }
@@ -320,8 +353,9 @@ class EditGroupViewModel(
           ?: inherited(PriorityFormatter(context).format(defaults.priority.ordinal)),
         categorySubtitle = n.category?.let { CategoryFormatter(context).format(it.ordinal) }
           ?: inherited(CategoryFormatter(context).format(defaults.category.ordinal)),
-        lockScreenVisibilitySubtitle = n.lockScreenVisibility?.let { LockScreenVisibilityFormatter(context).format(it.ordinal) }
-          ?: inherited(LockScreenVisibilityFormatter(context).format(defaults.lockScreenVisibility.ordinal)),
+        lockScreenVisibilitySubtitle = n.lockScreenVisibility?.let {
+          LockScreenVisibilityFormatter(context).format(it.ordinal)
+        } ?: inherited(LockScreenVisibilityFormatter(context).format(defaults.lockScreenVisibility.ordinal)),
         vibrationPatternSubtitle = n.vibrationPattern?.let { VibrationPatternFormatter(context).format(it) }
           ?: inherited(VibrationPatternFormatter(context).format(defaults.vibrationPattern.orEmpty())),
         delayMinutesSubtitle = n.delayMinutes?.let { DelayMinutesFormatter(context).format(it) }

@@ -86,7 +86,11 @@ class NotificationOverrideBuilderItemsTest {
   fun `builder items leave the notification override unchanged when no value was set`() {
     val items = listOf(
       CategoryBuilderItem(title = "c", description = null, categoryFormatter = mockk(relaxed = true)),
-      LockScreenVisibilityBuilderItem(title = "l", description = null, lockScreenVisibilityFormatter = mockk(relaxed = true)),
+      LockScreenVisibilityBuilderItem(
+        title = "l",
+        description = null,
+        lockScreenVisibilityFormatter = mockk(relaxed = true),
+      ),
       BypassDndBuilderItem(title = "b", description = null, bypassDndFormatter = mockk(relaxed = true)),
       WakeScreenBuilderItem(title = "w", description = null, wakeScreenFormatter = mockk(relaxed = true)),
       VibrationPatternBuilderItem(title = "v", description = null, vibrationPatternFormatter = mockk(relaxed = true)),

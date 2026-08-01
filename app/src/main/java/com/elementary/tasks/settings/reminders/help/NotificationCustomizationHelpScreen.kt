@@ -49,18 +49,16 @@ fun NotificationCustomizationHelpScreen(onBackClick: () -> Unit) {
           }
         },
         colors = TopAppbarColor,
-        scrollBehavior =
-          TopAppBarDefaults.enterAlwaysScrollBehavior().apply {
-            state.contentOffset = if (isScrolled) -1f else 0f
-          },
+        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior().apply {
+          state.contentOffset = if (isScrolled) -1f else 0f
+        },
       )
     },
   ) { paddingValues ->
     AndroidView(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(paddingValues),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(paddingValues),
       factory = { context ->
         WebView(context).apply {
           layoutParams =

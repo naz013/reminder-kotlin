@@ -5,7 +5,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.simplemap.DefaultRadiusFormatter
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
@@ -73,6 +72,7 @@ import com.elementary.tasks.reminder.build.formatter.datetime.WeekdayArrayFormat
 import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.elementary.tasks.simplemap.DefaultRadiusFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.PackageManagerWrapper

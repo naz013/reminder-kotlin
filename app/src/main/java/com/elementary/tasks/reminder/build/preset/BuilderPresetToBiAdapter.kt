@@ -60,6 +60,7 @@ import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.reminder.BiTypeToBiValue
 import com.github.naz013.domain.PresetBuilderScheme
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.BiType.APPLICATION
 import com.github.naz013.domain.reminder.BiType.ARRIVING_COORDINATES
 import com.github.naz013.domain.reminder.BiType.ATTACHMENTS
@@ -172,6 +173,18 @@ class BuilderPresetToBiAdapter(
       LED_COLOR -> create(scheme, LedColorBuilderItem::class.java)
       ATTACHMENTS -> create(scheme, AttachmentsBuilderItem::class.java)
       OTHER_PARAMS -> create(scheme, OtherParamsBuilderItem::class.java)
+      else -> toNotificationOrIntegrationBuilderItem(scheme, type)
+    }
+  }
+
+  // Split out of toBuilderItem() to stay under the LongMethod line threshold - the notification
+  // override fields and third-party-integration items, which don't share any grouping with the
+  // core/params/action items above beyond both being flat BiType -> BuilderItem lookups.
+  private suspend fun toNotificationOrIntegrationBuilderItem(
+    scheme: PresetBuilderScheme,
+    type: BiType,
+  ): BuilderItem<*>? =
+    when (type) {
       CATEGORY -> create(scheme, CategoryBuilderItem::class.java)
       LOCK_SCREEN_VISIBILITY -> create(scheme, LockScreenVisibilityBuilderItem::class.java)
       BYPASS_DND -> create(scheme, BypassDndBuilderItem::class.java)
@@ -182,8 +195,8 @@ class BuilderPresetToBiAdapter(
       GOOGLE_CALENDAR -> create(scheme, GoogleCalendarBuilderItem::class.java)
       GOOGLE_CALENDAR_DURATION -> create(scheme, GoogleCalendarDurationBuilderItem::class.java)
       NOTE -> create(scheme, NoteBuilderItem::class.java)
+      else -> error("Unknown biType: $type")
     }
-  }
 
   private suspend inline fun <reified V, reified T : BuilderItem<V>> create(
     scheme: PresetBuilderScheme,

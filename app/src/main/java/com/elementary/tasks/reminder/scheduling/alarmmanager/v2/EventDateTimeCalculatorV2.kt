@@ -34,12 +34,6 @@ class EventDateTimeCalculatorV2(
     }
     Logger.i(TAG, "Calculated event time: ${dateTimeManager.logDateTime(due)}")
     val millis = dateTimeManager.toMillis(due)
-    // A plain `millis <= 0` check only catches dates at/before the 1970 epoch, which never
-    // happens for a real reminder - it let any genuinely-past `due` (e.g. from an upstream
-    // miscalculation) through to AlarmManager, which fires past-due exact alarms almost
-    // immediately instead of not scheduling at all. Compare against "now" instead, with a
-    // small tolerance so a reminder due earlier in the current minute (seconds were just
-    // zeroed above) isn't rejected.
     val nowMillis = dateTimeManager.toMillis(dateTimeManager.getCurrentDateTime())
     if (millis < nowMillis - PAST_TOLERANCE_MILLIS) {
       Logger.w(TAG, "Calculated event time is in the past: $due")

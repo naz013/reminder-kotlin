@@ -12,6 +12,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class ReminderHandlerFactory(
@@ -24,9 +25,13 @@ class ReminderHandlerFactory(
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val snoozeReminderUseCase: SnoozeReminderUseCase,
 ) {
-  fun createAction(canShowWindow: Boolean): ActionHandler<ReminderV2> =
+  fun createAction(
+    canShowWindow: Boolean,
+    notificationSettings: NotificationSettings,
+  ): ActionHandler<ReminderV2> =
     ReminderNotificationHandler(
       reminderDataProvider = reminderDataProvider,
+      notificationSettings = notificationSettings,
       contextProvider = contextProvider,
       textProvider = textProvider,
       notifier = notifier,

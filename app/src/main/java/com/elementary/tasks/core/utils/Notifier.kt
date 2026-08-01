@@ -27,6 +27,8 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.logging.Logger
@@ -70,9 +72,7 @@ class Notifier(
     val importance = NotificationManager.IMPORTANCE_DEFAULT
     val channel = NotificationChannel(CHANNEL_SYSTEM, name, importance)
     channel.description = descr
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      channel.setAllowBubbles(false)
-    }
+    channel.setAllowBubbles(false)
     channel.setShowBadge(false)
     return channel
   }
@@ -83,11 +83,85 @@ class Notifier(
     val importance = NotificationManager.IMPORTANCE_DEFAULT
     val channel = NotificationChannel(CHANNEL_REMINDER, name, importance)
     channel.description = descr
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      channel.setAllowBubbles(false)
-    }
+    channel.setAllowBubbles(false)
     channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
     return channel
+  }
+
+  /**
+   * A `NotificationChannel`'s importance/vibration/DND-bypass are locked at creation on Android
+   * 8+, so [CHANNEL_REMINDER] alone can't express per-reminder/per-group overrides for those
+   * fields - this derives (and lazily creates) one channel per distinct resolved combination of
+   * them instead. `vibrationPattern` only ever takes one of a handful of fixed presets, so the
+   * combination space is small and bounded (roughly 50 in the worst case) - no orphan-channel
+   * cleanup is needed for that to stay reasonable.
+   */
+  fun reminderChannelId(settings: NotificationSettings): String {
+    val id = "$CHANNEL_REMINDER.${channelSuffix(settings)}"
+    ensureReminderChannel(id, settings)
+    return id
+  }
+
+  private fun channelSuffix(settings: NotificationSettings): String {
+    val key =
+      "${settings.vibrate}|${settings.vibrationPattern?.joinToString(",")}|" +
+        "${settings.priority.ordinal}|${settings.bypassDoNotDisturb}"
+    return Integer.toHexString(key.hashCode())
+  }
+
+  private fun ensureReminderChannel(
+    id: String,
+    settings: NotificationSettings,
+  ) {
+    val manager = getManager() ?: return
+    if (manager.getNotificationChannel(id) != null) return
+    val channel =
+      NotificationChannel(
+        id,
+        context.getString(R.string.reminder_channel),
+        channelImportance(settings.priority),
+      )
+    channel.description = channelDescription(settings)
+    channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+    channel.setAllowBubbles(false)
+    channel.enableVibration(settings.vibrate)
+    if (settings.vibrate) {
+      settings.vibrationPattern?.toLongArray()?.let { channel.vibrationPattern = it }
+    }
+    channel.setBypassDnd(settings.bypassDoNotDisturb)
+    manager.createNotificationChannel(channel)
+  }
+
+  private fun channelImportance(priority: ReminderPriority): Int =
+    when (priority) {
+      ReminderPriority.LOWEST -> NotificationManager.IMPORTANCE_MIN
+      ReminderPriority.LOW -> NotificationManager.IMPORTANCE_LOW
+      ReminderPriority.NORMAL -> NotificationManager.IMPORTANCE_DEFAULT
+      ReminderPriority.HIGH, ReminderPriority.HIGHEST -> NotificationManager.IMPORTANCE_HIGH
+    }
+
+  private fun priorityLabel(priority: ReminderPriority): String =
+    context.getString(
+      when (priority) {
+        ReminderPriority.LOWEST -> R.string.priority_lowest
+        ReminderPriority.LOW -> R.string.priority_low
+        ReminderPriority.NORMAL -> R.string.priority_normal
+        ReminderPriority.HIGH -> R.string.priority_high
+        ReminderPriority.HIGHEST -> R.string.priority_highest
+      },
+    )
+
+  // Multiple dynamically-created channels all show up as separate "Reminders" entries in system
+  // Settings > App notifications - this description is what actually distinguishes them there.
+  private fun channelDescription(settings: NotificationSettings): String {
+    val vibrateLabel = context.getString(if (settings.vibrate) R.string.vibrate else R.string.off)
+    val parts =
+      listOfNotNull(
+        priorityLabel(settings.priority),
+        vibrateLabel,
+        context.getString(R.string.bypass_do_not_disturb).takeIf { settings.bypassDoNotDisturb },
+      )
+    return "${context.getString(R.string.default_reminder_notifications)} (${parts.joinToString(", ")})"
   }
 
   private fun createNoteChannel(): NotificationChannel {
@@ -96,9 +170,7 @@ class Notifier(
     val importance = NotificationManager.IMPORTANCE_LOW
     val channel = NotificationChannel(CHANNEL_NOTES, name, importance)
     channel.description = descr
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      channel.setAllowBubbles(false)
-    }
+    channel.setAllowBubbles(false)
     channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
     return channel
   }
@@ -112,9 +184,7 @@ class Notifier(
     channel.enableLights(true)
     channel.enableVibration(false)
     channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      channel.setAllowBubbles(false)
-    }
+    channel.setAllowBubbles(false)
     return channel
   }
 
