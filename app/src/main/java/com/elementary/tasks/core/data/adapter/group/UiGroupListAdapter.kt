@@ -12,7 +12,10 @@ import com.github.naz013.ui.common.theme.ThemeProvider
 class UiGroupListAdapter(
   private val contextProvider: ContextProvider,
 ) {
-  fun convert(group: GroupV2): UiGroupList {
+  fun convert(
+    group: GroupV2,
+    reminderCount: Int = 0,
+  ): UiGroupList {
     val groupColor = ThemeProvider.themedColor(contextProvider.themedContext, group.color)
     return UiGroupList(
       id = group.uuId,
@@ -23,8 +26,12 @@ class UiGroupListAdapter(
       isDefaultGroup = group.isDefault,
       canDelete = !group.isDefault,
       canSetAsDefault = !group.isDefault,
+      reminderCountText = formatReminderCount(reminderCount),
     )
   }
+
+  private fun formatReminderCount(count: Int): String =
+    contextProvider.themedContext.resources.getQuantityString(R.plurals.group_x_reminders, count, count)
 
   fun convert(
     id: String,

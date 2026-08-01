@@ -7,13 +7,12 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.VibrationPlayer
 import com.elementary.tasks.core.utils.VibrationPresets
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.groups.NotificationOverrideSubtitleFormatter
 import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.SaveGroupUseCase
 import com.elementary.tasks.reminder.build.formatter.CategoryFormatter
-import com.elementary.tasks.reminder.build.formatter.DelayMinutesFormatter
 import com.elementary.tasks.reminder.build.formatter.LockScreenVisibilityFormatter
 import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
-import com.elementary.tasks.reminder.build.formatter.VibrationPatternFormatter
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -58,6 +57,7 @@ class EditGroupViewModel(
   private val reminderSettingsRepository: ReminderSettingsRepository,
   private val vibrationPlayer: VibrationPlayer,
   private val prefs: Prefs,
+  private val notificationOverrideSubtitleFormatter: NotificationOverrideSubtitleFormatter,
 ) : ViewModel() {
 
   private val context get() = contextProvider.themedContext
@@ -344,35 +344,21 @@ class EditGroupViewModel(
   private fun vibrationPatternOptions(): List<String> = VibrationPresets.ALL.map { context.getString(it.nameRes) }
 
   private fun refreshNotificationSubtitles() {
-    val defaults = reminderSettingsRepository.getNotificationDefaults()
+    val subtitles = notificationOverrideSubtitleFormatter.format(_state.value.notification)
     _state.update { current ->
-      val n = current.notification
       current.copy(
-        vibrateSubtitle = boolSubtitle(n.vibrate, defaults.vibrate),
-        repeatNotificationSubtitle = boolSubtitle(n.repeatNotification, defaults.repeatNotification),
-        bypassDndSubtitle = boolSubtitle(n.bypassDoNotDisturb, defaults.bypassDoNotDisturb),
-        wakeScreenSubtitle = boolSubtitle(n.wakeScreen, defaults.wakeScreen),
-        prioritySubtitle = n.priority?.let { PriorityFormatter(context).format(it.ordinal) }
-          ?: inherited(PriorityFormatter(context).format(defaults.priority.ordinal)),
-        categorySubtitle = n.category?.let { CategoryFormatter(context).format(it.ordinal) }
-          ?: inherited(CategoryFormatter(context).format(defaults.category.ordinal)),
-        lockScreenVisibilitySubtitle = n.lockScreenVisibility?.let {
-          LockScreenVisibilityFormatter(context).format(it.ordinal)
-        } ?: inherited(LockScreenVisibilityFormatter(context).format(defaults.lockScreenVisibility.ordinal)),
-        vibrationPatternSubtitle = n.vibrationPattern?.let { VibrationPatternFormatter(context).format(it) }
-          ?: inherited(VibrationPatternFormatter(context).format(defaults.vibrationPattern.orEmpty())),
-        delayMinutesSubtitle = n.delayMinutes?.let { DelayMinutesFormatter(context).format(it) }
-          ?: inherited(DelayMinutesFormatter(context).format(defaults.delayMinutes)),
+        vibrateSubtitle = subtitles.vibrate ?: "",
+        repeatNotificationSubtitle = subtitles.repeatNotification ?: "",
+        bypassDndSubtitle = subtitles.bypassDnd ?: "",
+        wakeScreenSubtitle = subtitles.wakeScreen ?: "",
+        prioritySubtitle = subtitles.priority ?: "",
+        categorySubtitle = subtitles.category ?: "",
+        lockScreenVisibilitySubtitle = subtitles.lockScreenVisibility ?: "",
+        vibrationPatternSubtitle = subtitles.vibrationPattern ?: "",
+        delayMinutesSubtitle = subtitles.delayMinutes ?: "",
       )
     }
   }
-
-  private fun boolSubtitle(value: Boolean?, effective: Boolean): String {
-    val label = context.getString(if (value ?: effective) R.string.on else R.string.off)
-    return if (value != null) label else inherited(label)
-  }
-
-  private fun inherited(value: String): String = context.getString(R.string.inherited_format, value)
 
   private fun load() {
     viewModelScope.launch(dispatcherProvider.io()) {

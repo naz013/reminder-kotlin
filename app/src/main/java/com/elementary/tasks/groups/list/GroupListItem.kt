@@ -74,6 +74,12 @@ fun GroupListItem(
           style = MaterialTheme.typography.titleMedium,
           modifier = Modifier.fillMaxWidth(),
         )
+        Text(
+          text = group.reminderCountText,
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.fillMaxWidth(),
+        )
       }
       Box {
         MenuIconButton(

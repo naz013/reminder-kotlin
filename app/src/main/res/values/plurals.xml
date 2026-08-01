@@ -14,4 +14,9 @@
         <item quantity="one">@string/builder_and_x_item_is_deleted</item>
         <item quantity="other">@string/builder_and_x_items_are_deleted</item>
     </plurals>
+
+    <plurals name="group_x_reminders" >
+        <item quantity="one">@string/group_x_reminder</item>
+        <item quantity="other">@string/group_x_reminders</item>
+    </plurals>
 </resources>

@@ -4,6 +4,8 @@ import org.koin.dsl.module
 
 val remindersUseCaseModule = module {
   factory { GetActiveRemindersV2UseCase(get()) }
+  factory { GetActiveRemindersV2ByGroupIdUseCase(get()) }
+  factory { CountActiveRemindersV2ByGroupIdUseCase(get()) }
   factory { GetReminderV2ByIdUseCase(get()) }
   factory { GetRemindersV2ByGroupIdUseCase(get()) }
   factory { GetRemindersV2InRangeUseCase(get()) }
