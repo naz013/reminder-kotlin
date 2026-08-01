@@ -12,16 +12,23 @@ import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.repository.ReminderSettingsRepository
 
 data class NotificationOverrideSubtitles(
-  val vibrate: String = "",
-  val repeatNotification: String = "",
-  val bypassDnd: String = "",
-  val wakeScreen: String = "",
-  val priority: String = "",
-  val category: String = "",
-  val lockScreenVisibility: String = "",
-  val vibrationPattern: String = "",
-  val delayMinutes: String = "",
-)
+  val vibrate: String? = null,
+  val repeatNotification: String? = null,
+  val bypassDnd: String? = null,
+  val wakeScreen: String? = null,
+  val priority: String? = null,
+  val category: String? = null,
+  val lockScreenVisibility: String? = null,
+  val vibrationPattern: String? = null,
+  val delayMinutes: String? = null,
+) {
+  val allDefault: Boolean
+    get() {
+      return vibrate == null && repeatNotification == null && bypassDnd == null && wakeScreen == null &&
+        priority == null && category == null && lockScreenVisibility == null && vibrationPattern == null &&
+        delayMinutes == null
+    }
+}
 
 /**
  * Formats a group/reminder [NotificationSettingsOverride] into per-field subtitles that read
@@ -35,25 +42,37 @@ class NotificationOverrideSubtitleFormatter(
   private val reminderSettingsRepository: ReminderSettingsRepository,
 ) {
 
-  fun format(notification: NotificationSettingsOverride): NotificationOverrideSubtitles {
+  fun format(
+    notification: NotificationSettingsOverride,
+    excludeDefault: Boolean = false,
+  ): NotificationOverrideSubtitles {
     val context = contextProvider.themedContext
     val defaults = reminderSettingsRepository.getNotificationDefaults()
     return NotificationOverrideSubtitles(
-      vibrate = boolSubtitle(context, notification.vibrate, defaults.vibrate),
-      repeatNotification = boolSubtitle(context, notification.repeatNotification, defaults.repeatNotification),
-      bypassDnd = boolSubtitle(context, notification.bypassDoNotDisturb, defaults.bypassDoNotDisturb),
-      wakeScreen = boolSubtitle(context, notification.wakeScreen, defaults.wakeScreen),
+      vibrate = boolSubtitle(context, notification.vibrate, defaults.vibrate)
+        .takeIf { notification.vibrate != null || !excludeDefault },
+      repeatNotification = boolSubtitle(context, notification.repeatNotification, defaults.repeatNotification)
+        .takeIf { notification.repeatNotification != null || !excludeDefault },
+      bypassDnd = boolSubtitle(context, notification.bypassDoNotDisturb, defaults.bypassDoNotDisturb)
+        .takeIf { notification.bypassDoNotDisturb != null || !excludeDefault },
+      wakeScreen = boolSubtitle(context, notification.wakeScreen, defaults.wakeScreen)
+        .takeIf { notification.wakeScreen != null || !excludeDefault },
       priority = notification.priority?.let { PriorityFormatter(context).format(it.ordinal) }
-        ?: inherited(context, PriorityFormatter(context).format(defaults.priority.ordinal)),
+        ?: inherited(context, PriorityFormatter(context).format(defaults.priority.ordinal))
+          .takeIf { !excludeDefault },
       category = notification.category?.let { CategoryFormatter(context).format(it.ordinal) }
-        ?: inherited(context, CategoryFormatter(context).format(defaults.category.ordinal)),
+        ?: inherited(context, CategoryFormatter(context).format(defaults.category.ordinal))
+          .takeIf { !excludeDefault },
       lockScreenVisibility = notification.lockScreenVisibility?.let {
         LockScreenVisibilityFormatter(context).format(it.ordinal)
-      } ?: inherited(context, LockScreenVisibilityFormatter(context).format(defaults.lockScreenVisibility.ordinal)),
+      } ?: inherited(context, LockScreenVisibilityFormatter(context).format(defaults.lockScreenVisibility.ordinal))
+        .takeIf { !excludeDefault },
       vibrationPattern = notification.vibrationPattern?.let { VibrationPatternFormatter(context).format(it) }
-        ?: inherited(context, VibrationPatternFormatter(context).format(defaults.vibrationPattern.orEmpty())),
+        ?: inherited(context, VibrationPatternFormatter(context).format(defaults.vibrationPattern.orEmpty()))
+          .takeIf { !excludeDefault },
       delayMinutes = notification.delayMinutes?.let { DelayMinutesFormatter(context).format(it) }
-        ?: inherited(context, DelayMinutesFormatter(context).format(defaults.delayMinutes)),
+        ?: inherited(context, DelayMinutesFormatter(context).format(defaults.delayMinutes))
+          .takeIf { !excludeDefault },
     )
   }
 

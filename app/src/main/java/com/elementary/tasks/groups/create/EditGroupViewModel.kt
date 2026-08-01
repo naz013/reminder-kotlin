@@ -347,15 +347,15 @@ class EditGroupViewModel(
     val subtitles = notificationOverrideSubtitleFormatter.format(_state.value.notification)
     _state.update { current ->
       current.copy(
-        vibrateSubtitle = subtitles.vibrate,
-        repeatNotificationSubtitle = subtitles.repeatNotification,
-        bypassDndSubtitle = subtitles.bypassDnd,
-        wakeScreenSubtitle = subtitles.wakeScreen,
-        prioritySubtitle = subtitles.priority,
-        categorySubtitle = subtitles.category,
-        lockScreenVisibilitySubtitle = subtitles.lockScreenVisibility,
-        vibrationPatternSubtitle = subtitles.vibrationPattern,
-        delayMinutesSubtitle = subtitles.delayMinutes,
+        vibrateSubtitle = subtitles.vibrate ?: "",
+        repeatNotificationSubtitle = subtitles.repeatNotification ?: "",
+        bypassDndSubtitle = subtitles.bypassDnd ?: "",
+        wakeScreenSubtitle = subtitles.wakeScreen ?: "",
+        prioritySubtitle = subtitles.priority ?: "",
+        categorySubtitle = subtitles.category ?: "",
+        lockScreenVisibilitySubtitle = subtitles.lockScreenVisibility ?: "",
+        vibrationPatternSubtitle = subtitles.vibrationPattern ?: "",
+        delayMinutesSubtitle = subtitles.delayMinutes ?: "",
       )
     }
   }

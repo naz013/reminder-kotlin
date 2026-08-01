@@ -71,7 +71,7 @@ class GroupDetailsViewModel(
         return@launch
       }
       val canBeDeleted = groupV2Repository.countAll() > 1 && !group.isDefault
-      val subtitles = notificationOverrideSubtitleFormatter.format(group.notification)
+      val subtitles = notificationOverrideSubtitleFormatter.format(group.notification, excludeDefault = true)
       val reminders = getActiveRemindersV2ByGroupIdUseCase(id).map { uiReminderListAdapter.createV2(it, group) }
       val color = uiGroupListAdapter.convert(group).color
 

@@ -102,7 +102,7 @@ class GroupDetailsViewModelTest : BaseTest() {
     coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
     coEvery { groupV2Repository.countAll() } returns 2
     coEvery { getActiveRemindersV2ByGroupIdUseCase("1") } returns emptyList()
-    every { notificationOverrideSubtitleFormatter.format(any()) } returns NotificationOverrideSubtitles()
+    every { notificationOverrideSubtitleFormatter.format(any(), any()) } returns NotificationOverrideSubtitles()
     every { uiGroupListAdapter.convert(any<GroupV2>()) } answers {
       uiGroupList(color = firstArg<GroupV2>().color * 100)
     }
@@ -116,7 +116,7 @@ class GroupDetailsViewModelTest : BaseTest() {
     val uiReminder = uiReminderList("r1")
     coEvery { getActiveRemindersV2ByGroupIdUseCase("1") } returns listOf(reminder)
     every { uiReminderListAdapter.createV2(reminder, any()) } returns uiReminder
-    every { notificationOverrideSubtitleFormatter.format(any()) } returns
+    every { notificationOverrideSubtitleFormatter.format(any(), any()) } returns
       NotificationOverrideSubtitles(priority = "High")
 
     val state = viewModel.state.first()

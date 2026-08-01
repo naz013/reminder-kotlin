@@ -97,7 +97,7 @@ class EditGroupViewModelTest : BaseTest() {
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
     every { dateTimeManager.getCurrentDateTime() } returns org.threeten.bp.LocalDateTime.now()
     every { reminderSettingsRepository.getNotificationDefaults() } returns NotificationSettings()
-    every { notificationOverrideSubtitleFormatter.format(any()) } returns NotificationOverrideSubtitles()
+    every { notificationOverrideSubtitleFormatter.format(any(), any()) } returns NotificationOverrideSubtitles()
     coEvery { groupV2Repository.getById(any()) } returns null
     coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
     coEvery { groupV2Repository.countAll() } returns 2

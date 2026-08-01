@@ -185,59 +185,79 @@ private fun SectionHeader(text: String) {
 
 @Composable
 private fun NotificationOverridesSection(subtitles: NotificationOverrideSubtitles) {
+  if (subtitles.allDefault) return
+
   SettingsSectionHeader(stringResource(R.string.notification_overrides))
-  SettingsItem(
-    title = stringResource(R.string.reminder_default_priority),
-    subtitle = subtitles.priority,
-    dividerBottom = true,
-    icon = AppIcons.Fluent.Star,
-  )
-  SettingsItem(
-    title = stringResource(R.string.repeat_notification),
-    subtitle = subtitles.repeatNotification,
-    dividerBottom = true,
-  )
-  SettingsItem(
-    title = stringResource(R.string.notification_delay),
-    subtitle = subtitles.delayMinutes,
-    dividerBottom = true,
-    icon = AppIcons.Builder.Interval,
-  )
-  SettingsItem(
-    title = stringResource(R.string.notification_category),
-    subtitle = subtitles.category,
-    dividerBottom = true,
-    icon = AppIcons.Fluent.ChannelNotifications,
-  )
-  SettingsItem(
-    title = stringResource(R.string.default_vibrate),
-    subtitle = subtitles.vibrate,
-    dividerBottom = true,
-    icon = AppIcons.Fluent.PhoneVibrate,
-  )
-  SettingsItem(
-    title = stringResource(R.string.vibration_pattern),
-    subtitle = subtitles.vibrationPattern,
-    dividerBottom = true,
-    icon = AppIcons.Fluent.PhoneVibrate,
-  )
-  SettingsItem(
-    title = stringResource(R.string.bypass_do_not_disturb),
-    subtitle = subtitles.bypassDnd,
-    dividerBottom = true,
-    icon = AppIcons.Fluent.Sleep,
-  )
-  SettingsItem(
-    title = stringResource(R.string.wake_screen),
-    subtitle = subtitles.wakeScreen,
-    dividerBottom = true,
-  )
-  SettingsItem(
-    title = stringResource(R.string.lock_screen_visibility),
-    subtitle = subtitles.lockScreenVisibility,
-    dividerBottom = true,
-    icon = AppIcons.Fluent.LockShield,
-  )
+  subtitles.priority?.let {
+    SettingsItem(
+      title = stringResource(R.string.reminder_default_priority),
+      subtitle = subtitles.priority,
+      dividerBottom = true,
+      icon = AppIcons.Fluent.Star,
+    )
+  }
+  subtitles.repeatNotification?.let {
+    SettingsItem(
+      title = stringResource(R.string.repeat_notification),
+      subtitle = subtitles.repeatNotification,
+      dividerBottom = true,
+    )
+  }
+  subtitles.delayMinutes?.let {
+    SettingsItem(
+      title = stringResource(R.string.notification_delay),
+      subtitle = subtitles.delayMinutes,
+      dividerBottom = true,
+      icon = AppIcons.Builder.Interval,
+    )
+  }
+  subtitles.category?.let {
+    SettingsItem(
+      title = stringResource(R.string.notification_category),
+      subtitle = subtitles.category,
+      dividerBottom = true,
+      icon = AppIcons.Fluent.ChannelNotifications,
+    )
+  }
+  subtitles.vibrate?.let {
+    SettingsItem(
+      title = stringResource(R.string.default_vibrate),
+      subtitle = subtitles.vibrate,
+      dividerBottom = true,
+      icon = AppIcons.Fluent.PhoneVibrate,
+    )
+  }
+  subtitles.vibrationPattern?.let {
+    SettingsItem(
+      title = stringResource(R.string.vibration_pattern),
+      subtitle = subtitles.vibrationPattern,
+      dividerBottom = true,
+      icon = AppIcons.Fluent.PhoneVibrate,
+    )
+  }
+  subtitles.bypassDnd?.let {
+    SettingsItem(
+      title = stringResource(R.string.bypass_do_not_disturb),
+      subtitle = subtitles.bypassDnd,
+      dividerBottom = true,
+      icon = AppIcons.Fluent.Sleep,
+    )
+  }
+  subtitles.wakeScreen?.let {
+    SettingsItem(
+      title = stringResource(R.string.wake_screen),
+      subtitle = subtitles.wakeScreen,
+      dividerBottom = true,
+    )
+  }
+  subtitles.lockScreenVisibility?.let {
+    SettingsItem(
+      title = stringResource(R.string.lock_screen_visibility),
+      subtitle = subtitles.lockScreenVisibility,
+      dividerBottom = true,
+      icon = AppIcons.Fluent.LockShield,
+    )
+  }
 }
 
 @Composable
