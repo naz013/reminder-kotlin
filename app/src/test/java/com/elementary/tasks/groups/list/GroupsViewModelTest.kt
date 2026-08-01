@@ -9,6 +9,7 @@ import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.usecase.reminders.CountActiveRemindersV2ByGroupIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -24,6 +25,7 @@ class GroupsViewModelTest : BaseTest() {
   private val uiGroupListAdapter = mockk<UiGroupListAdapter>()
   private val deleteGroupUseCase = mockk<DeleteGroupUseCase>(relaxed = true)
   private val makeGroupDefaultUseCase = mockk<MakeGroupDefaultUseCase>(relaxed = true)
+  private val countActiveRemindersV2ByGroupIdUseCase = mockk<CountActiveRemindersV2ByGroupIdUseCase>()
 
   private lateinit var viewModel: GroupsViewModel
 
@@ -58,7 +60,8 @@ class GroupsViewModelTest : BaseTest() {
   override fun setUp() {
     super.setUp()
     coEvery { groupV2Repository.getAll() } returns emptyList()
-    every { uiGroupListAdapter.convert(any<GroupV2>()) } returns uiGroupList()
+    coEvery { countActiveRemindersV2ByGroupIdUseCase(any()) } returns 0
+    every { uiGroupListAdapter.convert(any<GroupV2>(), any()) } returns uiGroupList()
 
     viewModel =
       GroupsViewModel(
@@ -67,6 +70,7 @@ class GroupsViewModelTest : BaseTest() {
         uiGroupListAdapter = uiGroupListAdapter,
         deleteGroupUseCase = deleteGroupUseCase,
         makeGroupDefaultUseCase = makeGroupDefaultUseCase,
+        countActiveRemindersV2ByGroupIdUseCase = countActiveRemindersV2ByGroupIdUseCase,
       )
   }
 
@@ -84,13 +88,26 @@ class GroupsViewModelTest : BaseTest() {
       val defaultGroup = groupV2(id = "2", title = "Zeta", isDefault = true)
       val otherGroup = groupV2(id = "1", title = "Alpha", isDefault = false)
       coEvery { groupV2Repository.getAll() } returns listOf(otherGroup, defaultGroup)
-      every { uiGroupListAdapter.convert(defaultGroup) } returns uiGroupList(id = "2", title = "Zeta", isDefault = true)
-      every { uiGroupListAdapter.convert(otherGroup) } returns uiGroupList(id = "1", title = "Alpha", isDefault = false)
+      every { uiGroupListAdapter.convert(defaultGroup, any()) } returns uiGroupList(id = "2", title = "Zeta", isDefault = true)
+      every { uiGroupListAdapter.convert(otherGroup, any()) } returns uiGroupList(id = "1", title = "Alpha", isDefault = false)
 
       val state = viewModel.state.first()
 
       val ready = state.listState as ListState.Ready
       assertEquals(listOf("2", "1"), ready.groups.map { it.id })
+    }
+
+  @Test
+  fun `loads each group with its active reminder count`() =
+    runTest {
+      val group = groupV2(id = "1", title = "Work")
+      coEvery { groupV2Repository.getAll() } returns listOf(group)
+      coEvery { countActiveRemindersV2ByGroupIdUseCase("1") } returns 4
+      every { uiGroupListAdapter.convert(group, 4) } returns uiGroupList(id = "1", title = "Work")
+
+      viewModel.state.first()
+
+      coVerify(exactly = 1) { uiGroupListAdapter.convert(group, 4) }
     }
 
   @Test

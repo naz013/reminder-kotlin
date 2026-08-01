@@ -144,6 +144,7 @@ private fun GroupsScreenPreview() {
                     canDelete = false,
                     canSetAsDefault = false,
                     isDefaultGroup = true,
+                    reminderCountText = "12 reminders",
                   ),
                   UiGroupList(
                     id = "2",
@@ -154,6 +155,7 @@ private fun GroupsScreenPreview() {
                     canDelete = true,
                     canSetAsDefault = true,
                     isDefaultGroup = false,
+                    reminderCountText = "1 reminder",
                   ),
                   UiGroupList(
                     id = "3",
@@ -164,6 +166,7 @@ private fun GroupsScreenPreview() {
                     canDelete = true,
                     canSetAsDefault = true,
                     isDefaultGroup = false,
+                    reminderCountText = "0 reminders",
                   ),
                 ),
             ),
