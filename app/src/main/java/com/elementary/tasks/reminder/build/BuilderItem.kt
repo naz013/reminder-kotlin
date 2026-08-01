@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.reminder.build.bi.BiGroup
+import com.elementary.tasks.reminder.build.bi.BooleanModifier
 import com.elementary.tasks.reminder.build.bi.BuilderModifier
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.DateModifier
@@ -20,6 +21,7 @@ import com.elementary.tasks.reminder.build.bi.GoogleTaskListModifier
 import com.elementary.tasks.reminder.build.bi.GroupModifier
 import com.elementary.tasks.reminder.build.bi.IntModifier
 import com.elementary.tasks.reminder.build.bi.ListIntModifier
+import com.elementary.tasks.reminder.build.bi.ListLongModifier
 import com.elementary.tasks.reminder.build.bi.ListStringModifier
 import com.elementary.tasks.reminder.build.bi.LongModifier
 import com.elementary.tasks.reminder.build.bi.NoteModifier
@@ -39,13 +41,19 @@ import com.elementary.tasks.reminder.build.bi.constraint.BiConstraint
 import com.elementary.tasks.reminder.build.bi.constraint.constraints
 import com.elementary.tasks.reminder.build.formatter.ApplicationFormatter
 import com.elementary.tasks.reminder.build.formatter.AttachmentsFormatter
+import com.elementary.tasks.reminder.build.formatter.BypassDndFormatter
 import com.elementary.tasks.reminder.build.formatter.CalendarDurationFormatter
+import com.elementary.tasks.reminder.build.formatter.CategoryFormatter
+import com.elementary.tasks.reminder.build.formatter.DelayMinutesFormatter
 import com.elementary.tasks.reminder.build.formatter.Formatter
 import com.elementary.tasks.reminder.build.formatter.LedColorFormatter
+import com.elementary.tasks.reminder.build.formatter.LockScreenVisibilityFormatter
 import com.elementary.tasks.reminder.build.formatter.OtherParamsFormatter
 import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
 import com.elementary.tasks.reminder.build.formatter.RepeatLimitFormatter
 import com.elementary.tasks.reminder.build.formatter.TimerExclusionFormatter
+import com.elementary.tasks.reminder.build.formatter.VibrationPatternFormatter
+import com.elementary.tasks.reminder.build.formatter.WakeScreenFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.BeforeTimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DayOfMonthFormatter
@@ -62,13 +70,15 @@ import com.elementary.tasks.reminder.build.formatter.`object`.NoteFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.common.system.Module
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.system.Module
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.domain.reminder.v2.LockScreenVisibility
+import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.icalendar.ByDayRecurParam
@@ -334,7 +344,7 @@ data class GroupBuilderItem(
   val groups: List<UiGroupList>,
   val defaultGroup: UiGroupList?,
 ) : BuilderItem<UiGroupList>() {
-  override val iconRes: Int = R.drawable.ic_builder_group
+  override val iconRes: Int = R.drawable.ic_fluent_group
   override val isForPro: Boolean = false
   override val modifier: BuilderModifier<UiGroupList> = GroupModifier(defaultGroup)
   override val biType: BiType = BiType.GROUP
@@ -499,6 +509,122 @@ data class LedColorBuilderItem(
     }
   override val biType: BiType = BiType.LED_COLOR
   override val biGroup: BiGroup = BiGroup.EXTRA
+}
+
+data class CategoryBuilderItem(
+  override val title: String,
+  override val description: String?,
+  private val categoryFormatter: CategoryFormatter,
+) : BuilderItem<Int>() {
+  override val iconRes: Int = R.drawable.ic_fluent_channel_notifications
+  override val isForPro: Boolean = false
+  override val modifier: BuilderModifier<Int> =
+    object : IntModifier(categoryFormatter, 0) {
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let {
+          reminder.copy(
+            notification = reminder.notification.copy(
+              category = ReminderNotificationCategory.entries.getOrNull(it) ?: ReminderNotificationCategory.DEFAULT,
+            ),
+          )
+        } ?: reminder
+    }
+  override val biType: BiType = BiType.CATEGORY
+  override val biGroup: BiGroup = BiGroup.EXTRA
+}
+
+data class LockScreenVisibilityBuilderItem(
+  override val title: String,
+  override val description: String?,
+  private val lockScreenVisibilityFormatter: LockScreenVisibilityFormatter,
+) : BuilderItem<Int>() {
+  override val iconRes: Int = R.drawable.ic_fluent_lock_shield
+  override val isForPro: Boolean = false
+  override val modifier: BuilderModifier<Int> =
+    object : IntModifier(lockScreenVisibilityFormatter, 1) {
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let {
+          reminder.copy(
+            notification = reminder.notification.copy(
+              lockScreenVisibility = LockScreenVisibility.entries.getOrNull(it) ?: LockScreenVisibility.PRIVATE,
+            ),
+          )
+        } ?: reminder
+    }
+  override val biType: BiType = BiType.LOCK_SCREEN_VISIBILITY
+  override val biGroup: BiGroup = BiGroup.EXTRA
+}
+
+data class BypassDndBuilderItem(
+  override val title: String,
+  override val description: String?,
+  private val bypassDndFormatter: BypassDndFormatter,
+) : BuilderItem<Boolean>() {
+  override val iconRes: Int = R.drawable.ic_fluent_alert_off
+  override val isForPro: Boolean = false
+  override val modifier: BuilderModifier<Boolean> =
+    object : BooleanModifier(bypassDndFormatter, false) {
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let {
+          reminder.copy(notification = reminder.notification.copy(bypassDoNotDisturb = it))
+        } ?: reminder
+    }
+  override val biType: BiType = BiType.BYPASS_DND
+  override val biGroup: BiGroup = BiGroup.EXTRA
+}
+
+data class WakeScreenBuilderItem(
+  override val title: String,
+  override val description: String?,
+  private val wakeScreenFormatter: WakeScreenFormatter,
+) : BuilderItem<Boolean>() {
+  override val iconRes: Int = R.drawable.ic_fluent_phone_status_bar
+  override val isForPro: Boolean = false
+  override val modifier: BuilderModifier<Boolean> =
+    object : BooleanModifier(wakeScreenFormatter, false) {
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let {
+          reminder.copy(notification = reminder.notification.copy(wakeScreen = it))
+        } ?: reminder
+    }
+  override val biType: BiType = BiType.WAKE_SCREEN
+  override val biGroup: BiGroup = BiGroup.EXTRA
+}
+
+data class VibrationPatternBuilderItem(
+  override val title: String,
+  override val description: String?,
+  private val vibrationPatternFormatter: VibrationPatternFormatter,
+) : BuilderItem<List<Long>>() {
+  override val iconRes: Int = R.drawable.ic_fluent_phone_vibrate
+  override val isForPro: Boolean = true
+  override val modifier: BuilderModifier<List<Long>> =
+    object : ListLongModifier(vibrationPatternFormatter) {
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let {
+          reminder.copy(notification = reminder.notification.copy(vibrationPattern = it))
+        } ?: reminder
+    }
+  override val biType: BiType = BiType.VIBRATION_PATTERN
+  override val biGroup: BiGroup = BiGroup.EXTRA
+}
+
+data class DelayMinutesBuilderItem(
+  override val title: String,
+  override val description: String?,
+  private val delayMinutesFormatter: DelayMinutesFormatter,
+) : BuilderItem<Int>() {
+  override val iconRes: Int = R.drawable.ic_fluent_alert_snooze
+  override val isForPro: Boolean = false
+  override val modifier: BuilderModifier<Int> =
+    object : IntModifier(delayMinutesFormatter, 0) {
+      override fun putInto(reminder: ReminderV2): ReminderV2 =
+        storage.value?.let {
+          reminder.copy(notification = reminder.notification.copy(delayMinutes = it))
+        } ?: reminder
+    }
+  override val biType: BiType = BiType.DELAY_MINUTES
+  override val biGroup: BiGroup = BiGroup.PARAMS
 }
 
 data class AttachmentsBuilderItem(

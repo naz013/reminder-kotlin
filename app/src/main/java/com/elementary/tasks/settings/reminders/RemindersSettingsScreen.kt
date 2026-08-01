@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.DisabledAlpha
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
@@ -48,6 +49,8 @@ fun RemindersSettingsScreen(
   onDefaultWakeScreenToggle: () -> Unit,
   onDefaultCategoryClick: () -> Unit,
   onDefaultLockScreenVisibilityClick: () -> Unit,
+  onDefaultVibrationPatternClick: () -> Unit,
+  onNotificationHelpClick: () -> Unit,
   onChoiceOptionSelected: (Int) -> Unit,
   onSeekValueChange: (Int) -> Unit,
   onSeekConfirm: () -> Unit,
@@ -86,7 +89,7 @@ fun RemindersSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.reminder_default_priority),
       subtitle = state.priorityName,
-      icon = painterResource(R.drawable.ic_fluent_star),
+      icon = AppIcons.Fluent.Star,
       dividerBottom = true,
       onClick = onPriorityClick,
     )
@@ -131,6 +134,7 @@ fun RemindersSettingsScreen(
       subtitle = state.repeatIntervalText,
       enabled = state.isRepeatIntervalRowEnabled,
       dividerBottom = true,
+      icon = AppIcons.Builder.Interval,
       onClick = onRepeatIntervalClick,
     )
     if (state.isLedVisible) {
@@ -179,7 +183,7 @@ fun RemindersSettingsScreen(
       title = stringResource(R.string.do_not_disturb),
       checked = state.isDoNotDisturbChecked,
       onCheckedChange = { onDoNotDisturbToggle() },
-      icon = painterResource(R.drawable.ic_fluent_sleep),
+      icon = AppIcons.Fluent.Sleep,
       dividerBottom = true,
     )
 
@@ -233,6 +237,19 @@ fun RemindersSettingsScreen(
 
     SettingsSectionHeader(stringResource(R.string.notification_defaults))
 
+    SettingsItem(
+      title = stringResource(R.string.how_does_this_work),
+      icon = AppIcons.Fluent.QuestionCircle,
+      dividerBottom = true,
+      onClick = onNotificationHelpClick,
+    )
+    SettingsItem(
+      title = stringResource(R.string.notification_category),
+      subtitle = state.defaultCategoryName,
+      dividerBottom = true,
+      onClick = onDefaultCategoryClick,
+      icon = AppIcons.Fluent.ChannelNotifications,
+    )
     SettingsSwitchItem(
       title = stringResource(R.string.default_vibrate),
       checked = state.isDefaultVibrateChecked,
@@ -240,6 +257,14 @@ fun RemindersSettingsScreen(
       subtitleOn = stringResource(R.string.vibrate_on_notification),
       subtitleOff = stringResource(R.string.do_not_vibrate_on_notification),
       dividerBottom = true,
+      icon = AppIcons.Fluent.PhoneVibrate,
+    )
+    SettingsItem(
+      title = stringResource(R.string.vibration_pattern),
+      subtitle = state.defaultVibrationPatternName,
+      dividerBottom = true,
+      onClick = onDefaultVibrationPatternClick,
+      icon = AppIcons.Fluent.PhoneVibrate,
     )
     SettingsSwitchItem(
       title = stringResource(R.string.bypass_do_not_disturb),
@@ -258,16 +283,11 @@ fun RemindersSettingsScreen(
       dividerBottom = true,
     )
     SettingsItem(
-      title = stringResource(R.string.notification_category),
-      subtitle = state.defaultCategoryName,
-      dividerBottom = true,
-      onClick = onDefaultCategoryClick,
-    )
-    SettingsItem(
       title = stringResource(R.string.lock_screen_visibility),
       subtitle = state.defaultLockScreenVisibilityName,
       dividerBottom = true,
       onClick = onDefaultLockScreenVisibilityClick,
+      icon = AppIcons.Fluent.LockShield,
     )
   }
 

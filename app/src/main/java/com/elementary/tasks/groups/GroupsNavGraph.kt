@@ -16,6 +16,7 @@ import com.elementary.tasks.groups.list.GroupsScreenState
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
@@ -85,6 +86,20 @@ private fun GroupsEditEntry(
     onWorkflowRulesClick = {
       state.id?.let { groupId -> backStack.add(WorkflowNavKey.RulesForGroup(groupId)) }
     },
+    onVibrateClick = viewModel::onVibrateClick,
+    onRepeatNotificationClick = viewModel::onRepeatNotificationClick,
+    onBypassDndClick = viewModel::onBypassDndClick,
+    onWakeScreenClick = viewModel::onWakeScreenClick,
+    onPriorityClick = viewModel::onPriorityClick,
+    onCategoryClick = viewModel::onCategoryClick,
+    onLockScreenVisibilityClick = viewModel::onLockScreenVisibilityClick,
+    onVibrationPatternClick = viewModel::onVibrationPatternClick,
+    onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
+    onNotificationChoiceSelected = viewModel::onNotificationChoiceSelected,
+    onDelayMinutesClick = viewModel::onDelayMinutesClick,
+    onDelayMinutesOverrideToggle = viewModel::onDelayMinutesOverrideToggle,
+    onDelayMinutesPreviewChange = viewModel::onDelayMinutesPreviewChange,
+    onDelayMinutesConfirm = viewModel::onDelayMinutesConfirm,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onCopyKeepClick = viewModel::onCopyKeepClick,
     onCopyReplaceClick = viewModel::onCopyReplaceClick,

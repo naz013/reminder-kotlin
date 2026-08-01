@@ -2,6 +2,7 @@ package com.elementary.tasks.groups.create
 
 import android.content.Context
 import com.elementary.tasks.BaseTest
+import com.elementary.tasks.core.utils.VibrationPlayer
 import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
 import com.elementary.tasks.groups.usecase.SaveGroupUseCase
 import com.elementary.tasks.mockDispatcherProvider
@@ -10,13 +11,18 @@ import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
+import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderSettingsRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -35,6 +41,8 @@ class EditGroupViewModelTest : BaseTest() {
   private val contextProvider = mockk<ContextProvider>()
   private val deleteGroupUseCase = mockk<DeleteGroupUseCase>(relaxed = true)
   private val saveGroupUseCase = mockk<SaveGroupUseCase>(relaxed = true)
+  private val reminderSettingsRepository = mockk<ReminderSettingsRepository>()
+  private val vibrationPlayer = mockk<VibrationPlayer>(relaxed = true)
 
   private lateinit var viewModel: EditGroupViewModel
 
@@ -42,11 +50,13 @@ class EditGroupViewModelTest : BaseTest() {
     id: String = "1",
     title: String = "Work",
     isDefault: Boolean = false,
+    notification: NotificationSettingsOverride = NotificationSettingsOverride(),
   ) = GroupV2(
     uuId = id,
     title = title,
     color = 0,
     isDefault = isDefault,
+    notification = notification,
     syncState = SyncState.Synced,
   )
 
@@ -70,6 +80,8 @@ class EditGroupViewModelTest : BaseTest() {
     contextProvider = contextProvider,
     deleteGroupUseCase = deleteGroupUseCase,
     saveGroupUseCase = saveGroupUseCase,
+    reminderSettingsRepository = reminderSettingsRepository,
+    vibrationPlayer = vibrationPlayer,
   )
 
   @Before
@@ -77,6 +89,7 @@ class EditGroupViewModelTest : BaseTest() {
     super.setUp()
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
     every { dateTimeManager.getCurrentDateTime() } returns org.threeten.bp.LocalDateTime.now()
+    every { reminderSettingsRepository.getNotificationDefaults() } returns NotificationSettings()
     coEvery { groupV2Repository.getById(any()) } returns null
     coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
     coEvery { groupV2Repository.countAll() } returns 2
@@ -311,4 +324,87 @@ class EditGroupViewModelTest : BaseTest() {
       val event = viewModel.navigationEvent.value?.peekContent()
       assertEquals(EditGroupViewModel.NavigationEvent.Back, event)
     }
+
+  @Test
+  fun `loads the group's existing notification override into state`() =
+    runTest {
+      coEvery { groupV2Repository.getById("1") } returns
+        groupV2(id = "1", notification = NotificationSettingsOverride(priority = ReminderPriority.HIGH, vibrate = true))
+
+      val state = viewModel.state.first()
+
+      assertEquals(ReminderPriority.HIGH, state.notification.priority)
+      assertEquals(true, state.notification.vibrate)
+    }
+
+  @Test
+  fun `onSaveClick persists the edited notification override with the group`() =
+    runTest {
+      viewModel.state.first()
+
+      viewModel.onPriorityClick()
+      // index 0 is "Inherit from Settings", so index 1 is the first real option (LOWEST).
+      viewModel.onNotificationChoiceSelected(1)
+      viewModel.onSaveClick()
+
+      coVerify(exactly = 1) { saveGroupUseCase(match { it.notification.priority == ReminderPriority.LOWEST }) }
+    }
+
+  @Test
+  fun `onNotificationChoiceSelected with index 0 clears the override back to inherit`() =
+    runTest {
+      coEvery { groupV2Repository.getById("1") } returns
+        groupV2(id = "1", notification = NotificationSettingsOverride(priority = ReminderPriority.HIGH))
+      val latest = observeState()
+      viewModel.state.first()
+
+      viewModel.onPriorityClick()
+      viewModel.onNotificationChoiceSelected(0)
+
+      assertNull(latest().notification.priority)
+    }
+
+  @Test
+  fun `onVibrationPatternClick then selecting a preset plays it and does not play for inherit`() =
+    runTest {
+      viewModel.state.first()
+
+      viewModel.onVibrationPatternClick()
+      viewModel.onNotificationChoiceSelected(1)
+
+      verify { vibrationPlayer.play(any()) }
+    }
+
+  @Test
+  fun `onVibrationPatternClick then selecting inherit does not play a vibration`() =
+    runTest {
+      viewModel.state.first()
+
+      viewModel.onVibrationPatternClick()
+      viewModel.onNotificationChoiceSelected(0)
+
+      verify(exactly = 0) { vibrationPlayer.play(any()) }
+    }
+
+  @Test
+  fun `onDelayMinutesConfirm stores the preview value only when overridden`() {
+    val latest = observeState()
+
+    viewModel.onDelayMinutesClick()
+    viewModel.onDelayMinutesOverrideToggle(true)
+    viewModel.onDelayMinutesPreviewChange(45)
+    viewModel.onDelayMinutesConfirm()
+
+    assertEquals(45, latest().notification.delayMinutes)
+  }
+
+  @Test
+  fun `onDelayMinutesConfirm leaves delayMinutes null when not overridden`() {
+    val latest = observeState()
+
+    viewModel.onDelayMinutesClick()
+    viewModel.onDelayMinutesConfirm()
+
+    assertNull(latest().notification.delayMinutes)
+  }
 }

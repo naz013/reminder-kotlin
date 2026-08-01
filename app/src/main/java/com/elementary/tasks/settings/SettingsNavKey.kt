@@ -44,4 +44,7 @@ sealed interface SettingsNavKey : NavKey {
 
   @Serializable
   data object Troubleshooting : SettingsNavKey
+
+  @Serializable
+  data object NotificationCustomizationHelp : SettingsNavKey
 }

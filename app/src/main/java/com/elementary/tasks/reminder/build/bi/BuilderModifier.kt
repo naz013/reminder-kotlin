@@ -86,9 +86,32 @@ open class IntModifier(
   }
 }
 
+open class BooleanModifier(
+  private val formatter: Formatter<Boolean>,
+  private val initValue: Boolean? = null,
+) : DefaultModifier<Boolean>(DefaultBiStorage(initValue)) {
+  override fun getUiRepresentation(emptyText: String): String {
+    val value = storage.value ?: return emptyText
+    return formatter.format(value)
+  }
+
+  override fun setDefault() {
+    storage.value = initValue
+  }
+}
+
 open class ListIntModifier(
   private val formatter: Formatter<List<Int>>,
 ) : DefaultModifier<List<Int>>(DefaultBiStorage()) {
+  override fun getUiRepresentation(emptyText: String): String {
+    val value = storage.value ?: return emptyText
+    return formatter.format(value)
+  }
+}
+
+open class ListLongModifier(
+  private val formatter: Formatter<List<Long>>,
+) : DefaultModifier<List<Long>>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
     return formatter.format(value)

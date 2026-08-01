@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppTheme
 import kotlin.math.abs
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 private const val DISABLED_ALPHA = 0.38f
@@ -47,8 +49,9 @@ private const val DISABLED_ALPHA = 0.38f
  * centered.
  * @param itemHeight Height of a single row; also used to size the centered selection window.
  * @param enabled When false, scrolling/tapping is disabled and the wheel is dimmed.
- * @param hapticFeedbackEnabled When true, a tick is played whenever scrolling settles on a new
- * index, or a tap selects a different item.
+ * @param hapticFeedbackEnabled When true, a tick is played every time the centered row changes -
+ * continuously while dragging/flinging past each item, not only once scrolling settles - plus an
+ * immediate tick when a tap selects a different item.
  */
 @Composable
 fun WheelPicker(
@@ -88,12 +91,28 @@ fun WheelPicker(
     }
   }
 
+  // A tick per centered-row change, live as the wheel scrolls past each item (dragging or
+  // flinging) - not just once it settles. `centeredIndex` only changes when the nearest item
+  // actually changes (derivedStateOf), so this is exactly one tick per item boundary crossed.
+  // `drop(1)` skips the emission snapshotFlow fires immediately on collection start.
+  LaunchedEffect(listState) {
+    snapshotFlow { centeredIndex }
+      .distinctUntilChanged()
+      .drop(1)
+      .collect {
+        if (hapticFeedbackEnabled) {
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        }
+      }
+  }
+
   LaunchedEffect(listState) {
     snapshotFlow { listState.isScrollInProgress }.collect { scrolling ->
       if (!scrolling) {
         val settledIndex = listState.firstVisibleItemIndex.coerceIn(items.indices)
         if (settledIndex != selectedIndex) {
-          if (hapticFeedbackEnabled) hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+          // No haptic tick here - the centeredIndex effect above already played one for this
+          // exact index as it scrolled into the centered row, right before settling on it.
           onSelectedIndexChange(settledIndex)
         }
       }

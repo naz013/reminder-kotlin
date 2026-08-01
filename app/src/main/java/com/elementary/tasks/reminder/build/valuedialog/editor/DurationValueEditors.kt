@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringArrayResource
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.elementary.tasks.reminder.build.DelayMinutesBuilderItem
 import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
 import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
 import com.github.naz013.common.datetime.DateTimeManager
@@ -98,6 +99,32 @@ fun RepeatIntervalValueEditor(
       builderItem.modifier.update(it)
       onValueChange(builderItem)
     },
+    hapticFeedbackEnabled = hapticFeedbackEnabled,
+    modifier = Modifier.fillMaxWidth(),
+  )
+}
+
+/** Notification delay, in plain minutes (unlike [BeforeTimeValueEditor], no unit picker - the
+ *  domain field is already minutes). Reuses [NumberStepperField] the same way
+ *  [RepeatIntervalValueEditor] does. */
+@Composable
+fun DelayMinutesValueEditor(
+  builderItem: DelayMinutesBuilderItem,
+  onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
+) {
+  var value by remember(builderItem) {
+    mutableLongStateOf((builderItem.modifier.getValue() ?: 0).toLong())
+  }
+  NumberStepperField(
+    value = value,
+    onValueChange = {
+      value = it
+      builderItem.modifier.update(it.toInt())
+      onValueChange(builderItem)
+    },
+    minValue = 0,
+    maxValue = 999,
     hapticFeedbackEnabled = hapticFeedbackEnabled,
     modifier = Modifier.fillMaxWidth(),
   )

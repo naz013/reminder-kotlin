@@ -200,18 +200,89 @@ backfill from at all.
 
 ## UI surface today
 
-- **Settings**: a new "Notification defaults" section on the existing Reminders settings screen
-  (`app/src/main/java/com/elementary/tasks/settings/reminders/`) — `RemindersSettingsScreen` /
-  `RemindersSettingsViewModel` / `RemindersSettingsState`. Covers `vibrate` (toggle),
-  `bypassDoNotDisturb` (toggle), `wakeScreen` (toggle), `category` (choice dialog),
-  `lockScreenVisibility` (choice dialog).
-- **Group**: `EditGroupScreen` currently has **no** notification-override UI yet — `GroupV2`'s
-  `notification` field exists and round-trips correctly, but nothing in the edit-group screen lets
-  a user actually set a per-group override yet. This is the most obvious next step for whoever
-  picks this up.
-- **Not yet exposed anywhere**: `volume`, `soundUri`, `vibrationPattern`. These need dedicated UI
-  (a slider, a system ringtone picker `Intent`, a pattern editor) that didn't exist as a reusable
-  component anywhere in the codebase, so building it was scoped out rather than done quickly.
+Field-by-field, across the three sites (updated after the REM-1069 pass):
+
+| Field | Settings | Group editor | Reminder builder |
+|---|---|---|---|
+| color | ✅ "LED indication color" | ❌ (frozen) | ✅ `LedColorBuilderItem` |
+| vibrate | ✅ "Notification defaults" | ✅ | ✅ `OtherParamsBuilderItem` |
+| vibrationPattern | ✅ preset picker | ✅ preset picker | ✅ `VibrationPatternBuilderItem` |
+| repeatNotification | ✅ "Notification repeating" | ✅ | ✅ `OtherParamsBuilderItem` |
+| volume | ❌ (frozen, dead `Prefs.defaultVolume`) | ❌ (frozen) | ❌ (frozen) |
+| soundUri | ❌ (frozen, dead `Prefs.defaultSoundUri`) | ❌ (frozen) | ❌ (frozen) |
+| quietHoursFrom/To | ✅ (as global DND from/to, frozen) | ❌ (frozen) | ⚠️ Countdown-recurrence-only, frozen |
+| activeHours | ❌ (frozen, hardcoded `emptyList()`) | ❌ (frozen) | ⚠️ Countdown-recurrence-only, frozen |
+| delayMinutes | ⚠️ (as "default snooze time", reused pref, frozen) | ✅ | ✅ `DelayMinutesBuilderItem` |
+| priority | ✅ "Reminder default priority" | ✅ | ✅ `PriorityBuilderItem` |
+| category | ✅ "Notification category" | ✅ | ✅ `CategoryBuilderItem` |
+| bypassDoNotDisturb | ✅ "Notification defaults" | ✅ | ✅ `BypassDndBuilderItem` |
+| wakeScreen | ✅ "Notification defaults" | ✅ | ✅ `WakeScreenBuilderItem` |
+| lockScreenVisibility | ✅ "Notification defaults" | ✅ | ✅ `LockScreenVisibilityBuilderItem` |
+| remindBefore | ❌ (frozen, no Settings-level default beyond `0`) | ❌ (frozen) | ✅ `BeforeTimeBuilderItem` |
+
+- **Settings** (`app/src/main/java/com/elementary/tasks/settings/reminders/`) covers all 10
+  in-scope fields plus the frozen `color`/`priority`/`quietHoursFrom/To` rows. `vibrationPattern`
+  is a new choice-dialog row (`ChoiceDialogKind.VIBRATION_PATTERN`) backed by
+  `VibrationPresets.ALL` (`app/src/main/java/com/elementary/tasks/core/utils/VibrationPresets.kt`).
+  `Prefs.defaultVibrationPattern` switched from the buggy `getLongArray`/`putLongArray`
+  (`StringSet`-backed, unordered/deduplicating) to an ordered comma-joined string via
+  `getString`/`putString`.
+- **Reminder builder** (`app/src/main/java/com/elementary/tasks/reminder/build/`) now has all 10
+  in-scope fields as builder items: `CategoryBuilderItem`, `LockScreenVisibilityBuilderItem`,
+  `BypassDndBuilderItem`, `WakeScreenBuilderItem`, `VibrationPatternBuilderItem`,
+  `DelayMinutesBuilderItem` (new), plus the pre-existing `remindBefore`/`priority`/`color`/
+  `vibrate`/`repeatNotification` items. All six new items are `BiGroup.EXTRA`/`PARAMS` with no
+  `constraints` (always offered, regardless of recurrence type) — unlike the frozen
+  `quietHoursFrom`/`quietHoursTo`/`activeHours` bundle, which stays Countdown-only. The
+  `OtherParamsValueEditor.kt` `notifyByVoice` dead-toggle bug (shown in UI, silently dropped on
+  save) is unchanged — flagged but not fixed in this pass, since `notifyByVoice` isn't one of the
+  16 hierarchy fields.
+- **Group**: `EditGroupScreen` now has a "Notification overrides" section covering all 10 in-scope
+  fields — one `SettingsItem` row per field, each opening a `SingleChoiceDialog` (or, for
+  `delayMinutes`, an override-switch + slider dialog) with an "Inherit from Settings" option
+  prepended to the field's normal choices. Selecting "Inherit" sets the field back to `null`;
+  selecting anything else sets an explicit override. Row subtitles show either the overridden
+  value or `"Inherited: <effective Settings value>"`, reusing the builder's `Formatter` classes
+  (`CategoryFormatter`, `PriorityFormatter`, etc.) for consistent labels across Settings/Builder/
+  Group. `EditGroupState.notification: NotificationSettingsOverride` now round-trips through
+  `load()`/`performSave()` (previously silently dropped). `GroupV2.color` (the group's own
+  list-display color, set via the pre-existing `ColorSlider`) remains a distinct field from
+  `notification.color`, which stays frozen/unexposed at the Group level.
+- **User-facing help**: a new "How does this work?" row at the top of both the Settings
+  "Notification defaults" section and the Group editor "Notification overrides" section opens
+  `NotificationCustomizationHelpScreen`
+  (`app/src/main/java/com/elementary/tasks/settings/reminders/help/NotificationCustomizationHelpScreen.kt`,
+  registered as `SettingsNavKey.NotificationCustomizationHelp` so both features' nav graphs can
+  push it on the shared backstack) — a WebView-hosted HTML guide
+  (`app/src/main/assets/files/notification_customization.html`) explaining the 3-level hierarchy,
+  what each field does, and that some options (vibration patterns, custom sounds, bypassing Do Not
+  Disturb, notification-channel behavior) vary by device/manufacturer/Android version. Follows the
+  same pattern as `ReminderHelpScreen`/`how_to_create_a_reminder.html`.
+- `ResolveReminderV2NotificationSettingsUseCase` is still unused outside its own DI registration
+  and test — nothing resolves the hierarchy at notification-fire time yet (see Explicit non-goals).
+  This pass only adds override UI; wiring resolution into actual notification delivery remains a
+  separate follow-up.
+- `volume`/`soundUri` still have no reusable picker component anywhere in `ui-common` and remain
+  frozen/out of scope. `vibrationPattern` shipped in this pass as a small fixed preset list
+  (`VibrationPresets.ALL`: Short/Long/Double buzz/Default) rather than a free-form
+  millisecond-array editor — there was nothing to reuse, so this is a net-new, deliberately
+  simple picker. Selecting a preset in any of the three sites immediately plays it via
+  `VibrationPlayer` (`app/src/main/java/com/elementary/tasks/core/utils/VibrationPlayer.kt`,
+  a thin `Vibrator`/`VibrationEffect.createWaveform` wrapper) so the user can feel the difference,
+  not just read the name.
+
+### Scope for REM-1069 ("Finish notification override") — completed
+
+`color`, `volume`, `soundUri`, `quietHoursFrom`, `quietHoursTo`, `activeHours`, and `remindBefore`
+were kept **frozen** — left exactly as they were, no new UI (either already fine, or blocked on
+picker components still out of scope). The remaining 9 fields (`vibrate`, `vibrationPattern`,
+`repeatNotification`, `delayMinutes`, `priority`, `category`, `bypassDoNotDisturb`, `wakeScreen`,
+`lockScreenVisibility`) now have full 3-level UI coverage across Settings, Group editor, and
+Reminder builder.
+
+In scope — bring these to full 3-level coverage (Settings + Group + Builder) where a site is
+currently missing them: `vibrate`, `vibrationPattern`, `repeatNotification`, `delayMinutes`,
+`priority`, `category`, `bypassDoNotDisturb`, `wakeScreen`, `lockScreenVisibility`.
 
 ## Explicit non-goals (as of this writing)
 
@@ -257,8 +328,13 @@ badge count", "custom LED blink rate"), touch all of these:
 8. **Settings UI**: add a row to the "Notification defaults" section in `RemindersSettingsScreen`/
    `RemindersSettingsViewModel`/`RemindersSettingsState`, following the existing toggle
    (`SettingsSwitchItem`) or choice-dialog (`SettingsItem` + `ChoiceDialogKind`) patterns.
-9. **Group UI** (not yet built for *any* field — see above): once it exists, add the same row there,
-   defaulting to "inherit" (unset).
+9. **Group UI**: add a row to the "Notification overrides" section in `EditGroupScreen`/
+   `EditGroupViewModel`/`EditGroupState` (`app/src/main/java/com/elementary/tasks/groups/create/`),
+   following the established `SettingsItem` + `SingleChoiceDialog` pattern with an "Inherit from
+   Settings" option prepended to the field's choices (see `GroupNotificationDialogKind`,
+   `onNotificationChoiceSelected`, `refreshNotificationSubtitles()`). `delayMinutes` instead uses
+   the dedicated `EditGroupDialog.DelayMinutes` override-switch + slider dialog, since it's a
+   continuous value rather than a fixed choice list.
 10. **Tests**: extend `ReminderV2MapperTest`/`GroupV2MapperTest` round-trips, and add a resolution
     case to `ResolveReminderV2NotificationSettingsUseCaseTest` if the new field has interesting
     resolution semantics.
@@ -277,5 +353,8 @@ badge count", "custom LED blink rate"), touch all of these:
 - `app/src/main/java/com/elementary/tasks/core/data/repository/ReminderSettingsRepositoryImpl.kt`
 - `app/src/main/java/com/elementary/tasks/core/utils/params/Prefs.kt`, `PrefsConstants.kt`
 - `app/src/main/java/com/elementary/tasks/settings/reminders/` — Settings UI section
-- `app/src/main/java/com/elementary/tasks/groups/` — Group CRUD screens (list, create/edit, use cases)
+- `app/src/main/java/com/elementary/tasks/groups/` — Group CRUD screens (list, create/edit, use cases), notification-overrides section in `create/EditGroupScreen.kt`/`EditGroupViewModel.kt`/`EditGroupState.kt`
+- `app/src/main/java/com/elementary/tasks/reminder/build/BuilderItem.kt` — all per-reminder builder items, including `CategoryBuilderItem`/`LockScreenVisibilityBuilderItem`/`BypassDndBuilderItem`/`WakeScreenBuilderItem`/`VibrationPatternBuilderItem`/`DelayMinutesBuilderItem`
+- `app/src/main/java/com/elementary/tasks/reminder/build/formatter/` — `Formatter` implementations shared across the builder and (via direct reuse) the Group editor's subtitle text
+- `app/src/main/java/com/elementary/tasks/core/utils/VibrationPresets.kt` — the fixed vibration-pattern preset list shared by Settings/Builder/Group
 - `app/src/main/java/com/elementary/tasks/splash/SplashViewModel.kt` — backfill trigger points

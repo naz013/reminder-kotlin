@@ -11,10 +11,13 @@ import com.elementary.tasks.reminder.build.ArrivingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.elementary.tasks.reminder.build.BypassDndBuilderItem
+import com.elementary.tasks.reminder.build.CategoryBuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
 import com.elementary.tasks.reminder.build.DayOfYearBuilderItem
 import com.elementary.tasks.reminder.build.DaysOfWeekBuilderItem
+import com.elementary.tasks.reminder.build.DelayMinutesBuilderItem
 import com.elementary.tasks.reminder.build.DescriptionBuilderItem
 import com.elementary.tasks.reminder.build.EmailBuilderItem
 import com.elementary.tasks.reminder.build.EmailSubjectBuilderItem
@@ -26,6 +29,7 @@ import com.elementary.tasks.reminder.build.LeavingCoordinatesBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
+import com.elementary.tasks.reminder.build.LockScreenVisibilityBuilderItem
 import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
@@ -39,16 +43,24 @@ import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.TimerExclusionBuilderItem
+import com.elementary.tasks.reminder.build.VibrationPatternBuilderItem
+import com.elementary.tasks.reminder.build.WakeScreenBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
 import com.elementary.tasks.reminder.build.formatter.ApplicationFormatter
 import com.elementary.tasks.reminder.build.formatter.AttachmentsFormatter
+import com.elementary.tasks.reminder.build.formatter.BypassDndFormatter
 import com.elementary.tasks.reminder.build.formatter.CalendarDurationFormatter
+import com.elementary.tasks.reminder.build.formatter.CategoryFormatter
+import com.elementary.tasks.reminder.build.formatter.DelayMinutesFormatter
 import com.elementary.tasks.reminder.build.formatter.LedColorFormatter
+import com.elementary.tasks.reminder.build.formatter.LockScreenVisibilityFormatter
 import com.elementary.tasks.reminder.build.formatter.OtherParamsFormatter
 import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
 import com.elementary.tasks.reminder.build.formatter.RepeatLimitFormatter
 import com.elementary.tasks.reminder.build.formatter.TimerExclusionFormatter
+import com.elementary.tasks.reminder.build.formatter.VibrationPatternFormatter
+import com.elementary.tasks.reminder.build.formatter.WakeScreenFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.BeforeTimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DayOfMonthFormatter
@@ -239,6 +251,63 @@ class BiFactory(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_set_led_color_for_the_notification),
           ledColorFormatter = LedColorFormatter(context),
+        )
+      }
+
+      BiType.CATEGORY -> {
+        CategoryBuilderItem(
+          title = biTypeForUiAdapter.getUiString(biType),
+          description = context.getString(R.string.builder_set_category_for_the_notification),
+          categoryFormatter = CategoryFormatter(context),
+        )
+      }
+
+      BiType.LOCK_SCREEN_VISIBILITY -> {
+        LockScreenVisibilityBuilderItem(
+          title = biTypeForUiAdapter.getUiString(biType),
+          description =
+            context.getString(
+              R.string.builder_set_lock_screen_visibility_for_the_notification,
+            ),
+          lockScreenVisibilityFormatter = LockScreenVisibilityFormatter(context),
+        )
+      }
+
+      BiType.BYPASS_DND -> {
+        BypassDndBuilderItem(
+          title = biTypeForUiAdapter.getUiString(biType),
+          description =
+            context.getString(
+              R.string.builder_set_bypass_do_not_disturb_for_the_notification,
+            ),
+          bypassDndFormatter = BypassDndFormatter(context),
+        )
+      }
+
+      BiType.WAKE_SCREEN -> {
+        WakeScreenBuilderItem(
+          title = biTypeForUiAdapter.getUiString(biType),
+          description = context.getString(R.string.builder_set_wake_screen_for_the_notification),
+          wakeScreenFormatter = WakeScreenFormatter(context),
+        )
+      }
+
+      BiType.VIBRATION_PATTERN -> {
+        VibrationPatternBuilderItem(
+          title = biTypeForUiAdapter.getUiString(biType),
+          description =
+            context.getString(
+              R.string.builder_set_vibration_pattern_for_the_notification,
+            ),
+          vibrationPatternFormatter = VibrationPatternFormatter(context),
+        )
+      }
+
+      BiType.DELAY_MINUTES -> {
+        DelayMinutesBuilderItem(
+          title = biTypeForUiAdapter.getUiString(biType),
+          description = context.getString(R.string.builder_set_delay_for_the_notification),
+          delayMinutesFormatter = DelayMinutesFormatter(context),
         )
       }
 

@@ -34,9 +34,9 @@ class GetNavigationItemsUseCase(
     add(getEventsItem(scope = scope))
     add(getNoteItem(scope = scope))
     add(getGoogleTasksItem(scope = scope))
+    add(getGroupItem(scope = scope))
     if (WorkflowConfig.isEnabled) {
       add(getWorkflowItem(scope = scope))
-      add(getGroupItem(scope = scope))
     }
   }
 
@@ -106,7 +106,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.groups,
-          iconRes = R.drawable.ic_builder_group,
+          iconRes = R.drawable.ic_fluent_group,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
           subtitle = "${groupV2Repository.countAll()}",

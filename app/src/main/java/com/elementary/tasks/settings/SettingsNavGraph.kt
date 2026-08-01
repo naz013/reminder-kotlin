@@ -46,6 +46,7 @@ import com.elementary.tasks.settings.reminders.ManagePresetsScreen
 import com.elementary.tasks.settings.reminders.RemindersSettingsEvent
 import com.elementary.tasks.settings.reminders.RemindersSettingsScreen
 import com.elementary.tasks.settings.reminders.RemindersSettingsViewModel
+import com.elementary.tasks.settings.reminders.help.NotificationCustomizationHelpScreen
 import com.elementary.tasks.settings.security.SecurityNavKey
 import com.elementary.tasks.settings.test.DeveloperEvent
 import com.elementary.tasks.settings.test.DeveloperScreen
@@ -77,6 +78,9 @@ fun EntryProviderScope<NavKey>.settingsEntries(backStack: MutableList<NavKey>) {
   entry<SettingsNavKey.ObjectExportTest> { ObjectExportEntry(backStack) }
   entry<SettingsNavKey.ProVersion> { ProVersionEntry(backStack) }
   entry<SettingsNavKey.Troubleshooting> { TroubleshootingEntry(backStack) }
+  entry<SettingsNavKey.NotificationCustomizationHelp> {
+    NotificationCustomizationHelpScreen(onBackClick = { backStack.removeLastOrNull() })
+  }
 }
 
 @Composable
@@ -230,6 +234,8 @@ private fun RemindersEntry(
       onDefaultWakeScreenToggle = viewModel::onDefaultWakeScreenToggle,
       onDefaultCategoryClick = viewModel::onDefaultCategoryClick,
       onDefaultLockScreenVisibilityClick = viewModel::onDefaultLockScreenVisibilityClick,
+      onDefaultVibrationPatternClick = viewModel::onDefaultVibrationPatternClick,
+      onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
       onChoiceOptionSelected = viewModel::onChoiceOptionSelected,
       onSeekValueChange = viewModel::onSeekValueChange,
       onSeekConfirm = viewModel::onSeekConfirm,

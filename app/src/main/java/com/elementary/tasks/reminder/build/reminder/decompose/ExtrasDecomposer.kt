@@ -5,16 +5,22 @@ import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.elementary.tasks.reminder.build.BypassDndBuilderItem
+import com.elementary.tasks.reminder.build.CategoryBuilderItem
+import com.elementary.tasks.reminder.build.DelayMinutesBuilderItem
 import com.elementary.tasks.reminder.build.DescriptionBuilderItem
 import com.elementary.tasks.reminder.build.EmailSubjectBuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarBuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
+import com.elementary.tasks.reminder.build.LockScreenVisibilityBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PriorityBuilderItem
 import com.elementary.tasks.reminder.build.RepeatLimitBuilderItem
 import com.elementary.tasks.reminder.build.SummaryBuilderItem
+import com.elementary.tasks.reminder.build.VibrationPatternBuilderItem
+import com.elementary.tasks.reminder.build.WakeScreenBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
@@ -125,6 +131,44 @@ class ExtrasDecomposer(
           )
         }
 
+    val category =
+      notification.category?.let {
+        biFactory.createWithValue(BiType.CATEGORY, it.ordinal, CategoryBuilderItem::class.java)
+      }
+
+    val lockScreenVisibility =
+      notification.lockScreenVisibility?.let {
+        biFactory.createWithValue(
+          BiType.LOCK_SCREEN_VISIBILITY,
+          it.ordinal,
+          LockScreenVisibilityBuilderItem::class.java,
+        )
+      }
+
+    val bypassDnd =
+      notification.bypassDoNotDisturb?.let {
+        biFactory.createWithValue(BiType.BYPASS_DND, it, BypassDndBuilderItem::class.java)
+      }
+
+    val wakeScreen =
+      notification.wakeScreen?.let {
+        biFactory.createWithValue(BiType.WAKE_SCREEN, it, WakeScreenBuilderItem::class.java)
+      }
+
+    val vibrationPattern =
+      notification.vibrationPattern
+        ?.takeIf { it.isNotEmpty() }
+        ?.let {
+          biFactory.createWithValue(BiType.VIBRATION_PATTERN, it, VibrationPatternBuilderItem::class.java)
+        }
+
+    val delayMinutes =
+      notification.delayMinutes
+        ?.takeIf { it > 0 }
+        ?.let {
+          biFactory.createWithValue(BiType.DELAY_MINUTES, it, DelayMinutesBuilderItem::class.java)
+        }
+
     val otherParams =
       reminder
         .takeIf { notification.vibrate == true || notification.repeatNotification == true }
@@ -150,6 +194,12 @@ class ExtrasDecomposer(
       repeatLimit,
       priority,
       ledColor,
+      category,
+      lockScreenVisibility,
+      bypassDnd,
+      wakeScreen,
+      vibrationPattern,
+      delayMinutes,
       attachments,
       googleTaskList,
       googleCalendar,

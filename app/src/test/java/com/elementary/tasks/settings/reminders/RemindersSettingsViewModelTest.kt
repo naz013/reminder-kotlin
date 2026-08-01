@@ -1,6 +1,7 @@
 package com.elementary.tasks.settings.reminders
 
 import com.elementary.tasks.BaseTest
+import com.elementary.tasks.core.utils.VibrationPlayer
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
@@ -25,6 +26,7 @@ class RemindersSettingsViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val systemInfo = mockk<SystemInfo>()
   private val buildInfo = mockk<BuildInfo>()
+  private val vibrationPlayer = mockk<VibrationPlayer>(relaxed = true)
 
   private lateinit var viewModel: RemindersSettingsViewModel
 
@@ -63,6 +65,7 @@ class RemindersSettingsViewModelTest : BaseTest() {
         analyticsEventSender = analyticsEventSender,
         systemInfo = systemInfo,
         buildInfo = buildInfo,
+        vibrationPlayer = vibrationPlayer,
       )
   }
 
@@ -93,7 +96,15 @@ class RemindersSettingsViewModelTest : BaseTest() {
   fun `isLedVisible is false when the build is not pro`() {
     every { buildInfo.isPro } returns false
     val vm =
-      RemindersSettingsViewModel(prefs, textProvider, dateTimeManager, analyticsEventSender, systemInfo, buildInfo)
+      RemindersSettingsViewModel(
+        prefs,
+        textProvider,
+        dateTimeManager,
+        analyticsEventSender,
+        systemInfo,
+        buildInfo,
+        vibrationPlayer,
+      )
 
     assertEquals(false, vm.state.value.isLedVisible)
   }
@@ -276,6 +287,15 @@ class RemindersSettingsViewModelTest : BaseTest() {
     viewModel.onChoiceOptionSelected(5)
 
     verify { prefs.doNotDisturbIgnore = 5 }
+  }
+
+  @Test
+  fun `onChoiceOptionSelected plays the vibration pattern preset when persisting it`() {
+    viewModel.onDefaultVibrationPatternClick()
+
+    viewModel.onChoiceOptionSelected(0)
+
+    verify { vibrationPlayer.play(any()) }
   }
 
   @Test

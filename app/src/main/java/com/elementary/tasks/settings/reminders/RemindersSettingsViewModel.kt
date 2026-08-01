@@ -3,6 +3,8 @@ package com.elementary.tasks.settings.reminders
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.VibrationPlayer
+import com.elementary.tasks.core.utils.VibrationPresets
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
@@ -27,6 +29,7 @@ class RemindersSettingsViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val systemInfo: SystemInfo,
   private val buildInfo: BuildInfo,
+  private val vibrationPlayer: VibrationPlayer,
 ) : ViewModel() {
 
   val state: StateFlow<RemindersSettingsState> field = MutableStateFlow(buildState())
@@ -132,6 +135,11 @@ class RemindersSettingsViewModel(
       ChoiceDialogKind.CATEGORY -> prefs.defaultNotificationCategory = categoryValues()[index]
       ChoiceDialogKind.LOCK_SCREEN_VISIBILITY ->
         prefs.defaultLockScreenVisibility = lockScreenVisibilityValues()[index]
+      ChoiceDialogKind.VIBRATION_PATTERN -> {
+        val pattern = VibrationPresets.ALL[index].pattern
+        prefs.defaultVibrationPattern = pattern
+        vibrationPlayer.play(pattern)
+      }
     }
     dismissDialog()
   }
@@ -247,6 +255,15 @@ class RemindersSettingsViewModel(
     )
   }
 
+  fun onDefaultVibrationPatternClick() {
+    showChoiceDialog(
+      kind = ChoiceDialogKind.VIBRATION_PATTERN,
+      title = textProvider.getString(R.string.vibration_pattern),
+      options = vibrationPatternOptions(),
+      selectedIndex = selectedVibrationPatternIndex(),
+    )
+  }
+
   fun onDialogDismiss() {
     dismissDialog()
   }
@@ -338,6 +355,7 @@ class RemindersSettingsViewModel(
       defaultLockScreenVisibilityName = lockScreenVisibilityOptions()[
         lockScreenVisibilityValues().indexOf(prefs.defaultLockScreenVisibility).coerceAtLeast(0)
       ],
+      defaultVibrationPatternName = vibrationPatternOptions()[selectedVibrationPatternIndex()],
     )
   }
 
@@ -388,6 +406,11 @@ class RemindersSettingsViewModel(
     )
 
   private fun lockScreenVisibilityValues(): List<String> = LockScreenVisibility.entries.map { it.name }
+
+  private fun vibrationPatternOptions(): List<String> = VibrationPresets.ALL.map { textProvider.getString(it.nameRes) }
+
+  private fun selectedVibrationPatternIndex(): Int =
+    VibrationPresets.ALL.indexOfFirst { it.pattern == prefs.defaultVibrationPattern }.coerceAtLeast(0)
 
   private fun ignoreOptions(): List<String> {
     val andAbove = textProvider.getString(R.string.and_above)

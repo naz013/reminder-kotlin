@@ -37,6 +37,7 @@ fun ICalFreqValueEditor(
   builderItem: BuilderItem<FreqType>,
   paramToTextAdapter: ParamToTextAdapter,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   val entries = remember { FreqType.entries }
   val items = remember(entries) { entries.map { paramToTextAdapter.getFreqText(it) } }
@@ -52,6 +53,7 @@ fun ICalFreqValueEditor(
       onValueChange(builderItem)
     },
     modifier = Modifier.fillMaxWidth(),
+    hapticFeedbackEnabled = hapticFeedbackEnabled,
   )
 }
 
@@ -61,6 +63,7 @@ fun ICalWeekStartValueEditor(
   builderItem: BuilderItem<DayValue>,
   paramToTextAdapter: ParamToTextAdapter,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   val entries = remember { Day.entries }
   val items = remember(entries) { entries.map { paramToTextAdapter.getDayFullText(DayValue(it)) } }
@@ -76,6 +79,7 @@ fun ICalWeekStartValueEditor(
       onValueChange(builderItem)
     },
     modifier = Modifier.fillMaxWidth(),
+    hapticFeedbackEnabled = hapticFeedbackEnabled,
   )
 }
 
