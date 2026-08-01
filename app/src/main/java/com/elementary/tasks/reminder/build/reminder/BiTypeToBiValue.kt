@@ -55,6 +55,9 @@ class BiTypeToBiValue {
       BiType.ICAL_COUNT,
       BiType.PRIORITY,
       BiType.LED_COLOR,
+      BiType.CATEGORY,
+      BiType.LOCK_SCREEN_VISIBILITY,
+      BiType.DELAY_MINUTES,
       -> value.toInt() as? V
 
       BiType.COUNTDOWN_TIMER,
@@ -62,6 +65,13 @@ class BiTypeToBiValue {
       BiType.REPEAT_TIME,
       BiType.REPEAT_INTERVAL,
       -> value.toLong() as? V
+
+      BiType.BYPASS_DND,
+      BiType.WAKE_SCREEN,
+      -> value.toBoolean() as? V
+
+      BiType.VIBRATION_PATTERN,
+      -> parseLongList(value) as? V
 
       BiType.ARRIVING_COORDINATES,
       BiType.LEAVING_COORDINATES,
@@ -162,6 +172,8 @@ class BiTypeToBiValue {
   }
 
   private fun parseIntList(value: String): List<Int> = value.split(',').mapNotNull { it.toIntOrNull() }
+
+  private fun parseLongList(value: String): List<Long> = value.split(',').mapNotNull { it.toLongOrNull() }
 
   private fun parseStringList(value: String): List<String> = value.split(',')
 }

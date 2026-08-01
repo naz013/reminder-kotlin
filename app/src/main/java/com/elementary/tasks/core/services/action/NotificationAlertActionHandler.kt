@@ -34,7 +34,7 @@ abstract class NotificationAlertActionHandler<T>(
   override suspend fun handle(data: T) {
     Logger.d(logTag, "handle: style=${style.name}, data=$data")
 
-    val builder = NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
+    val builder = NotificationCompat.Builder(contextProvider.context, channelId(data))
     builder.setAutoCancel(false)
     builder.setOngoing(true)
     builder.setContentTitle(contentTitle(data))
@@ -91,6 +91,12 @@ abstract class NotificationAlertActionHandler<T>(
 
   protected abstract val groupKey: String
   protected abstract val logTag: String
+
+  /** Which channel this notification posts to. Defaults to the single static reminder channel;
+   *  override to select/create a channel derived from resolved per-notification settings (see
+   *  [Notifier.reminderChannelId]) when a field needs to vary per notification on Android 8+,
+   *  where a channel's importance/vibration/DND-bypass are locked at creation. */
+  protected open fun channelId(data: T): String = Notifier.CHANNEL_REMINDER
 
   protected abstract fun receiverClass(): Class<out BroadcastReceiver>
 

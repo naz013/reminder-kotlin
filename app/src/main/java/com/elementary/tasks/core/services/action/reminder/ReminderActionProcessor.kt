@@ -10,10 +10,10 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.usecase.reminders.ResolveReminderV2NotificationSettingsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,6 +30,7 @@ class ReminderActionProcessor(
   private val contextProvider: ContextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val workflowTriggerRunner: WorkflowTriggerRunner,
+  private val resolveReminderV2NotificationSettingsUseCase: ResolveReminderV2NotificationSettingsUseCase,
 ) {
   private val scope = CoroutineScope(dispatcherProvider.default())
 
@@ -59,8 +60,9 @@ class ReminderActionProcessor(
     Logger.i(TAG, "Going to process reminder: $id")
     scope.launch {
       val reminder = reminderV2Repository.getById(id) ?: return@launch
-      val priority = (reminder.notification.priority ?: ReminderPriority.NORMAL).ordinal
-      if (doNotDisturbManager.applyDoNotDisturb(priority)) {
+      val notificationSettings = resolveReminderV2NotificationSettingsUseCase(reminder)
+      val priority = notificationSettings.priority.ordinal
+      if (!notificationSettings.bypassDoNotDisturb && doNotDisturbManager.applyDoNotDisturb(priority)) {
         if (prefs.doNotDisturbAction == 0) {
           val delayTime =
             dateTimeManager.millisToEndDnd(
@@ -78,7 +80,7 @@ class ReminderActionProcessor(
       } else {
         val canShowWindow = !SuperUtil.isPhoneCallActive(contextProvider.context)
         analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
-        val handler = reminderHandlerFactory.createAction(canShowWindow)
+        val handler = reminderHandlerFactory.createAction(canShowWindow, notificationSettings)
         Logger.d(TAG, "Processing reminder id=${reminder.uuId} with handler $handler")
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)

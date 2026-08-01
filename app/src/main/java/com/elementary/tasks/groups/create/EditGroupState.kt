@@ -2,6 +2,7 @@ package com.elementary.tasks.groups.create
 
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.workflow.WorkflowConfig
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 
 data class EditGroupState(
   val id: String? = null,
@@ -18,13 +19,39 @@ data class EditGroupState(
   val isFromFile: Boolean = false,
   val hasSameInDb: Boolean = false,
   val workflowsVisible: Boolean = WorkflowConfig.isEnabled,
+  val notification: NotificationSettingsOverride = NotificationSettingsOverride(),
+  val vibrateSubtitle: String = "",
+  val repeatNotificationSubtitle: String = "",
+  val bypassDndSubtitle: String = "",
+  val wakeScreenSubtitle: String = "",
+  val prioritySubtitle: String = "",
+  val categorySubtitle: String = "",
+  val lockScreenVisibilitySubtitle: String = "",
+  val vibrationPatternSubtitle: String = "",
+  val delayMinutesSubtitle: String = "",
 ) {
   val hasId: Boolean
     get() = id.isNullOrEmpty().not()
+}
+
+enum class GroupNotificationDialogKind {
+  VIBRATE, REPEAT_NOTIFICATION, BYPASS_DND, WAKE_SCREEN, PRIORITY, CATEGORY, LOCK_SCREEN_VISIBILITY, VIBRATION_PATTERN
 }
 
 sealed interface EditGroupDialog {
   data object CopyConflict : EditGroupDialog
 
   data object DeleteConfirm : EditGroupDialog
+
+  data class NotificationChoice(
+    val kind: GroupNotificationDialogKind,
+    val title: String,
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : EditGroupDialog
+
+  data class DelayMinutes(
+    val isOverridden: Boolean,
+    val previewValue: Int,
+  ) : EditGroupDialog
 }

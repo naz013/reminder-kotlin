@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
@@ -109,7 +110,7 @@ private fun GroupsEmptyState(modifier: Modifier = Modifier) {
     verticalArrangement = Arrangement.Center,
   ) {
     Icon(
-      painter = painterResource(R.drawable.ic_builder_group),
+      painter = AppIcons.Fluent.Group,
       contentDescription = null,
       modifier = Modifier.size(64.dp),
       tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),

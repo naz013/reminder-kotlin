@@ -315,9 +315,15 @@ class Prefs(
     get() = getBoolean(PrefsConstants.DEFAULT_VIBRATE, def = false)
     set(value) = putBoolean(PrefsConstants.DEFAULT_VIBRATE, value)
 
-  var defaultVibrationPattern: Array<Long>
-    get() = getLongArray(PrefsConstants.DEFAULT_VIBRATION_PATTERN)
-    set(value) = putLongArray(PrefsConstants.DEFAULT_VIBRATION_PATTERN, value)
+  // Stored as an ordered comma-joined string, not getLongArray/putLongArray, which round-trip
+  // through SharedPreferences.putStringSet and silently lose ordering and duplicate values -
+  // both of which matter for a vibration pattern.
+  var defaultVibrationPattern: List<Long>
+    get() =
+      getString(PrefsConstants.DEFAULT_VIBRATION_PATTERN, "")
+        .split(",")
+        .mapNotNull { it.trim().toLongOrNull() }
+    set(value) = putString(PrefsConstants.DEFAULT_VIBRATION_PATTERN, value.joinToString(","))
 
   var defaultVolume: Int
     get() = getInt(PrefsConstants.DEFAULT_VOLUME, def = -1)

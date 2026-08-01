@@ -16,7 +16,7 @@ class ReminderSettingsRepositoryImpl(
   override fun getNotificationDefaults(): NotificationSettings = NotificationSettings(
     color = prefs.ledColor,
     vibrate = prefs.isDefaultVibrateEnabled,
-    vibrationPattern = prefs.defaultVibrationPattern.toList().takeIf { it.isNotEmpty() },
+    vibrationPattern = prefs.defaultVibrationPattern.takeIf { it.isNotEmpty() },
     repeatNotification = prefs.isNotificationRepeatEnabled,
     volume = prefs.defaultVolume,
     soundUri = prefs.defaultSoundUri.takeIf { it.isNotEmpty() },
@@ -39,7 +39,7 @@ class ReminderSettingsRepositoryImpl(
   override fun setNotificationDefaults(settings: NotificationSettings) {
     prefs.ledColor = settings.color
     prefs.isDefaultVibrateEnabled = settings.vibrate
-    prefs.defaultVibrationPattern = settings.vibrationPattern?.toTypedArray() ?: emptyArray()
+    prefs.defaultVibrationPattern = settings.vibrationPattern.orEmpty()
     prefs.isNotificationRepeatEnabled = settings.repeatNotification
     prefs.defaultVolume = settings.volume
     prefs.defaultSoundUri = settings.soundUri.orEmpty()

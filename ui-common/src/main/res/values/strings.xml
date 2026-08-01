@@ -1023,6 +1023,26 @@
     <string name="lock_screen_visibility_public">Show full content</string>
     <string name="lock_screen_visibility_private">Hide sensitive content</string>
     <string name="lock_screen_visibility_secret">Hide completely</string>
+    <string name="vibration_pattern">Vibration pattern</string>
+    <string name="notification_overrides">Notification overrides</string>
+    <string name="notification_customization">Notification customization</string>
+    <string name="how_does_this_work">How does this work?</string>
+    <string name="inherit_from_settings">Inherit from Settings</string>
+    <string name="inherited_format">Inherited: %s</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="vibration_preset_short">Short</string>
+    <string name="vibration_preset_long">Long</string>
+    <string name="vibration_preset_double_buzz">Double buzz</string>
+    <string name="vibration_preset_default">Default</string>
+    <string name="notification_delay">Notification delay</string>
+
+    <string name="builder_set_category_for_the_notification">Set a system notification category for the notification</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">Set how much of the notification is shown on the lock screen</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">Ring even when Do Not Disturb is on</string>
+    <string name="builder_set_wake_screen_for_the_notification">Turn the screen on like an alarm</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">Set a vibration pattern for the notification</string>
+    <string name="builder_set_delay_for_the_notification">Delay the notification by this many minutes</string>
 
     <string name="builder_quick_start_one_time">One-time reminder</string>
     <string name="builder_quick_start_every_weekday">Every weekday</string>

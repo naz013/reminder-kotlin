@@ -30,7 +30,7 @@ val actionModule = module {
     )
   }
 
-  factory { ReminderActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+  factory { ReminderActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   factory {
     BirthdayActionProcessor(
       get(),

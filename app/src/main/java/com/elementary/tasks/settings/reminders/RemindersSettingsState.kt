@@ -29,12 +29,15 @@ data class RemindersSettingsState(
   val isDefaultWakeScreenChecked: Boolean = false,
   val defaultCategoryName: String = "",
   val defaultLockScreenVisibilityName: String = "",
+  val defaultVibrationPatternName: String = "",
   val dialog: RemindersSettingsDialog? = null,
   val hasLocation: Boolean = false,
   val workflowsVisible: Boolean = WorkflowConfig.isEnabled,
 )
 
-enum class ChoiceDialogKind { PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE, CATEGORY, LOCK_SCREEN_VISIBILITY }
+enum class ChoiceDialogKind {
+  PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE, CATEGORY, LOCK_SCREEN_VISIBILITY, VIBRATION_PATTERN
+}
 
 enum class SeekDialogKind { SNOOZE, REPEAT_INTERVAL }
 

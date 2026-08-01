@@ -14,7 +14,7 @@ object Icons {
   val DUE: Int = R.drawable.ic_builder_by_monthday
 
   @DrawableRes
-  val GROUP: Int = R.drawable.ic_builder_group
+  val GROUP: Int = R.drawable.ic_fluent_group
 
   @DrawableRes
   val ID: Int = R.drawable.ic_fluent_cloud

@@ -33,6 +33,7 @@ private const val REPEAT_LIMIT_STEPS = 365
 fun PriorityValueEditor(
   builderItem: PriorityBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   val items = stringArrayResource(R.array.priorities).toList()
   var selectedIndex by remember(builderItem) {
@@ -47,6 +48,7 @@ fun PriorityValueEditor(
       onValueChange(builderItem)
     },
     modifier = Modifier.fillMaxWidth(),
+    hapticFeedbackEnabled = hapticFeedbackEnabled,
   )
 }
 

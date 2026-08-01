@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,11 +30,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
+import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +50,20 @@ fun EditGroupScreen(
   onColorSelected: (Int) -> Unit,
   onDefaultCheckChanged: (Boolean) -> Unit,
   onWorkflowRulesClick: () -> Unit,
+  onVibrateClick: () -> Unit,
+  onRepeatNotificationClick: () -> Unit,
+  onBypassDndClick: () -> Unit,
+  onWakeScreenClick: () -> Unit,
+  onPriorityClick: () -> Unit,
+  onCategoryClick: () -> Unit,
+  onLockScreenVisibilityClick: () -> Unit,
+  onVibrationPatternClick: () -> Unit,
+  onNotificationHelpClick: () -> Unit,
+  onNotificationChoiceSelected: (Int) -> Unit,
+  onDelayMinutesClick: () -> Unit,
+  onDelayMinutesOverrideToggle: (Boolean) -> Unit,
+  onDelayMinutesPreviewChange: (Int) -> Unit,
+  onDelayMinutesConfirm: () -> Unit,
   onDeleteConfirmed: () -> Unit,
   onCopyKeepClick: () -> Unit,
   onCopyReplaceClick: () -> Unit,
@@ -141,6 +159,77 @@ fun EditGroupScreen(
         }
       }
 
+      SettingsSectionHeader(
+        stringResource(R.string.notification_overrides),
+        modifier = Modifier.padding(top = 16.dp),
+      )
+      SettingsItem(
+        title = stringResource(R.string.how_does_this_work),
+        icon = AppIcons.Fluent.QuestionCircle,
+        dividerBottom = true,
+        onClick = onNotificationHelpClick,
+      )
+      SettingsItem(
+        title = stringResource(R.string.reminder_default_priority),
+        subtitle = state.prioritySubtitle,
+        dividerBottom = true,
+        onClick = onPriorityClick,
+        icon = AppIcons.Fluent.Star,
+      )
+      SettingsItem(
+        title = stringResource(R.string.repeat_notification),
+        subtitle = state.repeatNotificationSubtitle,
+        dividerBottom = true,
+        onClick = onRepeatNotificationClick,
+      )
+      SettingsItem(
+        title = stringResource(R.string.notification_delay),
+        subtitle = state.delayMinutesSubtitle,
+        dividerBottom = true,
+        onClick = onDelayMinutesClick,
+        icon = AppIcons.Builder.Interval,
+      )
+      SettingsItem(
+        title = stringResource(R.string.notification_category),
+        subtitle = state.categorySubtitle,
+        dividerBottom = true,
+        onClick = onCategoryClick,
+        icon = AppIcons.Fluent.ChannelNotifications,
+      )
+      SettingsItem(
+        title = stringResource(R.string.default_vibrate),
+        subtitle = state.vibrateSubtitle,
+        dividerBottom = true,
+        onClick = onVibrateClick,
+        icon = AppIcons.Fluent.PhoneVibrate,
+      )
+      SettingsItem(
+        title = stringResource(R.string.vibration_pattern),
+        subtitle = state.vibrationPatternSubtitle,
+        dividerBottom = true,
+        onClick = onVibrationPatternClick,
+        icon = AppIcons.Fluent.PhoneVibrate,
+      )
+      SettingsItem(
+        title = stringResource(R.string.bypass_do_not_disturb),
+        subtitle = state.bypassDndSubtitle,
+        dividerBottom = true,
+        onClick = onBypassDndClick,
+        icon = AppIcons.Fluent.Sleep
+      )
+      SettingsItem(
+        title = stringResource(R.string.wake_screen),
+        subtitle = state.wakeScreenSubtitle,
+        dividerBottom = true,
+        onClick = onWakeScreenClick,
+      )
+      SettingsItem(
+        title = stringResource(R.string.lock_screen_visibility),
+        subtitle = state.lockScreenVisibilitySubtitle,
+        dividerBottom = true,
+        onClick = onLockScreenVisibilityClick,
+        icon = AppIcons.Fluent.LockShield,
+      )
       if (state.workflowsVisible) {
         SettingsItem(
           title = stringResource(R.string.workflow_rules),
@@ -152,7 +241,7 @@ fun EditGroupScreen(
     }
   }
 
-  when (state.dialog) {
+  when (val dialog = state.dialog) {
     EditGroupDialog.CopyConflict -> {
       AlertDialog(
         onDismissRequest = onDialogDismiss,
@@ -179,6 +268,52 @@ fun EditGroupScreen(
       )
     }
 
+    is EditGroupDialog.NotificationChoice -> {
+      SingleChoiceDialog(
+        title = dialog.title,
+        options = dialog.options,
+        selectedIndex = dialog.selectedIndex,
+        onOptionSelected = onNotificationChoiceSelected,
+        onDismiss = onDialogDismiss,
+      )
+    }
+
+    is EditGroupDialog.DelayMinutes -> {
+      AlertDialog(
+        onDismissRequest = onDialogDismiss,
+        title = { Text(stringResource(R.string.notification_delay)) },
+        text = {
+          Column {
+            Row(
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier.fillMaxWidth(),
+            ) {
+              Text(text = stringResource(R.string.inherit_from_settings), modifier = Modifier.weight(1f))
+              Switch(
+                checked = !dialog.isOverridden,
+                onCheckedChange = { inherit -> onDelayMinutesOverrideToggle(!inherit) },
+              )
+            }
+            if (dialog.isOverridden) {
+              Text(
+                text = stringResource(R.string.x_minutes, dialog.previewValue.toString()),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(top = 8.dp),
+              )
+              Slider(
+                value = dialog.previewValue.toFloat(),
+                onValueChange = { onDelayMinutesPreviewChange(it.toInt()) },
+                valueRange = 0f..60f,
+                modifier = Modifier.fillMaxWidth(),
+              )
+            }
+          }
+        },
+        confirmButton = { TextButton(onClick = onDelayMinutesConfirm) { Text(stringResource(R.string.ok)) } },
+        dismissButton = { TextButton(onClick = onDialogDismiss) { Text(stringResource(R.string.cancel)) } },
+      )
+    }
+
     null -> Unit
   }
 }
@@ -202,6 +337,20 @@ private fun EditGroupScreenPreview() {
       onColorSelected = {},
       onDefaultCheckChanged = {},
       onWorkflowRulesClick = {},
+      onVibrateClick = {},
+      onRepeatNotificationClick = {},
+      onBypassDndClick = {},
+      onWakeScreenClick = {},
+      onPriorityClick = {},
+      onCategoryClick = {},
+      onLockScreenVisibilityClick = {},
+      onVibrationPatternClick = {},
+      onNotificationHelpClick = {},
+      onNotificationChoiceSelected = {},
+      onDelayMinutesClick = {},
+      onDelayMinutesOverrideToggle = {},
+      onDelayMinutesPreviewChange = {},
+      onDelayMinutesConfirm = {},
       onDeleteConfirmed = {},
       onCopyKeepClick = {},
       onCopyReplaceClick = {},

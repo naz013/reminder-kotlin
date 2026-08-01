@@ -19,12 +19,18 @@ object AppIcons {
     val Add: Painter @Composable get() = painterResource(R.drawable.ic_fluent_add)
     val Calendar: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar)
     val Search: Painter @Composable get() = painterResource(R.drawable.ic_fluent_search)
+    val ChannelNotifications: Painter @Composable get() = painterResource(R.drawable.ic_fluent_channel_notifications)
+    val Group: Painter @Composable get() = painterResource(R.drawable.ic_fluent_group)
+    val LockShield: Painter @Composable get() = painterResource(R.drawable.ic_fluent_lock_shield)
+    val QuestionCircle: Painter @Composable get() = painterResource(R.drawable.ic_fluent_question_circle)
+    val Sleep: Painter @Composable get() = painterResource(R.drawable.ic_fluent_sleep)
+    val PhoneVibrate: Painter @Composable get() = painterResource(R.drawable.ic_fluent_phone_vibrate)
   }
 
   object Builder {
     val Details: Painter @Composable get() = painterResource(R.drawable.ic_builder_details)
     val ByMonthday: Painter @Composable get() = painterResource(R.drawable.ic_builder_by_monthday)
-    val Group: Painter @Composable get() = painterResource(R.drawable.ic_builder_group)
+    val Tag: Painter @Composable get() = painterResource(R.drawable.ic_builder_group)
     val RepeatLimit: Painter @Composable get() = painterResource(R.drawable.ic_builder_repeat_limit)
     val AddCall: Painter @Composable get() = painterResource(R.drawable.ic_builder_add_call)
     val SendMessage: Painter @Composable get() = painterResource(R.drawable.ic_builder_send_message)
@@ -33,5 +39,6 @@ object AppIcons {
     val AddApp: Painter @Composable get() = painterResource(R.drawable.ic_builder_add_app)
     val WebAddress: Painter @Composable get() = painterResource(R.drawable.ic_builder_web_address)
     val Clear: Painter @Composable get() = painterResource(R.drawable.ic_builder_clear)
+    val Interval: Painter @Composable get() = painterResource(R.drawable.ic_builder_interval)
   }
 }

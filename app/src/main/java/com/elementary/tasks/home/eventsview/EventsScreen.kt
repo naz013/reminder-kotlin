@@ -313,7 +313,7 @@ private fun OverflowMenuButton(
   val actions =
     listOf(
       Triple(0, stringResource(R.string.reminders_archive), R.drawable.ic_fluent_archive) to onArchiveClick,
-      Triple(1, stringResource(R.string.groups), R.drawable.ic_builder_group) to onGroupsClick,
+      Triple(1, stringResource(R.string.groups), R.drawable.ic_fluent_group) to onGroupsClick,
     )
   Box {
     MenuIconButton(

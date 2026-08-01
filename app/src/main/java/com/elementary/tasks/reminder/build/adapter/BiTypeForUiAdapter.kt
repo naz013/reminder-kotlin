@@ -42,6 +42,12 @@ class BiTypeForUiAdapter(
       BiType.EMAIL_SUBJECT -> textProvider.getString(R.string.subject)
       BiType.APPLICATION -> textProvider.getString(R.string.application)
       BiType.OTHER_PARAMS -> textProvider.getString(R.string.builder_additional_parameters)
+      BiType.CATEGORY -> textProvider.getString(R.string.notification_category)
+      BiType.LOCK_SCREEN_VISIBILITY -> textProvider.getString(R.string.lock_screen_visibility)
+      BiType.BYPASS_DND -> textProvider.getString(R.string.bypass_do_not_disturb)
+      BiType.WAKE_SCREEN -> textProvider.getString(R.string.wake_screen)
+      BiType.VIBRATION_PATTERN -> textProvider.getString(R.string.vibration_pattern)
+      BiType.DELAY_MINUTES -> textProvider.getString(R.string.notification_delay)
       BiType.SUB_TASKS -> textProvider.getString(R.string.builder_sub_tasks)
       BiType.ARRIVING_COORDINATES -> {
         textProvider.getString(R.string.builder_arriving_destination)

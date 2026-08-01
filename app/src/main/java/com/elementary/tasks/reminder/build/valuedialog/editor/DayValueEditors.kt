@@ -34,6 +34,7 @@ private const val LAST_DAY_VALUE = 0
 fun DayOfMonthValueEditor(
   builderItem: BuilderItem<Int>,
   onValueChange: (BuilderItem<*>) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   val lastDayLabel = stringResource(R.string.last_day)
   val days = remember(lastDayLabel) { (1..28).toList() + LAST_DAY_VALUE }
@@ -53,6 +54,7 @@ fun DayOfMonthValueEditor(
       }
     },
     modifier = Modifier.fillMaxWidth(),
+    hapticFeedbackEnabled = hapticFeedbackEnabled,
   )
 }
 

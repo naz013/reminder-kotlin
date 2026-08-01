@@ -22,8 +22,6 @@ class ReminderDataProvider(
     }
   }
 
-  fun getVibrationPattern(): LongArray? = longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-
   fun getAppName(): String = textProvider.getAppName()
 
   fun priority(priority: Int): Int =

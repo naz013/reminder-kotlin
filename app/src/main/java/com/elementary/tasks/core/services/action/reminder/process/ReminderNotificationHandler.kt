@@ -15,14 +15,15 @@ import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.PendingIntentWrapper
-import com.github.naz013.domain.reminder.v2.ReminderPriority
+import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class ReminderNotificationHandler(
   private val reminderDataProvider: ReminderDataProvider,
+  private val notificationSettings: NotificationSettings,
   contextProvider: ContextProvider,
   textProvider: TextProvider,
-  notifier: Notifier,
+  private val notifier: Notifier,
   prefs: Prefs,
   wearNotification: WearNotification,
   style: NotificationStyle,
@@ -65,12 +66,17 @@ class ReminderNotificationHandler(
 
   override fun domainIcon(data: ReminderV2): Int = R.drawable.ic_fluent_alert
 
-  override fun defaultPriority(data: ReminderV2): Int =
-    reminderDataProvider.priority((data.notification.priority ?: ReminderPriority.NORMAL).ordinal)
+  // Widened to public (base declarations are protected) so these - the resolved-settings ->
+  // Android-API mapping this fix is about - are directly unit-testable.
+  public override fun channelId(data: ReminderV2): String = notifier.reminderChannelId(notificationSettings)
 
-  override fun vibrationPattern(data: ReminderV2): LongArray? = reminderDataProvider.getVibrationPattern()
+  public override fun defaultPriority(data: ReminderV2): Int =
+    reminderDataProvider.priority(notificationSettings.priority.ordinal)
 
-  override fun ledColor(data: ReminderV2): Int? = reminderDataProvider.getLedColor(data.notification.color ?: 0)
+  public override fun vibrationPattern(data: ReminderV2): LongArray? =
+    if (notificationSettings.vibrate) notificationSettings.vibrationPattern?.toLongArray() else null
+
+  public override fun ledColor(data: ReminderV2): Int? = reminderDataProvider.getLedColor(notificationSettings.color)
 
   override fun appName(data: ReminderV2): String = reminderDataProvider.getAppName()
 

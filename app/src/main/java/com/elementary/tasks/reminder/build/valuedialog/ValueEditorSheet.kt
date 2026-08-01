@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.build.valuedialog
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,19 +16,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
-import android.net.Uri
+import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.elementary.tasks.reminder.build.BypassDndBuilderItem
+import com.elementary.tasks.reminder.build.CategoryBuilderItem
 import com.elementary.tasks.reminder.build.DateBuilderItem
 import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
 import com.elementary.tasks.reminder.build.DayOfYearBuilderItem
 import com.elementary.tasks.reminder.build.DaysOfWeekBuilderItem
+import com.elementary.tasks.reminder.build.DelayMinutesBuilderItem
 import com.elementary.tasks.reminder.build.DescriptionBuilderItem
 import com.elementary.tasks.reminder.build.EmailBuilderItem
 import com.elementary.tasks.reminder.build.EmailSubjectBuilderItem
@@ -47,6 +50,7 @@ import com.elementary.tasks.reminder.build.ICalWeekStartBuilderItem
 import com.elementary.tasks.reminder.build.LedColorBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayDateBuilderItem
 import com.elementary.tasks.reminder.build.LocationDelayTimeBuilderItem
+import com.elementary.tasks.reminder.build.LockScreenVisibilityBuilderItem
 import com.elementary.tasks.reminder.build.NoteBuilderItem
 import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.PhoneCallBuilderItem
@@ -60,18 +64,23 @@ import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.TimerExclusionBuilderItem
+import com.elementary.tasks.reminder.build.VibrationPatternBuilderItem
+import com.elementary.tasks.reminder.build.WakeScreenBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.build.valuedialog.editor.ApplicationValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.AttachmentsValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.BeforeTimeValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.BypassDndValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.CategoryValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownExclusionValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.CountdownTimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DateValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfMonthValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DayOfYearValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.DaysOfWeekValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.DelayMinutesValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleCalendarDurationValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleCalendarValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.GoogleTaskListValueEditor
@@ -82,6 +91,7 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntListValueEd
 import com.elementary.tasks.reminder.build.valuedialog.editor.ICalIntValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.ICalWeekStartValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.LedColorValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.LockScreenVisibilityValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.NoteValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.OtherParamsValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.PhoneInputValueEditor
@@ -93,6 +103,8 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.SimpleTextValueEdi
 import com.elementary.tasks.reminder.build.valuedialog.editor.SubTasksValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TextInputValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.VibrationPatternValueEditor
+import com.elementary.tasks.reminder.build.valuedialog.editor.WakeScreenValueEditor
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
@@ -217,20 +229,22 @@ private fun ValueEditorContent(
     is ICalUntilDateBuilderItem -> DateValueEditor(builderItem, onValueChange)
     is ICalStartTimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
     is ICalUntilTimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
-    is ICalFrequencyBuilderItem -> ICalFreqValueEditor(builderItem, paramToTextAdapter, onValueChange)
-    is ICalWeekStartBuilderItem -> ICalWeekStartValueEditor(builderItem, paramToTextAdapter, onValueChange)
+    is ICalFrequencyBuilderItem ->
+      ICalFreqValueEditor(builderItem, paramToTextAdapter, onValueChange, hapticFeedbackEnabled)
+    is ICalWeekStartBuilderItem ->
+      ICalWeekStartValueEditor(builderItem, paramToTextAdapter, onValueChange, hapticFeedbackEnabled)
     is ICalIntBuilderItem -> ICalIntValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is ICalListIntBuilderItem -> ICalIntListValueEditor(builderItem, onValueChange)
     is ICalByDayBuilderItem -> ICalDayValueListValueEditor(builderItem, paramToTextAdapter, onValueChange)
     is TimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
     is LocationDelayTimeBuilderItem -> TimeValueEditor(builderItem, is24HourFormat, onValueChange)
-    is GroupBuilderItem -> GroupValueEditor(builderItem, onValueChange)
-    is GoogleTaskListBuilderItem -> GoogleTaskListValueEditor(builderItem, onValueChange)
+    is GroupBuilderItem -> GroupValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
+    is GoogleTaskListBuilderItem -> GoogleTaskListValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is LedColorBuilderItem -> LedColorValueEditor(builderItem, onValueChange)
     is DayOfMonthBuilderItem -> DayOfMonthValueEditor(builderItem, onValueChange)
     is DayOfYearBuilderItem -> DayOfYearValueEditor(builderItem, onValueChange)
     is DaysOfWeekBuilderItem -> DaysOfWeekValueEditor(builderItem, onValueChange)
-    is PriorityBuilderItem -> PriorityValueEditor(builderItem, onValueChange)
+    is PriorityBuilderItem -> PriorityValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is RepeatLimitBuilderItem -> RepeatLimitValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is BeforeTimeBuilderItem -> BeforeTimeValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is RepeatTimeBuilderItem -> RepeatTimeValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
@@ -239,9 +253,17 @@ private fun ValueEditorContent(
     is GoogleCalendarDurationBuilderItem ->
       GoogleCalendarDurationValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is OtherParamsBuilderItem -> OtherParamsValueEditor(builderItem, onValueChange)
+    is CategoryBuilderItem -> CategoryValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
+    is LockScreenVisibilityBuilderItem ->
+      LockScreenVisibilityValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
+    is BypassDndBuilderItem -> BypassDndValueEditor(builderItem, onValueChange)
+    is WakeScreenBuilderItem -> WakeScreenValueEditor(builderItem, onValueChange)
+    is VibrationPatternBuilderItem -> VibrationPatternValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
+    is DelayMinutesBuilderItem -> DelayMinutesValueEditor(builderItem, onValueChange, hapticFeedbackEnabled)
     is EmailBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Email)
     is WebAddressBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Uri)
-    is GoogleCalendarBuilderItem -> GoogleCalendarValueEditor(builderItem, googleCalendarUtils, onValueChange)
+    is GoogleCalendarBuilderItem ->
+      GoogleCalendarValueEditor(builderItem, googleCalendarUtils, onValueChange, hapticFeedbackEnabled)
     is SummaryBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     is DescriptionBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     is EmailSubjectBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
@@ -251,7 +273,8 @@ private fun ValueEditorContent(
     is AttachmentsBuilderItem -> AttachmentsValueEditor(builderItem, attachmentFileAdapter, onPickFiles, onValueChange)
     is NoteBuilderItem -> NoteValueEditor(builderItem, onValueChange)
     is SubTasksBuilderItem -> SubTasksValueEditor(builderItem, dateTimeManager, onValueChange)
-    is TimerExclusionBuilderItem -> CountdownExclusionValueEditor(builderItem, dateTimeManager, is24HourFormat, onValueChange)
+    is TimerExclusionBuilderItem ->
+      CountdownExclusionValueEditor(builderItem, dateTimeManager, is24HourFormat, onValueChange)
     else -> {}
   }
 }

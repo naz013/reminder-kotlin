@@ -29,6 +29,8 @@ val groupModule =
         get(),
         get(),
         get(),
+        get(),
+        get(),
       )
     }
   }
