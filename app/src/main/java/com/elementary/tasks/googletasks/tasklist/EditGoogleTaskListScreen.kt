@@ -145,6 +145,7 @@ fun EditGoogleTaskListScreen(
                 .fillMaxWidth()
                 .height(36.dp)
                 .padding(top = 8.dp),
+            hapticFeedbackEnabled = state.hapticFeedbackEnabled,
           )
         }
       }

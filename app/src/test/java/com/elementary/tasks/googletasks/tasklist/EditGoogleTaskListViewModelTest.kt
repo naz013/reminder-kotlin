@@ -3,6 +3,7 @@ package com.elementary.tasks.googletasks.tasklist
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -39,6 +40,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>()
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
+  private val prefs = mockk<Prefs>(relaxed = true)
 
   private lateinit var viewModel: EditGoogleTaskListViewModel
 
@@ -54,6 +56,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
       textProvider = textProvider,
       themeProvider = themeProvider,
       appWidgetUpdater = appWidgetUpdater,
+      prefs = prefs,
     )
 
   @Before

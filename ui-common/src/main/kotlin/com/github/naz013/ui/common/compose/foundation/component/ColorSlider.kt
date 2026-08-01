@@ -14,7 +14,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppTheme
@@ -22,16 +24,6 @@ import com.github.naz013.ui.common.compose.AppTheme
 private val SelectorStrokeWidth = 2.dp
 private const val UnselectedItemVerticalInset = 0.1f
 
-/**
- * Reusable replacement for the `com.github.naz013:ColorSlider` AndroidView: a horizontal strip of
- * equal-width color swatches. The selected swatch is drawn full-height with a [selectorColor]
- * outline; the rest are inset vertically by 10% of the height - matching that view's
- * `drawSlider`/`calculateRectangles` look exactly.
- *
- * Tapping or dragging anywhere across the strip selects whichever swatch is under the pointer,
- * same as the original view's raw touch handling (no drag-slop, selection updates continuously
- * while dragging rather than only once a "drag" is recognized).
- */
 @Composable
 fun ColorSlider(
   colors: List<Color>,
@@ -40,14 +32,21 @@ fun ColorSlider(
   modifier: Modifier = Modifier,
   selectorColor: Color = MaterialTheme.colorScheme.onSurface,
   enabled: Boolean = true,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
+  val hapticFeedback = LocalHapticFeedback.current
+
   val currentOnColorSelected by rememberUpdatedState(onColorSelected)
+  val currentSelectedIndex by rememberUpdatedState(selectedIndex)
   val gestureModifier =
     if (enabled && colors.isNotEmpty()) {
       Modifier.pointerInput(colors.size) {
         fun selectAt(x: Float) {
           val itemWidth = size.width / colors.size.toFloat()
           val index = (x / itemWidth).toInt().coerceIn(0, colors.size - 1)
+          if (hapticFeedbackEnabled && currentSelectedIndex != index) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentTick)
+          }
           currentOnColorSelected(index)
         }
         awaitEachGesture {

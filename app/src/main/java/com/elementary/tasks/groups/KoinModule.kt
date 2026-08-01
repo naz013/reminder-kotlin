@@ -31,6 +31,7 @@ val groupModule =
         get(),
         get(),
         get(),
+        get()
       )
     }
   }

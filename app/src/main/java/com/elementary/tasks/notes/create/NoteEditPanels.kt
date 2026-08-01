@@ -243,6 +243,7 @@ fun ColorPanel(
   contentColor: Color,
   onColorSelected: (Int) -> Unit,
   onOpacityChanged: (Int) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   Column(modifier = Modifier.padding(vertical = 8.dp)) {
     ColorSlider(
@@ -250,10 +251,10 @@ fun ColorPanel(
       selectedIndex = selectedIndex,
       onColorSelected = { onColorSelected(it) },
       selectorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .height(36.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(36.dp),
+      hapticFeedbackEnabled = hapticFeedbackEnabled,
     )
     Text(
       text = stringResource(R.string.opacity),
@@ -265,12 +266,11 @@ fun ColorPanel(
       value = opacity.toFloat(),
       onValueChange = { onOpacityChanged(it.toInt()) },
       valueRange = 0f..100f,
-      colors =
-        SliderDefaults.colors(
-          thumbColor = contentColor,
-          activeTrackColor = contentColor,
-          inactiveTrackColor = contentColor.copy(alpha = 0.24f),
-        ),
+      colors = SliderDefaults.colors(
+        thumbColor = contentColor,
+        activeTrackColor = contentColor,
+        inactiveTrackColor = contentColor.copy(alpha = 0.24f),
+      ),
     )
   }
 }

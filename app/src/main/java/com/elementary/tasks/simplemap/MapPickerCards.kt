@@ -135,6 +135,7 @@ internal fun MarkerStyleCard(
   selectedIndex: Int,
   selectorColor: Color = MaterialTheme.colorScheme.onSurface,
   onStyleSelected: (Int) -> Unit,
+  hapticFeedbackEnabled: Boolean = true,
 ) {
   PickerCard(modifier = modifier) {
     // padding() must come before height() - applied the other way around, the 16dp padding on
@@ -148,6 +149,7 @@ internal fun MarkerStyleCard(
         .padding(16.dp)
         .fillMaxWidth()
         .height(40.dp),
+      hapticFeedbackEnabled = hapticFeedbackEnabled,
     )
   }
 }

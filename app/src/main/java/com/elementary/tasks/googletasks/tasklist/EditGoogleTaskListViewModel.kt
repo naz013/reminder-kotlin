@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -38,6 +39,7 @@ class EditGoogleTaskListViewModel(
   private val textProvider: TextProvider,
   private val themeProvider: ThemeProvider,
   private val appWidgetUpdater: AppWidgetUpdater,
+  private val prefs: Prefs,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EditGoogleTaskListState())
@@ -49,6 +51,7 @@ class EditGoogleTaskListViewModel(
   init {
     _state.update {
       it.copy(
+        hapticFeedbackEnabled = prefs.hapticsEnabled,
         sliderColors = themeProvider.colorsForSliderThemed(),
       )
     }

@@ -20,7 +20,6 @@ dependencies {
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.biometric.compose)
   implementation(libs.material)
-  implementation(libs.colorslider)
 
   implementation(libs.threetenbp)
 

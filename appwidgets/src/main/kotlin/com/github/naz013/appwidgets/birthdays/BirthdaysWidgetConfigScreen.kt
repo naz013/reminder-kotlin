@@ -19,8 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,8 +38,6 @@ internal fun BirthdaysWidgetConfigScreen(
   onItemColorSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val hapticFeedback = LocalHapticFeedback.current
-
   WidgetConfigScaffold(
     title = stringResource(R.string.birthdays),
     onBackClick = onBackClick,
@@ -69,12 +65,10 @@ internal fun BirthdaysWidgetConfigScreen(
         colors = state.palette,
         selectedIndex = state.headerBackgroundIndex,
         onColorSelected = { index ->
-          if (state.hapticFeedbackEnabled && index != state.headerBackgroundIndex) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-          }
           onHeaderColorSelected(index)
         },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
+        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
       )
     }
 
@@ -92,12 +86,10 @@ internal fun BirthdaysWidgetConfigScreen(
         colors = state.palette,
         selectedIndex = state.itemBackgroundIndex,
         onColorSelected = { index ->
-          if (state.hapticFeedbackEnabled && index != state.itemBackgroundIndex) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-          }
           onItemColorSelected(index)
         },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
+        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
       )
     }
   }

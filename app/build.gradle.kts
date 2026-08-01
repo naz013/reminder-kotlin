@@ -247,7 +247,6 @@ dependencies {
 
   "proImplementation"(project(":appfunctions"))
 
-  implementation(libs.circleimageview)
   implementation(libs.retrofit)
   implementation(libs.retrofit.converter.gson)
   implementation(libs.gson)
@@ -255,9 +254,6 @@ dependencies {
   implementation(libs.okhttp3.logging.interceptor)
   implementation(libs.lib.recur)
   implementation(libs.commons.lang3)
-  implementation(libs.android.calendar.ext) {
-    exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
-  }
   implementation(libs.lottie)
   implementation(libs.lottie.compose)
 

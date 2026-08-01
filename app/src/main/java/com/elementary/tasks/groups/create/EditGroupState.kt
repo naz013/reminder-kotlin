@@ -29,6 +29,7 @@ data class EditGroupState(
   val lockScreenVisibilitySubtitle: String = "",
   val vibrationPatternSubtitle: String = "",
   val delayMinutesSubtitle: String = "",
+  val hapticFeedbackEnabled: Boolean = true,
 ) {
   val hasId: Boolean
     get() = id.isNullOrEmpty().not()

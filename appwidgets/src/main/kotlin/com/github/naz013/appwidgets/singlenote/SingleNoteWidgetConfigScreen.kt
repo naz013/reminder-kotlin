@@ -103,12 +103,10 @@ internal fun SingleNoteWidgetConfigScreen(
       colors = state.palette,
       selectedIndex = state.textColorIndex,
       onColorSelected = { index ->
-        if (state.hapticFeedbackEnabled && index != state.textColorIndex) {
-          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-        }
         onTextColorSelected(index)
       },
       modifier = Modifier.fillMaxWidth().height(36.dp).padding(top = 4.dp),
+      hapticFeedbackEnabled = state.hapticFeedbackEnabled,
     )
 
     SectionTitle(stringResource(R.string.text_opacity))
@@ -150,12 +148,10 @@ internal fun SingleNoteWidgetConfigScreen(
       colors = state.palette,
       selectedIndex = state.overlayColorIndex,
       onColorSelected = { index ->
-        if (state.hapticFeedbackEnabled && index != state.overlayColorIndex) {
-          hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-        }
         onOverlayColorSelected(index)
       },
       modifier = Modifier.fillMaxWidth().height(36.dp).padding(top = 4.dp),
+      hapticFeedbackEnabled = state.hapticFeedbackEnabled,
     )
 
     SectionTitle(stringResource(R.string.foreground_opacity))

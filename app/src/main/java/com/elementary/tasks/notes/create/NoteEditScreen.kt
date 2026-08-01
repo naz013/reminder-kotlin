@@ -324,6 +324,7 @@ private fun noteEditBarItems(
             contentColor = contentColor,
             onColorSelected = actions.onColorSelected,
             onOpacityChanged = actions.onOpacityChanged,
+            hapticFeedbackEnabled = state.hapticFeedbackEnabled,
           )
         },
         bubbleWidth = barMaxWidth,
