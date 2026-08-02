@@ -6,7 +6,6 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.Note
-import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -30,15 +29,6 @@ import org.threeten.bp.LocalTime
  * and `saveReminder`.
  */
 class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
-
-  private fun defaultGroup() =
-    GroupV2(
-      title = "Default",
-      uuId = "group-1",
-      color = 0,
-      isDefault = true,
-      syncState = SyncState.Synced,
-    )
 
   @Test
   fun `onSaveClicked opens the same-note conflict dialog instead of saving when imported and a duplicate exists`() {
@@ -105,7 +95,6 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     viewModel.onReminderAttachedChanged(true)
     viewModel.onNewDate(LocalDate.of(2026, 8, 1))
     viewModel.onNewTime(LocalTime.of(9, 0))
-    coEvery { groupV2Repository.defaultGroup() } returns defaultGroup()
 
     viewModel.saveNote()
 
@@ -113,19 +102,19 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     coVerify(exactly = 1) { activateReminderUseCase(capture(reminderSlot), any()) }
     assertEquals(RecurrenceRule.Once, reminderSlot.captured.recurrence)
     assertEquals(true, reminderSlot.captured.isActive)
-    assertEquals("group-1", reminderSlot.captured.groupId)
+    assertEquals(null, reminderSlot.captured.groupId)
   }
 
   @Test
-  fun `saveNote does not activate a reminder when there is no default reminder group`() {
+  fun `saveNote still activates a reminder without a group when there is no default reminder group`() {
     val viewModel = buildViewModel()
     viewModel.onReminderAttachedChanged(true)
-    coEvery { groupV2Repository.defaultGroup() } returns null
 
     viewModel.saveNote()
 
-    coVerify(exactly = 0) { activateReminderUseCase(any(), any()) }
-    // The note itself still saves and navigates back even though the reminder was dropped.
+    val reminderSlot = slot<ReminderV2>()
+    coVerify(exactly = 1) { activateReminderUseCase(capture(reminderSlot), any()) }
+    assertEquals(null, reminderSlot.captured.groupId)
     coVerify(exactly = 1) { saveNoteUseCase(any()) }
     val event = viewModel.event.value?.getContentIfNotHandled()
     assertEquals(NoteEditViewModel.ViewModelEvent.MoveBack, event)
@@ -148,7 +137,6 @@ class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     )
     coEvery { reminderV2Repository.getByNoteId("42") } returns listOf(existingReminder)
     coEvery { reminderV2Repository.getById("r1") } returns existingReminder
-    coEvery { groupV2Repository.defaultGroup() } returns defaultGroup()
     val viewModel = buildViewModel(id = "42")
 
     viewModel.saveNote()

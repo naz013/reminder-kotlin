@@ -9,16 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
-/**
- * Compose replacement for [com.elementary.tasks.core.os.datapicker.MultipleUriPicker]. Needs no
- * Fragment/Activity reference - [rememberLauncherForActivityResult] resolves the
- * `ActivityResultRegistry` from the current composition, matching
- * [com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker].
- *
- * @return a trigger function taking a per-call result callback, matching
- * [com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet]'s
- * `onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit` shape.
- */
 @Composable
 fun rememberMultipleUriPicker(): (onResult: (List<Uri>) -> Unit) -> Unit {
   val context = LocalContext.current

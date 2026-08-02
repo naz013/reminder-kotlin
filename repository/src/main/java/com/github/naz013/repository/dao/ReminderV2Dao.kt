@@ -42,6 +42,9 @@ internal interface ReminderV2Dao {
   @Query("SELECT COUNT(*) FROM ReminderV2 WHERE groupId=:groupId AND isActive=1 AND isRemoved=0")
   fun countActiveByGroupId(groupId: String): Int
 
+  @Query("UPDATE ReminderV2 SET groupId = NULL WHERE groupId=:groupId")
+  fun clearGroupId(groupId: String)
+
   @Query("SELECT * FROM ReminderV2 WHERE noteId=:noteId")
   fun getByNoteId(noteId: String): List<ReminderV2Entity>
 

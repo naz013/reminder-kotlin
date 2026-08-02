@@ -3,7 +3,6 @@ package com.elementary.tasks.core.data.adapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayShowAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskPreviewAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
@@ -12,7 +11,6 @@ import com.elementary.tasks.core.data.adapter.note.UiNoteImagesAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
-import com.elementary.tasks.core.data.adapter.place.UiPlaceEditAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.notes.list.UiNoteListItemAdapter
@@ -24,7 +22,6 @@ val adapterModule = module {
   factory { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get(), get()) }
 
   factory { UiBirthdayListAdapter(get(), get(), get()) }
-  factory { UiBirthdayShowAdapter(get(), get()) }
   factory { UiBirthdayEditAdapter() }
   factory { UiBirthdayPreviewAdapter(get(), get(), get()) }
 
@@ -32,8 +29,6 @@ val adapterModule = module {
   factory { UiGoogleTaskPreviewAdapter(get(), get()) }
 
   factory { UiGroupListAdapter(get()) }
-
-  factory { UiUsedTimeListAdapter() }
 
   factory { UiNoteImagesAdapter() }
   factory { UiNoteEditAdapter(get()) }
@@ -44,7 +39,6 @@ val adapterModule = module {
   factoryOf(::UiNoteNotificationAdapter)
 
   factoryOf(::UiPlaceListAdapter)
-  factoryOf(::UiPlaceEditAdapter)
 
   factoryOf(::UiPresetListAdapter)
 }

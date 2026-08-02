@@ -69,6 +69,12 @@ internal class ReminderV2RepositoryImpl(
     return dao.countActiveByGroupId(groupId)
   }
 
+  override suspend fun clearGroupId(groupId: String) {
+    Logger.d(TAG, "Clear group id: $groupId")
+    dao.clearGroupId(groupId)
+    tableChangeNotifier.notify(table)
+  }
+
   override suspend fun getByNoteId(noteId: String): List<ReminderV2> {
     Logger.d(TAG, "Get reminders by note id: $noteId")
     return dao.getByNoteId(noteId).map { it.toDomain() }

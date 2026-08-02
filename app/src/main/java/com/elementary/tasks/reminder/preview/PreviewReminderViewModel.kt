@@ -218,13 +218,6 @@ class PreviewReminderViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderV2Repository.getById(id) ?: return@launch
 
-      val groupId =
-        if (reminder.groupId.isNullOrEmpty()) {
-          groupV2Repository.defaultGroup()?.uuId ?: reminder.groupId
-        } else {
-          reminder.groupId
-        }
-
       val date =
         reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }?.toLocalDate()
           ?: LocalDate.now()
@@ -238,7 +231,6 @@ class PreviewReminderViewModel(
       val newItem =
         reminder.copy(
           uuId = UUID.randomUUID().toString(),
-          groupId = groupId,
           summary = textProvider.getText(R.string.copy_of, reminder.summary),
           schedule = ReminderSchedule(startDateTime = eventDateTime, eventDateTime = eventDateTime),
         )

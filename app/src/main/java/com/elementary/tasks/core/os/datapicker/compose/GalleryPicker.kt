@@ -10,14 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.elementary.tasks.R
 
-/**
- * Compose replacement for [com.elementary.tasks.core.os.datapicker.MultiPicturePicker]: launches the
- * system document picker for one or more images and forwards the resulting [Uri]s. Needs no
- * Fragment/Activity reference — [rememberLauncherForActivityResult] resolves the
- * `ActivityResultRegistry` from the current composition.
- *
- * @return a trigger function that opens the picker.
- */
 @Composable
 fun rememberGalleryPicker(onPicturesPicked: (List<Uri>) -> Unit): () -> Unit {
   val context = LocalContext.current

@@ -68,7 +68,6 @@ import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
-import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.reviews.AppSource
@@ -94,7 +93,6 @@ class BuildReminderViewModel(
   private val deepLinkTodo: Boolean,
   private val deepLinkText: String?,
   private val dispatcherProvider: DispatcherProvider,
-  private val groupV2Repository: GroupV2Repository,
   private val placeRepository: PlaceRepository,
   private val analyticsEventSender: AnalyticsEventSender,
   private val reminderAnalyticsTracker: ReminderAnalyticsTracker,
@@ -245,16 +243,6 @@ class BuildReminderViewModel(
       }
 
       Logger.i(TAG, "All permissions granted")
-
-      if (!hasGroupBuilderItem(builderItems)) {
-        Logger.i(TAG, "Does not have group builder item")
-        getGroupBuilderItem()?.also {
-          Logger.i(TAG, "Add group builder item")
-          builderItems.add(it)
-        } ?: run {
-          Logger.i(TAG, "Group builder item not found")
-        }
-      }
 
       val baseV2 = originalV2 ?: newBlankReminderV2()
       when (val buildResult = biToReminderAdapter(baseV2, builderItems, isEdited)) {
@@ -521,9 +509,6 @@ class BuildReminderViewModel(
   }
 
   private fun addEmptySummaryItemToBuilderIfNeeded() {
-    if (prefs.reminderCreatorParams.isAutoAddSummary().not()) {
-      return
-    }
     val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.SUMMARY }
     Logger.i(TAG, "Add Empty Summary builder item")
     if (itemIndex == -1) {
@@ -835,20 +820,6 @@ class BuildReminderViewModel(
   private fun newBlankReminderV2(): ReminderV2 =
     ReminderV2(schedule = ReminderSchedule(startDateTime = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime())))
 
-  private fun getGroupBuilderItem(): GroupBuilderItem? =
-    builderItemsLogic
-      .getAvailable()
-      .firstOrNull { it.biType == BiType.GROUP } as? GroupBuilderItem
-
-  private fun hasGroupBuilderItem(items: List<BuilderItem<*>>): Boolean {
-    items.forEach {
-      if (it is GroupBuilderItem) {
-        return true
-      }
-    }
-    return false
-  }
-
   private suspend fun savePreset(items: List<BuilderItem<*>>) {
     Logger.i(TAG, "Save new preset")
     val preset =
@@ -883,13 +854,6 @@ class BuildReminderViewModel(
       TAG,
       "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupId}",
     )
-    val reminder = if (reminder.groupId.isNullOrEmpty()) {
-      val group = groupV2Repository.defaultGroup()
-      Logger.i(TAG, "Reminder does not have a group, get default = $group")
-      if (group != null) reminder.copy(groupId = group.uuId) else reminder
-    } else {
-      reminder
-    }
     if (!isEdit && reminder.places.isNotEmpty()) {
       placeRepository.save(reminder.places[0])
     }

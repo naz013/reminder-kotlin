@@ -12,7 +12,6 @@ import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.bi.BiFactoryICal
 import com.elementary.tasks.reminder.build.bi.BiFilter
-import com.elementary.tasks.reminder.build.bi.CreatorConfigFilter
 import com.elementary.tasks.reminder.build.bi.LocationFilter
 import com.elementary.tasks.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.elementary.tasks.reminder.build.formatter.factory.RadiusFormatterFactory
@@ -122,7 +121,6 @@ val reminderModule =
         key.deepLinkDateTimeMillis,
         key.deepLinkTodo,
         key.deepLinkText,
-        get(),
         get(),
         get(),
         get(),
@@ -293,7 +291,6 @@ val reminderModule =
     factory { NoteDecomposer(get(), get(), get()) }
 
     factoryOf(::LocationFilter)
-    factoryOf(::CreatorConfigFilter)
     factoryOf(::BiFilter)
 
     factory { PrimitiveProtocol() }

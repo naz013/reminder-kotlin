@@ -55,7 +55,6 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
-import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -80,7 +79,6 @@ class NoteEditViewModel(
   private val imageDecoder: ImageDecoder,
   private val dispatcherProvider: DispatcherProvider,
   private val noteRepository: NoteRepository,
-  private val groupV2Repository: GroupV2Repository,
   private val reminderV2Repository: ReminderV2Repository,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val prefs: Prefs,
@@ -749,10 +747,7 @@ class NoteEditViewModel(
 
   private fun saveReminder(reminder: ReminderV2) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val group = groupV2Repository.defaultGroup()
-      if (group != null) {
-        activateReminderUseCase(reminder.copy(groupId = group.uuId))
-      }
+      activateReminderUseCase(reminder)
     }
   }
 

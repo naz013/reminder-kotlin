@@ -22,7 +22,6 @@ import com.elementary.tasks.googletasks.work.UpdateTaskTask
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
-import com.elementary.tasks.reminder.build.BuilderConfigureViewModel
 import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
 import com.elementary.tasks.settings.other.TermsViewModel
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
@@ -48,7 +47,6 @@ val workerModule = module {
 
 val viewModelModule = module {
   viewModelOf(::SelectApplicationViewModel)
-  viewModelOf(::BuilderConfigureViewModel)
   viewModelOf(::ProVersionViewModel)
 
   viewModelOf(::SplashViewModel)

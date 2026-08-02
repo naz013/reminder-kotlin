@@ -48,7 +48,6 @@ object PrefsConstants {
 
   const val DROPBOX_TOKEN = "dropbox_token"
   const val APP_LANGUAGE = "app_language"
-  const val REMINDER_CREATOR_PARAMS = "reminder_creator_params"
 
   const val PIN_CODE = "pin_code"
   const val USE_FINGERPRINT = "use_finger"

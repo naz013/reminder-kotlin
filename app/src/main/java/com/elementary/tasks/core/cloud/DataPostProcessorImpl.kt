@@ -55,10 +55,9 @@ class DataPostProcessorImpl(
 
   private suspend fun postProcessReminder(reminder: ReminderV2) {
     val groups = groupV2Repository.getAll().associateBy { it.uuId }
-    val defGroup = groupV2Repository.defaultGroup() ?: groups.values.first()
 
-    val withGroup = if (reminder.groupId == null || !groups.containsKey(reminder.groupId)) {
-      reminder.copy(groupId = defGroup.uuId)
+    val withGroup = if (reminder.groupId != null && !groups.containsKey(reminder.groupId)) {
+      reminder.copy(groupId = null)
     } else {
       reminder
     }

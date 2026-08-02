@@ -47,7 +47,6 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.navigation.intent.IntentDataReader
-import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
@@ -65,7 +64,6 @@ import org.junit.Test
 import org.threeten.bp.LocalDateTime
 
 class BuildReminderViewModelTest : BaseTest() {
-  private val groupV2Repository = mockk<GroupV2Repository>(relaxed = true)
   private val placeRepository = mockk<PlaceRepository>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val reminderAnalyticsTracker = mockk<ReminderAnalyticsTracker>(relaxed = true)
@@ -148,7 +146,6 @@ class BuildReminderViewModelTest : BaseTest() {
       deepLinkTodo = deepLinkTodo,
       deepLinkText = deepLinkText,
       dispatcherProvider = mockDispatcherProvider(),
-      groupV2Repository = groupV2Repository,
       placeRepository = placeRepository,
       analyticsEventSender = analyticsEventSender,
       reminderAnalyticsTracker = reminderAnalyticsTracker,
@@ -325,7 +322,7 @@ class BuildReminderViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `saveReminder adds a default group item when one is not already present`() =
+  fun `saveReminder does not add a group item when the builder list has none`() =
     runTest {
       every { builderItemsLogic.getUsed() } returns listOf(summaryItem())
       every { builderItemsLogic.getAvailable() } returns listOf(groupItem())
@@ -334,7 +331,7 @@ class BuildReminderViewModelTest : BaseTest() {
       viewModel.saveReminder(newId = false)
 
       verify {
-        biToReminderAdapter(any(), match { items -> items.any { it is GroupBuilderItem } }, any())
+        biToReminderAdapter(any(), match { items -> items.none { it is GroupBuilderItem } }, any())
       }
     }
 

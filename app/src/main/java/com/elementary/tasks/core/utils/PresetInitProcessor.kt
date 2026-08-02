@@ -4,7 +4,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.preset.BuilderPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
-import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
@@ -17,39 +16,18 @@ class PresetInitProcessor(
   private val recurPresetRepository: RecurPresetRepository,
   private val prefs: Prefs,
   private val textProvider: TextProvider,
-  private val packageManagerWrapper: PackageManagerWrapper,
   private val builderPresetsGenerateUseCase: BuilderPresetsGenerateUseCase,
   private val builderDefaultPresetsGenerateUseCase: DefaultPresetsGenerateUseCase,
 ) {
   suspend fun run() {
     if (prefs.initPresets) {
       prefs.initPresets = false
-      setBuilderSettings()
       createRecurPresets().forEach { savePreset(it) }
       builderPresetsGenerateUseCase().forEach { savePreset(it) }
     }
     if (prefs.initDefaultPresets) {
       prefs.initDefaultPresets = false
       builderDefaultPresetsGenerateUseCase().forEach { savePreset(it) }
-    }
-  }
-
-  private fun setBuilderSettings() {
-    val versionCode = packageManagerWrapper.getVersionCode()
-    val prefsVersionCode = prefs.lastVersionCode
-    if (prefsVersionCode < versionCode) {
-      // Updated app
-      prefs.reminderCreatorParams
-        .apply {
-          setICalendarEnabled(true)
-          setPhoneCallEnabled(true)
-          setSendSmsEnabled(true)
-          setOpenAppEnabled(true)
-          setOpenLinkEnabled(true)
-          setSendEmailEnabled(true)
-        }.also {
-          prefs.reminderCreatorParams = it
-        }
     }
   }
 

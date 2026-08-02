@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -69,7 +68,6 @@ import com.github.naz013.ui.common.compose.foundation.component.BuilderListItemC
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import androidx.compose.ui.text.font.Typeface as ComposeTypeface
 
-private const val OVERFLOW_ITEM_CONFIGURE = 0
 private const val OVERFLOW_ITEM_HELP = 1
 private const val OVERFLOW_ITEM_REPORT_ISSUE = 2
 
@@ -94,7 +92,6 @@ fun BuildReminderScreen(
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
-  onConfigureClick: () -> Unit,
   onHelpClick: () -> Unit,
   onReportIssueClick: () -> Unit,
   onSaveAsPresetChange: (Boolean) -> Unit,
@@ -139,7 +136,6 @@ fun BuildReminderScreen(
             onDismissRequest = { overflowExpanded = false },
             items =
               listOf(
-                PopupMenuItem(id = OVERFLOW_ITEM_CONFIGURE, title = stringResource(R.string.configure)),
                 PopupMenuItem(id = OVERFLOW_ITEM_HELP, title = stringResource(R.string.help)),
                 PopupMenuItem(
                   id = OVERFLOW_ITEM_REPORT_ISSUE,
@@ -149,7 +145,6 @@ fun BuildReminderScreen(
             onItemClick = { id ->
               overflowExpanded = false
               when (id) {
-                OVERFLOW_ITEM_CONFIGURE -> onConfigureClick()
                 OVERFLOW_ITEM_HELP -> onHelpClick()
                 OVERFLOW_ITEM_REPORT_ISSUE -> onReportIssueClick()
               }
@@ -480,7 +475,6 @@ private fun PreviewBuildReminderScreenEmpty() {
       onBackClick = {},
       onSaveClick = {},
       onDeleteClick = {},
-      onConfigureClick = {},
       onHelpClick = {},
       onReportIssueClick = {},
       onSaveAsPresetChange = {},

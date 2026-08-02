@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
-import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.simplemap.MapConfig
@@ -483,14 +482,4 @@ class Prefs(
   var workflowUnacknowledgedRulesScheduled: Boolean
     get() = getBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, false)
     set(value) = putBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, value)
-
-  var reminderCreatorParams: ReminderCreatorConfig
-    get() =
-      ReminderCreatorConfig(
-        getString(
-          PrefsConstants.REMINDER_CREATOR_PARAMS,
-          ReminderCreatorConfig.DEFAULT_VALUE,
-        ),
-      )
-    set(value) = putString(PrefsConstants.REMINDER_CREATOR_PARAMS, value.toHex())
 }
