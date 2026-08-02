@@ -12,6 +12,7 @@ dependencies {
   implementation(project(":repository-api"))
   implementation(project(":logging-api"))
   implementation(project(":feature-common"))
+  implementation(project(":platform-common"))
   implementation(project(":ui-common"))
 
   implementation(libs.koin.android)
