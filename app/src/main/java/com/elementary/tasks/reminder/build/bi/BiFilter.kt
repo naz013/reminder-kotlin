@@ -20,7 +20,8 @@ class BiFilter(
     return (isEnabled && isProEnabled && isInSdkRange && isLocationAllowed).also {
       Logger.d(
         "BiFilter",
-        "Item filtered ($it): ${item.biType}, enabled=$isEnabled, isForPro=$isForPro, isProEnabled=$isProEnabled, isInSdkRange=$isInSdkRange, isLocationAllowed=$isLocationAllowed",
+        "Item filtered ($it): ${item.biType}, enabled=$isEnabled, isForPro=$isForPro, " +
+          "isProEnabled=$isProEnabled, isInSdkRange=$isInSdkRange, isLocationAllowed=$isLocationAllowed",
       )
     }
   }

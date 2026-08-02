@@ -626,6 +626,7 @@ private class FakeReminderV2Repository(
   override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> = emptyList()
   override suspend fun updateSyncState(id: String, state: SyncState) = Unit
   override suspend fun getAllIds(): List<String> = reminders.keys.toList()
+  override suspend fun clearGroupId(groupId: String) = Unit
 }
 
 private class NoOpGroupV2Repository : GroupV2Repository {
