@@ -36,6 +36,7 @@ import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
 import com.elementary.tasks.workflow.workflowEntries
 import com.github.naz013.insights.insightsEntries
+import com.github.naz013.localbackup.localBackupEntries
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.tags.tagsEntries
 import org.koin.compose.koinInject
@@ -114,6 +115,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         workflowEntries(backStack)
         tagsEntries(backStack)
         insightsEntries(backStack)
+        localBackupEntries(backStack)
       },
   )
 }

@@ -35,6 +35,8 @@ fun SettingsHubScreen(
   onNotesClick: () -> Unit,
   onOtherClick: () -> Unit,
   onInsightsClick: () -> Unit,
+  onExportBackupClick: () -> Unit,
+  onImportBackupClick: () -> Unit,
   onDeveloperClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -165,6 +167,20 @@ fun SettingsHubScreen(
         icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
         dividerBottom = true,
         onClick = onInsightsClick,
+      )
+    }
+    if (state.isLocalBackupVisible) {
+      SettingsItem(
+        title = stringResource(R.string.backup_export_title),
+        icon = painterResource(R.drawable.ic_fluent_cloud_backup),
+        dividerBottom = true,
+        onClick = onExportBackupClick,
+      )
+      SettingsItem(
+        title = stringResource(R.string.backup_import_title),
+        icon = painterResource(R.drawable.ic_fluent_cloud_backup),
+        dividerBottom = true,
+        onClick = onImportBackupClick,
       )
     }
     if (BuildConfig.DEBUG) {

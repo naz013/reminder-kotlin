@@ -50,6 +50,7 @@ import com.github.naz013.icalendar.iCalendarModule
 import com.github.naz013.insights.insightsModule
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.legalModule
+import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DataDestination
@@ -169,6 +170,7 @@ class ReminderApp :
           fileModule,
           tagsModule,
           insightsModule,
+          localBackupModule,
         ),
       )
     }

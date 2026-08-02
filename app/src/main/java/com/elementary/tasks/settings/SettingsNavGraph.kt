@@ -62,6 +62,7 @@ import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.insights.InsightsNavKey
+import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.login.rememberAuthProvider
@@ -91,6 +92,15 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
   val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
   val authProvider = rememberAuthProvider()
 
+  val exportBackupLauncher =
+    rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
+      if (uri != null) backStack.add(LocalBackupNavKey.Export(uri.toString()))
+    }
+  val importBackupLauncher =
+    rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+      if (uri != null) backStack.add(LocalBackupNavKey.Import(uri.toString()))
+    }
+
   val state by viewModel.state.collectAsState(SettingsHubState())
 
   SettingsScaffold(
@@ -116,6 +126,8 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
       onNotesClick = { backStack.add(SettingsNavKey.Note()) },
       onOtherClick = { backStack.add(OtherNavKey.Other) },
       onInsightsClick = { backStack.add(InsightsNavKey.Dashboard) },
+      onExportBackupClick = { exportBackupLauncher.launch(BACKUP_FILE_NAME) },
+      onImportBackupClick = { importBackupLauncher.launch(arrayOf("*/*")) },
       onDeveloperClick = { backStack.add(SettingsNavKey.Developer) },
       modifier = Modifier.padding(padding),
     )
@@ -528,3 +540,5 @@ private fun TroubleshootingEntry(backStack: MutableList<NavKey>) {
     )
   }
 }
+
+private const val BACKUP_FILE_NAME = "reminder_backup.rbkp"

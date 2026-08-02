@@ -9,4 +9,5 @@ data class SettingsHubState(
   val isPlayServicesWarningVisible: Boolean = false,
   val hasPinCode: Boolean = false,
   val isInsightsVisible: Boolean = false,
+  val isLocalBackupVisible: Boolean = false,
 )

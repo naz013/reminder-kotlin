@@ -45,6 +45,7 @@ class SettingsHubViewModel(
         isPlayServicesWarningVisible = !systemInfo.googlePlayServicesAvailable,
         hasPinCode = prefs.hasPinCode,
         isInsightsVisible = buildInfo.isPro,
+        isLocalBackupVisible = buildInfo.isPro,
       )
     }
   }
