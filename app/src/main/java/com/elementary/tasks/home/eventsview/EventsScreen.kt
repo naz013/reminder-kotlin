@@ -45,6 +45,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
+import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 
 private val HEADER_ELEVATION = 3.dp
 
@@ -55,6 +56,7 @@ fun EventsScreen(
   onBackClick: () -> Unit,
   onSearchQueryChange: (String) -> Unit,
   onCategoryToggle: (EventCategory) -> Unit,
+  onSmartListSelected: (SmartListFilter?) -> Unit,
   onAddReminderClick: () -> Unit,
   onAddShoppingClick: () -> Unit,
   onAddBirthdayClick: () -> Unit,
@@ -100,6 +102,12 @@ fun EventsScreen(
           CategoryChipRow(
             selected = state.selectedCategories,
             onToggle = onCategoryToggle,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+          )
+
+          SmartListChipRow(
+            selected = state.selectedSmartList,
+            onSelect = onSmartListSelected,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
           )
         }
@@ -212,6 +220,35 @@ private fun EventCategory.titleRes(): Int =
     EventCategory.REMINDERS -> R.string.reminders
     EventCategory.SHOPPING -> R.string.shopping_lists
     EventCategory.BIRTHDAYS -> R.string.birthdays
+  }
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SmartListChipRow(
+  selected: SmartListFilter?,
+  onSelect: (SmartListFilter?) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  FlowRow(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    SmartListFilter.entries.forEach { filter ->
+      FilterChip(
+        selected = filter == selected,
+        onClick = { onSelect(filter) },
+        label = { Text(stringResource(filter.titleRes())) },
+      )
+    }
+  }
+}
+
+private fun SmartListFilter.titleRes(): Int =
+  when (this) {
+    SmartListFilter.TODAY -> R.string.smart_list_today
+    SmartListFilter.OVERDUE -> R.string.smart_list_overdue
+    SmartListFilter.THIS_WEEK -> R.string.smart_list_this_week
+    SmartListFilter.NO_GROUP -> R.string.smart_list_no_group
   }
 
 @Composable
@@ -339,6 +376,7 @@ private fun EventsScreenEmptyPreview() {
       onBackClick = {},
       onSearchQueryChange = {},
       onCategoryToggle = {},
+      onSmartListSelected = {},
       onAddReminderClick = {},
       onAddShoppingClick = {},
       onAddBirthdayClick = {},

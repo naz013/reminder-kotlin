@@ -1063,4 +1063,9 @@
     <string name="builder_permissions_required_message">Grant the requested permissions to continue</string>
 
     <string name="gemini_functions">Gemini functions</string>
+
+    <string name="smart_list_today">Today</string>
+    <string name="smart_list_overdue">Overdue</string>
+    <string name="smart_list_this_week">This week</string>
+    <string name="smart_list_no_group">No group</string>
 </resources>

@@ -240,6 +240,7 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
     onBackClick = { backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onCategoryToggle = viewModel::onCategoryToggle,
+    onSmartListSelected = viewModel::onSmartListSelected,
     onAddReminderClick = viewModel::onAddReminderClick,
     onAddShoppingClick = viewModel::onAddShoppingClick,
     onAddBirthdayClick = viewModel::onAddBirthdayClick,
