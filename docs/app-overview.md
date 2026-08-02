@@ -22,6 +22,13 @@ The app is available on [Google Play](https://play.google.com/store/apps/details
 | **Do-Not-Disturb** | Configurable quiet-hours window that suppresses reminder notifications |
 | **Event history** | A historical log of every reminder event that has fired |
 | **Recur presets** | Saved RRULE presets for quickly re-applying complex repeat patterns |
+| **Smart lists** | Pinned quick filters (Today, Overdue, This week, No group) on the home reminder list, computed entirely on-device from existing reminder fields |
+| **Tags** | Cross-cutting labels (name + color) that can be attached to both reminders and notes, independent of Groups; managed from their own screen and embeddable as a chip picker in edit screens |
+
+### Streaks & Insights (PRO)
+
+- A dashboard showing per-reminder streaks (consecutive days fired), a weekly activity trend, and the busiest day of the week — computed entirely on-device from the existing event-history log, with no data leaving the device
+- Reachable from Settings; hidden on the free flavor
 
 ### Notes
 
@@ -57,9 +64,16 @@ The app supports backing up and restoring all data (reminders, notes, birthdays,
 
 Sync is handled by a dedicated `sync` module that negotiates differences between local storage and remote file metadata so data survives device changes.
 
+### Local Encrypted Backup (PRO)
+
+- Exports all local data (reminders, notes excluded, groups, birthdays, places, recur presets) to a single passphrase-encrypted file the user saves anywhere via the system file picker (Storage Access Framework) — entirely offline, no network involved
+- AES-256-GCM encryption with a PBKDF2-derived key (600,000 iterations); a wrong passphrase or corrupted file is detected and rejected cleanly
+- Restoring upserts items back by ID without deleting anything already on-device
+- Reachable from Settings ("Export backup" / "Restore backup"); hidden on the free flavor
+
 ### Widgets
 
-Home-screen widgets give at-a-glance access to upcoming reminders, notes, birthdays, and Google Tasks without opening the app.
+Home-screen widgets give at-a-glance access to upcoming reminders, notes, birthdays, and Google Tasks without opening the app. A Quick Settings tile ("Add reminder") offers the same one-tap reminder creation from the notification shade, reusing the existing app-shortcut deep link.
 
 ### Customisation & Settings
 
