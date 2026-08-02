@@ -42,4 +42,7 @@ internal interface TagAssignmentDao {
 
   @Query("DELETE FROM TagAssignment WHERE itemId=:itemId AND itemType=:itemType")
   suspend fun deleteAllForItem(itemId: String, itemType: String)
+
+  @Query("DELETE FROM TagAssignment WHERE tagId=:tagId")
+  suspend fun deleteAllForTag(tagId: String)
 }

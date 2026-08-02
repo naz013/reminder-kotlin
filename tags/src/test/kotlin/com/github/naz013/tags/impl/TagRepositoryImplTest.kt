@@ -131,6 +131,18 @@ class TagRepositoryImplTest {
   }
 
   @Test
+  fun `detachAllForTag removes the tag from every item it was attached to`() = runTest {
+    tagRepository.save(Tag(id = "tag-1", name = "Work", color = 0))
+    tagAssignmentRepository.attach("reminder-1", TaggedItemType.REMINDER, "tag-1")
+    tagAssignmentRepository.attach("note-1", TaggedItemType.NOTE, "tag-1")
+
+    tagAssignmentRepository.detachAllForTag("tag-1")
+
+    assertTrue(tagAssignmentRepository.getTagsForItem("reminder-1", TaggedItemType.REMINDER).isEmpty())
+    assertTrue(tagAssignmentRepository.getTagsForItem("note-1", TaggedItemType.NOTE).isEmpty())
+  }
+
+  @Test
   fun `attaching the same tag to the same item twice does not fail or duplicate`() = runTest {
     tagRepository.save(Tag(id = "tag-1", name = "Work", color = 0))
 

@@ -38,6 +38,11 @@ internal class TagAssignmentRepositoryImpl(
     dao.deleteAllForItem(itemId, itemType.name)
   }
 
+  override suspend fun detachAllForTag(tagId: String) {
+    Logger.d(TAG, "Detach tag $tagId from every item")
+    dao.deleteAllForTag(tagId)
+  }
+
   companion object {
     private const val TAG = "TagAssignmentRepository"
   }

@@ -14,4 +14,6 @@ interface TagAssignmentRepository {
   suspend fun detach(itemId: String, itemType: TaggedItemType, tagId: String)
 
   suspend fun detachAll(itemId: String, itemType: TaggedItemType)
+
+  suspend fun detachAllForTag(tagId: String)
 }
