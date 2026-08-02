@@ -203,6 +203,10 @@ class EventsViewModelTest {
     runTest {
       val now = LocalDateTime.of(2026, 8, 2, 12, 0)
       every { dateTimeManager.getCurrentDateTime() } returns now
+      // Reminders' eventDateTime is stored in UTC, so filterReminders() converts "now" to UTC
+      // before comparing - an identity conversion here keeps this test focused on the smart-list
+      // predicate rather than the timezone math (covered separately).
+      every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
       coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
         listOf(
           reminderV2(id = "today", eventDateTime = now.plusHours(1)),
@@ -212,6 +216,29 @@ class EventsViewModelTest {
       val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.TODAY)
 
       assertEquals(listOf("today"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `overdue smart list accounts for the local-to-UTC offset instead of comparing local time directly`() =
+    runTest {
+      // Regression test for a bug where filterReminders() compared eventDateTime (always stored
+      // in UTC - see UiReminderListAdapter's utcToLocal conversion for the same field) directly
+      // against local "now", silently misclassifying reminders in any non-UTC timezone. Here the
+      // device is 2 hours ahead of UTC (e.g. Europe/Warsaw in summer): a reminder due in 1 local
+      // hour is genuinely in the future and must not show up as overdue.
+      val localNow = LocalDateTime.of(2026, 8, 2, 22, 0)
+      val utcNow = localNow.minusHours(2)
+      every { dateTimeManager.getCurrentDateTime() } returns localNow
+      every { dateTimeManager.localToUtc(localNow) } returns utcNow
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "due-in-one-local-hour", eventDateTime = utcNow.plusHours(1)),
+          reminderV2(id = "genuinely-overdue", eventDateTime = utcNow.minusMinutes(1)),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.OVERDUE)
+
+      assertEquals(listOf("genuinely-overdue"), result.items.map { it.id })
     }
 
   private fun reminderV2(

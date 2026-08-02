@@ -123,7 +123,10 @@ class EventsViewModel(
       if (smartList == null) {
         byQuery
       } else {
-        val now = dateTimeManager.getCurrentDateTime()
+        // reminder.schedule.eventDateTime is stored in UTC (see UiReminderListAdapter's
+        // utcToLocal conversion for the same field) - comparing it against local "now" would
+        // silently misclassify Today/Overdue/This week in any non-UTC timezone.
+        val now = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime())
         byQuery.filter { ReminderSmartListPredicate.matches(smartList, it, now) }
       }
     return bySmartList
