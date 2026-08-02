@@ -10,7 +10,6 @@ import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.ReminderAction
@@ -21,6 +20,7 @@ import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
+import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -44,7 +44,6 @@ class EventsViewModelTest {
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val uiEventItemAdapter = mockk<UiEventItemAdapter>()
-  private val textProvider = mockk<TextProvider>(relaxed = true)
   private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>()
   private val skipReminderUseCase = mockk<SkipReminderUseCase>()
@@ -63,7 +62,6 @@ class EventsViewModelTest {
     // doesn't crash on unmocked calls; individual tests override these as needed.
     coEvery { getRemindersV2ByRemovedStatusUseCase(any()) } returns emptyList()
     coEvery { birthdayRepository.getAll() } returns emptyList()
-    every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     // Echoes the filtered reminders/birthdays back as bare UiEventItems keyed by id, so tests can
     // assert on which domain objects survived filtering without depending on real UI formatting.
     every { uiEventItemAdapter.convertV2(any(), any(), any()) } answers {
@@ -80,7 +78,6 @@ class EventsViewModelTest {
         groupV2Repository = groupV2Repository,
         birthdayRepository = birthdayRepository,
         uiEventItemAdapter = uiEventItemAdapter,
-        textProvider = textProvider,
         dateTimeManager = dateTimeManager,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
         skipReminderUseCase = skipReminderUseCase,
@@ -187,16 +184,47 @@ class EventsViewModelTest {
       assertEquals(emptyList<UiEventItem>(), result.items)
     }
 
+  @Test
+  fun `no group smart list keeps only reminders without a group`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "grouped", groupId = "group-1"),
+          reminderV2(id = "ungrouped", groupId = null),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.NO_GROUP)
+
+      assertEquals(listOf("ungrouped"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `today smart list keeps only reminders due today`() =
+    runTest {
+      val now = LocalDateTime.of(2026, 8, 2, 12, 0)
+      every { dateTimeManager.getCurrentDateTime() } returns now
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "today", eventDateTime = now.plusHours(1)),
+          reminderV2(id = "tomorrow", eventDateTime = now.plusDays(1)),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.TODAY)
+
+      assertEquals(listOf("today"), result.items.map { it.id })
+    }
+
   private fun reminderV2(
     id: String,
     summary: String = "",
     isShopping: Boolean = false,
     groupId: String? = null,
+    eventDateTime: LocalDateTime? = null,
   ) = ReminderV2(
     uuId = id,
     summary = summary,
     groupId = groupId,
-    schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+    schedule = ReminderSchedule(startDateTime = LocalDateTime.now(), eventDateTime = eventDateTime),
     action = if (isShopping) ReminderAction.Shopping else ReminderAction.None,
   )
 
