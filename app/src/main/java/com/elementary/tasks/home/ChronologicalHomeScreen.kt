@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,8 +27,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -46,7 +47,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,7 +60,6 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.dynamicParameter
-import com.github.naz013.ui.common.compose.withAlpha
 import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -403,24 +402,17 @@ private fun EventCard(
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
-  val shape = RoundedCornerShape(12.dp)
-  val containerColor = event.color.withAlpha(0.5f).compositeOver(MaterialTheme.colorScheme.background)
   val onContainerColor = MaterialTheme.colorScheme.onBackground
-  ElevatedCard(
-    onClick = { onEventClick(event) },
+  Card(
     modifier =
       modifier
-        .fillMaxWidth(),
-    shape = shape,
-    colors =
-      CardDefaults.elevatedCardColors(
-        containerColor = containerColor,
-      ),
-    elevation =
-      CardDefaults.elevatedCardElevation(
-        defaultElevation = 0.dp,
-        pressedElevation = 2.dp,
-      ),
+        .fillMaxWidth()
+        .clip(MaterialTheme.shapes.medium)
+        .clickable(onClick = { onEventClick(event) }),
+    elevation = CardDefaults.elevatedCardElevation(
+      defaultElevation = 0.dp,
+      pressedElevation = 2.dp,
+    ),
   ) {
     Column(
       modifier =
