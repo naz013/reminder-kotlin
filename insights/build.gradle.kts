@@ -29,6 +29,7 @@ dependencies {
 
   implementation(platform(libs.compose.bom))
   implementation(libs.compose.material3)
+  implementation(libs.compose.material.iconsext)
   implementation(libs.compose.foundation.foundation)
   implementation(libs.compose.ui.ui)
   implementation(libs.compose.ui.tooling.preview)
