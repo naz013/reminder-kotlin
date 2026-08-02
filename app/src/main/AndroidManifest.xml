@@ -226,6 +226,17 @@
             android:foregroundServiceType="location"
             android:permission="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
+        <service
+            android:name=".qstile.QuickAddTileService"
+            android:exported="true"
+            android:icon="@drawable/add_reminder_shortcut"
+            android:label="@string/add_reminder_menu"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="${apiKey}" />
