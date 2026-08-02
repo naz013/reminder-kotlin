@@ -62,7 +62,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
     val alreadyImportedIds = calendarEventRepository.eventIds()
     val newEvents = events.filterNot { alreadyImportedIds.contains(it.id) }
 
-    val groupId = groupV2Repository.defaultGroup()?.uuId ?: ""
+    val groupId = groupV2Repository.defaultGroup()?.uuId
     Logger.i(TAG, "Using reminder group ID: $groupId")
 
     for (item in newEvents) {
@@ -128,7 +128,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
     summary: String,
     dtStart: Long,
     repeat: Long,
-    categoryId: String,
+    categoryId: String?,
     allDay: Boolean,
   ) {
     val eventDateTime = dateTimeManager.localToUtc(dateTimeManager.fromMillis(dtStart))

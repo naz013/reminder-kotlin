@@ -43,7 +43,6 @@ import org.koin.core.parameter.parametersOf
 
 fun EntryProviderScope<NavKey>.buildReminderEntries(backStack: MutableList<NavKey>) {
   entry<BuildReminderNavKey.Main> { key -> MainEntry(key, backStack) }
-  entry<BuildReminderNavKey.Configure> { ConfigureEntry(backStack) }
   entry<BuildReminderNavKey.Help> {
     ReminderHelpScreen(onBackClick = { backStack.removeLastOrNull() })
   }
@@ -95,20 +94,6 @@ private fun MainEntry(
   val state by viewModel.state.collectAsState()
 
   var showSelector by remember { mutableStateOf(false) }
-
-  // BuilderConfigureScreen (a sibling backstack entry, not nested in this composition) writes
-  // each toggle straight to prefs and has no reference to this screen's BuildReminderViewModel
-  // instance - this flag (rememberSaveable so it survives Main being unmounted while Configure is
-  // shown) is how Main learns "the config may have changed" once it remounts after Configure pops,
-  // matching the old ActivityResult-callback timing without needing to share a ViewModel across
-  // NavEntries.
-  var pendingConfigRefresh by rememberSaveable { mutableStateOf(false) }
-  LaunchedEffect(Unit) {
-    if (pendingConfigRefresh) {
-      pendingConfigRefresh = false
-      viewModel.onConfigurationChanged()
-    }
-  }
 
   // SelectApplication is a separate Nav3 entry (its own ViewModelStoreOwner), so it can't hand
   // the picked package name back to viewModel directly - this position (rememberSaveable for the
@@ -167,10 +152,6 @@ private fun MainEntry(
       }
     },
     onDeleteClick = { deleteReminder(dialogDispatcher, state, viewModel) },
-    onConfigureClick = {
-      pendingConfigRefresh = true
-      backStack.add(BuildReminderNavKey.Configure)
-    },
     onHelpClick = { backStack.add(BuildReminderNavKey.Help) },
     onReportIssueClick = viewModel::onReportAnIssueClicked,
     onSaveAsPresetChange = viewModel::onSaveAsPresetChange,
@@ -239,32 +220,6 @@ private fun MainEntry(
       )
     }
   }
-}
-
-@Composable
-private fun ConfigureEntry(backStack: MutableList<NavKey>) {
-  val configureViewModel = koinViewModel<BuilderConfigureViewModel>()
-  val state by configureViewModel.state.collectAsState()
-  BuilderConfigureScreen(
-    state = state,
-    onBackClick = { backStack.removeLastOrNull() },
-    onSummaryToggle = configureViewModel::onSummaryToggle,
-    onBeforeToggle = configureViewModel::onBeforeToggle,
-    onRepeatToggle = configureViewModel::onRepeatToggle,
-    onRepeatLimitToggle = configureViewModel::onRepeatLimitToggle,
-    onPriorityToggle = configureViewModel::onPriorityToggle,
-    onAttachmentToggle = configureViewModel::onAttachmentToggle,
-    onCalendarToggle = configureViewModel::onCalendarToggle,
-    onTasksToggle = configureViewModel::onTasksToggle,
-    onExtraToggle = configureViewModel::onExtraToggle,
-    onLedToggle = configureViewModel::onLedToggle,
-    onICalendarToggle = configureViewModel::onICalendarToggle,
-    onMakeCallToggle = configureViewModel::onMakeCallToggle,
-    onSendSmsToggle = configureViewModel::onSendSmsToggle,
-    onOpenAppToggle = configureViewModel::onOpenAppToggle,
-    onOpenLinkToggle = configureViewModel::onOpenLinkToggle,
-    onSendEmailToggle = configureViewModel::onSendEmailToggle,
-  )
 }
 
 private fun askNotificationPermissionIfNeeded(

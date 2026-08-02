@@ -1,16 +1,8 @@
 package com.elementary.tasks.core.utils.io
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.database.Cursor
-import android.net.Uri
-import android.provider.DocumentsContract
-import android.provider.OpenableColumns
-import com.github.naz013.feature.common.copyInputStreamToFile
-import com.github.naz013.logging.Logger
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
@@ -18,7 +10,6 @@ import java.io.OutputStream
 class CacheUtil(
   val context: Context,
 ) {
-  private val sp = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
   fun cacheFile(f: File): File? {
     val cacheDir = context.externalCacheDir ?: context.cacheDir
@@ -63,89 +54,7 @@ class CacheUtil(
     }
   }
 
-  @SuppressLint("Range")
-  fun cacheFile(uri: Uri): String? {
-    val cacheDir = context.externalCacheDir ?: context.cacheDir
-    val inputStream =
-      try {
-        context.contentResolver.openInputStream(uri)
-      } catch (e: FileNotFoundException) {
-        null
-      } catch (e: Exception) {
-        null
-      } ?: return null
-    val fileId =
-      try {
-        DocumentsContract.getDocumentId(uri)
-      } catch (e: Exception) {
-        ""
-      }
-
-    val cursor: Cursor? =
-      context.contentResolver.query(
-        // uri =
-        uri,
-        // projection =
-        null,
-        // selection =
-        null,
-        // selectionArgs =
-        null,
-        // sortOrder =
-        null,
-        // cancellationSignal =
-        null,
-      )
-    val name =
-      cursor?.use {
-        if (it.moveToFirst()) {
-          try {
-            it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)) ?: ""
-          } catch (e: Exception) {
-            ""
-          }
-        } else {
-          ""
-        }
-      } ?: ""
-    if (name.isEmpty() && fileId.isEmpty()) {
-      return null
-    }
-
-    val fileName = name.ifEmpty { fileId }
-    val file = File(cacheDir, fileName)
-    val fId = fileId.ifEmpty { name }
-
-    Logger.d(TAG, "cacheFile: $fId, ${file.absolutePath}, $fileName")
-
-    if (hasCache(fId) && file.exists()) {
-      Logger.d(TAG, "cacheFile: FROM CACHE")
-      return file.absolutePath
-    }
-
-    return try {
-      if (!file.createNewFile()) {
-        runCatching {
-          file.delete()
-          file.createNewFile()
-        }
-      }
-      file.copyInputStreamToFile(inputStream)
-      saveCache(fId)
-      file.absolutePath
-    } catch (e: Exception) {
-      null
-    }
-  }
-
-  private fun hasCache(path: String): Boolean = sp.getBoolean(path, false)
-
-  private fun saveCache(path: String) {
-    sp.edit().putBoolean(path, true).apply()
-  }
-
   companion object {
     private const val PREFS_NAME = "cache_prefs"
-    private const val TAG = "CacheUtil"
   }
 }

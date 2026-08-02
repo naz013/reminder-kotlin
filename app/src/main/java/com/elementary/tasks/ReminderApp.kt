@@ -40,6 +40,7 @@ import com.elementary.tasks.workflow.workflowModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
@@ -197,7 +198,7 @@ class ReminderApp :
     get<NavigationObservable>().subscribeGlobal(navigationConsumer)
 
     get<Notifier>().createChannels()
-    AdsProvider.init(this)
+    AdsProvider.init(this, get<SystemInfo>())
     get<RemotePrefs>().preLoad()
     CoroutineScope(get<DispatcherProvider>().io()).launch { get<LegalDocumentRepository>().refresh() }
 

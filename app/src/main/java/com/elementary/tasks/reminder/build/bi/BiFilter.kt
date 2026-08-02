@@ -1,16 +1,14 @@
 package com.elementary.tasks.reminder.build.bi
 
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.BuilderItem
-import com.github.naz013.common.system.Module
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.Module
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 
 class BiFilter(
   private val locationFilter: LocationFilter,
-  private val creatorConfigFilter: CreatorConfigFilter,
   private val buildInfo: BuildInfo
 ) {
   operator fun invoke(item: BuilderItem<*>): Boolean {
@@ -19,43 +17,13 @@ class BiFilter(
     val isProEnabled = !item.isForPro || (item.isForPro && buildInfo.isPro)
     val isInSdkRange = Module.CURRENT_SDK in item.minSdk..item.maxSdk
     val isLocationAllowed = locationFilter(item)
-    val isCreatorConfigAllowed = creatorConfigFilter(item)
-    return (isEnabled && isProEnabled && isInSdkRange && isLocationAllowed && isCreatorConfigAllowed).also {
+    return (isEnabled && isProEnabled && isInSdkRange && isLocationAllowed).also {
       Logger.d(
         "BiFilter",
-        "Item filtered ($it): ${item.biType}, enabled=$isEnabled, isForPro=$isForPro, isProEnabled=$isProEnabled, isInSdkRange=$isInSdkRange, isLocationAllowed=$isLocationAllowed, isCreatorConfigAllowed=$isCreatorConfigAllowed",
+        "Item filtered ($it): ${item.biType}, enabled=$isEnabled, isForPro=$isForPro, " +
+          "isProEnabled=$isProEnabled, isInSdkRange=$isInSdkRange, isLocationAllowed=$isLocationAllowed",
       )
     }
-  }
-}
-
-class CreatorConfigFilter(
-  private val prefs: Prefs,
-) {
-  operator fun invoke(item: BuilderItem<*>): Boolean = !getDisabledTypes().contains(item.biType)
-
-  private fun getDisabledTypes(): List<BiType> {
-    val config = prefs.reminderCreatorParams
-    return (
-      listOfNotNull(
-        BiType.BEFORE_TIME.takeIf { !config.isBeforePickerEnabled() },
-        BiType.REPEAT_TIME.takeIf { !config.isRepeatPickerEnabled() },
-        BiType.REPEAT_LIMIT.takeIf { !config.isRepeatLimitPickerEnabled() },
-        BiType.PRIORITY.takeIf { !config.isPriorityPickerEnabled() },
-        BiType.GOOGLE_CALENDAR.takeIf { !config.isCalendarPickerEnabled() },
-        BiType.GOOGLE_CALENDAR_DURATION.takeIf { !config.isCalendarPickerEnabled() },
-        BiType.GOOGLE_TASK_LIST.takeIf { !config.isGoogleTasksPickerEnabled() },
-        BiType.OTHER_PARAMS.takeIf { !config.isTuneExtraPickerEnabled() },
-        BiType.ATTACHMENTS.takeIf { !config.isAttachmentPickerEnabled() },
-        BiType.LED_COLOR.takeIf { !config.isLedPickerEnabled() },
-        BiType.PHONE_CALL.takeIf { !config.isPhoneCallEnabled() },
-        BiType.SMS.takeIf { !config.isSendSmsEnabled() },
-        BiType.EMAIL.takeIf { !config.isSendEmailEnabled() },
-        BiType.EMAIL_SUBJECT.takeIf { !config.isSendEmailEnabled() },
-        BiType.APPLICATION.takeIf { !config.isOpenAppEnabled() },
-        BiType.LINK.takeIf { !config.isOpenLinkEnabled() },
-      ) + (BiGroup.ICAL.types.takeIf { !config.isICalendarEnabled() } ?: emptyList())
-    )
   }
 }
 

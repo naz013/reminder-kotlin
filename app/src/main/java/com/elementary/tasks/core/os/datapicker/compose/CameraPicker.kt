@@ -18,13 +18,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/**
- * Compose replacement for [com.elementary.tasks.core.os.datapicker.CameraPhotoPicker]: creates a
- * scoped-storage-safe file, launches the camera app to fill it, and forwards the resulting [Uri] on
- * success. Needs no Fragment/Activity reference.
- *
- * @return a trigger function that opens the camera.
- */
 @Composable
 fun rememberCameraPicker(onPhotoTaken: (Uri) -> Unit): () -> Unit {
   val context = LocalContext.current

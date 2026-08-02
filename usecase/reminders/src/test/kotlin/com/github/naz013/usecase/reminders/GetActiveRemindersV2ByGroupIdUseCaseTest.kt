@@ -71,4 +71,5 @@ private class FakeGroupReminderV2Repository(
   override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> = emptyList()
   override suspend fun updateSyncState(id: String, state: SyncState) = Unit
   override suspend fun getAllIds(): List<String> = emptyList()
+  override suspend fun clearGroupId(groupId: String) = Unit
 }

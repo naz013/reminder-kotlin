@@ -11,14 +11,6 @@ import androidx.compose.ui.platform.LocalContext
 import com.elementary.tasks.core.os.data.ContactData
 import com.github.naz013.feature.common.readString
 
-/**
- * Compose replacement for [com.elementary.tasks.core.os.datapicker.ContactPicker]: launches the
- * system contact picker and forwards the selected phone number/name. Needs no Fragment/Activity
- * reference - [rememberLauncherForActivityResult] resolves the `ActivityResultRegistry` from the
- * current composition, matching [com.elementary.tasks.core.os.datapicker.compose.rememberGalleryPicker].
- *
- * @return a trigger function that opens the picker.
- */
 @Composable
 fun rememberContactPicker(onContactPicked: (ContactData) -> Unit): () -> Unit {
   val context = LocalContext.current

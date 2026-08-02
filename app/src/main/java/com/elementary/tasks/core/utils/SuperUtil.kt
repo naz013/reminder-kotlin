@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.utils
 
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -10,13 +9,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.core.services.GeolocationService
 import com.github.naz013.common.Permissions
-import com.github.naz013.logging.Logger
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import java.io.UnsupportedEncodingException
 
 object SuperUtil {
-  private const val TAG = "SuperUtil"
 
   fun isPhoneCallActive(context: Context): Boolean {
     val manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -60,25 +55,6 @@ object SuperUtil {
     } else {
       ""
     }
-
-  fun isGooglePlayServicesAvailable(a: Context): Boolean {
-    val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(a)
-    return resultCode == ConnectionResult.SUCCESS
-  }
-
-  fun checkGooglePlayServicesAvailability(a: Activity): Boolean {
-    val googleAPI = GoogleApiAvailability.getInstance()
-    val result = googleAPI.isGooglePlayServicesAvailable(a)
-    Logger.d(TAG, "checkGooglePlayServicesAvailability: $result")
-    return if (result != ConnectionResult.SUCCESS) {
-      if (googleAPI.isUserResolvableError(result)) {
-        googleAPI.getErrorDialog(a, result, 69)?.show()
-      }
-      false
-    } else {
-      true
-    }
-  }
 
   private fun isServiceRunning(
     context: Context,

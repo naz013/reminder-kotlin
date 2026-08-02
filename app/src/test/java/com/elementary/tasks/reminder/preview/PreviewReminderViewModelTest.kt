@@ -383,12 +383,23 @@ class PreviewReminderViewModelTest : BaseTest() {
   fun `copyReminder activates a new reminder with a fresh id`() =
     runTest {
       coEvery { reminderV2Repository.getById("42") } returns reminderV2()
-      coEvery { groupV2Repository.defaultGroup() } returns null
       val viewModel = createViewModel()
 
       viewModel.copyReminder(LocalTime.of(9, 0))
 
       coVerify(exactly = 1) { activateReminderUseCase(match { it.uuId != "42" }) }
+    }
+
+  @Test
+  fun `copyReminder preserves a null group id instead of backfilling a default`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      val viewModel = createViewModel()
+
+      viewModel.copyReminder(LocalTime.of(9, 0))
+
+      coVerify(exactly = 1) { activateReminderUseCase(match { it.groupId == null }) }
+      coVerify(exactly = 0) { groupV2Repository.defaultGroup() }
     }
 
   @Test

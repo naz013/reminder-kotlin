@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.elementary.tasks.core.utils.SuperUtil
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.logging.Logger
 import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.ConsentForm
@@ -111,8 +112,8 @@ class AdsProvider {
 
     fun hasAds(): Boolean = !wasError
 
-    fun init(context: Context) {
-      if (SuperUtil.isGooglePlayServicesAvailable(context)) {
+    fun init(context: Context, systemInfo: SystemInfo) {
+      if (systemInfo.googlePlayServicesAvailable) {
         MobileAds.initialize(context) {
           Logger.i(TAG, "Ads provider initialized")
         }

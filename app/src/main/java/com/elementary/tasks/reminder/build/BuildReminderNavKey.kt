@@ -20,9 +20,6 @@ sealed interface BuildReminderNavKey : NavKey {
   }
 
   @Serializable
-  data object Configure : BuildReminderNavKey
-
-  @Serializable
   data object Help : BuildReminderNavKey
 
   @Serializable

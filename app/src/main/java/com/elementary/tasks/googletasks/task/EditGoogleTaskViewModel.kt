@@ -25,7 +25,6 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
-import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
@@ -45,7 +44,6 @@ class EditGoogleTaskViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
   private val reminderV2Repository: ReminderV2Repository,
-  private val groupV2Repository: GroupV2Repository,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val getAllGoogleTaskListsUseCase: GetAllGoogleTaskListsUseCase,
@@ -329,20 +327,9 @@ class EditGoogleTaskViewModel(
   private suspend fun saveReminder(reminder: ReminderV2?) {
     if (reminder == null) return
     Logger.d(TAG, "Saving reminder: $reminder")
-    val group = withContext(dispatcherProvider.io()) {
-      groupV2Repository.defaultGroup()
-    }
-
-    val toSave = if (group != null) {
-      Logger.v(TAG, "Reminder saved with the Group id = ${group.uuId}")
-      reminder.copy(groupId = group.uuId)
-    } else {
-      Logger.v(TAG, "Reminder saved without the Group")
-      reminder
-    }
 
     withContext(dispatcherProvider.io()) {
-      activateReminderUseCase(toSave)
+      activateReminderUseCase(reminder)
       appWidgetUpdater.updateScheduleWidget()
     }
   }

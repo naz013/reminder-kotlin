@@ -19,7 +19,6 @@ import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.GoogleTaskRepository
-import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
@@ -44,7 +43,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   private val googleTasksApi = mockk<GoogleTasksApi>()
   private val googleTaskRepository = mockk<GoogleTaskRepository>()
   private val reminderV2Repository = mockk<ReminderV2Repository>()
-  private val groupV2Repository = mockk<GroupV2Repository>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val getAllGoogleTaskListsUseCase = mockk<GetAllGoogleTaskListsUseCase>()
@@ -69,7 +67,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     dispatcherProvider = mockDispatcherProvider(),
     googleTaskRepository = googleTaskRepository,
     reminderV2Repository = reminderV2Repository,
-    groupV2Repository = groupV2Repository,
     dateTimeManager = dateTimeManager,
     analyticsEventSender = analyticsEventSender,
     getAllGoogleTaskListsUseCase = getAllGoogleTaskListsUseCase,
@@ -532,7 +529,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
       val saved = GoogleTask(taskId = "new1")
       coEvery { googleTasksApi.saveTask(any()) } returns saved
       coEvery { googleTaskRepository.save(saved) } returns Unit
-      coEvery { groupV2Repository.defaultGroup() } returns null
 
       viewModel.save()
 

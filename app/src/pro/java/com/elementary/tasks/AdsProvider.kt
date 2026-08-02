@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import com.github.naz013.common.system.SystemInfo
 
 class AdsProvider {
   fun showConsentMessage(activity: Activity) {}
@@ -32,7 +33,7 @@ class AdsProvider {
 
     fun hasAds() = false
 
-    fun init(context: Context) {
+    fun init(context: Context, systemInfo: SystemInfo) {
     }
   }
 }

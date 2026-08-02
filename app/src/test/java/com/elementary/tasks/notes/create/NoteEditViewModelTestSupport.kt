@@ -29,7 +29,6 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.every
@@ -53,7 +52,6 @@ import java.util.regex.Pattern
 open class NoteEditViewModelTestSupport : BaseTest() {
   protected val imageDecoder = mockk<ImageDecoder>()
   protected val noteRepository = mockk<NoteRepository>()
-  protected val groupV2Repository = mockk<GroupV2Repository>()
   protected val reminderV2Repository = mockk<ReminderV2Repository>()
   protected val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
   protected val prefs = mockk<Prefs>(relaxed = true)
@@ -96,7 +94,6 @@ open class NoteEditViewModelTestSupport : BaseTest() {
     coEvery { noteRepository.getById(any()) } returns null
     coEvery { reminderV2Repository.getByNoteId(any()) } returns emptyList()
     coEvery { reminderV2Repository.getById(any()) } returns null
-    coEvery { groupV2Repository.defaultGroup() } returns null
 
     every { dateTimeManager.getTime(any<LocalTime>()) } returns "10:00"
     every { dateTimeManager.getDate(any<LocalDate>()) } returns "24 Jul 2026"
@@ -201,7 +198,6 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       imageDecoder = imageDecoder,
       dispatcherProvider = mockDispatcherProvider(),
       noteRepository = noteRepository,
-      groupV2Repository = groupV2Repository,
       reminderV2Repository = reminderV2Repository,
       deleteReminderUseCase = deleteReminderUseCase,
       prefs = prefs,
