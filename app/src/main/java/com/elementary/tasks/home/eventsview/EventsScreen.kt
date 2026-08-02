@@ -62,6 +62,7 @@ fun EventsScreen(
   onAddBirthdayClick: () -> Unit,
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
+  onTagsClick: () -> Unit,
   onItemClick: (UiEventItem) -> Unit,
   onEventMenuAction: (UiEventItem, EventMenuAction) -> Unit,
   modifier: Modifier = Modifier,
@@ -85,6 +86,7 @@ fun EventsScreen(
             onAddBirthdayClick = onAddBirthdayClick,
             onArchiveClick = onArchiveClick,
             onGroupsClick = onGroupsClick,
+            onTagsClick = onTagsClick,
           )
 
           if (state.listState !is ListState.Empty || state.searchQuery.isNotEmpty()) {
@@ -282,6 +284,7 @@ private fun EventsTopBar(
   onAddBirthdayClick: () -> Unit,
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
+  onTagsClick: () -> Unit,
 ) {
   TopAppBar(
     title = { Text(stringResource(R.string.events)) },
@@ -301,6 +304,7 @@ private fun EventsTopBar(
       OverflowMenuButton(
         onArchiveClick = onArchiveClick,
         onGroupsClick = onGroupsClick,
+        onTagsClick = onTagsClick,
       )
     },
     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
@@ -345,12 +349,14 @@ private fun AddMenuButton(
 private fun OverflowMenuButton(
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
+  onTagsClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
   val actions =
     listOf(
       Triple(0, stringResource(R.string.reminders_archive), R.drawable.ic_fluent_archive) to onArchiveClick,
       Triple(1, stringResource(R.string.groups), R.drawable.ic_fluent_group) to onGroupsClick,
+      Triple(2, stringResource(R.string.tags), R.drawable.ic_builder_group) to onTagsClick,
     )
   Box {
     MenuIconButton(
@@ -382,6 +388,7 @@ private fun EventsScreenEmptyPreview() {
       onAddBirthdayClick = {},
       onArchiveClick = {},
       onGroupsClick = {},
+      onTagsClick = {},
       onItemClick = {},
       onEventMenuAction = { _, _ -> },
     )

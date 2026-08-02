@@ -267,6 +267,10 @@ class EventsViewModel(
     navigationEvent.value = Event(NavigationEvent.OpenGroups)
   }
 
+  fun onTagsClick() {
+    navigationEvent.value = Event(NavigationEvent.OpenTags)
+  }
+
   data class MergedResult(
     val items: List<UiEventItem>,
   )
@@ -297,6 +301,8 @@ class EventsViewModel(
     data object OpenArchive : NavigationEvent
 
     data object OpenGroups : NavigationEvent
+
+    data object OpenTags : NavigationEvent
 
     data class RequestGpsPermission(
       val id: String,

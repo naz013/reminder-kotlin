@@ -196,6 +196,8 @@ dependencies {
   implementation(project(":legal"))
   implementation(project(":files-api"))
   implementation(project(":files"))
+  implementation(project(":tags-api"))
+  implementation(project(":tags"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")

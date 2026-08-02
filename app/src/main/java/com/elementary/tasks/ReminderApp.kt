@@ -59,6 +59,7 @@ import com.github.naz013.reviews.ReviewSdk
 import com.github.naz013.reviews.config.SecondaryFirebaseConfig
 import com.github.naz013.reviews.reviewsKoinModule
 import com.github.naz013.sync.syncApiModule
+import com.github.naz013.tags.tagsModule
 import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
@@ -165,6 +166,7 @@ class ReminderApp :
           intentModule,
           workflowModule,
           fileModule,
+          tagsModule,
         ),
       )
     }
