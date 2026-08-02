@@ -34,6 +34,7 @@ fun SettingsHubScreen(
   onSecurityClick: () -> Unit,
   onNotesClick: () -> Unit,
   onOtherClick: () -> Unit,
+  onInsightsClick: () -> Unit,
   onDeveloperClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -158,6 +159,14 @@ fun SettingsHubScreen(
       dividerBottom = true,
       onClick = onOtherClick,
     )
+    if (state.isInsightsVisible) {
+      SettingsItem(
+        title = stringResource(R.string.insights),
+        icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
+        dividerBottom = true,
+        onClick = onInsightsClick,
+      )
+    }
     if (BuildConfig.DEBUG) {
       SettingsItem(
         title = "Developer",

@@ -47,6 +47,7 @@ import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.icalendar.iCalendarModule
+import com.github.naz013.insights.insightsModule
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.legalModule
 import com.github.naz013.logging.initLogging
@@ -167,6 +168,7 @@ class ReminderApp :
           workflowModule,
           fileModule,
           tagsModule,
+          insightsModule,
         ),
       )
     }

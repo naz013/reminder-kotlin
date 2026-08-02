@@ -61,6 +61,7 @@ import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSetting
 import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.insights.InsightsNavKey
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.login.rememberAuthProvider
@@ -114,6 +115,7 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
       },
       onNotesClick = { backStack.add(SettingsNavKey.Note()) },
       onOtherClick = { backStack.add(OtherNavKey.Other) },
+      onInsightsClick = { backStack.add(InsightsNavKey.Dashboard) },
       onDeveloperClick = { backStack.add(SettingsNavKey.Developer) },
       modifier = Modifier.padding(padding),
     )

@@ -44,6 +44,7 @@ class SettingsHubViewModel(
         isBuyProBadgeVisible = !buildInfo.isPro && !systemInfo.isProAppInstalled,
         isPlayServicesWarningVisible = !systemInfo.googlePlayServicesAvailable,
         hasPinCode = prefs.hasPinCode,
+        isInsightsVisible = buildInfo.isPro,
       )
     }
   }
