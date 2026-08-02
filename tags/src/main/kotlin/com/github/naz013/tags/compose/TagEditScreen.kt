@@ -54,7 +54,7 @@ fun TagEditScreen(
           if (state.canDelete) {
             MenuIconButton(
               icon = AppIcons.Fluent.Dismiss,
-              contentDescription = stringResource(R.string.delete_tag_permanently),
+              contentDescription = stringResource(R.string.delete),
               onClick = onDeleteClick
             )
           }

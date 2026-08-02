@@ -12,6 +12,7 @@ import com.github.naz013.tags.compose.TagEditViewModel
 import com.github.naz013.tags.compose.TagsScreen
 import com.github.naz013.tags.compose.TagsScreenState
 import com.github.naz013.tags.compose.TagsViewModel
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -45,6 +46,7 @@ private fun TagsEditEntry(
   backStack: MutableList<NavKey>
 ) {
   val viewModel = koinViewModel<TagEditViewModel> { parametersOf(key.id) }
+  val dialogDispatcher = rememberDialogDispatcher()
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
@@ -59,6 +61,13 @@ private fun TagsEditEntry(
     onNameChange = viewModel::onNameChanged,
     onColorSelected = viewModel::onColorSelected,
     onSaveClick = viewModel::onSaveClick,
-    onDeleteClick = viewModel::onDeleteClick
+    onDeleteClick = {
+      dialogDispatcher.showDialog(
+        textRes = R.string.delete_tag_permanently,
+        positiveButtonRes = R.string.yes,
+        negativeButtonRes = R.string.cancel,
+        onPositive = viewModel::onDeleteClick
+      )
+    }
   )
 }
