@@ -34,6 +34,7 @@ import com.elementary.tasks.reminder.recur.RecurHelpScreen
 import com.github.naz013.common.Permissions
 import com.github.naz013.domain.Place
 import com.github.naz013.logging.Logger
+import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
@@ -133,6 +134,8 @@ private fun MainEntry(
       is BuildReminderViewModel.ViewModelEvent.ShowMessage -> {
         toastDispatcher.showToast(messageRes = event.messageRes)
       }
+
+      BuildReminderViewModel.ViewModelEvent.OpenManageTags -> backStack.add(TagsNavKey.Manage)
     }
   }
 
@@ -145,6 +148,8 @@ private fun MainEntry(
     saveAsPresetChecked = state.saveAsPresetChecked,
     presetName = state.presetName,
     quickStartOptions = QuickStartOption.entries,
+    allTags = state.allTags,
+    selectedTagIds = state.selectedTagIds,
     onBackClick = { backStack.removeLastOrNull() },
     onSaveClick = {
       askNotificationPermissionIfNeeded(permissionRequester) {
@@ -160,6 +165,8 @@ private fun MainEntry(
     onItemRemove = { position, item -> viewModel.removeItem(position, item) },
     onAddClick = { showSelector = true },
     onQuickStartClick = viewModel::onQuickStartSelected,
+    onTagToggle = viewModel::onTagToggle,
+    onManageTagsClick = viewModel::onManageTagsClick,
   )
 
   if (showSelector) {

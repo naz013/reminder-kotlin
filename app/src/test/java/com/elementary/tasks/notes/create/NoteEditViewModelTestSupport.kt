@@ -30,9 +30,12 @@ import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.tags.TagAssignmentRepository
+import com.github.naz013.tags.TagRepository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -72,6 +75,8 @@ open class NoteEditViewModelTestSupport : BaseTest() {
   protected val systemInfo = mockk<SystemInfo>(relaxed = true)
   protected val imageLoader = mockk<ImageLoader>()
   protected val noteColorEngine = mockk<NoteColorEngine>()
+  protected val tagRepository = mockk<TagRepository>()
+  protected val tagAssignmentRepository = mockk<TagAssignmentRepository>()
 
   protected val fakeContext = mockk<Context>(relaxed = true)
 
@@ -116,6 +121,9 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       NoteColorEngine.Colors(background = Color.White, content = Color.Black)
     }
     every { noteColorEngine.allColors() } returns listOf(Color.Red, Color.Green, Color.Blue)
+
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
   }
 
   private fun ensureWebUrlPatternIsUsable() {
@@ -218,5 +226,7 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       systemInfo = systemInfo,
       imageLoader = imageLoader,
       noteColorEngine = noteColorEngine,
+      tagRepository = tagRepository,
+      tagAssignmentRepository = tagAssignmentRepository,
     )
 }

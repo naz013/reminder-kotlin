@@ -49,12 +49,15 @@ import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.tags.TagAssignmentRepository
+import com.github.naz013.tags.TagRepository
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -100,11 +103,15 @@ class BuildReminderViewModelTest : BaseTest() {
   private val featureManager = mockk<FeatureManager>(relaxed = true)
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
   private val quickStartItemsProvider = mockk<QuickStartItemsProvider>()
+  private val tagRepository = mockk<TagRepository>()
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
 
   @Before
   override fun setUp() {
     super.setUp()
     every { prefs.is24HourFormat } returns true
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
     coEvery { biFactory.create(any()) } returns summaryItem()
     every { biFilter(any()) } returns true
     coEvery { recurPresetRepository.getAllByType(any()) } returns emptyList()
@@ -182,6 +189,8 @@ class BuildReminderViewModelTest : BaseTest() {
       featureManager = featureManager,
       buildInfo = buildInfo,
       quickStartItemsProvider = quickStartItemsProvider,
+      tagRepository = tagRepository,
+      tagAssignmentRepository = tagAssignmentRepository,
     )
 
   @Test

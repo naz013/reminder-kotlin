@@ -57,9 +57,17 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.tags.Tag
+import com.github.naz013.tags.TagAssignmentRepository
+import com.github.naz013.tags.TagRepository
+import com.github.naz013.tags.TaggedItemType
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -71,6 +79,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.UUID
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NoteEditViewModel(
   private val id: String?,
   private val sharedText: String?,
@@ -99,6 +108,8 @@ class NoteEditViewModel(
   private val systemInfo: SystemInfo,
   private val imageLoader: ImageLoader,
   private val noteColorEngine: NoteColorEngine,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
 ) : ViewModel() {
 
   val is24HourFormat: Boolean = prefs.is24HourFormat
@@ -156,6 +167,39 @@ class NoteEditViewModel(
     onNewDate(LocalDate.now())
 
     load()
+    observeTags()
+  }
+
+  private fun observeTags() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll().collect { tags ->
+        _state.update { it.copy(allTags = tags) }
+      }
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
+      _state.map { it.noteId }
+        .distinctUntilChanged()
+        .flatMapLatest { noteId -> tagAssignmentRepository.observeTagsForItem(noteId, TaggedItemType.NOTE) }
+        .collect { tags ->
+          _state.update { it.copy(selectedTagIds = tags.map(Tag::id).toSet()) }
+        }
+    }
+  }
+
+  fun onTagToggle(tag: Tag) {
+    val noteId = _state.value.noteId
+    val isSelected = tag.id in _state.value.selectedTagIds
+    viewModelScope.launch(dispatcherProvider.io()) {
+      if (isSelected) {
+        tagAssignmentRepository.detach(noteId, TaggedItemType.NOTE, tag.id)
+      } else {
+        tagAssignmentRepository.attach(noteId, TaggedItemType.NOTE, tag.id)
+      }
+    }
+  }
+
+  fun onManageTagsClick() {
+    event.emit(ViewModelEvent.OpenManageTags)
   }
 
   fun onDateClicked() {
@@ -776,6 +820,8 @@ class NoteEditViewModel(
       val time: LocalTime,
       val title: String,
     ) : ViewModelEvent
+
+    data object OpenManageTags : ViewModelEvent
   }
 
   companion object {

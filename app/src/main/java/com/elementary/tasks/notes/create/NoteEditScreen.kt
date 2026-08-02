@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.github.naz013.common.uri.UriUtil
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.dragAndDropHighlight
 
@@ -373,6 +374,25 @@ private fun noteEditBarItems(
           )
         },
         bubbleContent = { ReminderPanel(state, contentColor, actions) },
+      ),
+    )
+
+    val tagsDescription = stringResource(R.string.tags)
+    add(
+      NoteEditBarItem(
+        id = "tags",
+        contentDescription = tagsDescription,
+        selected = state.expandedTab == EditTab.TAGS,
+        showBadge = state.selectedTagIds.isNotEmpty(),
+        onClick = actions.onTagsTabClick,
+        icon = {
+          Icon(
+            painter = AppIcons.Builder.Tag,
+            contentDescription = tagsDescription,
+            tint = contentColor,
+          )
+        },
+        bubbleContent = { TagsPanel(state, actions) },
       ),
     )
 
