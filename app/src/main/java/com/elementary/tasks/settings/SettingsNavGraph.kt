@@ -30,6 +30,7 @@ import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.birthday.BirthdaySettingsEvent
 import com.elementary.tasks.settings.birthday.BirthdaySettingsScreen
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
+import com.elementary.tasks.settings.backup.BackupSettingsScreen
 import com.elementary.tasks.settings.calendar.CalendarSettingsScreen
 import com.elementary.tasks.settings.calendar.CalendarSettingsViewModel
 import com.elementary.tasks.settings.export.ExportNavKey
@@ -60,17 +61,20 @@ import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSettingsLauncher
 import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.insights.InsightsNavKey
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.login.rememberAuthProvider
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 fun EntryProviderScope<NavKey>.settingsEntries(backStack: MutableList<NavKey>) {
   entry<SettingsNavKey.Hub> { HubEntry(backStack) }
   entry<SettingsNavKey.General> { GeneralEntry(backStack) }
+  entry<SettingsNavKey.Backup> { BackupEntry(backStack) }
   entry<SettingsNavKey.Reminders> { key -> RemindersEntry(key, backStack) }
   entry<SettingsNavKey.Calendar> { key -> CalendarEntry(key, backStack) }
   entry<SettingsNavKey.Birthday> { key -> BirthdayEntry(key, backStack) }
@@ -92,15 +96,6 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
   val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
   val authProvider = rememberAuthProvider()
 
-  val exportBackupLauncher =
-    rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
-      if (uri != null) backStack.add(LocalBackupNavKey.Export(uri.toString()))
-    }
-  val importBackupLauncher =
-    rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-      if (uri != null) backStack.add(LocalBackupNavKey.Import(uri.toString()))
-    }
-
   val state by viewModel.state.collectAsState(SettingsHubState())
 
   SettingsScaffold(
@@ -112,7 +107,7 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
       onBuyProClick = { backStack.add(SettingsNavKey.ProVersion) },
       onUpdateClick = { googlePlayMarketLauncher.launchSelf() },
       onGeneralClick = { backStack.add(SettingsNavKey.General) },
-      onCloudBackupClick = { backStack.add(ExportNavKey.CloudBackup) },
+      onBackupClick = { backStack.add(SettingsNavKey.Backup) },
       onCalendarClick = { backStack.add(SettingsNavKey.Calendar()) },
       onRemindersClick = { backStack.add(SettingsNavKey.Reminders()) },
       onBirthdaysClick = { backStack.add(SettingsNavKey.Birthday()) },
@@ -126,9 +121,34 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
       onNotesClick = { backStack.add(SettingsNavKey.Note()) },
       onOtherClick = { backStack.add(OtherNavKey.Other) },
       onInsightsClick = { backStack.add(InsightsNavKey.Dashboard) },
+      onDeveloperClick = { backStack.add(SettingsNavKey.Developer) },
+      modifier = Modifier.padding(padding),
+    )
+  }
+}
+
+@Composable
+private fun BackupEntry(backStack: MutableList<NavKey>) {
+  val buildInfo = koinInject<BuildInfo>()
+
+  val exportBackupLauncher =
+    rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
+      if (uri != null) backStack.add(LocalBackupNavKey.Export(uri.toString()))
+    }
+  val importBackupLauncher =
+    rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+      if (uri != null) backStack.add(LocalBackupNavKey.Import(uri.toString()))
+    }
+
+  SettingsScaffold(
+    title = stringResource(R.string.backup),
+    onBackClick = { backStack.removeLastOrNull() },
+  ) { padding ->
+    BackupSettingsScreen(
+      isLocalBackupVisible = buildInfo.isPro,
+      onCloudBackupClick = { backStack.add(ExportNavKey.CloudBackup) },
       onExportBackupClick = { exportBackupLauncher.launch(BACKUP_FILE_NAME) },
       onImportBackupClick = { importBackupLauncher.launch(arrayOf("*/*")) },
-      onDeveloperClick = { backStack.add(SettingsNavKey.Developer) },
       modifier = Modifier.padding(padding),
     )
   }

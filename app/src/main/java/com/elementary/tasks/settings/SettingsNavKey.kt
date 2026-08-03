@@ -11,6 +11,9 @@ sealed interface SettingsNavKey : NavKey {
   data object General : SettingsNavKey
 
   @Serializable
+  data object Backup : SettingsNavKey
+
+  @Serializable
   data class Reminders(
     val screenTitle: String? = null,
   ) : SettingsNavKey

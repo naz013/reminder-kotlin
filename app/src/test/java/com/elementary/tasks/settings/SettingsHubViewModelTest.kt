@@ -74,7 +74,6 @@ class SettingsHubViewModelTest : BaseTest() {
       assertFalse(state.isPlayServicesWarningVisible)
       assertFalse(state.hasPinCode)
       assertFalse(state.isInsightsVisible)
-      assertFalse(state.isLocalBackupVisible)
     }
 
   @Test
@@ -85,16 +84,6 @@ class SettingsHubViewModelTest : BaseTest() {
       val state = newViewModel().state.first()
 
       assertTrue(state.isInsightsVisible)
-    }
-
-  @Test
-  fun `shows local backup entry only for pro users`() =
-    runTest {
-      every { buildInfo.isPro } returns true
-
-      val state = newViewModel().state.first()
-
-      assertTrue(state.isLocalBackupVisible)
     }
 
   @Test

@@ -27,7 +27,7 @@ fun SettingsHubScreen(
   onBuyProClick: () -> Unit,
   onUpdateClick: () -> Unit,
   onGeneralClick: () -> Unit,
-  onCloudBackupClick: () -> Unit,
+  onBackupClick: () -> Unit,
   onCalendarClick: () -> Unit,
   onRemindersClick: () -> Unit,
   onBirthdaysClick: () -> Unit,
@@ -35,8 +35,6 @@ fun SettingsHubScreen(
   onNotesClick: () -> Unit,
   onOtherClick: () -> Unit,
   onInsightsClick: () -> Unit,
-  onExportBackupClick: () -> Unit,
-  onImportBackupClick: () -> Unit,
   onDeveloperClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -120,10 +118,10 @@ fun SettingsHubScreen(
       onClick = onGeneralClick,
     )
     SettingsItem(
-      title = stringResource(R.string.cloud_backup),
+      title = stringResource(R.string.backup),
       icon = painterResource(R.drawable.ic_fluent_cloud_backup),
       dividerBottom = true,
-      onClick = onCloudBackupClick,
+      onClick = onBackupClick,
     )
     SettingsItem(
       title = stringResource(R.string.calendar),
@@ -167,20 +165,6 @@ fun SettingsHubScreen(
         icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
         dividerBottom = true,
         onClick = onInsightsClick,
-      )
-    }
-    if (state.isLocalBackupVisible) {
-      SettingsItem(
-        title = stringResource(R.string.backup_export_title),
-        icon = painterResource(R.drawable.ic_fluent_cloud_backup),
-        dividerBottom = true,
-        onClick = onExportBackupClick,
-      )
-      SettingsItem(
-        title = stringResource(R.string.backup_import_title),
-        icon = painterResource(R.drawable.ic_fluent_cloud_backup),
-        dividerBottom = true,
-        onClick = onImportBackupClick,
       )
     }
     if (BuildConfig.DEBUG) {
