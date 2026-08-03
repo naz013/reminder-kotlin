@@ -18,12 +18,10 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.migration.GroupV2BackfillUseCase
 import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 sealed interface BottomNavInitState {
   data object Loading : BottomNavInitState
@@ -69,7 +67,6 @@ class BottomNavInitViewModel(
       if (prefs.isSbNotificationEnabled) {
         notifier.sendShowReminderPermanent()
       }
-      delay(5.seconds)
       _state.value = BottomNavInitState.Ready(requiresLogin = prefs.hasPinCode)
     }
   }
