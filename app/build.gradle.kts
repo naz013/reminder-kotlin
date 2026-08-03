@@ -163,6 +163,11 @@ configurations.testImplementation {
   exclude(module = "logback-android")
 }
 
+configurations.configureEach {
+  exclude(group = "com.google.android.gms", module = "play-services-ads")
+  exclude(group = "com.google.android.gms", module = "play-services-ads-lite")
+}
+
 fun getDateAndTime(): String = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm:ss").format(LocalDateTime.now())
 
 fun getDate(): String = DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(LocalDateTime.now())
@@ -244,7 +249,7 @@ dependencies {
   implementation(libs.play.services.auth)
   implementation(libs.maps.compose)
 
-  "freeImplementation"(libs.play.services.ads)
+  "freeImplementation"(libs.ads.mobile.sdk)
   "freeImplementation"(libs.user.messaging.platform)
 
   "proImplementation"(project(":appfunctions"))

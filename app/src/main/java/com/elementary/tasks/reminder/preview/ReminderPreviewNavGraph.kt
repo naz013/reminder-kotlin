@@ -238,7 +238,7 @@ private fun ReminderAdBanner(adsProvider: AdsProvider) {
     modifier = Modifier.fillMaxWidth(),
     factory = { FrameLayout(context) },
     update = { viewGroup ->
-      adsProvider.showNativeBanner(viewGroup, AdsProvider.REMINDER_PREVIEW_BANNER_ID, R.layout.list_item_ads_hor)
+      adsProvider.showBanner(viewGroup, AdsProvider.REMINDER_PREVIEW_BANNER_ID)
     },
   )
 }

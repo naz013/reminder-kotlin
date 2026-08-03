@@ -3,11 +3,10 @@ package com.elementary.tasks
 import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.logging.Logger
-import com.google.android.gms.ads.MobileAds
+import com.google.android.libraries.ads.mobile.sdk.MobileAds
+import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
 import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
@@ -22,8 +21,7 @@ class AdsProvider {
   }
 
   fun showConsentMessage(activity: Activity) {
-    val params =
-      ConsentRequestParameters
+    val params = ConsentRequestParameters
         .Builder()
         .setTagForUnderAgeOfConsent(false)
         .build()
@@ -81,26 +79,6 @@ class AdsProvider {
     )
   }
 
-  fun showNativeBanner(
-    viewGroup: ViewGroup,
-    bannerId: String,
-    @LayoutRes res: Int,
-    failListener: (() -> Unit)? = null,
-  ) {
-    RotatingNativeAdsProvider(
-      viewGroup = viewGroup,
-      bannerId = bannerId,
-      res = res,
-      onAdsFailureCallback =
-        object : OnAdsFailureCallback {
-          override fun onAdsFailure() {
-            wasError = true
-            failListener?.invoke()
-          }
-        },
-    )
-  }
-
   companion object {
     private const val TAG = "AdsProvider"
     const val REMINDER_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1084030852"
@@ -114,7 +92,8 @@ class AdsProvider {
 
     fun init(context: Context, systemInfo: SystemInfo) {
       if (systemInfo.googlePlayServicesAvailable) {
-        MobileAds.initialize(context) {
+        val initConfig = InitializationConfig.Builder("ca-app-pub-5133908997831400~9675541050").build()
+        MobileAds.initialize(context, initConfig) {
           Logger.i(TAG, "Ads provider initialized")
         }
       } else {
