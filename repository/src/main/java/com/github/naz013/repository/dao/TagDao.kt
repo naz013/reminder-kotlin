@@ -25,6 +25,9 @@ internal interface TagDao {
   @Query("DELETE FROM Tag WHERE id=:id")
   fun delete(id: String)
 
+  @Query("DELETE FROM Tag")
+  fun deleteAll()
+
   @Query("SELECT id FROM Tag WHERE syncState IN (:syncStates)")
   fun getBySyncStates(syncStates: List<String>): List<String>
 

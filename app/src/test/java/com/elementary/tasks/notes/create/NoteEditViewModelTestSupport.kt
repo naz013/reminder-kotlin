@@ -30,8 +30,8 @@ import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.tags.TagAssignmentRepository
-import com.github.naz013.tags.TagRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

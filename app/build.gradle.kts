@@ -196,7 +196,6 @@ dependencies {
   implementation(project(":legal"))
   implementation(project(":files-api"))
   implementation(project(":files"))
-  implementation(project(":tags-api"))
   implementation(project(":tags"))
   implementation(project(":insights"))
   implementation(project(":localbackup"))

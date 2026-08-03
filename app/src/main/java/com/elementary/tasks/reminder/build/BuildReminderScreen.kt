@@ -59,7 +59,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
-import com.github.naz013.tags.Tag
+import com.github.naz013.domain.Tag
 import com.github.naz013.tags.compose.TagChipPicker
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme

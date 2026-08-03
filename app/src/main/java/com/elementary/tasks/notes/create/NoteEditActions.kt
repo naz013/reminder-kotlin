@@ -1,7 +1,7 @@
 package com.elementary.tasks.notes.create
 
 import android.content.ClipData
-import com.github.naz013.tags.Tag
+import com.github.naz013.domain.Tag
 
 /**
  * Bundles every user-interaction callback for the note edit screen so the composable tree

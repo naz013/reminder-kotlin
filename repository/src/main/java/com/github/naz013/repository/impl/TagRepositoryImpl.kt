@@ -47,6 +47,12 @@ internal class TagRepositoryImpl(
     tagSyncTrigger.onTagDeleted(id)
   }
 
+  override suspend fun deleteAll() {
+    Logger.d(TAG, "Delete all tags")
+    dao.deleteAll()
+    tableChangeNotifier.notify(table)
+  }
+
   override suspend fun getIdsByState(states: List<SyncState>): List<String> {
     Logger.d(TAG, "Get tags by sync states: $states")
     return dao.getBySyncStates(states.map { it.name })

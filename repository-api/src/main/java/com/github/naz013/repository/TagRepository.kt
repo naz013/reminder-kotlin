@@ -15,6 +15,8 @@ interface TagRepository {
 
   suspend fun delete(id: String)
 
+  suspend fun deleteAll()
+
   suspend fun getIdsByState(states: List<SyncState>): List<String>
 
   suspend fun updateSyncState(id: String, state: SyncState)

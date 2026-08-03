@@ -8,10 +8,10 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.domain.Tag
 import com.github.naz013.logging.Logger
-import com.github.naz013.tags.Tag
-import com.github.naz013.tags.TagAssignmentRepository
-import com.github.naz013.tags.TagRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update

@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build
 
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
-import com.github.naz013.tags.Tag
+import com.github.naz013.domain.Tag
 
 data class BuildReminderState(
   val builderItems: List<UiBuilderItem> = emptyList(),

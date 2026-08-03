@@ -1,6 +1,5 @@
 plugins {
   id("reminder.android.library.compose")
-  alias(libs.plugins.ksp)
   alias(libs.plugins.kotlin.serialization)
 }
 
@@ -9,8 +8,8 @@ android {
 }
 
 dependencies {
-  implementation(project(":tags-api"))
   implementation(project(":domain"))
+  implementation(project(":repository-api"))
   implementation(project(":logging-api"))
   implementation(project(":feature-common"))
   implementation(project(":ui-common"))
@@ -19,10 +18,6 @@ dependencies {
   implementation(libs.koin.android.ext)
   implementation(libs.koin.androidx.compose)
   implementation(libs.koin.compose.navigation3)
-
-  implementation(libs.androidx.room.ktx)
-  implementation(libs.androidx.room.runtime)
-  ksp(libs.androidx.room.compiler)
 
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.navigation3.ui)
@@ -40,6 +35,4 @@ dependencies {
   testImplementation(libs.junit)
   testImplementation(libs.mockk)
   testImplementation(libs.kotlinx.coroutines.test)
-  testImplementation(libs.robolectric)
-  testImplementation(libs.androidx.test.core)
 }

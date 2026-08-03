@@ -54,6 +54,12 @@ internal class TagAssignmentRepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun deleteAll() {
+    Logger.d(TAG, "Delete all tag assignments")
+    dao.deleteAll()
+    tableChangeNotifier.notify(table)
+  }
+
   override suspend fun getAll(): List<TagAssignment> {
     Logger.d(TAG, "Get all tag assignments")
     return dao.getAll().map { it.toDomain() }

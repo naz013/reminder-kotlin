@@ -39,6 +39,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
@@ -57,10 +59,8 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.tags.Tag
-import com.github.naz013.tags.TagAssignmentRepository
-import com.github.naz013.tags.TagRepository
-import com.github.naz013.tags.TaggedItemType
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

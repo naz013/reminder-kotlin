@@ -49,8 +49,8 @@ import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.tags.TagAssignmentRepository
-import com.github.naz013.tags.TagRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify

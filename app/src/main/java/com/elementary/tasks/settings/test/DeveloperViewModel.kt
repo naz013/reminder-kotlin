@@ -33,6 +33,8 @@ import com.github.naz013.repository.RecentQueryRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RemoteFileMetadataRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.UsedTimeRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.repository.WorkflowTemplateRepository
@@ -69,6 +71,8 @@ class DeveloperViewModel(
   private val groupV2Repository: GroupV2Repository,
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val workflowTemplateRepository: WorkflowTemplateRepository,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
   private val activateReminderUseCase: ActivateReminderUseCase,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
@@ -274,6 +278,8 @@ class DeveloperViewModel(
       Table.GroupV2 -> groupV2Repository.deleteAll()
       Table.WorkflowRule -> workflowRuleRepository.deleteAll()
       Table.WorkflowTemplate -> workflowTemplateRepository.deleteAll()
+      Table.Tag -> tagRepository.deleteAll()
+      Table.TagAssignment -> tagAssignmentRepository.deleteAll()
     }
   }
 

@@ -1,6 +1,6 @@
 package com.github.naz013.tags.compose
 
-import com.github.naz013.tags.Tag
+import com.github.naz013.domain.Tag
 
 data class TagsScreenState(
   val listState: TagsListState = TagsListState.Loading

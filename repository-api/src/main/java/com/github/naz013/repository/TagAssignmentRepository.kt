@@ -20,6 +20,8 @@ interface TagAssignmentRepository {
 
   suspend fun detachAllForTag(tagId: String)
 
+  suspend fun deleteAll()
+
   suspend fun getAll(): List<TagAssignment>
 
   suspend fun replaceAll(assignments: List<TagAssignment>)

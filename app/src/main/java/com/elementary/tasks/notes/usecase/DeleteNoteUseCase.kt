@@ -3,11 +3,11 @@ package com.elementary.tasks.notes.usecase
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.repository.NoteImageRepository
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.tags.TagAssignmentRepository
-import com.github.naz013.tags.TaggedItemType
+import com.github.naz013.repository.TagAssignmentRepository
 
 class DeleteNoteUseCase(
   private val noteRepository: NoteRepository,

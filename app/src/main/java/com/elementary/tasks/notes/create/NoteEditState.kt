@@ -4,8 +4,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.notes.NoteColorEngine
+import com.github.naz013.domain.Tag
 import com.github.naz013.domain.font.FontParams
-import com.github.naz013.tags.Tag
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import java.util.UUID
