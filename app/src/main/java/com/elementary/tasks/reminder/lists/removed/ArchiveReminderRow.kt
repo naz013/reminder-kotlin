@@ -8,11 +8,6 @@ import com.elementary.tasks.home.eventsview.EventListItem
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
-/**
- * Thin domain wrapper around [EventListItem] for archived reminders: Edit/Delete only, mirroring
- * [com.elementary.tasks.reminder.lists.ReminderActionResolver]'s `isRemoved` branching (the legacy
- * "Open" popup entry was wired to a no-op and is intentionally dropped here).
- */
 @Composable
 fun ArchiveReminderRow(
   item: UiReminderList,

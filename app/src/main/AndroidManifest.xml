@@ -99,20 +99,15 @@
         tools:targetApi="tiramisu">
 
         <activity
-            android:name=".splash.SplashScreenActivity"
-            android:exported="true"
-            android:theme="@style/SplashScreenTheme">
+            android:name=".navigation.BottomNavActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Reminder"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".navigation.BottomNavActivity"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.Reminder"
-            android:exported="false" />
         <activity
             android:name=".core.arch.CreateReminderIntentActivity"
             android:configChanges="keyboardHidden"

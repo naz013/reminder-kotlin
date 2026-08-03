@@ -4,11 +4,9 @@ data class GeneralSettingsState(
   val languageName: String = "",
   val themeName: String = "",
   val timeFormatName: String = "",
-  val isDynamicColorsVisible: Boolean = false,
   val isMetricChecked: Boolean = false,
   val isAnalyticsChecked: Boolean = false,
   val dialog: GeneralSettingsDialog? = null,
-  val useDynamicColors: Boolean = false,
   val hapticFeedbackEnabled: Boolean = false,
 )
 
@@ -40,10 +38,6 @@ sealed interface GeneralSettingsEvent {
   data object RecreateActivity : GeneralSettingsEvent
 
   data object RestartApp : GeneralSettingsEvent
-
-  data class ApplyDynamicColorsAndRecreate(
-    val useDynamicColors: Boolean,
-  ) : GeneralSettingsEvent
 
   data object HapticFeedback : GeneralSettingsEvent
 }

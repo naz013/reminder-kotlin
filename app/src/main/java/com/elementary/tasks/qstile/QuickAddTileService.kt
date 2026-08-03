@@ -18,7 +18,7 @@ class QuickAddTileService : TileService() {
     qsTile?.apply {
       state = Tile.STATE_ACTIVE
       label = getString(R.string.add_reminder_menu)
-      icon = Icon.createWithResource(this@QuickAddTileService, R.drawable.ic_fluent_alert)
+      icon = Icon.createWithResource(this@QuickAddTileService, R.drawable.qs_tile_icon)
       updateTile()
     }
   }

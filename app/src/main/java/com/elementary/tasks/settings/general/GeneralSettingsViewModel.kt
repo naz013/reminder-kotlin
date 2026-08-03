@@ -9,7 +9,6 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.Module
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -79,12 +78,6 @@ class GeneralSettingsViewModel(
     dismissDialog()
   }
 
-  fun onDynamicColorsToggle() {
-    prefs.useDynamicColors = !prefs.useDynamicColors
-    refreshState()
-    event.emit(GeneralSettingsEvent.ApplyDynamicColorsAndRecreate(prefs.useDynamicColors))
-  }
-
   fun onMetricToggle() {
     prefs.useMetric = !prefs.useMetric
     refreshState()
@@ -146,8 +139,6 @@ class GeneralSettingsViewModel(
       languageName = languageOptions[prefs.appLanguage.coerceIn(languageOptions.indices)],
       themeName = themeOptions[themeIndexFor(prefs.nightMode)],
       timeFormatName = timeFormatOptions[prefs.hourFormat.coerceIn(timeFormatOptions.indices)],
-      isDynamicColorsVisible = Module.is12,
-      useDynamicColors = prefs.useDynamicColors,
       isMetricChecked = prefs.useMetric,
       isAnalyticsChecked = prefs.analyticsEnabled,
       hapticFeedbackEnabled = prefs.hapticsEnabled,

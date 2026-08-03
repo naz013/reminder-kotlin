@@ -16,11 +16,6 @@ class ThemePreferencesImpl(
       return prefs.mapStyle
     }
 
-  override val useDynamicColors: Boolean
-    get() {
-      return prefs.useDynamicColors
-    }
-
   override val birthdayColor: Int
     get() {
       return prefs.birthdayColor

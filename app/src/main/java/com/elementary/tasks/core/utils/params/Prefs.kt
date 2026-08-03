@@ -459,10 +459,6 @@ class Prefs(
     get() = getString(PrefsConstants.DROPBOX_TOKEN)
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
 
-  var useDynamicColors: Boolean
-    get() = getBoolean(PrefsConstants.DYNAMIC_COLORS, false)
-    set(value) = putBoolean(PrefsConstants.DYNAMIC_COLORS, value)
-
   var noteMigrationDone: Boolean
     get() = getBoolean("note_migration", false)
     set(value) = putBoolean("note_migration", value)

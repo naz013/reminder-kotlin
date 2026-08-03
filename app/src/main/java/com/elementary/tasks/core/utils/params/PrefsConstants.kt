@@ -66,7 +66,6 @@ object PrefsConstants {
   const val AUTO_BACKUP_STATE = "auto_backup_state"
   const val NIGHT_MODE = "night_mode"
   const val TO_BIRTHDAY_DAYS = "to_birthday_days"
-  const val DYNAMIC_COLORS = "dynamic_colors_13"
   const val ANALYTICS_ENABLED = "analytics_enabled"
   const val METRIC_SYSTEM = "metric_system"
 

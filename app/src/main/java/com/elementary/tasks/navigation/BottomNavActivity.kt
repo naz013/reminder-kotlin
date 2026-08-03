@@ -1,12 +1,21 @@
 package com.elementary.tasks.navigation
 
 import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.Crossfade
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
+import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
+import com.elementary.tasks.core.os.ContextSwitcher
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
@@ -34,28 +43,124 @@ import com.github.naz013.navigation.ViewNoteScreen
 import com.github.naz013.navigation.ViewReminderScreen
 import com.github.naz013.ui.common.compose.BaseAuthActivity
 import com.github.naz013.ui.common.compose.composeView
+import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.workapi.NetworkRequirement
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BottomNavActivity : BaseAuthActivity() {
   private val workScheduler by inject<WorkScheduler>()
+  private val contextSwitcher by inject<ContextSwitcher>()
+  private val initViewModel by viewModel<BottomNavInitViewModel>()
 
   private val adsProvider = AdsProvider()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    contextSwitcher.switchContext(this)
+
     enableEdgeToEdge()
     Logger.i(TAG, "Starting with action: ${intent.action}")
     Logger.i(TAG, "Starting with data: ${intent.data}")
     Logger.i(TAG, "Starting with extras: ${intent.extras?.keySet()?.toList()}")
 
     composeView {
-      AppNavGraph(initialKeys = resolveInitialNavKeys())
+      val initState by initViewModel.state.collectAsStateWithLifecycle()
+      val readyState = initState as? BottomNavInitState.Ready
+
+      if (readyState?.requiresLogin == true) {
+        LaunchedEffect(Unit) {
+          startActivity(LoginApi.authIntent(this@BottomNavActivity, isBack = false))
+          finish()
+        }
+      }
+
+      // Keeps the animated splash on screen through Loading and the brief requiresLogin ->
+      // finish() window, then crossfades into AppNavGraph once home is actually ready to show.
+      Crossfade(targetState = readyState != null && !readyState.requiresLogin, label = "bottomNavSplash") { showHome ->
+        if (showHome) {
+          LaunchedEffect(Unit) {
+            enableShortcuts()
+          }
+          AppNavGraph(initialKeys = resolveInitialNavKeys())
+        } else {
+          BottomNavSplashScreen()
+        }
+      }
     }
 
     adsProvider.showConsentMessage(this)
+  }
+
+  private fun enableShortcuts() {
+    val shortcutManager = getSystemService(ShortcutManager::class.java)
+    if (shortcutManager != null) {
+      val shortcut =
+        run {
+          val bundle =
+            ShortcutDestination.createBundle(
+              shortcut = ShortcutDestination.Shortcut.Reminder,
+            )
+          ShortcutInfo
+            .Builder(this, "id.reminder")
+            .setShortLabel(getString(R.string.add_reminder_menu))
+            .setLongLabel(getString(R.string.add_reminder_menu))
+            .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
+            .setIntents(
+              arrayOf(
+                Intent(Intent.ACTION_MAIN)
+                  .setClass(this, BottomNavActivity::class.java)
+                  .putExtras(bundle),
+              ),
+            ).build()
+        }
+
+      val shortcut2 =
+        run {
+          val bundle =
+            ShortcutDestination.createBundle(
+              shortcut = ShortcutDestination.Shortcut.Note,
+            )
+          ShortcutInfo
+            .Builder(this, "id.note")
+            .setShortLabel(getString(R.string.add_note))
+            .setLongLabel(getString(R.string.add_note))
+            .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
+            .setIntents(
+              arrayOf(
+                Intent(Intent.ACTION_MAIN)
+                  .setClass(this, BottomNavActivity::class.java)
+                  .putExtras(bundle),
+              ),
+            ).build()
+        }
+
+      if (initViewModel.isGoogleTasksEnabled) {
+        val bundle =
+          ShortcutDestination.createBundle(
+            shortcut = ShortcutDestination.Shortcut.GoogleTask,
+          )
+        val shortcut3 =
+          ShortcutInfo
+            .Builder(this, "id.google.tasks")
+            .setShortLabel(getString(R.string.add_google_task))
+            .setLongLabel(getString(R.string.add_google_task))
+            .setIcon(Icon.createWithResource(this, R.drawable.add_google_shortcut))
+            .setIntents(
+              arrayOf(
+                Intent(Intent.ACTION_MAIN)
+                  .setClass(this, BottomNavActivity::class.java)
+                  .putExtras(bundle),
+              ),
+            ).build()
+        shortcutManager.dynamicShortcuts = listOf(shortcut, shortcut2, shortcut3)
+      } else {
+        shortcutManager.dynamicShortcuts = listOf(shortcut, shortcut2)
+      }
+    }
   }
 
   /**

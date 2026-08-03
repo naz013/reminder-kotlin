@@ -1,7 +1,5 @@
-package com.elementary.tasks.splash
+package com.elementary.tasks.navigation
 
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
@@ -12,19 +10,28 @@ import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.workflow.WorkflowRulesUtil
 import com.github.naz013.appwidgets.AppWidgetPreviewUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.migration.GroupV2BackfillUseCase
 import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
-class SplashViewModel(
+sealed interface BottomNavInitState {
+  data object Loading : BottomNavInitState
+
+  data class Ready(val requiresLogin: Boolean) : BottomNavInitState
+}
+
+class BottomNavInitViewModel(
   googleTasksAuthManager: GoogleTasksAuthManager,
   private val prefs: Prefs,
   private val activateAllActiveRemindersUseCase: ActivateAllActiveRemindersUseCase,
@@ -41,23 +48,17 @@ class SplashViewModel(
   private val reminderV2BackfillUseCase: ReminderV2BackfillUseCase,
   private val workflowRulesUtil: WorkflowRulesUtil,
   private val jobScheduler: JobScheduler,
-) : ViewModel(),
-  DefaultLifecycleObserver {
+) : ViewModel() {
   val isGoogleTasksEnabled =
     featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
       googleTasksAuthManager.isAuthorized()
-  val openHome = mutableLiveDataOf<Boolean>()
 
-  override fun onCreate(owner: LifecycleOwner) {
-    super.onCreate(owner)
+  private val _state = MutableStateFlow<BottomNavInitState>(BottomNavInitState.Loading)
+  val state: StateFlow<BottomNavInitState> = _state.asStateFlow()
+
+  init {
     viewModelScope.launch(dispatcherProvider.default()) {
       presetInitProcessor.run()
-    }
-  }
-
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    viewModelScope.launch(dispatcherProvider.default()) {
       checkIfAppUpdated()
       checkDb()
       appWidgetPreviewUpdater.updateEventsWidgetPreview()
@@ -65,12 +66,11 @@ class SplashViewModel(
         prefs.occurrenceMigrated = true
         migrateExistingEventOccurrencesUseCase()
       }
-      withUIContext {
-        if (prefs.isSbNotificationEnabled) {
-          notifier.sendShowReminderPermanent()
-        }
-        openHome.postValue(prefs.hasPinCode)
+      if (prefs.isSbNotificationEnabled) {
+        notifier.sendShowReminderPermanent()
       }
+      delay(5.seconds)
+      _state.value = BottomNavInitState.Ready(requiresLogin = prefs.hasPinCode)
     }
   }
 

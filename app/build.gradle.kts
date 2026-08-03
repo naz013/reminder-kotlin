@@ -219,7 +219,6 @@ dependencies {
   implementation(libs.material)
 
   implementation(libs.androidx.multidex)
-  implementation(libs.androidx.splashscreen)
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.activity.compose)
 

@@ -30,7 +30,6 @@ androidx-recyclerview = "1.4.0"
 androidx-multidex = "2.0.1"
 androidx-appfunctions = "1.0.0-alpha10"
 androidx-biometric = "1.4.0-alpha07"
-androidx-splashscreen = "1.2.0"
 androidx-core-ktx = "1.19.0"
 androidx-activity-ktx = "1.13.0"
 androidx-work-runtime = "2.11.2"
@@ -114,7 +113,6 @@ androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview"
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "androidx-multidex" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidx-biometric" }
 androidx-biometric-compose = { group = "androidx.biometric", name = "biometric-compose", version.ref = "androidx-biometric" }
-androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-splashscreen" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity-ktx" }
 

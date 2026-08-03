@@ -1,14 +1,13 @@
-package com.elementary.tasks.splash
+package com.elementary.tasks.navigation
 
-import androidx.lifecycle.LifecycleOwner
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
 import com.elementary.tasks.core.data.repository.NoteImageMigration
+import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PresetInitProcessor
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.mockDispatcherProvider
@@ -29,7 +28,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class SplashViewModelTest : BaseTest() {
+// mockDispatcherProvider() uses Dispatchers.Unconfined, so the init{} coroutine below runs
+// synchronously and `state` is already Ready by the time createViewModel() returns.
+class BottomNavInitViewModelTest : BaseTest() {
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>()
   private val prefs = mockk<Prefs>(relaxed = true)
   private val activateAllActiveRemindersUseCase = mockk<ActivateAllActiveRemindersUseCase>(relaxed = true)
@@ -51,7 +52,7 @@ class SplashViewModelTest : BaseTest() {
   private var noteMigrationDone = false
   private val savedVersions = mutableSetOf<String>()
 
-  private lateinit var viewModel: SplashViewModel
+  private lateinit var viewModel: BottomNavInitViewModel
 
   @Before
   override fun setUp() {
@@ -74,8 +75,8 @@ class SplashViewModelTest : BaseTest() {
     viewModel = createViewModel()
   }
 
-  private fun createViewModel(): SplashViewModel =
-    SplashViewModel(
+  private fun createViewModel(): BottomNavInitViewModel =
+    BottomNavInitViewModel(
       googleTasksAuthManager = googleTasksAuthManager,
       prefs = prefs,
       activateAllActiveRemindersUseCase = activateAllActiveRemindersUseCase,
@@ -118,54 +119,44 @@ class SplashViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onCreate runs the preset init processor`() {
-    val owner = mockk<LifecycleOwner>(relaxed = true)
-
-    viewModel.onCreate(owner)
-
+  fun `init runs the preset init processor`() {
     coVerify(exactly = 1) { presetInitProcessor.run() }
   }
 
   @Test
-  fun `onResume initializes default groups and updates the widget preview`() {
-    val owner = mockk<LifecycleOwner>(relaxed = true)
-
-    viewModel.onResume(owner)
-
+  fun `init initializes default groups and updates the widget preview`() {
     coVerify(exactly = 1) { groupsUtil.initDefaultIfEmpty() }
     coVerify(exactly = 1) { appWidgetPreviewUpdater.updateEventsWidgetPreview() }
   }
 
   @Test
-  fun `onResume shows the permanent notification and opens home based on prefs`() {
+  fun `init shows the permanent notification and requires login based on prefs`() {
     every { prefs.isSbNotificationEnabled } returns true
     every { prefs.hasPinCode } returns true
-    val owner = mockk<LifecycleOwner>(relaxed = true)
 
-    viewModel.onResume(owner)
+    val vm = createViewModel()
 
     verify(exactly = 1) { notifier.sendShowReminderPermanent() }
-    assertEquals(true, viewModel.openHome.value)
+    assertEquals(BottomNavInitState.Ready(requiresLogin = true), vm.state.value)
   }
 
   @Test
-  fun `onResume does not show the notification when it is disabled in prefs`() {
+  fun `init does not show the notification when it is disabled in prefs`() {
     every { prefs.isSbNotificationEnabled } returns false
     every { prefs.hasPinCode } returns false
-    val owner = mockk<LifecycleOwner>(relaxed = true)
 
-    viewModel.onResume(owner)
+    val vm = createViewModel()
 
     verify(exactly = 0) { notifier.sendShowReminderPermanent() }
-    assertEquals(false, viewModel.openHome.value)
+    assertEquals(BottomNavInitState.Ready(requiresLogin = false), vm.state.value)
   }
 
   @Test
-  fun `onResume runs each guarded one-time migration only once across repeated resumes`() {
-    val owner = mockk<LifecycleOwner>(relaxed = true)
-
-    viewModel.onResume(owner)
-    viewModel.onResume(owner)
+  fun `each guarded one-time migration only runs once across repeated cold starts`() {
+    // viewModel from setUp() already ran the migrations once; a second cold start (e.g. after
+    // AppRestartController.restartApp() recreates BottomNavActivity) should see the prefs flags
+    // already set and skip them.
+    createViewModel()
 
     coVerify(exactly = 1) { migrateExistingEventOccurrencesUseCase() }
     coVerify(exactly = 1) { noteImageMigration.migrate() }

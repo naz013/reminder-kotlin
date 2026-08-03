@@ -165,9 +165,6 @@ private fun GeneralEntry(backStack: MutableList<NavKey>) {
     when (event) {
       GeneralSettingsEvent.RecreateActivity -> appRestartController.recreate()
       GeneralSettingsEvent.RestartApp -> appRestartController.restartApp()
-      is GeneralSettingsEvent.ApplyDynamicColorsAndRecreate -> {
-        appRestartController.applyDynamicColorsAndRecreate(event.useDynamicColors)
-      }
 
       is GeneralSettingsEvent.HapticFeedback -> {
         hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
@@ -185,7 +182,6 @@ private fun GeneralEntry(backStack: MutableList<NavKey>) {
       onLanguageClick = viewModel::onLanguageClick,
       onThemeClick = viewModel::onThemeClick,
       onTimeFormatClick = viewModel::onTimeFormatClick,
-      onDynamicColorsToggle = { viewModel.onDynamicColorsToggle() },
       onMetricToggle = { viewModel.onMetricToggle() },
       onAnalyticsToggle = { viewModel.onAnalyticsToggle() },
       onDialogOptionSelected = viewModel::onDialogOptionSelected,

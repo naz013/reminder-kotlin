@@ -3,8 +3,6 @@ package com.github.naz013.ui.common.activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
-import android.view.inputmethod.InputMethodManager
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -19,13 +17,11 @@ import com.github.naz013.ui.common.login.LoginLauncher
 import com.github.naz013.ui.common.login.LoginStateViewModel
 import com.github.naz013.ui.common.theme.ThemePreferences
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.google.android.material.color.DynamicColors
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 abstract class LightThemedActivity : AppCompatActivity() {
 
-  private val themeProvider by inject<ThemeProvider>()
   private val themePreferences by inject<ThemePreferences>()
   protected val language by inject<Language>()
   private val authPreferences by inject<AuthPreferences>()
@@ -38,11 +34,6 @@ abstract class LightThemedActivity : AppCompatActivity() {
       finish()
     }
   }
-
-  protected val isDarkMode: Boolean
-    get() {
-      return themeProvider.isDark
-    }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -93,36 +84,18 @@ abstract class LightThemedActivity : AppCompatActivity() {
   override fun onResume() {
     super.onResume()
     AppCompatDelegate.setDefaultNightMode(themePreferences.nightMode)
-    if (themePreferences.useDynamicColors) {
-      DynamicColors.applyToActivityIfAvailable(this)
-    }
   }
 
   override fun onRestart() {
     super.onRestart()
     AppCompatDelegate.setDefaultNightMode(themePreferences.nightMode)
-    if (themePreferences.useDynamicColors) {
-      DynamicColors.applyToActivityIfAvailable(this)
-    }
   }
 
   override fun attachBaseContext(newBase: Context) {
     super.attachBaseContext(language.onAttach(newBase))
   }
 
-  protected fun hideKeyboard(token: IBinder? = null) {
-    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?
-    if (token == null) {
-      val currentToken = window.currentFocus?.windowToken
-      currentToken?.let { imm?.hideSoftInputFromWindow(token, 0) }
-    } else {
-      imm?.hideSoftInputFromWindow(token, 0)
-    }
-  }
-
   protected fun isLogged() = intent.isLogged()
-
-  protected fun intentString(key: String, def: String = "") = intent.getStringExtra(key) ?: def
 
   open fun requireLogin() = false
 
