@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.request.ImageRequest
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
@@ -55,6 +57,7 @@ import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
@@ -110,6 +113,7 @@ class NoteEditViewModel(
   private val noteColorEngine: NoteColorEngine,
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) : ViewModel() {
 
   val is24HourFormat: Boolean = prefs.is24HourFormat
@@ -195,6 +199,7 @@ class NoteEditViewModel(
       } else {
         tagAssignmentRepository.attach(noteId, TaggedItemType.NOTE, tag.id)
       }
+      scheduleBackgroundWorkUseCase(workType = WorkType.Upload, dataType = DataType.TagAssignments)
     }
   }
 

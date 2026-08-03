@@ -198,6 +198,7 @@ class BuildReminderViewModel(
       } else {
         tagAssignmentRepository.attach(stableReminderId, TaggedItemType.REMINDER, tag.id)
       }
+      scheduleBackgroundWorkUseCase(workType = WorkType.Upload, dataType = DataType.TagAssignments)
     }
   }
 

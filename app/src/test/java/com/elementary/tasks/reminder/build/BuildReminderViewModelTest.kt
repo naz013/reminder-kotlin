@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelStore
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.utils.FeatureManager
@@ -43,8 +44,10 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.files.DataType
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
@@ -757,5 +760,22 @@ class BuildReminderViewModelTest : BaseTest() {
       store.clear()
 
       coVerify(exactly = 0) { resumeReminderUseCase(any()) }
+    }
+
+  @Test
+  fun `onTagToggle attaches an unselected tag and schedules an upload of the tag assignments snapshot`() =
+    runTest {
+      coEvery { tagAssignmentRepository.attach(any(), any(), any()) } returns Unit
+      val viewModel = createViewModel()
+
+      viewModel.onTagToggle(Tag(id = "tag-1", name = "Work", color = 0))
+
+      coVerify { tagAssignmentRepository.attach(any(), any(), "tag-1") }
+      verify {
+        scheduleBackgroundWorkUseCase(
+          workType = WorkType.Upload,
+          dataType = DataType.TagAssignments,
+        )
+      }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.BaseTest
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
@@ -77,6 +78,7 @@ open class NoteEditViewModelTestSupport : BaseTest() {
   protected val noteColorEngine = mockk<NoteColorEngine>()
   protected val tagRepository = mockk<TagRepository>()
   protected val tagAssignmentRepository = mockk<TagAssignmentRepository>()
+  protected val scheduleBackgroundWorkUseCase = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
 
   protected val fakeContext = mockk<Context>(relaxed = true)
 
@@ -228,5 +230,6 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       noteColorEngine = noteColorEngine,
       tagRepository = tagRepository,
       tagAssignmentRepository = tagAssignmentRepository,
+      scheduleBackgroundWorkUseCase = scheduleBackgroundWorkUseCase,
     )
 }
