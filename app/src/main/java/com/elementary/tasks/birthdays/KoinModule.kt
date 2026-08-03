@@ -8,6 +8,7 @@ import com.elementary.tasks.birthdays.dialog.CreateBirthdayActionScreenStateUseC
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayViewModel
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -15,6 +16,7 @@ val birthdaysModule = module {
   factory { UiBirthdayDateFormatter(get()) }
   factory { GetBirthdayActionsUseCase() }
   factory { CreateBirthdayActionScreenStateUseCase(get(), get(), get(), get(), get()) }
+  factoryOf(::BirthdaySmartListPredicate)
 
   viewModel { (id: String) ->
     BirthdayActionViewModel(

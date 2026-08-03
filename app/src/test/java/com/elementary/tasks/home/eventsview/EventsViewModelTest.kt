@@ -1,5 +1,6 @@
 package com.elementary.tasks.home.eventsview
 
+import com.elementary.tasks.birthdays.BirthdaySmartListPredicate
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.text.UiTextFormat
@@ -11,6 +12,7 @@ import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCa
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -50,6 +52,7 @@ class EventsViewModelTest {
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
+  private val birthdaySmartListPredicate = BirthdaySmartListPredicate(BirthdayDateCalculatorImpl())
 
   private lateinit var viewModel: EventsViewModel
 
@@ -79,6 +82,7 @@ class EventsViewModelTest {
         birthdayRepository = birthdayRepository,
         uiEventItemAdapter = uiEventItemAdapter,
         dateTimeManager = dateTimeManager,
+        birthdaySmartListPredicate = birthdaySmartListPredicate,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
         skipReminderUseCase = skipReminderUseCase,
         toggleReminderStateUseCase = toggleReminderStateUseCase,
@@ -241,6 +245,50 @@ class EventsViewModelTest {
       assertEquals(listOf("genuinely-overdue"), result.items.map { it.id })
     }
 
+  @Test
+  fun `today smart list keeps only birthdays occurring today`() =
+    runTest {
+      val now = LocalDateTime.of(2026, 8, 2, 12, 0)
+      every { dateTimeManager.getCurrentDateTime() } returns now
+      coEvery { birthdayRepository.getAll() } returns
+        listOf(
+          reminderBirthday(id = "today", day = 2, month = 8),
+          reminderBirthday(id = "later-this-month", day = 10, month = 8),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.TODAY)
+
+      assertEquals(listOf("today"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `this week smart list keeps only birthdays occurring in the next seven days`() =
+    runTest {
+      val now = LocalDateTime.of(2026, 8, 2, 12, 0)
+      every { dateTimeManager.getCurrentDateTime() } returns now
+      coEvery { birthdayRepository.getAll() } returns
+        listOf(
+          reminderBirthday(id = "this-week", day = 6, month = 8),
+          reminderBirthday(id = "next-month", day = 2, month = 9),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.THIS_WEEK)
+
+      assertEquals(listOf("this-week"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `overdue smart list excludes all birthdays since they always recur into the future`() =
+    runTest {
+      val now = LocalDateTime.of(2026, 8, 2, 12, 0)
+      every { dateTimeManager.getCurrentDateTime() } returns now
+      coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday(id = "b1", day = 1, month = 1))
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.OVERDUE)
+
+      assertEquals(emptyList<String>(), result.items.map { it.id })
+    }
+
   private fun reminderV2(
     id: String,
     summary: String = "",
@@ -258,7 +306,9 @@ class EventsViewModelTest {
   private fun reminderBirthday(
     id: String,
     name: String = "",
-  ) = Birthday(uuId = id, name = name, syncState = SyncState.Synced)
+    day: Int = 1,
+    month: Int = 1,
+  ) = Birthday(uuId = id, name = name, day = day, month = month, syncState = SyncState.Synced)
 
   private fun fakeReminderItem(id: String): UiEventReminder =
     UiEventReminder(

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.BirthdayQueryFilter
+import com.elementary.tasks.birthdays.BirthdaySmartListPredicate
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.reminder.lists.filter.query.ReminderV2QueryFilterInstance
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
@@ -44,6 +45,7 @@ class EventsViewModel(
   private val birthdayRepository: BirthdayRepository,
   private val uiEventItemAdapter: UiEventItemAdapter,
   private val dateTimeManager: DateTimeManager,
+  private val birthdaySmartListPredicate: BirthdaySmartListPredicate,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val skipReminderUseCase: SkipReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
@@ -92,7 +94,7 @@ class EventsViewModel(
     val groups = groupV2Repository.getAll()
 
     val filteredReminders = filterReminders(allReminders, query, categories, smartList)
-    val filteredBirthdays = filterBirthdays(allBirthdays, query)
+    val filteredBirthdays = filterBirthdays(allBirthdays, query, smartList)
 
     val groupsById = groups.associateBy { it.uuId }
     val items = uiEventItemAdapter.convertV2(filteredReminders, groupsById, filteredBirthdays)
@@ -135,7 +137,14 @@ class EventsViewModel(
   private fun filterBirthdays(
     birthdays: List<Birthday>,
     query: String,
-  ): List<Birthday> = if (query.isBlank()) birthdays else birthdays.filter(BirthdayQueryFilter(query))
+    smartList: SmartListFilter?,
+  ): List<Birthday> {
+    val byQuery = if (query.isBlank()) birthdays else birthdays.filter(BirthdayQueryFilter(query))
+    if (smartList == null) return byQuery
+
+    val today = dateTimeManager.getCurrentDateTime().toLocalDate()
+    return byQuery.filter { birthdaySmartListPredicate.matches(smartList, it, today) }
+  }
 
   fun onSearchQueryChange(query: String) {
     _eventsScreenState.update { it.copy(searchQuery = query) }
