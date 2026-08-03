@@ -2,7 +2,6 @@ package com.elementary.tasks
 
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnDetach
 import com.github.naz013.logging.Logger
@@ -74,14 +73,6 @@ class RotatingBannerAdsProvider(
         }
       }
     return true
-  }
-
-  private fun View.gone() {
-    visibility = View.GONE
-  }
-
-  private fun View.visible() {
-    visibility = View.VISIBLE
   }
 
   companion object {

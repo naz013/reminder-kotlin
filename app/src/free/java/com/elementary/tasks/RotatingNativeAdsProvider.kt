@@ -11,9 +11,6 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.view.doOnDetach
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.transparent
-import com.github.naz013.ui.common.view.visible
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
