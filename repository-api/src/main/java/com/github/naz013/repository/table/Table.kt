@@ -20,4 +20,6 @@ enum class Table(val tableName: String) {
   RemoteFileMetadata("RemoteFileMetadata"),
   EventOccurrence("EventOccurrence"),
   EventHistory("EventHistory"),
+  Tag("Tag"),
+  TagAssignment("TagAssignment"),
 }

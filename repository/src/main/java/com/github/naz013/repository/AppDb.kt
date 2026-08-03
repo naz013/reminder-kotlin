@@ -19,6 +19,8 @@ import com.github.naz013.repository.dao.ReminderDao
 import com.github.naz013.repository.dao.ReminderGroupDao
 import com.github.naz013.repository.dao.ReminderV2Dao
 import com.github.naz013.repository.dao.RemoteFileMetadataDao
+import com.github.naz013.repository.dao.TagAssignmentDao
+import com.github.naz013.repository.dao.TagDao
 import com.github.naz013.repository.dao.UsedTimeDao
 import com.github.naz013.repository.dao.WorkflowRuleDao
 import com.github.naz013.repository.dao.WorkflowTemplateDao
@@ -38,6 +40,8 @@ import com.github.naz013.repository.entity.ReminderEntity
 import com.github.naz013.repository.entity.ReminderGroupEntity
 import com.github.naz013.repository.entity.ReminderV2Entity
 import com.github.naz013.repository.entity.RemoteFileMetadataEntity
+import com.github.naz013.repository.entity.TagAssignmentEntity
+import com.github.naz013.repository.entity.TagEntity
 import com.github.naz013.repository.entity.UsedTimeEntity
 import com.github.naz013.repository.entity.WorkflowRuleEntity
 import com.github.naz013.repository.entity.WorkflowTemplateEntity
@@ -61,6 +65,7 @@ import com.github.naz013.repository.migrations.MIGRATION_25_26
 import com.github.naz013.repository.migrations.MIGRATION_26_27
 import com.github.naz013.repository.migrations.MIGRATION_27_28
 import com.github.naz013.repository.migrations.MIGRATION_28_29
+import com.github.naz013.repository.migrations.MIGRATION_29_30
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
@@ -90,9 +95,11 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     ReminderV2Entity::class,
     GroupV2Entity::class,
     WorkflowRuleEntity::class,
-    WorkflowTemplateEntity::class
+    WorkflowTemplateEntity::class,
+    TagEntity::class,
+    TagAssignmentEntity::class
   ],
-  version = 29,
+  version = 30,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -115,6 +122,8 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun remoteFileMetadataDao(): RemoteFileMetadataDao
   abstract fun eventOccurrenceDao(): EventOccurrenceDao
   abstract fun eventHistoryDao(): EventHistoryDao
+  abstract fun tagDao(): TagDao
+  abstract fun tagAssignmentDao(): TagAssignmentDao
 
   companion object {
 
@@ -152,7 +161,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_25_26,
             MIGRATION_26_27,
             MIGRATION_27_28,
-            MIGRATION_28_29
+            MIGRATION_28_29,
+            MIGRATION_29_30
           )
           .allowMainThreadQueries()
           .build()
