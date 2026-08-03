@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.build
 
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
+import com.github.naz013.domain.Tag
 
 data class BuildReminderState(
   val builderItems: List<UiBuilderItem> = emptyList(),
@@ -16,4 +17,6 @@ data class BuildReminderState(
   val hasSameInDb: Boolean = false,
   val is24HourFormat: Boolean = true,
   val hapticFeedbackEnabled: Boolean = true,
+  val allTags: List<Tag> = emptyList(),
+  val selectedTagIds: Set<String> = emptySet(),
 )

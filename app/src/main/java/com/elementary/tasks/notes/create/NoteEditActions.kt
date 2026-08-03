@@ -1,6 +1,7 @@
 package com.elementary.tasks.notes.create
 
 import android.content.ClipData
+import com.github.naz013.domain.Tag
 
 /**
  * Bundles every user-interaction callback for the note edit screen so the composable tree
@@ -36,4 +37,7 @@ data class NoteEditActions(
   val onSameNoteReplace: () -> Unit = {},
   val onDialogDismiss: () -> Unit = {},
   val onDrop: (ClipData) -> Unit = {},
+  val onTagsTabClick: () -> Unit = {},
+  val onTagToggle: (Tag) -> Unit = {},
+  val onManageTagsClick: () -> Unit = {},
 )

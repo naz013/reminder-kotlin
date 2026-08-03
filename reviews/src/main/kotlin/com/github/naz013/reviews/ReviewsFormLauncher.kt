@@ -25,34 +25,16 @@ interface ReviewsFormLauncher {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun rememberReviewsFormLauncher(): ReviewsFormLauncher {
-  val viewModel = koinViewModel<ReviewDialogViewModel>()
-
   val data = remember { mutableStateOf<Data?>(null) }
 
-  val toastDispatcher = rememberToastDispatcher()
-  val isLoading by viewModel.isLoading.observeAsState(false)
-
-  viewModel.submitSuccess.observeAsEvent {
-    toastDispatcher.showToast(messageRes = R.string.thank_you_for_your_feedback)
-    data.value = null
-  }
-  viewModel.submitError.observeAsEvent { message ->
-    toastDispatcher.showToast(message = message)
-  }
-
+  // Resolving ReviewDialogViewModel touches Firebase (via the reviews Koin module's
+  // FirestoreDatabase singleton), which throws if ReviewSdk.initialize() hasn't succeeded yet
+  // (e.g. no network shortly after a fresh install) - every screen that calls
+  // rememberReviewsFormLauncher() would otherwise crash on composition even though the user
+  // never opened the feedback form. Deferring resolution to only while the sheet is shown keeps
+  // that failure scoped to the rare case of actually submitting feedback offline.
   data.value?.let { request ->
-    ModalBottomSheet(onDismissRequest = { data.value = null }) {
-      ReviewFormContent(
-        title = request.title ?: stringResource(com.github.naz013.ui.common.R.string.feedback),
-        isLoading = isLoading,
-        allowLogs = request.allowLogsAttachment,
-        onSubmit = { rating, comment, attachLog, email ->
-          viewModel.submitReview(rating, comment, attachLog, email, request.appSource)
-        },
-        onDismiss = { data.value = null },
-        onShowError = { message -> toastDispatcher.showToast(message = message) },
-      )
-    }
+    ReviewFormSheet(request = request, onDismissRequest = { data.value = null })
   }
 
   return object : ReviewsFormLauncher {
@@ -63,6 +45,36 @@ fun rememberReviewsFormLauncher(): ReviewsFormLauncher {
     ) {
       data.value = Data(title, appSource, allowLogsAttachment)
     }
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReviewFormSheet(request: Data, onDismissRequest: () -> Unit) {
+  val viewModel = koinViewModel<ReviewDialogViewModel>()
+
+  val toastDispatcher = rememberToastDispatcher()
+  val isLoading by viewModel.isLoading.observeAsState(false)
+
+  viewModel.submitSuccess.observeAsEvent {
+    toastDispatcher.showToast(messageRes = R.string.thank_you_for_your_feedback)
+    onDismissRequest()
+  }
+  viewModel.submitError.observeAsEvent { message ->
+    toastDispatcher.showToast(message = message)
+  }
+
+  ModalBottomSheet(onDismissRequest = onDismissRequest) {
+    ReviewFormContent(
+      title = request.title ?: stringResource(com.github.naz013.ui.common.R.string.feedback),
+      isLoading = isLoading,
+      allowLogs = request.allowLogsAttachment,
+      onSubmit = { rating, comment, attachLog, email ->
+        viewModel.submitReview(rating, comment, attachLog, email, request.appSource)
+      },
+      onDismiss = onDismissRequest,
+      onShowError = { message -> toastDispatcher.showToast(message = message) },
+    )
   }
 }
 

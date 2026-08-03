@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.request.ImageRequest
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
@@ -39,6 +41,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
@@ -53,13 +57,20 @@ import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -71,6 +82,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.UUID
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NoteEditViewModel(
   private val id: String?,
   private val sharedText: String?,
@@ -99,6 +111,9 @@ class NoteEditViewModel(
   private val systemInfo: SystemInfo,
   private val imageLoader: ImageLoader,
   private val noteColorEngine: NoteColorEngine,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) : ViewModel() {
 
   val is24HourFormat: Boolean = prefs.is24HourFormat
@@ -156,6 +171,40 @@ class NoteEditViewModel(
     onNewDate(LocalDate.now())
 
     load()
+    observeTags()
+  }
+
+  private fun observeTags() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll().collect { tags ->
+        _state.update { it.copy(allTags = tags) }
+      }
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
+      _state.map { it.noteId }
+        .distinctUntilChanged()
+        .flatMapLatest { noteId -> tagAssignmentRepository.observeTagsForItem(noteId, TaggedItemType.NOTE) }
+        .collect { tags ->
+          _state.update { it.copy(selectedTagIds = tags.map(Tag::id).toSet()) }
+        }
+    }
+  }
+
+  fun onTagToggle(tag: Tag) {
+    val noteId = _state.value.noteId
+    val isSelected = tag.id in _state.value.selectedTagIds
+    viewModelScope.launch(dispatcherProvider.io()) {
+      if (isSelected) {
+        tagAssignmentRepository.detach(noteId, TaggedItemType.NOTE, tag.id)
+      } else {
+        tagAssignmentRepository.attach(noteId, TaggedItemType.NOTE, tag.id)
+      }
+      scheduleBackgroundWorkUseCase(workType = WorkType.Upload, dataType = DataType.TagAssignments)
+    }
+  }
+
+  fun onManageTagsClick() {
+    event.emit(ViewModelEvent.OpenManageTags)
   }
 
   fun onDateClicked() {
@@ -776,6 +825,8 @@ class NoteEditViewModel(
       val time: LocalTime,
       val title: String,
     ) : ViewModelEvent
+
+    data object OpenManageTags : ViewModelEvent
   }
 
   companion object {

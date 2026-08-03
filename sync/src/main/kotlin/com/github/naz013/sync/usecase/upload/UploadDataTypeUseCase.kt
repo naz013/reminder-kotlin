@@ -5,10 +5,12 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.files.DataType
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.settings.UploadSettingsUseCase
+import com.github.naz013.sync.settings.UploadTagAssignmentsUseCase
 
 internal class UploadDataTypeUseCase(
   private val uploadSingleUseCase: UploadSingleUseCase,
   private val uploadSettingsUseCase: UploadSettingsUseCase,
+  private val uploadTagAssignmentsUseCase: UploadTagAssignmentsUseCase,
   private val dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory,
 ) {
 
@@ -16,7 +18,8 @@ internal class UploadDataTypeUseCase(
    * Uploads all items of a specific data type that are waiting for upload or failed previously.
    *
    * For regular data types, uploads items with sync states: WaitingForUpload or FailedToUpload.
-   * For Settings type, delegates to UploadSettingsUseCase.
+   * For Settings/TagAssignments (whole-collection snapshot types), delegates to their own
+   * always-upload use case instead.
    * Continues uploading remaining items even if some fail.
    *
    * @param dataType The type of data to upload
@@ -26,6 +29,9 @@ internal class UploadDataTypeUseCase(
     if (dataType == DataType.Settings) {
       Logger.i(TAG, "Uploading settings")
       uploadSettingsUseCase()
+    } else if (dataType == DataType.TagAssignments) {
+      Logger.i(TAG, "Uploading tag assignments")
+      uploadTagAssignmentsUseCase()
     } else {
       val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
       val ids = repositoryCaller.getIdsByState(

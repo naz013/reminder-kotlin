@@ -1,5 +1,6 @@
 package com.elementary.tasks.home.eventsview
 
+import com.elementary.tasks.birthdays.BirthdaySmartListPredicate
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.text.UiTextFormat
@@ -10,8 +11,8 @@ import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -21,6 +22,7 @@ import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
+import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -44,13 +46,13 @@ class EventsViewModelTest {
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val uiEventItemAdapter = mockk<UiEventItemAdapter>()
-  private val textProvider = mockk<TextProvider>(relaxed = true)
   private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>()
   private val skipReminderUseCase = mockk<SkipReminderUseCase>()
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
+  private val birthdaySmartListPredicate = BirthdaySmartListPredicate(BirthdayDateCalculatorImpl())
 
   private lateinit var viewModel: EventsViewModel
 
@@ -63,7 +65,6 @@ class EventsViewModelTest {
     // doesn't crash on unmocked calls; individual tests override these as needed.
     coEvery { getRemindersV2ByRemovedStatusUseCase(any()) } returns emptyList()
     coEvery { birthdayRepository.getAll() } returns emptyList()
-    every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     // Echoes the filtered reminders/birthdays back as bare UiEventItems keyed by id, so tests can
     // assert on which domain objects survived filtering without depending on real UI formatting.
     every { uiEventItemAdapter.convertV2(any(), any(), any()) } answers {
@@ -80,8 +81,8 @@ class EventsViewModelTest {
         groupV2Repository = groupV2Repository,
         birthdayRepository = birthdayRepository,
         uiEventItemAdapter = uiEventItemAdapter,
-        textProvider = textProvider,
         dateTimeManager = dateTimeManager,
+        birthdaySmartListPredicate = birthdaySmartListPredicate,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
         skipReminderUseCase = skipReminderUseCase,
         toggleReminderStateUseCase = toggleReminderStateUseCase,
@@ -187,23 +188,127 @@ class EventsViewModelTest {
       assertEquals(emptyList<UiEventItem>(), result.items)
     }
 
+  @Test
+  fun `no group smart list keeps only reminders without a group`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "grouped", groupId = "group-1"),
+          reminderV2(id = "ungrouped", groupId = null),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.NO_GROUP)
+
+      assertEquals(listOf("ungrouped"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `today smart list keeps only reminders due today`() =
+    runTest {
+      val now = LocalDateTime.of(2026, 8, 2, 12, 0)
+      every { dateTimeManager.getCurrentDateTime() } returns now
+      // Reminders' eventDateTime is stored in UTC, so filterReminders() converts "now" to UTC
+      // before comparing - an identity conversion here keeps this test focused on the smart-list
+      // predicate rather than the timezone math (covered separately).
+      every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "today", eventDateTime = now.plusHours(1)),
+          reminderV2(id = "tomorrow", eventDateTime = now.plusDays(1)),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.TODAY)
+
+      assertEquals(listOf("today"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `overdue smart list accounts for the local-to-UTC offset instead of comparing local time directly`() =
+    runTest {
+      // Regression test for a bug where filterReminders() compared eventDateTime (always stored
+      // in UTC - see UiReminderListAdapter's utcToLocal conversion for the same field) directly
+      // against local "now", silently misclassifying reminders in any non-UTC timezone. Here the
+      // device is 2 hours ahead of UTC (e.g. Europe/Warsaw in summer): a reminder due in 1 local
+      // hour is genuinely in the future and must not show up as overdue.
+      val localNow = LocalDateTime.of(2026, 8, 2, 22, 0)
+      val utcNow = localNow.minusHours(2)
+      every { dateTimeManager.getCurrentDateTime() } returns localNow
+      every { dateTimeManager.localToUtc(localNow) } returns utcNow
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "due-in-one-local-hour", eventDateTime = utcNow.plusHours(1)),
+          reminderV2(id = "genuinely-overdue", eventDateTime = utcNow.minusMinutes(1)),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.OVERDUE)
+
+      assertEquals(listOf("genuinely-overdue"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `today smart list keeps only birthdays occurring today`() =
+    runTest {
+      val now = LocalDateTime.of(2026, 8, 2, 12, 0)
+      every { dateTimeManager.getCurrentDateTime() } returns now
+      coEvery { birthdayRepository.getAll() } returns
+        listOf(
+          reminderBirthday(id = "today", day = 2, month = 8),
+          reminderBirthday(id = "later-this-month", day = 10, month = 8),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.TODAY)
+
+      assertEquals(listOf("today"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `this week smart list keeps only birthdays occurring in the next seven days`() =
+    runTest {
+      val now = LocalDateTime.of(2026, 8, 2, 12, 0)
+      every { dateTimeManager.getCurrentDateTime() } returns now
+      coEvery { birthdayRepository.getAll() } returns
+        listOf(
+          reminderBirthday(id = "this-week", day = 6, month = 8),
+          reminderBirthday(id = "next-month", day = 2, month = 9),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.THIS_WEEK)
+
+      assertEquals(listOf("this-week"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `overdue smart list excludes all birthdays since they always recur into the future`() =
+    runTest {
+      val now = LocalDateTime.of(2026, 8, 2, 12, 0)
+      every { dateTimeManager.getCurrentDateTime() } returns now
+      coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday(id = "b1", day = 1, month = 1))
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.OVERDUE)
+
+      assertEquals(emptyList<String>(), result.items.map { it.id })
+    }
+
   private fun reminderV2(
     id: String,
     summary: String = "",
     isShopping: Boolean = false,
     groupId: String? = null,
+    eventDateTime: LocalDateTime? = null,
   ) = ReminderV2(
     uuId = id,
     summary = summary,
     groupId = groupId,
-    schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+    schedule = ReminderSchedule(startDateTime = LocalDateTime.now(), eventDateTime = eventDateTime),
     action = if (isShopping) ReminderAction.Shopping else ReminderAction.None,
   )
 
   private fun reminderBirthday(
     id: String,
     name: String = "",
-  ) = Birthday(uuId = id, name = name, syncState = SyncState.Synced)
+    day: Int = 1,
+    month: Int = 1,
+  ) = Birthday(uuId = id, name = name, day = day, month = month, syncState = SyncState.Synced)
 
   private fun fakeReminderItem(id: String): UiEventReminder =
     UiEventReminder(

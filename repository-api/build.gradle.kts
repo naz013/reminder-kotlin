@@ -5,4 +5,5 @@ plugins {
 dependencies {
   implementation(project(":domain"))
   implementation(libs.threetenbp)
+  implementation(libs.kotlinx.coroutines.core)
 }

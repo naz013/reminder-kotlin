@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
 import com.elementary.tasks.notes.NoteColorEngine
+import com.github.naz013.domain.Tag
 import com.github.naz013.domain.font.FontParams
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -38,9 +39,11 @@ data class NoteEditState(
   val noteId: String = UUID.randomUUID().toString(),
   val sliderColors: List<Color> = emptyList(),
   val hapticFeedbackEnabled: Boolean = true,
+  val allTags: List<Tag> = emptyList(),
+  val selectedTagIds: Set<String> = emptySet(),
 )
 
-enum class EditTab { COLOR, FONT, REMINDER, IMAGE }
+enum class EditTab { COLOR, FONT, REMINDER, IMAGE, TAGS }
 
 /** Which of the two text fields last had focus — drives which field's font size/style
  *  [com.elementary.tasks.notes.create.FontPanel] displays and edits. */

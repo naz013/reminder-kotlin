@@ -47,8 +47,10 @@ import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.icalendar.iCalendarModule
+import com.github.naz013.insights.insightsModule
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.legalModule
+import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DataDestination
@@ -59,6 +61,7 @@ import com.github.naz013.reviews.ReviewSdk
 import com.github.naz013.reviews.config.SecondaryFirebaseConfig
 import com.github.naz013.reviews.reviewsKoinModule
 import com.github.naz013.sync.syncApiModule
+import com.github.naz013.tags.tagsModule
 import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
@@ -165,6 +168,9 @@ class ReminderApp :
           intentModule,
           workflowModule,
           fileModule,
+          tagsModule,
+          insightsModule,
+          localBackupModule,
         ),
       )
     }

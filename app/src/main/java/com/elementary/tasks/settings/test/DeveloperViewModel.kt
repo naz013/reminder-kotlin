@@ -8,6 +8,8 @@ import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.history.EventHistoricalRecord
+import com.github.naz013.domain.history.EventHistoricalRecordType
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
@@ -33,6 +35,8 @@ import com.github.naz013.repository.RecentQueryRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RemoteFileMetadataRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.UsedTimeRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.repository.WorkflowTemplateRepository
@@ -46,6 +50,7 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+import java.util.UUID
 
 class DeveloperViewModel(
   private val legalDocumentRepository: LegalDocumentRepository,
@@ -69,6 +74,8 @@ class DeveloperViewModel(
   private val groupV2Repository: GroupV2Repository,
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val workflowTemplateRepository: WorkflowTemplateRepository,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
   private val activateReminderUseCase: ActivateReminderUseCase,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
@@ -140,6 +147,13 @@ class DeveloperViewModel(
       insertDemoBirthdays()
       insertDemoNotes()
       navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("Demo data has been inserted")))
+    }
+  }
+
+  fun onInsertInsightsDemoDataClick() {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      insertInsightsDemoData()
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("Insights demo data has been inserted")))
     }
   }
 
@@ -274,6 +288,8 @@ class DeveloperViewModel(
       Table.GroupV2 -> groupV2Repository.deleteAll()
       Table.WorkflowRule -> workflowRuleRepository.deleteAll()
       Table.WorkflowTemplate -> workflowTemplateRepository.deleteAll()
+      Table.Tag -> tagRepository.deleteAll()
+      Table.TagAssignment -> tagAssignmentRepository.deleteAll()
     }
   }
 
@@ -395,6 +411,90 @@ class DeveloperViewModel(
         ),
       )
     }
+  }
+
+  /**
+   * Insights reads [EventHistoricalRecord]s of type Reminder to build streaks, a weekly trend
+   * chart and a busiest-day-of-week stat (see ReminderStreakCalculator/CompletionStatsCalculator
+   * in :insights) - none of that has anything to show without fabricated history, since real
+   * history only accumulates as reminders actually fire. Each demo habit gets a current streak
+   * running up to today, an older/longer streak further back (so "longest" differs from
+   * "current"), and a few scattered single days for weekly-trend/busiest-day variety.
+   */
+  private suspend fun insertInsightsDemoData() {
+    val today = LocalDate.now()
+    val groupId = groupV2Repository.defaultGroup()?.uuId
+    val startDateTime = dateTimeManager.getCurrentDateTime()
+    val habitTime = LocalTime.of(8, 0)
+
+    data class Habit(val title: String, val dates: List<LocalDate>)
+
+    val habits =
+      listOf(
+        Habit(
+          title = "Morning meditation",
+          dates = buildStreakDates(today, currentStreakDays = 10, gapDays = 4, earlierStreakDays = 6, scatterCount = 2),
+        ),
+        Habit(
+          title = "Drink 8 glasses of water",
+          dates = buildStreakDates(today, currentStreakDays = 4, gapDays = 8, earlierStreakDays = 18, scatterCount = 3),
+        ),
+        Habit(
+          title = "Evening walk",
+          dates = buildStreakDates(today, currentStreakDays = 2, gapDays = 6, earlierStreakDays = 5, scatterCount = 4),
+        ),
+      )
+
+    val records = mutableListOf<EventHistoricalRecord>()
+    habits.forEach { habit ->
+      val reminder =
+        ReminderV2(
+          summary = habit.title,
+          schedule =
+            ReminderSchedule(
+              startDateTime = startDateTime,
+              eventDateTime = dateTimeManager.localToUtc(LocalDateTime.of(today, habitTime)),
+            ),
+          recurrence = RecurrenceRule.Daily(repeatInterval = 24 * 60 * 60 * 1000L),
+          groupId = groupId,
+        )
+      reminderV2Repository.save(reminder)
+      habit.dates.forEach { date ->
+        records +=
+          EventHistoricalRecord(
+            id = UUID.randomUUID().toString(),
+            eventId = reminder.uuId,
+            date = date,
+            time = habitTime,
+            type = EventHistoricalRecordType.Reminder,
+          )
+      }
+    }
+    eventHistoryRepository.saveAll(records)
+  }
+
+  /**
+   * [currentStreakDays] consecutive days ending today, then a gap of [gapDays], then an older
+   * consecutive run of [earlierStreakDays], then [scatterCount] single days further back still -
+   * all within the 8-week window Insights charts (see InsightsViewModel.WEEKLY_TREND_WEEKS).
+   */
+  private fun buildStreakDates(
+    today: LocalDate,
+    currentStreakDays: Int,
+    gapDays: Int,
+    earlierStreakDays: Int,
+    scatterCount: Int,
+  ): List<LocalDate> {
+    val dates = mutableListOf<LocalDate>()
+    for (i in 0 until currentStreakDays) dates += today.minusDays(i.toLong())
+
+    val earlierStreakEnd = today.minusDays((currentStreakDays + gapDays).toLong())
+    for (i in 0 until earlierStreakDays) dates += earlierStreakEnd.minusDays(i.toLong())
+
+    val scatterBase = earlierStreakEnd.minusDays(earlierStreakDays.toLong() + 3)
+    for (i in 0 until scatterCount) dates += scatterBase.minusDays((i * 5).toLong())
+
+    return dates
   }
 
   private fun prepareReminder(selectedItem: Int): ReminderV2 {

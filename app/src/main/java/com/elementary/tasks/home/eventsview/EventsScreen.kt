@@ -45,6 +45,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
+import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 
 private val HEADER_ELEVATION = 3.dp
 
@@ -55,11 +56,13 @@ fun EventsScreen(
   onBackClick: () -> Unit,
   onSearchQueryChange: (String) -> Unit,
   onCategoryToggle: (EventCategory) -> Unit,
+  onSmartListSelected: (SmartListFilter?) -> Unit,
   onAddReminderClick: () -> Unit,
   onAddShoppingClick: () -> Unit,
   onAddBirthdayClick: () -> Unit,
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
+  onTagsClick: () -> Unit,
   onItemClick: (UiEventItem) -> Unit,
   onEventMenuAction: (UiEventItem, EventMenuAction) -> Unit,
   modifier: Modifier = Modifier,
@@ -83,6 +86,7 @@ fun EventsScreen(
             onAddBirthdayClick = onAddBirthdayClick,
             onArchiveClick = onArchiveClick,
             onGroupsClick = onGroupsClick,
+            onTagsClick = onTagsClick,
           )
 
           if (state.listState !is ListState.Empty || state.searchQuery.isNotEmpty()) {
@@ -100,6 +104,12 @@ fun EventsScreen(
           CategoryChipRow(
             selected = state.selectedCategories,
             onToggle = onCategoryToggle,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+          )
+
+          SmartListChipRow(
+            selected = state.selectedSmartList,
+            onSelect = onSmartListSelected,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
           )
         }
@@ -214,6 +224,35 @@ private fun EventCategory.titleRes(): Int =
     EventCategory.BIRTHDAYS -> R.string.birthdays
   }
 
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SmartListChipRow(
+  selected: SmartListFilter?,
+  onSelect: (SmartListFilter?) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  FlowRow(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    SmartListFilter.entries.forEach { filter ->
+      FilterChip(
+        selected = filter == selected,
+        onClick = { onSelect(filter) },
+        label = { Text(stringResource(filter.titleRes())) },
+      )
+    }
+  }
+}
+
+private fun SmartListFilter.titleRes(): Int =
+  when (this) {
+    SmartListFilter.TODAY -> R.string.smart_list_today
+    SmartListFilter.OVERDUE -> R.string.smart_list_overdue
+    SmartListFilter.THIS_WEEK -> R.string.smart_list_this_week
+    SmartListFilter.NO_GROUP -> R.string.smart_list_no_group
+  }
+
 @Composable
 private fun EventsEmptyState(modifier: Modifier = Modifier) {
   Column(
@@ -245,6 +284,7 @@ private fun EventsTopBar(
   onAddBirthdayClick: () -> Unit,
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
+  onTagsClick: () -> Unit,
 ) {
   TopAppBar(
     title = { Text(stringResource(R.string.events)) },
@@ -264,6 +304,7 @@ private fun EventsTopBar(
       OverflowMenuButton(
         onArchiveClick = onArchiveClick,
         onGroupsClick = onGroupsClick,
+        onTagsClick = onTagsClick,
       )
     },
     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
@@ -308,12 +349,14 @@ private fun AddMenuButton(
 private fun OverflowMenuButton(
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
+  onTagsClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
   val actions =
     listOf(
       Triple(0, stringResource(R.string.reminders_archive), R.drawable.ic_fluent_archive) to onArchiveClick,
       Triple(1, stringResource(R.string.groups), R.drawable.ic_fluent_group) to onGroupsClick,
+      Triple(2, stringResource(R.string.tags), R.drawable.ic_builder_group) to onTagsClick,
     )
   Box {
     MenuIconButton(
@@ -339,11 +382,13 @@ private fun EventsScreenEmptyPreview() {
       onBackClick = {},
       onSearchQueryChange = {},
       onCategoryToggle = {},
+      onSmartListSelected = {},
       onAddReminderClick = {},
       onAddShoppingClick = {},
       onAddBirthdayClick = {},
       onArchiveClick = {},
       onGroupsClick = {},
+      onTagsClick = {},
       onItemClick = {},
       onEventMenuAction = { _, _ -> },
     )

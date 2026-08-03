@@ -356,6 +356,7 @@ class RemindersSettingsViewModel(
         lockScreenVisibilityValues().indexOf(prefs.defaultLockScreenVisibility).coerceAtLeast(0)
       ],
       defaultVibrationPatternName = vibrationPatternOptions()[selectedVibrationPatternIndex()],
+      isInsightsVisible = buildInfo.isPro,
     )
   }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.BaseTest
+import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
@@ -30,9 +31,12 @@ import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -72,6 +76,9 @@ open class NoteEditViewModelTestSupport : BaseTest() {
   protected val systemInfo = mockk<SystemInfo>(relaxed = true)
   protected val imageLoader = mockk<ImageLoader>()
   protected val noteColorEngine = mockk<NoteColorEngine>()
+  protected val tagRepository = mockk<TagRepository>()
+  protected val tagAssignmentRepository = mockk<TagAssignmentRepository>()
+  protected val scheduleBackgroundWorkUseCase = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
 
   protected val fakeContext = mockk<Context>(relaxed = true)
 
@@ -116,6 +123,9 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       NoteColorEngine.Colors(background = Color.White, content = Color.Black)
     }
     every { noteColorEngine.allColors() } returns listOf(Color.Red, Color.Green, Color.Blue)
+
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
   }
 
   private fun ensureWebUrlPatternIsUsable() {
@@ -218,5 +228,8 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       systemInfo = systemInfo,
       imageLoader = imageLoader,
       noteColorEngine = noteColorEngine,
+      tagRepository = tagRepository,
+      tagAssignmentRepository = tagAssignmentRepository,
+      scheduleBackgroundWorkUseCase = scheduleBackgroundWorkUseCase,
     )
 }

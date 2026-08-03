@@ -5,12 +5,14 @@ import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.files.DataType
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.files.DataType
+import com.github.naz013.repository.TagAssignmentRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
@@ -33,6 +35,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
   private lateinit var deactivateReminderUseCase: DeactivateReminderUseCase
   private lateinit var eventOccurrenceRepository: EventOccurrenceRepository
   private lateinit var eventHistoryRepository: EventHistoryRepository
+  private lateinit var tagAssignmentRepository: TagAssignmentRepository
 
   private lateinit var useCase: DeleteAllReminderUseCase
 
@@ -48,6 +51,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
     deactivateReminderUseCase = mockk(relaxed = true)
     eventOccurrenceRepository = mockk(relaxed = true)
     eventHistoryRepository = mockk(relaxed = true)
+    tagAssignmentRepository = mockk(relaxed = true)
 
     useCase =
       DeleteAllReminderUseCase(
@@ -57,6 +61,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         deactivateReminderUseCase = deactivateReminderUseCase,
         eventOccurrenceRepository = eventOccurrenceRepository,
         eventHistoryRepository = eventHistoryRepository,
+        tagAssignmentRepository = tagAssignmentRepository,
       )
   }
 
@@ -128,6 +133,9 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 1) { eventOccurrenceRepository.deleteByEventId("cal-201") }
       coVerify(exactly = 1) { eventOccurrenceRepository.deleteByEventId("cal-202") }
       coVerify(exactly = 1) { eventOccurrenceRepository.deleteByEventId("cal-203") }
+      coVerify(exactly = 1) { tagAssignmentRepository.detachAll("cal-201", TaggedItemType.REMINDER) }
+      coVerify(exactly = 1) { tagAssignmentRepository.detachAll("cal-202", TaggedItemType.REMINDER) }
+      coVerify(exactly = 1) { tagAssignmentRepository.detachAll("cal-203", TaggedItemType.REMINDER) }
     }
 
   @Test
@@ -163,9 +171,11 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
         googleCalendarUtils.deleteEvents("order-301")
         eventHistoryRepository.deleteByEventId("order-301")
         eventOccurrenceRepository.deleteByEventId("order-301")
+        tagAssignmentRepository.detachAll("order-301", TaggedItemType.REMINDER)
         googleCalendarUtils.deleteEvents("order-302")
         eventHistoryRepository.deleteByEventId("order-302")
         eventOccurrenceRepository.deleteByEventId("order-302")
+        tagAssignmentRepository.detachAll("order-302", TaggedItemType.REMINDER)
       }
     }
 
@@ -191,6 +201,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 0) { googleCalendarUtils.deleteEvents(any()) }
       coVerify(exactly = 0) { eventHistoryRepository.deleteByEventId(any()) }
       coVerify(exactly = 0) { eventOccurrenceRepository.deleteByEventId(any()) }
+      coVerify(exactly = 0) { tagAssignmentRepository.detachAll(any(), any()) }
     }
 
   @Test
@@ -218,6 +229,7 @@ class DeleteAllReminderUseCaseTest : BaseTest() {
       coVerify(exactly = 1) { googleCalendarUtils.deleteEvents("single-401") }
       coVerify(exactly = 1) { eventHistoryRepository.deleteByEventId("single-401") }
       coVerify(exactly = 1) { eventOccurrenceRepository.deleteByEventId("single-401") }
+      coVerify(exactly = 1) { tagAssignmentRepository.detachAll("single-401", TaggedItemType.REMINDER) }
     }
 
   @Test

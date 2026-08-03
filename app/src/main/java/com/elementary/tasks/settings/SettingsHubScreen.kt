@@ -19,15 +19,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
 fun SettingsHubScreen(
+  modifier: Modifier = Modifier,
   state: SettingsHubState,
   onBuyProClick: () -> Unit,
   onUpdateClick: () -> Unit,
   onGeneralClick: () -> Unit,
-  onCloudBackupClick: () -> Unit,
+  onBackupClick: () -> Unit,
   onCalendarClick: () -> Unit,
   onRemindersClick: () -> Unit,
   onBirthdaysClick: () -> Unit,
@@ -35,7 +37,6 @@ fun SettingsHubScreen(
   onNotesClick: () -> Unit,
   onOtherClick: () -> Unit,
   onDeveloperClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier =
@@ -112,15 +113,14 @@ fun SettingsHubScreen(
     SettingsItem(
       title = stringResource(R.string.general),
       icon = painterResource(R.drawable.ic_fluent_system),
-      dividerTop = true,
       dividerBottom = true,
       onClick = onGeneralClick,
     )
     SettingsItem(
-      title = stringResource(R.string.cloud_backup),
-      icon = painterResource(R.drawable.ic_fluent_cloud_backup),
+      title = stringResource(R.string.backup),
+      icon = AppIcons.Fluent.CloudSyncComplete,
       dividerBottom = true,
-      onClick = onCloudBackupClick,
+      onClick = onBackupClick,
     )
     SettingsItem(
       title = stringResource(R.string.calendar),

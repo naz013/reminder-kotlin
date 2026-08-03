@@ -7,6 +7,7 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagRepository
 
 internal class DataTypeRepositoryCallerFactory(
   private val noteRepository: NoteRepository,
@@ -14,7 +15,8 @@ internal class DataTypeRepositoryCallerFactory(
   private val placeRepository: PlaceRepository,
   private val recurPresetRepository: RecurPresetRepository,
   private val reminderV2Repository: ReminderV2Repository,
-  private val groupV2Repository: GroupV2Repository
+  private val groupV2Repository: GroupV2Repository,
+  private val tagRepository: TagRepository
 ) {
 
   fun getCaller(dataType: DataType): DataTypeRepositoryCaller<*> {
@@ -29,6 +31,8 @@ internal class DataTypeRepositoryCallerFactory(
       DataType.Settings -> NoopRepositoryCaller()
       DataType.RecurPresets -> RecurPresetRepositoryCaller(recurPresetRepository)
       DataType.SharedNote -> NoopRepositoryCaller()
+      DataType.Tags -> TagRepositoryCaller(tagRepository)
+      DataType.TagAssignments -> NoopRepositoryCaller()
     }
   }
 }

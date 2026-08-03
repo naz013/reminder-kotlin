@@ -3,22 +3,16 @@ package com.elementary.tasks.home.eventsview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayQueryFilter
+import com.elementary.tasks.birthdays.BirthdaySmartListPredicate
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
-import com.elementary.tasks.reminder.lists.filter.DateRangeFilterGroup
-import com.elementary.tasks.reminder.lists.filter.FilterGroup
-import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilter
-import com.elementary.tasks.reminder.lists.filter.ReminderGroupFilterGroup
 import com.elementary.tasks.reminder.lists.filter.query.ReminderV2QueryFilterInstance
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -29,6 +23,8 @@ import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
+import com.github.naz013.usecase.reminders.smartlist.ReminderSmartListPredicate
+import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +35,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.threeten.bp.LocalDate
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class EventsViewModel(
@@ -49,8 +44,8 @@ class EventsViewModel(
   private val groupV2Repository: GroupV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val uiEventItemAdapter: UiEventItemAdapter,
-  private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
+  private val birthdaySmartListPredicate: BirthdaySmartListPredicate,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val skipReminderUseCase: SkipReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
@@ -65,6 +60,7 @@ class EventsViewModel(
 
   private val searchQuery = MutableStateFlow("")
   private val selectedCategories = MutableStateFlow(EventCategory.entries.toSet())
+  private val selectedSmartList = MutableStateFlow<SmartListFilter?>(null)
   private val refreshSignal = MutableStateFlow(0)
 
   init {
@@ -72,10 +68,11 @@ class EventsViewModel(
       combine(
         searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
         selectedCategories,
+        selectedSmartList,
         refreshSignal,
-      ) { query, categories, _ -> Pair(query, categories) }
-        .flatMapLatest { (query, categories) ->
-          flow { emit(loadMerged(query, categories)) }
+      ) { query, categories, smartList, _ -> Triple(query, categories, smartList) }
+        .flatMapLatest { (query, categories, smartList) ->
+          flow { emit(loadMerged(query, categories, smartList)) }
         }.collect { applyList(it) }
     }
   }
@@ -87,6 +84,7 @@ class EventsViewModel(
   internal suspend fun loadMerged(
     query: String,
     categories: Set<EventCategory>,
+    smartList: SmartListFilter? = null,
   ): MergedResult {
     val reminderCategoriesSelected =
       categories.contains(EventCategory.REMINDERS) || categories.contains(EventCategory.SHOPPING)
@@ -95,14 +93,12 @@ class EventsViewModel(
     val allBirthdays = if (categories.contains(EventCategory.BIRTHDAYS)) birthdayRepository.getAll() else emptyList()
     val groups = groupV2Repository.getAll()
 
-    val canFilter = prepareFilters(allReminders, groups, reminderCategoriesSelected)
-
-    val filteredReminders = filterReminders(allReminders, query, categories)
-    val filteredBirthdays = filterBirthdays(allBirthdays, query)
+    val filteredReminders = filterReminders(allReminders, query, categories, smartList)
+    val filteredBirthdays = filterBirthdays(allBirthdays, query, smartList)
 
     val groupsById = groups.associateBy { it.uuId }
     val items = uiEventItemAdapter.convertV2(filteredReminders, groupsById, filteredBirthdays)
-    return MergedResult(items, canFilter)
+    return MergedResult(items)
   }
 
   private fun applyList(result: MergedResult) {
@@ -113,53 +109,11 @@ class EventsViewModel(
     }
   }
 
-  private fun prepareFilters(
-    reminders: List<ReminderV2>,
-    groups: List<GroupV2>,
-    reminderCategoriesSelected: Boolean,
-  ): Boolean {
-    val filterGroups = mutableListOf<FilterGroup>()
-    val groupFilters = groups.map { ReminderGroupFilter(it.uuId, it.title) }
-    if (groupFilters.isNotEmpty()) {
-      filterGroups.add(
-        ReminderGroupFilterGroup(
-          id = GROUP_FILTER_ID,
-          title = textProvider.getString(R.string.groups),
-          appliedFilter = null,
-          filters = groupFilters,
-        ),
-      )
-    }
-
-    if (reminders.isNotEmpty()) {
-      var minDate = LocalDate.now()
-      var maxDate = LocalDate.now()
-      reminders.forEach {
-        val reminderDate = it.schedule.eventDateTime?.let { dt -> dateTimeManager.utcToLocal(dt) }?.toLocalDate() ?: return@forEach
-        if (reminderDate.isBefore(minDate)) {
-          minDate = reminderDate
-        } else if (reminderDate.isAfter(maxDate)) {
-          maxDate = reminderDate
-        }
-      }
-      filterGroups.add(
-        DateRangeFilterGroup(
-          id = DATE_RANGE_FILTER_ID,
-          title = textProvider.getString(R.string.date_range),
-          appliedFilter = null,
-          minDate = minDate,
-          maxDate = maxDate,
-        ),
-      )
-    }
-
-    return filterGroups.isNotEmpty() && reminders.isNotEmpty() && reminderCategoriesSelected
-  }
-
   private fun filterReminders(
     reminders: List<ReminderV2>,
     query: String,
     categories: Set<EventCategory>,
+    smartList: SmartListFilter?,
   ): List<ReminderV2> {
     val byCategory =
       reminders.filter { reminder ->
@@ -167,13 +121,30 @@ class EventsViewModel(
         if (isShopping) categories.contains(EventCategory.SHOPPING) else categories.contains(EventCategory.REMINDERS)
       }
     val byQuery = if (query.isBlank()) byCategory else byCategory.filter(ReminderV2QueryFilterInstance(query))
-    return byQuery
+    val bySmartList =
+      if (smartList == null) {
+        byQuery
+      } else {
+        // reminder.schedule.eventDateTime is stored in UTC (see UiReminderListAdapter's
+        // utcToLocal conversion for the same field) - comparing it against local "now" would
+        // silently misclassify Today/Overdue/This week in any non-UTC timezone.
+        val now = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime())
+        byQuery.filter { ReminderSmartListPredicate.matches(smartList, it, now) }
+      }
+    return bySmartList
   }
 
   private fun filterBirthdays(
     birthdays: List<Birthday>,
     query: String,
-  ): List<Birthday> = if (query.isBlank()) birthdays else birthdays.filter(BirthdayQueryFilter(query))
+    smartList: SmartListFilter?,
+  ): List<Birthday> {
+    val byQuery = if (query.isBlank()) birthdays else birthdays.filter(BirthdayQueryFilter(query))
+    if (smartList == null) return byQuery
+
+    val today = dateTimeManager.getCurrentDateTime().toLocalDate()
+    return byQuery.filter { birthdaySmartListPredicate.matches(smartList, it, today) }
+  }
 
   fun onSearchQueryChange(query: String) {
     _eventsScreenState.update { it.copy(searchQuery = query) }
@@ -185,6 +156,12 @@ class EventsViewModel(
     val updated = if (current.contains(category)) current - category else current + category
     selectedCategories.value = updated
     _eventsScreenState.update { it.copy(selectedCategories = updated) }
+  }
+
+  fun onSmartListSelected(filter: SmartListFilter?) {
+    val updated = if (selectedSmartList.value == filter) null else filter
+    selectedSmartList.value = updated
+    _eventsScreenState.update { it.copy(selectedSmartList = updated) }
   }
 
   fun onItemClick(item: UiEventItem) {
@@ -302,9 +279,12 @@ class EventsViewModel(
     navigationEvent.value = Event(NavigationEvent.OpenGroups)
   }
 
+  fun onTagsClick() {
+    navigationEvent.value = Event(NavigationEvent.OpenTags)
+  }
+
   data class MergedResult(
     val items: List<UiEventItem>,
-    val canFilter: Boolean,
   )
 
   sealed interface NavigationEvent {
@@ -334,6 +314,8 @@ class EventsViewModel(
 
     data object OpenGroups : NavigationEvent
 
+    data object OpenTags : NavigationEvent
+
     data class RequestGpsPermission(
       val id: String,
     ) : NavigationEvent
@@ -354,7 +336,5 @@ class EventsViewModel(
   companion object {
     private const val TAG = "EventsViewModel"
     private const val SEARCH_DEBOUNCE_MS = 300L
-    private const val GROUP_FILTER_ID = "groups"
-    private const val DATE_RANGE_FILTER_ID = "date_range"
   }
 }

@@ -15,6 +15,8 @@ import com.github.naz013.repository.impl.ReminderGroupRepositoryImpl
 import com.github.naz013.repository.impl.ReminderRepositoryImpl
 import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
 import com.github.naz013.repository.impl.RemoteFileMetadataRepositoryImpl
+import com.github.naz013.repository.impl.TagAssignmentRepositoryImpl
+import com.github.naz013.repository.impl.TagRepositoryImpl
 import com.github.naz013.repository.impl.UsedTimeRepositoryImpl
 import com.github.naz013.repository.impl.WorkflowRuleRepositoryImpl
 import com.github.naz013.repository.impl.WorkflowTemplateRepositoryImpl
@@ -34,6 +36,13 @@ val repositoryModule = module {
   factory { TableChangeListenerFactoryImpl(get()) as TableChangeListenerFactory }
 
   factory { BirthdayRepositoryImpl(get<AppDb>().birthdaysDao(), get()) as BirthdayRepository }
+  factory { TagRepositoryImpl(get<AppDb>().tagDao(), get(), get()) as TagRepository }
+  factory {
+    TagAssignmentRepositoryImpl(
+      get<AppDb>().tagAssignmentDao(),
+      get()
+    ) as TagAssignmentRepository
+  }
   factory {
     RecentQueryRepositoryImpl(
       get<AppDb>().recentQueryDao(),

@@ -40,6 +40,7 @@ fun DeveloperScreen(
   onClearAllTablesConfirm: () -> Unit,
   onClearAllTablesDismiss: () -> Unit,
   onInsertDemoDataClick: () -> Unit,
+  onInsertInsightsDemoDataClick: () -> Unit,
   onDialogOptionSelected: (Int) -> Unit,
   onDialogConfirm: () -> Unit,
   onDialogDismiss: () -> Unit,
@@ -108,6 +109,12 @@ fun DeveloperScreen(
       title = "Insert Demo Data",
       subtitle = "Adds sample reminders, birthdays and notes, useful for taking promo screenshots",
       onClick = onInsertDemoDataClick,
+    )
+    HorizontalDivider()
+    DeveloperOption(
+      title = "Insert Insights Demo Data",
+      subtitle = "Adds habit reminders with fabricated fire history, so the Insights screen has streaks and charts to show",
+      onClick = onInsertInsightsDemoDataClick,
     )
     HorizontalDivider()
   }

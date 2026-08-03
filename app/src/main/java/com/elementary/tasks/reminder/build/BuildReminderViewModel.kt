@@ -51,6 +51,8 @@ import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
@@ -70,6 +72,8 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -129,9 +133,16 @@ class BuildReminderViewModel(
   private val featureManager: FeatureManager,
   private val buildInfo: BuildInfo,
   private val quickStartItemsProvider: QuickStartItemsProvider,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
 ) : ViewModel() {
 
   val id: String = initialId
+
+  /** Stable for the whole editing session, unlike [newBlankReminderV2]'s old behavior of
+   *  generating a fresh [ReminderV2.uuId] on every call - tags need one fixed id to attach to
+   *  from the very first frame, well before the reminder is actually saved. */
+  private val stableReminderId: String = initialId.ifEmpty { UUID.randomUUID().toString() }
 
   private val _state = MutableStateFlow(BuildReminderState())
   val state: StateFlow<BuildReminderState> = _state.asStateFlow()
@@ -163,6 +174,36 @@ class BuildReminderViewModel(
     initBuilder()
     loadPresets()
     handleDeepLink()
+    observeTags()
+  }
+
+  private fun observeTags() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll().collect { tags ->
+        _state.update { it.copy(allTags = tags) }
+      }
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagAssignmentRepository.observeTagsForItem(stableReminderId, TaggedItemType.REMINDER).collect { tags ->
+        _state.update { it.copy(selectedTagIds = tags.map(Tag::id).toSet()) }
+      }
+    }
+  }
+
+  fun onTagToggle(tag: Tag) {
+    val isSelected = tag.id in _state.value.selectedTagIds
+    viewModelScope.launch(dispatcherProvider.io()) {
+      if (isSelected) {
+        tagAssignmentRepository.detach(stableReminderId, TaggedItemType.REMINDER, tag.id)
+      } else {
+        tagAssignmentRepository.attach(stableReminderId, TaggedItemType.REMINDER, tag.id)
+      }
+      scheduleBackgroundWorkUseCase(workType = WorkType.Upload, dataType = DataType.TagAssignments)
+    }
+  }
+
+  fun onManageTagsClick() {
+    event.emit(ViewModelEvent.OpenManageTags)
   }
 
   override fun onCleared() {
@@ -818,7 +859,10 @@ class BuildReminderViewModel(
   }
 
   private fun newBlankReminderV2(): ReminderV2 =
-    ReminderV2(schedule = ReminderSchedule(startDateTime = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime())))
+    ReminderV2(
+      uuId = stableReminderId,
+      schedule = ReminderSchedule(startDateTime = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime())),
+    )
 
   private suspend fun savePreset(items: List<BuilderItem<*>>) {
     Logger.i(TAG, "Save new preset")
@@ -982,6 +1026,8 @@ class BuildReminderViewModel(
       val appSource: AppSource,
       val canAttachLogs: Boolean,
     ) : ViewModelEvent
+
+    data object OpenManageTags : ViewModelEvent
   }
 
   companion object {

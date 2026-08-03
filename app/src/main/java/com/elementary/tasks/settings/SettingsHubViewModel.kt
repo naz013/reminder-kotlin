@@ -2,7 +2,6 @@ package com.elementary.tasks.settings
 
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
@@ -53,7 +52,7 @@ class SettingsHubViewModel(
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
     prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
-    if (!BuildParams.isPro) {
+    if (!buildInfo.isPro) {
       remotePrefs.removeSaleObserver(this)
     }
     remotePrefs.removeUpdateObserver(this)
@@ -67,7 +66,7 @@ class SettingsHubViewModel(
     prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
     remotePrefs.addUpdateObserver(this)
     remotePrefs.addMessageObserver(this)
-    if (!BuildParams.isPro) {
+    if (!buildInfo.isPro) {
       remotePrefs.addSaleObserver(this)
     }
     checkDoNotDisturb()

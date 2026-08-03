@@ -32,6 +32,7 @@ import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.other.OtherNavKey
 import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
+import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -194,6 +195,10 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
         appNavBridge.navigate(GroupsNavKey.List)
       }
 
+      EventsViewModel.NavigationEvent.OpenTags -> {
+        backStack.add(TagsNavKey.Manage)
+      }
+
       is EventsViewModel.NavigationEvent.RequestGpsPermission -> {
         permissionRequester.request(
           listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
@@ -240,11 +245,13 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
     onBackClick = { backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onCategoryToggle = viewModel::onCategoryToggle,
+    onSmartListSelected = viewModel::onSmartListSelected,
     onAddReminderClick = viewModel::onAddReminderClick,
     onAddShoppingClick = viewModel::onAddShoppingClick,
     onAddBirthdayClick = viewModel::onAddBirthdayClick,
     onArchiveClick = viewModel::onArchiveClick,
     onGroupsClick = viewModel::onGroupsClick,
+    onTagsClick = viewModel::onTagsClick,
     onItemClick = viewModel::onItemClick,
     onEventMenuAction = viewModel::onEventMenuAction,
   )

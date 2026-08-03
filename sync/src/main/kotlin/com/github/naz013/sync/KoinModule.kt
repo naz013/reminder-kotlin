@@ -8,6 +8,7 @@ import com.github.naz013.sync.images.PostProcessOldNoteUseCase
 import com.github.naz013.sync.images.UploadFilesUseCase
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.settings.UploadSettingsUseCase
+import com.github.naz013.sync.settings.UploadTagAssignmentsUseCase
 import com.github.naz013.sync.usecase.CreateCloudFileUseCase
 import com.github.naz013.sync.usecase.CreateRemoteFileMetadataUseCase
 import com.github.naz013.sync.usecase.FindAllFilesToDeleteUseCase
@@ -52,8 +53,9 @@ val syncApiModule = module {
   factory { DeleteSingleUseCase(get(), get(), get()) }
   factory { DeleteDataTypeUseCase(get(), get()) }
 
-  factory { UploadDataTypeUseCase(get(), get(), get()) }
+  factory { UploadDataTypeUseCase(get(), get(), get(), get()) }
   factory { UploadSettingsUseCase(get(), get(), get(), get()) }
+  factory { UploadTagAssignmentsUseCase(get(), get(), get(), get()) }
 
   factory { HasAnyCloudApiUseCase(get()) }
 

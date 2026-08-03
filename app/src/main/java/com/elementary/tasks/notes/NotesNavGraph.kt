@@ -44,6 +44,7 @@ import com.elementary.tasks.notes.preview.PreviewNoteViewModel
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.github.naz013.common.Permissions
+import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.ToastDispatcher
@@ -365,6 +366,10 @@ private fun NoteEditEntry(
           onTimeSelected = viewModel::onNewTime
         )
       }
+
+      NoteEditViewModel.ViewModelEvent.OpenManageTags -> {
+        backStack.add(TagsNavKey.Manage)
+      }
     }
   }
 
@@ -423,6 +428,9 @@ private fun NoteEditEntry(
         onSameNoteReplace = { viewModel.saveNote() },
         onDialogDismiss = viewModel::onDialogDismissed,
         onDrop = { clipData -> if (clipData.itemCount > 0) viewModel.parseDrop(clipData) },
+        onTagsTabClick = { viewModel.onTabClicked(EditTab.TAGS) },
+        onTagToggle = viewModel::onTagToggle,
+        onManageTagsClick = viewModel::onManageTagsClick,
       ),
   )
 }

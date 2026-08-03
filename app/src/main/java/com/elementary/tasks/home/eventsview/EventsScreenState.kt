@@ -3,12 +3,14 @@ package com.elementary.tasks.home.eventsview
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.lists.data.UiReminderListState
+import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 import org.threeten.bp.LocalDateTime
 
 data class EventsScreenState(
   val listState: ListState = ListState.Loading,
   val searchQuery: String = "",
   val selectedCategories: Set<EventCategory> = EventCategory.entries.toSet(),
+  val selectedSmartList: SmartListFilter? = null,
 )
 
 sealed interface ListState {

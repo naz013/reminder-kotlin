@@ -1063,4 +1063,43 @@
     <string name="builder_permissions_required_message">Grant the requested permissions to continue</string>
 
     <string name="gemini_functions">Gemini functions</string>
+
+    <string name="smart_list_today">Today</string>
+    <string name="smart_list_overdue">Overdue</string>
+    <string name="smart_list_this_week">This week</string>
+    <string name="smart_list_no_group">No group</string>
+
+    <string name="tags">Tags</string>
+    <string name="manage_tags">Manage tags</string>
+    <string name="new_tag">New tag</string>
+    <string name="tag_name">Tag name</string>
+    <string name="no_tags">No tags yet</string>
+    <string name="delete_tag_permanently">Delete this tag? It will be removed from every reminder and note.</string>
+
+    <string name="local_backup">Local backup</string>
+    <string name="backup_export_title">Export backup</string>
+    <string name="backup_import_title">Restore backup</string>
+    <string name="backup_export_description">Save an encrypted copy of your reminders, notes, groups, birthdays, places and presets to a file you choose. Nothing is sent anywhere. If you forget the passphrase, the backup cannot be recovered.</string>
+    <string name="backup_import_description">Restore data from a previously exported encrypted backup file. Existing items with the same ID will be overwritten; nothing else is deleted.</string>
+    <string name="backup_passphrase">Passphrase</string>
+    <string name="backup_confirm_passphrase">Confirm passphrase</string>
+    <string name="backup_passphrase_mismatch">Passphrases don\'t match</string>
+    <string name="backup_passphrase_empty">Enter a passphrase</string>
+    <string name="backup_export_action">Export</string>
+    <string name="backup_import_action">Restore</string>
+    <string name="backup_export_success">Backup saved successfully.</string>
+    <string name="backup_export_failed">Could not save the backup. Please try again.</string>
+    <string name="backup_import_success">Restored %1$d items successfully.</string>
+    <string name="backup_import_failed">Could not restore the backup. Please try again.</string>
+    <string name="backup_wrong_passphrase">Incorrect passphrase, or the file is corrupted.</string>
+    <string name="backup_invalid_file">This file is not a valid Reminder backup.</string>
+    <string name="backup_open_file_failed">Could not open the selected file.</string>
+
+    <string name="insights">Insights</string>
+    <string name="weekly_trend">Weekly trend</string>
+    <string name="busiest_day">Busiest day: %1$s</string>
+    <string name="streak_current">Current streak: %1$d days</string>
+    <string name="streak_longest">Longest streak: %1$d days</string>
+    <string name="streak_fired_count">Fired %1$d times in the last 90 days</string>
+    <string name="no_insights_yet">No reminder activity in the last 90 days yet</string>
 </resources>

@@ -59,6 +59,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
+import com.github.naz013.domain.Tag
+import com.github.naz013.tags.compose.TagChipPicker
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
@@ -89,6 +92,8 @@ fun BuildReminderScreen(
   saveAsPresetChecked: Boolean,
   presetName: String,
   quickStartOptions: List<QuickStartOption>,
+  allTags: List<Tag>,
+  selectedTagIds: Set<String>,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
@@ -100,6 +105,8 @@ fun BuildReminderScreen(
   onItemRemove: (Int, BuilderItem<*>) -> Unit,
   onAddClick: () -> Unit,
   onQuickStartClick: (QuickStartOption) -> Unit,
+  onTagToggle: (Tag) -> Unit,
+  onManageTagsClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -187,6 +194,15 @@ fun BuildReminderScreen(
             item = item,
             onClick = { onItemClick(index, item.builderItem) },
             onRemoveClick = { onItemRemove(index, item.builderItem) },
+          )
+        }
+
+        item(key = "tags") {
+          TagsRow(
+            allTags = allTags,
+            selectedTagIds = selectedTagIds,
+            onToggle = onTagToggle,
+            onManageTagsClick = onManageTagsClick,
           )
         }
 
@@ -360,6 +376,34 @@ private fun ForecastRow(prediction: ReminderPrediction, modifier: Modifier = Mod
 }
 
 @Composable
+private fun TagsRow(
+  allTags: List<Tag>,
+  selectedTagIds: Set<String>,
+  onToggle: (Tag) -> Unit,
+  onManageTagsClick: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Row(
+    modifier = modifier.fillMaxWidth().padding(8.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Icon(
+      painter = AppIcons.Builder.Tag,
+      contentDescription = null,
+      tint = MaterialTheme.colorScheme.onBackground,
+      modifier = Modifier.padding(start = 8.dp).size(24.dp),
+    )
+    TagChipPicker(
+      allTags = allTags,
+      selectedTagIds = selectedTagIds,
+      onToggle = onToggle,
+      onManageTagsClick = onManageTagsClick,
+      modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
+    )
+  }
+}
+
+@Composable
 private fun SaveAsPresetRow(
   checked: Boolean,
   onCheckedChange: (Boolean) -> Unit,
@@ -472,6 +516,8 @@ private fun PreviewBuildReminderScreenEmpty() {
       saveAsPresetChecked = false,
       presetName = "",
       quickStartOptions = QuickStartOption.entries,
+      allTags = emptyList(),
+      selectedTagIds = emptySet(),
       onBackClick = {},
       onSaveClick = {},
       onDeleteClick = {},
@@ -483,6 +529,8 @@ private fun PreviewBuildReminderScreenEmpty() {
       onItemRemove = { _, _ -> },
       onAddClick = {},
       onQuickStartClick = {},
+      onTagToggle = {},
+      onManageTagsClick = {},
     )
   }
 }

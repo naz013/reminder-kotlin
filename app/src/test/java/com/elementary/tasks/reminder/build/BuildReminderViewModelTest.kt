@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelStore
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
+import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.utils.FeatureManager
@@ -43,18 +44,23 @@ import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.files.DataType
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -100,11 +106,15 @@ class BuildReminderViewModelTest : BaseTest() {
   private val featureManager = mockk<FeatureManager>(relaxed = true)
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
   private val quickStartItemsProvider = mockk<QuickStartItemsProvider>()
+  private val tagRepository = mockk<TagRepository>()
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
 
   @Before
   override fun setUp() {
     super.setUp()
     every { prefs.is24HourFormat } returns true
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
     coEvery { biFactory.create(any()) } returns summaryItem()
     every { biFilter(any()) } returns true
     coEvery { recurPresetRepository.getAllByType(any()) } returns emptyList()
@@ -182,6 +192,8 @@ class BuildReminderViewModelTest : BaseTest() {
       featureManager = featureManager,
       buildInfo = buildInfo,
       quickStartItemsProvider = quickStartItemsProvider,
+      tagRepository = tagRepository,
+      tagAssignmentRepository = tagAssignmentRepository,
     )
 
   @Test
@@ -748,5 +760,22 @@ class BuildReminderViewModelTest : BaseTest() {
       store.clear()
 
       coVerify(exactly = 0) { resumeReminderUseCase(any()) }
+    }
+
+  @Test
+  fun `onTagToggle attaches an unselected tag and schedules an upload of the tag assignments snapshot`() =
+    runTest {
+      coEvery { tagAssignmentRepository.attach(any(), any(), any()) } returns Unit
+      val viewModel = createViewModel()
+
+      viewModel.onTagToggle(Tag(id = "tag-1", name = "Work", color = 0))
+
+      coVerify { tagAssignmentRepository.attach(any(), any(), "tag-1") }
+      verify {
+        scheduleBackgroundWorkUseCase(
+          workType = WorkType.Upload,
+          dataType = DataType.TagAssignments,
+        )
+      }
     }
 }

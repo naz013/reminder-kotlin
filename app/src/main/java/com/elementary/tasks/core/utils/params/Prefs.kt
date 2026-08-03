@@ -137,7 +137,7 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.ANALYTICS_ENABLED, value)
 
   var nightMode: Int
-    get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_NO)
+    get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     set(value) = putInt(PrefsConstants.NIGHT_MODE, value)
 
   var autoBackupState: Int
@@ -361,7 +361,7 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_REMINDER, value)
 
   var birthdayTime: String
-    get() = getString(PrefsConstants.BIRTHDAY_REMINDER_TIME)
+    get() = getString(PrefsConstants.BIRTHDAY_REMINDER_TIME, "14:00")
     set(value) = putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, value)
 
   var isBirthdayInWidgetEnabled: Boolean

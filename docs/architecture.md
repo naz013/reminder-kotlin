@@ -38,6 +38,10 @@ The project follows a **multi-module Clean Architecture** approach. Concerns are
 | `reviews` | Android library | In-app review flow using the Play Core / Play Review API. |
 | `reviewsadmin` | Android library | Internal admin tooling for the review flow (debug/test only). |
 | `cloudtestadmin` | Android library | Internal admin tooling for testing cloud integrations (debug/test only). |
+| `tags-api` | Kotlin library | Public contract for the Tags feature: `Tag`, `TaggedItemType`, `TagRepository`, `TagAssignmentRepository`. Depends on `domain`. |
+| `tags` | Android library (Compose) | Room-backed implementation of `tags-api` in its own database (`tags_db`, isolated from the shared `AppDb`) plus the Tags Compose UI (`TagChipPicker`, manage/edit screens) and Nav3 entries. Both flavors. |
+| `insights` | Android library (Compose) | **PRO-only** Streaks & Insights dashboard. Purely computed from `repository-api` (`EventHistoryRepository`, `ReminderV2Repository`) — no schema of its own. Gated at runtime via `BuildInfo.isPro`, not a build-time flavor split. |
+| `localbackup` | Android library (Compose) | **PRO-only** local encrypted backup/restore. Owns the crypto (PBKDF2 + AES-GCM), the archive framing (reusing `files-api`'s `DataConverter`), and the passphrase Compose UI. Gated at runtime via `BuildInfo.isPro`. |
 
 ---
 
@@ -93,6 +97,17 @@ app
  ├── usecase:birthdays  ──┤
  ├── usecase:googletasks─┘
  ├── reviews
+ ├── tags-api
+ │     └── domain
+ ├── tags
+ │     ├── tags-api / domain / logging-api / feature-common / ui-common
+ │     └── own Room database (tags_db, isolated from AppDb)
+ ├── insights (PRO at runtime — see "Runtime vs. build-time PRO gating" below)
+ │     ├── domain / repository-api / logging-api / feature-common / ui-common
+ │     └── no persistent storage of its own
+ ├── localbackup (PRO at runtime — see "Runtime vs. build-time PRO gating" below)
+ │     ├── domain / repository-api / files-api / logging-api / feature-common / ui-common
+ │     └── javax.crypto / java.security only (no new crypto dependency)
  └── (debug) cloudtestadmin / reviewsadmin
 ```
 
@@ -112,6 +127,10 @@ app
 A module needed by only one product flavor (e.g. `appfunctions`, PRO-only) is added with `"proImplementation"(project(":appfunctions"))` in `app/build.gradle.kts` instead of a plain `implementation`, so the `free` APK never contains its code, its manifest entries, or its transitive dependencies.
 
 Because `main`-sourceset code (e.g. `ReminderApp.kt`) can't reference types from a dependency that only one flavor sees, each flavor provides its own same-named shim class — e.g. `app/src/pro/.../AppFunctionsInitializer.kt` (real implementation, calls `loadKoinModules(appFunctionsModule)`) and `app/src/free/.../AppFunctionsInitializer.kt` (empty no-op) — mirroring the older `AdsProvider` free/pro split. `main` code calls the shim unconditionally; Gradle compiles whichever flavor's version is on the classpath for that variant. The flavor-gated module's own `KoinModule.kt` is therefore loaded at runtime via `loadKoinModules(...)` from the pro-flavor shim, not included in `ReminderApp.kt`'s static `startKoin { modules(listOf(...)) }` call like every other module's.
+
+### Runtime vs. build-time PRO gating
+
+`insights` and `localbackup` are **PRO features gated at runtime**, not build-time flavor splits like `appfunctions`: both modules are plain `implementation(project(":x"))` dependencies present in every build, their Koin modules are registered unconditionally in `ReminderApp.kt`, and their Nav3 entries are always reachable in the graph. The only PRO check is a `buildInfo.isPro` read in `SettingsHubViewModel` that hides their Settings entry points on the free flavor (`SettingsHubState.isInsightsVisible` / `isLocalBackupVisible`). This was a deliberate simplicity trade-off — these two features have no free-flavor-only code paths or extra manifest entries worth stripping from the free APK, unlike `appfunctions`, so the Gradle-flavor-split machinery wasn't worth the extra complexity.
 
 ---
 
@@ -157,6 +176,7 @@ Modules that provide DI configuration:
 - `navigation-api/KoinModule.kt`
 - `feature-common/KoinModule.kt`
 - `app/core/utils/KoinModule.kt` (top-level wiring)
+- `tags/KoinModule.kt`, `insights/KoinModule.kt`, `localbackup/KoinModule.kt` — all added to `startKoin { modules(listOf(...)) }` like any other module (see "Runtime vs. build-time PRO gating" above for why `insights`/`localbackup` aren't loaded conditionally despite being PRO features)
 - `appfunctions/KoinModule.kt` — the exception: loaded at runtime via `loadKoinModules(...)` from `app/src/pro`'s `AppFunctionsInitializer`, not added to `startKoin { modules(listOf(...)) }` (see "Flavor-gated modules" above)
 
 ---

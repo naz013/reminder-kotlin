@@ -100,8 +100,8 @@ import org.koin.dsl.module
 
 val reminderModule =
   module {
-    factory { DeleteReminderUseCase(get(), get(), get(), get(), get(), get()) }
-    factory { DeleteAllReminderUseCase(get(), get(), get(), get(), get(), get()) }
+    factory { DeleteReminderUseCase(get(), get(), get(), get(), get(), get(), get()) }
+    factory { DeleteAllReminderUseCase(get(), get(), get(), get(), get(), get(), get()) }
     factory { MoveReminderToArchiveUseCase(get(), get()) }
     factory { SaveReminderUseCase(get(), get(), get()) }
     factory { ScheduleReminderUploadUseCase(get()) }
@@ -121,6 +121,8 @@ val reminderModule =
         key.deepLinkDateTimeMillis,
         key.deepLinkTodo,
         key.deepLinkText,
+        get(),
+        get(),
         get(),
         get(),
         get(),

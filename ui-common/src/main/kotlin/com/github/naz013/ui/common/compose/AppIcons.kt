@@ -25,6 +25,11 @@ object AppIcons {
     val QuestionCircle: Painter @Composable get() = painterResource(R.drawable.ic_fluent_question_circle)
     val Sleep: Painter @Composable get() = painterResource(R.drawable.ic_fluent_sleep)
     val PhoneVibrate: Painter @Composable get() = painterResource(R.drawable.ic_fluent_phone_vibrate)
+    val DataPie: Painter @Composable get() = painterResource(R.drawable.ic_fluent_data_pie)
+    val CloudSyncComplete: Painter @Composable get() = painterResource(R.drawable.ic_fluent_cloud_sync_complete)
+    val FolderMove: Painter @Composable get() = painterResource(R.drawable.ic_fluent_folder_move)
+    val CloudBackup: Painter @Composable get() = painterResource(R.drawable.ic_fluent_cloud_backup)
+    val DocumentTopRight: Painter @Composable get() = painterResource(R.drawable.ic_fluent_document_top_right)
   }
 
   object Builder {

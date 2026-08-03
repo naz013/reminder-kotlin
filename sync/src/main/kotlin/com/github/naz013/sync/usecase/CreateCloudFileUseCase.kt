@@ -4,12 +4,14 @@ import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.Tag
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.files.DataType
 import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.files.model.SettingsModel
+import com.github.naz013.files.model.TagAssignmentsSnapshotJson
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
 
@@ -27,7 +29,9 @@ internal class CreateCloudFileUseCase(
       is GroupV2 -> any.getFileNamePrefix()
       is Place -> any.getFileNamePrefix()
       is SettingsModel -> "app"
+      is TagAssignmentsSnapshotJson -> "app"
       is RecurPreset -> any.getFileNamePrefix()
+      is Tag -> any.getFileNamePrefix()
       is NoteV3Json -> any.key
       else -> throw IllegalArgumentException("Unsupported data type: ${any::class.java}")
     } + dataType.fileExtension
@@ -63,6 +67,10 @@ internal class CreateCloudFileUseCase(
   }
 
   private fun RecurPreset.getFileNamePrefix(): String {
+    return id
+  }
+
+  private fun Tag.getFileNamePrefix(): String {
     return id
   }
 

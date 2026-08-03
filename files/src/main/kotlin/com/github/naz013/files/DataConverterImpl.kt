@@ -8,7 +8,10 @@ import com.github.naz013.domain.Place
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
 import com.github.naz013.domain.ReminderGroup
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.domain.reminder.migration.toGroupV2
 import com.github.naz013.domain.reminder.migration.toReminderV2
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
@@ -33,6 +36,7 @@ import com.github.naz013.files.model.NotificationSettingsOverrideJson
 import com.github.naz013.files.model.ReminderV2Json
 import com.github.naz013.files.model.SharedNote
 import com.github.naz013.files.model.ShopItemV2Json
+import com.github.naz013.files.model.TagJson
 import com.github.naz013.files.model.TaskExportSettingsJson
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
@@ -70,6 +74,8 @@ internal class DataConverterImpl : DataConverter {
         is Reminder -> object : TypeToken<Reminder>() {}.type
         is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
         is OldNote -> object : TypeToken<OldNote>() {}.type
+        is TagJson -> object : TypeToken<TagJson>() {}.type
+        is TagAssignment -> object : TypeToken<TagAssignment>() {}.type
         else -> null
       } ?: run {
         throw IllegalArgumentException("Unsupported type: ${any::class.java}")
@@ -116,6 +122,7 @@ private fun Any.toJson(): Any {
   return when (this) {
     is ReminderV2 -> this.toJson()
     is GroupV2 -> this.toJson()
+    is Tag -> this.toJson()
     else -> this
   }
 }
@@ -130,6 +137,8 @@ private fun Any.toJson(): Any {
 private fun detectClass(json: JsonObject): Class<*> = when {
   json.has("recurrenceType") && json.has("actionType") -> ReminderV2Json::class.java
   json.has("notification") && json.has("createdAt") -> GroupV2Json::class.java
+  json.has("tagId") && json.has("itemId") && json.has("itemType") -> TagAssignment::class.java
+  json.has("id") && json.has("name") && json.has("color") -> TagJson::class.java
   json.has("eventTime") && json.has("startTime") -> Reminder::class.java
   json.has("isDefaultGroup") -> ReminderGroup::class.java
   json.has("showedYear") || json.has("contactId") -> Birthday::class.java
@@ -145,6 +154,7 @@ private fun Any.toDomain(): Any {
   return when (this) {
     is GroupV2Json -> this.toDomain()
     is ReminderV2Json -> this.toDomain()
+    is TagJson -> this.toDomain()
     is ReminderGroup -> this.toGroupV2()
     is Reminder -> this.toReminderV2()
     else -> this
@@ -159,6 +169,14 @@ private fun GroupV2Json.toDomain(): GroupV2 = GroupV2(
   notification = notification.toDomain(),
   createdAt = LocalDateTime.parse(createdAt, jsonDateTimeFormatter),
   version = version
+)
+
+private fun TagJson.toDomain(): Tag = Tag(
+  id = id,
+  name = name,
+  color = color,
+  version = version,
+  syncState = SyncState.Synced
 )
 
 private fun ReminderV2Json.toDomain(): ReminderV2 = ReminderV2(
@@ -275,6 +293,13 @@ private fun GroupV2.toJson(): GroupV2Json {
     version = version
   )
 }
+
+private fun Tag.toJson(): TagJson = TagJson(
+  id = id,
+  name = name,
+  color = color,
+  version = version
+)
 
 private fun ReminderV2.toJson(): ReminderV2Json {
   val (recurrenceType, recurrencePayload) = recurrence.toColumns()
