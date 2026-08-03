@@ -1,6 +1,9 @@
 package com.github.naz013.localbackup
 
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TagAssignment
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -13,6 +16,8 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -34,6 +39,8 @@ private class FakeDataConverter : DataConverter {
       is ReminderV2 -> "R|${any.uuId}|${any.summary}"
       is GroupV2 -> "G|${any.uuId}|${any.title}"
       is Birthday -> "B|${any.uuId}|${any.name}"
+      is Tag -> "T|${any.id}|${any.name}"
+      is TagAssignment -> "A|${any.tagId}|${any.itemId}::${any.itemType}"
       else -> error("FakeDataConverter does not support ${any::class.java}")
     }
     outputStream.use { it.write(encoded.toByteArray()) }
@@ -51,6 +58,11 @@ private class FakeDataConverter : DataConverter {
       "R" -> ReminderV2(uuId = id, summary = label, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
       "G" -> GroupV2(uuId = id, title = label, createdAt = LocalDateTime.now(), syncState = SyncState.Synced)
       "B" -> Birthday(uuId = id, name = label, syncState = SyncState.Synced)
+      "T" -> Tag(id = id, name = label, color = 0, syncState = SyncState.Synced)
+      "A" -> {
+        val (itemId, itemType) = label.split("::", limit = 2)
+        TagAssignment(tagId = id, itemId = itemId, itemType = TaggedItemType.valueOf(itemType))
+      }
       else -> error("FakeDataConverter does not support tag $tag")
     }
   }
@@ -63,6 +75,8 @@ class LocalBackupApiImplTest {
   private val birthdayRepository = mockk<BirthdayRepository>(relaxed = true)
   private val placeRepository = mockk<PlaceRepository>(relaxed = true)
   private val recurPresetRepository = mockk<RecurPresetRepository>(relaxed = true)
+  private val tagRepository = mockk<TagRepository>(relaxed = true)
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
   private val dataConverter = FakeDataConverter()
 
   private lateinit var api: LocalBackupApiImpl
@@ -75,6 +89,8 @@ class LocalBackupApiImplTest {
       birthdayRepository = birthdayRepository,
       placeRepository = placeRepository,
       recurPresetRepository = recurPresetRepository,
+      tagRepository = tagRepository,
+      tagAssignmentRepository = tagAssignmentRepository,
       archiveWriter = BackupArchiveWriter(dataConverter),
       archiveReader = BackupArchiveReader(dataConverter)
     )
@@ -99,6 +115,8 @@ class LocalBackupApiImplTest {
     coVerify { birthdayRepository.getAll() }
     coVerify { placeRepository.getAll() }
     coVerify { recurPresetRepository.getAll() }
+    coVerify { tagRepository.getAll() }
+    coVerify { tagAssignmentRepository.getAll() }
     assertTrue(output.toByteArray().isNotEmpty())
   }
 
@@ -128,6 +146,25 @@ class LocalBackupApiImplTest {
     assertEquals(1, summary.groupsImported)
     coVerify { reminderV2Repository.save(match { it.uuId == "r1" }) }
     coVerify { groupV2Repository.save(match { it.uuId == "g1" }) }
+  }
+
+  @Test
+  fun `round trips tags and tag assignments through import`() = runTest {
+    coEvery { tagRepository.getAll() } returns listOf(Tag(id = "t1", name = "Work", color = 1, syncState = SyncState.Synced))
+    coEvery { tagAssignmentRepository.getAll() } returns listOf(
+      TagAssignment(tagId = "t1", itemId = "r1", itemType = TaggedItemType.REMINDER)
+    )
+    val output = ByteArrayOutputStream()
+    api.export(output, "correct horse".toCharArray())
+
+    val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
+
+    assertTrue(result.isSuccess)
+    val summary = result.getOrThrow()
+    assertEquals(1, summary.tagsImported)
+    assertEquals(1, summary.tagAssignmentsImported)
+    coVerify { tagRepository.save(match { it.id == "t1" }) }
+    coVerify { tagAssignmentRepository.replaceAll(match { it.size == 1 && it[0].tagId == "t1" }) }
   }
 
   @Test

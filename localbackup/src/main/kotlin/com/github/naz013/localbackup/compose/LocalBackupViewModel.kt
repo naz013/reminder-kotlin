@@ -80,7 +80,8 @@ internal class LocalBackupViewModel(
           context.getString(
             R.string.backup_import_success,
             summary.remindersImported + summary.groupsImported + summary.birthdaysImported +
-              summary.placesImported + summary.presetsImported
+              summary.placesImported + summary.presetsImported + summary.tagsImported +
+              summary.tagAssignmentsImported
           )
         )
       },

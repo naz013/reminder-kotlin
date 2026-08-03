@@ -118,7 +118,9 @@ class LocalBackupViewModelTest {
         groupsImported = 1,
         birthdaysImported = 0,
         placesImported = 0,
-        presetsImported = 0
+        presetsImported = 0,
+        tagsImported = 0,
+        tagAssignmentsImported = 0
       )
     )
 

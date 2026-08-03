@@ -14,7 +14,9 @@ data class ImportSummary(
   val groupsImported: Int,
   val birthdaysImported: Int,
   val placesImported: Int,
-  val presetsImported: Int
+  val presetsImported: Int,
+  val tagsImported: Int,
+  val tagAssignmentsImported: Int
 )
 
 /** Distinguishes "wrong passphrase or corrupted file" from other IO failures during import. */
