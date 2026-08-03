@@ -7,12 +7,18 @@ import com.github.naz013.files.CopyByteArrayStream
 import com.github.naz013.files.DataConverter
 import com.github.naz013.files.DataType
 import com.github.naz013.files.model.SettingsModel
+import com.github.naz013.files.model.TagAssignmentsSnapshotJson
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.SyncDataConverter
+import com.google.gson.Gson
+import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
+import java.io.InputStreamReader
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.OutputStreamWriter
+import java.nio.charset.StandardCharsets
 
 class SyncDataConverterImpl(
   private val dataConverter: DataConverter,
@@ -21,7 +27,31 @@ class SyncDataConverterImpl(
     if (any is SettingsModel) {
       return toInputStream(any)
     }
+    if (any is TagAssignmentsSnapshotJson) {
+      return toInputStream(any)
+    }
     return dataConverter.toInputStream(any)
+  }
+
+  /**
+   * Converts a [TagAssignmentsSnapshotJson] to a Base64-wrapped, Gson-serialized InputStream -
+   * unlike [SettingsModel]'s legacy ObjectOutputStream codec, this is a normal typed data class,
+   * so plain Gson (matching DataConverterImpl's own approach for every other entity) is enough.
+   */
+  private fun toInputStream(snapshot: TagAssignmentsSnapshotJson): InputStream {
+    val outputBytes = CopyByteArrayStream()
+    try {
+      val base64Output = Base64OutputStream(outputBytes, Base64.DEFAULT)
+      val writer = OutputStreamWriter(base64Output, StandardCharsets.UTF_8)
+      writer.use { Gson().toJson(snapshot, TagAssignmentsSnapshotJson::class.java, it) }
+      base64Output.close()
+      return outputBytes.toInputStream()
+    } catch (e: Exception) {
+      Logger.e(TAG, "TagAssignmentsConverter: toInputStream error: $e")
+      throw e
+    } finally {
+      outputBytes.close()
+    }
   }
 
   /**
@@ -68,8 +98,21 @@ class SyncDataConverterImpl(
       @Suppress("UNCHECKED_CAST")
       return convert(stream)
     }
+    if (dataType == DataType.TagAssignments) {
+      return convertTagAssignments(stream)
+    }
     return dataConverter.toData(stream)
   }
+
+  private fun convertTagAssignments(stream: InputStream): TagAssignmentsSnapshotJson =
+    try {
+      val base64Input = Base64InputStream(stream, Base64.DEFAULT)
+      val reader = BufferedReader(InputStreamReader(base64Input, StandardCharsets.UTF_8))
+      reader.use { Gson().fromJson(it, TagAssignmentsSnapshotJson::class.java) }
+    } catch (e: Exception) {
+      Logger.e(TAG, "TagAssignmentsConverter: convert error: $e")
+      throw e
+    }
 
   /**
    * Converts Base64-encoded InputStream to SettingsModel.
