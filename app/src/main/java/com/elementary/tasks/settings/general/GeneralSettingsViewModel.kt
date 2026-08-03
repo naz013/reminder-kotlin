@@ -110,7 +110,7 @@ class GeneralSettingsViewModel(
     refreshState()
     if (changed) {
       AppCompatDelegate.setApplicationLocales(Language.getLocaleList(index))
-      event.emit(GeneralSettingsEvent.RecreateActivity)
+      event.emit(GeneralSettingsEvent.RestartApp)
     }
   }
 

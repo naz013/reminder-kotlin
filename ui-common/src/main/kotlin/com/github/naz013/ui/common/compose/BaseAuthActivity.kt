@@ -1,5 +1,6 @@
 package com.github.naz013.ui.common.compose
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.window.OnBackInvokedDispatcher
@@ -7,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.login.AuthPreferences
 import com.github.naz013.ui.common.login.LoginApi.isLogged
 import com.github.naz013.ui.common.login.LoginLauncher
@@ -19,6 +21,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 abstract class BaseAuthActivity : ComponentActivity() {
 
   private val themePreferences by inject<ThemePreferences>()
+  private val language by inject<Language>()
   private val authPreferences by inject<AuthPreferences>()
 
   private val loginStateViewModel by viewModel<LoginStateViewModel>()
@@ -80,6 +83,10 @@ abstract class BaseAuthActivity : ComponentActivity() {
     if (themePreferences.useDynamicColors) {
       DynamicColors.applyToActivityIfAvailable(this)
     }
+  }
+
+  override fun attachBaseContext(newBase: Context) {
+    super.attachBaseContext(language.onAttach(newBase))
   }
 
   protected fun isLogged() = intent.isLogged()

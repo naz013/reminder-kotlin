@@ -9,6 +9,7 @@ import com.elementary.tasks.module.platform.DateTimePreferencesImpl
 import com.elementary.tasks.module.sync.SyncDataConverterImpl
 import com.elementary.tasks.module.uicommon.AuthPreferencesImpl
 import com.elementary.tasks.module.uicommon.FontApiImpl
+import com.elementary.tasks.module.uicommon.LocalePreferencesImpl
 import com.elementary.tasks.module.uicommon.ThemePreferencesImpl
 import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
@@ -18,6 +19,7 @@ import com.github.naz013.common.datetime.DateTimePreferences
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.ui.common.font.FontApi
+import com.github.naz013.ui.common.locale.LocalePreferences
 import com.github.naz013.ui.common.login.AuthPreferences
 import com.github.naz013.ui.common.theme.ThemePreferences
 import org.koin.core.module.dsl.factoryOf
@@ -30,6 +32,7 @@ val libModule = module {
 
   // ui-common
   single { ThemePreferencesImpl(get()) as ThemePreferences }
+  single { LocalePreferencesImpl(get()) as LocalePreferences }
   single { AuthPreferencesImpl(get()) as AuthPreferences }
   factory { FontApiImpl(get()) as FontApi }
 
