@@ -39,6 +39,8 @@ sealed class GeneralSettingsDialog {
 sealed interface GeneralSettingsEvent {
   data object RecreateActivity : GeneralSettingsEvent
 
+  data object RestartApp : GeneralSettingsEvent
+
   data class ApplyDynamicColorsAndRecreate(
     val useDynamicColors: Boolean,
   ) : GeneralSettingsEvent

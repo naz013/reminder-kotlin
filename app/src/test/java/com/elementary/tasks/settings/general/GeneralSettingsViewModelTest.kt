@@ -154,7 +154,7 @@ class GeneralSettingsViewModelTest : BaseTest() {
     assertNull(viewModel.state.value.dialog)
     assertEquals("German", viewModel.state.value.languageName)
     val event = viewModel.event.value?.peekContent()
-    assertEquals(GeneralSettingsEvent.RecreateActivity, event)
+    assertEquals(GeneralSettingsEvent.RestartApp, event)
   }
 
   @Test

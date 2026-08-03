@@ -164,6 +164,7 @@ private fun GeneralEntry(backStack: MutableList<NavKey>) {
   viewModel.event.ObserveEvent { event ->
     when (event) {
       GeneralSettingsEvent.RecreateActivity -> appRestartController.recreate()
+      GeneralSettingsEvent.RestartApp -> appRestartController.restartApp()
       is GeneralSettingsEvent.ApplyDynamicColorsAndRecreate -> {
         appRestartController.applyDynamicColorsAndRecreate(event.useDynamicColors)
       }

@@ -2,10 +2,13 @@ package com.github.naz013.ui.common.locale
 
 import android.content.Context
 import androidx.core.os.LocaleListCompat
+import com.github.naz013.common.TextProvider
 import java.util.Locale
 
 class Language(
+  private val localePreferences: LocalePreferences,
   private val context: Context,
+  private val textProvider: TextProvider,
 ) {
 
   fun getCurrentLocale(): String {
@@ -13,6 +16,24 @@ class Language(
     val locale = runCatching { context.resources.configuration.locales.get(0) }.getOrNull()
       ?: defLocale
     return locale.language
+  }
+
+  fun onAttach(context: Context): Context {
+    return setLocale(context, getScreenLanguage(localePreferences.appLanguage)).also {
+      textProvider.updateContext(it)
+    }
+  }
+
+  private fun setLocale(context: Context, locale: Locale): Context {
+    return updateResources(context, locale)
+  }
+
+  private fun updateResources(context: Context, locale: Locale): Context {
+    Locale.setDefault(locale)
+    val configuration = context.resources.configuration
+    configuration.setLocale(locale)
+    configuration.setLayoutDirection(locale)
+    return context.createConfigurationContext(configuration)
   }
 
   companion object {
