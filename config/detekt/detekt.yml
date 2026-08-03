@@ -19,7 +19,7 @@ complexity:
     ignoreOverridden: true
     thresholdInClasses: 20
   ComplexInterface:
-    allowedDefinitions: 20
+    threshold: 20
 
 coroutines:
   active: true
