@@ -469,6 +469,7 @@ private fun DeveloperEntry(backStack: MutableList<NavKey>) {
       onClearAllTablesConfirm = viewModel::onClearAllTablesConfirm,
       onClearAllTablesDismiss = viewModel::onClearAllTablesDismiss,
       onInsertDemoDataClick = viewModel::onInsertDemoDataClick,
+      onInsertInsightsDemoDataClick = viewModel::onInsertInsightsDemoDataClick,
       onDialogOptionSelected = viewModel::onDialogOptionSelected,
       onDialogConfirm = viewModel::onDialogConfirm,
       onDialogDismiss = viewModel::onDialogDismiss,
