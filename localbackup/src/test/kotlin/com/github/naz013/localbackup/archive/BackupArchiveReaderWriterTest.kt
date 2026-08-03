@@ -1,6 +1,9 @@
 package com.github.naz013.localbackup.archive
 
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TagAssignment
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -33,6 +36,8 @@ private class FakeDataConverter : DataConverter {
       is ReminderV2 -> "R|${any.uuId}|${any.summary}"
       is GroupV2 -> "G|${any.uuId}|${any.title}"
       is Birthday -> "B|${any.uuId}|${any.name}"
+      is Tag -> "T|${any.id}|${any.name}"
+      is TagAssignment -> "A|${any.tagId}|${any.itemId}::${any.itemType}"
       else -> error("FakeDataConverter does not support ${any::class.java}")
     }
     outputStream.use { it.write(encoded.toByteArray()) }
@@ -50,6 +55,11 @@ private class FakeDataConverter : DataConverter {
       "R" -> ReminderV2(uuId = id, summary = label, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
       "G" -> GroupV2(uuId = id, title = label, createdAt = LocalDateTime.now(), syncState = SyncState.Synced)
       "B" -> Birthday(uuId = id, name = label, syncState = SyncState.Synced)
+      "T" -> Tag(id = id, name = label, color = 0)
+      "A" -> {
+        val (itemId, itemType) = label.split("::", limit = 2)
+        TagAssignment(tagId = id, itemId = itemId, itemType = TaggedItemType.valueOf(itemType))
+      }
       else -> error("FakeDataConverter does not support tag $tag")
     }
   }
@@ -76,6 +86,11 @@ class BackupArchiveReaderWriterTest {
   )
 
   private fun birthday(id: String) = Birthday(uuId = id, name = "Birthday $id", syncState = SyncState.Synced)
+
+  private fun tag(id: String) = Tag(id = id, name = "Tag $id", color = 0)
+
+  private fun tagAssignment(tagId: String, itemId: String) =
+    TagAssignment(tagId = tagId, itemId = itemId, itemType = TaggedItemType.NOTE)
 
   @Test
   fun `round trips an empty envelope`() = runTest {
@@ -107,6 +122,27 @@ class BackupArchiveReaderWriterTest {
     assertEquals("b1", result.birthdays.single().uuId)
     assertTrue(result.places.isEmpty())
     assertTrue(result.presets.isEmpty())
+  }
+
+  @Test
+  fun `round trips tags and tag assignments and buckets them by type`() = runTest {
+    val envelope = BackupEnvelope(
+      tags = listOf(tag("t1"), tag("t2")),
+      tagAssignments = listOf(tagAssignment("t1", "note-1"), tagAssignment("t2", "note-1")),
+    )
+    val output = ByteArrayOutputStream()
+
+    writer.write(output, envelope)
+    val result = reader.read(ByteArrayInputStream(output.toByteArray()))
+
+    assertEquals(2, result.tags.size)
+    assertEquals(setOf("t1", "t2"), result.tags.map { it.id }.toSet())
+    assertEquals(2, result.tagAssignments.size)
+    assertEquals(
+      setOf("t1" to "note-1", "t2" to "note-1"),
+      result.tagAssignments.map { it.tagId to it.itemId }.toSet()
+    )
+    assertTrue(result.reminders.isEmpty())
   }
 
   @Test
