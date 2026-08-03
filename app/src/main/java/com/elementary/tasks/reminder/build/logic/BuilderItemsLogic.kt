@@ -38,5 +38,8 @@ class BuilderItemsLogic(
 
   fun getUsed(): List<BuilderItem<*>> = builderItemsHolder.getItems()
 
-  fun getAvailable(): List<BuilderItem<*>> = items - builderItemsHolder.getItems().toSet()
+  fun getAvailable(): List<BuilderItem<*>> {
+    val usedTypes = builderItemsHolder.getItems().map { it.biType }.toSet()
+    return items.filterNot { it.biType in usedTypes }
+  }
 }
