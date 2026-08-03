@@ -27,10 +27,10 @@ import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
+import com.elementary.tasks.settings.backup.BackupSettingsScreen
 import com.elementary.tasks.settings.birthday.BirthdaySettingsEvent
 import com.elementary.tasks.settings.birthday.BirthdaySettingsScreen
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
-import com.elementary.tasks.settings.backup.BackupSettingsScreen
 import com.elementary.tasks.settings.calendar.CalendarSettingsScreen
 import com.elementary.tasks.settings.calendar.CalendarSettingsViewModel
 import com.elementary.tasks.settings.export.ExportNavKey
@@ -120,7 +120,6 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
       },
       onNotesClick = { backStack.add(SettingsNavKey.Note()) },
       onOtherClick = { backStack.add(OtherNavKey.Other) },
-      onInsightsClick = { backStack.add(InsightsNavKey.Dashboard) },
       onDeveloperClick = { backStack.add(SettingsNavKey.Developer) },
       modifier = Modifier.padding(padding),
     )
@@ -235,6 +234,7 @@ private fun RemindersEntry(
   ) { padding ->
     RemindersSettingsScreen(
       state = state,
+      onInsightsClick = { backStack.add(InsightsNavKey.Dashboard) },
       onPresetsClick = viewModel::onPresetsClick,
       onLocationClick = viewModel::onLocationClick,
       onWorkflowRulesClick = viewModel::onWorkflowRulesClick,

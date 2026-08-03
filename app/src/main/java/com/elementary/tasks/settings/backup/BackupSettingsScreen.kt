@@ -6,10 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 
 /**
  * Groups the three backup-related destinations (cloud sync settings, local encrypted export,
@@ -31,20 +32,22 @@ fun BackupSettingsScreen(
   ) {
     SettingsItem(
       title = stringResource(R.string.cloud_backup),
-      icon = painterResource(R.drawable.ic_fluent_cloud_backup),
-      dividerTop = true,
-      dividerBottom = !isLocalBackupVisible,
+      icon = AppIcons.Fluent.CloudBackup,
+      dividerBottom = true,
       onClick = onCloudBackupClick,
     )
     if (isLocalBackupVisible) {
+      SettingsSectionHeader(stringResource(R.string.local_backup))
+
       SettingsItem(
         title = stringResource(R.string.backup_export_title),
-        icon = painterResource(R.drawable.ic_fluent_cloud_backup),
+        icon = AppIcons.Fluent.FolderMove,
+        dividerBottom = true,
         onClick = onExportBackupClick,
       )
       SettingsItem(
         title = stringResource(R.string.backup_import_title),
-        icon = painterResource(R.drawable.ic_fluent_cloud_backup),
+        icon = AppIcons.Fluent.DocumentTopRight,
         dividerBottom = true,
         onClick = onImportBackupClick,
       )

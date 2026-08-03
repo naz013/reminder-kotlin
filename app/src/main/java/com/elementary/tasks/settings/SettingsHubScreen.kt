@@ -19,10 +19,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
 fun SettingsHubScreen(
+  modifier: Modifier = Modifier,
   state: SettingsHubState,
   onBuyProClick: () -> Unit,
   onUpdateClick: () -> Unit,
@@ -34,9 +36,7 @@ fun SettingsHubScreen(
   onSecurityClick: () -> Unit,
   onNotesClick: () -> Unit,
   onOtherClick: () -> Unit,
-  onInsightsClick: () -> Unit,
   onDeveloperClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier =
@@ -113,13 +113,12 @@ fun SettingsHubScreen(
     SettingsItem(
       title = stringResource(R.string.general),
       icon = painterResource(R.drawable.ic_fluent_system),
-      dividerTop = true,
       dividerBottom = true,
       onClick = onGeneralClick,
     )
     SettingsItem(
       title = stringResource(R.string.backup),
-      icon = painterResource(R.drawable.ic_fluent_cloud_backup),
+      icon = AppIcons.Fluent.CloudSyncComplete,
       dividerBottom = true,
       onClick = onBackupClick,
     )
@@ -159,14 +158,6 @@ fun SettingsHubScreen(
       dividerBottom = true,
       onClick = onOtherClick,
     )
-    if (state.isInsightsVisible) {
-      SettingsItem(
-        title = stringResource(R.string.insights),
-        icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
-        dividerBottom = true,
-        onClick = onInsightsClick,
-      )
-    }
     if (BuildConfig.DEBUG) {
       SettingsItem(
         title = "Developer",

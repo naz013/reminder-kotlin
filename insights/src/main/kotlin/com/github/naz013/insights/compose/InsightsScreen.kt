@@ -182,7 +182,7 @@ private fun InsightsEmptyState(modifier: Modifier = Modifier) {
     verticalArrangement = Arrangement.Center
   ) {
     Icon(
-      painter = AppIcons.Fluent.ArrowRepeatAll,
+      painter = AppIcons.Fluent.DataPie,
       contentDescription = null,
       modifier = Modifier.size(64.dp),
       tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)

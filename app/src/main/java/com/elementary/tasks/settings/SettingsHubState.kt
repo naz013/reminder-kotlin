@@ -8,5 +8,4 @@ data class SettingsHubState(
   val isBuyProBadgeVisible: Boolean = false,
   val isPlayServicesWarningVisible: Boolean = false,
   val hasPinCode: Boolean = false,
-  val isInsightsVisible: Boolean = false,
 )
