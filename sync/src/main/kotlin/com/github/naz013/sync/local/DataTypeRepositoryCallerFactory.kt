@@ -32,6 +32,7 @@ internal class DataTypeRepositoryCallerFactory(
       DataType.RecurPresets -> RecurPresetRepositoryCaller(recurPresetRepository)
       DataType.SharedNote -> NoopRepositoryCaller()
       DataType.Tags -> TagRepositoryCaller(tagRepository)
+      DataType.TagAssignments -> NoopRepositoryCaller()
     }
   }
 }

@@ -15,5 +15,6 @@ enum class DataType(
   RecurPresets(".rp2"),
   NotesV2(".no2", isLegacy = true),
   SharedNote(".etnote"),
-  Tags(".tg1")
+  Tags(".tg1"),
+  TagAssignments(".tga1")
 }

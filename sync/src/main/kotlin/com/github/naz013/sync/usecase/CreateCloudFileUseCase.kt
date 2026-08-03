@@ -11,6 +11,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.files.DataType
 import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.files.model.SettingsModel
+import com.github.naz013.files.model.TagAssignmentsSnapshotJson
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
 
@@ -28,6 +29,7 @@ internal class CreateCloudFileUseCase(
       is GroupV2 -> any.getFileNamePrefix()
       is Place -> any.getFileNamePrefix()
       is SettingsModel -> "app"
+      is TagAssignmentsSnapshotJson -> "app"
       is RecurPreset -> any.getFileNamePrefix()
       is Tag -> any.getFileNamePrefix()
       is NoteV3Json -> any.key

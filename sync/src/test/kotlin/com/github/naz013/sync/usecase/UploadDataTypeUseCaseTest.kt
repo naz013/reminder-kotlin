@@ -5,6 +5,7 @@ import com.github.naz013.files.DataType
 import com.github.naz013.sync.local.DataTypeRepositoryCaller
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
 import com.github.naz013.sync.settings.UploadSettingsUseCase
+import com.github.naz013.sync.settings.UploadTagAssignmentsUseCase
 import com.github.naz013.sync.usecase.upload.UploadDataTypeUseCase
 import com.github.naz013.sync.usecase.upload.UploadSingleUseCase
 import io.mockk.coEvery
@@ -26,6 +27,7 @@ class UploadDataTypeUseCaseTest {
 
   private lateinit var uploadSingleUseCase: UploadSingleUseCase
   private lateinit var uploadSettingsUseCase: UploadSettingsUseCase
+  private lateinit var uploadTagAssignmentsUseCase: UploadTagAssignmentsUseCase
   private lateinit var dataTypeRepositoryCallerFactory: DataTypeRepositoryCallerFactory
   private lateinit var uploadDataTypeUseCase: UploadDataTypeUseCase
 
@@ -35,12 +37,14 @@ class UploadDataTypeUseCaseTest {
   fun setUp() {
     uploadSingleUseCase = mockk(relaxed = true)
     uploadSettingsUseCase = mockk(relaxed = true)
+    uploadTagAssignmentsUseCase = mockk(relaxed = true)
     dataTypeRepositoryCallerFactory = mockk()
     mockRepositoryCaller = mockk(relaxed = true)
 
     uploadDataTypeUseCase = UploadDataTypeUseCase(
       uploadSingleUseCase = uploadSingleUseCase,
       uploadSettingsUseCase = uploadSettingsUseCase,
+      uploadTagAssignmentsUseCase = uploadTagAssignmentsUseCase,
       dataTypeRepositoryCallerFactory = dataTypeRepositoryCallerFactory
     )
   }
@@ -56,6 +60,22 @@ class UploadDataTypeUseCaseTest {
 
       // Assert - Should call uploadSettingsUseCase, not uploadSingleUseCase
       coVerify(exactly = 1) { uploadSettingsUseCase() }
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+      coVerify(exactly = 0) { dataTypeRepositoryCallerFactory.getCaller(any()) }
+    }
+  }
+
+  @Test
+  fun `invoke with tag assignments data type should call upload tag assignments use case`() {
+    runBlocking {
+      // Arrange - TagAssignments data type has special handling, same as Settings
+      val dataType = DataType.TagAssignments
+
+      // Act
+      uploadDataTypeUseCase(dataType)
+
+      // Assert - Should call uploadTagAssignmentsUseCase, not uploadSingleUseCase
+      coVerify(exactly = 1) { uploadTagAssignmentsUseCase() }
       coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
       coVerify(exactly = 0) { dataTypeRepositoryCallerFactory.getCaller(any()) }
     }

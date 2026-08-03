@@ -9,6 +9,7 @@ import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.files.model.SettingsModel
+import com.github.naz013.files.model.TagAssignmentsSnapshotJson
 import com.github.naz013.sync.images.CachedFile
 
 internal class GetLocalUuIdUseCase {
@@ -20,6 +21,7 @@ internal class GetLocalUuIdUseCase {
       is GroupV2 -> any.uuId
       is Place -> any.id
       is SettingsModel -> "app"
+      is TagAssignmentsSnapshotJson -> "app"
       is RecurPreset -> any.id
       is Tag -> any.id
       is CachedFile -> any.name

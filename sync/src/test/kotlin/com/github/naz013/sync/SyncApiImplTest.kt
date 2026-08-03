@@ -302,6 +302,29 @@ class SyncApiImplTest {
     }
   }
 
+  @Test
+  fun `sync single item with TagAssignments should throw IllegalArgumentException`() {
+    runBlocking {
+      // Arrange
+      every { hasAnyCloudApiUseCase() } returns true
+
+      // Act & Assert
+      var exceptionThrown = false
+      var exceptionMessage = ""
+      try {
+        syncApi.sync(DataType.TagAssignments, "tag-assignments-id")
+      } catch (e: IllegalArgumentException) {
+        exceptionThrown = true
+        exceptionMessage = e.message ?: ""
+      }
+
+      assertTrue(exceptionThrown)
+      assertEquals("Cannot sync single tag assignments item.", exceptionMessage)
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+      coVerify(exactly = 0) { downloadSingleUseCase(any(), any()) }
+    }
+  }
+
   // ==================== upload() Tests ====================
 
   @Test
@@ -425,6 +448,28 @@ class SyncApiImplTest {
 
       assertTrue(exceptionThrown)
       assertEquals("Cannot upload single settings item.", exceptionMessage)
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+    }
+  }
+
+  @Test
+  fun `upload single item with TagAssignments should throw IllegalArgumentException`() {
+    runBlocking {
+      // Arrange
+      every { hasAnyCloudApiUseCase() } returns true
+
+      // Act & Assert
+      var exceptionThrown = false
+      var exceptionMessage = ""
+      try {
+        syncApi.upload(DataType.TagAssignments, "tag-assignments-id")
+      } catch (e: IllegalArgumentException) {
+        exceptionThrown = true
+        exceptionMessage = e.message ?: ""
+      }
+
+      assertTrue(exceptionThrown)
+      assertEquals("Cannot upload single tag assignments item.", exceptionMessage)
       coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
     }
   }

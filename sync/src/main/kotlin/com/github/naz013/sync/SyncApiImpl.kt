@@ -82,6 +82,9 @@ internal class SyncApiImpl(
     if (dataType == DataType.Settings) {
       throw IllegalArgumentException("Cannot sync single settings item.")
     }
+    if (dataType == DataType.TagAssignments) {
+      throw IllegalArgumentException("Cannot sync single tag assignments item.")
+    }
     Logger.i(TAG, "Syncing single item. dataType: $dataType, id: $id")
     uploadSingleUseCase(dataType, id)
     downloadSingleUseCase(dataType, id).also {
@@ -123,6 +126,9 @@ internal class SyncApiImpl(
     }
     if (dataType == DataType.Settings) {
       throw IllegalArgumentException("Cannot upload single settings item.")
+    }
+    if (dataType == DataType.TagAssignments) {
+      throw IllegalArgumentException("Cannot upload single tag assignments item.")
     }
     Logger.i(TAG, "Uploading single item. dataType: $dataType, id: $id")
     uploadSingleUseCase(dataType, id)
