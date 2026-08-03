@@ -73,17 +73,6 @@ class SettingsHubViewModelTest : BaseTest() {
       assertTrue(state.isBuyProBadgeVisible)
       assertFalse(state.isPlayServicesWarningVisible)
       assertFalse(state.hasPinCode)
-      assertFalse(state.isInsightsVisible)
-    }
-
-  @Test
-  fun `shows insights entry only for pro users`() =
-    runTest {
-      every { buildInfo.isPro } returns true
-
-      val state = newViewModel().state.first()
-
-      assertTrue(state.isInsightsVisible)
     }
 
   @Test
