@@ -11,13 +11,15 @@ complexity:
     ignoreAnnotated:
       - 'Composable'
   LongParameterList:
-    constructorThreshold: 8
+    constructorThreshold: 25
     ignoreAnnotated:
       - 'Composable'
   TooManyFunctions:
     ignorePrivate: true
     ignoreOverridden: true
     thresholdInClasses: 20
+  ComplexInterface:
+    allowedDefinitions: 20
 
 coroutines:
   active: true

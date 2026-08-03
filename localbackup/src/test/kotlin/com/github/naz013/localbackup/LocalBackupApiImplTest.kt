@@ -150,7 +150,9 @@ class LocalBackupApiImplTest {
 
   @Test
   fun `round trips tags and tag assignments through import`() = runTest {
-    coEvery { tagRepository.getAll() } returns listOf(Tag(id = "t1", name = "Work", color = 1, syncState = SyncState.Synced))
+    coEvery { tagRepository.getAll() } returns listOf(
+      Tag(id = "t1", name = "Work", color = 1, syncState = SyncState.Synced)
+    )
     coEvery { tagAssignmentRepository.getAll() } returns listOf(
       TagAssignment(tagId = "t1", itemId = "r1", itemType = TaggedItemType.REMINDER)
     )
