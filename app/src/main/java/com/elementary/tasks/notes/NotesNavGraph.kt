@@ -1,9 +1,7 @@
 package com.elementary.tasks.notes
 
-import android.widget.FrameLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -12,12 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.core.os.compose.PermissionRequester
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.os.datapicker.compose.rememberCameraPicker
@@ -268,12 +265,7 @@ private fun NotePreviewEntry(
         onReminderEditClick = viewModel::onReminderEditClick,
         onReminderDetachClick = viewModel::onReminderDetachClick,
       ),
-    adsBanner =
-      if (state.showAdsBanner) {
-        { NoteNativeAdBanner(remember { AdsProvider() }) }
-      } else {
-        null
-      },
+    adsBanner = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.NotePreview) },
   )
 }
 
@@ -449,20 +441,5 @@ private fun NoteImagePreviewEntry(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
     onPageChanged = viewModel::onPageChanged,
-  )
-}
-
-@Composable
-private fun NoteNativeAdBanner(adsProvider: AdsProvider) {
-  val context = LocalContext.current
-  AndroidView(
-    modifier = Modifier.fillMaxWidth(),
-    factory = { FrameLayout(context) },
-    update = { viewGroup ->
-      adsProvider.showBanner(
-        viewGroup,
-        AdsProvider.NOTE_PREVIEW_BANNER_ID,
-      )
-    },
   )
 }

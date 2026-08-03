@@ -3,6 +3,7 @@ package com.elementary.tasks
 import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
+import com.elementary.tasks.ads.AdBanner
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.logging.Logger
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
@@ -64,11 +65,11 @@ class AdsProvider {
 
   fun showBanner(
     viewGroup: ViewGroup,
-    bannerId: String,
+    adBanner: AdBanner,
     failListener: (() -> Unit)? = null,
   ) {
     RotatingBannerAdsProvider(
-      bannerId = bannerId,
+      bannerId = adBanner.bannerId,
       viewGroup = viewGroup,
       onAdsFailureCallback =
         object : OnAdsFailureCallback {
@@ -79,12 +80,24 @@ class AdsProvider {
     )
   }
 
+  private val AdBanner.bannerId: String
+    get() {
+      return when (this) {
+        AdBanner.ReminderPreview -> "ca-app-pub-5133908997831400/5532170457"
+        AdBanner.Birthday -> "ca-app-pub-5133908997831400/1262280397"
+        AdBanner.NotePreview -> "ca-app-pub-5133908997831400/9399263275"
+        AdBanner.GoogleTask -> "ca-app-pub-5133908997831400/5192898494"
+        AdBanner.Group -> "ca-app-pub-5133908997831400/5460018266"
+        AdBanner.GoogleTaskList -> "ca-app-pub-5133908997831400/6866147439"
+        AdBanner.Tag -> "ca-app-pub-5133908997831400/1613820753"
+        AdBanner.Place -> "ca-app-pub-5133908997831400/1110689651"
+        AdBanner.PinLogin -> "ca-app-pub-5133908997831400/3859996131"
+        AdBanner.ActionScreen -> "ca-app-pub-5133908997831400/8797607986"
+      }
+    }
+
   companion object {
     private const val TAG = "AdsProvider"
-    const val REMINDER_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1084030852"
-    const val NOTE_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/4831704177"
-    const val BIRTHDAY_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/1262280397"
-    const val GOOGLE_TASKS_PREVIEW_BANNER_ID = "ca-app-pub-5133908997831400/5192898494"
 
     private var wasError = false
 

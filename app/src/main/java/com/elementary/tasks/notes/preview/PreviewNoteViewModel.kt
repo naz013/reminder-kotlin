@@ -3,11 +3,9 @@ package com.elementary.tasks.notes.preview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
-import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.notes.NoteColorEngine
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
@@ -86,7 +84,6 @@ class PreviewNoteViewModel(
               textSize = uiNotePreview.textSize,
               images = uiNotePreview.images,
               isArchived = uiNotePreview.isArchived,
-              showAdsBanner = !BuildParams.isPro && AdsProvider.hasAds(),
               background = noteColors.background,
               content = noteColors.content,
             )

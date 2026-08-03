@@ -3,7 +3,6 @@ package com.elementary.tasks.googletasks.preview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskPreviewAdapter
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -12,7 +11,6 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -38,7 +36,6 @@ class PreviewGoogleTaskViewModel(
   private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val textProvider: TextProvider,
-  private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewGoogleTaskState())
@@ -119,9 +116,6 @@ class PreviewGoogleTaskViewModel(
   }
 
   private fun loadTask() {
-    _state.update {
-      it.copy(hasAdsBanner = !buildInfo.isPro && AdsProvider.hasAds())
-    }
     viewModelScope.launch(dispatcherProvider.main()) {
       val googleTask = withContext(dispatcherProvider.io()) {
         googleTaskRepository.getById(id)

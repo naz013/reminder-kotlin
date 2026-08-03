@@ -5,7 +5,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
@@ -24,12 +23,11 @@ import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -39,8 +37,8 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
-import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
@@ -82,7 +80,6 @@ class PreviewReminderViewModel(
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val tableChangeListenerFactory: TableChangeListenerFactory,
-  private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewReminderState())
@@ -353,7 +350,6 @@ class PreviewReminderViewModel(
             placesHeader = placesHeaderV2(reminder.recurrence, places.size),
             canCopy = canCopyV2(reminder.recurrence),
             canDelete = reminder.isRemoved,
-            hasAds = !buildInfo.isPro && AdsProvider.hasAds()
           )
         }
       }

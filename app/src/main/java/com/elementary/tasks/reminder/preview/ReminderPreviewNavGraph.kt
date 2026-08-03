@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.preview
 
-import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,15 +11,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
@@ -58,7 +56,6 @@ private fun PreviewEntry(
   val toastDispatcher = rememberToastDispatcher()
   val fileIntentSender = rememberFileIntentSender()
   val intentResolver = rememberSendIntentResolver()
-  val adsProvider = remember { AdsProvider() }
 
   // ReminderActionActivity (the full-screen alarm popup) is a separate Activity launched on
   // top of this screen, so the composable is never disposed and the state flow's
@@ -133,7 +130,7 @@ private fun PreviewEntry(
         onMapClick = { backStack.add(ReminderPreviewNavKey.FullscreenMap(key.id)) },
       )
     },
-    adsContent = { if (state.hasAds) ReminderAdBanner(adsProvider) },
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.ReminderPreview) },
   )
 }
 
@@ -228,17 +225,5 @@ private fun FullscreenEmbeddedMap(
     onControllerReady = onControllerReady,
     edgeToEdge = true,
     modifier = Modifier.fillMaxSize(),
-  )
-}
-
-@Composable
-private fun ReminderAdBanner(adsProvider: AdsProvider) {
-  val context = LocalContext.current
-  AndroidView(
-    modifier = Modifier.fillMaxWidth(),
-    factory = { FrameLayout(context) },
-    update = { viewGroup ->
-      adsProvider.showBanner(viewGroup, AdsProvider.REMINDER_PREVIEW_BANNER_ID)
-    },
   )
 }

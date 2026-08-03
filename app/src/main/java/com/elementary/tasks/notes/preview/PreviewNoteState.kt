@@ -17,7 +17,6 @@ data class PreviewNoteState(
   val reminders: List<UiNoteAttachedReminder> = emptyList(),
   val isArchived: Boolean = false,
   val isLoading: Boolean = false,
-  val showAdsBanner: Boolean = false,
   val background: Color = Color.Transparent,
   val content: Color = Color.Unspecified,
 )

@@ -1,19 +1,17 @@
 package com.elementary.tasks.googletasks
 
-import android.widget.FrameLayout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
 import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
@@ -143,7 +141,6 @@ private fun TaskPreviewEntry(
   val viewModel = koinViewModel<PreviewGoogleTaskViewModel> { parametersOf(key.id) }
 
   val toastDispatcher = rememberToastDispatcher()
-  val adsProvider = remember { AdsProvider() }
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
@@ -163,7 +160,7 @@ private fun TaskPreviewEntry(
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,
     onCompleteClick = viewModel::onComplete,
-    adsContent = { if (state.hasAdsBanner) { GoogleTaskAdBanner(adsProvider) } },
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) },
   )
 }
 
@@ -271,15 +268,5 @@ private fun ListEditEntry(
     onDefaultToggle = viewModel::onDefaultToggle,
     onDeleteConfirmed = viewModel::deleteGoogleTaskList,
     onDeleteDismiss = viewModel::onDeleteDismiss,
-  )
-}
-
-@Composable
-private fun GoogleTaskAdBanner(adsProvider: AdsProvider) {
-  val context = LocalContext.current
-  AndroidView(
-    modifier = Modifier.fillMaxWidth(),
-    factory = { FrameLayout(context) },
-    update = { viewGroup -> adsProvider.showBanner(viewGroup, AdsProvider.GOOGLE_TASKS_PREVIEW_BANNER_ID) },
   )
 }
