@@ -45,7 +45,7 @@
         </activity>
 
         <receiver
-            android:name="com.github.naz013.appwidgets.notes.NotesWidget"
+            android:name=".notes.NotesGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/notes">
             <intent-filter>
@@ -56,10 +56,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/note_widget_metadata" />
         </receiver>
-
-        <service
-            android:name="com.github.naz013.appwidgets.notes.NotesService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
             android:name="com.github.naz013.appwidgets.calendar.CalendarWidgetConfigActivity"

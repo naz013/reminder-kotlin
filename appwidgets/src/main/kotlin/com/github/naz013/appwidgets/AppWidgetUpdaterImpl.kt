@@ -12,7 +12,7 @@ import com.github.naz013.appwidgets.calendar.CalendarWidget
 import com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsGlanceAppWidget
 import com.github.naz013.appwidgets.events.EventsGlanceAppWidget
 import com.github.naz013.appwidgets.googletasks.TasksWidget
-import com.github.naz013.appwidgets.notes.NotesWidget
+import com.github.naz013.appwidgets.notes.NotesGlanceAppWidget
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidget
 import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.logging.Logger
@@ -64,15 +64,8 @@ internal class AppWidgetUpdaterImpl(
     }
   }
 
-  override fun updateNotesWidget() {
-    val intent = Intent(context, NotesWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, NotesWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
-
+  override fun updateNotesWidget(widgetId: Int) {
+    invokeSuspend { updateGlanceWidget(NotesGlanceAppWidget(), widgetId) }
     updateNoteWidgets()
   }
 
