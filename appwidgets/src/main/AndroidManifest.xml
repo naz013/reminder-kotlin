@@ -160,7 +160,7 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver
-            android:name="com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsWidget"
+            android:name=".combinedbuttons.CombinedButtonsGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/quick_buttons">
             <intent-filter>

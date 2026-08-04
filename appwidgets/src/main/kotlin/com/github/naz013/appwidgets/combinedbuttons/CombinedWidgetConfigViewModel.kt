@@ -1,19 +1,20 @@
 package com.github.naz013.appwidgets.combinedbuttons
 
-import android.appwidget.AppWidgetManager
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
-import com.github.naz013.appwidgets.WidgetUpdater
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.appwidgets.WidgetUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class CombinedWidgetConfigViewModel(
-  private val widgetUpdater: WidgetUpdater,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val prefsProvider: CombinedWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   appWidgetPreferences: AppWidgetPreferences,
@@ -52,8 +53,8 @@ internal class CombinedWidgetConfigViewModel(
   fun onSaveClick() {
     prefsProvider.setWidgetBackground(state.value.backgroundIndex)
     analyticsEventSender.send(WidgetUsedEvent(Widget.COMBINED))
-    widgetUpdater.update {
-      CombinedButtonsWidget.updateWidget(this, AppWidgetManager.getInstance(this), prefsProvider)
+    viewModelScope.launch {
+      appWidgetUpdater.updateCombinedButtonsWidget(prefsProvider.widgetId)
     }
   }
 }
