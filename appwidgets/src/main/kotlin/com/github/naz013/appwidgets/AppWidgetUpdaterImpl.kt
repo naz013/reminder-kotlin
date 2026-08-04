@@ -11,7 +11,7 @@ import com.github.naz013.appwidgets.birthdays.BirthdaysGlanceAppWidget
 import com.github.naz013.appwidgets.calendar.CalendarWidget
 import com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsGlanceAppWidget
 import com.github.naz013.appwidgets.events.EventsGlanceAppWidget
-import com.github.naz013.appwidgets.googletasks.TasksWidget
+import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidget
 import com.github.naz013.appwidgets.notes.NotesGlanceAppWidget
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidget
 import com.github.naz013.feature.common.coroutine.invokeSuspend
@@ -89,14 +89,8 @@ internal class AppWidgetUpdaterImpl(
     context.sendBroadcast(intent)
   }
 
-  override fun updateScheduleWidget() {
-    val intent = Intent(context, TasksWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, TasksWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
+  override fun updateScheduleWidget(widgetId: Int) {
+    invokeSuspend { updateGlanceWidget(GoogleTasksGlanceAppWidget(), widgetId) }
   }
 
   override fun updateBirthdaysWidget(widgetId: Int) {

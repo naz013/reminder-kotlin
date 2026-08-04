@@ -13,6 +13,7 @@ import com.github.naz013.appwidgets.events.EventsAppWidgetViewModel
 import com.github.naz013.appwidgets.events.EventsWidgetConfigViewModel
 import com.github.naz013.appwidgets.events.EventsWidgetPrefsProvider
 import com.github.naz013.appwidgets.events.UiReminderWidgetListAdapter
+import com.github.naz013.appwidgets.googletasks.GoogleTasksAppWidgetViewModel
 import com.github.naz013.appwidgets.googletasks.GoogleTasksWidgetPrefsProvider
 import com.github.naz013.appwidgets.googletasks.TasksWidgetConfigViewModel
 import com.github.naz013.appwidgets.notes.NotesAppWidgetViewModel
@@ -86,6 +87,10 @@ val appWidgetsModule = module {
 
   factory { (prefs: BirthdaysWidgetPrefsProvider) ->
     BirthdaysAppWidgetViewModel(prefs, get(), get())
+  }
+
+  factory { (prefs: GoogleTasksWidgetPrefsProvider) ->
+    GoogleTasksAppWidgetViewModel(prefs, get(), get(), get())
   }
 
   viewModel { (widgetId: Int) ->

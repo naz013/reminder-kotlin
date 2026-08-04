@@ -187,7 +187,7 @@
         </activity>
 
         <receiver
-            android:name="com.github.naz013.appwidgets.googletasks.TasksWidget"
+            android:name=".googletasks.GoogleTasksGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/google_tasks">
             <intent-filter>
@@ -198,9 +198,5 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/tasks_widget_metadata" />
         </receiver>
-
-        <service
-            android:name="com.github.naz013.appwidgets.googletasks.TasksService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 </manifest>
