@@ -1,12 +1,11 @@
 package com.github.naz013.appwidgets.birthdays
 
-import android.appwidget.AppWidgetManager
 import androidx.lifecycle.ViewModel
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
-import com.github.naz013.appwidgets.WidgetUpdater
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.appwidgets.WidgetUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +15,7 @@ internal class BirthdaysWidgetConfigViewModel(
   private val prefsProvider: BirthdaysWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   appWidgetPreferences: AppWidgetPreferences,
-  private val widgetUpdater: WidgetUpdater
+  private val appWidgetUpdater: AppWidgetUpdater
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(BirthdaysWidgetConfigState())
@@ -69,8 +68,6 @@ internal class BirthdaysWidgetConfigViewModel(
 
     analyticsEventSender.send(WidgetUsedEvent(Widget.BIRTHDAYS))
 
-    widgetUpdater.update {
-      BirthdaysWidget.updateWidget(this, AppWidgetManager.getInstance(this), prefsProvider)
-    }
+    appWidgetUpdater.updateBirthdaysWidget(prefsProvider.widgetId)
   }
 }

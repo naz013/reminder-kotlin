@@ -1,5 +1,6 @@
 package com.github.naz013.appwidgets
 
+import com.github.naz013.appwidgets.birthdays.BirthdaysAppWidgetViewModel
 import com.github.naz013.appwidgets.birthdays.BirthdaysWidgetConfigViewModel
 import com.github.naz013.appwidgets.birthdays.BirthdaysWidgetPrefsProvider
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetListAdapter
@@ -81,6 +82,10 @@ val appWidgetsModule = module {
 
   factory { (prefs: NotesWidgetPrefsProvider) ->
     NotesAppWidgetViewModel(prefs, get(), get())
+  }
+
+  factory { (prefs: BirthdaysWidgetPrefsProvider) ->
+    BirthdaysAppWidgetViewModel(prefs, get(), get())
   }
 
   viewModel { (widgetId: Int) ->
