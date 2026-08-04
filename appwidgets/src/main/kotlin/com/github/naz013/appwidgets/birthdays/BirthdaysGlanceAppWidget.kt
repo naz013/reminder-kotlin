@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
@@ -22,7 +21,7 @@ import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
-import androidx.glance.color.ColorProvider
+import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
@@ -45,8 +44,8 @@ import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
-import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.common.intent.IntentKeys
@@ -70,6 +69,9 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private val widgetTypeKey = ActionParameters.Key<Widget>(
     AppWidgetActionActivity.WIDGET_TYPE
   )
+  private val composeResourceProvider: (Context) -> ComposeResourceProvider = {
+    ComposeResourceProvider(it)
+  }
 
   override val stateDefinition: GlanceStateDefinition<BirthdaysAppWidgetState>
     get() = object : GlanceStateDefinition<BirthdaysAppWidgetState> {
@@ -148,27 +150,25 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     titleText: String,
     emptyStateText: String
   ) {
-    val headerContrastColorProvider = paletteContrastColor(
-      state.headerBackgroundColor,
-      state.headerContrastColor
-    )
+    val widgetColors = composeResourceProvider(context).getColors(state.backgroundColor)
     Column(
-      modifier = modifier.fillMaxSize().systemWidgetShape()
+      modifier = modifier.fillMaxSize()
+        .roundedBackground(widgetColors.background)
+        .systemWidgetShape()
     ) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()
-          .height(56.dp)
-          .roundedBackground(state.headerBackgroundColor),
+          .height(56.dp),
         verticalAlignment = Alignment.Vertical.CenterVertically
       ) {
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(16.dp))
         Text(
           text = titleText,
           modifier = GlanceModifier.fillMaxWidth()
             .defaultWeight(),
           style = TextStyle(
-            fontSize = 18.sp,
-            color = headerContrastColorProvider
+            fontSize = 20.sp,
+            color = widgetColors.foreground
           ),
           maxLines = 1
         )
@@ -186,7 +186,7 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             ),
           provider = ImageProvider(R.drawable.ic_fluent_settings),
           contentDescription = null,
-          colorFilter = ColorFilter.tint(headerContrastColorProvider)
+          colorFilter = ColorFilter.tint(widgetColors.foreground)
         )
         Spacer(modifier = GlanceModifier.width(4.dp))
         Image(
@@ -205,24 +205,34 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             ),
           provider = ImageProvider(R.drawable.ic_fluent_add),
           contentDescription = null,
-          colorFilter = ColorFilter.tint(headerContrastColorProvider)
+          colorFilter = ColorFilter.tint(widgetColors.foreground)
         )
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(16.dp))
       }
-      Spacer(modifier = GlanceModifier.height(4.dp))
+      Spacer(
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .height(1.dp)
+          .background(widgetColors.foreground)
+      )
       if (state.items.isEmpty()) {
         Text(
           text = emptyStateText,
-          modifier = GlanceModifier.fillMaxWidth().padding(16.dp)
+          modifier = GlanceModifier.fillMaxWidth().padding(16.dp),
+          style = TextStyle(
+            fontSize = 22.sp,
+            color = widgetColors.foreground
+          ),
         )
       } else {
-        LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
+        LazyColumn(
+          modifier = GlanceModifier.fillMaxWidth(),
+        ) {
           items(state.items.size) { index: Int ->
             BirthdayItem(
               context = context,
               data = state.items[index],
-              itemBackgroundColor = state.itemBackgroundColor,
-              itemContrastColor = state.itemContrastColor
+              textColor = widgetColors.foreground,
             )
           }
         }
@@ -234,44 +244,33 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private fun BirthdayItem(
     context: Context,
     data: UiBirthdayWidgetList,
-    itemBackgroundColor: Int,
-    itemContrastColor: Color
+    textColor: ColorProvider,
   ) {
-    val contentColorProvider = paletteContrastColor(itemBackgroundColor, itemContrastColor)
-    Row(
-      modifier = GlanceModifier.fillMaxWidth()
-        .padding(8.dp)
-        .roundedBackground(itemBackgroundColor)
-        .clickable(
-          onClick = actionStartActivity(
-            intent = viewIntent(context),
-            parameters = actionParametersOf(
-              directionKey to Direction.BIRTHDAY_PREVIEW,
-              dataKey to WidgetIntentProtocol(
-                mapOf<String, Any?>(Pair(IntentKeys.INTENT_ID, data.uuId))
-              ),
-              widgetTypeKey to Widget.BIRTHDAYS
+    Column(
+      modifier = GlanceModifier.fillMaxWidth(),
+    ) {
+      Column(
+        modifier = GlanceModifier.fillMaxWidth()
+          .padding(vertical = 8.dp, horizontal = 16.dp)
+          .clickable(
+            onClick = actionStartActivity(
+              intent = viewIntent(context),
+              parameters = actionParametersOf(
+                directionKey to Direction.BIRTHDAY_PREVIEW,
+                dataKey to WidgetIntentProtocol(
+                  mapOf<String, Any?>(Pair(IntentKeys.INTENT_ID, data.uuId))
+                ),
+                widgetTypeKey to Widget.BIRTHDAYS
+              )
             )
           )
-        ),
-      verticalAlignment = Alignment.Vertical.CenterVertically
-    ) {
-      Image(
-        modifier = GlanceModifier
-          .size(40.dp)
-          .padding(8.dp),
-        provider = ImageProvider(R.drawable.ic_fluent_food_cake),
-        contentDescription = null,
-        colorFilter = ColorFilter.tint(contentColorProvider)
-      )
-      Spacer(modifier = GlanceModifier.width(8.dp))
-      Column(modifier = GlanceModifier.fillMaxWidth()) {
+      ) {
         Text(
           text = data.name,
           modifier = GlanceModifier.fillMaxWidth(),
           style = TextStyle(
             fontSize = 14.sp,
-            color = contentColorProvider
+            color = textColor
           ),
           maxLines = 2
         )
@@ -281,11 +280,17 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           modifier = GlanceModifier.fillMaxWidth(),
           style = TextStyle(
             fontSize = 14.sp,
-            color = contentColorProvider
+            color = textColor
           ),
           maxLines = 2
         )
       }
+      Spacer(
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .height(1.dp)
+          .background(textColor)
+      )
     }
   }
 

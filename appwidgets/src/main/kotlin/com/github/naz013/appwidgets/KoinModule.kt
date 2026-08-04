@@ -69,7 +69,7 @@ val appWidgetsModule = module {
   }
 
   viewModel { (widgetId: Int) ->
-    BirthdaysWidgetConfigViewModel(get(), BirthdaysWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+    BirthdaysWidgetConfigViewModel(BirthdaysWidgetPrefsProvider(get(), widgetId), get(), get(), get(), get())
   }
 
   viewModel { (widgetId: Int) ->

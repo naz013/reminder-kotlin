@@ -35,7 +35,6 @@ internal fun BirthdaysWidgetConfigScreen(
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onHeaderColorSelected: (Int) -> Unit,
-  onItemColorSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   WidgetConfigScaffold(
@@ -45,10 +44,8 @@ internal fun BirthdaysWidgetConfigScreen(
     modifier = modifier,
   ) {
     BirthdaysWidgetMockPreview(
-      headerColor = state.headerColor,
-      headerContentColor = state.headerContentColor,
-      itemColor = state.itemColor,
-      itemContentColor = state.itemContentColor,
+      backgroundColor = state.backgroundColor,
+      foregroundColor = state.foregroundColor,
     )
 
     Text(
@@ -63,30 +60,9 @@ internal fun BirthdaysWidgetConfigScreen(
     ) {
       ColorSlider(
         colors = state.palette,
-        selectedIndex = state.headerBackgroundIndex,
+        selectedIndex = state.backgroundColorIndex,
         onColorSelected = { index ->
           onHeaderColorSelected(index)
-        },
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
-        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
-      )
-    }
-
-    Text(
-      text = stringResource(R.string.list_item_background),
-      style = MaterialTheme.typography.titleMedium,
-      color = MaterialTheme.colorScheme.primary,
-      modifier = Modifier.padding(top = 16.dp),
-    )
-    Card(
-      modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-    ) {
-      ColorSlider(
-        colors = state.palette,
-        selectedIndex = state.itemBackgroundIndex,
-        onColorSelected = { index ->
-          onItemColorSelected(index)
         },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
         hapticFeedbackEnabled = state.hapticFeedbackEnabled,
@@ -97,11 +73,9 @@ internal fun BirthdaysWidgetConfigScreen(
 
 @Composable
 private fun BirthdaysWidgetMockPreview(
-  headerColor: Color,
-  headerContentColor: Color,
-  itemColor: Color,
-  itemContentColor: Color,
   modifier: Modifier = Modifier,
+  backgroundColor: Color,
+  foregroundColor: Color,
 ) {
   Box(
     modifier = modifier
@@ -114,47 +88,52 @@ private fun BirthdaysWidgetMockPreview(
       .padding(16.dp),
   ) {
     val cornerShape = RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))
-    Column {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(backgroundColor, cornerShape),
+    ) {
       Row(
-        modifier = Modifier.fillMaxWidth().height(50.dp).background(headerColor, cornerShape),
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(50.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Text(
           text = stringResource(R.string.birthdays),
-          color = headerContentColor,
+          color = foregroundColor,
           style = MaterialTheme.typography.titleMedium,
           modifier = Modifier.weight(1f).padding(start = 16.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_settings),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_add),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
       }
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .background(itemColor, cornerShape)
           .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Icon(
           painter = painterResource(R.drawable.ic_fluent_food_cake),
           contentDescription = null,
-          tint = itemContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(40.dp),
         )
         Column(modifier = Modifier.padding(start = 8.dp)) {
-          Text(text = "User Name", color = itemContentColor)
-          Text(text = "25 years", color = itemContentColor, modifier = Modifier.padding(top = 4.dp))
-          Text(text = "5 days", color = itemContentColor, modifier = Modifier.padding(top = 4.dp))
+          Text(text = "User Name", color = foregroundColor)
+          Text(text = "25 years", color = foregroundColor, modifier = Modifier.padding(top = 4.dp))
+          Text(text = "5 days", color = foregroundColor, modifier = Modifier.padding(top = 4.dp))
         }
       }
     }
@@ -166,11 +145,10 @@ private fun BirthdaysWidgetMockPreview(
 private fun BirthdaysWidgetConfigScreenPreview() {
   AppTheme {
     BirthdaysWidgetConfigScreen(
-      state = BirthdaysWidgetConfigState(headerBackgroundIndex = 9, itemBackgroundIndex = 4),
+      state = BirthdaysWidgetConfigState(backgroundColorIndex = 9),
       onBackClick = {},
       onSaveClick = {},
       onHeaderColorSelected = {},
-      onItemColorSelected = {},
     )
   }
 }

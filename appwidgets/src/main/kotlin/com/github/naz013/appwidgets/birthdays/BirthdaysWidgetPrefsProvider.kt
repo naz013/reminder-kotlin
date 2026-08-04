@@ -8,24 +8,15 @@ internal class BirthdaysWidgetPrefsProvider(
   val widgetId: Int
 ) : WidgetPrefsProvider(context, "widget_birthdays_pref", widgetId) {
 
-  fun setHeaderBackground(value: Int) {
-    putInt(WIDGET_HEADER_BG, value)
+  fun setWidgetBackground(value: Int) {
+    putInt(WIDGET_BG, value)
   }
 
-  fun getHeaderBackground(): Int {
-    return getInt(WIDGET_HEADER_BG, 2)
-  }
-
-  fun setItemBackground(value: Int) {
-    putInt(WIDGET_ITEM_BG, value)
-  }
-
-  fun getItemBackground(): Int {
-    return getInt(WIDGET_ITEM_BG, 2)
+  fun getWidgetBackground(): Int {
+    return getInt(WIDGET_BG, 2)
   }
 
   companion object {
-    private const val WIDGET_HEADER_BG = "widget_birthdays_header_bg"
-    private const val WIDGET_ITEM_BG = "widget_birthdays_item_bg"
+    private const val WIDGET_BG = "widget_birthdays_header_bg"
   }
 }
