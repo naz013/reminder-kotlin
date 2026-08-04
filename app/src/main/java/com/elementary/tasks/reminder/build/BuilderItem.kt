@@ -111,8 +111,12 @@ abstract class BuilderItem<T> {
   abstract val biGroup: BiGroup
   open val isEnabled: Boolean = true
   open val minSdk: Int = Module.MIN_SDK
-  open val maxSdk: Int = Module.MAX_SDK
+  open val maxSdk: Int = MAX_SDK_UNDEFINED
   open val constraints: List<BiConstraint<*>> = constraints { }
+
+  companion object {
+    const val MAX_SDK_UNDEFINED = -1
+  }
 }
 
 abstract class StringBuilderItem : BuilderItem<String>()
