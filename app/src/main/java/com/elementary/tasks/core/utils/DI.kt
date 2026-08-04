@@ -20,6 +20,7 @@ import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.googletasks.work.SaveNewTaskTask
 import com.elementary.tasks.googletasks.work.UpdateTaskTask
 import com.elementary.tasks.groups.GroupsUtil
+import com.elementary.tasks.navigation.BottomNavInitViewModel
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
 import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
@@ -29,7 +30,6 @@ import com.elementary.tasks.settings.proversion.ProVersionViewModel
 import com.elementary.tasks.settings.test.DeveloperViewModel
 import com.elementary.tasks.settings.test.ObjectExportViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
-import com.elementary.tasks.splash.SplashViewModel
 import com.github.naz013.cloudapi.CloudKeysStorage
 import com.github.naz013.repository.ReminderSettingsRepository
 import com.github.naz013.workapi.BackgroundTask
@@ -49,7 +49,7 @@ val viewModelModule = module {
   viewModelOf(::SelectApplicationViewModel)
   viewModelOf(::ProVersionViewModel)
 
-  viewModelOf(::SplashViewModel)
+  viewModelOf(::BottomNavInitViewModel)
 
   viewModelOf(::TroubleshootingViewModel)
 

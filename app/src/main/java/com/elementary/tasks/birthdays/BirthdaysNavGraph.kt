@@ -1,18 +1,16 @@
 package com.elementary.tasks.birthdays
 
-import android.widget.FrameLayout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.elementary.tasks.AdsProvider
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.create.EditBirthdayScreen
 import com.elementary.tasks.birthdays.create.EditBirthdayState
 import com.elementary.tasks.birthdays.create.EditBirthdayViewModel
@@ -72,7 +70,7 @@ private fun PreviewEntry(
     onDeleteDismiss = viewModel::onDeleteDismiss,
     onCallClick = viewModel::onCallClicked,
     onSmsClick = viewModel::onSmsClicked,
-    adsContent = { if (state.hasAds) BirthdayAdBanner() },
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) },
   )
 }
 
@@ -127,16 +125,5 @@ private fun EditEntry(
     onCopyKeepClick = viewModel::onCopyKeepClick,
     onCopyReplaceClick = viewModel::onCopyReplaceClick,
     onDialogDismiss = viewModel::onDialogDismiss,
-  )
-}
-
-@Composable
-private fun BirthdayAdBanner() {
-  val context = LocalContext.current
-  val adsProvider = remember { AdsProvider() }
-  AndroidView(
-    modifier = Modifier.fillMaxWidth(),
-    factory = { FrameLayout(context) },
-    update = { viewGroup -> adsProvider.showBanner(viewGroup, AdsProvider.BIRTHDAY_PREVIEW_BANNER_ID) },
   )
 }

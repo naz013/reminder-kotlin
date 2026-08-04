@@ -6,6 +6,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.github.naz013.common.ContextProvider
 
+@Deprecated("Use Compose color")
 class ColorProvider(
   private val contextProvider: ContextProvider
 ) {
@@ -23,11 +24,6 @@ class ColorProvider(
   @ColorInt
   fun getColorOnSecondaryContainer(): Int {
     return ThemeProvider.getThemeOnSecondaryContainerColor(getContext())
-  }
-
-  @ColorInt
-  fun getColorOnBackground(): Int {
-    return ThemeProvider.getThemeOnBackgroundColor(getContext())
   }
 
   private fun getContext(): Context = contextProvider.themedContext

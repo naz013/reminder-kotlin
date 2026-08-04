@@ -31,18 +31,6 @@ object ViewUtils {
     return null
   }
 
-  fun tintIcon(context: Context, @DrawableRes resource: Int, @ColorInt color: Int): Drawable? {
-    var icon = ContextCompat.getDrawable(context, resource)
-    if (icon != null) {
-      icon = (DrawableCompat.wrap(icon)).mutate()
-      if (icon == null) return null
-      DrawableCompat.setTint(icon, color)
-      DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
-      return icon
-    }
-    return null
-  }
-
   @ColorInt
   fun tintIconColor(context: Context, isDark: Boolean): Int {
     return if (isDark) {

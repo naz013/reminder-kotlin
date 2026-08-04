@@ -22,7 +22,6 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.navigation.BottomNavActivity
-import com.elementary.tasks.splash.SplashScreenActivity
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.PendingIntentWrapper
@@ -296,9 +295,9 @@ class Notifier(
         noteBuilder.getPendingIntent(0, 0)
       }
     remoteViews.setOnClickPendingIntent(R.id.noteAdd, notePendingIntent)
-    val resInt = Intent(context, SplashScreenActivity::class.java)
+    val resInt = Intent(context, BottomNavActivity::class.java)
     val stackInt = TaskStackBuilder.create(context)
-    stackInt.addParentStack(SplashScreenActivity::class.java)
+    stackInt.addParentStack(BottomNavActivity::class.java)
     stackInt.addNextIntent(resInt)
     val resultPendingInt =
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

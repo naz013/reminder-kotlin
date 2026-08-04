@@ -49,7 +49,19 @@ private val lightScheme = lightColorScheme(
   surfaceContainerLow = surfaceContainerLowLight,
   surfaceContainer = surfaceContainerLight,
   surfaceContainerHigh = surfaceContainerHighLight,
-  surfaceContainerHighest = surfaceContainerHighestLight
+  surfaceContainerHighest = surfaceContainerHighestLight,
+  primaryFixed = primaryFixed,
+  primaryFixedDim = primaryFixedDim,
+  onPrimaryFixed = onPrimaryFixed,
+  onPrimaryFixedVariant = onPrimaryFixedVariant,
+  secondaryFixed = secondaryFixed,
+  secondaryFixedDim = secondaryFixedDim,
+  onSecondaryFixed = onSecondaryFixed,
+  onSecondaryFixedVariant = onSecondaryFixedVariant,
+  tertiaryFixed = tertiaryFixed,
+  tertiaryFixedDim = tertiaryFixedDim,
+  onTertiaryFixed = onTertiaryFixed,
+  onTertiaryFixedVariant = onTertiaryFixedVariant
 )
 
 private val darkScheme = darkColorScheme(
@@ -87,14 +99,26 @@ private val darkScheme = darkColorScheme(
   surfaceContainerLow = surfaceContainerLowDark,
   surfaceContainer = surfaceContainerDark,
   surfaceContainerHigh = surfaceContainerHighDark,
-  surfaceContainerHighest = surfaceContainerHighestDark
+  surfaceContainerHighest = surfaceContainerHighestDark,
+  primaryFixed = primaryFixed,
+  primaryFixedDim = primaryFixedDim,
+  onPrimaryFixed = onPrimaryFixed,
+  onPrimaryFixedVariant = onPrimaryFixedVariant,
+  secondaryFixed = secondaryFixed,
+  secondaryFixedDim = secondaryFixedDim,
+  onSecondaryFixed = onSecondaryFixed,
+  onSecondaryFixedVariant = onSecondaryFixedVariant,
+  tertiaryFixed = tertiaryFixed,
+  tertiaryFixedDim = tertiaryFixedDim,
+  onTertiaryFixed = onTertiaryFixed,
+  onTertiaryFixedVariant = onTertiaryFixedVariant
 )
 
 @Composable
 fun AppTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
   // Dynamic color is available on Android 12+
-  dynamicColor: Boolean = true,
+  dynamicColor: Boolean = false,
   content: @Composable() () -> Unit
 ) {
   val colorScheme = when {

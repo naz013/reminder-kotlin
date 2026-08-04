@@ -3,6 +3,7 @@ package com.github.naz013.ui.common
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 
+@Deprecated("Use Compose color")
 @ColorInt
 fun Int.adjustAlpha(@IntRange(from = 0, to = 100) factor: Int): Int {
   val alpha = 255f * (factor.toFloat() / 100f)
@@ -13,11 +14,13 @@ fun Int.adjustAlpha(@IntRange(from = 0, to = 100) factor: Int): Int {
 }
 
 // Check of opacity of Color
+@Deprecated("Use Compose color")
 fun Int.isAlmostTransparent(): Boolean {
   return this < 25
 }
 
 // Check if Color is Dark
+@Deprecated("Use Compose color")
 fun Int.isColorDark(): Boolean {
   val darkness = 1 - (
     0.299 * android.graphics.Color.red(this) +

@@ -5,13 +5,13 @@ import android.os.Looper
 import android.view.ViewGroup
 import androidx.core.view.doOnDetach
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.view.gone
-import com.github.naz013.ui.common.view.visible
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
+import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
+import com.google.android.libraries.ads.mobile.sdk.banner.AdView
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdEventCallback
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
+import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
+import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
 import java.lang.ref.WeakReference
 
 class RotatingBannerAdsProvider(
@@ -49,31 +49,39 @@ class RotatingBannerAdsProvider(
   private fun safeLoadAds(): Boolean = runCatching { loadAds() }.getOrNull() ?: false
 
   private fun loadAds(): Boolean {
-    val viewGroup =
-      parent.get() ?: return false.also {
-        Logger.e(TAG, "Will not show ADS, Parent view is null")
-      }
+    val viewGroup = parent.get() ?: return false.also {
+      Logger.e(TAG, "Will not show ADS, Parent view is null")
+    }
     val adView = AdView(viewGroup.context)
-    adView.setAdSize(AdSize.LARGE_BANNER)
-    adView.adUnitId = bannerId
 
     viewGroup.removeAllViews()
     viewGroup.addView(adView)
 
-    val adRequest = AdRequest.Builder().build()
-    adView.loadAd(adRequest)
+    val adSize = AdSize.getLargeAnchoredAdaptiveBannerAdSize(viewGroup.context, 360)
+    val adRequest = BannerAdRequest.Builder(bannerId, adSize).build()
+    adView.loadAd(
+      adRequest,
+      object : AdLoadCallback<BannerAd> {
+        override fun onAdLoaded(ad: BannerAd) {
+          adView.visible()
+          ad.adEventCallback = object : BannerAdEventCallback {
+              override fun onAdImpression() {
+                Logger.d(TAG, "Banner ad recorded an impression.")
+              }
 
-    adView.adListener =
-      object : AdListener() {
+              override fun onAdClicked() {
+                Logger.d(TAG, "Banner ad clicked.")
+              }
+            }
+        }
+
         override fun onAdFailedToLoad(adError: LoadAdError) {
+          Logger.e(TAG, "Banner ad failed to load: $adError")
           adView.gone()
           callback.get()?.onAdsFailure()
         }
-
-        override fun onAdLoaded() {
-          adView.visible()
-        }
-      }
+      },
+    )
     return true
   }
 

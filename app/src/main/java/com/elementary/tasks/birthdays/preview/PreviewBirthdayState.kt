@@ -8,5 +8,4 @@ data class PreviewBirthdayState(
   val showDeleteConfirm: Boolean = false,
   val playConfetti: Boolean = false,
   val canShowAnimation: Boolean = true,
-  val hasAds: Boolean = false,
 )

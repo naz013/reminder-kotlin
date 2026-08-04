@@ -19,10 +19,9 @@ import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.system.BuildInfo
-import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -79,7 +78,6 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
   private val tableChangeListenerFactory = mockk<TableChangeListenerFactory>(relaxed = true)
-  private val buildInfo = mockk<BuildInfo>(relaxed = true)
 
   @Before
   override fun setUp() {
@@ -147,7 +145,6 @@ class PreviewReminderViewModelTest : BaseTest() {
       toggleReminderStateUseCase = toggleReminderStateUseCase,
       saveReminderUseCase = saveReminderUseCase,
       tableChangeListenerFactory = tableChangeListenerFactory,
-      buildInfo = buildInfo,
     )
 
   @Test

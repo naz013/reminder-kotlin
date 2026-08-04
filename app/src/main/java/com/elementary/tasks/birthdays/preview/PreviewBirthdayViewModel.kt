@@ -3,13 +3,11 @@ package com.elementary.tasks.birthdays.preview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
-import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -29,7 +27,6 @@ class PreviewBirthdayViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
-  private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewBirthdayState())
@@ -82,7 +79,6 @@ class PreviewBirthdayViewModel(
           birthday = uiBirthday,
           playConfetti = shouldPlayConfetti,
           canShowAnimation = false,
-          hasAds = !buildInfo.isPro && AdsProvider.hasAds(),
         )
       }
     }

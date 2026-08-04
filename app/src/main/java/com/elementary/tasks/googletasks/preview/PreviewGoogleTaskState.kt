@@ -6,5 +6,4 @@ data class PreviewGoogleTaskState(
   val task: UiGoogleTaskPreview? = null,
   val isLoading: Boolean = false,
   val showDeleteConfirm: Boolean = false,
-  val hasAdsBanner: Boolean = false,
 )

@@ -18,7 +18,6 @@ val uiCommonModule = module {
   singleOf(::ThemeProvider)
   singleOf(::ThemeModeHolder)
   singleOf(::Language)
-  singleOf(::Dialogues)
   singleOf(::ModelDateTimeFormatter)
   singleOf(::NowDateTimeProvider)
 

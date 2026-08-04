@@ -31,7 +31,6 @@ class GeneralSettingsViewModelTest : BaseTest() {
   private var appLanguage = 0
   private var nightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
   private var hourFormat = 0
-  private var useDynamicColors = false
   private var useMetric = false
   private var analyticsEnabled = false
   private var hapticFeedbackEnabled = false
@@ -48,8 +47,6 @@ class GeneralSettingsViewModelTest : BaseTest() {
     every { prefs.nightMode = any() } answers { nightMode = firstArg() }
     every { prefs.hourFormat } answers { hourFormat }
     every { prefs.hourFormat = any() } answers { hourFormat = firstArg() }
-    every { prefs.useDynamicColors } answers { useDynamicColors }
-    every { prefs.useDynamicColors = any() } answers { useDynamicColors = firstArg() }
     every { prefs.useMetric } answers { useMetric }
     every { prefs.useMetric = any() } answers { useMetric = firstArg() }
     every { prefs.analyticsEnabled } answers { analyticsEnabled }
@@ -92,8 +89,6 @@ class GeneralSettingsViewModelTest : BaseTest() {
     assertEquals("System default", state.languageName)
     assertEquals("System default", state.themeName)
     assertEquals("System default", state.timeFormatName)
-    assertEquals(false, state.isDynamicColorsVisible)
-    assertEquals(false, state.useDynamicColors)
     assertEquals(false, state.isMetricChecked)
     assertEquals(false, state.isAnalyticsChecked)
     assertNull(state.dialog)
@@ -197,18 +192,6 @@ class GeneralSettingsViewModelTest : BaseTest() {
     assertEquals(0, appLanguage)
     assertEquals(0, hourFormat)
     assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, nightMode)
-  }
-
-  @Test
-  fun `onDynamicColorsToggle flips the flag, persists it and posts apply event`() {
-    useDynamicColors = false
-
-    viewModel.onDynamicColorsToggle()
-
-    assertEquals(true, useDynamicColors)
-    assertEquals(true, viewModel.state.value.useDynamicColors)
-    val event = viewModel.event.value?.peekContent()
-    assertEquals(GeneralSettingsEvent.ApplyDynamicColorsAndRecreate(true), event)
   }
 
   @Test

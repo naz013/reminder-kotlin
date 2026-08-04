@@ -7,8 +7,6 @@ import androidx.annotation.ColorRes
 import androidx.annotation.Px
 import androidx.core.content.ContextCompat
 
-fun Context.colorOf(@ColorRes color: Int) = ContextCompat.getColor(this, color)
-
 @Px
 fun Context.dp2px(dp: Int): Int {
   return TypedValue.applyDimension(

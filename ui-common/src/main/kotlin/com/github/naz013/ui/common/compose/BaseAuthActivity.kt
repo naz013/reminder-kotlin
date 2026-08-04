@@ -14,7 +14,6 @@ import com.github.naz013.ui.common.login.LoginApi.isLogged
 import com.github.naz013.ui.common.login.LoginLauncher
 import com.github.naz013.ui.common.login.LoginStateViewModel
 import com.github.naz013.ui.common.theme.ThemePreferences
-import com.google.android.material.color.DynamicColors
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -72,17 +71,11 @@ abstract class BaseAuthActivity : ComponentActivity() {
   override fun onResume() {
     super.onResume()
     AppCompatDelegate.setDefaultNightMode(themePreferences.nightMode)
-    if (themePreferences.useDynamicColors) {
-      DynamicColors.applyToActivityIfAvailable(this)
-    }
   }
 
   override fun onRestart() {
     super.onRestart()
     AppCompatDelegate.setDefaultNightMode(themePreferences.nightMode)
-    if (themePreferences.useDynamicColors) {
-      DynamicColors.applyToActivityIfAvailable(this)
-    }
   }
 
   override fun attachBaseContext(newBase: Context) {
