@@ -49,15 +49,12 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
     val widgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
     Logger.d(TAG, "Refreshing the widget with the ID = $widgetId")
     val backgroundColorCode = CombinedWidgetPrefsProvider(context, widgetId).getWidgetBackground()
-    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
 
     provideContent {
       GlanceAppWidgetTheme {
         CombinedButtonsContent(
+          context = context,
           colorGroup = composeResourceProvider(context).getColors(backgroundColorCode),
-          viewIntent = viewIntent
         )
       }
     }
@@ -67,8 +64,8 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
     provideContent {
       GlanceAppWidgetTheme {
         CombinedButtonsContent(
+          context = null,
           colorGroup = composeResourceProvider(context).getColors(3),
-          viewIntent = null
         )
       }
     }
@@ -76,8 +73,8 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
 
   @Composable
   private fun CombinedButtonsContent(
+    context: Context?,
     colorGroup: ComposeResourceProvider.ColorGroup,
-    viewIntent: Intent?
   ) {
     Row(
       modifier = GlanceModifier.fillMaxSize()
@@ -87,36 +84,39 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
       verticalAlignment = Alignment.Vertical.CenterVertically
     ) {
       ActionButton(
+        context = context,
         iconRes = R.drawable.ic_fluent_clock_alarm,
         contrastColor = colorGroup.foreground,
-        direction = Direction.ADD_REMINDER,
-        viewIntent = viewIntent
+        direction = Direction.ADD_REMINDER
       )
       ActionButton(
+        context = context,
         iconRes = R.drawable.ic_fluent_note,
         contrastColor = colorGroup.foreground,
-        direction = Direction.ADD_NOTE,
-        viewIntent = viewIntent
+        direction = Direction.ADD_NOTE
       )
       ActionButton(
+        context = context,
         iconRes = R.drawable.ic_fluent_food_cake,
         contrastColor = colorGroup.foreground,
-        direction = Direction.ADD_BIRTHDAY,
-        viewIntent = viewIntent
+        direction = Direction.ADD_BIRTHDAY
       )
     }
   }
 
   @Composable
   private fun RowScope.ActionButton(
+    context: Context?,
     iconRes: Int,
     contrastColor: ColorProvider,
-    direction: Direction,
-    viewIntent: Intent?
+    direction: Direction
   ) {
-    val onClick: Action = if (viewIntent != null) {
+    val onClick: Action = if (context != null) {
+      val buttonIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+      }
       actionStartActivity(
-        intent = viewIntent,
+        intent = buttonIntent,
         parameters = actionParametersOf(
           directionKey to direction,
           widgetTypeKey to Widget.COMBINED
