@@ -12,6 +12,8 @@ import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.compose.onPrimaryContainerLight
 import com.github.naz013.ui.common.compose.primaryContainerLight
+import kotlin.math.max
+import kotlin.math.min
 
 internal class ComposeResourceProvider(
   private val context: Context,
@@ -35,7 +37,8 @@ internal class ComposeResourceProvider(
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       GlanceTheme.colors.onPrimaryContainer
     } else {
-      androidx.glance.color.ColorProvider(day = onPrimaryContainerLight, night = onPrimaryContainerLight)
+      val foregroundColor = bestForegroundColor(primaryContainerLight)
+      androidx.glance.color.ColorProvider(day = foregroundColor, night = foregroundColor)
     }
   }
 
@@ -63,20 +66,6 @@ internal class ComposeResourceProvider(
     }
   }
 
-  fun getContrastColor(code: Int): Color {
-    return getContrastColor(WidgetUtils.getComposeColor(code))
-  }
-
-  fun getContrastColor(color: Color): Color {
-    val luminance = color.luminance()
-    Logger.d(TAG, "Get contrast color for luminance: $luminance")
-    return Color.hsl(
-      hue = 0f,
-      saturation = 0f,
-      lightness = if (luminance > 0.5f) 0.1f else 0.9f
-    )
-  }
-
   @Composable
   fun getColors(code: Int): ColorGroup {
     val background = if (code == DYNAMIC_COLOR_INDEX) {
@@ -90,10 +79,24 @@ internal class ComposeResourceProvider(
       foreground = if (code == WidgetUtils.DYNAMIC_COLOR_INDEX) {
         getDynamicContrastColor()
       } else {
-        val fallback = getContrastColor(background)
+        val fallback = bestForegroundColor(background)
         androidx.glance.color.ColorProvider(day = fallback, night = fallback)
       },
     )
+  }
+
+  fun bestForegroundColor(
+    background: Color,
+    candidates: List<Color> = listOf(Color.Black, Color.White),
+    minimumRatio: Float = 4.5f  // 3f for large text/UI components, 7f for AAA
+  ): Color =
+    candidates.maxBy { contrastRatio(background, it) }
+      .let { best -> if (contrastRatio(background, best) >= minimumRatio) best else best }
+
+  private fun contrastRatio(a: Color, b: Color): Float {
+    val l1 = a.luminance() + 0.05f
+    val l2 = b.luminance() + 0.05f
+    return max(l1, l2) / min(l1, l2)
   }
 
   data class ColorGroup(

@@ -7,7 +7,6 @@ import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.channels.Channel
@@ -34,18 +33,11 @@ internal class CombinedWidgetConfigViewModel(
   init {
     _state.update {
       it.copy(
-        backgroundIndex = prefsProvider.getWidgetBackground(),
         hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
+        palette = composeResourceProvider.getBackgroundColors(),
       )
     }
-    val palette = composeResourceProvider.getBackgroundColors()
-    _state.update {
-      it.copy(
-        palette = palette,
-        backgroundColor = palette[it.backgroundIndex],
-        contentColor = WidgetUtils.getContrastColor(it.backgroundIndex),
-      )
-    }
+    onBackgroundColorSelected(prefsProvider.getWidgetBackground())
   }
 
   fun onBackgroundColorSelected(index: Int) {
@@ -53,7 +45,7 @@ internal class CombinedWidgetConfigViewModel(
       it.copy(
         backgroundIndex = index,
         backgroundColor = it.palette[index],
-        contentColor = composeResourceProvider.getContrastColor(index),
+        contentColor = composeResourceProvider.bestForegroundColor(it.palette[index]),
       )
     }
   }
