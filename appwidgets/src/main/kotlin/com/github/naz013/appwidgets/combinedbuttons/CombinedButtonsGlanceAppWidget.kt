@@ -26,6 +26,7 @@ import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
+import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.paletteContrastColor
@@ -52,6 +53,21 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
       GlanceAppWidgetTheme {
         CombinedButtonsContent(
           backgroundColorCode = backgroundColorCode,
+          viewIntent = viewIntent
+        )
+      }
+    }
+  }
+
+  override suspend fun providePreview(context: Context, widgetCategory: Int) {
+    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+    provideContent {
+      GlanceAppWidgetTheme {
+        CombinedButtonsContent(
+          backgroundColorCode = CombinedWidgetPrefsProvider(context, WidgetId.PREVIEW_ID)
+            .getWidgetBackground(),
           viewIntent = viewIntent
         )
       }

@@ -44,6 +44,7 @@ import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
+import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetList
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
@@ -109,6 +110,27 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
       GlanceAppWidgetTheme {
         EventsContent(
           state = currentState(),
+          configIntent = configIntent,
+          viewIntent = viewIntent
+        )
+      }
+    }
+  }
+
+  override suspend fun providePreview(context: Context, widgetCategory: Int) {
+    val configIntent = Intent(context, EventsWidgetConfigActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+    val previewState = get<EventsAppWidgetViewModel> {
+      parametersOf(EventsWidgetPrefsProvider(context, WidgetId.PREVIEW_ID))
+    }.getState()
+    provideContent {
+      GlanceAppWidgetTheme {
+        EventsContent(
+          state = previewState,
           configIntent = configIntent,
           viewIntent = viewIntent
         )

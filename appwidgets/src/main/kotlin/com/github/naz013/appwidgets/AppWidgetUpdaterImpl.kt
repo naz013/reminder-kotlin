@@ -33,6 +33,7 @@ internal class AppWidgetUpdaterImpl(
 
   override suspend fun updateCombinedButtonsWidget(widgetId: Int) {
     updateGlanceWidget(CombinedButtonsGlanceAppWidget(), widgetId)
+    appWidgetPreviewUpdater.updateCombinedButtonsWidgetPreview()
   }
 
   private suspend fun updateGlanceWidget(widget: GlanceAppWidget, widgetId: Int) {
@@ -62,28 +63,44 @@ internal class AppWidgetUpdaterImpl(
   }
 
   override fun updateNotesWidget(widgetId: Int) {
-    invokeSuspend { updateGlanceWidget(NotesGlanceAppWidget(), widgetId) }
+    invokeSuspend {
+      updateGlanceWidget(NotesGlanceAppWidget(), widgetId)
+      appWidgetPreviewUpdater.updateNotesWidgetPreview()
+    }
     updateNoteWidgets()
   }
 
   private fun updateNoteWidgets() {
-    invokeSuspend { updateGlanceWidget(SingleNoteGlanceAppWidget(), WidgetId.NO_ID) }
+    invokeSuspend {
+      updateGlanceWidget(SingleNoteGlanceAppWidget(), WidgetId.NO_ID)
+      appWidgetPreviewUpdater.updateSingleNoteWidgetPreview()
+    }
   }
 
   override suspend fun updateSingleNoteWidget(widgetId: Int) {
     updateGlanceWidget(SingleNoteGlanceAppWidget(), widgetId)
+    appWidgetPreviewUpdater.updateSingleNoteWidgetPreview()
   }
 
   override fun updateCalendarWidget(widgetId: Int) {
-    invokeSuspend { updateGlanceWidget(CalendarGlanceAppWidget(), widgetId) }
+    invokeSuspend {
+      updateGlanceWidget(CalendarGlanceAppWidget(), widgetId)
+      appWidgetPreviewUpdater.updateCalendarWidgetPreview()
+    }
   }
 
   override fun updateScheduleWidget(widgetId: Int) {
-    invokeSuspend { updateGlanceWidget(GoogleTasksGlanceAppWidget(), widgetId) }
+    invokeSuspend {
+      updateGlanceWidget(GoogleTasksGlanceAppWidget(), widgetId)
+      appWidgetPreviewUpdater.updateScheduleWidgetPreview()
+    }
   }
 
   override fun updateBirthdaysWidget(widgetId: Int) {
-    invokeSuspend { updateGlanceWidget(BirthdaysGlanceAppWidget(), widgetId) }
+    invokeSuspend {
+      updateGlanceWidget(BirthdaysGlanceAppWidget(), widgetId)
+      appWidgetPreviewUpdater.updateBirthdaysWidgetPreview()
+    }
   }
 
   companion object {

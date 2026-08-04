@@ -44,6 +44,7 @@ import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
+import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.paletteContrastColor
@@ -107,6 +108,31 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
       GlanceAppWidgetTheme {
         NotesContent(
           state = currentState(),
+          configIntent = configIntent,
+          viewIntent = viewIntent,
+          titleText = titleText,
+          emptyStateText = emptyStateText
+        )
+      }
+    }
+  }
+
+  override suspend fun providePreview(context: Context, widgetCategory: Int) {
+    val configIntent = Intent(context, NotesWidgetConfigActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+    val titleText = context.getString(R.string.notes)
+    val emptyStateText = context.getString(R.string.no_notes)
+    val previewState = get<NotesAppWidgetViewModel> {
+      parametersOf(NotesWidgetPrefsProvider(context, WidgetId.PREVIEW_ID))
+    }.getState()
+    provideContent {
+      GlanceAppWidgetTheme {
+        NotesContent(
+          state = previewState,
           configIntent = configIntent,
           viewIntent = viewIntent,
           titleText = titleText,

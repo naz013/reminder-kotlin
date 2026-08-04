@@ -49,6 +49,7 @@ import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
+import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.calendar.data.CalendarAppWidgetState
 import com.github.naz013.appwidgets.calendar.data.UiCalendarDay
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
@@ -114,6 +115,30 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           context = context,
           dateTimeManager = dateTimeManager,
           state = currentState(),
+          configIntent = configIntent,
+          addReminderIntent = addReminderIntent
+        )
+      }
+    }
+  }
+
+  override suspend fun providePreview(context: Context, widgetCategory: Int) {
+    val configIntent = Intent(context, CalendarWidgetConfigActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+    val addReminderIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+    val dateTimeManager = get<DateTimeManager>()
+    val previewState = get<CalendarAppWidgetViewModel> {
+      parametersOf(context, CalendarWidgetPrefsProvider(context, WidgetId.PREVIEW_ID))
+    }.getState()
+    provideContent {
+      GlanceAppWidgetTheme {
+        CalendarContent(
+          context = context,
+          dateTimeManager = dateTimeManager,
+          state = previewState,
           configIntent = configIntent,
           addReminderIntent = addReminderIntent
         )

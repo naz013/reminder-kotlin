@@ -36,7 +36,7 @@ val appWidgetsModule = module {
   factory { UiReminderWidgetListAdapter(get()) }
 
   factory { AppWidgetUpdaterImpl(get(), get()) as AppWidgetUpdater }
-  factory { AppWidgetPreviewUpdaterImpl() as AppWidgetPreviewUpdater }
+  factory { AppWidgetPreviewUpdaterImpl(get()) as AppWidgetPreviewUpdater }
 
   factory { RecyclableUiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
   factory { UiNoteWidgetAdapter(get(), get(), get(), get(), get()) }
