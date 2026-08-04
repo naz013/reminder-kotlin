@@ -1,5 +1,6 @@
 package com.github.naz013.appwidgets.birthdays
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 internal class BirthdaysWidgetConfigViewModel(
+  private val context: Context,
   private val prefsProvider: BirthdaysWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   appWidgetPreferences: AppWidgetPreferences,
@@ -30,7 +32,8 @@ internal class BirthdaysWidgetConfigViewModel(
       )
     }
 
-    val palette = (0..13).map { index -> WidgetUtils.getComposeColor(index) }
+    val palette = (0..13).map { index -> WidgetUtils.getComposeColor(index) } +
+      WidgetUtils.getDynamicPreviewColor(context)
     _state.update {
       it.copy(
         palette = palette,

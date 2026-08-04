@@ -5,11 +5,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PorterDuff
+import android.os.Build
 import android.widget.RemoteViews
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.core.content.ContextCompat
@@ -21,6 +23,28 @@ import com.github.naz013.ui.common.context.intentForClass
 internal object WidgetUtils {
 
   private const val TAG = "WidgetUtils"
+
+  /**
+   * Sentinel palette index (one past the fixed 0-13 palette) meaning "use the launcher's dynamic
+   * Material You color" instead of one of the fixed colors. Handled entirely at the Glance
+   * rendering layer (see `roundedBackground`/`paletteContrastColor`) - the legacy color/contrast
+   * lookups below never need to special-case it since their `else` branches already handle any
+   * out-of-range index safely.
+   */
+  const val DYNAMIC_COLOR_INDEX = 14
+
+  /**
+   * A representative color for the dynamic-color swatch in the widget config color pickers.
+   * Purely cosmetic (the picker is plain Compose, not Glance, so it can't read GlanceTheme) -
+   * actual widget rendering resolves the real per-widget dynamic color via GlanceTheme.
+   */
+  fun getDynamicPreviewColor(context: Context): Color {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      dynamicLightColorScheme(context).primary
+    } else {
+      Color(0xFF6750A4)
+    }
+  }
 
   fun initButton(
     context: Context,

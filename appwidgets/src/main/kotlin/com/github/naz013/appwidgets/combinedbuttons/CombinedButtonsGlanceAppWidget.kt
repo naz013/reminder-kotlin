@@ -16,19 +16,19 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
-import androidx.glance.color.ColorProvider
 import androidx.glance.layout.Alignment
-import androidx.glance.unit.ColorProvider
 import androidx.glance.layout.Row
 import androidx.glance.layout.RowScope
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
+import androidx.glance.unit.ColorProvider
 import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
+import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 
@@ -44,10 +44,6 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
   override suspend fun provideGlance(context: Context, id: GlanceId) {
     val widgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
     val backgroundColorCode = CombinedWidgetPrefsProvider(context, widgetId).getWidgetBackground()
-    val contrastColor = ColorProvider(
-      day = WidgetUtils.getContrastColor(backgroundColorCode),
-      night = WidgetUtils.getContrastColor(backgroundColorCode)
-    )
     val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
@@ -56,7 +52,6 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
       GlanceAppWidgetTheme {
         CombinedButtonsContent(
           backgroundColorCode = backgroundColorCode,
-          contrastColor = contrastColor,
           viewIntent = viewIntent
         )
       }
@@ -66,9 +61,12 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
   @Composable
   private fun CombinedButtonsContent(
     backgroundColorCode: Int,
-    contrastColor: ColorProvider,
     viewIntent: Intent
   ) {
+    val contrastColor = paletteContrastColor(
+      backgroundColorCode,
+      WidgetUtils.getContrastColor(backgroundColorCode)
+    )
     Row(
       modifier = GlanceModifier.fillMaxSize()
         .roundedBackground(backgroundColorCode)

@@ -52,6 +52,7 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.calendar.data.CalendarAppWidgetState
 import com.github.naz013.appwidgets.calendar.data.UiCalendarDay
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
+import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.common.datetime.DateTimeManager
@@ -129,9 +130,9 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     configIntent: Intent,
     addReminderIntent: Intent
   ) {
-    val headerContrastColorProvider = ColorProvider(
-      day = state.headerContrastColor,
-      night = state.headerContrastColor
+    val headerContrastColorProvider = paletteContrastColor(
+      state.headerBackgroundColor,
+      state.headerContrastColor
     )
     Column(modifier = modifier.fillMaxSize().systemWidgetShape()) {
       Row(
@@ -194,10 +195,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
               style = TextStyle(
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
-                color = ColorProvider(
-                  day = state.backgroundContrastColor,
-                  night = state.backgroundContrastColor
-                )
+                color = paletteContrastColor(state.backgroundColor, state.backgroundContrastColor)
               ),
               maxLines = 1
             )
@@ -213,6 +211,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
                 context = context,
                 dateTimeManager = dateTimeManager,
                 day = day,
+                backgroundColorIndex = state.backgroundColor,
                 currentMonthTextColor = state.backgroundContrastColor,
                 todayMarkColor = state.todayMarkColor,
                 reminderMarkColor = state.reminderMarkColor,
@@ -248,6 +247,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     context: Context,
     dateTimeManager: DateTimeManager,
     day: UiCalendarDay,
+    backgroundColorIndex: Int,
     currentMonthTextColor: Color,
     todayMarkColor: Color,
     reminderMarkColor: Color,
@@ -263,7 +263,12 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         DayViewScreen(dayMillis)
       )
     }
-    val textColor = if (day.isCurrentMonth) currentMonthTextColor else Color(0xFF303030)
+    val outOfMonthColor = Color(0xFF303030)
+    val textColorProvider = if (day.isCurrentMonth) {
+      paletteContrastColor(backgroundColorIndex, currentMonthTextColor)
+    } else {
+      ColorProvider(day = outOfMonthColor, night = outOfMonthColor)
+    }
     Box(
       modifier = GlanceModifier
         .defaultWeight()
@@ -281,7 +286,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         style = TextStyle(
           fontSize = 13.sp,
           textAlign = TextAlign.Center,
-          color = ColorProvider(day = textColor, night = textColor)
+          color = textColorProvider
         ),
         maxLines = 1
       )

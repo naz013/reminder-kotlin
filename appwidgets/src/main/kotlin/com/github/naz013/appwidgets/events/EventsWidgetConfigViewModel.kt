@@ -1,5 +1,6 @@
 package com.github.naz013.appwidgets.events
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class EventsWidgetConfigViewModel(
+  private val context: Context,
   private val prefsProvider: EventsWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val appWidgetUpdater: AppWidgetUpdater,
@@ -37,7 +39,8 @@ internal class EventsWidgetConfigViewModel(
         hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
       )
     }
-    val palette = (0..13).map { WidgetUtils.getComposeColor(it) }
+    val palette = (0..13).map { WidgetUtils.getComposeColor(it) } +
+      WidgetUtils.getDynamicPreviewColor(context)
     _state.update {
       it.copy(
         palette = palette,

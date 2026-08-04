@@ -45,6 +45,7 @@ import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
+import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.common.intent.IntentKeys
@@ -121,9 +122,9 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     titleText: String,
     emptyStateText: String
   ) {
-    val headerContrastColorProvider = ColorProvider(
-      day = state.headerContrastColor,
-      night = state.headerContrastColor
+    val headerContrastColorProvider = paletteContrastColor(
+      state.headerBackgroundColor,
+      state.headerContrastColor
     )
     Column(
       modifier = modifier.fillMaxSize().systemWidgetShape()
@@ -210,10 +211,7 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     itemContrastColor: Color,
     viewIntent: Intent
   ) {
-    val contentColorProvider = ColorProvider(
-      day = itemContrastColor,
-      night = itemContrastColor
-    )
+    val contentColorProvider = paletteContrastColor(itemBackgroundColor, itemContrastColor)
     Row(
       modifier = GlanceModifier.fillMaxWidth()
         .padding(8.dp)

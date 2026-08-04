@@ -47,6 +47,7 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetList
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
+import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.events.data.DateSorted
@@ -122,6 +123,10 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     configIntent: Intent,
     viewIntent: Intent
   ) {
+    val headerContrastColorProvider = paletteContrastColor(
+      state.headerBackgroundColor,
+      state.headerContrastColor
+    )
     Column(
       modifier = modifier.fillMaxSize().systemWidgetShape()
     ) {
@@ -138,10 +143,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             .defaultWeight(),
           style = TextStyle(
             fontSize = 18.sp,
-            color = ColorProvider(
-              day = state.headerContrastColor,
-              night = state.headerContrastColor
-            )
+            color = headerContrastColorProvider
           ),
           maxLines = 1
         )
@@ -160,10 +162,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           provider = ImageProvider(R.drawable.ic_fluent_settings),
           contentDescription = null,
           colorFilter = ColorFilter.tint(
-            colorProvider = ColorProvider(
-              day = state.headerContrastColor,
-              night = state.headerContrastColor
-            )
+            colorProvider = headerContrastColorProvider
           )
         )
         Spacer(modifier = GlanceModifier.width(4.dp))
@@ -184,10 +183,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           provider = ImageProvider(R.drawable.ic_fluent_add),
           contentDescription = null,
           colorFilter = ColorFilter.tint(
-            colorProvider = ColorProvider(
-              day = state.headerContrastColor,
-              night = state.headerContrastColor
-            )
+            colorProvider = headerContrastColorProvider
           )
         )
         Spacer(modifier = GlanceModifier.width(8.dp))
@@ -215,10 +211,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     itemTextSize: TextUnit,
     viewIntent: Intent
   ) {
-    val colorProvider = ColorProvider(
-      day = itemContrastColor,
-      night = itemContrastColor
-    )
+    val colorProvider = paletteContrastColor(itemBackgroundColor, itemContrastColor)
     Column(modifier = GlanceModifier.fillMaxWidth()) {
       Spacer(modifier = GlanceModifier.height(4.dp))
       when (data) {

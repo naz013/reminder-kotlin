@@ -2,24 +2,45 @@ package com.github.naz013.appwidgets.compose
 
 import android.os.Build
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
+import androidx.glance.color.ColorProvider
+import androidx.glance.unit.ColorProvider
 import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.common.system.Module
 
+@Composable
 internal fun GlanceModifier.roundedBackground(color: Int): GlanceModifier {
-  return if (Module.is12) {
+  return if (color == WidgetUtils.DYNAMIC_COLOR_INDEX) {
+    this.cornerRadius(8.dp).background(GlanceTheme.colors.primaryContainer)
+  } else if (Module.is12) {
     this.cornerRadius(8.dp)
       .background(WidgetUtils.getComposeColor(color))
   } else {
     this.background(
       imageProvider = ImageProvider(WidgetUtils.newWidgetBg(color))
     )
+  }
+}
+
+/**
+ * Resolves the text/icon color for a palette-driven surface: the dynamic GlanceTheme contrast
+ * color when [index] is [WidgetUtils.DYNAMIC_COLOR_INDEX], otherwise [fallback] (the fixed
+ * contrast color already computed for the selected palette entry).
+ */
+@Composable
+internal fun paletteContrastColor(index: Int, fallback: Color): ColorProvider {
+  return if (index == WidgetUtils.DYNAMIC_COLOR_INDEX) {
+    GlanceTheme.colors.onPrimaryContainer
+  } else {
+    ColorProvider(day = fallback, night = fallback)
   }
 }
 

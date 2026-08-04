@@ -46,6 +46,7 @@ import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
+import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.notes.data.NotesAppWidgetState
@@ -124,9 +125,9 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     titleText: String,
     emptyStateText: String
   ) {
-    val headerContrastColorProvider = ColorProvider(
-      day = state.headerContrastColor,
-      night = state.headerContrastColor
+    val headerContrastColorProvider = paletteContrastColor(
+      state.headerBackgroundColor,
+      state.headerContrastColor
     )
     Column(
       modifier = modifier.fillMaxSize().systemWidgetShape()

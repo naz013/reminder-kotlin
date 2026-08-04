@@ -58,23 +58,30 @@ val appWidgetsModule = module {
   }
 
   viewModel { (widgetId: Int) ->
-    NotesWidgetConfigViewModel(get(), NotesWidgetPrefsProvider(get(), widgetId), get(), get())
+    NotesWidgetConfigViewModel(get(), get(), NotesWidgetPrefsProvider(get(), widgetId), get(), get())
   }
 
   viewModel { (widgetId: Int) ->
-    CalendarWidgetConfigViewModel(CalendarWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+    CalendarWidgetConfigViewModel(get(), CalendarWidgetPrefsProvider(get(), widgetId), get(), get(), get())
   }
 
   viewModel { (widgetId: Int) ->
-    BirthdaysWidgetConfigViewModel(BirthdaysWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+    BirthdaysWidgetConfigViewModel(get(), BirthdaysWidgetPrefsProvider(get(), widgetId), get(), get(), get())
   }
 
   viewModel { (widgetId: Int) ->
-    CombinedWidgetConfigViewModel(get(), CombinedWidgetPrefsProvider(get(), widgetId), get(), get())
+    CombinedWidgetConfigViewModel(get(), get(), CombinedWidgetPrefsProvider(get(), widgetId), get(), get())
   }
 
   viewModel { (widgetId: Int) ->
-    TasksWidgetConfigViewModel(get(), GoogleTasksWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+    TasksWidgetConfigViewModel(
+      get(),
+      get(),
+      GoogleTasksWidgetPrefsProvider(get(), widgetId),
+      get(),
+      get(),
+      get()
+    )
   }
 
   factory { (prefs: EventsWidgetPrefsProvider) ->
@@ -102,6 +109,6 @@ val appWidgetsModule = module {
   }
 
   viewModel { (widgetId: Int) ->
-    EventsWidgetConfigViewModel(EventsWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+    EventsWidgetConfigViewModel(get(), EventsWidgetPrefsProvider(get(), widgetId), get(), get(), get())
   }
 }

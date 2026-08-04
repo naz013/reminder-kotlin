@@ -1,5 +1,6 @@
 package com.github.naz013.appwidgets.calendar
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
@@ -14,6 +15,7 @@ import java.util.Calendar
 import java.util.GregorianCalendar
 
 internal class CalendarWidgetConfigViewModel(
+  private val context: Context,
   private val prefsProvider: CalendarWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   appWidgetPreferences: AppWidgetPreferences,
@@ -31,7 +33,8 @@ internal class CalendarWidgetConfigViewModel(
         hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
       )
     }
-    val palette = (0..13).map { WidgetUtils.getComposeColor(it) }
+    val palette = (0..13).map { WidgetUtils.getComposeColor(it) } +
+      WidgetUtils.getDynamicPreviewColor(context)
     _state.update {
       it.copy(
         palette = palette,
