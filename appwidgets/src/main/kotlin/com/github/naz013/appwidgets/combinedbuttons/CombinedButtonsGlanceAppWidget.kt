@@ -30,6 +30,7 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
+import com.github.naz013.appwidgets.compose.systemWidgetShape
 
 internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
 
@@ -70,7 +71,8 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
   ) {
     Row(
       modifier = GlanceModifier.fillMaxSize()
-        .roundedBackground(backgroundColorCode),
+        .roundedBackground(backgroundColorCode)
+        .systemWidgetShape(),
       horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
       verticalAlignment = Alignment.Vertical.CenterVertically
     ) {

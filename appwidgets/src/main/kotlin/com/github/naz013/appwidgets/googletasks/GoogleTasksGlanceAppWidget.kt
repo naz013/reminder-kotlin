@@ -46,6 +46,7 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
+import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.googletasks.data.GoogleTasksAppWidgetState
 import com.github.naz013.appwidgets.googletasks.data.UiGoogleTaskWidgetItem
 import com.github.naz013.common.intent.IntentKeys
@@ -127,7 +128,7 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
       night = state.headerContrastColor
     )
     Column(
-      modifier = modifier.fillMaxSize()
+      modifier = modifier.fillMaxSize().systemWidgetShape()
     ) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()

@@ -31,6 +31,7 @@ import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
+import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
@@ -95,7 +96,7 @@ internal class SingleNoteGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     emptyStateText: String
   ) {
     Box(
-      modifier = modifier.fillMaxSize().padding(8.dp),
+      modifier = modifier.fillMaxSize().systemWidgetShape().padding(8.dp),
       contentAlignment = Alignment.Center
     ) {
       val bitmap = state.bitmap

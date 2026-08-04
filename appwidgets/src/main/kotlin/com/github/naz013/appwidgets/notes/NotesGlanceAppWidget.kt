@@ -47,6 +47,7 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
+import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.notes.data.NotesAppWidgetState
 import com.github.naz013.appwidgets.notes.data.UiNoteWidgetItem
 import com.github.naz013.common.intent.IntentKeys
@@ -128,7 +129,7 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
       night = state.headerContrastColor
     )
     Column(
-      modifier = modifier.fillMaxSize()
+      modifier = modifier.fillMaxSize().systemWidgetShape()
     ) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()

@@ -48,6 +48,7 @@ import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetList
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
+import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.events.data.DateSorted
 import com.github.naz013.appwidgets.events.data.EventsAppWidgetState
 import com.github.naz013.appwidgets.events.data.UiReminderWidgetList
@@ -122,7 +123,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     viewIntent: Intent
   ) {
     Column(
-      modifier = modifier.fillMaxSize()
+      modifier = modifier.fillMaxSize().systemWidgetShape()
     ) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()

@@ -46,6 +46,7 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
+import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
 import org.koin.core.component.KoinComponent
@@ -125,7 +126,7 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
       night = state.headerContrastColor
     )
     Column(
-      modifier = modifier.fillMaxSize()
+      modifier = modifier.fillMaxSize().systemWidgetShape()
     ) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()

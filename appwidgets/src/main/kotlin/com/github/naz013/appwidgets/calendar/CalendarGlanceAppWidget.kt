@@ -53,6 +53,7 @@ import com.github.naz013.appwidgets.calendar.data.CalendarAppWidgetState
 import com.github.naz013.appwidgets.calendar.data.UiCalendarDay
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
+import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DayViewScreen
@@ -132,7 +133,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
       day = state.headerContrastColor,
       night = state.headerContrastColor
     )
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize().systemWidgetShape()) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()
           .height(50.dp)

@@ -7,7 +7,7 @@
     android:targetCellHeight="1"
     android:targetCellWidth="3"
     android:previewImage="@drawable/widget_action_buttons"
-    android:resizeMode="none"
+    android:resizeMode="horizontal"
     android:description="@string/widget_combined_description"
     android:updatePeriodMillis="1800000"
     android:widgetFeatures="reconfigurable"
