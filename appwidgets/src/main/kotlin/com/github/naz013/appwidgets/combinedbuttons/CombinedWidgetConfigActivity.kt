@@ -1,6 +1,7 @@
 package com.github.naz013.appwidgets.combinedbuttons
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.naz013.appwidgets.ComposeWidgetConfigActivity
@@ -14,13 +15,15 @@ internal class CombinedWidgetConfigActivity : ComposeWidgetConfigActivity() {
   @Composable
   override fun ActivityContent() {
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+      viewModel.saved.collect { finishWithResult() }
+    }
+
     CombinedWidgetConfigScreen(
       state = state,
       onBackClick = { finish() },
-      onSaveClick = {
-        viewModel.onSaveClick()
-        finishWithResult()
-      },
+      onSaveClick = viewModel::onSaveClick,
       onBackgroundColorSelected = viewModel::onBackgroundColorSelected,
     )
   }
