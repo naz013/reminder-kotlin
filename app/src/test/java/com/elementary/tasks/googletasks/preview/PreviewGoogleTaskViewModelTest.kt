@@ -12,7 +12,6 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.repository.GoogleTaskListRepository
@@ -39,7 +38,6 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
   private val uiGoogleTaskPreviewAdapter = mockk<UiGoogleTaskPreviewAdapter>()
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
-  private val buildInfo = mockk<BuildInfo>(relaxed = true)
 
   private lateinit var viewModel: PreviewGoogleTaskViewModel
 
@@ -80,7 +78,6 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
         uiGoogleTaskPreviewAdapter = uiGoogleTaskPreviewAdapter,
         appWidgetUpdater = appWidgetUpdater,
         textProvider = textProvider,
-        buildInfo = buildInfo,
       )
   }
 
@@ -88,16 +85,6 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
   fun `sends a feature-used analytics event on creation`() {
     verify(exactly = 1) { analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_TASK_PREVIEW)) }
   }
-
-  @Test
-  fun `hasAdsBanner is false in the pro build`() =
-    runTest {
-      every { buildInfo.isPro } returns true
-
-      val state = viewModel.state.first()
-
-      assertEquals(false, state.hasAdsBanner)
-    }
 
   @Test
   fun `loads the task into state on first collection`() =
