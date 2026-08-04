@@ -69,7 +69,7 @@
         </activity>
 
         <receiver
-            android:name="com.github.naz013.appwidgets.calendar.CalendarWidget"
+            android:name=".calendar.CalendarGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/calendar">
             <intent-filter>
@@ -79,29 +79,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/calendar_widget_metadata" />
-        </receiver>
-
-        <service
-            android:name="com.github.naz013.appwidgets.calendar.CalendarWeekdayService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service
-            android:name="com.github.naz013.appwidgets.calendar.CalendarMonthService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <receiver
-            android:name="com.github.naz013.appwidgets.calendar.CalendarPreviousReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name="com.github.naz013.appwidgets.calendar.CalendarNextReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
-            </intent-filter>
         </receiver>
 
         <receiver

@@ -1,9 +1,11 @@
 package com.github.naz013.appwidgets
 
+import android.content.Context
 import com.github.naz013.appwidgets.birthdays.BirthdaysAppWidgetViewModel
 import com.github.naz013.appwidgets.birthdays.BirthdaysWidgetConfigViewModel
 import com.github.naz013.appwidgets.birthdays.BirthdaysWidgetPrefsProvider
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetListAdapter
+import com.github.naz013.appwidgets.calendar.CalendarAppWidgetViewModel
 import com.github.naz013.appwidgets.calendar.CalendarWidgetConfigViewModel
 import com.github.naz013.appwidgets.calendar.CalendarWidgetPrefsProvider
 import com.github.naz013.appwidgets.calendar.WidgetDataProvider
@@ -28,8 +30,6 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appWidgetsModule = module {
-  single { WidgetPrefsHolder(get()) }
-
   factory { WidgetDataProvider(get(), get(), get(), get()) }
 
   factory { UiBirthdayWidgetListAdapter(get(), get()) }
@@ -91,6 +91,10 @@ val appWidgetsModule = module {
 
   factory { (prefs: GoogleTasksWidgetPrefsProvider) ->
     GoogleTasksAppWidgetViewModel(prefs, get(), get(), get())
+  }
+
+  factory { (context: Context, prefs: CalendarWidgetPrefsProvider) ->
+    CalendarAppWidgetViewModel(context, prefs, get(), get(), get(), get())
   }
 
   viewModel { (widgetId: Int) ->

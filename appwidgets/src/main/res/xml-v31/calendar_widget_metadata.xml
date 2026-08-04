@@ -2,7 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="com.github.naz013.appwidgets.calendar.CalendarWidgetConfigActivity"
     android:description="@string/widget_calendar_description"
-    android:initialLayout="@layout/widget_calendar"
+    android:initialLayout="@layout/glance_default_loading_layout"
     android:minWidth="276dp"
     android:minHeight="180dp"
     android:previewImage="@drawable/widget_calendar"

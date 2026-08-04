@@ -8,7 +8,7 @@ import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import com.github.naz013.appwidgets.birthdays.BirthdaysGlanceAppWidget
-import com.github.naz013.appwidgets.calendar.CalendarWidget
+import com.github.naz013.appwidgets.calendar.CalendarGlanceAppWidget
 import com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsGlanceAppWidget
 import com.github.naz013.appwidgets.events.EventsGlanceAppWidget
 import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidget
@@ -79,14 +79,8 @@ internal class AppWidgetUpdaterImpl(
     context.sendBroadcast(intent)
   }
 
-  override fun updateCalendarWidget() {
-    val intent = Intent(context, CalendarWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, CalendarWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
+  override fun updateCalendarWidget(widgetId: Int) {
+    invokeSuspend { updateGlanceWidget(CalendarGlanceAppWidget(), widgetId) }
   }
 
   override fun updateScheduleWidget(widgetId: Int) {
