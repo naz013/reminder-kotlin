@@ -8,4 +8,5 @@ interface AppWidgetUpdater {
   fun updateBirthdaysWidget(widgetId: Int = WidgetId.NO_ID)
   suspend fun updateEventsWidget(widgetId: Int = WidgetId.NO_ID)
   suspend fun updateCombinedButtonsWidget(widgetId: Int = WidgetId.NO_ID)
+  suspend fun updateSingleNoteWidget(widgetId: Int = WidgetId.NO_ID)
 }

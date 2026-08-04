@@ -1,9 +1,6 @@
 package com.github.naz013.appwidgets
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
@@ -13,7 +10,7 @@ import com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsGlanceAppWidg
 import com.github.naz013.appwidgets.events.EventsGlanceAppWidget
 import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidget
 import com.github.naz013.appwidgets.notes.NotesGlanceAppWidget
-import com.github.naz013.appwidgets.singlenote.SingleNoteWidget
+import com.github.naz013.appwidgets.singlenote.SingleNoteGlanceAppWidget
 import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.logging.Logger
 
@@ -70,13 +67,11 @@ internal class AppWidgetUpdaterImpl(
   }
 
   private fun updateNoteWidgets() {
-    val intent = Intent(context, SingleNoteWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+    invokeSuspend { updateGlanceWidget(SingleNoteGlanceAppWidget(), WidgetId.NO_ID) }
+  }
 
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, SingleNoteWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
+  override suspend fun updateSingleNoteWidget(widgetId: Int) {
+    updateGlanceWidget(SingleNoteGlanceAppWidget(), widgetId)
   }
 
   override fun updateCalendarWidget(widgetId: Int) {

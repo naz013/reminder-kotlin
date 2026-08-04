@@ -21,11 +21,11 @@ import com.github.naz013.appwidgets.googletasks.TasksWidgetConfigViewModel
 import com.github.naz013.appwidgets.notes.NotesAppWidgetViewModel
 import com.github.naz013.appwidgets.notes.NotesWidgetConfigViewModel
 import com.github.naz013.appwidgets.notes.NotesWidgetPrefsProvider
+import com.github.naz013.appwidgets.singlenote.SingleNoteAppWidgetViewModel
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetConfigViewModel
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetPrefsProvider
 import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
-import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -97,9 +97,11 @@ val appWidgetsModule = module {
     CalendarAppWidgetViewModel(context, prefs, get(), get(), get(), get())
   }
 
+  factory { (context: Context, prefs: SingleNoteWidgetPrefsProvider) ->
+    SingleNoteAppWidgetViewModel(context, prefs, get(), get())
+  }
+
   viewModel { (widgetId: Int) ->
     EventsWidgetConfigViewModel(EventsWidgetPrefsProvider(get(), widgetId), get(), get(), get())
   }
-
-  factoryOf(::WidgetUpdater)
 }

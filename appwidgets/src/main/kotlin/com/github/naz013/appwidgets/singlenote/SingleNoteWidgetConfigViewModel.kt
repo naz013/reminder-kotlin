@@ -1,6 +1,5 @@
 package com.github.naz013.appwidgets.singlenote
 
-import android.appwidget.AppWidgetManager
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +7,7 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
-import com.github.naz013.appwidgets.WidgetUpdater
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
@@ -27,7 +26,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 internal class SingleNoteWidgetConfigViewModel(
-  private val widgetUpdater: WidgetUpdater,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val dispatcherProvider: DispatcherProvider,
   private val prefsProvider: SingleNoteWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -139,16 +138,7 @@ internal class SingleNoteWidgetConfigViewModel(
 
       analyticsEventSender.send(WidgetUsedEvent(Widget.SINGLE_NOTE))
 
-      val noteWithImages = getNoteByIdUseCase(noteId)
-      widgetUpdater.update {
-        SingleNoteWidget.updateWidget(
-          context = this,
-          appWidgetManager = AppWidgetManager.getInstance(this),
-          prefsProvider = prefsProvider,
-          uiNoteWidgetAdapter = uiNoteWidgetAdapter,
-          noteWithImages = noteWithImages,
-        )
-      }
+      appWidgetUpdater.updateSingleNoteWidget(prefsProvider.widgetId)
 
       _events.trySend(SingleNoteWidgetConfigEvent.Saved)
     }

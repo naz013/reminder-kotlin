@@ -10,7 +10,7 @@
             android:windowSoftInputMode="stateUnchanged" />
 
         <receiver
-            android:name="com.github.naz013.appwidgets.singlenote.SingleNoteWidget"
+            android:name=".singlenote.SingleNoteGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/note">
             <intent-filter>
