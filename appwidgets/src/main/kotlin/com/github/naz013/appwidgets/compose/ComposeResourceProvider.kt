@@ -1,37 +1,46 @@
-package com.github.naz013.appwidgets
+package com.github.naz013.appwidgets.compose
 
 import android.content.Context
 import android.os.Build
 import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.glance.GlanceTheme
+import androidx.glance.unit.ColorProvider
+import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.compose.onPrimaryContainerLight
 import com.github.naz013.ui.common.compose.primaryContainerLight
 
-internal object WidgetUtils {
-
-  private const val TAG = "WidgetUtils"
-
-  /**
-   * Sentinel palette index (one past the fixed 0-13 palette) meaning "use the launcher's dynamic
-   * Material You color" instead of one of the fixed colors. Handled entirely at the Glance
-   * rendering layer (see `roundedBackground`/`paletteContrastColor`) - the legacy color/contrast
-   * lookups below never need to special-case it since their `else` branches already handle any
-   * out-of-range index safely.
-   */
-  const val DYNAMIC_COLOR_INDEX = 14
+internal class ComposeResourceProvider(
+  private val context: Context,
+) {
 
   /**
    * A representative color for the dynamic-color swatch in the widget config color pickers.
    * Purely cosmetic (the picker is plain Compose, not Glance, so it can't read GlanceTheme) -
    * actual widget rendering resolves the real per-widget dynamic color via GlanceTheme.
    */
-  fun getDynamicPreviewColor(context: Context): Color {
+  fun getDynamicPreviewColor(): Color {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      dynamicLightColorScheme(context).primary
+      dynamicLightColorScheme(context).primaryContainer
     } else {
       primaryContainerLight
     }
+  }
+
+  @Composable
+  fun getDynamicContrastColor(): ColorProvider {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      GlanceTheme.colors.onPrimaryContainer
+    } else {
+      androidx.glance.color.ColorProvider(day = onPrimaryContainerLight, night = onPrimaryContainerLight)
+    }
+  }
+
+  fun getBackgroundColors(): List<Color> {
+    return (0..13).map { getComposeColor(it) } + getDynamicPreviewColor()
   }
 
   fun getComposeColor(code: Int): Color {
@@ -55,7 +64,7 @@ internal object WidgetUtils {
   }
 
   fun getContrastColor(code: Int): Color {
-    return getContrastColor(getComposeColor(code))
+    return getContrastColor(WidgetUtils.getComposeColor(code))
   }
 
   fun getContrastColor(color: Color): Color {
@@ -66,5 +75,34 @@ internal object WidgetUtils {
       saturation = 0f,
       lightness = if (luminance > 0.5f) 0.1f else 0.9f
     )
+  }
+
+  @Composable
+  fun getColors(code: Int): ColorGroup {
+    val background = if (code == DYNAMIC_COLOR_INDEX) {
+      getDynamicPreviewColor()
+    } else {
+      getComposeColor(code = code)
+    }
+    Logger.d(TAG, "Get WIDGET colors for index = $code")
+    return ColorGroup(
+      background = background,
+      foreground = if (code == WidgetUtils.DYNAMIC_COLOR_INDEX) {
+        getDynamicContrastColor()
+      } else {
+        val fallback = getContrastColor(background)
+        androidx.glance.color.ColorProvider(day = fallback, night = fallback)
+      },
+    )
+  }
+
+  data class ColorGroup(
+    val background: Color,
+    val foreground: ColorProvider,
+  )
+
+  companion object {
+    private const val TAG = "WidgetUtils"
+    const val DYNAMIC_COLOR_INDEX = 14
   }
 }

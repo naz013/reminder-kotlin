@@ -11,6 +11,7 @@ import com.github.naz013.appwidgets.calendar.CalendarWidgetPrefsProvider
 import com.github.naz013.appwidgets.calendar.WidgetDataProvider
 import com.github.naz013.appwidgets.combinedbuttons.CombinedWidgetConfigViewModel
 import com.github.naz013.appwidgets.combinedbuttons.CombinedWidgetPrefsProvider
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.appwidgets.events.EventsAppWidgetViewModel
 import com.github.naz013.appwidgets.events.EventsWidgetConfigViewModel
 import com.github.naz013.appwidgets.events.EventsWidgetPrefsProvider
@@ -26,11 +27,13 @@ import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetConfigViewModel
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetPrefsProvider
 import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appWidgetsModule = module {
-  factory { WidgetDataProvider(get(), get(), get(), get()) }
+  factoryOf(::WidgetDataProvider)
+  factoryOf(::ComposeResourceProvider)
 
   factory { UiBirthdayWidgetListAdapter(get(), get()) }
   factory { UiReminderWidgetListAdapter(get()) }

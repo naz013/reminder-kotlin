@@ -1,6 +1,5 @@
 package com.github.naz013.appwidgets.combinedbuttons
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -9,6 +8,8 @@ import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.appwidgets.WidgetUtils
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
+import com.github.naz013.logging.Logger
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class CombinedWidgetConfigViewModel(
-  private val context: Context,
+  private val composeResourceProvider: ComposeResourceProvider,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val prefsProvider: CombinedWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -37,8 +38,7 @@ internal class CombinedWidgetConfigViewModel(
         hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
       )
     }
-    val palette = (0..13).map { WidgetUtils.getComposeColor(it) } +
-      WidgetUtils.getDynamicPreviewColor(context)
+    val palette = composeResourceProvider.getBackgroundColors()
     _state.update {
       it.copy(
         palette = palette,
@@ -53,17 +53,22 @@ internal class CombinedWidgetConfigViewModel(
       it.copy(
         backgroundIndex = index,
         backgroundColor = it.palette[index],
-        contentColor = WidgetUtils.getContrastColor(index),
+        contentColor = composeResourceProvider.getContrastColor(index),
       )
     }
   }
 
   fun onSaveClick() {
+    Logger.d(TAG, "Saving widget config for widget ID = ${prefsProvider.widgetId}")
     prefsProvider.setWidgetBackground(state.value.backgroundIndex)
     analyticsEventSender.send(WidgetUsedEvent(Widget.COMBINED))
     viewModelScope.launch {
       appWidgetUpdater.updateCombinedButtonsWidget(prefsProvider.widgetId)
       _saved.trySend(Unit)
     }
+  }
+
+  companion object {
+    private const val TAG = "CombinedWidgetConfigViewModel"
   }
 }

@@ -9,6 +9,7 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.action.Action
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.clickable
@@ -26,12 +27,11 @@ import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
 import com.github.naz013.appwidgets.R
-import com.github.naz013.appwidgets.WidgetId
-import com.github.naz013.appwidgets.WidgetUtils
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
-import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
+import com.github.naz013.logging.Logger
 
 internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
 
@@ -41,9 +41,13 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
   private val widgetTypeKey = ActionParameters.Key<Widget>(
     AppWidgetActionActivity.WIDGET_TYPE
   )
+  private val composeResourceProvider: (Context) -> ComposeResourceProvider = {
+    ComposeResourceProvider(it)
+  }
 
   override suspend fun provideGlance(context: Context, id: GlanceId) {
     val widgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
+    Logger.d(TAG, "Refreshing the widget with the ID = $widgetId")
     val backgroundColorCode = CombinedWidgetPrefsProvider(context, widgetId).getWidgetBackground()
     val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -52,7 +56,7 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
     provideContent {
       GlanceAppWidgetTheme {
         CombinedButtonsContent(
-          backgroundColorCode = backgroundColorCode,
+          colorGroup = composeResourceProvider(context).getColors(backgroundColorCode),
           viewIntent = viewIntent
         )
       }
@@ -60,15 +64,11 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
   }
 
   override suspend fun providePreview(context: Context, widgetCategory: Int) {
-    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
     provideContent {
       GlanceAppWidgetTheme {
         CombinedButtonsContent(
-          backgroundColorCode = CombinedWidgetPrefsProvider(context, WidgetId.PREVIEW_ID)
-            .getWidgetBackground(),
-          viewIntent = viewIntent
+          colorGroup = composeResourceProvider(context).getColors(3),
+          viewIntent = null
         )
       }
     }
@@ -76,35 +76,31 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
 
   @Composable
   private fun CombinedButtonsContent(
-    backgroundColorCode: Int,
-    viewIntent: Intent
+    colorGroup: ComposeResourceProvider.ColorGroup,
+    viewIntent: Intent?
   ) {
-    val contrastColor = paletteContrastColor(
-      backgroundColorCode,
-      WidgetUtils.getContrastColor(backgroundColorCode)
-    )
     Row(
       modifier = GlanceModifier.fillMaxSize()
-        .roundedBackground(backgroundColorCode)
+        .roundedBackground(colorGroup.background)
         .systemWidgetShape(),
       horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
       verticalAlignment = Alignment.Vertical.CenterVertically
     ) {
       ActionButton(
         iconRes = R.drawable.ic_fluent_clock_alarm,
-        contrastColor = contrastColor,
+        contrastColor = colorGroup.foreground,
         direction = Direction.ADD_REMINDER,
         viewIntent = viewIntent
       )
       ActionButton(
         iconRes = R.drawable.ic_fluent_note,
-        contrastColor = contrastColor,
+        contrastColor = colorGroup.foreground,
         direction = Direction.ADD_NOTE,
         viewIntent = viewIntent
       )
       ActionButton(
         iconRes = R.drawable.ic_fluent_food_cake,
-        contrastColor = contrastColor,
+        contrastColor = colorGroup.foreground,
         direction = Direction.ADD_BIRTHDAY,
         viewIntent = viewIntent
       )
@@ -116,24 +112,31 @@ internal class CombinedButtonsGlanceAppWidget : GlanceAppWidget() {
     iconRes: Int,
     contrastColor: ColorProvider,
     direction: Direction,
-    viewIntent: Intent
+    viewIntent: Intent?
   ) {
+    val onClick: Action = if (viewIntent != null) {
+      actionStartActivity(
+        intent = viewIntent,
+        parameters = actionParametersOf(
+          directionKey to direction,
+          widgetTypeKey to Widget.COMBINED
+        )
+      )
+    } else {
+      object : Action {}
+    }
     Image(
       modifier = GlanceModifier
         .defaultWeight()
         .padding(12.dp)
-        .clickable(
-          onClick = actionStartActivity(
-            intent = viewIntent,
-            parameters = actionParametersOf(
-              directionKey to direction,
-              widgetTypeKey to Widget.COMBINED
-            )
-          )
-        ),
+        .clickable(onClick = onClick),
       provider = ImageProvider(iconRes),
       contentDescription = null,
       colorFilter = ColorFilter.tint(contrastColor)
     )
+  }
+
+  companion object {
+    private const val TAG = "CombinedButtonsGlanceAppWidget"
   }
 }
