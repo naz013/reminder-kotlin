@@ -14,6 +14,8 @@ import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -21,6 +23,8 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 import io.mockk.clearMocks
@@ -45,6 +49,8 @@ class EventsViewModelTest {
   private val getRemindersV2ByRemovedStatusUseCase = mockk<GetRemindersV2ByRemovedStatusUseCase>()
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
+  private val tagRepository = mockk<TagRepository>()
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val uiEventItemAdapter = mockk<UiEventItemAdapter>()
   private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>()
@@ -65,6 +71,8 @@ class EventsViewModelTest {
     // doesn't crash on unmocked calls; individual tests override these as needed.
     coEvery { getRemindersV2ByRemovedStatusUseCase(any()) } returns emptyList()
     coEvery { birthdayRepository.getAll() } returns emptyList()
+    coEvery { tagRepository.getAll() } returns emptyList()
+    coEvery { tagAssignmentRepository.getItemIdsForTag(any(), any()) } returns emptyList()
     // Echoes the filtered reminders/birthdays back as bare UiEventItems keyed by id, so tests can
     // assert on which domain objects survived filtering without depending on real UI formatting.
     every { uiEventItemAdapter.convertV2(any(), any(), any()) } answers {
@@ -80,6 +88,8 @@ class EventsViewModelTest {
         getRemindersV2ByRemovedStatusUseCase = getRemindersV2ByRemovedStatusUseCase,
         groupV2Repository = groupV2Repository,
         birthdayRepository = birthdayRepository,
+        tagRepository = tagRepository,
+        tagAssignmentRepository = tagAssignmentRepository,
         uiEventItemAdapter = uiEventItemAdapter,
         dateTimeManager = dateTimeManager,
         birthdaySmartListPredicate = birthdaySmartListPredicate,
@@ -200,6 +210,52 @@ class EventsViewModelTest {
       val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.NO_GROUP)
 
       assertEquals(listOf("ungrouped"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `group filter keeps only reminders in that group and drops birthdays`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "in-group", groupId = "group-1"),
+          reminderV2(id = "other-group", groupId = "group-2"),
+        )
+      coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday("b1"))
+
+      val result =
+        viewModel.loadMerged("", EventCategory.entries.toSet(), smartList = null, tagId = null, groupId = "group-1")
+
+      assertEquals(listOf("in-group"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `tag filter keeps only reminders returned by getItemIdsForTag and drops birthdays`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "tagged"),
+          reminderV2(id = "not-tagged"),
+        )
+      coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday("b1"))
+      coEvery { tagAssignmentRepository.getItemIdsForTag("tag-1", TaggedItemType.REMINDER) } returns
+        listOf("tagged")
+
+      val result =
+        viewModel.loadMerged("", EventCategory.entries.toSet(), smartList = null, tagId = "tag-1", groupId = null)
+
+      assertEquals(listOf("tagged"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `loadMerged returns available tags and groups for the filter sheet`() =
+    runTest {
+      val tag = Tag(id = "tag-1", name = "Work", color = 0)
+      coEvery { tagRepository.getAll() } returns listOf(tag)
+      coEvery { groupV2Repository.getAll() } returns emptyList()
+
+      val result = viewModel.loadMerged("", EventCategory.entries.toSet())
+
+      assertEquals(listOf(tag), result.availableTags)
     }
 
   @Test

@@ -15,11 +15,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,10 +47,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
+import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
@@ -57,6 +69,8 @@ fun EventsScreen(
   onSearchQueryChange: (String) -> Unit,
   onCategoryToggle: (EventCategory) -> Unit,
   onSmartListSelected: (SmartListFilter?) -> Unit,
+  onTagFilterSelected: (String?) -> Unit,
+  onGroupFilterSelected: (String?) -> Unit,
   onAddReminderClick: () -> Unit,
   onAddShoppingClick: () -> Unit,
   onAddBirthdayClick: () -> Unit,
@@ -73,6 +87,12 @@ fun EventsScreen(
     targetValue = if (isScrolled) HEADER_ELEVATION else 0.dp,
     label = "eventsHeaderElevation",
   )
+  var showFilterSheet by remember { mutableStateOf(false) }
+  val hasActiveFilters =
+    state.selectedCategories != EventCategory.entries.toSet() ||
+      state.selectedSmartList != null ||
+      state.selectedTagId != null ||
+      state.selectedGroupId != null
 
   Scaffold(
     modifier = modifier,
@@ -87,9 +107,11 @@ fun EventsScreen(
             onArchiveClick = onArchiveClick,
             onGroupsClick = onGroupsClick,
             onTagsClick = onTagsClick,
+            onFilterClick = { showFilterSheet = true },
+            hasActiveFilters = hasActiveFilters,
           )
 
-          if (state.listState !is ListState.Empty || state.searchQuery.isNotEmpty()) {
+          if (state.hasAnyItems) {
             SearchBar(
               query = state.searchQuery,
               onQueryChange = onSearchQueryChange,
@@ -97,21 +119,9 @@ fun EventsScreen(
               modifier =
                 Modifier
                   .fillMaxWidth()
-                  .padding(horizontal = 16.dp),
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
             )
           }
-
-          CategoryChipRow(
-            selected = state.selectedCategories,
-            onToggle = onCategoryToggle,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-          )
-
-          SmartListChipRow(
-            selected = state.selectedSmartList,
-            onSelect = onSmartListSelected,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-          )
         }
       }
     },
@@ -146,6 +156,113 @@ fun EventsScreen(
           )
         }
       }
+    }
+  }
+
+  if (showFilterSheet) {
+    EventsFilterBottomSheet(
+      state = state,
+      hasActiveFilters = hasActiveFilters,
+      onDismissRequest = { showFilterSheet = false },
+      onCategoryToggle = onCategoryToggle,
+      onSmartListSelected = onSmartListSelected,
+      onTagFilterSelected = onTagFilterSelected,
+      onGroupFilterSelected = onGroupFilterSelected,
+    )
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EventsFilterBottomSheet(
+  state: EventsScreenState,
+  hasActiveFilters: Boolean,
+  onDismissRequest: () -> Unit,
+  onCategoryToggle: (EventCategory) -> Unit,
+  onSmartListSelected: (SmartListFilter?) -> Unit,
+  onTagFilterSelected: (String?) -> Unit,
+  onGroupFilterSelected: (String?) -> Unit,
+) {
+  AppModalBottomSheet(
+    onDismissRequest = onDismissRequest,
+  ) {
+    Column(
+      modifier =
+        Modifier
+          .verticalScroll(rememberScrollState())
+          .padding(bottom = 16.dp),
+    ) {
+      BottomSheetHeader(title = stringResource(R.string.filter))
+
+      FilterSection(title = stringResource(R.string.type)) {
+        CategoryChipRow(selected = state.selectedCategories, onToggle = onCategoryToggle)
+      }
+
+      FilterSection(title = stringResource(R.string.smart_lists)) {
+        SmartListChipRow(selected = state.selectedSmartList, onSelect = onSmartListSelected)
+      }
+
+      FilterSection(title = stringResource(R.string.tags)) {
+        if (state.availableTags.isEmpty()) {
+          Text(
+            text = stringResource(R.string.no_tags),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+          )
+        } else {
+          TagFilterChipRow(
+            tags = state.availableTags,
+            selected = state.selectedTagId,
+            onSelect = onTagFilterSelected,
+          )
+        }
+      }
+
+      FilterSection(title = stringResource(R.string.groups)) {
+        if (state.availableGroups.isEmpty()) {
+          Text(
+            text = stringResource(R.string.no_groups),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+          )
+        } else {
+          GroupFilterChipRow(
+            groups = state.availableGroups,
+            selected = state.selectedGroupId,
+            onSelect = onGroupFilterSelected,
+          )
+        }
+      }
+
+      if (hasActiveFilters) {
+        Button(
+          onClick = {
+            EventCategory.entries.forEach { category ->
+              if (category !in state.selectedCategories) onCategoryToggle(category)
+            }
+            onSmartListSelected(null)
+            onTagFilterSelected(null)
+            onGroupFilterSelected(null)
+          },
+          modifier = Modifier.padding(horizontal = 16.dp),
+        ) {
+          Text(stringResource(R.string.filters_reset))
+        }
+      }
+    }
+  }
+}
+
+@Composable
+private fun FilterSection(
+  title: String,
+  modifier: Modifier = Modifier,
+  content: @Composable () -> Unit,
+) {
+  Column(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+    Text(text = title, style = MaterialTheme.typography.titleSmall)
+    Box(modifier = Modifier.padding(top = 8.dp)) {
+      content()
     }
   }
 }
@@ -253,6 +370,50 @@ private fun SmartListFilter.titleRes(): Int =
     SmartListFilter.NO_GROUP -> R.string.smart_list_no_group
   }
 
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun TagFilterChipRow(
+  tags: List<Tag>,
+  selected: String?,
+  onSelect: (String?) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  FlowRow(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    tags.forEach { tag ->
+      FilterChip(
+        selected = tag.id == selected,
+        onClick = { onSelect(tag.id) },
+        label = { Text(tag.name) },
+      )
+    }
+  }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun GroupFilterChipRow(
+  groups: List<GroupV2>,
+  selected: String?,
+  onSelect: (String?) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  FlowRow(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    groups.forEach { group ->
+      FilterChip(
+        selected = group.uuId == selected,
+        onClick = { onSelect(group.uuId) },
+        label = { Text(group.title) },
+      )
+    }
+  }
+}
+
 @Composable
 private fun EventsEmptyState(modifier: Modifier = Modifier) {
   Column(
@@ -285,6 +446,8 @@ private fun EventsTopBar(
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
   onTagsClick: () -> Unit,
+  onFilterClick: () -> Unit,
+  hasActiveFilters: Boolean,
 ) {
   TopAppBar(
     title = { Text(stringResource(R.string.events)) },
@@ -301,6 +464,15 @@ private fun EventsTopBar(
         onAddShoppingClick = onAddShoppingClick,
         onAddBirthdayClick = onAddBirthdayClick,
       )
+      BadgedBox(
+        badge = { if (hasActiveFilters) Badge() },
+      ) {
+        MenuIconButton(
+          icon = Icons.Default.FilterList,
+          contentDescription = stringResource(R.string.filter),
+          onClick = onFilterClick,
+        )
+      }
       OverflowMenuButton(
         onArchiveClick = onArchiveClick,
         onGroupsClick = onGroupsClick,
@@ -383,6 +555,8 @@ private fun EventsScreenEmptyPreview() {
       onSearchQueryChange = {},
       onCategoryToggle = {},
       onSmartListSelected = {},
+      onTagFilterSelected = {},
+      onGroupFilterSelected = {},
       onAddReminderClick = {},
       onAddShoppingClick = {},
       onAddBirthdayClick = {},
