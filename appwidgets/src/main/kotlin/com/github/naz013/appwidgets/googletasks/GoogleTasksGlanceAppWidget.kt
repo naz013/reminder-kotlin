@@ -98,17 +98,14 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     val configIntent = Intent(context, TasksWidgetConfigActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
-    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
     val titleText = context.getString(R.string.google_tasks)
     val emptyStateText = context.getString(R.string.no_google_tasks)
     provideContent {
       GlanceAppWidgetTheme {
         GoogleTasksContent(
+          context = context,
           state = currentState(),
           configIntent = configIntent,
-          viewIntent = viewIntent,
           titleText = titleText,
           emptyStateText = emptyStateText
         )
@@ -120,9 +117,6 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     val configIntent = Intent(context, TasksWidgetConfigActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
-    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
     val titleText = context.getString(R.string.google_tasks)
     val emptyStateText = context.getString(R.string.no_google_tasks)
     val previewState = get<GoogleTasksAppWidgetViewModel> {
@@ -131,9 +125,9 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     provideContent {
       GlanceAppWidgetTheme {
         GoogleTasksContent(
+          context = context,
           state = previewState,
           configIntent = configIntent,
-          viewIntent = viewIntent,
           titleText = titleText,
           emptyStateText = emptyStateText
         )
@@ -141,12 +135,18 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     }
   }
 
+  private fun viewIntent(context: Context): Intent {
+    return Intent(context, AppWidgetActionActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+  }
+
   @Composable
   private fun GoogleTasksContent(
     modifier: GlanceModifier = GlanceModifier,
+    context: Context,
     state: GoogleTasksAppWidgetState,
     configIntent: Intent,
-    viewIntent: Intent,
     titleText: String,
     emptyStateText: String
   ) {
@@ -198,7 +198,7 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             .cornerRadius(16.dp)
             .clickable(
               onClick = actionStartActivity(
-                intent = viewIntent,
+                intent = viewIntent(context),
                 parameters = actionParametersOf(
                   directionKey to Direction.GOOGLE_TASK,
                   dataKey to WidgetIntentProtocol(emptyMap()),
@@ -222,10 +222,10 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
           items(state.items.size) { index: Int ->
             GoogleTaskItem(
+              context = context,
               data = state.items[index],
               itemBackgroundColor = state.itemBackgroundColor,
-              itemContrastColor = state.itemContrastColor,
-              viewIntent = viewIntent
+              itemContrastColor = state.itemContrastColor
             )
           }
         }
@@ -235,10 +235,10 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
 
   @Composable
   private fun GoogleTaskItem(
+    context: Context,
     data: UiGoogleTaskWidgetItem,
     itemBackgroundColor: Int,
-    itemContrastColor: Color,
-    viewIntent: Intent
+    itemContrastColor: Color
   ) {
     val contentColorProvider = paletteContrastColor(itemBackgroundColor, itemContrastColor)
     Row(
@@ -247,7 +247,7 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         .roundedBackground(itemBackgroundColor)
         .clickable(
           onClick = actionStartActivity(
-            intent = viewIntent,
+            intent = viewIntent(context),
             parameters = actionParametersOf(
               directionKey to Direction.GOOGLE_TASK,
               dataKey to WidgetIntentProtocol(

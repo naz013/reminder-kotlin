@@ -96,17 +96,14 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     val configIntent = Intent(context, BirthdaysWidgetConfigActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
-    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
     val titleText = context.getString(R.string.birthdays)
     val emptyStateText = context.getString(R.string.no_upcoming_birthdays)
     provideContent {
       GlanceAppWidgetTheme {
         BirthdaysContent(
+          context = context,
           state = currentState(),
           configIntent = configIntent,
-          viewIntent = viewIntent,
           titleText = titleText,
           emptyStateText = emptyStateText
         )
@@ -118,9 +115,6 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     val configIntent = Intent(context, BirthdaysWidgetConfigActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
-    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
     val titleText = context.getString(R.string.birthdays)
     val emptyStateText = context.getString(R.string.no_upcoming_birthdays)
     val previewState = get<BirthdaysAppWidgetViewModel> {
@@ -129,9 +123,9 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     provideContent {
       GlanceAppWidgetTheme {
         BirthdaysContent(
+          context = context,
           state = previewState,
           configIntent = configIntent,
-          viewIntent = viewIntent,
           titleText = titleText,
           emptyStateText = emptyStateText
         )
@@ -139,12 +133,18 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     }
   }
 
+  private fun viewIntent(context: Context): Intent {
+    return Intent(context, AppWidgetActionActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+  }
+
   @Composable
   private fun BirthdaysContent(
     modifier: GlanceModifier = GlanceModifier,
+    context: Context,
     state: BirthdaysAppWidgetState,
     configIntent: Intent,
-    viewIntent: Intent,
     titleText: String,
     emptyStateText: String
   ) {
@@ -196,7 +196,7 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             .cornerRadius(16.dp)
             .clickable(
               onClick = actionStartActivity(
-                intent = viewIntent,
+                intent = viewIntent(context),
                 parameters = actionParametersOf(
                   directionKey to Direction.ADD_BIRTHDAY,
                   widgetTypeKey to Widget.BIRTHDAYS
@@ -219,10 +219,10 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
           items(state.items.size) { index: Int ->
             BirthdayItem(
+              context = context,
               data = state.items[index],
               itemBackgroundColor = state.itemBackgroundColor,
-              itemContrastColor = state.itemContrastColor,
-              viewIntent = viewIntent
+              itemContrastColor = state.itemContrastColor
             )
           }
         }
@@ -232,10 +232,10 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
 
   @Composable
   private fun BirthdayItem(
+    context: Context,
     data: UiBirthdayWidgetList,
     itemBackgroundColor: Int,
-    itemContrastColor: Color,
-    viewIntent: Intent
+    itemContrastColor: Color
   ) {
     val contentColorProvider = paletteContrastColor(itemBackgroundColor, itemContrastColor)
     Row(
@@ -244,7 +244,7 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         .roundedBackground(itemBackgroundColor)
         .clickable(
           onClick = actionStartActivity(
-            intent = viewIntent,
+            intent = viewIntent(context),
             parameters = actionParametersOf(
               directionKey to Direction.BIRTHDAY_PREVIEW,
               dataKey to WidgetIntentProtocol(

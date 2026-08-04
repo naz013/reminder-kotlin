@@ -99,17 +99,14 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     val configIntent = Intent(context, NotesWidgetConfigActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
-    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
     val titleText = context.getString(R.string.notes)
     val emptyStateText = context.getString(R.string.no_notes)
     provideContent {
       GlanceAppWidgetTheme {
         NotesContent(
+          context = context,
           state = currentState(),
           configIntent = configIntent,
-          viewIntent = viewIntent,
           titleText = titleText,
           emptyStateText = emptyStateText
         )
@@ -121,9 +118,6 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     val configIntent = Intent(context, NotesWidgetConfigActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
-    val viewIntent = Intent(context, AppWidgetActionActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
     val titleText = context.getString(R.string.notes)
     val emptyStateText = context.getString(R.string.no_notes)
     val previewState = get<NotesAppWidgetViewModel> {
@@ -132,9 +126,9 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     provideContent {
       GlanceAppWidgetTheme {
         NotesContent(
+          context = context,
           state = previewState,
           configIntent = configIntent,
-          viewIntent = viewIntent,
           titleText = titleText,
           emptyStateText = emptyStateText
         )
@@ -142,12 +136,18 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     }
   }
 
+  private fun viewIntent(context: Context): Intent {
+    return Intent(context, AppWidgetActionActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    }
+  }
+
   @Composable
   private fun NotesContent(
     modifier: GlanceModifier = GlanceModifier,
+    context: Context,
     state: NotesAppWidgetState,
     configIntent: Intent,
-    viewIntent: Intent,
     titleText: String,
     emptyStateText: String
   ) {
@@ -199,7 +199,7 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             .cornerRadius(16.dp)
             .clickable(
               onClick = actionStartActivity(
-                intent = viewIntent,
+                intent = viewIntent(context),
                 parameters = actionParametersOf(
                   directionKey to Direction.ADD_NOTE,
                   widgetTypeKey to Widget.NOTES
@@ -222,8 +222,8 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
           items(state.items.size) { index: Int ->
             NoteItem(
-              data = state.items[index],
-              viewIntent = viewIntent
+              context = context,
+              data = state.items[index]
             )
           }
         }
@@ -233,8 +233,8 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
 
   @Composable
   private fun NoteItem(
-    data: UiNoteWidgetItem,
-    viewIntent: Intent
+    context: Context,
+    data: UiNoteWidgetItem
   ) {
     val contentColorProvider = ColorProvider(
       day = data.contentColor,
@@ -247,7 +247,7 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         .background(data.backgroundColor)
         .clickable(
           onClick = actionStartActivity(
-            intent = viewIntent,
+            intent = viewIntent(context),
             parameters = actionParametersOf(
               directionKey to Direction.NOTE_PREVIEW,
               dataKey to WidgetIntentProtocol(
