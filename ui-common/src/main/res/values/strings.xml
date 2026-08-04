@@ -870,6 +870,8 @@
     <string name="filter_empty_name">Empty name</string>
     <string name="filters_apply">Apply filters</string>
     <string name="filters_reset">Reset filters</string>
+    <string name="type">Type</string>
+    <string name="smart_lists">Smart Lists</string>
     <string name="filter_reminders">Filter reminders</string>
     <string name="date_range">Date range</string>
 

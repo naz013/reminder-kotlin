@@ -13,6 +13,9 @@ import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -22,6 +25,8 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import com.github.naz013.usecase.reminders.smartlist.ReminderSmartListPredicate
 import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
@@ -43,6 +48,8 @@ class EventsViewModel(
   private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase,
   private val groupV2Repository: GroupV2Repository,
   private val birthdayRepository: BirthdayRepository,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
   private val uiEventItemAdapter: UiEventItemAdapter,
   private val dateTimeManager: DateTimeManager,
   private val birthdaySmartListPredicate: BirthdaySmartListPredicate,
@@ -61,19 +68,39 @@ class EventsViewModel(
   private val searchQuery = MutableStateFlow("")
   private val selectedCategories = MutableStateFlow(EventCategory.entries.toSet())
   private val selectedSmartList = MutableStateFlow<SmartListFilter?>(null)
+  private val selectedTagId = MutableStateFlow<String?>(null)
+  private val selectedGroupId = MutableStateFlow<String?>(null)
   private val refreshSignal = MutableStateFlow(0)
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      combine(
-        searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
-        selectedCategories,
-        selectedSmartList,
-        refreshSignal,
-      ) { query, categories, smartList, _ -> Triple(query, categories, smartList) }
-        .flatMapLatest { (query, categories, smartList) ->
-          flow { emit(loadMerged(query, categories, smartList)) }
+      val filterCriteria =
+        combine(
+          searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
+          selectedCategories,
+          selectedSmartList,
+          selectedTagId,
+          selectedGroupId,
+        ) { query, categories, smartList, tagId, groupId ->
+          FilterCriteria(query, categories, smartList, tagId, groupId)
+        }
+      combine(filterCriteria, refreshSignal) { criteria, _ -> criteria }
+        .flatMapLatest { criteria ->
+          flow {
+            emit(
+              loadMerged(
+                query = criteria.query,
+                categories = criteria.categories,
+                smartList = criteria.smartList,
+                tagId = criteria.tagId,
+                groupId = criteria.groupId,
+              ),
+            )
+          }
         }.collect { applyList(it) }
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
+      refreshSignal.collect { refreshHasAnyItems() }
     }
   }
 
@@ -81,10 +108,18 @@ class EventsViewModel(
     refreshSignal.update { it + 1 }
   }
 
+  private suspend fun refreshHasAnyItems() {
+    val hasAnyItems =
+      getRemindersV2ByRemovedStatusUseCase(removed = false).isNotEmpty() || birthdayRepository.getAll().isNotEmpty()
+    _eventsScreenState.update { it.copy(hasAnyItems = hasAnyItems) }
+  }
+
   internal suspend fun loadMerged(
     query: String,
     categories: Set<EventCategory>,
     smartList: SmartListFilter? = null,
+    tagId: String? = null,
+    groupId: String? = null,
   ): MergedResult {
     val reminderCategoriesSelected =
       categories.contains(EventCategory.REMINDERS) || categories.contains(EventCategory.SHOPPING)
@@ -92,28 +127,33 @@ class EventsViewModel(
       if (reminderCategoriesSelected) getRemindersV2ByRemovedStatusUseCase(removed = false) else emptyList()
     val allBirthdays = if (categories.contains(EventCategory.BIRTHDAYS)) birthdayRepository.getAll() else emptyList()
     val groups = groupV2Repository.getAll()
+    val tags = tagRepository.getAll()
 
-    val filteredReminders = filterReminders(allReminders, query, categories, smartList)
-    val filteredBirthdays = filterBirthdays(allBirthdays, query, smartList)
+    val filteredReminders = filterReminders(allReminders, query, categories, smartList, tagId, groupId)
+    val filteredBirthdays = filterBirthdays(allBirthdays, query, smartList, tagId, groupId)
 
     val groupsById = groups.associateBy { it.uuId }
     val items = uiEventItemAdapter.convertV2(filteredReminders, groupsById, filteredBirthdays)
-    return MergedResult(items)
+    return MergedResult(items, tags, groups)
   }
 
   private fun applyList(result: MergedResult) {
     _eventsScreenState.update {
       it.copy(
         listState = if (result.items.isEmpty()) ListState.Empty else ListState.Ready(result.items),
+        availableTags = result.availableTags,
+        availableGroups = result.availableGroups,
       )
     }
   }
 
-  private fun filterReminders(
+  private suspend fun filterReminders(
     reminders: List<ReminderV2>,
     query: String,
     categories: Set<EventCategory>,
     smartList: SmartListFilter?,
+    tagId: String?,
+    groupId: String?,
   ): List<ReminderV2> {
     val byCategory =
       reminders.filter { reminder ->
@@ -131,14 +171,28 @@ class EventsViewModel(
         val now = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime())
         byQuery.filter { ReminderSmartListPredicate.matches(smartList, it, now) }
       }
-    return bySmartList
+    val byGroup = if (groupId == null) bySmartList else bySmartList.filter { it.groupId == groupId }
+    val byTag =
+      if (tagId == null) {
+        byGroup
+      } else {
+        val taggedIds = tagAssignmentRepository.getItemIdsForTag(tagId, TaggedItemType.REMINDER).toSet()
+        byGroup.filter { it.uuId in taggedIds }
+      }
+    return byTag
   }
 
   private fun filterBirthdays(
     birthdays: List<Birthday>,
     query: String,
     smartList: SmartListFilter?,
+    tagId: String?,
+    groupId: String?,
   ): List<Birthday> {
+    // Birthdays have no tag or group concept, so an active Tag/Group filter is an explicit
+    // request to narrow down to labeled items - birthdays vacuously don't match and drop out.
+    if (tagId != null || groupId != null) return emptyList()
+
     val byQuery = if (query.isBlank()) birthdays else birthdays.filter(BirthdayQueryFilter(query))
     if (smartList == null) return byQuery
 
@@ -162,6 +216,18 @@ class EventsViewModel(
     val updated = if (selectedSmartList.value == filter) null else filter
     selectedSmartList.value = updated
     _eventsScreenState.update { it.copy(selectedSmartList = updated) }
+  }
+
+  fun onTagFilterSelected(tagId: String?) {
+    val updated = if (selectedTagId.value == tagId) null else tagId
+    selectedTagId.value = updated
+    _eventsScreenState.update { it.copy(selectedTagId = updated) }
+  }
+
+  fun onGroupFilterSelected(groupId: String?) {
+    val updated = if (selectedGroupId.value == groupId) null else groupId
+    selectedGroupId.value = updated
+    _eventsScreenState.update { it.copy(selectedGroupId = updated) }
   }
 
   fun onItemClick(item: UiEventItem) {
@@ -285,6 +351,16 @@ class EventsViewModel(
 
   data class MergedResult(
     val items: List<UiEventItem>,
+    val availableTags: List<Tag> = emptyList(),
+    val availableGroups: List<GroupV2> = emptyList(),
+  )
+
+  private data class FilterCriteria(
+    val query: String,
+    val categories: Set<EventCategory>,
+    val smartList: SmartListFilter?,
+    val tagId: String?,
+    val groupId: String?,
   )
 
   sealed interface NavigationEvent {

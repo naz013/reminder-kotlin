@@ -246,6 +246,8 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onCategoryToggle = viewModel::onCategoryToggle,
     onSmartListSelected = viewModel::onSmartListSelected,
+    onTagFilterSelected = viewModel::onTagFilterSelected,
+    onGroupFilterSelected = viewModel::onGroupFilterSelected,
     onAddReminderClick = viewModel::onAddReminderClick,
     onAddShoppingClick = viewModel::onAddShoppingClick,
     onAddBirthdayClick = viewModel::onAddBirthdayClick,
