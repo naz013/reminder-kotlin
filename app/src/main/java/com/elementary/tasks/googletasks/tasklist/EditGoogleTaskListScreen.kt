@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
@@ -56,7 +57,7 @@ fun EditGoogleTaskListScreen(
         title = { Text(stringResource(state.screenTitleRes)) },
         navigationIcon = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_builder_arrow_left),
+            icon = AppIcons.Builder.ArrowLeft,
             contentDescription = null,
             enabled = !state.isLoading,
             onClick = onBackClick,

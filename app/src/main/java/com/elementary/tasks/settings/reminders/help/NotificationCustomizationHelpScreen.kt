@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
 
 /**
@@ -43,7 +44,7 @@ fun NotificationCustomizationHelpScreen(onBackClick: () -> Unit) {
         navigationIcon = {
           IconButton(onClick = onBackClick) {
             Icon(
-              painter = painterResource(R.drawable.ic_builder_arrow_left),
+              painter = AppIcons.Builder.ArrowLeft,
               contentDescription = stringResource(R.string.cd_back),
             )
           }

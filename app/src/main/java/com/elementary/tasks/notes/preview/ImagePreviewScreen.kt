@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
+import com.github.naz013.ui.common.compose.AppIcons
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
 import me.saket.telephoto.zoomable.rememberZoomableState
@@ -55,7 +56,7 @@ fun ImagePreviewScreen(
       navigationIcon = {
         IconButton(onClick = onBackClick) {
           Icon(
-            painter = painterResource(R.drawable.ic_builder_arrow_left),
+            painter = AppIcons.Builder.ArrowLeft,
             contentDescription = stringResource(R.string.cd_back),
             tint = state.content,
           )

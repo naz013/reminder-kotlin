@@ -56,7 +56,7 @@ fun TagsScreen(
         title = { Text(stringResource(R.string.tags)) },
         navigationIcon = {
           MenuIconButton(
-            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            icon = AppIcons.Builder.ArrowLeft,
             contentDescription = null,
             onClick = onBackClick
           )

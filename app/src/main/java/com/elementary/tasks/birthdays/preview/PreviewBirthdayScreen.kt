@@ -46,6 +46,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import kotlinx.coroutines.delay
@@ -71,7 +72,7 @@ fun PreviewBirthdayScreen(
         title = { Text(stringResource(R.string.details)) },
         navigationIcon = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_builder_arrow_left),
+            icon = AppIcons.Builder.ArrowLeft,
             contentDescription = null,
             onClick = onBackClick,
           )

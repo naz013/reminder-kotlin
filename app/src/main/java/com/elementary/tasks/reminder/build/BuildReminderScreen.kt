@@ -117,7 +117,7 @@ fun BuildReminderScreen(
         title = {},
         navigationIcon = {
           IconButton(onClick = onBackClick) {
-            Icon(painter = painterResource(R.drawable.ic_builder_arrow_left), contentDescription = null)
+            Icon(painter = AppIcons.Builder.ArrowLeft, contentDescription = null)
           }
         },
         actions = {

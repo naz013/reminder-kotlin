@@ -56,6 +56,7 @@ import com.elementary.tasks.reminder.Icons
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.AttachmentFile
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.AttachmentType
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
@@ -90,7 +91,7 @@ fun PreviewReminderScreen(
         title = { Text(stringResource(R.string.details)) },
         navigationIcon = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_builder_arrow_left),
+            icon = AppIcons.Builder.ArrowLeft,
             contentDescription = null,
             onClick = onBackClick,
           )
