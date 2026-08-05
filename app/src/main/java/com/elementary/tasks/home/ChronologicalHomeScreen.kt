@@ -59,6 +59,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.dynamicParameter
 import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
@@ -117,6 +118,11 @@ fun ChronologicalHomeScreen(
       }
       when (state.listState) {
         is ListState.Ready -> {
+          if (state.listState.sections.isNotEmpty()) {
+            item {
+              SettingsSectionHeader(title = stringResource(R.string.upcoming_events))
+            }
+          }
           items(state.listState.sections.size) { index ->
             TimeSectionRow(
               modifier = Modifier.padding(horizontal = 16.dp),
