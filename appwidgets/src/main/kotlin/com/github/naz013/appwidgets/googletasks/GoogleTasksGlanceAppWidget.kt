@@ -158,7 +158,7 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     Column(
       modifier = modifier
         .fillMaxSize()
-        .roundedBackground(state.backgroundColor)
+        .roundedBackground(widgetColors.background)
         .systemWidgetShape()
     ) {
       Row(

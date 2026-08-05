@@ -38,7 +38,6 @@ import androidx.glance.layout.width
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
 import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
@@ -46,8 +45,9 @@ import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
+import com.github.naz013.appwidgets.compose.EmptyData
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
-import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.notes.data.NotesAppWidgetState
@@ -73,6 +73,9 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private val widgetTypeKey = ActionParameters.Key<Widget>(
     AppWidgetActionActivity.WIDGET_TYPE
   )
+  private val composeResourceProvider: (Context) -> ComposeResourceProvider = {
+    ComposeResourceProvider(it)
+  }
 
   override val stateDefinition: GlanceStateDefinition<NotesAppWidgetState>
     get() = object : GlanceStateDefinition<NotesAppWidgetState> {
@@ -151,27 +154,26 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     titleText: String,
     emptyStateText: String
   ) {
-    val headerContrastColorProvider = paletteContrastColor(
-      state.headerBackgroundColor,
-      state.headerContrastColor
-    )
+    val widgetColors = composeResourceProvider(context).getColors(state.backgroundColor)
     Column(
-      modifier = modifier.fillMaxSize().systemWidgetShape()
+      modifier = modifier
+        .fillMaxSize()
+        .roundedBackground(widgetColors.background)
+        .systemWidgetShape()
     ) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()
-          .height(56.dp)
-          .roundedBackground(state.headerBackgroundColor),
+          .height(56.dp),
         verticalAlignment = Alignment.Vertical.CenterVertically
       ) {
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(16.dp))
         Text(
           text = titleText,
           modifier = GlanceModifier.fillMaxWidth()
             .defaultWeight(),
           style = TextStyle(
             fontSize = 18.sp,
-            color = headerContrastColorProvider
+            color = widgetColors.foreground
           ),
           maxLines = 1
         )
@@ -189,7 +191,7 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             ),
           provider = ImageProvider(R.drawable.ic_fluent_settings),
           contentDescription = null,
-          colorFilter = ColorFilter.tint(headerContrastColorProvider)
+          colorFilter = ColorFilter.tint(widgetColors.foreground)
         )
         Spacer(modifier = GlanceModifier.width(4.dp))
         Image(
@@ -208,15 +210,23 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             ),
           provider = ImageProvider(R.drawable.ic_fluent_add),
           contentDescription = null,
-          colorFilter = ColorFilter.tint(headerContrastColorProvider)
+          colorFilter = ColorFilter.tint(widgetColors.foreground)
         )
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(16.dp))
       }
-      Spacer(modifier = GlanceModifier.height(4.dp))
+      Spacer(
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .height(1.dp)
+          .background(widgetColors.foreground)
+      )
       if (state.items.isEmpty()) {
-        Text(
+        EmptyData(
+          modifier = GlanceModifier
+            .fillMaxSize()
+            .padding(16.dp),
           text = emptyStateText,
-          modifier = GlanceModifier.fillMaxWidth().padding(16.dp)
+          color = widgetColors.foreground
         )
       } else {
         LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
@@ -234,7 +244,7 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   @Composable
   private fun NoteItem(
     context: Context,
-    data: UiNoteWidgetItem
+    data: UiNoteWidgetItem,
   ) {
     val contentColorProvider = ColorProvider(
       day = data.contentColor,

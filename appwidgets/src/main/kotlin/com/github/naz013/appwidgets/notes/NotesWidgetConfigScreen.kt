@@ -43,7 +43,7 @@ internal fun NotesWidgetConfigScreen(
     onSaveClick = onSaveClick,
     modifier = modifier,
   ) {
-    NotesWidgetMockPreview(headerColor = state.headerColor, contentColor = state.contentColor)
+    NotesWidgetMockPreview(headerColor = state.backgroundColor, contentColor = state.foregroundColor)
 
     Text(
       text = stringResource(R.string.background),
@@ -84,12 +84,15 @@ private fun NotesWidgetMockPreview(
       )
       .padding(16.dp),
   ) {
-    Column {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(headerColor, RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))),
+    ) {
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .height(50.dp)
-          .background(headerColor, RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))),
+          .height(50.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Text(

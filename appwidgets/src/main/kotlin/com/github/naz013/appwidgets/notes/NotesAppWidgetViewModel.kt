@@ -3,7 +3,6 @@ package com.github.naz013.appwidgets.notes
 import android.graphics.BitmapFactory
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.notes.data.NotesAppWidgetState
 import com.github.naz013.appwidgets.notes.data.UiNoteWidgetItem
 import com.github.naz013.domain.font.FontParams
@@ -19,11 +18,10 @@ internal class NotesAppWidgetViewModel(
 ) {
 
   suspend fun getState(): NotesAppWidgetState {
-    val headerBackgroundColor = prefsProvider.getHeaderBackground()
+    val headerBackgroundColor = prefsProvider.getBackground()
     return NotesAppWidgetState(
       widgetId = prefsProvider.widgetId,
-      headerBackgroundColor = headerBackgroundColor,
-      headerContrastColor = WidgetUtils.getContrastColor(headerBackgroundColor),
+      backgroundColor = headerBackgroundColor,
       items = getAllNotesUseCase().map { it.toUiNoteWidgetItem() }
     )
   }

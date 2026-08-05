@@ -61,7 +61,7 @@ val appWidgetsModule = module {
   }
 
   viewModel { (widgetId: Int) ->
-    NotesWidgetConfigViewModel(get(), get(), NotesWidgetPrefsProvider(get(), widgetId), get(), get())
+    NotesWidgetConfigViewModel(NotesWidgetPrefsProvider(get(), widgetId), get(), get(), get(), get())
   }
 
   viewModel { (widgetId: Int) ->
