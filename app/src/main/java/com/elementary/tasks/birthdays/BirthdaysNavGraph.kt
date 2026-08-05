@@ -120,10 +120,13 @@ private fun EditEntry(
     onYearCheckChanged = viewModel::onYearCheckChanged,
     onDateFieldClick = viewModel::onDateClicked,
     onNumberChange = viewModel::onNumberChanged,
-    onPickContactClick = pickContact,
+    onPickContactClick = {
+      permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { pickContact() })
+    },
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onCopyKeepClick = viewModel::onCopyKeepClick,
     onCopyReplaceClick = viewModel::onCopyReplaceClick,
     onDialogDismiss = viewModel::onDialogDismiss,
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) }
   )
 }

@@ -1,5 +1,14 @@
 package com.elementary.tasks.birthdays.preview
 
+import android.graphics.Bitmap
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,6 +59,12 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
+
+/** Matches the stagger pattern already used for list rows in `ChronologicalHomeScreen`. */
+private const val DETAIL_ROW_ANIMATION_DURATION_MS = 250
+private const val DETAIL_ROW_STAGGER_DELAY_MS = 30L
+private const val DETAIL_ROW_MAX_STAGGER_DELAY_MS = 180L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,9 +176,59 @@ fun PreviewBirthdayScreen(
 @Composable
 private fun BirthdayDetails(birthday: UiBirthdayPreview) {
   if (birthday.photo != null) {
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    AnimatedAvatar(photo = birthday.photo)
+  }
+  AnimatedDetailRow(index = 0) {
+    DetailRow(
+      icon = R.drawable.ic_fluent_person,
+      text = birthday.name,
+      iconTint = MaterialTheme.colorScheme.primary,
+      textStyle = MaterialTheme.typography.headlineSmall,
+      textColor = MaterialTheme.colorScheme.primary,
+      topPadding = if (birthday.photo != null) 16.dp else 32.dp,
+    )
+  }
+  if (birthday.number != null) {
+    val displayName =
+      if (birthday.contactName != null) {
+        "${birthday.contactName} (${birthday.number})"
+      } else {
+        birthday.number
+      }
+    AnimatedDetailRow(index = 1) {
+      DetailRow(icon = R.drawable.ic_fluent_phone, text = displayName)
+    }
+  }
+  birthday.ageFormatted?.let {
+    AnimatedDetailRow(index = 2) { DetailRow(icon = R.drawable.ic_fluent_emoji_laugh, text = it) }
+  }
+  birthday.dateOfBirth?.let {
+    AnimatedDetailRow(index = 3) { DetailRow(icon = R.drawable.ic_fluent_food_cake, text = it) }
+  }
+  birthday.nextBirthdayDate?.let {
+    AnimatedDetailRow(index = 4) {
+      DetailRow(icon = R.drawable.ic_fluent_alert, text = it, contentDescription = stringResource(R.string.estimated_next_reminder))
+    }
+  }
+}
+
+/** Pop-in for the contact photo - this screen's one hero element. */
+@Composable
+private fun AnimatedAvatar(photo: Bitmap) {
+  val visibleState = remember { MutableTransitionState(false) }
+  LaunchedEffect(Unit) { visibleState.targetState = true }
+  Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    AnimatedVisibility(
+      visibleState = visibleState,
+      enter =
+        fadeIn() +
+          scaleIn(
+            animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+            initialScale = 0.6f,
+          ),
+    ) {
       Image(
-        bitmap = birthday.photo.asImageBitmap(),
+        bitmap = photo.asImageBitmap(),
         contentDescription = stringResource(R.string.acc_contact_photo),
         contentScale = ContentScale.Crop,
         modifier =
@@ -174,27 +239,26 @@ private fun BirthdayDetails(birthday: UiBirthdayPreview) {
       )
     }
   }
-  DetailRow(
-    icon = R.drawable.ic_fluent_person,
-    text = birthday.name,
-    iconTint = MaterialTheme.colorScheme.primary,
-    textStyle = MaterialTheme.typography.headlineSmall,
-    textColor = MaterialTheme.colorScheme.primary,
-    topPadding = if (birthday.photo != null) 16.dp else 32.dp,
-  )
-  if (birthday.number != null) {
-    val displayName =
-      if (birthday.contactName != null) {
-        "${birthday.contactName} (${birthday.number})"
-      } else {
-        birthday.number
-      }
-    DetailRow(icon = R.drawable.ic_fluent_phone, text = displayName)
+}
+
+/** Staggers each detail row in on entry, matching the list-row pattern in `ChronologicalHomeScreen`. */
+@Composable
+private fun AnimatedDetailRow(
+  index: Int,
+  content: @Composable () -> Unit,
+) {
+  val visibleState = remember { MutableTransitionState(false) }
+  LaunchedEffect(Unit) {
+    delay((index * DETAIL_ROW_STAGGER_DELAY_MS).coerceAtMost(DETAIL_ROW_MAX_STAGGER_DELAY_MS).milliseconds)
+    visibleState.targetState = true
   }
-  birthday.ageFormatted?.let { DetailRow(icon = R.drawable.ic_fluent_emoji_laugh, text = it) }
-  birthday.dateOfBirth?.let { DetailRow(icon = R.drawable.ic_fluent_food_cake, text = it) }
-  birthday.nextBirthdayDate?.let {
-    DetailRow(icon = R.drawable.ic_fluent_alert, text = it, contentDescription = stringResource(R.string.estimated_next_reminder))
+  AnimatedVisibility(
+    visibleState = visibleState,
+    enter =
+      fadeIn(animationSpec = tween(DETAIL_ROW_ANIMATION_DURATION_MS)) +
+        slideInVertically(animationSpec = tween(DETAIL_ROW_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight / 6 },
+  ) {
+    content()
   }
 }
 

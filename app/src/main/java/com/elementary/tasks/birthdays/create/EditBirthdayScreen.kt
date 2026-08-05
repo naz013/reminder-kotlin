@@ -2,7 +2,6 @@ package com.elementary.tasks.birthdays.create
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,12 +20,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +42,11 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
+import com.github.naz013.ui.common.compose.foundation.component.FormItem
+import com.github.naz013.ui.common.compose.foundation.component.FormSwitchItem
 import com.github.naz013.ui.common.compose.foundation.component.PhoneNumberVisualTransformation
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,6 +64,7 @@ fun EditBirthdayScreen(
   onCopyKeepClick: () -> Unit,
   onCopyReplaceClick: () -> Unit,
   onDialogDismiss: () -> Unit,
+  adsContent: @Composable () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -117,41 +121,37 @@ fun EditBirthdayScreen(
         modifier = Modifier.fillMaxWidth(),
       )
 
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
+      Card(
         modifier =
           Modifier
             .fillMaxWidth()
             .padding(top = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
       ) {
-        Text(
-          text = stringResource(R.string.i_don_t_know_the_year),
-          style = MaterialTheme.typography.bodyLarge,
-          modifier = Modifier.weight(1f),
-        )
-        Switch(checked = state.ignoreYear, onCheckedChange = onYearCheckChanged, enabled = !state.isLoading)
+        Column {
+          FormSwitchItem(
+            title = stringResource(R.string.i_don_t_know_the_year),
+            checked = state.ignoreYear,
+            onCheckedChange = onYearCheckChanged,
+            enabled = !state.isLoading,
+            dividerBottom = true,
+          )
+          FormItem(
+            title = stringResource(R.string.select_date),
+            enabled = !state.isLoading,
+            onClick = onDateFieldClick,
+            trailing = {
+              Text(text = state.dateText, style = MaterialTheme.typography.titleMedium)
+            },
+          )
+        }
       }
 
-      FieldCard(
-        label = stringResource(R.string.select_date),
-        value = state.dateText,
-        enabled = !state.isLoading,
-        onClick = onDateFieldClick,
-      )
-
-      Text(
-        text = stringResource(R.string.attach_contact),
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.secondary,
-        modifier = Modifier.padding(top = 24.dp),
-      )
+      SettingsSectionHeader(stringResource(R.string.attach_contact))
 
       Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
+        modifier = Modifier.fillMaxWidth(),
       ) {
         OutlinedTextField(
           value = state.number,
@@ -173,98 +173,73 @@ fun EditBirthdayScreen(
       }
 
       if (state.contactName != null) {
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
+        Card(
           modifier =
             Modifier
               .fillMaxWidth()
-              .padding(top = 12.dp),
+              .padding(top = 16.dp),
+          colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         ) {
-          val photo = state.contactPhoto
-          if (photo != null) {
-            Image(
-              bitmap = photo.asImageBitmap(),
-              contentDescription = stringResource(R.string.acc_contact_photo),
-              contentScale = ContentScale.Crop,
-              modifier = Modifier.size(36.dp).clip(CircleShape),
-            )
-          } else {
-            Icon(
-              painter = painterResource(R.drawable.ic_fluent_person),
-              contentDescription = null,
-              modifier = Modifier.size(36.dp),
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(12.dp),
+          ) {
+            val photo = state.contactPhoto
+            if (photo != null) {
+              Image(
+                bitmap = photo.asImageBitmap(),
+                contentDescription = stringResource(R.string.acc_contact_photo),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(36.dp).clip(CircleShape),
+              )
+            } else {
+              Icon(
+                painter = painterResource(R.drawable.ic_fluent_person),
+                contentDescription = null,
+                modifier = Modifier.size(36.dp),
+              )
+            }
+            Text(
+              text = state.contactName,
+              style = MaterialTheme.typography.bodyLarge,
+              modifier = Modifier.padding(start = 16.dp),
             )
           }
-          Text(
-            text = state.contactName,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(start = 16.dp),
-          )
         }
       }
+
+      adsContent()
     }
   }
 
-  when (state.dialog) {
-    EditBirthdayDialog.CopyConflict -> {
-      AlertDialog(
-        onDismissRequest = onDialogDismiss,
-        text = { Text(stringResource(R.string.same_birthday_message)) },
-        confirmButton = {
-          TextButton(onClick = onCopyKeepClick) { Text(stringResource(R.string.keep)) }
-        },
-        dismissButton = {
-          TextButton(onClick = onCopyReplaceClick) { Text(stringResource(R.string.replace)) }
-        },
+  val dialogDispatcher = rememberDialogDispatcher()
+
+  LaunchedEffect(state.dialog) {
+    if (state.dialog == EditBirthdayDialog.DeleteConfirm) {
+      dialogDispatcher.showDialog(
+        textRes = R.string.are_you_sure,
+        positiveButtonRes = R.string.yes,
+        negativeButtonRes = R.string.no,
+        onPositive = onDeleteConfirmed,
+        onNegative = onDialogDismiss,
       )
     }
-
-    EditBirthdayDialog.DeleteConfirm -> {
-      AlertDialog(
-        onDismissRequest = onDialogDismiss,
-        text = { Text(stringResource(R.string.are_you_sure)) },
-        confirmButton = {
-          TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) }
-        },
-        dismissButton = {
-          TextButton(onClick = onDialogDismiss) { Text(stringResource(R.string.no)) }
-        },
-      )
-    }
-
-    null -> Unit
   }
-}
 
-@Composable
-private fun FieldCard(
-  label: String,
-  value: String,
-  enabled: Boolean,
-  onClick: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  Card(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .padding(top = 16.dp),
-    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-  ) {
-    Column(
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .clickable(enabled = enabled, onClick = onClick)
-          .padding(12.dp),
-    ) {
-      Text(text = label, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
-      Text(
-        text = value,
-        style = MaterialTheme.typography.headlineSmall,
-        modifier = Modifier.padding(top = 8.dp),
-      )
-    }
+  // Kept as a plain AlertDialog rather than DialogDispatcher: DialogDispatcher maps an
+  // outside-tap dismiss to the negative button's action, which here would silently trigger the
+  // destructive "replace" action instead of a no-op cancel.
+  if (state.dialog == EditBirthdayDialog.CopyConflict) {
+    AlertDialog(
+      onDismissRequest = onDialogDismiss,
+      text = { Text(stringResource(R.string.same_birthday_message)) },
+      confirmButton = {
+        TextButton(onClick = onCopyKeepClick) { Text(stringResource(R.string.keep)) }
+      },
+      dismissButton = {
+        TextButton(onClick = onCopyReplaceClick) { Text(stringResource(R.string.replace)) }
+      },
+    )
   }
 }
 
@@ -292,6 +267,7 @@ private fun EditBirthdayScreenPreview() {
       onCopyKeepClick = {},
       onCopyReplaceClick = {},
       onDialogDismiss = {},
+      adsContent = {},
     )
   }
 }
