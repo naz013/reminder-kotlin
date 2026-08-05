@@ -6,6 +6,6 @@ internal data class NotesWidgetConfigState(
   val backgroundIndex: Int = 0,
   val hapticFeedbackEnabled: Boolean = true,
   val palette: List<Color> = emptyList(),
-  val headerColor: Color = Color.Unspecified,
-  val contentColor: Color = Color.Unspecified,
+  val backgroundColor: Color = Color.Unspecified,
+  val foregroundColor: Color = Color.Unspecified,
 )

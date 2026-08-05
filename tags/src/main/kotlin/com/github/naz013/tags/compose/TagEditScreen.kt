@@ -45,7 +45,7 @@ fun TagEditScreen(
         title = { Text(stringResource(if (state.id == null) R.string.new_tag else R.string.tags)) },
         navigationIcon = {
           MenuIconButton(
-            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            icon = AppIcons.Builder.ArrowLeft,
             contentDescription = null,
             onClick = onBackClick
           )

@@ -96,7 +96,7 @@ fun WeekViewScreen(
           title = { Text(state.title) },
           navigationIcon = {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_builder_arrow_left),
+              icon = AppIcons.Builder.ArrowLeft,
               contentDescription = null,
               onClick = onBackClick,
             )

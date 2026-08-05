@@ -34,7 +34,6 @@ internal fun CalendarWidgetConfigScreen(
   state: CalendarWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
-  onHeaderColorSelected: (Int) -> Unit,
   onBackgroundColorSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -45,31 +44,9 @@ internal fun CalendarWidgetConfigScreen(
     modifier = modifier,
   ) {
     CalendarWidgetMockPreview(
-      headerColor = state.headerColor,
-      headerContentColor = state.headerContentColor,
       backgroundColor = state.backgroundColor,
+      foregroundColor = state.foregroundColor,
     )
-
-    Text(
-      text = stringResource(R.string.header_background),
-      style = MaterialTheme.typography.titleMedium,
-      color = MaterialTheme.colorScheme.primary,
-      modifier = Modifier.padding(top = 16.dp),
-    )
-    Card(
-      modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-    ) {
-      ColorSlider(
-        colors = state.palette,
-        selectedIndex = state.headerBackgroundIndex,
-        onColorSelected = { index ->
-          onHeaderColorSelected(index)
-        },
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
-        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
-      )
-    }
 
     Text(
       text = stringResource(R.string.background),
@@ -96,9 +73,8 @@ internal fun CalendarWidgetConfigScreen(
 
 @Composable
 private fun CalendarWidgetMockPreview(
-  headerColor: Color,
-  headerContentColor: Color,
   backgroundColor: Color,
+  foregroundColor: Color,
   modifier: Modifier = Modifier,
 ) {
   Box(
@@ -112,53 +88,58 @@ private fun CalendarWidgetMockPreview(
       .padding(16.dp),
   ) {
     val cornerShape = RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))
-    Column {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(backgroundColor, cornerShape),
+    ) {
       Row(
-        modifier = Modifier.fillMaxWidth().height(50.dp).background(headerColor, cornerShape),
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(50.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Icon(
           painter = painterResource(R.drawable.ic_fluent_chevron_left),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
         Text(
           text = "January",
-          color = headerContentColor,
+          color = foregroundColor,
           style = MaterialTheme.typography.titleMedium,
           modifier = Modifier.weight(1f).padding(start = 16.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_chevron_right),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_settings),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_builder_mic_on),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_add),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
       }
       Box(
         modifier = Modifier
           .fillMaxWidth()
-          .height(90.dp)
-          .background(backgroundColor, cornerShape),
+          .height(90.dp),
       )
     }
   }
@@ -169,10 +150,9 @@ private fun CalendarWidgetMockPreview(
 private fun CalendarWidgetConfigScreenPreview() {
   AppTheme {
     CalendarWidgetConfigScreen(
-      state = CalendarWidgetConfigState(headerBackgroundIndex = 9, backgroundIndex = 4),
+      state = CalendarWidgetConfigState(backgroundIndex = 4),
       onBackClick = {},
       onSaveClick = {},
-      onHeaderColorSelected = {},
       onBackgroundColorSelected = {},
     )
   }

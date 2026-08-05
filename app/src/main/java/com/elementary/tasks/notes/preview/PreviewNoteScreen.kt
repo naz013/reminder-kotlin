@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
@@ -57,7 +58,7 @@ fun PreviewNoteScreen(
       navigationIcon = {
         IconButton(onClick = actions.onBackClick) {
           Icon(
-            painter = painterResource(R.drawable.ic_builder_arrow_left),
+            painter = AppIcons.Builder.ArrowLeft,
             contentDescription = stringResource(R.string.cd_back),
             tint = state.content,
           )

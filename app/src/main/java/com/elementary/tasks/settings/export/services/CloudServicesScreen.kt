@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.AnimatedGradientBackground
 import com.github.naz013.ui.common.compose.withAlpha
 import com.github.naz013.ui.common.R as UiR
@@ -63,7 +64,7 @@ fun CloudServicesScreen(
               .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
         ) {
           Icon(
-            painter = painterResource(UiR.drawable.ic_builder_arrow_left),
+            painter = AppIcons.Builder.ArrowLeft,
             contentDescription = stringResource(UiR.string.cd_back),
             tint = MaterialTheme.colorScheme.onSurface,
           )

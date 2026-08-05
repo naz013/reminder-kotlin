@@ -1,13 +1,12 @@
 package com.github.naz013.appwidgets.calendar
 
-import android.appwidget.AppWidgetManager
 import androidx.lifecycle.ViewModel
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
-import com.github.naz013.appwidgets.WidgetUpdater
-import com.github.naz013.appwidgets.WidgetUtils
+import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -18,7 +17,8 @@ internal class CalendarWidgetConfigViewModel(
   private val prefsProvider: CalendarWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   appWidgetPreferences: AppWidgetPreferences,
-  private val widgetUpdater: WidgetUpdater,
+  private val appWidgetUpdater: AppWidgetUpdater,
+  private val composeResourceProvider: ComposeResourceProvider,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(CalendarWidgetConfigState())
@@ -27,30 +27,11 @@ internal class CalendarWidgetConfigViewModel(
   init {
     _state.update {
       it.copy(
-        headerBackgroundIndex = prefsProvider.getHeaderBackground(),
-        backgroundIndex = prefsProvider.getBackground(),
+        palette = composeResourceProvider.getBackgroundColors(),
         hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
       )
     }
-    val palette = (0..13).map { WidgetUtils.getComposeColor(it) }
-    _state.update {
-      it.copy(
-        palette = palette,
-        headerColor = palette[it.headerBackgroundIndex],
-        headerContentColor = WidgetUtils.getContrastColor(it.headerBackgroundIndex),
-        backgroundColor = palette[it.backgroundIndex],
-      )
-    }
-  }
-
-  fun onHeaderColorSelected(index: Int) {
-    _state.update {
-      it.copy(
-        headerBackgroundIndex = index,
-        headerColor = it.palette[index],
-        headerContentColor = WidgetUtils.getContrastColor(index),
-      )
-    }
+    onBackgroundColorSelected(prefsProvider.getBackground())
   }
 
   fun onBackgroundColorSelected(index: Int) {
@@ -58,6 +39,7 @@ internal class CalendarWidgetConfigViewModel(
       it.copy(
         backgroundIndex = index,
         backgroundColor = it.palette[index],
+        foregroundColor = composeResourceProvider.bestForegroundColor(it.palette[index])
       )
     }
   }
@@ -66,13 +48,10 @@ internal class CalendarWidgetConfigViewModel(
     val calendar = GregorianCalendar().apply { timeInMillis = System.currentTimeMillis() }
 
     prefsProvider.setBackground(state.value.backgroundIndex)
-    prefsProvider.setHeaderBackground(state.value.headerBackgroundIndex)
     prefsProvider.setMonth(calendar.get(Calendar.MONTH))
     prefsProvider.setYear(calendar.get(Calendar.YEAR))
 
     analyticsEventSender.send(WidgetUsedEvent(Widget.CALENDAR))
-    widgetUpdater.update {
-      CalendarWidget.updateWidget(this, AppWidgetManager.getInstance(this), prefsProvider)
-    }
+    appWidgetUpdater.updateCalendarWidget(prefsProvider.widgetId)
   }
 }

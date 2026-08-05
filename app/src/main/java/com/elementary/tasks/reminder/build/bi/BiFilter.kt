@@ -15,7 +15,11 @@ class BiFilter(
     val isEnabled = item.isEnabled
     val isForPro = item.isForPro
     val isProEnabled = !item.isForPro || (item.isForPro && buildInfo.isPro)
-    val isInSdkRange = Module.CURRENT_SDK in item.minSdk..item.maxSdk
+    val isInSdkRange = if (item.maxSdk == BuilderItem.MAX_SDK_UNDEFINED) {
+      Module.CURRENT_SDK >= item.minSdk
+    } else {
+      Module.CURRENT_SDK in item.minSdk..item.maxSdk
+    }
     val isLocationAllowed = locationFilter(item)
     return (isEnabled && isProEnabled && isInSdkRange && isLocationAllowed).also {
       Logger.d(

@@ -21,8 +21,7 @@ internal class BirthdaysWidgetConfigActivity : ComposeWidgetConfigActivity() {
         viewModel.onSaveClick()
         finishWithResult()
       },
-      onHeaderColorSelected = viewModel::onHeaderColorSelected,
-      onItemColorSelected = viewModel::onItemColorSelected,
+      onHeaderColorSelected = viewModel::onBackgroundColorSelected,
     )
   }
 }

@@ -453,7 +453,7 @@ private fun EventsTopBar(
     title = { Text(stringResource(R.string.events)) },
     navigationIcon = {
       MenuIconButton(
-        icon = painterResource(R.drawable.ic_builder_arrow_left),
+        icon = AppIcons.Builder.ArrowLeft,
         contentDescription = null,
         onClick = onBackClick,
       )

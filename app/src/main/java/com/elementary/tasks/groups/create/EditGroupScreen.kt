@@ -77,7 +77,7 @@ fun EditGroupScreen(
         title = { Text(stringResource(if (state.hasId) R.string.change_group else R.string.create_group)) },
         navigationIcon = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_builder_arrow_left),
+            icon = AppIcons.Builder.ArrowLeft,
             contentDescription = null,
             enabled = !state.isLoading,
             onClick = onBackClick,

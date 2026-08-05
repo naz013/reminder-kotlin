@@ -40,10 +40,6 @@ internal class WidgetDataProvider(
     this.isFeature = isFeature
   }
 
-  fun getData(): List<Item> = data
-
-  fun getItem(position: Int): Item = data[position]
-
   fun hasReminder(date: LocalDate): Boolean {
     var res = false
     for (item in data) {

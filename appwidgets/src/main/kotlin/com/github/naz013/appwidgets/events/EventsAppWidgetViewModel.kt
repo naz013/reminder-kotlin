@@ -3,7 +3,6 @@ package com.github.naz013.appwidgets.events
 import androidx.compose.ui.unit.sp
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.R
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetList
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetListAdapter
 import com.github.naz013.appwidgets.events.data.DateSorted
@@ -37,11 +36,8 @@ internal class EventsAppWidgetViewModel(
     } else {
       EventsAppWidgetState(
         widgetId = prefsProvider.widgetId,
-        headerBackgroundColor = prefsProvider.getHeaderBackground(),
-        headerContrastColor = WidgetUtils.getContrastColor(prefsProvider.getHeaderBackground()),
+        backgroundColor = prefsProvider.getBackground(),
         headerText = getCurrentDateFormatted(),
-        itemBackgroundColor = prefsProvider.getItemBackground(),
-        itemContrastColor = WidgetUtils.getContrastColor(prefsProvider.getItemBackground()),
         itemTextSize = prefsProvider.getTextSize().toInt().sp,
         items = getEvents()
       )
@@ -78,11 +74,8 @@ internal class EventsAppWidgetViewModel(
     Logger.d(TAG, "Get state for preview")
     return EventsAppWidgetState(
       widgetId = prefsProvider.widgetId,
-      headerBackgroundColor = backgroundCode,
-      headerContrastColor = WidgetUtils.getContrastColor(backgroundCode),
+      backgroundColor = backgroundCode,
       headerText = getCurrentDateFormatted(),
-      itemBackgroundColor = backgroundCode,
-      itemContrastColor = WidgetUtils.getContrastColor(backgroundCode),
       itemTextSize = 15.sp,
       items = getPreviewEvents()
     )

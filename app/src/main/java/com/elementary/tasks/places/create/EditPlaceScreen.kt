@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
@@ -46,7 +47,7 @@ fun EditPlaceScreen(
         title = { Text(stringResource(state.screenTitle)) },
         navigationIcon = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_builder_arrow_left),
+            icon = AppIcons.Builder.ArrowLeft,
             contentDescription = null,
             onClick = onBackClick,
           )

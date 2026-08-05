@@ -8,20 +8,12 @@ internal class EventsWidgetPrefsProvider(
   internal val widgetId: Int
 ) : WidgetPrefsProvider(context, "new_events_pref", widgetId) {
 
-  fun setHeaderBackground(value: Int) {
+  fun setBackground(value: Int) {
     putInt(WIDGET_HEADER_BG, value)
   }
 
-  fun getHeaderBackground(): Int {
+  fun getBackground(): Int {
     return getInt(WIDGET_HEADER_BG)
-  }
-
-  fun setItemBackground(value: Int) {
-    putInt(WIDGET_ITEM_BG, value)
-  }
-
-  fun getItemBackground(): Int {
-    return getInt(WIDGET_ITEM_BG)
   }
 
   fun setTextSize(value: Float) {
@@ -34,7 +26,6 @@ internal class EventsWidgetPrefsProvider(
 
   companion object {
     private const val WIDGET_HEADER_BG = "new_events_header_bg"
-    private const val WIDGET_ITEM_BG = "new_events_item_bg"
     private const val WIDGET_TEXT_SIZE = "new_events_text_size"
   }
 }

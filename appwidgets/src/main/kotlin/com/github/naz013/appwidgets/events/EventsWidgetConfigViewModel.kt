@@ -7,7 +7,7 @@ import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.appwidgets.WidgetUtils
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +20,7 @@ internal class EventsWidgetConfigViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val appWidgetUpdater: AppWidgetUpdater,
   appWidgetPreferences: AppWidgetPreferences,
+  private val composeResourceProvider: ComposeResourceProvider,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EventsWidgetConfigState())
@@ -31,40 +32,20 @@ internal class EventsWidgetConfigViewModel(
   init {
     _state.update {
       it.copy(
-        headerBackgroundIndex = prefsProvider.getHeaderBackground(),
-        itemBackgroundIndex = prefsProvider.getItemBackground(),
+        palette = composeResourceProvider.getBackgroundColors(),
         textSize = prefsProvider.getTextSize().takeIf { it != 0f }?.toInt() ?: 14,
         hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
       )
     }
-    val palette = (0..13).map { WidgetUtils.getComposeColor(it) }
-    _state.update {
-      it.copy(
-        palette = palette,
-        headerColor = palette[it.headerBackgroundIndex],
-        headerContentColor = WidgetUtils.getContrastColor(it.headerBackgroundIndex),
-        itemColor = palette[it.itemBackgroundIndex],
-        itemContentColor = WidgetUtils.getContrastColor(it.itemBackgroundIndex),
-      )
-    }
+    onBackgroundColorSelected(prefsProvider.getBackground())
   }
 
-  fun onHeaderColorSelected(index: Int) {
+  fun onBackgroundColorSelected(index: Int) {
     _state.update {
       it.copy(
-        headerBackgroundIndex = index,
-        headerColor = it.palette[index],
-        headerContentColor = WidgetUtils.getContrastColor(index),
-      )
-    }
-  }
-
-  fun onItemColorSelected(index: Int) {
-    _state.update {
-      it.copy(
-        itemBackgroundIndex = index,
-        itemColor = it.palette[index],
-        itemContentColor = WidgetUtils.getContrastColor(index),
+        backgroundIndex = index,
+        backgroundColor = it.palette[index],
+        foregroundColor = composeResourceProvider.bestForegroundColor(it.palette[index]),
       )
     }
   }
@@ -84,8 +65,7 @@ internal class EventsWidgetConfigViewModel(
   fun onTextSizeDialogConfirm() {
     _state.update { it.copy(isTextSizeDialogVisible = false) }
     viewModelScope.launch {
-      prefsProvider.setHeaderBackground(state.value.headerBackgroundIndex)
-      prefsProvider.setItemBackground(state.value.itemBackgroundIndex)
+      prefsProvider.setBackground(state.value.backgroundIndex)
       prefsProvider.setTextSize(state.value.textSize.toFloat())
 
       analyticsEventSender.send(WidgetUsedEvent(Widget.EVENTS))

@@ -40,8 +40,7 @@ internal fun EventsWidgetConfigScreen(
   state: EventsWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
-  onHeaderColorSelected: (Int) -> Unit,
-  onItemColorSelected: (Int) -> Unit,
+  onBackgroundColorSelected: (Int) -> Unit,
   onTextSizeChanged: (Int) -> Unit,
   onTextSizeDialogConfirm: () -> Unit,
   onTextSizeDialogDismiss: () -> Unit,
@@ -56,10 +55,8 @@ internal fun EventsWidgetConfigScreen(
     modifier = modifier,
   ) {
     EventsWidgetMockPreview(
-      headerColor = state.headerColor,
-      headerContentColor = state.headerContentColor,
-      itemColor = state.itemColor,
-      itemContentColor = state.itemContentColor,
+      backgroundColor = state.backgroundColor,
+      foregroundColor = state.foregroundColor,
     )
 
     Text(
@@ -74,30 +71,9 @@ internal fun EventsWidgetConfigScreen(
     ) {
       ColorSlider(
         colors = state.palette,
-        selectedIndex = state.headerBackgroundIndex,
+        selectedIndex = state.backgroundIndex,
         onColorSelected = { index ->
-          onHeaderColorSelected(index)
-        },
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
-        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
-      )
-    }
-
-    Text(
-      text = stringResource(R.string.list_item_background),
-      style = MaterialTheme.typography.titleMedium,
-      color = MaterialTheme.colorScheme.primary,
-      modifier = Modifier.padding(top = 16.dp),
-    )
-    Card(
-      modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-    ) {
-      ColorSlider(
-        colors = state.palette,
-        selectedIndex = state.itemBackgroundIndex,
-        onColorSelected = { index ->
-          onItemColorSelected(index)
+          onBackgroundColorSelected(index)
         },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
         hapticFeedbackEnabled = state.hapticFeedbackEnabled,
@@ -138,10 +114,8 @@ internal fun EventsWidgetConfigScreen(
 
 @Composable
 private fun EventsWidgetMockPreview(
-  headerColor: Color,
-  headerContentColor: Color,
-  itemColor: Color,
-  itemContentColor: Color,
+  backgroundColor: Color,
+  foregroundColor: Color,
   modifier: Modifier = Modifier,
 ) {
   Box(
@@ -155,63 +129,68 @@ private fun EventsWidgetMockPreview(
       .padding(16.dp),
   ) {
     val cornerShape = RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))
-    Column {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(backgroundColor, cornerShape)
+    ) {
       Row(
-        modifier = Modifier.fillMaxWidth().height(50.dp).background(headerColor, cornerShape),
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(50.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Text(
           text = stringResource(R.string.events),
-          color = headerContentColor,
+          color = foregroundColor,
           style = MaterialTheme.typography.titleMedium,
           modifier = Modifier.weight(1f).padding(start = 16.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_settings),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_add),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
       }
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .background(itemColor, cornerShape)
           .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Icon(
           painter = painterResource(R.drawable.ic_fluent_clock_alarm),
           contentDescription = null,
-          tint = itemContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(40.dp),
         )
         Column(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
           Row(modifier = Modifier.fillMaxWidth()) {
             Text(
               text = "Task",
-              color = itemContentColor,
+              color = foregroundColor,
               modifier = Modifier.weight(1f),
             )
-            Text(text = "July 25, 2019", color = itemContentColor)
+            Text(text = "July 25, 2019", color = foregroundColor)
           }
           Row(modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
             Text(
               text = "+1234567890",
-              color = itemContentColor,
+              color = foregroundColor,
               modifier = Modifier.weight(1f),
             )
-            Text(text = "10:00 AM", color = itemContentColor)
+            Text(text = "10:00 AM", color = foregroundColor)
           }
           Text(
             text = "25 minutes",
-            color = itemContentColor,
+            color = foregroundColor,
             modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
           )
         }
@@ -225,11 +204,10 @@ private fun EventsWidgetMockPreview(
 private fun EventsWidgetConfigScreenPreview() {
   AppTheme {
     EventsWidgetConfigScreen(
-      state = EventsWidgetConfigState(headerBackgroundIndex = 9, itemBackgroundIndex = 4),
+      state = EventsWidgetConfigState(backgroundIndex = 9),
       onBackClick = {},
       onSaveClick = {},
-      onHeaderColorSelected = {},
-      onItemColorSelected = {},
+      onBackgroundColorSelected = {},
       onTextSizeChanged = {},
       onTextSizeDialogConfirm = {},
       onTextSizeDialogDismiss = {},

@@ -13,7 +13,7 @@ internal class CombinedWidgetPrefsProvider(
   }
 
   fun getWidgetBackground(): Int {
-    return getInt(WIDGET_BG_COLOR, 0)
+    return getInt(WIDGET_BG_COLOR, 3)
   }
 
   companion object {

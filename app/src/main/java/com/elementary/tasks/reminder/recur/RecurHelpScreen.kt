@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
 
 private const val URL = "file:///android_asset/files/doc_rfc_5545.html"
@@ -35,7 +36,7 @@ fun RecurHelpScreen(onBackClick: () -> Unit) {
         navigationIcon = {
           IconButton(onClick = onBackClick) {
             Icon(
-              painter = painterResource(R.drawable.ic_builder_arrow_left),
+              painter = AppIcons.Builder.ArrowLeft,
               contentDescription = stringResource(com.github.naz013.ui.common.R.string.cd_back),
             )
           }

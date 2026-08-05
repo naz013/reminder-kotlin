@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.localbackup.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
@@ -41,7 +42,7 @@ fun LocalBackupScreen(
       TopAppBar(
         title = { Text(stringResource(if (isExport) R.string.backup_export_title else R.string.backup_import_title)) },
         navigationIcon = {
-          MenuIconButton(icon = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, onClick = onBackClick)
+          MenuIconButton(icon = AppIcons.Builder.ArrowLeft, contentDescription = null, onClick = onBackClick)
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
       )

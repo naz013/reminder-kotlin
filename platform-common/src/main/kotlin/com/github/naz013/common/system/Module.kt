@@ -9,8 +9,9 @@ object Module {
 
   val CURRENT_SDK: Int = Build.VERSION.SDK_INT
   const val MIN_SDK: Int = Build.VERSION_CODES.Q
-  const val MAX_SDK: Int = Build.VERSION_CODES.BAKLAVA
+  const val MAX_SDK: Int = Build.VERSION_CODES.CINNAMON_BUN
 
+  val is17: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN
   val is16: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA
   val is15: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM
   val is14: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE

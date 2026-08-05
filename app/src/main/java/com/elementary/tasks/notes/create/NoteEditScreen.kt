@@ -93,7 +93,7 @@ fun NoteEditScreen(
         navigationIcon = {
           IconButton(onClick = actions.onBackClick) {
             Icon(
-              painter = painterResource(R.drawable.ic_builder_arrow_left),
+              painter = AppIcons.Builder.ArrowLeft,
               contentDescription = null,
               tint = contentColor,
             )

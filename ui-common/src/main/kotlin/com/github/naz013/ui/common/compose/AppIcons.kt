@@ -45,5 +45,6 @@ object AppIcons {
     val WebAddress: Painter @Composable get() = painterResource(R.drawable.ic_builder_web_address)
     val Clear: Painter @Composable get() = painterResource(R.drawable.ic_builder_clear)
     val Interval: Painter @Composable get() = painterResource(R.drawable.ic_builder_interval)
+    val ArrowLeft: Painter @Composable get() = painterResource(R.drawable.ic_builder_arrow_left)
   }
 }

@@ -21,7 +21,6 @@ internal class CalendarWidgetConfigActivity : ComposeWidgetConfigActivity() {
         viewModel.onSaveClick()
         finishWithResult()
       },
-      onHeaderColorSelected = viewModel::onHeaderColorSelected,
       onBackgroundColorSelected = viewModel::onBackgroundColorSelected,
     )
   }
