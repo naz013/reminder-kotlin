@@ -4,11 +4,15 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -37,6 +42,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +69,7 @@ import com.github.naz013.ui.common.compose.foundation.dynamicParameter
 import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val TILE_ANIMATION_DURATION_MS = 250
 private const val TILE_STAGGER_DELAY_MS = 40L
@@ -71,6 +78,9 @@ private const val TILE_MAX_STAGGER_DELAY_MS = 240L
 private const val LIST_ITEM_ANIMATION_DURATION_MS = 250
 private const val LIST_ITEM_STAGGER_DELAY_MS = 30L
 private const val LIST_ITEM_MAX_STAGGER_DELAY_MS = 180L
+
+private const val HEADER_COLLAPSE_ANIMATION_DURATION_MS = 450
+private const val NAVIGATION_GRID_ITEM_INDEX = 0
 
 @Composable
 fun ChronologicalHomeScreen(
@@ -83,26 +93,51 @@ fun ChronologicalHomeScreen(
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
   val listState = rememberLazyListState()
-  val isScrolled =
-    listState.firstVisibleItemIndex > 0 ||
-      listState.firstVisibleItemScrollOffset > 0
+  val isScrolled by remember {
+    derivedStateOf {
+      listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0
+    }
+  }
+  val isNavigationGridHidden by remember {
+    derivedStateOf {
+      listState.layoutInfo.visibleItemsInfo.none { it.index == NAVIGATION_GRID_ITEM_INDEX }
+    }
+  }
   val headerElevation by animateDpAsState(
     targetValue = if (isScrolled) 4.dp else 0.dp,
     label = "header_elevation",
   )
 
   Column(modifier = modifier.fillMaxSize()) {
-    Header(
+    Column(
       modifier =
         Modifier
           .shadow(elevation = headerElevation, clip = false)
-          .background(MaterialTheme.colorScheme.background)
-          .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
-      text = state.greeting,
-      addMenuItems = state.addMenuItems,
-      onAddMenuItemClick = onAddMenuItemClick,
-      onSettingsClick = onSettingsClick,
-    )
+          .background(MaterialTheme.colorScheme.background),
+    ) {
+      Header(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+        text = state.greeting,
+        addMenuItems = state.addMenuItems,
+        onAddMenuItemClick = onAddMenuItemClick,
+        onSettingsClick = onSettingsClick,
+      )
+      AnimatedVisibility(
+        visible = isNavigationGridHidden && state.headerNavigationItems.isNotEmpty(),
+        enter =
+          fadeIn(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)) +
+            expandVertically(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)),
+        exit =
+          fadeOut(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)) +
+            shrinkVertically(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)),
+      ) {
+        HeaderNavigationRow(
+          modifier = Modifier.padding(bottom = 8.dp),
+          items = state.headerNavigationItems,
+          onItemClick = onHeaderNavigationItemClick,
+        )
+      }
+    }
     LazyColumn(
       modifier = Modifier.fillMaxSize(),
       state = listState,
@@ -117,6 +152,16 @@ fun ChronologicalHomeScreen(
       }
       when (state.listState) {
         is ListState.Ready -> {
+          if (state.listState.sections.isNotEmpty()) {
+            item {
+              Text(
+                text = stringResource(R.string.upcoming_events),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
+              )
+            }
+          }
           items(state.listState.sections.size) { index ->
             TimeSectionRow(
               modifier = Modifier.padding(horizontal = 16.dp),
@@ -271,7 +316,7 @@ private fun HeaderNavigationTile(
   val visibleState = remember { MutableTransitionState(hasAnimated) }
   LaunchedEffect(Unit) {
     if (!hasAnimated) {
-      delay((index * TILE_STAGGER_DELAY_MS).coerceAtMost(TILE_MAX_STAGGER_DELAY_MS))
+      delay((index * TILE_STAGGER_DELAY_MS).coerceAtMost(TILE_MAX_STAGGER_DELAY_MS).milliseconds)
       hasAnimated = true
     }
     visibleState.targetState = true
@@ -328,6 +373,55 @@ private fun HeaderNavigationTile(
 }
 
 @Composable
+private fun HeaderNavigationRow(
+  modifier: Modifier = Modifier,
+  items: List<HeaderNavigationItem>,
+  onItemClick: (HeaderNavigationItem) -> Unit,
+) {
+  Row(
+    modifier =
+      modifier
+        .fillMaxWidth()
+        .horizontalScroll(rememberScrollState())
+        .padding(horizontal = 16.dp),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    items.forEach { item ->
+      HeaderNavigationIconButton(
+        item = item,
+        onClick = { onItemClick(item) },
+      )
+    }
+  }
+}
+
+@Composable
+private fun HeaderNavigationIconButton(
+  modifier: Modifier = Modifier,
+  item: HeaderNavigationItem,
+  onClick: () -> Unit,
+) {
+  Surface(
+    modifier = modifier,
+    onClick = onClick,
+    shape = RoundedCornerShape(12.dp),
+    color = MaterialTheme.colorScheme.surfaceContainer,
+  ) {
+    Box(
+      modifier = Modifier.size(44.dp),
+      contentAlignment = Alignment.Center,
+    ) {
+      Icon(
+        painter = painterResource(item.iconRes),
+        contentDescription = stringResource(item.titleRes),
+        modifier = Modifier.size(20.dp),
+        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+      )
+    }
+  }
+}
+
+@Composable
 private fun EmptyEventsState(modifier: Modifier = Modifier) {
   Column(
     modifier = modifier,
@@ -359,7 +453,7 @@ private fun TimeSectionRow(
 ) {
   val visibleState = remember { MutableTransitionState(false) }
   LaunchedEffect(Unit) {
-    delay((index * LIST_ITEM_STAGGER_DELAY_MS).coerceAtMost(LIST_ITEM_MAX_STAGGER_DELAY_MS))
+    delay((index * LIST_ITEM_STAGGER_DELAY_MS).coerceAtMost(LIST_ITEM_MAX_STAGGER_DELAY_MS).milliseconds)
     visibleState.targetState = true
   }
   AnimatedVisibility(
@@ -699,6 +793,45 @@ private fun HeaderWithPopupPreview() {
 @Composable
 private fun HeaderNavigationGridPreview() {
   HeaderNavigationGrid(
+    items =
+      listOf(
+        HeaderNavigationItem(
+          titleRes = R.string.calendar,
+          iconRes = R.drawable.ic_fluent_calendar,
+          color = Color(0xFF4CAF50),
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
+          subtitle = "12",
+        ),
+        HeaderNavigationItem(
+          titleRes = R.string.events,
+          iconRes = R.drawable.ic_fluent_timeline,
+          color = Color(0xFF2196F3),
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
+          subtitle = "5",
+        ),
+        HeaderNavigationItem(
+          titleRes = R.string.notes,
+          iconRes = R.drawable.ic_fluent_note,
+          color = Color(0xFFFFA726),
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
+          subtitle = "0",
+        ),
+        HeaderNavigationItem(
+          titleRes = R.string.google_tasks,
+          iconRes = R.drawable.ic_builder_google_task_list,
+          color = Color(0xFFE53935),
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
+          subtitle = "3",
+        ),
+      ),
+    onItemClick = {},
+  )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HeaderNavigationRowPreview() {
+  HeaderNavigationRow(
     items =
       listOf(
         HeaderNavigationItem(
