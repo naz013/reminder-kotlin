@@ -8,5 +8,5 @@ import org.koin.dsl.module
 
 val tagsModule = module {
   viewModelOf(::TagsViewModel)
-  viewModel { (id: String?) -> TagEditViewModel(id, get(), get(), get()) }
+  viewModel { (id: String?) -> TagEditViewModel(id, get(), get(), get(), get(), get()) }
 }

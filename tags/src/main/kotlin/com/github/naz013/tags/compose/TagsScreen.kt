@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,17 +26,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.naz013.domain.Tag
 import com.github.naz013.tags.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
-import com.github.naz013.ui.common.compose.toColor
-import com.github.naz013.ui.common.theme.ThemeProvider
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -106,14 +101,10 @@ fun TagsScreen(
 
 @Composable
 private fun TagListItem(
-  tag: Tag,
+  tag: TagState,
   onClick: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val context = LocalContext.current
-  val paletteColors = ThemeProvider.colorsForSliderThemed(context).map { it.toColor() }
-  val dotColor = paletteColors.getOrElse(tag.color) { MaterialTheme.colorScheme.primary }
-
   Card(
     modifier = modifier,
     onClick = onClick,
@@ -125,7 +116,7 @@ private fun TagListItem(
       horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
       Canvas(modifier = Modifier.size(20.dp)) {
-        drawCircle(color = dotColor)
+        drawCircle(color = tag.color)
       }
       Text(text = tag.name, style = MaterialTheme.typography.bodyLarge)
     }
@@ -162,8 +153,8 @@ private fun TagsScreenPreview() {
       state = TagsScreenState(
         listState = TagsListState.Ready(
           tags = listOf(
-            Tag(id = "1", name = "Work", color = 5),
-            Tag(id = "2", name = "Home", color = 9)
+            TagState(id = "1", name = "Work", color = Color.Red),
+            TagState(id = "2", name = "Home", color = Color.Cyan)
           )
         )
       ),

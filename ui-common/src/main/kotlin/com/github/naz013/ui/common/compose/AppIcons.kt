@@ -30,6 +30,7 @@ object AppIcons {
     val FolderMove: Painter @Composable get() = painterResource(R.drawable.ic_fluent_folder_move)
     val CloudBackup: Painter @Composable get() = painterResource(R.drawable.ic_fluent_cloud_backup)
     val DocumentTopRight: Painter @Composable get() = painterResource(R.drawable.ic_fluent_document_top_right)
+    val Delete: Painter @Composable get() = painterResource(R.drawable.ic_fluent_delete)
   }
 
   object Builder {

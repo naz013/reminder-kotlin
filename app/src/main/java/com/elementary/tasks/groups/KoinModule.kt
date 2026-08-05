@@ -34,7 +34,8 @@ val groupModule =
         get(),
         get(),
         get(),
-        get()
+        get(),
+        get(),
       )
     }
     viewModel { (id: String) ->
