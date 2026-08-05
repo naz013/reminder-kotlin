@@ -40,10 +40,20 @@ screen rather than making everything loud.
 
 Compose BOM is `2026.06.01` and `androidx.compose.material3:material3` is pinned to **1.4.0**
 ([`gradle/libs.versions.toml:39,42`](../gradle/libs.versions.toml)) — this is a stable release that carries
-the Expressive APIs (`MaterialExpressiveTheme`, emphasized `Typography` fields, `MaterialShapes`,
-`MaterialTheme.motionScheme`, `ButtonGroup`, `LoadingIndicator`, floating toolbars, etc., some still gated
-behind `@ExperimentalMaterial3ExpressiveApi`). No version bump is needed to start — the gap is entirely in
-how `ui-common` and the screens use the library today.
+most of the Expressive APIs (`MaterialExpressiveTheme`, `MaterialShapes`, `MaterialTheme.motionScheme`,
+`ButtonGroup`, `LoadingIndicator`, floating toolbars, etc., some still gated behind
+`@ExperimentalMaterial3ExpressiveApi`).
+
+**Correction (verified against the actual 1.4.0 sources)**: emphasized `Typography` is *not* usable in this
+version, and not merely experimental-gated. `Typography.xxxEmphasized` and the `TypographyTokens.XxxEmphasized`
+values that would populate them with anything other than the baseline style are declared `internal` to the
+`androidx.compose.material3` module — there is no public constructor, extension property, or
+`CompositionLocal` that exposes them from `ui-common` or `app`. The only public `Typography(...)` constructor
+sets every `xxxEmphasized` field equal to its baseline counterpart, and no M3 1.4.0 component (buttons, FABs,
+etc.) reads the emphasized fields internally either — the feature is present in the class shape but inert.
+Decision: **wait for a future material3 release that exposes this publicly** rather than hand-rolling a local
+approximation now; re-audit §3.1 below when upgrading. No version bump is needed for the rest of this plan —
+that gap is entirely in how `ui-common` and the screens use the library today.
 
 ### `ui-common` foundation audit
 
@@ -117,13 +127,13 @@ how `ui-common` and the screens use the library today.
 Do this once, in `ui-common`, before touching either screen — otherwise Home and Events end up with two
 divergent hand-rolled interpretations of "expressive."
 
-1. **Typography** — replace `Type.kt`'s bare `Typography()` with an explicit `AppTypography` that defines
-   both baseline and emphasized styles (Material's default emphasized values are a reasonable starting
-   point; only deviate if a specific screen needs it). Expose an easy way for a composable to reach the
-   emphasized variant of whatever baseline style it's already using, rather than requiring call sites to
-   hardcode `fontWeight = FontWeight.Bold`/`.Medium` overrides the way `ChronologicalHomeScreen.kt` does
-   today (see `TimeSectionRow`, `EventCard`, `HeaderNavigationTile`) — those ad hoc weight bumps are exactly
-   what emphasized tokens are meant to replace.
+1. **Typography** — **on hold.** Material's default emphasized values are not reachable from `ui-common` in
+   `material3:1.4.0` (see the correction in §2) — there's no public API to source them from, so this item
+   can't be done as originally scoped. Revisit once a material3 version publicly exposes emphasized
+   typography; re-evaluate at that point whether to consume it directly or still build a local
+   `AppTypography` wrapper. Until then, screens that want emphasis (e.g. `ChronologicalHomeScreen.kt`'s
+   `TimeSectionRow`/`EventCard`/`HeaderNavigationTile` weight overrides) keep doing ad hoc
+   `fontWeight = FontWeight.Bold`/`.Medium` overrides at the call site rather than a shared token.
 2. **Shape** — add a `Shape.kt` in `ui-common/compose` with a small named scale (e.g. `tile`, `card`,
    `pill`) built from `MaterialShapes`/the corner-radius scale, and pass it into `MaterialTheme`/
    `MaterialExpressiveTheme` in `Theme.kt` instead of leaving `shapes` as the default. Migrate the
