@@ -10,7 +10,6 @@ import androidx.glance.GlanceTheme
 import androidx.glance.unit.ColorProvider
 import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.logging.Logger
-import com.github.naz013.ui.common.compose.onPrimaryContainerLight
 import com.github.naz013.ui.common.compose.primaryContainerLight
 import kotlin.math.max
 import kotlin.math.min

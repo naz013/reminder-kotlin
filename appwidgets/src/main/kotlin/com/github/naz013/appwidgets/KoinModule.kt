@@ -65,7 +65,7 @@ val appWidgetsModule = module {
   }
 
   viewModel { (widgetId: Int) ->
-    CalendarWidgetConfigViewModel(get(), CalendarWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+    CalendarWidgetConfigViewModel(CalendarWidgetPrefsProvider(get(), widgetId), get(), get(), get(), get())
   }
 
   viewModel { (widgetId: Int) ->
@@ -112,6 +112,6 @@ val appWidgetsModule = module {
   }
 
   viewModel { (widgetId: Int) ->
-    EventsWidgetConfigViewModel(get(), EventsWidgetPrefsProvider(get(), widgetId), get(), get(), get())
+    EventsWidgetConfigViewModel(EventsWidgetPrefsProvider(get(), widgetId), get(), get(), get(), get())
   }
 }

@@ -29,6 +29,7 @@ import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.ColumnScope
 import androidx.glance.layout.Row
 import androidx.glance.layout.RowScope
 import androidx.glance.layout.Spacer
@@ -38,7 +39,6 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.layout.width
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
@@ -52,8 +52,8 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.calendar.data.CalendarAppWidgetState
 import com.github.naz013.appwidgets.calendar.data.UiCalendarDay
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
-import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.common.datetime.DateTimeManager
@@ -78,6 +78,9 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private val widgetTypeKey = ActionParameters.Key<Widget>(
     AppWidgetActionActivity.WIDGET_TYPE
   )
+  private val composeResourceProvider: (Context) -> ComposeResourceProvider = {
+    ComposeResourceProvider(it)
+  }
 
   override val stateDefinition: GlanceStateDefinition<CalendarAppWidgetState>
     get() = object : GlanceStateDefinition<CalendarAppWidgetState> {
@@ -155,20 +158,21 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     configIntent: Intent,
     addReminderIntent: Intent
   ) {
-    val headerContrastColorProvider = paletteContrastColor(
-      state.headerBackgroundColor,
-      state.headerContrastColor
-    )
-    Column(modifier = modifier.fillMaxSize().systemWidgetShape()) {
+    val widgetColor = composeResourceProvider(context).getColors(state.backgroundColorIndex)
+    Column(
+      modifier = modifier
+        .fillMaxSize()
+        .roundedBackground(widgetColor.background)
+        .systemWidgetShape()
+    ) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()
-          .height(50.dp)
-          .roundedBackground(state.headerBackgroundColor),
+          .height(50.dp),
         verticalAlignment = Alignment.Vertical.CenterVertically
       ) {
         HeaderIcon(
           iconRes = R.drawable.ic_fluent_chevron_left,
-          tintColor = headerContrastColorProvider,
+          tintColor = widgetColor.foreground,
           onClick = actionRunCallback<CalendarPreviousMonthActionCallback>()
         )
         Text(
@@ -177,18 +181,18 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             .defaultWeight(),
           style = TextStyle(
             fontSize = 16.sp,
-            color = headerContrastColorProvider
+            color = widgetColor.foreground
           ),
           maxLines = 1
         )
         HeaderIcon(
           iconRes = R.drawable.ic_fluent_chevron_right,
-          tintColor = headerContrastColorProvider,
+          tintColor = widgetColor.foreground,
           onClick = actionRunCallback<CalendarNextMonthActionCallback>()
         )
         HeaderIcon(
           iconRes = R.drawable.ic_fluent_settings,
-          tintColor = headerContrastColorProvider,
+          tintColor = widgetColor.foreground,
           onClick = actionStartActivity(
             intent = configIntent,
             parameters = actionParametersOf(widgetIdKey to state.widgetId)
@@ -196,7 +200,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         )
         HeaderIcon(
           iconRes = R.drawable.ic_fluent_add,
-          tintColor = headerContrastColorProvider,
+          tintColor = widgetColor.foreground,
           onClick = actionStartActivity(
             intent = addReminderIntent,
             parameters = actionParametersOf(
@@ -208,11 +212,13 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
       }
       Spacer(modifier = GlanceModifier.height(4.dp))
       Column(
-        modifier = GlanceModifier.fillMaxWidth()
+        modifier = GlanceModifier
+          .fillMaxWidth()
           .fillMaxHeight()
-          .roundedBackground(state.backgroundColor)
       ) {
-        Row(modifier = GlanceModifier.fillMaxWidth()) {
+        Row(
+          modifier = GlanceModifier.fillMaxWidth()
+        ) {
           state.weekdays.forEach { weekday ->
             Text(
               text = weekday,
@@ -220,7 +226,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
               style = TextStyle(
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
-                color = paletteContrastColor(state.backgroundColor, state.backgroundContrastColor)
+                color = widgetColor.foreground
               ),
               maxLines = 1
             )
@@ -228,7 +234,8 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         }
         state.days.chunked(7).forEach { week ->
           Row(
-            modifier = GlanceModifier.fillMaxWidth()
+            modifier = GlanceModifier
+              .fillMaxWidth()
               .defaultWeight()
           ) {
             week.forEach { day ->
@@ -236,8 +243,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
                 context = context,
                 dateTimeManager = dateTimeManager,
                 day = day,
-                backgroundColorIndex = state.backgroundColor,
-                currentMonthTextColor = state.backgroundContrastColor,
+                foregroundColor = widgetColor.foreground,
                 todayMarkColor = state.todayMarkColor,
                 reminderMarkColor = state.reminderMarkColor,
                 birthdayMarkColor = state.birthdayMarkColor
@@ -272,8 +278,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     context: Context,
     dateTimeManager: DateTimeManager,
     day: UiCalendarDay,
-    backgroundColorIndex: Int,
-    currentMonthTextColor: Color,
+    foregroundColor: ColorProvider,
     todayMarkColor: Color,
     reminderMarkColor: Color,
     birthdayMarkColor: Color
@@ -290,7 +295,7 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     }
     val outOfMonthColor = Color(0xFF303030)
     val textColorProvider = if (day.isCurrentMonth) {
-      paletteContrastColor(backgroundColorIndex, currentMonthTextColor)
+      foregroundColor
     } else {
       ColorProvider(day = outOfMonthColor, night = outOfMonthColor)
     }
@@ -301,7 +306,11 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         .clickable(onClick = actionStartActivity(intent = dayIntent)),
       contentAlignment = Alignment.Center
     ) {
-      Column(modifier = GlanceModifier.fillMaxWidth()) {
+      Column(
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .fillMaxHeight()
+      ) {
         MarkBar(visible = day.isToday, color = todayMarkColor)
         MarkBar(visible = day.hasReminder, color = reminderMarkColor)
         MarkBar(visible = day.hasBirthday, color = birthdayMarkColor)
@@ -319,15 +328,20 @@ internal class CalendarGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   }
 
   @Composable
-  private fun MarkBar(visible: Boolean, color: Color) {
+  private fun ColumnScope.MarkBar(visible: Boolean, color: Color) {
     if (visible) {
       Spacer(
-        modifier = GlanceModifier.fillMaxWidth()
-          .height(3.dp)
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .defaultWeight()
           .background(color)
       )
     } else {
-      Spacer(modifier = GlanceModifier.fillMaxWidth().height(3.dp))
+      Spacer(
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .defaultWeight()
+      )
     }
   }
 

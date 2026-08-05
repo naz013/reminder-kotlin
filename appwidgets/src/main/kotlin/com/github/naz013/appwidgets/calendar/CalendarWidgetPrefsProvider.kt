@@ -30,14 +30,6 @@ internal class CalendarWidgetPrefsProvider(
     return if (year < 1) LocalDate.now().year else year
   }
 
-  fun setHeaderBackground(value: Int) {
-    putInt(WIDGET_HEADER_BG_COLOR, value)
-  }
-
-  fun getHeaderBackground(): Int {
-    return getInt(WIDGET_HEADER_BG_COLOR, 0)
-  }
-
   fun setBackground(value: Int) {
     putInt(WIDGET_BG, value)
   }
@@ -47,7 +39,6 @@ internal class CalendarWidgetPrefsProvider(
   }
 
   companion object {
-    private const val WIDGET_HEADER_BG_COLOR = "new_calendar_header_bg"
     private const val WIDGET_BG = "new_calendar_bg"
     private const val CALENDAR_WIDGET_MONTH = "new_calendar_month_"
     private const val CALENDAR_WIDGET_YEAR = "new_calendar_year_"

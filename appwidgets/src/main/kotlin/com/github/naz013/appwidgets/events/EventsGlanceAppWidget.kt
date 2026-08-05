@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,7 +22,7 @@ import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
-import androidx.glance.color.ColorProvider
+import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
@@ -47,8 +46,8 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetList
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
-import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.events.data.DateSorted
@@ -77,6 +76,9 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private val widgetTypeKey = ActionParameters.Key<Widget>(
     AppWidgetActionActivity.WIDGET_TYPE
   )
+  private val composeResourceProvider: (Context) -> ComposeResourceProvider = {
+    ComposeResourceProvider(it)
+  }
 
   override val stateDefinition: GlanceStateDefinition<EventsAppWidgetState>
     get() = object : GlanceStateDefinition<EventsAppWidgetState> {
@@ -145,27 +147,27 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     state: EventsAppWidgetState,
     configIntent: Intent
   ) {
-    val headerContrastColorProvider = paletteContrastColor(
-      state.headerBackgroundColor,
-      state.headerContrastColor
-    )
+    val widgetColors = composeResourceProvider(context).getColors(state.backgroundColor)
     Column(
-      modifier = modifier.fillMaxSize().systemWidgetShape()
+      modifier = modifier
+        .fillMaxSize()
+        .roundedBackground(widgetColors.background)
+        .systemWidgetShape()
     ) {
       Row(
-        modifier = GlanceModifier.fillMaxWidth()
-          .height(56.dp)
-          .roundedBackground(state.headerBackgroundColor),
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .height(56.dp),
         verticalAlignment = Alignment.Vertical.CenterVertically
       ) {
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(16.dp))
         Text(
           text = state.headerText,
           modifier = GlanceModifier.fillMaxWidth()
             .defaultWeight(),
           style = TextStyle(
             fontSize = 18.sp,
-            color = headerContrastColorProvider
+            color = widgetColors.foreground
           ),
           maxLines = 1
         )
@@ -183,9 +185,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             ),
           provider = ImageProvider(R.drawable.ic_fluent_settings),
           contentDescription = null,
-          colorFilter = ColorFilter.tint(
-            colorProvider = headerContrastColorProvider
-          )
+          colorFilter = ColorFilter.tint(colorProvider = widgetColors.foreground)
         )
         Spacer(modifier = GlanceModifier.width(4.dp))
         Image(
@@ -204,20 +204,22 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             ),
           provider = ImageProvider(R.drawable.ic_fluent_add),
           contentDescription = null,
-          colorFilter = ColorFilter.tint(
-            colorProvider = headerContrastColorProvider
-          )
+          colorFilter = ColorFilter.tint(colorProvider = widgetColors.foreground)
         )
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(16.dp))
       }
-      Spacer(modifier = GlanceModifier.height(4.dp))
+      Spacer(
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .height(1.dp)
+          .background(widgetColors.foreground)
+      )
       LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
         items(state.items.size) { index: Int ->
           ListItem(
             context = context,
             data = state.items[index],
-            itemBackgroundColor = state.itemBackgroundColor,
-            itemContrastColor = state.itemContrastColor,
+            foregroundColor = widgetColors.foreground,
             itemTextSize = state.itemTextSize
           )
         }
@@ -229,20 +231,18 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private fun ListItem(
     context: Context,
     data: DateSorted,
-    itemBackgroundColor: Int,
-    itemContrastColor: Color,
+    foregroundColor: ColorProvider,
     itemTextSize: TextUnit
   ) {
-    val colorProvider = paletteContrastColor(itemBackgroundColor, itemContrastColor)
-    Column(modifier = GlanceModifier.fillMaxWidth()) {
-      Spacer(modifier = GlanceModifier.height(4.dp))
+    Column(
+      modifier = GlanceModifier.fillMaxWidth()
+    ) {
       when (data) {
         is UiBirthdayWidgetList -> {
           BirthdayItem(
             context = context,
             data = data,
-            itemBackgroundColor = itemBackgroundColor,
-            itemContrastColor = colorProvider,
+            foregroundColor = foregroundColor,
             itemTextSize = itemTextSize
           )
         }
@@ -251,8 +251,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           ReminderItem(
             context = context,
             data = data,
-            itemBackgroundColor = itemBackgroundColor,
-            itemContrastColor = colorProvider,
+            foregroundColor = foregroundColor,
             itemTextSize = itemTextSize
           )
         }
@@ -261,12 +260,17 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           TaskListReminderItem(
             context = context,
             data = data,
-            itemBackgroundColor = itemBackgroundColor,
-            itemContrastColor = colorProvider,
+            foregroundColor = foregroundColor,
             itemTextSize = itemTextSize
           )
         }
       }
+      Spacer(
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .height(1.dp)
+          .background(foregroundColor)
+      )
     }
   }
 
@@ -274,14 +278,12 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private fun BirthdayItem(
     context: Context,
     data: UiBirthdayWidgetList,
-    itemBackgroundColor: Int,
-    itemContrastColor: ColorProvider,
+    foregroundColor: ColorProvider,
     itemTextSize: TextUnit
   ) {
     Row(
       modifier = GlanceModifier.fillMaxWidth()
         .padding(8.dp)
-        .roundedBackground(itemBackgroundColor)
         .clickable(
           onClick = actionStartActivity(
             intent = viewIntent(context),
@@ -300,9 +302,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           .padding(8.dp),
         provider = ImageProvider(R.drawable.ic_fluent_food_cake),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(
-          colorProvider = itemContrastColor
-        )
+        colorFilter = ColorFilter.tint(colorProvider = foregroundColor)
       )
       Spacer(modifier = GlanceModifier.width(8.dp))
       Column(modifier = GlanceModifier.fillMaxWidth()) {
@@ -311,7 +311,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           modifier = GlanceModifier.fillMaxWidth(),
           style = TextStyle(
             fontSize = itemTextSize,
-            color = itemContrastColor
+            color = foregroundColor
           ),
           maxLines = 2
         )
@@ -321,7 +321,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           modifier = GlanceModifier.fillMaxWidth(),
           style = TextStyle(
             fontSize = itemTextSize,
-            color = itemContrastColor
+            color = foregroundColor
           ),
           maxLines = 2
         )
@@ -333,14 +333,12 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private fun ReminderItem(
     context: Context,
     data: UiReminderWidgetList,
-    itemBackgroundColor: Int,
-    itemContrastColor: ColorProvider,
+    foregroundColor: ColorProvider,
     itemTextSize: TextUnit
   ) {
     Row(
       modifier = GlanceModifier.fillMaxWidth()
         .padding(8.dp)
-        .roundedBackground(itemBackgroundColor)
         .clickable(
           onClick = actionStartActivity(
             intent = viewIntent(context),
@@ -359,9 +357,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           .padding(8.dp),
         provider = ImageProvider(R.drawable.ic_fluent_clock_alarm),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(
-          colorProvider = itemContrastColor
-        )
+        colorFilter = ColorFilter.tint(colorProvider = foregroundColor)
       )
       Spacer(modifier = GlanceModifier.width(8.dp))
       Column(modifier = GlanceModifier.fillMaxWidth()) {
@@ -370,7 +366,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           modifier = GlanceModifier.fillMaxWidth(),
           style = TextStyle(
             fontSize = itemTextSize,
-            color = itemContrastColor
+            color = foregroundColor
           ),
           maxLines = 2
         )
@@ -380,7 +376,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           modifier = GlanceModifier.fillMaxWidth(),
           style = TextStyle(
             fontSize = itemTextSize,
-            color = itemContrastColor
+            color = foregroundColor
           ),
           maxLines = 2
         )
@@ -392,14 +388,12 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private fun TaskListReminderItem(
     context: Context,
     data: UiReminderWidgetShopList,
-    itemBackgroundColor: Int,
-    itemContrastColor: ColorProvider,
+    foregroundColor: ColorProvider,
     itemTextSize: TextUnit
   ) {
     Row(
       modifier = GlanceModifier.fillMaxWidth()
         .padding(8.dp)
-        .roundedBackground(itemBackgroundColor)
         .clickable(
           onClick = actionStartActivity(
             intent = viewIntent(context),
@@ -418,9 +412,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           .padding(8.dp),
         provider = ImageProvider(R.drawable.ic_fluent_cart),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(
-          colorProvider = itemContrastColor
-        )
+        colorFilter = ColorFilter.tint(colorProvider = foregroundColor)
       )
       Spacer(modifier = GlanceModifier.width(8.dp))
       Column(modifier = GlanceModifier.fillMaxWidth()) {
@@ -429,7 +421,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           modifier = GlanceModifier.fillMaxWidth(),
           style = TextStyle(
             fontSize = itemTextSize,
-            color = itemContrastColor
+            color = foregroundColor
           ),
           maxLines = 2
         )
@@ -440,7 +432,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             modifier = GlanceModifier.fillMaxWidth(),
             style = TextStyle(
               fontSize = itemTextSize,
-              color = itemContrastColor
+              color = foregroundColor
             ),
             maxLines = 2
           )
@@ -449,7 +441,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         data.items.forEach {
           TaskItem(
             data = it,
-            itemContrastColor = itemContrastColor,
+            foregroundColor = foregroundColor,
             itemTextSize = itemTextSize
           )
         }
@@ -460,7 +452,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   @Composable
   private fun TaskItem(
     data: UiShopListWidget,
-    itemContrastColor: ColorProvider,
+    foregroundColor: ColorProvider,
     itemTextSize: TextUnit
   ) {
     Row(
@@ -473,9 +465,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           .padding(4.dp),
         provider = ImageProvider(data.iconRes),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(
-          colorProvider = itemContrastColor
-        )
+        colorFilter = ColorFilter.tint(colorProvider = foregroundColor)
       )
       Spacer(modifier = GlanceModifier.width(8.dp))
       Text(
@@ -483,7 +473,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         modifier = GlanceModifier.fillMaxWidth(),
         style = TextStyle(
           fontSize = itemTextSize,
-          color = itemContrastColor
+          color = foregroundColor
         ),
         maxLines = 1
       )

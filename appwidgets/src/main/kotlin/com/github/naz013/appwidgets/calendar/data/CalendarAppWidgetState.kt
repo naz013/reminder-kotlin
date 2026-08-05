@@ -4,10 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 internal data class CalendarAppWidgetState(
   val widgetId: Int,
-  val headerBackgroundColor: Int,
-  val headerContrastColor: Color,
-  val backgroundColor: Int,
-  val backgroundContrastColor: Color,
+  val backgroundColorIndex: Int,
   val monthYearText: String,
   val weekdays: List<String>,
   val days: List<UiCalendarDay>,

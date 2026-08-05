@@ -45,6 +45,7 @@ internal fun WidgetConfigScaffold(
             icon = painterResource(R.drawable.ic_fluent_dismiss),
             contentDescription = null,
             onClick = onBackClick,
+            modifier = Modifier.padding(4.dp)
           )
         },
         actions = {

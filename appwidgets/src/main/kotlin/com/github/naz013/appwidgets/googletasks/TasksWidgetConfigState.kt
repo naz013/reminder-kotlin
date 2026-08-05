@@ -5,7 +5,6 @@ import androidx.compose.ui.graphics.Color
 internal data class TasksWidgetConfigState(
   val headerBackgroundIndex: Int = 0,
   val itemBackgroundIndex: Int = 0,
-  val isAuthorized: Boolean = true,
   val hapticFeedbackEnabled: Boolean = true,
   val palette: List<Color> = emptyList(),
   val headerColor: Color = Color.Unspecified,

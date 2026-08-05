@@ -3,7 +3,6 @@ package com.github.naz013.appwidgets.calendar
 import android.content.Context
 import android.text.format.DateUtils
 import com.github.naz013.appwidgets.AppWidgetPreferences
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.calendar.data.CalendarAppWidgetState
 import com.github.naz013.appwidgets.calendar.data.UiCalendarDay
 import com.github.naz013.common.datetime.DateTimeManager
@@ -27,14 +26,9 @@ internal class CalendarAppWidgetViewModel(
   suspend fun getState(): CalendarAppWidgetState {
     val year = prefsProvider.getResolvedYear()
     val month = prefsProvider.getMonth() + 1
-    val headerBackgroundColor = prefsProvider.getHeaderBackground()
-    val backgroundColor = prefsProvider.getBackground()
     return CalendarAppWidgetState(
       widgetId = prefsProvider.widgetId,
-      headerBackgroundColor = headerBackgroundColor,
-      headerContrastColor = WidgetUtils.getContrastColor(headerBackgroundColor),
-      backgroundColor = backgroundColor,
-      backgroundContrastColor = WidgetUtils.getContrastColor(backgroundColor),
+      backgroundColorIndex = prefsProvider.getBackground(),
       monthYearText = formatMonthYear(year, month),
       weekdays = buildWeekdays(),
       days = buildDays(year, month),
