@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -15,7 +15,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,19 +23,18 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
-import com.github.naz013.ui.common.compose.toColor
-import com.github.naz013.ui.common.theme.ThemeProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagEditScreen(
+  modifier: Modifier = Modifier,
   state: TagEditState,
   onBackClick: () -> Unit,
   onNameChange: (String) -> Unit,
   onColorSelected: (Int) -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
-  modifier: Modifier = Modifier
+  adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
     modifier = modifier,
@@ -53,7 +51,7 @@ fun TagEditScreen(
         actions = {
           if (state.canDelete) {
             MenuIconButton(
-              icon = AppIcons.Fluent.Dismiss,
+              icon = AppIcons.Fluent.Delete,
               contentDescription = stringResource(R.string.delete),
               onClick = onDeleteClick
             )
@@ -68,7 +66,11 @@ fun TagEditScreen(
       )
     }
   ) { padding ->
-    Column(modifier = Modifier.padding(padding).padding(16.dp)) {
+    Column(
+      modifier = Modifier
+        .padding(padding)
+        .padding(16.dp)
+    ) {
       OutlinedTextField(
         value = state.name,
         onValueChange = onNameChange,
@@ -78,17 +80,32 @@ fun TagEditScreen(
         modifier = Modifier.fillMaxWidth()
       )
 
-      val context = LocalContext.current
-      val paletteColors = ThemeProvider.colorsForSliderThemed(context).map { it.toColor() }
-      ColorSlider(
-        colors = paletteColors,
-        selectedIndex = state.colorPosition,
-        onColorSelected = onColorSelected,
+      Card(
         modifier = Modifier
           .fillMaxWidth()
-          .height(40.dp)
-          .padding(top = 24.dp)
-      )
+          .padding(top = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+      ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+          Text(
+            text = stringResource(R.string.color),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary,
+          )
+          ColorSlider(
+            colors = state.sliderColors,
+            selectedIndex = state.colorPosition,
+            onColorSelected = onColorSelected,
+            modifier = Modifier
+              .fillMaxWidth()
+              .height(40.dp)
+              .padding(top = 8.dp),
+            hapticFeedbackEnabled = state.hapticFeedbackEnabled,
+          )
+        }
+      }
+
+      adsContent()
     }
   }
 }
@@ -103,7 +120,8 @@ private fun TagEditScreenPreview() {
       onNameChange = {},
       onColorSelected = {},
       onSaveClick = {},
-      onDeleteClick = {}
+      onDeleteClick = {},
+      adsContent = {},
     )
   }
 }

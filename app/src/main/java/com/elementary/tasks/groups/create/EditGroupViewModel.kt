@@ -34,7 +34,6 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderSettingsRepository
-import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
@@ -58,6 +57,7 @@ class EditGroupViewModel(
   private val vibrationPlayer: VibrationPlayer,
   private val prefs: Prefs,
   private val notificationOverrideSubtitleFormatter: NotificationOverrideSubtitleFormatter,
+  private val themeProvider: ThemeProvider,
 ) : ViewModel() {
 
   private val context get() = contextProvider.themedContext
@@ -72,8 +72,7 @@ class EditGroupViewModel(
     _state.update {
       it.copy(
         hapticFeedbackEnabled = prefs.hapticsEnabled,
-        sliderColors = ThemeProvider.colorsForSliderThemed(contextProvider.themedContext)
-          .map { color -> color.toColor() },
+        sliderColors = themeProvider.colorsForSliderThemed(),
       )
     }
   }

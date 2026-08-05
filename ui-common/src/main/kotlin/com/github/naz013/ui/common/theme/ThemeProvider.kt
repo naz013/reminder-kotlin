@@ -251,28 +251,6 @@ class ThemeProvider(
     }
 
     @ColorInt
-    fun colorsForSliderThemed(context: Context): IntArray {
-      return intArrayOf(
-        ContextCompat.getColor(context, R.color.redAccent),
-        ContextCompat.getColor(context, R.color.pinkAccent),
-        ContextCompat.getColor(context, R.color.purpleAccent),
-        ContextCompat.getColor(context, R.color.purpleDeepAccent),
-        ContextCompat.getColor(context, R.color.indigoAccent),
-        ContextCompat.getColor(context, R.color.blueAccent),
-        ContextCompat.getColor(context, R.color.blueLightAccent),
-        ContextCompat.getColor(context, R.color.cyanAccent),
-        ContextCompat.getColor(context, R.color.tealAccent),
-        ContextCompat.getColor(context, R.color.greenAccent),
-        ContextCompat.getColor(context, R.color.greenLightAccent),
-        ContextCompat.getColor(context, R.color.limeAccent),
-        ContextCompat.getColor(context, R.color.yellowAccent),
-        ContextCompat.getColor(context, R.color.amberAccent),
-        ContextCompat.getColor(context, R.color.orangeAccent),
-        ContextCompat.getColor(context, R.color.orangeDeepAccent)
-      )
-    }
-
-    @ColorInt
     fun themedColor(context: Context, code: Int = AppColorIndex.RED): Int {
       val color: Int
       when (code) {
@@ -310,22 +288,12 @@ class ThemeProvider(
     }
 
     @ColorInt
-    fun getThemeOnBackgroundColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_onBackground)
-    }
-
-    @ColorInt
     fun colorBirthdayCalendar(context: Context, color: Int): Int {
       return themedColor(context, color)
     }
 
     @ColorInt
     fun colorReminderCalendar(context: Context, color: Int): Int {
-      return themedColor(context, color)
-    }
-
-    @ColorInt
-    fun colorTodayCalendar(context: Context, color: Int): Int {
       return themedColor(context, color)
     }
   }

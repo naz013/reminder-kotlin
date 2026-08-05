@@ -21,6 +21,7 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderSettingsRepository
+import com.github.naz013.ui.common.theme.ThemeProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -48,6 +49,7 @@ class EditGroupViewModelTest : BaseTest() {
   private val vibrationPlayer = mockk<VibrationPlayer>(relaxed = true)
   private val prefs = mockk<Prefs>(relaxed = true)
   private val notificationOverrideSubtitleFormatter = mockk<NotificationOverrideSubtitleFormatter>(relaxed = true)
+  private val themeProvider = mockk<ThemeProvider>(relaxed = true)
 
   private lateinit var viewModel: EditGroupViewModel
 
@@ -89,6 +91,7 @@ class EditGroupViewModelTest : BaseTest() {
     vibrationPlayer = vibrationPlayer,
     prefs = prefs,
     notificationOverrideSubtitleFormatter = notificationOverrideSubtitleFormatter,
+    themeProvider = themeProvider,
   )
 
   @Before

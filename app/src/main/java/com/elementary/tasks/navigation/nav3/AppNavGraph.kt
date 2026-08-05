@@ -9,6 +9,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
@@ -18,6 +19,8 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.birthdaysEntries
 import com.elementary.tasks.calendar.monthview.calendarEntries
 import com.elementary.tasks.googletasks.googleTasksEntries
@@ -37,9 +40,7 @@ import com.elementary.tasks.settings.settingsEntries
 import com.elementary.tasks.workflow.workflowEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.localBackupEntries
-import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.tags.tagsEntries
-import org.koin.compose.koinInject
 
 /**
  * Root of the app's single Nav3 graph, hosted directly by
@@ -113,7 +114,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         otherEntries(backStack)
         exportEntries(backStack)
         workflowEntries(backStack)
-        tagsEntries(backStack)
+        tagsEntries(backStack, adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Tag) })
         insightsEntries(backStack)
         localBackupEntries(backStack)
       },

@@ -16,9 +16,12 @@ import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispa
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-fun EntryProviderScope<NavKey>.tagsEntries(backStack: MutableList<NavKey>) {
+fun EntryProviderScope<NavKey>.tagsEntries(
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit = {},
+) {
   entry<TagsNavKey.Manage> { TagsManageEntry(backStack) }
-  entry<TagsNavKey.Edit> { key -> TagsEditEntry(key, backStack) }
+  entry<TagsNavKey.Edit> { key -> TagsEditEntry(key, backStack, adsContent) }
 }
 
 @Composable
@@ -43,7 +46,8 @@ private fun TagsManageEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun TagsEditEntry(
   key: TagsNavKey.Edit,
-  backStack: MutableList<NavKey>
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit = {},
 ) {
   val viewModel = koinViewModel<TagEditViewModel> { parametersOf(key.id) }
   val dialogDispatcher = rememberDialogDispatcher()
@@ -68,6 +72,7 @@ private fun TagsEditEntry(
         negativeButtonRes = R.string.cancel,
         onPositive = viewModel::onDeleteClick
       )
-    }
+    },
+    adsContent = adsContent
   )
 }
