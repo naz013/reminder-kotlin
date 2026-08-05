@@ -78,9 +78,8 @@ val appWidgetsModule = module {
 
   viewModel { (widgetId: Int) ->
     TasksWidgetConfigViewModel(
-      get(),
-      get(),
       GoogleTasksWidgetPrefsProvider(get(), widgetId),
+      get(),
       get(),
       get(),
       get()

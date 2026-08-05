@@ -1,25 +1,22 @@
 package com.github.naz013.appwidgets.googletasks
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.appwidgets.WidgetUtils
-import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 internal class TasksWidgetConfigViewModel(
-  private val context: Context,
-  private val appWidgetUpdater: AppWidgetUpdater,
   private val prefsProvider: GoogleTasksWidgetPrefsProvider,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val analyticsEventSender: AnalyticsEventSender,
-  googleTasksAuthManager: GoogleTasksAuthManager,
   appWidgetPreferences: AppWidgetPreferences,
+  private val composeResourceProvider: ComposeResourceProvider,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TasksWidgetConfigState())
@@ -28,48 +25,25 @@ internal class TasksWidgetConfigViewModel(
   init {
     _state.update {
       it.copy(
-        headerBackgroundIndex = prefsProvider.getHeaderBackground(),
-        itemBackgroundIndex = prefsProvider.getItemBackground(),
-        isAuthorized = googleTasksAuthManager.isAuthorized(),
+        palette = composeResourceProvider.getBackgroundColors(),
         hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled,
       )
     }
-    val palette = (0..13).map { WidgetUtils.getComposeColor(it) } +
-      WidgetUtils.getDynamicPreviewColor(context)
-    _state.update {
-      it.copy(
-        palette = palette,
-        headerColor = palette[it.headerBackgroundIndex],
-        headerContentColor = WidgetUtils.getContrastColor(it.headerBackgroundIndex),
-        itemColor = palette[it.itemBackgroundIndex],
-        itemContentColor = WidgetUtils.getContrastColor(it.itemBackgroundIndex),
-      )
-    }
+    onBackgroundColorSelected(prefsProvider.getBackground())
   }
 
-  fun onHeaderColorSelected(index: Int) {
+  fun onBackgroundColorSelected(index: Int) {
     _state.update {
       it.copy(
-        headerBackgroundIndex = index,
-        headerColor = it.palette[index],
-        headerContentColor = WidgetUtils.getContrastColor(index),
-      )
-    }
-  }
-
-  fun onItemColorSelected(index: Int) {
-    _state.update {
-      it.copy(
-        itemBackgroundIndex = index,
-        itemColor = it.palette[index],
-        itemContentColor = WidgetUtils.getContrastColor(index),
+        backgroundIndex = index,
+        backgroundColor = it.palette[index],
+        foregroundColor = composeResourceProvider.bestForegroundColor(it.palette[index]),
       )
     }
   }
 
   fun onSaveClick() {
-    prefsProvider.setHeaderBackground(state.value.headerBackgroundIndex)
-    prefsProvider.setItemBackground(state.value.itemBackgroundIndex)
+    prefsProvider.setBackground(state.value.backgroundIndex)
 
     analyticsEventSender.send(WidgetUsedEvent(Widget.GOOGLE_TASKS))
     appWidgetUpdater.updateScheduleWidget(prefsProvider.widgetId)

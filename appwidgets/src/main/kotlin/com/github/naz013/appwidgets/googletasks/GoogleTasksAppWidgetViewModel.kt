@@ -20,15 +20,10 @@ internal class GoogleTasksAppWidgetViewModel(
 ) {
 
   suspend fun getState(): GoogleTasksAppWidgetState {
-    val headerBackgroundColor = prefsProvider.getHeaderBackground()
-    val itemBackgroundColor = prefsProvider.getItemBackground()
     val listColors = getAllGoogleTaskListsUseCase().associate { it.listId to it.color }
     return GoogleTasksAppWidgetState(
       widgetId = prefsProvider.widgetId,
-      headerBackgroundColor = headerBackgroundColor,
-      headerContrastColor = WidgetUtils.getContrastColor(headerBackgroundColor),
-      itemBackgroundColor = itemBackgroundColor,
-      itemContrastColor = WidgetUtils.getContrastColor(itemBackgroundColor),
+      backgroundColor = prefsProvider.getBackground(),
       items = getAllGoogleTasksUseCase().map { it.toUiGoogleTaskWidgetItem(listColors) }
     )
   }

@@ -45,6 +45,7 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.compose.ComposeResourceProvider
+import com.github.naz013.appwidgets.compose.EmptyData
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
@@ -216,13 +217,12 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           .background(widgetColors.foreground)
       )
       if (state.items.isEmpty()) {
-        Text(
+        EmptyData(
+          modifier = GlanceModifier
+            .fillMaxSize()
+            .padding(16.dp),
           text = emptyStateText,
-          modifier = GlanceModifier.fillMaxWidth().padding(16.dp),
-          style = TextStyle(
-            fontSize = 22.sp,
-            color = widgetColors.foreground
-          ),
+          color = widgetColors.foreground
         )
       } else {
         LazyColumn(

@@ -34,8 +34,7 @@ internal fun TasksWidgetConfigScreen(
   state: TasksWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
-  onHeaderColorSelected: (Int) -> Unit,
-  onItemColorSelected: (Int) -> Unit,
+  onBackgroundColorSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   WidgetConfigScaffold(
@@ -45,10 +44,8 @@ internal fun TasksWidgetConfigScreen(
     modifier = modifier,
   ) {
     TasksWidgetMockPreview(
-      headerColor = state.headerColor,
-      headerContentColor = state.headerContentColor,
-      itemColor = state.itemColor,
-      itemContentColor = state.itemContentColor,
+      backgroundColor = state.backgroundColor,
+      foregroundColor = state.foregroundColor,
     )
 
     Text(
@@ -63,30 +60,9 @@ internal fun TasksWidgetConfigScreen(
     ) {
       ColorSlider(
         colors = state.palette,
-        selectedIndex = state.headerBackgroundIndex,
+        selectedIndex = state.backgroundIndex,
         onColorSelected = { index ->
-          onHeaderColorSelected(index)
-        },
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
-        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
-      )
-    }
-
-    Text(
-      text = stringResource(R.string.list_item_background),
-      style = MaterialTheme.typography.titleMedium,
-      color = MaterialTheme.colorScheme.primary,
-      modifier = Modifier.padding(top = 16.dp),
-    )
-    Card(
-      modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-    ) {
-      ColorSlider(
-        colors = state.palette,
-        selectedIndex = state.itemBackgroundIndex,
-        onColorSelected = { index ->
-          onItemColorSelected(index)
+          onBackgroundColorSelected(index)
         },
         modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
         hapticFeedbackEnabled = state.hapticFeedbackEnabled,
@@ -97,10 +73,8 @@ internal fun TasksWidgetConfigScreen(
 
 @Composable
 private fun TasksWidgetMockPreview(
-  headerColor: Color,
-  headerContentColor: Color,
-  itemColor: Color,
-  itemContentColor: Color,
+  backgroundColor: Color,
+  foregroundColor: Color,
   modifier: Modifier = Modifier,
 ) {
   Box(
@@ -114,53 +88,58 @@ private fun TasksWidgetMockPreview(
       .padding(16.dp),
   ) {
     val cornerShape = RoundedCornerShape(dimensionResource(R.dimen.home_screen_widget_corner_radius))
-    Column {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(backgroundColor, cornerShape),
+    ) {
       Row(
-        modifier = Modifier.fillMaxWidth().height(50.dp).background(headerColor, cornerShape),
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(50.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Text(
           text = stringResource(R.string.google_tasks),
-          color = headerContentColor,
+          color = foregroundColor,
           style = MaterialTheme.typography.titleMedium,
           modifier = Modifier.weight(1f).padding(start = 16.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_settings),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
         Icon(
           painter = painterResource(R.drawable.ic_fluent_add),
           contentDescription = null,
-          tint = headerContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(50.dp).padding(12.dp),
         )
       }
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .background(itemColor, cornerShape)
           .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Icon(
           painter = painterResource(R.drawable.ic_builder_google_task_list),
           contentDescription = null,
-          tint = itemContentColor,
+          tint = foregroundColor,
           modifier = Modifier.size(40.dp),
         )
         Column(modifier = Modifier.weight(1f).padding(start = 8.dp, end = 8.dp)) {
-          Text(text = "Task", color = itemContentColor, style = MaterialTheme.typography.titleSmall)
+          Text(text = "Task", color = foregroundColor, style = MaterialTheme.typography.titleSmall)
           Text(
             text = "Note",
-            color = itemContentColor,
+            color = foregroundColor,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 8.dp),
           )
         }
-        Text(text = "15/05", color = itemContentColor, style = MaterialTheme.typography.titleSmall)
+        Text(text = "15/05", color = foregroundColor, style = MaterialTheme.typography.titleSmall)
       }
     }
   }
@@ -171,11 +150,10 @@ private fun TasksWidgetMockPreview(
 private fun TasksWidgetConfigScreenPreview() {
   AppTheme {
     TasksWidgetConfigScreen(
-      state = TasksWidgetConfigState(headerBackgroundIndex = 9, itemBackgroundIndex = 4),
+      state = TasksWidgetConfigState(backgroundIndex = 9),
       onBackClick = {},
       onSaveClick = {},
-      onHeaderColorSelected = {},
-      onItemColorSelected = {},
+      onBackgroundColorSelected = {},
     )
   }
 }

@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
@@ -22,6 +21,7 @@ import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
+import androidx.glance.background
 import androidx.glance.color.ColorProvider
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
@@ -45,8 +45,9 @@ import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
+import com.github.naz013.appwidgets.compose.EmptyData
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
-import com.github.naz013.appwidgets.compose.paletteContrastColor
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.googletasks.data.GoogleTasksAppWidgetState
@@ -72,6 +73,9 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private val widgetTypeKey = ActionParameters.Key<Widget>(
     AppWidgetActionActivity.WIDGET_TYPE
   )
+  private val composeResourceProvider: (Context) -> ComposeResourceProvider = {
+    ComposeResourceProvider(it)
+  }
 
   override val stateDefinition: GlanceStateDefinition<GoogleTasksAppWidgetState>
     get() = object : GlanceStateDefinition<GoogleTasksAppWidgetState> {
@@ -150,27 +154,26 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     titleText: String,
     emptyStateText: String
   ) {
-    val headerContrastColorProvider = paletteContrastColor(
-      state.headerBackgroundColor,
-      state.headerContrastColor
-    )
+    val widgetColors = composeResourceProvider(context).getColors(state.backgroundColor)
     Column(
-      modifier = modifier.fillMaxSize().systemWidgetShape()
+      modifier = modifier
+        .fillMaxSize()
+        .roundedBackground(state.backgroundColor)
+        .systemWidgetShape()
     ) {
       Row(
         modifier = GlanceModifier.fillMaxWidth()
-          .height(56.dp)
-          .roundedBackground(state.headerBackgroundColor),
+          .height(56.dp),
         verticalAlignment = Alignment.Vertical.CenterVertically
       ) {
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(16.dp))
         Text(
           text = titleText,
           modifier = GlanceModifier.fillMaxWidth()
             .defaultWeight(),
           style = TextStyle(
             fontSize = 18.sp,
-            color = headerContrastColorProvider
+            color = widgetColors.foreground
           ),
           maxLines = 1
         )
@@ -188,7 +191,7 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             ),
           provider = ImageProvider(R.drawable.ic_fluent_settings),
           contentDescription = null,
-          colorFilter = ColorFilter.tint(headerContrastColorProvider)
+          colorFilter = ColorFilter.tint(widgetColors.foreground)
         )
         Spacer(modifier = GlanceModifier.width(4.dp))
         Image(
@@ -208,25 +211,42 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             ),
           provider = ImageProvider(R.drawable.ic_fluent_add),
           contentDescription = null,
-          colorFilter = ColorFilter.tint(headerContrastColorProvider)
+          colorFilter = ColorFilter.tint(widgetColors.foreground)
         )
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(16.dp))
       }
-      Spacer(modifier = GlanceModifier.height(4.dp))
+      Spacer(
+        modifier = GlanceModifier
+          .fillMaxWidth()
+          .height(1.dp)
+          .background(widgetColors.foreground)
+      )
       if (state.items.isEmpty()) {
-        Text(
+        EmptyData(
+          modifier = GlanceModifier
+            .fillMaxSize()
+            .padding(16.dp),
           text = emptyStateText,
-          modifier = GlanceModifier.fillMaxWidth().padding(16.dp)
+          color = widgetColors.foreground
         )
       } else {
         LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
           items(state.items.size) { index: Int ->
-            GoogleTaskItem(
-              context = context,
-              data = state.items[index],
-              itemBackgroundColor = state.itemBackgroundColor,
-              itemContrastColor = state.itemContrastColor
-            )
+            Column(
+              modifier = GlanceModifier.fillMaxWidth(),
+            ) {
+              GoogleTaskItem(
+                context = context,
+                data = state.items[index],
+                textColor = widgetColors.foreground,
+              )
+              Spacer(
+                modifier = GlanceModifier
+                  .fillMaxWidth()
+                  .height(1.dp)
+                  .background(widgetColors.foreground)
+              )
+            }
           }
         }
       }
@@ -237,14 +257,12 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private fun GoogleTaskItem(
     context: Context,
     data: UiGoogleTaskWidgetItem,
-    itemBackgroundColor: Int,
-    itemContrastColor: Color
+    textColor: ColorProvider,
   ) {
-    val contentColorProvider = paletteContrastColor(itemBackgroundColor, itemContrastColor)
     Row(
-      modifier = GlanceModifier.fillMaxWidth()
+      modifier = GlanceModifier
+        .fillMaxWidth()
         .padding(8.dp)
-        .roundedBackground(itemBackgroundColor)
         .clickable(
           onClick = actionStartActivity(
             intent = viewIntent(context),
@@ -279,7 +297,7 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           modifier = GlanceModifier.fillMaxWidth(),
           style = TextStyle(
             fontSize = 16.sp,
-            color = contentColorProvider
+            color = textColor
           ),
           maxLines = 1
         )
@@ -290,7 +308,7 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             modifier = GlanceModifier.fillMaxWidth(),
             style = TextStyle(
               fontSize = 14.sp,
-              color = contentColorProvider
+              color = textColor
             ),
             maxLines = 1
           )
@@ -302,7 +320,7 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           text = data.dateText,
           style = TextStyle(
             fontSize = 16.sp,
-            color = contentColorProvider
+            color = textColor
           ),
           maxLines = 2
         )

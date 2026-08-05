@@ -47,6 +47,7 @@ import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetList
 import com.github.naz013.appwidgets.compose.ComposeResourceProvider
+import com.github.naz013.appwidgets.compose.EmptyData
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
@@ -147,6 +148,7 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     state: EventsAppWidgetState,
     configIntent: Intent
   ) {
+    val emptyStateText = context.getString(R.string.schedule_you_have_done_everything_for_today)
     val widgetColors = composeResourceProvider(context).getColors(state.backgroundColor)
     Column(
       modifier = modifier
@@ -214,14 +216,24 @@ internal class EventsGlanceAppWidget : GlanceAppWidget(), KoinComponent {
           .height(1.dp)
           .background(widgetColors.foreground)
       )
-      LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
-        items(state.items.size) { index: Int ->
-          ListItem(
-            context = context,
-            data = state.items[index],
-            foregroundColor = widgetColors.foreground,
-            itemTextSize = state.itemTextSize
-          )
+      if (state.items.isEmpty()) {
+        EmptyData(
+          modifier = GlanceModifier
+            .fillMaxSize()
+            .padding(16.dp),
+          text = emptyStateText,
+          color = widgetColors.foreground
+        )
+      } else {
+        LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
+          items(state.items.size) { index: Int ->
+            ListItem(
+              context = context,
+              data = state.items[index],
+              foregroundColor = widgetColors.foreground,
+              itemTextSize = state.itemTextSize
+            )
+          }
         }
       }
     }
