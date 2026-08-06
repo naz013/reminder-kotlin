@@ -49,7 +49,6 @@
     <string name="birthday_reminder">Birthday reminder</string>
     <string name="contacts">Contacts</string>
     <string name="no_events">No events</string>
-    <string name="upcoming_events">Upcoming</string>
     <string name="theme">Theme</string>
     <string name="calendar">Calendar</string>
     <string name="title">Title</string>
@@ -161,7 +160,6 @@
     <string name="add_birthday">Add birthday</string>
     <string name="active_reminders">Active reminders</string>
     <string name="events">Events</string>
-    <string name="agenda">Agenda</string>
     <string name="must_be_not_empty">Must not be empty!</string>
     <string name="other_version_detected">Other application detected!</string>
     <string name="open">Open</string>
@@ -560,9 +558,6 @@
     <string name="acc_switch_to_map">Switch to map</string>
     <string name="application_data">Application Data</string>
     <string name="reminders">Reminders</string>
-    <string name="group_has_no_active_reminders">No active reminders in this group</string>
-    <string name="group_x_reminder">%d reminder</string>
-    <string name="group_x_reminders">%d reminders</string>
     <string name="logout">Logout</string>
     <string name="reminder_by_date_explanations">Set your reminder for exact date and time</string>
     <string name="reminder_by_timer_explanations">Set your reminder by countdown timer</string>
@@ -872,8 +867,6 @@
     <string name="filter_empty_name">Empty name</string>
     <string name="filters_apply">Apply filters</string>
     <string name="filters_reset">Reset filters</string>
-    <string name="type">Type</string>
-    <string name="smart_lists">Smart Lists</string>
     <string name="filter_reminders">Filter reminders</string>
     <string name="date_range">Date range</string>
 
@@ -1106,4 +1099,15 @@
     <string name="streak_longest">Longest streak: %1$d days</string>
     <string name="streak_fired_count">Fired %1$d times in the last 90 days</string>
     <string name="no_insights_yet">No reminder activity in the last 90 days yet</string>
+
+    <string name="upcoming_events">Upcoming</string>
+
+    <string name="agenda">Agenda</string>
+
+    <string name="group_has_no_active_reminders">No active reminders in this group</string>
+    <string name="group_x_reminder">%d reminder</string>
+    <string name="group_x_reminders">%d reminders</string>
+
+    <string name="type">Type</string>
+    <string name="smart_lists">Smart Lists</string>
 </resources>

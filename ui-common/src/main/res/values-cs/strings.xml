@@ -929,4 +929,186 @@
     <string name="cd_back">Zpět</string>
     <string name="how_to_create_a_reminder">Jak vytvořit připomínku</string>
     <string name="copy_of">Kopie: %s</string>
+
+    <string name="turn_off">Vypnout</string>
+
+    <string name="delete_reminder_permanently">Smazat připomínku trvale?</string>
+    <string name="delete_birthday_permanently">Smazat narozeniny trvale?</string>
+    <string name="delete_note_permanently">Smazat poznámku trvale?</string>
+    <string name="delete_group_permanently">Smazat skupinu trvale?</string>
+
+    <string name="share_send_note">Odeslat poznámku…</string>
+
+    <string name="note_moved_to_archive">Poznámka přesunuta do archívu</string>
+    <string name="note_reverted_from_archive">Poznámka obnovena z archívu</string>
+    <string name="show_note_in_notifications">Zobrazit poznámku v oznámeních</string>
+
+    <string name="share_intent_title">Sdílet...</string>
+    <string name="error_reminder_not_found">Připomínka nenalezena!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">Připomínka již byla odstraněna! Nejdříve ji upravte.</string>
+
+    <string name="workflow_rules">Pravidla pracovního postupu</string>
+    <string name="workflow_automations">Automatizace</string>
+    <string name="workflow_active_global_rules">Aktivní globální pravidla</string>
+    <string name="workflow_rules_for_group">Pravidla pro tuto skupinu</string>
+    <string name="workflow_no_rules_yet">Zatím žádná pravidla</string>
+    <string name="workflow_templates">Šablony</string>
+    <string name="workflow_apply_globally">Použít globálně</string>
+    <string name="workflow_apply_to_group">Použít pro skupinu</string>
+    <string name="workflow_open_group_to_apply">Otevřete skupinu a aplikujte tuto</string>
+    <string name="workflow_save_as_template">Uložit jako šablonu</string>
+    <string name="workflow_create_custom_rule">Vytvořit vlastní pravidlo</string>
+    <string name="workflow_archive_after_days_hint">Dny</string>
+    <string name="workflow_category_reminder_lifecycle">Životní cyklus připomínky</string>
+    <string name="workflow_category_group">Skupina</string>
+    <string name="workflow_category_location">Umístění</string>
+    <string name="workflow_category_notification_escalation">Oznámení &amp; eskalace</string>
+    <string name="workflow_category_system_integration">Integrace systému</string>
+    <string name="workflow_category_privacy_data_hygiene">Soukromí &amp; hygiena dat</string>
+
+    <string name="workflow_builder_new_rule_title">Nové pravidlo</string>
+    <string name="workflow_builder_edit_rule_title">Upravit pravidlo</string>
+    <string name="workflow_builder_when">Kdy</string>
+    <string name="workflow_builder_if_optional">Pokud (volitelné)</string>
+    <string name="workflow_builder_then">Pak</string>
+    <string name="workflow_builder_not_set">Nenastaveno</string>
+    <string name="workflow_builder_add_condition">Přidat podmínku</string>
+    <string name="workflow_builder_choose_trigger">Vyberte spouštěč</string>
+    <string name="workflow_builder_choose_condition">Vyberte podmínku</string>
+    <string name="workflow_builder_choose_action">Vyberte akci</string>
+    <string name="workflow_builder_snooze_count_hint">Počet odložení</string>
+    <string name="workflow_builder_minutes_hint">Minuty</string>
+    <string name="workflow_builder_minutes_unit">min</string>
+    <string name="workflow_builder_select_group">Vyberte skupinu</string>
+    <string name="workflow_builder_select_reminder">Vyberte připomínku</string>
+    <string name="workflow_builder_no_groups">Zatím žádné skupiny</string>
+    <string name="workflow_builder_no_reminders">Žádná aktivní připomínka</string>
+    <string name="workflow_trigger_reminder_completed">Připomínka je dokončena</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">Připomínka odložena N krát</string>
+    <string name="workflow_trigger_group_all_completed">Všechny připomínky ve skupině jsou dokončeny</string>
+    <string name="workflow_trigger_location_entered">Přijel do místa připomínky</string>
+    <string name="workflow_trigger_location_exited">Odjel z místa připomínky</string>
+    <string name="workflow_trigger_reminder_age_exceeded">Dokončeno před minimálně N dny</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">Neuvidíte N minut</string>
+    <string name="workflow_condition_priority_at_least">Priorita je nejméně</string>
+    <string name="workflow_condition_within_time_window">Aktuální čas je mezi</string>
+    <string name="workflow_condition_group_is">Skupina připomínky je</string>
+    <string name="workflow_action_archive_reminder">Archivovat připomínku</string>
+    <string name="workflow_action_complete_reminder">Dokončit připomínku</string>
+    <string name="workflow_action_apply_notification_override">Změnit nastavení oznámení</string>
+    <string name="workflow_action_activate_reminder">Aktivovat jinou připomínku</string>
+    <string name="preset_buy_groceries">Nákup potravin</string>
+    <string name="preset_bread">Chléb</string>
+    <string name="preset_juice">Džus</string>
+    <string name="preset_cookies">Sušenky</string>
+    <string name="haptic_feedback">Haptická zpětná vazba</string>
+    <string name="use_haptic_feedback_for_interactions">Používat haptickou zpětnou vazbu pro interakce</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">Nepoužívat haptickou zpětnou vazbu pro interakce</string>
+
+    <string name="notification_defaults">Výchozí nastavení oznámení</string>
+    <string name="default_vibrate">Vibrace</string>
+    <string name="vibrate_on_notification">Vibrovat při oznámení</string>
+    <string name="do_not_vibrate_on_notification">Nevibrovat při oznámení</string>
+    <string name="bypass_do_not_disturb">Obejít Nerušit</string>
+    <string name="bypass_do_not_disturb_enabled">Vyzvánět i během Nerušit</string>
+    <string name="bypass_do_not_disturb_disabled">Respektovat Nerušit</string>
+    <string name="wake_screen">Probrat obrazovku</string>
+    <string name="wake_screen_enabled">Zapnout obrazovku jako budík</string>
+    <string name="wake_screen_disabled">Nezapínat obrazovku</string>
+    <string name="notification_category">Kategorie oznámení</string>
+    <string name="notification_category_default">Výchozí</string>
+    <string name="notification_category_alarm">Alarm</string>
+    <string name="notification_category_event">Událost</string>
+    <string name="notification_category_call">Hovor</string>
+    <string name="lock_screen_visibility">Viditelnost na zamknuté obrazovce</string>
+    <string name="lock_screen_visibility_public">Zobrazit úplný obsah</string>
+    <string name="lock_screen_visibility_private">Skrýt citlivý obsah</string>
+    <string name="lock_screen_visibility_secret">Skrýt zcela</string>
+    <string name="vibration_pattern">Vzor vibrací</string>
+    <string name="notification_overrides">Přepsání oznámení</string>
+    <string name="notification_customization">Přizpůsobení oznámení</string>
+    <string name="how_does_this_work">Jak to funguje?</string>
+    <string name="inherit_from_settings">Zdědit z nastavení</string>
+    <string name="inherited_format">Zděděno: %s</string>
+    <string name="on">Zapnuto</string>
+    <string name="off">Vypnuto</string>
+    <string name="vibration_preset_short">Krátké</string>
+    <string name="vibration_preset_long">Dlouhé</string>
+    <string name="vibration_preset_double_buzz">Dvojitý zvuk</string>
+    <string name="vibration_preset_default">Výchozí</string>
+    <string name="notification_delay">Zpoždění oznámení</string>
+
+    <string name="builder_set_category_for_the_notification">Nastavit kategorii systémového oznámení pro oznámení</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">Nastavte, jaká část oznámení se zobrazí na zamknuté obrazovce</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">Vyzvánět i když je zapnuto Nerušit</string>
+    <string name="builder_set_wake_screen_for_the_notification">Zapnout obrazovku jako budík</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">Nastavit vzor vibrací pro oznámení</string>
+    <string name="builder_set_delay_for_the_notification">Zpoždít oznámení o tento počet minut</string>
+
+    <string name="builder_quick_start_one_time">Jednorázové připomínka</string>
+    <string name="builder_quick_start_every_weekday">Každý pracovní den</string>
+    <string name="builder_quick_start_every_month_day">Každý měsíc v tento den</string>
+    <string name="builder_quick_start_every_year">Každý rok v tento den</string>
+    <string name="builder_quick_start_timer">Odčítací časovač</string>
+    <string name="builder_quick_start_shopping_list">Nákupní seznam</string>
+    <string name="builder_quick_start_more_options">Více možností…</string>
+
+    <string name="builder_invalid_email_value">Zadejte platnou e-mailovou adresu</string>
+    <string name="builder_invalid_web_address_value">Zadejte platnou webovou adresu</string>
+    <string name="builder_invalid_phone_number_value">Zadejte platné telefonní číslo</string>
+    <string name="builder_shopping_list_empty_value">Přidejte do seznamu alespoň jednu položku</string>
+    <string name="builder_invalid_value_generic">Tato hodnota není platná</string>
+    <string name="builder_permissions_required_message">Udělte požadovaná oprávnění a pokračujte</string>
+
+    <string name="gemini_functions">Funkce Gemini</string>
+
+    <string name="smart_list_today">Dnes</string>
+    <string name="smart_list_overdue">Časově vázáno</string>
+    <string name="smart_list_this_week">Tento týden</string>
+    <string name="smart_list_no_group">Žádná skupina</string>
+
+    <string name="tags">Štítky</string>
+    <string name="manage_tags">Spravovat štítky</string>
+    <string name="new_tag">Nový štítek</string>
+    <string name="tag_name">Název štítku</string>
+    <string name="no_tags">Zatím žádné štítky</string>
+    <string name="delete_tag_permanently">Smazat tento štítek? Bude odstraněn z každé připomínky a poznámky.</string>
+
+    <string name="local_backup">Místní záloha</string>
+    <string name="backup_export_title">Exportovat zálohu</string>
+    <string name="backup_import_title">Obnovit zálohu</string>
+    <string name="backup_export_description">Uložte šifrovanou kopii svých připomínek, poznámek, skupin, narozenin, míst a předvoleb do souboru podle vaší volby. Nic se nikam neposílá. Pokud zapomenete heslo, zálohu nelze obnovit.</string>
+    <string name="backup_import_description">Obnovte data z dříve exportovaného šifrovaného souboru zálohy. Existující položky se stejným ID budou přepsány; nic jiného není odstraněno.</string>
+    <string name="backup_passphrase">Heslo</string>
+    <string name="backup_confirm_passphrase">Potvrdit heslo</string>
+    <string name="backup_passphrase_mismatch">Hesla se neshodují</string>
+    <string name="backup_passphrase_empty">Zadejte heslo</string>
+    <string name="backup_export_action">Exportovat</string>
+    <string name="backup_import_action">Obnovit</string>
+    <string name="backup_export_success">Záloha úspěšně uložena.</string>
+    <string name="backup_export_failed">Zálohu se nepodařilo uložit. Zkuste to prosím znovu.</string>
+    <string name="backup_import_success">%1$d položek úspěšně obnoveno.</string>
+    <string name="backup_import_failed">Zálohu se nepodařilo obnovit. Zkuste to prosím znovu.</string>
+    <string name="backup_wrong_passphrase">Nesprávné heslo nebo poškozený soubor.</string>
+    <string name="backup_invalid_file">Tento soubor není platná záloha Reminder.</string>
+    <string name="backup_open_file_failed">Vybraný soubor se nepodařilo otevřít.</string>
+
+    <string name="insights">Informace</string>
+    <string name="weekly_trend">Týdenní trend</string>
+    <string name="busiest_day">Nejrušnější den: %1$s</string>
+    <string name="streak_current">Aktuální série: %1$d dní</string>
+    <string name="streak_longest">Nejdelší série: %1$d dní</string>
+    <string name="streak_fired_count">Spuštěno %1$d krát za posledních 90 dní</string>
+    <string name="no_insights_yet">Zatím bez aktivit připomínek za posledních 90 dní</string>
+
+    <string name="upcoming_events">Nadcházející</string>
+
+    <string name="agenda">Program</string>
+
+    <string name="group_has_no_active_reminders">V této skupině nejsou žádné aktivní připomínky</string>
+    <string name="group_x_reminder">%d připomínka</string>
+    <string name="group_x_reminders">%d připomínek</string>
+
+    <string name="type">Typ</string>
+    <string name="smart_lists">Chytré seznamy</string>
 </resources>

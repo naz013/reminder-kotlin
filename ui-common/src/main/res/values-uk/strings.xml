@@ -930,4 +930,186 @@
     <string name="cd_back">Назад</string>
     <string name="how_to_create_a_reminder">Як створити нагадування</string>
     <string name="copy_of">Копія: %s</string>
+
+    <string name="turn_off">Вимкнути</string>
+
+    <string name="delete_reminder_permanently">Видалити нагадування назавжди?</string>
+    <string name="delete_birthday_permanently">Видалити день народження назавжди?</string>
+    <string name="delete_note_permanently">Видалити нотатку назавжди?</string>
+    <string name="delete_group_permanently">Видалити групу назавжди?</string>
+
+    <string name="share_send_note">Надіслати нотатку…</string>
+
+    <string name="note_moved_to_archive">Нотатку перемістено в архів</string>
+    <string name="note_reverted_from_archive">Нотатку відновлено з архіву</string>
+    <string name="show_note_in_notifications">Показувати нотатку в сповіщеннях</string>
+
+    <string name="share_intent_title">Поділитися...</string>
+    <string name="error_reminder_not_found">Нагадування не знайдено!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">Нагадування вже видалено! Спочатку відредагуйте його.</string>
+
+    <string name="workflow_rules">Правила рабочого процесу</string>
+    <string name="workflow_automations">Автоматизація</string>
+    <string name="workflow_active_global_rules">Активні глобальні правила</string>
+    <string name="workflow_rules_for_group">Правила для цієї групи</string>
+    <string name="workflow_no_rules_yet">Немає правил</string>
+    <string name="workflow_templates">Шаблони</string>
+    <string name="workflow_apply_globally">Застосувати глобально</string>
+    <string name="workflow_apply_to_group">Застосувати до групи</string>
+    <string name="workflow_open_group_to_apply">Відкрийте групу, щоб застосувати це</string>
+    <string name="workflow_save_as_template">Зберегти як шаблон</string>
+    <string name="workflow_create_custom_rule">Створити користувацьке правило</string>
+    <string name="workflow_archive_after_days_hint">Дні</string>
+    <string name="workflow_category_reminder_lifecycle">Життєвий цикл нагадування</string>
+    <string name="workflow_category_group">Група</string>
+    <string name="workflow_category_location">Місцезнаходження</string>
+    <string name="workflow_category_notification_escalation">Сповіщення &amp; масштабування</string>
+    <string name="workflow_category_system_integration">Інтеграція системи</string>
+    <string name="workflow_category_privacy_data_hygiene">Конфіденційність &amp; гігієна даних</string>
+
+    <string name="workflow_builder_new_rule_title">Нове правило</string>
+    <string name="workflow_builder_edit_rule_title">Редагувати правило</string>
+    <string name="workflow_builder_when">Коли</string>
+    <string name="workflow_builder_if_optional">Якщо (необов\'язково)</string>
+    <string name="workflow_builder_then">Тоді</string>
+    <string name="workflow_builder_not_set">Не встановлено</string>
+    <string name="workflow_builder_add_condition">Додати умову</string>
+    <string name="workflow_builder_choose_trigger">Виберіть тригер</string>
+    <string name="workflow_builder_choose_condition">Виберіть умову</string>
+    <string name="workflow_builder_choose_action">Виберіть дію</string>
+    <string name="workflow_builder_snooze_count_hint">Кількість відкладень</string>
+    <string name="workflow_builder_minutes_hint">Хвилини</string>
+    <string name="workflow_builder_minutes_unit">хв</string>
+    <string name="workflow_builder_select_group">Виберіть групу</string>
+    <string name="workflow_builder_select_reminder">Виберіть нагадування</string>
+    <string name="workflow_builder_no_groups">Немає груп</string>
+    <string name="workflow_builder_no_reminders">Немає активних нагадувань</string>
+    <string name="workflow_trigger_reminder_completed">Нагадування завершено</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">Нагадування відкладено N разів</string>
+    <string name="workflow_trigger_group_all_completed">Усі нагадування в групі завершено</string>
+    <string name="workflow_trigger_location_entered">Прибули до місцезнаходження нагадування</string>
+    <string name="workflow_trigger_location_exited">Вийшли з місцезнаходження нагадування</string>
+    <string name="workflow_trigger_reminder_age_exceeded">Завершено щонайменше N днів тому</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">Не переглядалося N хвилин</string>
+    <string name="workflow_condition_priority_at_least">Пріоритет щонайменше</string>
+    <string name="workflow_condition_within_time_window">Поточний час між</string>
+    <string name="workflow_condition_group_is">Група нагадування</string>
+    <string name="workflow_action_archive_reminder">Архівувати нагадування</string>
+    <string name="workflow_action_complete_reminder">Завершити нагадування</string>
+    <string name="workflow_action_apply_notification_override">Змінити параметри сповіщення</string>
+    <string name="workflow_action_activate_reminder">Активувати інше нагадування</string>
+    <string name="preset_buy_groceries">Купити продукти</string>
+    <string name="preset_bread">Хліб</string>
+    <string name="preset_juice">Сік</string>
+    <string name="preset_cookies">Печиво</string>
+    <string name="haptic_feedback">Тактильний зворотний зв\'язок</string>
+    <string name="use_haptic_feedback_for_interactions">Використовувати тактильний зворотний зв\'язок для взаємодій</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">Не використовувати тактильний зворотний зв\'язок для взаємодій</string>
+
+    <string name="notification_defaults">Стандартні параметри сповіщень</string>
+    <string name="default_vibrate">Вібрація</string>
+    <string name="vibrate_on_notification">Вібрація при сповіщенні</string>
+    <string name="do_not_vibrate_on_notification">Без вібрації при сповіщенні</string>
+    <string name="bypass_do_not_disturb">Обійти режим "Не турбувати"</string>
+    <string name="bypass_do_not_disturb_enabled">Дзвоніть навіть у режимі "Не турбувати"</string>
+    <string name="bypass_do_not_disturb_disabled">Дотримуватися режиму "Не турбувати"</string>
+    <string name="wake_screen">Розбудити екран</string>
+    <string name="wake_screen_enabled">Увімкнути екран як будильник</string>
+    <string name="wake_screen_disabled">Не вмикати екран</string>
+    <string name="notification_category">Категорія сповіщення</string>
+    <string name="notification_category_default">За замовчуванням</string>
+    <string name="notification_category_alarm">Будильник</string>
+    <string name="notification_category_event">Подія</string>
+    <string name="notification_category_call">Дзвінок</string>
+    <string name="lock_screen_visibility">Видимість на екрані блокування</string>
+    <string name="lock_screen_visibility_public">Показати весь вміст</string>
+    <string name="lock_screen_visibility_private">Сховати конфіденційний вміст</string>
+    <string name="lock_screen_visibility_secret">Повністю сховати</string>
+    <string name="vibration_pattern">Шаблон вібрації</string>
+    <string name="notification_overrides">Переозначення сповіщень</string>
+    <string name="notification_customization">Налаштування сповіщень</string>
+    <string name="how_does_this_work">Як це працює?</string>
+    <string name="inherit_from_settings">Спадкувати з параметрів</string>
+    <string name="inherited_format">Унаслідковано: %s</string>
+    <string name="on">Увімкнено</string>
+    <string name="off">Вимкнено</string>
+    <string name="vibration_preset_short">Коротка</string>
+    <string name="vibration_preset_long">Довга</string>
+    <string name="vibration_preset_double_buzz">Подвійний гудок</string>
+    <string name="vibration_preset_default">За замовчуванням</string>
+    <string name="notification_delay">Затримка сповіщення</string>
+
+    <string name="builder_set_category_for_the_notification">Установити категорію системного сповіщення</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">Установити видимість сповіщення на екрані блокування</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">Дзвоніть навіть коли увімкнений режим "Не турбувати"</string>
+    <string name="builder_set_wake_screen_for_the_notification">Увімкнути екран як будильник</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">Установити шаблон вібрації для сповіщення</string>
+    <string name="builder_set_delay_for_the_notification">Затримати сповіщення на вказану кількість хвилин</string>
+
+    <string name="builder_quick_start_one_time">Одноразове нагадування</string>
+    <string name="builder_quick_start_every_weekday">Кожного робочого дня</string>
+    <string name="builder_quick_start_every_month_day">Кожного місяця в цей день</string>
+    <string name="builder_quick_start_every_year">Кожного року в цей день</string>
+    <string name="builder_quick_start_timer">Зворотний відлік</string>
+    <string name="builder_quick_start_shopping_list">Список покупок</string>
+    <string name="builder_quick_start_more_options">Більше параметрів…</string>
+
+    <string name="builder_invalid_email_value">Введіть дійсну адресу електронної пошти</string>
+    <string name="builder_invalid_web_address_value">Введіть дійсну веб-адресу</string>
+    <string name="builder_invalid_phone_number_value">Введіть дійсний номер телефону</string>
+    <string name="builder_shopping_list_empty_value">Додайте принаймні один елемент до списку</string>
+    <string name="builder_invalid_value_generic">Це значення недійсне</string>
+    <string name="builder_permissions_required_message">Надайте запрошені дозволи для продовження</string>
+
+    <string name="gemini_functions">Функції Gemini</string>
+
+    <string name="smart_list_today">Сьогодні</string>
+    <string name="smart_list_overdue">Прострочено</string>
+    <string name="smart_list_this_week">Цього тижня</string>
+    <string name="smart_list_no_group">Немає групи</string>
+
+    <string name="tags">Теги</string>
+    <string name="manage_tags">Управління тегами</string>
+    <string name="new_tag">Новий тег</string>
+    <string name="tag_name">Назва тега</string>
+    <string name="no_tags">Немає тегів</string>
+    <string name="delete_tag_permanently">Видалити цей тег? Він буде видалений з кожного нагадування та нотатки.</string>
+
+    <string name="local_backup">Локальна резервна копія</string>
+    <string name="backup_export_title">Експортувати резервну копію</string>
+    <string name="backup_import_title">Відновити резервну копію</string>
+    <string name="backup_export_description">Збережіть зашифровану копію ваших нагадувань, нотаток, груп, днів народження, місць і передустановок у файлі за вашим вибором. Нічого не надсилається. Якщо ви забудете пароль, резервну копію неможливо буде відновити.</string>
+    <string name="backup_import_description">Відновіть дані з раніше експортованого зашифрованого файлу резервної копії. Існуючі елементи з однаковим ідентифікатором будуть перезаписані; більш нічого не буде видалено.</string>
+    <string name="backup_passphrase">Парольна фраза</string>
+    <string name="backup_confirm_passphrase">Підтвердити парольну фразу</string>
+    <string name="backup_passphrase_mismatch">Парольні фрази не збігаються</string>
+    <string name="backup_passphrase_empty">Введіть парольну фразу</string>
+    <string name="backup_export_action">Експортувати</string>
+    <string name="backup_import_action">Відновити</string>
+    <string name="backup_export_success">Резервна копія успішно збережена.</string>
+    <string name="backup_export_failed">Не вдалося зберегти резервну копію. Будь ласка, спробуйте ще раз.</string>
+    <string name="backup_import_success">%1$d елементів успішно відновлено.</string>
+    <string name="backup_import_failed">Не вдалося відновити резервну копію. Будь ласка, спробуйте ще раз.</string>
+    <string name="backup_wrong_passphrase">Невірна парольна фраза або файл пошкоджений.</string>
+    <string name="backup_invalid_file">Цей файл не є дійсною резервною копією Reminder.</string>
+    <string name="backup_open_file_failed">Не вдалося відкрити вибраний файл.</string>
+
+    <string name="insights">Аналітика</string>
+    <string name="weekly_trend">Тижневий тренд</string>
+    <string name="busiest_day">Найбільш завантажений день: %1$s</string>
+    <string name="streak_current">Поточна серія: %1$d днів</string>
+    <string name="streak_longest">Найдовша серія: %1$d днів</string>
+    <string name="streak_fired_count">Запущено %1$d разів за останні 90 днів</string>
+    <string name="no_insights_yet">Без активності нагадувань за останні 90 днів</string>
+
+    <string name="upcoming_events">Майбутні</string>
+
+    <string name="agenda">Порядок денний</string>
+
+    <string name="group_has_no_active_reminders">Немає активних нагадувань у цій групі</string>
+    <string name="group_x_reminder">%d нагадування</string>
+    <string name="group_x_reminders">%d нагадувань</string>
+
+    <string name="type">Тип</string>
+    <string name="smart_lists">Розумні списки</string>
 </resources>
