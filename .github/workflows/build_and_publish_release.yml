@@ -43,7 +43,7 @@ jobs:
         echo "VERSION_CODE=$version_code" >> $GITHUB_ENV
 
     - name: Increase version code and change version name
-      uses: chkfung/android-version-actions@v1.2.2
+      uses: chkfung/android-version-actions@v1.2.3
       with:
         gradlePath: app/build.gradle.kts
         versionCode: ${{ env.VERSION_CODE }}
