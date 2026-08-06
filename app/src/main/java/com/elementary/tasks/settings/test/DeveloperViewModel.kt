@@ -132,7 +132,7 @@ class DeveloperViewModel(
   fun onClearAllTablesConfirm() {
     state.update { it.copy(clearAllTablesConfirmation = false) }
     viewModelScope.launch(dispatcherProvider.io()) {
-      Table.entries.forEach { clearTable(it) }
+      SUPPORTED_TABLES.forEach { clearTable(it) }
       navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("All tables have been cleared")))
     }
   }
@@ -260,7 +260,7 @@ class DeveloperViewModel(
   }
 
   private fun clearSelectedTable(selectedIndex: Int) {
-    val table = Table.entries[selectedIndex]
+    val table = SUPPORTED_TABLES[selectedIndex]
     viewModelScope.launch(dispatcherProvider.io()) {
       clearTable(table)
       navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("${table.tableName} table has been cleared")))
@@ -626,10 +626,13 @@ class DeveloperViewModel(
         "Birthday with number",
         "Birthday without age",
       )
-    private val TABLE_OPTIONS = Table.entries
+
+    private val SUPPORTED_TABLES = Table.entries
       .filterNot { it == Table.Reminder }
       .filterNot { it == Table.ReminderGroup }
+    private val TABLE_OPTIONS = SUPPORTED_TABLES
       .map { it.tableName }
+
     private val RECURRENCE_TEST_MINUTES = listOf(1, 2, 5, 10)
     private val RECURRENCE_TEST_OPTIONS = RECURRENCE_TEST_MINUTES.map { "$it minute${if (it == 1) "" else "s"}" }
     private val RECURRENCE_TEST_TYPES =
