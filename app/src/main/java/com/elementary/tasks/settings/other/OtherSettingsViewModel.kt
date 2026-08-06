@@ -69,6 +69,11 @@ class OtherSettingsViewModel(
   }
 
   fun onShowPermissionDialogClicked() {
+    _state.update {
+      it.copy(
+        permissionItems = loadPermissionItems(),
+      )
+    }
     if (_state.value.permissionItems.isEmpty()) {
       Logger.v(TAG, "Will not show permission dialog, no permissions are missing")
       event.emit(ViewModelEvent.ShowToast(textProvider.getString(R.string.all_permissions_are_enabled)))

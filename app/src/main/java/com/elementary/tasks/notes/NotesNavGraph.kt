@@ -2,7 +2,6 @@ package com.elementary.tasks.notes
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -138,12 +137,10 @@ private fun NotesListEntry(backStack: MutableList<NavKey>) {
     )
   }
 
-  val snackbarHostState = remember { SnackbarHostState() }
   val state by viewModel.notesScreenState.collectAsState(NotesScreenState())
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
-    snackbarHostState = snackbarHostState,
     onBackClick = { backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,
@@ -178,12 +175,10 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>) {
     )
   }
 
-  val snackbarHostState = remember { SnackbarHostState() }
   val state by viewModel.notesScreenState.collectAsState(NotesScreenState())
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
-    snackbarHostState = snackbarHostState,
     onBackClick = { backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,

@@ -19,12 +19,9 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,6 +50,7 @@ private const val GRID_COLUMNS = 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesScreen(
+  modifier: Modifier = Modifier,
   state: NotesScreenState,
   onBackClick: (() -> Unit)?,
   onSearchQueryChange: (String) -> Unit,
@@ -64,12 +62,9 @@ fun NotesScreen(
   onNoteClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
-  snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
-    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     topBar = {
       NotesTopBar(
         title = stringResource(if (state.isArchived) R.string.notes_archive else R.string.notes),
@@ -80,17 +75,8 @@ fun NotesScreen(
         onSortOrderSelected = onSortOrderSelected,
         onArchiveClick = onArchiveClick,
         onSettingsClick = onSettingsClick,
+        onAddClick = onAddClick
       )
-    },
-    floatingActionButton = {
-      if (onAddClick != null) {
-        FloatingActionButton(onClick = onAddClick) {
-          Icon(
-            painter = painterResource(R.drawable.ic_fluent_add),
-            contentDescription = stringResource(R.string.add_note),
-          )
-        }
-      }
     },
   ) { padding ->
     Column(
@@ -258,6 +244,7 @@ private fun NotesTopBar(
   onSortOrderSelected: (String) -> Unit,
   onArchiveClick: (() -> Unit)?,
   onSettingsClick: (() -> Unit)?,
+  onAddClick: (() -> Unit)?,
 ) {
   TopAppBar(
     title = { Text(title) },
@@ -271,15 +258,21 @@ private fun NotesTopBar(
       }
     },
     actions = {
-      MenuIconButton(
-        icon = painterResource(if (isGrid) R.drawable.ic_fluent_grid else R.drawable.ic_fluent_list),
-        contentDescription = stringResource(if (isGrid) R.string.grid_view else R.string.list_view),
-        onClick = onGridToggleClick,
-      )
-      SortMenuButton(sortOrder = sortOrder, onSortOrderSelected = onSortOrderSelected)
-      if (onArchiveClick != null || onSettingsClick != null) {
-        OverflowMenuButton(onArchiveClick = onArchiveClick, onSettingsClick = onSettingsClick)
+      if (onAddClick != null) {
+        MenuIconButton(
+          icon = AppIcons.Fluent.Add,
+          contentDescription = stringResource(R.string.acc_add),
+          onClick = onAddClick,
+          iconColor = MaterialTheme.colorScheme.primary,
+        )
       }
+      SortMenuButton(sortOrder = sortOrder, onSortOrderSelected = onSortOrderSelected)
+      OverflowMenuButton(
+        isGrid = isGrid,
+        onGridToggleClick = onGridToggleClick,
+        onArchiveClick = onArchiveClick,
+        onSettingsClick = onSettingsClick
+      )
     },
     colors =
       TopAppBarDefaults.topAppBarColors(
@@ -332,17 +325,27 @@ private data class OverflowAction(
 
 @Composable
 private fun OverflowMenuButton(
+  isGrid: Boolean,
+  onGridToggleClick: () -> Unit,
   onArchiveClick: (() -> Unit)?,
   onSettingsClick: (() -> Unit)?,
 ) {
   var expanded by remember { mutableStateOf(false) }
   val actions =
     buildList {
+      add(
+        OverflowAction(
+          0,
+          stringResource(if (isGrid) R.string.grid_view else R.string.list_view),
+          if (isGrid) R.drawable.ic_fluent_grid else R.drawable.ic_fluent_list,
+          onGridToggleClick
+        )
+      )
       if (onArchiveClick != null) {
-        add(OverflowAction(0, stringResource(R.string.notes_archive), R.drawable.ic_fluent_archive, onArchiveClick))
+        add(OverflowAction(1, stringResource(R.string.notes_archive), R.drawable.ic_fluent_archive, onArchiveClick))
       }
       if (onSettingsClick != null) {
-        add(OverflowAction(1, stringResource(R.string.action_settings), R.drawable.ic_fluent_settings, onSettingsClick))
+        add(OverflowAction(2, stringResource(R.string.action_settings), R.drawable.ic_fluent_settings, onSettingsClick))
       }
     }
   Box {

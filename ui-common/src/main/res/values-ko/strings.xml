@@ -929,4 +929,186 @@
     <string name="cd_back">뒤로</string>
     <string name="how_to_create_a_reminder">미리 알림 만드는 방법</string>
     <string name="copy_of">%s의 복사본</string>
+
+    <string name="turn_off">끄기</string>
+
+    <string name="delete_reminder_permanently">미리 알림을 영구 삭제하시겠습니까?</string>
+    <string name="delete_birthday_permanently">생일을 영구 삭제하시겠습니까?</string>
+    <string name="delete_note_permanently">메모를 영구 삭제하시겠습니까?</string>
+    <string name="delete_group_permanently">그룹을 영구 삭제하시겠습니까?</string>
+
+    <string name="share_send_note">메모 보내기…</string>
+
+    <string name="note_moved_to_archive">메모가 보관함으로 이동되었습니다</string>
+    <string name="note_reverted_from_archive">메모가 보관함에서 복원되었습니다</string>
+    <string name="show_note_in_notifications">알림에 메모 표시</string>
+
+    <string name="share_intent_title">공유...</string>
+    <string name="error_reminder_not_found">미리 알림을 찾을 수 없습니다!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">미리 알림이 이미 제거되었습니다! 먼저 편집하십시오.</string>
+
+    <string name="workflow_rules">워크플로우 규칙</string>
+    <string name="workflow_automations">자동화</string>
+    <string name="workflow_active_global_rules">활성 전역 규칙</string>
+    <string name="workflow_rules_for_group">이 그룹의 규칙</string>
+    <string name="workflow_no_rules_yet">아직 규칙 없음</string>
+    <string name="workflow_templates">템플릿</string>
+    <string name="workflow_apply_globally">전역 적용</string>
+    <string name="workflow_apply_to_group">그룹에 적용</string>
+    <string name="workflow_open_group_to_apply">그룹을 열어 이를 적용하세요</string>
+    <string name="workflow_save_as_template">템플릿으로 저장</string>
+    <string name="workflow_create_custom_rule">사용자 정의 규칙 만들기</string>
+    <string name="workflow_archive_after_days_hint">일</string>
+    <string name="workflow_category_reminder_lifecycle">미리 알림 수명 주기</string>
+    <string name="workflow_category_group">그룹</string>
+    <string name="workflow_category_location">위치</string>
+    <string name="workflow_category_notification_escalation">알림 &amp; 에스컬레이션</string>
+    <string name="workflow_category_system_integration">시스템 통합</string>
+    <string name="workflow_category_privacy_data_hygiene">개인 정보 보호 &amp; 데이터 위생</string>
+
+    <string name="workflow_builder_new_rule_title">새 규칙</string>
+    <string name="workflow_builder_edit_rule_title">규칙 수정</string>
+    <string name="workflow_builder_when">언제</string>
+    <string name="workflow_builder_if_optional">만약 (선택사항)</string>
+    <string name="workflow_builder_then">그럼</string>
+    <string name="workflow_builder_not_set">설정되지 않음</string>
+    <string name="workflow_builder_add_condition">조건 추가</string>
+    <string name="workflow_builder_choose_trigger">트리거 선택</string>
+    <string name="workflow_builder_choose_condition">조건 선택</string>
+    <string name="workflow_builder_choose_action">작업 선택</string>
+    <string name="workflow_builder_snooze_count_hint">다시 알림 횟수</string>
+    <string name="workflow_builder_minutes_hint">분</string>
+    <string name="workflow_builder_minutes_unit">분</string>
+    <string name="workflow_builder_select_group">그룹 선택</string>
+    <string name="workflow_builder_select_reminder">미리 알림 선택</string>
+    <string name="workflow_builder_no_groups">그룹이 없습니다</string>
+    <string name="workflow_builder_no_reminders">활성 미리 알림 없음</string>
+    <string name="workflow_trigger_reminder_completed">미리 알림이 완료됨</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">미리 알림이 N번 다시 알림됨</string>
+    <string name="workflow_trigger_group_all_completed">그룹의 모든 미리 알림이 완료됨</string>
+    <string name="workflow_trigger_location_entered">미리 알림의 위치에 도착함</string>
+    <string name="workflow_trigger_location_exited">미리 알림의 위치를 떠남</string>
+    <string name="workflow_trigger_reminder_age_exceeded">최소 N일 전에 완료됨</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">N분 동안 표시되지 않음</string>
+    <string name="workflow_condition_priority_at_least">우선순위가 최소</string>
+    <string name="workflow_condition_within_time_window">현재 시간은</string>
+    <string name="workflow_condition_group_is">미리 알림의 그룹은</string>
+    <string name="workflow_action_archive_reminder">미리 알림 보관</string>
+    <string name="workflow_action_complete_reminder">미리 알림 완료</string>
+    <string name="workflow_action_apply_notification_override">알림 설정 변경</string>
+    <string name="workflow_action_activate_reminder">다른 미리 알림 활성화</string>
+    <string name="preset_buy_groceries">식료품 구매</string>
+    <string name="preset_bread">빵</string>
+    <string name="preset_juice">주스</string>
+    <string name="preset_cookies">쿠키</string>
+    <string name="haptic_feedback">햅틱 피드백</string>
+    <string name="use_haptic_feedback_for_interactions">상호 작용을 위해 햅틱 피드백 사용</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">상호 작용을 위해 햅틱 피드백을 사용하지 않음</string>
+
+    <string name="notification_defaults">알림 기본값</string>
+    <string name="default_vibrate">진동</string>
+    <string name="vibrate_on_notification">알림 시 진동</string>
+    <string name="do_not_vibrate_on_notification">알림 시 진동하지 않음</string>
+    <string name="bypass_do_not_disturb">방해 금지 모드 무시</string>
+    <string name="bypass_do_not_disturb_enabled">방해 금지 중에도 울림</string>
+    <string name="bypass_do_not_disturb_disabled">방해 금지 모드 준수</string>
+    <string name="wake_screen">화면 깨우기</string>
+    <string name="wake_screen_enabled">알람처럼 화면 켜기</string>
+    <string name="wake_screen_disabled">화면을 켜지 않음</string>
+    <string name="notification_category">알림 카테고리</string>
+    <string name="notification_category_default">기본값</string>
+    <string name="notification_category_alarm">알람</string>
+    <string name="notification_category_event">이벤트</string>
+    <string name="notification_category_call">통화</string>
+    <string name="lock_screen_visibility">잠금 화면 표시 여부</string>
+    <string name="lock_screen_visibility_public">전체 콘텐츠 표시</string>
+    <string name="lock_screen_visibility_private">민감한 콘텐츠 숨기기</string>
+    <string name="lock_screen_visibility_secret">완전히 숨기기</string>
+    <string name="vibration_pattern">진동 패턴</string>
+    <string name="notification_overrides">알림 재정의</string>
+    <string name="notification_customization">알림 맞춤설정</string>
+    <string name="how_does_this_work">어떻게 작동합니까?</string>
+    <string name="inherit_from_settings">설정에서 상속</string>
+    <string name="inherited_format">상속됨: %s</string>
+    <string name="on">켜짐</string>
+    <string name="off">꺼짐</string>
+    <string name="vibration_preset_short">짧음</string>
+    <string name="vibration_preset_long">길음</string>
+    <string name="vibration_preset_double_buzz">이중 버즈</string>
+    <string name="vibration_preset_default">기본값</string>
+    <string name="notification_delay">알림 지연</string>
+
+    <string name="builder_set_category_for_the_notification">알림에 대한 시스템 알림 카테고리 설정</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">잠금 화면에 표시되는 알림의 양 설정</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">방해 금지 중에도 울림</string>
+    <string name="builder_set_wake_screen_for_the_notification">알람처럼 화면 켜기</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">알림에 대한 진동 패턴 설정</string>
+    <string name="builder_set_delay_for_the_notification">이 시간(분)만큼 알림 지연</string>
+
+    <string name="builder_quick_start_one_time">일회용 미리 알림</string>
+    <string name="builder_quick_start_every_weekday">매주 평일</string>
+    <string name="builder_quick_start_every_month_day">매월 이날</string>
+    <string name="builder_quick_start_every_year">매년 이날</string>
+    <string name="builder_quick_start_timer">카운트다운 타이머</string>
+    <string name="builder_quick_start_shopping_list">쇼핑 목록</string>
+    <string name="builder_quick_start_more_options">더 많은 옵션…</string>
+
+    <string name="builder_invalid_email_value">유효한 이메일 주소를 입력하세요</string>
+    <string name="builder_invalid_web_address_value">유효한 웹 주소를 입력하세요</string>
+    <string name="builder_invalid_phone_number_value">유효한 전화번호를 입력하세요</string>
+    <string name="builder_shopping_list_empty_value">목록에 최소 하나의 항목을 추가하세요</string>
+    <string name="builder_invalid_value_generic">이 값은 유효하지 않습니다</string>
+    <string name="builder_permissions_required_message">계속하려면 요청된 권한을 부여하세요</string>
+
+    <string name="gemini_functions">Gemini 기능</string>
+
+    <string name="smart_list_today">오늘</string>
+    <string name="smart_list_overdue">기한 초과</string>
+    <string name="smart_list_this_week">이번 주</string>
+    <string name="smart_list_no_group">그룹 없음</string>
+
+    <string name="tags">태그</string>
+    <string name="manage_tags">태그 관리</string>
+    <string name="new_tag">새 태그</string>
+    <string name="tag_name">태그 이름</string>
+    <string name="no_tags">아직 태그 없음</string>
+    <string name="delete_tag_permanently">이 태그를 삭제하시겠습니까? 모든 미리 알림 및 메모에서 제거됩니다.</string>
+
+    <string name="local_backup">로컬 백업</string>
+    <string name="backup_export_title">백업 내보내기</string>
+    <string name="backup_import_title">백업 복원</string>
+    <string name="backup_export_description">미리 알림, 메모, 그룹, 생일, 장소 및 사전설정의 암호화된 복사본을 선택한 파일에 저장하세요. 어디에도 전송되지 않습니다. 암호를 잊은 경우 백업을 복구할 수 없습니다.</string>
+    <string name="backup_import_description">이전에 내보낸 암호화된 백업 파일에서 데이터를 복원하세요. 동일한 ID의 기존 항목은 덮어쓰기됩니다. 다른 항목은 삭제되지 않습니다.</string>
+    <string name="backup_passphrase">암호</string>
+    <string name="backup_confirm_passphrase">암호 확인</string>
+    <string name="backup_passphrase_mismatch">암호가 일치하지 않습니다</string>
+    <string name="backup_passphrase_empty">암호를 입력하세요</string>
+    <string name="backup_export_action">내보내기</string>
+    <string name="backup_import_action">복원</string>
+    <string name="backup_export_success">백업이 성공적으로 저장되었습니다.</string>
+    <string name="backup_export_failed">백업을 저장할 수 없습니다. 다시 시도하세요.</string>
+    <string name="backup_import_success">%1$d개 항목이 성공적으로 복원되었습니다.</string>
+    <string name="backup_import_failed">백업을 복원할 수 없습니다. 다시 시도하세요.</string>
+    <string name="backup_wrong_passphrase">잘못된 암호이거나 파일이 손상되었습니다.</string>
+    <string name="backup_invalid_file">이 파일은 유효한 알림 백업이 아닙니다.</string>
+    <string name="backup_open_file_failed">선택한 파일을 열 수 없습니다.</string>
+
+    <string name="insights">인사이트</string>
+    <string name="weekly_trend">주간 트렌드</string>
+    <string name="busiest_day">가장 바쁜 날: %1$s</string>
+    <string name="streak_current">현재 연속: %1$d일</string>
+    <string name="streak_longest">가장 긴 연속: %1$d일</string>
+    <string name="streak_fired_count">지난 90일 동안 %1$d번 실행됨</string>
+    <string name="no_insights_yet">지난 90일 동안의 미리 알림 활동이 아직 없습니다</string>
+
+    <string name="upcoming_events">예정된 이벤트</string>
+
+    <string name="agenda">의제</string>
+
+    <string name="group_has_no_active_reminders">이 그룹에는 활성 미리 알림이 없습니다</string>
+    <string name="group_x_reminder">%d미리 알림</string>
+    <string name="group_x_reminders">%d미리 알림</string>
+
+    <string name="type">유형</string>
+    <string name="smart_lists">스마트 목록</string>
 </resources>
