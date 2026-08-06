@@ -5,10 +5,10 @@ import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.text.UiTextFormat
-import com.elementary.tasks.home.eventsview.EventCategory
-import com.elementary.tasks.home.eventsview.EventMenuAction
-import com.elementary.tasks.home.eventsview.UiEventBirthday
-import com.elementary.tasks.home.eventsview.UiEventReminder
+import com.elementary.tasks.home.agenda.AgendaCategory
+import com.elementary.tasks.home.agenda.AgendaMenuAction
+import com.elementary.tasks.home.agenda.UiAgendaBirthday
+import com.elementary.tasks.home.agenda.UiAgendaReminder
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.lists.data.UiReminderListState
@@ -68,10 +68,10 @@ class WeekViewViewModelTest : BaseTest() {
   private fun reminderItem(
     id: String = "r1",
     isGps: Boolean = false,
-  ) = UiEventReminder(
+  ) = UiAgendaReminder(
     id = id,
     dateTime = of(2026, 7, 15, 9, 0),
-    category = EventCategory.REMINDERS,
+    category = AgendaCategory.REMINDERS,
     mainText = UiTextElement(id, UiTextFormat(fontSize = 14f)),
     secondaryText = null,
     tertiaryText = null,
@@ -81,7 +81,7 @@ class WeekViewViewModelTest : BaseTest() {
   )
 
   private fun birthdayItem(id: String = "b1") =
-    UiEventBirthday(
+    UiAgendaBirthday(
       id = id,
       dateTime = of(2026, 7, 15, 0, 0),
       name = "Alice",
@@ -176,8 +176,8 @@ class WeekViewViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onEventMenuAction OPEN on a reminder posts OpenReminderPreview`() {
-    viewModel.onEventMenuAction(reminderItem("r1"), EventMenuAction.OPEN)
+  fun `onAgendaMenuAction OPEN on a reminder posts OpenReminderPreview`() {
+    viewModel.onAgendaMenuAction(reminderItem("r1"), AgendaMenuAction.OPEN)
 
     assertEquals(
       WeekViewViewModel.NavigationEvent.OpenReminderPreview("r1"),
@@ -186,8 +186,8 @@ class WeekViewViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onEventMenuAction EDIT on a reminder posts OpenReminderEdit`() {
-    viewModel.onEventMenuAction(reminderItem("r1"), EventMenuAction.EDIT)
+  fun `onAgendaMenuAction EDIT on a reminder posts OpenReminderEdit`() {
+    viewModel.onAgendaMenuAction(reminderItem("r1"), AgendaMenuAction.EDIT)
 
     assertEquals(
       WeekViewViewModel.NavigationEvent.OpenReminderEdit("r1"),
@@ -196,8 +196,8 @@ class WeekViewViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onEventMenuAction ARCHIVE on a reminder posts ConfirmArchiveReminder`() {
-    viewModel.onEventMenuAction(reminderItem("r1"), EventMenuAction.ARCHIVE)
+  fun `onAgendaMenuAction ARCHIVE on a reminder posts ConfirmArchiveReminder`() {
+    viewModel.onAgendaMenuAction(reminderItem("r1"), AgendaMenuAction.ARCHIVE)
 
     assertEquals(
       WeekViewViewModel.NavigationEvent.ConfirmArchiveReminder("r1"),
@@ -206,19 +206,19 @@ class WeekViewViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onEventMenuAction TURN_OFF on a non-gps reminder toggles it directly`() {
+  fun `onAgendaMenuAction TURN_OFF on a non-gps reminder toggles it directly`() {
     val reminder = ReminderV2(uuId = "r1", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
     coEvery { reminderV2Repository.getById("r1") } returns reminder
 
-    viewModel.onEventMenuAction(reminderItem("r1", isGps = false), EventMenuAction.TURN_OFF)
+    viewModel.onAgendaMenuAction(reminderItem("r1", isGps = false), AgendaMenuAction.TURN_OFF)
 
     coVerify(exactly = 1) { toggleReminderStateUseCase(reminder) }
     assertEquals(null, viewModel.navigationEvent.value)
   }
 
   @Test
-  fun `onEventMenuAction TURN_OFF on a gps reminder requests location permission instead of toggling`() {
-    viewModel.onEventMenuAction(reminderItem("r1", isGps = true), EventMenuAction.TURN_OFF)
+  fun `onAgendaMenuAction TURN_OFF on a gps reminder requests location permission instead of toggling`() {
+    viewModel.onAgendaMenuAction(reminderItem("r1", isGps = true), AgendaMenuAction.TURN_OFF)
 
     coVerify(exactly = 0) { toggleReminderStateUseCase(any()) }
     assertEquals(
@@ -228,15 +228,15 @@ class WeekViewViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onEventMenuAction DELETE on a reminder does nothing`() {
-    viewModel.onEventMenuAction(reminderItem("r1"), EventMenuAction.DELETE)
+  fun `onAgendaMenuAction DELETE on a reminder does nothing`() {
+    viewModel.onAgendaMenuAction(reminderItem("r1"), AgendaMenuAction.DELETE)
 
     assertEquals(null, viewModel.navigationEvent.value)
   }
 
   @Test
-  fun `onEventMenuAction EDIT on a birthday posts OpenBirthdayEdit`() {
-    viewModel.onEventMenuAction(birthdayItem("b1"), EventMenuAction.EDIT)
+  fun `onAgendaMenuAction EDIT on a birthday posts OpenBirthdayEdit`() {
+    viewModel.onAgendaMenuAction(birthdayItem("b1"), AgendaMenuAction.EDIT)
 
     assertEquals(
       WeekViewViewModel.NavigationEvent.OpenBirthdayEdit("b1"),
@@ -245,8 +245,8 @@ class WeekViewViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onEventMenuAction DELETE on a birthday posts ConfirmDeleteBirthday`() {
-    viewModel.onEventMenuAction(birthdayItem("b1"), EventMenuAction.DELETE)
+  fun `onAgendaMenuAction DELETE on a birthday posts ConfirmDeleteBirthday`() {
+    viewModel.onAgendaMenuAction(birthdayItem("b1"), AgendaMenuAction.DELETE)
 
     assertEquals(
       WeekViewViewModel.NavigationEvent.ConfirmDeleteBirthday("b1"),
@@ -255,8 +255,8 @@ class WeekViewViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onEventMenuAction ARCHIVE on a birthday does nothing`() {
-    viewModel.onEventMenuAction(birthdayItem("b1"), EventMenuAction.ARCHIVE)
+  fun `onAgendaMenuAction ARCHIVE on a birthday does nothing`() {
+    viewModel.onAgendaMenuAction(birthdayItem("b1"), AgendaMenuAction.ARCHIVE)
 
     assertEquals(null, viewModel.navigationEvent.value)
   }

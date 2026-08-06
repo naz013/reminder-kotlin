@@ -17,9 +17,9 @@ import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.elementary.tasks.googletasks.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
-import com.elementary.tasks.home.eventsview.EventsScreen
-import com.elementary.tasks.home.eventsview.EventsScreenState
-import com.elementary.tasks.home.eventsview.EventsViewModel
+import com.elementary.tasks.home.agenda.AgendaScreen
+import com.elementary.tasks.home.agenda.AgendaScreenState
+import com.elementary.tasks.home.agenda.AgendaViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
@@ -38,7 +38,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
   entry<HomeNavKey.Main> { HomeEntry(backStack) }
-  entry<HomeNavKey.Events> { EventsEntry(backStack) }
+  entry<HomeNavKey.Agenda> { AgendaEntry(backStack) }
 }
 
 @Composable
@@ -79,8 +79,8 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
         backStack.add(CalendarNavKey.Month)
       }
 
-      is ScheduleHomeViewModel.ViewModelEvent.OpenEvents -> {
-        backStack.add(HomeNavKey.Events)
+      is ScheduleHomeViewModel.ViewModelEvent.OpenAgenda -> {
+        backStack.add(HomeNavKey.Agenda)
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenNotes -> {
@@ -151,62 +151,62 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
 }
 
 @Composable
-private fun EventsEntry(backStack: MutableList<NavKey>) {
-  val viewModel = koinViewModel<EventsViewModel>()
+private fun AgendaEntry(backStack: MutableList<NavKey>) {
+  val viewModel = koinViewModel<AgendaViewModel>()
   val appNavBridge = rememberAppNavBridge()
   val permissionRequester = rememberPermissionRequesterRationale()
   val dialogDispatcher = rememberDialogDispatcher()
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is EventsViewModel.NavigationEvent.OpenReminderPreview -> {
+      is AgendaViewModel.NavigationEvent.OpenReminderPreview -> {
         backStack.add(ReminderPreviewNavKey.Preview(event.id))
       }
 
-      is EventsViewModel.NavigationEvent.OpenReminderEdit -> {
+      is AgendaViewModel.NavigationEvent.OpenReminderEdit -> {
         appNavBridge.navigate(BuildReminderNavKey.Main(id = event.id))
       }
 
-      EventsViewModel.NavigationEvent.OpenNewReminder -> {
+      AgendaViewModel.NavigationEvent.OpenNewReminder -> {
         appNavBridge.navigate(BuildReminderNavKey.Main())
       }
 
-      EventsViewModel.NavigationEvent.OpenNewShoppingReminder -> {
+      AgendaViewModel.NavigationEvent.OpenNewShoppingReminder -> {
         appNavBridge.navigate(BuildReminderNavKey.Main(deepLinkTodo = true))
       }
 
-      is EventsViewModel.NavigationEvent.OpenBirthdayPreview -> {
+      is AgendaViewModel.NavigationEvent.OpenBirthdayPreview -> {
         appNavBridge.navigate(BirthdaysNavKey.Preview(event.id))
       }
 
-      is EventsViewModel.NavigationEvent.OpenBirthdayEdit -> {
+      is AgendaViewModel.NavigationEvent.OpenBirthdayEdit -> {
         appNavBridge.navigate(BirthdaysNavKey.Edit(event.id))
       }
 
-      EventsViewModel.NavigationEvent.OpenNewBirthday -> {
+      AgendaViewModel.NavigationEvent.OpenNewBirthday -> {
         appNavBridge.navigate(BirthdaysNavKey.Edit())
       }
 
-      EventsViewModel.NavigationEvent.OpenArchive -> {
+      AgendaViewModel.NavigationEvent.OpenArchive -> {
         backStack.add(RemindersArchiveNavKey.List)
       }
 
-      EventsViewModel.NavigationEvent.OpenGroups -> {
+      AgendaViewModel.NavigationEvent.OpenGroups -> {
         appNavBridge.navigate(GroupsNavKey.List)
       }
 
-      EventsViewModel.NavigationEvent.OpenTags -> {
+      AgendaViewModel.NavigationEvent.OpenTags -> {
         backStack.add(TagsNavKey.Manage)
       }
 
-      is EventsViewModel.NavigationEvent.RequestGpsPermission -> {
+      is AgendaViewModel.NavigationEvent.RequestGpsPermission -> {
         permissionRequester.request(
           listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
           onGranted = { viewModel.toggleReminder(event.id) },
         )
       }
 
-      is EventsViewModel.NavigationEvent.ConfirmArchiveReminder -> {
+      is AgendaViewModel.NavigationEvent.ConfirmArchiveReminder -> {
         dialogDispatcher.showDialog(
           titleRes = R.string.move_to_archive,
           positiveButtonRes = R.string.yes,
@@ -217,7 +217,7 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
         )
       }
 
-      is EventsViewModel.NavigationEvent.ConfirmDeleteReminder -> {
+      is AgendaViewModel.NavigationEvent.ConfirmDeleteReminder -> {
         dialogDispatcher.showDialog(
           textRes = R.string.delete_reminder_permanently,
           positiveButtonRes = R.string.yes,
@@ -228,7 +228,7 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
         )
       }
 
-      is EventsViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
+      is AgendaViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
         dialogDispatcher.showDialog(
           textRes = R.string.delete_birthday_permanently,
           positiveButtonRes = R.string.yes,
@@ -239,8 +239,8 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
     }
   }
 
-  val state by viewModel.eventsScreenState.collectAsState(EventsScreenState())
-  EventsScreen(
+  val state by viewModel.agendaScreenState.collectAsState(AgendaScreenState())
+  AgendaScreen(
     state = state,
     onBackClick = { backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
@@ -255,6 +255,6 @@ private fun EventsEntry(backStack: MutableList<NavKey>) {
     onGroupsClick = viewModel::onGroupsClick,
     onTagsClick = viewModel::onTagsClick,
     onItemClick = viewModel::onItemClick,
-    onEventMenuAction = viewModel::onEventMenuAction,
+    onAgendaMenuAction = viewModel::onAgendaMenuAction,
   )
 }

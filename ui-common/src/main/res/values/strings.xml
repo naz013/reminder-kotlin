@@ -161,6 +161,7 @@
     <string name="add_birthday">Add birthday</string>
     <string name="active_reminders">Active reminders</string>
     <string name="events">Events</string>
+    <string name="agenda">Agenda</string>
     <string name="must_be_not_empty">Must not be empty!</string>
     <string name="other_version_detected">Other application detected!</string>
     <string name="open">Open</string>

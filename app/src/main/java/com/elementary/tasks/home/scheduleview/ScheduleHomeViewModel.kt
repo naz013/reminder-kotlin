@@ -240,7 +240,7 @@ class ScheduleHomeViewModel(
 
     data object OpenCreateNote : ViewModelEvent
 
-    data object OpenEvents : ViewModelEvent
+    data object OpenAgenda : ViewModelEvent
 
     data object OpenCalendar : ViewModelEvent
 

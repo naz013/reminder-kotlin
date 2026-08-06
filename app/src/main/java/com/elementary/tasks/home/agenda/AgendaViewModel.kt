@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.eventsview
+package com.elementary.tasks.home.agenda
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-class EventsViewModel(
+class AgendaViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderV2Repository: ReminderV2Repository,
   private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase,
@@ -50,7 +50,7 @@ class EventsViewModel(
   private val birthdayRepository: BirthdayRepository,
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
-  private val uiEventItemAdapter: UiEventItemAdapter,
+  private val uiAgendaItemAdapter: UiAgendaItemAdapter,
   private val dateTimeManager: DateTimeManager,
   private val birthdaySmartListPredicate: BirthdaySmartListPredicate,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
@@ -60,13 +60,13 @@ class EventsViewModel(
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
 ) : ViewModel() {
 
-  private val _eventsScreenState = MutableStateFlow(EventsScreenState())
-  val eventsScreenState = _eventsScreenState.stateInWhileSubscribed(EventsScreenState())
+  private val _agendaScreenState = MutableStateFlow(AgendaScreenState())
+  val agendaScreenState = _agendaScreenState.stateInWhileSubscribed(AgendaScreenState())
     .onStart { refresh() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQuery = MutableStateFlow("")
-  private val selectedCategories = MutableStateFlow(EventCategory.entries.toSet())
+  private val selectedCategories = MutableStateFlow(AgendaCategory.entries.toSet())
   private val selectedSmartList = MutableStateFlow<SmartListFilter?>(null)
   private val selectedTagId = MutableStateFlow<String?>(null)
   private val selectedGroupId = MutableStateFlow<String?>(null)
@@ -111,21 +111,23 @@ class EventsViewModel(
   private suspend fun refreshHasAnyItems() {
     val hasAnyItems =
       getRemindersV2ByRemovedStatusUseCase(removed = false).isNotEmpty() || birthdayRepository.getAll().isNotEmpty()
-    _eventsScreenState.update { it.copy(hasAnyItems = hasAnyItems) }
+    _agendaScreenState.update { it.copy(hasAnyItems = hasAnyItems) }
   }
 
   internal suspend fun loadMerged(
     query: String,
-    categories: Set<EventCategory>,
+    categories: Set<AgendaCategory>,
     smartList: SmartListFilter? = null,
     tagId: String? = null,
     groupId: String? = null,
   ): MergedResult {
     val reminderCategoriesSelected =
-      categories.contains(EventCategory.REMINDERS) || categories.contains(EventCategory.SHOPPING)
+      categories.contains(AgendaCategory.REMINDERS) ||
+        categories.contains(AgendaCategory.SHOPPING) ||
+        categories.contains(AgendaCategory.LOCATION)
     val allReminders =
       if (reminderCategoriesSelected) getRemindersV2ByRemovedStatusUseCase(removed = false) else emptyList()
-    val allBirthdays = if (categories.contains(EventCategory.BIRTHDAYS)) birthdayRepository.getAll() else emptyList()
+    val allBirthdays = if (categories.contains(AgendaCategory.BIRTHDAYS)) birthdayRepository.getAll() else emptyList()
     val groups = groupV2Repository.getAll()
     val tags = tagRepository.getAll()
 
@@ -133,12 +135,12 @@ class EventsViewModel(
     val filteredBirthdays = filterBirthdays(allBirthdays, query, smartList, tagId, groupId)
 
     val groupsById = groups.associateBy { it.uuId }
-    val items = uiEventItemAdapter.convertV2(filteredReminders, groupsById, filteredBirthdays)
+    val items = uiAgendaItemAdapter.convertV2(filteredReminders, groupsById, filteredBirthdays)
     return MergedResult(items, tags, groups)
   }
 
   private fun applyList(result: MergedResult) {
-    _eventsScreenState.update {
+    _agendaScreenState.update {
       it.copy(
         listState = if (result.items.isEmpty()) ListState.Empty else ListState.Ready(result.items),
         availableTags = result.availableTags,
@@ -150,15 +152,18 @@ class EventsViewModel(
   private suspend fun filterReminders(
     reminders: List<ReminderV2>,
     query: String,
-    categories: Set<EventCategory>,
+    categories: Set<AgendaCategory>,
     smartList: SmartListFilter?,
     tagId: String?,
     groupId: String?,
   ): List<ReminderV2> {
     val byCategory =
       reminders.filter { reminder ->
-        val isShopping = reminder.action is ReminderAction.Shopping
-        if (isShopping) categories.contains(EventCategory.SHOPPING) else categories.contains(EventCategory.REMINDERS)
+        when {
+          reminder.action is ReminderAction.Shopping -> categories.contains(AgendaCategory.SHOPPING)
+          reminder.location != null -> categories.contains(AgendaCategory.LOCATION)
+          else -> categories.contains(AgendaCategory.REMINDERS)
+        }
       }
     val byQuery = if (query.isBlank()) byCategory else byCategory.filter(ReminderV2QueryFilterInstance(query))
     val bySmartList =
@@ -201,44 +206,44 @@ class EventsViewModel(
   }
 
   fun onSearchQueryChange(query: String) {
-    _eventsScreenState.update { it.copy(searchQuery = query) }
+    _agendaScreenState.update { it.copy(searchQuery = query) }
     searchQuery.value = query
   }
 
-  fun onCategoryToggle(category: EventCategory) {
+  fun onCategoryToggle(category: AgendaCategory) {
     val current = selectedCategories.value
     val updated = if (current.contains(category)) current - category else current + category
     selectedCategories.value = updated
-    _eventsScreenState.update { it.copy(selectedCategories = updated) }
+    _agendaScreenState.update { it.copy(selectedCategories = updated) }
   }
 
   fun onSmartListSelected(filter: SmartListFilter?) {
     val updated = if (selectedSmartList.value == filter) null else filter
     selectedSmartList.value = updated
-    _eventsScreenState.update { it.copy(selectedSmartList = updated) }
+    _agendaScreenState.update { it.copy(selectedSmartList = updated) }
   }
 
   fun onTagFilterSelected(tagId: String?) {
     val updated = if (selectedTagId.value == tagId) null else tagId
     selectedTagId.value = updated
-    _eventsScreenState.update { it.copy(selectedTagId = updated) }
+    _agendaScreenState.update { it.copy(selectedTagId = updated) }
   }
 
   fun onGroupFilterSelected(groupId: String?) {
     val updated = if (selectedGroupId.value == groupId) null else groupId
     selectedGroupId.value = updated
-    _eventsScreenState.update { it.copy(selectedGroupId = updated) }
+    _agendaScreenState.update { it.copy(selectedGroupId = updated) }
   }
 
-  fun onItemClick(item: UiEventItem) {
+  fun onItemClick(item: UiAgendaItem) {
     when (item) {
-      is UiEventReminder -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
-      is UiEventBirthday -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
-      is UiEventHeader -> Unit
+      is UiAgendaReminder -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
+      is UiAgendaBirthday -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
+      is UiAgendaHeader -> Unit
     }
   }
 
-  private fun onToggleReminder(item: UiEventReminder) {
+  private fun onToggleReminder(item: UiAgendaReminder) {
     if (item.state.isGps) {
       navigationEvent.value = Event(NavigationEvent.RequestGpsPermission(item.id))
     } else {
@@ -254,40 +259,40 @@ class EventsViewModel(
     }
   }
 
-  fun onEventMenuAction(
-    item: UiEventItem,
-    action: EventMenuAction,
+  fun onAgendaMenuAction(
+    item: UiAgendaItem,
+    action: AgendaMenuAction,
   ) {
     when (item) {
-      is UiEventReminder -> onReminderMenuAction(item, action)
-      is UiEventBirthday -> onBirthdayMenuAction(item, action)
-      is UiEventHeader -> Unit
+      is UiAgendaReminder -> onReminderMenuAction(item, action)
+      is UiAgendaBirthday -> onBirthdayMenuAction(item, action)
+      is UiAgendaHeader -> Unit
     }
   }
 
   private fun onReminderMenuAction(
-    item: UiEventReminder,
-    action: EventMenuAction,
+    item: UiAgendaReminder,
+    action: AgendaMenuAction,
   ) {
     when (action) {
-      EventMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
-      EventMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenReminderEdit(item.id))
-      EventMenuAction.ARCHIVE -> navigationEvent.value = Event(NavigationEvent.ConfirmArchiveReminder(item.id))
-      EventMenuAction.SKIP -> skipReminder(item.id)
-      EventMenuAction.TURN_OFF -> onToggleReminder(item)
-      EventMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteReminder(item.id))
+      AgendaMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
+      AgendaMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenReminderEdit(item.id))
+      AgendaMenuAction.ARCHIVE -> navigationEvent.value = Event(NavigationEvent.ConfirmArchiveReminder(item.id))
+      AgendaMenuAction.SKIP -> skipReminder(item.id)
+      AgendaMenuAction.TURN_OFF -> onToggleReminder(item)
+      AgendaMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteReminder(item.id))
     }
   }
 
   private fun onBirthdayMenuAction(
-    item: UiEventBirthday,
-    action: EventMenuAction,
+    item: UiAgendaBirthday,
+    action: AgendaMenuAction,
   ) {
     when (action) {
-      EventMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
-      EventMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayEdit(item.id))
-      EventMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteBirthday(item.id))
-      EventMenuAction.ARCHIVE, EventMenuAction.SKIP, EventMenuAction.TURN_OFF -> Unit
+      AgendaMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
+      AgendaMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayEdit(item.id))
+      AgendaMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteBirthday(item.id))
+      AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF -> Unit
     }
   }
 
@@ -350,14 +355,14 @@ class EventsViewModel(
   }
 
   data class MergedResult(
-    val items: List<UiEventItem>,
+    val items: List<UiAgendaItem>,
     val availableTags: List<Tag> = emptyList(),
     val availableGroups: List<GroupV2> = emptyList(),
   )
 
   private data class FilterCriteria(
     val query: String,
-    val categories: Set<EventCategory>,
+    val categories: Set<AgendaCategory>,
     val smartList: SmartListFilter?,
     val tagId: String?,
     val groupId: String?,
@@ -410,7 +415,7 @@ class EventsViewModel(
   }
 
   companion object {
-    private const val TAG = "EventsViewModel"
+    private const val TAG = "AgendaViewModel"
     private const val SEARCH_DEBOUNCE_MS = 300L
   }
 }

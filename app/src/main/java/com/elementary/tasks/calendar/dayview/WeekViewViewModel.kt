@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
-import com.elementary.tasks.home.eventsview.EventMenuAction
-import com.elementary.tasks.home.eventsview.UiEventBirthday
-import com.elementary.tasks.home.eventsview.UiEventItem
-import com.elementary.tasks.home.eventsview.UiEventReminder
+import com.elementary.tasks.home.agenda.AgendaMenuAction
+import com.elementary.tasks.home.agenda.UiAgendaBirthday
+import com.elementary.tasks.home.agenda.UiAgendaItem
+import com.elementary.tasks.home.agenda.UiAgendaReminder
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
@@ -83,7 +83,7 @@ class WeekViewViewModel(
     }
   }
 
-  suspend fun loadDayEvents(date: LocalDate): List<UiEventItem> =
+  suspend fun loadDayEvents(date: LocalDate): List<UiAgendaItem> =
     withContext(dispatcherProvider.default()) { getDayEventItemsUseCase(date) }
 
   private suspend fun applyDate(date: LocalDate) {
@@ -92,52 +92,52 @@ class WeekViewViewModel(
     state.update { it.copy(title = title, days = days, selectedDate = date) }
   }
 
-  fun onItemClick(item: UiEventItem) {
+  fun onItemClick(item: UiAgendaItem) {
     when (item) {
-      is UiEventReminder -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
-      is UiEventBirthday -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
+      is UiAgendaReminder -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
+      is UiAgendaBirthday -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
       else -> Unit
     }
   }
 
-  fun onEventMenuAction(
-    item: UiEventItem,
-    action: EventMenuAction,
+  fun onAgendaMenuAction(
+    item: UiAgendaItem,
+    action: AgendaMenuAction,
   ) {
     when (item) {
-      is UiEventReminder -> onReminderMenuAction(item, action)
-      is UiEventBirthday -> onBirthdayMenuAction(item, action)
+      is UiAgendaReminder -> onReminderMenuAction(item, action)
+      is UiAgendaBirthday -> onBirthdayMenuAction(item, action)
       else -> Unit
     }
   }
 
   private fun onReminderMenuAction(
-    item: UiEventReminder,
-    action: EventMenuAction,
+    item: UiAgendaReminder,
+    action: AgendaMenuAction,
   ) {
     when (action) {
-      EventMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
-      EventMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenReminderEdit(item.id))
-      EventMenuAction.ARCHIVE -> navigationEvent.value = Event(NavigationEvent.ConfirmArchiveReminder(item.id))
-      EventMenuAction.SKIP -> Unit
-      EventMenuAction.TURN_OFF -> onToggleReminder(item)
-      EventMenuAction.DELETE -> Unit
+      AgendaMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
+      AgendaMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenReminderEdit(item.id))
+      AgendaMenuAction.ARCHIVE -> navigationEvent.value = Event(NavigationEvent.ConfirmArchiveReminder(item.id))
+      AgendaMenuAction.SKIP -> Unit
+      AgendaMenuAction.TURN_OFF -> onToggleReminder(item)
+      AgendaMenuAction.DELETE -> Unit
     }
   }
 
   private fun onBirthdayMenuAction(
-    item: UiEventBirthday,
-    action: EventMenuAction,
+    item: UiAgendaBirthday,
+    action: AgendaMenuAction,
   ) {
     when (action) {
-      EventMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
-      EventMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayEdit(item.id))
-      EventMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteBirthday(item.id))
-      EventMenuAction.ARCHIVE, EventMenuAction.SKIP, EventMenuAction.TURN_OFF -> Unit
+      AgendaMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
+      AgendaMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayEdit(item.id))
+      AgendaMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteBirthday(item.id))
+      AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF -> Unit
     }
   }
 
-  private fun onToggleReminder(item: UiEventReminder) {
+  private fun onToggleReminder(item: UiAgendaReminder) {
     if (item.state.isGps) {
       navigationEvent.value = Event(NavigationEvent.RequestGpsPermission(item.id))
     } else {

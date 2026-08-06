@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.eventsview
+package com.elementary.tasks.home.agenda
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
@@ -12,6 +12,8 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListState
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.reminder.v2.LocationSettings
+import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.SyncMetadata
@@ -25,13 +27,13 @@ import org.junit.Test
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
-class UiEventItemAdapterTest {
+class UiAgendaItemAdapterTest {
   private val uiReminderListAdapter = mockk<UiReminderListAdapter>()
   private val uiBirthdayListAdapter = mockk<UiBirthdayListAdapter>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val textProvider = mockk<TextProvider>()
 
-  private lateinit var adapter: UiEventItemAdapter
+  private lateinit var adapter: UiAgendaItemAdapter
 
   private val today: LocalDate = LocalDate.now()
   private val tomorrow: LocalDate = today.plusDays(1)
@@ -43,22 +45,29 @@ class UiEventItemAdapterTest {
     every { textProvider.getText(R.string.tomorrow) } returns "Tomorrow"
     every { textProvider.getText(R.string.permanent) } returns "Permanent"
     every { textProvider.getText(R.string.disabled) } returns "Turned off"
+    every { textProvider.getText(R.string.location) } returns "Location"
+    every { textProvider.getText(R.string.shopping_lists) } returns "Shopping lists"
 
-    adapter = UiEventItemAdapter(uiReminderListAdapter, uiBirthdayListAdapter, dateTimeManager, textProvider)
+    adapter = UiAgendaItemAdapter(uiReminderListAdapter, uiBirthdayListAdapter, dateTimeManager, textProvider)
   }
 
-  private fun reminderV2(uuId: String) =
-    ReminderV2(
-      uuId = uuId,
-      schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
-      sync = SyncMetadata(syncState = SyncState.Synced),
-    )
+  private fun reminderV2(
+    uuId: String,
+    isLocation: Boolean = false,
+    isShopping: Boolean = false,
+  ) = ReminderV2(
+    uuId = uuId,
+    schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+    sync = SyncMetadata(syncState = SyncState.Synced),
+    location = if (isLocation) LocationSettings() else null,
+    action = if (isShopping) ReminderAction.Shopping else ReminderAction.None,
+  )
 
   @Test
   fun `returns empty list when there are no reminders or birthdays`() {
     val result = adapter.convertV2(emptyList(), emptyMap(), emptyList())
 
-    assertEquals(emptyList<UiEventItem>(), result)
+    assertEquals(emptyList<UiAgendaItem>(), result)
   }
 
   @Test
@@ -73,8 +82,8 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(laterReminder), emptyMap(), listOf(earlierBirthday))
 
     assertEquals(3, result.size)
-    assertTrue(result[0] is UiEventHeader)
-    assertEquals("Today", (result[0] as UiEventHeader).text)
+    assertTrue(result[0] is UiAgendaHeader)
+    assertEquals("Today", (result[0] as UiAgendaHeader).text)
     assertEquals("b1", result[1].id)
     assertEquals("r1", result[2].id)
   }
@@ -91,9 +100,9 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(todayReminder, tomorrowReminder), emptyMap(), emptyList())
 
     assertEquals(4, result.size)
-    assertEquals("Today", (result[0] as UiEventHeader).text)
+    assertEquals("Today", (result[0] as UiAgendaHeader).text)
     assertEquals("today-item", result[1].id)
-    assertEquals("Tomorrow", (result[2] as UiEventHeader).text)
+    assertEquals("Tomorrow", (result[2] as UiAgendaHeader).text)
     assertEquals("tomorrow-item", result[3].id)
   }
 
@@ -109,9 +118,9 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(datedReminder, permanentReminder), emptyMap(), emptyList())
 
     assertEquals(4, result.size)
-    assertEquals("Today", (result[0] as UiEventHeader).text)
+    assertEquals("Today", (result[0] as UiAgendaHeader).text)
     assertEquals("dated", result[1].id)
-    assertEquals("Permanent", (result[2] as UiEventHeader).text)
+    assertEquals("Permanent", (result[2] as UiAgendaHeader).text)
     assertEquals("permanent", result[3].id)
   }
 
@@ -124,8 +133,63 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(disabledReminder), emptyMap(), emptyList())
 
     assertEquals(2, result.size)
-    assertEquals("Turned off", (result[0] as UiEventHeader).text)
+    assertEquals("Turned off", (result[0] as UiAgendaHeader).text)
     assertEquals("disabled", result[1].id)
+  }
+
+  @Test
+  fun `orders due-date, permanent, location, no-date shopping and disabled buckets in that sequence`() {
+    val datedReminder = reminderV2("dated-reminder")
+    val permanentReminder = reminderV2("permanent-reminder")
+    val locationReminder = reminderV2("location-reminder", isLocation = true)
+    val shoppingNoDateReminder = reminderV2("shopping-reminder", isShopping = true)
+    val disabledReminder = reminderV2("disabled-reminder")
+    every { uiReminderListAdapter.createV2(datedReminder, null) } returns
+      uiReminderList(id = "dated", dueDateTime = today.atTime(10, 0))
+    every { uiReminderListAdapter.createV2(permanentReminder, null) } returns
+      uiReminderList(id = "permanent", dueDateTime = null, isActive = true)
+    every { uiReminderListAdapter.createV2(locationReminder, null) } returns
+      uiReminderList(id = "location", dueDateTime = null, isActive = true)
+    every { uiReminderListAdapter.createV2(shoppingNoDateReminder, null) } returns
+      uiReminderList(id = "shopping-no-date", dueDateTime = null, isActive = true)
+    every { uiReminderListAdapter.createV2(disabledReminder, null) } returns
+      uiReminderList(id = "disabled", dueDateTime = null, isActive = false)
+
+    val result =
+      adapter.convertV2(
+        listOf(disabledReminder, shoppingNoDateReminder, locationReminder, permanentReminder, datedReminder),
+        emptyMap(),
+        emptyList(),
+      )
+
+    assertEquals(
+      listOf(
+        "Today",
+        "dated",
+        "Permanent",
+        "permanent",
+        "Location",
+        "location",
+        "Shopping lists",
+        "shopping-no-date",
+        "Turned off",
+        "disabled",
+      ),
+      result.map { item -> if (item is UiAgendaHeader) item.text else item.id },
+    )
+  }
+
+  @Test
+  fun `keeps a location reminder in the Location bucket even when it has a due date`() {
+    val locationReminder = reminderV2("location-reminder", isLocation = true)
+    every { uiReminderListAdapter.createV2(locationReminder, null) } returns
+      uiReminderList(id = "location", dueDateTime = today.atTime(10, 0), isActive = true)
+
+    val result = adapter.convertV2(listOf(locationReminder), emptyMap(), emptyList())
+
+    assertEquals(2, result.size)
+    assertEquals("Location", (result[0] as UiAgendaHeader).text)
+    assertEquals("location", result[1].id)
   }
 
   private fun textElement(text: String) = UiTextElement(text = text, textFormat = UiTextFormat(fontSize = 14f))

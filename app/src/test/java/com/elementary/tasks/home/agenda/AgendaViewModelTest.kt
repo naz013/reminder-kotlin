@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.eventsview
+package com.elementary.tasks.home.agenda
 
 import com.elementary.tasks.birthdays.BirthdaySmartListPredicate
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
@@ -16,6 +16,7 @@ import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.reminder.v2.LocationSettings
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -39,19 +40,19 @@ import org.junit.Test
 import org.threeten.bp.LocalDateTime
 
 /**
- * Unit tests for [EventsViewModel]'s merge/sort/filter pipeline ([EventsViewModel.loadMerged]).
- * [UiEventItemAdapter] is mocked so these tests can focus purely on which reminders/birthdays make
+ * Unit tests for [AgendaViewModel]'s merge/sort/filter pipeline ([AgendaViewModel.loadMerged]).
+ * [UiAgendaItemAdapter] is mocked so these tests can focus purely on which reminders/birthdays make
  * it through category and search-query filtering, rather than on presentation formatting (covered
- * separately by [UiEventItemAdapterTest]).
+ * separately by [UiAgendaItemAdapterTest]).
  */
-class EventsViewModelTest {
+class AgendaViewModelTest {
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val getRemindersV2ByRemovedStatusUseCase = mockk<GetRemindersV2ByRemovedStatusUseCase>()
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val tagRepository = mockk<TagRepository>()
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
-  private val uiEventItemAdapter = mockk<UiEventItemAdapter>()
+  private val uiAgendaItemAdapter = mockk<UiAgendaItemAdapter>()
   private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>()
   private val skipReminderUseCase = mockk<SkipReminderUseCase>()
@@ -60,12 +61,12 @@ class EventsViewModelTest {
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
   private val birthdaySmartListPredicate = BirthdaySmartListPredicate(BirthdayDateCalculatorImpl())
 
-  private lateinit var viewModel: EventsViewModel
+  private lateinit var viewModel: AgendaViewModel
 
   @Before
   fun setUp() {
     coEvery { groupV2Repository.getAll() } returns emptyList()
-    // EventsViewModel's init{} eagerly runs the load pipeline once on construction, and
+    // AgendaViewModel's init{} eagerly runs the load pipeline once on construction, and
     // mockDispatcherProvider() uses Dispatchers.Unconfined, so that eager call executes
     // synchronously here in setUp() before any test body runs. Stub safe defaults so it
     // doesn't crash on unmocked calls; individual tests override these as needed.
@@ -73,16 +74,16 @@ class EventsViewModelTest {
     coEvery { birthdayRepository.getAll() } returns emptyList()
     coEvery { tagRepository.getAll() } returns emptyList()
     coEvery { tagAssignmentRepository.getItemIdsForTag(any(), any()) } returns emptyList()
-    // Echoes the filtered reminders/birthdays back as bare UiEventItems keyed by id, so tests can
+    // Echoes the filtered reminders/birthdays back as bare UiAgendaItems keyed by id, so tests can
     // assert on which domain objects survived filtering without depending on real UI formatting.
-    every { uiEventItemAdapter.convertV2(any(), any(), any()) } answers {
+    every { uiAgendaItemAdapter.convertV2(any(), any(), any()) } answers {
       val reminders = firstArg<List<ReminderV2>>()
       val birthdays = thirdArg<List<Birthday>>()
       reminders.map { fakeReminderItem(it.uuId) } + birthdays.map { fakeBirthdayItem(it.uuId) }
     }
 
     viewModel =
-      EventsViewModel(
+      AgendaViewModel(
         dispatcherProvider = mockDispatcherProvider(),
         reminderV2Repository = reminderV2Repository,
         getRemindersV2ByRemovedStatusUseCase = getRemindersV2ByRemovedStatusUseCase,
@@ -90,7 +91,7 @@ class EventsViewModelTest {
         birthdayRepository = birthdayRepository,
         tagRepository = tagRepository,
         tagAssignmentRepository = tagAssignmentRepository,
-        uiEventItemAdapter = uiEventItemAdapter,
+        uiAgendaItemAdapter = uiAgendaItemAdapter,
         dateTimeManager = dateTimeManager,
         birthdaySmartListPredicate = birthdaySmartListPredicate,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
@@ -111,7 +112,7 @@ class EventsViewModelTest {
     runTest {
       coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday("b1"))
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS))
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.BIRTHDAYS))
 
       coVerify(exactly = 0) { getRemindersV2ByRemovedStatusUseCase(any()) }
       assertEquals(listOf("b1"), result.items.map { it.id })
@@ -123,7 +124,7 @@ class EventsViewModelTest {
       coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
         listOf(reminderV2(id = "r1"))
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS))
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.REMINDERS))
 
       coVerify(exactly = 0) { birthdayRepository.getAll() }
       assertEquals(listOf("r1"), result.items.map { it.id })
@@ -138,7 +139,7 @@ class EventsViewModelTest {
           reminderV2(id = "shopping", isShopping = true),
         )
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS))
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.REMINDERS))
 
       assertEquals(listOf("normal"), result.items.map { it.id })
     }
@@ -152,9 +153,49 @@ class EventsViewModelTest {
           reminderV2(id = "shopping", isShopping = true),
         )
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.SHOPPING))
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.SHOPPING))
 
       assertEquals(listOf("shopping"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `filters out location-type reminders when only Reminders category is selected`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "normal"),
+          reminderV2(id = "location", isLocation = true),
+        )
+
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.REMINDERS))
+
+      assertEquals(listOf("normal"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `filters out normal reminders when only Location category is selected`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "normal"),
+          reminderV2(id = "location", isLocation = true),
+        )
+
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.LOCATION))
+
+      assertEquals(listOf("location"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `loads reminders when only Location category is selected`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(reminderV2(id = "location", isLocation = true))
+
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.LOCATION))
+
+      coVerify(exactly = 0) { birthdayRepository.getAll() }
+      assertEquals(listOf("location"), result.items.map { it.id })
     }
 
   @Test
@@ -171,7 +212,7 @@ class EventsViewModelTest {
           reminderBirthday(id = "no-match-bday", name = "John"),
         )
 
-      val result = viewModel.loadMerged("milk", EventCategory.entries.toSet())
+      val result = viewModel.loadMerged("milk", AgendaCategory.entries.toSet())
 
       assertEquals(setOf("match", "match-bday"), result.items.map { it.id }.toSet())
     }
@@ -183,7 +224,7 @@ class EventsViewModelTest {
 
       coVerify(exactly = 0) { getRemindersV2ByRemovedStatusUseCase(any()) }
       coVerify(exactly = 0) { birthdayRepository.getAll() }
-      assertEquals(emptyList<UiEventItem>(), result.items)
+      assertEquals(emptyList<UiAgendaItem>(), result.items)
     }
 
   @Test
@@ -193,9 +234,9 @@ class EventsViewModelTest {
         listOf(reminderV2(id = "r1", summary = "Call mom"))
       coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday("b1", name = "John"))
 
-      val result = viewModel.loadMerged("nonexistent-query", EventCategory.entries.toSet())
+      val result = viewModel.loadMerged("nonexistent-query", AgendaCategory.entries.toSet())
 
-      assertEquals(emptyList<UiEventItem>(), result.items)
+      assertEquals(emptyList<UiAgendaItem>(), result.items)
     }
 
   @Test
@@ -207,7 +248,7 @@ class EventsViewModelTest {
           reminderV2(id = "ungrouped", groupId = null),
         )
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.NO_GROUP)
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.REMINDERS), SmartListFilter.NO_GROUP)
 
       assertEquals(listOf("ungrouped"), result.items.map { it.id })
     }
@@ -223,7 +264,7 @@ class EventsViewModelTest {
       coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday("b1"))
 
       val result =
-        viewModel.loadMerged("", EventCategory.entries.toSet(), smartList = null, tagId = null, groupId = "group-1")
+        viewModel.loadMerged("", AgendaCategory.entries.toSet(), smartList = null, tagId = null, groupId = "group-1")
 
       assertEquals(listOf("in-group"), result.items.map { it.id })
     }
@@ -241,7 +282,7 @@ class EventsViewModelTest {
         listOf("tagged")
 
       val result =
-        viewModel.loadMerged("", EventCategory.entries.toSet(), smartList = null, tagId = "tag-1", groupId = null)
+        viewModel.loadMerged("", AgendaCategory.entries.toSet(), smartList = null, tagId = "tag-1", groupId = null)
 
       assertEquals(listOf("tagged"), result.items.map { it.id })
     }
@@ -253,7 +294,7 @@ class EventsViewModelTest {
       coEvery { tagRepository.getAll() } returns listOf(tag)
       coEvery { groupV2Repository.getAll() } returns emptyList()
 
-      val result = viewModel.loadMerged("", EventCategory.entries.toSet())
+      val result = viewModel.loadMerged("", AgendaCategory.entries.toSet())
 
       assertEquals(listOf(tag), result.availableTags)
     }
@@ -273,7 +314,7 @@ class EventsViewModelTest {
           reminderV2(id = "tomorrow", eventDateTime = now.plusDays(1)),
         )
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.TODAY)
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.REMINDERS), SmartListFilter.TODAY)
 
       assertEquals(listOf("today"), result.items.map { it.id })
     }
@@ -296,7 +337,7 @@ class EventsViewModelTest {
           reminderV2(id = "genuinely-overdue", eventDateTime = utcNow.minusMinutes(1)),
         )
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS), SmartListFilter.OVERDUE)
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.REMINDERS), SmartListFilter.OVERDUE)
 
       assertEquals(listOf("genuinely-overdue"), result.items.map { it.id })
     }
@@ -312,7 +353,7 @@ class EventsViewModelTest {
           reminderBirthday(id = "later-this-month", day = 10, month = 8),
         )
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.TODAY)
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.BIRTHDAYS), SmartListFilter.TODAY)
 
       assertEquals(listOf("today"), result.items.map { it.id })
     }
@@ -328,7 +369,7 @@ class EventsViewModelTest {
           reminderBirthday(id = "next-month", day = 2, month = 9),
         )
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.THIS_WEEK)
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.BIRTHDAYS), SmartListFilter.THIS_WEEK)
 
       assertEquals(listOf("this-week"), result.items.map { it.id })
     }
@@ -340,7 +381,7 @@ class EventsViewModelTest {
       every { dateTimeManager.getCurrentDateTime() } returns now
       coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday(id = "b1", day = 1, month = 1))
 
-      val result = viewModel.loadMerged("", setOf(EventCategory.BIRTHDAYS), SmartListFilter.OVERDUE)
+      val result = viewModel.loadMerged("", setOf(AgendaCategory.BIRTHDAYS), SmartListFilter.OVERDUE)
 
       assertEquals(emptyList<String>(), result.items.map { it.id })
     }
@@ -349,6 +390,7 @@ class EventsViewModelTest {
     id: String,
     summary: String = "",
     isShopping: Boolean = false,
+    isLocation: Boolean = false,
     groupId: String? = null,
     eventDateTime: LocalDateTime? = null,
   ) = ReminderV2(
@@ -357,6 +399,7 @@ class EventsViewModelTest {
     groupId = groupId,
     schedule = ReminderSchedule(startDateTime = LocalDateTime.now(), eventDateTime = eventDateTime),
     action = if (isShopping) ReminderAction.Shopping else ReminderAction.None,
+    location = if (isLocation) LocationSettings() else null,
   )
 
   private fun reminderBirthday(
@@ -366,11 +409,11 @@ class EventsViewModelTest {
     month: Int = 1,
   ) = Birthday(uuId = id, name = name, day = day, month = month, syncState = SyncState.Synced)
 
-  private fun fakeReminderItem(id: String): UiEventReminder =
-    UiEventReminder(
+  private fun fakeReminderItem(id: String): UiAgendaReminder =
+    UiAgendaReminder(
       id = id,
       dateTime = LocalDateTime.now(),
-      category = EventCategory.REMINDERS,
+      category = AgendaCategory.REMINDERS,
       mainText = UiTextElement(id, UiTextFormat(fontSize = 14f)),
       secondaryText = null,
       tertiaryText = null,
@@ -379,8 +422,8 @@ class EventsViewModelTest {
       state = UiReminderListState(),
     )
 
-  private fun fakeBirthdayItem(id: String): UiEventBirthday =
-    UiEventBirthday(
+  private fun fakeBirthdayItem(id: String): UiAgendaBirthday =
+    UiAgendaBirthday(
       id = id,
       dateTime = LocalDateTime.now(),
       name = id,

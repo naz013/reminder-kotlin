@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
-import com.elementary.tasks.home.eventsview.EventListItem
+import com.elementary.tasks.home.agenda.AgendaListItem
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
@@ -15,7 +15,7 @@ fun ArchiveReminderRow(
   onMenuAction: (ArchiveReminderMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  EventListItem(
+  AgendaListItem(
     mainText = item.mainText.text,
     secondaryText = item.secondaryText?.text,
     tertiaryText = item.tertiaryText?.text,
