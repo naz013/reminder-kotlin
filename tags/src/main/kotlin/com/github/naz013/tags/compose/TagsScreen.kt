@@ -16,7 +16,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -56,14 +55,17 @@ fun TagsScreen(
             onClick = onBackClick
           )
         },
+        actions = {
+          MenuIconButton(
+            icon = AppIcons.Fluent.Add,
+            contentDescription = stringResource(R.string.new_tag),
+            onClick = onAddClick,
+            iconColor = MaterialTheme.colorScheme.primary,
+          )
+        },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
       )
     },
-    floatingActionButton = {
-      FloatingActionButton(onClick = onAddClick) {
-        Icon(AppIcons.Fluent.Add, contentDescription = stringResource(R.string.new_tag))
-      }
-    }
   ) { padding ->
     when (val listState = state.listState) {
       is TagsListState.Loading -> {
