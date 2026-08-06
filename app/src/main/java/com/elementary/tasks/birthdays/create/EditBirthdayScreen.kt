@@ -51,6 +51,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispa
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditBirthdayScreen(
+  modifier: Modifier = Modifier,
   state: EditBirthdayState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -65,7 +66,6 @@ fun EditBirthdayScreen(
   onCopyReplaceClick: () -> Unit,
   onDialogDismiss: () -> Unit,
   adsContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,

@@ -62,21 +62,13 @@ import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDisp
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Main composable for the birthday action screen.
- *
- * Displays birthday information with action buttons for user interaction.
- * Adapts layout based on screen orientation (portrait/landscape).
- *
- * @param modifier Modifier to be applied to the root container
- * @param viewModel ViewModel providing screen state and handling actions
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BirthdayActionScreen(
   modifier: Modifier = Modifier,
   id: String,
-  onFinish: () -> Unit = {}
+  onFinish: () -> Unit = {},
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<BirthdayActionViewModel> { parametersOf(id) }
 
@@ -135,6 +127,7 @@ fun BirthdayActionScreen(
             onActionClick = { action ->
               viewModel.onActionClick(action)
             },
+            adsContent = adsContent,
           )
         }
         else -> {
@@ -143,6 +136,7 @@ fun BirthdayActionScreen(
             onActionClick = { action ->
               viewModel.onActionClick(action)
             },
+            adsContent = adsContent,
           )
         }
       }
@@ -150,19 +144,11 @@ fun BirthdayActionScreen(
   }
 }
 
-/**
- * Portrait layout for the birthday action screen.
- *
- * Displays the content in a vertical single-column layout optimized for portrait orientation.
- * Header appears at the top, followed by action buttons at the bottom.
- *
- * @param screenState The screen state containing all display data
- * @param onActionClick Callback for action button clicks
- */
 @Composable
 private fun BirthdayActionScreenPortrait(
   screenState: BirthdayActionScreenState,
   onActionClick: (BirthdayAction) -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   Column(
     modifier =
@@ -181,6 +167,8 @@ private fun BirthdayActionScreenPortrait(
       BirthdayHeader(header = screenState.header)
     }
 
+    adsContent()
+
     Spacer(modifier = Modifier.height(16.dp))
 
     // Action buttons section
@@ -192,19 +180,11 @@ private fun BirthdayActionScreenPortrait(
   }
 }
 
-/**
- * Landscape layout for the birthday action screen.
- *
- * Displays the content in a horizontal two-column layout optimized for landscape orientation.
- * Left column contains the header, right column contains action buttons.
- *
- * @param screenState The screen state containing all display data
- * @param onActionClick Callback for action button clicks
- */
 @Composable
 private fun BirthdayActionScreenLandscape(
   screenState: BirthdayActionScreenState,
   onActionClick: (BirthdayAction) -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   Row(
     modifier =
@@ -213,7 +193,6 @@ private fun BirthdayActionScreenLandscape(
         .padding(16.dp),
     horizontalArrangement = Arrangement.spacedBy(16.dp),
   ) {
-    // Left column: Content (header + todo list)
     Column(
       modifier =
         Modifier
@@ -224,9 +203,10 @@ private fun BirthdayActionScreenLandscape(
     ) {
       // Header section
       BirthdayHeader(header = screenState.header)
+
+      adsContent()
     }
 
-    // Right column: Actions
     Column(
       modifier =
         Modifier
@@ -526,7 +506,8 @@ private fun BirthdayActionScreenPortraitPreview() {
                 ),
               ),
           ),
-        onActionClick = { },
+        onActionClick = {},
+        adsContent = {},
       )
     }
   }
@@ -573,7 +554,8 @@ private fun BirthdayActionScreenLandscapePreview() {
                 ),
               ),
           ),
-        onActionClick = { },
+        onActionClick = {},
+        adsContent = {},
       )
     }
   }

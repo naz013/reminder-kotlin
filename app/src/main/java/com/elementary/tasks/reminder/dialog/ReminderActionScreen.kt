@@ -87,6 +87,7 @@ fun ReminderActionScreen(
   id: String,
   onFinish: () -> Unit,
   onEdit: (String) -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel: ReminderActionActivityViewModel = koinViewModel { parametersOf(id) }
 
@@ -181,6 +182,7 @@ fun ReminderActionScreen(
             onActionClick = { action ->
               viewModel.onActionClick(action)
             },
+            adsContent = adsContent,
           )
         }
         else -> {
@@ -194,6 +196,7 @@ fun ReminderActionScreen(
             onActionClick = { action ->
               viewModel.onActionClick(action)
             },
+            adsContent = adsContent,
           )
         }
       }
@@ -226,21 +229,12 @@ fun ReminderActionScreen(
   }
 }
 
-/**
- * Portrait layout for the reminder action screen.
- *
- * Displays the content in a vertical layout optimized for portrait orientation.
- * Content is arranged with header at top, todo list in middle, and actions at bottom.
- *
- * @param screenState The screen state containing all display data
- * @param onTodoItemClick Callback for todo item clicks
- * @param onActionClick Callback for action button clicks
- */
 @Composable
 private fun ReminderActionScreenPortrait(
   screenState: ReminderActionScreenState,
   onTodoItemClick: (String) -> Unit,
   onActionClick: (ReminderAction) -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   Column(
     modifier =
@@ -257,6 +251,8 @@ private fun ReminderActionScreenPortrait(
     ) {
       // Header section
       ReminderHeader(header = screenState.header)
+
+      adsContent()
 
       // Todo list section (if present)
       screenState.todoList?.let { todoList ->
@@ -278,21 +274,12 @@ private fun ReminderActionScreenPortrait(
   }
 }
 
-/**
- * Landscape layout for the reminder action screen.
- *
- * Displays the content in a horizontal two-column layout optimized for landscape orientation.
- * Left column contains header and todo list, right column contains action buttons.
- *
- * @param screenState The screen state containing all display data
- * @param onTodoItemClick Callback for todo item clicks
- * @param onActionClick Callback for action button clicks
- */
 @Composable
 private fun ReminderActionScreenLandscape(
   screenState: ReminderActionScreenState,
   onTodoItemClick: (String) -> Unit,
   onActionClick: (ReminderAction) -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   Row(
     modifier =
@@ -312,6 +299,8 @@ private fun ReminderActionScreenLandscape(
     ) {
       // Header section
       ReminderHeader(header = screenState.header)
+
+      adsContent()
 
       // Todo list section (if present)
       screenState.todoList?.let { todoList ->
@@ -1176,8 +1165,9 @@ private fun ReminderActionScreenPortraitPreview() {
                 ),
               ),
           ),
-        onTodoItemClick = { },
-        onActionClick = { },
+        onTodoItemClick = {},
+        onActionClick = {},
+        adsContent = {},
       )
     }
   }
@@ -1240,8 +1230,9 @@ private fun ReminderActionScreenLandscapePreview() {
                 ),
               ),
           ),
-        onTodoItemClick = { },
-        onActionClick = { },
+        onTodoItemClick = {},
+        onActionClick = {},
+        adsContent = {},
       )
     }
   }

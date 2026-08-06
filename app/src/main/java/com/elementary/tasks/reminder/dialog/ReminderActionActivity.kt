@@ -3,7 +3,11 @@ package com.elementary.tasks.reminder.dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DestinationScreen
@@ -37,6 +41,7 @@ class ReminderActionActivity : ComposeActivity() {
         )
         finish()
       },
+      adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.ActionScreen) }
     )
   }
 

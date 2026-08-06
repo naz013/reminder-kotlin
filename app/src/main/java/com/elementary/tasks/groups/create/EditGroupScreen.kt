@@ -42,6 +42,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditGroupScreen(
+  modifier: Modifier = Modifier,
   state: EditGroupState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -68,7 +69,7 @@ fun EditGroupScreen(
   onCopyKeepClick: () -> Unit,
   onCopyReplaceClick: () -> Unit,
   onDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
+  adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
     modifier = modifier,
@@ -159,6 +160,8 @@ fun EditGroupScreen(
           )
         }
       }
+
+      adsContent()
 
       SettingsSectionHeader(
         stringResource(R.string.notification_overrides),
@@ -356,6 +359,7 @@ private fun EditGroupScreenPreview() {
       onCopyKeepClick = {},
       onCopyReplaceClick = {},
       onDialogDismiss = {},
+      adsContent = {},
     )
   }
 }

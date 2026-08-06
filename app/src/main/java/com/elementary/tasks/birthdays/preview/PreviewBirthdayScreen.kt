@@ -69,6 +69,7 @@ private const val DETAIL_ROW_MAX_STAGGER_DELAY_MS = 180L
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewBirthdayScreen(
+  modifier: Modifier = Modifier,
   state: PreviewBirthdayState,
   onBackClick: () -> Unit,
   onEditClick: () -> Unit,
@@ -78,7 +79,6 @@ fun PreviewBirthdayScreen(
   onCallClick: () -> Unit,
   onSmsClick: () -> Unit,
   adsContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,

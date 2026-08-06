@@ -40,6 +40,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewGoogleTaskScreen(
+  modifier: Modifier = Modifier,
   state: PreviewGoogleTaskState,
   onBackClick: () -> Unit,
   onEditClick: () -> Unit,
@@ -48,7 +49,6 @@ fun PreviewGoogleTaskScreen(
   onDeleteDismiss: () -> Unit,
   onCompleteClick: () -> Unit,
   adsContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,

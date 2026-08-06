@@ -39,6 +39,7 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditGoogleTaskListScreen(
+  modifier: Modifier = Modifier,
   state: EditGoogleTaskListState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -48,7 +49,7 @@ fun EditGoogleTaskListScreen(
   onDefaultToggle: () -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDeleteDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
+  adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
     modifier = modifier,
@@ -150,6 +151,8 @@ fun EditGoogleTaskListScreen(
           )
         }
       }
+
+      adsContent()
     }
   }
 
@@ -199,6 +202,7 @@ private fun EditGoogleTaskListScreenPreview() {
       onDefaultToggle = {},
       onDeleteConfirmed = {},
       onDeleteDismiss = {},
+      adsContent = {},
     )
   }
 }

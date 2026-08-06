@@ -2,7 +2,11 @@ package com.elementary.tasks.birthdays.dialog
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.ui.common.compose.ComposeActivity
 import com.github.naz013.ui.common.context.buildIntent
@@ -14,7 +18,8 @@ class BirthdayActionActivity : ComposeActivity() {
   override fun ActivityContent() {
     BirthdayActionScreen(
       id = getId(),
-      onFinish = { finish() }
+      onFinish = { finish() },
+      adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.ActionScreen) }
     )
   }
 

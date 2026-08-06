@@ -160,7 +160,7 @@ private fun TaskPreviewEntry(
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,
     onCompleteClick = viewModel::onComplete,
-    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) },
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.GoogleTask) },
   )
 }
 
@@ -226,6 +226,7 @@ private fun TaskEditEntry(
     onListPicked = viewModel::onListPicked,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDialogDismiss = viewModel::onDialogDismiss,
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.GoogleTask) }
   )
 }
 
@@ -268,5 +269,6 @@ private fun ListEditEntry(
     onDefaultToggle = viewModel::onDefaultToggle,
     onDeleteConfirmed = viewModel::deleteGoogleTaskList,
     onDeleteDismiss = viewModel::onDeleteDismiss,
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.GoogleTaskList) }
   )
 }

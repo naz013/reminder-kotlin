@@ -32,13 +32,14 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPlaceScreen(
+  modifier: Modifier = Modifier,
   state: EditPlaceState,
   onBackClick: () -> Unit,
   onNameChange: (String) -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
-  modifier: Modifier = Modifier,
   mapContent: @Composable () -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
     modifier = modifier,
@@ -91,6 +92,7 @@ fun EditPlaceScreen(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
       )
+      adsContent()
       Box(
         modifier =
           Modifier

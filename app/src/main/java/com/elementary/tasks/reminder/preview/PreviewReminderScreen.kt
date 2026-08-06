@@ -65,6 +65,7 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewReminderScreen(
+  modifier: Modifier = Modifier,
   state: PreviewReminderState,
   onBackClick: () -> Unit,
   onToggleClick: () -> Unit,
@@ -82,7 +83,6 @@ fun PreviewReminderScreen(
   onCalendarRemoveClick: (UiCalendarEventList) -> Unit,
   mapContent: @Composable () -> Unit,
   adsContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
