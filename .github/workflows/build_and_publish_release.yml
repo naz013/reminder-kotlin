@@ -144,7 +144,7 @@ jobs:
 
     - name: Sign Free AAB
       id: sign-free
-      uses: r0adkll/sign-android-release@v1
+      uses: r0adkll/sign-android-release@d5f8436b702872ad5cdb1e6e4d5c8b983d25a997 # v1, node24 (v1 tag itself is stale on node12)
       with:
         releaseDirectory: app/build/outputs/bundle/freeRelease
         signingKeyBase64: ${{ secrets.FREE_SIGN_KEY }}
@@ -163,7 +163,7 @@ jobs:
 
     - name: Sign Pro AAB
       id: sign-pro
-      uses: r0adkll/sign-android-release@v1
+      uses: r0adkll/sign-android-release@d5f8436b702872ad5cdb1e6e4d5c8b983d25a997 # v1, node24 (v1 tag itself is stale on node12)
       with:
         releaseDirectory: app/build/outputs/bundle/proRelease
         signingKeyBase64: ${{ secrets.PRO_SIGN_KEY }}
