@@ -26,8 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +46,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.birthdays.actions.BirthdayAction
+import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.telephony.rememberPhoneCaller
+import com.elementary.tasks.telephony.rememberSmsSender
+import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.DeviceScreenConfiguration
@@ -55,36 +58,61 @@ import com.github.naz013.ui.common.compose.foundation.SplitButton
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-/**
- * Main composable for the birthday action screen.
- *
- * Displays birthday information with action buttons for user interaction.
- * Adapts layout based on screen orientation (portrait/landscape).
- *
- * @param modifier Modifier to be applied to the root container
- * @param viewModel ViewModel providing screen state and handling actions
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BirthdayActionScreen(
   modifier: Modifier = Modifier,
-  viewModel: BirthdayActionViewModel = koinViewModel(),
+  id: String,
+  onFinish: () -> Unit = {},
+  adsContent: @Composable () -> Unit,
 ) {
-  val snackbarHostState = remember { SnackbarHostState() }
-  val state by viewModel.state.observeAsState()
+  val viewModel = koinViewModel<BirthdayActionViewModel> { parametersOf(id) }
 
   val screenConfiguration = deviceScreenConfiguration()
+  val toastDispatcher = rememberToastDispatcher()
+  val phoneCaller = rememberPhoneCaller()
+  val smsSender = rememberSmsSender()
+  val permissionRequester = rememberPermissionRequesterRationale()
 
-  Scaffold(
-    snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-  ) { paddingValues ->
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      BirthdayActionViewModel.ViewModelEvent.Finish -> {
+        onFinish()
+      }
+
+      is BirthdayActionViewModel.ViewModelEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is BirthdayActionViewModel.ViewModelEvent.MakeCall -> {
+        permissionRequester.request(
+          Permissions.CALL_PHONE,
+          onGranted = {
+            phoneCaller.call(event.phoneNumber)
+            onFinish()
+          }
+        )
+      }
+
+      is BirthdayActionViewModel.ViewModelEvent.SendSms -> {
+        smsSender.send(event.phoneNumber, null)
+        onFinish()
+      }
+    }
+  }
+
+  val state by viewModel.state.observeAsState()
+  Scaffold { paddingValues ->
     Surface(
-      modifier = modifier
-        .fillMaxSize()
-        .padding(paddingValues),
-      color = MaterialTheme.colorScheme.background
+      modifier =
+        modifier
+          .fillMaxSize()
+          .padding(paddingValues),
+      color = MaterialTheme.colorScheme.background,
     ) {
       // Early return if state is not available yet
       val screenState = state ?: return@Surface
@@ -98,7 +126,8 @@ fun BirthdayActionScreen(
             screenState = screenState,
             onActionClick = { action ->
               viewModel.onActionClick(action)
-            }
+            },
+            adsContent = adsContent,
           )
         }
         else -> {
@@ -106,7 +135,8 @@ fun BirthdayActionScreen(
             screenState = screenState,
             onActionClick = { action ->
               viewModel.onActionClick(action)
-            }
+            },
+            adsContent = adsContent,
           )
         }
       }
@@ -114,35 +144,30 @@ fun BirthdayActionScreen(
   }
 }
 
-/**
- * Portrait layout for the birthday action screen.
- *
- * Displays the content in a vertical single-column layout optimized for portrait orientation.
- * Header appears at the top, followed by action buttons at the bottom.
- *
- * @param screenState The screen state containing all display data
- * @param onActionClick Callback for action button clicks
- */
 @Composable
 private fun BirthdayActionScreenPortrait(
   screenState: BirthdayActionScreenState,
-  onActionClick: (BirthdayAction) -> Unit
+  onActionClick: (BirthdayAction) -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .verticalScroll(rememberScrollState())
-      .padding(16.dp),
-    verticalArrangement = Arrangement.SpaceBetween
+    modifier =
+      Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+        .padding(16.dp),
+    verticalArrangement = Arrangement.SpaceBetween,
   ) {
     // Main content
     Column(
       modifier = Modifier.weight(1f),
-      verticalArrangement = Arrangement.spacedBy(16.dp)
+      verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
       // Header section
       BirthdayHeader(header = screenState.header)
     }
+
+    adsContent()
 
     Spacer(modifier = Modifier.height(16.dp))
 
@@ -150,54 +175,49 @@ private fun BirthdayActionScreenPortrait(
     ActionsSection(
       mainAction = screenState.mainAction,
       secondaryActions = screenState.secondaryActions,
-      onActionClick = onActionClick
+      onActionClick = onActionClick,
     )
   }
 }
 
-/**
- * Landscape layout for the birthday action screen.
- *
- * Displays the content in a horizontal two-column layout optimized for landscape orientation.
- * Left column contains the header, right column contains action buttons.
- *
- * @param screenState The screen state containing all display data
- * @param onActionClick Callback for action button clicks
- */
 @Composable
 private fun BirthdayActionScreenLandscape(
   screenState: BirthdayActionScreenState,
-  onActionClick: (BirthdayAction) -> Unit
+  onActionClick: (BirthdayAction) -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   Row(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(16.dp),
-    horizontalArrangement = Arrangement.spacedBy(16.dp)
-  ) {
-    // Left column: Content (header + todo list)
-    Column(
-      modifier = Modifier
-        .weight(1f)
+    modifier =
+      Modifier
         .fillMaxSize()
-        .verticalScroll(rememberScrollState()),
-      verticalArrangement = Arrangement.spacedBy(16.dp)
+        .padding(16.dp),
+    horizontalArrangement = Arrangement.spacedBy(16.dp),
+  ) {
+    Column(
+      modifier =
+        Modifier
+          .weight(1f)
+          .fillMaxSize()
+          .verticalScroll(rememberScrollState()),
+      verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
       // Header section
       BirthdayHeader(header = screenState.header)
+
+      adsContent()
     }
 
-    // Right column: Actions
     Column(
-      modifier = Modifier
-        .width(280.dp)
-        .fillMaxSize(),
-      verticalArrangement = Arrangement.Bottom
+      modifier =
+        Modifier
+          .width(280.dp)
+          .fillMaxSize(),
+      verticalArrangement = Arrangement.Bottom,
     ) {
       ActionsSection(
         mainAction = screenState.mainAction,
         secondaryActions = screenState.secondaryActions,
-        onActionClick = onActionClick
+        onActionClick = onActionClick,
       )
     }
   }
@@ -213,15 +233,17 @@ private fun BirthdayHeader(header: BirthdayActionScreenHeader) {
   Card(
     modifier = Modifier.fillMaxWidth(),
     shape = RoundedCornerShape(12.dp),
-    colors = CardDefaults.cardColors(
-      containerColor = MaterialTheme.colorScheme.surfaceVariant
-    ),
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    colors =
+      CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+      ),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
   ) {
     Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(16.dp),
     ) {
       ContactHeaderContent(
         text = header.text,
@@ -230,7 +252,7 @@ private fun BirthdayHeader(header: BirthdayActionScreenHeader) {
         contactPhoto = header.contactPhoto,
         birthdayDate = header.birthdayDate,
         age = header.age,
-        icon = R.drawable.ic_fluent_phone
+        icon = R.drawable.ic_fluent_phone,
       )
     }
   }
@@ -255,36 +277,38 @@ private fun ContactHeaderContent(
   contactPhoto: Bitmap?,
   birthdayDate: String,
   age: String?,
-  icon: Int
+  icon: Int,
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(12.dp),
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     // Contact photo or icon
     if (contactPhoto != null) {
       Image(
         bitmap = contactPhoto.asImageBitmap(),
         contentDescription = contactName ?: contactInfo,
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape),
-        contentScale = ContentScale.Crop
+        modifier =
+          Modifier
+            .size(56.dp)
+            .clip(CircleShape),
+        contentScale = ContentScale.Crop,
       )
     } else {
       Box(
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.primaryContainer),
-        contentAlignment = Alignment.Center
+        modifier =
+          Modifier
+            .size(56.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center,
       ) {
         Icon(
           painter = painterResource(id = icon),
           contentDescription = null,
           modifier = Modifier.size(28.dp),
-          tint = MaterialTheme.colorScheme.onPrimaryContainer
+          tint = MaterialTheme.colorScheme.onPrimaryContainer,
         )
       }
     }
@@ -297,7 +321,7 @@ private fun ContactHeaderContent(
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 2,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
       )
 
       // Birthday date
@@ -306,7 +330,7 @@ private fun ContactHeaderContent(
           text = birthdayDate,
           style = MaterialTheme.typography.bodyLarge,
           fontWeight = FontWeight.Medium,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
       }
 
@@ -316,7 +340,7 @@ private fun ContactHeaderContent(
           text = age,
           style = MaterialTheme.typography.bodyMedium,
           fontWeight = FontWeight.Medium,
-          color = MaterialTheme.colorScheme.primary
+          color = MaterialTheme.colorScheme.primary,
         )
       }
 
@@ -327,7 +351,7 @@ private fun ContactHeaderContent(
           text = contactName,
           style = MaterialTheme.typography.bodyMedium,
           fontWeight = FontWeight.Normal,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
       }
 
@@ -336,7 +360,7 @@ private fun ContactHeaderContent(
         Text(
           text = contactInfo,
           style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+          color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
         )
       }
     }
@@ -354,29 +378,31 @@ private fun ContactHeaderContent(
 private fun ActionsSection(
   mainAction: BirthdayActionScreenActionItem,
   secondaryActions: List<BirthdayActionScreenActionItem>,
-  onActionClick: (BirthdayAction) -> Unit
+  onActionClick: (BirthdayAction) -> Unit,
 ) {
   if (secondaryActions.isEmpty()) {
     Button(
       onClick = { onActionClick(mainAction.action) },
-      modifier = Modifier
-        .fillMaxWidth()
-        .height(56.dp),
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .height(56.dp),
       shape = ButtonDefaults.shape,
-      colors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.primary
-      )
+      colors =
+        ButtonDefaults.buttonColors(
+          containerColor = MaterialTheme.colorScheme.primary,
+        ),
     ) {
       Icon(
         painter = painterResource(id = mainAction.iconRes),
         contentDescription = null,
-        modifier = Modifier.size(24.dp)
+        modifier = Modifier.size(24.dp),
       )
       Spacer(modifier = Modifier.width(8.dp))
       Text(
         text = mainAction.text,
         style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold
+        fontWeight = FontWeight.SemiBold,
       )
     }
   } else {
@@ -390,42 +416,44 @@ private fun ActionsSection(
         leftContent = {
           Icon(
             painter = painterResource(id = mainAction.iconRes),
-            contentDescription = mainAction.text
+            contentDescription = mainAction.text,
           )
           Text(
             text = mainAction.text,
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.padding(start = 8.dp),
           )
         },
         rightContent = {
           Box {
             Icon(
               painter = painterResource(id = R.drawable.ic_fluent_more_hor),
-              contentDescription = stringResource(com.elementary.tasks.R.string.more_options)
+              contentDescription = stringResource(com.elementary.tasks.R.string.more_options),
             )
             PopupMenu(
               expanded = expanded,
               onDismissRequest = { expanded = false },
-              items = secondaryActions.mapIndexed { index, item ->
-                PopupMenuItem(
-                  id = index,
-                  title = item.text,
-                  iconRes = item.iconRes
-                )
-              },
+              items =
+                secondaryActions.mapIndexed { index, item ->
+                  PopupMenuItem(
+                    id = index,
+                    title = item.text,
+                    iconRes = item.iconRes,
+                  )
+                },
               onItemClick = { itemId ->
                 val actionItem = secondaryActions.getOrNull(itemId)
                 actionItem?.let {
                   onActionClick(it.action)
                 }
-              }
+              },
             )
           }
         },
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(56.dp),
-        cornerRadius = 28.dp
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        cornerRadius = 28.dp,
       )
     }
   }
@@ -438,43 +466,48 @@ private fun BirthdayActionScreenPortraitPreview() {
   MaterialTheme {
     Surface(
       modifier = Modifier.fillMaxSize(),
-      color = MaterialTheme.colorScheme.background
+      color = MaterialTheme.colorScheme.background,
     ) {
       BirthdayActionScreenPortrait(
-        screenState = BirthdayActionScreenState(
-          id = "preview-1",
-          header = BirthdayActionScreenHeader(
-            text = "John Doe",
-            phoneNumber = "+1234567890",
-            contactName = "John Doe",
-            contactPhoto = null,
-            birthdayDate = "December 23",
-            age = "29 years"
+        screenState =
+          BirthdayActionScreenState(
+            id = "preview-1",
+            header =
+              BirthdayActionScreenHeader(
+                text = "John Doe",
+                phoneNumber = "+1234567890",
+                contactName = "John Doe",
+                contactPhoto = null,
+                birthdayDate = "December 23",
+                age = "29 years",
+              ),
+            mainAction =
+              BirthdayActionScreenActionItem(
+                action = BirthdayAction.Ok,
+                text = "OK",
+                iconRes = R.drawable.ic_fluent_checkmark,
+              ),
+            secondaryActions =
+              listOf(
+                BirthdayActionScreenActionItem(
+                  action = BirthdayAction.MakeCall,
+                  text = "Call",
+                  iconRes = R.drawable.ic_fluent_phone,
+                ),
+                BirthdayActionScreenActionItem(
+                  action = BirthdayAction.SendSms,
+                  text = "SMS",
+                  iconRes = R.drawable.ic_fluent_send,
+                ),
+                BirthdayActionScreenActionItem(
+                  action = BirthdayAction.Edit,
+                  text = "Edit",
+                  iconRes = R.drawable.ic_fluent_edit,
+                ),
+              ),
           ),
-          mainAction = BirthdayActionScreenActionItem(
-            action = BirthdayAction.Ok,
-            text = "OK",
-            iconRes = R.drawable.ic_fluent_checkmark
-          ),
-          secondaryActions = listOf(
-            BirthdayActionScreenActionItem(
-              action = BirthdayAction.MakeCall,
-              text = "Call",
-              iconRes = R.drawable.ic_fluent_phone
-            ),
-            BirthdayActionScreenActionItem(
-              action = BirthdayAction.SendSms,
-              text = "SMS",
-              iconRes = R.drawable.ic_fluent_send
-            ),
-            BirthdayActionScreenActionItem(
-              action = BirthdayAction.Edit,
-              text = "Edit",
-              iconRes = R.drawable.ic_fluent_edit
-            )
-          )
-        ),
-        onActionClick = { }
+        onActionClick = {},
+        adsContent = {},
       )
     }
   }
@@ -486,38 +519,43 @@ private fun BirthdayActionScreenLandscapePreview() {
   MaterialTheme {
     Surface(
       modifier = Modifier.fillMaxSize(),
-      color = MaterialTheme.colorScheme.background
+      color = MaterialTheme.colorScheme.background,
     ) {
       BirthdayActionScreenLandscape(
-        screenState = BirthdayActionScreenState(
-          id = "preview-2",
-          header = BirthdayActionScreenHeader(
-            text = "Jane Smith",
-            phoneNumber = "+0987654321",
-            contactName = "Jane Smith",
-            contactPhoto = null,
-            birthdayDate = "March 15",
-            age = null // Year ignored, no age shown
+        screenState =
+          BirthdayActionScreenState(
+            id = "preview-2",
+            header =
+              BirthdayActionScreenHeader(
+                text = "Jane Smith",
+                phoneNumber = "+0987654321",
+                contactName = "Jane Smith",
+                contactPhoto = null,
+                birthdayDate = "March 15",
+                age = null, // Year ignored, no age shown
+              ),
+            mainAction =
+              BirthdayActionScreenActionItem(
+                action = BirthdayAction.Ok,
+                text = "Ok",
+                iconRes = R.drawable.ic_fluent_checkmark,
+              ),
+            secondaryActions =
+              listOf(
+                BirthdayActionScreenActionItem(
+                  action = BirthdayAction.Snooze,
+                  text = "Snooze",
+                  iconRes = R.drawable.ic_fluent_alert_snooze,
+                ),
+                BirthdayActionScreenActionItem(
+                  action = BirthdayAction.Edit,
+                  text = "Edit",
+                  iconRes = R.drawable.ic_fluent_edit,
+                ),
+              ),
           ),
-          mainAction = BirthdayActionScreenActionItem(
-            action = BirthdayAction.Ok,
-            text = "Ok",
-            iconRes = R.drawable.ic_fluent_checkmark
-          ),
-          secondaryActions = listOf(
-            BirthdayActionScreenActionItem(
-              action = BirthdayAction.Snooze,
-              text = "Snooze",
-              iconRes = R.drawable.ic_fluent_alert_snooze
-            ),
-            BirthdayActionScreenActionItem(
-              action = BirthdayAction.Edit,
-              text = "Edit",
-              iconRes = R.drawable.ic_fluent_edit
-            )
-          )
-        ),
-        onActionClick = { }
+        onActionClick = {},
+        adsContent = {},
       )
     }
   }

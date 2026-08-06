@@ -1,18 +1,14 @@
 package com.elementary.tasks.notes.preview
 
-import androidx.annotation.ColorInt
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.note.UiNoteNotificationAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNotePreviewAdapter
-import com.elementary.tasks.core.data.ui.note.UiNotePreview
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.notes.NoteColorEngine
 import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedReminder
-import com.elementary.tasks.notes.preview.reminders.UiNoteAttachedReminder
 import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
@@ -21,178 +17,201 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
-import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.livedata.toSingleEvent
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class PreviewNoteViewModel(
   val key: String,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val noteRepository: NoteRepository,
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val uiNotePreviewAdapter: UiNotePreviewAdapter,
   private val textProvider: TextProvider,
-  private val analyticsEventSender: AnalyticsEventSender,
+  analyticsEventSender: AnalyticsEventSender,
   private val uiNoteNotificationAdapter: UiNoteNotificationAdapter,
   private val notifier: Notifier,
   private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
-  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase
-) : BaseProgressViewModel(dispatcherProvider) {
+  private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
+  private val imagesSingleton: ImagesSingleton,
+  private val noteColorEngine: NoteColorEngine,
+) : ViewModel() {
 
-  private val _sharedFile = mutableLiveDataOf<Pair<NoteWithImages, File>>()
-  val sharedFile = _sharedFile.toSingleEvent()
+  private val _state = MutableStateFlow(PreviewNoteState(id = key))
+  val state = _state.stateInWhileSubscribed(PreviewNoteState(id = key))
+    .onStart { loadInternal() }
 
-  private val _note = mutableLiveDataOf<UiNotePreview>()
-  val note = _note.toLiveData()
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
-  private val _reminders = mutableLiveDataOf<List<UiNoteAttachedReminder>>()
-  val reminders = _reminders.toLiveData()
-
-  var hasSameInDb: Boolean = false
-  var isBgDark: Boolean = false
-  private var initStatusBarColor: Int = -1
-  private var statusBarColorSaved: Boolean = false
-
-  @ColorInt
-  fun getStatusBarColor(): Int? {
-    return if (statusBarColorSaved) {
-      initStatusBarColor.takeIf { it != -1 }
-    } else {
-      null
-    }
-  }
-
-  fun saveStatusBarColor(@ColorInt color: Int) {
-    if (statusBarColorSaved) return
-    initStatusBarColor = color
-    statusBarColorSaved = true
-  }
-
-  override fun onCreate(owner: LifecycleOwner) {
-    super.onCreate(owner)
+  init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTE_PREVIEW))
-  }
-
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    loadInternal()
   }
 
   private fun loadInternal() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(key)
       if (noteWithImages != null) {
-        _note.postValue(uiNotePreviewAdapter.convert(noteWithImages))
+        val uiNotePreview = uiNotePreviewAdapter.convert(noteWithImages)
+        val noteColors = noteColorEngine.colorsForLegacy(
+          code = noteWithImages.getColor(),
+          palette = noteWithImages.getPalette(),
+          opacity = noteWithImages.getOpacity(),
+        )
+        withContext(dispatcherProvider.main()) {
+          _state.update {
+            it.copy(
+              id = uiNotePreview.id,
+              title = uiNotePreview.title,
+              text = uiNotePreview.text,
+              titleTypeface = uiNotePreview.titleTypeface,
+              typeface = uiNotePreview.typeface,
+              titleTextSize = uiNotePreview.titleTextSize,
+              textSize = uiNotePreview.textSize,
+              images = uiNotePreview.images,
+              isArchived = uiNotePreview.isArchived,
+              background = noteColors.background,
+              content = noteColors.content,
+            )
+          }
+        }
       }
       loadReminders()
     }
   }
 
   private suspend fun loadReminders() {
-    val reminders = reminderRepository.getByNoteKey(key).map {
-      reminderToUiNoteAttachedReminder(it)
-    }
-    _reminders.postValue(reminders)
+    val reminders =
+      reminderV2Repository.getByNoteId(key).map {
+        reminderToUiNoteAttachedReminder(it)
+      }
+    _state.update { it.copy(reminders = reminders) }
   }
 
-  fun showNoteInNotification(id: String) {
+  fun onStatusClick() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = noteRepository.getById(id) ?: return@launch
+      val noteWithImages = noteRepository.getById(key) ?: return@launch
       uiNoteNotificationAdapter.convert(noteWithImages).also {
-        withUIContext { notifier.showNoteNotification(it) }
+        withContext(dispatcherProvider.main()) { notifier.showNoteNotification(it) }
       }
     }
   }
 
-  fun toggleArchiveFlag() {
-    postInProgress(true)
+  fun onArchiveClick() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(key)
-      if (noteWithImages == null) {
-        postInProgress(false)
-        postError(textProvider.getText(R.string.notes_failed_to_update))
-        return@launch
-      }
-
-      val note = noteWithImages.note
+      val note = noteWithImages?.note
       if (note == null) {
-        postInProgress(false)
-        postError(textProvider.getText(R.string.notes_failed_to_update))
+        event.emit(ViewModelEvent.Message(textProvider.getText(R.string.notes_failed_to_update)))
         return@launch
       }
 
       changeNoteArchiveStateUseCase(key, !note.archived)
+      val message = if (note.archived) {
+        textProvider.getText(R.string.note_reverted_from_archive)
+      } else {
+        textProvider.getText(R.string.note_moved_to_archive)
+      }
 
       loadInternal()
 
-      postInProgress(false)
-      postCommand(Commands.UPDATED)
+      withContext(dispatcherProvider.main()) {
+        event.emit(ViewModelEvent.Message(message))
+      }
     }
   }
 
-  fun deleteNote() {
-    postInProgress(true)
+  fun onDeleteClick() {
+    event.emit(ViewModelEvent.Delete)
+  }
+
+  fun onDeleteConfirmed() {
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteNoteUseCase(key)
-      postInProgress(false)
-      postCommand(Commands.DELETED)
+      event.emit(ViewModelEvent.MoveBack)
     }
   }
 
-  fun shareNote() {
+  fun onShareClick() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      postInProgress(true)
-      val noteWithImages = noteRepository.getById(key)
-      if (noteWithImages == null) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
-        return@launch
-      }
+      val noteWithImages = noteRepository.getById(key) ?: return@launch
       val file = createSharedNoteFileUseCase(noteWithImages)
       Logger.i(TAG, "Share note file created: ${file?.absolutePath}")
-
-      postInProgress(false)
-      if (file != null) {
-        _sharedFile.postValue(Pair(noteWithImages, file))
+      if (file != null && file.exists() && file.canRead()) {
+        event.emit(ViewModelEvent.ShareNote(noteWithImages.getTitle(), file))
       } else {
-        postError(textProvider.getText(R.string.failed_to_send_note))
+        event.emit(ViewModelEvent.Message(textProvider.getText(R.string.failed_to_send_note)))
       }
     }
   }
 
-  fun detachReminder(id: String) {
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val reminder = reminderRepository.getById(id)
+  fun onEditClick() {
+    event.emit(ViewModelEvent.EditNote(key))
+  }
 
-      if (reminder == null) {
-        postInProgress(false)
-        return@launch
-      }
+  fun onReminderEditClick(id: String) {
+    event.emit(ViewModelEvent.EditReminder(id))
+  }
+
+  fun onImageOpen(position: Int) {
+    imagesSingleton.setCurrent(images = _state.value.images, backgroundColor = _state.value.background)
+    event.emit(ViewModelEvent.OpenImagePreview(position))
+  }
+
+  fun onReminderDetachClick(id: String) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
 
       saveReminderUseCase(
         reminder.copy(
           noteId = "",
-          version = reminder.version + 1,
-          syncState = SyncState.WaitingForUpload
-        )
+          sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
+        ),
       )
 
       loadReminders()
-      postInProgress(false)
-      postCommand(Commands.UPDATED)
     }
+  }
+
+  sealed interface ViewModelEvent {
+    data class EditNote(
+      val id: String,
+    ) : ViewModelEvent
+
+    data class EditReminder(
+      val id: String,
+    ) : ViewModelEvent
+
+    data class OpenImagePreview(
+      val position: Int,
+    ) : ViewModelEvent
+
+    data class ShareNote(
+      val text: String,
+      val file: File,
+    ) : ViewModelEvent
+
+    data class Message(
+      val message: String,
+    ) : ViewModelEvent
+
+    data object MoveBack : ViewModelEvent
+
+    data object Delete : ViewModelEvent
   }
 
   companion object {

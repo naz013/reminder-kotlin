@@ -1,57 +1,94 @@
 package com.elementary.tasks.birthdays.preview
 
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
-import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PreviewBirthdayViewModel(
   private val id: String,
   private val birthdayRepository: BirthdayRepository,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
-  private val deleteBirthdayUseCase: DeleteBirthdayUseCase
-) : BaseProgressViewModel(dispatcherProvider) {
+  private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
+) : ViewModel() {
 
-  private val _birthday = mutableLiveDataOf<UiBirthdayPreview>()
-  val birthday = _birthday.toLiveData()
+  private val _state = MutableStateFlow(PreviewBirthdayState())
+  val state = _state.stateInWhileSubscribed(PreviewBirthdayState())
+    .onStart { load() }
 
-  var canShowAnimation: Boolean = true
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
-  fun hasId(): Boolean = id.isNotEmpty()
+  fun onSmsClicked() {
+    _state.value.birthday?.number?.also {
+      event.emit(ViewModelEvent.SendSms(it))
+    }
+  }
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    load()
+  fun onCallClicked() {
+    _state.value.birthday?.number?.also {
+      event.emit(ViewModelEvent.MakeCall(it))
+    }
+  }
+
+  fun onDeleteClick() {
+    _state.update { it.copy(showDeleteConfirm = true) }
+  }
+
+  fun onDeleteDismiss() {
+    _state.update { it.copy(showDeleteConfirm = false) }
+  }
+
+  fun onDeleteConfirmed() {
+    _state.update { it.copy(showDeleteConfirm = false) }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      deleteBirthdayUseCase(id)
+
+      withContext(dispatcherProvider.main()) {
+        event.emit(ViewModelEvent.MoveBack)
+      }
+    }
   }
 
   private fun load() {
-    viewModelScope.launch(dispatcherProvider.default()) {
+    viewModelScope.launch(dispatcherProvider.io()) {
       val birthday = birthdayRepository.getById(id) ?: return@launch
 
       analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY_PREVIEW))
-      _birthday.postValue(uiBirthdayPreviewAdapter.convert(birthday))
+
+      val uiBirthday = uiBirthdayPreviewAdapter.convert(birthday)
+      val shouldPlayConfetti = uiBirthday.hasBirthdayToday && _state.value.canShowAnimation
+      _state.update {
+        it.copy(
+          birthday = uiBirthday,
+          playConfetti = shouldPlayConfetti,
+          canShowAnimation = false,
+        )
+      }
     }
   }
 
-  fun deleteBirthday() {
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      deleteBirthdayUseCase(id)
-      postInProgress(false)
-      postCommand(Commands.DELETED)
-    }
+  sealed interface ViewModelEvent {
+    data object MoveBack : ViewModelEvent
+
+    data class SendSms(val number: String) : ViewModelEvent
+
+    data class MakeCall(val number: String) : ViewModelEvent
   }
 }

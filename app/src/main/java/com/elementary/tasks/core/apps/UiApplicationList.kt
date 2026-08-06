@@ -1,10 +1,10 @@
 package com.elementary.tasks.core.apps
 
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 
 @Deprecated("After S")
 data class UiApplicationList(
-  val name: String?,
-  val packageName: String?,
-  val drawable: Drawable?
+  val name: String,
+  val packageName: String,
+  val icon: Bitmap?,
 )

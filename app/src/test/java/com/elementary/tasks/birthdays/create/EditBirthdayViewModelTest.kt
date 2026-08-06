@@ -1,344 +1,260 @@
 package com.elementary.tasks.birthdays.create
 
-import android.net.Uri
 import com.elementary.tasks.BaseTest
+import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
-import com.elementary.tasks.core.utils.io.UriReader
+import com.elementary.tasks.core.os.data.ContactData
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.BirthdayRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDate
 
 class EditBirthdayViewModelTest : BaseTest() {
-
-  private lateinit var viewModel: EditBirthdayViewModel
-
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val contactsReader = mockk<ContactsReader>()
   private val dateTimeManager = mockk<DateTimeManager>()
-  private val analyticsEventSender = mockk<AnalyticsEventSender>()
-  private val uriReader = mockk<UriReader>()
+  private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val intentDataReader = mockk<IntentDataReader>()
-  private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
-  private val saveBirthdayUseCase = mockk<SaveBirthdayUseCase>()
-
+  private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>(relaxed = true)
+  private val saveBirthdayUseCase = mockk<SaveBirthdayUseCase>(relaxed = true)
+  private val textProvider = mockk<TextProvider>(relaxed = true)
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
 
+  @Before
   override fun setUp() {
     super.setUp()
-    every { dateTimeManager.getCurrentDate() }.returns(LocalDate.now())
+    every { dateTimeManager.getCurrentDate() } returns LocalDate.now()
+    every { dateTimeManager.formatBirthdayFullDateForUi(any()) } returns "formatted"
+    every { dateTimeManager.formatBirthdayDate(any()) } returns "1999-10-01"
+    every { dateTimeManager.getNowGmtDateTime() } returns "2024-01-01T00:00:00"
+    every { contactsReader.getIdFromNumber(any()) } returns 0L
+  }
 
-    viewModel = EditBirthdayViewModel(
-      id = ID,
+  private fun createViewModel(
+    id: String? = null,
+    fromIntentData: Boolean = false,
+    prefillDateEpochDay: Long? = null,
+  ): EditBirthdayViewModel =
+    EditBirthdayViewModel(
+      key = BirthdaysNavKey.Edit(id = id, fromIntentData = fromIntentData, prefillDateEpochDay = prefillDateEpochDay),
       birthdayRepository = birthdayRepository,
       dispatcherProvider = mockDispatcherProvider(),
       contactsReader = contactsReader,
       dateTimeManager = dateTimeManager,
       analyticsEventSender = analyticsEventSender,
       uiBirthdayEditAdapter = uiBirthdayEditAdapter,
-      uriReader = uriReader,
       intentDataReader = intentDataReader,
       uiBirthdayDateFormatter = UiBirthdayDateFormatter(dateTimeManager),
       deleteBirthdayUseCase = deleteBirthdayUseCase,
-      saveBirthdayUseCase = saveBirthdayUseCase
+      saveBirthdayUseCase = saveBirthdayUseCase,
+      textProvider = textProvider,
     )
-  }
 
   @Test
-  fun testInitLoad_doNothing() = runTest {
-    coEvery { birthdayRepository.getById(ID) }.returns(null)
+  fun `leaves state empty when no birthday exists for id`() =
+    runTest {
+      coEvery { birthdayRepository.getById("42") } returns null
 
-    viewModel.load()
+      val state = createViewModel(id = "42").state.first()
 
-    coVerify(exactly = 1) { birthdayRepository.getById(ID) }
-
-    assertEquals(null, viewModel.birthday.getOrAwaitValue())
-    assertEquals(null, viewModel.formattedDate.getOrAwaitValue())
-    assertEquals(false, viewModel.isEdited)
-    assertEquals(false, viewModel.isFromFile)
-    assertEquals(false, viewModel.hasSameInDb)
-  }
+      assertEquals("", state.name)
+      assertEquals(false, state.canDelete)
+    }
 
   @Test
-  fun testCreateBirthday_activityStarted() = runTest {
-    val date = LocalDate.now()
-    val formattedDate = "AAA"
+  fun `loads existing birthday from the repository into state`() =
+    runTest {
+      val birthday =
+        Birthday(
+          uuId = "42",
+          name = "Alice",
+          number = "555",
+          date = "1999-10-01",
+          ignoreYear = false,
+          syncState = SyncState.Synced,
+        )
+      coEvery { birthdayRepository.getById("42") } returns birthday
+      every { dateTimeManager.parseBirthdayDate("1999-10-01") } returns LocalDate.of(1999, 10, 1)
+      every { contactsReader.getIdFromNumber("555") } returns 7L
+      every { contactsReader.getPhotoBitmap(7L) } returns null
+      every { contactsReader.getNameFromNumber("555") } returns "Alice Contact"
 
-    coEvery { birthdayRepository.getById(ID) }.returns(null)
-    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
+      val state = createViewModel(id = "42").state.first()
 
-    viewModel.formattedDate.observeForever { }
-    viewModel.isContactAttached.observeForever { }
-    viewModel.birthday.observeForever { }
-
-    viewModel.load()
-    viewModel.onContactAttached(false)
-    viewModel.onDateChanged(date)
-
-    coVerify(exactly = 1) { birthdayRepository.getById(eq(ID)) }
-
-    assertEquals(false, viewModel.isEdited)
-    assertEquals(false, viewModel.isFromFile)
-    assertEquals(false, viewModel.hasSameInDb)
-    assertEquals(date, viewModel.selectedDate)
-    assertEquals(formattedDate, viewModel.formattedDate.value)
-    assertEquals(false, viewModel.isContactAttached.value)
-    assertEquals(null, viewModel.birthday.value)
-  }
-
-  @Test
-  fun testEditBirthday_fromId() = runTest {
-    val date = LocalDate.now()
-    val formattedDate = "AAA"
-    val name = "Name"
-    val number = ""
-    val birthdayDate = "1999-10-01"
-
-    val birthday = mockk<Birthday>()
-    every { birthday.uuId }.returns(ID)
-    every { birthday.date }.returns(birthdayDate)
-    every { birthday.name }.returns(name)
-    every { birthday.number }.returns(number)
-    every { birthday.ignoreYear }.returns(false)
-
-    val expectedToEdit = uiBirthdayEditAdapter.convert(birthday)
-
-    coEvery { birthdayRepository.getById(ID) }.returns(birthday)
-    every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
-
-    viewModel.birthday.observeForever { }
-    viewModel.formattedDate.observeForever { }
-
-    viewModel.load()
-    viewModel.onContactAttached(false)
-
-    coVerify(exactly = 1) { birthdayRepository.getById(eq(ID)) }
-
-    assertEquals(true, viewModel.isEdited)
-    assertEquals(false, viewModel.isFromFile)
-    assertEquals(false, viewModel.hasSameInDb)
-    assertEquals(date, viewModel.selectedDate)
-    assertEquals(formattedDate, viewModel.formattedDate.value)
-    assertEquals(expectedToEdit, viewModel.birthday.value)
-  }
+      assertEquals("Alice", state.name)
+      assertEquals("555", state.number)
+      assertEquals("Alice Contact", state.contactName)
+      assertEquals(true, state.canDelete)
+    }
 
   @Test
-  fun testEditBirthday_fromObject() = runTest {
-    val objectId = "1"
-    val date = LocalDate.now()
-    val formattedDate = "AAA"
-    val name = "Name"
-    val number = ""
-    val birthdayDate = "1999-10-01"
+  fun `checkArguments loads birthday from intent and disables delete for imported items`() =
+    runTest {
+      val birthday =
+        Birthday(
+          uuId = "from-file",
+          name = "Bob",
+          date = "1999-10-01",
+          syncState = SyncState.Synced,
+        )
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, Birthday::class.java) } returns birthday
+      every { dateTimeManager.parseBirthdayDate("1999-10-01") } returns LocalDate.of(1999, 10, 1)
+      coEvery { birthdayRepository.getById("from-file") } returns null
 
-    val birthdayObject = mockk<Birthday>()
-    every { birthdayObject.uuId }.returns(objectId)
-    every { birthdayObject.date }.returns(birthdayDate)
-    every { birthdayObject.name }.returns(name)
-    every { birthdayObject.number }.returns(number)
-    every { birthdayObject.ignoreYear }.returns(false)
+      val state = createViewModel(fromIntentData = true).state.first()
 
-    val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
-
-    coEvery { birthdayRepository.getById(ID) }.returns(null)
-    coEvery { birthdayRepository.getById(objectId) }.returns(null)
-    every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
-
-    every { intentDataReader.get(any(), Birthday::class.java) }.returns(birthdayObject)
-
-    viewModel.birthday.observeForever { }
-    viewModel.formattedDate.observeForever { }
-
-    viewModel.load()
-    viewModel.onContactAttached(false)
-    viewModel.onIntent()
-
-    coVerify(exactly = 2) { birthdayRepository.getById(any()) }
-
-    assertEquals(true, viewModel.isEdited)
-    assertEquals(true, viewModel.isFromFile)
-    assertEquals(false, viewModel.hasSameInDb)
-    assertEquals(date, viewModel.selectedDate)
-    assertEquals(formattedDate, viewModel.formattedDate.value)
-    assertEquals(expectedToEdit, viewModel.birthday.value)
-  }
+      assertEquals("Bob", state.name)
+      assertEquals(false, state.canDelete)
+    }
 
   @Test
-  fun testEditBirthday_fromObject_sameId() = runTest {
-    val objectId = "1"
-    val date = LocalDate.now()
-    val formattedDate = "AAA"
-    val name = "Name"
-    val number = ""
-    val birthdayDate = "1999-10-01"
+  fun `onSaveClick shows copy conflict dialog when the imported birthday already exists in db`() =
+    runTest {
+      val birthday = Birthday(uuId = "dup", name = "Bob", date = "1999-10-01", syncState = SyncState.Synced)
+      every { intentDataReader.get(IntentKeys.INTENT_ITEM, Birthday::class.java) } returns birthday
+      every { dateTimeManager.parseBirthdayDate("1999-10-01") } returns LocalDate.of(1999, 10, 1)
+      coEvery { birthdayRepository.getById("dup") } returns birthday
 
-    val birthdayObject = mockk<Birthday>()
-    every { birthdayObject.uuId }.returns(objectId)
-    every { birthdayObject.date }.returns(birthdayDate)
-    every { birthdayObject.name }.returns(name)
-    every { birthdayObject.number }.returns(number)
-    every { birthdayObject.ignoreYear }.returns(false)
+      val viewModel = createViewModel(fromIntentData = true)
+      // First collection triggers checkArguments() -> onIntent(), loading "Bob"/marking hasSameInDb
+      // - needed before onSaveClick() so it takes the copy-conflict branch instead of saving.
+      viewModel.state.first()
 
-    val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
+      viewModel.onSaveClick()
 
-    coEvery { birthdayRepository.getById(ID) }.returns(null)
-    coEvery { birthdayRepository.getById(objectId) }.returns(birthdayObject)
-    every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
-
-    every { intentDataReader.get(any(), Birthday::class.java) }.returns(birthdayObject)
-
-    viewModel.birthday.observeForever { }
-    viewModel.formattedDate.observeForever { }
-
-    viewModel.load()
-    viewModel.onContactAttached(false)
-    viewModel.onIntent()
-
-    coVerify(exactly = 2) { birthdayRepository.getById(any()) }
-
-    assertEquals(true, viewModel.isEdited)
-    assertEquals(true, viewModel.isFromFile)
-    assertEquals(true, viewModel.hasSameInDb)
-    assertEquals(date, viewModel.selectedDate)
-    assertEquals(formattedDate, viewModel.formattedDate.value)
-    assertEquals(expectedToEdit, viewModel.birthday.value)
-  }
+      // A second, fresh collection re-runs checkArguments()/onIntent(), but neither touches
+      // `dialog`, so it doesn't clobber the CopyConflict value onSaveClick() just set.
+      assertEquals(EditBirthdayDialog.CopyConflict, viewModel.state.first().dialog)
+      coVerify(exactly = 0) { saveBirthdayUseCase(any()) }
+    }
 
   @Test
-  fun testEditBirthday_fromUri() = runTest {
-    val objectId = "1"
-    val date = LocalDate.now()
-    val formattedDate = "AAA"
-    val name = "Name"
-    val number = ""
-    val birthdayDate = "1999-10-01"
+  fun `onSaveClick sets name error and does not save when name is blank`() =
+    runTest {
+      val viewModel = createViewModel()
 
-    val uri = mockk<Uri>()
+      viewModel.onSaveClick()
 
-    val birthdayObject = mockk<Birthday>()
-    every { birthdayObject.uuId }.returns(objectId)
-    every { birthdayObject.date }.returns(birthdayDate)
-    every { birthdayObject.name }.returns(name)
-    every { birthdayObject.number }.returns(number)
-    every { birthdayObject.ignoreYear }.returns(false)
-
-    val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
-
-    coEvery { birthdayRepository.getById(ID) }.returns(null)
-    coEvery { birthdayRepository.getById(objectId) }.returns(null)
-    every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
-    every { uriReader.readBirthdayObject(uri) }.returns(birthdayObject)
-
-    viewModel.birthday.observeForever { }
-    viewModel.formattedDate.observeForever { }
-
-    viewModel.load()
-    viewModel.onContactAttached(false)
-    viewModel.onFile(uri)
-
-    coVerify(exactly = 2) { birthdayRepository.getById(any()) }
-
-    assertEquals(true, viewModel.isEdited)
-    assertEquals(true, viewModel.isFromFile)
-    assertEquals(false, viewModel.hasSameInDb)
-    assertEquals(date, viewModel.selectedDate)
-    assertEquals(formattedDate, viewModel.formattedDate.value)
-    assertEquals(expectedToEdit, viewModel.birthday.value)
-  }
+      assertEquals(true, viewModel.state.first().nameError)
+      coVerify(exactly = 0) { saveBirthdayUseCase(any()) }
+    }
 
   @Test
-  fun testEditBirthday_fromUri_failedToRead() = runTest {
-    val date = LocalDate.now()
-    val formattedDate = "AAA"
-    val birthdayDate = "1999-10-01"
+  fun `onNameChanged clears a previous name error`() =
+    runTest {
+      val viewModel = createViewModel()
+      viewModel.onSaveClick()
 
-    val uri = mockk<Uri>()
+      viewModel.onNameChanged("Charlie")
 
-    coEvery { birthdayRepository.getById(ID) }.returns(null)
-    every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
-    every { dateTimeManager.getCurrentDate() }.returns(date)
-    every { uriReader.readBirthdayObject(uri) }.returns(null)
-
-    viewModel.birthday.observeForever { }
-    viewModel.formattedDate.observeForever { }
-
-    viewModel.load()
-    viewModel.onContactAttached(false)
-    viewModel.onFile(uri)
-
-    coVerify(exactly = 1) { birthdayRepository.getById(any()) }
-
-    assertEquals(false, viewModel.isEdited)
-    assertEquals(false, viewModel.isFromFile)
-    assertEquals(false, viewModel.hasSameInDb)
-    assertEquals(date, viewModel.selectedDate)
-    assertEquals(formattedDate, viewModel.formattedDate.value)
-    assertEquals(null, viewModel.birthday.value)
-  }
+      val state = viewModel.state.first()
+      assertEquals(false, state.nameError)
+      assertEquals("Charlie", state.name)
+    }
 
   @Test
-  fun testEditBirthday_fromUri_sameId() = runTest {
-    val objectId = "1"
-    val date = LocalDate.now()
-    val formattedDate = "AAA"
-    val name = "Name"
-    val number = ""
-    val birthdayDate = "1999-10-01"
+  fun `onSaveClick saves a new birthday and posts MoveBack`() =
+    runTest {
+      // A default id-less key gets a random UUID assigned in EditBirthdayViewModel's init block -
+      // performSave() looks that id up (to decide new-vs-existing), so it must be stubbed generically.
+      coEvery { birthdayRepository.getById(any()) } returns null
+      val viewModel = createViewModel()
+      viewModel.onNameChanged("Charlie")
 
-    val uri = mockk<Uri>()
+      viewModel.onSaveClick()
 
-    val birthdayObject = mockk<Birthday>()
-    every { birthdayObject.uuId }.returns(objectId)
-    every { birthdayObject.date }.returns(birthdayDate)
-    every { birthdayObject.name }.returns(name)
-    every { birthdayObject.number }.returns(number)
-    every { birthdayObject.ignoreYear }.returns(false)
+      coVerify(exactly = 1) { saveBirthdayUseCase(any()) }
+      val event = viewModel.event.getOrAwaitValue()
+      assertEquals(EditBirthdayViewModel.ViewModelEvent.MoveBack, event?.getContentIfNotHandled())
+    }
 
-    val expectedToEdit = uiBirthdayEditAdapter.convert(birthdayObject)
+  @Test
+  fun `onContactPicked fills the number and fills a blank name from the contact`() =
+    runTest {
+      every { contactsReader.getIdFromNumber("555") } returns 7L
+      every { contactsReader.getPhotoBitmap(7L) } returns null
+      val viewModel = createViewModel()
 
-    coEvery { birthdayRepository.getById(ID) }.returns(null)
-    coEvery { birthdayRepository.getById(objectId) }.returns(birthdayObject)
-    every { dateTimeManager.parseBirthdayDate(birthdayDate) }.returns(date)
-    every { dateTimeManager.formatBirthdayFullDateForUi(date) }.returns(formattedDate)
-    every { uriReader.readBirthdayObject(uri) }.returns(birthdayObject)
+      viewModel.onContactPicked(ContactData(name = "Dana", phone = "555"))
 
-    viewModel.birthday.observeForever { }
-    viewModel.formattedDate.observeForever { }
+      val state = viewModel.state.first()
+      assertEquals("555", state.number)
+      assertEquals("Dana", state.name)
+    }
 
-    viewModel.load()
-    viewModel.onContactAttached(false)
-    viewModel.onFile(uri)
+  @Test
+  fun `onContactPicked does not overwrite an already entered name`() =
+    runTest {
+      every { contactsReader.getIdFromNumber("555") } returns 7L
+      every { contactsReader.getPhotoBitmap(7L) } returns null
+      val viewModel = createViewModel()
+      viewModel.onNameChanged("Charlie")
 
-    coVerify(exactly = 2) { birthdayRepository.getById(any()) }
+      viewModel.onContactPicked(ContactData(name = "Dana", phone = "555"))
 
-    assertEquals(true, viewModel.isEdited)
-    assertEquals(true, viewModel.isFromFile)
-    assertEquals(true, viewModel.hasSameInDb)
-    assertEquals(date, viewModel.selectedDate)
-    assertEquals(formattedDate, viewModel.formattedDate.value)
-    assertEquals(expectedToEdit, viewModel.birthday.value)
-  }
+      assertEquals("Charlie", viewModel.state.first().name)
+    }
 
-  companion object {
-    private const val ID = ""
-  }
+  @Test
+  fun `onDeleteConfirmed deletes and posts MoveBack when delete is allowed`() =
+    runTest {
+      val birthday = Birthday(uuId = "42", name = "Alice", date = "1999-10-01", syncState = SyncState.Synced)
+      coEvery { birthdayRepository.getById("42") } returns birthday
+      every { dateTimeManager.parseBirthdayDate("1999-10-01") } returns LocalDate.of(1999, 10, 1)
+      val viewModel = createViewModel(id = "42")
+      // Trigger checkArguments() -> load() so canDelete is populated before deleting.
+      viewModel.state.first()
+
+      viewModel.onDeleteMenuClick()
+      viewModel.onDeleteConfirmed()
+
+      coVerify(exactly = 1) { deleteBirthdayUseCase("42") }
+      val event = viewModel.event.getOrAwaitValue()
+      assertEquals(EditBirthdayViewModel.ViewModelEvent.MoveBack, event?.getContentIfNotHandled())
+    }
+
+  @Test
+  fun `onDeleteConfirmed does nothing when delete is not allowed`() =
+    runTest {
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onDeleteConfirmed()
+
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+      assertNull(viewModel.event.value)
+    }
+
+  @Test
+  fun `onYearCheckChanged updates ignoreYear and reformats the date`() =
+    runTest {
+      every { dateTimeManager.formatBirthdayDateForUi(any()) } returns "no-year"
+      val viewModel = createViewModel()
+
+      viewModel.onYearCheckChanged(true)
+
+      val state = viewModel.state.first()
+      assertEquals(true, state.ignoreYear)
+      assertEquals("no-year", state.dateText)
+    }
 }

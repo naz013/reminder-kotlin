@@ -6,17 +6,18 @@ import java.util.UUID
 
 class NoteImageMigration(
   private val noteRepository: NoteRepository,
-  private val noteImageRepository: NoteImageRepository
+  private val noteImageRepository: NoteImageRepository,
 ) {
-
   suspend fun migrate() {
     noteRepository.getImagesIds().forEach {
-      runCatching { noteRepository.getImageById(it) }.getOrNull()
+      runCatching { noteRepository.getImageById(it) }
+        .getOrNull()
         ?.takeIf { it.image != null }
         ?.also { imageFile ->
-          Logger.d("migrate image: ${imageFile.noteId}")
-          val fileName = imageFile.fileName.takeIf { it.isNotEmpty() }
-            ?: UUID.randomUUID().toString()
+          Logger.d(TAG, "migrate image: ${imageFile.noteId}")
+          val fileName =
+            imageFile.fileName.takeIf { it.isNotEmpty() }
+              ?: UUID.randomUUID().toString()
           imageFile.filePath =
             noteImageRepository.saveBytesToFile(fileName, imageFile.image, imageFile.noteId)
           imageFile.fileName = fileName
@@ -24,5 +25,9 @@ class NoteImageMigration(
           noteRepository.save(imageFile)
         }
     }
+  }
+
+  companion object {
+    private const val TAG = "NoteImageMigration"
   }
 }

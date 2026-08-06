@@ -1,22 +1,21 @@
 package com.elementary.tasks.reminder.build.preset.primitive
 
-import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.domain.Place
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.utils.GoogleCalendarUtils
-import com.github.naz013.icalendar.DayValue
-import com.github.naz013.icalendar.FreqType
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
 import com.elementary.tasks.reminder.build.bi.TimerExclusion
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.Place
+import com.github.naz013.icalendar.DayValue
+import com.github.naz013.icalendar.FreqType
 import com.google.gson.Gson
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 class PrimitiveProtocol {
-
-  fun asString(any: Any): String {
-    return when (any) {
+  fun asString(any: Any): String =
+    when (any) {
       is Int -> any.asString()
       is Long -> any.asString()
       is Boolean -> any.asString()
@@ -35,65 +34,34 @@ class PrimitiveProtocol {
       is String -> any
       else -> ""
     }
-  }
 
-  private fun CalendarDuration.asString(): String {
-    return Gson().toJson(this)
-  }
+  private fun CalendarDuration.asString(): String = Gson().toJson(this)
 
-  private fun GoogleCalendarUtils.CalendarItem.asString(): String {
-    return Gson().toJson(this)
-  }
+  private fun GoogleCalendarUtils.CalendarItem.asString(): String = Gson().toJson(this)
 
-  private fun GoogleTaskList.asString(): String {
-    return Gson().toJson(this)
-  }
+  private fun GoogleTaskList.asString(): String = Gson().toJson(this)
 
-  private fun OtherParams.asString(): String {
-    return Gson().toJson(this)
-  }
+  private fun OtherParams.asString(): String = Gson().toJson(this)
 
-  private fun UiGroupList.asString(): String {
-    return Gson().toJson(this)
-  }
+  private fun UiGroupList.asString(): String = Gson().toJson(this)
 
-  private fun DayValue.asString(): String {
-    return value
-  }
+  private fun DayValue.asString(): String = value
 
-  private fun FreqType.asString(): String {
-    return ordinal.asString()
-  }
+  private fun FreqType.asString(): String = ordinal.asString()
 
-  private fun TimerExclusion.asString(): String {
-    return Gson().toJson(this)
-  }
+  private fun TimerExclusion.asString(): String = Gson().toJson(this)
 
-  private fun Place.asString(): String {
-    return Gson().toJson(this)
-  }
+  private fun Place.asString(): String = Gson().toJson(this)
 
-  private fun List<*>.asString(): String {
-    return joinToString(",") { asString(it ?: "") }
-  }
+  private fun List<*>.asString(): String = joinToString(",") { asString(it ?: "") }
 
-  private fun LocalTime.asString(): String {
-    return toString()
-  }
+  private fun LocalTime.asString(): String = toString()
 
-  private fun LocalDate.asString(): String {
-    return toString()
-  }
+  private fun LocalDate.asString(): String = toString()
 
-  private fun Int.asString(): String {
-    return toString()
-  }
+  private fun Int.asString(): String = toString()
 
-  private fun Long.asString(): String {
-    return toString()
-  }
+  private fun Long.asString(): String = toString()
 
-  private fun Boolean.asString(): String {
-    return toString()
-  }
+  private fun Boolean.asString(): String = toString()
 }

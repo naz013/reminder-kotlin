@@ -1,13 +1,11 @@
 package com.elementary.tasks.reminder.scheduling.usecase.location
 
 import android.content.Context
-import android.text.TextUtils
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 
 /**
  * Checks if there are any active geolocation reminders left.
@@ -15,16 +13,14 @@ import com.github.naz013.repository.ReminderRepository
  */
 class StopLocationTrackingUseCase(
   private val context: Context,
-  private val reminderRepository: ReminderRepository,
-  private val dateTimeManager: DateTimeManager
+  private val reminderV2Repository: ReminderV2Repository,
 ) {
-
-  suspend operator fun invoke(reminder: Reminder, isPaused: Boolean) {
-    val list = reminderRepository.getAllTypes(
-      active = true,
-      removed = false,
-      types = Reminder.gpsTypes()
-    )
+  suspend operator fun invoke(
+    reminder: ReminderV2,
+    isPaused: Boolean,
+  ) {
+    val list =
+      reminderV2Repository.getAll(active = true, removed = false).filter { it.places.isNotEmpty() }
     if (list.isEmpty()) {
       SuperUtil.stopService(context, GeolocationService::class.java)
       Logger.i(TAG, "No active geolocation reminders. Stopping service.")
@@ -32,26 +28,12 @@ class StopLocationTrackingUseCase(
     }
     var hasActive = false
     for (item in list) {
-      if (isPaused) {
-        if (item.uniqueId == reminder.uniqueId) {
-          continue
-        }
-        if (TextUtils.isEmpty(item.eventTime) || !dateTimeManager.isCurrent(item.eventTime)) {
-          if (!item.isNotificationShown) {
-            hasActive = true
-            break
-          }
-        } else {
-          if (!item.isNotificationShown) {
-            hasActive = true
-            break
-          }
-        }
-      } else {
-        if (!item.isNotificationShown) {
-          hasActive = true
-          break
-        }
+      if (isPaused && item.uniqueId == reminder.uniqueId) {
+        continue
+      }
+      if (!(item.location?.isNotificationShown ?: false)) {
+        hasActive = true
+        break
       }
     }
     if (!hasActive) {

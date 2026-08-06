@@ -23,5 +23,5 @@ enum class BirthdayAction(
 enum class BirthdayActionCategory {
   Main,
   Secondary,
-  Action
+  Action,
 }

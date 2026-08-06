@@ -11,5 +11,5 @@ data class UiReminderDueData(
   val localDateTime: LocalDateTime? = null,
   val recurRule: String? = null,
   val formattedTime: String?,
-  val formattedDateTime: String?
+  val formattedDateTime: String?,
 )

@@ -10,5 +10,5 @@ data class UpdateMessageV2(
   @SerializedName("versionName")
   val versionName: String,
   @SerializedName("createdAt")
-  val createdAt: String
+  val createdAt: String,
 )

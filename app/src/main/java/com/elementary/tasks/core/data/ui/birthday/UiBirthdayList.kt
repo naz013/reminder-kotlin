@@ -16,5 +16,5 @@ data class UiBirthdayList(
   val nextBirthdayDateFormatted: String = "",
   val nextBirthdayTimeFormatted: String = "",
   val nextBirthdayDate: LocalDateTime,
-  val nextBirthdayDateMillis: Long = 0L // Milliseconds
+  val nextBirthdayDateMillis: Long = 0L, // Milliseconds
 )

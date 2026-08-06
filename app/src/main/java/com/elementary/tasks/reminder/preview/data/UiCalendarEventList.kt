@@ -7,5 +7,5 @@ data class UiCalendarEventList(
   val dateStartFormatted: String?,
   val dateEndFormatted: String?,
   val id: Long,
-  val localId: String
+  val localId: String,
 )

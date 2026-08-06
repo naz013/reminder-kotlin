@@ -30,11 +30,6 @@ object Logger {
     }
   }
 
-  @Deprecated("Use d(tag: String, message: String) instead")
-  fun d(message: String) {
-    d("Logger", message)
-  }
-
   fun i(tag: String, message: String) {
     if (loggingEnabled) {
       loggerProvider?.info(tag, message)
@@ -44,20 +39,10 @@ object Logger {
     }
   }
 
-  @Deprecated("Use i(tag: String, message: String) instead")
-  fun i(message: String) {
-    i("Logger", message)
-  }
-
   fun w(tag: String, message: String) {
     if (loggingEnabled) {
       loggerProvider?.warning(tag, message)
     }
-  }
-
-  @Deprecated("Use w(tag: String, message: String) instead")
-  fun w(message: String) {
-    w("Logger", message)
   }
 
   fun e(tag: String, message: String, t: Throwable) {
@@ -76,21 +61,6 @@ object Logger {
     if (reportingEnabled) {
       firebaseLogger?.logEvent(message)
     }
-  }
-
-  @Deprecated("Use e(tag: String, message: String, t: Throwable) instead")
-  fun e(t: Throwable, message: String) {
-    e("Logger", message, t)
-  }
-
-  @Deprecated("Use e(tag: String, message: String) instead")
-  fun e(message: String, t: Throwable) {
-    e("Logger", message, t)
-  }
-
-  @Deprecated("Use e(tag: String, message: String) instead")
-  fun e(message: String) {
-    e("Logger", message)
   }
 
   fun logEvent(event: String) {

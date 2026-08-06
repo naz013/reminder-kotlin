@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:ImageFileEntityTest.kt$ImageFileEntityTest$(9)</ID>
+    <ID>ArgumentListWrapping:ImageFileEntityTest.kt$ImageFileEntityTest$(image = byteArrayOf(9), noteId = "note-1", id = 7, filePath = "path", fileName = "name")</ID>
+    <ID>ArgumentListWrapping:KoinModule.kt$(get&lt;AppDb&gt;().remoteFileMetadataDao(), get())</ID>
+    <ID>ArgumentListWrapping:WorkflowRuleDao.kt$WorkflowRuleDao$("SELECT * FROM WorkflowRule WHERE scopeType=:scopeType AND (scopeId=:scopeId OR (:scopeId IS NULL AND scopeId IS NULL))")</ID>
+    <ID>ImportOrdering:ReminderV2Entity.kt$import androidx.annotation.Keep import androidx.room.Embedded import androidx.room.Entity import androidx.room.Index import androidx.room.PrimaryKey import androidx.room.TypeConverters import com.github.naz013.repository.converters.ListStringTypeConverter import com.github.naz013.repository.converters.PlacesTypeConverter import com.github.naz013.repository.converters.ReminderV2BuilderSchemeConverter import com.github.naz013.repository.converters.ReminderV2NullableIntListConverter import com.github.naz013.repository.converters.ReminderV2ShopItemsConverter import com.github.naz013.repository.converters.ReminderV2VibrationPatternConverter import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2 import com.github.naz013.domain.reminder.v2.ShopItemV2 import java.util.UUID</ID>
+    <ID>ImportOrdering:ReminderV2Mapper.kt$import com.github.naz013.domain.reminder.v2.CalendarExportSettings import com.github.naz013.domain.reminder.v2.LocationSettings import com.github.naz013.domain.reminder.v2.LockScreenVisibility import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride import com.github.naz013.domain.reminder.v2.ReminderAction import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory import com.github.naz013.domain.reminder.v2.ReminderPriority import com.github.naz013.domain.reminder.v2.ReminderSchedule import com.github.naz013.domain.reminder.v2.ReminderV2 import com.github.naz013.domain.reminder.v2.RecurrenceRule import com.github.naz013.domain.reminder.v2.SyncMetadata import com.github.naz013.domain.reminder.v2.TaskExportSettings import com.github.naz013.domain.sync.SyncState import com.google.gson.Gson import org.threeten.bp.Instant import org.threeten.bp.LocalDateTime import org.threeten.bp.ZoneOffset</ID>
+    <ID>ImportOrdering:ReminderV2MapperTest.kt$import com.github.naz013.domain.reminder.v2.CalendarExportSettings import com.github.naz013.domain.reminder.v2.LocationSettings import com.github.naz013.domain.reminder.v2.LockScreenVisibility import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride import com.github.naz013.domain.reminder.v2.ReminderAction import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory import com.github.naz013.domain.reminder.v2.ReminderPriority import com.github.naz013.domain.reminder.v2.ReminderSchedule import com.github.naz013.domain.reminder.v2.ReminderV2 import com.github.naz013.domain.reminder.v2.RecurrenceRule import com.github.naz013.domain.reminder.v2.SyncMetadata import com.github.naz013.domain.reminder.v2.TaskExportSettings import com.github.naz013.domain.sync.SyncState import org.junit.Assert.assertEquals import org.junit.Test import org.threeten.bp.LocalDateTime</ID>
+    <ID>LongMethod:Migration21To22.kt$&lt;no name provided&gt;$override fun migrate(db: SupportSQLiteDatabase)</ID>
+    <ID>LongMethod:Migration23To24.kt$&lt;no name provided&gt;$override fun migrate(db: SupportSQLiteDatabase)</ID>
+    <ID>LongMethod:ReminderEntity.kt$ReminderEntity$fun toDomain(): Reminder</ID>
+    <ID>MaxLineLength:ImageFileEntityTest.kt$ImageFileEntityTest$val entity = ImageFileEntity(image = byteArrayOf(9), noteId = "note-1", id = 7, filePath = "path", fileName = "name")</ID>
+    <ID>MaxLineLength:KoinModule.kt$factory { RemoteFileMetadataRepositoryImpl(get&lt;AppDb&gt;().remoteFileMetadataDao(), get()) as RemoteFileMetadataRepository }</ID>
+    <ID>MaxLineLength:WorkflowRuleDao.kt$WorkflowRuleDao$@Query("SELECT * FROM WorkflowRule WHERE scopeType=:scopeType AND (scopeId=:scopeId OR (:scopeId IS NULL AND scopeId IS NULL))")</ID>
+    <ID>PropertyWrapping:ImageFileEntityTest.kt$ImageFileEntityTest$val entity = ImageFileEntity(image = byteArrayOf(9), noteId = "note-1", id = 7, filePath = "path", fileName = "name")</ID>
+    <ID>TooManyFunctions:BirthdaysDao.kt$BirthdaysDao</ID>
+    <ID>TooManyFunctions:GoogleTasksDao.kt$GoogleTasksDao</ID>
+    <ID>TooManyFunctions:GroupV2Dao.kt$GroupV2Dao</ID>
+    <ID>TooManyFunctions:NotesDao.kt$NotesDao</ID>
+    <ID>TooManyFunctions:ReminderGroupDao.kt$ReminderGroupDao</ID>
+    <ID>TooManyFunctions:ReminderV2Dao.kt$ReminderV2Dao</ID>
+    <ID>TooManyFunctions:WorkflowRuleDao.kt$WorkflowRuleDao</ID>
+    <ID>Wrapping:KoinModule.kt$RemoteFileMetadataRepositoryImpl(get&lt;AppDb&gt;().remoteFileMetadataDao(), get()) as RemoteFileMetadataRepository</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,27 +1,30 @@
 package com.elementary.tasks.reminder.build.preset
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
-import com.elementary.tasks.core.data.ui.preset.UiPresetList
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.PresetAction
+import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ManagePresetsViewModel(
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val uiPresetListAdapter: UiPresetListAdapter,
   private val recurPresetRepository: RecurPresetRepository,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
-) : BaseProgressViewModel(dispatcherProvider) {
-
-  private val _presets = mutableLiveDataOf<List<UiPresetList>>()
-  val presets = _presets.toLiveData()
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val analyticsEventSender: AnalyticsEventSender,
+) : ViewModel() {
+  val state: StateFlow<ManagePresetsState> field = MutableStateFlow(ManagePresetsState())
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -36,14 +39,17 @@ class ManagePresetsViewModel(
         workType = WorkType.Delete,
         dataType = DataType.RecurPresets,
         id = id,
-        ids = null
+        ids = null,
       )
+      analyticsEventSender.send(PresetUsed(PresetAction.DELETE))
       loadPresets()
     }
   }
 
   private suspend fun loadPresets() {
     val presets = recurPresetRepository.getAll().map { uiPresetListAdapter.create(it) }
-    _presets.postValue(presets)
+    withContext(dispatcherProvider.main()) {
+      state.update { it.copy(presets = presets) }
+    }
   }
 }

@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.build.bi
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.ICalByDayBuilderItem
 import com.elementary.tasks.reminder.build.ICalByHourBuilderItem
@@ -21,6 +20,7 @@ import com.elementary.tasks.reminder.build.ICalUntilDateBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilTimeBuilderItem
 import com.elementary.tasks.reminder.build.ICalWeekStartBuilderItem
 import com.elementary.tasks.reminder.build.adapter.BiTypeForUiAdapter
+import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.TimeFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalByMonthFormatter
@@ -29,26 +29,25 @@ import com.elementary.tasks.reminder.build.formatter.ical.ICalFreqFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericIntFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericListIntFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalListDayValueFormatter
-import com.elementary.tasks.reminder.build.adapter.ParamToTextAdapter
-import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.domain.reminder.BiType
 
 class BiFactoryICal(
   contextProvider: ContextProvider,
   private val biTypeForUiAdapter: BiTypeForUiAdapter,
   private val dateTimeManager: DateTimeManager,
-  private val paramToTextAdapter: ParamToTextAdapter
+  private val paramToTextAdapter: ParamToTextAdapter,
 ) {
-
   private val context: Context = contextProvider.themedContext
 
-  fun create(biType: BiType): BuilderItem<*> {
-    return when (biType) {
+  fun create(biType: BiType): BuilderItem<*> =
+    when (biType) {
       BiType.ICAL_BYSETPOS -> {
         ICalBySetPosBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_by_setpos_description),
-          formatter = ICalGenericListIntFormatter(context)
+          formatter = ICalGenericListIntFormatter(context),
         )
       }
 
@@ -56,7 +55,7 @@ class BiFactoryICal(
         ICalByDayBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_by_day_description),
-          formatter = ICalListDayValueFormatter(context, paramToTextAdapter)
+          formatter = ICalListDayValueFormatter(context, paramToTextAdapter),
         )
       }
 
@@ -64,7 +63,7 @@ class BiFactoryICal(
         ICalByMonthBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_by_month_description),
-          formatter = ICalByMonthFormatter(context, dateTimeManager)
+          formatter = ICalByMonthFormatter(context, dateTimeManager),
         )
       }
 
@@ -72,7 +71,7 @@ class BiFactoryICal(
         ICalByMonthDayBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_by_monthday_description),
-          formatter = ICalGenericListIntFormatter(context)
+          formatter = ICalGenericListIntFormatter(context),
         )
       }
 
@@ -80,7 +79,7 @@ class BiFactoryICal(
         ICalByYearDayBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_by_yearday_description),
-          formatter = ICalGenericListIntFormatter(context)
+          formatter = ICalGenericListIntFormatter(context),
         )
       }
 
@@ -88,7 +87,7 @@ class BiFactoryICal(
         ICalByHourBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_by_hour_description),
-          formatter = ICalGenericListIntFormatter(context)
+          formatter = ICalGenericListIntFormatter(context),
         )
       }
 
@@ -96,7 +95,7 @@ class BiFactoryICal(
         ICalByMinuteBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_by_minute_description),
-          formatter = ICalGenericListIntFormatter(context)
+          formatter = ICalGenericListIntFormatter(context),
         )
       }
 
@@ -104,7 +103,7 @@ class BiFactoryICal(
         ICalByWeekNoBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_week_number_description),
-          formatter = ICalGenericListIntFormatter(context)
+          formatter = ICalGenericListIntFormatter(context),
         )
       }
 
@@ -112,7 +111,7 @@ class BiFactoryICal(
         ICalFrequencyBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_frequency_description),
-          formatter = ICalFreqFormatter(paramToTextAdapter)
+          formatter = ICalFreqFormatter(paramToTextAdapter),
         )
       }
 
@@ -120,7 +119,7 @@ class BiFactoryICal(
         ICalCountBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_count_description),
-          formatter = ICalGenericIntFormatter()
+          formatter = ICalGenericIntFormatter(),
         )
       }
 
@@ -128,7 +127,7 @@ class BiFactoryICal(
         ICalIntervalBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_interval_description),
-          formatter = ICalGenericIntFormatter()
+          formatter = ICalGenericIntFormatter(),
         )
       }
 
@@ -136,7 +135,7 @@ class BiFactoryICal(
         ICalUntilDateBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_until_date_description),
-          formatter = DateFormatter(dateTimeManager)
+          formatter = DateFormatter(dateTimeManager),
         )
       }
 
@@ -144,7 +143,7 @@ class BiFactoryICal(
         ICalUntilTimeBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_until_time_description),
-          formatter = TimeFormatter(dateTimeManager)
+          formatter = TimeFormatter(dateTimeManager),
         )
       }
 
@@ -152,7 +151,7 @@ class BiFactoryICal(
         ICalStartDateBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_start_date_description),
-          formatter = DateFormatter(dateTimeManager)
+          formatter = DateFormatter(dateTimeManager),
         )
       }
 
@@ -160,7 +159,7 @@ class BiFactoryICal(
         ICalStartTimeBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_start_time_description),
-          formatter = TimeFormatter(dateTimeManager)
+          formatter = TimeFormatter(dateTimeManager),
         )
       }
 
@@ -168,7 +167,7 @@ class BiFactoryICal(
         ICalWeekStartBuilderItem(
           title = biTypeForUiAdapter.getUiString(biType),
           description = context.getString(R.string.builder_week_start_description),
-          formatter = ICalDayValueFormatter(paramToTextAdapter)
+          formatter = ICalDayValueFormatter(paramToTextAdapter),
         )
       }
 
@@ -176,5 +175,4 @@ class BiFactoryICal(
         throw IllegalArgumentException("Unknown biType: $biType")
       }
     }
-  }
 }

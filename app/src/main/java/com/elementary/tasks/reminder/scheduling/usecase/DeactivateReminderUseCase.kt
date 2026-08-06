@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.scheduling.usecase
 import com.elementary.tasks.reminder.scheduling.usecase.google.CompleteRelatedGoogleTaskUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePermanentReminderNotificationUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventOccurrenceRepository
@@ -23,21 +23,20 @@ class DeactivateReminderUseCase(
   private val completeRelatedGoogleTaskUseCase: CompleteRelatedGoogleTaskUseCase,
   private val pauseReminderUseCase: PauseReminderUseCase,
   private val updatePermanentReminderNotificationUseCase: UpdatePermanentReminderNotificationUseCase,
-  private val eventOccurrenceRepository: EventOccurrenceRepository
+  private val eventOccurrenceRepository: EventOccurrenceRepository,
 ) {
-
-  suspend operator fun invoke(reminder: Reminder): Reminder {
+  suspend operator fun invoke(reminder: ReminderV2): ReminderV2 {
     Logger.d(TAG, "Deactivating reminder id=${reminder.uuId}")
-    val reminder = reminder.copy(
-      isActive = false,
-      syncState = SyncState.WaitingForUpload,
-      version = reminder.version + 1,
-    )
+    val reminder =
+      reminder.copy(
+        isActive = false,
+        sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
+      )
     saveReminderUseCase(reminder)
     pauseReminderUseCase(reminder)
     updatePermanentReminderNotificationUseCase()
 
-    if (reminder.exportToTasks) {
+    if (reminder.taskExport != null) {
       completeRelatedGoogleTaskUseCase(reminder.uuId)
     }
 

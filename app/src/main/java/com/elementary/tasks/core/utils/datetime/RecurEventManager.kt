@@ -7,16 +7,19 @@ import com.github.naz013.icalendar.UtcDateTime
 import org.threeten.bp.LocalDateTime
 
 class RecurEventManager(
-  private val iCalendarApi: ICalendarApi
+  private val iCalendarApi: ICalendarApi,
 ) {
-
-  fun getNextAfterDateTime(dateTime: LocalDateTime?, recurObject: String?): LocalDateTime? {
+  fun getNextAfterDateTime(
+    dateTime: LocalDateTime?,
+    recurObject: String?,
+  ): LocalDateTime? {
     if (recurObject == null || dateTime == null) return null
 
     val map = iCalendarApi.parseObject(recurObject) ?: return null
 
-    val recurrenceDateTimeTag = map.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)
-      ?: return null
+    val recurrenceDateTimeTag =
+      map.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)
+        ?: return null
     val list = recurrenceDateTimeTag.values
 
     val index = findIndex(dateTime.withNano(0), list)
@@ -28,7 +31,8 @@ class RecurEventManager(
     }
   }
 
-  private fun findIndex(dateTime: LocalDateTime, list: List<UtcDateTime>): Int {
-    return list.indexOfFirst { it.dateTime == dateTime }
-  }
+  private fun findIndex(
+    dateTime: LocalDateTime,
+    list: List<UtcDateTime>,
+  ): Int = list.indexOfFirst { it.dateTime == dateTime }
 }

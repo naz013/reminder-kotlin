@@ -4,8 +4,9 @@ import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.Navigator
 import java.lang.ref.WeakReference
 
-class NavigatorImpl : Navigator, NavigationObservable {
-
+class NavigatorImpl :
+  Navigator,
+  NavigationObservable {
   private var navigationConsumer: WeakReference<NavigationConsumer>? = null
   private var globalConsumer: WeakReference<NavigationConsumer>? = null
 

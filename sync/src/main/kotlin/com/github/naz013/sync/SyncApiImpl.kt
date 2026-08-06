@@ -1,5 +1,6 @@
 package com.github.naz013.sync
 
+import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.cache.SyncApiSessionCache
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
@@ -81,6 +82,9 @@ internal class SyncApiImpl(
     if (dataType == DataType.Settings) {
       throw IllegalArgumentException("Cannot sync single settings item.")
     }
+    if (dataType == DataType.TagAssignments) {
+      throw IllegalArgumentException("Cannot sync single tag assignments item.")
+    }
     Logger.i(TAG, "Syncing single item. dataType: $dataType, id: $id")
     uploadSingleUseCase(dataType, id)
     downloadSingleUseCase(dataType, id).also {
@@ -122,6 +126,9 @@ internal class SyncApiImpl(
     }
     if (dataType == DataType.Settings) {
       throw IllegalArgumentException("Cannot upload single settings item.")
+    }
+    if (dataType == DataType.TagAssignments) {
+      throw IllegalArgumentException("Cannot upload single tag assignments item.")
     }
     Logger.i(TAG, "Uploading single item. dataType: $dataType, id: $id")
     uploadSingleUseCase(dataType, id)

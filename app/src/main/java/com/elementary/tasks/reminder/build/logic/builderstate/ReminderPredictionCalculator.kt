@@ -4,78 +4,76 @@ import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.icalendar.ICalendarApi
 
 class ReminderPredictionCalculator(
   private val dateTimeManager: DateTimeManager,
   private val iCalendarApi: ICalendarApi,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
 ) {
-
-  operator fun invoke(reminder: Reminder): ReminderPrediction {
-    val type = reminder.readType()
+  operator fun invoke(reminder: ReminderV2): ReminderPrediction {
+    val recurrence = reminder.recurrence
 
     return when {
-      type.isGpsType() -> {
+      recurrence == RecurrenceRule.LocationEnter || recurrence == RecurrenceRule.LocationExit -> {
         if (reminder.places.isEmpty()) {
           return ReminderPrediction.FailedPrediction(
             icon = R.drawable.ic_fluent_location_not_found,
-            message = textProvider.getString(R.string.builder_error_no_places)
+            message = textProvider.getString(R.string.builder_error_no_places),
           )
         }
-        if (reminder.hasReminder && reminder.eventTime.isNotEmpty()) {
-          val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-            ?: return ReminderPrediction.FailedPrediction(
-              icon = R.drawable.ic_fluent_error_circle,
-              message = textProvider.getString(R.string.builder_error_cannot_parse_date_time)
-            )
+        val eventDateTime = reminder.schedule.eventDateTime
+        if (reminder.location?.hasDelayedReminder == true && eventDateTime != null) {
+          val dateTime = dateTimeManager.utcToLocal(eventDateTime)
           ReminderPrediction.SuccessPrediction(
             icon = R.drawable.ic_builder_forecast,
-            message = textProvider.getString(R.string.builder_delayed_tracking_until) +
-              dateTimeManager.getDateTime(dateTime)
+            message =
+              textProvider.getString(R.string.builder_delayed_tracking_until) +
+                dateTimeManager.getDateTime(dateTime),
           )
         } else {
           ReminderPrediction.SuccessPrediction(
             icon = R.drawable.ic_builder_forecast,
-            message = textProvider.getString(R.string.builder_will_start_tracking_immediately)
+            message = textProvider.getString(R.string.builder_will_start_tracking_immediately),
           )
         }
       }
 
-      type.hasSubTasks() && !reminder.hasReminder -> {
+      reminder.action is ReminderAction.Shopping && reminder.schedule.eventDateTime == null -> {
         ReminderPrediction.SuccessPrediction(
           icon = R.drawable.ic_builder_forecast,
-          message = textProvider.getString(R.string.builder_permanent_reminder_with_sub_tasks)
+          message = textProvider.getString(R.string.builder_permanent_reminder_with_sub_tasks),
         )
       }
 
       else -> {
-        if (reminder.eventTime.isEmpty()) {
+        val eventDateTime = reminder.schedule.eventDateTime
+        if (eventDateTime == null) {
           ReminderPrediction.FailedPrediction(
             icon = R.drawable.ic_fluent_warning,
-            message = textProvider.getString(R.string.builder_error_no_event_time)
+            message = textProvider.getString(R.string.builder_error_no_event_time),
           )
         } else {
-          val dateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-            ?: return ReminderPrediction.FailedPrediction(
-              icon = R.drawable.ic_fluent_error_circle,
-              message = textProvider.getString(R.string.builder_error_cannot_parse_date_time)
-            )
+          val dateTime = dateTimeManager.utcToLocal(eventDateTime)
 
           if (dateTime.isBefore(dateTimeManager.getCurrentDateTime())) {
             ReminderPrediction.SuccessPrediction(
               icon = R.drawable.ic_builder_forecast,
-              message = textProvider.getString(
-                R.string.builder_will_trigger_immediately_because_before_the_now_time
-              )
+              message =
+                textProvider.getString(
+                  R.string.builder_will_trigger_immediately_because_before_the_now_time,
+                ),
             )
           } else {
             ReminderPrediction.SuccessPrediction(
               icon = R.drawable.ic_builder_forecast,
-              message = textProvider.getString(R.string.builder_scheduled_at) +
-                dateTimeManager.getDateTime(dateTime) +
-                createRecurrenceMessage(reminder)
+              message =
+                textProvider.getString(R.string.builder_scheduled_at) +
+                  dateTimeManager.getDateTime(dateTime) +
+                  createRecurrenceMessage(recurrence),
             )
           }
         }
@@ -83,46 +81,37 @@ class ReminderPredictionCalculator(
     }
   }
 
-  private fun createRecurrenceMessage(reminder: Reminder): String {
-    return if (reminder.readType().isICalendar()) {
-      val rules = reminder.recurDataObject?.let {
-        runCatching { iCalendarApi.parseObject(it) }.getOrNull()
-      }
-      if (rules == null) {
-        return ""
-      }
+  private fun createRecurrenceMessage(recurrence: RecurrenceRule): String {
+    val rrule = (recurrence as? RecurrenceRule.ICalendar)?.rrule ?: return ""
 
-      val recurrence = runCatching { iCalendarApi.generate(rules) }.getOrNull()
-      if (recurrence == null) {
-        return ""
-      }
+    val rules = runCatching { iCalendarApi.parseObject(rrule) }.getOrNull() ?: return ""
+    val generated = runCatching { iCalendarApi.generate(rules) }.getOrNull() ?: return ""
 
-      val nowDateTime = dateTimeManager.getCurrentDateTime().withNano(0)
+    val nowDateTime = dateTimeManager.getCurrentDateTime().withNano(0)
 
-      var nowSelected = false
-      var position = -1
+    var nowSelected = false
+    var position = -1
 
-      recurrence.forEachIndexed { index, utcDateTime ->
-        val dateTime = utcDateTime.dateTime
-        if (dateTime != null) {
-          if (!nowSelected) {
-            if (dateTime.isEqual(nowDateTime) || dateTime.isAfter(nowDateTime)) {
-              position = index
-              nowSelected = true
-            }
+    generated.forEachIndexed { index, utcDateTime ->
+      val dateTime = utcDateTime.dateTime
+      if (dateTime != null) {
+        if (!nowSelected) {
+          if (dateTime.isEqual(nowDateTime) || dateTime.isAfter(nowDateTime)) {
+            position = index
+            nowSelected = true
           }
         }
       }
+    }
 
-      if (nowSelected && position != -1) {
-        val afterRecurrences = recurrence.subList(position, recurrence.size)
+    return if (nowSelected && position != -1) {
+      val afterRecurrences =
+        generated
+          .subList(position, generated.size)
           .mapNotNull { it.dateTime }
-        if (afterRecurrences.isNotEmpty()) {
-          textProvider.getString(R.string.and_will_be_repeated_at) +
-            afterRecurrences.joinToString(",\n") { dateTimeManager.getDateTime(it) }
-        } else {
-          ""
-        }
+      if (afterRecurrences.isNotEmpty()) {
+        textProvider.getString(R.string.and_will_be_repeated_at) +
+          afterRecurrences.joinToString(",\n") { dateTimeManager.getDateTime(it) }
       } else {
         ""
       }
@@ -136,12 +125,12 @@ sealed class ReminderPrediction {
   data class SuccessPrediction(
     @DrawableRes
     val icon: Int,
-    val message: String
+    val message: String,
   ) : ReminderPrediction()
 
   data class FailedPrediction(
     @DrawableRes
     val icon: Int,
-    val message: String
+    val message: String,
   ) : ReminderPrediction()
 }

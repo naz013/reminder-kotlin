@@ -18,23 +18,25 @@ class RemotePrefs(
   private val prefs: Prefs,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val dateTimeManager: DateTimeManager,
-  private val language: Language
+  private val language: Language,
 ) {
-
-  private val config: FirebaseRemoteConfig? = try {
-    FirebaseRemoteConfig.getInstance()
-  } catch (e: Exception) {
-    null
-  }
+  private val config: FirebaseRemoteConfig? =
+    try {
+      FirebaseRemoteConfig.getInstance()
+    } catch (e: Exception) {
+      null
+    }
 
   private val mSaleObservers = mutableListOf<SaleObserver>()
   private val mUpdateObservers = mutableListOf<UpdateObserver>()
   private val mMessageObservers = mutableListOf<MessageObserver>()
 
   init {
-    val configSettings = FirebaseRemoteConfigSettings.Builder()
-      .setMinimumFetchIntervalInSeconds(60)
-      .build()
+    val configSettings =
+      FirebaseRemoteConfigSettings
+        .Builder()
+        .setMinimumFetchIntervalInSeconds(60)
+        .build()
     this.config?.setConfigSettingsAsync(configSettings)
     this.config?.setDefaultsAsync(R.xml.remote_config_defaults)
   }
@@ -44,21 +46,22 @@ class RemotePrefs(
   }
 
   private fun fetchConfig() {
-    config?.fetchAndActivate()?.addOnCompleteListener { task ->
-      Logger.d(TAG, "fetchConfig: ${task.isSuccessful}, ${task.exception}")
-      if (task.isSuccessful) {
-        config.fetchAndActivate()
+    config
+      ?.fetchAndActivate()
+      ?.addOnCompleteListener { task ->
+        Logger.d(TAG, "fetchConfig: ${task.isSuccessful}, ${task.exception}")
+        if (task.isSuccessful) {
+          config.fetchAndActivate()
+        }
+        readFeatureFlags()
+        readUpdateMessage()
+        readInternalMessage()
+        if (!BuildParams.isPro) {
+          readSaleMessage()
+        }
+      }?.addOnFailureListener {
+        it.printStackTrace()
       }
-      readAppConfigs()
-      readFeatureFlags()
-      readUpdateMessage()
-      readInternalMessage()
-      if (!BuildParams.isPro) {
-        readSaleMessage()
-      }
-    }?.addOnFailureListener {
-      it.printStackTrace()
-    }
   }
 
   private fun readUpdateMessage() {
@@ -82,7 +85,10 @@ class RemotePrefs(
     }
   }
 
-  private fun notifyUpdateObservers(hasUpdate: Boolean, version: String) {
+  private fun notifyUpdateObservers(
+    hasUpdate: Boolean,
+    version: String,
+  ) {
     for (observer in mUpdateObservers) {
       observer.onUpdateChanged(hasUpdate, version)
     }
@@ -128,7 +134,11 @@ class RemotePrefs(
     }
   }
 
-  private fun notifySaleObservers(hasSale: Boolean, discount: String, endDate: String) {
+  private fun notifySaleObservers(
+    hasSale: Boolean,
+    discount: String,
+    endDate: String,
+  ) {
     for (observer in mSaleObservers) {
       observer.onSaleChanged(hasSale, discount, endDate)
     }
@@ -174,8 +184,8 @@ class RemotePrefs(
     }
   }
 
-  private fun getMessageText(internalMessageV1: InternalMessageV1): String {
-    return if (internalMessageV1.localized.isEmpty()) {
+  private fun getMessageText(internalMessageV1: InternalMessageV1): String =
+    if (internalMessageV1.localized.isEmpty()) {
       internalMessageV1.message
     } else {
       val locale = language.getCurrentLocale().lowercase()
@@ -184,39 +194,30 @@ class RemotePrefs(
         ?.text
         ?: internalMessageV1.message
     }
-  }
 
-  private fun notifyMessageObservers(showMessage: Boolean, message: String) {
+  private fun notifyMessageObservers(
+    showMessage: Boolean,
+    message: String,
+  ) {
     for (observer in mMessageObservers) {
       observer.onMessageChanged(showMessage, message)
     }
   }
 
-  private fun readAppConfigs() {
-    val privacyUrl = config?.getString(PRIVACY_POLICY_URL)
-    val termsUrl = config?.getString(TERMS_URL)
-
-    Logger.d(TAG, "Privacy Url=$privacyUrl")
-    Logger.d(TAG, "Terms Url=$termsUrl")
-
-    privacyUrl?.also { prefs.privacyUrl = it }
-    termsUrl?.also { prefs.termsUrl = it }
-  }
-
   private fun readFeatureFlags() {
-    FeatureManager.Feature.entries.map {
-      it to (readBool(it.value) ?: it.defaultValue)
-    }.forEach {
-      Logger.d(TAG, "Feature ${it.first} isEnabled=${it.second}")
-      prefs.putBoolean(it.first.value, it.second)
-    }
+    FeatureManager.Feature.entries
+      .map {
+        it to (readBool(it.value) ?: it.defaultValue)
+      }.forEach {
+        Logger.d(TAG, "Feature ${it.first} isEnabled=${it.second}")
+        prefs.putBoolean(it.first.value, it.second)
+      }
   }
 
-  private fun readBool(key: String): Boolean? {
-    return config?.getBoolean(key).also {
+  private fun readBool(key: String): Boolean? =
+    config?.getBoolean(key).also {
       Logger.d(TAG, "Read bool key=$key, val=$it")
     }
-  }
 
   fun addUpdateObserver(observer: UpdateObserver) {
     if (!mUpdateObservers.contains(observer)) {
@@ -258,22 +259,29 @@ class RemotePrefs(
   }
 
   interface UpdateObserver {
-    fun onUpdateChanged(hasUpdate: Boolean, version: String)
+    fun onUpdateChanged(
+      hasUpdate: Boolean,
+      version: String,
+    )
   }
 
   interface SaleObserver {
-    fun onSaleChanged(showDiscount: Boolean, discount: String, until: String)
+    fun onSaleChanged(
+      showDiscount: Boolean,
+      discount: String,
+      until: String,
+    )
   }
 
   interface MessageObserver {
-    fun onMessageChanged(showMessage: Boolean, message: String)
+    fun onMessageChanged(
+      showMessage: Boolean,
+      message: String,
+    )
   }
 
   companion object {
     private const val TAG = "RemotePrefs"
-
-    private const val PRIVACY_POLICY_URL = "privacy_policy_link"
-    private const val TERMS_URL = "terms_link"
 
     private const val UPDATE_MESSAGE = "update_message_v2"
     private const val PRO_SALE_MESSAGE = "pro_sale_message_v2"

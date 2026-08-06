@@ -1,35 +1,25 @@
 package com.elementary.tasks.reminder.preview
 
-import android.os.Bundle
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toSingleEvent
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
-import com.github.naz013.usecase.reminders.GetReminderByIdUseCase
+import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class FullScreenMapViewModel(
-  arguments: Bundle?,
-  dispatcherProvider: DispatcherProvider,
-  private val getReminderByIdUseCase: GetReminderByIdUseCase
-) : BaseProgressViewModel(dispatcherProvider) {
-
-  val id = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
-
-  private val _reminder = mutableLiveDataOf<Reminder>()
-  val reminder = _reminder.toSingleEvent()
+  private val id: String,
+  private val dispatcherProvider: DispatcherProvider,
+  private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
+) : ViewModel() {
+  val reminder: StateFlow<ReminderV2?> field = MutableStateFlow(null)
   var placeIndex = 0
 
-  override fun onCreate(owner: LifecycleOwner) {
-    super.onCreate(owner)
+  init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      getReminderByIdUseCase(id)?.also {
-        _reminder.postValue(it)
-      }
+      reminder.value = getReminderV2ByIdUseCase(id)
     }
   }
 }

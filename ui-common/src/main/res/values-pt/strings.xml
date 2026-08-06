@@ -928,4 +928,187 @@
     <string name="keep_notification">Manter notificação</string>
     <string name="cd_back">Voltar</string>
     <string name="how_to_create_a_reminder">Como criar um lembrete</string>
+    <string name="copy_of">Cópia de: %s</string>
+
+    <string name="turn_off">Desligar</string>
+
+    <string name="delete_reminder_permanently">Excluir lembrete permanentemente?</string>
+    <string name="delete_birthday_permanently">Excluir aniversário permanentemente?</string>
+    <string name="delete_note_permanently">Excluir nota permanentemente?</string>
+    <string name="delete_group_permanently">Excluir grupo permanentemente?</string>
+
+    <string name="share_send_note">Enviar nota…</string>
+
+    <string name="note_moved_to_archive">Nota movida para arquivo</string>
+    <string name="note_reverted_from_archive">Nota restaurada do arquivo</string>
+    <string name="show_note_in_notifications">Mostrar nota nas notificações</string>
+
+    <string name="share_intent_title">Compartilhar...</string>
+    <string name="error_reminder_not_found">Lembrete não encontrado!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">O lembrete já foi removido! Edite-o primeiro.</string>
+
+    <string name="workflow_rules">Regras de fluxo de trabalho</string>
+    <string name="workflow_automations">Automações</string>
+    <string name="workflow_active_global_rules">Regras globais ativas</string>
+    <string name="workflow_rules_for_group">Regras para este grupo</string>
+    <string name="workflow_no_rules_yet">Sem regras ainda</string>
+    <string name="workflow_templates">Modelos</string>
+    <string name="workflow_apply_globally">Aplicar globalmente</string>
+    <string name="workflow_apply_to_group">Aplicar ao grupo</string>
+    <string name="workflow_open_group_to_apply">Abra um grupo para aplicar isto</string>
+    <string name="workflow_save_as_template">Salvar como modelo</string>
+    <string name="workflow_create_custom_rule">Criar regra personalizada</string>
+    <string name="workflow_archive_after_days_hint">Dias</string>
+    <string name="workflow_category_reminder_lifecycle">Ciclo de vida do lembrete</string>
+    <string name="workflow_category_group">Grupo</string>
+    <string name="workflow_category_location">Localização</string>
+    <string name="workflow_category_notification_escalation">Notificação &amp; escalação</string>
+    <string name="workflow_category_system_integration">Integração do sistema</string>
+    <string name="workflow_category_privacy_data_hygiene">Privacidade &amp; higiene de dados</string>
+
+    <string name="workflow_builder_new_rule_title">Nova regra</string>
+    <string name="workflow_builder_edit_rule_title">Editar regra</string>
+    <string name="workflow_builder_when">Quando</string>
+    <string name="workflow_builder_if_optional">Se (opcional)</string>
+    <string name="workflow_builder_then">Então</string>
+    <string name="workflow_builder_not_set">Não definido</string>
+    <string name="workflow_builder_add_condition">Adicionar condição</string>
+    <string name="workflow_builder_choose_trigger">Escolher um gatilho</string>
+    <string name="workflow_builder_choose_condition">Escolher uma condição</string>
+    <string name="workflow_builder_choose_action">Escolher uma ação</string>
+    <string name="workflow_builder_snooze_count_hint">Número de adiamentos</string>
+    <string name="workflow_builder_minutes_hint">Minutos</string>
+    <string name="workflow_builder_minutes_unit">min</string>
+    <string name="workflow_builder_select_group">Selecionar um grupo</string>
+    <string name="workflow_builder_select_reminder">Selecionar um lembrete</string>
+    <string name="workflow_builder_no_groups">Nenhum grupo ainda</string>
+    <string name="workflow_builder_no_reminders">Sem lembretes ativos</string>
+    <string name="workflow_trigger_reminder_completed">Lembrete concluído</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">Lembrete adiado N vezes</string>
+    <string name="workflow_trigger_group_all_completed">Todos os lembretes do grupo estão concluídos</string>
+    <string name="workflow_trigger_location_entered">Chegou ao local do lembrete</string>
+    <string name="workflow_trigger_location_exited">Saiu do local do lembrete</string>
+    <string name="workflow_trigger_reminder_age_exceeded">Concluído há pelo menos N dias</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">Não visto há N minutos</string>
+    <string name="workflow_condition_priority_at_least">Prioridade é pelo menos</string>
+    <string name="workflow_condition_within_time_window">Hora atual está entre</string>
+    <string name="workflow_condition_group_is">Grupo do lembrete é</string>
+    <string name="workflow_action_archive_reminder">Arquivar o lembrete</string>
+    <string name="workflow_action_complete_reminder">Concluir o lembrete</string>
+    <string name="workflow_action_apply_notification_override">Alterar configurações de notificação</string>
+    <string name="workflow_action_activate_reminder">Ativar outro lembrete</string>
+    <string name="preset_buy_groceries">Comprar mantimentos</string>
+    <string name="preset_bread">Pão</string>
+    <string name="preset_juice">Suco</string>
+    <string name="preset_cookies">Biscoitos</string>
+    <string name="haptic_feedback">Feedback háptico</string>
+    <string name="use_haptic_feedback_for_interactions">Usar feedback háptico para interações</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">Não usar feedback háptico para interações</string>
+
+    <string name="notification_defaults">Padrões de notificação</string>
+    <string name="default_vibrate">Vibração</string>
+    <string name="vibrate_on_notification">Vibrar na notificação</string>
+    <string name="do_not_vibrate_on_notification">Não vibrar na notificação</string>
+    <string name="bypass_do_not_disturb">Contornar Não incomodar</string>
+    <string name="bypass_do_not_disturb_enabled">Toque mesmo durante Não incomodar</string>
+    <string name="bypass_do_not_disturb_disabled">Respeitar Não incomodar</string>
+    <string name="wake_screen">Acordar tela</string>
+    <string name="wake_screen_enabled">Ligar tela como alarme</string>
+    <string name="wake_screen_disabled">Não ligar tela</string>
+    <string name="notification_category">Categoria de notificação</string>
+    <string name="notification_category_default">Padrão</string>
+    <string name="notification_category_alarm">Alarme</string>
+    <string name="notification_category_event">Evento</string>
+    <string name="notification_category_call">Chamada</string>
+    <string name="lock_screen_visibility">Visibilidade da tela de bloqueio</string>
+    <string name="lock_screen_visibility_public">Mostrar conteúdo completo</string>
+    <string name="lock_screen_visibility_private">Ocultar conteúdo sensível</string>
+    <string name="lock_screen_visibility_secret">Ocultar completamente</string>
+    <string name="vibration_pattern">Padrão de vibração</string>
+    <string name="notification_overrides">Substitui de notificação</string>
+    <string name="notification_customization">Personalização de notificação</string>
+    <string name="how_does_this_work">Como funciona?</string>
+    <string name="inherit_from_settings">Herdar de Configurações</string>
+    <string name="inherited_format">Herdado: %s</string>
+    <string name="on">Ativado</string>
+    <string name="off">Desativado</string>
+    <string name="vibration_preset_short">Curto</string>
+    <string name="vibration_preset_long">Longo</string>
+    <string name="vibration_preset_double_buzz">Duplo zumbido</string>
+    <string name="vibration_preset_default">Padrão</string>
+    <string name="notification_delay">Atraso de notificação</string>
+
+    <string name="builder_set_category_for_the_notification">Definir uma categoria de notificação do sistema para a notificação</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">Defina quanto da notificação é mostrado na tela de bloqueio</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">Toque mesmo quando Não incomodar está ativado</string>
+    <string name="builder_set_wake_screen_for_the_notification">Ligar tela como alarme</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">Defina um padrão de vibração para a notificação</string>
+    <string name="builder_set_delay_for_the_notification">Atrasar a notificação por este número de minutos</string>
+
+    <string name="builder_quick_start_one_time">Lembrete único</string>
+    <string name="builder_quick_start_every_weekday">Cada dia da semana</string>
+    <string name="builder_quick_start_every_month_day">Cada mês neste dia</string>
+    <string name="builder_quick_start_every_year">Cada ano neste dia</string>
+    <string name="builder_quick_start_timer">Temporizador regressivo</string>
+    <string name="builder_quick_start_shopping_list">Lista de compras</string>
+    <string name="builder_quick_start_more_options">Mais opções…</string>
+
+    <string name="builder_invalid_email_value">Insira um endereço de e-mail válido</string>
+    <string name="builder_invalid_web_address_value">Insira um endereço web válido</string>
+    <string name="builder_invalid_phone_number_value">Insira um número de telefone válido</string>
+    <string name="builder_shopping_list_empty_value">Adicione pelo menos um item à lista</string>
+    <string name="builder_invalid_value_generic">Este valor não é válido</string>
+    <string name="builder_permissions_required_message">Conceda as permissões solicitadas para continuar</string>
+
+    <string name="gemini_functions">Funções Gemini</string>
+
+    <string name="smart_list_today">Hoje</string>
+    <string name="smart_list_overdue">Vencido</string>
+    <string name="smart_list_this_week">Esta semana</string>
+    <string name="smart_list_no_group">Sem grupo</string>
+
+    <string name="tags">Rótulos</string>
+    <string name="manage_tags">Gerenciar rótulos</string>
+    <string name="new_tag">Novo rótulo</string>
+    <string name="tag_name">Nome do rótulo</string>
+    <string name="no_tags">Sem rótulos ainda</string>
+    <string name="delete_tag_permanently">Excluir este rótulo? Será removido de cada lembrete e nota.</string>
+
+    <string name="local_backup">Backup local</string>
+    <string name="backup_export_title">Exportar backup</string>
+    <string name="backup_import_title">Restaurar backup</string>
+    <string name="backup_export_description">Salve uma cópia criptografada de seus lembretes, notas, grupos, aniversários, lugares e predefinições em um arquivo de sua escolha. Nada é enviado para lugar nenhum. Se você esquecer a frase-senha, o backup não poderá ser recuperado.</string>
+    <string name="backup_import_description">Restaure dados de um arquivo de backup criptografado exportado anteriormente. Os itens existentes com a mesma ID serão sobrescritos; nada mais será excluído.</string>
+    <string name="backup_passphrase">Frase-senha</string>
+    <string name="backup_confirm_passphrase">Confirmar frase-senha</string>
+    <string name="backup_passphrase_mismatch">As frases-senhas não correspondem</string>
+    <string name="backup_passphrase_empty">Insira uma frase-senha</string>
+    <string name="backup_export_action">Exportar</string>
+    <string name="backup_import_action">Restaurar</string>
+    <string name="backup_export_success">Backup salvo com sucesso.</string>
+    <string name="backup_export_failed">Não foi possível salvar o backup. Tente novamente.</string>
+    <string name="backup_import_success">%1$d itens restaurados com sucesso.</string>
+    <string name="backup_import_failed">Não foi possível restaurar o backup. Tente novamente.</string>
+    <string name="backup_wrong_passphrase">Frase-senha incorreta ou arquivo corrompido.</string>
+    <string name="backup_invalid_file">Este arquivo não é um backup Reminder válido.</string>
+    <string name="backup_open_file_failed">Não foi possível abrir o arquivo selecionado.</string>
+
+    <string name="insights">Informações</string>
+    <string name="weekly_trend">Tendência semanal</string>
+    <string name="busiest_day">Dia mais ocupado: %1$s</string>
+    <string name="streak_current">Sequência atual: %1$d dias</string>
+    <string name="streak_longest">Sequência mais longa: %1$d dias</string>
+    <string name="streak_fired_count">Acionado %1$d vezes nos últimos 90 dias</string>
+    <string name="no_insights_yet">Sem atividade de lembrete nos últimos 90 dias ainda</string>
+
+    <string name="upcoming_events">Próximos</string>
+
+    <string name="agenda">Agenda</string>
+
+    <string name="group_has_no_active_reminders">Nenhum lembrete ativo neste grupo</string>
+    <string name="group_x_reminder">%d lembrete</string>
+    <string name="group_x_reminders">%d lembretes</string>
+
+    <string name="type">Tipo</string>
+    <string name="smart_lists">Listas inteligentes</string>
 </resources>

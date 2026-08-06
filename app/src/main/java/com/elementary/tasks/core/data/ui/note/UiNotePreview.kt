@@ -6,11 +6,12 @@ import androidx.annotation.ColorInt
 data class UiNotePreview(
   val id: String,
   val text: String,
-  @ColorInt val backgroundColor: Int,
-  val opacity: Int,
+  val title: String,
   val typeface: Typeface?,
   val images: List<UiNoteImage>,
   val uniqueId: Int,
   val textSize: Float,
-  val isArchived: Boolean
+  val titleTypeface: Typeface?,
+  val titleTextSize: Float,
+  val isArchived: Boolean,
 )

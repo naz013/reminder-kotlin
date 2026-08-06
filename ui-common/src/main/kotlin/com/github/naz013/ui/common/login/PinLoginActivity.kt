@@ -1,57 +1,107 @@
 package com.github.naz013.ui.common.login
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.FragmentTransaction
-import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.navigation.DestinationScreen
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.ActivityDestination
+import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.Navigator
 import com.github.naz013.ui.common.R
-import com.github.naz013.ui.common.activity.BindingActivity
-import com.github.naz013.navigation.DeepLinkData
-import com.github.naz013.ui.common.context.intentForClass
-import com.github.naz013.ui.common.context.startActivity
-import com.github.naz013.ui.common.databinding.ActivityPinLoginBinding
+import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.compose.composeView
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-internal class PinLoginActivity :
-  BindingActivity<ActivityPinLoginBinding>(),
-  AuthFragment.AuthCallback {
+internal class PinLoginActivity : ComponentActivity() {
 
   private val authPreferences by inject<AuthPreferences>()
   private val navigator by inject<Navigator>()
-
-  private val biometricProvider = BiometricProvider(this) { onSuccess() }
+  private val systemInfo by inject<SystemInfo>()
+  private val viewModel by viewModel<PinLoginViewModel>()
 
   private var isBack = false
   private var hasFinger = false
-
-  override fun inflateBinding() = ActivityPinLoginBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     isBack = intent.getBooleanExtra(ARG_BACK, false)
     hasFinger = authPreferences.useFingerprint
 
-    openPinLogin()
-    if (hasFinger) {
-      biometricProvider.tryToOpenFingerLogin()
+    composeView { Content() }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      onBackInvokedDispatcher.registerOnBackInvokedCallback(
+        OnBackInvokedDispatcher.PRIORITY_DEFAULT
+      ) {
+        handleBackPress()
+      }
+    } else {
+      onBackPressedDispatcher.addCallback(
+        this,
+        object : OnBackPressedCallback(true) {
+          override fun handleOnBackPressed() {
+            handleBackPress()
+          }
+        }
+      )
     }
   }
 
-  private fun openPinLogin() {
-    runCatching {
-      supportFragmentManager.beginTransaction()
-        .replace(R.id.fragment_container, PinFragment.newInstance(hasFinger), null)
-        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        .commitAllowingStateLoss()
+  @Composable
+  private fun Content() {
+    val biometricProvider = rememberBiometricProvider()
+
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(viewModel) {
+      viewModel.navigationEvent.collect { event ->
+        when (event) {
+          PinLoginEvent.Success -> onSuccess()
+          PinLoginEvent.ShowPinMismatch -> toast(R.string.pin_not_match)
+        }
+      }
+    }
+
+    LaunchedEffect(systemInfo) {
+      if (systemInfo.hasBiometricHardware && hasFinger) {
+        biometricProvider.authenticate(
+          onSuccess = { viewModel.onFingerprintSucceeded() }
+        )
+      }
+    }
+
+    Box(
+      modifier = Modifier.fillMaxSize(),
+    ) {
+      PinLoginScreen(
+        pin = state.pin,
+        shuffleDigits = state.shuffleDigits,
+        showFingerprintButton = hasFinger,
+        onDigitClick = viewModel::onDigitClick,
+        onDeleteClick = viewModel::onDeleteClick,
+        onFingerprintClick = {
+          biometricProvider.authenticate(
+            onSuccess = { viewModel.onFingerprintSucceeded() }
+          )
+        },
+        onCloseClick = { handleBackPress() },
+      )
     }
   }
 
-  override fun onSuccess() {
+  private fun onSuccess() {
     if (isBack) {
       setResult(Activity.RESULT_OK)
       finish()
@@ -60,60 +110,23 @@ internal class PinLoginActivity :
     }
   }
 
-  override fun changeScreen(auth: Int) {
-    when (auth) {
-      AuthFragment.AUTH_FINGER -> biometricProvider.tryToOpenFingerLogin()
-      else -> {
-      }
-    }
-  }
-
   private fun openApplication() {
     navigator.navigate(
       ActivityDestination(
-        screen = DestinationScreen.Main
-      )
+        screen = DestinationScreen.Main,
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+      ),
     )
     finish()
   }
 
-  override fun handleBackPress(): Boolean {
+  private fun handleBackPress() {
     setResult(Activity.RESULT_CANCELED)
     finishAffinity()
-    return true
   }
 
   companion object {
     const val ARG_BACK = "arg_back"
     const val ARG_LOGGED = "arg_logged"
-
-    fun openLogged(context: Context, clazz: Class<*>) {
-      context.startActivity(clazz) {
-        putExtra(ARG_LOGGED, true)
-      }
-    }
-
-    fun openLogged(
-      context: Context,
-      clazz: Class<*>,
-      deepLinkData: DeepLinkData,
-      builder: Intent.() -> Unit
-    ) {
-      val intent = context.intentForClass(clazz).apply {
-        builder(this)
-        putExtra(ARG_LOGGED, true)
-        putExtra(IntentKeys.INTENT_DEEP_LINK, true)
-        putExtra(deepLinkData.intentKey, deepLinkData)
-      }
-      context.startActivity(intent)
-    }
-
-    fun openLogged(context: Context, clazz: Class<*>, builder: Intent.() -> Unit) {
-      val intent = context.intentForClass(clazz).apply {
-        builder(this)
-        putExtra(ARG_LOGGED, true)
-      }
-      context.startActivity(intent)
-    }
   }
 }

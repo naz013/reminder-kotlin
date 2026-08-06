@@ -1,38 +1,31 @@
+import com.android.build.api.dsl.ApplicationExtension
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Properties
 
 plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
+  id("reminder.android.application.compose")
   alias(libs.plugins.kotlin.parcelize)
-  alias(libs.plugins.navigation.safeargs)
   alias(libs.plugins.crashlytics.gradle)
   alias(libs.plugins.google.services)
-  alias(libs.plugins.ktlint)
-  alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.kotlin.serialization)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
   namespace = "com.elementary.tasks"
-  compileSdk = libs.versions.compileSdk.get().toInt()
-  setFlavorDimensions(listOf("level"))
+  flavorDimensions.add("level")
 
   defaultConfig {
     applicationId = "com.cray.software.justreminder"
-    minSdk = libs.versions.minSdk.get().toInt()
-    targetSdk = libs.versions.targetSdk.get().toInt()
-    versionCode = 344
-    versionName = "9.12.0"
+    versionCode = 345
+    versionName = "10.0.0"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
   buildFeatures {
     viewBinding = true
     buildConfig = true
-    compose = true
   }
 
   val propsFile = file("${rootProject.rootDir}/keystore.properties")
@@ -77,9 +70,6 @@ android {
       buildConfigField("boolean", "IS_PRO", "false")
 
       val api = props.getProperty("freeApiKey", "API_KEY")
-      val placesApiKey = props.getProperty("freePlacesApiKey", "\"API_KEY\"")
-
-      buildConfigField("String", "PLACES_API_KEY", placesApiKey)
       manifestPlaceholders["apiKey"] = api
 
       buildConfigField("String", "REVIEWS_PROJECT_ID", props.getProperty("reviewsProjectId", "\"\""))
@@ -93,9 +83,6 @@ android {
       buildConfigField("boolean", "IS_PRO", "true")
 
       val api = props.getProperty("proApiKey", "API_KEY")
-      val placesApiKey = props.getProperty("proPlacesApiKey", "\"API_KEY\"")
-
-      buildConfigField("String", "PLACES_API_KEY", placesApiKey)
       manifestPlaceholders["apiKey"] = api
 
       buildConfigField("String", "REVIEWS_PROJECT_ID", props.getProperty("reviewsProjectId", "\"\""))
@@ -106,16 +93,13 @@ android {
   }
   packaging {
     resources {
-      excludes += "META-INF/NOTICE"
-      excludes += "META-INF/LICENSE.txt"
-      excludes += "META-INF/NOTICE.txt"
-      excludes += "META-INF/proguard/androidx-annotations.pro"
-      excludes += "META-INF/DEPENDENCIES"
-      excludes += "META-INF/LICENSE"
-      excludes += "META-INF/license.txt"
-      excludes += "META-INF/ASL2.0"
-      excludes += "META-INF/LICENSE.md"
       excludes += "META-INF/INDEX.LIST"
+      // pdfbox-android (Bouncy Castle) signing files
+      excludes += "META-INF/BCKEY.DSA"
+      excludes += "META-INF/BCKEY.SF"
+      excludes += "META-INF/BCKEY.RSA"
+      excludes += "META-INF/BC2048KE.DSA"
+      excludes += "META-INF/BC2048KE.SF"
     }
   }
   buildTypes {
@@ -124,7 +108,7 @@ android {
       isMinifyEnabled = true
       proguardFiles(
         getDefaultProguardFile("proguard-android-optimize.txt"),
-        "proguard-rules.pro"
+        "proguard-rules.pro",
       )
       isDebuggable = false
       isJniDebuggable = false
@@ -145,16 +129,7 @@ android {
       }
     }
   }
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  kotlin {
-    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  }
+
   @Suppress("UnstableApiUsage")
   testOptions {
     unitTests {
@@ -169,12 +144,18 @@ android {
     exclude(module = "httpclient")
     exclude(group = "com.google.guava", module = "listenablefuture")
   }
-  sourceSets {
-    get("main").java.srcDirs("src/main/kotlin")
-  }
   lint {
     checkReleaseBuilds = false
     abortOnError = false
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
+  }
+}
+
+kotlin {
+  compilerOptions {
+    freeCompilerArgs.add("-XXLanguage:+ExplicitBackingFields")
   }
 }
 
@@ -182,13 +163,14 @@ configurations.testImplementation {
   exclude(module = "logback-android")
 }
 
-fun getDateAndTime(): String {
-  return DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm:ss").format(LocalDateTime.now())
+configurations.configureEach {
+  exclude(group = "com.google.android.gms", module = "play-services-ads")
+  exclude(group = "com.google.android.gms", module = "play-services-ads-lite")
 }
 
-fun getDate(): String {
-  return DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(LocalDateTime.now())
-}
+fun getDateAndTime(): String = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm:ss").format(LocalDateTime.now())
+
+fun getDate(): String = DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(LocalDateTime.now())
 
 dependencies {
   implementation(project(":domain"))
@@ -199,7 +181,10 @@ dependencies {
   implementation(project(":repository"))
   implementation(project(":cloud-api"))
   implementation(project(":cloud"))
+  implementation(project(":work-api"))
+  implementation(project(":work"))
   implementation(project(":feature-common"))
+  implementation(project(":feature-note"))
   implementation(project(":appwidgets"))
   implementation(project(":navigation-api"))
   implementation(project(":platform-common"))
@@ -209,8 +194,16 @@ dependencies {
   implementation(project(":usecase:notes"))
   implementation(project(":usecase:reminders"))
   implementation(project(":icalendar"))
+  implementation(project(":date-calculations"))
   implementation(project(":sync"))
   implementation(project(":reviews"))
+  implementation(project(":legal-api"))
+  implementation(project(":legal"))
+  implementation(project(":files-api"))
+  implementation(project(":files"))
+  implementation(project(":tags"))
+  implementation(project(":insights"))
+  implementation(project(":localbackup"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")
@@ -223,24 +216,16 @@ dependencies {
   implementation(libs.koin.android.ext)
   implementation(libs.koin.androidx.workmanager)
   implementation(libs.koin.androidx.compose)
+  implementation(libs.koin.compose.navigation3)
 
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.android)
 
   implementation(libs.material)
 
-  implementation(libs.androidx.recyclerview)
   implementation(libs.androidx.multidex)
-  implementation(libs.androidx.constraintlayout)
-  implementation(libs.androidx.swiperefreshlayout)
-  implementation(libs.androidx.viewpager2)
-  implementation(libs.androidx.splashscreen)
   implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.fragment.ktx)
-  implementation(libs.androidx.activity.ktx)
-  implementation(libs.androidx.collection.ktx)
-  implementation(libs.androidx.palette.ktx)
-  implementation(libs.androidx.dynamicanimation.ktx)
+  implementation(libs.androidx.activity.compose)
 
   implementation(libs.androidx.work.runtime) {
     exclude(group = "com.google.guava", module = "listenablefuture")
@@ -254,9 +239,6 @@ dependencies {
   implementation(libs.androidx.lifecycle.common.java8)
   implementation(libs.androidx.lifecycle.livedata.ktx)
 
-  implementation(libs.androidx.navigation.fragment.ktx)
-  implementation(libs.androidx.navigation.ui.ktx)
-
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.crashlytics)
   implementation(libs.firebase.auth)
@@ -265,11 +247,13 @@ dependencies {
   implementation(libs.play.services.location)
   implementation(libs.play.services.maps)
   implementation(libs.play.services.auth)
+  implementation(libs.maps.compose)
 
-  "freeImplementation"(libs.play.services.ads)
+  "freeImplementation"(libs.ads.mobile.sdk)
   "freeImplementation"(libs.user.messaging.platform)
 
-  implementation(libs.circleimageview)
+  "proImplementation"(project(":appfunctions"))
+
   implementation(libs.retrofit)
   implementation(libs.retrofit.converter.gson)
   implementation(libs.gson)
@@ -277,22 +261,17 @@ dependencies {
   implementation(libs.okhttp3.logging.interceptor)
   implementation(libs.lib.recur)
   implementation(libs.commons.lang3)
-  implementation(libs.colorslider)
-  implementation(libs.android.calendar.ext) {
-    exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
-  }
   implementation(libs.lottie)
-  implementation(libs.photoview)
-  implementation(libs.sheets.core)
-  implementation(libs.sheets.info)
-  implementation(libs.sheets.lottie)
-  implementation(libs.sheets.input)
+  implementation(libs.lottie.compose)
 
   implementation(libs.kotlin.stdlib)
   implementation(libs.kotlin.reflect)
 
   implementation(libs.threetenbp)
   implementation(libs.coil)
+  implementation(libs.coil.compose)
+  implementation(libs.telephoto.zoomable.image.coil)
+  implementation(libs.pdfbox.android)
 
   implementation(libs.slf4j.api)
   implementation(libs.logback.android)
@@ -308,6 +287,11 @@ dependencies {
   implementation(libs.compose.ui.tooling.preview)
   debugImplementation(libs.compose.ui.tooling)
 
+  implementation(libs.androidx.navigation3.runtime)
+  implementation(libs.androidx.navigation3.ui)
+  implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+  implementation(libs.kotlinx.serialization.core)
+
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)
   testImplementation(libs.mockk)
@@ -317,9 +301,4 @@ dependencies {
   testImplementation(libs.androidx.lifecycle.runtime.testing)
   testImplementation(libs.kotlinx.coroutines.test)
   testImplementation(libs.robolectric)
-}
-
-ktlint {
-  android = true
-  outputColorName.set("RED")
 }

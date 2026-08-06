@@ -11,32 +11,47 @@ A comprehensive task management and reminder application for Android, built with
 ## Features
 
 ### Reminders & Tasks
-- **Flexible Scheduling**: Create reminders with various scheduling options including one-time, recurring, and custom repeat patterns
+- **Flexible Scheduling**: Create reminders with various scheduling options including one-time, recurring daily/weekly/monthly/yearly, and custom repeat patterns
 - **Location-Based Reminders**: Set reminders that trigger when you arrive at or leave specific locations
 - **Priority Levels**: Organize tasks by priority to focus on what matters most
-- **Sub-tasks**: Break down complex tasks into manageable sub-tasks
+- **Sub-tasks & Checklists**: Break down complex tasks into manageable sub-tasks and shopping lists
 - **Smart Notifications**: Receive timely notifications with customizable sounds and vibration patterns
+- **Agenda View**: See all reminders organized by date with powerful filtering options
 
 ### Notes
 - **Quick Note Taking**: Capture ideas and information quickly with an intuitive note-taking interface
-- **Rich Text Support**: Format your notes with different styles and structures
+- **Color-Coded Notes**: Organize notes with custom colors for better visual categorization
 - **Easy Organization**: Search, filter, and organize your notes efficiently
+- **Favorites**: Mark important notes as favorites for quick access
+
+### Groups & Organization
+- **Task Categories**: Organize reminders into custom groups (General, Personal, Work, etc.)
+- **Smart Lists**: Filter reminders by predefined smart lists (Today, Overdue, This Week)
+- **Tag Support**: Add custom tags to reminders for better organization and filtering
 
 ### Cloud Backup & Sync
 - **Automatic Backups**: Keep your data safe with automatic cloud backup functionality
+- **Google Drive Integration**: Backup and sync your data with Google Drive
+- **Dropbox Support**: Additional cloud storage option for your reminders and notes
 - **Cross-Device Sync**: Access your reminders and notes across multiple devices
-- **Multiple Cloud Providers**: Support for various cloud storage providers
+
+### Insights & Analytics
+- **Activity Tracking**: Monitor your reminder completion and task trends
+- **Habit Streaks**: Track habit completion streaks over time
+- **Weekly Trends**: Visualize your busiest days and activity patterns
 
 ### Customization
-- **Themes**: Personalize the app with different color themes and appearance options
+- **Material Design**: Modern UI built with Material Design 3 components
 - **Widget Support**: Add home screen widgets for quick access to your tasks and reminders
 - **Flexible Settings**: Customize notification behavior, default reminder settings, and more
 
 ### Additional Features
 - **Calendar Integration**: View your reminders alongside calendar events
 - **Import/Export**: Import and export your data using iCalendar format
-- **Task Categories**: Organize reminders into custom categories
+- **Google Tasks Integration**: Sync with your Google Tasks account
+- **Birthday Tracking**: Never forget birthdays with dedicated birthday reminders
 - **Attachments**: Add images and files to your reminders and notes
+- **Free & Pro Flavors**: Free version with core features, plus a Pro version with advanced capabilities
 
 ## Technology Stack
 
@@ -49,19 +64,21 @@ This application is built using modern Android development practices:
 
 ## Screenshots
 
+### Home Dashboard & Quick Overview
 <p float="left">
-  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/reminder_scr.jpg" width="300" />
-  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr1.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/01.jpeg" width="300" alt="Home Dashboard - Quick overview with statistics and upcoming reminders" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/02.jpeg" width="300" alt="Notes List - Browse and manage all your notes organized by color" />
 </p>
 
+### Task Management & Creation
 <p float="left">
-  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr2.jpg" width="300" />
-  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr3.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/03.jpeg" width="300" alt="Agenda View - See all reminders organized by date with filtering options" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/04.jpeg" width="300" alt="Create Reminder - Choose from preset reminder patterns" />
 </p>
 
+### Advanced Features
 <p float="left">
-  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr4.jpg" width="300" />
-  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr5.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/05.jpeg" width="300" alt="Reminder Details - Configure date, time, tags, and save as presets" />
 </p>
 
 ## Contributing

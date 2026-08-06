@@ -213,4 +213,111 @@ class ICalendarApiTest {
     Assert.assertEquals(expected.size, result.size)
     Assert.assertTrue(result.containsAll(expected))
   }
+
+  @Test
+  fun testGenerate_MissingDtStart_ReturnsEmptyList() {
+    val map = mutableMapOf<TagType, Tag>().apply {
+      put(
+        TagType.RRULE,
+        RecurrenceRuleTag(
+          listOf(FreqRecurParam(FreqType.DAILY), CountRecurParam(5))
+        )
+      )
+    }
+
+    val result = iCalendarApi.generate(RuleMap(map))
+
+    Assert.assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun testGenerate_MissingRrule_ReturnsEmptyList() {
+    val startDateTime = LocalDateTime.of(2023, 5, 16, 12, 0, 0)
+    val map = mutableMapOf<TagType, Tag>().apply {
+      put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
+    }
+
+    val result = iCalendarApi.generate(RuleMap(map))
+
+    Assert.assertTrue(result.isEmpty())
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun testCreateObject_MissingCount_Throws() {
+    val startDateTime = LocalDateTime.of(2023, 5, 16, 12, 0, 0)
+    val map = mutableMapOf<TagType, Tag>().apply {
+      put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
+      put(
+        TagType.RRULE,
+        RecurrenceRuleTag(listOf(FreqRecurParam(FreqType.DAILY), IntervalRecurParam(1)))
+      )
+    }
+
+    iCalendarApi.createObject(RuleMap(map))
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun testCreateObject_MissingDtStart_Throws() {
+    val map = mutableMapOf<TagType, Tag>().apply {
+      put(
+        TagType.RRULE,
+        RecurrenceRuleTag(listOf(FreqRecurParam(FreqType.DAILY), CountRecurParam(5)))
+      )
+    }
+
+    iCalendarApi.createObject(RuleMap(map))
+  }
+
+  @Test
+  fun testGenerate_Weekly_ByDay_Interval() {
+    // 2023-05-15 is a Monday.
+    val startDateTime = LocalDateTime.of(2023, 5, 15, 9, 0, 0)
+
+    val map = mutableMapOf<TagType, Tag>().apply {
+      put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
+      put(
+        TagType.RRULE,
+        RecurrenceRuleTag(
+          listOf(
+            FreqRecurParam(FreqType.WEEKLY),
+            IntervalRecurParam(2),
+            ByDayRecurParam(listOf(DayValue(Day.MO), DayValue(Day.WE))),
+            CountRecurParam(4)
+          )
+        )
+      )
+    }
+
+    val result = iCalendarApi.generate(RuleMap(map))
+
+    val expected = listOf(
+      UtcDateTime(startDateTime),
+      UtcDateTime(startDateTime.plusDays(2)),
+      UtcDateTime(startDateTime.plusWeeks(2)),
+      UtcDateTime(startDateTime.plusWeeks(2).plusDays(2))
+    )
+
+    Assert.assertEquals(expected, result)
+  }
+
+  @Test
+  fun testParseObject_RoundTripsCreatedRrule() {
+    val startDateTime = LocalDateTime.of(2023, 5, 16, 12, 0, 0)
+
+    val map = mutableMapOf<TagType, Tag>().apply {
+      put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
+      put(
+        TagType.RRULE,
+        RecurrenceRuleTag(
+          listOf(FreqRecurParam(FreqType.DAILY), IntervalRecurParam(1), CountRecurParam(5))
+        )
+      )
+    }
+
+    val created = iCalendarApi.createObject(RuleMap(map))
+    val parsed = iCalendarApi.parseObject(created)
+
+    Assert.assertEquals(map[TagType.DTSTART], parsed?.map?.get(TagType.DTSTART))
+    Assert.assertEquals(map[TagType.RRULE], parsed?.map?.get(TagType.RRULE))
+  }
 }

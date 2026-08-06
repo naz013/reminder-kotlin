@@ -1,47 +1,53 @@
 package com.elementary.tasks.core.utils.io
 
 import android.content.Context
-import com.github.naz013.cloudapi.FileConfig
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.files.DataConverter
+import com.github.naz013.files.FileConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
 class BackupTool(
   private val context: Context,
-  private val memoryUtil: MemoryUtil,
+  private val dataConverter: DataConverter,
 ) {
+  suspend fun reminderToFile(item: ReminderV2): File? = anyToFile(item, item.uuId + FileConfig.FILE_NAME_REMINDER_V2)
 
-  fun reminderToFile(item: Reminder): File? {
-    return anyToFile(item, item.uuId + FileConfig.FILE_NAME_REMINDER)
-  }
+  suspend fun placeToFile(item: Place): File? = anyToFile(item, item.id + FileConfig.FILE_NAME_PLACE)
 
-  fun placeToFile(item: Place): File? {
-    return anyToFile(item, item.id + FileConfig.FILE_NAME_PLACE)
-  }
-
-  private fun anyToFile(any: Any, fileName: String): File? {
+  private suspend fun anyToFile(
+    any: Any,
+    fileName: String,
+  ): File? {
     val cacheDir = context.externalCacheDir ?: context.cacheDir
     val file = File(cacheDir, fileName)
-    if (!file.createNewFile()) {
+    if (!withContext(Dispatchers.IO) {
+        file.createNewFile()
+      }) {
       try {
         file.delete()
-        file.createNewFile()
+        withContext(Dispatchers.IO) {
+          file.createNewFile()
+        }
       } catch (e: Exception) {
         e.printStackTrace()
       }
     }
     return try {
-      val outputStream = FileOutputStream(file)
-      return if (memoryUtil.toStream(any, outputStream)) {
-        outputStream.flush()
-        outputStream.close()
-        file
-      } else {
-        outputStream.flush()
-        outputStream.close()
-        null
+      val outputStream = withContext(Dispatchers.IO) {
+        FileOutputStream(file)
       }
+      dataConverter.toOutputStream(any, outputStream)
+      withContext(Dispatchers.IO) {
+        outputStream.flush()
+      }
+      withContext(Dispatchers.IO) {
+        outputStream.close()
+      }
+      file
     } catch (e: Exception) {
       e.printStackTrace()
       null

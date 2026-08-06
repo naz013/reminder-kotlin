@@ -8,12 +8,12 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 
 class SaveNoteUseCase(
   private val noteRepository: NoteRepository,
   private val noteImageRepository: NoteImageRepository,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {
   suspend operator fun invoke(noteWithImages: NoteWithImages) {
     val note = noteWithImages.note ?: return
@@ -23,17 +23,21 @@ class SaveNoteUseCase(
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.Notes,
-      id = note.key
+      id = note.key,
     )
     Logger.i(TAG, "Saved note: ${note.key}")
   }
 
-  private suspend fun saveImages(list: List<ImageFile>, id: String) {
+  private suspend fun saveImages(
+    list: List<ImageFile>,
+    id: String,
+  ) {
     val oldList = noteRepository.getImagesByNoteId(id)
     for (image in oldList) {
       noteRepository.deleteImage(image.id)
     }
-    noteImageRepository.moveImagesToFolder(list, id)
+    noteImageRepository
+      .moveImagesToFolder(list, id)
       .map { it.copy(noteId = id) }
       .takeIf { it.isNotEmpty() }
       ?.also { noteRepository.saveAll(it) }

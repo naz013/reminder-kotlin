@@ -13,6 +13,13 @@ interface NoteRepository {
   suspend fun getById(id: String): NoteWithImages?
   suspend fun getAll(isArchived: Boolean = false): List<NoteWithImages>
   suspend fun searchByText(query: String, isArchived: Boolean = false): List<NoteWithImages>
+
+  /**
+   * Filters by archive state and (optional) lowercase search text, and sorts in SQL (sortOrder
+   * is one of "date_az", "date_za", "text_az", "text_za" — anything else behaves like
+   * "date_za"), all as a single query.
+   */
+  suspend fun getNotes(isArchived: Boolean, query: String, sortOrder: String): List<NoteWithImages>
   suspend fun getImagesIds(): List<Int>
   suspend fun getImageById(id: Int): ImageFile?
   suspend fun search(query: String): List<Note>
@@ -28,4 +35,6 @@ interface NoteRepository {
   suspend fun updateSyncState(id: String, state: SyncState)
   suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
   suspend fun getAllIds(): List<String>
+
+  suspend fun countAll(isArchived: Boolean = false): Int
 }

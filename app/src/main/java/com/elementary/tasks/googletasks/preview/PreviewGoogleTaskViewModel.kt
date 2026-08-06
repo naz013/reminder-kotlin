@@ -1,116 +1,147 @@
 package com.elementary.tasks.googletasks.preview
 
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskPreviewAdapter
-import com.elementary.tasks.core.data.ui.google.UiGoogleTaskPreview
-import com.elementary.tasks.core.utils.withUIContext
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PreviewGoogleTaskViewModel(
   private val id: String,
   private val googleTasksApi: GoogleTasksApi,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
-  private val analyticsEventSender: AnalyticsEventSender,
+  analyticsEventSender: AnalyticsEventSender,
   private val uiGoogleTaskPreviewAdapter: UiGoogleTaskPreviewAdapter,
-  private val appWidgetUpdater: AppWidgetUpdater
-) : BaseProgressViewModel(dispatcherProvider) {
+  private val appWidgetUpdater: AppWidgetUpdater,
+  private val textProvider: TextProvider,
+) : ViewModel() {
 
-  private val _googleTask = mutableLiveDataOf<UiGoogleTaskPreview>()
-  val googleTask = _googleTask.toLiveData()
+  private val _state = MutableStateFlow(PreviewGoogleTaskState())
+  val state = _state.stateInWhileSubscribed(PreviewGoogleTaskState())
+    .onStart { loadTask() }
+  val event: LiveData<Event<PreviewGoogleTaskEvent>> field = mutableLiveEventOf()
 
-  override fun onCreate(owner: LifecycleOwner) {
-    super.onCreate(owner)
+  init {
     analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_TASK_PREVIEW))
   }
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
-    loadTask()
+  fun onDeleteClick() {
+    _state.update { it.copy(showDeleteConfirm = true) }
   }
 
-  fun onDelete() {
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      try {
-        val googleTask = googleTaskRepository.getById(id)
-        if (googleTask == null) {
-          postInProgress(false)
-          postCommand(Commands.FAILED)
-          return@launch
+  fun onDeleteDismiss() {
+    _state.update { it.copy(showDeleteConfirm = false) }
+  }
+
+  fun onDeleteConfirmed() {
+    _state.update { it.copy(showDeleteConfirm = false) }
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val googleTask = withContext(dispatcherProvider.io()) {
+        googleTaskRepository.getById(id)
+      }
+
+      if (googleTask == null) {
+        event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
+        return@launch
+      }
+
+      val deleted = withContext(dispatcherProvider.io()) {
+        try {
+          googleTasksApi.deleteTask(googleTask).also {
+            if (it) {
+              googleTaskRepository.delete(googleTask.taskId)
+            }
+          }
+        } catch (e: Throwable) {
+          Logger.e(TAG, "Got an error while deleting the Google Task, ${e.message}")
+          false
         }
-        if (googleTasksApi.deleteTask(googleTask)) {
-          googleTaskRepository.delete(googleTask.taskId)
-          postInProgress(false)
-          postCommand(Commands.DELETED)
-        } else {
-          postInProgress(false)
-          postCommand(Commands.FAILED)
-        }
-      } catch (e: Throwable) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+      }
+
+      if (deleted) {
+        event.emit(PreviewGoogleTaskEvent.MoveBack)
+      } else {
+        event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
       }
     }
   }
 
   fun onComplete() {
-    postInProgress(true)
-    viewModelScope.launch(dispatcherProvider.default()) {
-      try {
-        val googleTask = googleTaskRepository.getById(id)
-        if (googleTask == null) {
-          postInProgress(false)
-          postCommand(Commands.FAILED)
-          return@launch
-        }
-        if (googleTask.isNeedAction()) {
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val googleTask = withContext(dispatcherProvider.io()) {
+        googleTaskRepository.getById(id)
+      } ?: run {
+        event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
+        return@launch
+      }
+
+      if (googleTask.isNeedAction()) {
+        withContext(dispatcherProvider.io()) {
           googleTasksApi.updateTaskStatus(GoogleTask.TASKS_COMPLETE, googleTask)?.also {
             googleTaskRepository.save(it)
-          } ?: run {
-            postInProgress(false)
-            postCommand(Commands.FAILED)
-            return@launch
           }
-        } else {
-          postInProgress(false)
-          postCommand(Commands.FAILED)
+        } ?: run {
+          event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
           return@launch
         }
-        loadTask()
-        postInProgress(false)
-        postCommand(Commands.UPDATED)
-        withUIContext {
-          appWidgetUpdater.updateScheduleWidget()
-        }
-      } catch (e: Throwable) {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+      } else {
+        event.emit(PreviewGoogleTaskEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))
+        return@launch
       }
+      loadTask()
+      appWidgetUpdater.updateScheduleWidget()
     }
   }
 
   private fun loadTask() {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      val googleTask = googleTaskRepository.getById(id) ?: return@launch
-      val googleTaskList = googleTaskListRepository.getById(googleTask.listId)
-        ?: googleTaskListRepository.defaultGoogleTaskList()
-      _googleTask.postValue(uiGoogleTaskPreviewAdapter.convert(googleTask, googleTaskList))
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val googleTask = withContext(dispatcherProvider.io()) {
+        googleTaskRepository.getById(id)
+      } ?: run {
+        Logger.w(TAG, "Google Task with id $id not found.")
+        return@launch
+      }
+      val googleTaskList = withContext(dispatcherProvider.io()) {
+        googleTaskListRepository.getById(googleTask.listId) ?: googleTaskListRepository.defaultGoogleTaskList()
+      }
+      val uiTask = withContext(dispatcherProvider.io()) {
+        uiGoogleTaskPreviewAdapter.convert(googleTask, googleTaskList)
+      }
+      _state.update { it.copy(task = uiTask) }
     }
+  }
+
+  sealed interface PreviewGoogleTaskEvent {
+    data class ShowError(
+      val message: String
+    ) : PreviewGoogleTaskEvent
+
+    data object MoveBack : PreviewGoogleTaskEvent
+  }
+
+  companion object {
+    private const val TAG = "PreviewGoogleTaskViewModel"
   }
 }

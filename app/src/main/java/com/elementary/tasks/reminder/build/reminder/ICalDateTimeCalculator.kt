@@ -24,27 +24,29 @@ import org.threeten.bp.LocalDateTime
 
 class ICalDateTimeCalculator(
   private val iCalendarApi: ICalendarApi,
-  private val dateTimeManager: DateTimeManager
+  private val dateTimeManager: DateTimeManager,
 ) {
-
   operator fun invoke(processedBuilderItems: ProcessedBuilderItems): EventData? {
     Logger.d(TAG, "Start calculation with processedBuilderItems = $processedBuilderItems")
 
-    val iCalParams = processedBuilderItems.groupMap[BiGroup.ICAL]
-      ?.takeIf { it.isNotEmpty() }
-      ?.associateBy { it.biType }
-      ?: return null
+    val iCalParams =
+      processedBuilderItems.groupMap[BiGroup.ICAL]
+        ?.takeIf { it.isNotEmpty() }
+        ?.associateBy { it.biType }
+        ?: return null
 
     Logger.d(TAG, "iCalParams = $iCalParams")
 
-    val startDate = iCalParams.readValue(
-      BiType.ICAL_START_DATE,
-      ICalStartDateBuilderItem::class.java
-    ) ?: return null
-    val startTime = iCalParams.readValue(
-      BiType.ICAL_START_TIME,
-      ICalStartTimeBuilderItem::class.java
-    ) ?: return null
+    val startDate =
+      iCalParams.readValue(
+        BiType.ICAL_START_DATE,
+        ICalStartDateBuilderItem::class.java,
+      ) ?: return null
+    val startTime =
+      iCalParams.readValue(
+        BiType.ICAL_START_TIME,
+        ICalStartTimeBuilderItem::class.java,
+      ) ?: return null
 
     val startDateTime = LocalDateTime.of(startDate, startTime)
 
@@ -54,9 +56,10 @@ class ICalDateTimeCalculator(
 
     Logger.d(TAG, "Generated ruleMap = $ruleMap")
 
-    val recurObject = runCatching {
-      iCalendarApi.createObject(ruleMap)
-    }.getOrNull() ?: return null
+    val recurObject =
+      runCatching {
+        iCalendarApi.createObject(ruleMap)
+      }.getOrNull() ?: return null
 
     Logger.i(TAG, "Generated recurObject = $recurObject")
 
@@ -68,22 +71,25 @@ class ICalDateTimeCalculator(
 
     Logger.i(TAG, "Calculated position = $position")
 
+    if (position < 0) return null
+
     return dates[position].dateTime?.let {
       Logger.i(TAG, "Calculated next event date time = $it")
       EventData(
         startDateTime = it,
-        recurObject = recurObject
+        recurObject = recurObject,
       )
     }
   }
 
   private fun createRuleMap(
     startDateTime: LocalDateTime,
-    params: Map<BiType, BuilderItem<*>>
+    params: Map<BiType, BuilderItem<*>>,
   ): RuleMap {
-    val map = mutableMapOf<TagType, Tag>().apply {
-      put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
-    }
+    val map =
+      mutableMapOf<TagType, Tag>().apply {
+        put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
+      }
 
     createRruleTag(params)?.also {
       map[it.tagType] = it
@@ -92,27 +98,28 @@ class ICalDateTimeCalculator(
     return RuleMap(map)
   }
 
-  private fun createRruleTag(
-    params: Map<BiType, BuilderItem<*>>
-  ): RecurrenceRuleTag? {
+  private fun createRruleTag(params: Map<BiType, BuilderItem<*>>): RecurrenceRuleTag? {
     if (params.isEmpty()) return null
 
     val recurParams = mutableListOf<RecurParam>()
 
-    val untilDate = params.readValue(
-      BiType.ICAL_UNTIL_DATE,
-      ICalUntilDateBuilderItem::class.java
-    )
-    val untilTime = params.readValue(
-      BiType.ICAL_UNTIL_TIME,
-      ICalUntilTimeBuilderItem::class.java
-    )
+    val untilDate =
+      params.readValue(
+        BiType.ICAL_UNTIL_DATE,
+        ICalUntilDateBuilderItem::class.java,
+      )
+    val untilTime =
+      params.readValue(
+        BiType.ICAL_UNTIL_TIME,
+        ICalUntilTimeBuilderItem::class.java,
+      )
 
-    val untilDateTime = if (untilDate != null && untilTime != null) {
-      LocalDateTime.of(untilDate, untilTime)
-    } else {
-      null
-    }
+    val untilDateTime =
+      if (untilDate != null && untilTime != null) {
+        LocalDateTime.of(untilDate, untilTime)
+      } else {
+        null
+      }
 
     Logger.d(TAG, "Found untilDateTime = $untilDateTime")
 
@@ -120,13 +127,15 @@ class ICalDateTimeCalculator(
       recurParams.add(UntilRecurParam(UtcDateTime(untilDateTime)))
     }
 
-    params.map { it.value }.mapNotNull { item ->
-      if (item is ICalBuilderItem<*>) {
-        item.getRecurParam()
-      } else {
-        null
-      }
-    }.forEach { recurParams.add(it) }
+    params
+      .map { it.value }
+      .mapNotNull { item ->
+        if (item is ICalBuilderItem<*>) {
+          item.getRecurParam()
+        } else {
+          null
+        }
+      }.forEach { recurParams.add(it) }
 
     return RecurrenceRuleTag(recurParams)
   }
@@ -157,13 +166,13 @@ class ICalDateTimeCalculator(
   @Suppress("UNCHECKED_CAST")
   private fun <T, B : BuilderItem<T>> Map<BiType, BuilderItem<*>>.readValue(
     type: BiType,
-    clazz: Class<B>
-  ): T? {
-    return get(type)?.takeIf { it::class.java == clazz }
+    clazz: Class<B>,
+  ): T? =
+    get(type)
+      ?.takeIf { it::class.java == clazz }
       ?.let { it as? B }
       ?.modifier
       ?.getValue()
-  }
 
   companion object {
     private const val TAG = "ICalDateTimeCalculator"

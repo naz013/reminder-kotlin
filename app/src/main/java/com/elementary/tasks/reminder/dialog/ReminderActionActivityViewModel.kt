@@ -1,13 +1,11 @@
 package com.elementary.tasks.reminder.dialog
 
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.actions.ReminderAction
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
@@ -15,24 +13,25 @@ import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCas
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.ReminderAction as DomainReminderAction
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.theme.ColorProvider
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ReminderActionActivityViewModel(
   private val id: String,
-  private val isTest: Boolean,
-  private val reminderRepository: ReminderRepository,
-  dispatcherProvider: DispatcherProvider,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val dispatcherProvider: DispatcherProvider,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
@@ -42,42 +41,24 @@ class ReminderActionActivityViewModel(
   private val notifier: Notifier,
   private val colorProvider: ColorProvider,
   private val textProvider: TextProvider,
-) : BaseProgressViewModel(dispatcherProvider) {
-
+) : ViewModel() {
   private val _state = mutableLiveDataOf<ReminderActionScreenState>()
   val state = _state.toLiveData()
 
-  private val _redirectEvent = mutableLiveEventOf<Redirect>()
-  val redirectEvent = _redirectEvent.toLiveData()
-
-  private val _showToast = mutableLiveEventOf<Int>()
-  val showToast = _showToast.toLiveData()
-
-  private val _showSnoozeDialog = mutableLiveEventOf<Unit>()
-  val showSnoozeDialog = _showSnoozeDialog.toLiveData()
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
   private var currentState: ReminderActionScreenState? = null
-  private var _reminder: Reminder? = null
+  private var _reminder: ReminderV2? = null
 
   init {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       Logger.i(TAG, "Loaded reminder: ${reminder.uuId}")
       val screenState = getReminderActionScreenStateUseCase(reminder)
       currentState = screenState
       _reminder = reminder
       withContext(dispatcherProvider.main()) {
         _state.value = screenState
-      }
-    }
-  }
-
-  override fun onDestroy(owner: LifecycleOwner) {
-    super.onDestroy(owner)
-    if (isTest) {
-      Logger.d(TAG, "Test reminder finished, deleting reminder id=$id")
-      viewModelScope.launch(dispatcherProvider.io()) {
-        reminderRepository.delete(id)
       }
     }
   }
@@ -95,7 +76,7 @@ class ReminderActionActivityViewModel(
       ReminderAction.Complete -> onOkClicked()
       ReminderAction.Snooze -> onDefaultSnoozeClicked()
       ReminderAction.SnoozeCustom -> {
-        _showSnoozeDialog.value = Event(Unit)
+        event.emit(ViewModelEvent.ShowSnoozeDialog)
       }
       ReminderAction.Dismiss -> onCancelClicked()
       ReminderAction.MakeCall -> onActionButtonClick()
@@ -120,17 +101,18 @@ class ReminderActionActivityViewModel(
   fun onTodoItemClick(itemId: String) {
     Logger.i(TAG, "Todo item clicked: $itemId for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       // Find and toggle the task
-      val updatedTasks = reminder.shoppings.map { task ->
-        if (task.uuId == itemId) {
-          task.copy(isChecked = !task.isChecked)
-        } else {
-          task
+      val updatedTasks =
+        reminder.shoppingItems.map { task ->
+          if (task.uuId == itemId) {
+            task.copy(isChecked = !task.isChecked)
+          } else {
+            task
+          }
         }
-      }
       // Save the reminder with updated tasks
-      val updatedReminder = reminder.copy(shoppings = updatedTasks)
+      val updatedReminder = reminder.copy(shoppingItems = updatedTasks)
       saveReminder(updatedReminder)
 
       // Refresh the screen state
@@ -157,10 +139,10 @@ class ReminderActionActivityViewModel(
   private fun onOkClicked() {
     Logger.i(TAG, "OK clicked for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       completeReminderUseCase(reminder)
       withContext(dispatcherProvider.main()) {
-        _redirectEvent.value = Event(Redirect.Finish)
+        event.emit(ViewModelEvent.Finish)
       }
     }
   }
@@ -168,26 +150,30 @@ class ReminderActionActivityViewModel(
   private fun onFavoriteClicked() {
     Logger.i(TAG, "Favorite clicked for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       completeReminderUseCase(reminder)
       withContext(dispatcherProvider.main()) {
         showFavouriteNotification(
           text = reminder.summary,
-          notificationId = reminder.uniqueId
+          notificationId = reminder.uniqueId,
         )
-        _redirectEvent.value = Event(Redirect.Finish)
+        event.emit(ViewModelEvent.Finish)
       }
     }
   }
 
-  private fun showFavouriteNotification(text: String, notificationId: Int) {
+  private fun showFavouriteNotification(
+    text: String,
+    notificationId: Int,
+  ) {
     val builder = notifier.getNotificationBuilder(Notifier.CHANNEL_REMINDER)
     builder.setContentTitle(text)
-    val appName: String = if (BuildParams.isPro) {
-      textProvider.getString(R.string.app_name_pro)
-    } else {
-      textProvider.getString(R.string.app_name)
-    }
+    val appName: String =
+      if (BuildParams.isPro) {
+        textProvider.getString(R.string.app_name_pro)
+      } else {
+        textProvider.getString(R.string.app_name)
+      }
     builder.setContentText(appName)
     builder.setSmallIcon(R.drawable.ic_fluent_alert)
     builder.color = colorProvider.getColor(R.color.secondaryBlue)
@@ -202,7 +188,7 @@ class ReminderActionActivityViewModel(
       showWearNotification(
         text,
         appName,
-        notificationId
+        notificationId,
       )
     }
   }
@@ -210,9 +196,9 @@ class ReminderActionActivityViewModel(
   private fun showWearNotification(
     text: String,
     secondaryText: String,
-    notificationId: Int
+    notificationId: Int,
   ) {
-    Logger.d("showWearNotification: $secondaryText")
+    Logger.d(TAG, "showWearNotification: $secondaryText")
     val wearableNotificationBuilder = notifier.getNotificationBuilder(Notifier.CHANNEL_REMINDER)
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
     wearableNotificationBuilder.setContentTitle(text)
@@ -228,17 +214,18 @@ class ReminderActionActivityViewModel(
   private fun onCancelClicked() {
     Logger.i(TAG, "Cancel clicked for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       deactivateReminderUseCase(reminder)
       withContext(dispatcherProvider.main()) {
-        _redirectEvent.value = Event(Redirect.Finish)
+        event.emit(ViewModelEvent.Finish)
       }
     }
   }
 
   private fun onDefaultSnoozeClicked() {
     val reminder = _reminder ?: return
-    val snoozeTime = reminder.delay.takeIf { it != 0 } ?: prefs.snoozeTime
+    val delayMinutes = reminder.notification.delayMinutes
+    val snoozeTime = delayMinutes?.takeIf { it != 0 } ?: prefs.snoozeTime
     Logger.i(TAG, "Default snooze clicked for reminder id=$id for $snoozeTime minutes")
     onSnoozeClicked(snoozeTime)
   }
@@ -246,11 +233,11 @@ class ReminderActionActivityViewModel(
   private fun onSnoozeClicked(timeInMinutes: Int) {
     Logger.i(TAG, "Snooze clicked for reminder id=$id for $timeInMinutes minutes")
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       snoozeReminderUseCase(reminder, timeInMinutes)
       withContext(dispatcherProvider.main()) {
-        _showToast.value = Event(R.string.reminder_snoozed)
-        _redirectEvent.value = Event(Redirect.Finish)
+        event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.reminder_snoozed)))
+        event.emit(ViewModelEvent.Finish)
       }
     }
   }
@@ -258,97 +245,103 @@ class ReminderActionActivityViewModel(
   private fun onActionButtonClick() {
     Logger.i(TAG, "Action button clicked for reminder id=$id")
     viewModelScope.launch(dispatcherProvider.io()) {
-      val reminder = reminderRepository.getById(id) ?: return@launch
+      val reminder = reminderV2Repository.getById(id) ?: return@launch
       completeReminderUseCase(reminder)
       withContext(dispatcherProvider.main()) {
-        when {
-          reminder.readType().hasSmsAction() -> {
+        when (val action = reminder.action) {
+          is DomainReminderAction.Sms -> {
             if (reminder.summary.isEmpty()) {
               Logger.w(TAG, "SMS message is empty, finishing.")
-              _redirectEvent.value = Event(Redirect.Finish)
+              event.emit(ViewModelEvent.Finish)
             } else {
               Logger.i(TAG, "Sending SMS for reminder id=${reminder.uuId}")
-              _redirectEvent.value = Event(
-                Redirect.SendSms(
-                  target = reminder.to,
-                  message = reminder.summary
+              event.emit(
+                ViewModelEvent.SendSms(
+                  target = action.target,
+                  message = reminder.summary,
                 )
               )
             }
           }
-          isAppType(reminder) -> {
-            if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
-              Logger.i(TAG, "Opening app for reminder id=${reminder.uuId}")
-              _redirectEvent.value = Event(Redirect.OpenApp(reminder.target))
-            } else {
-              Logger.i(TAG, "Opening link for reminder id=${reminder.uuId}")
-              _redirectEvent.value = Event(Redirect.OpenLink(reminder.target))
-            }
+          is DomainReminderAction.App -> {
+            Logger.i(TAG, "Opening app for reminder id=${reminder.uuId}")
+            event.emit(ViewModelEvent.OpenApp(action.target))
           }
-          Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> {
+          is DomainReminderAction.Link -> {
+            Logger.i(TAG, "Opening link for reminder id=${reminder.uuId}")
+            event.emit(ViewModelEvent.OpenLink(action.target))
+          }
+          is DomainReminderAction.Email -> {
             Logger.i(TAG, "Sending email for reminder id=${reminder.uuId}")
-            _redirectEvent.value = Event(
-              Redirect.SendEmail(
-                email = reminder.to,
-                subject = reminder.subject,
+            event.emit(
+              ViewModelEvent.SendEmail(
+                email = action.target,
+                subject = action.subject,
                 message = reminder.summary,
-                filePath = reminder.attachmentFile
+                filePath = reminder.attachmentFiles.firstOrNull(),
               )
             )
           }
-          else -> {
-            if (TelephonyUtil.isPhoneNumber(reminder.target)) {
-              Logger.i(TAG, "Making call for reminder id=${reminder.uuId}")
-              _redirectEvent.value = Event(Redirect.MakeCall(reminder.target))
-            } else {
-              Logger.w(TAG, "Unknown action, finishing reminder id=${reminder.uuId}")
-              _redirectEvent.value = Event(Redirect.Finish)
-            }
+          is DomainReminderAction.Call -> {
+            Logger.i(TAG, "Making call for reminder id=${reminder.uuId}")
+            event.emit(ViewModelEvent.MakeCall(action.target))
+          }
+          DomainReminderAction.None, DomainReminderAction.Shopping -> {
+            Logger.w(TAG, "Unknown action, finishing reminder id=${reminder.uuId}")
+            event.emit(ViewModelEvent.Finish)
           }
         }
       }
     }
   }
 
-  private fun saveReminder(reminder: Reminder) {
-    postInProgress(true)
+  private fun saveReminder(reminder: ReminderV2) {
     viewModelScope.launch(dispatcherProvider.default()) {
       saveReminderUseCase(
         reminder.copy(
-          version = reminder.version + 1,
-          syncState = SyncState.WaitingForUpload
-        )
+          sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
+        ),
       )
-      postInProgress(false)
-      postCommand(Commands.SAVED)
     }
   }
 
-  private fun isAppType(reminder: Reminder): Boolean {
-    return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) ||
-      Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
-  }
+  sealed interface ViewModelEvent {
+    data object Finish : ViewModelEvent
 
-  sealed class Redirect {
-    data object Finish : Redirect()
-    data class Edit(val id: String): Redirect()
-    data class OpenApp(val target: String): Redirect()
-    data class OpenLink(val target: String): Redirect()
-    data class MakeCall(val target: String): Redirect()
-    data class SendSms(val target: String, val message: String): Redirect()
+    data class Edit(
+      val id: String,
+    ) : ViewModelEvent
+
+    data class OpenApp(
+      val target: String,
+    ) : ViewModelEvent
+
+    data class OpenLink(
+      val target: String,
+    ) : ViewModelEvent
+
+    data class MakeCall(
+      val target: String,
+    ) : ViewModelEvent
+
+    data class SendSms(
+      val target: String,
+      val message: String,
+    ) : ViewModelEvent
+
     data class SendEmail(
       val email: String,
       val subject: String,
       val message: String,
-      val filePath: String?
-    ): Redirect()
-  }
+      val filePath: String?,
+    ) : ViewModelEvent
 
-  data class FavoriteNotificationData(
-    val notificationId: Int,
-    val id: String,
-    val text: String
-  )
+    data class ShowError(
+      val message: String,
+    ) : ViewModelEvent
+
+    data object ShowSnoozeDialog : ViewModelEvent
+  }
 
   companion object {
     private const val TAG = "ReminderViewModel"

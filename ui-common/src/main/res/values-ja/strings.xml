@@ -928,4 +928,187 @@
     <string name="keep_notification">通知を保持</string>
     <string name="cd_back">戻る</string>
     <string name="how_to_create_a_reminder">リマインダーの作成方法</string>
+    <string name="copy_of">%s のコピー</string>
+
+    <string name="turn_off">オフにする</string>
+
+    <string name="delete_reminder_permanently">リマインダーを完全に削除しますか?</string>
+    <string name="delete_birthday_permanently">誕生日を完全に削除しますか?</string>
+    <string name="delete_note_permanently">メモを完全に削除しますか?</string>
+    <string name="delete_group_permanently">グループを完全に削除しますか?</string>
+
+    <string name="share_send_note">メモを送信…</string>
+
+    <string name="note_moved_to_archive">メモがアーカイブに移動されました</string>
+    <string name="note_reverted_from_archive">メモがアーカイブから復元されました</string>
+    <string name="show_note_in_notifications">通知にメモを表示</string>
+
+    <string name="share_intent_title">共有...</string>
+    <string name="error_reminder_not_found">リマインダーが見つかりません!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">リマインダーは既に削除されています!まず編集してください。</string>
+
+    <string name="workflow_rules">ワークフロールール</string>
+    <string name="workflow_automations">オートメーション</string>
+    <string name="workflow_active_global_rules">アクティブなグローバルルール</string>
+    <string name="workflow_rules_for_group">このグループのルール</string>
+    <string name="workflow_no_rules_yet">ルールはまだありません</string>
+    <string name="workflow_templates">テンプレート</string>
+    <string name="workflow_apply_globally">グローバルに適用</string>
+    <string name="workflow_apply_to_group">グループに適用</string>
+    <string name="workflow_open_group_to_apply">グループを開いてこれを適用します</string>
+    <string name="workflow_save_as_template">テンプレートとして保存</string>
+    <string name="workflow_create_custom_rule">カスタムルールを作成</string>
+    <string name="workflow_archive_after_days_hint">日</string>
+    <string name="workflow_category_reminder_lifecycle">リマインダーのライフサイクル</string>
+    <string name="workflow_category_group">グループ</string>
+    <string name="workflow_category_location">場所</string>
+    <string name="workflow_category_notification_escalation">通知 &amp; エスカレーション</string>
+    <string name="workflow_category_system_integration">システム統合</string>
+    <string name="workflow_category_privacy_data_hygiene">プライバシー &amp; データ衛生</string>
+
+    <string name="workflow_builder_new_rule_title">新しいルール</string>
+    <string name="workflow_builder_edit_rule_title">ルールを編集</string>
+    <string name="workflow_builder_when">いつ</string>
+    <string name="workflow_builder_if_optional">もし(オプション)</string>
+    <string name="workflow_builder_then">その後</string>
+    <string name="workflow_builder_not_set">設定されていません</string>
+    <string name="workflow_builder_add_condition">条件を追加</string>
+    <string name="workflow_builder_choose_trigger">トリガーを選択</string>
+    <string name="workflow_builder_choose_condition">条件を選択</string>
+    <string name="workflow_builder_choose_action">アクションを選択</string>
+    <string name="workflow_builder_snooze_count_hint">スヌーズ回数</string>
+    <string name="workflow_builder_minutes_hint">分</string>
+    <string name="workflow_builder_minutes_unit">分</string>
+    <string name="workflow_builder_select_group">グループを選択</string>
+    <string name="workflow_builder_select_reminder">リマインダーを選択</string>
+    <string name="workflow_builder_no_groups">グループはまだありません</string>
+    <string name="workflow_builder_no_reminders">アクティブなリマインダーなし</string>
+    <string name="workflow_trigger_reminder_completed">リマインダーが完了しました</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">リマインダーがN回スヌーズされました</string>
+    <string name="workflow_trigger_group_all_completed">グループ内のすべてのリマインダーが完了しました</string>
+    <string name="workflow_trigger_location_entered">リマインダーの場所に到着しました</string>
+    <string name="workflow_trigger_location_exited">リマインダーの場所を出ました</string>
+    <string name="workflow_trigger_reminder_age_exceeded">最低N日前に完了しました</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">N分間表示されていません</string>
+    <string name="workflow_condition_priority_at_least">優先度は最低</string>
+    <string name="workflow_condition_within_time_window">現在の時刻は</string>
+    <string name="workflow_condition_group_is">リマインダーのグループは</string>
+    <string name="workflow_action_archive_reminder">リマインダーをアーカイブ</string>
+    <string name="workflow_action_complete_reminder">リマインダーを完了</string>
+    <string name="workflow_action_apply_notification_override">通知設定を変更</string>
+    <string name="workflow_action_activate_reminder">別のリマインダーを起動</string>
+    <string name="preset_buy_groceries">食料品を買う</string>
+    <string name="preset_bread">パン</string>
+    <string name="preset_juice">ジュース</string>
+    <string name="preset_cookies">クッキー</string>
+    <string name="haptic_feedback">触覚フィードバック</string>
+    <string name="use_haptic_feedback_for_interactions">インタラクションに触覚フィードバックを使用</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">インタラクションに触覚フィードバックを使用しない</string>
+
+    <string name="notification_defaults">通知のデフォルト設定</string>
+    <string name="default_vibrate">振動</string>
+    <string name="vibrate_on_notification">通知時に振動</string>
+    <string name="do_not_vibrate_on_notification">通知時に振動しない</string>
+    <string name="bypass_do_not_disturb">集中モードをバイパス</string>
+    <string name="bypass_do_not_disturb_enabled">集中モード中でも鳴る</string>
+    <string name="bypass_do_not_disturb_disabled">集中モードを尊重</string>
+    <string name="wake_screen">スクリーンを起動</string>
+    <string name="wake_screen_enabled">アラームのようにスクリーンをオン</string>
+    <string name="wake_screen_disabled">スクリーンをオンにしない</string>
+    <string name="notification_category">通知カテゴリ</string>
+    <string name="notification_category_default">デフォルト</string>
+    <string name="notification_category_alarm">アラーム</string>
+    <string name="notification_category_event">イベント</string>
+    <string name="notification_category_call">通話</string>
+    <string name="lock_screen_visibility">ロック画面の表示</string>
+    <string name="lock_screen_visibility_public">全コンテンツを表示</string>
+    <string name="lock_screen_visibility_private">機密コンテンツを非表示</string>
+    <string name="lock_screen_visibility_secret">完全に非表示</string>
+    <string name="vibration_pattern">振動パターン</string>
+    <string name="notification_overrides">通知のオーバーライド</string>
+    <string name="notification_customization">通知のカスタマイズ</string>
+    <string name="how_does_this_work">これはどのように機能しますか？</string>
+    <string name="inherit_from_settings">設定から継承</string>
+    <string name="inherited_format">継承済み: %s</string>
+    <string name="on">オン</string>
+    <string name="off">オフ</string>
+    <string name="vibration_preset_short">短い</string>
+    <string name="vibration_preset_long">長い</string>
+    <string name="vibration_preset_double_buzz">ダブルバズ</string>
+    <string name="vibration_preset_default">デフォルト</string>
+    <string name="notification_delay">通知の遅延</string>
+
+    <string name="builder_set_category_for_the_notification">通知のシステム通知カテゴリを設定</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">ロック画面に表示される通知の量を設定</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">集中モード中でも鳴る</string>
+    <string name="builder_set_wake_screen_for_the_notification">アラームのようにスクリーンをオン</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">通知の振動パターンを設定</string>
+    <string name="builder_set_delay_for_the_notification">通知をこの分数だけ遅延させる</string>
+
+    <string name="builder_quick_start_one_time">1回限りのリマインダー</string>
+    <string name="builder_quick_start_every_weekday">毎週平日</string>
+    <string name="builder_quick_start_every_month_day">毎月このをの日</string>
+    <string name="builder_quick_start_every_year">毎年このの日</string>
+    <string name="builder_quick_start_timer">カウントダウンタイマー</string>
+    <string name="builder_quick_start_shopping_list">買い物リスト</string>
+    <string name="builder_quick_start_more_options">その他のオプション…</string>
+
+    <string name="builder_invalid_email_value">有効なメールアドレスを入力してください</string>
+    <string name="builder_invalid_web_address_value">有効なWebアドレスを入力してください</string>
+    <string name="builder_invalid_phone_number_value">有効な電話番号を入力してください</string>
+    <string name="builder_shopping_list_empty_value">リストに少なくとも1つのアイテムを追加してください</string>
+    <string name="builder_invalid_value_generic">この値は有効ではありません</string>
+    <string name="builder_permissions_required_message">続行するには、要求されたアクセス許可を付与してください</string>
+
+    <string name="gemini_functions">Gemini機能</string>
+
+    <string name="smart_list_today">今日</string>
+    <string name="smart_list_overdue">期限切れ</string>
+    <string name="smart_list_this_week">今週</string>
+    <string name="smart_list_no_group">グループなし</string>
+
+    <string name="tags">タグ</string>
+    <string name="manage_tags">タグの管理</string>
+    <string name="new_tag">新しいタグ</string>
+    <string name="tag_name">タグ名</string>
+    <string name="no_tags">タグはまだありません</string>
+    <string name="delete_tag_permanently">このタグを削除しますか？すべてのリマインダーとメモから削除されます。</string>
+
+    <string name="local_backup">ローカルバックアップ</string>
+    <string name="backup_export_title">バックアップのエクスポート</string>
+    <string name="backup_import_title">バックアップの復元</string>
+    <string name="backup_export_description">リマインダー、メモ、グループ、誕生日、場所、プリセットの暗号化されたコピーを選択したファイルに保存します。何も送信されません。パスフレーズを忘れた場合、バックアップは回復できません。</string>
+    <string name="backup_import_description">以前にエクスポートした暗号化されたバックアップファイルからデータを復元してください。同じIDの既存アイテムは上書きされます。他に何も削除されません。</string>
+    <string name="backup_passphrase">パスフレーズ</string>
+    <string name="backup_confirm_passphrase">パスフレーズを確認</string>
+    <string name="backup_passphrase_mismatch">パスフレーズが一致しません</string>
+    <string name="backup_passphrase_empty">パスフレーズを入力</string>
+    <string name="backup_export_action">エクスポート</string>
+    <string name="backup_import_action">復元</string>
+    <string name="backup_export_success">バックアップが正常に保存されました。</string>
+    <string name="backup_export_failed">バックアップを保存できませんでした。もう一度お試しください。</string>
+    <string name="backup_import_success">%1$d個のアイテムが正常に復元されました。</string>
+    <string name="backup_import_failed">バックアップを復元できませんでした。もう一度お試しください。</string>
+    <string name="backup_wrong_passphrase">パスフレーズが間違っているか、ファイルが破損しています。</string>
+    <string name="backup_invalid_file">このファイルは有効なReminderバックアップではありません。</string>
+    <string name="backup_open_file_failed">選択したファイルを開くことができませんでした。</string>
+
+    <string name="insights">インサイト</string>
+    <string name="weekly_trend">週間トレンド</string>
+    <string name="busiest_day">最も忙しい日: %1$s</string>
+    <string name="streak_current">現在のストリーク: %1$d日</string>
+    <string name="streak_longest">最長ストリーク: %1$d日</string>
+    <string name="streak_fired_count">過去90日間に%1$d回発火</string>
+    <string name="no_insights_yet">過去90日間のリマインダーアクティビティはまだありません</string>
+
+    <string name="upcoming_events">今後のイベント</string>
+
+    <string name="agenda">アジェンダ</string>
+
+    <string name="group_has_no_active_reminders">このグループにはアクティブなリマインダーがありません</string>
+    <string name="group_x_reminder">%dリマインダー</string>
+    <string name="group_x_reminders">%dリマインダー</string>
+
+    <string name="type">タイプ</string>
+    <string name="smart_lists">スマートリスト</string>
 </resources>

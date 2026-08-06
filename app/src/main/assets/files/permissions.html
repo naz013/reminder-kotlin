@@ -1,38 +1,87 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <link rel="stylesheet" type="text/css" href="test.css" />
-    <title>Permissions</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permissions</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h2>Permissions used by application</h2>
-<br>
-<h3>Course/Fine location, Background location</h3>
-<p>
-    This permissions uses to check your current location for location reminder type. This application don't save or share Your location.
-</p>
-<h3>Call phone</h3>
-<p>
-    This permission used in call reminder types to make calls from application. Application don't call without Your acceptance.
-</p>
-<h3>Read contacts</h3>
-<p>
-    Used for getting birthdays from it or getting information for call or message reminder type.
-</p>
-<h3>Get accounts</h3>
-<p>
-    This permission used for getting Your Google account to enable Google Drive and Google Task features.
-</p>
-<h3>Read/Write calendar</h3>
-<p>
-    This permission used for storing and getting events from system or Google calendar.
-</p>
-<h3>Read/Write external storage</h3>
-<p>
-    This permission used for making backup of application data.
-</p>
-<br>
+<div class="container">
+  <h1>Permissions used by this app</h1>
+  <p class="subtitle">Every permission below is requested only for the feature it powers, and most are optional — the app works without granting them, just with that feature turned off.</p>
+
+  <details>
+    <summary><span class="summary-title">Location</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Fine, coarse and background location are used to trigger location-based reminders when you enter or leave a place. Your location is never saved or shared.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Call phone</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Lets a reminder place a phone call action you configured. The app never calls without your acceptance.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Contacts</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Reading contact birthdays for the Birthdays feature, or getting contact information for a call or message reminder type. Read-only, never uploaded.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Camera</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Used for attaching a photo you take to a note.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Microphone</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Used for voice input when creating a reminder or note.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Accounts</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Used for signing in with your Google account to enable Google Drive backup and Google Tasks features.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Calendar</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Read/write access is used for storing and getting events from the system or Google calendar.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Biometric</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Used for locking the app with your fingerprint or face — this check happens entirely on your device and never leaves it.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Notifications &amp; exact alarms</span><span class="badge">Required</span></summary>
+    <div class="section-body">
+      <p>Used for showing reminders on time. Without these, the app can't notify you when a reminder is due.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="summary-title">Bluetooth</span><span class="badge">Optional</span></summary>
+    <div class="section-body">
+      <p>Used only if you set up a reminder trigger or action tied to a Bluetooth device.</p>
+    </div>
+  </details>
+
+  <footer>See the in-app Privacy Policy for how any data collected through these permissions is used.</footer>
+</div>
 </body>
 </html>
-

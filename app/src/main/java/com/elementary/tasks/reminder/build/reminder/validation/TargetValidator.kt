@@ -1,21 +1,16 @@
 package com.elementary.tasks.reminder.build.reminder.validation
 
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class TargetValidator {
-
-  operator fun invoke(reminder: Reminder): Boolean {
-    if (!shouldCheckTarget(reminder)) {
-      return true
+  operator fun invoke(reminder: ReminderV2): Boolean =
+    when (val action = reminder.action) {
+      is ReminderAction.App -> action.target.isNotEmpty()
+      is ReminderAction.Call -> action.target.isNotEmpty()
+      is ReminderAction.Sms -> action.target.isNotEmpty()
+      is ReminderAction.Email -> action.target.isNotEmpty()
+      is ReminderAction.Link -> action.target.isNotEmpty()
+      ReminderAction.Shopping, ReminderAction.None -> true
     }
-    return reminder.target.isNotEmpty()
-  }
-
-  private fun shouldCheckTarget(reminder: Reminder): Boolean {
-    return reminder.type % 10 == Reminder.Action.APP ||
-      reminder.type % 10 == Reminder.Action.CALL ||
-      reminder.type % 10 == Reminder.Action.SMS ||
-      reminder.type % 10 == Reminder.Action.EMAIL ||
-      reminder.type % 10 == Reminder.Action.LINK
-  }
 }

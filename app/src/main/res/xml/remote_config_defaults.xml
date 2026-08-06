@@ -23,10 +23,6 @@
     </entry>
 
     <entry>
-        <key>privacy_policy_link</key>
-        <value>https://sukhovych.com/reminder-privacy-policy/</value>
-    </entry>
-    <entry>
         <key>voice_help_urls</key>
         <value>{}</value>
     </entry>
@@ -41,10 +37,6 @@
     <entry>
         <key>feature_google_tasks</key>
         <value>true</value>
-    </entry>
-    <entry>
-        <key>terms_link</key>
-        <value>https://sukhovych.com/terms-and-conditions/</value>
     </entry>
     <entry>
         <key>update_message_v2</key>

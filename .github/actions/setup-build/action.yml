@@ -1,0 +1,49 @@
+name: Setup build
+description: JDK, gradlew permissions and google-services.json files shared by build_and_test jobs. Requires actions/checkout to have already run in the calling job.
+
+inputs:
+  google-services-pro:
+    description: Contents of app/src/pro/google-services.json
+    required: true
+  google-services-free:
+    description: Contents of app/src/free/google-services.json
+    required: true
+  google-services-cloudtestadmin:
+    description: Contents of cloudtestadmin/google-services.json
+    required: true
+
+runs:
+  using: composite
+  steps:
+
+    - name: Validate Gradle wrapper
+      uses: gradle/actions/wrapper-validation@v6
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v5
+      with:
+        java-version: '17'
+        distribution: 'adopt'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew
+
+    - name: Put data into services json file for PRO version
+      shell: bash
+      env:
+        DATA: ${{ inputs.google-services-pro }}
+      run: echo "$DATA" > app/src/pro/google-services.json
+
+    - name: Put data into services json file for FREE version
+      shell: bash
+      env:
+        DATA: ${{ inputs.google-services-free }}
+      run: echo "$DATA" > app/src/free/google-services.json
+
+    - name: Put data into services json file for CloudTestAdmin
+      shell: bash
+      env:
+        DATA: ${{ inputs.google-services-cloudtestadmin }}
+      run: echo "$DATA" > cloudtestadmin/google-services.json

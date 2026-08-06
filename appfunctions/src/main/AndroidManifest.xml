@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <application>
+    <service
+      android:name=".ReminderAppFunctionService"
+      android:permission="android.permission.BIND_APP_FUNCTION_SERVICE"
+      android:exported="true"
+      tools:targetApi="36">
+      <intent-filter>
+        <action android:name="android.app.appfunctions.AppFunctionService" />
+      </intent-filter>
+    </service>
+
+    <service
+      android:name=".NoteAppFunctionService"
+      android:permission="android.permission.BIND_APP_FUNCTION_SERVICE"
+      android:exported="true"
+      tools:targetApi="36">
+      <intent-filter>
+        <action android:name="android.app.appfunctions.AppFunctionService" />
+      </intent-filter>
+    </service>
+
+    <service
+      android:name=".BirthdayAppFunctionService"
+      android:permission="android.permission.BIND_APP_FUNCTION_SERVICE"
+      android:exported="true"
+      tools:targetApi="36">
+      <intent-filter>
+        <action android:name="android.app.appfunctions.AppFunctionService" />
+      </intent-filter>
+    </service>
+
+    <service
+      android:name=".GoogleTaskAppFunctionService"
+      android:permission="android.permission.BIND_APP_FUNCTION_SERVICE"
+      android:exported="true"
+      tools:targetApi="36">
+      <intent-filter>
+        <action android:name="android.app.appfunctions.AppFunctionService" />
+      </intent-filter>
+    </service>
+  </application>
+
+</manifest>

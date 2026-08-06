@@ -927,4 +927,187 @@
     <string name="keep_notification">Сохранить уведомление</string>
     <string name="cd_back">Назад</string>
     <string name="how_to_create_a_reminder">Как создать напоминание</string>
+    <string name="copy_of">Копия: %s</string>
+
+    <string name="turn_off">Выключить</string>
+
+    <string name="delete_reminder_permanently">Удалить напоминание навсегда?</string>
+    <string name="delete_birthday_permanently">Удалить день рождения навсегда?</string>
+    <string name="delete_note_permanently">Удалить заметку навсегда?</string>
+    <string name="delete_group_permanently">Удалить группу навсегда?</string>
+
+    <string name="share_send_note">Отправить заметку…</string>
+
+    <string name="note_moved_to_archive">Заметка перемещена в архив</string>
+    <string name="note_reverted_from_archive">Заметка восстановлена из архива</string>
+    <string name="show_note_in_notifications">Показывать заметку в уведомлениях</string>
+
+    <string name="share_intent_title">Поделиться...</string>
+    <string name="error_reminder_not_found">Напоминание не найдено!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">Напоминание уже удалено! Отредактируйте его сначала.</string>
+
+    <string name="workflow_rules">Правила рабочего процесса</string>
+    <string name="workflow_automations">Автоматизация</string>
+    <string name="workflow_active_global_rules">Активные глобальные правила</string>
+    <string name="workflow_rules_for_group">Правила для этой группы</string>
+    <string name="workflow_no_rules_yet">Нет правил</string>
+    <string name="workflow_templates">Шаблоны</string>
+    <string name="workflow_apply_globally">Применить глобально</string>
+    <string name="workflow_apply_to_group">Применить к группе</string>
+    <string name="workflow_open_group_to_apply">Откройте группу, чтобы применить это</string>
+    <string name="workflow_save_as_template">Сохранить как шаблон</string>
+    <string name="workflow_create_custom_rule">Создать пользовательское правило</string>
+    <string name="workflow_archive_after_days_hint">Дни</string>
+    <string name="workflow_category_reminder_lifecycle">Жизненный цикл напоминания</string>
+    <string name="workflow_category_group">Группа</string>
+    <string name="workflow_category_location">Местоположение</string>
+    <string name="workflow_category_notification_escalation">Уведомления &amp; эскалация</string>
+    <string name="workflow_category_system_integration">Интеграция с системой</string>
+    <string name="workflow_category_privacy_data_hygiene">Конфиденциальность &amp; гигиена данных</string>
+
+    <string name="workflow_builder_new_rule_title">Новое правило</string>
+    <string name="workflow_builder_edit_rule_title">Изменить правило</string>
+    <string name="workflow_builder_when">Когда</string>
+    <string name="workflow_builder_if_optional">Если (опционально)</string>
+    <string name="workflow_builder_then">Тогда</string>
+    <string name="workflow_builder_not_set">Не установлено</string>
+    <string name="workflow_builder_add_condition">Добавить условие</string>
+    <string name="workflow_builder_choose_trigger">Выбрать триггер</string>
+    <string name="workflow_builder_choose_condition">Выбрать условие</string>
+    <string name="workflow_builder_choose_action">Выбрать действие</string>
+    <string name="workflow_builder_snooze_count_hint">Количество отложений</string>
+    <string name="workflow_builder_minutes_hint">Минуты</string>
+    <string name="workflow_builder_minutes_unit">мин</string>
+    <string name="workflow_builder_select_group">Выбрать группу</string>
+    <string name="workflow_builder_select_reminder">Выбрать напоминание</string>
+    <string name="workflow_builder_no_groups">Нет групп</string>
+    <string name="workflow_builder_no_reminders">Нет активных напоминаний</string>
+    <string name="workflow_trigger_reminder_completed">Напоминание завершено</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">Напоминание отложено N раз</string>
+    <string name="workflow_trigger_group_all_completed">Все напоминания в группе завершены</string>
+    <string name="workflow_trigger_location_entered">Прибыл в местоположение напоминания</string>
+    <string name="workflow_trigger_location_exited">Покинул местоположение напоминания</string>
+    <string name="workflow_trigger_reminder_age_exceeded">Завершено минимум N дней назад</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">Не просмотрено N минут</string>
+    <string name="workflow_condition_priority_at_least">Приоритет не менее</string>
+    <string name="workflow_condition_within_time_window">Текущее время между</string>
+    <string name="workflow_condition_group_is">Группа напоминания</string>
+    <string name="workflow_action_archive_reminder">Архивировать напоминание</string>
+    <string name="workflow_action_complete_reminder">Завершить напоминание</string>
+    <string name="workflow_action_apply_notification_override">Изменить параметры уведомления</string>
+    <string name="workflow_action_activate_reminder">Активировать другое напоминание</string>
+    <string name="preset_buy_groceries">Купить продукты</string>
+    <string name="preset_bread">Хлеб</string>
+    <string name="preset_juice">Сок</string>
+    <string name="preset_cookies">Печенье</string>
+    <string name="haptic_feedback">Тактильная обратная связь</string>
+    <string name="use_haptic_feedback_for_interactions">Использовать тактильную обратную связь для взаимодействий</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">Не использовать тактильную обратную связь для взаимодействий</string>
+
+    <string name="notification_defaults">Параметры уведомления по умолчанию</string>
+    <string name="default_vibrate">Вибрация</string>
+    <string name="vibrate_on_notification">Вибрация при уведомлении</string>
+    <string name="do_not_vibrate_on_notification">Без вибрации при уведомлении</string>
+    <string name="bypass_do_not_disturb">Обход режима "Не беспокоить"</string>
+    <string name="bypass_do_not_disturb_enabled">Звонить даже в режиме "Не беспокоить"</string>
+    <string name="bypass_do_not_disturb_disabled">Соблюдать режим "Не беспокоить"</string>
+    <string name="wake_screen">Пробудить экран</string>
+    <string name="wake_screen_enabled">Включить экран как будильник</string>
+    <string name="wake_screen_disabled">Не включать экран</string>
+    <string name="notification_category">Категория уведомления</string>
+    <string name="notification_category_default">По умолчанию</string>
+    <string name="notification_category_alarm">Будильник</string>
+    <string name="notification_category_event">События</string>
+    <string name="notification_category_call">Вызов</string>
+    <string name="lock_screen_visibility">Видимость на экране блокировки</string>
+    <string name="lock_screen_visibility_public">Показать полное содержимое</string>
+    <string name="lock_screen_visibility_private">Скрыть конфиденциальное содержимое</string>
+    <string name="lock_screen_visibility_secret">Полностью скрыть</string>
+    <string name="vibration_pattern">Паттерн вибрации</string>
+    <string name="notification_overrides">Переопределения уведомлений</string>
+    <string name="notification_customization">Настройка уведомлений</string>
+    <string name="how_does_this_work">Как это работает?</string>
+    <string name="inherit_from_settings">Унаследовать из параметров</string>
+    <string name="inherited_format">Унаследовано: %s</string>
+    <string name="on">Вкл.</string>
+    <string name="off">Выкл.</string>
+    <string name="vibration_preset_short">Короткая</string>
+    <string name="vibration_preset_long">Длинная</string>
+    <string name="vibration_preset_double_buzz">Двойной гудок</string>
+    <string name="vibration_preset_default">По умолчанию</string>
+    <string name="notification_delay">Задержка уведомления</string>
+
+    <string name="builder_set_category_for_the_notification">Установить системную категорию уведомления</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">Установить видимость уведомления на экране блокировки</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">Звонить даже когда включен режим "Не беспокоить"</string>
+    <string name="builder_set_wake_screen_for_the_notification">Включить экран как будильник</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">Установить паттерн вибрации для уведомления</string>
+    <string name="builder_set_delay_for_the_notification">Отложить уведомление на указанное количество минут</string>
+
+    <string name="builder_quick_start_one_time">Единовременное напоминание</string>
+    <string name="builder_quick_start_every_weekday">Каждый рабочий день</string>
+    <string name="builder_quick_start_every_month_day">Каждый месяц в этот день</string>
+    <string name="builder_quick_start_every_year">Каждый год в этот день</string>
+    <string name="builder_quick_start_timer">Обратный отсчет</string>
+    <string name="builder_quick_start_shopping_list">Список покупок</string>
+    <string name="builder_quick_start_more_options">Дополнительные параметры…</string>
+
+    <string name="builder_invalid_email_value">Введите действительный адрес электронной почты</string>
+    <string name="builder_invalid_web_address_value">Введите действительный веб-адрес</string>
+    <string name="builder_invalid_phone_number_value">Введите действительный номер телефона</string>
+    <string name="builder_shopping_list_empty_value">Добавьте хотя бы один элемент в список</string>
+    <string name="builder_invalid_value_generic">Это значение недействительно</string>
+    <string name="builder_permissions_required_message">Предоставьте запрашиваемые разрешения для продолжения</string>
+
+    <string name="gemini_functions">Функции Gemini</string>
+
+    <string name="smart_list_today">Сегодня</string>
+    <string name="smart_list_overdue">Просрочено</string>
+    <string name="smart_list_this_week">На этой неделе</string>
+    <string name="smart_list_no_group">Нет группы</string>
+
+    <string name="tags">Теги</string>
+    <string name="manage_tags">Управлять тегами</string>
+    <string name="new_tag">Новый тег</string>
+    <string name="tag_name">Имя тега</string>
+    <string name="no_tags">Нет тегов</string>
+    <string name="delete_tag_permanently">Удалить этот тег? Он будет удален из каждого напоминания и заметки.</string>
+
+    <string name="local_backup">Локальная резервная копия</string>
+    <string name="backup_export_title">Экспортировать резервную копию</string>
+    <string name="backup_import_title">Восстановить резервную копию</string>
+    <string name="backup_export_description">Сохраните зашифрованную копию ваших напоминаний, заметок, групп, дней рождения, мест и предустановок в файл на вашем выборе. Ничего не отправляется. Если вы забудете пароль, резервную копию невозможно восстановить.</string>
+    <string name="backup_import_description">Восстановите данные из ранее экспортированного зашифрованного файла резервной копии. Существующие элементы с одинаковым идентификатором будут перезаписаны; ничего больше не удаляется.</string>
+    <string name="backup_passphrase">Пароль</string>
+    <string name="backup_confirm_passphrase">Подтвердить пароль</string>
+    <string name="backup_passphrase_mismatch">Пароли не совпадают</string>
+    <string name="backup_passphrase_empty">Введите пароль</string>
+    <string name="backup_export_action">Экспорт</string>
+    <string name="backup_import_action">Восстановить</string>
+    <string name="backup_export_success">Резервная копия успешно сохранена.</string>
+    <string name="backup_export_failed">Не удалось сохранить резервную копию. Пожалуйста, попробуйте еще раз.</string>
+    <string name="backup_import_success">%1$d элементов успешно восстановлено.</string>
+    <string name="backup_import_failed">Не удалось восстановить резервную копию. Пожалуйста, попробуйте еще раз.</string>
+    <string name="backup_wrong_passphrase">Неправильный пароль или файл повреждден.</string>
+    <string name="backup_invalid_file">Этот файл не является действительной резервной копией Reminder.</string>
+    <string name="backup_open_file_failed">Не удалось открыть выбранный файл.</string>
+
+    <string name="insights">Рекомендации</string>
+    <string name="weekly_trend">Недельный тренд</string>
+    <string name="busiest_day">Самый загруженный день: %1$s</string>
+    <string name="streak_current">Текущая серия: %1$d дней</string>
+    <string name="streak_longest">Самая длинная серия: %1$d дней</string>
+    <string name="streak_fired_count">Запущено %1$d раз за последние 90 дней</string>
+    <string name="no_insights_yet">Нет активности напоминания за последние 90 дней</string>
+
+    <string name="upcoming_events">Предстоящие</string>
+
+    <string name="agenda">Повестка дня</string>
+
+    <string name="group_has_no_active_reminders">Нет активных напоминаний в этой группе</string>
+    <string name="group_x_reminder">%d напоминание</string>
+    <string name="group_x_reminders">%d напоминаний</string>
+
+    <string name="type">Тип</string>
+    <string name="smart_lists">Умные списки</string>
 </resources>

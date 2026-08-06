@@ -2,15 +2,18 @@ package com.elementary.tasks.core.services.action.birthday
 
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TelephonyUtil
-import com.github.naz013.common.datetime.DateTimeManager
-import com.elementary.tasks.core.utils.datetime.DateValidator
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.telephony.PhoneCaller
+import com.elementary.tasks.telephony.SmsSender
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
+import com.github.naz013.common.Permissions
+import com.github.naz013.datecalc.BirthdayDateCalculator
+import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
+import com.github.naz013.datecalc.DateValidator
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
@@ -25,39 +28,42 @@ class BirthdayActionProcessor(
   private val birthdayRepository: BirthdayRepository,
   private val prefs: Prefs,
   private val doNotDisturbManager: DoNotDisturbManager,
-  private val dateTimeManager: DateTimeManager,
   private val jobScheduler: JobScheduler,
   private val analyticsEventSender: AnalyticsEventSender,
   private val contextProvider: ContextProvider,
-  private val dateValidator: DateValidator = DateValidator()
+  private val dateValidator: DateValidator = DateValidator(),
+  private val birthdayDateCalculator: BirthdayDateCalculator = BirthdayDateCalculatorImpl(),
+  private val smsSender: SmsSender,
+  private val phoneCaller: PhoneCaller,
 ) {
-
   private val scope = CoroutineScope(dispatcherProvider.default())
 
   fun sendSms(id: String) {
-    Logger.d("sendSms: $id")
+    Logger.d(TAG, "sendSms: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
       withContext(dispatcherProvider.main()) {
-        TelephonyUtil.sendSms(birthday.number, contextProvider.context)
+        smsSender.send(birthday.number, null)
       }
     }
   }
 
   fun makeCall(id: String) {
-    Logger.d("makeCall: $id")
+    Logger.d(TAG, "makeCall: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
       withContext(dispatcherProvider.main()) {
-        TelephonyUtil.makeCall(birthday.number, contextProvider.context)
+        if (Permissions.checkPermission(contextProvider.context, Permissions.CALL_PHONE)) {
+          phoneCaller.call(birthday.number)
+        }
       }
     }
   }
 
   fun cancel(id: String) {
-    Logger.d("cancel: $id")
+    Logger.d(TAG, "cancel: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
       birthdayHandlerFactory.createCancel().handle(birthday)
@@ -65,7 +71,7 @@ class BirthdayActionProcessor(
   }
 
   suspend fun process() {
-    Logger.d("process: ")
+    Logger.d(TAG, "process: ")
     jobScheduler.cancelDailyBirthday()
     jobScheduler.scheduleDailyBirthday()
     scope.launch {
@@ -74,18 +80,25 @@ class BirthdayActionProcessor(
 
       val date = LocalDate.now()
       val mYear = date.year
-      val currentDate = dateTimeManager.getBirthdayDateSearch(date)
 
       val handler =
         birthdayHandlerFactory.createAction(!SuperUtil.isPhoneCallActive(contextProvider.context))
 
-      val birthdays = birthdayRepository.getAll()
-        .filter { dateValidator.isLegacyMonthValid(it.month) }
+      val birthdays =
+        birthdayRepository
+          .getAll()
+          .filter { dateValidator.isLegacyMonthValid(it.month) }
 
       for (birthday in birthdays) {
         val year = birthday.showedYear
-        val birthValue = getBirthdayValue(birthday.month, birthday.day, daysBefore)
-        if (!applyDnd && birthValue == currentDate && year != mYear) {
+        val isBirthdayToday =
+          birthdayDateCalculator.isBirthdayOn(
+            birthMonth1Based = birthday.month + 1,
+            birthDay = birthday.day,
+            targetDate = date,
+            daysBefore = daysBefore,
+          )
+        if (!applyDnd && isBirthdayToday && year != mYear) {
           analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY))
           withContext(dispatcherProvider.main()) {
             handler.handle(birthday)
@@ -95,11 +108,7 @@ class BirthdayActionProcessor(
     }
   }
 
-  private fun getBirthdayValue(month: Int, day: Int, daysBefore: Int): String {
-    val date = LocalDate.now()
-      .withMonth(month + 1)
-      .withDayOfMonth(day)
-      .minusDays(daysBefore.toLong())
-    return dateTimeManager.getBirthdayDateSearch(date)
+  companion object {
+    private const val TAG = "BirthdayActionProcessor"
   }
 }

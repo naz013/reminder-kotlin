@@ -2,11 +2,11 @@ package com.elementary.tasks.reminder.build.formatter.datetime
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.github.naz013.common.datetime.DateTimeManager
 import com.elementary.tasks.reminder.build.formatter.Formatter
+import com.github.naz013.common.datetime.DateTimeManager
 
 class TimerFormatter(
-  private val context: Context
+  private val context: Context,
 ) : Formatter<Long>() {
   override fun format(millis: Long): String {
     val timeString = DateTimeManager.generateViewAfterString(millis, divider = "")

@@ -3,6 +3,9 @@ package com.github.naz013.appwidgets
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Widget
+import com.github.naz013.analytics.WidgetInteractedEvent
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.common.android.readSerializable
 import com.github.naz013.logging.Logger
@@ -16,6 +19,7 @@ import org.koin.android.ext.android.inject
 internal class AppWidgetActionActivity : LightThemedActivity() {
 
   private val navigator by inject<Navigator>()
+  private val analyticsEventSender by inject<AnalyticsEventSender>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -30,6 +34,9 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
     if (direction == null) {
       finish()
       return
+    }
+    intent.readSerializable(WIDGET_TYPE, Widget::class.java)?.also { widget ->
+      analyticsEventSender.send(WidgetInteractedEvent(widget))
     }
     val data = intent.readSerializable(DATA, WidgetIntentProtocol::class.java)
     Logger.d("AppWidgetActionActivity", "Received data = $data")
@@ -103,7 +110,8 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
             screen = DestinationScreen.NoteCreate,
             extras = bundle,
             flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-            isLoggedIn = true
+            isLoggedIn = true,
+            action = Intent.ACTION_VIEW
           )
         )
       }
@@ -157,6 +165,7 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
 
     const val DIRECTION = "arg_direction"
     const val DATA = "arg_data"
+    const val WIDGET_TYPE = "arg_widget_type"
 
     fun createIntent(context: Context): Intent {
       return context.intentForClass(AppWidgetActionActivity::class.java)

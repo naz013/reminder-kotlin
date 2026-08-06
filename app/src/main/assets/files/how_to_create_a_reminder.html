@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Create and Customize Reminders</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h1>How to Create and Customize Reminders</h1>
+  <p class="subtitle">A comprehensive guide to using the reminder builder</p>
+
+  <h2>Getting Started</h2>
+  <p>The reminder builder is a powerful, modular system that allows you to create customized reminders by combining different building blocks. Each reminder is constructed by adding and configuring various components to match your specific needs.</p>
+
+  <div class="info-box">
+    <h4>Key Concept</h4>
+    <p>Think of creating a reminder like building with LEGO blocks. Each block (Builder Item) has a specific function, and you combine them to create the exact reminder you need.</p>
+  </div>
+
+  <h2>Basic Workflow</h2>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <h4>Open the Reminder Builder</h4>
+    <p>Navigate to the reminder creation screen. You'll see an empty builder with a floating action button (FAB) in the bottom-right corner.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <h4>Add Builder Items</h4>
+    <p>Tap the <strong>add button</strong> (FAB) to open the selector dialog. This dialog has three tabs:</p>
+    <ul>
+      <li><strong>Builder Items</strong> - Individual components to build your reminder</li>
+      <li><strong>Presets</strong> - Pre-configured templates for common reminder types</li>
+      <li><strong>Recur Presets</strong> - Advanced recurring patterns (Pro feature)</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <h4>Configure Each Item</h4>
+    <p>After adding an item, tap on it to configure its specific settings. Each item type has its own configuration dialog.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <h4>Review the Prediction</h4>
+    <p>As you build, the system shows a <strong>forecast</strong> of when your reminder will trigger. This helps you verify that the configuration is correct.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span>
+    <h4>Save Your Reminder</h4>
+    <p>Once all items are configured correctly, tap the <strong>save icon</strong> in the top menu. The system will validate your configuration and activate the reminder.</p>
+  </div>
+
+  <h2>Builder Item Categories</h2>
+
+  <h3>Core Items <span class="badge badge-core">CORE</span></h3>
+  <p>These are the fundamental building blocks that define when your reminder will trigger:</p>
+
+  <div class="feature-grid">
+    <div class="feature-card"><h4>Date</h4><p>Set a specific date for your reminder. Must be combined with Time. Cannot be used with recurring reminders or location-based reminders.</p></div>
+    <div class="feature-card"><h4>Time</h4><p>Set a specific time of day. Required when using Date. Works independently with Days of Week.</p></div>
+    <div class="feature-card"><h4>Days of Week</h4><p>Select specific weekdays (e.g., Monday, Wednesday, Friday) for recurring reminders. Perfect for alarms and weekly events.</p></div>
+    <div class="feature-card"><h4>Day of Month</h4><p>Repeat on a specific day each month (e.g., 15th of every month). Great for monthly bills or meetings.</p></div>
+    <div class="feature-card"><h4>Day of Year</h4><p>Trigger once per year on a specific date (e.g., birthdays, anniversaries).</p></div>
+    <div class="feature-card"><h4>Countdown Timer</h4><p>Set a timer that counts down from now (e.g., in 2 hours, in 30 minutes). Perfect for quick reminders.</p></div>
+    <div class="feature-card"><h4>Arriving at Location</h4><p>Trigger when you arrive at a specific place. Requires location permissions.</p></div>
+    <div class="feature-card"><h4>Leaving Location</h4><p>Trigger when you leave a specific place. Requires location permissions.</p></div>
+  </div>
+
+  <div class="info-box warning">
+    <h4>Constraint Rules</h4>
+    <p>Core items have mutual exclusivity rules. For example, you cannot combine Date with Days of Week, or use location-based triggers with countdown timers. The system will automatically disable incompatible options.</p>
+  </div>
+
+  <h3>Parameter Items <span class="badge badge-params">PARAMS</span></h3>
+  <p>These items modify the behavior of your reminder:</p>
+
+  <div class="feature-grid">
+    <div class="feature-card"><h4>Summary</h4><p>The main text/title of your reminder. This is what you'll see in the notification.</p></div>
+    <div class="feature-card"><h4>Group</h4><p>Assign the reminder to a category or group for better organization.</p></div>
+    <div class="feature-card"><h4>Before Time</h4><p>Show a notification X minutes/hours before the main event (e.g., 15 minutes before a meeting).</p></div>
+    <div class="feature-card"><h4>Repeat Time</h4><p>How often to repeat the notification (e.g., every 2 hours, every day). Works with Date, Time, or Countdown Timer.</p></div>
+    <div class="feature-card"><h4>Repeat Interval</h4><p>Advanced: Set precise intervals between repetitions (milliseconds).</p></div>
+    <div class="feature-card"><h4>Repeat Limit</h4><p>Stop repeating after X occurrences. Prevents infinite repetitions.</p></div>
+    <div class="feature-card"><h4>Location Delay Date/Time</h4><p>For location-based reminders, wait until a specific date/time after arriving/leaving before triggering.</p></div>
+    <div class="feature-card"><h4>Timer Exclusion</h4><p>Set time ranges when countdown timers should NOT trigger (e.g., don't remind me during sleep hours).</p></div>
+  </div>
+
+  <h3>Action Items <span class="badge badge-action">ACTION</span></h3>
+  <p>Define what action the reminder should perform when triggered:</p>
+
+  <div class="feature-grid">
+    <div class="feature-card"><h4>Phone Call</h4><p>Automatically initiate a phone call to a specific number.</p></div>
+    <div class="feature-card"><h4>SMS</h4><p>Send a text message to a specific number.</p></div>
+    <div class="feature-card"><h4>Email</h4><p>Open email composer with pre-filled recipient and optional subject.</p></div>
+    <div class="feature-card"><h4>Open Link</h4><p>Open a specific URL in the browser when the reminder triggers.</p></div>
+    <div class="feature-card"><h4>Launch Application</h4><p>Open a specific app on your device (Android 12 and below).</p></div>
+    <div class="feature-card"><h4>Sub-tasks (Shopping List)</h4><p>Create a checklist of items within the reminder. Perfect for shopping lists or todo items.</p></div>
+  </div>
+
+  <div class="info-box">
+    <h4>Note About Actions</h4>
+    <p>You can only use ONE action type per reminder. For example, you cannot combine Phone Call with SMS. However, you can attach a Note to any reminder type for additional information.</p>
+  </div>
+
+  <h3>Extra Items <span class="badge badge-extra">EXTRA</span></h3>
+  <p>Additional customization options:</p>
+
+  <div class="feature-grid">
+    <div class="feature-card"><h4>Description</h4><p>Add detailed notes or additional information to your reminder.</p></div>
+    <div class="feature-card"><h4>Note Attachment</h4><p>Link an existing note from your notes collection to the reminder.</p></div>
+    <div class="feature-card"><h4>Priority</h4><p>Set notification priority (Default, High, Low, etc.) to control how prominently it's displayed.</p></div>
+    <div class="feature-card"><h4>LED Color</h4><p>Choose the LED notification light color (for devices that support it).</p></div>
+    <div class="feature-card"><h4>Melody</h4><p>Select a custom ringtone or sound for the notification.</p></div>
+    <div class="feature-card"><h4>Vibration</h4><p>Configure vibration pattern for the notification.</p></div>
+    <div class="feature-card"><h4>Do Not Disturb Override</h4><p>Allow the reminder to bypass Do Not Disturb mode.</p></div>
+  </div>
+
+  <h2>Common Use Cases</h2>
+
+  <h3>1. Simple One-Time Reminder</h3>
+  <p><strong>Goal:</strong> Remind me to call mom tomorrow at 3 PM</p>
+  <ul>
+    <li>Add <strong>Summary</strong>: "Call mom"</li>
+    <li>Add <strong>Date</strong>: Tomorrow's date</li>
+    <li>Add <strong>Time</strong>: 3:00 PM</li>
+  </ul>
+
+  <h3>2. Recurring Alarm</h3>
+  <p><strong>Goal:</strong> Wake me up at 7 AM on weekdays</p>
+  <ul>
+    <li>Add <strong>Summary</strong>: "Wake up!"</li>
+    <li>Add <strong>Days of Week</strong>: Monday - Friday</li>
+    <li>Add <strong>Time</strong>: 7:00 AM</li>
+    <li>Optional: Add <strong>Melody</strong> for alarm sound</li>
+  </ul>
+
+  <h3>3. Location-Based Reminder</h3>
+  <p><strong>Goal:</strong> Remind me to buy milk when I arrive at the grocery store</p>
+  <ul>
+    <li>Add <strong>Summary</strong>: "Buy milk"</li>
+    <li>Add <strong>Arriving at Location</strong>: Select or search for grocery store</li>
+    <li>Set radius (e.g., 150 meters)</li>
+  </ul>
+  <div class="info-box warning">
+    <p><strong>Permissions Required:</strong> Location access, Background location (Android 10+)</p>
+  </div>
+
+  <h3>4. Countdown Timer with Action</h3>
+  <p><strong>Goal:</strong> Call the dentist in 2 hours</p>
+  <ul>
+    <li>Add <strong>Summary</strong>: "Call dentist"</li>
+    <li>Add <strong>Countdown Timer</strong>: 2 hours</li>
+    <li>Add <strong>Phone Call</strong>: Enter dentist's phone number</li>
+  </ul>
+
+  <h3>5. Monthly Bill Reminder</h3>
+  <p><strong>Goal:</strong> Pay rent on the 1st of every month at 9 AM</p>
+  <ul>
+    <li>Add <strong>Summary</strong>: "Pay rent"</li>
+    <li>Add <strong>Day of Month</strong>: 1st</li>
+    <li>Add <strong>Time</strong>: 9:00 AM</li>
+    <li>Optional: Add <strong>Before Time</strong>: 1 day (to get advance notice)</li>
+  </ul>
+
+  <h3>6. Shopping List</h3>
+  <p><strong>Goal:</strong> Remember to buy multiple items at the store</p>
+  <ul>
+    <li>Add <strong>Summary</strong>: "Grocery shopping"</li>
+    <li>Add <strong>Sub-tasks</strong>: Bread, Milk, Eggs, etc.</li>
+    <li>Add <strong>Date</strong> and <strong>Time</strong> OR <strong>Arriving at Location</strong></li>
+  </ul>
+
+  <h3>7. Birthday Reminder</h3>
+  <p><strong>Goal:</strong> Remember friend's birthday every year</p>
+  <ul>
+    <li>Add <strong>Summary</strong>: "Sarah's Birthday"</li>
+    <li>Add <strong>Day of Year</strong>: Select the date</li>
+    <li>Add <strong>Time</strong>: 9:00 AM</li>
+    <li>Optional: Add <strong>Before Time</strong>: 1 week (to give time to prepare)</li>
+  </ul>
+
+  <h2>Using Presets</h2>
+  <p>Presets are pre-configured templates that automatically add the right combination of builder items for common scenarios. This saves time and ensures compatibility.</p>
+
+  <h3>Available Preset Categories</h3>
+
+  <h4>Default Presets (Available to All Users)</h4>
+  <ul>
+    <li><strong>By Date</strong> - Single event at specific date and time</li>
+    <li><strong>Timer</strong> - Countdown from now</li>
+    <li><strong>Alarm</strong> - Recurring weekday alarm</li>
+    <li><strong>Email</strong> - Reminder to send an email</li>
+    <li><strong>Application</strong> - Launch specific app</li>
+    <li><strong>Monthly</strong> - Monthly recurring reminder</li>
+    <li><strong>Yearly</strong> - Annual reminder</li>
+    <li><strong>Shopping List</strong> - Permanent shopping checklist</li>
+    <li><strong>Call</strong> - Phone call reminder</li>
+    <li><strong>Link</strong> - Open URL reminder</li>
+    <li><strong>Arriving at Place</strong> - Location-based trigger</li>
+    <li><strong>Leaving Place</strong> - Location departure trigger</li>
+  </ul>
+
+  <h4>Builder Presets <span class="badge badge-pro">PRO</span></h4>
+  <ul>
+    <li><strong>Exact Date and Time</strong> - Basic one-time reminder</li>
+    <li><strong>Date and Time with Repeat</strong> - Custom repetition interval</li>
+    <li><strong>Weekday Alarm</strong> - Monday to Friday alarm</li>
+    <li><strong>Make Call in 3 Hours</strong> - Quick phone call timer</li>
+    <li><strong>Open Link at Location</strong> - Combined location + web action</li>
+    <li><strong>Permanent Shopping List</strong> - Pre-populated shopping items</li>
+  </ul>
+
+  <h4>Recur Presets <span class="badge badge-pro">PRO</span></h4>
+  <p>Advanced iCalendar-based recurring patterns for complex scheduling needs. These use the iCalendar RRULE standard for maximum flexibility.</p>
+
+  <div class="info-box tip">
+    <h4>Tip: Modify Presets</h4>
+    <p>After applying a preset, you can add, remove, or modify any builder items to customize it further. Presets are just starting points!</p>
+  </div>
+
+  <h2>Item States and Validation</h2>
+  <p>Each builder item can have one of three states:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>State</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Empty</strong></td><td>The item has been added but not configured yet. You need to tap it and set values.</td></tr>
+        <tr><td><strong>Done</strong></td><td>The item is properly configured and valid.</td></tr>
+        <tr><td><strong>Error</strong></td><td>The item has invalid or conflicting values. Check the error message and fix it.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <h4>Save Conditions</h4>
+    <p>You can only save a reminder when:</p>
+    <ul>
+      <li>All items are in <strong>Done</strong> state (green checkmark)</li>
+      <li>No permission requirements are missing</li>
+      <li>The forecast shows a valid trigger time</li>
+      <li>All constraint rules are satisfied</li>
+    </ul>
+  </div>
+
+  <h2>Permissions</h2>
+  <p>Certain builder items require specific Android permissions:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Builder Item</th><th>Required Permissions</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Phone Call</td><td>Phone</td></tr>
+        <tr><td>SMS</td><td>SMS, Contacts</td></tr>
+        <tr><td>Arriving/Leaving Location</td><td>Fine Location, Coarse Location, Background Location (Android 10+), Foreground Service</td></tr>
+        <tr><td>All Reminders (Android 13+)</td><td>Post Notifications</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The app will automatically request these permissions when you add items that require them. If you deny permissions, those items will show an error state.</p>
+
+  <h2>Advanced Configuration</h2>
+
+  <h3>Reminder Forecast</h3>
+  <p>As you configure your reminder, the forecast section shows when the next notification will appear. This helps you verify your setup is correct before saving.</p>
+  <ul>
+    <li><strong>Success Prediction:</strong> Shows next trigger time(s)</li>
+    <li><strong>Failed Prediction:</strong> Indicates configuration errors with helpful messages</li>
+  </ul>
+
+  <h3>Save as Preset</h3>
+  <p>If you create a reminder configuration you want to reuse later, enable the <strong>"Save as Preset"</strong> option at the bottom of the screen. Give it a memorable name, and it will appear in your Presets tab for quick access in the future.</p>
+
+  <h3>Builder Configuration</h3>
+  <p>Access the configuration menu to customize which builder items are available. You can disable items you never use to simplify the selector dialog.</p>
+
+  <h2>Menu Actions</h2>
+
+  <h4>Save</h4>
+  <p>Saves and activates the reminder. Only enabled when the configuration is valid.</p>
+
+  <h4>Delete / Archive</h4>
+  <p>For existing reminders, you can either move to archive (soft delete) or permanently delete. Archived reminders can be restored later.</p>
+
+  <h4>Configure</h4>
+  <p>Opens settings to customize which builder items are shown in the selector.</p>
+
+  <h4>Report Issue</h4>
+  <p>Opens feedback form to report bugs or suggest improvements. Can optionally attach logs (Pro feature).</p>
+
+  <h2>Best Practices</h2>
+
+  <div class="info-box success">
+    <h4>Do This</h4>
+    <ul>
+      <li>Start with a preset when available - it's faster and ensures compatibility</li>
+      <li>Check the forecast before saving to verify trigger time</li>
+      <li>Use descriptive Summary text - you'll see it in notifications</li>
+      <li>Group related reminders using the Group item</li>
+      <li>Set Repeat Limit to prevent infinite notifications</li>
+      <li>Use Before Time for important events to get advance notice</li>
+    </ul>
+  </div>
+
+  <div class="info-box warning">
+    <h4>Avoid This</h4>
+    <ul>
+      <li>Don't mix incompatible core items (e.g., Date + Days of Week)</li>
+      <li>Don't forget to configure items after adding them</li>
+      <li>Don't add multiple action types to one reminder</li>
+      <li>Don't set countdown timers for past times</li>
+      <li>Don't ignore permission requests - they're required for functionality</li>
+    </ul>
+  </div>
+
+  <h2>Troubleshooting</h2>
+
+  <h4>Can't save the reminder</h4>
+  <p><strong>Solution:</strong> Check that all items show green checkmarks. Look for error badges and tap items to fix configuration.</p>
+
+  <h4>Forecast shows error</h4>
+  <p><strong>Solution:</strong> You have conflicting builder items. Remove incompatible items or choose an alternative configuration.</p>
+
+  <h4>Builder item is grayed out</h4>
+  <p><strong>Solution:</strong> That item is incompatible with your current configuration, requires Pro version, or needs missing permissions.</p>
+
+  <h4>Location reminder not working</h4>
+  <p><strong>Solution:</strong> Ensure all location permissions are granted, including Background Location. Check that radius is appropriate (too small may miss triggers).</p>
+
+  <h4>Preset not loading</h4>
+  <p><strong>Solution:</strong> Some presets require Pro version or specific permissions. Grant permissions or upgrade to Pro.</p>
+
+  <h2>Summary</h2>
+  <p>The reminder builder is a flexible, modular system that lets you create exactly the reminder you need. Start with the core timing item (Date, Timer, Location, etc.), add parameters to refine behavior, optionally add an action, and customize with extra items. The system guides you with constraints, validation, and forecasts to ensure your reminder works as expected.</p>
+
+  <div class="info-box tip">
+    <h4>Pro Tip</h4>
+    <p>Experiment with different combinations! The builder is designed to prevent invalid configurations, so feel free to try different items and see what works. Use presets as learning tools to understand how different items work together.</p>
+  </div>
+
+  <footer>Last updated: January 2026</footer>
+</div>
+</body>
+</html>

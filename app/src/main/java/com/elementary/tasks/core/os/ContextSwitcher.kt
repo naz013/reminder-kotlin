@@ -4,9 +4,8 @@ import android.content.Context
 import com.github.naz013.common.ContextProvider
 
 class ContextSwitcher(
-  private val contextProvider: ContextProvider
+  private val contextProvider: ContextProvider,
 ) {
-
   fun switchContext(context: Context) {
     contextProvider.switchContext(context)
   }

@@ -10,9 +10,8 @@ import com.github.naz013.repository.GoogleTaskRepository
  */
 class CompleteRelatedGoogleTaskUseCase(
   private val jobScheduler: JobScheduler,
-  private val googleTaskRepository: GoogleTaskRepository
+  private val googleTaskRepository: GoogleTaskRepository,
 ) {
-
   suspend operator fun invoke(reminderId: String) {
     val googleTask = googleTaskRepository.getByReminderId(reminderId)
     if (googleTask != null && googleTask.status == GoogleTask.Companion.TASKS_NEED_ACTION) {

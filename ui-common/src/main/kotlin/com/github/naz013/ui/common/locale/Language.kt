@@ -1,14 +1,14 @@
 package com.github.naz013.ui.common.locale
 
 import android.content.Context
+import androidx.core.os.LocaleListCompat
 import com.github.naz013.common.TextProvider
-import com.github.naz013.ui.common.R
 import java.util.Locale
 
 class Language(
   private val localePreferences: LocalePreferences,
   private val context: Context,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
 ) {
 
   fun getCurrentLocale(): String {
@@ -35,9 +35,6 @@ class Language(
     configuration.setLayoutDirection(locale)
     return context.createConfigurationContext(configuration)
   }
-
-  fun getScreenLocaleName(context: Context): String =
-    context.resources.getStringArray(R.array.app_languages)[localePreferences.appLanguage]
 
   companion object {
     const val POLISH = "pl"
@@ -70,5 +67,15 @@ class Language(
         else -> Locale.getDefault()
       }
     }
+
+    /** Index 0 is "system default" - an empty list tells [androidx.appcompat.app.AppCompatDelegate]
+     *  to follow the device locale rather than pinning to whatever [Locale.getDefault] was at
+     *  selection time. */
+    fun getLocaleList(code: Int): LocaleListCompat =
+      if (code == 0) {
+        LocaleListCompat.getEmptyLocaleList()
+      } else {
+        LocaleListCompat.create(getScreenLanguage(code))
+      }
   }
 }

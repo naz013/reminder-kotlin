@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
-import com.github.naz013.domain.Reminder
-import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class TypeDecomposer(
   private val byDateDecomposer: ByDateDecomposer,
@@ -11,20 +11,20 @@ class TypeDecomposer(
   private val byDayOfMonthDecomposer: ByDayOfMonthDecomposer,
   private val byDayOfYearDecomposer: ByDayOfYearDecomposer,
   private val byLocationDecomposer: ByLocationDecomposer,
-  private val iCalDecomposer: ICalDecomposer
+  private val iCalDecomposer: ICalDecomposer,
 ) {
-
-  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
-    val type = UiReminderType(reminder.type)
-    return when {
-      type.isByDate() -> byDateDecomposer(reminder)
-      type.isTimer() -> byTimerDecomposer(reminder)
-      type.isByWeekday() -> byWeekdaysDecomposer(reminder)
-      type.isMonthly() -> byDayOfMonthDecomposer(reminder)
-      type.isYearly() -> byDayOfYearDecomposer(reminder)
-      type.isGpsType() -> byLocationDecomposer(reminder)
-      type.isRecur() -> iCalDecomposer(reminder)
-      else -> emptyList()
+  suspend operator fun invoke(reminder: ReminderV2): List<BuilderItem<*>> {
+    return when (reminder.recurrence) {
+      RecurrenceRule.Once, is RecurrenceRule.Daily -> byDateDecomposer(reminder)
+      is RecurrenceRule.Countdown -> byTimerDecomposer(reminder)
+      is RecurrenceRule.Weekly -> byWeekdaysDecomposer(reminder)
+      is RecurrenceRule.Monthly -> byDayOfMonthDecomposer(reminder)
+      // No builder field support yet for "nth weekday of month" - unreachable today; nothing in
+      // the composer (RecurrenceRuleCalculator) produces this recurrence shape yet either.
+      is RecurrenceRule.RelativeMonthly -> emptyList()
+      is RecurrenceRule.Yearly -> byDayOfYearDecomposer(reminder)
+      RecurrenceRule.LocationEnter, RecurrenceRule.LocationExit -> byLocationDecomposer(reminder)
+      is RecurrenceRule.ICalendar -> iCalDecomposer(reminder)
     }
   }
 }

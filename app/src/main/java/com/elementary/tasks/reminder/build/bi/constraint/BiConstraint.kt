@@ -5,21 +5,21 @@ sealed class BiConstraint<T> {
 }
 
 data class PermissionConstraint(
-  override val value: String
+  override val value: String,
 ) : BiConstraint<String>()
 
 data class RequiresAllConstraint<T>(
-  override val value: T
+  override val value: T,
 ) : BiConstraint<T>()
 
 data class RequiresAnyOfConstraint<T>(
-  override val value: T
+  override val value: T,
 ) : BiConstraint<T>()
 
 data class BlockedByConstraint<T>(
-  override val value: T
+  override val value: T,
 ) : BiConstraint<T>()
 
 data class MandatoryIfConstraint<T>(
-  override val value: T
+  override val value: T,
 ) : BiConstraint<T>()

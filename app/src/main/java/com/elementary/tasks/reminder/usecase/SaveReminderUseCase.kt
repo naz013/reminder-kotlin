@@ -1,18 +1,17 @@
 package com.elementary.tasks.reminder.usecase
 
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderRepository
+import com.github.naz013.repository.ReminderV2Repository
 
 class SaveReminderUseCase(
-  private val reminderRepository: ReminderRepository,
+  private val reminderV2Repository: ReminderV2Repository,
   private val appWidgetUpdater: AppWidgetUpdater,
-  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase
+  private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
 ) {
-
-  suspend operator fun invoke(reminder: Reminder) {
-    reminderRepository.save(reminder)
+  suspend operator fun invoke(reminder: ReminderV2) {
+    reminderV2Repository.save(reminder)
     appWidgetUpdater.updateScheduleWidget()
     scheduleReminderUploadUseCase(reminder.uuId)
     Logger.i(TAG, "Saved reminder with id = ${reminder.uuId}")

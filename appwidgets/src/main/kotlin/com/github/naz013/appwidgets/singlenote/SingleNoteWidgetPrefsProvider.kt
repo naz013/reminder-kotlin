@@ -56,8 +56,8 @@ internal class SingleNoteWidgetPrefsProvider(
   }
 
   fun getTextColorPosition(): Int {
-    return getInt(WIDGET_TEXT_COLOR_POSITION, def = ThemeProvider.Color.BLACK).also {
-      Logger.d("getTextColorPosition: $it")
+    return getInt(WIDGET_TEXT_COLOR_POSITION, def = ThemeProvider.AppColorIndex.BLACK).also {
+      Logger.d(TAG, "getTextColorPosition: $it")
     }
   }
 
@@ -74,8 +74,8 @@ internal class SingleNoteWidgetPrefsProvider(
   }
 
   fun getOverlayColorPosition(): Int {
-    return getInt(WIDGET_OVERLAY_COLOR_POSITION, def = ThemeProvider.Color.WHITE).also {
-      Logger.d("getOverlayColorPosition: $it")
+    return getInt(WIDGET_OVERLAY_COLOR_POSITION, def = ThemeProvider.AppColorIndex.WHITE).also {
+      Logger.d(TAG, "getOverlayColorPosition: $it")
     }
   }
 
@@ -101,6 +101,8 @@ internal class SingleNoteWidgetPrefsProvider(
   }
 
   companion object {
+    private const val TAG = "SingleNoteWidgetPrefsProvider"
+
     private const val WIDGET_NOTE_ID = "widget_note_id"
     private const val WIDGET_TEXT_SIZE = "widget_text_size"
     private const val WIDGET_TEXT_VER_ALIGNMENT = "widget_text_hor_alignment"

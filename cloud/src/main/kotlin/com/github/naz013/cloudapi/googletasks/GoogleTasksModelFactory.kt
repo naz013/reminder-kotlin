@@ -6,7 +6,7 @@ import com.google.api.services.tasks.model.Task
 import com.google.api.services.tasks.model.TaskList
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
@@ -150,10 +150,7 @@ internal class GoogleTasksModelFactory(
    * @return RFC3339 formatted date string
    */
   fun toRfc3339Format(millis: Long): String {
-    return ZonedDateTime.of(
-      LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault()),
-      ZoneId.systemDefault()
-    ).format(RFC3339_DATE_FORMATTER)
+    return Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).format(RFC3339_DATE_FORMATTER)
   }
 
   /**
@@ -164,12 +161,12 @@ internal class GoogleTasksModelFactory(
    */
   private fun fromRfc3339Format(date: String?): Long {
     if (date == null) return 0L
-    val dateTime = try {
-      ZonedDateTime.parse(date, RFC3339_DATE_FORMATTER)
+    val instant = try {
+      LocalDateTime.parse(date, RFC3339_DATE_FORMATTER).toInstant(ZoneOffset.UTC)
     } catch (_: Exception) {
-      ZonedDateTime.parse(date)
+      ZonedDateTime.parse(date).toInstant()
     }
-    return dateTime.toInstant().toEpochMilli()
+    return instant.toEpochMilli()
   }
 
   companion object {

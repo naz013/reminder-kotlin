@@ -1,6 +1,6 @@
 package com.github.naz013.sync.usecase
 
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before

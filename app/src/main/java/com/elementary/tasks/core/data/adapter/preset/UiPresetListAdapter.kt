@@ -7,22 +7,23 @@ import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.TagType
 
 class UiPresetListAdapter(
-  private val iCalendarApi: ICalendarApi
+  private val iCalendarApi: ICalendarApi,
 ) : UiAdapter<RecurPreset, UiPresetList> {
-
-  override fun create(data: RecurPreset): UiPresetList {
-    return UiPresetList(
+  override fun create(data: RecurPreset): UiPresetList =
+    UiPresetList(
       id = data.id,
       name = data.name,
-      description = getDescription(data)
+      description = getDescription(data),
     )
-  }
 
   private fun getDescription(data: RecurPreset): String {
-    val rrule = runCatching { iCalendarApi.parseObject(data.recurObject) }
-      .getOrNull()
-      ?.map?.values?.firstOrNull { it.tagType == TagType.RRULE }
-      ?.buildString()
+    val rrule =
+      runCatching { iCalendarApi.parseObject(data.recurObject) }
+        .getOrNull()
+        ?.map
+        ?.values
+        ?.firstOrNull { it.tagType == TagType.RRULE }
+        ?.buildString()
     return rrule ?: data.description ?: ""
   }
 }

@@ -3,7 +3,7 @@ package com.github.naz013.sync.images
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.sync.NoteV3Json
+import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 
@@ -39,6 +39,9 @@ internal class PostProcessNoteV3UseCase(
       style = noteV3Json.style,
       uniqueId = noteV3Json.uniqueId,
       summary = noteV3Json.summary,
+      title = noteV3Json.title,
+      titleFontSize = noteV3Json.titleFontSize,
+      titleFontStyle = noteV3Json.titleFontStyle,
       updatedAt = noteV3Json.updatedAt,
       fontSize = noteV3Json.fontSize,
       archived = noteV3Json.archived,

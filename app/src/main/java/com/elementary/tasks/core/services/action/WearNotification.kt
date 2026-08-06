@@ -9,16 +9,15 @@ import com.github.naz013.logging.Logger
 
 class WearNotification(
   private val contextProvider: ContextProvider,
-  private val notifier: Notifier
+  private val notifier: Notifier,
 ) {
-
   fun show(
     id: Int,
     summary: String,
     secondaryText: String,
-    groupName: String
+    groupName: String,
   ) {
-    Logger.d("showWearNotification: $secondaryText")
+    Logger.d(TAG, "showWearNotification: $secondaryText")
     val wearableNotificationBuilder =
       NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
     wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
@@ -31,5 +30,9 @@ class WearNotification(
     wearableNotificationBuilder.setGroup(groupName)
     wearableNotificationBuilder.setGroupSummary(false)
     notifier.notify(id, wearableNotificationBuilder.build())
+  }
+
+  companion object {
+    private const val TAG = "WearNotification"
   }
 }

@@ -5,11 +5,14 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 
 object ReminderUtils {
-
   const val DAY_CHECKED = 1
 
   @Deprecated("Use DateTimeManager")
-  fun getRepeatString(context: Context, prefs: Prefs, repCode: List<Int>): String {
+  fun getRepeatString(
+    context: Context,
+    prefs: Prefs,
+    repCode: List<Int>,
+  ): String {
     val sb = StringBuilder()
     val first = prefs.startDay
     if (first == 0 && repCode[0] == DAY_CHECKED) {
@@ -51,7 +54,5 @@ object ReminderUtils {
     }
   }
 
-  private fun isAllChecked(repCode: List<Int>): Boolean {
-    return repCode.none { it == 0 }
-  }
+  private fun isAllChecked(repCode: List<Int>): Boolean = repCode.none { it == 0 }
 }

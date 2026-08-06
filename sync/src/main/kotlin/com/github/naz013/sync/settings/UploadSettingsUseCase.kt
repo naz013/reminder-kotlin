@@ -1,7 +1,7 @@
 package com.github.naz013.sync.settings
 
 import com.github.naz013.logging.Logger
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncSettings
 import com.github.naz013.sync.usecase.CreateCloudFileUseCase

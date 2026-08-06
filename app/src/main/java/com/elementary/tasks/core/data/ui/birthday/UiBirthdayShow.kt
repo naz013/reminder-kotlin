@@ -8,5 +8,5 @@ data class UiBirthdayShow(
   val ageFormatted: String?,
   val number: String,
   val photo: Bitmap?,
-  val uniqueId: Int
+  val uniqueId: Int,
 )

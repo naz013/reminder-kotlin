@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:AppWidgetActionActivity.kt$AppWidgetActionActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>CyclomaticComplexMethod:WidgetUtils.kt$WidgetUtils$@DrawableRes fun newWidgetBg(code: Int): Int</ID>
+    <ID>CyclomaticComplexMethod:WidgetUtils.kt$WidgetUtils$fun getComposeColor(code: Int): Color</ID>
+    <ID>LongMethod:AppWidgetActionActivity.kt$AppWidgetActionActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:CalendarMonthFactory.kt$CalendarMonthFactory$override fun getViewAt(i: Int): RemoteViews</ID>
+    <ID>LongMethod:CalendarWidget.kt$CalendarWidget.Companion$fun updateWidget( context: Context, appWidgetManager: AppWidgetManager, sp: CalendarWidgetPrefsProvider )</ID>
+    <ID>LongMethod:RecyclableUiNoteWidgetAdapter.kt$RecyclableUiNoteWidgetAdapter$fun convertDp( noteWithImages: NoteWithImages, sizeDp: Int, fontSize: Float, @ColorInt textColor: Int, horizontalAlignment: NoteDrawableParams.HorizontalAlignment = NoteDrawableParams.HorizontalAlignment.CENTER, verticalAlignment: NoteDrawableParams.VerticalAlignment = NoteDrawableParams.VerticalAlignment.CENTER, marginDp: Int, @ColorInt overlayColor: Int = Color.TRANSPARENT ): UiNoteWidget</ID>
+    <ID>LongMethod:TasksFactory.kt$TasksFactory$override fun getViewAt(i: Int): RemoteViews</ID>
+    <ID>LongMethod:TasksWidget.kt$TasksWidget.Companion$fun updateWidget( context: Context, appWidgetManager: AppWidgetManager, prefsProvider: GoogleTasksWidgetPrefsProvider )</ID>
+    <ID>LongMethod:UiNoteWidgetAdapter.kt$UiNoteWidgetAdapter$fun convert( noteWithImages: NoteWithImages, size: Int, fontSize: Float, @ColorInt textColor: Int, horizontalAlignment: NoteDrawableParams.HorizontalAlignment = NoteDrawableParams.HorizontalAlignment.CENTER, verticalAlignment: NoteDrawableParams.VerticalAlignment = NoteDrawableParams.VerticalAlignment.CENTER, margin: Float, @ColorInt overlayColor: Int = Color.TRANSPARENT ): UiNoteWidget</ID>
+    <ID>LongParameterList:NoteDrawableParams.kt$NoteDrawableParams.Companion$( context: Context, radius: Float, text: String = "", color: Int = Color.GRAY, borderThickness: Int = 0, width: Int = 0, height: Int = 0, font: Typeface = Typeface.create("sans-serif-light", Typeface.NORMAL), @ColorInt textColor: Int = Color.WHITE, fontSize: Float = 0f, margin: Float = context.dp2px(16).toFloat(), backgroundImage: Bitmap? = null, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER, textAutoScale: Boolean = true, overlayParams: OverlayParams = OverlayParams(Color.TRANSPARENT) )</ID>
+    <ID>LongParameterList:NoteDrawableParams.kt$NoteDrawableParams.Companion$( context: Context, text: String = "", color: Int = Color.GRAY, borderThickness: Int = 0, width: Int = 0, height: Int = 0, font: Typeface = Typeface.create("sans-serif-light", Typeface.NORMAL), @ColorInt textColor: Int = Color.WHITE, fontSize: Float = 0f, margin: Float = context.dp2px(16).toFloat(), radius: Float = 0.toFloat(), backgroundImage: Bitmap? = null, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment: VerticalAlignment = VerticalAlignment.CENTER, textAutoScale: Boolean = true, overlayParams: OverlayParams = OverlayParams(Color.TRANSPARENT) )</ID>
+    <ID>LongParameterList:RecyclableUiNoteWidgetAdapter.kt$RecyclableUiNoteWidgetAdapter$( noteWithImages: NoteWithImages, sizeDp: Int, fontSize: Float, @ColorInt textColor: Int, horizontalAlignment: NoteDrawableParams.HorizontalAlignment = NoteDrawableParams.HorizontalAlignment.CENTER, verticalAlignment: NoteDrawableParams.VerticalAlignment = NoteDrawableParams.VerticalAlignment.CENTER, marginDp: Int, @ColorInt overlayColor: Int = Color.TRANSPARENT )</ID>
+    <ID>LongParameterList:SingleNoteWidgetConfigViewModel.kt$SingleNoteWidgetConfigViewModel$( private val widgetUpdater: WidgetUpdater, private val dispatcherProvider: DispatcherProvider, private val prefsProvider: SingleNoteWidgetPrefsProvider, private val analyticsEventSender: AnalyticsEventSender, private val getAllNotesUseCase: GetAllNotesUseCase, private val getNoteByIdUseCase: GetNoteByIdUseCase, private val uiNoteListItemAdapter: UiNoteListItemAdapter, private val previewAdapter: RecyclableUiNoteWidgetAdapter, private val uiNoteWidgetAdapter: UiNoteWidgetAdapter, appWidgetPreferences: AppWidgetPreferences, private val noteWidgetPreferences: NoteWidgetPreferences, )</ID>
+    <ID>LongParameterList:UiNoteWidgetAdapter.kt$UiNoteWidgetAdapter$( noteWithImages: NoteWithImages, size: Int, fontSize: Float, @ColorInt textColor: Int, horizontalAlignment: NoteDrawableParams.HorizontalAlignment = NoteDrawableParams.HorizontalAlignment.CENTER, verticalAlignment: NoteDrawableParams.VerticalAlignment = NoteDrawableParams.VerticalAlignment.CENTER, margin: Float, @ColorInt overlayColor: Int = Color.TRANSPARENT )</ID>
+    <ID>LongParameterList:WidgetUtils.kt$WidgetUtils$( context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @ColorRes color: Int, @IdRes viewId: Int, cls: Class&lt;*&gt;, extras: ((Intent) -&gt; Intent)? = null )</ID>
+    <ID>LongParameterList:WidgetUtils.kt$WidgetUtils$( context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @ColorRes color: Int, @IdRes viewId: Int, intent: Intent, requestCode: Int = RandomRequestCode.generate() )</ID>
+    <ID>LongParameterList:WidgetUtils.kt$WidgetUtils$( context: Context, rv: RemoteViews, @IdRes viewId: Int, icon: Bitmap?, cls: Class&lt;*&gt;, extras: ((Intent) -&gt; Intent)? = null )</ID>
+    <ID>MayBeConst:NoteTextDrawable.kt$NoteTextDrawable.Companion$private val SHADE_FACTOR = 0.9f</ID>
+    <ID>NestedBlockDepth:CalendarMonthFactory.kt$CalendarMonthFactory$override fun getViewAt(i: Int): RemoteViews</ID>
+    <ID>SerialVersionUIDInSerializableClass:WidgetIntentProtocol.kt$Direction : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:WidgetIntentProtocol.kt$WidgetIntentProtocol : Serializable</ID>
+    <ID>SwallowedException:NotesFactory.kt$NotesFactory$e: IndexOutOfBoundsException</ID>
+    <ID>TooGenericExceptionCaught:AppWidgetUpdaterImpl.kt$AppWidgetUpdaterImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NotesFactory.kt$NotesFactory$e: IndexOutOfBoundsException</ID>
+    <ID>UnusedPrivateMember:BirthdaysWidgetConfigScreen.kt$@Preview(showBackground = true) @Composable private fun BirthdaysWidgetConfigScreenPreview()</ID>
+    <ID>UnusedPrivateMember:CalendarWidgetConfigScreen.kt$@Preview(showBackground = true) @Composable private fun CalendarWidgetConfigScreenPreview()</ID>
+    <ID>UnusedPrivateMember:CombinedWidgetConfigScreen.kt$@Preview(showBackground = true) @Composable private fun CombinedWidgetConfigScreenPreview()</ID>
+    <ID>UnusedPrivateMember:EventsWidgetConfigScreen.kt$@Preview(showBackground = true) @Composable private fun EventsWidgetConfigScreenPreview()</ID>
+    <ID>UnusedPrivateMember:NotesWidgetConfigScreen.kt$@Preview(showBackground = true) @Composable private fun NotesWidgetConfigScreenPreview()</ID>
+    <ID>UnusedPrivateMember:SingleNoteWidgetConfigScreen.kt$@Preview(showBackground = true) @Composable private fun SingleNoteWidgetConfigScreenPreview()</ID>
+    <ID>UnusedPrivateMember:TasksWidgetConfigScreen.kt$@Preview(showBackground = true) @Composable private fun TasksWidgetConfigScreenPreview()</ID>
+  </CurrentIssues>
+</SmellBaseline>

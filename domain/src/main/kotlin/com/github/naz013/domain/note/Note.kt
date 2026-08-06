@@ -9,6 +9,12 @@ import java.util.UUID
 data class Note(
   @SerializedName("summary")
   var summary: String = "",
+  @SerializedName("title")
+  var title: String = "",
+  @SerializedName("titleFontSize")
+  var titleFontSize: Int = -1,
+  @SerializedName("titleFontStyle")
+  var titleFontStyle: Int = -1,
   @SerializedName("key")
   var key: String = UUID.randomUUID().toString(),
   @SerializedName("date")

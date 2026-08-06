@@ -10,5 +10,5 @@ data class SaleMessageV2(
   @SerializedName("startAt")
   val startAt: String,
   @SerializedName("endAt")
-  val endAt: String
+  val endAt: String,
 )

@@ -64,4 +64,7 @@ internal interface GoogleTasksDao {
 
   @Query("DELETE FROM GoogleTask WHERE listId=:listId")
   fun deleteAll(listId: String)
+
+  @Query("SELECT COUNT(*) FROM GoogleTask WHERE status=:status")
+  fun countAll(status: String): Int
 }

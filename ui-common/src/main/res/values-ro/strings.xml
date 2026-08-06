@@ -928,4 +928,187 @@
     <string name="keep_notification">Păstrați notificarea</string>
     <string name="cd_back">Înapoi</string>
     <string name="how_to_create_a_reminder">Cum să creezi o reamintire</string>
+    <string name="copy_of">Copie a: %s</string>
+
+    <string name="turn_off">Oprire</string>
+
+    <string name="delete_reminder_permanently">Ștergere memento permanent?</string>
+    <string name="delete_birthday_permanently">Ștergere zi de naștere permanent?</string>
+    <string name="delete_note_permanently">Ștergere notă permanent?</string>
+    <string name="delete_group_permanently">Ștergere grup permanent?</string>
+
+    <string name="share_send_note">Trimitere notă…</string>
+
+    <string name="note_moved_to_archive">Notă mutată în arhivă</string>
+    <string name="note_reverted_from_archive">Notă restaurată din arhivă</string>
+    <string name="show_note_in_notifications">Afișare notă în notificări</string>
+
+    <string name="share_intent_title">Partajare...</string>
+    <string name="error_reminder_not_found">Memento negăsit!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">Memento a fost deja eliminat! Editați-l mai întâi.</string>
+
+    <string name="workflow_rules">Reguli flux de lucru</string>
+    <string name="workflow_automations">Automatizări</string>
+    <string name="workflow_active_global_rules">Reguli globale active</string>
+    <string name="workflow_rules_for_group">Reguli pentru acest grup</string>
+    <string name="workflow_no_rules_yet">Fără reguli</string>
+    <string name="workflow_templates">Șabloane</string>
+    <string name="workflow_apply_globally">Aplicare global</string>
+    <string name="workflow_apply_to_group">Aplicare la grup</string>
+    <string name="workflow_open_group_to_apply">Deschideți un grup pentru a aplica aceasta</string>
+    <string name="workflow_save_as_template">Salvare ca șablon</string>
+    <string name="workflow_create_custom_rule">Creare regulă personalizată</string>
+    <string name="workflow_archive_after_days_hint">Zile</string>
+    <string name="workflow_category_reminder_lifecycle">Ciclu viață memento</string>
+    <string name="workflow_category_group">Grup</string>
+    <string name="workflow_category_location">Locație</string>
+    <string name="workflow_category_notification_escalation">Notificare &amp; escaladare</string>
+    <string name="workflow_category_system_integration">Integrare sistem</string>
+    <string name="workflow_category_privacy_data_hygiene">Confidențialitate &amp; igienă date</string>
+
+    <string name="workflow_builder_new_rule_title">Regulă nouă</string>
+    <string name="workflow_builder_edit_rule_title">Editare regulă</string>
+    <string name="workflow_builder_when">Când</string>
+    <string name="workflow_builder_if_optional">Dacă (opțional)</string>
+    <string name="workflow_builder_then">Atunci</string>
+    <string name="workflow_builder_not_set">Nesetat</string>
+    <string name="workflow_builder_add_condition">Adăugare condiție</string>
+    <string name="workflow_builder_choose_trigger">Alege un declanșator</string>
+    <string name="workflow_builder_choose_condition">Alege o condiție</string>
+    <string name="workflow_builder_choose_action">Alege o acțiune</string>
+    <string name="workflow_builder_snooze_count_hint">Numărul de amânări</string>
+    <string name="workflow_builder_minutes_hint">Minute</string>
+    <string name="workflow_builder_minutes_unit">min</string>
+    <string name="workflow_builder_select_group">Selectare grup</string>
+    <string name="workflow_builder_select_reminder">Selectare memento</string>
+    <string name="workflow_builder_no_groups">Fără grupuri</string>
+    <string name="workflow_builder_no_reminders">Fără mementos active</string>
+    <string name="workflow_trigger_reminder_completed">Memento completat</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">Memento amânat de N ori</string>
+    <string name="workflow_trigger_group_all_completed">Toate mementos din grup sunt complete</string>
+    <string name="workflow_trigger_location_entered">Sosit la locația mementoului</string>
+    <string name="workflow_trigger_location_exited">Plecat de la locația mementoului</string>
+    <string name="workflow_trigger_reminder_age_exceeded">Completat de cel puțin N zile</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">Nevăzut de N minute</string>
+    <string name="workflow_condition_priority_at_least">Prioritatea este cel puțin</string>
+    <string name="workflow_condition_within_time_window">Ora actuală este între</string>
+    <string name="workflow_condition_group_is">Grupul mementoului este</string>
+    <string name="workflow_action_archive_reminder">Arhivare memento</string>
+    <string name="workflow_action_complete_reminder">Completare memento</string>
+    <string name="workflow_action_apply_notification_override">Modificare setări notificare</string>
+    <string name="workflow_action_activate_reminder">Activare alt memento</string>
+    <string name="preset_buy_groceries">Cumparare alimente</string>
+    <string name="preset_bread">Pâine</string>
+    <string name="preset_juice">Suc</string>
+    <string name="preset_cookies">Biscuiti</string>
+    <string name="haptic_feedback">Feedback haptic</string>
+    <string name="use_haptic_feedback_for_interactions">Folosiți feedback haptic pentru interacțiuni</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">Nu folosiți feedback haptic pentru interacțiuni</string>
+
+    <string name="notification_defaults">Implicitudes notificări</string>
+    <string name="default_vibrate">Vibrație</string>
+    <string name="vibrate_on_notification">Vibra la notificare</string>
+    <string name="do_not_vibrate_on_notification">Nu vibra la notificare</string>
+    <string name="bypass_do_not_disturb">Ocoliți "Nu deranjați"</string>
+    <string name="bypass_do_not_disturb_enabled">Sună chiar și în perioada "Nu deranjați"</string>
+    <string name="bypass_do_not_disturb_disabled">Respectați "Nu deranjați"</string>
+    <string name="wake_screen">Rescoaliți ecranul</string>
+    <string name="wake_screen_enabled">Pornește ecranul ca un ceas alarmă</string>
+    <string name="wake_screen_disabled">Nu porniți ecranul</string>
+    <string name="notification_category">Categoria de notificare</string>
+    <string name="notification_category_default">Implicit</string>
+    <string name="notification_category_alarm">Alarmă</string>
+    <string name="notification_category_event">Eveniment</string>
+    <string name="notification_category_call">Apel</string>
+    <string name="lock_screen_visibility">Vizibilitate ecran blocat</string>
+    <string name="lock_screen_visibility_public">Afișează conținut complet</string>
+    <string name="lock_screen_visibility_private">Ascunde conținut sensibil</string>
+    <string name="lock_screen_visibility_secret">Ascunde complet</string>
+    <string name="vibration_pattern">Modelul de vibrație</string>
+    <string name="notification_overrides">Suprascrieri notificări</string>
+    <string name="notification_customization">Personalizare notificări</string>
+    <string name="how_does_this_work">Cum funcționează?</string>
+    <string name="inherit_from_settings">Moștenire din setări</string>
+    <string name="inherited_format">Moștenit: %s</string>
+    <string name="on">Pornit</string>
+    <string name="off">Oprit</string>
+    <string name="vibration_preset_short">Scurt</string>
+    <string name="vibration_preset_long">Lung</string>
+    <string name="vibration_preset_double_buzz">Dublu sunet</string>
+    <string name="vibration_preset_default">Implicit</string>
+    <string name="notification_delay">Întârziere notificare</string>
+
+    <string name="builder_set_category_for_the_notification">Setează o categorie de notificare de sistem pentru notificare</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">Setează cât din notificare se afișează pe ecranul blocat</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">Sună chiar și când "Nu deranjați" este activat</string>
+    <string name="builder_set_wake_screen_for_the_notification">Pornește ecranul ca un ceas alarmă</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">Setează un model de vibrație pentru notificare</string>
+    <string name="builder_set_delay_for_the_notification">Întârzie notificarea cu acest număr de minute</string>
+
+    <string name="builder_quick_start_one_time">Memento unic</string>
+    <string name="builder_quick_start_every_weekday">În fiecare zi a săptămânii</string>
+    <string name="builder_quick_start_every_month_day">Fiecare lună în această zi</string>
+    <string name="builder_quick_start_every_year">Fiecare an în această zi</string>
+    <string name="builder_quick_start_timer">Numărător invers</string>
+    <string name="builder_quick_start_shopping_list">Listă de cumpărături</string>
+    <string name="builder_quick_start_more_options">Mai multe opțiuni…</string>
+
+    <string name="builder_invalid_email_value">Introduceți o adresă de e-mail validă</string>
+    <string name="builder_invalid_web_address_value">Introduceți o adresă web validă</string>
+    <string name="builder_invalid_phone_number_value">Introduceți un număr de telefon valid</string>
+    <string name="builder_shopping_list_empty_value">Adăugați cel puțin un element în listă</string>
+    <string name="builder_invalid_value_generic">Această valoare nu este valabilă</string>
+    <string name="builder_permissions_required_message">Acordați permisiunile solicitate pentru a continua</string>
+
+    <string name="gemini_functions">Funcții Gemini</string>
+
+    <string name="smart_list_today">Astazi</string>
+    <string name="smart_list_overdue">Scadent</string>
+    <string name="smart_list_this_week">Aceasta saptamana</string>
+    <string name="smart_list_no_group">Nicio grupa</string>
+
+    <string name="tags">Etichete</string>
+    <string name="manage_tags">Gestionare etichete</string>
+    <string name="new_tag">Eticheta noua</string>
+    <string name="tag_name">Nume etichet</string>
+    <string name="no_tags">Fara etichete</string>
+    <string name="delete_tag_permanently">Sterge aceasta etichet? Va fi eliminata din fiecare memento si notita.</string>
+
+    <string name="local_backup">Copie de siguranța locală</string>
+    <string name="backup_export_title">Exportare copie de siguranță</string>
+    <string name="backup_import_title">Restaurare copie de siguranță</string>
+    <string name="backup_export_description">Salvați o copie criptată a mementourilor, notelor, grupurilor, zilelor de naștere, locurilor și setărilor implicite într-un fișier la alegere. Nimic nu este trimis nicăieri. Dacă uitați parola, copia de siguranță nu poate fi recuperată.</string>
+    <string name="backup_import_description">Restaurați datele dintr-un fișier de copie de siguranță criptat exportat anterior. Elementele existente cu același ID vor fi suprascrise; nimic altceva nu va fi șters.</string>
+    <string name="backup_passphrase">Parola</string>
+    <string name="backup_confirm_passphrase">Confirmă parola</string>
+    <string name="backup_passphrase_mismatch">Parolele nu se potrivesc</string>
+    <string name="backup_passphrase_empty">Introduceți o parolă</string>
+    <string name="backup_export_action">Exportare</string>
+    <string name="backup_import_action">Restaurare</string>
+    <string name="backup_export_success">Copia de siguranță a fost salvată cu succes.</string>
+    <string name="backup_export_failed">Nu a fost posibil să se salveze copia de siguranță. Încearcă din nou.</string>
+    <string name="backup_import_success">%1$d elemente restaurate cu succes.</string>
+    <string name="backup_import_failed">Nu a fost posibil să se restaureze copia de siguranță. Încearcă din nou.</string>
+    <string name="backup_wrong_passphrase">Parolă incorectă sau fișier corupt.</string>
+    <string name="backup_invalid_file">Acest fișier nu este o copie de siguranță Reminder validă.</string>
+    <string name="backup_open_file_failed">Nu a fost posibil să se deschidă fișierul selectat.</string>
+
+    <string name="insights">Informații</string>
+    <string name="weekly_trend">Tendință săptămânală</string>
+    <string name="busiest_day">Ziua cea mai ocupată: %1$s</string>
+    <string name="streak_current">Secvență curentă: %1$d zile</string>
+    <string name="streak_longest">Secvență mai lungă: %1$d zile</string>
+    <string name="streak_fired_count">Declanșat %1$d ori în ultimele 90 de zile</string>
+    <string name="no_insights_yet">Nicio activitate de memento în ultimele 90 de zile</string>
+
+    <string name="upcoming_events">Viitor</string>
+
+    <string name="agenda">Agendă</string>
+
+    <string name="group_has_no_active_reminders">Nicio memento activă în acest grup</string>
+    <string name="group_x_reminder">%d memento</string>
+    <string name="group_x_reminders">%d mementos</string>
+
+    <string name="type">Tip</string>
+    <string name="smart_lists">Liste inteligente</string>
 </resources>

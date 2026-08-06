@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ComplexCondition:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$!isInitialized || status.isBlank() || googleTask.listId.isBlank() || googleTask.taskId.isBlank()</ID>
+    <ID>NestedBlockDepth:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$override suspend fun findFile(searchParams: CloudFileSearchParams): CloudFile?</ID>
+    <ID>NestedBlockDepth:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$override suspend fun findFiles(fileExtension: String): List&lt;CloudFile&gt;</ID>
+    <ID>NoBlankLineBeforeRbrace:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$ </ID>
+    <ID>NoConsecutiveBlankLines:DropboxApiImplTest.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetFileExtensionFromNameUseCaseTest.kt$ </ID>
+    <ID>ReturnCount:DropboxApiImpl.kt$DropboxApiImpl$override fun initialize(): Boolean</ID>
+    <ID>ReturnCount:DropboxApiImpl.kt$DropboxApiImpl$override suspend fun findFile(searchParams: CloudFileSearchParams): CloudFile?</ID>
+    <ID>ReturnCount:DropboxApiImpl.kt$DropboxApiImpl$override suspend fun findFiles(fileExtension: String): List&lt;CloudFile&gt;</ID>
+    <ID>ReturnCount:DropboxApiImpl.kt$DropboxApiImpl$private fun folderFromFileName(fileName: String): String</ID>
+    <ID>ReturnCount:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$override suspend fun deleteFile(fileName: String): Boolean</ID>
+    <ID>ReturnCount:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$override suspend fun findFile(searchParams: CloudFileSearchParams): CloudFile?</ID>
+    <ID>ReturnCount:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$override suspend fun findFiles(fileExtension: String): List&lt;CloudFile&gt;</ID>
+    <ID>ReturnCount:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$override suspend fun removeAllData(): Boolean</ID>
+    <ID>ReturnCount:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$override suspend fun getTasks(listId: String): List&lt;GoogleTask&gt;</ID>
+    <ID>ReturnCount:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$override suspend fun moveTask(item: GoogleTask, oldList: String): GoogleTask?</ID>
+    <ID>ReturnCount:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$override suspend fun saveTask(googleTask: GoogleTask): GoogleTask?</ID>
+    <ID>ReturnCount:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$override suspend fun saveTasksList(listTitle: String, color: Int): GoogleTaskList?</ID>
+    <ID>ReturnCount:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$override suspend fun updateTask(googleTask: GoogleTask): GoogleTask?</ID>
+    <ID>ReturnCount:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$override suspend fun updateTaskStatus(status: String, googleTask: GoogleTask): GoogleTask?</ID>
+    <ID>ReturnCount:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$override suspend fun updateTasksList( newTitle: String, googleTaskList: GoogleTaskList ): GoogleTaskList?</ID>
+    <ID>TooGenericExceptionCaught:DropboxApiImpl.kt$DropboxApiImpl$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:GoogleTasksApiImpl.kt$GoogleTasksApiImpl$e: Exception</ID>
+    <ID>UseCheckOrError:DropboxApiImpl.kt$DropboxApiImpl$throw IllegalStateException("DropboxApi is not initialized")</ID>
+    <ID>UseCheckOrError:DropboxApiImpl.kt$DropboxApiImpl$throw IllegalStateException("Upload failed")</ID>
+    <ID>UseCheckOrError:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$throw IllegalStateException("Failed to get file ID after upload")</ID>
+    <ID>UseCheckOrError:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$throw IllegalStateException("File not found: ${cloudFile.name}")</ID>
+    <ID>UseCheckOrError:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$throw IllegalStateException("File upload failed")</ID>
+    <ID>UseCheckOrError:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$throw IllegalStateException("Google Drive is not initialized")</ID>
+    <ID>UseRequire:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$throw IllegalArgumentException("File ID is empty")</ID>
+    <ID>UseRequire:GoogleDriveApiImpl.kt$GoogleDriveApiImpl$throw IllegalArgumentException("File name is empty")</ID>
+  </CurrentIssues>
+</SmellBaseline>

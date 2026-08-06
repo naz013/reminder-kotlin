@@ -1,44 +1,9 @@
 plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.ktlint)
-  alias(libs.plugins.compose.compiler)
+  id("reminder.android.library.compose")
 }
 
 android {
   namespace = "com.github.naz013.appwidgets"
-  compileSdk = libs.versions.compileSdk.get().toInt()
-
-  defaultConfig {
-    minSdk = libs.versions.minSdk.get().toInt()
-
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    consumerProguardFiles("consumer-rules.pro")
-  }
-  buildFeatures {
-    viewBinding = true
-    compose = true
-  }
-  buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-    }
-  }
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  kotlin {
-    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  }
-
-  sourceSets["main"].java {
-    srcDir("src/main/kotlin")
-  }
 }
 
 dependencies {
@@ -48,6 +13,7 @@ dependencies {
   implementation(project(":cloud-api"))
   implementation(project(":platform-common"))
   implementation(project(":feature-common"))
+  implementation(project(":feature-note"))
   implementation(project(":ui-common"))
   implementation(project(":usecase:googletasks"))
   implementation(project(":usecase:birthdays"))
@@ -55,6 +21,7 @@ dependencies {
   implementation(project(":usecase:reminders"))
   implementation(project(":analytics"))
   implementation(project(":icalendar"))
+  implementation(project(":date-calculations"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)
@@ -64,10 +31,6 @@ dependencies {
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.android)
 
-  implementation(libs.androidx.recyclerview)
-  implementation(libs.material)
-
-  implementation(libs.colorslider)
   implementation(libs.coil)
 
   implementation(libs.androidx.lifecycle.extensions)
@@ -87,9 +50,4 @@ dependencies {
 
   debugImplementation(libs.glance.preview)
   debugImplementation(libs.glance.appwidget.preview)
-}
-
-ktlint {
-  android = true
-  outputColorName.set("RED")
 }

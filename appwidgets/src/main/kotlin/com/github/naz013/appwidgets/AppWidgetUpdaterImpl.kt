@@ -1,17 +1,16 @@
 package com.github.naz013.appwidgets
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import androidx.glance.GlanceId
+import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
-import com.github.naz013.appwidgets.birthdays.BirthdaysWidget
-import com.github.naz013.appwidgets.calendar.CalendarWidget
+import com.github.naz013.appwidgets.birthdays.BirthdaysGlanceAppWidget
+import com.github.naz013.appwidgets.calendar.CalendarGlanceAppWidget
+import com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsGlanceAppWidget
 import com.github.naz013.appwidgets.events.EventsGlanceAppWidget
-import com.github.naz013.appwidgets.googletasks.TasksWidget
-import com.github.naz013.appwidgets.notes.NotesWidget
-import com.github.naz013.appwidgets.singlenote.SingleNoteWidget
+import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidget
+import com.github.naz013.appwidgets.notes.NotesGlanceAppWidget
+import com.github.naz013.appwidgets.singlenote.SingleNoteGlanceAppWidget
 import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.logging.Logger
 
@@ -28,8 +27,17 @@ internal class AppWidgetUpdaterImpl(
   }
 
   override suspend fun updateEventsWidget(widgetId: Int) {
+    updateGlanceWidget(EventsGlanceAppWidget(), widgetId)
+    appWidgetPreviewUpdater.updateEventsWidgetPreview()
+  }
+
+  override suspend fun updateCombinedButtonsWidget(widgetId: Int) {
+    updateGlanceWidget(CombinedButtonsGlanceAppWidget(), widgetId)
+    appWidgetPreviewUpdater.updateCombinedButtonsWidgetPreview()
+  }
+
+  private suspend fun updateGlanceWidget(widget: GlanceAppWidget, widgetId: Int) {
     val manager = GlanceAppWidgetManager(context)
-    val widget = EventsGlanceAppWidget()
     var glanceId: GlanceId? = null
     if (widgetId != WidgetId.NO_ID) {
       try {
@@ -38,7 +46,7 @@ internal class AppWidgetUpdaterImpl(
         Logger.e(TAG, "Failed to get glance ID for widget with id $widgetId", e)
       }
     }
-    Logger.i(TAG, "Updating events widget with id $widgetId, glanceId: $glanceId")
+    Logger.i(TAG, "Updating ${widget.javaClass.simpleName} with id $widgetId, glanceId: $glanceId")
     if (glanceId == null) {
       // Update all widgets
       val glanceIds = manager.getGlanceIds(widget.javaClass)
@@ -49,62 +57,50 @@ internal class AppWidgetUpdaterImpl(
       try {
         widget.update(context, glanceId)
       } catch (e: Exception) {
-        Logger.e(TAG, "Failed to update events widget with id $widgetId", e)
+        Logger.e(TAG, "Failed to update ${widget.javaClass.simpleName} with id $widgetId", e)
       }
     }
-    appWidgetPreviewUpdater.updateEventsWidgetPreview()
   }
 
-  override fun updateNotesWidget() {
-    val intent = Intent(context, NotesWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, NotesWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
-
+  override fun updateNotesWidget(widgetId: Int) {
+    invokeSuspend {
+      updateGlanceWidget(NotesGlanceAppWidget(), widgetId)
+      appWidgetPreviewUpdater.updateNotesWidgetPreview()
+    }
     updateNoteWidgets()
   }
 
   private fun updateNoteWidgets() {
-    val intent = Intent(context, SingleNoteWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, SingleNoteWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
+    invokeSuspend {
+      updateGlanceWidget(SingleNoteGlanceAppWidget(), WidgetId.NO_ID)
+      appWidgetPreviewUpdater.updateSingleNoteWidgetPreview()
+    }
   }
 
-  override fun updateCalendarWidget() {
-    val intent = Intent(context, CalendarWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, CalendarWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
+  override suspend fun updateSingleNoteWidget(widgetId: Int) {
+    updateGlanceWidget(SingleNoteGlanceAppWidget(), widgetId)
+    appWidgetPreviewUpdater.updateSingleNoteWidgetPreview()
   }
 
-  override fun updateScheduleWidget() {
-    val intent = Intent(context, TasksWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, TasksWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
+  override fun updateCalendarWidget(widgetId: Int) {
+    invokeSuspend {
+      updateGlanceWidget(CalendarGlanceAppWidget(), widgetId)
+      appWidgetPreviewUpdater.updateCalendarWidgetPreview()
+    }
   }
 
-  override fun updateBirthdaysWidget() {
-    val intent = Intent(context, BirthdaysWidget::class.java)
-    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+  override fun updateScheduleWidget(widgetId: Int) {
+    invokeSuspend {
+      updateGlanceWidget(GoogleTasksGlanceAppWidget(), widgetId)
+      appWidgetPreviewUpdater.updateScheduleWidgetPreview()
+    }
+  }
 
-    val ids = AppWidgetManager.getInstance(context)
-      .getAppWidgetIds(ComponentName(context, BirthdaysWidget::class.java))
-    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-    context.sendBroadcast(intent)
+  override fun updateBirthdaysWidget(widgetId: Int) {
+    invokeSuspend {
+      updateGlanceWidget(BirthdaysGlanceAppWidget(), widgetId)
+      appWidgetPreviewUpdater.updateBirthdaysWidgetPreview()
+    }
   }
 
   companion object {

@@ -7,5 +7,5 @@ data class WeekDay(
   val weekday: String,
   val date: String,
   val isSelected: Boolean,
-  val hasEvents: Boolean
+  val hasEvents: Boolean,
 )

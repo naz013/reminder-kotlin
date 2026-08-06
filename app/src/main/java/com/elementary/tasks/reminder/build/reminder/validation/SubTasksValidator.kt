@@ -1,14 +1,13 @@
 package com.elementary.tasks.reminder.build.reminder.validation
 
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class SubTasksValidator {
-
-  operator fun invoke(reminder: Reminder): Boolean {
-    return if (reminder.readType().hasSubTasks()) {
-      reminder.shoppings.isNotEmpty()
+  operator fun invoke(reminder: ReminderV2): Boolean =
+    if (reminder.action is ReminderAction.Shopping) {
+      reminder.shoppingItems.isNotEmpty()
     } else {
       true
     }
-  }
 }

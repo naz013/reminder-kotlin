@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notification Customization</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h1>How Notification Customization Works</h1>
+  <p class="subtitle">Vibration, sound, priority, and more — set once, override wherever you need</p>
+
+  <div class="info-box">
+    <h4>Key Concept</h4>
+    <p>Every notification setting (vibration, vibration pattern, repeating, delay, priority, category, bypassing Do Not Disturb, waking the screen, lock screen visibility) can be set at three levels. The most specific level you've customized always wins.</p>
+  </div>
+
+  <h2>The Three Levels</h2>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <h4>Settings <span class="badge badge-core">BASE</span></h4>
+    <p>Your app-wide defaults, found in <strong>Settings → Reminders → Notification defaults</strong>. Every value here is always set — this is what applies unless you override it somewhere more specific.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <h4>Group <span class="badge badge-params">OPTIONAL</span></h4>
+    <p>Per-group overrides, found when editing a group under <strong>Notification overrides</strong>. Leave a field on "Inherit from Settings" and it falls back to your app-wide default; override it and every reminder in that group picks it up.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <h4>Reminder <span class="badge badge-extra">MOST SPECIFIC</span></h4>
+    <p>Per-reminder overrides, set directly in the reminder builder. These take priority over everything else — perfect for the one reminder that needs to be louder, quieter, or silent, without changing the rest of its group.</p>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <tr><th>If you set it on...</th><th>...it applies to</th></tr>
+      <tr><td>Reminder</td><td>Just that one reminder</td></tr>
+      <tr><td>Group</td><td>Every reminder in that group that hasn't overridden it itself</td></tr>
+      <tr><td>Settings</td><td>Every reminder that hasn't overridden it at the group or reminder level</td></tr>
+    </table>
+  </div>
+
+  <h2>What You Can Customize</h2>
+
+  <div class="feature-grid">
+    <div class="feature-card"><h4>Vibrate</h4><p>Turn vibration on or off for the notification.</p></div>
+    <div class="feature-card"><h4>Vibration Pattern</h4><p>Pick a pattern (Short, Long, Double buzz, Default) so different reminders feel different.</p></div>
+    <div class="feature-card"><h4>Repeating</h4><p>Whether the notification keeps repeating until you act on it.</p></div>
+    <div class="feature-card"><h4>Notification Delay</h4><p>Delay the notification by a number of minutes.</p></div>
+    <div class="feature-card"><h4>Priority</h4><p>How prominently the notification is shown.</p></div>
+    <div class="feature-card"><h4>Category</h4><p>Tags the notification as Default, Alarm, Event, or Call, which affects how your device treats it.</p></div>
+    <div class="feature-card"><h4>Bypass Do Not Disturb</h4><p>Let this notification ring even while Do Not Disturb is on.</p></div>
+    <div class="feature-card"><h4>Wake Screen</h4><p>Turn the screen on like an alarm when the notification fires.</p></div>
+    <div class="feature-card"><h4>Lock Screen Visibility</h4><p>Show full content, hide sensitive content, or hide the notification completely on the lock screen.</p></div>
+  </div>
+
+  <h2>Example</h2>
+  <p>Say your Settings default has vibration on and Normal priority. You create a "Work" group and turn its priority to High. Most work reminders now fire at High priority automatically. For one especially important meeting, you open that single reminder and turn on "Bypass Do Not Disturb" — only that reminder rings through Do Not Disturb; the rest of the group is unaffected.</p>
+
+  <div class="info-box warning">
+    <h4>Device and Android version differences</h4>
+    <p>Not every option behaves the same way on every device or Android version. Some manufacturers restrict vibration patterns, custom sounds, or bypassing Do Not Disturb; battery-optimization or "deep sleep" modes on some phones can delay notifications regardless of what you've set; and once a notification channel is created, Android itself may lock its sound and vibration behavior in the system notification settings for that channel. If something doesn't behave as expected, check your device's own notification/app settings alongside what's configured here.</p>
+  </div>
+
+  <footer>Reminder wins, then Group, then Settings.</footer>
+</div>
+</body>
+</html>

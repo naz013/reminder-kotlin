@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:ReminderV2Test.kt$ReminderV2Test$(RecurrenceRule.RelativeMonthly(weekday = 2, ordinal = 1, repeatLimit = 1), eventCount = 1)</ID>
+    <ID>ArgumentListWrapping:ReminderV2Test.kt$ReminderV2Test$(weekday = 2, ordinal = 1, repeatLimit = 1)</ID>
+    <ID>ArgumentListWrapping:ReminderV2ToReminderMapperTest.kt$ReminderV2ToReminderMapperTest$(Reminder.Action.CALL, reminderV2(action = ReminderAction.Call("+123")).toReminder().type % Reminder.BY_DATE)</ID>
+    <ID>ArgumentListWrapping:ReminderV2ToReminderMapperTest.kt$ReminderV2ToReminderMapperTest$(Reminder.Action.SHOP, reminderV2(action = ReminderAction.Shopping).toReminder().type % Reminder.BY_DATE)</ID>
+    <ID>CyclomaticComplexMethod:NotificationSettingsResolver.kt$fun NotificationSettingsOverride.resolve( group: NotificationSettingsOverride?, defaults: NotificationSettings ): NotificationSettings</ID>
+    <ID>CyclomaticComplexMethod:ReminderV2ToReminderMapper.kt$fun ReminderV2.toReminder(): Reminder</ID>
+    <ID>Filename:NotificationSettingsResolver.kt$com.github.naz013.domain.reminder.v2.NotificationSettingsResolver.kt</ID>
+    <ID>ImportOrdering:ReminderToReminderV2Mapper.kt$import com.github.naz013.domain.Reminder import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2 import com.github.naz013.domain.reminder.v2.CalendarExportSettings import com.github.naz013.domain.reminder.v2.LocationSettings import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride import com.github.naz013.domain.reminder.v2.ReminderAction import com.github.naz013.domain.reminder.v2.ReminderPriority import com.github.naz013.domain.reminder.v2.ReminderSchedule import com.github.naz013.domain.reminder.v2.ReminderV2 import com.github.naz013.domain.reminder.v2.RecurrenceRule import com.github.naz013.domain.reminder.v2.ShopItemV2 import com.github.naz013.domain.reminder.v2.SyncMetadata import com.github.naz013.domain.reminder.v2.TaskExportSettings import org.threeten.bp.LocalDateTime import org.threeten.bp.ZoneOffset import org.threeten.bp.ZonedDateTime import org.threeten.bp.format.DateTimeFormatter import java.util.Locale</ID>
+    <ID>ImportOrdering:ReminderToReminderV2MapperTest.kt$import com.github.naz013.domain.Reminder import com.github.naz013.domain.reminder.v2.ReminderAction import com.github.naz013.domain.reminder.v2.RecurrenceRule import org.junit.Assert.assertEquals import org.junit.Test import org.threeten.bp.LocalDateTime</ID>
+    <ID>ImportOrdering:ReminderV2ToReminderMapper.kt$import com.github.naz013.domain.Reminder import com.github.naz013.domain.reminder.BiType import com.github.naz013.domain.reminder.BuilderSchemeItem import com.github.naz013.domain.reminder.ShopItem import com.github.naz013.domain.reminder.v2.ReminderAction import com.github.naz013.domain.reminder.v2.ReminderPriority import com.github.naz013.domain.reminder.v2.ReminderV2 import com.github.naz013.domain.reminder.v2.RecurrenceRule import org.threeten.bp.LocalDateTime import org.threeten.bp.ZoneOffset import org.threeten.bp.ZonedDateTime import org.threeten.bp.format.DateTimeFormatter import java.util.Locale</ID>
+    <ID>ImportOrdering:ReminderV2ToReminderMapperTest.kt$import com.github.naz013.domain.Reminder import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride import com.github.naz013.domain.reminder.v2.ReminderAction import com.github.naz013.domain.reminder.v2.ReminderSchedule import com.github.naz013.domain.reminder.v2.ReminderV2 import com.github.naz013.domain.reminder.v2.RecurrenceRule import org.junit.Assert.assertEquals import org.junit.Test import org.threeten.bp.LocalDateTime</ID>
+    <ID>LongMethod:ReminderToReminderV2Mapper.kt$fun Reminder.toReminderV2(): ReminderV2</ID>
+    <ID>LongMethod:ReminderV2ToReminderMapper.kt$fun ReminderV2.toReminder(): Reminder</ID>
+    <ID>MatchingDeclarationName:NotificationSettingsResolver.kt$NotificationSettingsOverride</ID>
+    <ID>MaxLineLength:ReminderV2.kt$LockScreenVisibility$/** Maps to [android.app.Notification.VISIBILITY_PUBLIC]/[android.app.Notification.VISIBILITY_PRIVATE]/[android.app.Notification.VISIBILITY_SECRET]. */</ID>
+    <ID>MaxLineLength:ReminderV2Test.kt$ReminderV2Test$val reminder = reminderWith(RecurrenceRule.RelativeMonthly(weekday = 2, ordinal = 1, repeatLimit = 1), eventCount = 1)</ID>
+    <ID>MaxLineLength:ReminderV2ToReminderMapperTest.kt$ReminderV2ToReminderMapperTest$assertEquals(Reminder.Action.CALL, reminderV2(action = ReminderAction.Call("+123")).toReminder().type % Reminder.BY_DATE)</ID>
+    <ID>MaxLineLength:ReminderV2ToReminderMapperTest.kt$ReminderV2ToReminderMapperTest$assertEquals(Reminder.Action.SHOP, reminderV2(action = ReminderAction.Shopping).toReminder().type % Reminder.BY_DATE)</ID>
+    <ID>MemberNameEqualsClassName:Bytes.kt$Bytes$private val bytes: ByteArray = hexString.chunked(2) .map { it.toInt(16).toByte() } .toByteArray()</ID>
+    <ID>PropertyWrapping:ReminderV2Test.kt$ReminderV2Test$val reminder = reminderWith(RecurrenceRule.RelativeMonthly(weekday = 2, ordinal = 1, repeatLimit = 1), eventCount = 1)</ID>
+    <ID>SerialVersionUIDInSerializableClass:ImageFile.kt$ImageFile : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Note.kt$Note : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:NoteWithImages.kt$NoteWithImages : NoteInterfaceSerializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Place.kt$Place : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Reminder.kt$Reminder : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:ReminderGroup.kt$ReminderGroup : Serializable</ID>
+  </CurrentIssues>
+</SmellBaseline>

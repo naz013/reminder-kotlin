@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:DateTimeManager.kt$DateTimeManager$(Instant.ofEpochMilli(millis), ZoneId.systemDefault())</ID>
+    <ID>ArgumentListWrapping:DateTimeManager.kt$DateTimeManager$(localDateTime, ZoneId.systemDefault())</ID>
+    <ID>ArgumentListWrapping:DateTimeManager.kt$DateTimeManager$(millis)</ID>
+    <ID>CommentWrapping:ContactsReader.kt$ContactsReader$/* projection = */</ID>
+    <ID>CommentWrapping:ContactsReader.kt$ContactsReader$/* selection = */</ID>
+    <ID>CommentWrapping:ContactsReader.kt$ContactsReader$/* selectionArgs = */</ID>
+    <ID>CommentWrapping:ContactsReader.kt$ContactsReader$/* sortOrder = */</ID>
+    <ID>CommentWrapping:ContactsReader.kt$ContactsReader$/* uri = */</ID>
+    <ID>MaxLineLength:DateTimeManager.kt$DateTimeManager$fun fromMillis(millis: Long): LocalDateTime</ID>
+    <ID>MaxLineLength:DateTimeManager.kt$DateTimeManager$fun getBirthdayDayMonth(dateTime: LocalDateTime = getCurrentDateTime()): String</ID>
+    <ID>MaxLineLength:DateTimeManager.kt$DateTimeManager$fun toMillis(localDateTime: LocalDateTime): Long</ID>
+    <ID>NestedBlockDepth:ContactsReader.kt$ContactsReader$fun getNameFromNumber(contactNumber: String?): String?</ID>
+    <ID>PrintStackTrace:ContactsReader.kt$ContactsReader$e</ID>
+    <ID>PrintStackTrace:DateTimeManager.kt$DateTimeManager$e</ID>
+    <ID>ReturnCount:ContactsReader.kt$ContactsReader$fun getIdFromNumber(phoneNumber: String?): Long</ID>
+    <ID>ReturnCount:ContactsReader.kt$ContactsReader$fun getPhotoBitmap(contactId: Long): Bitmap?</ID>
+    <ID>ReturnCount:DateTimeManager.kt$DateTimeManager$fun doNotDisturbRange( from: String?, to: String?, ): LongRange</ID>
+    <ID>SwallowedException:ContactsReader.kt$ContactsReader$e: Exception</ID>
+    <ID>SwallowedException:ContactsReader.kt$ContactsReader$e: Throwable</ID>
+    <ID>SwallowedException:PackageManagerWrapper.kt$PackageManagerWrapper$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:ContactsReader.kt$ContactsReader$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ContactsReader.kt$ContactsReader$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:DateTimeManager.kt$DateTimeManager$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:PackageManagerWrapper.kt$PackageManagerWrapper$e: Throwable</ID>
+    <ID>TooManyFunctions:DateTimeManager.kt$DateTimeManager</ID>
+  </CurrentIssues>
+</SmellBaseline>

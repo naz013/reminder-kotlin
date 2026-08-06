@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 
 /**
@@ -15,9 +15,8 @@ import com.github.naz013.logging.Logger
  */
 class ToggleReminderStateUseCase(
   private val activateReminderUseCase: ActivateReminderUseCase,
-  private val deactivateReminderUseCase: DeactivateReminderUseCase
+  private val deactivateReminderUseCase: DeactivateReminderUseCase,
 ) {
-
   /**
    * Toggles the reminder state.
    *
@@ -27,20 +26,32 @@ class ToggleReminderStateUseCase(
    * @param reminder The reminder to toggle
    * @return Pair of (new active state, updated reminder)
    */
-  suspend operator fun invoke(reminder: Reminder): Pair<Boolean, Reminder> {
+  suspend operator fun invoke(reminder: ReminderV2): Result {
     Logger.d(TAG, "Toggling reminder state for id=${reminder.uuId}, currentState=${reminder.isActive}")
 
     return if (reminder.isActive) {
       Logger.i(TAG, "Deactivating reminder id=${reminder.uuId}")
-      false to deactivateReminderUseCase(reminder)
+      val newReminder = deactivateReminderUseCase(reminder)
+      Result(
+        success = !newReminder.isActive,
+        newReminder = newReminder
+      )
     } else {
       Logger.i(TAG, "Activating reminder id=${reminder.uuId}")
-      true to activateReminderUseCase(reminder)
+      val newReminder = activateReminderUseCase(reminder)
+      Result(
+        success = newReminder.isActive,
+        newReminder = newReminder
+      )
     }
   }
+
+  data class Result(
+    val success: Boolean,
+    val newReminder: ReminderV2,
+  )
 
   companion object {
     private const val TAG = "ToggleReminderStateUseCase"
   }
 }
-

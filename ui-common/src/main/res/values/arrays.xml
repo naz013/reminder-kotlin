@@ -20,4 +20,45 @@
         <item>한국어</item>
         <item>Български</item>
     </string-array>
+
+    <string-array name="map_types">
+        <item>@string/normal</item>
+        <item>@string/satellite</item>
+        <item>@string/terrain</item>
+        <item>@string/hybrid</item>
+    </string-array>
+
+    <string-array name="repeat_times">
+        <item>@string/seconds</item>
+        <item>@string/_minutes</item>
+        <item>@string/_hours</item>
+        <item>@string/days</item>
+        <item>@string/weeks</item>
+        <item>@string/months</item>
+    </string-array>
+
+    <string-array name="repeat_times_month">
+        <item>@string/months</item>
+    </string-array>
+
+    <string-array name="before_times">
+        <item>@string/seconds</item>
+        <item>@string/_minutes</item>
+        <item>@string/_hours</item>
+        <item>@string/days</item>
+        <item>@string/weeks</item>
+        <item>@string/months</item>
+    </string-array>
+
+    <string-array name="app_translators">
+        <item>Chinese: Waye Wrong</item>
+    </string-array>
+
+    <string-array name="priorities">
+        <item>@string/priority_lowest</item>
+        <item>@string/priority_low</item>
+        <item>@string/priority_normal</item>
+        <item>@string/priority_high</item>
+        <item>@string/priority_highest</item>
+    </string-array>
 </resources>

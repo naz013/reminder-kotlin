@@ -16,6 +16,18 @@ data class NoteWithImages(
     return note?.summary ?: ""
   }
 
+  fun getTitle(): String {
+    return note?.title ?: ""
+  }
+
+  fun getTitleFontSize(): Int {
+    return note?.titleFontSize ?: FontParams.DEFAULT_TITLE_FONT_SIZE
+  }
+
+  fun getTitleFontStyle(): Int {
+    return note?.titleFontStyle ?: FontParams.DEFAULT_FONT_STYLE
+  }
+
   override fun getKey(): String {
     return note?.key ?: ""
   }

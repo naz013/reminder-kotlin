@@ -42,6 +42,12 @@ internal class CalendarEventRepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun deleteAll() {
+    Logger.d(TAG, "Delete all calendar events")
+    dao.deleteAll()
+    tableChangeNotifier.notify(table)
+  }
+
   companion object {
     private const val TAG = "CalendarEventRepository"
   }

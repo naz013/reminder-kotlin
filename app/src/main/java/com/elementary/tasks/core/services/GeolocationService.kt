@@ -19,39 +19,44 @@ import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
 class GeolocationService : Service() {
-
   private val notifier by inject<Notifier>()
   private val reminderActionProcessor by inject<ReminderActionProcessor>()
   private val checkLocationReminderUseCase by inject<CheckLocationReminderUseCase>()
 
   private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
-  private var locationListener: LocationTracker.Listener = object : LocationTracker.Listener {
-    override fun onUpdate(lat: Double, lng: Double) {
-      val locationA = Location("point A")
-      locationA.latitude = lat
-      locationA.longitude = lng
-      checkReminders(locationA)
+  private var locationListener: LocationTracker.Listener =
+    object : LocationTracker.Listener {
+      override fun onUpdate(
+        lat: Double,
+        lng: Double,
+      ) {
+        val locationA = Location("point A")
+        locationA.latitude = lat
+        locationA.longitude = lng
+        checkReminders(locationA)
+      }
     }
-  }
 
   override fun onDestroy() {
     super.onDestroy()
     locationTracker.removeUpdates()
     stopForeground(STOP_FOREGROUND_REMOVE)
-    Logger.d("onDestroy: ")
+    Logger.d(TAG, "onDestroy: ")
   }
 
-  override fun onBind(intent: Intent?): IBinder? {
-    return null
-  }
+  override fun onBind(intent: Intent?): IBinder? = null
 
   override fun onCreate() {
     super.onCreate()
     showDefaultNotification()
   }
 
-  override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    Logger.d("onStartCommand: ")
+  override fun onStartCommand(
+    intent: Intent?,
+    flags: Int,
+    startId: Int,
+  ): Int {
+    Logger.d(TAG, "onStartCommand: ")
     showDefaultNotification()
     locationTracker.startUpdates()
     return START_STICKY
@@ -69,15 +74,11 @@ class GeolocationService : Service() {
     reminderActionProcessor.process(id)
   }
 
-  private suspend fun showReminder(
-    showReminderNotification: CheckLocationReminderUseCase.ShowReminderNotification
-  ) {
+  private suspend fun showReminder(showReminderNotification: CheckLocationReminderUseCase.ShowReminderNotification) {
     withUIContext { reminderAction(showReminderNotification.uuId) }
   }
 
-  private fun showNotification(
-    notification: CheckLocationReminderUseCase.ShowDistanceNotification
-  ) {
+  private fun showNotification(notification: CheckLocationReminderUseCase.ShowDistanceNotification) {
     val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SILENT)
     builder.setContentTitle(notification.title)
     builder.setContentText(notification.text)
@@ -99,18 +100,19 @@ class GeolocationService : Service() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       try {
         startForeground(NOTIFICATION_ID, builder.build())
-        Logger.i("GeolocationService", "Start foreground: success")
+        Logger.i(TAG, "Start foreground: success")
       } catch (e: ForegroundServiceStartNotAllowedException) {
-        Logger.i("GeolocationService", "Start foreground: not allowed")
+        Logger.i(TAG, "Start foreground: not allowed, ${e.message}")
         stopSelf()
       }
     } else {
       startForeground(NOTIFICATION_ID, builder.build())
-      Logger.i("GeolocationService", "Start foreground: success")
+      Logger.i(TAG, "Start foreground: success")
     }
   }
 
   companion object {
+    private const val TAG = "GeolocationService"
     private const val NOTIFICATION_ID = 1245
   }
 }

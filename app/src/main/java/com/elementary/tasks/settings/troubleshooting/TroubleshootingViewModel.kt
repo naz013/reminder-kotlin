@@ -1,88 +1,117 @@
 package com.elementary.tasks.settings.troubleshooting
 
-import androidx.lifecycle.LifecycleOwner
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.github.naz013.feature.common.livedata.toSingleEvent
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.elementary.tasks.core.utils.FeatureManager
+import com.elementary.tasks.core.utils.io.CacheUtil
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Screen
+import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.core.utils.io.CacheUtil
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
-import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class TroubleshootingViewModel(
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   systemServiceProvider: SystemServiceProvider,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val featureManager: FeatureManager,
   private val contextProvider: ContextProvider,
-  private val cacheUtil: CacheUtil
-) : BaseProgressViewModel(dispatcherProvider) {
+  private val cacheUtil: CacheUtil,
+  private val analyticsEventSender: AnalyticsEventSender,
+) : ViewModel() {
 
   private val powerManager = systemServiceProvider.providePowerManager()
 
-  private val _hideBatteryOptimizationCard = mutableLiveDataOf<Boolean>()
-  val hideBatteryOptimizationCard = _hideBatteryOptimizationCard.toSingleEvent()
+  private val _state = MutableStateFlow(TroubleshootingScreenState())
+  val state = _state.stateInWhileSubscribed(TroubleshootingScreenState())
+    .onStart { internalLoad() }
 
-  private val _showEmptyView = mutableLiveDataOf<Boolean>()
-  val showEmptyView = _showEmptyView.toLiveData()
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
-  private val _showSendLogs = mutableLiveDataOf<Boolean>()
-  val showSendLogs = _showSendLogs.toSingleEvent()
-
-  private val _sendLogFile = mutableLiveDataOf<File>()
-  val sendLogFile = _sendLogFile.toSingleEvent()
-
-  fun packageName(): String {
-    return packageManagerWrapper.getPackageName()
+  fun onOpenOptimizationSettingsClicked() {
+    analyticsEventSender.send(ScreenUsedEvent(Screen.TROUBLESHOOTING))
+    event.emit(ViewModelEvent.OpenOptimizationSettings)
   }
 
+  fun packageName(): String = packageManagerWrapper.getPackageName()
+
   fun sendLogs() {
-    val logFile = getLogFile() ?: return
-    val cacheFile = cacheUtil.cacheFile(logFile) ?: return
-    _sendLogFile.postValue(cacheFile)
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val logFile = getLogFile() ?: return@launch
+      val cacheFile = cacheUtil.cacheFile(logFile) ?: return@launch
+
+      withContext(dispatcherProvider.main()) {
+        event.emit(ViewModelEvent.SendLogs(cacheFile))
+      }
+    }
   }
 
   private fun getLogFile(): File? {
     val dir = contextProvider.context.dataDir
     val logDir = File(dir, "files/log")
-    Logger.d("getLogFile: dir = $dir, logDir = $logDir")
+    Logger.d(TAG, "getLogFile: dir = $dir, logDir = $logDir")
     if (!logDir.exists()) return null
     val files = logDir.listFiles() ?: return null
     return files.firstOrNull { it.name.endsWith(".log") }
   }
 
-  override fun onResume(owner: LifecycleOwner) {
-    super.onResume(owner)
+  private fun internalLoad() {
     checkLogs()
     checkBatteryOptimization()
     checkEmptyView()
   }
 
   private fun checkLogs() {
-    val enabled = featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) &&
-      hasLogFiles()
-    Logger.d("Logging is $enabled")
-    _showSendLogs.postValue(enabled)
+    val enabled =
+      featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) &&
+        hasLogFiles()
+    Logger.d(TAG, "Logging is $enabled")
+    _state.update {
+      it.copy(showSendLogs = enabled)
+    }
   }
 
-  private fun hasLogFiles(): Boolean {
-    return getLogFile() != null
-  }
+  private fun hasLogFiles(): Boolean = getLogFile() != null
 
   private fun checkBatteryOptimization() {
     val optimizationStatus = powerManager?.isIgnoringBatteryOptimizations(packageName())
-    Logger.d("Battery optimization is disabled = $optimizationStatus")
-    _hideBatteryOptimizationCard.postValue(optimizationStatus ?: false)
+    Logger.d(TAG, "Battery optimization is disabled = $optimizationStatus")
+    _state.update {
+      it.copy(showBatteryOptimizationCard = optimizationStatus?.not() ?: false)
+    }
   }
 
   private fun checkEmptyView() {
     val optimizationDisabled = powerManager?.isIgnoringBatteryOptimizations(packageName()) ?: false
     val logsEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS)
-    _showEmptyView.postValue(optimizationDisabled && !logsEnabled)
+    _state.update {
+      it.copy(showEmptyView = optimizationDisabled && !logsEnabled)
+    }
+  }
+
+  sealed interface ViewModelEvent {
+    data object OpenOptimizationSettings : ViewModelEvent
+
+    data class SendLogs(
+      val file: File,
+    ) : ViewModelEvent
+  }
+
+  companion object {
+    private const val TAG = "TroubleshootingViewModel"
   }
 }

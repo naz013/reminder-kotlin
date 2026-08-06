@@ -10,20 +10,27 @@ import com.github.naz013.repository.dao.EventHistoryDao
 import com.github.naz013.repository.dao.EventOccurrenceDao
 import com.github.naz013.repository.dao.GoogleTaskListsDao
 import com.github.naz013.repository.dao.GoogleTasksDao
+import com.github.naz013.repository.dao.GroupV2Dao
 import com.github.naz013.repository.dao.NotesDao
 import com.github.naz013.repository.dao.PlacesDao
 import com.github.naz013.repository.dao.RecentQueryDao
 import com.github.naz013.repository.dao.RecurPresetDao
 import com.github.naz013.repository.dao.ReminderDao
 import com.github.naz013.repository.dao.ReminderGroupDao
+import com.github.naz013.repository.dao.ReminderV2Dao
 import com.github.naz013.repository.dao.RemoteFileMetadataDao
+import com.github.naz013.repository.dao.TagAssignmentDao
+import com.github.naz013.repository.dao.TagDao
 import com.github.naz013.repository.dao.UsedTimeDao
+import com.github.naz013.repository.dao.WorkflowRuleDao
+import com.github.naz013.repository.dao.WorkflowTemplateDao
 import com.github.naz013.repository.entity.BirthdayEntity
 import com.github.naz013.repository.entity.CalendarEventEntity
 import com.github.naz013.repository.entity.EventHistoryEntity
 import com.github.naz013.repository.entity.EventOccurrenceEntity
 import com.github.naz013.repository.entity.GoogleTaskEntity
 import com.github.naz013.repository.entity.GoogleTaskListEntity
+import com.github.naz013.repository.entity.GroupV2Entity
 import com.github.naz013.repository.entity.ImageFileEntity
 import com.github.naz013.repository.entity.NoteEntity
 import com.github.naz013.repository.entity.PlaceEntity
@@ -31,8 +38,13 @@ import com.github.naz013.repository.entity.RecentQueryEntity
 import com.github.naz013.repository.entity.RecurPresetEntity
 import com.github.naz013.repository.entity.ReminderEntity
 import com.github.naz013.repository.entity.ReminderGroupEntity
+import com.github.naz013.repository.entity.ReminderV2Entity
 import com.github.naz013.repository.entity.RemoteFileMetadataEntity
+import com.github.naz013.repository.entity.TagAssignmentEntity
+import com.github.naz013.repository.entity.TagEntity
 import com.github.naz013.repository.entity.UsedTimeEntity
+import com.github.naz013.repository.entity.WorkflowRuleEntity
+import com.github.naz013.repository.entity.WorkflowTemplateEntity
 import com.github.naz013.repository.migrations.MIGRATION_10_11
 import com.github.naz013.repository.migrations.MIGRATION_11_12
 import com.github.naz013.repository.migrations.MIGRATION_12_13
@@ -44,6 +56,16 @@ import com.github.naz013.repository.migrations.MIGRATION_17_18
 import com.github.naz013.repository.migrations.MIGRATION_18_19
 import com.github.naz013.repository.migrations.MIGRATION_19_20
 import com.github.naz013.repository.migrations.MIGRATION_1_2
+import com.github.naz013.repository.migrations.MIGRATION_20_21
+import com.github.naz013.repository.migrations.MIGRATION_21_22
+import com.github.naz013.repository.migrations.MIGRATION_22_23
+import com.github.naz013.repository.migrations.MIGRATION_23_24
+import com.github.naz013.repository.migrations.MIGRATION_24_25
+import com.github.naz013.repository.migrations.MIGRATION_25_26
+import com.github.naz013.repository.migrations.MIGRATION_26_27
+import com.github.naz013.repository.migrations.MIGRATION_27_28
+import com.github.naz013.repository.migrations.MIGRATION_28_29
+import com.github.naz013.repository.migrations.MIGRATION_29_30
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
@@ -69,15 +91,25 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     RecentQueryEntity::class,
     RemoteFileMetadataEntity::class,
     EventOccurrenceEntity::class,
-    EventHistoryEntity::class
+    EventHistoryEntity::class,
+    ReminderV2Entity::class,
+    GroupV2Entity::class,
+    WorkflowRuleEntity::class,
+    WorkflowTemplateEntity::class,
+    TagEntity::class,
+    TagAssignmentEntity::class
   ],
-  version = 20,
+  version = 30,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
 
   abstract fun reminderDao(): ReminderDao
   abstract fun reminderGroupDao(): ReminderGroupDao
+  abstract fun reminderV2Dao(): ReminderV2Dao
+  abstract fun groupV2Dao(): GroupV2Dao
+  abstract fun workflowRuleDao(): WorkflowRuleDao
+  abstract fun workflowTemplateDao(): WorkflowTemplateDao
   abstract fun placesDao(): PlacesDao
   abstract fun calendarEventsDao(): CalendarEventsDao
   abstract fun notesDao(): NotesDao
@@ -90,6 +122,8 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun remoteFileMetadataDao(): RemoteFileMetadataDao
   abstract fun eventOccurrenceDao(): EventOccurrenceDao
   abstract fun eventHistoryDao(): EventHistoryDao
+  abstract fun tagDao(): TagDao
+  abstract fun tagAssignmentDao(): TagAssignmentDao
 
   companion object {
 
@@ -118,7 +152,17 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_16_17,
             MIGRATION_17_18,
             MIGRATION_18_19,
-            MIGRATION_19_20
+            MIGRATION_19_20,
+            MIGRATION_20_21,
+            MIGRATION_21_22,
+            MIGRATION_22_23,
+            MIGRATION_23_24,
+            MIGRATION_24_25,
+            MIGRATION_25_26,
+            MIGRATION_26_27,
+            MIGRATION_27_28,
+            MIGRATION_28_29,
+            MIGRATION_29_30
           )
           .allowMainThreadQueries()
           .build()

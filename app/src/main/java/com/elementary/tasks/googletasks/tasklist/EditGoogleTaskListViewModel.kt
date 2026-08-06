@@ -1,171 +1,230 @@
 package com.elementary.tasks.googletasks.tasklist
 
-import android.os.Bundle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.arch.BaseProgressViewModel
-import com.elementary.tasks.core.data.Commands
+import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
-import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.common.livedata.toLiveData
-import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.usecase.googletasks.GetGoogleTaskListByIdUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EditGoogleTaskListViewModel(
-  arguments: Bundle?,
+  private val listId: String?,
   private val googleTasksApi: GoogleTasksApi,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val getGoogleTaskListByIdUseCase: GetGoogleTaskListByIdUseCase
-) : BaseProgressViewModel(dispatcherProvider) {
+  private val getGoogleTaskListByIdUseCase: GetGoogleTaskListByIdUseCase,
+  private val textProvider: TextProvider,
+  private val themeProvider: ThemeProvider,
+  private val appWidgetUpdater: AppWidgetUpdater,
+  private val prefs: Prefs,
+) : ViewModel() {
 
-  private val _googleTaskList = mutableLiveDataOf<GoogleTaskList>()
-  val googleTaskList = _googleTaskList.toLiveData()
+  private val _state = MutableStateFlow(EditGoogleTaskListState())
+  val state = _state.stateInWhileSubscribed(EditGoogleTaskListState())
+    .onStart { loadInternal() }
 
-  private val _colorChanged = mutableLiveDataOf<Int>()
-  val colorChanged = _colorChanged.toLiveData()
-
-  var isEdited = false
-    private set
-  var listId: String = ""
-    private set
-
-  private var color: Int = 0
-  var editedTaskList: GoogleTaskList? = null
+  val navigationEvent: LiveData<Event<EditGoogleTaskListEvent>> field = mutableLiveEventOf()
 
   init {
-    val id = arguments?.getString(IntentKeys.INTENT_ID) ?: ""
-    listId = id
-    viewModelScope.launch(dispatcherProvider.default()) {
-      postInProgress(true)
-      editedTaskList = getGoogleTaskListByIdUseCase(id)
-      editedTaskList?.also {
-        _googleTaskList.postValue(it)
-      }
-      postInProgress(false)
+    _state.update {
+      it.copy(
+        hapticFeedbackEnabled = prefs.hapticsEnabled,
+        sliderColors = themeProvider.colorsForSliderThemed(),
+      )
     }
   }
 
-  fun onColorChanged(color: Int) {
-    this.color = color
+  fun onNameChange(name: String) {
+    _state.update { it.copy(name = name, nameError = false) }
   }
 
-  fun hasId(): Boolean {
-    return listId.isNotEmpty()
+  fun onColorSelected(index: Int) {
+    _state.update { it.copy(colorIndex = index) }
   }
 
-  fun onCreated(savedInstanceState: Bundle?) {
-    if (savedInstanceState != null) {
-      _colorChanged.postValue(color)
-    }
+  fun onDefaultToggle() {
+    if (_state.value.isDefaultLocked) return
+    _state.update { it.copy(isDefault = !it.isDefault) }
   }
 
-  fun canDelete(): Boolean {
-    return editedTaskList?.let { !it.isDefault() } ?: false
+  fun onDeleteClick() {
+    _state.update { it.copy(showDeleteConfirm = true) }
+  }
+
+  fun onDeleteDismiss() {
+    _state.update { it.copy(showDeleteConfirm = false) }
   }
 
   fun deleteGoogleTaskList() {
-    val googleTaskList = editedTaskList ?: return
-    postInProgress(true)
-    Logger.i(TAG, "Deleting Google Task List (${googleTaskList.listId})")
-    viewModelScope.launch(dispatcherProvider.default()) {
-      if (googleTasksApi.deleteTaskList(googleTaskList.listId)) {
-        googleTaskListRepository.delete(googleTaskList.listId)
-        googleTaskRepository.deleteAll(googleTaskList.listId)
-        if (googleTaskList.def == 1) {
-          val lists = googleTaskListRepository.getAll()
-          if (lists.isNotEmpty()) {
-            val taskList = lists[0]
-            taskList.def = 1
-            googleTaskListRepository.save(taskList)
+    if (!_state.value.canDelete) {
+      Logger.w(TAG, "Cannot delete the Google Task List")
+    }
+    _state.update { it.copy(showDeleteConfirm = false) }
+    val listId = _state.value.id
+    Logger.i(TAG, "Deleting Google Task List ($listId)")
+    viewModelScope.launch(dispatcherProvider.io()) {
+      if (googleTasksApi.deleteTaskList(listId)) {
+        googleTaskListRepository.delete(listId)
+        googleTaskRepository.deleteAll(listId)
+        if (_state.value.wasDefault) {
+          googleTaskListRepository.getAll().firstOrNull()?.also {
+            it.def = 1
+            googleTaskListRepository.save(it)
           }
         }
-        postInProgress(false)
-        postCommand(Commands.DELETED)
+        appWidgetUpdater.updateScheduleWidget()
+        withContext(dispatcherProvider.main()) {
+          navigationEvent.emit(EditGoogleTaskListEvent.MoveBack)
+        }
       } else {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+        withContext(dispatcherProvider.main()) {
+          navigationEvent.emit(
+            EditGoogleTaskListEvent.ShowError(
+              textProvider.getString(R.string.failed_to_update_task)
+            )
+          )
+        }
       }
     }
   }
 
-  fun save(listName: String, color: Int, isDefault: Boolean) {
+  fun save() {
+    val listName = _state.value.name.trim()
+    if (listName.isEmpty()) {
+      _state.update { it.copy(nameError = true) }
+      return
+    }
+    val color = _state.value.colorIndex
+    val isDefault = _state.value.isDefault
     var isNew = false
-    val item = (editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
-      this.title = listName
-      this.color = color
-      this.updated = System.currentTimeMillis()
-    }
-    if (isDefault) {
-      item.def = 1
-    }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val editedTaskList = googleTaskListRepository.getById(_state.value.id)
+      val item = (editedTaskList ?: GoogleTaskList().also { isNew = true }).apply {
+        this.title = listName
+        this.color = color
+        this.updated = System.currentTimeMillis()
+      }
+      if (isDefault) {
+        item.def = 1
+      }
 
-    if (isNew) {
-      newGoogleTaskList(item)
-    } else {
-      updateGoogleTaskList(item)
+      if (isNew) {
+        newGoogleTaskList(item)
+      } else {
+        updateGoogleTaskList(item)
+      }
     }
   }
 
-  private fun newGoogleTaskList(googleTaskList: GoogleTaskList) {
-    postInProgress(true)
+  private suspend fun newGoogleTaskList(googleTaskList: GoogleTaskList) {
     Logger.i(
       TAG,
-      "Creating Google Task List (${googleTaskList.listId}), default=${googleTaskList.isDefault()}"
+      "Creating Google Task List (${googleTaskList.listId}), default=${googleTaskList.isDefault()}",
     )
-    viewModelScope.launch(dispatcherProvider.default()) {
-      if (googleTaskList.isDefault()) {
-        googleTaskListRepository.getDefault().forEach {
-          it.def = 0
-          googleTaskListRepository.save(it)
-        }
+    if (googleTaskList.isDefault()) {
+      googleTaskListRepository.getDefault().forEach {
+        it.def = 0
+        googleTaskListRepository.save(it)
       }
-      googleTasksApi.saveTasksList(googleTaskList.title, googleTaskList.color)
-        ?.apply { this.def = googleTaskList.def }
-        ?.let {
-          googleTaskListRepository.save(it)
-          analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK_LIST))
-          postInProgress(false)
-          postCommand(Commands.SAVED)
-        } ?: run {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
+    }
+    googleTasksApi.saveTasksList(googleTaskList.title, googleTaskList.color)
+      ?.apply { this.def = googleTaskList.def }
+      ?.let {
+        googleTaskListRepository.save(it)
+        analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_GOOGLE_TASK_LIST))
+        appWidgetUpdater.updateScheduleWidget()
+        withContext(dispatcherProvider.main()) {
+          navigationEvent.emit(EditGoogleTaskListEvent.MoveBack)
+        }
+      } ?: run {
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.emit(
+          EditGoogleTaskListEvent.ShowError(textProvider.getString(R.string.failed_to_update_task))
+        )
       }
     }
   }
 
-  private fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
-    postInProgress(true)
+  private suspend fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
     Logger.i(TAG, "Updating Google Task List (${googleTaskList.listId})")
-    viewModelScope.launch(dispatcherProvider.default()) {
-      if (googleTaskList.isDefault()) {
-        googleTaskListRepository.getDefault().forEach {
-          it.def = 0
-          googleTaskListRepository.save(it)
-        }
-      }
-      googleTasksApi.updateTasksList(googleTaskList.title, googleTaskList)?.let {
+    if (googleTaskList.isDefault()) {
+      googleTaskListRepository.getDefault().forEach {
+        it.def = 0
         googleTaskListRepository.save(it)
-        postInProgress(false)
-        postCommand(Commands.SAVED)
-      } ?: run {
-        postInProgress(false)
-        postCommand(Commands.FAILED)
       }
     }
+    googleTasksApi.updateTasksList(googleTaskList.title, googleTaskList)?.let {
+      googleTaskListRepository.save(it)
+      appWidgetUpdater.updateScheduleWidget()
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.emit(EditGoogleTaskListEvent.MoveBack)
+      }
+    } ?: run {
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.emit(
+          EditGoogleTaskListEvent.ShowError(textProvider.getString(R.string.failed_to_update_task))
+        )
+      }
+    }
+  }
+
+  private fun loadInternal() {
+    if (listId == null) {
+      Logger.w(TAG, "Google Task List id is null")
+      return
+    }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val editedTaskList = getGoogleTaskListByIdUseCase(listId)
+      editedTaskList?.also { list ->
+        Logger.w(TAG, "Loaded Google Task List with id: $listId")
+        _state.update {
+          it.copy(
+            id = list.listId,
+            name = list.title,
+            colorIndex = list.color,
+            isDefault = list.isDefault(),
+            isDefaultLocked = list.isDefault(),
+            canDelete = !list.isDefault(),
+            wasDefault = list.isDefault(),
+            screenTitleRes = R.string.edit_task_list,
+          )
+        }
+      }
+    }
+  }
+
+  sealed interface EditGoogleTaskListEvent {
+    data object MoveBack : EditGoogleTaskListEvent
+
+    data class ShowError(
+      val message: String,
+    ) : EditGoogleTaskListEvent
   }
 
   companion object {
-    private const val TAG = "EditGoogleTaskViewModel"
+    private const val TAG = "EditGoogleTaskListViewModel"
   }
 }

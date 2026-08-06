@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-
 import com.elementary.tasks.R
 
 object LED {
@@ -39,8 +38,11 @@ object LED {
     return colors
   }
 
-  fun getTitle(context: Context, code: Int): String {
-    return when (code) {
+  fun getTitle(
+    context: Context,
+    code: Int,
+  ): String =
+    when (code) {
       0 -> context.getString(R.string.red)
       1 -> context.getString(R.string.green)
       2 -> context.getString(R.string.blue)
@@ -50,5 +52,4 @@ object LED {
       6 -> context.getString(R.string.teal)
       else -> context.getString(R.string.blue)
     }
-  }
 }

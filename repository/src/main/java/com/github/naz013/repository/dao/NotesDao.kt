@@ -21,6 +21,22 @@ internal interface NotesDao {
     """
         SELECT *
         FROM Note
+        WHERE archived = :isArchived
+        AND (:query = '' OR LOWER(summary) LIKE '%' || :query || '%')
+        ORDER BY
+          CASE WHEN :sortOrder = 'date_az' THEN date END ASC,
+          CASE WHEN :sortOrder = 'text_az' THEN summary END ASC,
+          CASE WHEN :sortOrder = 'text_za' THEN summary END DESC,
+          CASE WHEN :sortOrder NOT IN ('date_az', 'text_az', 'text_za') THEN date END DESC
+    """
+  )
+  fun getNotes(isArchived: Boolean, query: String, sortOrder: String): List<NoteWithImagesEntity>
+
+  @Transaction
+  @Query(
+    """
+        SELECT *
+        FROM Note
         WHERE LOWER(summary) LIKE '%' || :query || '%'"""
   )
   fun search(query: String): List<NoteEntity>
@@ -87,4 +103,7 @@ internal interface NotesDao {
 
   @Query("SELECT `key` FROM Note")
   fun getAllIds(): List<String>
+
+  @Query("SELECT COUNT(*) FROM Note WHERE archived=:isArchived")
+  fun countAll(isArchived: Boolean = false): Int
 }

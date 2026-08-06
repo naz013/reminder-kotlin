@@ -8,9 +8,8 @@ import com.github.naz013.common.TextProvider
 
 class ReminderDataProvider(
   private val textProvider: TextProvider,
-  private val prefs: Prefs
+  private val prefs: Prefs,
 ) {
-
   fun getLedColor(reminderColor: Int): Int? {
     return if (BuildParams.isPro && prefs.isLedEnabled) {
       if (reminderColor != -1) {
@@ -23,21 +22,14 @@ class ReminderDataProvider(
     }
   }
 
-  fun getVibrationPattern(): LongArray? {
-    return longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-  }
+  fun getAppName(): String = textProvider.getAppName()
 
-  fun getAppName(): String {
-    return textProvider.getAppName()
-  }
-
-  fun priority(priority: Int): Int {
-    return when (priority) {
+  fun priority(priority: Int): Int =
+    when (priority) {
       0 -> NotificationCompat.PRIORITY_MIN
       1 -> NotificationCompat.PRIORITY_LOW
       2 -> NotificationCompat.PRIORITY_DEFAULT
       3 -> NotificationCompat.PRIORITY_HIGH
       else -> NotificationCompat.PRIORITY_MAX
     }
-  }
 }

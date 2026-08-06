@@ -10,7 +10,7 @@
             android:windowSoftInputMode="stateUnchanged" />
 
         <receiver
-            android:name="com.github.naz013.appwidgets.singlenote.SingleNoteWidget"
+            android:name=".singlenote.SingleNoteGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/note">
             <intent-filter>
@@ -45,7 +45,7 @@
         </activity>
 
         <receiver
-            android:name="com.github.naz013.appwidgets.notes.NotesWidget"
+            android:name=".notes.NotesGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/notes">
             <intent-filter>
@@ -56,10 +56,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/note_widget_metadata" />
         </receiver>
-
-        <service
-            android:name="com.github.naz013.appwidgets.notes.NotesService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
             android:name="com.github.naz013.appwidgets.calendar.CalendarWidgetConfigActivity"
@@ -73,7 +69,7 @@
         </activity>
 
         <receiver
-            android:name="com.github.naz013.appwidgets.calendar.CalendarWidget"
+            android:name=".calendar.CalendarGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/calendar">
             <intent-filter>
@@ -83,29 +79,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/calendar_widget_metadata" />
-        </receiver>
-
-        <service
-            android:name="com.github.naz013.appwidgets.calendar.CalendarWeekdayService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service
-            android:name="com.github.naz013.appwidgets.calendar.CalendarMonthService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <receiver
-            android:name="com.github.naz013.appwidgets.calendar.CalendarPreviousReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name="com.github.naz013.appwidgets.calendar.CalendarNextReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
-            </intent-filter>
         </receiver>
 
         <receiver
@@ -143,7 +116,7 @@
         </activity>
 
         <receiver
-            android:name="com.github.naz013.appwidgets.birthdays.BirthdaysWidget"
+            android:name=".birthdays.BirthdaysGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/birthdays">
             <intent-filter>
@@ -155,12 +128,8 @@
                 android:resource="@xml/birthdays_widget_metadata" />
         </receiver>
 
-        <service
-            android:name="com.github.naz013.appwidgets.birthdays.BirthdaysService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
         <receiver
-            android:name="com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsWidget"
+            android:name=".combinedbuttons.CombinedButtonsGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/quick_buttons">
             <intent-filter>
@@ -195,7 +164,7 @@
         </activity>
 
         <receiver
-            android:name="com.github.naz013.appwidgets.googletasks.TasksWidget"
+            android:name=".googletasks.GoogleTasksGlanceAppWidgetReceiver"
             android:exported="true"
             android:label="@string/google_tasks">
             <intent-filter>
@@ -206,9 +175,5 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/tasks_widget_metadata" />
         </receiver>
-
-        <service
-            android:name="com.github.naz013.appwidgets.googletasks.TasksService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 </manifest>

@@ -2,7 +2,9 @@ package com.elementary.tasks.reminder.build.bi
 
 import com.github.naz013.domain.reminder.BiType
 
-enum class BiGroup(val types: List<BiType> = emptyList()) {
+enum class BiGroup(
+  val types: List<BiType> = emptyList(),
+) {
   CORE,
   PARAMS,
   ACTION,
@@ -23,8 +25,8 @@ enum class BiGroup(val types: List<BiType> = emptyList()) {
       BiType.ICAL_BYYEARDAY,
       BiType.ICAL_BYWEEKNO,
       BiType.ICAL_BYSETPOS,
-      BiType.ICAL_WEEKSTART
-    )
+      BiType.ICAL_WEEKSTART,
+    ),
   ),
-  EXTRA
+  EXTRA,
 }

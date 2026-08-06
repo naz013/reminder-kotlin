@@ -11,27 +11,30 @@ class SyncGoogleTaskList(
   private val downloadGoogleTaskList: DownloadGoogleTaskList,
   private val saveGoogleTaskList: SaveGoogleTaskList,
   private val syncGoogleTasks: SyncGoogleTasks,
-  private val googleTasksAuthManager: GoogleTasksAuthManager
+  private val googleTasksAuthManager: GoogleTasksAuthManager,
 ) {
-
   suspend operator fun invoke(list: GoogleTaskList) {
     if (!googleTasksAuthManager.isAuthorized()) {
-      Logger.i("Sync task list - not logged")
+      Logger.w(TAG, "Sync task list - not logged")
       return
     }
 
     // Upload if not uploaded
 
     // Download remote version
-    Logger.i("Sync task list - load remote version")
+    Logger.i(TAG, "Sync task list - load remote version")
     val remote = downloadGoogleTaskList(list)
 
     // Save updated version to db
-    Logger.i("Sync task list - save new version")
+    Logger.i(TAG, "Sync task list - save new version")
     saveGoogleTaskList(remote)
 
     // Sync Tasks
-    Logger.i("Sync task list - sync tasks")
+    Logger.i(TAG, "Sync task list - sync tasks")
     syncGoogleTasks(remote)
+  }
+
+  companion object {
+    private const val TAG = "SyncGoogleTaskList"
   }
 }

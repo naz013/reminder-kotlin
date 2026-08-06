@@ -6,23 +6,25 @@ import android.os.Bundle
 import com.elementary.tasks.core.services.BaseBroadcast
 import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.services.action.reminder.ReminderRepeatProcessor
-import com.github.naz013.common.intent.IntentKeys
 import com.elementary.tasks.core.utils.SuperUtil
+import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDateTime
 
 class AlarmReceiver : BaseBroadcast() {
-
   private val reminderActionProcessor by inject<ReminderActionProcessor>()
   private val reminderRepeatProcessor by inject<ReminderRepeatProcessor>()
 
-  override fun onReceive(context: Context?, intent: Intent?) {
+  override fun onReceive(
+    context: Context?,
+    intent: Intent?,
+  ) {
     if (context == null) return
     val action = intent?.action ?: return
 
-    Logger.d("onReceive: action = $action")
-    Logger.d("onReceive: date time = ${LocalDateTime.now()}")
+    Logger.d(TAG, "onReceive: action = $action")
+    Logger.d(TAG, "onReceive: date time = ${LocalDateTime.now()}")
 
     when (action) {
       ACTION_REMINDER -> processReminder(intent.extras)
@@ -34,7 +36,7 @@ class AlarmReceiver : BaseBroadcast() {
   private fun processReminder(extras: Bundle?) {
     val id = extras?.getString(IntentKeys.INTENT_ID) ?: return
 
-    Logger.d("processReminder: id = $id")
+    Logger.d(TAG, "processReminder: id = $id")
 
     reminderActionProcessor.process(id)
   }
@@ -42,12 +44,13 @@ class AlarmReceiver : BaseBroadcast() {
   private fun processRepeat(extras: Bundle?) {
     val id = extras?.getString(IntentKeys.INTENT_ID) ?: return
 
-    Logger.d("processRepeat: id = $id")
+    Logger.d(TAG, "processRepeat: id = $id")
 
     reminderRepeatProcessor.process(id)
   }
 
   companion object {
+    private const val TAG = "AlarmReceiver"
     const val ACTION_REMINDER = "com.elementary.tasks.core.services.alarm.REMINDER"
     const val ACTION_REMINDER_GPS =
       "com.elementary.tasks.core.services.alarm.REMINDER_START_TRACKING"

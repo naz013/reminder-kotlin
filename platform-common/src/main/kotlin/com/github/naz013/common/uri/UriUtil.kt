@@ -8,24 +8,23 @@ import java.io.File
 
 object UriUtil {
 
-  const val URI_MIME = "application/x-arc-uri-list"
+  private const val TAG = "UriUtil"
   const val ANY_MIME = "any"
-  const val IMAGE_MIME = "image/*"
 
   fun getUri(context: Context, filePath: String, applicationId: String): Uri? {
-    Logger.d("getUri: $applicationId, $filePath")
+    Logger.d(TAG, "getUri: $applicationId, $filePath")
     return try {
       FileProvider.getUriForFile(context, "$applicationId.provider", File(filePath))
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
       null
     }
   }
 
   fun getUri(context: Context, file: File, applicationId: String): Uri? {
-    Logger.d("getUri: $applicationId, $file")
+    Logger.d(TAG, "getUri: $applicationId, $file")
     return try {
       FileProvider.getUriForFile(context, "$applicationId.provider", file)
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
       null
     }
   }

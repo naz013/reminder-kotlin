@@ -930,4 +930,187 @@
     <string name="keep_notification">नोटिफ़िकेशन रखें</string>
     <string name="cd_back">वापस जाएं</string>
     <string name="how_to_create_a_reminder">रिमाइंडर कैसे बनाएं</string>
+    <string name="copy_of">%s की प्रति</string>
+
+    <string name="turn_off">बंद करें</string>
+
+    <string name="delete_reminder_permanently">रिमाइंडर को स्थायी रूप से हटाएं?</string>
+    <string name="delete_birthday_permanently">जन्मदिन को स्थायी रूप से हटाएं?</string>
+    <string name="delete_note_permanently">नोट को स्थायी रूप से हटाएं?</string>
+    <string name="delete_group_permanently">समूह को स्थायी रूप से हटाएं?</string>
+
+    <string name="share_send_note">नोट भेजें…</string>
+
+    <string name="note_moved_to_archive">नोट को संग्रह में ले जाया गया</string>
+    <string name="note_reverted_from_archive">नोट को संग्रह से पुनर्स्थापित किया गया</string>
+    <string name="show_note_in_notifications">सूचनाओं में नोट दिखाएं</string>
+
+    <string name="share_intent_title">साझा करें...</string>
+    <string name="error_reminder_not_found">रिमाइंडर नहीं मिला!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">रिमाइंडर पहले से ही हटा दिया गया है! इसे पहले संपादित करें।</string>
+
+    <string name="workflow_rules">वर्कफ़्लो नियम</string>
+    <string name="workflow_automations">स्वचालन</string>
+    <string name="workflow_active_global_rules">सक्रिय वैश्विक नियम</string>
+    <string name="workflow_rules_for_group">इस समूह के लिए नियम</string>
+    <string name="workflow_no_rules_yet">अभी कोई नियम नहीं</string>
+    <string name="workflow_templates">टेम्पलेट</string>
+    <string name="workflow_apply_globally">वैश्विक रूप से लागू करें</string>
+    <string name="workflow_apply_to_group">समूह में लागू करें</string>
+    <string name="workflow_open_group_to_apply">इसे लागू करने के लिए समूह खोलें</string>
+    <string name="workflow_save_as_template">टेम्पलेट के रूप में सहेजें</string>
+    <string name="workflow_create_custom_rule">कस्टम नियम बनाएं</string>
+    <string name="workflow_archive_after_days_hint">दिन</string>
+    <string name="workflow_category_reminder_lifecycle">रिमाइंडर जीवन चक्र</string>
+    <string name="workflow_category_group">समूह</string>
+    <string name="workflow_category_location">स्थान</string>
+    <string name="workflow_category_notification_escalation">सूचना &amp; वृद्धि</string>
+    <string name="workflow_category_system_integration">सिस्टम एकीकरण</string>
+    <string name="workflow_category_privacy_data_hygiene">गोपनीयता &amp; डेटा स्वच्छता</string>
+
+    <string name="workflow_builder_new_rule_title">नया नियम</string>
+    <string name="workflow_builder_edit_rule_title">नियम संपादित करें</string>
+    <string name="workflow_builder_when">कब</string>
+    <string name="workflow_builder_if_optional">यदि (वैकल्पिक)</string>
+    <string name="workflow_builder_then">तब</string>
+    <string name="workflow_builder_not_set">सेट नहीं किया गया</string>
+    <string name="workflow_builder_add_condition">शर्त जोड़ें</string>
+    <string name="workflow_builder_choose_trigger">ट्रिगर चुनें</string>
+    <string name="workflow_builder_choose_condition">शर्त चुनें</string>
+    <string name="workflow_builder_choose_action">कार्य चुनें</string>
+    <string name="workflow_builder_snooze_count_hint">स्नूज़ गिनती</string>
+    <string name="workflow_builder_minutes_hint">मिनट</string>
+    <string name="workflow_builder_minutes_unit">मिनट</string>
+    <string name="workflow_builder_select_group">समूह चुनें</string>
+    <string name="workflow_builder_select_reminder">रिमाइंडर चुनें</string>
+    <string name="workflow_builder_no_groups">अभी कोई समूह नहीं</string>
+    <string name="workflow_builder_no_reminders">कोई सक्रिय रिमाइंडर नहीं</string>
+    <string name="workflow_trigger_reminder_completed">रिमाइंडर पूर्ण है</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">रिमाइंडर को N बार स्नूज़ किया गया</string>
+    <string name="workflow_trigger_group_all_completed">समूह में सभी रिमाइंडर पूर्ण हैं</string>
+    <string name="workflow_trigger_location_entered">रिमाइंडर के स्थान पर पहुंचे</string>
+    <string name="workflow_trigger_location_exited">रिमाइंडर के स्थान से चले गए</string>
+    <string name="workflow_trigger_reminder_age_exceeded">कम से कम N दिन पहले पूर्ण हुआ</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">N मिनट से नहीं देखा गया</string>
+    <string name="workflow_condition_priority_at_least">प्राथमिकता कम से कम है</string>
+    <string name="workflow_condition_within_time_window">वर्तमान समय के बीच</string>
+    <string name="workflow_condition_group_is">रिमाइंडर का समूह है</string>
+    <string name="workflow_action_archive_reminder">रिमाइंडर संग्रहीत करें</string>
+    <string name="workflow_action_complete_reminder">रिमाइंडर पूर्ण करें</string>
+    <string name="workflow_action_apply_notification_override">सूचना सेटिंग्स बदलें</string>
+    <string name="workflow_action_activate_reminder">अन्य रिमाइंडर सक्रिय करें</string>
+    <string name="preset_buy_groceries">किराना खरीदें</string>
+    <string name="preset_bread">ब्रेड</string>
+    <string name="preset_juice">रस</string>
+    <string name="preset_cookies">कुकीज़</string>
+    <string name="haptic_feedback">हैप्टिक प्रतिक्रिया</string>
+    <string name="use_haptic_feedback_for_interactions">इंटरैक्शन के लिए हैप्टिक प्रतिक्रिया का उपयोग करें</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">इंटरैक्शन के लिए हैप्टिक प्रतिक्रिया का उपयोग न करें</string>
+
+    <string name="notification_defaults">अधिसूचना डिफ़ॉल्ट</string>
+    <string name="default_vibrate">कंपन</string>
+    <string name="vibrate_on_notification">अधिसूचना पर कंपन</string>
+    <string name="do_not_vibrate_on_notification">अधिसूचना पर कंपन न करें</string>
+    <string name="bypass_do_not_disturb">परेशान न करें को बायपास करें</string>
+    <string name="bypass_do_not_disturb_enabled">परेशान न करें के दौरान भी बजाएं</string>
+    <string name="bypass_do_not_disturb_disabled">परेशान न करें का सम्मान करें</string>
+    <string name="wake_screen">स्क्रीन जगाएं</string>
+    <string name="wake_screen_enabled">स्क्रीन को अलर्ट की तरह चालू करें</string>
+    <string name="wake_screen_disabled">स्क्रीन न चालू करें</string>
+    <string name="notification_category">अधिसूचना श्रेणी</string>
+    <string name="notification_category_default">डिफ़ॉल्ट</string>
+    <string name="notification_category_alarm">अलर्ट</string>
+    <string name="notification_category_event">इवेंट</string>
+    <string name="notification_category_call">कॉल</string>
+    <string name="lock_screen_visibility">लॉक स्क्रीन दृश्यता</string>
+    <string name="lock_screen_visibility_public">पूरी सामग्री दिखाएं</string>
+    <string name="lock_screen_visibility_private">संवेदनशील सामग्री छुपाएं</string>
+    <string name="lock_screen_visibility_secret">पूरी तरह से छुपाएं</string>
+    <string name="vibration_pattern">कंपन पैटर्न</string>
+    <string name="notification_overrides">अधिसूचना ओवररइड</string>
+    <string name="notification_customization">अधिसूचना अनुकूलन</string>
+    <string name="how_does_this_work">यह कैसे काम करता है?</string>
+    <string name="inherit_from_settings">सेटिंग्स से विरासत प्राप्त करें</string>
+    <string name="inherited_format">विरासत में मिला: %s</string>
+    <string name="on">पर</string>
+    <string name="off">बंद</string>
+    <string name="vibration_preset_short">छोटा</string>
+    <string name="vibration_preset_long">लंबा</string>
+    <string name="vibration_preset_double_buzz">दोहरी गूंज</string>
+    <string name="vibration_preset_default">डिफ़ॉल्ट</string>
+    <string name="notification_delay">अधिसूचना विलंब</string>
+
+    <string name="builder_set_category_for_the_notification">अधिसूचना के लिए एक सिस्टम अधिसूचना श्रेणी सेट करें</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">लॉक स्क्रीन पर कितनी अधिसूचना दिखाई देती है यह सेट करें</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">परेशान न करें चालू होने पर भी बजाएं</string>
+    <string name="builder_set_wake_screen_for_the_notification">स्क्रीन को अलर्ट की तरह चालू करें</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">अधिसूचना के लिए एक कंपन पैटर्न सेट करें</string>
+    <string name="builder_set_delay_for_the_notification">अधिसूचना को इस कई मिनट तक विलंबित करें</string>
+
+    <string name="builder_quick_start_one_time">एकबारी अनुस्मारक</string>
+    <string name="builder_quick_start_every_weekday">हर सप्ताह के दिन</string>
+    <string name="builder_quick_start_every_month_day">हर महीने इसी दिन</string>
+    <string name="builder_quick_start_every_year">हर साल इसी दिन</string>
+    <string name="builder_quick_start_timer">उल्टी गिनती टाइमर</string>
+    <string name="builder_quick_start_shopping_list">शॉपिंग सूची</string>
+    <string name="builder_quick_start_more_options">अधिक विकल्प…</string>
+
+    <string name="builder_invalid_email_value">वैध ईमेल पता दर्ज करें</string>
+    <string name="builder_invalid_web_address_value">वैध वेब पता दर्ज करें</string>
+    <string name="builder_invalid_phone_number_value">वैध फोन नंबर दर्ज करें</string>
+    <string name="builder_shopping_list_empty_value">सूची में कम से कम एक आइटम जोड़ें</string>
+    <string name="builder_invalid_value_generic">यह मान वैध नहीं है</string>
+    <string name="builder_permissions_required_message">जारी रखने के लिए अनुरोधित अनुमतियां दें</string>
+
+    <string name="gemini_functions">Gemini कार्य</string>
+
+    <string name="smart_list_today">आज</string>
+    <string name="smart_list_overdue">अतिदेय</string>
+    <string name="smart_list_this_week">इस हफ्ते</string>
+    <string name="smart_list_no_group">कोई समूह नहीं</string>
+
+    <string name="tags">टैग</string>
+    <string name="manage_tags">टैग प्रबंधित करें</string>
+    <string name="new_tag">नया टैग</string>
+    <string name="tag_name">टैग नाम</string>
+    <string name="no_tags">कोई टैग नहीं</string>
+    <string name="delete_tag_permanently">यह टैग हटाएं? यह हर अनुस्मारक और नोट से हटा दिया जाएगा।</string>
+
+    <string name="local_backup">स्थानीय बैकअप</string>
+    <string name="backup_export_title">बैकअप निर्यात करें</string>
+    <string name="backup_import_title">बैकअप पुनर्स्थापित करें</string>
+    <string name="backup_export_description">अपने अनुस्मारकों, नोट्स, समूहों, जन्मदिन, स्थानों और प्रीसेट की एक एन्क्रिप्टेड प्रतिलिपि अपनी पसंद की फ़ाइल में सहेजें। कुछ भी कहीं नहीं भेजा जाता है। यदि आप पासफ्रेज भूल जाते हैं, तो बैकअप को पुनः प्राप्त नहीं किया जा सकता।</string>
+    <string name="backup_import_description">पहले निर्यात की गई एन्क्रिप्टेड बैकअप फ़ाइल से डेटा पुनर्स्थापित करें। समान आईडी वाली मौजूदा चीजें अधिलेखित होंगी; अन्य कुछ भी हटाया नहीं जाता है।</string>
+    <string name="backup_passphrase">पासफ़्रेज़</string>
+    <string name="backup_confirm_passphrase">पासफ़्रेज़ की पुष्टि करें</string>
+    <string name="backup_passphrase_mismatch">पासफ़्रेज़ मेल नहीं खाते</string>
+    <string name="backup_passphrase_empty">पासफ़्रेज़ दर्ज करें</string>
+    <string name="backup_export_action">निर्यात करें</string>
+    <string name="backup_import_action">पुनर्स्थापित करें</string>
+    <string name="backup_export_success">बैकअप सफलतापूर्वक सहेजा गया।</string>
+    <string name="backup_export_failed">बैकअप सहेजा नहीं जा सका। कृपया पुनः प्रयास करें।</string>
+    <string name="backup_import_success">%1$d आइटम सफलतापूर्वक पुनर्स्थापित।</string>
+    <string name="backup_import_failed">बैकअप पुनर्स्थापित नहीं किया जा सका। कृपया पुनः प्रयास करें।</string>
+    <string name="backup_wrong_passphrase">गलत पासफ़्रेज़ या फ़ाइल दूषित है।</string>
+    <string name="backup_invalid_file">यह फ़ाइल वैध अनुस्मारक बैकअप नहीं है।</string>
+    <string name="backup_open_file_failed">चयनित फ़ाइल खोली नहीं जा सकी।</string>
+
+    <string name="insights">अंतर्दृष्टि</string>
+    <string name="weekly_trend">साप्ताहिक रुझान</string>
+    <string name="busiest_day">सबसे व्यस्त दिन: %1$s</string>
+    <string name="streak_current">वर्तमान स्ट्रीक: %1$d दिन</string>
+    <string name="streak_longest">सबसे लंबी स्ट्रीक: %1$d दिन</string>
+    <string name="streak_fired_count">पिछले 90 दिनों में %1$d बार सक्रिय</string>
+    <string name="no_insights_yet">पिछले 90 दिनों में कोई अनुस्मारक गतिविधि नहीं</string>
+
+    <string name="upcoming_events">आने वाली</string>
+
+    <string name="agenda">एजेंडा</string>
+
+    <string name="group_has_no_active_reminders">इस समूह में कोई सक्रिय अनुस्मारक नहीं</string>
+    <string name="group_x_reminder">%d अनुस्मारक</string>
+    <string name="group_x_reminders">%d अनुस्मारक</string>
+
+    <string name="type">प्रकार</string>
+    <string name="smart_lists">स्मार्ट सूचियाँ</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils.params
 
 object PrefsConstants {
-
   const val PREFS_NAME = "prefs_six"
 
   const val DRIVE_USER = "ggl_user"
@@ -43,11 +42,12 @@ object PrefsConstants {
   const val LAST_NOTE_COLOR = "last_note_color"
   const val LAST_NOTE_FONT_SIZE = "last_note_font_size"
   const val LAST_NOTE_FONT_STYLE = "last_note_font_style"
+  const val LAST_NOTE_TITLE_FONT_SIZE = "last_note_title_font_size"
+  const val LAST_NOTE_TITLE_FONT_STYLE = "last_note_title_font_style"
   const val NOTE_COLOR_OPACITY = "note_color_opacity"
 
   const val DROPBOX_TOKEN = "dropbox_token"
   const val APP_LANGUAGE = "app_language"
-  const val REMINDER_CREATOR_PARAMS = "reminder_creator_params"
 
   const val PIN_CODE = "pin_code"
   const val USE_FINGERPRINT = "use_finger"
@@ -65,9 +65,7 @@ object PrefsConstants {
   const val NOTE_PALETTE = "note_palette"
   const val AUTO_BACKUP_STATE = "auto_backup_state"
   const val NIGHT_MODE = "night_mode"
-  const val PRIVACY_SHOWED = "privacy_showed"
   const val TO_BIRTHDAY_DAYS = "to_birthday_days"
-  const val DYNAMIC_COLORS = "dynamic_colors_13"
   const val ANALYTICS_ENABLED = "analytics_enabled"
   const val METRIC_SYSTEM = "metric_system"
 
@@ -90,9 +88,7 @@ object PrefsConstants {
 
   const val REMINDERS_CREATED_COUNT = "reminders_created_count"
   const val REVIEW_DIALOG_SHOWN = "review_dialog_shown"
-
-  const val PRIVACY_POLICY_URL = "privacy_url"
-  const val TERMS_URL = "terms_url"
+  const val GOOGLE_TASKS_ADOPTED = "google_tasks_adopted"
 
   const val WORKER_NETWORK_TYPE = "worker_network_type"
   const val OCCURRENCE_MIGRATED = "occurrence_migrated"
@@ -102,4 +98,21 @@ object PrefsConstants {
   const val GOOGLE_CALENDAR_SYNC = "google_calendar_sync"
   const val GOOGLE_CALENDAR_ID = "google_calendar_id"
   const val GOOGLE_CALENDAR_ADD_REMINDERS = "google_calendar_add_reminders"
+
+  const val GENERAL_HAPTICS = "settings.general.haptics"
+
+  // ReminderV2 notification-customization defaults (base of the Settings -> Group -> Reminder hierarchy)
+  const val DEFAULT_VIBRATE = "default_vibrate"
+  const val DEFAULT_VIBRATION_PATTERN = "default_vibration_pattern"
+  const val DEFAULT_VOLUME = "default_volume"
+  const val DEFAULT_SOUND_URI = "default_sound_uri"
+  const val DEFAULT_NOTIFICATION_CATEGORY = "default_notification_category"
+  const val DEFAULT_BYPASS_DO_NOT_DISTURB = "default_bypass_do_not_disturb"
+  const val DEFAULT_WAKE_SCREEN = "default_wake_screen"
+  const val DEFAULT_LOCK_SCREEN_VISIBILITY = "default_lock_screen_visibility"
+
+  const val REMINDER_V2_BACKFILL_DONE = "reminder_v2_backfill_done"
+  const val GROUP_V2_BACKFILL_DONE = "group_v2_backfill_done"
+  const val WORKFLOW_RULES_SCHEDULED = "workflow_rules_scheduled"
+  const val WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED = "workflow_unacknowledged_rules_scheduled"
 }

@@ -1,27 +1,23 @@
 package com.elementary.tasks.core.arch
 
-import android.content.ContentResolver
 import android.os.Bundle
+import androidx.compose.runtime.Composable
+import androidx.lifecycle.lifecycleScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.converters.NoteToOldNoteConverter
-import com.elementary.tasks.core.utils.io.MemoryUtil
-import com.elementary.tasks.notes.SharedNote
-import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Place
-import com.github.naz013.domain.Reminder
-import com.github.naz013.domain.ReminderGroup
-import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.files.AndroidDataConverter
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Navigator
-import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.activity.toast
+import com.github.naz013.ui.common.compose.ComposeActivity
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class IntentActivity : LightThemedActivity() {
+class IntentActivity : ComposeActivity() {
 
-  private val noteToOldNoteConverter by inject<NoteToOldNoteConverter>()
   private val navigator by inject<Navigator>()
+  private val androidDataConverter by inject<AndroidDataConverter>()
+  private val importIntentResolver = ImportIntentResolver()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -31,150 +27,40 @@ class IntentActivity : LightThemedActivity() {
 
     Logger.i(TAG, "Incoming intent with data: $data, scheme: $scheme")
 
-    if (ContentResolver.SCHEME_CONTENT == scheme) {
-      val any = MemoryUtil.readFromUri(this, data)
-      if (any != null) {
-        Logger.i(TAG, "Parsed object: $any")
-        when (any) {
-          is Place -> {
-            if (any.isValid()) {
-              Logger.i(TAG, "Place is valid")
-              navigator.navigate(DataDestination(any))
-            } else {
-              Logger.i(TAG, "Place is NOT invalid, reason: ${any.getInvalidReason()}")
-              toast(getString(R.string.unsupported_file_format))
-            }
-            finish()
-          }
-
-          is NoteWithImages -> {
-            if (any.isValid()) {
-              Logger.i(TAG, "Note is valid")
-              navigator.navigate(DataDestination(any))
-            } else {
-              Logger.i(TAG, "Note is NOT valid")
-              toast(getString(R.string.unsupported_file_format))
-            }
-            finish()
-          }
-
-          is SharedNote -> {
-            val noteWithImages = noteToOldNoteConverter.toNote(any)
-            if (noteWithImages != null) {
-              Logger.i(TAG, "OLD Note is valid")
-              navigator.navigate(DataDestination(noteWithImages))
-            } else {
-              Logger.i(TAG, "OLD Note is Null")
-              toast(getString(R.string.unsupported_file_format))
-            }
-            finish()
-          }
-
-          is Birthday -> {
-            if (any.isValid()) {
-              Logger.i(TAG, "Birthday is valid")
-              navigator.navigate(DataDestination(any))
-            } else {
-              Logger.i(TAG, "Birthday is NOT valid, reason: ${any.getInvalidReason()}")
-              toast(getString(R.string.unsupported_file_format))
-            }
-            finish()
-          }
-
-          is Reminder -> {
-            if (any.isValid()) {
-              Logger.i(TAG, "Reminder is valid")
-              navigator.navigate(DataDestination(any))
-            } else {
-              Logger.i(TAG, "Reminder is NOT valid, reason: ${any.getInvalidReason()}")
-              toast(getString(R.string.unsupported_file_format))
-            }
-            finish()
-          }
-
-          is ReminderGroup -> {
-            if (any.isValid()) {
-              Logger.i(TAG, "Group is valid")
-              navigator.navigate(DataDestination(any))
-            } else {
-              Logger.i(TAG, "Group is NOT valid, reason: ${any.getInvalidReason()}")
-              toast(getString(R.string.unsupported_file_format))
-            }
-            finish()
-          }
-
-          else -> {
-            Logger.i(TAG, "Parsed object is not supported: ${any.javaClass.simpleName}")
-            toast(getString(R.string.unsupported_file_format))
-            finish()
-          }
-        }
-      } else {
-        Logger.i(TAG, "Parsed object is NULL")
-        toast(getString(R.string.unsupported_file_format))
-        finish()
-      }
-    } else {
+    if (!importIntentResolver.isSupportedScheme(scheme)) {
       Logger.i(TAG, "Unsupported scheme: $scheme")
       toast(getString(R.string.unsupported_file_format))
+      finish()
+      return
+    }
+
+    lifecycleScope.launch {
+      val any = androidDataConverter.toData(data)
+      Logger.i(TAG, "Parsed object: $any")
+
+      when (val result = importIntentResolver.resolve(any)) {
+        is ImportResult.Valid -> {
+          navigator.navigate(DataDestination(result.data))
+        }
+
+        is ImportResult.Invalid -> {
+          Logger.i(TAG, "Parsed object is NOT valid, reason: ${result.reason}")
+          toast(getString(R.string.unsupported_file_format))
+        }
+
+        ImportResult.Unsupported -> {
+          Logger.i(TAG, "Parsed object is not supported: ${any?.javaClass?.simpleName}")
+          toast(getString(R.string.unsupported_file_format))
+        }
+      }
+
       finish()
     }
   }
 
-  private fun NoteWithImages.isValid(): Boolean {
-    val nt = note
-    return nt != null && nt.key.isNotEmpty()
-  }
+  @Composable
+  override fun ActivityContent() {
 
-  private fun ReminderGroup.isValid(): Boolean {
-    return groupTitle.isNotBlank() && groupUuId.isNotEmpty()
-  }
-
-  private fun ReminderGroup.getInvalidReason(): String {
-    return when {
-      groupUuId.isBlank() -> "UUID is blank"
-      groupTitle.isBlank() -> "Title is blank"
-      else -> ""
-    }
-  }
-
-  private fun Place.isValid(): Boolean {
-    return latitude != 0.0 && longitude != 0.0 && name.isNotBlank()
-  }
-
-  private fun Place.getInvalidReason(): String {
-    return when {
-      latitude == 0.0 -> "Latitude is 0"
-      longitude == 0.0 -> "Longitude is 0"
-      name.isBlank() -> "Name is blank"
-      else -> ""
-    }
-  }
-
-  private fun Reminder.isValid(): Boolean {
-    return type > 0 && groupUuId.isNotBlank()
-  }
-
-  private fun Reminder.getInvalidReason(): String {
-    return when {
-      type <= 0 -> "Type is not supported"
-      groupUuId.isBlank() -> "Group UUID is blank"
-      else -> ""
-    }
-  }
-
-  private fun Birthday.isValid(): Boolean {
-    return name.isNotBlank() && date.isNotBlank() && uuId.isNotBlank() && day > 0
-  }
-
-  private fun Birthday.getInvalidReason(): String {
-    return when {
-      name.isBlank() -> "Name is blank"
-      date.isBlank() -> "Date is blank"
-      uuId.isBlank() -> "Key is blank"
-      day == 0 -> "Day is 0"
-      else -> ""
-    }
   }
 
   companion object {

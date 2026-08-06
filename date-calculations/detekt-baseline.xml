@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:BirthdayDateCalculatorImpl.kt$BirthdayDateCalculatorImpl$(nowDateTime.year, birthDate.monthValue, birthDate.dayOfMonth)</ID>
+    <ID>ArgumentListWrapping:BirthdayDateCalculatorImpl.kt$BirthdayDateCalculatorImpl$(safeDateFor(nowDateTime.year, birthDate.monthValue, birthDate.dayOfMonth), birthdayTime)</ID>
+    <ID>ArgumentListWrapping:BirthdayDateCalculatorImplTest.kt$BirthdayDateCalculatorImplTest$(birthDate, time, ignoreYear = false, showedYear = 0, nowDateTime = nowDateTime)</ID>
+    <ID>ArgumentListWrapping:BirthdayDateCalculatorImplTest.kt$BirthdayDateCalculatorImplTest$(birthDate, time, ignoreYear = true, showedYear = 0, nowDateTime = nowDateTime)</ID>
+    <ID>ArgumentListWrapping:RecurrenceCalculatorImpl.kt$RecurrenceCalculatorImpl$(countdownTimeInMillis)</ID>
+    <ID>LongParameterList:RecurrenceCalculator.kt$RecurrenceCalculator$( eventDateTime: LocalDateTime, interval: Long, excludedHours: List&lt;Int&gt;, excludedFromTime: LocalTime?, excludedToTime: LocalTime?, afterOrEqualDateTime: LocalDateTime, )</ID>
+    <ID>MaxLineLength:BirthdayDateCalculator.kt$BirthdayDateCalculator$*</ID>
+    <ID>MaxLineLength:BirthdayDateCalculatorImpl.kt$BirthdayDateCalculatorImpl$var dateTime = LocalDateTime.of(safeDateFor(nowDateTime.year, birthDate.monthValue, birthDate.dayOfMonth), birthdayTime)</ID>
+    <ID>MaxLineLength:BirthdayDateCalculatorImplTest.kt$BirthdayDateCalculatorImplTest$val result = calculator.getNextOccurrence(birthDate, time, ignoreYear = false, showedYear = 0, nowDateTime = nowDateTime)</ID>
+    <ID>MaxLineLength:BirthdayDateCalculatorImplTest.kt$BirthdayDateCalculatorImplTest$val result = calculator.getNextOccurrence(birthDate, time, ignoreYear = true, showedYear = 0, nowDateTime = nowDateTime)</ID>
+    <ID>MaxLineLength:RecurrenceCalculator.kt$RecurrenceCalculator$*</ID>
+    <ID>MaxLineLength:RecurrenceCalculatorImpl.kt$RecurrenceCalculatorImpl$override fun getStartTimerDateTime(countdownTimeInMillis: Long): LocalDateTime</ID>
+    <ID>TooManyFunctions:RecurrenceCalculator.kt$RecurrenceCalculator</ID>
+    <ID>UseRequire:RecurrenceCalculatorImpl.kt$RecurrenceCalculatorImpl$throw IllegalArgumentException("Interval must be greater than zero.")</ID>
+    <ID>UseRequire:RecurrenceCalculatorImpl.kt$RecurrenceCalculatorImpl$throw IllegalArgumentException("dayOfMonth must be non-negative, but was $dayOfMonth")</ID>
+  </CurrentIssues>
+</SmellBaseline>

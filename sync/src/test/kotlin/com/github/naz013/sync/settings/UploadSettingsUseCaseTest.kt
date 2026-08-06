@@ -2,7 +2,8 @@ package com.github.naz013.sync.settings
 
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.model.SettingsModel
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.sync.SyncSettings
 import com.github.naz013.sync.usecase.CreateCloudFileUseCase

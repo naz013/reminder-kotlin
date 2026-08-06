@@ -5,6 +5,7 @@
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:exported="true"
+            android:theme="@style/Theme.Dropbox"
             android:launchMode="singleTask">
             <intent-filter>
                 <data android:scheme="db-4zi1d414h0v8sxe" />

@@ -5,5 +5,5 @@ enum class WorkType {
   Delete,
   Sync,
   ForceUpload,
-  ForceSync
+  ForceSync,
 }

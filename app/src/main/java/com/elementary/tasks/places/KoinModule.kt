@@ -4,15 +4,17 @@ import com.elementary.tasks.places.create.EditPlaceViewModel
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.places.usecase.DeletePlaceUseCase
 import com.elementary.tasks.places.usecase.SavePlaceUseCase
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val placeKoinModule = module {
-  factory { DeletePlaceUseCase(get(), get()) }
-  factory { SavePlaceUseCase(get(), get()) }
+  factoryOf(::DeletePlaceUseCase)
+  factoryOf(::SavePlaceUseCase)
 
-  viewModel { (id: String) ->
-    EditPlaceViewModel(id, get(), get(), get(), get(), get(), get(), get(), get())
+  viewModel { (key: PlacesNavKey.Edit) ->
+    EditPlaceViewModel(key, get(), get(), get(), get(), get(), get(), get())
   }
-  viewModel { PlacesViewModel(get(), get(), get(), get(), get()) }
+  viewModelOf(::PlacesViewModel)
 }

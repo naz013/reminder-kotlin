@@ -2,6 +2,7 @@ package com.github.naz013.appwidgets.calendar
 
 import android.content.Context
 import com.github.naz013.appwidgets.WidgetPrefsProvider
+import org.threeten.bp.LocalDate
 
 internal class CalendarWidgetPrefsProvider(
   context: Context,
@@ -24,12 +25,9 @@ internal class CalendarWidgetPrefsProvider(
     return getInt(CALENDAR_WIDGET_YEAR, 0)
   }
 
-  fun setHeaderBackground(value: Int) {
-    putInt(WIDGET_HEADER_BG_COLOR, value)
-  }
-
-  fun getHeaderBackground(): Int {
-    return getInt(WIDGET_HEADER_BG_COLOR, 0)
+  fun getResolvedYear(): Int {
+    val year = getYear()
+    return if (year < 1) LocalDate.now().year else year
   }
 
   fun setBackground(value: Int) {
@@ -40,19 +38,9 @@ internal class CalendarWidgetPrefsProvider(
     return getInt(WIDGET_BG, 0)
   }
 
-  fun getRowHeightDp(): Float {
-    return getFloat(ROW_HEIGHT)
-  }
-
-  fun setRowHeight(value: Float) {
-    putFloat(ROW_HEIGHT, value)
-  }
-
   companion object {
-    private const val WIDGET_HEADER_BG_COLOR = "new_calendar_header_bg"
     private const val WIDGET_BG = "new_calendar_bg"
     private const val CALENDAR_WIDGET_MONTH = "new_calendar_month_"
     private const val CALENDAR_WIDGET_YEAR = "new_calendar_year_"
-    private const val ROW_HEIGHT = "new_calendar_row_height"
   }
 }

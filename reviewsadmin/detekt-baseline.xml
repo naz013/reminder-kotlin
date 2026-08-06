@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:MainActivity.kt$MainActivity$isLoggedIn &amp;&amp; selectedAppSource == null &amp;&amp; selectedReview == null &amp;&amp; selectedLogUrl == null</ID>
+    <ID>CyclomaticComplexMethod:MainActivity.kt$MainActivity$@Composable override fun ActivityContent()</ID>
+    <ID>ImplicitDefaultLocale:DashboardScreen.kt$String.format("%.2f", sourceData.averageRating)</ID>
+    <ID>ImplicitDefaultLocale:DashboardScreen.kt$String.format("%.2f", stats.averageRating)</ID>
+    <ID>ImplicitDefaultLocale:ReviewDetailScreen.kt$String.format("%.1f ⭐", review.rating)</ID>
+    <ID>ImplicitDefaultLocale:ReviewListScreen.kt$String.format("%.1f", review.rating)</ID>
+    <ID>ImportOrdering:MainActivity.kt$import androidx.activity.compose.BackHandler import androidx.compose.animation.AnimatedContent import androidx.compose.animation.ContentTransform import androidx.compose.animation.core.tween import androidx.compose.animation.fadeIn import androidx.compose.animation.fadeOut import androidx.compose.animation.slideInHorizontally import androidx.compose.animation.slideOutHorizontally import androidx.compose.animation.togetherWith import androidx.compose.runtime.Composable import androidx.compose.runtime.LaunchedEffect import androidx.compose.runtime.collectAsState import androidx.compose.runtime.getValue import androidx.compose.runtime.mutableStateOf import androidx.compose.runtime.remember import androidx.compose.runtime.setValue import com.github.naz013.ui.common.compose.ComposeActivity import com.github.naz013.reviews.AppSource import com.github.naz013.reviews.Review import com.github.nsy.reviewsadmin.ui.dashboard.DashboardScreen import com.github.nsy.reviewsadmin.ui.dashboard.DashboardViewModel import com.github.nsy.reviewsadmin.ui.login.LoginScreen import com.github.nsy.reviewsadmin.ui.login.LoginUiState import com.github.nsy.reviewsadmin.ui.login.LoginViewModel import com.github.nsy.reviewsadmin.ui.logviewer.LogViewerScreen import com.github.nsy.reviewsadmin.ui.reviewdetail.ReviewDetailScreen import com.github.nsy.reviewsadmin.ui.reviewlist.ReviewListScreen import org.koin.androidx.compose.koinViewModel</ID>
+    <ID>ImportOrdering:ReviewDetailScreen.kt$import android.content.Intent import android.net.Uri import androidx.compose.foundation.layout.* import androidx.compose.foundation.rememberScrollState import androidx.compose.foundation.verticalScroll import androidx.compose.material.icons.Icons import androidx.compose.material.icons.automirrored.filled.ArrowBack import androidx.compose.material.icons.filled.Check import androidx.compose.material.icons.filled.Close import androidx.compose.material.icons.filled.Delete import androidx.compose.material.icons.filled.Refresh import androidx.compose.material3.* import androidx.compose.runtime.Composable import androidx.compose.runtime.collectAsState import androidx.compose.runtime.getValue import androidx.compose.runtime.LaunchedEffect import androidx.compose.ui.Alignment import androidx.compose.ui.Modifier import androidx.compose.ui.platform.LocalContext import androidx.compose.ui.res.stringResource import androidx.compose.ui.text.font.FontWeight import androidx.compose.ui.unit.dp import com.github.naz013.reviews.Review import com.github.nsy.reviewsadmin.R import org.koin.androidx.compose.koinViewModel import org.threeten.bp.format.DateTimeFormatter</ID>
+    <ID>NoConsecutiveBlankLines:LoginScreen.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:MainActivity.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ReviewIdCache.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ReviewListViewModel.kt$ </ID>
+    <ID>NoWildcardImports:DashboardScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>NoWildcardImports:DashboardScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>NoWildcardImports:LogViewerScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>NoWildcardImports:LogViewerScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>NoWildcardImports:LoginScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>NoWildcardImports:LoginScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>NoWildcardImports:ReviewDetailScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>NoWildcardImports:ReviewDetailScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>NoWildcardImports:ReviewListScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>NoWildcardImports:ReviewListScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>SpacingBetweenDeclarationsWithComments:MainActivity.kt$Screen.Dashboard$/** Dashboard screen */</ID>
+    <ID>SpacingBetweenDeclarationsWithComments:MainActivity.kt$Screen.LogViewer$/** Log viewer screen */</ID>
+    <ID>SpacingBetweenDeclarationsWithComments:MainActivity.kt$Screen.ReviewDetail$/** Review detail screen */</ID>
+    <ID>SpacingBetweenDeclarationsWithComments:MainActivity.kt$Screen.ReviewList$/** Review list screen */</ID>
+    <ID>StringTemplate:LogFileCache.kt$LogFileCache$${fileSize}</ID>
+    <ID>SwallowedException:LogViewerViewModel.kt$LogViewerViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DashboardViewModel.kt$DashboardViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LogFileCache.kt$LogFileCache$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LogViewerViewModel.kt$LogViewerViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LoginViewModel.kt$LoginViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReviewDetailViewModel.kt$ReviewDetailViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReviewIdCache.kt$ReviewIdCache$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReviewListViewModel.kt$ReviewListViewModel$e: Exception</ID>
+    <ID>WildcardImport:DashboardScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:DashboardScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:LogViewerScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:LogViewerScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:LoginScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:LoginScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ReviewDetailScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ReviewDetailScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ReviewListScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ReviewListScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>Wrapping:MainActivity.kt$MainActivity$(</ID>
+  </CurrentIssues>
+</SmellBaseline>

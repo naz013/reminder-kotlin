@@ -8,7 +8,7 @@ sealed class UiReminderEventsList {
 }
 
 data class UiReminderListHeader(
-  val mainText: UiTextElement
+  val mainText: UiTextElement,
 ) : UiReminderEventsList() {
   override val id: String = mainText.text
 }
@@ -22,13 +22,13 @@ data class UiReminderList(
   val tertiaryText: UiTextElement?,
   val tags: List<UiTextElement>,
   val actions: UiReminderListActions,
-  val state: UiReminderListState
+  val state: UiReminderListState,
 ) : UiReminderEventsList()
 
 data class UiReminderListState(
   val isActive: Boolean = false,
   val isRemoved: Boolean = false,
-  val isGps: Boolean = false
+  val isGps: Boolean = false,
 )
 
 data class UiReminderListActions(
@@ -36,5 +36,5 @@ data class UiReminderListActions(
   val canOpen: Boolean = false,
   val canEdit: Boolean = false,
   val canDelete: Boolean = false,
-  val canSkip: Boolean = false
+  val canSkip: Boolean = false,
 )

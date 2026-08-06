@@ -1,6 +1,7 @@
 package com.github.naz013.common
 
 import android.content.Context
+import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 
 class TextProvider(initContext: Context) {
@@ -30,6 +31,10 @@ class TextProvider(initContext: Context) {
 
   fun getText(@StringRes id: Int, vararg args: Any): String {
     return getString(id, *args)
+  }
+
+  fun getStringArray(@ArrayRes id: Int): Array<String> {
+    return context.resources.getStringArray(id)
   }
 
   fun getAppName(): String {

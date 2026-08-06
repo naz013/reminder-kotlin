@@ -1,34 +1,10 @@
 plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.ktlint)
+  id("reminder.android.library")
   alias(libs.plugins.ksp)
 }
 
 android {
   namespace = "com.github.naz013.repository"
-  compileSdk = libs.versions.compileSdk.get().toInt()
-
-  defaultConfig {
-    minSdk = libs.versions.minSdk.get().toInt()
-
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    consumerProguardFiles("consumer-rules.pro")
-  }
-
-  buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-    }
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  kotlin {
-    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  }
 }
 
 dependencies {
@@ -49,9 +25,6 @@ dependencies {
   implementation(libs.threetenbp)
 
   testImplementation(libs.junit)
-}
-
-ktlint {
-  android = true
-  outputColorName.set("RED")
+  testImplementation(libs.mockk)
+  testImplementation(libs.kotlinx.coroutines.test)
 }

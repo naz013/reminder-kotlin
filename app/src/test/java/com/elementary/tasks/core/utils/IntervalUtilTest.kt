@@ -10,20 +10,20 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class IntervalUtilTest {
-
   private lateinit var data: List<Int>
 
   @Before
   fun setup() {
-    data = IntervalUtil.getWeekRepeat(
-      mon = true,
-      tue = false,
-      wed = false,
-      thu = false,
-      fri = false,
-      sat = false,
-      sun = false
-    )
+    data =
+      IntervalUtil.getWeekRepeat(
+        mon = true,
+        tue = false,
+        wed = false,
+        thu = false,
+        fri = false,
+        sat = false,
+        sun = false,
+      )
   }
 
   @Test

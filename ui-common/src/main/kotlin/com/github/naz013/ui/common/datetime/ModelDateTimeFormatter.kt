@@ -4,26 +4,26 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.datetime.DateTimePreferences
 import com.github.naz013.common.datetime.NowDateTimeProvider
-import com.github.naz013.common.datetime.minusMillis
+import com.github.naz013.datecalc.BirthdayDateCalculator
+import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Reminder
-import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.ChronoUnit
-import kotlin.math.abs
 
 class ModelDateTimeFormatter(
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
   private val dateTimePreferences: DateTimePreferences,
-  private val nowDateTimeProvider: NowDateTimeProvider = NowDateTimeProvider()
+  private val nowDateTimeProvider: NowDateTimeProvider = NowDateTimeProvider(),
+  private val birthdayDateCalculator: BirthdayDateCalculator = BirthdayDateCalculatorImpl(),
 ) {
-
-  fun getRemaining(dateTime: String?, delay: Int): String {
+  fun getRemaining(
+    dateTime: String?,
+    delay: Int,
+  ): String {
     if (dateTime.isNullOrEmpty()) {
       return getRemaining(null)
     }
@@ -33,9 +33,9 @@ class ModelDateTimeFormatter(
   fun getBirthdayRemaining(
     futureBirthdayDateTime: LocalDateTime,
     ignoreYear: Boolean,
-    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime()
-  ): String? {
-    return when {
+    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime(),
+  ): String? =
+    when {
       ignoreYear -> null
       futureBirthdayDateTime == nowDateTime -> null
       futureBirthdayDateTime.isBefore(nowDateTime) -> {
@@ -44,11 +44,10 @@ class ModelDateTimeFormatter(
 
       else -> getRemaining(futureBirthdayDateTime, nowDateTime)
     }
-  }
 
-  private fun getRemaining(
+  fun getRemaining(
     eventTime: LocalDateTime?,
-    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime()
+    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime(),
   ): String {
     if (eventTime == null) return textProvider.getText(R.string.overdue)
 
@@ -130,38 +129,39 @@ class ModelDateTimeFormatter(
     birthdayTime: LocalTime,
     birthdayDate: LocalDate,
     birthday: Birthday,
-    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime()
-  ): LocalDateTime {
-    var dateTime = LocalDateTime.of(nowDateTime.toLocalDate(), birthdayTime)
-      .withMonth(birthdayDate.monthValue)
-      .withDayOfMonth(birthdayDate.dayOfMonth)
-    if (dateTime.isBefore(nowDateTime) && !birthday.ignoreYear) {
-      dateTime = dateTime.plusYears(1)
-    } else if (dateTime.isBefore(nowDateTime) && birthday.ignoreYear &&
-      birthday.showedYear >= dateTime.year
-    ) {
-      dateTime = dateTime.plusYears(1)
-    }
-    return dateTime
-  }
+    nowDateTime: LocalDateTime = nowDateTimeProvider.nowDateTime(),
+  ): LocalDateTime =
+    birthdayDateCalculator.getNextOccurrence(
+      birthDate = birthdayDate,
+      birthdayTime = birthdayTime,
+      ignoreYear = birthday.ignoreYear,
+      showedYear = birthday.showedYear,
+      nowDateTime = nowDateTime,
+    )
 
   fun getAgeFormatted(
     date: String?,
-    nowDate: LocalDate = nowDateTimeProvider.nowDate()
+    nowDate: LocalDate = nowDateTimeProvider.nowDate(),
   ): String {
     val years = getAge(date, nowDate)
     val language = dateTimePreferences.locale.language.lowercase()
     return buildYearString(language, years)
   }
 
-  private fun getAge(dateOfBirth: String?, nowDate: LocalDate): Int {
+  private fun getAge(
+    dateOfBirth: String?,
+    nowDate: LocalDate,
+  ): Int {
     if (dateOfBirth.isNullOrEmpty()) return 0
     val birthDate = dateTimeManager.parseBirthdayDate(dateOfBirth) ?: return 0
-    return abs(ChronoUnit.YEARS.between(birthDate, nowDate).toInt())
+    return birthdayDateCalculator.getAge(birthDate, nowDate)
   }
 
-  private fun buildYearString(language: String, years: Int): String {
-    return if (language.startsWith("uk")) {
+  private fun buildYearString(
+    language: String,
+    years: Int,
+  ): String =
+    if (language.startsWith("uk")) {
       var last = years.toLong()
       while (last > 10) {
         last -= 10
@@ -180,115 +180,4 @@ class ModelDateTimeFormatter(
         textProvider.getText(R.string.x_years, years.toString())
       }
     }
-  }
-
-  fun getNewNextMonthDayTime(
-    reminder: Reminder,
-    fromTime: LocalDateTime = dateTimeManager.getCurrentDateTime()
-  ): LocalDateTime {
-    val dayOfMonth = reminder.dayOfMonth
-    val beforeValue = reminder.remindBefore
-
-    Logger.d("getNextMonthDayTime: dayOfMonth=$dayOfMonth, before=$beforeValue, from=$fromTime")
-
-    if (dayOfMonth == 0) {
-      return getLastMonthDayTime(fromTime, reminder)
-    } else if (dayOfMonth > 28) {
-      return getSmartMonthDayTime(fromTime, reminder)
-    }
-
-    val startDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-      ?: dateTimeManager.getCurrentDateTime()
-    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), startDateTime.toLocalTime())
-      .withDayOfMonth(dayOfMonth)
-
-    val interval = if (reminder.repeatInterval <= 0L) {
-      1L
-    } else {
-      reminder.repeatInterval
-    }
-
-    var isAfter = dateTime.minusMillis(beforeValue).isAfter(fromTime)
-    if (dateTime.dayOfMonth == dayOfMonth && isAfter) {
-      return dateTime.withSecond(0)
-    }
-    while (true) {
-      isAfter = dateTime.minusMillis(beforeValue).isAfter(fromTime)
-      if (dateTime.dayOfMonth == dayOfMonth && isAfter) {
-        break
-      }
-      dateTime = dateTime.plusMonths(interval)
-    }
-    return dateTime.withSecond(0)
-  }
-
-  private fun getSmartMonthDayTime(fromTime: LocalDateTime, reminder: Reminder): LocalDateTime {
-    val dayOfMonth = reminder.dayOfMonth
-    val beforeValue = reminder.remindBefore
-
-    val startDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-      ?: dateTimeManager.getCurrentDateTime()
-    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), startDateTime.toLocalTime())
-    var yearMonth = YearMonth.from(dateTime)
-
-    val interval = if (reminder.repeatInterval <= 0L) {
-      1L
-    } else {
-      reminder.repeatInterval
-    }
-
-    var lastDay = yearMonth.atEndOfMonth().dayOfMonth
-    dateTime = if (dayOfMonth <= lastDay) {
-      dateTime.withDayOfMonth(dayOfMonth)
-    } else {
-      dateTime.withDayOfMonth(lastDay)
-    }
-    var isAfter = dateTime.minusMillis(beforeValue).isAfter(fromTime)
-    if (isAfter) {
-      return dateTime.withSecond(0)
-    }
-    while (true) {
-      isAfter = dateTime.minusMillis(beforeValue).isAfter(fromTime)
-      if (isAfter) {
-        break
-      }
-
-      dateTime = dateTime.withDayOfMonth(1).plusMonths(interval)
-
-      yearMonth = YearMonth.from(dateTime)
-      lastDay = yearMonth.atEndOfMonth().dayOfMonth
-      dateTime = if (dayOfMonth <= lastDay) {
-        dateTime.withDayOfMonth(dayOfMonth)
-      } else {
-        dateTime.withDayOfMonth(lastDay)
-      }
-    }
-    return dateTime.withSecond(0)
-  }
-
-  private fun getLastMonthDayTime(fromTime: LocalDateTime, reminder: Reminder): LocalDateTime {
-    val startDateTime = dateTimeManager.fromGmtToLocal(reminder.eventTime)
-      ?: dateTimeManager.getCurrentDateTime()
-    var dateTime = LocalDateTime.of(startDateTime.toLocalDate(), startDateTime.toLocalTime())
-
-    val interval = if (reminder.repeatInterval <= 0L) {
-      1L
-    } else {
-      reminder.repeatInterval
-    }
-    var yearMonth: YearMonth?
-
-    while (true) {
-      yearMonth = YearMonth.from(dateTime)
-      dateTime = dateTime.withDayOfMonth(yearMonth.atEndOfMonth().dayOfMonth)
-
-      if (dateTime.minusMillis(reminder.remindBefore).isAfter(fromTime)) {
-        break
-      }
-
-      dateTime = dateTime.withDayOfMonth(1)
-        .plusMonths(interval)
-    }
-    return dateTime.withSecond(0)
-  }
 }

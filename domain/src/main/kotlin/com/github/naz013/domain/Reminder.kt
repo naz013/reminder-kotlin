@@ -1,7 +1,6 @@
 package com.github.naz013.domain
 
 import com.github.naz013.domain.reminder.BuilderSchemeItem
-import com.github.naz013.domain.reminder.ReminderType
 import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
@@ -9,6 +8,7 @@ import java.io.Serializable
 import java.util.Random
 import java.util.UUID
 
+@Deprecated("Use ReminderV2")
 data class Reminder(
   @SerializedName("summary")
   var summary: String = "",
@@ -219,11 +219,6 @@ data class Reminder(
     reminder.isActive = true
     reminder.isRemoved = false
     return reminder
-  }
-
-  @Deprecated("Types are not used anymore")
-  fun readType(): ReminderType {
-    return ReminderType(type)
   }
 
   object Action {

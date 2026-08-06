@@ -192,13 +192,7 @@ internal class NoteTextDrawable(
   private fun createStaticLayout(
     text: String,
     textWidth: Int
-  ) = StaticLayout.Builder.obtain(
-    /* source = */ text,
-    /* start = */ 0,
-    /* end = */ text.length,
-    /* paint = */ textPaint,
-    /* width = */ textWidth
-  )
+  ) = StaticLayout.Builder.obtain(text, 0, text.length, textPaint, textWidth)
     .setAlignment(Layout.Alignment.ALIGN_NORMAL)
     .setTextDirection(TextDirectionHeuristics.LOCALE)
     .setBreakStrategy(LineBreaker.BREAK_STRATEGY_BALANCED)

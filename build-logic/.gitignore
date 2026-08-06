@@ -1,0 +1,4 @@
+/build
+/convention/build
+.kotlin
+.gradle

@@ -1,27 +1,19 @@
+import com.android.build.api.dsl.ApplicationExtension
 import java.util.Properties
 
 plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.compose.compiler)
+  id("reminder.android.application.compose")
   alias(libs.plugins.google.services)
   alias(libs.plugins.crashlytics.gradle)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
   namespace = "com.example.cloudtestadmin"
-  compileSdk {
-    version = release(libs.versions.compileSdk.get().toInt())
-  }
 
   defaultConfig {
     applicationId = "com.cray.software.justreminderpro"
-    minSdk = libs.versions.minSdk.get().toInt()
-    targetSdk = libs.versions.targetSdk.get().toInt()
     versionCode = 1
     versionName = "1.0"
-
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   val propsFile = file("${rootProject.rootDir}/keystore.properties")
@@ -52,37 +44,16 @@ android {
   }
 
   buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-    }
     debug {
       if (shouldSign) {
         signingConfig = signingConfigs.getByName("debugApp")
       }
     }
   }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  kotlin {
-    jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
-  }
-  buildFeatures {
-    compose = true
-  }
+
   packaging {
     resources {
-      excludes += "META-INF/NOTICE"
-      excludes += "META-INF/LICENSE.txt"
-      excludes += "META-INF/NOTICE.txt"
-      excludes += "META-INF/proguard/androidx-annotations.pro"
-      excludes += "META-INF/DEPENDENCIES"
-      excludes += "META-INF/LICENSE"
-      excludes += "META-INF/license.txt"
-      excludes += "META-INF/ASL2.0"
-      excludes += "META-INF/LICENSE.md"
+      excludes += "META-INF/INDEX.LIST"
     }
   }
 }
@@ -97,6 +68,7 @@ dependencies {
   implementation(project(":platform-common"))
   implementation(project(":ui-common"))
   implementation(project(":sync"))
+  implementation(project(":files-api"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)

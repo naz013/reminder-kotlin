@@ -343,7 +343,7 @@ internal class GoogleTasksApiImpl(
         return saveTask(item)
       }
     } catch (e: Exception) {
-      Logger.e(e, "Failed to move task")
+      Logger.e(TAG, "Failed to move task", e)
     }
     return null
   }

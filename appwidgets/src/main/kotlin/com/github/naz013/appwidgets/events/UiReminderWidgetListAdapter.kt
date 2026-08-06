@@ -7,23 +7,25 @@ import com.github.naz013.appwidgets.events.data.UiReminderWidgetList
 import com.github.naz013.appwidgets.events.data.UiReminderWidgetShopList
 import com.github.naz013.appwidgets.events.data.UiShopListWidget
 import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import org.threeten.bp.LocalDateTime
 import java.util.Locale
 
 internal class UiReminderWidgetListAdapter(
   private val dateTimeManager: DateTimeManager
 ) {
 
-  fun create(data: Reminder): DateSorted {
+  fun createV2(data: ReminderV2): DateSorted {
     return when {
-      data.readType().hasSubTasks() -> {
-        val due = getDue(data)
+      data.action is ReminderAction.Shopping -> {
+        val due = getDueV2(data.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) })
         UiReminderWidgetShopList(
           uuId = data.uuId,
           text = data.summary,
           dateTime = due.dateTime,
           millis = due.millis.takeIf { it != 0L } ?: Long.MAX_VALUE,
-          items = data.shoppings.map {
+          items = data.shoppingItems.map {
             UiShopListWidget(
               iconRes = if (it.isChecked) {
                 R.drawable.ic_fluent_checkbox_checked
@@ -36,9 +38,7 @@ internal class UiReminderWidgetListAdapter(
         )
       }
 
-      Reminder.isBase(data.type, Reminder.BY_LOCATION) ||
-        Reminder.isBase(data.type, Reminder.BY_OUT) ||
-        Reminder.isBase(data.type, Reminder.BY_PLACES) -> {
+      data.location != null -> {
         val place = data.places.firstOrNull()?.let {
           String.format(Locale.getDefault(), "%.5f", it.latitude) + " " +
             String.format(Locale.getDefault(), "%.5f", it.longitude)
@@ -52,7 +52,7 @@ internal class UiReminderWidgetListAdapter(
       }
 
       else -> {
-        val due = getDue(data)
+        val due = getDueV2(data.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) })
         UiReminderWidgetList(
           uuId = data.uuId,
           text = data.summary,
@@ -63,10 +63,11 @@ internal class UiReminderWidgetListAdapter(
     }
   }
 
-  private fun getDue(data: Reminder): UiReminderDueData {
-    val dateTime = dateTimeManager.fromGmtToLocal(data.eventTime)
-    val dueMillis = dateTimeManager.toMillis(data.eventTime)
+  /** [dateTime] must already be converted to local time (via [DateTimeManager.utcToLocal]) -
+   * `ReminderV2.schedule.eventDateTime` is stored UTC-zoned. */
+  private fun getDueV2(dateTime: LocalDateTime?): UiReminderDueData {
     val due = dateTime?.let { dateTimeManager.getFullDateTime(it) }
+    val dueMillis = dateTime?.let { dateTimeManager.toMillis(it) } ?: 0L
     return UiReminderDueData(
       dateTime = due,
       millis = dueMillis

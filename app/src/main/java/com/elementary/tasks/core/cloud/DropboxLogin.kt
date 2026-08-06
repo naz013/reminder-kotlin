@@ -1,33 +1,40 @@
 package com.elementary.tasks.core.cloud
 
-import android.app.Activity
-import android.app.Dialog
+import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.provider.Settings
-import androidx.appcompat.app.AlertDialog
-import com.elementary.tasks.R
+import androidx.core.net.toUri
 import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.cloud.worker.WorkType
-import com.elementary.tasks.core.utils.BuildParams
 import com.github.naz013.cloudapi.dropbox.DropboxApi
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
+import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.SystemInfo
 
 class DropboxLogin(
-  private val activity: Activity,
+  private val context: Context,
   private val dropboxApi: DropboxApi,
   private val dropboxAuthManager: DropboxAuthManager,
-  private val callback: LoginCallback,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val systemInfo: SystemInfo,
+  private val buildInfo: BuildInfo
 ) {
 
-  fun login() {
-    var isIn = isAppInstalled(MARKET_APP_JUSTREMINDER_PRO)
-    if (BuildParams.isPro) isIn = isAppInstalled(MARKET_APP_JUSTREMINDER)
-    if (isIn) {
-      checkDialog().show()
+  private var loginCallback: ((Boolean) -> Unit)? = null
+
+  fun login(
+    onAuthResult: (Boolean) -> Unit,
+    onDuplicateFound: () -> Unit = {},
+  ) {
+    val hasOtherVariant = if (buildInfo.isPro) {
+      systemInfo.isAppInstalled(SystemInfo.FREE_PACKAGE_NAME)
     } else {
+      systemInfo.isAppInstalled(SystemInfo.PRO_PACKAGE_NAME)
+    }
+    if (hasOtherVariant) {
+      onDuplicateFound()
+    } else {
+      loginCallback = onAuthResult
       performDropboxLinking()
     }
   }
@@ -36,7 +43,7 @@ class DropboxLogin(
     if (dropboxAuthManager.isAuthorized()) {
       dropboxApi.disconnect()
       dropboxAuthManager.removeOAuth2Token()
-      callback.onResult(false)
+      loginCallback?.invoke(false)
     } else {
       dropboxAuthManager.startAuth()
     }
@@ -44,11 +51,11 @@ class DropboxLogin(
 
   fun checkAuthOnResume() {
     if (dropboxAuthManager.isAuthorized()) {
-      callback.onResult(true)
+      loginCallback?.invoke(true)
     } else {
       dropboxAuthManager.onAuthFinished()
       dropboxApi.initialize()
-      callback.onResult(dropboxAuthManager.isAuthorized())
+      loginCallback?.invoke(dropboxAuthManager.isAuthorized())
       if (dropboxAuthManager.isAuthorized()) {
         scheduleBackgroundWorkUseCase(
           workType = WorkType.ForceSync,
@@ -60,56 +67,23 @@ class DropboxLogin(
     }
   }
 
-  private fun isAppInstalled(packageName: String): Boolean {
-    val pm = activity.packageManager
-    return try {
-      pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
-      true
-    } catch (e: PackageManager.NameNotFoundException) {
-      false
-    }
-  }
-
-  private fun checkDialog(): Dialog {
-    return AlertDialog.Builder(activity)
-      .setMessage(activity.getString(R.string.other_version_detected))
-      .setPositiveButton(activity.getString(R.string.open)) { _, _ -> openApp() }
-      .setNegativeButton(activity.getString(R.string.delete)) { _, _ -> deleteApp() }
-      .setNeutralButton(activity.getString(R.string.cancel)) { dialogInterface, _ ->
-        dialogInterface.dismiss()
-      }
-      .setCancelable(true)
-      .create()
-  }
-
-  private fun deleteApp() {
+  fun deleteApp() {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-    if (BuildParams.isPro) {
-      intent.data = Uri.parse("package:$MARKET_APP_JUSTREMINDER")
+    if (buildInfo.isPro) {
+      intent.data = "package:${SystemInfo.FREE_PACKAGE_NAME}".toUri()
     } else {
-      intent.data = Uri.parse("package:$MARKET_APP_JUSTREMINDER_PRO")
+      intent.data = "package:${SystemInfo.PRO_PACKAGE_NAME}".toUri()
     }
-    activity.startActivity(intent)
+    context.startActivity(intent)
   }
 
-  private fun openApp() {
-    val i: Intent?
-    val manager = activity.packageManager
-    i = if (BuildParams.isPro) {
-      manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER)
+  fun openApp() {
+    val intent = if (buildInfo.isPro) {
+      context.packageManager.getLaunchIntentForPackage(SystemInfo.FREE_PACKAGE_NAME)
     } else {
-      manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER_PRO)
+      context.packageManager.getLaunchIntentForPackage(SystemInfo.PRO_PACKAGE_NAME)
     }
-    i?.addCategory(Intent.CATEGORY_LAUNCHER)
-    activity.startActivity(i)
-  }
-
-  interface LoginCallback {
-    fun onResult(isSuccess: Boolean)
-  }
-
-  companion object {
-    const val MARKET_APP_JUSTREMINDER = "com.cray.software.justreminder"
-    const val MARKET_APP_JUSTREMINDER_PRO = "com.cray.software.justreminderpro"
+    intent?.addCategory(Intent.CATEGORY_LAUNCHER)
+    intent?.also { context.startActivity(it) }
   }
 }

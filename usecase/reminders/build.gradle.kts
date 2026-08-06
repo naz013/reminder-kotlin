@@ -1,27 +1,17 @@
 plugins {
-  alias(libs.plugins.java.library)
-  alias(libs.plugins.kotlin.jvm)
-  alias(libs.plugins.ktlint)
-}
-
-java {
-  sourceCompatibility = JavaVersion.VERSION_17
-  targetCompatibility = JavaVersion.VERSION_17
-}
-
-kotlin {
-  jvmToolchain(libs.versions.kotlinTargetJvm.get().toInt())
+  id("reminder.kotlin.jvm")
 }
 
 dependencies {
   implementation(project(":logging-api"))
   implementation(project(":domain"))
   implementation(project(":repository-api"))
+  implementation(project(":work-api"))
 
   implementation(libs.koin.core)
-}
+  implementation(libs.threetenbp)
 
-ktlint {
-  android = false
-  outputColorName.set("RED")
+  testImplementation(libs.junit)
+  testImplementation(libs.mockk)
+  testImplementation(libs.kotlinx.coroutines.test)
 }

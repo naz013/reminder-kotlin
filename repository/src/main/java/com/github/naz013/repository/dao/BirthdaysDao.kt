@@ -38,4 +38,7 @@ internal interface BirthdaysDao {
 
   @Query("DELETE FROM Birthday")
   fun deleteAll()
+
+  @Query("SELECT COUNT(*) FROM Birthday")
+  fun countAll(): Int
 }

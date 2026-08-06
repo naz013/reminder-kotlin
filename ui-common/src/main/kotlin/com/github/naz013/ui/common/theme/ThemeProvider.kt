@@ -2,29 +2,27 @@ package com.github.naz013.ui.common.theme
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
+import com.github.naz013.common.ContextProvider
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.adjustAlpha
-import com.github.naz013.common.ContextProvider
-import com.google.android.material.color.DynamicColors
-import com.google.android.material.color.MaterialColors
+import com.github.naz013.ui.common.compose.toColor
 
 class ThemeProvider(
   private val contextProvider: ContextProvider,
   private val themePreferences: ThemePreferences
-) {
+) : DarkModeState {
 
   private val context: Context
     get() = contextProvider.themedContext
 
-  val isDark: Boolean
+  override val isDark: Boolean
     get() {
       return when (themePreferences.nightMode) {
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> {
@@ -53,46 +51,6 @@ class ThemeProvider(
       return R.string.auto
     }
 
-  @RawRes
-  fun getMapStyleJson(mapStyle: Int): Int {
-    return when (mapStyle) {
-      0 -> R.raw.map_terrain_day
-      1 -> R.raw.map_terrain_retro
-      2 -> R.raw.map_terrain_silver
-      3 -> R.raw.map_terrain_night
-      4 -> R.raw.map_terrain_dark
-      5 -> R.raw.map_terrain_aubergine
-      else -> {
-        if (isDark) {
-          R.raw.map_terrain_night
-        } else {
-          R.raw.map_terrain_day
-        }
-      }
-    }
-  }
-
-  val mapStyleJson: Int
-    @RawRes
-    get() {
-      when (themePreferences.mapStyle) {
-        0 -> return R.raw.map_terrain_day
-        1 -> return R.raw.map_terrain_retro
-        2 -> return R.raw.map_terrain_silver
-        3 -> return R.raw.map_terrain_night
-        4 -> return R.raw.map_terrain_dark
-        5 -> return R.raw.map_terrain_aubergine
-        6 -> {
-          return if (isDark) {
-            R.raw.map_terrain_night
-          } else {
-            R.raw.map_terrain_day
-          }
-        }
-      }
-      return R.raw.map_terrain_day
-    }
-
   val mapStylePreview: Int
     @DrawableRes
     get() {
@@ -115,133 +73,26 @@ class ThemeProvider(
     }
 
   @ColorInt
-  fun getTertiaryColor(context: Context): Int {
-    return if (DynamicColors.isDynamicColorAvailable() && themePreferences.useDynamicColors) {
-      // if your base context is already using Material3 theme you can omit R.style argument
-      val dynamicColorContext = DynamicColors.wrapContextIfAvailable(context)
-      val attrsToResolve = intArrayOf(R.attr.colorPrimary)
-      val ta = dynamicColorContext.obtainStyledAttributes(attrsToResolve)
-      val tertiary = ta.getColor(0, ContextCompat.getColor(context, R.color.md_theme_tertiary))
-      ta.recycle() // recycle TypedArray
-      tertiary
-    } else {
-      ContextCompat.getColor(context, R.color.md_theme_tertiary)
-    }
-  }
-
-  fun getMarkerRadiusStyle(color: Int): Marker {
-    val fillColor: Int
-    val strokeColor: Int
-    when (color) {
-      Color.RED -> {
-        fillColor = R.color.secondaryRed12
-        strokeColor = R.color.secondaryRed
-      }
-
-      Color.PURPLE -> {
-        fillColor = R.color.secondaryPurple12
-        strokeColor = R.color.secondaryPurple
-      }
-
-      Color.LIGHT_GREEN -> {
-        fillColor = R.color.secondaryGreenLight12
-        strokeColor = R.color.secondaryGreenLight
-      }
-
-      Color.GREEN -> {
-        fillColor = R.color.secondaryGreen12
-        strokeColor = R.color.secondaryGreen
-      }
-
-      Color.LIGHT_BLUE -> {
-        fillColor = R.color.secondaryBlueLight12
-        strokeColor = R.color.secondaryBlueLight
-      }
-
-      Color.BLUE -> {
-        fillColor = R.color.secondaryBlue12
-        strokeColor = R.color.secondaryBlue
-      }
-
-      Color.YELLOW -> {
-        fillColor = R.color.secondaryYellow12
-        strokeColor = R.color.secondaryYellow
-      }
-
-      Color.ORANGE -> {
-        fillColor = R.color.secondaryOrange12
-        strokeColor = R.color.secondaryOrange
-      }
-
-      Color.CYAN -> {
-        fillColor = R.color.secondaryCyan12
-        strokeColor = R.color.secondaryCyan
-      }
-
-      Color.PINK -> {
-        fillColor = R.color.secondaryPink12
-        strokeColor = R.color.secondaryPink
-      }
-
-      Color.TEAL -> {
-        fillColor = R.color.secondaryTeal12
-        strokeColor = R.color.secondaryTeal
-      }
-
-      Color.AMBER -> {
-        fillColor = R.color.secondaryAmber12
-        strokeColor = R.color.secondaryAmber
-      }
-
-      Color.DEEP_PURPLE -> {
-        fillColor = R.color.secondaryPurpleDeep12
-        strokeColor = R.color.secondaryPurpleDeep
-      }
-
-      Color.DEEP_ORANGE -> {
-        fillColor = R.color.secondaryOrangeDeep12
-        strokeColor = R.color.secondaryOrangeDeep
-      }
-
-      Color.INDIGO -> {
-        fillColor = R.color.secondaryIndigo12
-        strokeColor = R.color.secondaryIndigo
-      }
-
-      Color.LIME -> {
-        fillColor = R.color.secondaryLime12
-        strokeColor = R.color.secondaryLime
-      }
-
-      else -> {
-        fillColor = R.color.secondaryBlue12
-        strokeColor = R.color.secondaryBlue
-      }
-    }
-    return Marker(fillColor, strokeColor)
-  }
-
-  @ColorInt
-  fun getMarkerLightColor(code: Int = Color.RED): Int {
+  fun getMarkerLightColor(code: Int = AppColorIndex.RED): Int {
     val color: Int
     when (code) {
-      Color.RED -> color = R.color.redAccentOld
-      Color.PURPLE -> color = R.color.purpleAccentOld
-      Color.LIGHT_GREEN -> color = R.color.greenLightAccentOld
-      Color.GREEN -> color = R.color.greenAccentOld
-      Color.LIGHT_BLUE -> color = R.color.blueLightAccentOld
-      Color.BLUE -> color = R.color.blueAccentOld
-      Color.YELLOW -> color = R.color.yellowAccentOld
-      Color.ORANGE -> color = R.color.orangeAccentOld
-      Color.CYAN -> color = R.color.cyanAccentOld
-      Color.PINK -> color = R.color.pinkAccentOld
-      Color.TEAL -> color = R.color.tealAccentOld
-      Color.AMBER -> color = R.color.amberAccentOld
-      Color.DEEP_PURPLE -> color = R.color.purpleDeepAccentOld
-      Color.DEEP_ORANGE -> color = R.color.orangeDeepAccentOld
-      Color.LIME -> color = R.color.limeAccentOld
-      Color.INDIGO -> color = R.color.indigoAccentOld
-      Color.LIVING_CORAL -> color = R.color.secondaryLivingCoral
+      AppColorIndex.RED -> color = R.color.redAccentOld
+      AppColorIndex.PURPLE -> color = R.color.purpleAccentOld
+      AppColorIndex.LIGHT_GREEN -> color = R.color.greenLightAccentOld
+      AppColorIndex.GREEN -> color = R.color.greenAccentOld
+      AppColorIndex.LIGHT_BLUE -> color = R.color.blueLightAccentOld
+      AppColorIndex.BLUE -> color = R.color.blueAccentOld
+      AppColorIndex.YELLOW -> color = R.color.yellowAccentOld
+      AppColorIndex.ORANGE -> color = R.color.orangeAccentOld
+      AppColorIndex.CYAN -> color = R.color.cyanAccentOld
+      AppColorIndex.PINK -> color = R.color.pinkAccentOld
+      AppColorIndex.TEAL -> color = R.color.tealAccentOld
+      AppColorIndex.AMBER -> color = R.color.amberAccentOld
+      AppColorIndex.DEEP_PURPLE -> color = R.color.purpleDeepAccentOld
+      AppColorIndex.DEEP_ORANGE -> color = R.color.orangeDeepAccentOld
+      AppColorIndex.LIME -> color = R.color.limeAccentOld
+      AppColorIndex.INDIGO -> color = R.color.indigoAccentOld
+      AppColorIndex.LIVING_CORAL -> color = R.color.secondaryLivingCoral
       else -> color = R.color.blueAccentOld
     }
     return ContextCompat.getColor(context, color)
@@ -252,7 +103,7 @@ class ThemeProvider(
     return getNoteColor(code, palette).adjustAlpha(opacity)
   }
 
-  object Color {
+  object AppColorIndex {
     const val RED = 0
     const val PINK = 1
     const val PURPLE = 2
@@ -290,17 +141,9 @@ class ThemeProvider(
   }
 
   @ColorInt
-  fun noteColorsForSlider(palette: Int = themePreferences.notePalette): IntArray =
-    obtainPalette(palette)
-
-  @ColorInt
-  fun getNoteColor(code: Int = Color.RED, palette: Int = themePreferences.notePalette): Int {
+  fun getNoteColor(code: Int = AppColorIndex.RED, palette: Int = themePreferences.notePalette): Int {
     return obtainPalette(palette)[code]
   }
-
-  @ColorRes
-  fun pickColorRes(@ColorRes colorForLight: Int, @ColorRes colorForDark: Int) =
-    if (isDark) colorForDark else colorForLight
 
   @ColorInt
   fun colorBirthdayCalendar(): Int {
@@ -312,7 +155,62 @@ class ThemeProvider(
     return ContextCompat.getColor(context, colorRes)
   }
 
-  data class Marker(@param:ColorRes val fillColor: Int, @param:ColorRes val strokeColor: Int)
+  fun colorsForSliderThemed(): List<Color> {
+    return listOf(
+      ContextCompat.getColor(context, R.color.redAccent),
+      ContextCompat.getColor(context, R.color.pinkAccent),
+      ContextCompat.getColor(context, R.color.purpleAccent),
+      ContextCompat.getColor(context, R.color.purpleDeepAccent),
+      ContextCompat.getColor(context, R.color.indigoAccent),
+      ContextCompat.getColor(context, R.color.blueAccent),
+      ContextCompat.getColor(context, R.color.blueLightAccent),
+      ContextCompat.getColor(context, R.color.cyanAccent),
+      ContextCompat.getColor(context, R.color.tealAccent),
+      ContextCompat.getColor(context, R.color.greenAccent),
+      ContextCompat.getColor(context, R.color.greenLightAccent),
+      ContextCompat.getColor(context, R.color.limeAccent),
+      ContextCompat.getColor(context, R.color.yellowAccent),
+      ContextCompat.getColor(context, R.color.amberAccent),
+      ContextCompat.getColor(context, R.color.orangeAccent),
+      ContextCompat.getColor(context, R.color.orangeDeepAccent)
+    ).map { it.toColor() }
+  }
+
+  /**
+   * The 19-entry palette (accent colors plus true white/black at the end) used by the single-note
+   * widget's text/overlay color pickers - as opposed to [colorsForSliderThemed], which is only
+   * accent hues, this one guarantees a genuine black/white so [AppColorIndex.WHITE]/[AppColorIndex.BLACK]
+   * remain valid, high-contrast default indices.
+   */
+  fun noteWidgetSliderColors(): List<Color> {
+    return colorsForNoteWidgetSlider(context).map { it.toColor() }
+  }
+
+  fun themedColor(code: Int = AppColorIndex.RED): Color {
+    val color: Int
+    when (code) {
+      AppColorIndex.RED -> color = R.color.redAccent
+      AppColorIndex.PURPLE -> color = R.color.purpleAccent
+      AppColorIndex.LIGHT_GREEN -> color = R.color.greenLightAccent
+      AppColorIndex.GREEN -> color = R.color.greenAccent
+      AppColorIndex.LIGHT_BLUE -> color = R.color.blueLightAccent
+      AppColorIndex.BLUE -> color = R.color.blueAccent
+      AppColorIndex.YELLOW -> color = R.color.yellowAccent
+      AppColorIndex.ORANGE -> color = R.color.orangeAccent
+      AppColorIndex.CYAN -> color = R.color.cyanAccent
+      AppColorIndex.PINK -> color = R.color.pinkAccent
+      AppColorIndex.TEAL -> color = R.color.tealAccent
+      AppColorIndex.AMBER -> color = R.color.amberAccent
+      AppColorIndex.DEEP_PURPLE -> color = R.color.purpleDeepAccent
+      AppColorIndex.DEEP_ORANGE -> color = R.color.orangeDeepAccent
+      AppColorIndex.LIME -> color = R.color.limeAccent
+      AppColorIndex.INDIGO -> color = R.color.indigoAccent
+      AppColorIndex.WHITE -> color = R.color.pureWhite
+      AppColorIndex.BLACK -> color = R.color.pureBlack
+      else -> color = R.color.blueAccent
+    }
+    return ContextCompat.getColor(context, color).toColor()
+  }
 
   companion object {
     const val NOTE_COLORS = 20
@@ -325,80 +223,6 @@ class ThemeProvider(
     @ColorInt
     fun getOnPrimaryColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.md_theme_onPrimary)
-    }
-
-    @ColorInt
-    fun getTertiaryContainerColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_tertiaryContainer)
-    }
-
-    @ColorInt
-    fun getSecondaryContainerColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_secondaryContainer)
-    }
-
-    @ColorInt
-    fun getPrimaryContainerColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_primaryContainer)
-    }
-
-    @ColorInt
-    fun getBackgroundColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_background)
-    }
-
-    @ColorInt
-    fun getSurfaceColor(context: Context): Int {
-      return MaterialColors.getColor(context, R.attr.colorSurface, "getSurfaceColor()")
-    }
-
-    @ColorInt
-    fun getSurfaceVariantColor(context: Context): Int {
-      return MaterialColors.getColor(
-        context,
-        R.attr.colorSurfaceContainer,
-        "getSurfaceVariantColor()"
-      )
-    }
-
-    @ColorInt
-    fun getHintTextColor(context: Context): Int {
-      return MaterialColors.getColor(
-        context,
-        android.R.attr.textColorHint,
-        "getHintTextColor()"
-      )
-    }
-
-    @ColorInt
-    fun getTitleTextColor(context: Context): Int {
-      return MaterialColors.getColor(
-        context,
-        android.R.attr.textColorPrimary,
-        "getTitleTextColor()"
-      )
-    }
-
-    @ColorInt
-    fun colorsForSlider(context: Context): IntArray {
-      return intArrayOf(
-        ContextCompat.getColor(context, R.color.redAccentOld),
-        ContextCompat.getColor(context, R.color.pinkAccentOld),
-        ContextCompat.getColor(context, R.color.purpleAccentOld),
-        ContextCompat.getColor(context, R.color.purpleDeepAccentOld),
-        ContextCompat.getColor(context, R.color.indigoAccentOld),
-        ContextCompat.getColor(context, R.color.blueAccentOld),
-        ContextCompat.getColor(context, R.color.blueLightAccentOld),
-        ContextCompat.getColor(context, R.color.cyanAccentOld),
-        ContextCompat.getColor(context, R.color.tealAccentOld),
-        ContextCompat.getColor(context, R.color.greenAccentOld),
-        ContextCompat.getColor(context, R.color.greenLightAccentOld),
-        ContextCompat.getColor(context, R.color.limeAccentOld),
-        ContextCompat.getColor(context, R.color.yellowAccentOld),
-        ContextCompat.getColor(context, R.color.amberAccentOld),
-        ContextCompat.getColor(context, R.color.orangeAccentOld),
-        ContextCompat.getColor(context, R.color.orangeDeepAccentOld)
-      )
     }
 
     @ColorInt
@@ -427,66 +251,30 @@ class ThemeProvider(
     }
 
     @ColorInt
-    fun colorsForSliderThemed(context: Context): IntArray {
-      return intArrayOf(
-        ContextCompat.getColor(context, R.color.redAccent),
-        ContextCompat.getColor(context, R.color.pinkAccent),
-        ContextCompat.getColor(context, R.color.purpleAccent),
-        ContextCompat.getColor(context, R.color.purpleDeepAccent),
-        ContextCompat.getColor(context, R.color.indigoAccent),
-        ContextCompat.getColor(context, R.color.blueAccent),
-        ContextCompat.getColor(context, R.color.blueLightAccent),
-        ContextCompat.getColor(context, R.color.cyanAccent),
-        ContextCompat.getColor(context, R.color.tealAccent),
-        ContextCompat.getColor(context, R.color.greenAccent),
-        ContextCompat.getColor(context, R.color.greenLightAccent),
-        ContextCompat.getColor(context, R.color.limeAccent),
-        ContextCompat.getColor(context, R.color.yellowAccent),
-        ContextCompat.getColor(context, R.color.amberAccent),
-        ContextCompat.getColor(context, R.color.orangeAccent),
-        ContextCompat.getColor(context, R.color.orangeDeepAccent)
-      )
-    }
-
-    @ColorInt
-    fun themedColor(context: Context, code: Int = Color.RED): Int {
+    fun themedColor(context: Context, code: Int = AppColorIndex.RED): Int {
       val color: Int
       when (code) {
-        Color.RED -> color = R.color.redAccent
-        Color.PURPLE -> color = R.color.purpleAccent
-        Color.LIGHT_GREEN -> color = R.color.greenLightAccent
-        Color.GREEN -> color = R.color.greenAccent
-        Color.LIGHT_BLUE -> color = R.color.blueLightAccent
-        Color.BLUE -> color = R.color.blueAccent
-        Color.YELLOW -> color = R.color.yellowAccent
-        Color.ORANGE -> color = R.color.orangeAccent
-        Color.CYAN -> color = R.color.cyanAccent
-        Color.PINK -> color = R.color.pinkAccent
-        Color.TEAL -> color = R.color.tealAccent
-        Color.AMBER -> color = R.color.amberAccent
-        Color.DEEP_PURPLE -> color = R.color.purpleDeepAccent
-        Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
-        Color.LIME -> color = R.color.limeAccent
-        Color.INDIGO -> color = R.color.indigoAccent
-        Color.WHITE -> color = R.color.pureWhite
-        Color.BLACK -> color = R.color.pureBlack
+        AppColorIndex.RED -> color = R.color.redAccent
+        AppColorIndex.PURPLE -> color = R.color.purpleAccent
+        AppColorIndex.LIGHT_GREEN -> color = R.color.greenLightAccent
+        AppColorIndex.GREEN -> color = R.color.greenAccent
+        AppColorIndex.LIGHT_BLUE -> color = R.color.blueLightAccent
+        AppColorIndex.BLUE -> color = R.color.blueAccent
+        AppColorIndex.YELLOW -> color = R.color.yellowAccent
+        AppColorIndex.ORANGE -> color = R.color.orangeAccent
+        AppColorIndex.CYAN -> color = R.color.cyanAccent
+        AppColorIndex.PINK -> color = R.color.pinkAccent
+        AppColorIndex.TEAL -> color = R.color.tealAccent
+        AppColorIndex.AMBER -> color = R.color.amberAccent
+        AppColorIndex.DEEP_PURPLE -> color = R.color.purpleDeepAccent
+        AppColorIndex.DEEP_ORANGE -> color = R.color.orangeDeepAccent
+        AppColorIndex.LIME -> color = R.color.limeAccent
+        AppColorIndex.INDIGO -> color = R.color.indigoAccent
+        AppColorIndex.WHITE -> color = R.color.pureWhite
+        AppColorIndex.BLACK -> color = R.color.pureBlack
         else -> color = R.color.blueAccent
       }
       return ContextCompat.getColor(context, color)
-    }
-
-    @ColorInt
-    fun colorWithAlpha(@ColorInt color: Int, alpha: Int): Int {
-      val r = android.graphics.Color.red(color)
-      val g = android.graphics.Color.green(color)
-      val b = android.graphics.Color.blue(color)
-      return android.graphics.Color.argb(alpha, r, g, b)
-    }
-
-    fun getThemeSecondaryColor(context: Context): Int {
-      val outValue = TypedValue()
-      context.theme.resolveAttribute(android.R.attr.colorSecondary, outValue, true)
-      return outValue.data
     }
 
     @ColorInt
@@ -495,18 +283,8 @@ class ThemeProvider(
     }
 
     @ColorInt
-    fun getThemeOnSecondaryColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_onSecondary)
-    }
-
-    @ColorInt
     fun getThemeOnSecondaryContainerColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.md_theme_onSecondaryContainer)
-    }
-
-    @ColorInt
-    fun getThemeOnBackgroundColor(context: Context): Int {
-      return ContextCompat.getColor(context, R.color.md_theme_onBackground)
     }
 
     @ColorInt
@@ -516,11 +294,6 @@ class ThemeProvider(
 
     @ColorInt
     fun colorReminderCalendar(context: Context, color: Int): Int {
-      return themedColor(context, color)
-    }
-
-    @ColorInt
-    fun colorTodayCalendar(context: Context, color: Int): Int {
       return themedColor(context, color)
     }
   }

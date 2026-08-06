@@ -4,12 +4,13 @@ import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.github.naz013.domain.reminder.BiType
 
 class BiConstraints(
-  val constraints: List<BiConstraint<*>>
+  val constraints: List<BiConstraint<*>>,
 ) {
   private constructor(builder: Builder) : this(builder.constraints)
 
   class Builder {
     val constraints = mutableListOf<BiConstraint<*>>()
+
     fun build() = BiConstraints(this)
 
     fun permission(vararg permissions: String) {
@@ -68,6 +69,9 @@ class BiConstraints(
   }
 }
 
-inline fun constraints(block: BiConstraints.Builder.() -> Unit): List<BiConstraint<*>> {
-  return BiConstraints.Builder().apply(block).build().constraints
-}
+inline fun constraints(block: BiConstraints.Builder.() -> Unit): List<BiConstraint<*>> =
+  BiConstraints
+    .Builder()
+    .apply(block)
+    .build()
+    .constraints

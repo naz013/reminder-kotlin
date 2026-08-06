@@ -2,25 +2,30 @@ package com.elementary.tasks.core.cloud
 
 import androidx.core.content.edit
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.TagAssignment
+import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.ReminderGroupRepository
+import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.sync.DataPostProcessor
-import com.github.naz013.sync.DataType
-import com.github.naz013.sync.settings.SettingsModel
+import com.github.naz013.files.DataType
+import com.github.naz013.files.model.SettingsModel
+import com.github.naz013.files.model.TagAssignmentsSnapshotJson
 
 class DataPostProcessorImpl(
-  private val reminderGroupRepository: ReminderGroupRepository,
-  private val groupsUtil: GroupsUtil,
+  private val groupV2Repository: GroupV2Repository,
   private val prefs: Prefs,
-  private val activateReminderUseCase: ActivateReminderUseCase
+  private val activateReminderUseCase: ActivateReminderUseCase,
+  private val tagAssignmentRepository: TagAssignmentRepository,
 ) : DataPostProcessor {
-
-  override suspend fun process(dataType: DataType, any: Any) {
+  override suspend fun process(
+    dataType: DataType,
+    any: Any,
+  ) {
     when (any) {
-      is Reminder -> {
+      is ReminderV2 -> {
         postProcessReminder(any)
       }
 
@@ -28,9 +33,28 @@ class DataPostProcessorImpl(
         postProcessSettings(any)
       }
 
+      is TagAssignmentsSnapshotJson -> {
+        postProcessTagAssignments(any)
+      }
+
       else -> {
         // No op
       }
+    }
+  }
+
+  private suspend fun postProcessTagAssignments(snapshot: TagAssignmentsSnapshotJson) {
+    try {
+      // A restore of the full tag<->item graph, not a merge - a row's absence is meaningful
+      // (it means "not tagged"), so replacing wholesale is required for a detach on one device
+      // to ever propagate to another.
+      tagAssignmentRepository.replaceAll(
+        snapshot.assignments.map {
+          TagAssignment(tagId = it.tagId, itemId = it.itemId, itemType = TaggedItemType.valueOf(it.itemType))
+        }
+      )
+    } catch (e: Exception) {
+      Logger.e(TAG, "Failed to post process tag assignments: $e")
     }
   }
 
@@ -53,22 +77,17 @@ class DataPostProcessorImpl(
     }
   }
 
-  private suspend fun postProcessReminder(reminder: Reminder) {
-    val groups = groupsUtil.mapAll()
-    val defGroup = reminderGroupRepository.defaultGroup() ?: groups.values.first()
+  private suspend fun postProcessReminder(reminder: ReminderV2) {
+    val groups = groupV2Repository.getAll().associateBy { it.uuId }
 
-    if (!groups.containsKey(reminder.groupUuId)) {
-      reminder.apply {
-        this.groupTitle = defGroup.groupTitle
-        this.groupUuId = defGroup.groupUuId
-        this.groupColor = defGroup.groupColor
-      }
+    val withGroup = if (reminder.groupId != null && !groups.containsKey(reminder.groupId)) {
+      reminder.copy(groupId = null)
+    } else {
+      reminder
     }
-    if (reminder.isRemoved) {
-      reminder.isActive = false
-    }
-    activateReminderUseCase(reminder)
-    Logger.i(TAG, "Post processed reminder with id = ${reminder.uuId}")
+    val fixed = if (withGroup.isRemoved) withGroup.copy(isActive = false) else withGroup
+    activateReminderUseCase(fixed)
+    Logger.i(TAG, "Post processed reminder with id = ${fixed.uuId}")
   }
 
   companion object {

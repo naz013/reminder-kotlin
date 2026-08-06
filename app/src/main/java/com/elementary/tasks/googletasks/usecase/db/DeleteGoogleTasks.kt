@@ -3,10 +3,10 @@ package com.elementary.tasks.googletasks.usecase.db
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.repository.GoogleTaskRepository
 
+@Deprecated("Use repository")
 class DeleteGoogleTasks(
-  private val googleTaskRepository: GoogleTaskRepository
+  private val googleTaskRepository: GoogleTaskRepository,
 ) {
-
   suspend operator fun invoke(tasks: List<GoogleTask>) {
     if (tasks.isEmpty()) {
       return

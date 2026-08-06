@@ -3,15 +3,14 @@ package com.elementary.tasks.calendar.dayview.weekheader
 import org.threeten.bp.LocalDate
 
 class WeekHeaderController(
-  private val weekFactory: WeekFactory
+  private val weekFactory: WeekFactory,
 ) {
-
   private var startDate: LocalDate? = null
   private var endDate: LocalDate? = null
   private var week: List<WeekDay> = emptyList()
 
-  suspend fun calculateWeek(date: LocalDate): List<WeekDay> {
-    return if (isInCurrentRange(date)) {
+  suspend fun calculateWeek(date: LocalDate): List<WeekDay> =
+    if (isInCurrentRange(date)) {
       week.map {
         it.copy(isSelected = it.localDate == date)
       }
@@ -22,7 +21,6 @@ class WeekHeaderController(
         endDate = week.lastOrNull()?.localDate
       }
     }
-  }
 
   private fun isInCurrentRange(date: LocalDate): Boolean {
     if (startDate == null || endDate == null) {

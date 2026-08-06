@@ -5,20 +5,21 @@ import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 
 object AssetsUtilExtended {
-
-  fun getFontNames(): List<String> {
-    return listOf(
+  fun getFontNames(): List<String> =
+    listOf(
       "Pacifico",
       "Caveat",
       "Ubuntu Mono",
       "Ubuntu Condensed",
       "Marck Script",
-      "Bad Script"
+      "Bad Script",
     )
-  }
 
-  fun getTypeface(context: Context, code: Int): Typeface? {
-    return when (code) {
+  fun getTypeface(
+    context: Context,
+    code: Int,
+  ): Typeface? =
+    when (code) {
       21 -> ResourcesCompat.getFont(context, R.font.pacifico_regular)
       22 -> ResourcesCompat.getFont(context, R.font.caveat_regular)
       23 -> ResourcesCompat.getFont(context, R.font.ubuntu_mono_regular)
@@ -27,5 +28,4 @@ object AssetsUtilExtended {
       26 -> ResourcesCompat.getFont(context, R.font.bad_script_regular)
       else -> ResourcesCompat.getFont(context, R.font.roboto_regular)
     }
-  }
 }

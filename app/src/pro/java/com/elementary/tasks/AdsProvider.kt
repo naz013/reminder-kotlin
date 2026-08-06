@@ -3,37 +3,20 @@ package com.elementary.tasks
 import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
+import com.elementary.tasks.ads.AdBanner
+import com.github.naz013.common.system.SystemInfo
 
 class AdsProvider {
-
   fun showConsentMessage(activity: Activity) {}
 
   fun showBanner(
     viewGroup: ViewGroup,
-    bannerId: String,
-    failListener: (() -> Unit)? = null
+    adBanner: AdBanner,
+    failListener: (() -> Unit)? = null,
   ) {}
-
-  fun showNativeBanner(
-    viewGroup: ViewGroup,
-    bannerId: String,
-    @LayoutRes res: Int,
-    failListener: (() -> Unit)? = null
-  ) {}
-
-  fun destroy() {
-  }
 
   companion object {
-    const val REMINDER_PREVIEW_BANNER_ID = ""
-    const val NOTE_PREVIEW_BANNER_ID = ""
-    const val BIRTHDAY_PREVIEW_BANNER_ID = ""
-    const val GOOGLE_TASKS_PREVIEW_BANNER_ID = ""
-
     fun hasAds() = false
-
-    fun init(context: Context) {
-    }
+    fun init(context: Context, systemInfo: SystemInfo) { }
   }
 }

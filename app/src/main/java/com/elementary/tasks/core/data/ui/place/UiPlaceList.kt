@@ -9,5 +9,5 @@ data class UiPlaceList(
   val name: String,
   val latLng: LatLng,
   val markerStyle: Int,
-  val formattedDate: String?
+  val formattedDate: String?,
 )

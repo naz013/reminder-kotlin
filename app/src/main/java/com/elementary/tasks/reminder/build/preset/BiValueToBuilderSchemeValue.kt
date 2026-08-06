@@ -7,9 +7,8 @@ import com.elementary.tasks.reminder.build.preset.primitive.PrimitiveProtocol
 import com.google.gson.Gson
 
 class BiValueToBuilderSchemeValue(
-  private val primitiveProtocol: PrimitiveProtocol
+  private val primitiveProtocol: PrimitiveProtocol,
 ) {
-
   operator fun invoke(builderItem: BuilderItem<*>): String {
     if (!builderItem.modifier.isCorrect()) {
       return ""

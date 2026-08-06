@@ -8,11 +8,11 @@ internal class NotesWidgetPrefsProvider(
   internal val widgetId: Int
 ) : WidgetPrefsProvider(context, "new_notes_prefs", widgetId) {
 
-  fun setHeaderBackground(value: Int) {
+  fun setBackground(value: Int) {
     putInt(WIDGET_HEADER_BG_COLOR, value)
   }
 
-  fun getHeaderBackground(): Int {
+  fun getBackground(): Int {
     return getInt(WIDGET_HEADER_BG_COLOR, 0)
   }
 

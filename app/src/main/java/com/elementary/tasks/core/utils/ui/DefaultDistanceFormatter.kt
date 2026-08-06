@@ -2,19 +2,18 @@ package com.elementary.tasks.core.utils.ui
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.github.naz013.common.TextProvider
 import com.elementary.tasks.core.utils.UnitConverter
+import com.github.naz013.common.TextProvider
 
 open class DefaultDistanceFormatter(
   context: Context,
   private val useMetric: Boolean,
-  private val unitConverter: UnitConverter = UnitConverter()
+  private val unitConverter: UnitConverter = UnitConverter(),
 ) : ValueFormatter<Int> {
-
   private val textProvider = TextProvider(context)
 
-  override fun format(meters: Int): String {
-    return if (meters > 5000) {
+  override fun format(meters: Int): String =
+    if (meters > 5000) {
       if (useMetric) {
         metersToKm(meters)
       } else {
@@ -27,11 +26,8 @@ open class DefaultDistanceFormatter(
         metersToFt(meters)
       }
     }
-  }
 
-  private fun meters(value: Int): String {
-    return textProvider.getText(R.string.dist_x_m, value.toString())
-  }
+  private fun meters(value: Int): String = textProvider.getText(R.string.dist_x_m, value.toString())
 
   private fun metersToKm(meters: Int): String {
     val km = unitConverter.m2Km(meters.toFloat())

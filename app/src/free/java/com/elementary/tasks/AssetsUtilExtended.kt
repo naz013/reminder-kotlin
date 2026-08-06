@@ -5,12 +5,10 @@ import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 
 object AssetsUtilExtended {
+  fun getFontNames(): List<String> = emptyList()
 
-  fun getFontNames(): List<String> {
-    return emptyList()
-  }
-
-  fun getTypeface(context: Context, code: Int): Typeface? {
-    return ResourcesCompat.getFont(context, R.font.roboto_regular)
-  }
+  fun getTypeface(
+    context: Context,
+    code: Int,
+  ): Typeface? = ResourcesCompat.getFont(context, R.font.roboto_regular)
 }

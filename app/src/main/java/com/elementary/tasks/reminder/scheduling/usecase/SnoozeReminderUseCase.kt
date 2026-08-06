@@ -2,10 +2,11 @@ package com.elementary.tasks.reminder.scheduling.usecase
 
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.reminder.scheduling.behavior.BehaviorStrategyResolver
-import com.elementary.tasks.reminder.scheduling.behavior.LocationBasedStrategy
+import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
+import com.elementary.tasks.reminder.scheduling.behavior.v2.LocationBasedStrategyV2
 import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
-import com.github.naz013.domain.Reminder
+import com.elementary.tasks.workflow.WorkflowTriggerRunner
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 
@@ -21,29 +22,36 @@ import com.github.naz013.logging.Logger
  */
 class SnoozeReminderUseCase(
   private val jobScheduler: JobScheduler,
-  private val strategyResolver: BehaviorStrategyResolver,
+  private val strategyResolver: BehaviorStrategyResolverV2,
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
-  private val notifier: Notifier
+  private val notifier: Notifier,
+  private val workflowTriggerRunner: WorkflowTriggerRunner,
 ) {
-
-  suspend operator fun invoke(reminder: Reminder, timeInMinutes: Int): Reminder {
+  suspend operator fun invoke(
+    reminder: ReminderV2,
+    timeInMinutes: Int,
+  ): ReminderV2 {
     val strategy = strategyResolver.resolve(reminder)
-    if (strategy is LocationBasedStrategy || strategy.requiresBackgroundService(reminder)) {
+    if (strategy is LocationBasedStrategyV2 || strategy.requiresBackgroundService(reminder)) {
       Logger.w(TAG, "Cannot snooze location-based reminder id=${reminder.uuId}")
-     return reminder
+      return reminder
     }
     if (timeInMinutes <= 0) {
       Logger.w(TAG, "Snooze time is less than or equal to zero for reminder id=${reminder.uuId}")
       return completeReminderUseCase(reminder)
     }
     notifier.cancel(reminder.uniqueId)
-    val reminder = reminder.copy(
-      delay = timeInMinutes,
-      syncState = SyncState.WaitingForUpload
-    )
+    val reminder =
+      reminder.copy(
+        notification = reminder.notification.copy(delayMinutes = timeInMinutes),
+        sync = reminder.sync.copy(syncState = SyncState.WaitingForUpload),
+        snoozeCount = reminder.snoozeCount + 1,
+        lastShownAt = null,
+      )
     saveReminderUseCase(reminder)
     jobScheduler.scheduleReminderDelay(timeInMinutes, reminder.uuId, reminder.uniqueId)
+    workflowTriggerRunner.onReminderSnoozed(reminder.uuId)
     Logger.i(TAG, "Snoozed reminder id=${reminder.uuId} for $timeInMinutes minutes")
     return reminder
   }

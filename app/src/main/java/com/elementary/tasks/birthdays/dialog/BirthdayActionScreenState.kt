@@ -7,13 +7,13 @@ data class BirthdayActionScreenState(
   val id: String,
   val header: BirthdayActionScreenHeader,
   val mainAction: BirthdayActionScreenActionItem,
-  val secondaryActions: List<BirthdayActionScreenActionItem>
+  val secondaryActions: List<BirthdayActionScreenActionItem>,
 )
 
 data class BirthdayActionScreenActionItem(
   val action: BirthdayAction,
   val text: String,
-  val iconRes: Int
+  val iconRes: Int,
 )
 
 data class BirthdayActionScreenHeader(
@@ -22,5 +22,5 @@ data class BirthdayActionScreenHeader(
   val contactName: String?,
   val contactPhoto: Bitmap?,
   val birthdayDate: String,
-  val age: String?
+  val age: String?,
 )

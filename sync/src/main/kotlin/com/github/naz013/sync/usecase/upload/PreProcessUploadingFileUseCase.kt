@@ -4,10 +4,10 @@ import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.domain.sync.NoteV3Image
-import com.github.naz013.domain.sync.NoteV3Json
+import com.github.naz013.files.model.NoteV3Image
+import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.logging.Logger
-import com.github.naz013.sync.DataType
+import com.github.naz013.files.DataType
 import com.github.naz013.sync.images.CachedFile
 import com.github.naz013.sync.images.NoteImageDataType
 import com.github.naz013.sync.images.UploadFilesUseCase
@@ -54,6 +54,9 @@ internal class PreProcessUploadingFileUseCase(
     return NoteV3Json(
       key = note.key,
       summary = note.summary,
+      title = note.title,
+      titleFontSize = note.titleFontSize,
+      titleFontStyle = note.titleFontStyle,
       color = note.color,
       archived = note.archived,
       date = note.date,

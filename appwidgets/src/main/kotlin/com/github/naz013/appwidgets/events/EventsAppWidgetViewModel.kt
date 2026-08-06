@@ -3,7 +3,6 @@ package com.github.naz013.appwidgets.events
 import androidx.compose.ui.unit.sp
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.R
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetList
 import com.github.naz013.appwidgets.birthdays.UiBirthdayWidgetListAdapter
 import com.github.naz013.appwidgets.events.data.DateSorted
@@ -14,7 +13,7 @@ import com.github.naz013.appwidgets.events.data.UiShopListWidget
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.logging.Logger
 import com.github.naz013.usecase.birthdays.GetBirthdaysByDayMonthUseCase
-import com.github.naz013.usecase.reminders.GetActiveRemindersUseCase
+import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
 import java.text.SimpleDateFormat
 import java.util.GregorianCalendar
 import java.util.Locale
@@ -23,7 +22,7 @@ import java.util.UUID
 internal class EventsAppWidgetViewModel(
   private val prefsProvider: EventsWidgetPrefsProvider,
   private val dateTimeManager: DateTimeManager,
-  private val getActiveRemindersUseCase: GetActiveRemindersUseCase,
+  private val getActiveRemindersV2UseCase: GetActiveRemindersV2UseCase,
   private val getBirthdaysByDayMonthUseCase: GetBirthdaysByDayMonthUseCase,
   private val uiReminderWidgetListAdapter: UiReminderWidgetListAdapter,
   private val uiBirthdayWidgetListAdapter: UiBirthdayWidgetListAdapter,
@@ -37,11 +36,8 @@ internal class EventsAppWidgetViewModel(
     } else {
       EventsAppWidgetState(
         widgetId = prefsProvider.widgetId,
-        headerBackgroundColor = prefsProvider.getHeaderBackground(),
-        headerContrastColor = WidgetUtils.getContrastColor(prefsProvider.getHeaderBackground()),
+        backgroundColor = prefsProvider.getBackground(),
         headerText = getCurrentDateFormatted(),
-        itemBackgroundColor = prefsProvider.getItemBackground(),
-        itemContrastColor = WidgetUtils.getContrastColor(prefsProvider.getItemBackground()),
         itemTextSize = prefsProvider.getTextSize().toInt().sp,
         items = getEvents()
       )
@@ -56,8 +52,8 @@ internal class EventsAppWidgetViewModel(
   }
 
   private suspend fun getEvents(): List<DateSorted> {
-    val events = getActiveRemindersUseCase()
-      .map { uiReminderWidgetListAdapter.create(it) }
+    val events = getActiveRemindersV2UseCase()
+      .map { uiReminderWidgetListAdapter.createV2(it) }
       .toMutableList()
 
     if (appWidgetPreferences.isBirthdayInWidgetEnabled) {
@@ -78,11 +74,8 @@ internal class EventsAppWidgetViewModel(
     Logger.d(TAG, "Get state for preview")
     return EventsAppWidgetState(
       widgetId = prefsProvider.widgetId,
-      headerBackgroundColor = backgroundCode,
-      headerContrastColor = WidgetUtils.getContrastColor(backgroundCode),
+      backgroundColor = backgroundCode,
       headerText = getCurrentDateFormatted(),
-      itemBackgroundColor = backgroundCode,
-      itemContrastColor = WidgetUtils.getContrastColor(backgroundCode),
       itemTextSize = 15.sp,
       items = getPreviewEvents()
     )

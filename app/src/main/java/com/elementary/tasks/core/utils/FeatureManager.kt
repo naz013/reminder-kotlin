@@ -3,16 +3,13 @@ package com.elementary.tasks.core.utils
 import com.elementary.tasks.core.utils.params.Prefs
 
 class FeatureManager(
-  private val prefs: Prefs
+  private val prefs: Prefs,
 ) {
-
-  fun isFeatureEnabled(feature: Feature): Boolean {
-    return prefs.getBoolean(feature.value, feature.defaultValue)
-  }
+  fun isFeatureEnabled(feature: Feature): Boolean = prefs.getBoolean(feature.value, feature.defaultValue)
 
   enum class Feature(
     val value: String,
-    val defaultValue: Boolean = true
+    val defaultValue: Boolean = true,
   ) {
     DROPBOX("feature_dropbox"),
     GOOGLE_DRIVE("feature_google_drive"),
@@ -21,6 +18,6 @@ class FeatureManager(
     REMINDER_BUILDER_V1("feature_builder_v1"),
     REMINDER_BUILDER_V2("feature_builder_v2"),
     GEOCODING("feature_geocoding"),
-    LOGS_IN_REVIEWS("feature_logs_in_reviews", false)
+    LOGS_IN_REVIEWS("feature_logs_in_reviews", false),
   }
 }

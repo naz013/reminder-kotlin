@@ -1,33 +1,32 @@
 package com.elementary.tasks.reminder.build.reminder.validation
 
-import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderAction
+import com.github.naz013.domain.reminder.v2.ReminderV2
 
 class EventTimeValidator {
+  operator fun invoke(reminder: ReminderV2): Boolean =
+    when (reminder.recurrence) {
+      is RecurrenceRule.ICalendar,
+      is RecurrenceRule.Yearly,
+      is RecurrenceRule.Countdown,
+      is RecurrenceRule.Weekly,
+      is RecurrenceRule.Monthly,
+      is RecurrenceRule.RelativeMonthly,
+      -> reminder.schedule.eventDateTime != null
 
-  operator fun invoke(reminder: Reminder): Boolean {
-    val type = reminder.readType()
-    return if (type.isICalendar() || type.isByDayOfYear() || type.isCountdown() ||
-      type.isByDayOfWeek() || type.isByDayOfMonth()
-    ) {
-      reminder.eventTime.isNotEmpty()
-    } else if (type.isDateTime()) {
-      if (type.hasSubTasks()) {
-        if (reminder.hasReminder) {
-          reminder.eventTime.isNotEmpty()
+      RecurrenceRule.Once, is RecurrenceRule.Daily ->
+        if (reminder.action is ReminderAction.Shopping) {
+          true
+        } else {
+          reminder.schedule.eventDateTime != null
+        }
+
+      RecurrenceRule.LocationEnter, RecurrenceRule.LocationExit ->
+        if (reminder.location?.hasDelayedReminder == true) {
+          reminder.schedule.eventDateTime != null
         } else {
           true
         }
-      } else {
-        reminder.eventTime.isNotEmpty()
-      }
-    } else if (type.isGpsType()) {
-      if (reminder.hasReminder) {
-        reminder.eventTime.isNotEmpty()
-      } else {
-        true
-      }
-    } else {
-      true
     }
-  }
 }

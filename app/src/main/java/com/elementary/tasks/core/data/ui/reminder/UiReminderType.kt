@@ -3,11 +3,10 @@ package com.elementary.tasks.core.data.ui.reminder
 import com.github.naz013.analytics.AnalyticsReminderType
 
 data class UiReminderType(
-  val value: Int
+  val value: Int,
 ) {
-
   constructor(base: Base, kind: Kind) : this(
-    base.value + kind.value
+    base.value + kind.value,
   )
 
   fun isCall(): Boolean = isKind(Kind.CALL)
@@ -34,25 +33,19 @@ data class UiReminderType(
 
   fun isRecur(): Boolean = isBase(Base.RECUR)
 
-  private fun isKind(kind: Kind): Boolean {
-    return value % Base.DATE.value == kind.value
-  }
+  private fun isKind(kind: Kind): Boolean = value % Base.DATE.value == kind.value
 
-  fun isSame(type: Int): Boolean {
-    return value == type
-  }
+  fun isSame(type: Int): Boolean = value == type
 
   fun isBase(base: Base): Boolean {
     val res = value - base.value
     return res in 0..9
   }
 
-  fun isGpsType(): Boolean {
-    return isBase(Base.LOCATION_IN) || isBase(Base.LOCATION_OUT) || isBase(Base.PLACE)
-  }
+  fun isGpsType(): Boolean = isBase(Base.LOCATION_IN) || isBase(Base.LOCATION_OUT) || isBase(Base.PLACE)
 
-  fun getEventType(): AnalyticsReminderType {
-    return when {
+  fun getEventType(): AnalyticsReminderType =
+    when {
       isRecur() -> AnalyticsReminderType.Recur
       isEmail() -> AnalyticsReminderType.Email
       isLink() -> AnalyticsReminderType.WebLink
@@ -67,9 +60,10 @@ data class UiReminderType(
       isByDate() -> AnalyticsReminderType.ByDate
       else -> AnalyticsReminderType.Other
     }
-  }
 
-  enum class Base(val value: Int) {
+  enum class Base(
+    val value: Int,
+  ) {
     DATE(10),
     TIMER(20),
     WEEKDAY(30),
@@ -83,15 +77,17 @@ data class UiReminderType(
     @Deprecated("This type is removed from application")
     PLACE(80),
     YEARLY(90),
-    RECUR(100)
+    RECUR(100),
   }
 
-  enum class Kind(val value: Int) {
+  enum class Kind(
+    val value: Int,
+  ) {
     CALL(1),
     SMS(2),
     APP(3),
     LINK(4),
     SHOPPING(5),
-    EMAIL(6)
+    EMAIL(6),
   }
 }

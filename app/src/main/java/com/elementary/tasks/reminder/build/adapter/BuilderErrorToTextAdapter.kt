@@ -6,11 +6,10 @@ import com.github.naz013.common.TextProvider
 
 class BuilderErrorToTextAdapter(
   private val biTypeForUiAdapter: BiTypeForUiAdapter,
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
 ) {
-
-  operator fun invoke(error: BuilderError): String {
-    return when (error) {
+  operator fun invoke(error: BuilderError): String =
+    when (error) {
       is BuilderError.RequiresBiType -> {
         collectionToText(error.value)
       }
@@ -23,10 +22,9 @@ class BuilderErrorToTextAdapter(
         textProvider.getText(R.string.builder_error_create_reminder)
       }
     }
-  }
 
-  private fun collectionToText(collection: BuilderError.BiTypeCollection): String {
-    return when (collection) {
+  private fun collectionToText(collection: BuilderError.BiTypeCollection): String =
+    when (collection) {
       is BuilderError.BiTypeCollection.Single -> {
         val typeName = biTypeForUiAdapter.getUiString(collection.value)
         textProvider.getString(R.string.please_add_x_to_create_reminder, typeName)
@@ -35,14 +33,13 @@ class BuilderErrorToTextAdapter(
       is BuilderError.BiTypeCollection.Multiple -> {
         textProvider.getString(
           R.string.please_add_the_following_items_x,
-          multipleToText(collection)
+          multipleToText(collection),
         )
       }
     }
-  }
 
-  private fun multipleToText(multiple: BuilderError.BiTypeCollection.Multiple): String {
-    return when (multiple) {
+  private fun multipleToText(multiple: BuilderError.BiTypeCollection.Multiple): String =
+    when (multiple) {
       is BuilderError.BiTypeCollection.Multiple.And -> {
         multiple.biTypes.joinToString("\nand ") { biTypeForUiAdapter.getUiString(it) }
       }
@@ -50,5 +47,4 @@ class BuilderErrorToTextAdapter(
         multiple.biTypes.joinToString("\nor ") { biTypeForUiAdapter.getUiString(it) }
       }
     }
-  }
 }

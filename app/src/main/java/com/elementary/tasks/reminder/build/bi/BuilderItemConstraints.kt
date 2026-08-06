@@ -8,19 +8,22 @@ import com.elementary.tasks.reminder.build.bi.constraint.RequiresAllConstraint
 import com.elementary.tasks.reminder.build.bi.constraint.RequiresAnyOfConstraint
 import com.github.naz013.domain.reminder.BiType
 
-data class BuilderItemConstraints(val constraints: List<BiConstraint<*>>) {
-
+data class BuilderItemConstraints(
+  val constraints: List<BiConstraint<*>>,
+) {
   val requiresAny: List<RequiresAnyOfConstraint<*>> by lazy {
     constraints.filterIsInstance<RequiresAnyOfConstraint<*>>()
   }
 
   val requiresAnyType: List<RequiresAnyOfConstraint<BiType>> by lazy {
-    requiresAny.filter { it.value is BiType }
+    requiresAny
+      .filter { it.value is BiType }
       .mapNotNull { it as? RequiresAnyOfConstraint<BiType> }
   }
 
   val requiresAnyGroup: List<RequiresAnyOfConstraint<BiGroup>> by lazy {
-    requiresAny.filter { it.value is BiGroup }
+    requiresAny
+      .filter { it.value is BiGroup }
       .mapNotNull { it as? RequiresAnyOfConstraint<BiGroup> }
   }
 
@@ -29,12 +32,14 @@ data class BuilderItemConstraints(val constraints: List<BiConstraint<*>>) {
   }
 
   val requiresAllType: List<RequiresAllConstraint<BiType>> by lazy {
-    requiresAll.filter { it.value is BiType }
+    requiresAll
+      .filter { it.value is BiType }
       .mapNotNull { it as? RequiresAllConstraint<BiType> }
   }
 
   val requiresAllGroup: List<RequiresAllConstraint<BiGroup>> by lazy {
-    requiresAll.filter { it.value is BiGroup }
+    requiresAll
+      .filter { it.value is BiGroup }
       .mapNotNull { it as? RequiresAllConstraint<BiGroup> }
   }
 
@@ -43,12 +48,14 @@ data class BuilderItemConstraints(val constraints: List<BiConstraint<*>>) {
   }
 
   val blockedByType: List<BlockedByConstraint<BiType>> by lazy {
-    blockedBy.filter { it.value is BiType }
+    blockedBy
+      .filter { it.value is BiType }
       .mapNotNull { it as? BlockedByConstraint<BiType> }
   }
 
   val blockedByGroup: List<BlockedByConstraint<BiGroup>> by lazy {
-    blockedBy.filter { it.value is BiGroup }
+    blockedBy
+      .filter { it.value is BiGroup }
       .mapNotNull { it as? BlockedByConstraint<BiGroup> }
   }
 
@@ -57,23 +64,24 @@ data class BuilderItemConstraints(val constraints: List<BiConstraint<*>>) {
   }
 
   val mandatoryIfType: List<MandatoryIfConstraint<BiType>> by lazy {
-    mandatoryIf.filter { it.value is BiType }
+    mandatoryIf
+      .filter { it.value is BiType }
       .mapNotNull { it as? MandatoryIfConstraint<BiType> }
   }
 
   val mandatoryIfGroup: List<MandatoryIfConstraint<BiGroup>> by lazy {
-    mandatoryIf.filter { it.value is BiGroup }
+    mandatoryIf
+      .filter { it.value is BiGroup }
       .mapNotNull { it as? MandatoryIfConstraint<BiGroup> }
   }
 
   val permissions: List<PermissionConstraint> = constraints.filterIsInstance<PermissionConstraint>()
 
-  override fun toString(): String {
-    return "BuilderItemConstraints(" +
+  override fun toString(): String =
+    "BuilderItemConstraints(" +
       "constraints=$constraints, " +
       "requiresAll=$requiresAll, " +
       "requiresAllType=$requiresAllType, " +
       "requiresAllGroup=$requiresAllGroup" +
       ")"
-  }
 }

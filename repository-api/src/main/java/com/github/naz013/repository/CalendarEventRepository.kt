@@ -10,4 +10,5 @@ interface CalendarEventRepository {
   suspend fun eventIds(): List<Long>
 
   suspend fun delete(id: String)
+  suspend fun deleteAll()
 }

@@ -4,5 +4,5 @@ import org.threeten.bp.LocalDateTime
 
 data class EventData(
   val startDateTime: LocalDateTime,
-  val recurObject: String
+  val recurObject: String,
 )

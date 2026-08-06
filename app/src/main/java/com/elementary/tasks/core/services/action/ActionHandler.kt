@@ -1,5 +1,5 @@
 package com.elementary.tasks.core.services.action
 
-interface ActionHandler<T> {
+fun interface ActionHandler<T> {
   suspend fun handle(data: T)
 }

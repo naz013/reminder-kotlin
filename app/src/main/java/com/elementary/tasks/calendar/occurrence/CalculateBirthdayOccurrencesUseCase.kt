@@ -2,6 +2,8 @@ package com.elementary.tasks.calendar.occurrence
 
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.BirthdayDateCalculator
+import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.domain.occurance.EventOccurrence
 import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.logging.Logger
@@ -14,32 +16,39 @@ class CalculateBirthdayOccurrencesUseCase(
   private val prefs: Prefs,
   private val birthdayRepository: BirthdayRepository,
   private val dateTimeManager: DateTimeManager,
-  private val eventOccurrenceRepository: EventOccurrenceRepository
+  private val eventOccurrenceRepository: EventOccurrenceRepository,
+  private val birthdayDateCalculator: BirthdayDateCalculator = BirthdayDateCalculatorImpl(),
 ) {
-
   suspend operator fun invoke(id: String) {
-    val birthday = birthdayRepository.getById(id) ?: run {
-      Logger.w(TAG, "Birthday not found: $id")
-      return
-    }
-    val date = dateTimeManager.parseBirthdayDate(birthday.date) ?: run {
-      Logger.w(TAG, "Birthday date parse error: ${birthday.date}")
-      return
-    }
+    val birthday =
+      birthdayRepository.getById(id) ?: run {
+        Logger.w(TAG, "Birthday not found: $id")
+        return
+      }
+    val date =
+      dateTimeManager.parseBirthdayDate(birthday.date) ?: run {
+        Logger.w(TAG, "Birthday date parse error: ${birthday.date}")
+        return
+      }
     eventOccurrenceRepository.deleteByEventId(birthday.uuId)
     val time = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
     val previousYear = dateTimeManager.getCurrentDate().year - 1
-    val startDate = date.withYear(previousYear)
-    for (i in 0..prefs.numberOfBirthdayOccurrences) {
-      val occurrenceDate = startDate.plusYears(i.toLong())
+    val occurrences =
+      birthdayDateCalculator.getOccurrenceWindow(
+        birthDate = date,
+        time = time,
+        occurrenceCount = prefs.numberOfBirthdayOccurrences,
+        fromYear = previousYear,
+      )
+    occurrences.forEach { occurrenceDateTime ->
       eventOccurrenceRepository.save(
         EventOccurrence(
           id = UUID.randomUUID().toString(),
           eventId = birthday.uuId,
-          date = occurrenceDate,
-          time = time,
+          date = occurrenceDateTime.toLocalDate(),
+          time = occurrenceDateTime.toLocalTime(),
           type = OccurrenceType.Birthday,
-        )
+        ),
       )
     }
     Logger.i(TAG, "Birthday occurrences calculated for birthday: ${birthday.uuId}")

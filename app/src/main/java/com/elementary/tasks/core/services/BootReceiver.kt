@@ -8,11 +8,13 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class BootReceiver : BaseBroadcast() {
-
   private val jobScheduler by inject<JobScheduler>()
 
-  override fun onReceive(context: Context, intent: Intent) {
-    Logger.i("Device boot completed")
+  override fun onReceive(
+    context: Context,
+    intent: Intent,
+  ) {
+    Logger.i(TAG, "Device boot completed")
     if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
       get<ActivateAllActiveRemindersUseCase>().run()
       if (prefs.isBirthdayReminderEnabled) {
@@ -30,5 +32,9 @@ class BootReceiver : BaseBroadcast() {
         notifier.showBirthdayPermanent()
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "BootReceiver"
   }
 }

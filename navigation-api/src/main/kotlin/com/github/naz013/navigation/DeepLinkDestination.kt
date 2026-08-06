@@ -1,13 +1,9 @@
 package com.github.naz013.navigation
 
-import android.os.Bundle
 import android.os.Parcelable
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 sealed class DeepLinkDestination : Parcelable {
-
-  abstract val extras: Bundle?
 
   companion object {
     const val KEY = "deep_link_destination"
@@ -16,56 +12,63 @@ sealed class DeepLinkDestination : Parcelable {
 
 @Parcelize
 data class DayViewScreen(
-  override val extras: Bundle
+  val dateMillis: Long
 ) : DeepLinkDestination()
 
 @Parcelize
 data class EditBirthdayScreen(
-  override val extras: Bundle
+  val id: String? = null,
+  val fromIntentData: Boolean = false
 ) : DeepLinkDestination()
 
 @Parcelize
 data class ViewBirthdayScreen(
-  override val extras: Bundle
+  val id: String? = null
 ) : DeepLinkDestination()
 
 @Parcelize
-data object SettingsScreen : DeepLinkDestination() {
-  @IgnoredOnParcel
-  override val extras: Bundle? = null
-}
+data object SettingsScreen : DeepLinkDestination()
 
 @Parcelize
 data class EditGroupScreen(
-  override val extras: Bundle
+  val id: String? = null,
+  val fromIntentData: Boolean = false
 ) : DeepLinkDestination()
 
 @Parcelize
 data class EditPlaceScreen(
-  override val extras: Bundle
+  val id: String? = null,
+  val fromIntentData: Boolean = false
 ) : DeepLinkDestination()
 
 @Parcelize
 data class ViewGoogleTaskScreen(
-  override val extras: Bundle
+  val id: String? = null
 ) : DeepLinkDestination()
 
 @Parcelize
-data class EditGoogleTaskScreen(
-  override val extras: Bundle
-) : DeepLinkDestination()
+data object EditGoogleTaskScreen : DeepLinkDestination()
 
 @Parcelize
 data class ViewReminderScreen(
-  override val extras: Bundle
+  val id: String? = null
 ) : DeepLinkDestination()
 
 @Parcelize
 data class EditReminderScreen(
-  override val extras: Bundle
+  val fromIntentItem: Boolean = false,
+  val deepLinkText: String? = null
 ) : DeepLinkDestination()
 
 @Parcelize
 data class ViewNoteScreen(
-  override val extras: Bundle
+  val id: String? = null
+) : DeepLinkDestination()
+
+@Parcelize
+data class EditNoteScreen(
+  val id: String? = null,
+  val fromIntentData: Boolean = false,
+  val sharedText: String? = null,
+  val sharedImageUris: List<String>? = null
 ) : DeepLinkDestination()

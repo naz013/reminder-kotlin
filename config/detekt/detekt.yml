@@ -1,0 +1,65 @@
+build:
+  maxIssues: 0
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+complexity:
+  LongMethod:
+    threshold: 60
+    ignoreAnnotated:
+      - 'Composable'
+  LongParameterList:
+    constructorThreshold: 25
+    ignoreAnnotated:
+      - 'Composable'
+  TooManyFunctions:
+    ignorePrivate: true
+    ignoreOverridden: true
+    thresholdInClasses: 20
+  ComplexInterface:
+    threshold: 20
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  InjectDispatcher:
+    active: true
+  RedundantSuspendModifier:
+    active: true
+  SleepInsteadOfDelay:
+    active: true
+  SuspendFunSwallowedCancellation:
+    active: true
+
+formatting:
+  active: true
+  android: false
+  autoCorrect: false
+  Indentation:
+    active: true
+    indentSize: 2
+  MaximumLineLength:
+    active: false
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - 'Composable'
+
+potential-bugs:
+  UnsafeCallOnNullableType:
+    ignoreAnnotated:
+      - 'Test'
+
+style:
+  ForbiddenComment:
+    active: false
+  MagicNumber:
+    active: false
+  UnusedPrivateMember:
+    active: true
+    allowedNames: '_|ignored|expected'
+    ignoreAnnotated: [ 'Preview' ]

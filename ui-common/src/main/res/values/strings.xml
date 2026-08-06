@@ -281,7 +281,7 @@
     <string name="delete_completed_tasks">Delete completed tasks</string>
     <string name="trash_cleared">Trash cleared</string>
     <string name="trash_is_empty">Trash is empty</string>
-    <string name="reminder_is_outdated">Reminder is outdated, edit it first</string>
+    <string name="reminder_is_outdated">Reminder is outdated, edit it first!</string>
     <string name="everyday">Everyday</string>
     <string name="reminder">Reminder</string>
     <string name="other">Other</string>
@@ -798,7 +798,7 @@
     <string name="builder_count_description">The COUNT rule part defines the number of occurrences at which to range-bound the recurrence</string>
     <string name="builder_interval_description">The INTERVAL rule part contains a positive integer representing at which intervals the recurrence rule repeats</string>
     <string name="builder_frequency_description">The Frequency rule part identifies the type of recurrence rule. This rule part MUST be specified in the recurrence rule</string>
-    <string name="builder_empty_message">Start building your Reminder by adding elements to it</string>
+    <string name="builder_empty_message">Choose how you\'d like to get started</string>
     <string name="builder_selector_tab_parameters">Parameters</string>
     <string name="builder_selector_tab_presets">@string/recur_presets</string>
     <string name="builder_selector_tab_recur_presets">iCalendar presets</string>
@@ -927,4 +927,187 @@
     <string name="keep_notification">Keep notification</string>
     <string name="cd_back">Move back</string>
     <string name="how_to_create_a_reminder">How to Create a Reminder</string>
+    <string name="copy_of">"Copy of: %s"</string>
+
+    <string name="turn_off">Turn off</string>
+
+    <string name="delete_reminder_permanently">Delete reminder permanently?</string>
+    <string name="delete_birthday_permanently">Delete birthday permanently?</string>
+    <string name="delete_note_permanently">Delete note permanently?</string>
+    <string name="delete_group_permanently">Delete group permanently?</string>
+
+    <string name="share_send_note">Send note…</string>
+
+    <string name="note_moved_to_archive">Note moved to archive</string>
+    <string name="note_reverted_from_archive">Note reverted from archive</string>
+    <string name="show_note_in_notifications">Show note in notifications</string>
+
+    <string name="share_intent_title">Share...</string>
+    <string name="error_reminder_not_found">Reminder not found!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">Reminder is already removed! Edit it first.</string>
+
+    <string name="workflow_rules">Workflow rules</string>
+    <string name="workflow_automations">Automations</string>
+    <string name="workflow_active_global_rules">Active global rules</string>
+    <string name="workflow_rules_for_group">Rules for this group</string>
+    <string name="workflow_no_rules_yet">No rules yet</string>
+    <string name="workflow_templates">Templates</string>
+    <string name="workflow_apply_globally">Apply globally</string>
+    <string name="workflow_apply_to_group">Apply to group</string>
+    <string name="workflow_open_group_to_apply">Open a group\'s rules to apply this</string>
+    <string name="workflow_save_as_template">Save as template</string>
+    <string name="workflow_create_custom_rule">Create custom rule</string>
+    <string name="workflow_archive_after_days_hint">Days</string>
+    <string name="workflow_category_reminder_lifecycle">Reminder lifecycle</string>
+    <string name="workflow_category_group">Group</string>
+    <string name="workflow_category_location">Location</string>
+    <string name="workflow_category_notification_escalation">Notification &amp; escalation</string>
+    <string name="workflow_category_system_integration">System integration</string>
+    <string name="workflow_category_privacy_data_hygiene">Privacy &amp; data hygiene</string>
+
+    <string name="workflow_builder_new_rule_title">New rule</string>
+    <string name="workflow_builder_edit_rule_title">Edit rule</string>
+    <string name="workflow_builder_when">When</string>
+    <string name="workflow_builder_if_optional">If (optional)</string>
+    <string name="workflow_builder_then">Then</string>
+    <string name="workflow_builder_not_set">Not set</string>
+    <string name="workflow_builder_add_condition">Add condition</string>
+    <string name="workflow_builder_choose_trigger">Choose a trigger</string>
+    <string name="workflow_builder_choose_condition">Choose a condition</string>
+    <string name="workflow_builder_choose_action">Choose an action</string>
+    <string name="workflow_builder_snooze_count_hint">Snooze count</string>
+    <string name="workflow_builder_minutes_hint">Minutes</string>
+    <string name="workflow_builder_minutes_unit">min</string>
+    <string name="workflow_builder_select_group">Select a group</string>
+    <string name="workflow_builder_select_reminder">Select a reminder</string>
+    <string name="workflow_builder_no_groups">No groups yet</string>
+    <string name="workflow_builder_no_reminders">No active reminders</string>
+    <string name="workflow_trigger_reminder_completed">Reminder is completed</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">Reminder snoozed N times</string>
+    <string name="workflow_trigger_group_all_completed">Every reminder in the group is completed</string>
+    <string name="workflow_trigger_location_entered">Arrived at the reminder\'s location</string>
+    <string name="workflow_trigger_location_exited">Left the reminder\'s location</string>
+    <string name="workflow_trigger_reminder_age_exceeded">Completed for at least N days</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">Not seen for N minutes</string>
+    <string name="workflow_condition_priority_at_least">Priority is at least</string>
+    <string name="workflow_condition_within_time_window">Current time is between</string>
+    <string name="workflow_condition_group_is">Reminder\'s group is</string>
+    <string name="workflow_action_archive_reminder">Archive the reminder</string>
+    <string name="workflow_action_complete_reminder">Complete the reminder</string>
+    <string name="workflow_action_apply_notification_override">Change notification settings</string>
+    <string name="workflow_action_activate_reminder">Activate another reminder</string>
+    <string name="preset_buy_groceries">Buy groceries</string>
+    <string name="preset_bread">Bread</string>
+    <string name="preset_juice">Juice</string>
+    <string name="preset_cookies">Cookies</string>
+    <string name="haptic_feedback">Haptic feedback</string>
+    <string name="use_haptic_feedback_for_interactions">Use haptic feedback for interactions</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">Do not use haptic feedback for interactions</string>
+
+    <string name="notification_defaults">Notification defaults</string>
+    <string name="default_vibrate">Vibrate</string>
+    <string name="vibrate_on_notification">Vibrate on notification</string>
+    <string name="do_not_vibrate_on_notification">Do not vibrate on notification</string>
+    <string name="bypass_do_not_disturb">Bypass Do Not Disturb</string>
+    <string name="bypass_do_not_disturb_enabled">Ring even during Do Not Disturb</string>
+    <string name="bypass_do_not_disturb_disabled">Respect Do Not Disturb</string>
+    <string name="wake_screen">Wake screen</string>
+    <string name="wake_screen_enabled">Turn on screen like an alarm</string>
+    <string name="wake_screen_disabled">Do not turn on screen</string>
+    <string name="notification_category">Notification category</string>
+    <string name="notification_category_default">Default</string>
+    <string name="notification_category_alarm">Alarm</string>
+    <string name="notification_category_event">Event</string>
+    <string name="notification_category_call">Call</string>
+    <string name="lock_screen_visibility">Lock screen visibility</string>
+    <string name="lock_screen_visibility_public">Show full content</string>
+    <string name="lock_screen_visibility_private">Hide sensitive content</string>
+    <string name="lock_screen_visibility_secret">Hide completely</string>
+    <string name="vibration_pattern">Vibration pattern</string>
+    <string name="notification_overrides">Notification overrides</string>
+    <string name="notification_customization">Notification customization</string>
+    <string name="how_does_this_work">How does this work?</string>
+    <string name="inherit_from_settings">Inherit from Settings</string>
+    <string name="inherited_format">Inherited: %s</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="vibration_preset_short">Short</string>
+    <string name="vibration_preset_long">Long</string>
+    <string name="vibration_preset_double_buzz">Double buzz</string>
+    <string name="vibration_preset_default">Default</string>
+    <string name="notification_delay">Notification delay</string>
+
+    <string name="builder_set_category_for_the_notification">Set a system notification category for the notification</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">Set how much of the notification is shown on the lock screen</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">Ring even when Do Not Disturb is on</string>
+    <string name="builder_set_wake_screen_for_the_notification">Turn the screen on like an alarm</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">Set a vibration pattern for the notification</string>
+    <string name="builder_set_delay_for_the_notification">Delay the notification by this many minutes</string>
+
+    <string name="builder_quick_start_one_time">One-time reminder</string>
+    <string name="builder_quick_start_every_weekday">Every weekday</string>
+    <string name="builder_quick_start_every_month_day">Every month on this day</string>
+    <string name="builder_quick_start_every_year">Every year on this day</string>
+    <string name="builder_quick_start_timer">Countdown timer</string>
+    <string name="builder_quick_start_shopping_list">Shopping list</string>
+    <string name="builder_quick_start_more_options">More options…</string>
+
+    <string name="builder_invalid_email_value">Enter a valid email address</string>
+    <string name="builder_invalid_web_address_value">Enter a valid web address</string>
+    <string name="builder_invalid_phone_number_value">Enter a valid phone number</string>
+    <string name="builder_shopping_list_empty_value">Add at least one item to the list</string>
+    <string name="builder_invalid_value_generic">This value isn\'t valid</string>
+    <string name="builder_permissions_required_message">Grant the requested permissions to continue</string>
+
+    <string name="gemini_functions">Gemini functions</string>
+
+    <string name="smart_list_today">Today</string>
+    <string name="smart_list_overdue">Overdue</string>
+    <string name="smart_list_this_week">This week</string>
+    <string name="smart_list_no_group">No group</string>
+
+    <string name="tags">Tags</string>
+    <string name="manage_tags">Manage tags</string>
+    <string name="new_tag">New tag</string>
+    <string name="tag_name">Tag name</string>
+    <string name="no_tags">No tags yet</string>
+    <string name="delete_tag_permanently">Delete this tag? It will be removed from every reminder and note.</string>
+
+    <string name="local_backup">Local backup</string>
+    <string name="backup_export_title">Export backup</string>
+    <string name="backup_import_title">Restore backup</string>
+    <string name="backup_export_description">Save an encrypted copy of your reminders, notes, groups, birthdays, places and presets to a file you choose. Nothing is sent anywhere. If you forget the passphrase, the backup cannot be recovered.</string>
+    <string name="backup_import_description">Restore data from a previously exported encrypted backup file. Existing items with the same ID will be overwritten; nothing else is deleted.</string>
+    <string name="backup_passphrase">Passphrase</string>
+    <string name="backup_confirm_passphrase">Confirm passphrase</string>
+    <string name="backup_passphrase_mismatch">Passphrases don\'t match</string>
+    <string name="backup_passphrase_empty">Enter a passphrase</string>
+    <string name="backup_export_action">Export</string>
+    <string name="backup_import_action">Restore</string>
+    <string name="backup_export_success">Backup saved successfully.</string>
+    <string name="backup_export_failed">Could not save the backup. Please try again.</string>
+    <string name="backup_import_success">Restored %1$d items successfully.</string>
+    <string name="backup_import_failed">Could not restore the backup. Please try again.</string>
+    <string name="backup_wrong_passphrase">Incorrect passphrase, or the file is corrupted.</string>
+    <string name="backup_invalid_file">This file is not a valid Reminder backup.</string>
+    <string name="backup_open_file_failed">Could not open the selected file.</string>
+
+    <string name="insights">Insights</string>
+    <string name="weekly_trend">Weekly trend</string>
+    <string name="busiest_day">Busiest day: %1$s</string>
+    <string name="streak_current">Current streak: %1$d days</string>
+    <string name="streak_longest">Longest streak: %1$d days</string>
+    <string name="streak_fired_count">Fired %1$d times in the last 90 days</string>
+    <string name="no_insights_yet">No reminder activity in the last 90 days yet</string>
+
+    <string name="upcoming_events">Upcoming</string>
+
+    <string name="agenda">Agenda</string>
+
+    <string name="group_has_no_active_reminders">No active reminders in this group</string>
+    <string name="group_x_reminder">%d reminder</string>
+    <string name="group_x_reminders">%d reminders</string>
+
+    <string name="type">Type</string>
+    <string name="smart_lists">Smart Lists</string>
 </resources>

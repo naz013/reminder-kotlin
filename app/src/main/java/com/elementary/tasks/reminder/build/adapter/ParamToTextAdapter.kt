@@ -1,18 +1,19 @@
 package com.elementary.tasks.reminder.build.adapter
 
+import androidx.compose.runtime.Composable
 import com.elementary.tasks.R
 import com.github.naz013.common.TextProvider
 import com.github.naz013.icalendar.Day
 import com.github.naz013.icalendar.DayValue
 import com.github.naz013.icalendar.FreqType
 import com.github.naz013.icalendar.RecurParamType
+import org.koin.compose.koinInject
 
 class ParamToTextAdapter(
-  private val textProvider: TextProvider
+  private val textProvider: TextProvider,
 ) {
-
-  fun getTypeText(recurParamType: RecurParamType): String {
-    return when (recurParamType) {
+  fun getTypeText(recurParamType: RecurParamType): String =
+    when (recurParamType) {
       RecurParamType.COUNT -> textProvider.getText(R.string.recur_count)
       RecurParamType.INTERVAL -> textProvider.getText(R.string.recur_interval)
       RecurParamType.FREQ -> textProvider.getText(R.string.recur_frequency)
@@ -27,10 +28,9 @@ class ParamToTextAdapter(
       RecurParamType.BYSETPOS -> textProvider.getText(R.string.recur_set_pos)
       RecurParamType.WEEKSTART -> textProvider.getText(R.string.recur_week_start)
     }
-  }
 
-  fun getDayFullText(dayValue: DayValue): String {
-    return when (dayValue.day) {
+  fun getDayFullText(dayValue: DayValue): String =
+    when (dayValue.day) {
       Day.MO -> textProvider.getText(R.string.recur_monday)
       Day.TU -> textProvider.getText(R.string.recur_tuesday)
       Day.WE -> textProvider.getText(R.string.recur_wednesday)
@@ -40,10 +40,9 @@ class ParamToTextAdapter(
       Day.SU -> textProvider.getText(R.string.recur_sunday)
       else -> dayValue.value
     }
-  }
 
-  fun getFreqText(freqType: FreqType): String {
-    return when (freqType) {
+  fun getFreqText(freqType: FreqType): String =
+    when (freqType) {
       FreqType.DAILY -> textProvider.getText(R.string.recur_daily)
       FreqType.WEEKLY -> textProvider.getText(R.string.recur_weekly)
       FreqType.YEARLY -> textProvider.getText(R.string.recur_yearly)
@@ -51,5 +50,7 @@ class ParamToTextAdapter(
       FreqType.HOURLY -> textProvider.getText(R.string.recur_hourly)
       FreqType.MINUTELY -> textProvider.getText(R.string.recur_minutely)
     }
-  }
 }
+
+@Composable
+fun rememberParamToTextAdapter(): ParamToTextAdapter = koinInject()

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whats_new_version_and_date" translatable="false">%s, %s</string>
+    <string name="whats_new_version_and_date" translatable="false">%s\n%s</string>
     <string name="whats_new_text" translatable="false">
-        \n
-        ✅ Add Reminder help document;\n
-        🐞 Fix recurrent reminders;\n
+        ⭐ Refresh the application look;\n
+        ✅ Add new notification override logics: Default -> Group -> Reminder;\n
+        ✅ Add title field to the Note builder;\n
+        ✅ Add tags to Notes and Reminders;\n
+        ✅ Add Insights (for PRO only);\n
+        ✅ Add Local file backup (for PRO only);\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">

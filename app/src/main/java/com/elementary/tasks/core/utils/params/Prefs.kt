@@ -4,49 +4,61 @@ import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
-import com.elementary.tasks.core.data.platform.ReminderCreatorConfig
+import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.common.Module
+import com.elementary.tasks.simplemap.MapConfig
 import com.github.naz013.domain.font.FontParams
 
 typealias PrefsObserver = (String) -> Unit
 
 class Prefs(
-  context: Context
+  context: Context,
 ) : SharedPrefs(context) {
-
   private val observersMap = mutableMapOf<String, List<PrefsObserver>>()
 
-  fun addObserver(key: String, observer: PrefsObserver) {
-    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
-      observersMap[key]?.toMutableList() ?: mutableListOf()
-    } else {
-      mutableListOf()
-    }
+  fun addObserver(
+    key: String,
+    observer: PrefsObserver,
+  ) {
+    val observers: MutableList<PrefsObserver> =
+      if (observersMap.containsKey(key)) {
+        observersMap[key]?.toMutableList() ?: mutableListOf()
+      } else {
+        mutableListOf()
+      }
     observers.add(observer)
     observersMap[key] = observers
   }
 
-  fun removeObserver(key: String, observer: PrefsObserver) {
-    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
-      observersMap[key]?.toMutableList() ?: mutableListOf()
-    } else {
-      mutableListOf()
-    }
+  fun removeObserver(
+    key: String,
+    observer: PrefsObserver,
+  ) {
+    val observers: MutableList<PrefsObserver> =
+      if (observersMap.containsKey(key)) {
+        observersMap[key]?.toMutableList() ?: mutableListOf()
+      } else {
+        mutableListOf()
+      }
     observers.remove(observer)
     observersMap[key] = observers
   }
 
   private fun notifyKey(key: String) {
-    val observers: MutableList<PrefsObserver> = if (observersMap.containsKey(key)) {
-      observersMap[key]?.toMutableList() ?: mutableListOf()
-    } else {
-      mutableListOf()
-    }
+    val observers: MutableList<PrefsObserver> =
+      if (observersMap.containsKey(key)) {
+        observersMap[key]?.toMutableList() ?: mutableListOf()
+      } else {
+        mutableListOf()
+      }
     observers.forEach {
       it.invoke(key)
     }
   }
+
+  var hapticsEnabled: Boolean
+    get() = getBoolean(PrefsConstants.GENERAL_HAPTICS, true)
+    set(value) = putBoolean(PrefsConstants.GENERAL_HAPTICS, value)
 
   var addRemindersToGoogleCalendar: Boolean
     get() = getBoolean(PrefsConstants.GOOGLE_CALENDAR_ADD_REMINDERS, def = false)
@@ -116,12 +128,16 @@ class Prefs(
     get() = getBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, def = false)
     set(value) = putBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, value)
 
+  var hasAdoptedGoogleTasks: Boolean
+    get() = getBoolean(PrefsConstants.GOOGLE_TASKS_ADOPTED, def = false)
+    set(value) = putBoolean(PrefsConstants.GOOGLE_TASKS_ADOPTED, value)
+
   var analyticsEnabled: Boolean
     get() = getBoolean(PrefsConstants.ANALYTICS_ENABLED, def = true)
     set(value) = putBoolean(PrefsConstants.ANALYTICS_ENABLED, value)
 
   var nightMode: Int
-    get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_NO)
+    get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     set(value) = putInt(PrefsConstants.NIGHT_MODE, value)
 
   var autoBackupState: Int
@@ -155,21 +171,21 @@ class Prefs(
     }
 
   var doNotDisturbFrom: String
-    get() = getString(PrefsConstants.DO_NOT_DISTURB_FROM)
+    get() = getString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
     set(value) {
       putString(PrefsConstants.DO_NOT_DISTURB_FROM, value)
       notifyKey(PrefsConstants.DO_NOT_DISTURB_FROM)
     }
 
   var doNotDisturbTo: String
-    get() = getString(PrefsConstants.DO_NOT_DISTURB_TO)
+    get() = getString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
     set(value) {
       putString(PrefsConstants.DO_NOT_DISTURB_TO, value)
       notifyKey(PrefsConstants.DO_NOT_DISTURB_TO)
     }
 
   var doNotDisturbIgnore: Int
-    get() = getInt(PrefsConstants.DO_NOT_DISTURB_IGNORE)
+    get() = getInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
     set(value) {
       putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, value)
       notifyKey(PrefsConstants.DO_NOT_DISTURB_IGNORE)
@@ -180,15 +196,12 @@ class Prefs(
     set(value) = putInt(PrefsConstants.DO_NOT_DISTURB_ACTION, value)
 
   var defaultPriority: Int
-    get() = getInt(PrefsConstants.DEFAULT_PRIORITY)
+    get() = getInt(PrefsConstants.DEFAULT_PRIORITY, 2)
     set(value) = putInt(PrefsConstants.DEFAULT_PRIORITY, value)
 
   var birthdayPriority: Int
-    get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY)
+    get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
     set(value) = putInt(PrefsConstants.BIRTHDAY_PRIORITY, value)
-
-  val isTelephonyAllowed: Boolean
-    get() = Module.hasTelephony(context) && isTelephonyEnabled
 
   var isTelephonyEnabled: Boolean
     get() = getBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, true)
@@ -199,23 +212,23 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.MOVE_TO_TRASH, value)
 
   var appLanguage: Int
-    get() = getInt(PrefsConstants.APP_LANGUAGE)
+    get() = getInt(PrefsConstants.APP_LANGUAGE, 0)
     set(value) = putInt(PrefsConstants.APP_LANGUAGE, value)
 
   var markerStyle: Int
-    get() = getInt(PrefsConstants.MARKER_STYLE)
+    get() = getInt(PrefsConstants.MARKER_STYLE, MapConfig.DEFAULT_MARKER_STYLE)
     set(value) = putInt(PrefsConstants.MARKER_STYLE, value)
 
   var todayColor: Int
-    get() = getInt(PrefsConstants.TODAY_COLOR)
+    get() = getInt(PrefsConstants.TODAY_COLOR, 0)
     set(value) = putInt(PrefsConstants.TODAY_COLOR, value)
 
   var reminderColor: Int
-    get() = getInt(PrefsConstants.REMINDER_COLOR)
+    get() = getInt(PrefsConstants.REMINDER_COLOR, 4)
     set(value) = putInt(PrefsConstants.REMINDER_COLOR, value)
 
   var birthdayColor: Int
-    get() = getInt(PrefsConstants.BIRTH_COLOR)
+    get() = getInt(PrefsConstants.BIRTH_COLOR, 2)
     set(value) = putInt(PrefsConstants.BIRTH_COLOR, value)
 
   val is24HourFormat: Boolean
@@ -229,11 +242,11 @@ class Prefs(
     }
 
   var hourFormat: Int
-    get() = getInt(PrefsConstants.TIME_FORMAT)
+    get() = getInt(PrefsConstants.TIME_FORMAT, 0)
     set(value) = putInt(PrefsConstants.TIME_FORMAT, value)
 
   var isCalendarEnabled: Boolean
-    get() = getBoolean(PrefsConstants.EXPORT_TO_CALENDAR)
+    get() = getBoolean(PrefsConstants.EXPORT_TO_CALENDAR, false)
     set(value) = putBoolean(PrefsConstants.EXPORT_TO_CALENDAR, value)
 
   var isWearEnabled: Boolean
@@ -245,30 +258,27 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION, value)
 
   var radius: Int
-    get() = getInt(PrefsConstants.LOCATION_RADIUS, def = DefaultValues.RADIUS)
+    get() = getInt(PrefsConstants.LOCATION_RADIUS, def = MapConfig.Radius.DEFAULT_METERS)
     set(value) = putInt(PrefsConstants.LOCATION_RADIUS, value)
 
   var isDistanceNotificationEnabled: Boolean
-    get() = getBoolean(
-      PrefsConstants.TRACKING_NOTIFICATION,
-      def = DefaultValues.LOCATION_TRACK_NOTIFICATION
-    )
+    get() = getBoolean(PrefsConstants.TRACKING_NOTIFICATION, def = true)
     set(value) = putBoolean(PrefsConstants.TRACKING_NOTIFICATION, value)
 
   var mapType: Int
-    get() = getInt(PrefsConstants.MAP_TYPE)
+    get() = getInt(PrefsConstants.MAP_TYPE, MapConfig.DEFAULT_MAP_TYPE)
     set(value) = putInt(PrefsConstants.MAP_TYPE, value)
 
   var mapStyle: Int
-    get() = getInt(PrefsConstants.MAP_STYLE)
+    get() = getInt(PrefsConstants.MAP_STYLE, MapConfig.DEFAULT_MAP_STYLE)
     set(value) = putInt(PrefsConstants.MAP_STYLE, value)
 
   var trackTime: Int
-    get() = getInt(PrefsConstants.TRACK_TIME)
+    get() = getInt(PrefsConstants.TRACK_TIME, 1)
     set(value) = putInt(PrefsConstants.TRACK_TIME, value)
 
   var driveUser: String
-    get() = SuperUtil.decrypt(getString(PrefsConstants.DRIVE_USER))
+    get() = SuperUtil.decrypt(getString(PrefsConstants.DRIVE_USER, "none"))
     set(value) = putString(PrefsConstants.DRIVE_USER, SuperUtil.encrypt(value))
 
   var tasksUser: String
@@ -280,7 +290,7 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.STATUS_BAR_ICON, value)
 
   var snoozeTime: Int
-    get() = getInt(PrefsConstants.DELAY_TIME)
+    get() = getInt(PrefsConstants.DELAY_TIME, 5)
     set(value) = putInt(PrefsConstants.DELAY_TIME, value)
 
   var isNotificationRepeatEnabled: Boolean
@@ -288,23 +298,62 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.NOTIFICATION_REPEAT, value)
 
   var notificationRepeatTime: Int
-    get() = getInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL)
+    get() = getInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, 15)
     set(value) = putInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, value)
 
   var isLedEnabled: Boolean
-    get() = getBoolean(PrefsConstants.LED_STATUS)
+    get() = getBoolean(PrefsConstants.LED_STATUS, true)
     set(value) = putBoolean(PrefsConstants.LED_STATUS, value)
 
   var ledColor: Int
-    get() = getInt(PrefsConstants.LED_COLOR)
+    get() = getInt(PrefsConstants.LED_COLOR, LED.BLUE)
     set(value) = putInt(PrefsConstants.LED_COLOR, value)
 
+  // ReminderV2 notification-customization defaults (base of the Settings -> Group -> Reminder hierarchy)
+  var isDefaultVibrateEnabled: Boolean
+    get() = getBoolean(PrefsConstants.DEFAULT_VIBRATE, def = false)
+    set(value) = putBoolean(PrefsConstants.DEFAULT_VIBRATE, value)
+
+  // Stored as an ordered comma-joined string, not getLongArray/putLongArray, which round-trip
+  // through SharedPreferences.putStringSet and silently lose ordering and duplicate values -
+  // both of which matter for a vibration pattern.
+  var defaultVibrationPattern: List<Long>
+    get() =
+      getString(PrefsConstants.DEFAULT_VIBRATION_PATTERN, "")
+        .split(",")
+        .mapNotNull { it.trim().toLongOrNull() }
+    set(value) = putString(PrefsConstants.DEFAULT_VIBRATION_PATTERN, value.joinToString(","))
+
+  var defaultVolume: Int
+    get() = getInt(PrefsConstants.DEFAULT_VOLUME, def = -1)
+    set(value) = putInt(PrefsConstants.DEFAULT_VOLUME, value)
+
+  var defaultSoundUri: String
+    get() = getString(PrefsConstants.DEFAULT_SOUND_URI)
+    set(value) = putString(PrefsConstants.DEFAULT_SOUND_URI, value)
+
+  var defaultNotificationCategory: String
+    get() = getString(PrefsConstants.DEFAULT_NOTIFICATION_CATEGORY, def = "DEFAULT")
+    set(value) = putString(PrefsConstants.DEFAULT_NOTIFICATION_CATEGORY, value)
+
+  var isDefaultBypassDoNotDisturbEnabled: Boolean
+    get() = getBoolean(PrefsConstants.DEFAULT_BYPASS_DO_NOT_DISTURB, def = false)
+    set(value) = putBoolean(PrefsConstants.DEFAULT_BYPASS_DO_NOT_DISTURB, value)
+
+  var isDefaultWakeScreenEnabled: Boolean
+    get() = getBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, def = false)
+    set(value) = putBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, value)
+
+  var defaultLockScreenVisibility: String
+    get() = getString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, def = "PRIVATE")
+    set(value) = putString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, value)
+
   var calendarEventDuration: Int
-    get() = getInt(PrefsConstants.EVENT_DURATION)
+    get() = getInt(PrefsConstants.EVENT_DURATION, 30)
     set(value) = putInt(PrefsConstants.EVENT_DURATION, value)
 
   var startDay: Int
-    get() = getInt(PrefsConstants.START_DAY)
+    get() = getInt(PrefsConstants.START_DAY, 1)
     set(value) = putInt(PrefsConstants.START_DAY, value)
 
   var isBirthdayReminderEnabled: Boolean
@@ -312,7 +361,7 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_REMINDER, value)
 
   var birthdayTime: String
-    get() = getString(PrefsConstants.BIRTHDAY_REMINDER_TIME)
+    get() = getString(PrefsConstants.BIRTHDAY_REMINDER_TIME, "14:00")
     set(value) = putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, value)
 
   var isBirthdayInWidgetEnabled: Boolean
@@ -320,11 +369,11 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.WIDGET_BIRTHDAYS, value)
 
   var isBirthdayPermanentEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_PERMANENT)
+    get() = getBoolean(PrefsConstants.BIRTHDAY_PERMANENT, false)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_PERMANENT, value)
 
   var daysToBirthday: Int
-    get() = getInt(PrefsConstants.DAYS_TO_BIRTHDAY)
+    get() = getInt(PrefsConstants.DAYS_TO_BIRTHDAY, 0)
     set(value) = putInt(PrefsConstants.DAYS_TO_BIRTHDAY, value)
 
   var birthdayDurationInDays: Int
@@ -332,23 +381,23 @@ class Prefs(
     set(value) = putInt(PrefsConstants.TO_BIRTHDAY_DAYS, value)
 
   var isContactBirthdaysEnabled: Boolean
-    get() = getBoolean(PrefsConstants.CONTACT_BIRTHDAYS)
+    get() = getBoolean(PrefsConstants.CONTACT_BIRTHDAYS, false)
     set(value) = putBoolean(PrefsConstants.CONTACT_BIRTHDAYS, value)
 
   var isContactAutoCheckEnabled: Boolean
-    get() = getBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS)
+    get() = getBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS, false)
     set(value) = putBoolean(PrefsConstants.AUTO_CHECK_BIRTHDAYS, value)
 
   var isBirthdayGlobalEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL)
+    get() = getBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL, true)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_USE_GLOBAL, value)
 
   var isBirthdayLedEnabled: Boolean
-    get() = getBoolean(PrefsConstants.BIRTHDAY_LED_STATUS)
+    get() = getBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, false)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, value)
 
   var birthdayLedColor: Int
-    get() = getInt(PrefsConstants.BIRTHDAY_LED_COLOR)
+    get() = getInt(PrefsConstants.BIRTHDAY_LED_COLOR, LED.BLUE)
     set(value) = putInt(PrefsConstants.BIRTHDAY_LED_COLOR, value)
 
   var noteOrder: String
@@ -370,13 +419,6 @@ class Prefs(
       notifyKey(PrefsConstants.USER_LOGGED)
     }
 
-  var isPrivacyPolicyShowed: Boolean
-    get() = getBoolean(PrefsConstants.PRIVACY_SHOWED)
-    set(value) {
-      putBoolean(PrefsConstants.PRIVACY_SHOWED, value)
-      notifyKey(PrefsConstants.PRIVACY_SHOWED)
-    }
-
   var isNoteFontSizeRememberingEnabled: Boolean
     get() = getBoolean(PrefsConstants.REMEMBER_NOTE_FONT_SIZE, def = true)
     set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_FONT_SIZE, value)
@@ -393,6 +435,14 @@ class Prefs(
     get() = getInt(PrefsConstants.LAST_NOTE_FONT_STYLE, def = FontParams.DEFAULT_FONT_STYLE)
     set(value) = putInt(PrefsConstants.LAST_NOTE_FONT_STYLE, value)
 
+  var lastNoteTitleFontSize: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_TITLE_FONT_SIZE, def = FontParams.DEFAULT_TITLE_FONT_SIZE)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_TITLE_FONT_SIZE, value)
+
+  var lastNoteTitleFontStyle: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_TITLE_FONT_STYLE, def = FontParams.DEFAULT_FONT_STYLE)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_TITLE_FONT_STYLE, value)
+
   var isNoteColorRememberingEnabled: Boolean
     get() = getBoolean(PrefsConstants.REMEMBER_NOTE_COLOR, def = true)
     set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_COLOR, value)
@@ -402,38 +452,30 @@ class Prefs(
     set(count) = putInt(PrefsConstants.LAST_NOTE_COLOR, count)
 
   var noteColorOpacity: Int
-    get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY)
+    get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY, def = 100)
     set(count) = putInt(PrefsConstants.NOTE_COLOR_OPACITY, count)
 
   var dropboxToken: String
     get() = getString(PrefsConstants.DROPBOX_TOKEN)
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
 
-  var privacyUrl: String
-    get() = getString(
-      PrefsConstants.PRIVACY_POLICY_URL,
-      "https://sukhovych.com/reminder-privacy-policy/"
-    )
-    set(value) = putString(PrefsConstants.PRIVACY_POLICY_URL, value)
-
-  var termsUrl: String
-    get() = getString(PrefsConstants.TERMS_URL, "https://sukhovych.com/terms-and-conditions/")
-    set(value) = putString(PrefsConstants.TERMS_URL, value)
-
-  var useDynamicColors: Boolean
-    get() = getBoolean(PrefsConstants.DYNAMIC_COLORS, false)
-    set(value) = putBoolean(PrefsConstants.DYNAMIC_COLORS, value)
-
   var noteMigrationDone: Boolean
     get() = getBoolean("note_migration", false)
     set(value) = putBoolean("note_migration", value)
 
-  var reminderCreatorParams: ReminderCreatorConfig
-    get() = ReminderCreatorConfig(
-      getString(
-        PrefsConstants.REMINDER_CREATOR_PARAMS,
-        ReminderCreatorConfig.DEFAULT_VALUE
-      )
-    )
-    set(value) = putString(PrefsConstants.REMINDER_CREATOR_PARAMS, value.toHex())
+  var reminderV2BackfillDone: Boolean
+    get() = getBoolean(PrefsConstants.REMINDER_V2_BACKFILL_DONE, false)
+    set(value) = putBoolean(PrefsConstants.REMINDER_V2_BACKFILL_DONE, value)
+
+  var groupV2BackfillDone: Boolean
+    get() = getBoolean(PrefsConstants.GROUP_V2_BACKFILL_DONE, false)
+    set(value) = putBoolean(PrefsConstants.GROUP_V2_BACKFILL_DONE, value)
+
+  var workflowRulesScheduled: Boolean
+    get() = getBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, false)
+    set(value) = putBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, value)
+
+  var workflowUnacknowledgedRulesScheduled: Boolean
+    get() = getBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, false)
+    set(value) = putBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, value)
 }

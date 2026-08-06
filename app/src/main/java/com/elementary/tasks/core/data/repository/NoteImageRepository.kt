@@ -6,26 +6,33 @@ import com.github.naz013.logging.Logger
 import java.io.File
 import java.io.InputStream
 
-class NoteImageRepository(private val context: Context) {
+class NoteImageRepository(
+  private val context: Context,
+) {
+  fun readBytes(filePath: String): ByteArray? = File(filePath).takeIf { it.exists() }?.readBytes()
 
-  fun readBytes(filePath: String): ByteArray? {
-    return File(filePath).takeIf { it.exists() }?.readBytes()
-  }
-
-  fun saveBytesToFile(fileName: String, byteArray: ByteArray?, folderName: String): String {
+  fun saveBytesToFile(
+    fileName: String,
+    byteArray: ByteArray?,
+    folderName: String,
+  ): String {
     if (byteArray == null) return ""
     return runCatching {
       val folder = getImageFolder(folderName)
-      val file = File(folder, fileName).also {
-        runCatching { it.createNewFile() }
-      }
+      val file =
+        File(folder, fileName).also {
+          runCatching { it.createNewFile() }
+        }
       file.writeBytes(byteArray)
       Logger.d(TAG, "Saved image file: $file")
       file.toString()
     }.getOrNull() ?: ""
   }
 
-  fun moveImagesToFolder(files: List<ImageFile>, folderName: String): List<ImageFile> {
+  fun moveImagesToFolder(
+    files: List<ImageFile>,
+    folderName: String,
+  ): List<ImageFile> {
     val tmpFolder = getTmpFolder()
     val dstFolder = getImageFolder(folderName)
     val fileNames = files.map { it.fileName }
@@ -43,7 +50,10 @@ class NoteImageRepository(private val context: Context) {
     return files
   }
 
-  fun saveTemporaryImage(fileName: String, inputStream: InputStream): String {
+  fun saveTemporaryImage(
+    fileName: String,
+    inputStream: InputStream,
+  ): String {
     val tmpFile = createTemporaryFile(fileName)
     tmpFile.copyInputStreamToFile(inputStream)
     Logger.i(TAG, "Saved temporary image: $tmpFile")
@@ -60,29 +70,23 @@ class NoteImageRepository(private val context: Context) {
     Logger.i(TAG, "Cleared temporary image folder")
   }
 
-  private fun createTemporaryFile(fileName: String): File {
-    return File(getTmpFolder(), fileName).also { it.createNewFile() }
-  }
+  private fun createTemporaryFile(fileName: String): File = File(getTmpFolder(), fileName).also { it.createNewFile() }
 
-  fun getImageFolder(folderName: String): File {
-    return File(getImagesFolder(), folderName).also {
+  fun getImageFolder(folderName: String): File =
+    File(getImagesFolder(), folderName).also {
       if (!it.exists()) {
         it.mkdirs()
       }
     }
-  }
 
-  private fun getTmpFolder(): File {
-    return File(getImagesFolder(), "tmp").also {
+  private fun getTmpFolder(): File =
+    File(getImagesFolder(), "tmp").also {
       if (!it.exists()) {
         it.mkdirs()
       }
     }
-  }
 
-  private fun getImagesFolder(): File {
-    return context.getDir("note_images", Context.MODE_PRIVATE)
-  }
+  private fun getImagesFolder(): File = context.getDir("note_images", Context.MODE_PRIVATE)
 
   private fun File.copyInputStreamToFile(inputStream: InputStream) {
     this.outputStream().use { fileOut ->

@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.build.logic
 import com.elementary.tasks.reminder.build.BuilderItem
 
 class BuilderItemsHolder {
-
   private val items = mutableListOf<BuilderItem<*>>()
 
   fun addAll(builderItems: List<BuilderItem<*>>) {
@@ -19,7 +18,10 @@ class BuilderItemsHolder {
     items.add(builderItem)
   }
 
-  fun update(position: Int, builderItem: BuilderItem<*>) {
+  fun update(
+    position: Int,
+    builderItem: BuilderItem<*>,
+  ) {
     if (position < 0 || position >= items.size) return
     items[position] = builderItem
   }
@@ -29,7 +31,5 @@ class BuilderItemsHolder {
     items.removeAt(position)
   }
 
-  fun getItems(): List<BuilderItem<*>> {
-    return items
-  }
+  fun getItems(): List<BuilderItem<*>> = items
 }

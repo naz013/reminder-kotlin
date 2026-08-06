@@ -1,15 +1,15 @@
 package com.elementary.tasks.birthdays.dialog
 
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.birthdays.actions.BirthdayAction
-import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
-import com.elementary.tasks.core.arch.BaseProgressViewModel
 import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -26,23 +26,17 @@ import org.threeten.bp.LocalDate
  */
 class BirthdayActionViewModel(
   private val id: String,
-  private val isTest: Boolean,
   private val birthdayRepository: BirthdayRepository,
-  dispatcherProvider: DispatcherProvider,
+  private val dispatcherProvider: DispatcherProvider,
   private val dateTimeManager: DateTimeManager,
   private val createBirthdayActionScreenStateUseCase: CreateBirthdayActionScreenStateUseCase,
   private val saveBirthdayUseCase: SaveBirthdayUseCase,
-  private val deleteBirthdayUseCase: DeleteBirthdayUseCase
-) : BaseProgressViewModel(dispatcherProvider) {
+) : ViewModel() {
 
   private val _state = mutableLiveDataOf<BirthdayActionScreenState>()
   val state = _state.toLiveData()
 
-  private val _redirectEvent = mutableLiveEventOf<Redirect>()
-  val redirectEvent = _redirectEvent.toLiveData()
-
-  private val _showToast = mutableLiveEventOf<Int>()
-  val showToast = _showToast.toLiveData()
+  val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
   private var currentState: BirthdayActionScreenState? = null
   private var _birthday: Birthday? = null
@@ -56,16 +50,6 @@ class BirthdayActionViewModel(
       _birthday = birthday
       withContext(dispatcherProvider.main()) {
         _state.value = screenState
-      }
-    }
-  }
-
-  override fun onDestroy(owner: LifecycleOwner) {
-    super.onDestroy(owner)
-    if (isTest) {
-      Logger.d(TAG, "Test birthday finished, deleting birthday id=$id")
-      viewModelScope.launch(dispatcherProvider.io()) {
-        deleteBirthdayUseCase(id)
       }
     }
   }
@@ -99,15 +83,11 @@ class BirthdayActionViewModel(
     val birthday = _birthday ?: return
     if (birthday.number.isEmpty()) {
       Logger.w(TAG, "Phone number is empty, finishing.")
-      viewModelScope.launch(dispatcherProvider.main()) {
-        _redirectEvent.value = Event(Redirect.Finish)
-      }
+      event.emit(ViewModelEvent.Finish)
       return
     }
     updateBirthday()
-    viewModelScope.launch(dispatcherProvider.main()) {
-      _redirectEvent.value = Event(Redirect.MakeCall(birthday.number))
-    }
+    event.emit(ViewModelEvent.MakeCall(birthday.number))
   }
 
   private fun onSendSmsClicked() {
@@ -115,15 +95,11 @@ class BirthdayActionViewModel(
     val birthday = _birthday ?: return
     if (birthday.number.isEmpty()) {
       Logger.w(TAG, "Phone number is empty, finishing.")
-      viewModelScope.launch(dispatcherProvider.main()) {
-        _redirectEvent.value = Event(Redirect.Finish)
-      }
+      event.emit(ViewModelEvent.Finish)
       return
     }
     updateBirthday()
-    viewModelScope.launch(dispatcherProvider.main()) {
-      _redirectEvent.value = Event(Redirect.SendSms(birthday.number))
-    }
+    event.emit(ViewModelEvent.SendSms(birthday.number))
   }
 
   private fun updateBirthday() {
@@ -131,7 +107,7 @@ class BirthdayActionViewModel(
       val birthday = birthdayRepository.getById(id)
       if (birthday == null) {
         withContext(dispatcherProvider.main()) {
-          _redirectEvent.value = Event(Redirect.Finish)
+          event.emit(ViewModelEvent.Finish)
         }
         return@launch
       }
@@ -139,22 +115,29 @@ class BirthdayActionViewModel(
       saveBirthdayUseCase(
         birthday.copy(
           updatedAt = dateTimeManager.getNowGmtDateTime(),
-          showedYear = LocalDate.now().year
-        )
+          showedYear = LocalDate.now().year,
+        ),
       )
       withContext(dispatcherProvider.main()) {
-        _redirectEvent.value = Event(Redirect.Finish)
+        event.emit(ViewModelEvent.Finish)
       }
     }
   }
 
-  /**
-   * Sealed class representing navigation redirect events.
-   */
-  sealed class Redirect {
-    data class MakeCall(val phoneNumber: String) : Redirect()
-    data class SendSms(val phoneNumber: String) : Redirect()
-    data object Finish : Redirect()
+  sealed interface ViewModelEvent {
+    data object Finish : ViewModelEvent
+
+    data class MakeCall(
+      val phoneNumber: String,
+    ) : ViewModelEvent
+
+    data class SendSms(
+      val phoneNumber: String,
+    ) : ViewModelEvent
+
+    data class ShowError(
+      val message: String,
+    ) : ViewModelEvent
   }
 
   companion object {

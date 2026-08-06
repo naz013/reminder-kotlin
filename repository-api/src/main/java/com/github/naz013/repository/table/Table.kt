@@ -8,6 +8,10 @@ enum class Table(val tableName: String) {
   CalendarEvent("CalendarEvent"),
   ReminderGroup("ReminderGroup"),
   Reminder("Reminder"),
+  ReminderV2("ReminderV2"),
+  GroupV2("GroupV2"),
+  WorkflowRule("WorkflowRule"),
+  WorkflowTemplate("WorkflowTemplate"),
   Place("Place"),
   Note("Note"),
   ImageFile("ImageFile"),
@@ -16,4 +20,6 @@ enum class Table(val tableName: String) {
   RemoteFileMetadata("RemoteFileMetadata"),
   EventOccurrence("EventOccurrence"),
   EventHistory("EventHistory"),
+  Tag("Tag"),
+  TagAssignment("TagAssignment"),
 }

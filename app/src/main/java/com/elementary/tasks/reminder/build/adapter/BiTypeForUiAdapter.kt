@@ -8,11 +8,10 @@ import com.github.naz013.icalendar.RecurParamType
 
 class BiTypeForUiAdapter(
   private val textProvider: TextProvider,
-  private val paramToTextAdapter: ParamToTextAdapter
+  private val paramToTextAdapter: ParamToTextAdapter,
 ) {
-
-  fun getUiString(biType: BiType): String {
-    return when (biType) {
+  fun getUiString(biType: BiType): String =
+    when (biType) {
       BiType.DATE -> textProvider.getString(R.string.builder_date)
       BiType.TIME -> textProvider.getString(R.string.time)
       BiType.SUMMARY -> textProvider.getString(R.string.builder_summary)
@@ -43,6 +42,12 @@ class BiTypeForUiAdapter(
       BiType.EMAIL_SUBJECT -> textProvider.getString(R.string.subject)
       BiType.APPLICATION -> textProvider.getString(R.string.application)
       BiType.OTHER_PARAMS -> textProvider.getString(R.string.builder_additional_parameters)
+      BiType.CATEGORY -> textProvider.getString(R.string.notification_category)
+      BiType.LOCK_SCREEN_VISIBILITY -> textProvider.getString(R.string.lock_screen_visibility)
+      BiType.BYPASS_DND -> textProvider.getString(R.string.bypass_do_not_disturb)
+      BiType.WAKE_SCREEN -> textProvider.getString(R.string.wake_screen)
+      BiType.VIBRATION_PATTERN -> textProvider.getString(R.string.vibration_pattern)
+      BiType.DELAY_MINUTES -> textProvider.getString(R.string.notification_delay)
       BiType.SUB_TASKS -> textProvider.getString(R.string.builder_sub_tasks)
       BiType.ARRIVING_COORDINATES -> {
         textProvider.getString(R.string.builder_arriving_destination)
@@ -89,14 +94,11 @@ class BiTypeForUiAdapter(
         }
       }
     }
-  }
 
-  private fun iCalendarPrefix(): String {
-    return textProvider.getString(R.string.builder_icalendar)
-  }
+  private fun iCalendarPrefix(): String = textProvider.getString(R.string.builder_icalendar)
 
-  private fun BiType.toRecurParamType(): RecurParamType? {
-    return when (this) {
+  private fun BiType.toRecurParamType(): RecurParamType? =
+    when (this) {
       BiType.ICAL_BYWEEKNO -> RecurParamType.BYWEEKNO
       BiType.ICAL_BYYEARDAY -> RecurParamType.BYYEARDAY
       BiType.ICAL_BYHOUR -> RecurParamType.BYHOUR
@@ -111,5 +113,4 @@ class BiTypeForUiAdapter(
       BiType.ICAL_FREQ -> RecurParamType.FREQ
       else -> null
     }
-  }
 }

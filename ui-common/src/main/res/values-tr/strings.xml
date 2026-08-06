@@ -929,4 +929,187 @@
     <string name="keep_notification">Bildirimi koru</string>
     <string name="cd_back">Geri</string>
     <string name="how_to_create_a_reminder">Hatırlatıcı nasıl oluşturulur</string>
+    <string name="copy_of">%s kopyası</string>
+
+    <string name="turn_off">Kapat</string>
+
+    <string name="delete_reminder_permanently">Hatırlatıcıyı kalıcı olarak sil?</string>
+    <string name="delete_birthday_permanently">Doğum gününü kalıcı olarak sil?</string>
+    <string name="delete_note_permanently">Notu kalıcı olarak sil?</string>
+    <string name="delete_group_permanently">Grubu kalıcı olarak sil?</string>
+
+    <string name="share_send_note">Notu gönder…</string>
+
+    <string name="note_moved_to_archive">Not arşive taşındı</string>
+    <string name="note_reverted_from_archive">Not arşivden geri yüklendi</string>
+    <string name="show_note_in_notifications">Notu bildirimlerde göster</string>
+
+    <string name="share_intent_title">Paylaş...</string>
+    <string name="error_reminder_not_found">Hatırlatıcı bulunamadı!</string>
+    <string name="error_reminder_is_already_removed_edit_it_first">Hatırlatıcı zaten kaldırıldı! Önce düzenle.</string>
+
+    <string name="workflow_rules">İş akışı kuralları</string>
+    <string name="workflow_automations">Otomasyonlar</string>
+    <string name="workflow_active_global_rules">Aktif genel kurallar</string>
+    <string name="workflow_rules_for_group">Bu grup için kurallar</string>
+    <string name="workflow_no_rules_yet">Henüz kural yok</string>
+    <string name="workflow_templates">Şablonlar</string>
+    <string name="workflow_apply_globally">Genel olarak uygula</string>
+    <string name="workflow_apply_to_group">Gruba uygula</string>
+    <string name="workflow_open_group_to_apply">Bunu uygulamak için bir grup aç</string>
+    <string name="workflow_save_as_template">Şablon olarak kaydet</string>
+    <string name="workflow_create_custom_rule">Özel kural oluştur</string>
+    <string name="workflow_archive_after_days_hint">Gün</string>
+    <string name="workflow_category_reminder_lifecycle">Hatırlatıcı yaşam döngüsü</string>
+    <string name="workflow_category_group">Grup</string>
+    <string name="workflow_category_location">Konum</string>
+    <string name="workflow_category_notification_escalation">Bildirim &amp; yükseltme</string>
+    <string name="workflow_category_system_integration">Sistem entegrasyonu</string>
+    <string name="workflow_category_privacy_data_hygiene">Gizlilik &amp; veri hijyeni</string>
+
+    <string name="workflow_builder_new_rule_title">Yeni kural</string>
+    <string name="workflow_builder_edit_rule_title">Kuralı düzenle</string>
+    <string name="workflow_builder_when">Ne zaman</string>
+    <string name="workflow_builder_if_optional">Eğer (isteğe bağlı)</string>
+    <string name="workflow_builder_then">O zaman</string>
+    <string name="workflow_builder_not_set">Ayarlanmamış</string>
+    <string name="workflow_builder_add_condition">Koşul ekle</string>
+    <string name="workflow_builder_choose_trigger">Tetikleyici seç</string>
+    <string name="workflow_builder_choose_condition">Koşul seç</string>
+    <string name="workflow_builder_choose_action">İşlem seç</string>
+    <string name="workflow_builder_snooze_count_hint">Ertele sayısı</string>
+    <string name="workflow_builder_minutes_hint">Dakika</string>
+    <string name="workflow_builder_minutes_unit">dak</string>
+    <string name="workflow_builder_select_group">Grup seç</string>
+    <string name="workflow_builder_select_reminder">Hatırlatıcı seç</string>
+    <string name="workflow_builder_no_groups">Henüz grup yok</string>
+    <string name="workflow_builder_no_reminders">Aktif hatırlatıcı yok</string>
+    <string name="workflow_trigger_reminder_completed">Hatırlatıcı tamamlandı</string>
+    <string name="workflow_trigger_reminder_snoozed_n_times">Hatırlatıcı N kez ertelendi</string>
+    <string name="workflow_trigger_group_all_completed">Gruptaki tüm hatırlatıcılar tamamlandı</string>
+    <string name="workflow_trigger_location_entered">Hatırlatıcının konumuna ulaştı</string>
+    <string name="workflow_trigger_location_exited">Hatırlatıcının konumundan ayrıldı</string>
+    <string name="workflow_trigger_reminder_age_exceeded">En az N gün önce tamamlandı</string>
+    <string name="workflow_trigger_reminder_unacknowledged_for">N dakika görmedi</string>
+    <string name="workflow_condition_priority_at_least">Öncelik en az</string>
+    <string name="workflow_condition_within_time_window">Geçerli saat arasında</string>
+    <string name="workflow_condition_group_is">Hatırlatıcı grubu</string>
+    <string name="workflow_action_archive_reminder">Hatırlatıcıyı arşivle</string>
+    <string name="workflow_action_complete_reminder">Hatırlatıcıyı tamamla</string>
+    <string name="workflow_action_apply_notification_override">Bildirim ayarlarını değiştir</string>
+    <string name="workflow_action_activate_reminder">Başka bir hatırlatıcıyı etkinleştir</string>
+    <string name="preset_buy_groceries">Ürün satın al</string>
+    <string name="preset_bread">Ekmek</string>
+    <string name="preset_juice">Meyve Suyu</string>
+    <string name="preset_cookies">Kurabiyeler</string>
+    <string name="haptic_feedback">Dokunsal geri bildirim</string>
+    <string name="use_haptic_feedback_for_interactions">Etkileşimler için dokunsal geri bildirim kullan</string>
+    <string name="do_not_use_haptic_feedback_for_interactions">Etkileşimler için dokunsal geri bildirim kullanma</string>
+
+    <string name="notification_defaults">Bildirim varsayılanları</string>
+    <string name="default_vibrate">Titreşim</string>
+    <string name="vibrate_on_notification">Bildirimdeyken titreş</string>
+    <string name="do_not_vibrate_on_notification">Bildirimdeyken titreşme</string>
+    <string name="bypass_do_not_disturb">Rahatsız Etme modunu atla</string>
+    <string name="bypass_do_not_disturb_enabled">Rahatsız Etme sırasında bile çal</string>
+    <string name="bypass_do_not_disturb_disabled">Rahatsız Etme\'ye saygı duy</string>
+    <string name="wake_screen">Ekranı uyanık tut</string>
+    <string name="wake_screen_enabled">Ekranı bir alarm gibi aç</string>
+    <string name="wake_screen_disabled">Ekranı açma</string>
+    <string name="notification_category">Bildirim kategorisi</string>
+    <string name="notification_category_default">Varsayılan</string>
+    <string name="notification_category_alarm">Alarm</string>
+    <string name="notification_category_event">Olay</string>
+    <string name="notification_category_call">Çağrı</string>
+    <string name="lock_screen_visibility">Kilit ekranı görünürlüğü</string>
+    <string name="lock_screen_visibility_public">Tam içeriği göster</string>
+    <string name="lock_screen_visibility_private">Hassas içeriği gizle</string>
+    <string name="lock_screen_visibility_secret">Tamamen gizle</string>
+    <string name="vibration_pattern">Titreşim deseni</string>
+    <string name="notification_overrides">Bildirim geçersiz kılmaları</string>
+    <string name="notification_customization">Bildirim özelleştirmesi</string>
+    <string name="how_does_this_work">Bu nasıl çalışır?</string>
+    <string name="inherit_from_settings">Ayarlardan devral</string>
+    <string name="inherited_format">Devralınan: %s</string>
+    <string name="on">Açık</string>
+    <string name="off">Kapalı</string>
+    <string name="vibration_preset_short">Kısa</string>
+    <string name="vibration_preset_long">Uzun</string>
+    <string name="vibration_preset_double_buzz">Çift vızıltı</string>
+    <string name="vibration_preset_default">Varsayılan</string>
+    <string name="notification_delay">Bildirim gecikmesi</string>
+
+    <string name="builder_set_category_for_the_notification">Bildirim için bir sistem bildirim kategorisi ayarla</string>
+    <string name="builder_set_lock_screen_visibility_for_the_notification">Bildirimin kilit ekranında ne kadarının gösterileceğini ayarla</string>
+    <string name="builder_set_bypass_do_not_disturb_for_the_notification">Rahatsız Etme açık olsa bile çal</string>
+    <string name="builder_set_wake_screen_for_the_notification">Ekranı bir alarm gibi aç</string>
+    <string name="builder_set_vibration_pattern_for_the_notification">Bildirim için bir titreşim deseni ayarla</string>
+    <string name="builder_set_delay_for_the_notification">Bildirimi bu dakika sayısı kadar ertele</string>
+
+    <string name="builder_quick_start_one_time">Tek seferlik hatırlatıcı</string>
+    <string name="builder_quick_start_every_weekday">Her hafta günü</string>
+    <string name="builder_quick_start_every_month_day">Her ay bu günde</string>
+    <string name="builder_quick_start_every_year">Her yıl bu günde</string>
+    <string name="builder_quick_start_timer">Geri sayım sayacı</string>
+    <string name="builder_quick_start_shopping_list">Alışveriş listesi</string>
+    <string name="builder_quick_start_more_options">Diğer seçenekler…</string>
+
+    <string name="builder_invalid_email_value">Geçerli bir e-posta adresi girin</string>
+    <string name="builder_invalid_web_address_value">Geçerli bir web adresi girin</string>
+    <string name="builder_invalid_phone_number_value">Geçerli bir telefon numarası girin</string>
+    <string name="builder_shopping_list_empty_value">Listeye en az bir öğe ekleyin</string>
+    <string name="builder_invalid_value_generic">Bu değer geçerli değil</string>
+    <string name="builder_permissions_required_message">Devam etmek için istenen izinleri verin</string>
+
+    <string name="gemini_functions">Gemini İşlevleri</string>
+
+    <string name="smart_list_today">Bugün</string>
+    <string name="smart_list_overdue">Süresi dolmuş</string>
+    <string name="smart_list_this_week">Bu hafta</string>
+    <string name="smart_list_no_group">Grup yok</string>
+
+    <string name="tags">Etiketler</string>
+    <string name="manage_tags">Etiketleri yönet</string>
+    <string name="new_tag">Yeni etiket</string>
+    <string name="tag_name">Etiket adı</string>
+    <string name="no_tags">Henüz etiket yok</string>
+    <string name="delete_tag_permanently">Bu etiketi sil? Her hatırlatıcı ve nottan kaldırılacak.</string>
+
+    <string name="local_backup">Yerel yedekleme</string>
+    <string name="backup_export_title">Yedeklemeyi dışa aktar</string>
+    <string name="backup_import_title">Yedeklemeyi geri yükle</string>
+    <string name="backup_export_description">Hatırlatıcılarınızın, notlarınızın, gruplarınızın, doğum günlerinizin, yerlerinizin ve ön ayarlarınızın şifreli bir kopyasını seçtiğiniz bir dosyaya kaydedin. Hiçbir şey hiçbir yere gönderilmez. Parolayı unutursanız, yedekleme kurtarılamaz.</string>
+    <string name="backup_import_description">Daha önce dışa aktarılan şifreli bir yedekleme dosyasından verileri geri yükleyin. Aynı kimliğe sahip mevcut öğeler üzerine yazılacak; başka bir şey silinmez.</string>
+    <string name="backup_passphrase">Parola</string>
+    <string name="backup_confirm_passphrase">Parolayı onayla</string>
+    <string name="backup_passphrase_mismatch">Parolalar eşleşmiyor</string>
+    <string name="backup_passphrase_empty">Parola girin</string>
+    <string name="backup_export_action">Dışa aktar</string>
+    <string name="backup_import_action">Geri yükle</string>
+    <string name="backup_export_success">Yedekleme başarıyla kaydedildi.</string>
+    <string name="backup_export_failed">Yedekleme kaydedilemedi. Lütfen tekrar deneyin.</string>
+    <string name="backup_import_success">%1$d öğe başarıyla geri yüklendi.</string>
+    <string name="backup_import_failed">Yedekleme geri yüklenemedi. Lütfen tekrar deneyin.</string>
+    <string name="backup_wrong_passphrase">Yanlış parola veya dosya bozuk.</string>
+    <string name="backup_invalid_file">Bu dosya geçerli bir Reminder yedeklemesi değil.</string>
+    <string name="backup_open_file_failed">Seçilen dosya açılamadı.</string>
+
+    <string name="insights">İçgörüler</string>
+    <string name="weekly_trend">Haftalık trend</string>
+    <string name="busiest_day">En yoğun gün: %1$s</string>
+    <string name="streak_current">Mevcut seri: %1$d gün</string>
+    <string name="streak_longest">En uzun seri: %1$d gün</string>
+    <string name="streak_fired_count">Son 90 günde %1$d kez tetiklendi</string>
+    <string name="no_insights_yet">Son 90 günde hatırlatıcı aktivitesi yok</string>
+
+    <string name="upcoming_events">Yaklaşan</string>
+
+    <string name="agenda">Ajanda</string>
+
+    <string name="group_has_no_active_reminders">Bu grupta aktif hatırlatıcı yok</string>
+    <string name="group_x_reminder">%d hatırlatıcı</string>
+    <string name="group_x_reminders">%d hatırlatıcılar</string>
+
+    <string name="type">Tür</string>
+    <string name="smart_lists">Akıllı Listeler</string>
 </resources>

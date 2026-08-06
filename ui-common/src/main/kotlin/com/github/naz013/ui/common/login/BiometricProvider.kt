@@ -1,93 +1,83 @@
 package com.github.naz013.ui.common.login
 
 import android.content.Context
+import androidx.biometric.AuthenticationRequest
+import androidx.biometric.AuthenticationResult
+import androidx.biometric.AuthenticationResultCallback
 import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricPrompt
+import androidx.biometric.compose.rememberAuthenticationLauncher
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.github.naz013.ui.common.R
 
-typealias OnSuccessListener = () -> Unit
+interface BiometricProvider {
+  fun hasBiometric(): Boolean
+  fun authenticate(
+    onSuccess: () -> Unit,
+    onError: () -> Unit = {},
+  )
+}
 
-class BiometricProvider private constructor(
-  private val promptCreator: PromptCreator,
-  private val onSuccessListener: OnSuccessListener
-) {
+@Composable
+fun rememberBiometricProvider(): BiometricProvider {
+  val context = LocalContext.current
 
-  constructor(
-    activity: FragmentActivity,
-    onSuccessListener: OnSuccessListener
-  ) : this(ActivityCreator(activity), onSuccessListener)
+  val data = remember { mutableStateOf<Data?>(null) }
 
-  constructor(
-    fragment: Fragment,
-    onSuccessListener: OnSuccessListener
-  ) : this(FragmentCreator(fragment), onSuccessListener)
+  val callback = object : AuthenticationResultCallback {
+    override fun onAuthResult(result: AuthenticationResult) {
+      if (result.isSuccess()) {
+        data.value?.onSuccess()
+      } else {
+        data.value?.onError()
+      }
+      data.value = null
+    }
 
-  fun hasBiometric(): Boolean {
-    return BiometricManager.from(promptCreator.getContext()).canAuthenticate(
-      BiometricManager.Authenticators.BIOMETRIC_WEAK
-    ) == BiometricManager.BIOMETRIC_SUCCESS
-  }
-
-  fun tryToOpenFingerLogin(): Boolean {
-    return if (hasBiometric()) {
-      createBiometricPrompt().authenticate(createPromptInfo())
-      true
-    } else {
-      false
+    override fun onAuthAttemptFailed() {
+      data.value?.onError()
+      data.value = null
     }
   }
+  val authLauncher = rememberAuthenticationLauncher(
+    ContextCompat.getMainExecutor(context),
+    callback
+  )
 
-  private fun createPromptInfo(): BiometricPrompt.PromptInfo {
-    return BiometricPrompt.PromptInfo.Builder()
-      .setTitle(promptCreator.getContext().getString(R.string.app_title))
-      .setSubtitle(promptCreator.getContext().getString(R.string.prompt_info_subtitle))
-      .setDescription(promptCreator.getContext().getString(R.string.prompt_info_description))
-      // Authenticate without requiring the user to press a "confirm"
-      // button after satisfying the biometric check
-      .setConfirmationRequired(false)
-      .setNegativeButtonText(promptCreator.getContext().getString(R.string.enter_your_pin))
-      .build()
-  }
+  return object : BiometricProvider {
+    override fun hasBiometric(): Boolean {
+      return BiometricManager.from(context).canAuthenticate(
+        BiometricManager.Authenticators.BIOMETRIC_WEAK
+      ) == BiometricManager.BIOMETRIC_SUCCESS
+    }
 
-  private fun createBiometricPrompt(): BiometricPrompt {
-    val callback = object : BiometricPrompt.AuthenticationCallback() {
-      override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-        super.onAuthenticationSucceeded(result)
-        onSuccessListener.invoke()
+    override fun authenticate(onSuccess: () -> Unit, onError: () -> Unit) {
+      if (hasBiometric()) {
+        data.value = Data(onSuccess, onError)
+        authLauncher.launch(createPromptInfo(context))
+      } else {
+        onError()
       }
     }
-    return promptCreator.create(callback)
-  }
 
-  abstract class PromptCreator {
-    abstract fun create(callback: BiometricPrompt.AuthenticationCallback): BiometricPrompt
-    abstract fun getContext(): Context
-  }
-
-  class ActivityCreator(
-    private val activity: FragmentActivity
-  ) : PromptCreator() {
-    override fun create(callback: BiometricPrompt.AuthenticationCallback): BiometricPrompt {
-      return BiometricPrompt(activity, ContextCompat.getMainExecutor(getContext()), callback)
-    }
-
-    override fun getContext(): Context {
-      return activity.applicationContext
-    }
-  }
-
-  class FragmentCreator(
-    private val fragment: Fragment
-  ) : PromptCreator() {
-    override fun create(callback: BiometricPrompt.AuthenticationCallback): BiometricPrompt {
-      return BiometricPrompt(fragment, ContextCompat.getMainExecutor(getContext()), callback)
-    }
-
-    override fun getContext(): Context {
-      return fragment.requireContext()
+    private fun createPromptInfo(context: Context): AuthenticationRequest {
+      return AuthenticationRequest.Biometric.Builder(context.getString(R.string.app_title))
+        .setSubtitle(context.getString(R.string.prompt_info_subtitle))
+        .setContent(
+          AuthenticationRequest.BodyContent.PlainText(
+            context.getString(R.string.prompt_info_description)
+          )
+        )
+        .setIsConfirmationRequired(false)
+        .build()
     }
   }
 }
+
+private data class Data(
+  val onSuccess: () -> Unit,
+  val onError: () -> Unit,
+)

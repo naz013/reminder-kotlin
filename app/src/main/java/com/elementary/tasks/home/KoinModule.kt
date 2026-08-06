@@ -1,31 +1,23 @@
 package com.elementary.tasks.home
 
-import com.elementary.tasks.home.eventsview.HomeEventsViewModel
-import com.elementary.tasks.home.scheduleview.ReminderGoogleTaskLiveData
-import com.elementary.tasks.home.scheduleview.ReminderNoteLiveData
+import com.elementary.tasks.home.agenda.AgendaViewModel
+import com.elementary.tasks.home.agenda.UiAgendaItemAdapter
+import com.elementary.tasks.home.scheduleview.GetActiveEventsForTheDayUseCase
+import com.elementary.tasks.home.scheduleview.GetGreetingTextUseCase
+import com.elementary.tasks.home.scheduleview.GetNavigationItemsUseCase
+import com.elementary.tasks.home.scheduleview.GetTimeSectionsUseCase
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
-import com.elementary.tasks.home.scheduleview.ScheduleLiveData
-import com.elementary.tasks.home.scheduleview.data.UiBirthdayScheduleListAdapter
-import com.elementary.tasks.home.scheduleview.data.UiReminderScheduleListAdapter
-import com.github.naz013.domain.Reminder
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val homeModule = module {
-  factory { ReminderGoogleTaskLiveData(get(), get(), get(), get(), get()) }
-  factory { ScheduleLiveData(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-  factory { (reminders: List<Reminder>) ->
-    ReminderNoteLiveData(get(), get(), get(), reminders, get())
-  }
+  factoryOf(::GetActiveEventsForTheDayUseCase)
+  factoryOf(::GetTimeSectionsUseCase)
+  factoryOf(::GetGreetingTextUseCase)
+  factoryOf(::GetNavigationItemsUseCase)
+  factoryOf(::UiAgendaItemAdapter)
 
-  factory { UiReminderScheduleListAdapter(get(), get(), get(), get(), get(), get()) }
-  factory { UiBirthdayScheduleListAdapter(get(), get(), get(), get(), get(), get()) }
-
-  viewModel {
-    ScheduleHomeViewModel(get(), get(), get())
-  }
-
-  viewModel {
-    HomeEventsViewModel()
-  }
+  viewModelOf(::ScheduleHomeViewModel)
+  viewModelOf(::AgendaViewModel)
 }

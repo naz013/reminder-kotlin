@@ -11,5 +11,5 @@ data class UiNoteNotification(
   @ColorInt
   val textColor: Int,
   val image: Bitmap? = null,
-  val uniqueId: Int
+  val uniqueId: Int,
 )

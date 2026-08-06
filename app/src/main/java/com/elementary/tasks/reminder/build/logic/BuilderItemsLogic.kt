@@ -3,9 +3,8 @@ package com.elementary.tasks.reminder.build.logic
 import com.elementary.tasks.reminder.build.BuilderItem
 
 class BuilderItemsLogic(
-  private val builderItemsHolder: BuilderItemsHolder
+  private val builderItemsHolder: BuilderItemsHolder,
 ) {
-
   private var items = emptyList<BuilderItem<*>>()
 
   fun addAll(builderItems: List<BuilderItem<*>>) {
@@ -20,7 +19,10 @@ class BuilderItemsLogic(
     builderItemsHolder.addNew(builderItem)
   }
 
-  fun update(position: Int, builderItem: BuilderItem<*>) {
+  fun update(
+    position: Int,
+    builderItem: BuilderItem<*>,
+  ) {
     builderItemsHolder.update(position, builderItem)
   }
 
@@ -28,19 +30,16 @@ class BuilderItemsLogic(
     builderItemsHolder.remove(position)
   }
 
-  fun canAdd(): Boolean {
-    return getAvailable().isNotEmpty()
-  }
+  fun canAdd(): Boolean = getAvailable().isNotEmpty()
 
   fun setAllAvailable(items: List<BuilderItem<*>>) {
     this.items = items
   }
 
-  fun getUsed(): List<BuilderItem<*>> {
-    return builderItemsHolder.getItems()
-  }
+  fun getUsed(): List<BuilderItem<*>> = builderItemsHolder.getItems()
 
   fun getAvailable(): List<BuilderItem<*>> {
-    return items - builderItemsHolder.getItems().toSet()
+    val usedTypes = builderItemsHolder.getItems().map { it.biType }.toSet()
+    return items.filterNot { it.biType in usedTypes }
   }
 }

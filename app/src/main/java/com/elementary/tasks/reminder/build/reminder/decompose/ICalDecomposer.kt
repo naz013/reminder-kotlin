@@ -1,26 +1,28 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
-import com.github.naz013.domain.Reminder
-import com.github.naz013.icalendar.DateTimeStartTag
-import com.github.naz013.icalendar.ICalendarApi
-import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.ICalStartDateBuilderItem
 import com.elementary.tasks.reminder.build.ICalStartTimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.github.naz013.domain.reminder.BiType
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
+import com.github.naz013.domain.reminder.BiType
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.icalendar.DateTimeStartTag
+import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.icalendar.RecurrenceRuleTag
 
 class ICalDecomposer(
   private val biFactory: BiFactory,
   private val ICalendarApi: ICalendarApi,
-  private val recurParamsToBiAdapter: RecurParamsToBiAdapter
+  private val recurParamsToBiAdapter: RecurParamsToBiAdapter,
 ) {
-
-  suspend operator fun invoke(reminder: Reminder): List<BuilderItem<*>> {
-    val rules = runCatching {
-      ICalendarApi.parseObject(reminder.recurDataObject)
-    }.getOrNull() ?: return emptyList()
+  suspend operator fun invoke(reminder: ReminderV2): List<BuilderItem<*>> {
+    val rrule = (reminder.recurrence as? RecurrenceRule.ICalendar)?.rrule ?: return emptyList()
+    val rules =
+      runCatching {
+        ICalendarApi.parseObject(rrule)
+      }.getOrNull() ?: return emptyList()
 
     val list = mutableListOf<BuilderItem<*>>()
 
@@ -34,20 +36,22 @@ class ICalDecomposer(
 
         is DateTimeStartTag -> {
           tag.value.dateTime?.also { dateTime ->
-            biFactory.createWithValue(
-              BiType.ICAL_START_DATE,
-              dateTime.toLocalDate(),
-              ICalStartDateBuilderItem::class.java
-            )?.also {
-              list.add(it)
-            }
-            biFactory.createWithValue(
-              BiType.ICAL_START_TIME,
-              dateTime.toLocalTime(),
-              ICalStartTimeBuilderItem::class.java
-            )?.also {
-              list.add(it)
-            }
+            biFactory
+              .createWithValue(
+                BiType.ICAL_START_DATE,
+                dateTime.toLocalDate(),
+                ICalStartDateBuilderItem::class.java,
+              )?.also {
+                list.add(it)
+              }
+            biFactory
+              .createWithValue(
+                BiType.ICAL_START_TIME,
+                dateTime.toLocalTime(),
+                ICalStartTimeBuilderItem::class.java,
+              )?.also {
+                list.add(it)
+              }
           }
         }
 
