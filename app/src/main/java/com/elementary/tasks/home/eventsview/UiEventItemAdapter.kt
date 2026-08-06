@@ -13,9 +13,10 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 /**
- * Converts already-filtered [ReminderV2]/[Birthday] domain lists into the flat, chronologically
- * sorted [UiEventItem] list the Events screen renders, inserting a [UiEventHeader] at every day
- * boundary (or "Permanent"/"Disabled" bucket for reminders without a due date).
+ * Converts already-filtered [ReminderV2]/[Birthday] domain lists into the flat [UiEventItem] list
+ * the Events screen renders, inserting a [UiEventHeader] at every day boundary within the
+ * chronological due-date section, followed by the Permanent/Location/Shopping-lists/Disabled
+ * buckets (see [resolveReminderDateTime]) in that order.
  */
 class UiEventItemAdapter(
   private val uiReminderListAdapter: UiReminderListAdapter,
@@ -41,7 +42,7 @@ class UiEventItemAdapter(
     val uiReminderList = uiReminderListAdapter.createV2(reminder, group)
     return UiEventReminder(
       id = uiReminderList.id,
-      dateTime = resolveReminderDateTime(uiReminderList.dueDateTime, uiReminderList.state.isActive),
+      dateTime = resolveReminderDateTime(reminder, uiReminderList.dueDateTime, uiReminderList.state.isActive),
       category =
         when {
           reminder.action is ReminderAction.Shopping -> EventCategory.SHOPPING
@@ -71,10 +72,25 @@ class UiEventItemAdapter(
     )
   }
 
+  /**
+   * Reminders sort into buckets, in this order: due-date reminders (chronological, alongside
+   * birthdays and shopping lists that have a due date), permanent reminders, location-based
+   * reminders (always here regardless of due date), shopping lists without a due date, and
+   * finally disabled reminders without a due date. Encoded as far-future sentinel dates so the
+   * whole merged list can still be sorted with a single [sortedBy] on [UiEventItem.dateTime].
+   */
   private fun resolveReminderDateTime(
+    reminder: ReminderV2,
     dueDateTime: LocalDateTime?,
     isActive: Boolean,
-  ): LocalDateTime = dueDateTime ?: if (isActive) PERMANENT_SENTINEL else DISABLED_SENTINEL
+  ): LocalDateTime =
+    when {
+      !isActive && dueDateTime == null -> DISABLED_SENTINEL
+      reminder.location != null -> LOCATION_SENTINEL
+      dueDateTime != null -> dueDateTime
+      reminder.action is ReminderAction.Shopping -> SHOPPING_SENTINEL
+      else -> PERMANENT_SENTINEL
+    }
 
   private fun insertHeaders(items: List<UiEventItem>): List<UiEventItem> {
     if (items.isEmpty()) return items
@@ -104,6 +120,8 @@ class UiEventItemAdapter(
       is UiEventReminder ->
         when (item.dateTime) {
           DISABLED_SENTINEL -> textProvider.getText(R.string.disabled)
+          SHOPPING_SENTINEL -> textProvider.getText(R.string.shopping_lists)
+          LOCATION_SENTINEL -> textProvider.getText(R.string.location)
           PERMANENT_SENTINEL -> textProvider.getText(R.string.permanent)
           else -> dateHeaderText(item.dateTime.toLocalDate(), today, tomorrow)
         }
@@ -125,8 +143,11 @@ class UiEventItemAdapter(
 
   companion object {
     // Sentinel values pushing reminders without a due date to the end of the chronologically
-    // sorted list, grouped into their own "Permanent"/"Disabled" header buckets.
-    val PERMANENT_SENTINEL: LocalDateTime = LocalDateTime.of(9999, 12, 30, 0, 0)
+    // sorted list, grouped into their own header buckets, in this order: Permanent, Location,
+    // Shopping (no due date), Disabled.
+    val PERMANENT_SENTINEL: LocalDateTime = LocalDateTime.of(9999, 12, 28, 0, 0)
+    val LOCATION_SENTINEL: LocalDateTime = LocalDateTime.of(9999, 12, 29, 0, 0)
+    val SHOPPING_SENTINEL: LocalDateTime = LocalDateTime.of(9999, 12, 30, 0, 0)
     val DISABLED_SENTINEL: LocalDateTime = LocalDateTime.of(9999, 12, 31, 0, 0)
   }
 }
