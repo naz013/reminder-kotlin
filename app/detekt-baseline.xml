@@ -59,9 +59,9 @@
     <ID>ArgumentListWrapping:EditPlaceScreen.kt$(id = triple.first, title = triple.second, iconRes = triple.third)</ID>
     <ID>ArgumentListWrapping:EventDateTimeCalculatorV2Test.kt$EventDateTimeCalculatorV2Test$(eventDateTime = future, remindBefore = remindBeforeMillis)</ID>
     <ID>ArgumentListWrapping:EventDateTimeCalculatorV2Test.kt$EventDateTimeCalculatorV2Test$(reminderV2(eventDateTime = future, remindBefore = remindBeforeMillis))</ID>
-    <ID>ArgumentListWrapping:EventsScreen.kt$(R.string.add_birthday)</ID>
-    <ID>ArgumentListWrapping:EventsScreen.kt$(id = 2, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake)</ID>
-    <ID>ArgumentListWrapping:EventsScreen.kt$(id = triple.first, title = triple.second, iconRes = triple.third)</ID>
+    <ID>ArgumentListWrapping:AgendaScreen.kt$(R.string.add_birthday)</ID>
+    <ID>ArgumentListWrapping:AgendaScreen.kt$(id = 2, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake)</ID>
+    <ID>ArgumentListWrapping:AgendaScreen.kt$(id = triple.first, title = triple.second, iconRes = triple.third)</ID>
     <ID>ArgumentListWrapping:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$(dateTime)</ID>
     <ID>ArgumentListWrapping:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$(eventDateTime = dateTimeManager.localToUtc(dateTime))</ID>
     <ID>ArgumentListWrapping:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$(it, dateTime, groupsById)</ID>
@@ -118,7 +118,7 @@
     <ID>ArgumentListWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$(repeatInterval = 1800000L, from = "08:00", to = "18:00", repeatLimit = 20, eventCount = 17L)</ID>
     <ID>ArgumentListWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = -1, eventCount = 100L)</ID>
     <ID>ArgumentListWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = 50, eventCount = 50L)</ID>
-    <ID>ArgumentListWrapping:UiEventItemAdapterTest.kt$UiEventItemAdapterTest$(canToggle = true, canOpen = true, canEdit = true, canDelete = true, canSkip = false)</ID>
+    <ID>ArgumentListWrapping:UiAgendaItemAdapterTest.kt$UiAgendaItemAdapterTest$(canToggle = true, canOpen = true, canEdit = true, canDelete = true, canSkip = false)</ID>
     <ID>ArgumentListWrapping:ValueEditorSheet.kt$(builderItem, dateTimeManager, is24HourFormat, onValueChange)</ID>
     <ID>ArgumentListWrapping:WeekFactoryTest.kt$WeekFactoryTest$(1)</ID>
     <ID>ArgumentListWrapping:WeekFactoryTest.kt$WeekFactoryTest$(2)</ID>
@@ -267,7 +267,7 @@
     <ID>Indentation:BiFilter.kt$CreatorConfigFilter$ </ID>
     <ID>Indentation:BirthdayActionScreen.kt$ </ID>
     <ID>Indentation:BirthdayActionViewModelTest.kt$BirthdayActionViewModelTest$ </ID>
-    <ID>Indentation:BirthdayEventRow.kt$ </ID>
+    <ID>Indentation:BirthdayAgendaRow.kt$ </ID>
     <ID>Indentation:BirthdayHandlerFactory.kt$BirthdayHandlerFactory$ </ID>
     <ID>Indentation:BirthdayNotificationHandler.kt$BirthdayNotificationHandler$ </ID>
     <ID>Indentation:BirthdaySettingsScreen.kt$ </ID>
@@ -310,8 +310,8 @@
     <ID>Indentation:EditGoogleTaskViewModel.kt$EditGoogleTaskViewModel$ </ID>
     <ID>Indentation:EditGroupScreen.kt$ </ID>
     <ID>Indentation:EditPlaceScreen.kt$ </ID>
-    <ID>Indentation:EventListItem.kt$ </ID>
-    <ID>Indentation:EventsScreen.kt$ </ID>
+    <ID>Indentation:AgendaListItem.kt$ </ID>
+    <ID>Indentation:AgendaScreen.kt$ </ID>
     <ID>Indentation:GeneralSettingsScreen.kt$ </ID>
     <ID>Indentation:GoogleTasksScreen.kt$ </ID>
     <ID>Indentation:GroupListItem.kt$ </ID>
@@ -423,7 +423,7 @@
     <ID>LongParameterList:EditGoogleTaskViewModel.kt$EditGoogleTaskViewModel$( val id: String?, private val initialListId: String, private val googleTasksApi: GoogleTasksApi, private val dispatcherProvider: DispatcherProvider, private val googleTaskRepository: GoogleTaskRepository, private val reminderV2Repository: ReminderV2Repository, private val groupV2Repository: GroupV2Repository, private val dateTimeManager: DateTimeManager, private val analyticsEventSender: AnalyticsEventSender, private val getAllGoogleTaskListsUseCase: GetAllGoogleTaskListsUseCase, private val getGoogleTaskByIdUseCase: GetGoogleTaskByIdUseCase, private val appWidgetUpdater: AppWidgetUpdater, private val activateReminderUseCase: ActivateReminderUseCase, private val textProvider: TextProvider, private val prefs: Prefs, )</ID>
     <ID>LongParameterList:EditGroupViewModel.kt$EditGroupViewModel$( private val id: String, private val fromIntentData: Boolean, private val dispatcherProvider: DispatcherProvider, private val groupV2Repository: GroupV2Repository, private val dateTimeManager: DateTimeManager, private val analyticsEventSender: AnalyticsEventSender, private val intentDataReader: IntentDataReader, private val contextProvider: ContextProvider, private val deleteGroupUseCase: DeleteGroupUseCase, private val saveGroupUseCase: SaveGroupUseCase, private val reminderSettingsRepository: ReminderSettingsRepository, private val vibrationPlayer: VibrationPlayer, )</ID>
     <ID>LongParameterList:EditPlaceViewModel.kt$EditPlaceViewModel$( private val key: PlacesNavKey.Edit, private val dispatcherProvider: DispatcherProvider, private val placeRepository: PlaceRepository, private val dateTimeManager: DateTimeManager, private val prefs: Prefs, private val intentDataReader: IntentDataReader, private val deletePlaceUseCase: DeletePlaceUseCase, private val savePlaceUseCase: SavePlaceUseCase, )</ID>
-    <ID>LongParameterList:EventsViewModel.kt$EventsViewModel$( private val dispatcherProvider: DispatcherProvider, private val reminderV2Repository: ReminderV2Repository, private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase, private val groupV2Repository: GroupV2Repository, private val birthdayRepository: BirthdayRepository, private val uiEventItemAdapter: UiEventItemAdapter, private val textProvider: TextProvider, private val dateTimeManager: DateTimeManager, private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase, private val skipReminderUseCase: SkipReminderUseCase, private val toggleReminderStateUseCase: ToggleReminderStateUseCase, private val deleteReminderUseCase: DeleteReminderUseCase, private val deleteBirthdayUseCase: DeleteBirthdayUseCase, )</ID>
+    <ID>LongParameterList:AgendaViewModel.kt$AgendaViewModel$( private val dispatcherProvider: DispatcherProvider, private val reminderV2Repository: ReminderV2Repository, private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase, private val groupV2Repository: GroupV2Repository, private val birthdayRepository: BirthdayRepository, private val uiEventItemAdapter: UiAgendaItemAdapter, private val textProvider: TextProvider, private val dateTimeManager: DateTimeManager, private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase, private val skipReminderUseCase: SkipReminderUseCase, private val toggleReminderStateUseCase: ToggleReminderStateUseCase, private val deleteReminderUseCase: DeleteReminderUseCase, private val deleteBirthdayUseCase: DeleteBirthdayUseCase, )</ID>
     <ID>LongParameterList:GetActiveEventsForTheDayUseCase.kt$GetActiveEventsForTheDayUseCase$( private val dispatcherProvider: DispatcherProvider, private val dateTimeManager: DateTimeManager, private val getRemindersV2InRangeUseCase: GetRemindersV2InRangeUseCase, private val birthdayRepository: BirthdayRepository, private val groupV2Repository: GroupV2Repository, private val modelDateTimeFormatter: ModelDateTimeFormatter, private val textProvider: TextProvider, private val shopItemsFormatter: ShopItemsFormatter, private val contextProvider: ContextProvider, private val prefs: Prefs, )</ID>
     <ID>LongParameterList:GetActiveEventsForTheDayUseCaseTest.kt$GetActiveEventsForTheDayUseCaseTest$( id: String = "1", summary: String = "Test reminder", groupId: String? = null, action: ReminderAction = ReminderAction.None, shoppingItems: List&lt;ShopItemV2&gt; = emptyList(), eventDateTime: LocalDateTime? = day.plusHours(1), )</ID>
     <ID>LongParameterList:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$( private val getOccurrencesByDayUseCase: GetOccurrencesByDayUseCase, private val getHistoryByDayUseCase: GetHistoryByDayUseCase, private val birthdayRepository: BirthdayRepository, private val reminderV2Repository: ReminderV2Repository, private val groupV2Repository: GroupV2Repository, private val uiReminderListAdapter: UiReminderListAdapter, private val uiBirthdayListAdapter: UiBirthdayListAdapter, private val dateTimeManager: DateTimeManager, )</ID>
@@ -513,12 +513,12 @@
     <ID>MaxLineLength:EditGroupViewModel.kt$EditGroupViewModel$sliderColors = ThemeProvider.colorsForSliderThemed(contextProvider.themedContext).map { color -&gt; color.toColor() }</ID>
     <ID>MaxLineLength:EditPlaceScreen.kt$items = actions.map { (triple, _) -&gt; PopupMenuItem(id = triple.first, title = triple.second, iconRes = triple.third) }</ID>
     <ID>MaxLineLength:EventDateTimeCalculatorV2Test.kt$EventDateTimeCalculatorV2Test$val result = calculator.calculateEventDateTime(reminderV2(eventDateTime = future, remindBefore = remindBeforeMillis))</ID>
-    <ID>MaxLineLength:EventsScreen.kt$PopupMenuItem(id = 2, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake)</ID>
-    <ID>MaxLineLength:EventsScreen.kt$items = actions.map { (triple, _) -&gt; PopupMenuItem(id = triple.first, title = triple.second, iconRes = triple.third) }</ID>
-    <ID>MaxLineLength:EventsViewModel.kt$EventsViewModel$val reminderDate = it.schedule.eventDateTime?.let { dt -&gt; dateTimeManager.utcToLocal(dt) }?.toLocalDate() ?: return@forEach</ID>
+    <ID>MaxLineLength:AgendaScreen.kt$PopupMenuItem(id = 2, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake)</ID>
+    <ID>MaxLineLength:AgendaScreen.kt$items = actions.map { (triple, _) -&gt; PopupMenuItem(id = triple.first, title = triple.second, iconRes = triple.third) }</ID>
+    <ID>MaxLineLength:AgendaViewModel.kt$AgendaViewModel$val reminderDate = it.schedule.eventDateTime?.let { dt -&gt; dateTimeManager.utcToLocal(dt) }?.toLocalDate() ?: return@forEach</ID>
     <ID>MaxLineLength:GetActiveEventsForTheDayUseCase.kt$GetActiveEventsForTheDayUseCase$is ReminderAction.Email -&gt; ResolvedEventAction.SendEmail(action.target, action.subject, body = "", attachmentFile = null)</ID>
-    <ID>MaxLineLength:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$EventHistoricalRecordType.Reminder -&gt; reminders[record.eventId]?.let { toUiEventReminder(it, dateTime, groupsById) }</ID>
-    <ID>MaxLineLength:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$OccurrenceType.Reminder -&gt; reminders[it.eventId]?.let { reminder -&gt; toUiEventReminder(reminder, dateTime, groupsById) }</ID>
+    <ID>MaxLineLength:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$EventHistoricalRecordType.Reminder -&gt; reminders[record.eventId]?.let { toUiAgendaReminder(it, dateTime, groupsById) }</ID>
+    <ID>MaxLineLength:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$OccurrenceType.Reminder -&gt; reminders[it.eventId]?.let { reminder -&gt; toUiAgendaReminder(reminder, dateTime, groupsById) }</ID>
     <ID>MaxLineLength:GetDayEventItemsUseCase.kt$GetDayEventItemsUseCase$val projected = reminder.copy(schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.localToUtc(dateTime)))</ID>
     <ID>MaxLineLength:IntervalRepeatOccurrenceCalculatorV2.kt$IntervalRepeatOccurrenceCalculatorV2$*</ID>
     <ID>MaxLineLength:JobScheduler.kt$JobScheduler$val millis = reminderV2.schedule.eventDateTime?.let { dateTimeManager.toMillis(dateTimeManager.utcToLocal(it)) } ?: 0L</ID>
@@ -560,7 +560,7 @@
     <ID>MaxLineLength:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 1800000L, from = "08:00", to = "18:00", repeatLimit = 20, eventCount = 17L)</ID>
     <ID>MaxLineLength:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = -1, eventCount = 100L)</ID>
     <ID>MaxLineLength:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = 50, eventCount = 50L)</ID>
-    <ID>MaxLineLength:UiEventItemAdapterTest.kt$UiEventItemAdapterTest$actions = UiReminderListActions(canToggle = true, canOpen = true, canEdit = true, canDelete = true, canSkip = false)</ID>
+    <ID>MaxLineLength:UiAgendaItemAdapterTest.kt$UiAgendaItemAdapterTest$actions = UiReminderListActions(canToggle = true, canOpen = true, canEdit = true, canDelete = true, canSkip = false)</ID>
     <ID>MaxLineLength:ValueEditorSheet.kt$is TimerExclusionBuilderItem -&gt; CountdownExclusionValueEditor(builderItem, dateTimeManager, is24HourFormat, onValueChange)</ID>
     <ID>MaxLineLength:WeekFactoryTest.kt$WeekFactoryTest$WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = localDate.plusDays(4), hasEvents = false)</ID>
     <ID>MaxLineLength:WeekFactoryTest.kt$WeekFactoryTest$WeekDay(weekday = "Fri", date = "25", isSelected = false, localDate = localDate.plusDays(5), hasEvents = false)</ID>
@@ -766,7 +766,7 @@
     <ID>TooManyFunctions:RemindersSettingsViewModel.kt$RemindersSettingsViewModel : ViewModel</ID>
     <ID>TooManyFunctions:SimpleMapViewViewModel.kt$SimpleMapViewViewModel : ViewModel</ID>
     <ID>UnusedPrivateProperty:BirthdayActionActivity.kt$BirthdayActionActivity.Companion$private const val TAG = "BirthdayActionActivity"</ID>
-    <ID>UnusedPrivateProperty:EventsViewModel.kt$EventsViewModel.Companion$private const val TAG = "EventsViewModel"</ID>
+    <ID>UnusedPrivateProperty:AgendaViewModel.kt$AgendaViewModel.Companion$private const val TAG = "AgendaViewModel"</ID>
     <ID>UnusedPrivateProperty:GetActiveEventsForTheDayUseCase.kt$GetActiveEventsForTheDayUseCase$private val dispatcherProvider: DispatcherProvider</ID>
     <ID>UnusedPrivateProperty:GetActiveEventsForTheDayUseCase.kt$GetActiveEventsForTheDayUseCase.Companion$private const val TAG = "GetActiveEventsForTheDayUseCase"</ID>
     <ID>UnusedPrivateProperty:ICalGenericListIntFormatter.kt$ICalGenericListIntFormatter$private val date = LocalDate.now().withDayOfMonth(15)</ID>

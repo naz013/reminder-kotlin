@@ -35,7 +35,7 @@ person picking up tags work starts from what's actually there instead of re-deri
 - **Local backup** — `LocalBackupApiImpl` exports/imports both tables the same way: `Tag` upserts
   per row, `TagAssignment` does a full `replaceAll()`, matching the cloud-download semantics for the
   same reason.
-- **Smart Lists precedent** — `EventsViewModel` already filters the merged Reminders/Birthdays list
+- **Smart Lists precedent** — `AgendaViewModel` already filters the merged Reminders/Birthdays list
   by `SmartListFilter` (`TODAY`/`OVERDUE`/`THIS_WEEK`/`NO_GROUP`), with the predicate logic split
   into a pure per-entity object (`ReminderSmartListPredicate` in `usecase:reminders`,
   `BirthdaySmartListPredicate` in `app` since it needs `BirthdayDateCalculator`). This is the
@@ -74,22 +74,22 @@ What's left is UI plumbing, one surface at a time.
 screen) only filters by a text `searchQuery` — there's no way to browse "just my Recipes notes."
 This is the cheapest win in this whole document: no new `TaggedItemType`, no sync changes, just a
 tag filter chip row on the Notes list reading from `TagAssignmentRepository.getItemIdsForTag()`
-(mirroring `EventsScreen`'s existing `SmartListChipRow`).
+(mirroring `AgendaScreen`'s existing `SmartListChipRow`).
 
 ### Reminders — already taggable, but Smart Lists can't filter by tag yet
 
-Same gap as Notes, on the Events screen: `BuildReminderViewModel` supports tagging, but
+Same gap as Notes, on the Agenda screen: `BuildReminderViewModel` supports tagging, but
 `SmartListFilter` only has `TODAY`/`OVERDUE`/`THIS_WEEK`/`NO_GROUP` — no `TAG(tagId)` case. Adding
 one means `SmartListFilter` (currently a plain enum) would need to become capable of carrying a
-parameter for this one case, and `EventsScreen`'s `SmartListChipRow` would need a way to present
+parameter for this one case, and `AgendaScreen`'s `SmartListChipRow` would need a way to present
 "pick a tag" as a filter option (a submenu or a second chip row) rather than a fixed enum of chips.
-Once in place, it applies to Reminders and Birthdays' `EventsViewModel` filtering symmetrically for
+Once in place, it applies to Reminders and Birthdays' `AgendaViewModel` filtering symmetrically for
 free — and to Notes' equivalent list filter above.
 
 ### Birthdays — not taggable yet
 
 `Birthday` has no group or tag concept at all today. Tagging would let users mark
-Family/Friends/Coworkers, then filter the Birthdays list or the Events screen down to one group —
+Family/Friends/Coworkers, then filter the Birthdays list or the Agenda screen down to one group —
 useful given birthdays have no other categorization mechanism (unlike Reminders, which have
 `GroupV2`).
 
@@ -97,7 +97,7 @@ useful given birthdays have no other categorization mechanism (unlike Reminders,
 - Wire `TagChipPicker` into
   [`EditBirthdayViewModel`](../app/src/main/java/com/elementary/tasks/birthdays/create/EditBirthdayViewModel.kt)
   and its screen, exactly like `BuildReminderViewModel.onTagToggle`.
-- Extend `EventsViewModel.filterBirthdays` (already smart-list-aware as of the recent bug fix — see
+- Extend `AgendaViewModel.filterBirthdays` (already smart-list-aware as of the recent bug fix — see
   `BirthdaySmartListPredicate`) to also accept a tag filter, sharing the tag-based `SmartListFilter`
   case proposed above for Reminders.
 - **UX caution**: the birthday add/edit flow is intentionally short (name, date, a couple of
@@ -143,8 +143,8 @@ surface added above.
   today surfaces it. Straightforward to build: `TagAssignmentRepository.getItemIdsForTag(tagId)`
   already returns exactly the `(itemId, itemType)` pairs needed; the screen just needs a
   per-`itemType` lookup + a shared list-row renderer (there's already a precedent for merging
-  heterogeneous item types into one list: `UiEventItemAdapter` does this for Reminders+Birthdays on
-  the Events screen).
+  heterogeneous item types into one list: `UiAgendaItemAdapter` does this for Reminders+Birthdays on
+  the Agenda screen).
 - **Tag-based Smart List filter** — described per-surface above; once built it's shared
   infrastructure, not a one-off.
 - **Tag Insights** — a "busiest tags" or "tag distribution over time" aggregator in `:insights`,
@@ -166,7 +166,7 @@ Roughly cheapest/highest-leverage first, though these aren't hard dependencies e
 
 1. **Notes list tag filter** — no new `TaggedItemType`, no sync/backup changes, smallest possible
    slice that makes existing Note tags actually useful for browsing.
-2. **Reminders/Events tag-based Smart List filter** — same cost profile as #1, and is the piece both
+2. **Reminders/Agenda tag-based Smart List filter** — same cost profile as #1, and is the piece both
    Birthdays (below) and Google Tasks depend on if they want tag-based filtering rather than just
    tag-based Insights/export.
 3. **Birthdays tagging** — new `TaggedItemType`, but mirrors the existing Note/Reminder wiring
@@ -194,5 +194,5 @@ Roughly cheapest/highest-leverage first, though these aren't hard dependencies e
   not just an engineering one, before Google Tasks tagging ships.
 - **`SmartListFilter` becoming parameterized** — introducing a `TAG(tagId)` case turns it from a
   plain `enum class` into something closer to a sealed class, which is a real (if small) API change
-  for every existing call site (`EventsViewModel`, `EventsScreen`'s chip row, both predicate
+  for every existing call site (`AgendaViewModel`, `AgendaScreen`'s chip row, both predicate
   objects). Worth designing once, not per-surface.

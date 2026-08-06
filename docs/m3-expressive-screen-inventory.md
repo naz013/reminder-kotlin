@@ -28,7 +28,7 @@ for the detailed gap analysis and plan behind these two.
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
 | Home | Compose | `home/HomeScreen.kt`, `home/ChronologicalHomeScreen.kt` | Audited |
-| Events | Compose | `home/eventsview/EventsScreen.kt` | Audited |
+| Agenda | Compose | `home/agenda/AgendaScreen.kt` | Audited |
 
 ## Reminders
 

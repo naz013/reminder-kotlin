@@ -197,7 +197,7 @@ private fun DayEntry(
     refreshSignal = refreshSignal,
     loadDayEvents = viewModel::loadDayEvents,
     onItemClick = viewModel::onItemClick,
-    onEventMenuAction = viewModel::onEventMenuAction,
+    onAgendaMenuAction = viewModel::onAgendaMenuAction,
     onAddReminderClick = { viewModel.onAddReminderClick(state.selectedDate) },
     onAddBirthdayClick = { viewModel.onAddBirthdayClick(state.selectedDate) },
     onBackClick = { backStack.removeLastOrNull() },

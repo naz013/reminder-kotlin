@@ -1,7 +1,7 @@
 # M3 Expressive Adoption Plan
 
 Research + gap analysis for adopting Material 3 Expressive, starting with `HomeScreen`
-(`ChronologicalHomeScreen`) and `EventsScreen`. This is a planning document, not a change log — no
+(`ChronologicalHomeScreen`) and `AgendaScreen`. This is a planning document, not a change log — no
 production code was modified while writing it.
 
 Source: [m3.material.io/blog/building-with-m3-expressive](https://m3.material.io/blog/building-with-m3-expressive)
@@ -109,16 +109,16 @@ that gap is entirely in how `ui-common` and the screens use the library today.
 - Banners in `HomeScreen.kt` (Privacy/Login/WhatsNew) are functionally identical `ElevatedCard`s — fine as
   is, low priority for expressive treatment.
 
-### `EventsScreen` audit
+### `AgendaScreen` audit
 
 - Top bar, search bar, filter chips, and bottom sheet are all stock M3 components used correctly, but with
   no emphasis differentiation: selected `FilterChip`s, the active filter `Badge`, and section headers
   (`titleMedium`) are exactly where the spec calls out emphasized type as the recommended pattern (selected
   chips/menu items, badges) and are not using it.
-- `EventsList` renders headers and rows with uniform `8.dp` spacing and no shape distinction between a
-  `UiEventReminder` and `UiEventBirthday` row — same gap as Home: type is conveyed only through icon/text,
+- `AgendaList` renders headers and rows with uniform `8.dp` spacing and no shape distinction between a
+  `UiAgendaReminder` and `UiAgendaBirthday` row — same gap as Home: type is conveyed only through icon/text,
   not through shape or color-role variety.
-- Empty state (`EventsEmptyState`) and the equivalent on Home (`EmptyEventsState`) are near-duplicates that
+- Empty state (`AgendaEmptyState`) and the equivalent on Home (`EmptyEventsState`) are near-duplicates that
   belong in `ui-common` as a shared composable regardless of the Expressive work — worth doing opportunistically
   during this migration since both screens will already be touched.
 
@@ -167,7 +167,7 @@ screen incrementally so every step stays reviewable and shippable on its own.
   `MenuIconButton` + `AppDropdownMenu` pair.
 - Stagger animations → migrate onto the shared motion scheme from §3.3.
 
-**Events (`EventsScreen`)**
+**Agenda (`AgendaScreen`)**
 - Section headers, active-filter badge, selected filter chips → swap to emphasized type per the spec's own
   "where emphasized styles can be used" guidance (badges, selected chips) — this is the most direct,
   lowest-risk win on this screen.

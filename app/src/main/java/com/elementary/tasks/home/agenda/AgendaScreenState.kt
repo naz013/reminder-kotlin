@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.eventsview
+package com.elementary.tasks.home.agenda
 
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
@@ -8,11 +8,11 @@ import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 import org.threeten.bp.LocalDateTime
 
-data class EventsScreenState(
+data class AgendaScreenState(
   val listState: ListState = ListState.Loading,
   val hasAnyItems: Boolean = true,
   val searchQuery: String = "",
-  val selectedCategories: Set<EventCategory> = EventCategory.entries.toSet(),
+  val selectedCategories: Set<AgendaCategory> = AgendaCategory.entries.toSet(),
   val selectedSmartList: SmartListFilter? = null,
   val selectedTagId: String? = null,
   val selectedGroupId: String? = null,
@@ -24,20 +24,20 @@ sealed interface ListState {
   data object Loading : ListState
 
   data class Ready(
-    val items: List<UiEventItem>,
+    val items: List<UiAgendaItem>,
   ) : ListState
 
   data object Empty : ListState
 }
 
-enum class EventCategory {
+enum class AgendaCategory {
   REMINDERS,
   SHOPPING,
   LOCATION,
   BIRTHDAYS,
 }
 
-enum class EventMenuAction {
+enum class AgendaMenuAction {
   OPEN,
   EDIT,
   DELETE,
@@ -46,31 +46,31 @@ enum class EventMenuAction {
   TURN_OFF,
 }
 
-/** A single row (or header) in the merged, chronologically-sorted events list. */
-sealed interface UiEventItem {
+/** A single row (or header) in the merged, chronologically-sorted agenda list. */
+sealed interface UiAgendaItem {
   val id: String
   val dateTime: LocalDateTime
 }
 
-data class UiEventHeader(
+data class UiAgendaHeader(
   override val id: String,
   override val dateTime: LocalDateTime,
   val text: String,
-) : UiEventItem
+) : UiAgendaItem
 
-data class UiEventReminder(
+data class UiAgendaReminder(
   override val id: String,
   override val dateTime: LocalDateTime,
-  val category: EventCategory,
+  val category: AgendaCategory,
   val mainText: UiTextElement,
   val secondaryText: UiTextElement?,
   val tertiaryText: UiTextElement?,
   val tags: List<UiTextElement>,
   val actions: UiReminderListActions,
   val state: UiReminderListState,
-) : UiEventItem
+) : UiAgendaItem
 
-data class UiEventBirthday(
+data class UiAgendaBirthday(
   override val id: String,
   override val dateTime: LocalDateTime,
   val name: String,
@@ -79,4 +79,4 @@ data class UiEventBirthday(
   val color: Int,
   val contrastColor: Int,
   val dateFormatted: String,
-) : UiEventItem
+) : UiAgendaItem

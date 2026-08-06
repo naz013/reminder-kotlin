@@ -41,12 +41,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.calendar.dayview.weekheader.WeekDay
-import com.elementary.tasks.home.eventsview.BirthdayEventRow
-import com.elementary.tasks.home.eventsview.EventMenuAction
-import com.elementary.tasks.home.eventsview.ReminderEventRow
-import com.elementary.tasks.home.eventsview.UiEventBirthday
-import com.elementary.tasks.home.eventsview.UiEventItem
-import com.elementary.tasks.home.eventsview.UiEventReminder
+import com.elementary.tasks.home.agenda.AgendaMenuAction
+import com.elementary.tasks.home.agenda.BirthdayAgendaRow
+import com.elementary.tasks.home.agenda.ReminderAgendaRow
+import com.elementary.tasks.home.agenda.UiAgendaBirthday
+import com.elementary.tasks.home.agenda.UiAgendaItem
+import com.elementary.tasks.home.agenda.UiAgendaReminder
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -68,9 +68,9 @@ fun WeekViewScreen(
   onPageSettled: (Int) -> Unit,
   onDayClick: (WeekDay) -> Unit,
   refreshSignal: Int,
-  loadDayEvents: suspend (LocalDate) -> List<UiEventItem>,
-  onItemClick: (UiEventItem) -> Unit,
-  onEventMenuAction: (UiEventItem, EventMenuAction) -> Unit,
+  loadDayEvents: suspend (LocalDate) -> List<UiAgendaItem>,
+  onItemClick: (UiAgendaItem) -> Unit,
+  onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
   onAddReminderClick: () -> Unit,
   onAddBirthdayClick: () -> Unit,
   onBackClick: () -> Unit,
@@ -126,7 +126,7 @@ fun WeekViewScreen(
         refreshSignal = refreshSignal,
         loadDayEvents = loadDayEvents,
         onItemClick = onItemClick,
-        onEventMenuAction = onEventMenuAction,
+        onAgendaMenuAction = onAgendaMenuAction,
       )
     }
   }
@@ -225,12 +225,12 @@ private fun WeekDayCell(
 private fun DayPage(
   date: LocalDate,
   refreshSignal: Int,
-  loadDayEvents: suspend (LocalDate) -> List<UiEventItem>,
-  onItemClick: (UiEventItem) -> Unit,
-  onEventMenuAction: (UiEventItem, EventMenuAction) -> Unit,
+  loadDayEvents: suspend (LocalDate) -> List<UiAgendaItem>,
+  onItemClick: (UiAgendaItem) -> Unit,
+  onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  var events by remember(date) { mutableStateOf<List<UiEventItem>?>(null) }
+  var events by remember(date) { mutableStateOf<List<UiAgendaItem>?>(null) }
 
   LaunchedEffect(date, refreshSignal) {
     events = loadDayEvents(date)
@@ -254,20 +254,20 @@ private fun DayPage(
         ) {
           items(items, key = { it.id }) { item ->
             when (item) {
-              is UiEventReminder -> {
-                ReminderEventRow(
+              is UiAgendaReminder -> {
+                ReminderAgendaRow(
                   item = item,
                   onClick = { onItemClick(item) },
-                  onMenuAction = { action -> onEventMenuAction(item, action) },
+                  onMenuAction = { action -> onAgendaMenuAction(item, action) },
                   modifier = Modifier.animateItem(),
                 )
               }
 
-              is UiEventBirthday -> {
-                BirthdayEventRow(
+              is UiAgendaBirthday -> {
+                BirthdayAgendaRow(
                   item = item,
                   onClick = { onItemClick(item) },
-                  onMenuAction = { action -> onEventMenuAction(item, action) },
+                  onMenuAction = { action -> onAgendaMenuAction(item, action) },
                   modifier = Modifier.animateItem(),
                 )
               }
@@ -331,7 +331,7 @@ private fun WeekViewScreenPreview() {
       refreshSignal = 0,
       loadDayEvents = { emptyList() },
       onItemClick = {},
-      onEventMenuAction = { _, _ -> },
+      onAgendaMenuAction = { _, _ -> },
       onAddReminderClick = {},
       onAddBirthdayClick = {},
       onBackClick = {},

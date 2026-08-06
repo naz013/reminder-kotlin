@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.eventsview
+package com.elementary.tasks.home.agenda
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
@@ -27,13 +27,13 @@ import org.junit.Test
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
-class UiEventItemAdapterTest {
+class UiAgendaItemAdapterTest {
   private val uiReminderListAdapter = mockk<UiReminderListAdapter>()
   private val uiBirthdayListAdapter = mockk<UiBirthdayListAdapter>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val textProvider = mockk<TextProvider>()
 
-  private lateinit var adapter: UiEventItemAdapter
+  private lateinit var adapter: UiAgendaItemAdapter
 
   private val today: LocalDate = LocalDate.now()
   private val tomorrow: LocalDate = today.plusDays(1)
@@ -48,7 +48,7 @@ class UiEventItemAdapterTest {
     every { textProvider.getText(R.string.location) } returns "Location"
     every { textProvider.getText(R.string.shopping_lists) } returns "Shopping lists"
 
-    adapter = UiEventItemAdapter(uiReminderListAdapter, uiBirthdayListAdapter, dateTimeManager, textProvider)
+    adapter = UiAgendaItemAdapter(uiReminderListAdapter, uiBirthdayListAdapter, dateTimeManager, textProvider)
   }
 
   private fun reminderV2(
@@ -67,7 +67,7 @@ class UiEventItemAdapterTest {
   fun `returns empty list when there are no reminders or birthdays`() {
     val result = adapter.convertV2(emptyList(), emptyMap(), emptyList())
 
-    assertEquals(emptyList<UiEventItem>(), result)
+    assertEquals(emptyList<UiAgendaItem>(), result)
   }
 
   @Test
@@ -82,8 +82,8 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(laterReminder), emptyMap(), listOf(earlierBirthday))
 
     assertEquals(3, result.size)
-    assertTrue(result[0] is UiEventHeader)
-    assertEquals("Today", (result[0] as UiEventHeader).text)
+    assertTrue(result[0] is UiAgendaHeader)
+    assertEquals("Today", (result[0] as UiAgendaHeader).text)
     assertEquals("b1", result[1].id)
     assertEquals("r1", result[2].id)
   }
@@ -100,9 +100,9 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(todayReminder, tomorrowReminder), emptyMap(), emptyList())
 
     assertEquals(4, result.size)
-    assertEquals("Today", (result[0] as UiEventHeader).text)
+    assertEquals("Today", (result[0] as UiAgendaHeader).text)
     assertEquals("today-item", result[1].id)
-    assertEquals("Tomorrow", (result[2] as UiEventHeader).text)
+    assertEquals("Tomorrow", (result[2] as UiAgendaHeader).text)
     assertEquals("tomorrow-item", result[3].id)
   }
 
@@ -118,9 +118,9 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(datedReminder, permanentReminder), emptyMap(), emptyList())
 
     assertEquals(4, result.size)
-    assertEquals("Today", (result[0] as UiEventHeader).text)
+    assertEquals("Today", (result[0] as UiAgendaHeader).text)
     assertEquals("dated", result[1].id)
-    assertEquals("Permanent", (result[2] as UiEventHeader).text)
+    assertEquals("Permanent", (result[2] as UiAgendaHeader).text)
     assertEquals("permanent", result[3].id)
   }
 
@@ -133,7 +133,7 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(disabledReminder), emptyMap(), emptyList())
 
     assertEquals(2, result.size)
-    assertEquals("Turned off", (result[0] as UiEventHeader).text)
+    assertEquals("Turned off", (result[0] as UiAgendaHeader).text)
     assertEquals("disabled", result[1].id)
   }
 
@@ -175,7 +175,7 @@ class UiEventItemAdapterTest {
         "Turned off",
         "disabled",
       ),
-      result.map { item -> if (item is UiEventHeader) item.text else item.id },
+      result.map { item -> if (item is UiAgendaHeader) item.text else item.id },
     )
   }
 
@@ -188,7 +188,7 @@ class UiEventItemAdapterTest {
     val result = adapter.convertV2(listOf(locationReminder), emptyMap(), emptyList())
 
     assertEquals(2, result.size)
-    assertEquals("Location", (result[0] as UiEventHeader).text)
+    assertEquals("Location", (result[0] as UiAgendaHeader).text)
     assertEquals("location", result[1].id)
   }
 

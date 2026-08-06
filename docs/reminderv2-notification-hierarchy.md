@@ -294,7 +294,7 @@ currently missing them: `vibrate`, `vibrationPattern`, `repeatNotification`, `de
   and belongs with the eventual reminder-builder cutover to `ReminderV2`.
 - V1 `Reminder`/`ReminderGroup` and their tables/migrations/usecases are fully untouched.
 - The V1 reminder-builder's group picker (`GroupDecomposer`, `BiFactory`) and home/schedule
-  group-based filtering (`home/eventsview`, `home/scheduleview`) still read the V1 `ReminderGroup`
+  group-based filtering (`home/agenda`, `home/scheduleview`) still read the V1 `ReminderGroup`
   table — only the standalone Group list/edit screens moved to `GroupV2`.
 - No cloud-sync wiring for `GroupV2Json`/`ReminderV2Json`'s notification fields — the JSON DTOs
   exist and are kept in sync with the domain shapes, but aren't registered in `DataType`/

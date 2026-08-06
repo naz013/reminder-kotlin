@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.eventsview
+package com.elementary.tasks.home.agenda
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -63,11 +63,11 @@ private val HEADER_ELEVATION = 3.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventsScreen(
-  state: EventsScreenState,
+fun AgendaScreen(
+  state: AgendaScreenState,
   onBackClick: () -> Unit,
   onSearchQueryChange: (String) -> Unit,
-  onCategoryToggle: (EventCategory) -> Unit,
+  onCategoryToggle: (AgendaCategory) -> Unit,
   onSmartListSelected: (SmartListFilter?) -> Unit,
   onTagFilterSelected: (String?) -> Unit,
   onGroupFilterSelected: (String?) -> Unit,
@@ -77,19 +77,19 @@ fun EventsScreen(
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
   onTagsClick: () -> Unit,
-  onItemClick: (UiEventItem) -> Unit,
-  onEventMenuAction: (UiEventItem, EventMenuAction) -> Unit,
+  onItemClick: (UiAgendaItem) -> Unit,
+  onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val lazyListState = rememberLazyListState()
   val isScrolled by remember { derivedStateOf { lazyListState.canScrollBackward } }
   val headerElevation by animateDpAsState(
     targetValue = if (isScrolled) HEADER_ELEVATION else 0.dp,
-    label = "eventsHeaderElevation",
+    label = "agendaHeaderElevation",
   )
   var showFilterSheet by remember { mutableStateOf(false) }
   val hasActiveFilters =
-    state.selectedCategories != EventCategory.entries.toSet() ||
+    state.selectedCategories != AgendaCategory.entries.toSet() ||
       state.selectedSmartList != null ||
       state.selectedTagId != null ||
       state.selectedGroupId != null
@@ -99,7 +99,7 @@ fun EventsScreen(
     topBar = {
       Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
         Column {
-          EventsTopBar(
+          AgendaTopBar(
             onBackClick = onBackClick,
             onAddReminderClick = onAddReminderClick,
             onAddShoppingClick = onAddShoppingClick,
@@ -143,15 +143,15 @@ fun EventsScreen(
         }
 
         is ListState.Empty -> {
-          EventsEmptyState(modifier = Modifier.fillMaxSize().weight(1f))
+          AgendaEmptyState(modifier = Modifier.fillMaxSize().weight(1f))
         }
 
         is ListState.Ready -> {
-          EventsList(
+          AgendaList(
             items = listState.items,
             lazyListState = lazyListState,
             onItemClick = onItemClick,
-            onEventMenuAction = onEventMenuAction,
+            onAgendaMenuAction = onAgendaMenuAction,
             modifier = Modifier.fillMaxSize().weight(1f),
           )
         }
@@ -160,7 +160,7 @@ fun EventsScreen(
   }
 
   if (showFilterSheet) {
-    EventsFilterBottomSheet(
+    AgendaFilterBottomSheet(
       state = state,
       hasActiveFilters = hasActiveFilters,
       onDismissRequest = { showFilterSheet = false },
@@ -174,11 +174,11 @@ fun EventsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EventsFilterBottomSheet(
-  state: EventsScreenState,
+private fun AgendaFilterBottomSheet(
+  state: AgendaScreenState,
   hasActiveFilters: Boolean,
   onDismissRequest: () -> Unit,
-  onCategoryToggle: (EventCategory) -> Unit,
+  onCategoryToggle: (AgendaCategory) -> Unit,
   onSmartListSelected: (SmartListFilter?) -> Unit,
   onTagFilterSelected: (String?) -> Unit,
   onGroupFilterSelected: (String?) -> Unit,
@@ -237,7 +237,7 @@ private fun EventsFilterBottomSheet(
       if (hasActiveFilters) {
         Button(
           onClick = {
-            EventCategory.entries.forEach { category ->
+            AgendaCategory.entries.forEach { category ->
               if (category !in state.selectedCategories) onCategoryToggle(category)
             }
             onSmartListSelected(null)
@@ -268,11 +268,11 @@ private fun FilterSection(
 }
 
 @Composable
-private fun EventsList(
-  items: List<UiEventItem>,
+private fun AgendaList(
+  items: List<UiAgendaItem>,
   lazyListState: LazyListState,
-  onItemClick: (UiEventItem) -> Unit,
-  onEventMenuAction: (UiEventItem, EventMenuAction) -> Unit,
+  onItemClick: (UiAgendaItem) -> Unit,
+  onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   LazyColumn(
@@ -283,7 +283,7 @@ private fun EventsList(
   ) {
     items(items, key = { it.id }) { item ->
       when (item) {
-        is UiEventHeader -> {
+        is UiAgendaHeader -> {
           Text(
             text = item.text,
             style = MaterialTheme.typography.titleMedium,
@@ -291,20 +291,20 @@ private fun EventsList(
           )
         }
 
-        is UiEventReminder -> {
-          ReminderEventRow(
+        is UiAgendaReminder -> {
+          ReminderAgendaRow(
             item = item,
             onClick = { onItemClick(item) },
-            onMenuAction = { action -> onEventMenuAction(item, action) },
+            onMenuAction = { action -> onAgendaMenuAction(item, action) },
             modifier = Modifier.animateItem(),
           )
         }
 
-        is UiEventBirthday -> {
-          BirthdayEventRow(
+        is UiAgendaBirthday -> {
+          BirthdayAgendaRow(
             item = item,
             onClick = { onItemClick(item) },
-            onMenuAction = { action -> onEventMenuAction(item, action) },
+            onMenuAction = { action -> onAgendaMenuAction(item, action) },
             modifier = Modifier.animateItem(),
           )
         }
@@ -316,15 +316,15 @@ private fun EventsList(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CategoryChipRow(
-  selected: Set<EventCategory>,
-  onToggle: (EventCategory) -> Unit,
+  selected: Set<AgendaCategory>,
+  onToggle: (AgendaCategory) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   FlowRow(
     modifier = modifier,
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    EventCategory.entries.forEach { category ->
+    AgendaCategory.entries.forEach { category ->
       FilterChip(
         selected = category in selected,
         onClick = { onToggle(category) },
@@ -334,12 +334,12 @@ private fun CategoryChipRow(
   }
 }
 
-private fun EventCategory.titleRes(): Int =
+private fun AgendaCategory.titleRes(): Int =
   when (this) {
-    EventCategory.REMINDERS -> R.string.reminders
-    EventCategory.SHOPPING -> R.string.shopping_lists
-    EventCategory.LOCATION -> R.string.location
-    EventCategory.BIRTHDAYS -> R.string.birthdays
+    AgendaCategory.REMINDERS -> R.string.reminders
+    AgendaCategory.SHOPPING -> R.string.shopping_lists
+    AgendaCategory.LOCATION -> R.string.location
+    AgendaCategory.BIRTHDAYS -> R.string.birthdays
   }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -416,7 +416,7 @@ private fun GroupFilterChipRow(
 }
 
 @Composable
-private fun EventsEmptyState(modifier: Modifier = Modifier) {
+private fun AgendaEmptyState(modifier: Modifier = Modifier) {
   Column(
     modifier = modifier,
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -439,7 +439,7 @@ private fun EventsEmptyState(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EventsTopBar(
+private fun AgendaTopBar(
   onBackClick: () -> Unit,
   onAddReminderClick: () -> Unit,
   onAddShoppingClick: () -> Unit,
@@ -451,7 +451,7 @@ private fun EventsTopBar(
   hasActiveFilters: Boolean,
 ) {
   TopAppBar(
-    title = { Text(stringResource(R.string.events)) },
+    title = { Text(stringResource(R.string.agenda)) },
     navigationIcon = {
       MenuIconButton(
         icon = AppIcons.Builder.ArrowLeft,
@@ -548,10 +548,10 @@ private fun OverflowMenuButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun EventsScreenEmptyPreview() {
+private fun AgendaScreenEmptyPreview() {
   AppTheme {
-    EventsScreen(
-      state = EventsScreenState(listState = ListState.Empty),
+    AgendaScreen(
+      state = AgendaScreenState(listState = ListState.Empty),
       onBackClick = {},
       onSearchQueryChange = {},
       onCategoryToggle = {},
@@ -565,7 +565,7 @@ private fun EventsScreenEmptyPreview() {
       onGroupsClick = {},
       onTagsClick = {},
       onItemClick = {},
-      onEventMenuAction = { _, _ -> },
+      onAgendaMenuAction = { _, _ -> },
     )
   }
 }

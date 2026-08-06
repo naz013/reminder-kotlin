@@ -2,17 +2,17 @@ package com.elementary.tasks.groups.details
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.elementary.tasks.home.eventsview.EventListItem
+import com.elementary.tasks.home.agenda.AgendaListItem
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 
-/** Thin wrapper around [EventListItem] for a group's reminders: tap-through only, no per-row menu. */
+/** Thin wrapper around [AgendaListItem] for a group's reminders: tap-through only, no per-row menu. */
 @Composable
 fun GroupReminderRow(
   item: UiReminderList,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  EventListItem(
+  AgendaListItem(
     mainText = item.mainText.text,
     secondaryText = item.secondaryText?.text,
     tertiaryText = item.tertiaryText?.text,

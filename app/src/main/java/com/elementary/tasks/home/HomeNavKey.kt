@@ -8,5 +8,5 @@ sealed interface HomeNavKey : NavKey {
   data object Main : HomeNavKey
 
   @Serializable
-  data object Events : HomeNavKey
+  data object Agenda : HomeNavKey
 }

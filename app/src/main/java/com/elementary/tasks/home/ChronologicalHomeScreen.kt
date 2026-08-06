@@ -803,7 +803,7 @@ private fun HeaderNavigationGridPreview() {
           subtitle = "12",
         ),
         HeaderNavigationItem(
-          titleRes = R.string.events,
+          titleRes = R.string.agenda,
           iconRes = R.drawable.ic_fluent_timeline,
           color = Color(0xFF2196F3),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
@@ -842,7 +842,7 @@ private fun HeaderNavigationRowPreview() {
           subtitle = "12",
         ),
         HeaderNavigationItem(
-          titleRes = R.string.events,
+          titleRes = R.string.agenda,
           iconRes = R.drawable.ic_fluent_timeline,
           color = Color(0xFF2196F3),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,

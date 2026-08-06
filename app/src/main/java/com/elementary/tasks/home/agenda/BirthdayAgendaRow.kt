@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.eventsview
+package com.elementary.tasks.home.agenda
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,24 +16,24 @@ import com.github.naz013.ui.common.compose.toColor
 private val COLOR_DOT_SIZE = 12.dp
 
 /**
- * Thin domain wrapper around [EventListItem] for birthdays: a colored dot as the leading slot and
+ * Thin domain wrapper around [AgendaListItem] for birthdays: a colored dot as the leading slot and
  * a menu mirroring `BirthdayResolver`'s Open/Edit/Delete actions.
  */
 @Composable
-fun BirthdayEventRow(
-  item: UiEventBirthday,
+fun BirthdayAgendaRow(
+  item: UiAgendaBirthday,
   onClick: () -> Unit,
-  onMenuAction: (EventMenuAction) -> Unit,
+  onMenuAction: (AgendaMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  EventListItem(
+  AgendaListItem(
     mainText = item.name,
     secondaryText = item.dateFormatted,
     tertiaryText = item.remainingTimeFormatted,
     tags = listOfNotNull(item.ageFormatted.takeIf { it.isNotEmpty() }),
     onClick = onClick,
     menuItems = birthdayMenuItems(),
-    onMenuItemClick = { id -> onMenuAction(EventMenuAction.entries[id]) },
+    onMenuItemClick = { id -> onMenuAction(AgendaMenuAction.entries[id]) },
     modifier = modifier,
     leading = { ColorDot(color = item.color) },
   )
@@ -56,17 +56,17 @@ private fun ColorDot(
 @Composable
 private fun birthdayMenuItems(): List<PopupMenuItem> =
   listOf(
-    EventMenuAction.OPEN to R.string.open,
-    EventMenuAction.EDIT to R.string.edit,
-    EventMenuAction.DELETE to R.string.delete,
+    AgendaMenuAction.OPEN to R.string.open,
+    AgendaMenuAction.EDIT to R.string.edit,
+    AgendaMenuAction.DELETE to R.string.delete,
   ).map { (action, titleRes) ->
     PopupMenuItem(id = action.ordinal, title = stringResource(titleRes), iconRes = action.iconResOrNull())
   }
 
-private fun EventMenuAction.iconResOrNull(): Int? =
+private fun AgendaMenuAction.iconResOrNull(): Int? =
   when (this) {
-    EventMenuAction.OPEN -> R.drawable.ic_fluent_open
-    EventMenuAction.EDIT -> R.drawable.ic_fluent_edit
-    EventMenuAction.DELETE -> R.drawable.ic_fluent_delete
-    EventMenuAction.ARCHIVE, EventMenuAction.SKIP, EventMenuAction.TURN_OFF -> null
+    AgendaMenuAction.OPEN -> R.drawable.ic_fluent_open
+    AgendaMenuAction.EDIT -> R.drawable.ic_fluent_edit
+    AgendaMenuAction.DELETE -> R.drawable.ic_fluent_delete
+    AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF -> null
   }

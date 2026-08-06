@@ -31,7 +31,7 @@ class GetNavigationItemsUseCase(
     day: LocalDateTime,
   ): List<HeaderNavigationItem> = buildList {
     add(getCalendarItem(scope = scope))
-    add(getEventsItem(scope = scope))
+    add(getAgendaItem(scope = scope))
     add(getNoteItem(scope = scope))
     add(getGoogleTasksItem(scope = scope))
     add(getGroupItem(scope = scope))
@@ -53,14 +53,14 @@ class GetNavigationItemsUseCase(
       }.await()
   }
 
-  private suspend fun getEventsItem(scope: CoroutineScope): HeaderNavigationItem =
+  private suspend fun getAgendaItem(scope: CoroutineScope): HeaderNavigationItem =
     scope
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
-          titleRes = R.string.events,
+          titleRes = R.string.agenda,
           iconRes = R.drawable.ic_fluent_timeline,
           color = Color.Green,
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenEvents,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenAgenda,
           subtitle = "${reminderV2Repository.getAll(active = true, removed = false).size}",
         )
       }.await()

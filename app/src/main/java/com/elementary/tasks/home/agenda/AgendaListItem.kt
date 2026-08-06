@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.eventsview
+package com.elementary.tasks.home.agenda
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,14 +38,14 @@ private const val SECONDARY_TEXT_MAX_LINES = 1
 private const val TERTIARY_TEXT_MAX_LINES = 2
 
 /**
- * Reusable card scaffold shared by [ReminderEventRow] and [BirthdayEventRow]: an optional
+ * Reusable card scaffold shared by [ReminderAgendaRow] and [BirthdayAgendaRow]: an optional
  * non-clickable status-chip row (e.g. "Enabled") above the title, title/date/tertiary text stack,
  * an optional non-clickable tag-chip row (repeat/remaining/group labels) below, an optional
  * leading slot, and a "more" menu in the top-right.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun EventListItem(
+fun AgendaListItem(
   mainText: String,
   secondaryText: String?,
   tertiaryText: String?,
@@ -75,7 +75,7 @@ fun EventListItem(
       }
       Column(modifier = Modifier.weight(1f)) {
         if (statusChips.isNotEmpty()) {
-          EventChipRow(chips = statusChips, modifier = Modifier.padding(bottom = 4.dp))
+          AgendaChipRow(chips = statusChips, modifier = Modifier.padding(bottom = 4.dp))
         }
         Text(
           text = mainText,
@@ -104,7 +104,7 @@ fun EventListItem(
           )
         }
         if (tags.isNotEmpty()) {
-          EventChipRow(chips = tags, modifier = Modifier.padding(top = 6.dp))
+          AgendaChipRow(chips = tags, modifier = Modifier.padding(top = 6.dp))
         }
       }
       Box {
@@ -126,7 +126,7 @@ fun EventListItem(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun EventChipRow(
+private fun AgendaChipRow(
   chips: List<String>,
   modifier: Modifier = Modifier,
 ) {
@@ -135,13 +135,13 @@ private fun EventChipRow(
     horizontalArrangement = Arrangement.spacedBy(6.dp),
     verticalArrangement = Arrangement.spacedBy(4.dp),
   ) {
-    chips.forEach { chip -> EventChip(text = chip) }
+    chips.forEach { chip -> AgendaChip(text = chip) }
   }
 }
 
 /** A purely decorative, non-clickable chip: no click/ripple semantics, unlike Material3's chips. */
 @Composable
-private fun EventChip(text: String) {
+private fun AgendaChip(text: String) {
   Surface(
     shape = RoundedCornerShape(8.dp),
     color = MaterialTheme.colorScheme.tertiaryContainer,
@@ -157,9 +157,9 @@ private fun EventChip(text: String) {
 
 @Preview(showBackground = true)
 @Composable
-private fun EventListItemPreview() {
+private fun AgendaListItemPreview() {
   AppTheme {
-    EventListItem(
+    AgendaListItem(
       mainText = "Buy milk",
       secondaryText = "Today, 18:00",
       tertiaryText = null,
