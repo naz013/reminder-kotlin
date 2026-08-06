@@ -42,7 +42,12 @@ class UiEventItemAdapter(
     return UiEventReminder(
       id = uiReminderList.id,
       dateTime = resolveReminderDateTime(uiReminderList.dueDateTime, uiReminderList.state.isActive),
-      category = if (reminder.action is ReminderAction.Shopping) EventCategory.SHOPPING else EventCategory.REMINDERS,
+      category =
+        when {
+          reminder.action is ReminderAction.Shopping -> EventCategory.SHOPPING
+          reminder.location != null -> EventCategory.LOCATION
+          else -> EventCategory.REMINDERS
+        },
       mainText = uiReminderList.mainText,
       secondaryText = uiReminderList.secondaryText,
       tertiaryText = uiReminderList.tertiaryText,

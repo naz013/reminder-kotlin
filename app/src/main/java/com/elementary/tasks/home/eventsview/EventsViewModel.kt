@@ -122,7 +122,9 @@ class EventsViewModel(
     groupId: String? = null,
   ): MergedResult {
     val reminderCategoriesSelected =
-      categories.contains(EventCategory.REMINDERS) || categories.contains(EventCategory.SHOPPING)
+      categories.contains(EventCategory.REMINDERS) ||
+        categories.contains(EventCategory.SHOPPING) ||
+        categories.contains(EventCategory.LOCATION)
     val allReminders =
       if (reminderCategoriesSelected) getRemindersV2ByRemovedStatusUseCase(removed = false) else emptyList()
     val allBirthdays = if (categories.contains(EventCategory.BIRTHDAYS)) birthdayRepository.getAll() else emptyList()
@@ -157,8 +159,11 @@ class EventsViewModel(
   ): List<ReminderV2> {
     val byCategory =
       reminders.filter { reminder ->
-        val isShopping = reminder.action is ReminderAction.Shopping
-        if (isShopping) categories.contains(EventCategory.SHOPPING) else categories.contains(EventCategory.REMINDERS)
+        when {
+          reminder.action is ReminderAction.Shopping -> categories.contains(EventCategory.SHOPPING)
+          reminder.location != null -> categories.contains(EventCategory.LOCATION)
+          else -> categories.contains(EventCategory.REMINDERS)
+        }
       }
     val byQuery = if (query.isBlank()) byCategory else byCategory.filter(ReminderV2QueryFilterInstance(query))
     val bySmartList =

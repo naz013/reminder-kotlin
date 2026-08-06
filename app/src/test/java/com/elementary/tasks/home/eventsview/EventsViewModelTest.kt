@@ -16,6 +16,7 @@ import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.reminder.v2.LocationSettings
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -155,6 +156,46 @@ class EventsViewModelTest {
       val result = viewModel.loadMerged("", setOf(EventCategory.SHOPPING))
 
       assertEquals(listOf("shopping"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `filters out location-type reminders when only Reminders category is selected`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "normal"),
+          reminderV2(id = "location", isLocation = true),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.REMINDERS))
+
+      assertEquals(listOf("normal"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `filters out normal reminders when only Location category is selected`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(
+          reminderV2(id = "normal"),
+          reminderV2(id = "location", isLocation = true),
+        )
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.LOCATION))
+
+      assertEquals(listOf("location"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `loads reminders when only Location category is selected`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(reminderV2(id = "location", isLocation = true))
+
+      val result = viewModel.loadMerged("", setOf(EventCategory.LOCATION))
+
+      coVerify(exactly = 0) { birthdayRepository.getAll() }
+      assertEquals(listOf("location"), result.items.map { it.id })
     }
 
   @Test
@@ -349,6 +390,7 @@ class EventsViewModelTest {
     id: String,
     summary: String = "",
     isShopping: Boolean = false,
+    isLocation: Boolean = false,
     groupId: String? = null,
     eventDateTime: LocalDateTime? = null,
   ) = ReminderV2(
@@ -357,6 +399,7 @@ class EventsViewModelTest {
     groupId = groupId,
     schedule = ReminderSchedule(startDateTime = LocalDateTime.now(), eventDateTime = eventDateTime),
     action = if (isShopping) ReminderAction.Shopping else ReminderAction.None,
+    location = if (isLocation) LocationSettings() else null,
   )
 
   private fun reminderBirthday(

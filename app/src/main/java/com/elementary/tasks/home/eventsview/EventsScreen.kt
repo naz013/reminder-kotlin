@@ -338,6 +338,7 @@ private fun EventCategory.titleRes(): Int =
   when (this) {
     EventCategory.REMINDERS -> R.string.reminders
     EventCategory.SHOPPING -> R.string.shopping_lists
+    EventCategory.LOCATION -> R.string.location
     EventCategory.BIRTHDAYS -> R.string.birthdays
   }
 

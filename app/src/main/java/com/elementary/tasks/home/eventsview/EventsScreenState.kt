@@ -33,6 +33,7 @@ sealed interface ListState {
 enum class EventCategory {
   REMINDERS,
   SHOPPING,
+  LOCATION,
   BIRTHDAYS,
 }
 
