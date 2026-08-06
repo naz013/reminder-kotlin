@@ -1,13 +1,17 @@
 package com.elementary.tasks.groups
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.groups.create.EditGroupScreen
 import com.elementary.tasks.groups.create.EditGroupState
 import com.elementary.tasks.groups.create.EditGroupViewModel
@@ -96,6 +100,7 @@ private fun GroupsDetailsEntry(
     onEditClick = viewModel::onEditClick,
     onDeleteClick = viewModel::onDeleteClick,
     onReminderClick = viewModel::onReminderClick,
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.Group) },
   )
 }
 
@@ -145,5 +150,6 @@ private fun GroupsEditEntry(
     onCopyKeepClick = viewModel::onCopyKeepClick,
     onCopyReplaceClick = viewModel::onCopyReplaceClick,
     onDialogDismiss = viewModel::onDialogDismiss,
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.Group) },
   )
 }

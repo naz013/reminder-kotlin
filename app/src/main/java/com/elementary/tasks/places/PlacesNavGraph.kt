@@ -1,6 +1,7 @@
 package com.elementary.tasks.places
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
+import com.elementary.tasks.ads.AdBanner
+import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.places.create.EditPlaceScreen
 import com.elementary.tasks.places.create.EditPlaceState
@@ -129,21 +132,23 @@ private fun PlaceEditEntry(
     onNameChange = viewModel::onNameChange,
     onSaveClick = viewModel::onSaveClick,
     onDeleteClick = viewModel::onDeleteClick,
-  ) {
-    SimpleMapView(
-      mapParams = MapParams(
-        isPlaces = false,
-        isStyles = true,
-        isRadius = true,
-        rememberMarkerRadius = false,
-        rememberMarkerStyle = false,
-      ),
-      markers = state.markers,
-      onLocationSelected = { markerState ->
-        viewModel.onMarkerPlaced(markerState = markerState)
-      },
-      onControllerReady = { mapController = it },
-      modifier = Modifier.fillMaxSize(),
-    )
-  }
+    mapContent = {
+      SimpleMapView(
+        mapParams = MapParams(
+          isPlaces = false,
+          isStyles = true,
+          isRadius = true,
+          rememberMarkerRadius = false,
+          rememberMarkerStyle = false,
+        ),
+        markers = state.markers,
+        onLocationSelected = { markerState ->
+          viewModel.onMarkerPlaced(markerState = markerState)
+        },
+        onControllerReady = { mapController = it },
+        modifier = Modifier.fillMaxSize(),
+      )
+    },
+    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.Place) },
+  )
 }

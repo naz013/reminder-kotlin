@@ -50,12 +50,13 @@ private val COLOR_DOT_SIZE = 14.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailsScreen(
+  modifier: Modifier = Modifier,
   state: GroupDetailsState,
   onBackClick: () -> Unit,
   onEditClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onReminderClick: (String) -> Unit,
-  modifier: Modifier = Modifier,
+  adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
     modifier = modifier,
@@ -100,6 +101,8 @@ fun GroupDetailsScreen(
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
       item { NotificationOverridesSection(state.notificationSubtitles) }
+
+      item { adsContent() }
 
       item { SectionHeader(text = stringResource(R.string.reminders)) }
       if (state.reminders.isEmpty()) {
@@ -312,6 +315,7 @@ private fun GroupDetailsScreenPreview() {
       onEditClick = {},
       onDeleteClick = {},
       onReminderClick = {},
+      adsContent = {},
     )
   }
 }

@@ -40,6 +40,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditGoogleTaskScreen(
+  modifier: Modifier = Modifier,
   state: EditGoogleTaskState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -55,7 +56,7 @@ fun EditGoogleTaskScreen(
   onListPicked: (String) -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
+  adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
     modifier = modifier,
@@ -152,6 +153,8 @@ fun EditGoogleTaskScreen(
         enabled = !state.isLoading,
         onClick = onListFieldClick,
       )
+
+      adsContent()
     }
   }
 
@@ -334,6 +337,7 @@ private fun EditGoogleTaskScreenPreview() {
       onListPicked = {},
       onDeleteConfirmed = {},
       onDialogDismiss = {},
+      adsContent = {},
     )
   }
 }
