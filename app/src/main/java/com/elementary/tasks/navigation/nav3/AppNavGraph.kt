@@ -23,7 +23,7 @@ import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.birthdaysEntries
 import com.elementary.tasks.calendar.monthview.calendarEntries
-import com.elementary.tasks.googletasks.googleTasksEntries
+import com.github.naz013.feature.googletask.googleTasksEntries
 import com.elementary.tasks.groups.groupsEntries
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries

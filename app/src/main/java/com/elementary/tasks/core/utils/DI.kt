@@ -17,8 +17,8 @@ import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.elementary.tasks.googletasks.work.SaveNewTaskTask
-import com.elementary.tasks.googletasks.work.UpdateTaskTask
+import com.github.naz013.feature.googletask.work.SaveNewTaskTask
+import com.github.naz013.feature.googletask.work.UpdateTaskTask
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.BottomNavInitViewModel
 import com.elementary.tasks.notes.create.drop.DroppedContentParser

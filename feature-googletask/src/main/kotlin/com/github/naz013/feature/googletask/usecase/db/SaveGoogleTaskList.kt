@@ -1,0 +1,13 @@
+package com.github.naz013.feature.googletask.usecase.db
+
+import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.repository.GoogleTaskListRepository
+
+@Deprecated("Use repository")
+class SaveGoogleTaskList(
+  private val googleTaskListRepository: GoogleTaskListRepository,
+) {
+  suspend operator fun invoke(googleTaskList: GoogleTaskList) {
+    googleTaskListRepository.save(googleTaskList)
+  }
+}

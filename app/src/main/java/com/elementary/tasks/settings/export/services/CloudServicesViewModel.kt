@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.googletasks.usecase.tasklist.SyncAllGoogleTaskLists
+import com.github.naz013.feature.googletask.usecase.tasklist.SyncAllGoogleTaskLists
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent

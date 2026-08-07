@@ -10,8 +10,8 @@ import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.event.BirthdayEventTask
 import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.googletasks.work.SaveNewTaskTask
-import com.elementary.tasks.googletasks.work.UpdateTaskTask
+import com.github.naz013.feature.googletask.work.SaveNewTaskTask
+import com.github.naz013.feature.googletask.work.UpdateTaskTask
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.elementary.tasks.workflow.RunWorkflowRulesTask

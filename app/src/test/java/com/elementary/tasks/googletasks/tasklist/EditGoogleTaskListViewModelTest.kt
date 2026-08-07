@@ -13,6 +13,8 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListState
+import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListViewModel
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.ui.common.theme.ThemeProvider

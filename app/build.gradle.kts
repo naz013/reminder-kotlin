@@ -185,10 +185,13 @@ dependencies {
   implementation(project(":work"))
   implementation(project(":feature-common"))
   implementation(project(":feature-note"))
+  implementation(project(":feature-googletask"))
   implementation(project(":appwidgets"))
+  implementation(project(":appwidgets-api"))
   implementation(project(":navigation-api"))
   implementation(project(":platform-common"))
   implementation(project(":ui-common"))
+  implementation(project(":ui-googletask"))
   implementation(project(":usecase:googletasks"))
   implementation(project(":usecase:birthdays"))
   implementation(project(":usecase:notes"))
@@ -204,6 +207,7 @@ dependencies {
   implementation(project(":tags"))
   implementation(project(":insights"))
   implementation(project(":localbackup"))
+  implementation(project(":logic-googletask"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")
@@ -292,6 +296,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
   implementation(libs.kotlinx.serialization.core)
 
+  testImplementation(project(":testing"))
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)
   testImplementation(libs.mockk)

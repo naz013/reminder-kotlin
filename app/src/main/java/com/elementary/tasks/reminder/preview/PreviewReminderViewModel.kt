@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
-import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
+import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
@@ -64,7 +64,7 @@ class PreviewReminderViewModel(
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val uiNoteListAdapter: UiNoteListAdapter,
-  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
+  private val googleTaskItemStateAdapter: GoogleTaskItemStateAdapter,
   private val uriToAttachmentFileAdapter: UriToAttachmentFileAdapter,
   private val backupTool: BackupTool,
   private val noteRepository: NoteRepository,
@@ -369,7 +369,7 @@ class PreviewReminderViewModel(
           googleTaskListRepository.getById(googleTask.listId)
         }
         withContext(dispatcherProvider.main()) {
-          _state.update { it.copy(googleTask = uiGoogleTaskListAdapter.convert(googleTask, list)) }
+          _state.update { it.copy(googleTask = googleTaskItemStateAdapter.convert(googleTask, list)) }
         }
       }
 

@@ -44,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
+import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.data.ui.reminder.UiAppTarget
 import com.elementary.tasks.core.data.ui.reminder.UiCallTarget
@@ -495,7 +495,7 @@ private fun NoteRow(
 
 @Composable
 private fun GoogleTaskRow(
-  task: UiGoogleTaskList,
+  task: GoogleTaskItemState,
   onClick: () -> Unit,
 ) {
   SectionHeader(text = stringResource(R.string.google_task))

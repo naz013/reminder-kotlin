@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.preview
 
-import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
+import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
@@ -29,7 +29,7 @@ data class PreviewReminderState(
   val places: List<UiReminderPlace> = emptyList(),
   val placesHeader: String = "",
   val note: UiNoteList? = null,
-  val googleTask: UiGoogleTaskList? = null,
+  val googleTask: GoogleTaskItemState? = null,
   val calendarEvents: List<UiCalendarEventList> = emptyList(),
   val canCopy: Boolean = false,
   val canDelete: Boolean = false,

@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.core.utils.workerModule
-import com.elementary.tasks.googletasks.googleTaskModule
+import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.elementary.tasks.groups.groupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
@@ -64,6 +64,7 @@ import com.github.naz013.sync.syncApiModule
 import com.github.naz013.tags.tagsModule
 import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
+import com.github.naz013.ui.googletask.uiGoogleTaskModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
 import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
 import com.github.naz013.usecase.notes.notesUseCaseModule
@@ -138,7 +139,7 @@ class ReminderApp :
           birthdaysModule,
           calendarModule,
           homeModule,
-          googleTaskModule,
+          featureGoogleTaskModule,
           noteModule,
           servicesModule,
           repositoryModule,
@@ -171,6 +172,7 @@ class ReminderApp :
           tagsModule,
           insightsModule,
           localBackupModule,
+          uiGoogleTaskModule
         ),
       )
     }

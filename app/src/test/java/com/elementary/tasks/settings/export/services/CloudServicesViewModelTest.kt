@@ -3,7 +3,7 @@ package com.elementary.tasks.settings.export.services
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.FeatureManager
-import com.elementary.tasks.googletasks.usecase.tasklist.SyncAllGoogleTaskLists
+import com.github.naz013.feature.googletask.usecase.tasklist.SyncAllGoogleTaskLists
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.appwidgets.AppWidgetUpdater

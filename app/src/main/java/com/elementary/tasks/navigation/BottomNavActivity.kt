@@ -16,7 +16,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.core.os.ContextSwitcher
-import com.elementary.tasks.googletasks.GoogleTasksNavKey
+import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
 import com.elementary.tasks.notes.NotesNavKey

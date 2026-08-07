@@ -3,10 +3,10 @@ package com.elementary.tasks.googletasks
 import android.content.Context
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
-import com.elementary.tasks.core.data.ui.google.UiGoogleTaskList
+import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
+import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.elementary.tasks.getOrAwaitValue
-import com.elementary.tasks.googletasks.usecase.tasklist.SyncAllGoogleTaskLists
+import com.github.naz013.feature.googletask.usecase.tasklist.SyncAllGoogleTaskLists
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -21,6 +21,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.feature.googletask.GoogleTasksState
+import com.github.naz013.feature.googletask.GoogleTasksViewModel
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import io.mockk.coEvery
@@ -44,7 +46,7 @@ class GoogleTasksViewModelTest : BaseTest() {
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val googleTaskRepository = mockk<GoogleTaskRepository>()
   private val googleTaskListRepository = mockk<GoogleTaskListRepository>()
-  private val uiGoogleTaskListAdapter = mockk<UiGoogleTaskListAdapter>()
+  private val googleTaskItemStateAdapter = mockk<GoogleTaskItemStateAdapter>()
   private val syncAllGoogleTaskLists = mockk<SyncAllGoogleTaskLists>(relaxed = true)
   private val contextProvider = mockk<ContextProvider>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
@@ -68,7 +70,7 @@ class GoogleTasksViewModelTest : BaseTest() {
   ) = GoogleTask(taskId = id, listId = listId, status = status)
 
   private fun uiTask(id: String = "t1") =
-    UiGoogleTaskList(
+    GoogleTaskItemState(
       id = id,
       text = "Task $id",
       notes = null,
@@ -85,7 +87,7 @@ class GoogleTasksViewModelTest : BaseTest() {
     every { googleTasksAuthManager.isAuthorized() } returns true
     coEvery { googleTaskListRepository.getAll() } returns emptyList()
     coEvery { googleTaskRepository.getAll() } returns emptyList()
-    every { uiGoogleTaskListAdapter.convert(any(), any()) } returns uiTask()
+    every { googleTaskItemStateAdapter.convert(any(), any()) } returns uiTask()
 
     viewModel =
       GoogleTasksViewModel(
@@ -94,7 +96,7 @@ class GoogleTasksViewModelTest : BaseTest() {
         appWidgetUpdater = appWidgetUpdater,
         googleTaskRepository = googleTaskRepository,
         googleTaskListRepository = googleTaskListRepository,
-        uiGoogleTaskListAdapter = uiGoogleTaskListAdapter,
+        googleTaskItemStateAdapter = googleTaskItemStateAdapter,
         syncAllGoogleTaskLists = syncAllGoogleTaskLists,
         contextProvider = contextProvider,
         analyticsEventSender = analyticsEventSender,
@@ -123,7 +125,7 @@ class GoogleTasksViewModelTest : BaseTest() {
       coEvery { googleTaskListRepository.getAll() } returns listOf(listA, listB)
       val t1 = task("t1", listId = "a")
       coEvery { googleTaskRepository.getAll() } returns listOf(t1)
-      every { uiGoogleTaskListAdapter.convert(t1, listA) } returns uiTask("t1")
+      every { googleTaskItemStateAdapter.convert(t1, listA) } returns uiTask("t1")
 
       val state = viewModel.state.first()
 

@@ -11,6 +11,7 @@ dependencies {
   implementation(project(":logging-api"))
   implementation(project(":navigation-api"))
   implementation(project(":cloud-api"))
+  implementation(project(":appwidgets-api"))
   implementation(project(":platform-common"))
   implementation(project(":feature-common"))
   implementation(project(":feature-note"))

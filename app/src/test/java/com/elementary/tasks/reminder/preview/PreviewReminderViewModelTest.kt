@@ -4,7 +4,7 @@ import android.net.Uri
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
-import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
+import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
@@ -62,7 +62,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val uiReminderCommonAdapter = mockk<UiReminderCommonAdapter>()
   private val uiGroupListAdapter = mockk<UiGroupListAdapter>()
   private val uiNoteListAdapter = mockk<UiNoteListAdapter>(relaxed = true)
-  private val uiGoogleTaskListAdapter = mockk<UiGoogleTaskListAdapter>(relaxed = true)
+  private val googleTaskItemStateAdapter = mockk<GoogleTaskItemStateAdapter>(relaxed = true)
   private val uriToAttachmentFileAdapter = mockk<UriToAttachmentFileAdapter>(relaxed = true)
   private val backupTool = mockk<BackupTool>(relaxed = true)
   private val noteRepository = mockk<NoteRepository>(relaxed = true)
@@ -129,7 +129,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       uiReminderCommonAdapter = uiReminderCommonAdapter,
       uiGroupListAdapter = uiGroupListAdapter,
       uiNoteListAdapter = uiNoteListAdapter,
-      uiGoogleTaskListAdapter = uiGoogleTaskListAdapter,
+      googleTaskItemStateAdapter = googleTaskItemStateAdapter,
       uriToAttachmentFileAdapter = uriToAttachmentFileAdapter,
       backupTool = backupTool,
       noteRepository = noteRepository,
