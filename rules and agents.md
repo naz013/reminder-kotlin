@@ -18,6 +18,12 @@
 - **State**: MVVM with `StateFlow` / `LiveData`.
 - **Log**: Use `logging-api` (`Logger` interface) to avoid concrete coupling.
 - **Persistence**: Room (SQLite). Mappings between Entity and Domain are mandatory.
+- **JSON**: Never `Gson().toJson(...)` / `fromJson(...)` a domain (or any non-`*Json`) data class
+  directly. Define a corresponding `*Json` data class, with `@SerializedName` on every field, in the
+  module doing the conversion, and map explicitly between it and the domain model. Gson field
+  reflection without `@SerializedName` is not safe under R8/ProGuard shrinking (see the
+  `@SerializedName` keep rule in `app/proguard-rules.pro`) - it caused a production crash
+  (`RecurrenceRule$Weekly` constructor stripped by R8).
 
 ## Dependency Rules
 - Arrows: `A -> B` (A depends on B).

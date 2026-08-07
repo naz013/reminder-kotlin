@@ -43,6 +43,7 @@ The project uses a **multi-module Clean Architecture** layout. Key rules:
 - Wrap external API calls (cloud, Room) in `try/catch` and log errors via the `Logger` interface from `logging-api`.
 - Never swallow exceptions silently; always log or propagate.
 - **Persistence**: Room (SQLite). Mappings between Entity (repository) and Domain (domain) are mandatory.
+- **JSON serialization**: Never call `Gson().toJson(...)` / `fromJson(...)` on a domain (or any non-`*Json`) data class directly. Define a corresponding `*Json` data class with `@SerializedName` on every field, in the module performing the conversion, and map explicitly between it and the domain model. Unannotated Gson field reflection is not safe under R8/ProGuard shrinking — see the `@SerializedName` keep rule in `app/proguard-rules.pro` and the `RecurrenceRule$Weekly` production crash it caused.
 
 ---
 

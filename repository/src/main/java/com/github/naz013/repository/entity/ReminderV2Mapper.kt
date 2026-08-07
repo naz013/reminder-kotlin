@@ -13,10 +13,13 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.reminder.v2.TaskExportSettings
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
+
+private const val TAG = "ReminderV2Mapper"
 
 private val gson = Gson()
 
@@ -183,18 +186,30 @@ private fun RecurrenceRule.toColumns(): Pair<String, String> = when (this) {
   is RecurrenceRule.ICalendar -> "ICALENDAR" to gson.toJson(this)
 }
 
-private fun toRecurrenceRule(type: String, payload: String): RecurrenceRule = when (type) {
-  "ONCE" -> RecurrenceRule.Once
-  "COUNTDOWN" -> gson.fromJson(payload, RecurrenceRule.Countdown::class.java)
-  "DAILY" -> gson.fromJson(payload, RecurrenceRule.Daily::class.java)
-  "WEEKLY" -> gson.fromJson(payload, RecurrenceRule.Weekly::class.java)
-  "MONTHLY" -> gson.fromJson(payload, RecurrenceRule.Monthly::class.java)
-  "RELATIVE_MONTHLY" -> gson.fromJson(payload, RecurrenceRule.RelativeMonthly::class.java)
-  "YEARLY" -> gson.fromJson(payload, RecurrenceRule.Yearly::class.java)
-  "LOCATION_ENTER" -> RecurrenceRule.LocationEnter
-  "LOCATION_EXIT" -> RecurrenceRule.LocationExit
-  "ICALENDAR" -> gson.fromJson(payload, RecurrenceRule.ICalendar::class.java)
-  else -> RecurrenceRule.Once
+/** Falls back to [RecurrenceRule.Once] (and logs) instead of throwing on a payload it can't parse,
+ * e.g. a row written before a fix to `app/proguard-rules.pro` kept Gson-reflected field names -
+ * one unreadable row must not take down the whole reminder list. */
+private fun toRecurrenceRule(type: String, payload: String): RecurrenceRule = runCatching {
+  when (type) {
+    "ONCE" -> RecurrenceRule.Once
+    "COUNTDOWN" -> gson.fromJson(payload, RecurrenceRule.Countdown::class.java)
+    "DAILY" -> gson.fromJson(payload, RecurrenceRule.Daily::class.java)
+    "WEEKLY" -> gson.fromJson(payload, RecurrenceRule.Weekly::class.java).also {
+      requireNotNull(it.weekdays) { "weekdays is null" }
+    }
+    "MONTHLY" -> gson.fromJson(payload, RecurrenceRule.Monthly::class.java)
+    "RELATIVE_MONTHLY" -> gson.fromJson(payload, RecurrenceRule.RelativeMonthly::class.java)
+    "YEARLY" -> gson.fromJson(payload, RecurrenceRule.Yearly::class.java)
+    "LOCATION_ENTER" -> RecurrenceRule.LocationEnter
+    "LOCATION_EXIT" -> RecurrenceRule.LocationExit
+    "ICALENDAR" -> gson.fromJson(payload, RecurrenceRule.ICalendar::class.java).also {
+      requireNotNull(it.rrule) { "rrule is null" }
+    }
+    else -> RecurrenceRule.Once
+  }
+}.getOrElse { e ->
+  Logger.e(TAG, "Failed to parse recurrence rule, type=$type, payload=$payload", e)
+  RecurrenceRule.Once
 }
 
 private fun ReminderAction.toColumns(): Triple<String, String, String> = when (this) {
