@@ -253,18 +253,31 @@ private fun ShopItemV2Json.toDomain(): ShopItemV2 = ShopItemV2(
   createdAt = LocalDateTime.parse(createdAt, jsonDateTimeFormatter)
 )
 
-private fun toRecurrenceRule(type: String, payload: String): RecurrenceRule = when (type) {
-  "ONCE" -> RecurrenceRule.Once
-  "COUNTDOWN" -> recurrenceGson.fromJson(payload, RecurrenceRule.Countdown::class.java)
-  "DAILY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Daily::class.java)
-  "WEEKLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Weekly::class.java)
-  "MONTHLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Monthly::class.java)
-  "RELATIVE_MONTHLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.RelativeMonthly::class.java)
-  "YEARLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Yearly::class.java)
-  "LOCATION_ENTER" -> RecurrenceRule.LocationEnter
-  "LOCATION_EXIT" -> RecurrenceRule.LocationExit
-  "ICALENDAR" -> recurrenceGson.fromJson(payload, RecurrenceRule.ICalendar::class.java)
-  else -> RecurrenceRule.Once
+/** Falls back to [RecurrenceRule.Once] (and logs) instead of throwing on a payload it can't
+ * parse — e.g. a backup file written before [RecurrenceRule]'s fields were `@SerializedName`
+ * protected — so one unreadable reminder doesn't fail the whole backup restore. Mirrors
+ * `ReminderV2Mapper.toRecurrenceRule` in the `repository` module. */
+private fun toRecurrenceRule(type: String, payload: String): RecurrenceRule = runCatching {
+  when (type) {
+    "ONCE" -> RecurrenceRule.Once
+    "COUNTDOWN" -> recurrenceGson.fromJson(payload, RecurrenceRule.Countdown::class.java)
+    "DAILY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Daily::class.java)
+    "WEEKLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Weekly::class.java).also {
+      requireNotNull(it.weekdays) { "weekdays is null" }
+    }
+    "MONTHLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Monthly::class.java)
+    "RELATIVE_MONTHLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.RelativeMonthly::class.java)
+    "YEARLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Yearly::class.java)
+    "LOCATION_ENTER" -> RecurrenceRule.LocationEnter
+    "LOCATION_EXIT" -> RecurrenceRule.LocationExit
+    "ICALENDAR" -> recurrenceGson.fromJson(payload, RecurrenceRule.ICalendar::class.java).also {
+      requireNotNull(it.rrule) { "rrule is null" }
+    }
+    else -> RecurrenceRule.Once
+  }
+}.getOrElse { e ->
+  Logger.e(FILES_TAG, "Failed to parse recurrence rule, type=$type, payload=$payload", e)
+  RecurrenceRule.Once
 }
 
 private fun toReminderAction(type: String, target: String, subject: String): ReminderAction =
@@ -281,6 +294,7 @@ private fun toReminderAction(type: String, target: String, subject: String): Rem
 
 private val jsonDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 private val recurrenceGson = Gson()
+private const val FILES_TAG = "DataConverter"
 
 private fun GroupV2.toJson(): GroupV2Json {
   return GroupV2Json(

@@ -104,4 +104,52 @@ class WorkflowRuleMapperTest {
     assertEquals(rule, roundTripped)
     assertEquals(emptyList<WorkflowCondition>(), roundTripped.conditions)
   }
+
+  @Test
+  fun `toDomain falls back to ReminderCompleted when the trigger payload is malformed`() {
+    val entity = legacyEntity(triggerType = "REMINDER_AGE_EXCEEDED", triggerPayload = "not-json")
+
+    val trigger = entity.toDomain().trigger
+
+    assertEquals(WorkflowTrigger.ReminderCompleted, trigger)
+  }
+
+  @Test
+  fun `toDomain falls back to ArchiveReminder when the action payload is malformed`() {
+    val entity = legacyEntity(actionType = "ACTIVATE_REMINDER", actionPayload = "not-json")
+
+    val action = entity.toDomain().action
+
+    assertEquals(WorkflowAction.ArchiveReminder, action)
+  }
+
+  @Test
+  fun `toDomain drops a condition it can't parse instead of failing the whole list`() {
+    val entity = legacyEntity(
+      conditionsPayload = """[{"type":"WITHIN_TIME_WINDOW","payload":"not-json"},""" +
+        """{"type":"GROUP_IS","payload":"{\"groupId\":\"group-1\"}"}]"""
+    )
+
+    val conditions = entity.toDomain().conditions
+
+    assertEquals(listOf(WorkflowCondition.GroupIs(groupId = "group-1")), conditions)
+  }
+
+  private fun legacyEntity(
+    triggerType: String = "REMINDER_COMPLETED",
+    triggerPayload: String = "",
+    actionType: String = "ARCHIVE_REMINDER",
+    actionPayload: String = "",
+    conditionsPayload: String = "[]"
+  ) = WorkflowRuleEntity(
+    uuId = "rule-legacy",
+    scopeType = "GLOBAL",
+    triggerType = triggerType,
+    triggerPayload = triggerPayload,
+    conditionsPayload = conditionsPayload,
+    actionType = actionType,
+    actionPayload = actionPayload,
+    createdAt = 0L,
+    syncState = SyncState.Synced.name
+  )
 }
