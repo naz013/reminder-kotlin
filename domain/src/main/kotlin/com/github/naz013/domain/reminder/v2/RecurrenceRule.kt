@@ -1,15 +1,22 @@
 package com.github.naz013.domain.reminder.v2
 
+import com.google.gson.annotations.SerializedName
 import org.threeten.bp.LocalDateTime
 
+/** Variants are Gson round-tripped directly (see `ReminderV2Mapper`/`files/DataConverterImpl`),
+ * so every field needs [SerializedName] - without it R8 is free to strip/rename the constructor
+ * and fields, which crashed in production (see the "Failed to invoke constructor" incident). */
 sealed class RecurrenceRule {
   data object Once : RecurrenceRule()
 
   /** Fires once after [after] millis. [repeatInterval] (raw millis, same convention as [Daily])
    * optionally repeats the timer after that; 0 (the default) means fire once and stop. */
   data class Countdown(
+    @SerializedName("after")
     val after: Long,
+    @SerializedName("repeatInterval")
     val repeatInterval: Long = 0,
+    @SerializedName("repeatLimit")
     val repeatLimit: Int = -1
   ) : RecurrenceRule()
 
@@ -18,39 +25,60 @@ sealed class RecurrenceRule {
    * raw millisecond duration - it can express sub-day granularity (seconds/minutes/hours), not
    * just whole days, matching how V1's plain by-date repeat picker stores its value. */
   data class Daily(
+    @SerializedName("repeatInterval")
     val repeatInterval: Long = 1,
+    @SerializedName("repeatLimit")
     val repeatLimit: Int = -1,
+    @SerializedName("until")
     val until: LocalDateTime? = null
   ) : RecurrenceRule()
 
   data class Weekly(
+    @SerializedName("weekdays")
     val weekdays: List<Int>,
+    @SerializedName("repeatInterval")
     val repeatInterval: Long = 1,
+    @SerializedName("repeatLimit")
     val repeatLimit: Int = -1,
+    @SerializedName("until")
     val until: LocalDateTime? = null
   ) : RecurrenceRule()
 
   data class Monthly(
+    @SerializedName("dayOfMonth")
     val dayOfMonth: Int,
+    @SerializedName("repeatInterval")
     val repeatInterval: Long = 1,
+    @SerializedName("repeatLimit")
     val repeatLimit: Int = -1,
+    @SerializedName("until")
     val until: LocalDateTime? = null
   ) : RecurrenceRule()
 
   /** e.g. "every 2nd Tuesday of the month". [weekday] follows the app's 0=Sunday..6=Saturday convention. */
   data class RelativeMonthly(
+    @SerializedName("weekday")
     val weekday: Int,
+    @SerializedName("ordinal")
     val ordinal: Int,
+    @SerializedName("repeatInterval")
     val repeatInterval: Long = 1,
+    @SerializedName("repeatLimit")
     val repeatLimit: Int = -1,
+    @SerializedName("until")
     val until: LocalDateTime? = null
   ) : RecurrenceRule()
 
   data class Yearly(
+    @SerializedName("dayOfMonth")
     val dayOfMonth: Int,
+    @SerializedName("monthOfYear")
     val monthOfYear: Int,
+    @SerializedName("repeatInterval")
     val repeatInterval: Long = 1,
+    @SerializedName("repeatLimit")
     val repeatLimit: Int = -1,
+    @SerializedName("until")
     val until: LocalDateTime? = null
   ) : RecurrenceRule()
 
@@ -60,6 +88,7 @@ sealed class RecurrenceRule {
 
   /** Escape hatch for anything the structured cases above don't model, e.g. BYSETPOS/BYWEEKNO combinations. */
   data class ICalendar(
+    @SerializedName("rrule")
     val rrule: String
   ) : RecurrenceRule()
 }

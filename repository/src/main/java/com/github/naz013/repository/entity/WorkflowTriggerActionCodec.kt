@@ -3,6 +3,7 @@ package com.github.naz013.repository.entity
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -11,6 +12,8 @@ import com.google.gson.reflect.TypeToken
  * [WorkflowTemplateMapper] — a rule and a template store the exact same trigger/action shapes.
  */
 internal val workflowGson = Gson()
+
+private const val TAG = "WorkflowTriggerActionCodec"
 
 internal fun WorkflowTrigger.toColumns(): Pair<String, String> = when (this) {
   is WorkflowTrigger.ReminderCompleted -> "REMINDER_COMPLETED" to ""
@@ -22,15 +25,22 @@ internal fun WorkflowTrigger.toColumns(): Pair<String, String> = when (this) {
   is WorkflowTrigger.ReminderUnacknowledgedFor -> "REMINDER_UNACKNOWLEDGED_FOR" to workflowGson.toJson(this)
 }
 
-internal fun toWorkflowTrigger(type: String, payload: String): WorkflowTrigger = when (type) {
-  "REMINDER_COMPLETED" -> WorkflowTrigger.ReminderCompleted
-  "REMINDER_SNOOZED_N_TIMES" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderSnoozedNTimes::class.java)
-  "GROUP_ALL_COMPLETED" -> WorkflowTrigger.GroupAllCompleted
-  "LOCATION_ENTERED" -> WorkflowTrigger.LocationEntered
-  "LOCATION_EXITED" -> WorkflowTrigger.LocationExited
-  "REMINDER_AGE_EXCEEDED" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderAgeExceeded::class.java)
-  "REMINDER_UNACKNOWLEDGED_FOR" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderUnacknowledgedFor::class.java)
-  else -> WorkflowTrigger.ReminderCompleted
+/** Falls back to [WorkflowTrigger.ReminderCompleted] (and logs) instead of throwing on a payload
+ * it can't parse — one unreadable row must not take down the whole workflow-rule list. */
+internal fun toWorkflowTrigger(type: String, payload: String): WorkflowTrigger = runCatching {
+  when (type) {
+    "REMINDER_COMPLETED" -> WorkflowTrigger.ReminderCompleted
+    "REMINDER_SNOOZED_N_TIMES" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderSnoozedNTimes::class.java)
+    "GROUP_ALL_COMPLETED" -> WorkflowTrigger.GroupAllCompleted
+    "LOCATION_ENTERED" -> WorkflowTrigger.LocationEntered
+    "LOCATION_EXITED" -> WorkflowTrigger.LocationExited
+    "REMINDER_AGE_EXCEEDED" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderAgeExceeded::class.java)
+    "REMINDER_UNACKNOWLEDGED_FOR" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderUnacknowledgedFor::class.java)
+    else -> WorkflowTrigger.ReminderCompleted
+  }
+}.getOrElse { e ->
+  Logger.e(TAG, "Failed to parse workflow trigger, type=$type, payload=$payload", e)
+  WorkflowTrigger.ReminderCompleted
 }
 
 internal fun WorkflowAction.toColumns(): Pair<String, String> = when (this) {
@@ -41,13 +51,20 @@ internal fun WorkflowAction.toColumns(): Pair<String, String> = when (this) {
   is WorkflowAction.RunBackgroundTask -> "RUN_BACKGROUND_TASK" to workflowGson.toJson(this)
 }
 
-internal fun toWorkflowAction(type: String, payload: String): WorkflowAction = when (type) {
-  "ARCHIVE_REMINDER" -> WorkflowAction.ArchiveReminder
-  "COMPLETE_REMINDER" -> WorkflowAction.CompleteReminder
-  "APPLY_NOTIFICATION_OVERRIDE" -> workflowGson.fromJson(payload, WorkflowAction.ApplyNotificationOverride::class.java)
-  "ACTIVATE_REMINDER" -> workflowGson.fromJson(payload, WorkflowAction.ActivateReminder::class.java)
-  "RUN_BACKGROUND_TASK" -> workflowGson.fromJson(payload, WorkflowAction.RunBackgroundTask::class.java)
-  else -> WorkflowAction.ArchiveReminder
+/** Falls back to [WorkflowAction.ArchiveReminder] (and logs) instead of throwing on a payload it
+ * can't parse — one unreadable row must not take down the whole workflow-rule list. */
+internal fun toWorkflowAction(type: String, payload: String): WorkflowAction = runCatching {
+  when (type) {
+    "ARCHIVE_REMINDER" -> WorkflowAction.ArchiveReminder
+    "COMPLETE_REMINDER" -> WorkflowAction.CompleteReminder
+    "APPLY_NOTIFICATION_OVERRIDE" -> workflowGson.fromJson(payload, WorkflowAction.ApplyNotificationOverride::class.java)
+    "ACTIVATE_REMINDER" -> workflowGson.fromJson(payload, WorkflowAction.ActivateReminder::class.java)
+    "RUN_BACKGROUND_TASK" -> workflowGson.fromJson(payload, WorkflowAction.RunBackgroundTask::class.java)
+    else -> WorkflowAction.ArchiveReminder
+  }
+}.getOrElse { e ->
+  Logger.e(TAG, "Failed to parse workflow action, type=$type, payload=$payload", e)
+  WorkflowAction.ArchiveReminder
 }
 
 private data class ConditionColumns(val type: String, val payload: String)
@@ -58,11 +75,18 @@ private fun WorkflowCondition.toColumns(): ConditionColumns = when (this) {
   is WorkflowCondition.GroupIs -> ConditionColumns("GROUP_IS", workflowGson.toJson(this))
 }
 
-private fun toWorkflowCondition(columns: ConditionColumns): WorkflowCondition? = when (columns.type) {
-  "PRIORITY_AT_LEAST" -> workflowGson.fromJson(columns.payload, WorkflowCondition.PriorityAtLeast::class.java)
-  "WITHIN_TIME_WINDOW" -> workflowGson.fromJson(columns.payload, WorkflowCondition.WithinTimeWindow::class.java)
-  "GROUP_IS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.GroupIs::class.java)
-  else -> null
+/** Drops (and logs) a condition it can't parse, rather than throwing - one bad condition must not
+ * take down the whole rule/conditions list; [toWorkflowConditions] already filters out nulls. */
+private fun toWorkflowCondition(columns: ConditionColumns): WorkflowCondition? = runCatching {
+  when (columns.type) {
+    "PRIORITY_AT_LEAST" -> workflowGson.fromJson(columns.payload, WorkflowCondition.PriorityAtLeast::class.java)
+    "WITHIN_TIME_WINDOW" -> workflowGson.fromJson(columns.payload, WorkflowCondition.WithinTimeWindow::class.java)
+    "GROUP_IS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.GroupIs::class.java)
+    else -> null
+  }
+}.getOrElse { e ->
+  Logger.e(TAG, "Failed to parse workflow condition, columns=$columns", e)
+  null
 }
 
 private val conditionColumnsListType = object : TypeToken<List<ConditionColumns>>() {}.type
