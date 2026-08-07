@@ -166,4 +166,52 @@ class ReminderV2MapperTest {
     assertEquals(0L, roundTripped.snoozeCount)
     assertEquals(null, roundTripped.lastShownAt)
   }
+
+  @Test
+  fun `toEntity then toDomain round trips a weekly recurrence`() {
+    val reminder = ReminderV2(
+      uuId = "id-9",
+      summary = "Standup",
+      recurrence = RecurrenceRule.Weekly(weekdays = listOf(1, 3, 5)),
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 20, 9, 0)),
+      action = ReminderAction.None
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+  }
+
+  @Test
+  fun `toDomain falls back to Once when a WEEKLY payload has no weekdays field`() {
+    // Simulates a row written before app-proguard-rules kept RecurrenceRule's real field
+    // names, so the persisted JSON keys ("a", "b", "c") no longer match "weekdays" etc.
+    val entity = legacyEntity(recurrenceType = "WEEKLY", recurrencePayload = """{"a":[1,3,5],"b":1,"c":-1}""")
+
+    val domain = entity.toDomain()
+
+    assertEquals(RecurrenceRule.Once, domain.recurrence)
+  }
+
+  @Test
+  fun `toDomain falls back to Once when the recurrence payload is malformed JSON`() {
+    val entity = legacyEntity(recurrenceType = "MONTHLY", recurrencePayload = "not-json")
+
+    val domain = entity.toDomain()
+
+    assertEquals(RecurrenceRule.Once, domain.recurrence)
+  }
+
+  private fun legacyEntity(recurrenceType: String, recurrencePayload: String) = ReminderV2Entity(
+    uuId = "id-legacy",
+    recurrenceType = recurrenceType,
+    recurrencePayload = recurrencePayload,
+    schedule = ReminderScheduleColumns(startDateTime = 0L),
+    notification = NotificationSettingsOverrideColumns(),
+    calendarExport = null,
+    taskExport = null,
+    location = null,
+    actionType = "NONE",
+    syncState = SyncState.Synced.name
+  )
 }
