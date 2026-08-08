@@ -143,6 +143,9 @@ fun rememberPermissionRequesterRationale(): PermissionRequester {
   val requester = remember(activity) { PermissionRequester(activity) }
   val launcher =
     rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+      if (results.entries.isEmpty()) {
+        return@rememberLauncherForActivityResult
+      }
       val (permission, isGranted) = results.entries.first()
       requester.onSystemResult(permission, isGranted)
     }

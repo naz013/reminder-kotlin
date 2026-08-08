@@ -99,7 +99,9 @@ class PreviewNoteViewModel(
       reminderV2Repository.getByNoteId(key).map {
         reminderToUiNoteAttachedReminder(it)
       }
-    _state.update { it.copy(reminders = reminders) }
+    withContext(dispatcherProvider.main()) {
+      _state.update { it.copy(reminders = reminders) }
+    }
   }
 
   fun onStatusClick() {
@@ -116,7 +118,9 @@ class PreviewNoteViewModel(
       val noteWithImages = noteRepository.getById(key)
       val note = noteWithImages?.note
       if (note == null) {
-        event.emit(ViewModelEvent.Message(textProvider.getText(R.string.notes_failed_to_update)))
+        withContext(dispatcherProvider.main()) {
+          event.emit(ViewModelEvent.Message(textProvider.getText(R.string.notes_failed_to_update)))
+        }
         return@launch
       }
 
@@ -142,7 +146,9 @@ class PreviewNoteViewModel(
   fun onDeleteConfirmed() {
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteNoteUseCase(key)
-      event.emit(ViewModelEvent.MoveBack)
+      withContext(dispatcherProvider.main()) {
+        event.emit(ViewModelEvent.MoveBack)
+      }
     }
   }
 
@@ -150,11 +156,15 @@ class PreviewNoteViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(key) ?: return@launch
       val file = createSharedNoteFileUseCase(noteWithImages)
+
       Logger.i(TAG, "Share note file created: ${file?.absolutePath}")
-      if (file != null && file.exists() && file.canRead()) {
-        event.emit(ViewModelEvent.ShareNote(noteWithImages.getTitle(), file))
-      } else {
-        event.emit(ViewModelEvent.Message(textProvider.getText(R.string.failed_to_send_note)))
+
+      withContext(dispatcherProvider.main()) {
+        if (file != null && file.exists() && file.canRead()) {
+          event.emit(ViewModelEvent.ShareNote(noteWithImages.getTitle(), file))
+        } else {
+          event.emit(ViewModelEvent.Message(textProvider.getText(R.string.failed_to_send_note)))
+        }
       }
     }
   }

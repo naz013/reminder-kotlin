@@ -135,6 +135,13 @@
   @com.google.gson.annotations.SerializedName <fields>;
 }
 
+# RecurrenceRule's variants are (de)serialized via raw field-reflection Gson in
+# ReminderV2Mapper (no @SerializedName), so without a keep rule R8 can rewrite their
+# constructors and crash with "Failed to invoke constructor '...$Weekly()' with no args"
+# when Gson reflectively reconstructs a persisted reminder.
+-keep class com.github.naz013.domain.reminder.v2.RecurrenceRule { *; }
+-keep class com.github.naz013.domain.reminder.v2.RecurrenceRule$* { *; }
+
 -dontwarn com.oracle.svm.core.annotate.AutomaticFeature
 -dontwarn com.oracle.svm.core.annotate.Delete
 -dontwarn com.oracle.svm.core.annotate.TargetClass
