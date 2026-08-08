@@ -18,10 +18,11 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionH
  */
 @Composable
 fun BackupSettingsScreen(
-  isLocalBackupVisible: Boolean,
+  isLocalBackupLocked: Boolean,
   onCloudBackupClick: () -> Unit,
   onExportBackupClick: () -> Unit,
   onImportBackupClick: () -> Unit,
+  onLocalBackupLockedClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
@@ -36,9 +37,18 @@ fun BackupSettingsScreen(
       dividerBottom = true,
       onClick = onCloudBackupClick,
     )
-    if (isLocalBackupVisible) {
-      SettingsSectionHeader(stringResource(R.string.local_backup))
+    SettingsSectionHeader(stringResource(R.string.local_backup))
 
+    if (isLocalBackupLocked) {
+      SettingsItem(
+        title = stringResource(R.string.local_backup),
+        subtitle = stringResource(R.string.local_backup_locked_description),
+        icon = AppIcons.Fluent.FolderMove,
+        locked = true,
+        dividerBottom = true,
+        onClick = onLocalBackupLockedClick,
+      )
+    } else {
       SettingsItem(
         title = stringResource(R.string.backup_export_title),
         icon = AppIcons.Fluent.FolderMove,

@@ -274,6 +274,7 @@ dependencies {
   "freeImplementation"(libs.user.messaging.platform)
 
   "proImplementation"(project(":appfunctions"))
+  "proImplementation"(libs.install.referrer)
 
   implementation(libs.retrofit)
   implementation(libs.retrofit.converter.gson)

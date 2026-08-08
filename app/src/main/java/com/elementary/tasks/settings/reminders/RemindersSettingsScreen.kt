@@ -65,14 +65,13 @@ fun RemindersSettingsScreen(
         .background(MaterialTheme.colorScheme.background)
         .verticalScroll(rememberScrollState()),
   ) {
-    if (state.isInsightsVisible) {
-      SettingsItem(
-        title = stringResource(R.string.insights),
-        icon = AppIcons.Fluent.DataPie,
-        dividerBottom = true,
-        onClick = onInsightsClick,
-      )
-    }
+    SettingsItem(
+      title = stringResource(R.string.insights),
+      icon = AppIcons.Fluent.DataPie,
+      locked = state.isInsightsLocked,
+      dividerBottom = true,
+      onClick = onInsightsClick,
+    )
     SettingsItem(
       title = stringResource(R.string.recur_presets),
       icon = painterResource(R.drawable.ic_builder_preset),

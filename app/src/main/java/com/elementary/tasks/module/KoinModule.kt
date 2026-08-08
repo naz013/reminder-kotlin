@@ -10,6 +10,7 @@ import com.elementary.tasks.module.logicreminder.ReminderPreferencesImpl
 import com.elementary.tasks.module.logicschedule.SchedulePreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
 import com.elementary.tasks.module.platform.DateTimePreferencesImpl
+import com.elementary.tasks.module.platform.InstallReferrerReader
 import com.elementary.tasks.module.sync.SyncDataConverterImpl
 import com.elementary.tasks.module.uicommon.AppPreferencesImpl
 import com.elementary.tasks.module.uicommon.AuthPreferencesImpl
@@ -39,6 +40,7 @@ val libModule = module {
   // platform
   factoryOf<BuildInfo>(::BuildInfoImpl)
   single { DateTimePreferencesImpl(get()) as DateTimePreferences }
+  factoryOf(::InstallReferrerReader)
 
   // ui-common
   single { ThemePreferencesImpl(get()) as ThemePreferences }

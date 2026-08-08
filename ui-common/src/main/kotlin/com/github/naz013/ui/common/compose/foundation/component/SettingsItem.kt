@@ -46,6 +46,12 @@ private val TrailingSpacing = 16.dp
  * Dependent enable/disable logic (e.g. "only enabled while PIN protection is on" in the legacy
  * `PrefsView.setDependentView`) is not part of this component — compute the combined [enabled]
  * value in the screen's ViewModel and pass it down, same as any other derived UI state.
+ *
+ * [locked] is for a Pro-only feature shown to a free user: it dims the row the same way
+ * [enabled]=false does, but — unlike [enabled] — never disables the click, since a locked row
+ * still needs to be tappable to route to the paywall. Pass a locked-aware [onClick] that does
+ * that routing. When [locked] is true and no explicit [trailing] is given, a [ProBadgeChip] is
+ * shown automatically.
  */
 @Composable
 fun SettingsItem(
@@ -54,13 +60,15 @@ fun SettingsItem(
   subtitle: String? = null,
   icon: Painter? = null,
   enabled: Boolean = true,
+  locked: Boolean = false,
   isLoading: Boolean = false,
   dividerTop: Boolean = false,
   dividerBottom: Boolean = false,
   onClick: (() -> Unit)? = null,
   trailing: @Composable (() -> Unit)? = null
 ) {
-  val contentAlpha = if (enabled) 1f else DisabledAlpha
+  val contentAlpha = if (enabled && !locked) 1f else DisabledAlpha
+  val effectiveTrailing = trailing ?: if (locked) { @Composable { ProBadgeChip() } } else null
 
   Column(modifier = modifier.fillMaxWidth()) {
     if (dividerTop) HorizontalDivider()
@@ -106,9 +114,9 @@ fun SettingsItem(
         }
       }
 
-      if (trailing != null) {
+      if (effectiveTrailing != null) {
         Box(modifier = Modifier.padding(start = TrailingSpacing)) {
-          trailing()
+          effectiveTrailing()
         }
       }
     }
@@ -233,6 +241,21 @@ private fun PreviewSettingsItemCustomButton() {
       subtitle = "128 MB used",
       dividerBottom = true,
       trailing = { TextButton(onClick = {}) { Text("Clear") } }
+    )
+  }
+}
+
+@Preview(showBackground = true, name = "Settings item - locked (PRO)")
+@Composable
+private fun PreviewSettingsItemLocked() {
+  AppTheme {
+    SettingsItem(
+      title = "Streaks & Insights",
+      subtitle = "See your reminder streaks and trends",
+      icon = AppIcons.Fluent.Settings,
+      locked = true,
+      dividerBottom = true,
+      onClick = {}
     )
   }
 }

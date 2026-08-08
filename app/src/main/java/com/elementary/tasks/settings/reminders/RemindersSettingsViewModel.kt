@@ -7,6 +7,8 @@ import com.elementary.tasks.core.utils.VibrationPlayer
 import com.elementary.tasks.core.utils.VibrationPresets
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
@@ -49,6 +51,10 @@ class RemindersSettingsViewModel(
 
   fun onWorkflowRulesClick() {
     navigationEvent.value = Event(RemindersSettingsEvent.OpenWorkflowRules)
+  }
+
+  fun onInsightsLockedClick() {
+    analyticsEventSender.send(FeatureGateTappedEvent(Feature.INSIGHTS))
   }
 
   fun onPriorityClick() {
@@ -356,7 +362,7 @@ class RemindersSettingsViewModel(
         lockScreenVisibilityValues().indexOf(prefs.defaultLockScreenVisibility).coerceAtLeast(0)
       ],
       defaultVibrationPatternName = vibrationPatternOptions()[selectedVibrationPatternIndex()],
-      isInsightsVisible = buildInfo.isPro,
+      isInsightsLocked = !buildInfo.isPro,
     )
   }
 

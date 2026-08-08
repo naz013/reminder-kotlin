@@ -909,19 +909,27 @@ class BuildReminderViewModel(
       reminderAnalyticsTracker.sendEvent(reminder.toAnalyticsReminderType())
     }
 
-    // Track reminder creation and show review dialog after 4 reminders
-    if (!isEdit && !prefs.reviewDialogShown) {
+    // Track reminder creation, show the feedback-form review dialog after 4 reminders, then -
+    // staggered after that, never in the same session - nudge the real Play Store review flow
+    // after 10, since the feedback form never touches the actual Play Store rating.
+    if (!isEdit) {
       val currentCount = prefs.remindersCreatedCount
       val newCount = currentCount + 1
       prefs.remindersCreatedCount = newCount
       Logger.i(TAG, "Reminder creation count: $newCount")
 
-      if (newCount >= 4) {
+      if (!prefs.reviewDialogShown && newCount >= 4) {
         Logger.i(TAG, "Showing review dialog after 4 reminders created")
         withContext(dispatcherProvider.main()) {
           askReview(R.string.share_your_experience)
         }
         prefs.reviewDialogShown = true
+      } else if (prefs.reviewDialogShown && !prefs.playReviewFlowShown && newCount >= 10) {
+        Logger.i(TAG, "Launching Play Store review flow after 10 reminders created")
+        withContext(dispatcherProvider.main()) {
+          event.emit(ViewModelEvent.ShowPlayReviewFlow)
+        }
+        prefs.playReviewFlowShown = true
       }
     }
   }
@@ -1020,6 +1028,8 @@ class BuildReminderViewModel(
     data class ShowMessage(
       val messageRes: Int,
     ) : ViewModelEvent
+
+    data object ShowPlayReviewFlow : ViewModelEvent
 
     data class ShowReviewDialog(
       val title: String,

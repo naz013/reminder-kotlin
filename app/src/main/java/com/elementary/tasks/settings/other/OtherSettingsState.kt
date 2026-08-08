@@ -4,6 +4,7 @@ data class OtherSettingsState(
   val aboutDialog: AboutDialogState? = null,
   val permissionItems: List<PermissionItem> = emptyList(),
   val isGeminiFunctionsVisible: Boolean = false,
+  val isGeminiFunctionsLocked: Boolean = false,
 )
 
 data class AboutDialogState(

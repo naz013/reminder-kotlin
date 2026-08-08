@@ -34,6 +34,7 @@ import com.elementary.tasks.reminder.recur.RecurHelpScreen
 import com.github.naz013.common.Permissions
 import com.github.naz013.domain.Place
 import com.github.naz013.logging.Logger
+import com.github.naz013.reviews.rememberPlayReviewLauncher
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
@@ -78,6 +79,7 @@ private fun MainEntry(
 
   val dialogDispatcher = rememberDialogDispatcher()
   val reviewsFormLauncher = rememberReviewsFormLauncher()
+  val playReviewLauncher = rememberPlayReviewLauncher()
   val toastDispatcher = rememberToastDispatcher()
 
   val selectorDialogDataHolder = rememberSelectorDialogDataHolder()
@@ -127,6 +129,10 @@ private fun MainEntry(
           appSource = event.appSource,
           allowLogsAttachment = event.canAttachLogs,
         )
+      }
+
+      BuildReminderViewModel.ViewModelEvent.ShowPlayReviewFlow -> {
+        playReviewLauncher.launchReviewFlow()
       }
 
       BuildReminderViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
