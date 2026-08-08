@@ -1,6 +1,6 @@
 package com.github.naz013.appfunctions.reminder
 
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.ReminderV2Repository

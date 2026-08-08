@@ -14,7 +14,7 @@ import com.github.naz013.appfunctions.birthday.CreateBirthdayParams
 import com.github.naz013.appfunctions.birthday.CreateSimpleBirthdayUseCase
 import com.github.naz013.appfunctions.birthday.ListUpcomingBirthdaysParams
 import com.github.naz013.appfunctions.birthday.ListUpcomingBirthdaysUseCase
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
 import kotlinx.coroutines.Dispatchers

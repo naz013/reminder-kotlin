@@ -1,7 +1,7 @@
 package com.elementary.tasks.module.platform
 
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.common.datetime.DateTimePreferences
+import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.ui.common.locale.Language
 import java.util.Locale
 

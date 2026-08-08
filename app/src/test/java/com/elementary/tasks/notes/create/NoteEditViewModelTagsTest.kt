@@ -1,6 +1,6 @@
 package com.elementary.tasks.notes.create
 
-import com.elementary.tasks.core.cloud.worker.WorkType
+import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.domain.Tag
 import com.github.naz013.files.DataType
 import io.mockk.coEvery

@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.utils.datetime
 
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.logging.Logger
 
 class DoNotDisturbManager(

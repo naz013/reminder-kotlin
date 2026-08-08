@@ -4,7 +4,7 @@ import android.content.Context
 import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
 import com.elementary.tasks.settings.birthday.usecase.GetContactsWithMetadataUseCase
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger

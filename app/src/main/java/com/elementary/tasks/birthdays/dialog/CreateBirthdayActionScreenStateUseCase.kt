@@ -5,7 +5,7 @@ import com.elementary.tasks.birthdays.actions.BirthdayActionCategory
 import com.elementary.tasks.birthdays.actions.GetBirthdayActionsUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.contacts.ContactsReader
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter

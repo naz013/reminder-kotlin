@@ -3,7 +3,6 @@ package com.github.naz013.icalendar.parser.common
 import com.github.naz013.icalendar.Param
 import com.github.naz013.icalendar.ParamValueType
 import com.github.naz013.icalendar.ValueParam
-import com.github.naz013.icalendar.parser.common.ParamParser
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

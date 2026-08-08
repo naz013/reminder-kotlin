@@ -5,7 +5,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.simplemap.MapStyle
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.google.android.gms.maps.GoogleMap
 import io.mockk.Runs

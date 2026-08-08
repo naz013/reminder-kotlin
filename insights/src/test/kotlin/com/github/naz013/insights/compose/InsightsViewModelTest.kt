@@ -1,6 +1,6 @@
 package com.github.naz013.insights.compose
 
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.history.EventHistoricalRecord
 import com.github.naz013.domain.history.EventHistoricalRecordType
 import com.github.naz013.domain.reminder.v2.ReminderSchedule

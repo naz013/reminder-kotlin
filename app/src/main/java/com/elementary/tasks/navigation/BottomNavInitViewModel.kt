@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
 import com.elementary.tasks.core.data.repository.NoteImageMigration
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
@@ -18,6 +17,7 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.migration.GroupV2BackfillUseCase
 import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
+import com.github.naz013.scheduler.JobSchedulerApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,7 +45,7 @@ class BottomNavInitViewModel(
   private val groupV2BackfillUseCase: GroupV2BackfillUseCase,
   private val reminderV2BackfillUseCase: ReminderV2BackfillUseCase,
   private val workflowRulesUtil: WorkflowRulesUtil,
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
 ) : ViewModel() {
   val isGoogleTasksEnabled =
     featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&

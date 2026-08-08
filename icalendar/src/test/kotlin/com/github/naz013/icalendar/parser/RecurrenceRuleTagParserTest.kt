@@ -6,7 +6,6 @@ import com.github.naz013.icalendar.FreqRecurParam
 import com.github.naz013.icalendar.FreqType
 import com.github.naz013.icalendar.IntervalRecurParam
 import com.github.naz013.icalendar.RecurrenceRuleTag
-import com.github.naz013.icalendar.parser.RecurrenceRuleTagParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test

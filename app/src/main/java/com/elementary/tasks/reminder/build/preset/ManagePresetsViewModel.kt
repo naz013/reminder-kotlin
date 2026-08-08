@@ -2,8 +2,8 @@ package com.elementary.tasks.reminder.build.preset
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.PresetAction

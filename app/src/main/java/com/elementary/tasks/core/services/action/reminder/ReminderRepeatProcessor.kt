@@ -1,16 +1,16 @@
 package com.elementary.tasks.core.services.action.reminder
 
-import com.elementary.tasks.core.services.JobScheduler
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.scheduler.JobSchedulerApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class ReminderRepeatProcessor(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderV2Repository: ReminderV2Repository,
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
   private val reminderActionProcessor: ReminderActionProcessor,
 ) {
   private val scope = CoroutineScope(dispatcherProvider.default())

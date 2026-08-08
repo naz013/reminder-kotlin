@@ -18,7 +18,7 @@ import com.github.naz013.appfunctions.reminder.ListUpcomingRemindersParams
 import com.github.naz013.appfunctions.reminder.ListUpcomingRemindersUseCase
 import com.github.naz013.appfunctions.reminder.ReminderFunctionResult
 import com.github.naz013.appfunctions.reminder.ReminderIdParams
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import kotlinx.coroutines.Dispatchers

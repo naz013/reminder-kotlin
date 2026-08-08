@@ -1,12 +1,13 @@
 package com.elementary.tasks.reminder.build.preset.primitive
 
 import com.elementary.tasks.core.data.ui.group.UiGroupList
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
 import com.elementary.tasks.reminder.build.bi.TimerExclusion
+import com.elementary.tasks.reminder.build.preset.data.CalendarItemJson
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place
+import com.github.naz013.googlecalendar.CalendarItem
 import com.github.naz013.icalendar.DayValue
 import com.github.naz013.icalendar.FreqType
 import com.google.gson.Gson
@@ -29,7 +30,7 @@ class PrimitiveProtocol {
       is UiGroupList -> any.asString()
       is OtherParams -> any.asString()
       is GoogleTaskList -> any.asString()
-      is GoogleCalendarUtils.CalendarItem -> any.asString()
+      is CalendarItem -> any.toJson().asString()
       is CalendarDuration -> any.asString()
       is String -> any
       else -> ""
@@ -37,7 +38,7 @@ class PrimitiveProtocol {
 
   private fun CalendarDuration.asString(): String = Gson().toJson(this)
 
-  private fun GoogleCalendarUtils.CalendarItem.asString(): String = Gson().toJson(this)
+  private fun CalendarItemJson.asString(): String = Gson().toJson(this)
 
   private fun GoogleTaskList.asString(): String = Gson().toJson(this)
 
@@ -64,4 +65,11 @@ class PrimitiveProtocol {
   private fun Long.asString(): String = toString()
 
   private fun Boolean.asString(): String = toString()
+
+  private fun CalendarItem.toJson(): CalendarItemJson {
+    return CalendarItemJson(
+      name = this.name,
+      id = this.id,
+    )
+  }
 }

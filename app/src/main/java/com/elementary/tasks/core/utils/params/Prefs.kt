@@ -3,11 +3,11 @@ package com.elementary.tasks.core.utils.params
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
-import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.simplemap.MapConfig
 import com.github.naz013.domain.font.FontParams
+import com.github.naz013.logic.schedule.WorkerNetworkType
 
 typealias PrefsObserver = (String) -> Unit
 

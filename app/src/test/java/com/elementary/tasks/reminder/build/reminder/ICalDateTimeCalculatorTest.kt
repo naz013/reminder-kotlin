@@ -10,7 +10,7 @@ import com.elementary.tasks.reminder.build.ICalStartTimeBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilDateBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilTimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.icalendar.CountRecurParam
 import com.github.naz013.icalendar.FreqType
 import com.github.naz013.icalendar.ICalendarApi

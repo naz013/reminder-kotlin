@@ -14,10 +14,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.Navigator
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.activity.toast
 import com.github.naz013.ui.common.compose.composeView

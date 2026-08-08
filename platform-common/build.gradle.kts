@@ -8,6 +8,7 @@ android {
 
 dependencies {
   implementation(project(":logging-api"))
+  implementation(project(":platform-api"))
   implementation(project(":feature-common"))
   implementation(project(":date-calculations"))
 

@@ -1,8 +1,8 @@
 package com.elementary.tasks.core.services.event
 
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
-import com.elementary.tasks.core.services.JobScheduler
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.workapi.BackgroundTask
 import com.github.naz013.workapi.TaskData
 import com.github.naz013.workapi.TaskProgressReporter
@@ -10,7 +10,7 @@ import com.github.naz013.workapi.TaskResult
 
 class AutoBackupEventTask(
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
 ) : BackgroundTask {
   override suspend fun run(
     input: TaskData,

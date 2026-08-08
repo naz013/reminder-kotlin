@@ -1,14 +1,14 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
-import com.elementary.tasks.reminder.scheduling.behavior.v2.LocationBasedStrategyV2
-import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.elementary.tasks.workflow.WorkflowTriggerRunner
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
+import com.github.naz013.logic.reminder.behavior.LocationBasedStrategyV2
+import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
+import com.github.naz013.scheduler.JobSchedulerApi
 
 /**
  * Snoozes a reminder for a specified time in minutes.
@@ -21,7 +21,7 @@ import com.github.naz013.logging.Logger
  * @param saveReminderUseCase The use case to save the updated reminder.
  */
 class SnoozeReminderUseCase(
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
   private val strategyResolver: BehaviorStrategyResolverV2,
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,

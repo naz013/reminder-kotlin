@@ -21,7 +21,7 @@ import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.WeekDaysProtocol
 import com.github.naz013.domain.PresetBuilderScheme
 import com.github.naz013.domain.PresetType

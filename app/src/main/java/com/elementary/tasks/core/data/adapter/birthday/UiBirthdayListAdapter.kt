@@ -2,7 +2,7 @@ package com.elementary.tasks.core.data.adapter.birthday
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import com.github.naz013.ui.common.isColorDark

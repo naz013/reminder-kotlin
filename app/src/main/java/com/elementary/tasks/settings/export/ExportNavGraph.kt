@@ -15,8 +15,8 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.compose.rememberDropboxLogin
 import com.elementary.tasks.core.cloud.compose.rememberGoogleDriveLogin
-import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
-import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.github.naz013.ui.googletask.rememberGoogleTasksLogin
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.settings.SettingsScaffold
 import com.elementary.tasks.settings.export.services.CloudServicesScreen

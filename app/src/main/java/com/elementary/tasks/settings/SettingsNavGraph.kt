@@ -20,10 +20,10 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
-import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
@@ -62,7 +62,7 @@ import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSetting
 import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.insights.InsightsNavKey
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.reviews.rememberReviewsFormLauncher

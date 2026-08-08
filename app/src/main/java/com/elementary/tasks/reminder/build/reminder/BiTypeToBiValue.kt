@@ -4,14 +4,15 @@ package com.elementary.tasks.reminder.build.reminder
 
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
 import com.elementary.tasks.reminder.build.bi.TimerExclusion
+import com.elementary.tasks.reminder.build.preset.data.CalendarItemJson
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.googlecalendar.CalendarItem
 import com.github.naz013.icalendar.DayValue
 import com.github.naz013.icalendar.FreqType
 import com.google.gson.Gson
@@ -109,11 +110,16 @@ class BiTypeToBiValue {
     return Gson().fromJson(value, object : TypeToken<CalendarDuration>() {}.type)
   }
 
-  private fun parseCalendarItem(value: String): GoogleCalendarUtils.CalendarItem? {
+  private fun parseCalendarItem(value: String): CalendarItem? {
     if (value.isEmpty()) {
       return null
     }
-    return Gson().fromJson(value, object : TypeToken<GoogleCalendarUtils.CalendarItem>() {}.type)
+    return Gson().fromJson<CalendarItemJson>(value, object : TypeToken<CalendarItemJson>() {}.type)?.let {
+      CalendarItem(
+        id = it.id,
+        name = it.name,
+      )
+    }
   }
 
   private fun parseGoogleTaskList(value: String): GoogleTaskList? {

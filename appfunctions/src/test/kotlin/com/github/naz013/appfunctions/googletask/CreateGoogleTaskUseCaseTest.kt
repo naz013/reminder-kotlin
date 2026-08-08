@@ -1,7 +1,7 @@
 package com.github.naz013.appfunctions.googletask
 
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.repository.GoogleTaskRepository
 import io.mockk.coEvery

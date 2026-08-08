@@ -12,7 +12,7 @@ import com.elementary.tasks.reminder.build.reminder.compose.ComposedRecurrence
 import com.elementary.tasks.reminder.build.reminder.compose.ReminderActionCalculator
 import com.elementary.tasks.reminder.build.reminder.compose.RecurrenceRuleCalculator
 import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule

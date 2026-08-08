@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.build.formatter
 import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.bi.TimerExclusion
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 
 class TimerExclusionFormatter(
   private val context: Context,

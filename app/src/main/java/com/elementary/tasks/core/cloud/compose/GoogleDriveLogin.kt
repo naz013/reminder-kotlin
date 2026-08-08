@@ -8,8 +8,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.logging.Logger
@@ -23,7 +23,7 @@ private const val TAG = "GoogleDriveLogin"
 
 /**
  * Google Drive sign-in state, tied to whichever composable calls [rememberGoogleDriveLogin] - the
- * Drive counterpart of [com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin]. Replaces
+ * Drive counterpart of [com.github.naz013.ui.googletask.rememberGoogleTasksLogin]. Replaces
  * [com.elementary.tasks.core.cloud.GoogleLogin]'s Drive mode for `CloudServicesFragment`'s Nav3
  * successor, which has no Fragment to eagerly register an `ActivityResultLauncher` in `onCreate()`
  * against (see that class's kdoc for why eager registration mattered there).

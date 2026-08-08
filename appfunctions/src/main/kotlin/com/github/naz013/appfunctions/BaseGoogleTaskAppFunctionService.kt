@@ -20,7 +20,7 @@ import com.github.naz013.appfunctions.googletask.GoogleTaskIdParams
 import com.github.naz013.appfunctions.googletask.ListGoogleTasksParams
 import com.github.naz013.appfunctions.googletask.ListGoogleTasksUseCase
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.GoogleTask
 import kotlinx.coroutines.Dispatchers

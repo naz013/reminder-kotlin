@@ -17,10 +17,9 @@ import com.elementary.tasks.reminder.build.reminder.validation.EventTimeValidato
 import com.elementary.tasks.reminder.build.reminder.validation.ReminderValidator
 import com.elementary.tasks.reminder.build.reminder.validation.SubTasksValidator
 import com.elementary.tasks.reminder.build.reminder.validation.TargetValidator
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.domain.Place
-import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -29,7 +28,6 @@ import com.github.naz013.domain.sync.SyncState
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test

@@ -2,6 +2,8 @@ package com.elementary.tasks.reminder.scheduling.usecase
 
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeactivateReminderUseCase
 
 /**
  * Toggles the reminder state between active and inactive.

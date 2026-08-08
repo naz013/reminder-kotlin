@@ -5,7 +5,7 @@ import com.elementary.tasks.reminder.build.DayOfMonthBuilderItem
 import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
 import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2

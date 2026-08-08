@@ -5,7 +5,7 @@ import android.text.format.DateUtils
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.calendar.data.CalendarAppWidgetState
 import com.github.naz013.appwidgets.calendar.data.UiCalendarDay
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.threeten.bp.LocalDate

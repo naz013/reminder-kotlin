@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>NestedBlockDepth:Duration.kt$Duration$private fun parse()</ID>
+    <ID>UseRequire:RecurParam.kt$DayValue$throw IllegalArgumentException("Should contain one of: SU,MO,TU,WE,TH,FR,SA, but was $value")</ID>
+  </CurrentIssues>
+</SmellBaseline>

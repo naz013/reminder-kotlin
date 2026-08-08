@@ -3,17 +3,16 @@ package com.elementary.tasks.settings.export
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.settings.export.work.ObservableBackupTask
 import com.elementary.tasks.settings.export.work.ObservableEraseDataTask
 import com.elementary.tasks.settings.export.work.ObservableSyncTask
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.schedule.WorkerNetworkType
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.workapi.ExistingWorkPolicy
 import com.github.naz013.workapi.NetworkRequirement
@@ -29,7 +28,7 @@ import kotlinx.coroutines.withContext
 class CloudBackupSettingsViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val cloudApiProvider: CloudApiProvider,
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
   private val prefs: Prefs,
   private val textProvider: TextProvider,
   private val workScheduler: WorkScheduler,

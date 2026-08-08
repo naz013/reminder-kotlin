@@ -13,6 +13,8 @@ dependencies {
   implementation(project(":domain"))
   implementation(project(":logging-api"))
   implementation(project(":navigation-api"))
+  implementation(project(":platform-api"))
+  implementation(project(":feature-common"))
   implementation(project(":platform-common"))
   implementation(project(":date-calculations"))
 

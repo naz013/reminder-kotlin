@@ -45,7 +45,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.notes.ObserveNonNull
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.shopitems.SubTasksViewModel
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.ShopItem
 
 private val LIST_MAX_HEIGHT = 400.dp

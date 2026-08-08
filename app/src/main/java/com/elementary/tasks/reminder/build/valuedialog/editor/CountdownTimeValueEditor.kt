@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.reminder.build.BuilderItem
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 
 private const val EMPTY_TIME_STRING = "000000"
 private val KEYPAD_ROWS = listOf(

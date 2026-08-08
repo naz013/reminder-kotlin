@@ -20,7 +20,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
-import com.elementary.tasks.googletasks.GoogleTasksNavKey
+import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent

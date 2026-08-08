@@ -12,13 +12,10 @@ import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.event.BirthdayEventTask
 import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
-import com.elementary.tasks.core.utils.datetime.RecurEventManager
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.elementary.tasks.googletasks.work.SaveNewTaskTask
-import com.elementary.tasks.googletasks.work.UpdateTaskTask
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.BottomNavInitViewModel
 import com.elementary.tasks.notes.create.drop.DroppedContentParser
@@ -31,7 +28,11 @@ import com.elementary.tasks.settings.test.DeveloperViewModel
 import com.elementary.tasks.settings.test.ObjectExportViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.github.naz013.cloudapi.CloudKeysStorage
+import com.github.naz013.googlecalendar.GoogleCalendarApi
+import com.github.naz013.logic.reminder.RecurEventManager
+import com.github.naz013.notification.NotificationApi
 import com.github.naz013.repository.ReminderSettingsRepository
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -39,11 +40,6 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-
-val workerModule = module {
-  factory<BackgroundTask>(named(SaveNewTaskTask.TASK_KEY)) { SaveNewTaskTask(get(), get()) }
-  factory<BackgroundTask>(named(UpdateTaskTask.TASK_KEY)) { UpdateTaskTask(get(), get()) }
-}
 
 val viewModelModule = module {
   viewModelOf(::SelectApplicationViewModel)
@@ -94,7 +90,7 @@ val storageModule = module {
 
 val utilModule = module {
   factoryOf(::PresetInitProcessor)
-  factoryOf(::GoogleCalendarUtils)
+  factory { GoogleCalendarUtils(get(), get(), get(), get()) as GoogleCalendarApi }
 
   singleOf(::BackupTool)
   singleOf(::CacheUtil)
@@ -105,7 +101,8 @@ val utilModule = module {
   singleOf(::RemotePrefs)
 
   factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
-  factory { JobScheduler(get(), get(), get(), get(), get(), get()) }
+  factory { Notifier(get(), get(), get(), get(), get(), get(), get()) as NotificationApi }
+  factory { JobScheduler(get(), get(), get(), get(), get(), get()) as JobSchedulerApi }
 
   factory { ActivateAllActiveRemindersUseCase(get(), get()) }
   factory { NoteImageMigration(get(), get()) }

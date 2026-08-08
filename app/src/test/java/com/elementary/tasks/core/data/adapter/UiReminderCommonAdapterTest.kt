@@ -4,7 +4,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.contacts.ContactsReader
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.icalendar.ICalendarApi

@@ -2,7 +2,6 @@ package com.github.naz013.icalendar.parser
 
 import com.github.naz013.icalendar.Duration
 import com.github.naz013.icalendar.DurationTag
-import com.github.naz013.icalendar.parser.DurationTagParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test

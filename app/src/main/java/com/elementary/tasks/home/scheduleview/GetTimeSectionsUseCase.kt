@@ -2,7 +2,7 @@ package com.elementary.tasks.home.scheduleview
 
 import com.elementary.tasks.home.HomeEvent
 import com.elementary.tasks.home.TimeSection
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 
 class GetTimeSectionsUseCase(
   private val dateTimeManager: DateTimeManager,

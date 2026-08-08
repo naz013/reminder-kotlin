@@ -9,10 +9,9 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.lists.data.UiReminderListState
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.datecalc.provideBirthdayDateCalculator
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
@@ -21,6 +20,7 @@ import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
@@ -59,7 +59,7 @@ class AgendaViewModelTest {
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
-  private val birthdaySmartListPredicate = BirthdaySmartListPredicate(BirthdayDateCalculatorImpl())
+  private val birthdaySmartListPredicate = BirthdaySmartListPredicate(provideBirthdayDateCalculator())
 
   private lateinit var viewModel: AgendaViewModel
 

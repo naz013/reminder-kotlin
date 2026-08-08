@@ -19,12 +19,13 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteNotification
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
+import com.elementary.tasks.core.utils.Notifier.Companion.CHANNEL_REMINDER
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.navigation.BottomNavActivity
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.PendingIntentWrapper
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderPriority
@@ -34,6 +35,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.EditNoteScreen
 import com.github.naz013.navigation.EditReminderScreen
+import com.github.naz013.notification.NotificationApi
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
@@ -49,13 +51,13 @@ class Notifier(
   private val reminderV2Repository: ReminderV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
-) {
+) : NotificationApi {
   fun getNotificationBuilder(channelId: String): NotificationCompat.Builder {
     createChannels()
     return NotificationCompat.Builder(context, channelId)
   }
 
-  fun createChannels() {
+  override fun createChannels() {
     val manager = systemServiceProvider.provideNotificationManager()
     manager?.run {
       createNotificationChannel(createReminderChannel())
@@ -95,7 +97,7 @@ class Notifier(
    * combination space is small and bounded (roughly 50 in the worst case) - no orphan-channel
    * cleanup is needed for that to stay reasonable.
    */
-  fun reminderChannelId(settings: NotificationSettings): String {
+  override fun reminderChannelId(settings: NotificationSettings): String {
     val id = "$CHANNEL_REMINDER.${channelSuffix(settings)}"
     ensureReminderChannel(id, settings)
     return id
@@ -243,16 +245,16 @@ class Notifier(
     }
   }
 
-  fun sendShowReminderPermanent() {
+  override fun sendShowReminderPermanent() {
     PermanentReminderReceiver.show(context)
   }
 
-  fun cancel(id: Int) {
+  override fun cancel(id: Int) {
     getManager()?.cancel(id)
   }
 
   // Checked for Notification permission
-  fun showReminderPermanent() {
+  override fun showReminderPermanent() {
     Logger.d(TAG, "showReminderPermanent: ")
     val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
     val builder = NotificationCompat.Builder(context, CHANNEL_SILENT)
@@ -368,7 +370,7 @@ class Notifier(
     rv.setImageViewResource(viewId, iconId)
   }
 
-  fun showBirthdayPermanent() {
+  override fun showBirthdayPermanent() {
     if (!prefs.isBirthdayPermanentEnabled) {
       return
     }

@@ -1,7 +1,7 @@
 package com.github.naz013.appfunctions
 
 /** AppFunction params/results use `java.time` (the type the AppFunctions framework marshals), while
- * the rest of the app - including [com.github.naz013.common.datetime.DateTimeManager] - uses the
+ * the rest of the app - including [com.github.naz013.datecalc.DateTimeManager] - uses the
  * org.threeten.bp backport. These convert at that boundary. */
 
 fun java.time.LocalDateTime.toThreeTen(): org.threeten.bp.LocalDateTime =
