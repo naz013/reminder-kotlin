@@ -70,3 +70,7 @@ internal class BirthdayDateCalculatorImpl : BirthdayDateCalculator {
     return LocalDate.of(year, month, minOf(day, lastDayOfMonth))
   }
 }
+
+fun provideBirthdayDateCalculator(): BirthdayDateCalculator {
+  return BirthdayDateCalculatorImpl()
+}

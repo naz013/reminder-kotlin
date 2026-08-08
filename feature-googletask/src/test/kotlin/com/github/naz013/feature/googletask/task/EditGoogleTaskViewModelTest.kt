@@ -7,11 +7,13 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.feature.googletask.GoogleTasksPreferences
+import com.github.naz013.logic.reminder.SaveOneTimeReminderUseCase
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.testing.BaseTest
@@ -47,9 +49,9 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   private val getAllGoogleTaskListsUseCase = mockk<GetAllGoogleTaskListsUseCase>()
   private val getGoogleTaskByIdUseCase = mockk<GetGoogleTaskByIdUseCase>()
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
-  private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
+  private val saveOneTimeReminderUseCase = mockk<SaveOneTimeReminderUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
-  private val prefs = mockk<Prefs>(relaxed = true)
+  private val prefs = mockk<GoogleTasksPreferences>(relaxed = true)
 
   private val listA = GoogleTaskList(listId = "list1", title = "Personal", color = 1)
   private val listB = GoogleTaskList(listId = "list2", title = "Work", color = 2)
@@ -70,10 +72,9 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     analyticsEventSender = analyticsEventSender,
     getAllGoogleTaskListsUseCase = getAllGoogleTaskListsUseCase,
     getGoogleTaskByIdUseCase = getGoogleTaskByIdUseCase,
-    appWidgetUpdater = appWidgetUpdater,
-    activateReminderUseCase = activateReminderUseCase,
+    saveOneTimeReminderUseCase = saveOneTimeReminderUseCase,
     textProvider = textProvider,
-    prefs = prefs,
+    preferences = prefs,
   )
 
   @Before
@@ -531,7 +532,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
       viewModel.save()
 
-      coVerify(exactly = 1) { activateReminderUseCase(any()) }
+      coVerify(exactly = 1) { saveOneTimeReminderUseCase(any(), any(), any()) }
       verify(exactly = 1) { appWidgetUpdater.updateScheduleWidget() }
     }
 

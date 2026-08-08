@@ -1,6 +1,6 @@
 package com.elementary.tasks.birthdays
 
-import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
+import com.github.naz013.datecalc.provideBirthdayDateCalculator
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
@@ -11,7 +11,7 @@ import org.threeten.bp.LocalDate
 
 class BirthdaySmartListPredicateTest {
 
-  private val predicate = BirthdaySmartListPredicate(BirthdayDateCalculatorImpl())
+  private val predicate = BirthdaySmartListPredicate(provideBirthdayDateCalculator())
   private val today = LocalDate.of(2026, 8, 2)
 
   private fun birthday(
