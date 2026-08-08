@@ -4,28 +4,27 @@ import android.net.Uri
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
-import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
+import com.github.naz013.googlecalendar.GoogleCalendarApi
+import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -35,6 +34,7 @@ import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.observer.TableChangeListener
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
+import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -57,7 +57,7 @@ import java.io.File
 class PreviewReminderViewModelTest : BaseTest() {
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val getReminderV2ByIdUseCase = mockk<GetReminderV2ByIdUseCase>()
-  private val googleCalendarUtils = mockk<GoogleCalendarUtils>(relaxed = true)
+  private val googleCalendarUtils = mockk<GoogleCalendarApi>(relaxed = true)
   private val uiReminderPlaceAdapter = mockk<UiReminderPlaceAdapter>()
   private val uiReminderCommonAdapter = mockk<UiReminderCommonAdapter>()
   private val uiGroupListAdapter = mockk<UiGroupListAdapter>()
@@ -123,7 +123,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       id = id,
       reminderV2Repository = reminderV2Repository,
       getReminderV2ByIdUseCase = getReminderV2ByIdUseCase,
-      googleCalendarUtils = googleCalendarUtils,
+      googleCalendarApi = googleCalendarUtils,
       dispatcherProvider = mockDispatcherProvider(),
       uiReminderPlaceAdapter = uiReminderPlaceAdapter,
       uiReminderCommonAdapter = uiReminderCommonAdapter,

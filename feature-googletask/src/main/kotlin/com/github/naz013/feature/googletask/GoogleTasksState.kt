@@ -4,7 +4,7 @@ import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.ui.googletask.GoogleTaskItemState
 
-data class GoogleTasksState(
+internal data class GoogleTasksState(
   val isLoggedIn: Boolean = false,
   val isLoading: Boolean = false,
   val taskLists: List<UiGoogleTaskListEntry> = emptyList(),
@@ -13,7 +13,7 @@ data class GoogleTasksState(
   val fabContentColor: Color? = null,
 )
 
-data class UiGoogleTaskListEntry(
+internal data class UiGoogleTaskListEntry(
   val id: String,
   val title: String,
   @ColorInt val color: Int, // TODO: Change to Compose color

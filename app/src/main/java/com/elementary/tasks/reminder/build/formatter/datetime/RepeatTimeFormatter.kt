@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.build.formatter.datetime
 import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.formatter.Formatter
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 
 class RepeatTimeFormatter(
   private val context: Context,

@@ -4,7 +4,7 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.repository.GoogleTaskRepository
 
-class UploadGoogleTask(
+internal class UploadGoogleTask(
   private val googleTasksApi: GoogleTasksApi,
   private val googleTaskRepository: GoogleTaskRepository,
 ) {

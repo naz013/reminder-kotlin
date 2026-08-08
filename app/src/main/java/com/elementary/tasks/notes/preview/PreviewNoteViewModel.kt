@@ -12,7 +12,7 @@ import com.elementary.tasks.notes.preview.reminders.ReminderToUiNoteAttachedRemi
 import com.elementary.tasks.notes.usecase.ChangeNoteArchiveStateUseCase
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
-import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
+import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent

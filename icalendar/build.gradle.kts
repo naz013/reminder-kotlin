@@ -9,6 +9,7 @@ android {
 dependencies {
   implementation(project(":domain"))
   implementation(project(":logging-api"))
+  implementation(project(":icalendar-api"))
 
   implementation(libs.koin.android)
 

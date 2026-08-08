@@ -2,14 +2,14 @@ package com.github.naz013.feature.googletask.usecase.tasklist
 
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.feature.googletask.usecase.db.SaveGoogleTaskList
 import com.github.naz013.feature.googletask.usecase.remote.DownloadGoogleTaskList
 import com.github.naz013.feature.googletask.usecase.task.SyncGoogleTasks
 import com.github.naz013.logging.Logger
+import com.github.naz013.repository.GoogleTaskListRepository
 
-class SyncGoogleTaskList(
+internal class SyncGoogleTaskList(
   private val downloadGoogleTaskList: DownloadGoogleTaskList,
-  private val saveGoogleTaskList: SaveGoogleTaskList,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val syncGoogleTasks: SyncGoogleTasks,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
 ) {
@@ -27,7 +27,7 @@ class SyncGoogleTaskList(
 
     // Save updated version to db
     Logger.i(TAG, "Sync task list - save new version")
-    saveGoogleTaskList(remote)
+    googleTaskListRepository.save(remote)
 
     // Sync Tasks
     Logger.i(TAG, "Sync task list - sync tasks")

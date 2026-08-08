@@ -4,7 +4,7 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.googletask.usecase.GoogleTaskListFactory
 
-class DownloadGoogleTaskList(
+internal class DownloadGoogleTaskList(
   private val googleTasksApi: GoogleTasksApi,
   private val googleTaskListFactory: GoogleTaskListFactory,
 ) {

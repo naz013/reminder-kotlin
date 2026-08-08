@@ -1,6 +1,6 @@
 package com.github.naz013.appfunctions.reminder
 
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coVerify
 import io.mockk.every

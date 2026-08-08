@@ -7,7 +7,7 @@ import com.elementary.tasks.core.utils.params.remote.InternalMessageV1
 import com.elementary.tasks.core.utils.params.remote.SaleMessageV2
 import com.elementary.tasks.core.utils.params.remote.UpdateMessageV2
 import com.github.naz013.common.PackageManagerWrapper
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.locale.Language
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig

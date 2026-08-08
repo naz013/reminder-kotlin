@@ -9,9 +9,9 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.actions.ReminderAction
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeactivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
-import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
+import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ReminderAction as DomainReminderAction

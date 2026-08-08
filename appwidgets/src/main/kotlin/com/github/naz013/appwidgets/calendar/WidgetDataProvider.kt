@@ -1,6 +1,6 @@
 package com.github.naz013.appwidgets.calendar
 
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.usecase.birthdays.GetAllBirthdaysUseCase

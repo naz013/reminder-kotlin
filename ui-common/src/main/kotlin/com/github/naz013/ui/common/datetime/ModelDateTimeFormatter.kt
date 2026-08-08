@@ -1,11 +1,10 @@
 package com.github.naz013.ui.common.datetime
 
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.datetime.DateTimePreferences
-import com.github.naz013.common.datetime.NowDateTimeProvider
 import com.github.naz013.datecalc.BirthdayDateCalculator
-import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.datecalc.DateTimePreferences
+import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.Birthday
 import com.github.naz013.ui.common.R
 import org.threeten.bp.LocalDate
@@ -17,8 +16,8 @@ class ModelDateTimeFormatter(
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
   private val dateTimePreferences: DateTimePreferences,
-  private val nowDateTimeProvider: NowDateTimeProvider = NowDateTimeProvider(),
-  private val birthdayDateCalculator: BirthdayDateCalculator = BirthdayDateCalculatorImpl(),
+  private val nowDateTimeProvider: NowDateTimeProvider,
+  private val birthdayDateCalculator: BirthdayDateCalculator,
 ) {
   fun getRemaining(
     dateTime: String?,

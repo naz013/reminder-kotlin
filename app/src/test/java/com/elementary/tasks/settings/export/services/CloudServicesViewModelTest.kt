@@ -3,13 +3,13 @@ package com.elementary.tasks.settings.export.services
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.FeatureManager
-import com.github.naz013.feature.googletask.usecase.tasklist.SyncAllGoogleTaskLists
+import com.github.naz013.feature.googletask.usecase.SyncAllGoogleTaskListsUseCase
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import io.mockk.Runs
@@ -29,7 +29,7 @@ import org.junit.Test
 
 class CloudServicesViewModelTest : BaseTest() {
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
-  private val syncAllGoogleTaskLists = mockk<SyncAllGoogleTaskLists>()
+  private val syncAllGoogleTaskListsUseCase = mockk<SyncAllGoogleTaskListsUseCase>()
   private val googleTaskListRepository = mockk<GoogleTaskListRepository>(relaxed = true)
   private val googleTaskRepository = mockk<GoogleTaskRepository>(relaxed = true)
   private val featureManager = mockk<FeatureManager>()
@@ -43,7 +43,7 @@ class CloudServicesViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { syncAllGoogleTaskLists() } just Runs
+    coEvery { syncAllGoogleTaskListsUseCase() } just Runs
     every { featureManager.isFeatureEnabled(any()) } returns true
     every { googleDriveAuthManager.isAuthorized() } returns false
     every { googleTasksAuthManager.isAuthorized() } returns false
@@ -53,7 +53,7 @@ class CloudServicesViewModelTest : BaseTest() {
       CloudServicesViewModel(
         dispatcherProvider = mockDispatcherProvider(),
         appWidgetUpdater = appWidgetUpdater,
-        syncAllGoogleTaskLists = syncAllGoogleTaskLists,
+        syncAllGoogleTaskListsUseCase = syncAllGoogleTaskListsUseCase,
         googleTaskListRepository = googleTaskListRepository,
         googleTaskRepository = googleTaskRepository,
         featureManager = featureManager,
@@ -252,7 +252,7 @@ class CloudServicesViewModelTest : BaseTest() {
       viewModel.onGoogleTasksLoginStateChanged(true)
 
       assertTrue(viewModel.state.first().isGoogleTasksLoggedIn)
-      coVerify { syncAllGoogleTaskLists() }
+      coVerify { syncAllGoogleTaskListsUseCase() }
     }
 
   @Test
@@ -261,7 +261,7 @@ class CloudServicesViewModelTest : BaseTest() {
       viewModel.onGoogleTasksLoginStateChanged(false)
 
       assertFalse(viewModel.state.first().isGoogleTasksLoggedIn)
-      coVerify(exactly = 0) { syncAllGoogleTaskLists() }
+      coVerify(exactly = 0) { syncAllGoogleTaskListsUseCase() }
     }
 
   @Test
@@ -294,7 +294,7 @@ class CloudServicesViewModelTest : BaseTest() {
     runTest {
       viewModel.loadGoogleTasks()
 
-      coVerify { syncAllGoogleTaskLists() }
+      coVerify { syncAllGoogleTaskListsUseCase() }
       verify { appWidgetUpdater.updateScheduleWidget() }
       assertFalse(viewModel.state.first().isLoading)
     }

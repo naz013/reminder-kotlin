@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.FeatureManager
-import com.github.naz013.feature.googletask.usecase.tasklist.SyncAllGoogleTaskLists
+import com.github.naz013.feature.googletask.usecase.SyncAllGoogleTaskListsUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -14,7 +14,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 class CloudServicesViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val appWidgetUpdater: AppWidgetUpdater,
-  private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists,
+  private val syncAllGoogleTaskListsUseCase: SyncAllGoogleTaskListsUseCase,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleTaskRepository: GoogleTaskRepository,
   private val featureManager: FeatureManager,
@@ -155,7 +155,7 @@ class CloudServicesViewModel(
   fun loadGoogleTasks() {
     _state.update { it.copy(isLoading = true) }
     viewModelScope.launch(dispatcherProvider.default()) {
-      syncAllGoogleTaskLists()
+      syncAllGoogleTaskListsUseCase()
       Logger.i(TAG, "Google tasks loaded.")
       withContext(dispatcherProvider.main()) {
         _state.update { it.copy(isLoading = false) }

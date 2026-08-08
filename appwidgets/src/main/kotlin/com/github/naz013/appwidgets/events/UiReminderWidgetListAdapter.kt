@@ -6,7 +6,7 @@ import com.github.naz013.appwidgets.events.data.UiReminderDueData
 import com.github.naz013.appwidgets.events.data.UiReminderWidgetList
 import com.github.naz013.appwidgets.events.data.UiReminderWidgetShopList
 import com.github.naz013.appwidgets.events.data.UiShopListWidget
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import org.threeten.bp.LocalDateTime

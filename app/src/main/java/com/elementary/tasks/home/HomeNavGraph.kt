@@ -13,7 +13,7 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
-import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey

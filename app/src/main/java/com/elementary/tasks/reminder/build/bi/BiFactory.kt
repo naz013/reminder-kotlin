@@ -76,7 +76,7 @@ import com.elementary.tasks.simplemap.DefaultRadiusFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.PackageManagerWrapper
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository

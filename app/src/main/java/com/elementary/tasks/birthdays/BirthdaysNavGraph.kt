@@ -17,9 +17,9 @@ import com.elementary.tasks.birthdays.create.EditBirthdayViewModel
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayScreen
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayState
 import com.elementary.tasks.birthdays.preview.PreviewBirthdayViewModel
-import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
-import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.telephony.rememberPhoneCaller

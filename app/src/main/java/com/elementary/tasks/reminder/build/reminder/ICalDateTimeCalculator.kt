@@ -8,7 +8,7 @@ import com.elementary.tasks.reminder.build.ICalUntilDateBuilderItem
 import com.elementary.tasks.reminder.build.ICalUntilTimeBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.icalendar.DateTimeStartTag
 import com.github.naz013.icalendar.ICalendarApi

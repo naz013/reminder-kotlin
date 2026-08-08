@@ -1,19 +1,15 @@
 package com.github.naz013.feature.googletask.usecase.task
 
 import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.feature.googletask.usecase.db.DeleteGoogleTasks
-import com.github.naz013.feature.googletask.usecase.db.SaveGoogleTasks
 import com.github.naz013.feature.googletask.usecase.remote.DownloadGoogleTasks
 import com.github.naz013.feature.googletask.usecase.remote.UploadGoogleTask
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
 
-class SyncGoogleTasks(
+internal class SyncGoogleTasks(
   private val googleTaskRepository: GoogleTaskRepository,
   private val uploadGoogleTask: UploadGoogleTask,
   private val downloadGoogleTasks: DownloadGoogleTasks,
-  private val saveGoogleTasks: SaveGoogleTasks,
-  private val deleteGoogleTasks: DeleteGoogleTasks,
 ) {
   suspend operator fun invoke(taskList: GoogleTaskList) {
     // Get local tasks
@@ -31,12 +27,15 @@ class SyncGoogleTasks(
 
     // Save new tasks
     Logger.i(TAG, "Sync tasks for list - save remote version")
-    saveGoogleTasks(remote)
+    googleTaskRepository.saveAll(remote)
 
     val remoteMap = remote.associateBy { it.taskId }
     val localDelete = local.filterNot { remoteMap.containsKey(it.taskId) }
     Logger.i(TAG, "Sync tasks for list - delete local versions = ${localDelete.size}")
-    deleteGoogleTasks(localDelete)
+
+    localDelete.map { it.taskId }
+      .takeIf { it.isNotEmpty() }
+      ?.let { googleTaskRepository.deleteAll(it) }
   }
 
   companion object {

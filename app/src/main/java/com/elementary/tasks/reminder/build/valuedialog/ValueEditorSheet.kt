@@ -19,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
@@ -106,7 +105,8 @@ import com.elementary.tasks.reminder.build.valuedialog.editor.TimeValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.VibrationPatternValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.WakeScreenValueEditor
 import com.github.naz013.common.PackageManagerWrapper
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
 /**
@@ -127,7 +127,7 @@ fun ValueEditorSheet(
   onDismissRequest: () -> Unit,
   onValueChange: (BuilderItem<*>) -> Unit,
   paramToTextAdapter: ParamToTextAdapter,
-  googleCalendarUtils: GoogleCalendarUtils,
+  googleCalendarApi: GoogleCalendarApi,
   packageManagerWrapper: PackageManagerWrapper,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
   dateTimeManager: DateTimeManager,
@@ -193,7 +193,7 @@ fun ValueEditorSheet(
         is24HourFormat = is24HourFormat,
         hapticFeedbackEnabled = hapticFeedbackEnabled,
         paramToTextAdapter = paramToTextAdapter,
-        googleCalendarUtils = googleCalendarUtils,
+        googleCalendarApi = googleCalendarApi,
         packageManagerWrapper = packageManagerWrapper,
         attachmentFileAdapter = attachmentFileAdapter,
         dateTimeManager = dateTimeManager,
@@ -214,7 +214,7 @@ private fun ValueEditorContent(
   is24HourFormat: Boolean,
   hapticFeedbackEnabled: Boolean,
   paramToTextAdapter: ParamToTextAdapter,
-  googleCalendarUtils: GoogleCalendarUtils,
+  googleCalendarApi: GoogleCalendarApi,
   packageManagerWrapper: PackageManagerWrapper,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
   dateTimeManager: DateTimeManager,
@@ -263,7 +263,7 @@ private fun ValueEditorContent(
     is EmailBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Email)
     is WebAddressBuilderItem -> SimpleTextValueEditor(builderItem, onValueChange, KeyboardType.Uri)
     is GoogleCalendarBuilderItem ->
-      GoogleCalendarValueEditor(builderItem, googleCalendarUtils, onValueChange, hapticFeedbackEnabled)
+      GoogleCalendarValueEditor(builderItem, googleCalendarApi, onValueChange, hapticFeedbackEnabled)
     is SummaryBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     is DescriptionBuilderItem -> TextInputValueEditor(builderItem, onValueChange)
     is EmailSubjectBuilderItem -> TextInputValueEditor(builderItem, onValueChange)

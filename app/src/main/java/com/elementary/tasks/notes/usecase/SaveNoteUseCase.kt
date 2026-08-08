@@ -1,7 +1,7 @@
 package com.elementary.tasks.notes.usecase
 
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.NoteWithImages

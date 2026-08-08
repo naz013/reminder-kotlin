@@ -9,13 +9,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.CategoryBuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarBuilderItem
 import com.elementary.tasks.reminder.build.GoogleTaskListBuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
 import com.elementary.tasks.reminder.build.LockScreenVisibilityBuilderItem
+import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.ui.common.compose.foundation.component.WheelPicker
 
 /** Single-select group picker. Replaces `GroupController`, which resets to the item's default
@@ -134,17 +134,14 @@ fun LockScreenVisibilityValueEditor(
   )
 }
 
-/** Single-select Google Calendar picker. Replaces `GoogleCalendarController`. Unlike the other
- *  selectable items, the option list isn't on the [BuilderItem] itself - it's fetched (a
- *  synchronous ContentResolver query) once per edit session via [GoogleCalendarUtils]. */
 @Composable
 fun GoogleCalendarValueEditor(
   builderItem: GoogleCalendarBuilderItem,
-  googleCalendarUtils: GoogleCalendarUtils,
+  googleCalendarApi: GoogleCalendarApi,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
 ) {
-  val calendars = remember(builderItem) { googleCalendarUtils.getCalendarsList() }
+  val calendars = remember(builderItem) { googleCalendarApi.getCalendarsList() }
   val initial = remember(builderItem) { builderItem.modifier.getValue() }
   var selectedIndex by remember(builderItem) {
     mutableIntStateOf(calendars.indexOf(initial).coerceAtLeast(0))

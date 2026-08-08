@@ -7,7 +7,7 @@ import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.ChronoUnit
 import kotlin.math.abs
 
-class BirthdayDateCalculatorImpl : BirthdayDateCalculator {
+internal class BirthdayDateCalculatorImpl : BirthdayDateCalculator {
   override fun getNextOccurrence(
     birthDate: LocalDate,
     birthdayTime: LocalTime,

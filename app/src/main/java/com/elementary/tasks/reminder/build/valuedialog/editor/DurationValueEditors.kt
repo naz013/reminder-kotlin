@@ -15,7 +15,7 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.DelayMinutesBuilderItem
 import com.elementary.tasks.reminder.build.RepeatIntervalBuilderItem
 import com.elementary.tasks.reminder.build.RepeatTimeBuilderItem
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.ui.common.compose.foundation.component.NumberStepperField
 import com.github.naz013.ui.common.compose.foundation.component.ValueAndTypePicker
 

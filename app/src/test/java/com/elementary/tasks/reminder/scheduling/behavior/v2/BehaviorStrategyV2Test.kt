@@ -1,14 +1,23 @@
 package com.elementary.tasks.reminder.scheduling.behavior.v2
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.utils.datetime.RecurEventManager
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.logic.reminder.RecurEventManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.reminder.behavior.IntervalRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.LocationBasedStrategyV2
+import com.github.naz013.logic.reminder.behavior.MonthlyRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.NoReminderStrategyV2
+import com.github.naz013.logic.reminder.behavior.RecurRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.SimpleDateStrategyV2
+import com.github.naz013.logic.reminder.behavior.TimerRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.WeekdayRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.YearlyRepeatStrategyV2
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

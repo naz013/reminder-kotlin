@@ -20,8 +20,6 @@ import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
-import com.elementary.tasks.core.utils.workerModule
-import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.elementary.tasks.groups.groupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
@@ -40,10 +38,10 @@ import com.elementary.tasks.workflow.workflowModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
-import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
+import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.icalendar.iCalendarModule
@@ -52,10 +50,13 @@ import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.legalModule
 import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
+import com.github.naz013.logic.reminder.logicReminderModule
+import com.github.naz013.logic.schedule.logicScheduleModule
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.navigationApiModule
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.repositoryModule
 import com.github.naz013.reviews.ReviewSdk
 import com.github.naz013.reviews.config.SecondaryFirebaseConfig
@@ -128,7 +129,6 @@ class ReminderApp :
           featureCommonModule,
           featureNoteModule,
           storageModule,
-          workerModule,
           viewModelModule,
           adapterModule,
           actionModule,
@@ -172,7 +172,9 @@ class ReminderApp :
           tagsModule,
           insightsModule,
           localBackupModule,
-          uiGoogleTaskModule
+          uiGoogleTaskModule,
+          logicScheduleModule,
+          logicReminderModule,
         ),
       )
     }

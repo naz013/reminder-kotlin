@@ -2,7 +2,7 @@ package com.github.naz013.feature.googletask.usecase
 
 import com.github.naz013.domain.GoogleTaskList
 
-class GoogleTaskListFactory {
+internal class GoogleTaskListFactory {
   fun update(
     googleTaskList: GoogleTaskList,
     newGoogleTaskList: GoogleTaskList,

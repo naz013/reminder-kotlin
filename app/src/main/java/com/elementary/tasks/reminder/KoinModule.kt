@@ -70,29 +70,12 @@ import com.elementary.tasks.reminder.lists.removed.RemindersArchiveViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
-import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
-import com.elementary.tasks.reminder.scheduling.occurrence.v2.ReminderOccurrenceCalculatorFactoryV2
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.PauseReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.google.CompleteRelatedGoogleTaskUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleCalendarUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.google.SaveReminderToGoogleTasksUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTrackingUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.location.StopLocationTrackingUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.notification.UpdatePermanentReminderNotificationUseCase
-import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
-import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
-import com.elementary.tasks.reminder.usecase.ScheduleReminderUploadUseCase
-import com.github.naz013.datecalc.RecurrenceCalculator
-import com.github.naz013.datecalc.RecurrenceCalculatorImpl
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -100,11 +83,7 @@ import org.koin.dsl.module
 
 val reminderModule =
   module {
-    factory { DeleteReminderUseCase(get(), get(), get(), get(), get(), get(), get()) }
-    factory { DeleteAllReminderUseCase(get(), get(), get(), get(), get(), get(), get()) }
     factory { MoveReminderToArchiveUseCase(get(), get()) }
-    factory { SaveReminderUseCase(get(), get(), get()) }
-    factory { ScheduleReminderUploadUseCase(get()) }
 
     viewModelOf(::RemindersArchiveViewModel)
 
@@ -252,7 +231,7 @@ val reminderModule =
     factory { BuilderItemRequiresAnyConstraintCalculator() }
 
     factory { BuilderStateCalculator() }
-    factory { RecurrenceRuleCalculator(get(), get()) }
+    factory { RecurrenceRuleCalculator(get(), get(), get()) }
     factory { ReminderActionCalculator() }
     factory { CalendarExportCalculator() }
 
@@ -315,12 +294,6 @@ val reminderModule =
 
     factoryOf(::UiReminderListAdapter)
 
-    factoryOf(::BehaviorStrategyResolverV2)
-
-    factoryOf(::ActivateReminderUseCase)
-    factoryOf(::DeactivateReminderUseCase)
-
-    factoryOf(::PauseReminderUseCase)
     factoryOf(::ResumeReminderUseCase)
 
     factoryOf(::SnoozeReminderUseCase)
@@ -329,20 +302,7 @@ val reminderModule =
 
     factoryOf(::ToggleReminderStateUseCase)
 
-    factoryOf(::UpdatePermanentReminderNotificationUseCase)
-
-    factory { StopLocationTrackingUseCase(get(), get()) }
-    factory { StartLocationTrackingUseCase(get(), get()) }
-
-    factory { CompleteRelatedGoogleTaskUseCase(get(), get()) }
-    factory { SaveReminderToGoogleTasksUseCase(get(), get(), get()) }
-    factory { SaveReminderToGoogleCalendarUseCase(get(), get()) }
-
-    factory { ReminderOccurrenceCalculatorFactoryV2(get(), get()) }
-
     factory { EventDateTimeCalculatorV2(get(), get()) }
-
-    factory<RecurrenceCalculator> { RecurrenceCalculatorImpl() }
 
     factory { GetReminderActionsUseCase() }
 

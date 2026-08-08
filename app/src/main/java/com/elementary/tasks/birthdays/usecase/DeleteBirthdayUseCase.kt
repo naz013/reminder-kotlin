@@ -1,7 +1,7 @@
 package com.elementary.tasks.birthdays.usecase
 
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
 import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.logging.Logger

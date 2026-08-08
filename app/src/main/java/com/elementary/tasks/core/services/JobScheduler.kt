@@ -10,19 +10,20 @@ import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.event.BirthdayEventTask
 import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.googletask.work.SaveNewTaskTask
-import com.github.naz013.feature.googletask.work.UpdateTaskTask
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.elementary.tasks.workflow.RunWorkflowRulesTask
 import com.elementary.tasks.workflow.RunWorkflowUnacknowledgedRulesTask
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.android.SystemServiceProvider
+import com.github.naz013.feature.googletask.work.SaveNewTaskTask
+import com.github.naz013.feature.googletask.work.UpdateTaskTask
 import com.github.naz013.logging.Logger
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.workapi.PeriodicWorkRequest
 import com.github.naz013.workapi.TaskData
 import com.github.naz013.workapi.WorkRequest
@@ -38,8 +39,9 @@ class JobScheduler(
   private val systemServiceProvider: SystemServiceProvider,
   private val eventDateTimeCalculatorV2: EventDateTimeCalculatorV2,
   private val workScheduler: WorkScheduler,
-) {
-  fun scheduleBirthdaysCheck() {
+) : JobSchedulerApi {
+
+  override fun scheduleBirthdaysCheck() {
     workScheduler.enqueuePeriodic(
       PeriodicWorkRequest(
         taskKey = CheckBirthdaysTask.TASK_KEY,
@@ -51,12 +53,12 @@ class JobScheduler(
     Logger.i(TAG, "Scheduled birthday check.")
   }
 
-  fun cancelBirthdaysCheck() {
+  override fun cancelBirthdaysCheck() {
     cancelReminder(EVENT_CHECK_BIRTHDAYS)
     Logger.w(TAG, "Cancelled birthday check.")
   }
 
-  fun scheduleWorkflowRulesCheck() {
+  override fun scheduleWorkflowRulesCheck() {
     workScheduler.enqueuePeriodic(
       PeriodicWorkRequest(
         taskKey = RunWorkflowRulesTask.TASK_KEY,
@@ -68,7 +70,7 @@ class JobScheduler(
     Logger.i(TAG, "Scheduled workflow rules check.")
   }
 
-  fun scheduleWorkflowUnacknowledgedCheck() {
+  override fun scheduleWorkflowUnacknowledgedCheck() {
     workScheduler.enqueuePeriodic(
       PeriodicWorkRequest(
         taskKey = RunWorkflowUnacknowledgedRulesTask.TASK_KEY,
@@ -80,7 +82,7 @@ class JobScheduler(
     Logger.i(TAG, "Scheduled workflow unacknowledged-reminder rules check.")
   }
 
-  fun scheduleBirthdayPermanent() {
+  override fun scheduleBirthdayPermanent() {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = System.currentTimeMillis()
     val currTime = calendar.timeInMillis
@@ -103,11 +105,11 @@ class JobScheduler(
     )
   }
 
-  fun cancelBirthdayPermanent() {
+  override fun cancelBirthdayPermanent() {
     cancelReminder(EVENT_BIRTHDAY_PERMANENT)
   }
 
-  fun scheduleAutoBackup() {
+  override fun scheduleAutoBackup() {
     val interval = prefs.autoBackupState
     if (interval <= 0) {
       cancelAutoBackup()
@@ -128,11 +130,11 @@ class JobScheduler(
     cancelReminder(EVENT_AUTO_BACKUP)
   }
 
-  fun cancelDailyBirthday() {
+  override fun cancelDailyBirthday() {
     cancelReminder(EVENT_BIRTHDAY)
   }
 
-  fun scheduleDailyBirthday() {
+  override fun scheduleDailyBirthday() {
     val millis = dateTimeManager.getMillisToBirthdayTime()
     if (millis <= 0) return
 
@@ -145,7 +147,7 @@ class JobScheduler(
     )
   }
 
-  fun scheduleReminderRepeat(reminderV2: ReminderV2): Boolean {
+  override fun scheduleReminderRepeat(reminderV2: ReminderV2): Boolean {
     val minutes = prefs.notificationRepeatTime
     val millis = System.currentTimeMillis() + (minutes * INTERVAL_MINUTE)
     if (millis <= 0) {
@@ -165,7 +167,7 @@ class JobScheduler(
     return true
   }
 
-  fun scheduleReminderDelay(
+  override fun scheduleReminderDelay(
     minutes: Int,
     uuId: String,
     requestCode: Int,
@@ -173,7 +175,7 @@ class JobScheduler(
     scheduleReminderDelay(INTERVAL_MINUTE * minutes, uuId, requestCode)
   }
 
-  fun scheduleReminderDelay(
+  override fun scheduleReminderDelay(
     millis: Long,
     uuId: String,
     requestCode: Int,
@@ -194,7 +196,7 @@ class JobScheduler(
     )
   }
 
-  fun scheduleGpsDelay(reminderV2: ReminderV2): Boolean {
+  override fun scheduleGpsDelay(reminderV2: ReminderV2): Boolean {
     val millis = reminderV2.schedule.eventDateTime?.let { dateTimeManager.toMillis(dateTimeManager.utcToLocal(it)) } ?: 0L
     if (millis <= 0) {
       return false
@@ -213,7 +215,7 @@ class JobScheduler(
     return true
   }
 
-  fun scheduleReminder(reminderV2: ReminderV2?) {
+  override fun scheduleReminder(reminderV2: ReminderV2?) {
     if (reminderV2 == null) {
       Logger.w(TAG, "Cannot schedule null reminder")
       return
@@ -264,7 +266,7 @@ class JobScheduler(
     workScheduler.cancelByTag(uuId)
   }
 
-  fun cancelReminder(requestCode: Int) {
+  override fun cancelReminder(requestCode: Int) {
     Logger.i(TAG, "cancelReminder: requestCode=$requestCode")
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent =
@@ -278,7 +280,7 @@ class JobScheduler(
     systemServiceProvider.provideAlarmManager()?.cancel(pendingIntent)
   }
 
-  fun scheduleSaveNewTask(
+  override fun scheduleSaveNewTask(
     googleTask: GoogleTask,
     uuId: String,
   ) {
@@ -291,7 +293,7 @@ class JobScheduler(
     )
   }
 
-  fun scheduleTaskDone(
+  override fun scheduleTaskDone(
     googleTask: GoogleTask,
     uuId: String,
   ) {

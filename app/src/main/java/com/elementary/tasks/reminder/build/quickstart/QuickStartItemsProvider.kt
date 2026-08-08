@@ -13,7 +13,7 @@ import com.elementary.tasks.reminder.build.TimeBuilderItem
 import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.WeekDaysProtocol
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.ShopItem

@@ -1,7 +1,7 @@
 package com.github.naz013.feature.googletask.task
 
-import com.elementary.tasks.R
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.ui.common.R
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import java.util.UUID
@@ -29,7 +29,7 @@ internal data class EditGoogleTaskState(
   val screenTitleRes: Int = R.string.new_task,
 )
 
-sealed interface EditGoogleTaskDialog {
+internal sealed interface EditGoogleTaskDialog {
   data object DateTypeChooser : EditGoogleTaskDialog
 
   data object TimeTypeChooser : EditGoogleTaskDialog
@@ -43,7 +43,7 @@ sealed interface EditGoogleTaskDialog {
   data object DeleteConfirm : EditGoogleTaskDialog
 }
 
-data class GoogleTaskListOption(
+internal data class GoogleTaskListOption(
   val id: String,
   val title: String,
 )

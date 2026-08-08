@@ -2,7 +2,7 @@ package com.github.naz013.insights.compose
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.insights.aggregator.CompletionStatsCalculator

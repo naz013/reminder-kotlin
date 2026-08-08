@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just

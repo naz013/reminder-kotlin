@@ -9,10 +9,19 @@ android {
 dependencies {
   implementation(project(":domain"))
   implementation(project(":logging-api"))
+  implementation(project(":cloud-api"))
   implementation(project(":ui-common"))
   implementation(project(":platform-common"))
 
+  implementation(libs.google.api.client.android) {
+    exclude(group = "org.apache.httpcomponents")
+  }
+
+  implementation(libs.play.services.auth)
+
   implementation(libs.koin.android)
+  implementation(libs.koin.androidx.compose)
+
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.biometric.compose)
   implementation(libs.material)

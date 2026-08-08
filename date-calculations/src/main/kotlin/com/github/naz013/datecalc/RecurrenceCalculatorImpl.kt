@@ -3,7 +3,7 @@ package com.github.naz013.datecalc
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-class RecurrenceCalculatorImpl : RecurrenceCalculator {
+internal class RecurrenceCalculatorImpl : RecurrenceCalculator {
   override fun getNextYearDayDateTime(
     eventDateTime: LocalDateTime,
     monthOfYear: Int,

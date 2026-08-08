@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.bi.TimerExclusion
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.ui.common.compose.foundation.component.SelectableChipGrid
 import org.threeten.bp.LocalTime
 

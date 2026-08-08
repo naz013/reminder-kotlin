@@ -20,7 +20,7 @@ import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.build.reminder.EventData
 import com.elementary.tasks.reminder.build.reminder.ICalDateTimeCalculator
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.v2.RecurrenceRule

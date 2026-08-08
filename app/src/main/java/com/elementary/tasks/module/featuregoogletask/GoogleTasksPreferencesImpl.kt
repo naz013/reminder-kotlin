@@ -10,4 +10,9 @@ class GoogleTasksPreferencesImpl(
     get() = prefs.hapticsEnabled
   override val is24HourFormat: Boolean
     get() = prefs.is24HourFormat
+  override var hasAdoptedGoogleTasks: Boolean
+    get() = prefs.hasAdoptedGoogleTasks
+    set(value) {
+      prefs.hasAdoptedGoogleTasks = value
+    }
 }

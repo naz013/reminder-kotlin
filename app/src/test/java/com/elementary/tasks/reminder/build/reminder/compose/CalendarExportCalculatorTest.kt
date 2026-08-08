@@ -1,13 +1,13 @@
 package com.elementary.tasks.reminder.build.reminder.compose
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarBuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
+import com.github.naz013.googlecalendar.CalendarItem
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -46,7 +46,7 @@ class CalendarExportCalculatorTest : BaseTest() {
 
   private fun calendarItem(id: Long) =
     GoogleCalendarBuilderItem(title = "cal", description = null).apply {
-      modifier.update(GoogleCalendarUtils.CalendarItem(name = "Cal", id = id))
+      modifier.update(CalendarItem(name = "Cal", id = id))
     }
 
   private fun durationItem(allDay: Boolean, millis: Long) =

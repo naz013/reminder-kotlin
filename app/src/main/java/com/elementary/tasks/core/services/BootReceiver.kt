@@ -4,11 +4,12 @@ import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.github.naz013.logging.Logger
+import com.github.naz013.scheduler.JobSchedulerApi
 import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class BootReceiver : BaseBroadcast() {
-  private val jobScheduler by inject<JobScheduler>()
+  private val jobScheduler by inject<JobSchedulerApi>()
 
   override fun onReceive(
     context: Context,

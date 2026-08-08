@@ -1,7 +1,6 @@
 package com.elementary.tasks.settings.birthday
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -9,8 +8,9 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
 import io.mockk.every
@@ -25,7 +25,7 @@ import org.threeten.bp.LocalTime
 class BirthdaySettingsViewModelTest : BaseTest() {
   private val prefs = mockk<Prefs>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
-  private val jobScheduler = mockk<JobScheduler>(relaxed = true)
+  private val jobScheduler = mockk<JobSchedulerApi>(relaxed = true)
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)

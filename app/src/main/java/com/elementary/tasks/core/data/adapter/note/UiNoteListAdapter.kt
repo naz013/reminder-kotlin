@@ -5,7 +5,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.core.utils.io.AssetsUtil
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.ui.common.isAlmostTransparent

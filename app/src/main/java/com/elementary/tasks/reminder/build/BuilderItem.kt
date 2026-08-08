@@ -5,7 +5,6 @@ import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.BooleanModifier
@@ -71,8 +70,8 @@ import com.elementary.tasks.reminder.build.formatter.`object`.PlaceFormatter
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.system.Module
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.BiType
@@ -81,6 +80,7 @@ import com.github.naz013.domain.reminder.v2.LockScreenVisibility
 import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.googlecalendar.CalendarItem
 import com.github.naz013.icalendar.ByDayRecurParam
 import com.github.naz013.icalendar.ByHourRecurParam
 import com.github.naz013.icalendar.ByMinuteRecurParam
@@ -745,10 +745,10 @@ data class GoogleTaskListBuilderItem(
 data class GoogleCalendarBuilderItem(
   override val title: String,
   override val description: String?,
-) : BuilderItem<GoogleCalendarUtils.CalendarItem>() {
+) : BuilderItem<CalendarItem>() {
   override val iconRes: Int = R.drawable.ic_builder_google_calendar_add
   override val isForPro: Boolean = false
-  override val modifier: BuilderModifier<GoogleCalendarUtils.CalendarItem> =
+  override val modifier: BuilderModifier<CalendarItem> =
     GoogleCalendarModifier()
   override val biType: BiType = BiType.GOOGLE_CALENDAR
   override val biGroup: BiGroup = BiGroup.EXTRA

@@ -1,23 +1,23 @@
 package com.github.naz013.feature.googletask.usecase.tasklist
 
 import com.github.naz013.domain.GoogleTaskList
-import com.github.naz013.feature.googletask.usecase.db.SaveGoogleTaskList
-import com.github.naz013.feature.googletask.usecase.db.SaveGoogleTasks
 import com.github.naz013.feature.googletask.usecase.remote.DownloadGoogleTasks
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
 
-class AddNewTaskList(
-  private val saveGoogleTaskList: SaveGoogleTaskList,
+internal class AddNewTaskList(
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val downloadGoogleTasks: DownloadGoogleTasks,
-  private val saveGoogleTasks: SaveGoogleTasks,
+  private val googleTaskRepository: GoogleTaskRepository,
 ) {
   suspend operator fun invoke(googleTaskList: GoogleTaskList) {
     // Save to DB
-    saveGoogleTaskList(googleTaskList)
+    googleTaskListRepository.save(googleTaskList)
 
     // Download Tasks for Task List
     val tasks = downloadGoogleTasks(googleTaskList)
     if (tasks.isNotEmpty()) {
-      saveGoogleTasks(tasks)
+      googleTaskRepository.saveAll(tasks)
     }
   }
 }

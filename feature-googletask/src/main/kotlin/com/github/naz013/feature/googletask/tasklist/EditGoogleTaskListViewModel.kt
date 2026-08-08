@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class EditGoogleTaskListViewModel(
+internal class EditGoogleTaskListViewModel(
   private val listId: String?,
   private val googleTasksApi: GoogleTasksApi,
   private val dispatcherProvider: DispatcherProvider,

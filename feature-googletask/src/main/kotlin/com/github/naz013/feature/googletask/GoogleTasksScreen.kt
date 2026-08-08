@@ -39,15 +39,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.google.android.gms.common.SignInButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoogleTasksScreen(
+internal fun GoogleTasksScreen(
   state: GoogleTasksState,
   onBackClick: () -> Unit,
   onConnectClick: () -> Unit,
@@ -228,7 +228,7 @@ internal fun GoogleTaskRow(
         )
         if (!task.notes.isNullOrEmpty()) {
           Text(
-            text = task.notes,
+            text = task.notes ?: "",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
@@ -238,7 +238,7 @@ internal fun GoogleTaskRow(
       }
       if (!task.dueDate.isNullOrEmpty()) {
         Text(
-          text = task.dueDate,
+          text = task.dueDate ?: "",
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

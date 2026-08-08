@@ -4,8 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
-import com.github.naz013.feature.googletask.usecase.tasklist.SyncAllGoogleTaskLists
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -16,7 +14,6 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.SystemInfo
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -24,25 +21,28 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.feature.googletask.usecase.SyncAllGoogleTaskListsUseCase
 import com.github.naz013.logging.Logger
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class GoogleTasksViewModel(
+internal class GoogleTasksViewModel(
   private val googleTasksApi: GoogleTasksApi,
   private val dispatcherProvider: DispatcherProvider,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleTaskItemStateAdapter: GoogleTaskItemStateAdapter,
-  private val syncAllGoogleTaskLists: SyncAllGoogleTaskLists,
+  private val syncAllGoogleTaskListsUseCase: SyncAllGoogleTaskListsUseCase,
   private val contextProvider: ContextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val textProvider: TextProvider,
@@ -127,11 +127,11 @@ class GoogleTasksViewModel(
   private fun fabContentColor(list: GoogleTaskList): Color =
     if (themedColor(list.color).isColorDark()) Color.White else Color.Black
 
-  fun loadGoogleTasks() = refreshTasks { syncAllGoogleTaskLists() }
+  fun loadGoogleTasks() = refreshTasks { syncAllGoogleTaskListsUseCase() }
 
   fun sync() {
     if (_state.value.isLoading) return
-    refreshTasks { syncAllGoogleTaskLists() }
+    refreshTasks { syncAllGoogleTaskListsUseCase() }
   }
 
   private fun refreshTasks(sync: suspend () -> Unit) {

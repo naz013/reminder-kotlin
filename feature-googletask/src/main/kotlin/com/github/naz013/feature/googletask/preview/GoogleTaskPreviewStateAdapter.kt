@@ -2,7 +2,7 @@ package com.github.naz013.feature.googletask.preview
 
 import androidx.annotation.ColorInt
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.ui.common.theme.ThemeProvider

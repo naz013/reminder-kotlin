@@ -7,9 +7,9 @@ import com.elementary.tasks.getOrAwaitValue
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.reminder.actions.ReminderAction
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeactivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
-import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
+import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderSchedule

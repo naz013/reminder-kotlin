@@ -9,18 +9,25 @@ android {
 
 dependencies {
   implementation(project(":domain"))
+
   implementation(project(":logging-api"))
   implementation(project(":cloud-api"))
   implementation(project(":repository-api"))
   implementation(project(":work-api"))
+  implementation(project(":appwidgets-api"))
+  implementation(project(":platform-api"))
+
   implementation(project(":platform-common"))
   implementation(project(":ui-common"))
   implementation(project(":ui-googletask"))
   implementation(project(":feature-common"))
   implementation(project(":usecase:googletasks"))
   implementation(project(":analytics"))
-  implementation(project(":appwidgets-api"))
+  implementation(project(":date-calculations"))
   implementation(project(":logic-googletask"))
+  implementation(project(":logic-reminder"))
+
+  implementation(libs.play.services.auth)
 
   implementation(libs.threetenbp)
   implementation(libs.gson)

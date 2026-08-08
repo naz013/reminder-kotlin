@@ -2,13 +2,14 @@ package com.elementary.tasks.settings.calendar
 
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
+import com.github.naz013.googlecalendar.CalendarItem
+import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.ui.common.theme.ThemeProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -19,7 +20,7 @@ import org.junit.Before
 import org.junit.Test
 
 class CalendarSettingsViewModelTest : BaseTest() {
-  private val calendarUtils = mockk<GoogleCalendarUtils>()
+  private val calendarUtils = mockk<GoogleCalendarApi>()
   private val prefs = mockk<Prefs>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
@@ -45,7 +46,7 @@ class CalendarSettingsViewModelTest : BaseTest() {
     viewModel =
       CalendarSettingsViewModel(
         dispatcherProvider = mockDispatcherProvider(),
-        calendarUtils = calendarUtils,
+        googleCalendarApi = calendarUtils,
         prefs = prefs,
         textProvider = textProvider,
         analyticsEventSender = analyticsEventSender,
@@ -67,7 +68,7 @@ class CalendarSettingsViewModelTest : BaseTest() {
   @Test
   fun `init selects the calendar found for the stored id`() {
     every { prefs.googleCalendarReminderId } returns 7L
-    every { calendarUtils.getCalendarById(7L) } returns GoogleCalendarUtils.CalendarItem("Work", 7L)
+    every { calendarUtils.getCalendarById(7L) } returns CalendarItem("Work", 7L)
 
     val vm =
       CalendarSettingsViewModel(mockDispatcherProvider(), calendarUtils, prefs, textProvider, analyticsEventSender, themeProvider)
@@ -169,8 +170,8 @@ class CalendarSettingsViewModelTest : BaseTest() {
   fun `onSelectGoogleCalendarClicked opens a dialog listing the available calendars`() {
     every { calendarUtils.getCalendarsList() } returns
       listOf(
-        GoogleCalendarUtils.CalendarItem("Home", 1L),
-        GoogleCalendarUtils.CalendarItem("Work", 2L),
+        CalendarItem("Home", 1L),
+        CalendarItem("Work", 2L),
       )
 
     viewModel.onSelectGoogleCalendarClicked()
@@ -191,7 +192,7 @@ class CalendarSettingsViewModelTest : BaseTest() {
   @Test
   fun `onCalendarReset clears the selected calendar`() {
     every { prefs.googleCalendarReminderId } returns 7L
-    every { calendarUtils.getCalendarById(7L) } returns GoogleCalendarUtils.CalendarItem("Work", 7L)
+    every { calendarUtils.getCalendarById(7L) } returns CalendarItem("Work", 7L)
     val vm =
       CalendarSettingsViewModel(mockDispatcherProvider(), calendarUtils, prefs, textProvider, analyticsEventSender, themeProvider)
 
@@ -206,8 +207,8 @@ class CalendarSettingsViewModelTest : BaseTest() {
   fun `onGoogleCalendarOptionSelected persists the chosen calendar and dismisses the dialog`() {
     every { calendarUtils.getCalendarsList() } returns
       listOf(
-        GoogleCalendarUtils.CalendarItem("Home", 1L),
-        GoogleCalendarUtils.CalendarItem("Work", 2L),
+        CalendarItem("Home", 1L),
+        CalendarItem("Work", 2L),
       )
     viewModel.onSelectGoogleCalendarClicked()
 
@@ -222,7 +223,7 @@ class CalendarSettingsViewModelTest : BaseTest() {
   @Test
   fun `onGoogleCalendarOptionSelected is a no-op for an out-of-range position`() {
     every { calendarUtils.getCalendarsList() } returns
-      listOf(GoogleCalendarUtils.CalendarItem("Home", 1L))
+      listOf(CalendarItem("Home", 1L))
     viewModel.onSelectGoogleCalendarClicked()
 
     viewModel.onGoogleCalendarOptionSelected(9)

@@ -5,6 +5,9 @@ import com.elementary.tasks.module.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.module.appwidgets.AppWidgetPreferencesImpl
 import com.elementary.tasks.module.appwidgets.NoteWidgetPreferencesImpl
 import com.elementary.tasks.module.featuregoogletask.GoogleTasksPreferencesImpl
+import com.elementary.tasks.module.locationapi.LocationTrackingApiImpl
+import com.elementary.tasks.module.logicreminder.ReminderPreferencesImpl
+import com.elementary.tasks.module.logicschedule.SchedulePreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
 import com.elementary.tasks.module.platform.DateTimePreferencesImpl
 import com.elementary.tasks.module.sync.SyncDataConverterImpl
@@ -17,9 +20,12 @@ import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.singlenote.NoteWidgetPreferences
-import com.github.naz013.common.datetime.DateTimePreferences
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
+import com.github.naz013.location.LocationTrackingApi
+import com.github.naz013.logic.reminder.ReminderPreferences
+import com.github.naz013.logic.schedule.SchedulePreferences
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.ui.common.font.FontApi
 import com.github.naz013.ui.common.locale.LocalePreferences
@@ -55,4 +61,13 @@ val libModule = module {
 
   // feature google task
   factory { GoogleTasksPreferencesImpl(get()) as GoogleTasksPreferences }
+
+  // logic schedule
+  factory { SchedulePreferencesImpl(get()) as SchedulePreferences }
+
+  // logic reminder
+  factory { ReminderPreferencesImpl(get()) as ReminderPreferences }
+
+  // location api
+  factory { LocationTrackingApiImpl(get()) as LocationTrackingApi }
 }

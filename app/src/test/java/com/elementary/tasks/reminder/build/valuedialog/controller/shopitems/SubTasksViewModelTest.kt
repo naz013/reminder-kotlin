@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.valuedialog.controller.shopitems
 
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.TestableObserver
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.ShopItem
 import io.mockk.every
 import io.mockk.mockk

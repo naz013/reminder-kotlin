@@ -10,7 +10,7 @@ import com.github.naz013.appwidgets.events.data.EventsAppWidgetState
 import com.github.naz013.appwidgets.events.data.UiReminderWidgetList
 import com.github.naz013.appwidgets.events.data.UiReminderWidgetShopList
 import com.github.naz013.appwidgets.events.data.UiShopListWidget
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.logging.Logger
 import com.github.naz013.usecase.birthdays.GetBirthdaysByDayMonthUseCase
 import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase

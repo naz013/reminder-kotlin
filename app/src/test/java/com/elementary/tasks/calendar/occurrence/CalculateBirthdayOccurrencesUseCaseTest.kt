@@ -2,7 +2,7 @@ package com.elementary.tasks.calendar.occurrence
 
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.occurance.EventOccurrence
 import com.github.naz013.domain.occurance.OccurrenceType

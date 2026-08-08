@@ -1,42 +1,41 @@
 package com.github.naz013.feature.googletask
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.elementary.tasks.ads.AdBanner
-import com.elementary.tasks.ads.NormalAdBanner
-import com.elementary.tasks.core.cloud.compose.rememberGoogleTasksLogin
-import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
-import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
+import com.github.naz013.common.Permissions
 import com.github.naz013.feature.googletask.preview.PreviewGoogleTaskScreen
 import com.github.naz013.feature.googletask.preview.PreviewGoogleTaskState
 import com.github.naz013.feature.googletask.preview.PreviewGoogleTaskViewModel
+import com.github.naz013.feature.googletask.task.EditGoogleTaskScreen
 import com.github.naz013.feature.googletask.task.EditGoogleTaskState
+import com.github.naz013.feature.googletask.task.EditGoogleTaskViewModel
 import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListScreen
 import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListState
 import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListViewModel
-import com.elementary.tasks.navigation.nav3.hideKeyboard
-import com.elementary.tasks.notes.ObserveEvent
-import com.github.naz013.common.Permissions
-import com.github.naz013.feature.googletask.task.EditGoogleTaskScreen
-import com.github.naz013.feature.googletask.task.EditGoogleTaskViewModel
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.compose.hideKeyboard
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
+import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
+import com.github.naz013.ui.googletask.rememberGoogleTasksLogin
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-fun EntryProviderScope<NavKey>.googleTasksEntries(backStack: MutableList<NavKey>) {
+fun EntryProviderScope<NavKey>.googleTasksEntries(
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
+) {
   entry<GoogleTasksNavKey.List> { GoogleTasksListEntry(backStack) }
   entry<GoogleTasksNavKey.TaskList> { key -> TaskListEntry(key, backStack) }
-  entry<GoogleTasksNavKey.TaskPreview> { key -> TaskPreviewEntry(key, backStack) }
-  entry<GoogleTasksNavKey.TaskEdit> { key -> TaskEditEntry(key, backStack) }
-  entry<GoogleTasksNavKey.ListEdit> { key -> ListEditEntry(key, backStack) }
+  entry<GoogleTasksNavKey.TaskPreview> { key -> TaskPreviewEntry(key, backStack, adsContent) }
+  entry<GoogleTasksNavKey.TaskEdit> { key -> TaskEditEntry(key, backStack, adsContent) }
+  entry<GoogleTasksNavKey.ListEdit> { key -> ListEditEntry(key, backStack, adsContent) }
 }
 
 @Composable
@@ -133,6 +132,7 @@ private fun TaskListEntry(
 private fun TaskPreviewEntry(
   key: GoogleTasksNavKey.TaskPreview,
   backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<PreviewGoogleTaskViewModel> { parametersOf(key.id) }
 
@@ -156,7 +156,7 @@ private fun TaskPreviewEntry(
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,
     onCompleteClick = viewModel::onComplete,
-    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.GoogleTask) },
+    adsContent = adsContent,
   )
 }
 
@@ -164,6 +164,7 @@ private fun TaskPreviewEntry(
 private fun TaskEditEntry(
   key: GoogleTasksNavKey.TaskEdit,
   backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<EditGoogleTaskViewModel> { parametersOf(key.id, key.listId) }
 
@@ -222,7 +223,7 @@ private fun TaskEditEntry(
     onListPicked = viewModel::onListPicked,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDialogDismiss = viewModel::onDialogDismiss,
-    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.GoogleTask) }
+    adsContent = adsContent,
   )
 }
 
@@ -230,6 +231,7 @@ private fun TaskEditEntry(
 private fun ListEditEntry(
   key: GoogleTasksNavKey.ListEdit,
   backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<EditGoogleTaskListViewModel> { parametersOf(key.id) }
 
@@ -265,6 +267,6 @@ private fun ListEditEntry(
     onDefaultToggle = viewModel::onDefaultToggle,
     onDeleteConfirmed = viewModel::deleteGoogleTaskList,
     onDeleteDismiss = viewModel::onDeleteDismiss,
-    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.GoogleTaskList) }
+    adsContent = adsContent,
   )
 }

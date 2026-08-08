@@ -14,6 +14,7 @@ dependencies {
   implementation(project(":feature-common"))
   implementation(project(":platform-common"))
   implementation(project(":ui-common"))
+  implementation(project(":date-calculations"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)

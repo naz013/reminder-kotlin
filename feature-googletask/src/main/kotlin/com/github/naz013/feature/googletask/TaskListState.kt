@@ -3,7 +3,7 @@ package com.github.naz013.feature.googletask
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.ui.googletask.GoogleTaskItemState
 
-data class TaskListState(
+internal data class TaskListState(
   val listId: String = "",
   val title: String = "",
   val isLoading: Boolean = false,

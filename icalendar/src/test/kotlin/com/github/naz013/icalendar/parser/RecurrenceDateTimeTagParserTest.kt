@@ -4,7 +4,6 @@ import com.github.naz013.icalendar.ParamValueType
 import com.github.naz013.icalendar.RecurrenceDateTimeTag
 import com.github.naz013.icalendar.UtcDateTime
 import com.github.naz013.icalendar.ValueParam
-import com.github.naz013.icalendar.parser.RecurrenceDateTimeTagParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
