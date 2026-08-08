@@ -4,7 +4,6 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureAdoptedEvent
 import com.github.naz013.analytics.FeatureUsedEvent
-import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -48,7 +47,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val getAllGoogleTaskListsUseCase = mockk<GetAllGoogleTaskListsUseCase>()
   private val getGoogleTaskByIdUseCase = mockk<GetGoogleTaskByIdUseCase>()
-  private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val saveOneTimeReminderUseCase = mockk<SaveOneTimeReminderUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val prefs = mockk<GoogleTasksPreferences>(relaxed = true)
@@ -533,7 +531,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
       viewModel.save()
 
       coVerify(exactly = 1) { saveOneTimeReminderUseCase(any(), any(), any()) }
-      verify(exactly = 1) { appWidgetUpdater.updateScheduleWidget() }
     }
 
   @Test

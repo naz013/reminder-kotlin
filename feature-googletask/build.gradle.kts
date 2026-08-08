@@ -5,6 +5,12 @@ plugins {
 
 android {
   namespace = "com.github.naz013.feature.googletask"
+
+  testOptions {
+    unitTests {
+      isReturnDefaultValues = true
+    }
+  }
 }
 
 dependencies {
