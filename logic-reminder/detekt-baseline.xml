@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:ActivateReminderUseCase.kt$ActivateReminderUseCase$(TAG, "Cannot start reminder id=${reminder.uuId} now, outdated eventTime=${reminder.schedule.eventDateTime}.")</ID>
+    <ID>ArgumentListWrapping:LocationBasedOccurrenceCalculatorV2.kt$LocationBasedOccurrenceCalculatorV2$(TAG, "calculateOccurrences: LocationBasedOccurrenceCalculatorV2 - location-based reminders have no time occurrences")</ID>
+    <ID>ArgumentListWrapping:MonthlyRepeatOccurrenceCalculatorV2Test.kt$MonthlyRepeatOccurrenceCalculatorV2Test$(dayOfMonth = dayOfMonth, repeatInterval = repeatInterval, repeatLimit = repeatLimit)</ID>
+    <ID>ArgumentListWrapping:ReminderOccurrenceCalculatorFactoryV2.kt$ReminderOccurrenceCalculatorFactoryV2$(TAG, "createCalculator: Unknown strategy type ${strategy::class.simpleName}, using NoReminderOccurrenceCalculatorV2")</ID>
+    <ID>ArgumentListWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$(repeatInterval = 1800000L, from = "08:00", to = "18:00", repeatLimit = 20, eventCount = 17L)</ID>
+    <ID>ArgumentListWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = -1, eventCount = 100L)</ID>
+    <ID>ArgumentListWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = 50, eventCount = 50L)</ID>
+    <ID>ImportOrdering:RecurRepeatOccurrenceCalculatorV2Test.kt$import com.github.naz013.logic.reminder.RecurEventManager import com.github.naz013.domain.reminder.v2.RecurrenceRule import com.github.naz013.domain.reminder.v2.ReminderSchedule import com.github.naz013.domain.reminder.v2.ReminderV2 import io.mockk.every import io.mockk.mockk import kotlinx.coroutines.test.runTest import org.junit.Assert.assertEquals import org.junit.Assert.assertTrue import org.junit.Before import org.junit.Test import org.threeten.bp.LocalDateTime</ID>
+    <ID>ImportOrdering:RecurRepeatStrategyV2.kt$import com.github.naz013.logic.reminder.RecurEventManager import com.github.naz013.datecalc.DateTimeManager import com.github.naz013.domain.reminder.v2.RecurrenceRule import com.github.naz013.domain.reminder.v2.ReminderV2 import org.threeten.bp.LocalDateTime</ID>
+    <ID>Indentation:YearlyRepeatOccurrenceCalculatorV2Test.kt$YearlyRepeatOccurrenceCalculatorV2Test$ </ID>
+    <ID>LongMethod:ActivateReminderUseCase.kt$ActivateReminderUseCase$suspend operator fun invoke( reminder: ReminderV2, startAnyway: Boolean = false, skipGoogleTaskExport: Boolean = false, ): ReminderV2</ID>
+    <ID>LongParameterList:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$( repeatInterval: Long, from: String, to: String, hours: List&lt;Int&gt; = emptyList(), repeatLimit: Int = -1, eventCount: Long = 0L, )</ID>
+    <ID>LoopWithTooManyJumpStatements:StopLocationTrackingUseCase.kt$StopLocationTrackingUseCase$for</ID>
+    <ID>MaxLineLength:ActivateReminderUseCase.kt$ActivateReminderUseCase$Logger.w(TAG, "Cannot start reminder id=${reminder.uuId} now, outdated eventTime=${reminder.schedule.eventDateTime}.")</ID>
+    <ID>MaxLineLength:BehaviorStrategyResolverV2.kt$BehaviorStrategyResolverV2$*</ID>
+    <ID>MaxLineLength:BehaviorStrategyResolverV2.kt$BehaviorStrategyResolverV2$/**</ID>
+    <ID>MaxLineLength:DeleteAllReminderUseCaseTest.kt$DeleteAllReminderUseCaseTest$coEvery { deactivateReminderUseCase(match { it.uuId == reminders[0].uuId }) } throws IllegalStateException("Deactivation error")</ID>
+    <ID>MaxLineLength:LocationBasedOccurrenceCalculatorV2.kt$LocationBasedOccurrenceCalculatorV2$Logger.d(TAG, "calculateOccurrences: LocationBasedOccurrenceCalculatorV2 - location-based reminders have no time occurrences")</ID>
+    <ID>MaxLineLength:MonthlyRepeatOccurrenceCalculatorV2Test.kt$MonthlyRepeatOccurrenceCalculatorV2Test$recurrence = RecurrenceRule.Monthly(dayOfMonth = dayOfMonth, repeatInterval = repeatInterval, repeatLimit = repeatLimit)</ID>
+    <ID>MaxLineLength:ReminderOccurrenceCalculatorFactoryV2.kt$ReminderOccurrenceCalculatorFactoryV2$Logger.w(TAG, "createCalculator: Unknown strategy type ${strategy::class.simpleName}, using NoReminderOccurrenceCalculatorV2")</ID>
+    <ID>MaxLineLength:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 1800000L, from = "08:00", to = "18:00", repeatLimit = 20, eventCount = 17L)</ID>
+    <ID>MaxLineLength:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = -1, eventCount = 100L)</ID>
+    <ID>MaxLineLength:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = 50, eventCount = 50L)</ID>
+    <ID>PropertyWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 1800000L, from = "08:00", to = "18:00", repeatLimit = 20, eventCount = 17L)</ID>
+    <ID>PropertyWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = -1, eventCount = 100L)</ID>
+    <ID>PropertyWrapping:TimerRepeatOccurrenceCalculatorV2Test.kt$TimerRepeatOccurrenceCalculatorV2Test$val reminder = reminder(repeatInterval = 3600000L, from = "09:00", to = "17:00", repeatLimit = 50, eventCount = 50L)</ID>
+    <ID>ReturnCount:ActivateReminderUseCase.kt$ActivateReminderUseCase$suspend operator fun invoke( reminder: ReminderV2, startAnyway: Boolean = false, skipGoogleTaskExport: Boolean = false, ): ReminderV2</ID>
+    <ID>ReturnCount:CalculateReminderOccurrencesUseCase.kt$CalculateReminderOccurrencesUseCase$suspend operator fun invoke(id: String)</ID>
+    <ID>ReturnCount:IntervalRepeatOccurrenceCalculatorV2.kt$IntervalRepeatOccurrenceCalculatorV2$override suspend fun calculateOccurrences( reminder: ReminderV2, fromDateTime: LocalDateTime, numberOfOccurrences: Int, ): List&lt;LocalDateTime&gt;</ID>
+    <ID>ReturnCount:IntervalRepeatStrategyV2.kt$IntervalRepeatStrategyV2$override fun calculateNextOccurrence( reminder: ReminderV2, fromDateTime: LocalDateTime, ): LocalDateTime?</ID>
+    <ID>ReturnCount:MonthlyRepeatOccurrenceCalculatorV2.kt$MonthlyRepeatOccurrenceCalculatorV2$override suspend fun calculateOccurrences( reminder: ReminderV2, fromDateTime: LocalDateTime, numberOfOccurrences: Int, ): List&lt;LocalDateTime&gt;</ID>
+    <ID>ReturnCount:MonthlyRepeatStrategyV2.kt$MonthlyRepeatStrategyV2$override fun calculateNextOccurrence( reminder: ReminderV2, fromDateTime: LocalDateTime, ): LocalDateTime?</ID>
+    <ID>ReturnCount:RecurEventManager.kt$RecurEventManager$fun getNextAfterDateTime( dateTime: LocalDateTime?, recurObject: String?, ): LocalDateTime?</ID>
+    <ID>ReturnCount:RecurRepeatOccurrenceCalculatorV2.kt$RecurRepeatOccurrenceCalculatorV2$override suspend fun calculateOccurrences( reminder: ReminderV2, fromDateTime: LocalDateTime, numberOfOccurrences: Int, ): List&lt;LocalDateTime&gt;</ID>
+    <ID>ReturnCount:TimerRepeatOccurrenceCalculatorV2.kt$TimerRepeatOccurrenceCalculatorV2$override suspend fun calculateOccurrences( reminder: ReminderV2, fromDateTime: LocalDateTime, numberOfOccurrences: Int, ): List&lt;LocalDateTime&gt;</ID>
+    <ID>ReturnCount:TimerRepeatStrategyV2.kt$TimerRepeatStrategyV2$override fun calculateNextOccurrence( reminder: ReminderV2, fromDateTime: LocalDateTime, ): LocalDateTime?</ID>
+    <ID>ReturnCount:WeekdayRepeatOccurrenceCalculatorV2.kt$WeekdayRepeatOccurrenceCalculatorV2$override suspend fun calculateOccurrences( reminder: ReminderV2, fromDateTime: LocalDateTime, numberOfOccurrences: Int, ): List&lt;LocalDateTime&gt;</ID>
+    <ID>ReturnCount:WeekdayRepeatStrategyV2.kt$WeekdayRepeatStrategyV2$override fun calculateNextOccurrence( reminder: ReminderV2, fromDateTime: LocalDateTime, ): LocalDateTime?</ID>
+    <ID>ReturnCount:YearlyRepeatOccurrenceCalculatorV2.kt$YearlyRepeatOccurrenceCalculatorV2$override suspend fun calculateOccurrences( reminder: ReminderV2, fromDateTime: LocalDateTime, numberOfOccurrences: Int, ): List&lt;LocalDateTime&gt;</ID>
+    <ID>ReturnCount:YearlyRepeatStrategyV2.kt$YearlyRepeatStrategyV2$override fun calculateNextOccurrence( reminder: ReminderV2, fromDateTime: LocalDateTime, ): LocalDateTime?</ID>
+    <ID>SwallowedException:DeleteAllReminderUseCaseTest.kt$DeleteAllReminderUseCaseTest$e: IllegalStateException</ID>
+    <ID>SwallowedException:DeleteReminderUseCaseTest.kt$DeleteReminderUseCaseTest$e: IllegalStateException</ID>
+    <ID>UnusedPrivateProperty:SaveReminderToGoogleCalendarUseCase.kt$SaveReminderToGoogleCalendarUseCase.Companion$private const val TAG = "SaveReminderToGoogleCalendarUseCase"</ID>
+    <ID>Wrapping:DeleteAllReminderUseCaseTest.kt$DeleteAllReminderUseCaseTest$deactivateReminderUseCase(match { it.uuId == reminders[0].uuId })</ID>
+    <ID>Wrapping:DeleteAllReminderUseCaseTest.kt$DeleteAllReminderUseCaseTest$it.uuId == reminders[0].uuId</ID>
+    <ID>Wrapping:RecurRepeatOccurrenceCalculatorV2Test.kt$RecurRepeatOccurrenceCalculatorV2Test$recurEventManager.getNextAfterDateTime(expectedOccurrences[0].plusSeconds(1), rrule)</ID>
+    <ID>Wrapping:RecurRepeatOccurrenceCalculatorV2Test.kt$RecurRepeatOccurrenceCalculatorV2Test$recurEventManager.getNextAfterDateTime(expectedOccurrences[1].plusSeconds(1), rrule)</ID>
+    <ID>Wrapping:RecurRepeatOccurrenceCalculatorV2Test.kt$RecurRepeatOccurrenceCalculatorV2Test$recurEventManager.getNextAfterDateTime(expectedOccurrences[2].plusSeconds(1), rrule)</ID>
+  </CurrentIssues>
+</SmellBaseline>

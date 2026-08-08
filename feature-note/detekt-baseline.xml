@@ -1,7 +1,5 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-  <ManuallySuppressedIssues></ManuallySuppressedIssues>
-  <CurrentIssues>
-    <ID>UnusedPrivateMember:NoteListItemCard.kt$@Preview(showBackground = true) @Composable private fun NoteListItemCardPreview()</ID>
-  </CurrentIssues>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues/>
 </SmellBaseline>
