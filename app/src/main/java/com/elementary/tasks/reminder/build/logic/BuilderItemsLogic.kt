@@ -16,6 +16,11 @@ class BuilderItemsLogic(
   }
 
   fun addNew(builderItem: BuilderItem<*>) {
+    // A fast double-tap on the "+" selector can invoke this twice for the same biType before the
+    // first add propagates back and flips that entry to unavailable in the sheet. Since only one
+    // item per biType is ever meant to be used, guard here rather than relying on the UI timing -
+    // a second item with the same biType would collide as a LazyColumn key in BuildReminderScreen.
+    if (builderItemsHolder.getItems().any { it.biType == builderItem.biType }) return
     builderItemsHolder.addNew(builderItem)
   }
 

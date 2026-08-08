@@ -8,6 +8,7 @@ import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.TimeFormatter
 import com.github.naz013.domain.reminder.BiType
 import io.mockk.mockk
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -79,5 +80,18 @@ class BuilderItemsLogicTest : BaseTest() {
     logic.addNew(dateItem())
 
     assertFalse(logic.canAdd())
+  }
+
+  @Test
+  fun `addNew ignores a second item with a biType already used`() {
+    // Simulates a fast double-tap on the selector sheet firing addNew twice for the same biType
+    // before the sheet recomposes - getUsed() must never contain two items with the same biType,
+    // since BuildReminderScreen keys its LazyColumn rows by biType.
+    logic.setAllAvailable(listOf(dateItem(), emailItem()))
+
+    logic.addNew(dateItem())
+    logic.addNew(dateItem())
+
+    assertEquals(1, logic.getUsed().count { it.biType == BiType.DATE })
   }
 }
