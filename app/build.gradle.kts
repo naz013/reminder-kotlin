@@ -207,7 +207,7 @@ dependencies {
   implementation(project(":feature-note"))
   implementation(project(":feature-googletask"))
   implementation(project(":feature-reminder"))
-  implementation(project(":tags"))
+  implementation(project(":feature-tags"))
   implementation(project(":feature-insights"))
   implementation(project(":localbackup"))
 
@@ -216,6 +216,7 @@ dependencies {
   implementation(project(":ui-common"))
   implementation(project(":ui-googletask"))
   implementation(project(":ui-reminder"))
+  implementation(project(":ui-tag"))
 
   implementation(project(":usecase:googletasks"))
   implementation(project(":usecase:birthdays"))
@@ -225,6 +226,7 @@ dependencies {
   implementation(project(":logic-googletask"))
   implementation(project(":logic-reminder"))
   implementation(project(":logic-schedule"))
+  implementation(project(":logic-tag"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")

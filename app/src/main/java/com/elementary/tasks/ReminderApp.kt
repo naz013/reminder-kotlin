@@ -53,6 +53,7 @@ import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.logic.reminder.logicReminderModule
 import com.github.naz013.logic.schedule.logicScheduleModule
+import com.github.naz013.logic.tag.logicTagModule
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
@@ -67,6 +68,7 @@ import com.github.naz013.tags.tagsModule
 import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.ui.googletask.uiGoogleTaskModule
+import com.github.naz013.ui.tag.uiTagModule
 import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
 import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
 import com.github.naz013.usecase.notes.notesUseCaseModule
@@ -176,6 +178,8 @@ class ReminderApp :
           uiGoogleTaskModule,
           logicScheduleModule,
           logicReminderModule,
+          uiTagModule,
+          logicTagModule,
         ),
       )
     }

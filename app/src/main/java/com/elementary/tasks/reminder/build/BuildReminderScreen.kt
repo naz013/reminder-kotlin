@@ -59,8 +59,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
-import com.github.naz013.domain.Tag
-import com.github.naz013.tags.compose.TagChipPicker
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
@@ -69,6 +67,8 @@ import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.BuilderItemStatus
 import com.github.naz013.ui.common.compose.foundation.component.BuilderListItemCard
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.tag.TagChipPicker
+import com.github.naz013.ui.tag.TagChipState
 import androidx.compose.ui.text.font.Typeface as ComposeTypeface
 
 private const val OVERFLOW_ITEM_HELP = 1
@@ -92,7 +92,7 @@ fun BuildReminderScreen(
   saveAsPresetChecked: Boolean,
   presetName: String,
   quickStartOptions: List<QuickStartOption>,
-  allTags: List<Tag>,
+  allTags: List<TagChipState>,
   selectedTagIds: Set<String>,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -105,7 +105,7 @@ fun BuildReminderScreen(
   onItemRemove: (Int, BuilderItem<*>) -> Unit,
   onAddClick: () -> Unit,
   onQuickStartClick: (QuickStartOption) -> Unit,
-  onTagToggle: (Tag) -> Unit,
+  onTagToggle: (TagChipState) -> Unit,
   onManageTagsClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -377,9 +377,9 @@ private fun ForecastRow(prediction: ReminderPrediction, modifier: Modifier = Mod
 
 @Composable
 private fun TagsRow(
-  allTags: List<Tag>,
+  allTags: List<TagChipState>,
   selectedTagIds: Set<String>,
-  onToggle: (Tag) -> Unit,
+  onToggle: (TagChipState) -> Unit,
   onManageTagsClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {

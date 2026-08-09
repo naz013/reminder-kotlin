@@ -36,7 +36,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun TagsScreen(
+internal fun TagsScreen(
   state: TagsScreenState,
   onBackClick: () -> Unit,
   onAddClick: () -> Unit,

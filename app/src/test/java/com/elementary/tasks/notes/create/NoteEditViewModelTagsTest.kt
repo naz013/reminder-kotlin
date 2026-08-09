@@ -1,11 +1,9 @@
 package com.elementary.tasks.notes.create
 
-import com.github.naz013.logic.schedule.WorkType
-import com.github.naz013.domain.Tag
-import com.github.naz013.files.DataType
+import androidx.compose.ui.graphics.Color
+import com.github.naz013.ui.tag.TagChipState
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.verify
 import org.junit.Test
 
 /**
@@ -17,16 +15,10 @@ class NoteEditViewModelTagsTest : NoteEditViewModelTestSupport() {
   @Test
   fun `onTagToggle attaches an unselected tag and schedules an upload of the tag assignments snapshot`() {
     val viewModel = buildViewModel(id = "note-1")
-    coEvery { tagAssignmentRepository.attach(any(), any(), any()) } returns Unit
+    coEvery { toggleTagAssignmentUseCase.invoke(any(), any(), any(), any()) } returns Unit
 
-    viewModel.onTagToggle(Tag(id = "tag-1", name = "Work", color = 0))
+    viewModel.onTagToggle(TagChipState(id = "tag-1", name = "Work", color = Color.Unspecified))
 
-    coVerify { tagAssignmentRepository.attach(any(), any(), "tag-1") }
-    verify {
-      scheduleBackgroundWorkUseCase(
-        workType = WorkType.Upload,
-        dataType = DataType.TagAssignments,
-      )
-    }
+    coVerify { toggleTagAssignmentUseCase.invoke(any(), any(), "tag-1", false) }
   }
 }

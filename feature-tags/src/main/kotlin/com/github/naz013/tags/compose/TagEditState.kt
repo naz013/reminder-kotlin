@@ -2,7 +2,7 @@ package com.github.naz013.tags.compose
 
 import androidx.compose.ui.graphics.Color
 
-data class TagEditState(
+internal data class TagEditState(
   val id: String? = null,
   val name: String = "",
   val nameError: Boolean = false,

@@ -2,11 +2,11 @@ package com.github.naz013.tags.compose
 
 import androidx.compose.ui.graphics.Color
 
-data class TagsScreenState(
+internal data class TagsScreenState(
   val listState: TagsListState = TagsListState.Loading
 )
 
-sealed interface TagsListState {
+internal sealed interface TagsListState {
   data object Loading : TagsListState
 
   data object Empty : TagsListState
@@ -16,7 +16,7 @@ sealed interface TagsListState {
   ) : TagsListState
 }
 
-data class TagState(
+internal data class TagState(
   val id: String,
   val name: String,
   val color: Color,

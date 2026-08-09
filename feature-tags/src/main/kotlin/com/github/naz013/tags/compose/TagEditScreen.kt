@@ -26,7 +26,7 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TagEditScreen(
+internal fun TagEditScreen(
   modifier: Modifier = Modifier,
   state: TagEditState,
   onBackClick: () -> Unit,

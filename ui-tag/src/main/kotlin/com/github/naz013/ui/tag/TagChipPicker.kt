@@ -1,4 +1,4 @@
-package com.github.naz013.tags.compose
+package com.github.naz013.ui.tag
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.domain.Tag
-import com.github.naz013.tags.R
 import com.github.naz013.ui.common.compose.AppIcons
 
 /**
@@ -22,9 +21,9 @@ import com.github.naz013.ui.common.compose.AppIcons
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TagChipPicker(
-  allTags: List<Tag>,
+  allTags: List<TagChipState>,
   selectedTagIds: Set<String>,
-  onToggle: (Tag) -> Unit,
+  onToggle: (TagChipState) -> Unit,
   onManageTagsClick: () -> Unit,
   modifier: Modifier = Modifier
 ) {
