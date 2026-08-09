@@ -56,6 +56,7 @@ fun GroupDetailsScreen(
   onEditClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onReminderClick: (String) -> Unit,
+  onAddClick: () -> Unit,
   adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
@@ -79,6 +80,12 @@ fun GroupDetailsScreen(
           )
         },
         actions = {
+          MenuIconButton(
+            icon = AppIcons.Fluent.Add,
+            contentDescription = stringResource(R.string.acc_add_reminder),
+            onClick = onAddClick,
+            iconColor = MaterialTheme.colorScheme.primary,
+          )
           OverflowMenu(
             canDelete = state.canDelete,
             onEditClick = onEditClick,
@@ -316,6 +323,7 @@ private fun GroupDetailsScreenPreview() {
       onDeleteClick = {},
       onReminderClick = {},
       adsContent = {},
+      onAddClick = {},
     )
   }
 }

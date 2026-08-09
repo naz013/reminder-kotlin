@@ -25,6 +25,7 @@ import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
 import com.elementary.tasks.reminder.build.preset.BuilderPresetToBiAdapter
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
+import com.elementary.tasks.reminder.build.quickstart.FindGroupUseCase
 import com.elementary.tasks.reminder.build.quickstart.QuickStartItemsProvider
 import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
@@ -92,14 +93,10 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import java.util.UUID
+import kotlin.time.Duration.Companion.milliseconds
 
 class BuildReminderViewModel(
-  initialId: String,
-  private val fromIntentItem: Boolean,
-  private val deepLinkDateTimeType: BuildReminderNavKey.Main.DateTimeType?,
-  private val deepLinkDateTimeMillis: Long?,
-  private val deepLinkTodo: Boolean,
-  private val deepLinkText: String?,
+  private val navKey: BuildReminderNavKey.Main,
   private val dispatcherProvider: DispatcherProvider,
   private val placeRepository: PlaceRepository,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -141,8 +138,10 @@ class BuildReminderViewModel(
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
   private val tagChipStateAdapter: TagChipStateAdapter,
+  private val findGroupUseCase: FindGroupUseCase,
 ) : ViewModel() {
 
+  val initialId = navKey.id
   val id: String = initialId
 
   /** Stable for the whole editing session, unlike [newBlankReminderV2]'s old behavior of
@@ -322,26 +321,23 @@ class BuildReminderViewModel(
   }
 
   private fun handleDeepLink() {
-    Logger.i(
-      TAG,
-      "Handle reminder Deep Link: id=$id, fromIntentItem=$fromIntentItem, " +
-        "deepLinkDateTimeType=$deepLinkDateTimeType, deepLinkTodo=$deepLinkTodo, " +
-        "deepLinkText=${Logger.data(deepLinkText)}",
-    )
+    Logger.i(TAG, "Handle reminder Deep Link: $navKey")
     viewModelScope.launch(dispatcherProvider.default()) {
       when {
-        fromIntentItem -> {
+        navKey.fromIntentItem -> {
           Logger.i(TAG, "Handle reminder object Deep Link")
           readObjectFromIntent()
         }
 
-        deepLinkDateTimeType != null && deepLinkDateTimeMillis != null -> {
-          readDateTimeDeepLink(deepLinkDateTimeType, deepLinkDateTimeMillis)
+        navKey.deepLinkDateTimeType != null && navKey.deepLinkDateTimeMillis != null -> {
+          readDateTimeDeepLink(navKey.deepLinkDateTimeType, navKey.deepLinkDateTimeMillis)
         }
 
-        deepLinkTodo -> readTodoDeepLink()
+        navKey.deepLinkTodo -> readTodoDeepLink()
 
-        deepLinkText != null -> readTextDeepLink(deepLinkText)
+        navKey.deepLinkText != null -> readTextDeepLink(navKey.deepLinkText)
+
+        navKey.groupUuId != null -> readGroupDeepLink(navKey.groupUuId)
 
         id.isNotEmpty() -> {
           Logger.i(TAG, "Handle reminder ID Deep Link")
@@ -462,7 +458,7 @@ class BuildReminderViewModel(
     millis: Long,
   ) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
+      delay(50.milliseconds)
     }
     if (type == BuildReminderNavKey.Main.DateTimeType.Date) {
       Logger.i(TAG, "Handle reminder date/time Deep Link")
@@ -476,7 +472,7 @@ class BuildReminderViewModel(
 
   private suspend fun readTodoDeepLink() {
     while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
+      delay(50.milliseconds)
     }
     Logger.i(TAG, "Handle reminder todo Deep Link")
     addSubTasksItemToBuilder()
@@ -486,11 +482,42 @@ class BuildReminderViewModel(
 
   private suspend fun readTextDeepLink(text: String) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
+      delay(50.milliseconds)
     }
     Logger.i(TAG, "Handle reminder text Deep Link")
     addSummaryItemToBuilder(text)
     updateSelector()
+  }
+
+  private suspend fun readGroupDeepLink(groupUuId: String) {
+    while (builderItemsLogic.getAvailable().isEmpty()) {
+      delay(50.milliseconds)
+    }
+    Logger.i(TAG, "Handle group deep link, $groupUuId")
+    addGroupItemToBuilder(groupUuId)
+    updateSelector()
+  }
+
+  private suspend fun addGroupItemToBuilder(groupUuId: String) {
+    val group = withContext(dispatcherProvider.io()) {
+      findGroupUseCase(groupUuId)
+    } ?: return
+
+    val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.GROUP }
+
+    Logger.i(TAG, "Add Group builder item")
+    if (itemIndex == -1) {
+      builderItemsLogic
+        .getAvailable()
+        .firstOrNull { it.biType == BiType.GROUP }
+        ?.let { it as GroupBuilderItem }
+        ?.apply { modifier.update(group) }
+        ?.also { builderItemsLogic.addNew(it) }
+    } else {
+      val item = builderItemsLogic.getUsed()[itemIndex] as? GroupBuilderItem ?: return
+      item.modifier.update(group)
+      builderItemsLogic.update(itemIndex, item)
+    }
   }
 
   private fun addDateItemToBuilder(date: LocalDate) {

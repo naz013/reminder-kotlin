@@ -36,6 +36,7 @@ import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
 import com.elementary.tasks.reminder.build.preset.primitive.PrimitiveProtocol
+import com.elementary.tasks.reminder.build.quickstart.FindGroupUseCase
 import com.elementary.tasks.reminder.build.quickstart.QuickStartItemsProvider
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.BiTypeToBiValue
@@ -94,12 +95,8 @@ val reminderModule =
     // deepLinkText.
     viewModel { (key: BuildReminderNavKey.Main) ->
       BuildReminderViewModel(
-        key.id,
-        key.fromIntentItem,
-        key.deepLinkDateTimeType,
-        key.deepLinkDateTimeMillis,
-        key.deepLinkTodo,
-        key.deepLinkText,
+        key,
+        get(),
         get(),
         get(),
         get(),
@@ -309,4 +306,6 @@ val reminderModule =
     factory { GetReminderActionsUseCase() }
 
     factory { CreateReminderActionScreenStateUseCase(get(), get(), get(), get()) }
+
+    factoryOf(::FindGroupUseCase)
   }
