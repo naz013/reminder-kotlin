@@ -579,6 +579,12 @@
     <string name="pro_version">Versiunea PRO</string>
     <string name="pro_advantages">Avantajele PRO:</string>
     <string name="pro_buy">Cumpără PRO</string>
+    <string name="pro_streaks_and_insights">- Panou Serii și statistici</string>
+    <string name="pro_local_encrypted_backup">- Backup local criptat</string>
+    <string name="pro_gemini_app_functions">- Integrare Gemini AppFunctions</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Îți place Reminder? Treci la PRO, fără reclame</string>
+    <string name="local_backup_locked_description">Exportă un backup criptat, protejat prin frază de acces, într-un fișier la alegere - complet offline</string>
     <string name="pro_no_ads">- Fără reclame</string>
     <string name="pro_different_settings_for_birthdays">- Setări diferite pentru zile de naștere</string>
     <string name="pro_led_notification">- Notificare LED</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">Previzualizare</string>
     <string name="recur_customize">Personalizează</string>
     <string name="recur_wrong_parameters_message">Parametri greșiți folosiți, nu sunt date-ore disponibile!</string>
-    <string name="additional_recur_type">- Tip suplimentar de memento - Personalizat, cu posibilitatea de a seta reguli proprii de recurență</string>
+    <string name="pro_icalendar_custom_reminder">- Memento personalizat iCalendar, cu posibilitatea de a seta propriile reguli de recurență</string>
     <string name="additional_places_type">- Tip suplimentar de memento - Locuri, unde poți seta puncte de interes ca ținte</string>
     <string name="recur_rfc_5545_doc">Documentația RFC 5545</string>
     <string name="recur_need_help">Ai nevoie de ajutor?</string>

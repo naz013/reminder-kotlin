@@ -1,6 +1,6 @@
 package com.github.naz013.ui.common
 
-import com.github.naz013.common.datetime.NowDateTimeProvider
+import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.login.LoginStateViewModel

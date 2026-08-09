@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
 import com.elementary.tasks.ads.AdBanner
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 
 class AdsProvider {
   fun showConsentMessage(activity: Activity) {}

@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.services.action.reminder
 
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
@@ -9,10 +8,11 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.usecase.reminders.ResolveReminderV2NotificationSettingsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ class ReminderActionProcessor(
   private val prefs: Prefs,
   private val doNotDisturbManager: DoNotDisturbManager,
   private val dateTimeManager: DateTimeManager,
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
   private val contextProvider: ContextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val workflowTriggerRunner: WorkflowTriggerRunner,

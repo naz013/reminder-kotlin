@@ -1,14 +1,14 @@
 package com.elementary.tasks.settings.export
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.settings.export.work.ObservableBackupTask
 import com.elementary.tasks.settings.export.work.ObservableEraseDataTask
 import com.elementary.tasks.settings.export.work.ObservableSyncTask
 import com.github.naz013.common.TextProvider
+import com.github.naz013.logic.schedule.WorkerNetworkType
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.sync.CloudApiProvider
 import com.github.naz013.workapi.ExistingWorkPolicy
 import com.github.naz013.workapi.TaskData
@@ -31,7 +31,7 @@ import org.junit.Test
 
 class CloudBackupSettingsViewModelTest : BaseTest() {
   private val cloudApiProvider = mockk<CloudApiProvider>()
-  private val jobScheduler = mockk<JobScheduler>(relaxed = true)
+  private val jobScheduler = mockk<JobSchedulerApi>(relaxed = true)
   private val prefs = mockk<Prefs>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val workScheduler = mockk<WorkScheduler>()

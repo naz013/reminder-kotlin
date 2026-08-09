@@ -4,7 +4,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.place.UiPlaceList
 import com.elementary.tasks.core.utils.ui.DrawableHelper
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.google.android.gms.maps.model.LatLng

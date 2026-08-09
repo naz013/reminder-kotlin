@@ -23,7 +23,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -37,7 +36,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Place
 import kotlinx.coroutines.launch
 

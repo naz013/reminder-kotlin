@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.usecase
 
-import com.elementary.tasks.reminder.scheduling.usecase.DeactivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeactivateReminderUseCase
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.ReminderV2Repository
 

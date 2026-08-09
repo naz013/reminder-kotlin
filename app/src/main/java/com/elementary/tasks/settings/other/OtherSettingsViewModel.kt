@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.FeatureManager
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.ContextProvider
@@ -13,7 +15,7 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -68,6 +70,10 @@ class OtherSettingsViewModel(
     )
   }
 
+  fun onGeminiFunctionsLockedClick() {
+    analyticsEventSender.send(FeatureGateTappedEvent(Feature.GEMINI_FUNCTIONS))
+  }
+
   fun onShowPermissionDialogClicked() {
     _state.update {
       it.copy(
@@ -110,7 +116,8 @@ class OtherSettingsViewModel(
     _state.update {
       it.copy(
         permissionItems = loadPermissionItems(),
-        isGeminiFunctionsVisible = buildInfo.isPro && systemInfo.is16,
+        isGeminiFunctionsVisible = systemInfo.is16,
+        isGeminiFunctionsLocked = !buildInfo.isPro,
       )
     }
   }

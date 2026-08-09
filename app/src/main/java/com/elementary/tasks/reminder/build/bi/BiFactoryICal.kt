@@ -30,7 +30,7 @@ import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericIntFormatte
 import com.elementary.tasks.reminder.build.formatter.ical.ICalGenericListIntFormatter
 import com.elementary.tasks.reminder.build.formatter.ical.ICalListDayValueFormatter
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.BiType
 
 class BiFactoryICal(

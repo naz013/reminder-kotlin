@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.build.preset
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.mockDispatcherProvider

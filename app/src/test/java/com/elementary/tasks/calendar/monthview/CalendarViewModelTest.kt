@@ -6,7 +6,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -16,7 +16,6 @@ import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.LocalTime
 
 class CalendarViewModelTest : BaseTest() {
   private val dateTimeManager = mockk<DateTimeManager>()

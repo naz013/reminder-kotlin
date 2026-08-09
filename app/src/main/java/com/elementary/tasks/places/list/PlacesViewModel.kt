@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.places.usecase.DeletePlaceUseCase
 import com.elementary.tasks.simplemap.MapStyle
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentFactory
 import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.coroutine.DispatcherProvider

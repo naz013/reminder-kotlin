@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
@@ -27,16 +25,14 @@ import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
 import com.elementary.tasks.reminder.build.preset.BuilderPresetToBiAdapter
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
+import com.elementary.tasks.reminder.build.quickstart.FindGroupUseCase
 import com.elementary.tasks.reminder.build.quickstart.QuickStartItemsProvider
 import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.PauseReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
-import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.AnalyticsReminderType
@@ -46,9 +42,9 @@ import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Tag
@@ -69,12 +65,20 @@ import com.github.naz013.icalendar.RecurParamType
 import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
+import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.reviews.AppSource
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -82,20 +86,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import java.util.UUID
+import kotlin.time.Duration.Companion.milliseconds
 
 class BuildReminderViewModel(
-  initialId: String,
-  private val fromIntentItem: Boolean,
-  private val deepLinkDateTimeType: BuildReminderNavKey.Main.DateTimeType?,
-  private val deepLinkDateTimeMillis: Long?,
-  private val deepLinkTodo: Boolean,
-  private val deepLinkText: String?,
+  private val navKey: BuildReminderNavKey.Main,
   private val dispatcherProvider: DispatcherProvider,
   private val placeRepository: PlaceRepository,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -135,8 +136,12 @@ class BuildReminderViewModel(
   private val quickStartItemsProvider: QuickStartItemsProvider,
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
+  private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
+  private val tagChipStateAdapter: TagChipStateAdapter,
+  private val findGroupUseCase: FindGroupUseCase,
 ) : ViewModel() {
 
+  val initialId = navKey.id
   val id: String = initialId
 
   /** Stable for the whole editing session, unlike [newBlankReminderV2]'s old behavior of
@@ -179,9 +184,13 @@ class BuildReminderViewModel(
 
   private fun observeTags() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      tagRepository.observeAll().collect { tags ->
-        _state.update { it.copy(allTags = tags) }
-      }
+      tagRepository.observeAll()
+        .map { tags ->
+          tags.map { tagChipStateAdapter(it) }
+        }
+        .collect { tags ->
+          _state.update { it.copy(allTags = tags) }
+        }
     }
     viewModelScope.launch(dispatcherProvider.default()) {
       tagAssignmentRepository.observeTagsForItem(stableReminderId, TaggedItemType.REMINDER).collect { tags ->
@@ -190,15 +199,10 @@ class BuildReminderViewModel(
     }
   }
 
-  fun onTagToggle(tag: Tag) {
+  fun onTagToggle(tag: TagChipState) {
     val isSelected = tag.id in _state.value.selectedTagIds
     viewModelScope.launch(dispatcherProvider.io()) {
-      if (isSelected) {
-        tagAssignmentRepository.detach(stableReminderId, TaggedItemType.REMINDER, tag.id)
-      } else {
-        tagAssignmentRepository.attach(stableReminderId, TaggedItemType.REMINDER, tag.id)
-      }
-      scheduleBackgroundWorkUseCase(workType = WorkType.Upload, dataType = DataType.TagAssignments)
+      toggleTagAssignmentUseCase(stableReminderId, TaggedItemType.REMINDER, tag.id, isSelected)
     }
   }
 
@@ -317,26 +321,23 @@ class BuildReminderViewModel(
   }
 
   private fun handleDeepLink() {
-    Logger.i(
-      TAG,
-      "Handle reminder Deep Link: id=$id, fromIntentItem=$fromIntentItem, " +
-        "deepLinkDateTimeType=$deepLinkDateTimeType, deepLinkTodo=$deepLinkTodo, " +
-        "deepLinkText=${Logger.data(deepLinkText)}",
-    )
+    Logger.i(TAG, "Handle reminder Deep Link: $navKey")
     viewModelScope.launch(dispatcherProvider.default()) {
       when {
-        fromIntentItem -> {
+        navKey.fromIntentItem -> {
           Logger.i(TAG, "Handle reminder object Deep Link")
           readObjectFromIntent()
         }
 
-        deepLinkDateTimeType != null && deepLinkDateTimeMillis != null -> {
-          readDateTimeDeepLink(deepLinkDateTimeType, deepLinkDateTimeMillis)
+        navKey.deepLinkDateTimeType != null && navKey.deepLinkDateTimeMillis != null -> {
+          readDateTimeDeepLink(navKey.deepLinkDateTimeType, navKey.deepLinkDateTimeMillis)
         }
 
-        deepLinkTodo -> readTodoDeepLink()
+        navKey.deepLinkTodo -> readTodoDeepLink()
 
-        deepLinkText != null -> readTextDeepLink(deepLinkText)
+        navKey.deepLinkText != null -> readTextDeepLink(navKey.deepLinkText)
+
+        navKey.groupUuId != null -> readGroupDeepLink(navKey.groupUuId)
 
         id.isNotEmpty() -> {
           Logger.i(TAG, "Handle reminder ID Deep Link")
@@ -457,7 +458,7 @@ class BuildReminderViewModel(
     millis: Long,
   ) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
+      delay(50.milliseconds)
     }
     if (type == BuildReminderNavKey.Main.DateTimeType.Date) {
       Logger.i(TAG, "Handle reminder date/time Deep Link")
@@ -471,7 +472,7 @@ class BuildReminderViewModel(
 
   private suspend fun readTodoDeepLink() {
     while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
+      delay(50.milliseconds)
     }
     Logger.i(TAG, "Handle reminder todo Deep Link")
     addSubTasksItemToBuilder()
@@ -481,11 +482,42 @@ class BuildReminderViewModel(
 
   private suspend fun readTextDeepLink(text: String) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
-      delay(50)
+      delay(50.milliseconds)
     }
     Logger.i(TAG, "Handle reminder text Deep Link")
     addSummaryItemToBuilder(text)
     updateSelector()
+  }
+
+  private suspend fun readGroupDeepLink(groupUuId: String) {
+    while (builderItemsLogic.getAvailable().isEmpty()) {
+      delay(50.milliseconds)
+    }
+    Logger.i(TAG, "Handle group deep link, $groupUuId")
+    addGroupItemToBuilder(groupUuId)
+    updateSelector()
+  }
+
+  private suspend fun addGroupItemToBuilder(groupUuId: String) {
+    val group = withContext(dispatcherProvider.io()) {
+      findGroupUseCase(groupUuId)
+    } ?: return
+
+    val itemIndex = builderItemsLogic.getUsed().indexOfFirst { it.biType == BiType.GROUP }
+
+    Logger.i(TAG, "Add Group builder item")
+    if (itemIndex == -1) {
+      builderItemsLogic
+        .getAvailable()
+        .firstOrNull { it.biType == BiType.GROUP }
+        ?.let { it as GroupBuilderItem }
+        ?.apply { modifier.update(group) }
+        ?.also { builderItemsLogic.addNew(it) }
+    } else {
+      val item = builderItemsLogic.getUsed()[itemIndex] as? GroupBuilderItem ?: return
+      item.modifier.update(group)
+      builderItemsLogic.update(itemIndex, item)
+    }
   }
 
   private fun addDateItemToBuilder(date: LocalDate) {
@@ -909,19 +941,27 @@ class BuildReminderViewModel(
       reminderAnalyticsTracker.sendEvent(reminder.toAnalyticsReminderType())
     }
 
-    // Track reminder creation and show review dialog after 4 reminders
-    if (!isEdit && !prefs.reviewDialogShown) {
+    // Track reminder creation, show the feedback-form review dialog after 4 reminders, then -
+    // staggered after that, never in the same session - nudge the real Play Store review flow
+    // after 10, since the feedback form never touches the actual Play Store rating.
+    if (!isEdit) {
       val currentCount = prefs.remindersCreatedCount
       val newCount = currentCount + 1
       prefs.remindersCreatedCount = newCount
       Logger.i(TAG, "Reminder creation count: $newCount")
 
-      if (newCount >= 4) {
+      if (!prefs.reviewDialogShown && newCount >= 4) {
         Logger.i(TAG, "Showing review dialog after 4 reminders created")
         withContext(dispatcherProvider.main()) {
           askReview(R.string.share_your_experience)
         }
         prefs.reviewDialogShown = true
+      } else if (prefs.reviewDialogShown && !prefs.playReviewFlowShown && newCount >= 10) {
+        Logger.i(TAG, "Launching Play Store review flow after 10 reminders created")
+        withContext(dispatcherProvider.main()) {
+          event.emit(ViewModelEvent.ShowPlayReviewFlow)
+        }
+        prefs.playReviewFlowShown = true
       }
     }
   }
@@ -1020,6 +1060,8 @@ class BuildReminderViewModel(
     data class ShowMessage(
       val messageRes: Int,
     ) : ViewModelEvent
+
+    data object ShowPlayReviewFlow : ViewModelEvent
 
     data class ShowReviewDialog(
       val title: String,

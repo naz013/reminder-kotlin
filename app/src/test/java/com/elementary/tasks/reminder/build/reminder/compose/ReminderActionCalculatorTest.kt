@@ -10,7 +10,7 @@ import com.elementary.tasks.reminder.build.SmsBuilderItem
 import com.elementary.tasks.reminder.build.SubTasksBuilderItem
 import com.elementary.tasks.reminder.build.WebAddressBuilderItem
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

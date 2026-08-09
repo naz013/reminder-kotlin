@@ -579,6 +579,12 @@
     <string name="pro_version">PRO संस्करण</string>
     <string name="pro_advantages">PRO के लाभ:</string>
     <string name="pro_buy">PRO खरीदें</string>
+    <string name="pro_streaks_and_insights">- स्ट्रीक और इनसाइट्स डैशबोर्ड</string>
+    <string name="pro_local_encrypted_backup">- लोकल एन्क्रिप्टेड बैकअप</string>
+    <string name="pro_gemini_app_functions">- Gemini AppFunctions इंटीग्रेशन</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Reminder पसंद आ रहा है? PRO के साथ विज्ञापन-मुक्त हो जाएं</string>
+    <string name="local_backup_locked_description">अपनी चुनी हुई फ़ाइल में एन्क्रिप्टेड, पासफ़्रेज़-प्रोटेक्टेड बैकअप एक्सपोर्ट करें - पूरी तरह ऑफ़लाइन</string>
     <string name="pro_no_ads">- कोई विज्ञापन नहीं</string>
     <string name="pro_different_settings_for_birthdays">- जन्मदिनों के लिए अलग सेटिंग्स</string>
     <string name="pro_led_notification">- LED सूचना</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">पूर्वावलोकन</string>
     <string name="recur_customize">कस्टमाइज़ करें</string>
     <string name="recur_wrong_parameters_message">गलत पैरामीटर का उपयोग किया गया, कोई दिनांक-समय उपलब्ध नहीं!</string>
-    <string name="additional_recur_type">- अतिरिक्त रिमाइंडर प्रकार - कस्टम, स्वयं के पुनरावृत्ति नियम सेट करने की संभावना के साथ</string>
+    <string name="pro_icalendar_custom_reminder">- अपने खुद के रिपीट नियम सेट करने की सुविधा वाला iCalendar कस्टम रिमाइंडर</string>
     <string name="additional_places_type">- अतिरिक्त रिमाइंडर प्रकार - स्थान, जहां आप POI को लक्ष्य के रूप में सेट कर सकते हैं</string>
     <string name="recur_rfc_5545_doc">RFC 5545 दस्तावेज़</string>
     <string name="recur_need_help">सहायता चाहिए?</string>

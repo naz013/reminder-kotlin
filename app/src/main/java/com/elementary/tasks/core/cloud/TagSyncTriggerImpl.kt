@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.cloud
 
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
-import com.elementary.tasks.core.cloud.worker.WorkType
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.files.DataType
 import com.github.naz013.repository.TagSyncTrigger
 

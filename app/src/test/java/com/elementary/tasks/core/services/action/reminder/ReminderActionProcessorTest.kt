@@ -3,7 +3,6 @@ package com.elementary.tasks.core.services.action.reminder
 import android.content.Context
 import android.media.AudioManager
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
@@ -11,7 +10,7 @@ import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.workflow.WorkflowTriggerRunner
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.LockScreenVisibility
 import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
@@ -19,6 +18,7 @@ import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.usecase.reminders.ResolveReminderV2NotificationSettingsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -35,7 +35,7 @@ class ReminderActionProcessorTest : BaseTest() {
   private val prefs = mockk<Prefs>(relaxed = true)
   private val doNotDisturbManager = mockk<DoNotDisturbManager>()
   private val dateTimeManager = mockk<DateTimeManager>()
-  private val jobScheduler = mockk<JobScheduler>(relaxed = true)
+  private val jobScheduler = mockk<JobSchedulerApi>(relaxed = true)
   private val contextProvider = mockk<ContextProvider>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val workflowTriggerRunner = mockk<WorkflowTriggerRunner>(relaxed = true)

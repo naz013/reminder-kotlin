@@ -11,7 +11,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart

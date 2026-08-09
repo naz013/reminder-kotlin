@@ -87,6 +87,7 @@ fun OtherSettingsScreen(
       SettingsItem(
         title = stringResource(R.string.gemini_functions),
         icon = painterResource(R.drawable.ic_fluent_apps),
+        locked = state.isGeminiFunctionsLocked,
         dividerBottom = true,
         onClick = onGeminiFunctionsClick,
       )

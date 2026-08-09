@@ -2,7 +2,7 @@ package com.elementary.tasks.core.cloud
 
 import androidx.core.content.edit
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.ReminderV2

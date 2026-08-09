@@ -3,13 +3,13 @@ package com.elementary.tasks.settings.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 
 class CalendarSettingsViewModel(
   private val dispatcherProvider: DispatcherProvider,
-  private val calendarUtils: GoogleCalendarUtils,
+  private val googleCalendarApi: GoogleCalendarApi,
   private val prefs: Prefs,
   private val textProvider: TextProvider,
   analyticsEventSender: AnalyticsEventSender,
@@ -95,7 +95,7 @@ class CalendarSettingsViewModel(
   fun onSelectGoogleCalendarClicked() {
     viewModelScope.launch(dispatcherProvider.default()) {
       calendars =
-        calendarUtils.getCalendarsList().map { GoogleCalendar(id = it.id, name = it.name) }
+        googleCalendarApi.getCalendarsList().map { GoogleCalendar(id = it.id, name = it.name) }
       if (calendars.isEmpty()) {
         Logger.e(TAG, "No Google Calendars found.")
         return@launch
@@ -160,7 +160,7 @@ class CalendarSettingsViewModel(
   private fun loadSelectedCalendar() {
     viewModelScope.launch(dispatcherProvider.default()) {
       selectedCalendarId = prefs.googleCalendarReminderId
-      val calendar = calendarUtils.getCalendarById(selectedCalendarId)
+      val calendar = googleCalendarApi.getCalendarById(selectedCalendarId)
       selectedCalendarName = calendar?.name
       if (calendar == null) {
         Logger.e(TAG, "Selected calendar not found for id: $selectedCalendarId")

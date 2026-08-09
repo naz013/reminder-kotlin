@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.history.EventHistoricalRecord

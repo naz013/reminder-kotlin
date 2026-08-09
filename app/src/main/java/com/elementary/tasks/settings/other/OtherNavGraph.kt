@@ -15,7 +15,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.SettingsScaffold
@@ -99,7 +99,14 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
       onRateClick = { googlePlayMarketLauncher.launchSelf() },
       onTellFriendsClick = { viewModel.onShareClicked() },
       onWhatsNewClick = { backStack.add(OtherNavKey.WhatsNew) },
-      onGeminiFunctionsClick = { backStack.add(OtherNavKey.GeminiFunctions) },
+      onGeminiFunctionsClick = {
+        if (state.isGeminiFunctionsLocked) {
+          viewModel.onGeminiFunctionsLockedClick()
+          backStack.add(SettingsNavKey.ProVersion)
+        } else {
+          backStack.add(OtherNavKey.GeminiFunctions)
+        }
+      },
       onPermissionsClick = { backStack.add(OtherNavKey.Permissions) },
       onAllowPermissionClick = { viewModel.onShowPermissionDialogClicked() },
       onOssClick = { backStack.add(OtherNavKey.Oss) },

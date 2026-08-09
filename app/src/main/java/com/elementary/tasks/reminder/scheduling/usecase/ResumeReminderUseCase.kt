@@ -1,17 +1,17 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
-import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
-import com.elementary.tasks.reminder.scheduling.behavior.v2.LocationBasedStrategyV2
-import com.elementary.tasks.reminder.scheduling.usecase.location.StartLocationTrackingUseCase
+import com.github.naz013.logic.reminder.usecase.StartLocationTrackingUseCase
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
+import com.github.naz013.logic.reminder.behavior.LocationBasedStrategyV2
+import com.github.naz013.scheduler.JobSchedulerApi
 
 /**
  * Resumes a reminder by scheduling necessary jobs based on its strategy.
  */
 class ResumeReminderUseCase(
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
   private val strategyResolver: BehaviorStrategyResolverV2,
   private val startLocationTrackingUseCase: StartLocationTrackingUseCase,
 ) {

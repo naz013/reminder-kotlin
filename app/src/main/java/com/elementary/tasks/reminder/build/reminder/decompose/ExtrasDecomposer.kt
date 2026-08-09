@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.build.reminder.decompose
 
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.AttachmentsBuilderItem
 import com.elementary.tasks.reminder.build.BeforeTimeBuilderItem
 import com.elementary.tasks.reminder.build.BuilderItem
@@ -29,12 +28,13 @@ import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.repeatLimitOrDefault
+import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.repository.GoogleTaskListRepository
 
 class ExtrasDecomposer(
   private val biFactory: BiFactory,
   private val googleTaskListRepository: GoogleTaskListRepository,
-  private val googleCalendarUtils: GoogleCalendarUtils,
+  private val googleCalendarApi: GoogleCalendarApi,
 ) {
   suspend operator fun invoke(reminder: ReminderV2): List<BuilderItem<*>> {
     val notification = reminder.notification
@@ -102,7 +102,7 @@ class ExtrasDecomposer(
       calendarExport?.calendarId
         ?.takeIf { it > 0 }
         ?.let { calendarId ->
-          googleCalendarUtils.getCalendarsList().firstOrNull { it.id == calendarId }
+          googleCalendarApi.getCalendarsList().firstOrNull { it.id == calendarId }
         }?.let {
           biFactory.createWithValue(BiType.GOOGLE_CALENDAR, it, GoogleCalendarBuilderItem::class.java)
         }

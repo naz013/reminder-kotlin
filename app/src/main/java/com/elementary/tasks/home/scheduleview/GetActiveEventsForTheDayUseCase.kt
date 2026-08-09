@@ -8,7 +8,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction

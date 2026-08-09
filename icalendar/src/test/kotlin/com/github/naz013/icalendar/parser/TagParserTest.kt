@@ -11,7 +11,6 @@ import com.github.naz013.icalendar.IntervalRecurParam
 import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.Tag
 import com.github.naz013.icalendar.UtcDateTime
-import com.github.naz013.icalendar.parser.TagParser
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

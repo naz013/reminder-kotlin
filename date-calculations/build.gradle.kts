@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+  implementation(project(":logging-api"))
+
   implementation(libs.threetenbp)
 
   implementation(libs.koin.core)

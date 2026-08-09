@@ -2,7 +2,7 @@ package com.elementary.tasks.calendar.dayview.weekheader
 
 import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDayUseCase
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.calendar.StartDayOfWeekProtocol
 import org.threeten.bp.LocalDate
 

@@ -6,8 +6,8 @@ import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.data.UiReminderListState
-import com.elementary.tasks.reminder.usecase.DeleteAllReminderUseCase
-import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.GroupV2Repository

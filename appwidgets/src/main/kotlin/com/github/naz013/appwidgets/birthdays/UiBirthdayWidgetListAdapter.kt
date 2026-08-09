@@ -1,6 +1,6 @@
 package com.github.naz013.appwidgets.birthdays
 
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDate

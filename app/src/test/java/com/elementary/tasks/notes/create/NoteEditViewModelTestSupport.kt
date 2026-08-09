@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.cloud.usecase.ScheduleBackgroundWorkUseCase
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteEdit
@@ -20,19 +19,21 @@ import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
-import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -78,7 +79,8 @@ open class NoteEditViewModelTestSupport : BaseTest() {
   protected val noteColorEngine = mockk<NoteColorEngine>()
   protected val tagRepository = mockk<TagRepository>()
   protected val tagAssignmentRepository = mockk<TagAssignmentRepository>()
-  protected val scheduleBackgroundWorkUseCase = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
+  protected val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>(relaxed = true)
+  protected val tagChipStateAdapter = mockk<TagChipStateAdapter>(relaxed = true)
 
   protected val fakeContext = mockk<Context>(relaxed = true)
 
@@ -230,6 +232,7 @@ open class NoteEditViewModelTestSupport : BaseTest() {
       noteColorEngine = noteColorEngine,
       tagRepository = tagRepository,
       tagAssignmentRepository = tagAssignmentRepository,
-      scheduleBackgroundWorkUseCase = scheduleBackgroundWorkUseCase,
+      toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
+      tagChipStateAdapter = tagChipStateAdapter,
     )
 }

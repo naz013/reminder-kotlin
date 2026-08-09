@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.utils
 
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

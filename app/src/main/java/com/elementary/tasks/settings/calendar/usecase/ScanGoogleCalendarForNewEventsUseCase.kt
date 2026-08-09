@@ -1,18 +1,17 @@
 package com.elementary.tasks.settings.calendar.usecase
 
 import android.app.AlarmManager
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.appwidgets.AppWidgetUpdater
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.CalendarEvent
-import com.github.naz013.domain.reminder.v2.RecurrenceRule as ReminderRecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GroupV2Repository
@@ -21,10 +20,11 @@ import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
 import java.util.Calendar
+import com.github.naz013.domain.reminder.v2.RecurrenceRule as ReminderRecurrenceRule
 
 class ScanGoogleCalendarForNewEventsUseCase(
   private val prefs: Prefs,
-  private val googleCalendarUtils: GoogleCalendarUtils,
+  private val googleCalendarApi: GoogleCalendarApi,
   private val dateTimeManager: DateTimeManager,
   private val calendarEventRepository: CalendarEventRepository,
   private val groupV2Repository: GroupV2Repository,
@@ -49,7 +49,7 @@ class ScanGoogleCalendarForNewEventsUseCase(
   }
 
   suspend fun scanCalendar(calendarId: Long) {
-    val events = googleCalendarUtils.getEvents(listOf(calendarId))
+    val events = googleCalendarApi.getEvents(listOf(calendarId))
     if (events.isEmpty()) {
       Logger.w(TAG, "No events found for Google Calendar ID: $calendarId")
       return

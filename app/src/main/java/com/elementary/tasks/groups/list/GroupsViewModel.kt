@@ -34,6 +34,10 @@ class GroupsViewModel(
     .onStart { loadGroups() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
+  fun refreshState() {
+    loadGroups()
+  }
+
   fun onAddClick() {
     navigationEvent.postValue(Event(NavigationEvent.AddGroup))
   }

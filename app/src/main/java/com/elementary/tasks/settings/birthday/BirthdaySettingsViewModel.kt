@@ -3,7 +3,6 @@ package com.elementary.tasks.settings.birthday
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -11,10 +10,11 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ import org.threeten.bp.LocalTime
 class BirthdaySettingsViewModel(
   private val prefs: Prefs,
   private val textProvider: TextProvider,
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val dateTimeManager: DateTimeManager,
   analyticsEventSender: AnalyticsEventSender,

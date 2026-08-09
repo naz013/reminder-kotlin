@@ -11,7 +11,14 @@ import com.elementary.tasks.R
 import androidx.core.net.toUri
 
 interface GooglePlayMarketLauncher {
-  fun launch(packageName: String)
+  /**
+   * [referrer] is passed through to the Play Store as the standard `referrer` install-referrer
+   * query param, so the target app can read it back via the Play Install Referrer Library and
+   * attribute the resulting install to whoever launched this deep link - the only attribution
+   * available when the two apps are separate paid/free listings rather than one app with an
+   * in-app purchase.
+   */
+  fun launch(packageName: String, referrer: String? = null)
   fun launchSelf()
 }
 
@@ -23,8 +30,9 @@ private class GooglePlayMarketLauncherImpl(
     launch(context.packageName)
   }
 
-  override fun launch(packageName: String) {
-    val uri = ("market://details?id=$packageName").toUri()
+  override fun launch(packageName: String, referrer: String?) {
+    val referrerSuffix = referrer?.let { "&referrer=${Uri.encode(it)}" }.orEmpty()
+    val uri = ("market://details?id=$packageName$referrerSuffix").toUri()
     val goToMarket = Intent(Intent.ACTION_VIEW, uri)
     try {
       context.startActivity(goToMarket)

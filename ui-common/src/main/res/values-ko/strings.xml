@@ -579,6 +579,12 @@
     <string name="pro_version">PRO 버전</string>
     <string name="pro_advantages">PRO의 장점:</string>
     <string name="pro_buy">PRO 구매</string>
+    <string name="pro_streaks_and_insights">- 스트릭 및 인사이트 대시보드</string>
+    <string name="pro_local_encrypted_backup">- 로컬 암호화 백업</string>
+    <string name="pro_gemini_app_functions">- Gemini AppFunctions 연동</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Reminder가 마음에 드시나요? PRO로 광고 없이 이용하세요</string>
+    <string name="local_backup_locked_description">선택한 파일로 암호화되고 암호로 보호된 백업을 내보내기 - 완전 오프라인</string>
     <string name="pro_no_ads">- 광고 없음</string>
     <string name="pro_different_settings_for_birthdays">- 생일을 위한 다양한 설정</string>
     <string name="pro_led_notification">- LED 알림</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">미리보기</string>
     <string name="recur_customize">사용자 정의</string>
     <string name="recur_wrong_parameters_message">잘못된 매개변수가 사용되어 사용할 수 있는 날짜-시간이 없습니다!</string>
-    <string name="additional_recur_type">- 추가 알림 유형 - 자체 반복 규칙을 설정할 수 있는 사용자 정의</string>
+    <string name="pro_icalendar_custom_reminder">- 직접 반복 규칙을 설정할 수 있는 iCalendar 맞춤 리마인더</string>
     <string name="additional_places_type">- 추가 알림 유형 - POI를 대상으로 설정할 수 있는 장소</string>
     <string name="recur_rfc_5545_doc">RFC 5545 문서</string>
     <string name="recur_need_help">도움이 필요하신가요?</string>

@@ -1,0 +1,272 @@
+package com.github.naz013.feature.googletask
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import com.github.naz013.common.Permissions
+import com.github.naz013.feature.googletask.preview.PreviewGoogleTaskScreen
+import com.github.naz013.feature.googletask.preview.PreviewGoogleTaskState
+import com.github.naz013.feature.googletask.preview.PreviewGoogleTaskViewModel
+import com.github.naz013.feature.googletask.task.EditGoogleTaskScreen
+import com.github.naz013.feature.googletask.task.EditGoogleTaskState
+import com.github.naz013.feature.googletask.task.EditGoogleTaskViewModel
+import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListScreen
+import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListState
+import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListViewModel
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.compose.hideKeyboard
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
+import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
+import com.github.naz013.ui.googletask.rememberGoogleTasksLogin
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+fun EntryProviderScope<NavKey>.googleTasksEntries(
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
+) {
+  entry<GoogleTasksNavKey.List> { GoogleTasksListEntry(backStack) }
+  entry<GoogleTasksNavKey.TaskList> { key -> TaskListEntry(key, backStack) }
+  entry<GoogleTasksNavKey.TaskPreview> { key -> TaskPreviewEntry(key, backStack, adsContent) }
+  entry<GoogleTasksNavKey.TaskEdit> { key -> TaskEditEntry(key, backStack, adsContent) }
+  entry<GoogleTasksNavKey.ListEdit> { key -> ListEditEntry(key, backStack, adsContent) }
+}
+
+@Composable
+private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
+  val viewModel = koinViewModel<GoogleTasksViewModel>()
+
+  val googleTasksLogin = rememberGoogleTasksLogin(
+    onResult = { viewModel.onGoogleTasksLoginStateChanged(it) },
+    onFail = { viewModel.onGoogleTasksAuthFailed() },
+  )
+
+  val permissionRequester = rememberPermissionRequesterRationale()
+  val toastDispatcher = rememberToastDispatcher()
+  val dialogDispatcher = rememberDialogDispatcher()
+
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      GoogleTasksViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+
+      GoogleTasksViewModel.ViewModelEvent.Login -> {
+        permissionRequester.request(
+          Permissions.GET_ACCOUNTS,
+          onGranted = { googleTasksLogin.login() },
+        )
+      }
+
+      GoogleTasksViewModel.ViewModelEvent.ShowLoginError -> {
+        dialogDispatcher.showDialog(
+          textRes = R.string.failed_to_login,
+          positiveButtonRes = R.string.ok,
+        )
+      }
+
+      is GoogleTasksViewModel.ViewModelEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+    }
+  }
+
+  val state by viewModel.state.collectAsState(GoogleTasksState())
+  GoogleTasksScreen(
+    state = state,
+    onBackClick = { viewModel.onBackPressed() },
+    onConnectClick = { viewModel.onLoginClicked() },
+    onAddListClick = { backStack.add(GoogleTasksNavKey.ListEdit()) },
+    onAddTaskClick = { backStack.add(GoogleTasksNavKey.TaskEdit()) },
+    onTaskListClick = { listId -> backStack.add(GoogleTasksNavKey.TaskList(listId)) },
+    onTaskClick = { id -> backStack.add(GoogleTasksNavKey.TaskPreview(id)) },
+    onTaskToggle = viewModel::toggleTask,
+    onRefresh = viewModel::sync,
+  )
+}
+
+@Composable
+private fun TaskListEntry(
+  key: GoogleTasksNavKey.TaskList,
+  backStack: MutableList<NavKey>,
+) {
+  val viewModel = koinViewModel<TaskListViewModel> { parametersOf(key.listId) }
+
+  val toastDispatcher = rememberToastDispatcher()
+
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      TaskListViewModel.TaskListEvent.MoveBack -> backStack.removeLastOrNull()
+
+      is TaskListViewModel.TaskListEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is TaskListViewModel.TaskListEvent.EditTaskList -> {
+        backStack.add(GoogleTasksNavKey.ListEdit(event.listId))
+      }
+    }
+  }
+
+  val state by viewModel.state.collectAsState(TaskListState())
+  TaskListScreen(
+    state = state,
+    onBackClick = { backStack.removeLastOrNull() },
+    onEditListClick = { viewModel.onEditClicked() },
+    onDeleteListClick = viewModel::onDeleteListClick,
+    onDeleteConfirmed = viewModel::deleteGoogleTaskList,
+    onDeleteDismiss = viewModel::onDeleteDismiss,
+    onClearCompletedClick = viewModel::clearList,
+    onTaskClick = { id -> backStack.add(GoogleTasksNavKey.TaskPreview(id)) },
+    onTaskToggle = viewModel::toggleTask,
+    onAddTaskClick = { backStack.add(GoogleTasksNavKey.TaskEdit(listId = key.listId)) },
+    onRefresh = viewModel::sync,
+  )
+}
+
+@Composable
+private fun TaskPreviewEntry(
+  key: GoogleTasksNavKey.TaskPreview,
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
+) {
+  val viewModel = koinViewModel<PreviewGoogleTaskViewModel> { parametersOf(key.id) }
+
+  val toastDispatcher = rememberToastDispatcher()
+
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      PreviewGoogleTaskViewModel.PreviewGoogleTaskEvent.MoveBack -> backStack.removeLastOrNull()
+      is PreviewGoogleTaskViewModel.PreviewGoogleTaskEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+    }
+  }
+
+  val state by viewModel.state.collectAsState(PreviewGoogleTaskState())
+  PreviewGoogleTaskScreen(
+    state = state,
+    onBackClick = { backStack.removeLastOrNull() },
+    onEditClick = { backStack.add(GoogleTasksNavKey.TaskEdit(id = key.id)) },
+    onDeleteClick = viewModel::onDeleteClick,
+    onDeleteConfirmed = viewModel::onDeleteConfirmed,
+    onDeleteDismiss = viewModel::onDeleteDismiss,
+    onCompleteClick = viewModel::onComplete,
+    adsContent = adsContent,
+  )
+}
+
+@Composable
+private fun TaskEditEntry(
+  key: GoogleTasksNavKey.TaskEdit,
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
+) {
+  val viewModel = koinViewModel<EditGoogleTaskViewModel> { parametersOf(key.id, key.listId) }
+
+  val context = LocalContext.current
+  val dateTimePicker = rememberDateTimePicker()
+  val toastDispatcher = rememberToastDispatcher()
+
+  DisposableEffect(viewModel) {
+    onDispose {
+      context.hideKeyboard()
+    }
+  }
+
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowDatePicker -> {
+        dateTimePicker.showDatePicker(
+          date = event.date,
+          title = event.title,
+          onDateSelected = { viewModel.onDateSet(it) },
+        )
+      }
+
+      is EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowTimePicker -> {
+        dateTimePicker.showTimePicker(
+          time = event.time,
+          title = event.title,
+          is24Hour = event.is24Hour,
+          onTimeSelected = { viewModel.onTimeSet(it) },
+        )
+      }
+
+      EditGoogleTaskViewModel.EditGoogleTaskEvent.MoveBack -> backStack.removeLastOrNull()
+
+      is EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+    }
+  }
+
+  val state by viewModel.state.collectAsState(EditGoogleTaskState())
+
+  EditGoogleTaskScreen(
+    state = state,
+    onBackClick = { backStack.removeLastOrNull() },
+    onSaveClick = viewModel::save,
+    onDeleteMenuClick = viewModel::onDeleteMenuClick,
+    onMoveMenuClick = viewModel::onMoveMenuClick,
+    onTitleChange = viewModel::onTitleChange,
+    onNotesChange = viewModel::onNotesChange,
+    onDateFieldClick = viewModel::onDateFieldClick,
+    onTimeFieldClick = viewModel::onTimeFieldClick,
+    onListFieldClick = viewModel::onListFieldClick,
+    onDateTypeSelected = viewModel::onDateTypeSelected,
+    onTimeTypeSelected = viewModel::onTimeTypeSelected,
+    onListPicked = viewModel::onListPicked,
+    onDeleteConfirmed = viewModel::onDeleteConfirmed,
+    onDialogDismiss = viewModel::onDialogDismiss,
+    adsContent = adsContent,
+  )
+}
+
+@Composable
+private fun ListEditEntry(
+  key: GoogleTasksNavKey.ListEdit,
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
+) {
+  val viewModel = koinViewModel<EditGoogleTaskListViewModel> { parametersOf(key.id) }
+
+  val context = LocalContext.current
+  val toastDispatcher = rememberToastDispatcher()
+
+  DisposableEffect(viewModel) {
+    onDispose {
+      context.hideKeyboard()
+    }
+  }
+
+  viewModel.navigationEvent.ObserveEvent { event ->
+    when (event) {
+      EditGoogleTaskListViewModel.EditGoogleTaskListEvent.MoveBack -> {
+        backStack.removeLastOrNull()
+      }
+
+      is EditGoogleTaskListViewModel.EditGoogleTaskListEvent.ShowError -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+    }
+  }
+
+  val state by viewModel.state.collectAsState(EditGoogleTaskListState())
+  EditGoogleTaskListScreen(
+    state = state,
+    onBackClick = { backStack.removeLastOrNull() },
+    onSaveClick = viewModel::save,
+    onDeleteMenuClick = viewModel::onDeleteClick,
+    onNameChange = viewModel::onNameChange,
+    onColorSelected = viewModel::onColorSelected,
+    onDefaultToggle = viewModel::onDefaultToggle,
+    onDeleteConfirmed = viewModel::deleteGoogleTaskList,
+    onDeleteDismiss = viewModel::onDeleteDismiss,
+    adsContent = adsContent,
+  )
+}

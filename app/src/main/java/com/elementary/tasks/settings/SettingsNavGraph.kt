@@ -20,10 +20,10 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
-import com.elementary.tasks.core.os.compose.rememberPermissionRequesterRationale
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.ui.compose.rememberDateTimePicker
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
@@ -43,6 +43,9 @@ import com.elementary.tasks.settings.other.OtherNavKey
 import com.elementary.tasks.settings.proversion.ProVersionScreen
 import com.elementary.tasks.settings.proversion.ProVersionViewModel
 import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.elementary.tasks.settings.reminders.ManagePresetsScreen
 import com.elementary.tasks.settings.reminders.RemindersSettingsEvent
 import com.elementary.tasks.settings.reminders.RemindersSettingsScreen
@@ -62,7 +65,7 @@ import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSetting
 import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.insights.InsightsNavKey
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.reviews.rememberReviewsFormLauncher
@@ -129,6 +132,7 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun BackupEntry(backStack: MutableList<NavKey>) {
   val buildInfo = koinInject<BuildInfo>()
+  val analyticsEventSender = koinInject<AnalyticsEventSender>()
 
   val exportBackupLauncher =
     rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
@@ -144,10 +148,14 @@ private fun BackupEntry(backStack: MutableList<NavKey>) {
     onBackClick = { backStack.removeLastOrNull() },
   ) { padding ->
     BackupSettingsScreen(
-      isLocalBackupVisible = buildInfo.isPro,
+      isLocalBackupLocked = !buildInfo.isPro,
       onCloudBackupClick = { backStack.add(ExportNavKey.CloudBackup) },
       onExportBackupClick = { exportBackupLauncher.launch(BACKUP_FILE_NAME) },
       onImportBackupClick = { importBackupLauncher.launch(arrayOf("*/*")) },
+      onLocalBackupLockedClick = {
+        analyticsEventSender.send(FeatureGateTappedEvent(Feature.LOCAL_BACKUP))
+        backStack.add(SettingsNavKey.ProVersion)
+      },
       modifier = Modifier.padding(padding),
     )
   }
@@ -231,7 +239,14 @@ private fun RemindersEntry(
   ) { padding ->
     RemindersSettingsScreen(
       state = state,
-      onInsightsClick = { backStack.add(InsightsNavKey.Dashboard) },
+      onInsightsClick = {
+        if (state.isInsightsLocked) {
+          viewModel.onInsightsLockedClick()
+          backStack.add(SettingsNavKey.ProVersion)
+        } else {
+          backStack.add(InsightsNavKey.Dashboard)
+        }
+      },
       onPresetsClick = viewModel::onPresetsClick,
       onLocationClick = viewModel::onLocationClick,
       onWorkflowRulesClick = viewModel::onWorkflowRulesClick,
@@ -517,7 +532,13 @@ private fun ProVersionEntry(backStack: MutableList<NavKey>) {
   ProVersionScreen(
     advantages = viewModel.state.advantages,
     onBackClick = { backStack.removeLastOrNull() },
-    onBuyClick = { googlePlayMarketLauncher.launch(SystemInfo.PRO_PACKAGE_NAME) },
+    onBuyClick = {
+      viewModel.onBuyClicked()
+      googlePlayMarketLauncher.launch(
+        packageName = SystemInfo.PRO_PACKAGE_NAME,
+        referrer = "utm_source=free_app&utm_medium=in_app_cta",
+      )
+    },
   )
 }
 

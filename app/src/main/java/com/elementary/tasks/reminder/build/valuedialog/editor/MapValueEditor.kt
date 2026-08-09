@@ -9,7 +9,7 @@ import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.simplemap.MapMarker
 import com.elementary.tasks.simplemap.MapParams
 import com.elementary.tasks.simplemap.SimpleMapView
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.sync.SyncState
 import com.google.android.gms.maps.model.LatLng

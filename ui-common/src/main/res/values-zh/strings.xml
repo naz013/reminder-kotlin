@@ -579,6 +579,12 @@
     <string name="pro_version">PRO版本</string>
     <string name="pro_advantages">PRO的优势：</string>
     <string name="pro_buy">购买PRO</string>
+    <string name="pro_streaks_and_insights">- 连续记录与统计仪表盘</string>
+    <string name="pro_local_encrypted_backup">- 本地加密备份</string>
+    <string name="pro_gemini_app_functions">- Gemini AppFunctions 集成</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">喜欢 Reminder 吗?升级 PRO 畅享无广告体验</string>
+    <string name="local_backup_locked_description">将加密且受密码保护的备份导出到你选择的文件 - 完全离线</string>
     <string name="pro_no_ads">- 无广告</string>
     <string name="pro_different_settings_for_birthdays">- 生日的不同设置</string>
     <string name="pro_led_notification">- LED通知</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">预览</string>
     <string name="recur_customize">自定义</string>
     <string name="recur_wrong_parameters_message">使用了错误的参数，没有可用的日期时间！</string>
-    <string name="additional_recur_type">- 附加提醒类型 - 自定义，可设置自己的重复规则</string>
+    <string name="pro_icalendar_custom_reminder">- iCalendar 自定义提醒,可设置自己的重复规则</string>
     <string name="additional_places_type">- 附加提醒类型 - 地点，可设置兴趣点作为目标</string>
     <string name="recur_rfc_5545_doc">RFC 5545 文档</string>
     <string name="recur_need_help">需要帮助？</string>

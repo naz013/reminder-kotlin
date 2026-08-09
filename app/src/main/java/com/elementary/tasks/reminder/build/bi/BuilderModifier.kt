@@ -3,15 +3,15 @@ package com.elementary.tasks.reminder.build.bi
 import android.util.Patterns
 import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.reminder.build.formatter.Formatter
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 import com.github.naz013.domain.reminder.v2.TaskExportSettings
+import com.github.naz013.googlecalendar.CalendarItem
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -237,8 +237,8 @@ class GoogleTaskListModifier(
 }
 
 class GoogleCalendarModifier(
-  private val initValue: GoogleCalendarUtils.CalendarItem? = null,
-) : DefaultModifier<GoogleCalendarUtils.CalendarItem>(DefaultBiStorage(initValue)) {
+  private val initValue: CalendarItem? = null,
+) : DefaultModifier<CalendarItem>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
     val value = storage.value ?: return emptyText
     return value.name

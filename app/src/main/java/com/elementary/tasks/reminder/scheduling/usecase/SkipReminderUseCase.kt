@@ -1,11 +1,12 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
-import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
-import com.elementary.tasks.reminder.scheduling.behavior.v2.LocationBasedStrategyV2
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
+import com.github.naz013.logic.reminder.behavior.LocationBasedStrategyV2
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.plusMillis
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 
 /**
  * Use case to skip a reminder to its next occurrence.

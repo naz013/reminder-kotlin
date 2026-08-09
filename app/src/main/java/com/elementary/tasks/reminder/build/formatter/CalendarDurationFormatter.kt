@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.build.formatter
 import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 
 class CalendarDurationFormatter(
   private val context: Context,

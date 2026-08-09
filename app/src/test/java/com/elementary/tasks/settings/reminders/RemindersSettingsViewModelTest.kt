@@ -4,12 +4,14 @@ import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.utils.VibrationPlayer
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.common.system.SystemInfo
+import com.github.naz013.platform.SystemInfo
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -107,6 +109,35 @@ class RemindersSettingsViewModelTest : BaseTest() {
       )
 
     assertEquals(false, vm.state.value.isLedVisible)
+  }
+
+  @Test
+  fun `isInsightsLocked is false when the build is pro`() {
+    assertEquals(false, viewModel.state.value.isInsightsLocked)
+  }
+
+  @Test
+  fun `isInsightsLocked is true when the build is not pro`() {
+    every { buildInfo.isPro } returns false
+    val vm =
+      RemindersSettingsViewModel(
+        prefs,
+        textProvider,
+        dateTimeManager,
+        analyticsEventSender,
+        systemInfo,
+        buildInfo,
+        vibrationPlayer,
+      )
+
+    assertEquals(true, vm.state.value.isInsightsLocked)
+  }
+
+  @Test
+  fun `onInsightsLockedClick sends a feature gate tapped analytics event`() {
+    viewModel.onInsightsLockedClick()
+
+    verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.INSIGHTS)) }
   }
 
   @Test

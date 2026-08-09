@@ -1,0 +1,19 @@
+package com.github.naz013.feature.googletask.usecase
+
+import com.github.naz013.domain.GoogleTaskList
+
+internal class GoogleTaskListFactory {
+  fun update(
+    googleTaskList: GoogleTaskList,
+    newGoogleTaskList: GoogleTaskList,
+  ): GoogleTaskList =
+    googleTaskList.copy(
+      title = newGoogleTaskList.title,
+      listId = newGoogleTaskList.listId,
+      eTag = newGoogleTaskList.eTag,
+      kind = newGoogleTaskList.kind,
+      selfLink = newGoogleTaskList.selfLink,
+      updated = newGoogleTaskList.updated,
+      uploaded = true,
+    )
+}

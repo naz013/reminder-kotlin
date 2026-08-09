@@ -8,21 +8,18 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
-import com.elementary.tasks.core.data.adapter.google.UiGoogleTaskListAdapter
 import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.utils.GoogleCalendarUtils
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.elementary.tasks.reminder.usecase.DeleteReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
-import com.elementary.tasks.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
@@ -33,7 +30,9 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -42,6 +41,7 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
+import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
@@ -58,13 +58,13 @@ class PreviewReminderViewModel(
   private val id: String,
   private val reminderV2Repository: ReminderV2Repository,
   private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
-  private val googleCalendarUtils: GoogleCalendarUtils,
+  private val googleCalendarApi: GoogleCalendarApi,
   private val dispatcherProvider: DispatcherProvider,
   private val uiReminderPlaceAdapter: UiReminderPlaceAdapter,
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val uiNoteListAdapter: UiNoteListAdapter,
-  private val uiGoogleTaskListAdapter: UiGoogleTaskListAdapter,
+  private val googleTaskItemStateAdapter: GoogleTaskItemStateAdapter,
   private val uriToAttachmentFileAdapter: UriToAttachmentFileAdapter,
   private val backupTool: BackupTool,
   private val noteRepository: NoteRepository,
@@ -205,7 +205,7 @@ class PreviewReminderViewModel(
       if (eventItem.localId.isNotBlank()) {
         calendarEventRepository.delete(eventItem.localId)
       }
-      googleCalendarUtils.deleteEvent(eventItem.id)
+      googleCalendarApi.deleteEvent(eventItem.id)
       load()
     }
   }
@@ -369,15 +369,15 @@ class PreviewReminderViewModel(
           googleTaskListRepository.getById(googleTask.listId)
         }
         withContext(dispatcherProvider.main()) {
-          _state.update { it.copy(googleTask = uiGoogleTaskListAdapter.convert(googleTask, list)) }
+          _state.update { it.copy(googleTask = googleTaskItemStateAdapter.convert(googleTask, list)) }
         }
       }
 
       val events = withContext(dispatcherProvider.io()) {
-        googleCalendarUtils.loadEvents(reminder.uuId)
+        googleCalendarApi.loadEvents(reminder.uuId)
       }
       if (events.isNotEmpty()) {
-        val calendarsMap = googleCalendarUtils.getCalendarsList().associateBy { it.id }
+        val calendarsMap = googleCalendarApi.getCalendarsList().associateBy { it.id }
         val calendarEvents =
           events.map { item ->
             UiCalendarEventList(

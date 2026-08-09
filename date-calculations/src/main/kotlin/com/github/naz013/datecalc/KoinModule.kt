@@ -7,4 +7,6 @@ val dateTimeCalculationsModule = module {
   factoryOf<BirthdayDateCalculator>(::BirthdayDateCalculatorImpl)
   factoryOf<RecurrenceCalculator>(::RecurrenceCalculatorImpl)
   factoryOf(::DateValidator)
+  factoryOf(::NowDateTimeProvider)
+  factoryOf(::DateTimeManager)
 }

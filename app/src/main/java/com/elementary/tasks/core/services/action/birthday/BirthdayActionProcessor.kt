@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.services.action.birthday
 
-import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
@@ -12,11 +11,11 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.Permissions
 import com.github.naz013.datecalc.BirthdayDateCalculator
-import com.github.naz013.datecalc.BirthdayDateCalculatorImpl
 import com.github.naz013.datecalc.DateValidator
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.scheduler.JobSchedulerApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,11 +27,11 @@ class BirthdayActionProcessor(
   private val birthdayRepository: BirthdayRepository,
   private val prefs: Prefs,
   private val doNotDisturbManager: DoNotDisturbManager,
-  private val jobScheduler: JobScheduler,
+  private val jobScheduler: JobSchedulerApi,
   private val analyticsEventSender: AnalyticsEventSender,
   private val contextProvider: ContextProvider,
-  private val dateValidator: DateValidator = DateValidator(),
-  private val birthdayDateCalculator: BirthdayDateCalculator = BirthdayDateCalculatorImpl(),
+  private val dateValidator: DateValidator,
+  private val birthdayDateCalculator: BirthdayDateCalculator,
   private val smsSender: SmsSender,
   private val phoneCaller: PhoneCaller,
 ) {

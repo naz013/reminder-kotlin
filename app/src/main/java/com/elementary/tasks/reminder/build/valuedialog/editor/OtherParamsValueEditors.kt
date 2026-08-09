@@ -20,10 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.GoogleCalendarDurationBuilderItem
-import com.elementary.tasks.reminder.build.OtherParamsBuilderItem
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 import com.github.naz013.ui.common.compose.foundation.component.ValueAndTypePicker
 

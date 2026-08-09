@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.utils.datetime
 
 import com.elementary.tasks.core.utils.ReminderUtils
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 
 object IntervalUtil {
   private const val REPEAT_CODE_ONCE = 0

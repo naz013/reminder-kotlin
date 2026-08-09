@@ -579,6 +579,12 @@
     <string name="pro_version">PRO Версія</string>
     <string name="pro_advantages">Переваги PRO:</string>
     <string name="pro_buy">Купити PRO</string>
+    <string name="pro_streaks_and_insights">- Панель серій і статистики</string>
+    <string name="pro_local_encrypted_backup">- Локальне шифроване резервне копіювання</string>
+    <string name="pro_gemini_app_functions">- Інтеграція з Gemini AppFunctions</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Подобається Reminder? Переходьте на PRO без реклами</string>
+    <string name="local_backup_locked_description">Експортуйте зашифровану резервну копію, захищену паролем, у вибраний файл - повністю офлайн</string>
     <string name="pro_no_ads">- Без реклами</string>
     <string name="pro_different_settings_for_birthdays">- Різні налаштування для днів народження</string>
     <string name="pro_led_notification">- LED сповіщення</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">Попередній перегляд</string>
     <string name="recur_customize">Налаштувати</string>
     <string name="recur_wrong_parameters_message">Використано неправильні параметри, немає доступних дат-часів!</string>
-    <string name="additional_recur_type">- Додатковий тип нагадування - Користувацький, з можливістю встановити власні правила повторення</string>
+    <string name="pro_icalendar_custom_reminder">- Користувацьке нагадування iCalendar з можливістю встановити власні правила повторення</string>
     <string name="additional_places_type">- Додатковий тип нагадування - Місця, де ви можете встановити POI як цілі</string>
     <string name="recur_rfc_5545_doc">Документація RFC 5545</string>
     <string name="recur_need_help">Потрібна допомога?</string>

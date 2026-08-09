@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.scheduling.alarmmanager.v2
 
-import com.elementary.tasks.reminder.scheduling.behavior.v2.BehaviorStrategyResolverV2
-import com.elementary.tasks.reminder.scheduling.behavior.v2.TimerRepeatStrategyV2
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
+import com.github.naz013.logic.reminder.behavior.TimerRepeatStrategyV2
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.minusMillis
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger

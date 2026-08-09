@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:DownloadGoogleTasks.kt$DownloadGoogleTasks$(googleTaskList.listId)</ID>
+    <ID>Indentation:EditGoogleTaskListScreen.kt$ </ID>
+    <ID>Indentation:EditGoogleTaskScreen.kt$ </ID>
+    <ID>Indentation:EditGoogleTaskViewModel.kt$EditGoogleTaskViewModel$ </ID>
+    <ID>Indentation:GoogleTaskPreviewStateAdapter.kt$GoogleTaskPreviewStateAdapter$ </ID>
+    <ID>Indentation:GoogleTasksScreen.kt$ </ID>
+    <ID>Indentation:PreviewGoogleTaskScreen.kt$ </ID>
+    <ID>Indentation:TaskListScreen.kt$ </ID>
+    <ID>MaxLineLength:DownloadGoogleTasks.kt$DownloadGoogleTasks$suspend operator fun invoke(googleTaskList: GoogleTaskList): List&lt;GoogleTask&gt;</ID>
+    <ID>NoConsecutiveBlankLines:EditGoogleTaskViewModel.kt$EditGoogleTaskViewModel$ </ID>
+    <ID>ParameterListWrapping:DownloadGoogleTasks.kt$DownloadGoogleTasks$(googleTaskList: GoogleTaskList)</ID>
+    <ID>SwallowedException:GoogleTasksViewModel.kt$GoogleTasksViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GoogleTasksViewModel.kt$GoogleTasksViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PreviewGoogleTaskViewModel.kt$PreviewGoogleTaskViewModel$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:TaskListViewModel.kt$TaskListViewModel$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

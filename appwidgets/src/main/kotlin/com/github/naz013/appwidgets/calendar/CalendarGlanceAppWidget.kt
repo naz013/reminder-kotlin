@@ -56,7 +56,7 @@ import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
 import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DayViewScreen
 import com.github.naz013.navigation.DeepLinkDestination

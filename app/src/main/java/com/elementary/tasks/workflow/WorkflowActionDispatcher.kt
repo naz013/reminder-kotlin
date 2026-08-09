@@ -1,6 +1,6 @@
 package com.elementary.tasks.workflow
 
-import com.elementary.tasks.reminder.scheduling.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.repository.ReminderV2Repository

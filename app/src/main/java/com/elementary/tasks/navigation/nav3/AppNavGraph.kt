@@ -23,7 +23,6 @@ import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.birthdaysEntries
 import com.elementary.tasks.calendar.monthview.calendarEntries
-import com.elementary.tasks.googletasks.googleTasksEntries
 import com.elementary.tasks.groups.groupsEntries
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
@@ -38,6 +37,7 @@ import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
 import com.elementary.tasks.workflow.workflowEntries
+import com.github.naz013.feature.googletask.googleTasksEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.localBackupEntries
 import com.github.naz013.tags.tagsEntries
@@ -103,7 +103,10 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         groupsEntries(backStack)
         placesEntries(backStack)
         birthdaysEntries(backStack)
-        googleTasksEntries(backStack)
+        googleTasksEntries(
+          backStack = backStack,
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) }
+        )
         buildReminderEntries(backStack)
         calendarEntries(backStack)
         reminderPreviewEntries(backStack)

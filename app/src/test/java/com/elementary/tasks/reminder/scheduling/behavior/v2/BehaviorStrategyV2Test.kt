@@ -1,14 +1,24 @@
 package com.elementary.tasks.reminder.scheduling.behavior.v2
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.utils.datetime.RecurEventManager
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.reminder.RecurEventManager
+import com.github.naz013.logic.reminder.behavior.IntervalRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.LocationBasedStrategyV2
+import com.github.naz013.logic.reminder.behavior.MonthlyRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.NoReminderStrategyV2
+import com.github.naz013.logic.reminder.behavior.RecurRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.SimpleDateStrategyV2
+import com.github.naz013.logic.reminder.behavior.TimerRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.WeekdayRepeatStrategyV2
+import com.github.naz013.logic.reminder.behavior.YearlyRepeatStrategyV2
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -39,12 +49,14 @@ private fun reminderV2(
 
 class SimpleDateStrategyV2Test : BaseTest() {
   private lateinit var dateTimeManager: DateTimeManager
+  private lateinit var recurrenceCalculator: RecurrenceCalculator
   private lateinit var strategy: SimpleDateStrategyV2
 
   @Before
   override fun setUp() {
     super.setUp()
     dateTimeManager = mockk()
+    recurrenceCalculator = mockk(relaxed = true)
     every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     strategy = SimpleDateStrategyV2(dateTimeManager)
   }
@@ -169,16 +181,18 @@ class RecurRepeatStrategyV2Test : BaseTest() {
 
 class TimerRepeatStrategyV2Test : BaseTest() {
   private lateinit var dateTimeManager: DateTimeManager
+  private lateinit var recurrenceCalculator: RecurrenceCalculator
   private lateinit var strategy: TimerRepeatStrategyV2
 
   @Before
   override fun setUp() {
     super.setUp()
     dateTimeManager = mockk()
+    recurrenceCalculator = mockk(relaxed = true)
     every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     every { dateTimeManager.toLocalTime(any()) } returns null
     every { dateTimeManager.getCurrentDateTime() } returns NOW
-    strategy = TimerRepeatStrategyV2(dateTimeManager)
+    strategy = TimerRepeatStrategyV2(dateTimeManager, recurrenceCalculator)
   }
 
   @Test
@@ -218,15 +232,17 @@ class TimerRepeatStrategyV2Test : BaseTest() {
 
 class WeekdayRepeatStrategyV2Test : BaseTest() {
   private lateinit var dateTimeManager: DateTimeManager
+  private lateinit var recurrenceCalculator: RecurrenceCalculator
   private lateinit var strategy: WeekdayRepeatStrategyV2
 
   @Before
   override fun setUp() {
     super.setUp()
     dateTimeManager = mockk()
+    recurrenceCalculator = mockk(relaxed = true)
     every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     every { dateTimeManager.getCurrentDateTime() } returns NOW
-    strategy = WeekdayRepeatStrategyV2(dateTimeManager)
+    strategy = WeekdayRepeatStrategyV2(dateTimeManager, recurrenceCalculator)
   }
 
   @Test
@@ -249,15 +265,17 @@ class WeekdayRepeatStrategyV2Test : BaseTest() {
 
 class YearlyRepeatStrategyV2Test : BaseTest() {
   private lateinit var dateTimeManager: DateTimeManager
+  private lateinit var recurrenceCalculator: RecurrenceCalculator
   private lateinit var strategy: YearlyRepeatStrategyV2
 
   @Before
   override fun setUp() {
     super.setUp()
     dateTimeManager = mockk()
+    recurrenceCalculator = mockk(relaxed = true)
     every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     every { dateTimeManager.getCurrentDateTime() } returns NOW
-    strategy = YearlyRepeatStrategyV2(dateTimeManager)
+    strategy = YearlyRepeatStrategyV2(dateTimeManager, recurrenceCalculator)
   }
 
   @Test
@@ -275,15 +293,17 @@ class YearlyRepeatStrategyV2Test : BaseTest() {
 
 class MonthlyRepeatStrategyV2Test : BaseTest() {
   private lateinit var dateTimeManager: DateTimeManager
+  private lateinit var recurrenceCalculator: RecurrenceCalculator
   private lateinit var strategy: MonthlyRepeatStrategyV2
 
   @Before
   override fun setUp() {
     super.setUp()
     dateTimeManager = mockk()
+    recurrenceCalculator = mockk()
     every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     every { dateTimeManager.getCurrentDateTime() } returns NOW
-    strategy = MonthlyRepeatStrategyV2(dateTimeManager)
+    strategy = MonthlyRepeatStrategyV2(dateTimeManager, recurrenceCalculator)
   }
 
   @Test
@@ -301,15 +321,17 @@ class MonthlyRepeatStrategyV2Test : BaseTest() {
 
 class IntervalRepeatStrategyV2Test : BaseTest() {
   private lateinit var dateTimeManager: DateTimeManager
+  private lateinit var recurrenceCalculator: RecurrenceCalculator
   private lateinit var strategy: IntervalRepeatStrategyV2
 
   @Before
   override fun setUp() {
     super.setUp()
     dateTimeManager = mockk()
+    recurrenceCalculator = mockk(relaxed = true)
     every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     every { dateTimeManager.getCurrentDateTime() } returns NOW
-    strategy = IntervalRepeatStrategyV2(dateTimeManager)
+    strategy = IntervalRepeatStrategyV2(dateTimeManager, recurrenceCalculator)
   }
 
   @Test

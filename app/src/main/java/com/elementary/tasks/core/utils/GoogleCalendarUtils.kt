@@ -10,15 +10,17 @@ import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.CalendarEvent
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.readInt
 import com.github.naz013.feature.common.readLong
 import com.github.naz013.feature.common.readString
+import com.github.naz013.googlecalendar.CalendarItem
+import com.github.naz013.googlecalendar.EventItem
+import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.CalendarEventRepository
-import com.google.gson.annotations.SerializedName
 import java.util.TimeZone
 
 class GoogleCalendarUtils(
@@ -26,11 +28,11 @@ class GoogleCalendarUtils(
   private val prefs: Prefs,
   private val calendarEventRepository: CalendarEventRepository,
   private val dateTimeManager: DateTimeManager,
-) {
+) : GoogleCalendarApi {
   /**
    * Add event to calendar.
    */
-  suspend fun addEvent(reminder: ReminderV2) {
+  override suspend fun addEvent(reminder: ReminderV2) {
     val export = reminder.calendarExport ?: return
     val mId = export.calendarId
     if (mId != 0L) {
@@ -81,7 +83,7 @@ class GoogleCalendarUtils(
     }
   }
 
-  suspend fun deleteEvents(id: String) {
+  override suspend fun deleteEvents(id: String) {
     if (!Permissions.checkPermission(context, Permissions.WRITE_CALENDAR)) {
       Logger.e(TAG, "No calendar permissions!")
       return
@@ -102,7 +104,7 @@ class GoogleCalendarUtils(
     }
   }
 
-  fun deleteEvent(id: Long) {
+  override fun deleteEvent(id: Long) {
     if (!Permissions.checkPermission(context, Permissions.WRITE_CALENDAR)) {
       Logger.e(TAG, "No calendar permissions!")
       return
@@ -118,7 +120,7 @@ class GoogleCalendarUtils(
     )
   }
 
-  suspend fun loadEvents(reminderId: String): List<EventItem> {
+  override suspend fun loadEvents(reminderId: String): List<EventItem> {
     if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
       Logger.e(TAG, "No calendar permissions!")
       return listOf()
@@ -200,7 +202,7 @@ class GoogleCalendarUtils(
     return null
   }
 
-  fun getCalendarsList(): List<CalendarItem> {
+  override fun getCalendarsList(): List<CalendarItem> {
     if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
       Logger.e(TAG, "No calendar permissions!")
       return listOf()
@@ -232,7 +234,7 @@ class GoogleCalendarUtils(
     return ids.sortedBy { it.id }
   }
 
-  fun getCalendarById(id: Long): CalendarItem? {
+  override fun getCalendarById(id: Long): CalendarItem? {
     if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
       Logger.e(TAG, "No calendar permissions!")
       return null
@@ -269,7 +271,7 @@ class GoogleCalendarUtils(
     return null
   }
 
-  fun getEvents(ids: List<Long>): List<EventItem> {
+  override fun getEvents(ids: List<Long>): List<EventItem> {
     if (ids.isEmpty()) return listOf()
     if (!Permissions.checkPermission(
         context,
@@ -341,27 +343,6 @@ class GoogleCalendarUtils(
     }
     return list
   }
-
-  data class EventItem(
-    val title: String,
-    val description: String,
-    val rrule: String,
-    private val rDate: String,
-    val calendarId: Long,
-    val allDay: Int,
-    val dtStart: Long,
-    val dtEnd: Long,
-    val id: Long,
-    var localId: String = "",
-    var calendarName: String = "",
-  )
-
-  data class CalendarItem(
-    @SerializedName("name")
-    val name: String,
-    @SerializedName("id")
-    val id: Long,
-  )
 
   companion object {
     private const val TAG = "GoogleCalendarUtils"

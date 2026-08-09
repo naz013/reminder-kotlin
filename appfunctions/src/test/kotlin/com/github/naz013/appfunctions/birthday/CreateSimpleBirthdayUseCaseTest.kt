@@ -1,6 +1,6 @@
 package com.github.naz013.appfunctions.birthday
 
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.repository.BirthdayRepository
 import io.mockk.coVerify
 import io.mockk.every

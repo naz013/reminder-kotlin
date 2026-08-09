@@ -18,9 +18,8 @@ import com.elementary.tasks.reminder.build.TimerBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.bi.ProcessedBuilderItems
 import com.elementary.tasks.reminder.build.reminder.ICalDateTimeCalculator
-import com.github.naz013.common.datetime.DateTimeManager
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.RecurrenceCalculator
-import com.github.naz013.datecalc.RecurrenceCalculatorImpl
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.LocationSettings
@@ -40,7 +39,7 @@ data class ComposedRecurrence(
 class RecurrenceRuleCalculator(
   private val dateTimeManager: DateTimeManager,
   private val iCalDateTimeCalculator: ICalDateTimeCalculator,
-  private val recurrenceCalculator: RecurrenceCalculator = RecurrenceCalculatorImpl(),
+  private val recurrenceCalculator: RecurrenceCalculator,
 ) {
   operator fun invoke(processedBuilderItems: ProcessedBuilderItems): ComposedRecurrence? {
     val itemsMap = processedBuilderItems.typeMap

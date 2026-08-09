@@ -3,11 +3,11 @@ package com.elementary.tasks.core.utils.params
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
-import com.elementary.tasks.core.cloud.worker.WorkerNetworkType
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.simplemap.MapConfig
 import com.github.naz013.domain.font.FontParams
+import com.github.naz013.logic.schedule.WorkerNetworkType
 
 typealias PrefsObserver = (String) -> Unit
 
@@ -127,6 +127,14 @@ class Prefs(
   var reviewDialogShown: Boolean
     get() = getBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, def = false)
     set(value) = putBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, value)
+
+  var playReviewFlowShown: Boolean
+    get() = getBoolean(PrefsConstants.PLAY_REVIEW_FLOW_SHOWN, def = false)
+    set(value) = putBoolean(PrefsConstants.PLAY_REVIEW_FLOW_SHOWN, value)
+
+  var installReferrerLogged: Boolean
+    get() = getBoolean(PrefsConstants.INSTALL_REFERRER_LOGGED, def = false)
+    set(value) = putBoolean(PrefsConstants.INSTALL_REFERRER_LOGGED, value)
 
   var hasAdoptedGoogleTasks: Boolean
     get() = getBoolean(PrefsConstants.GOOGLE_TASKS_ADOPTED, def = false)
