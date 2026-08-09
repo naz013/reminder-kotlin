@@ -91,6 +91,41 @@ data class PresetUsed(
   }
 }
 
+/** Fired when a free user taps a locked Pro-only row (Insights, Local Backup, Gemini
+ *  AppFunctions) instead of the feature itself, so we know which gate is driving Pro-screen
+ *  visits. */
+data class FeatureGateTappedEvent(
+  val feature: Feature
+) : AnalyticEvent(Event.FEATURE_GATE_TAPPED) {
+  override fun getParams(): Bundle {
+    return Bundle().apply {
+      putString(Parameter.TYPE, feature.value)
+    }
+  }
+}
+
+data object ProScreenViewedEvent : AnalyticEvent(Event.PRO_SCREEN_VIEWED) {
+  override fun getParams(): Bundle = Bundle()
+}
+
+data object ProBuyClickedEvent : AnalyticEvent(Event.PRO_BUY_CLICKED) {
+  override fun getParams(): Bundle = Bundle()
+}
+
+/** Fired once, from the Pro app's first launch, when an install-referrer value set by the free
+ *  app's "Buy PRO" deep link (see GooglePlayMarketLauncher) is read back - the only way to
+ *  attribute a Pro install to the free app, since Pro is a separate paid listing rather than an
+ *  in-app purchase. */
+data class ProInstallAttributedEvent(
+  val source: String
+) : AnalyticEvent(Event.PRO_INSTALL_ATTRIBUTED) {
+  override fun getParams(): Bundle {
+    return Bundle().apply {
+      putString(Parameter.SOURCE, source)
+    }
+  }
+}
+
 enum class Feature(val value: String) {
   REMINDER("reminder"),
   CREATE_REMINDER("create_reminder"),
@@ -124,7 +159,11 @@ enum class Feature(val value: String) {
 
   APP_FUNCTION_CREATE_GOOGLE_TASK("app_function_create_google_task"),
   APP_FUNCTION_LIST_GOOGLE_TASKS("app_function_list_google_tasks"),
-  APP_FUNCTION_COMPLETE_GOOGLE_TASK("app_function_complete_google_task")
+  APP_FUNCTION_COMPLETE_GOOGLE_TASK("app_function_complete_google_task"),
+
+  INSIGHTS("insights"),
+  LOCAL_BACKUP("local_backup"),
+  GEMINI_FUNCTIONS("gemini_functions")
 }
 
 enum class Screen(val value: String) {
@@ -168,7 +207,11 @@ enum class Event(val value: String) {
   SCREEN_OPENED("screen_opened"),
   PRESET_USED("preset_used"),
   WIDGET_USED("widget_used"),
-  WIDGET_INTERACTED("widget_interacted")
+  WIDGET_INTERACTED("widget_interacted"),
+  PRO_SCREEN_VIEWED("pro_screen_viewed"),
+  PRO_BUY_CLICKED("pro_buy_clicked"),
+  FEATURE_GATE_TAPPED("feature_gate_tapped"),
+  PRO_INSTALL_ATTRIBUTED("pro_install_attributed")
 }
 
 enum class PresetAction(val value: String) {
@@ -201,4 +244,5 @@ object Parameter {
 
   const val REMINDER_TYPE = "reminder_type"
   const val DURATION = "duration"
+  const val SOURCE = "source"
 }

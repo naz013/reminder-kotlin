@@ -128,6 +128,14 @@ class Prefs(
     get() = getBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, def = false)
     set(value) = putBoolean(PrefsConstants.REVIEW_DIALOG_SHOWN, value)
 
+  var playReviewFlowShown: Boolean
+    get() = getBoolean(PrefsConstants.PLAY_REVIEW_FLOW_SHOWN, def = false)
+    set(value) = putBoolean(PrefsConstants.PLAY_REVIEW_FLOW_SHOWN, value)
+
+  var installReferrerLogged: Boolean
+    get() = getBoolean(PrefsConstants.INSTALL_REFERRER_LOGGED, def = false)
+    set(value) = putBoolean(PrefsConstants.INSTALL_REFERRER_LOGGED, value)
+
   var hasAdoptedGoogleTasks: Boolean
     get() = getBoolean(PrefsConstants.GOOGLE_TASKS_ADOPTED, def = false)
     set(value) = putBoolean(PrefsConstants.GOOGLE_TASKS_ADOPTED, value)

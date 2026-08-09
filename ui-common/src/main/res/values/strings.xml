@@ -578,11 +578,16 @@
     <string name="pro_version">PRO Version</string>
     <string name="pro_advantages">Advantages of PRO:</string>
     <string name="pro_buy">Buy PRO</string>
+    <string name="pro_streaks_and_insights">- Streaks &amp; Insights dashboard</string>
+    <string name="pro_local_encrypted_backup">- Local encrypted backup</string>
+    <string name="pro_gemini_app_functions">- Gemini AppFunctions integration</string>
     <string name="pro_no_ads">- No Advertisement</string>
     <string name="pro_different_settings_for_birthdays">- Different settings for birthdays</string>
     <string name="pro_led_notification">- LED notification</string>
     <string name="pro_led_color_for_each_reminder">- LED color for each reminder</string>
     <string name="pro_styles_for_marker">- 16 styles for marker</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Enjoying Reminder? Go ad-free with PRO</string>
     <string name="use_default_text_size">Use default text size</string>
     <string name="remember_last_set_text_size">Remember last set text size</string>
     <string name="use_default_font_style">Use default font style</string>
@@ -632,7 +637,7 @@
     <string name="recur_preview">Preview</string>
     <string name="recur_customize">Customize</string>
     <string name="recur_wrong_parameters_message">Wrong parameters used, there is no date-times available!</string>
-    <string name="additional_recur_type">- Additional Reminder type - Custom, with the possibility to set own recurrence rules</string>
+    <string name="pro_icalendar_custom_reminder">- iCalendar custom reminder, with the possibility to set own recurrence rules</string>
     <string name="additional_places_type">- Additional Reminder type - Places, where You can set POI as targets</string>
     <string name="recur_rfc_5545_doc">RFC 5545 Documentation</string>
     <string name="recur_need_help">Need help?</string>
@@ -1074,6 +1079,7 @@
     <string name="delete_tag_permanently">Delete this tag? It will be removed from every reminder and note.</string>
 
     <string name="local_backup">Local backup</string>
+    <string name="local_backup_locked_description">Export an encrypted, passphrase-protected backup to a file you choose - entirely offline</string>
     <string name="backup_export_title">Export backup</string>
     <string name="backup_import_title">Restore backup</string>
     <string name="backup_export_description">Save an encrypted copy of your reminders, notes, groups, birthdays, places and presets to a file you choose. Nothing is sent anywhere. If you forget the passphrase, the backup cannot be recovered.</string>

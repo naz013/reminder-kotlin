@@ -579,6 +579,12 @@
     <string name="pro_version">Versione PRO</string>
     <string name="pro_advantages">Vantaggi di PRO:</string>
     <string name="pro_buy">Acquista PRO</string>
+    <string name="pro_streaks_and_insights">- Dashboard Serie e statistiche</string>
+    <string name="pro_local_encrypted_backup">- Backup locale cifrato</string>
+    <string name="pro_gemini_app_functions">- Integrazione Gemini AppFunctions</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Ti piace Reminder? Passa a PRO senza pubblicità</string>
+    <string name="local_backup_locked_description">Esporta un backup cifrato e protetto da passphrase in un file a tua scelta - completamente offline</string>
     <string name="pro_no_ads">- Nessuna Pubblicità</string>
     <string name="pro_different_settings_for_birthdays">- Impostazioni diverse per i compleanni</string>
     <string name="pro_led_notification">- Notifica LED</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">Anteprima</string>
     <string name="recur_customize">Personalizza</string>
     <string name="recur_wrong_parameters_message">Parametri errati utilizzati, non ci sono date-ore disponibili!</string>
-    <string name="additional_recur_type">- Tipo di Promemoria aggiuntivo - Personalizzato, con la possibilità di impostare proprie regole di ricorrenza</string>
+    <string name="pro_icalendar_custom_reminder">- Promemoria personalizzato iCalendar, con la possibilità di impostare regole di ricorrenza personalizzate</string>
     <string name="additional_places_type">- Tipo di Promemoria aggiuntivo - Luoghi, dove puoi impostare POI come obiettivi</string>
     <string name="recur_rfc_5545_doc">Documentazione RFC 5545</string>
     <string name="recur_need_help">Hai bisogno di aiuto?</string>

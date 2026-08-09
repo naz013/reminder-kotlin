@@ -43,6 +43,14 @@ class Language(
     const val UKRAINIAN = "uk"
     const val PORTUGUESE = "pt"
     const val BULGARIAN = "bg"
+    const val INDONESIAN = "id"
+    const val ARABIC = "ar"
+    const val SWEDISH = "sv"
+    const val DANISH = "da"
+    const val NORWEGIAN_BOKMAL = "nb"
+    const val VIETNAMESE = "vi"
+    const val THAI = "th"
+    const val DUTCH = "nl"
 
     fun getScreenLanguage(code: Int): Locale {
       return when (code) {
@@ -64,6 +72,14 @@ class Language(
         15 -> Locale("hi", "")
         16 -> Locale.KOREAN
         17 -> Locale(BULGARIAN, "")
+        18 -> Locale(INDONESIAN, "")
+        19 -> Locale(ARABIC, "")
+        20 -> Locale(SWEDISH, "")
+        21 -> Locale(DANISH, "")
+        22 -> Locale(NORWEGIAN_BOKMAL, "")
+        23 -> Locale(VIETNAMESE, "")
+        24 -> Locale(THAI, "")
+        25 -> Locale(DUTCH, "")
         else -> Locale.getDefault()
       }
     }

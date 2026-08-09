@@ -33,7 +33,7 @@ data class RemindersSettingsState(
   val dialog: RemindersSettingsDialog? = null,
   val hasLocation: Boolean = false,
   val workflowsVisible: Boolean = WorkflowConfig.isEnabled,
-  val isInsightsVisible: Boolean = false,
+  val isInsightsLocked: Boolean = false,
 )
 
 enum class ChoiceDialogKind {

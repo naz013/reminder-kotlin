@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.viewModelModule
 import com.elementary.tasks.groups.groupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
+import com.elementary.tasks.module.platform.InstallReferrerReader
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcher
 import com.elementary.tasks.navigation.NavigationObservable
@@ -209,6 +210,7 @@ class ReminderApp :
 
     get<Notifier>().createChannels()
     AdsProvider.init(this, get<SystemInfo>())
+    get<InstallReferrerReader>().readOnce()
     get<RemotePrefs>().preLoad()
     CoroutineScope(get<DispatcherProvider>().io()).launch { get<LegalDocumentRepository>().refresh() }
 

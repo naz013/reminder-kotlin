@@ -579,6 +579,12 @@
     <string name="pro_version">PRO версия</string>
     <string name="pro_advantages">Предимства на PRO:</string>
     <string name="pro_buy">Купи PRO</string>
+    <string name="pro_streaks_and_insights">- Табло със серии и статистики</string>
+    <string name="pro_local_encrypted_backup">- Локално шифровано резервно копие</string>
+    <string name="pro_gemini_app_functions">- Интеграция с Gemini AppFunctions</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Харесва ви Reminder? Преминете на PRO без реклами</string>
+    <string name="local_backup_locked_description">Експортирайте шифровано резервно копие, защитено с парола, във файл по ваш избор - напълно офлайн</string>
     <string name="pro_no_ads">- Без реклами</string>
     <string name="pro_different_settings_for_birthdays">- Различни настройки за рождени дни</string>
     <string name="pro_led_notification">- LED уведомление</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">Преглед</string>
     <string name="recur_customize">Персонализирай</string>
     <string name="recur_wrong_parameters_message">Използвани са грешни параметри, няма налични дати-времена!</string>
-    <string name="additional_recur_type">- Допълнителен тип напомняне - Персонализирано, с възможност за задаване на собствени правила за повторение</string>
+    <string name="pro_icalendar_custom_reminder">- Персонализирано напомняне iCalendar с възможност за задаване на собствени правила за повторение</string>
     <string name="additional_places_type">- Допълнителен тип напомняне - Места, където можете да задавате интересни точки като цели</string>
     <string name="recur_rfc_5545_doc">RFC 5545 документация</string>
     <string name="recur_need_help">Нуждаете се от помощ?</string>

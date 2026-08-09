@@ -5,6 +5,8 @@ import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.FeatureManager
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
@@ -43,6 +45,7 @@ class OtherSettingsViewModelTest : BaseTest() {
     every { contextProvider.context } returns mockk(relaxed = true)
     every { systemInfo.is15 } returns false
     every { systemInfo.is13 } returns false
+    every { systemInfo.is16 } returns true
     every { systemInfo.currentPackageName } returns "com.cray.software.justreminder"
     every { featureManager.isFeatureEnabled(any()) } returns false
     every { packageManagerWrapper.getVersionName() } returns "1.0.0"
@@ -107,6 +110,44 @@ class OtherSettingsViewModelTest : BaseTest() {
 
       assertEquals(2, state.permissionItems.size)
     }
+
+  @Test
+  fun `isGeminiFunctionsVisible follows the sdk check regardless of pro status`() =
+    runTest {
+      every { buildInfo.isPro } returns false
+      every { systemInfo.is16 } returns true
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.isGeminiFunctionsVisible)
+    }
+
+  @Test
+  fun `isGeminiFunctionsLocked is true when the build is not pro`() =
+    runTest {
+      every { buildInfo.isPro } returns false
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.isGeminiFunctionsLocked)
+    }
+
+  @Test
+  fun `isGeminiFunctionsLocked is false when the build is pro`() =
+    runTest {
+      every { buildInfo.isPro } returns true
+
+      val state = viewModel.state.first()
+
+      assertEquals(false, state.isGeminiFunctionsLocked)
+    }
+
+  @Test
+  fun `onGeminiFunctionsLockedClick sends a feature gate tapped analytics event`() {
+    viewModel.onGeminiFunctionsLockedClick()
+
+    verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.GEMINI_FUNCTIONS)) }
+  }
 
   @Test
   fun `onShareClicked emits ShareApp with a share intent and title`() {

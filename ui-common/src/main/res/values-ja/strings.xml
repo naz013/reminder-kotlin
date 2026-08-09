@@ -579,6 +579,12 @@
     <string name="pro_version">PRO版</string>
     <string name="pro_advantages">PROの利点：</string>
     <string name="pro_buy">PROを購入</string>
+    <string name="pro_streaks_and_insights">- ストリーク&amp;インサイトダッシュボード</string>
+    <string name="pro_local_encrypted_backup">- ローカル暗号化バックアップ</string>
+    <string name="pro_gemini_app_functions">- Gemini AppFunctions連携</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Reminderを気に入りましたか?PROで広告なしに</string>
+    <string name="local_backup_locked_description">選択したファイルに暗号化・パスフレーズ保護されたバックアップをエクスポート - 完全オフライン</string>
     <string name="pro_no_ads">- 広告なし</string>
     <string name="pro_different_settings_for_birthdays">- 誕生日用の異なる設定</string>
     <string name="pro_led_notification">- LED通知</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">プレビュー</string>
     <string name="recur_customize">カスタマイズ</string>
     <string name="recur_wrong_parameters_message">間違ったパラメーターが使用されています。利用可能な日時がありません！</string>
-    <string name="additional_recur_type">- 追加のリマインダータイプ - カスタム、独自の繰り返しルール設定が可能</string>
+    <string name="pro_icalendar_custom_reminder">- 独自の繰り返しルールを設定できるiCalendarカスタムリマインダー</string>
     <string name="additional_places_type">- 追加のリマインダータイプ - 場所、POIをターゲットとして設定可能</string>
     <string name="recur_rfc_5545_doc">RFC 5545 ドキュメント</string>
     <string name="recur_need_help">ヘルプが必要ですか？</string>

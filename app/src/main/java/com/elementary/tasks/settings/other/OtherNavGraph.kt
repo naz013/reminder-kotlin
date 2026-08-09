@@ -99,7 +99,14 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
       onRateClick = { googlePlayMarketLauncher.launchSelf() },
       onTellFriendsClick = { viewModel.onShareClicked() },
       onWhatsNewClick = { backStack.add(OtherNavKey.WhatsNew) },
-      onGeminiFunctionsClick = { backStack.add(OtherNavKey.GeminiFunctions) },
+      onGeminiFunctionsClick = {
+        if (state.isGeminiFunctionsLocked) {
+          viewModel.onGeminiFunctionsLockedClick()
+          backStack.add(SettingsNavKey.ProVersion)
+        } else {
+          backStack.add(OtherNavKey.GeminiFunctions)
+        }
+      },
       onPermissionsClick = { backStack.add(OtherNavKey.Permissions) },
       onAllowPermissionClick = { viewModel.onShowPermissionDialogClicked() },
       onOssClick = { backStack.add(OtherNavKey.Oss) },
