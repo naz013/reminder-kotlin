@@ -579,6 +579,12 @@
     <string name="pro_version">PRO Sürümü</string>
     <string name="pro_advantages">PRO\'nun Avantajları:</string>
     <string name="pro_buy">PRO Satın Al</string>
+    <string name="pro_streaks_and_insights">- Seriler ve İstatistikler paneli</string>
+    <string name="pro_local_encrypted_backup">- Yerel şifreli yedekleme</string>
+    <string name="pro_gemini_app_functions">- Gemini AppFunctions entegrasyonu</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Reminder\'ı beğendiniz mi? PRO ile reklamsız kullanın</string>
+    <string name="local_backup_locked_description">Şifreli, parola korumalı bir yedeği seçtiğiniz bir dosyaya aktarın - tamamen çevrimdışı</string>
     <string name="pro_no_ads">- Reklam Yok</string>
     <string name="pro_different_settings_for_birthdays">- Doğum günleri için farklı ayarlar</string>
     <string name="pro_led_notification">- LED bildirimi</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">Önizleme</string>
     <string name="recur_customize">Özelleştir</string>
     <string name="recur_wrong_parameters_message">Yanlış parametreler kullanıldı, mevcut tarih-saat yok!</string>
-    <string name="additional_recur_type">- Ek Hatırlatıcı türü - Özel, kendi tekrarlama kurallarını ayarlama olanağı ile</string>
+    <string name="pro_icalendar_custom_reminder">- Kendi tekrarlama kurallarınızı belirleme imkânı sunan özel iCalendar hatırlatıcısı</string>
     <string name="additional_places_type">- Ek Hatırlatıcı türü - Yerler, POI\'leri hedef olarak ayarlayabileceğiniz</string>
     <string name="recur_rfc_5545_doc">RFC 5545 Dokümantasyonu</string>
     <string name="recur_need_help">Yardıma mı ihtiyacınız var?</string>

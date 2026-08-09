@@ -579,6 +579,12 @@
     <string name="pro_version">PRO verze</string>
     <string name="pro_advantages">Výhody PRO:</string>
     <string name="pro_buy">Koupit PRO</string>
+    <string name="pro_streaks_and_insights">- Přehled sérií a statistik</string>
+    <string name="pro_local_encrypted_backup">- Místní šifrovaná záloha</string>
+    <string name="pro_gemini_app_functions">- Integrace Gemini AppFunctions</string>
+    <string name="pro_badge">PRO</string>
+    <string name="house_ad_message">Líbí se vám Reminder? Přejděte na PRO bez reklam</string>
+    <string name="local_backup_locked_description">Exportujte šifrovanou zálohu chráněnou heslem do souboru dle výběru - zcela offline</string>
     <string name="pro_no_ads">- Bez reklam</string>
     <string name="pro_different_settings_for_birthdays">- Různá nastavení pro narozeniny</string>
     <string name="pro_led_notification">- LED oznámení</string>
@@ -633,7 +639,7 @@
     <string name="recur_preview">Náhled</string>
     <string name="recur_customize">Přizpůsobit</string>
     <string name="recur_wrong_parameters_message">Použity nesprávné parametry, nejsou k dispozici žádné datum-časy!</string>
-    <string name="additional_recur_type">- Další typ připomenutí - Vlastní, s možností nastavit vlastní pravidla opakování</string>
+    <string name="pro_icalendar_custom_reminder">- Vlastní připomínka iCalendar s možností nastavit vlastní pravidla opakování</string>
     <string name="additional_places_type">- Další typ připomenutí - Místa, kde můžete nastavit body zájmu jako cíle</string>
     <string name="recur_rfc_5545_doc">Dokumentace RFC 5545</string>
     <string name="recur_need_help">Potřebujete pomoc?</string>
