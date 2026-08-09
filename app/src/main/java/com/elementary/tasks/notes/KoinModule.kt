@@ -64,6 +64,7 @@ val noteModule =
         get(),
         get(),
         get(),
+        get(),
       )
     }
     viewModel { (position: Int) -> ImagePreviewViewModel(position, get(), get()) }

@@ -42,9 +42,9 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.io.AssetsUtil
-import com.github.naz013.tags.compose.TagChipPicker
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
+import com.github.naz013.ui.tag.TagChipPicker
 
 /**
  * The icon content for the mic/speech bar item — switches between a static mic icon, an

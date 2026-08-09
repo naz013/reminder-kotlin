@@ -5,7 +5,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.naz013.tags.compose.ObserveEvent
 import com.github.naz013.tags.compose.TagEditScreen
 import com.github.naz013.tags.compose.TagEditState
 import com.github.naz013.tags.compose.TagEditViewModel
@@ -13,6 +12,7 @@ import com.github.naz013.tags.compose.TagsScreen
 import com.github.naz013.tags.compose.TagsScreenState
 import com.github.naz013.tags.compose.TagsViewModel
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

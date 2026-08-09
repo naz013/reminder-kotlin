@@ -13,6 +13,8 @@ dependencies {
   implementation(project(":logging-api"))
   implementation(project(":feature-common"))
   implementation(project(":ui-common"))
+  implementation(project(":ui-tag"))
+  implementation(project(":logic-tag"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)

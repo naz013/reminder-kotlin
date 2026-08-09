@@ -13,8 +13,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.request.ImageRequest
 import com.elementary.tasks.R
-import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
-import com.github.naz013.logic.schedule.WorkType
 import com.elementary.tasks.core.data.adapter.note.UiNoteEditAdapter
 import com.elementary.tasks.core.data.repository.NoteImageRepository
 import com.elementary.tasks.core.data.ui.note.UiNoteImage
@@ -30,17 +28,14 @@ import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.notes.usecase.CreateSharedNoteFileUseCase
 import com.elementary.tasks.notes.usecase.DeleteNoteUseCase
 import com.elementary.tasks.notes.usecase.SaveNoteUseCase
-import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
-import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
-import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
-import com.github.naz013.platform.SystemInfo
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.font.FontParams
@@ -57,13 +52,18 @@ import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
-import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
+import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -113,7 +113,8 @@ class NoteEditViewModel(
   private val noteColorEngine: NoteColorEngine,
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   val is24HourFormat: Boolean = prefs.is24HourFormat
@@ -176,9 +177,13 @@ class NoteEditViewModel(
 
   private fun observeTags() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      tagRepository.observeAll().collect { tags ->
-        _state.update { it.copy(allTags = tags) }
-      }
+      tagRepository.observeAll()
+        .map { tags ->
+          tags.map { tagChipStateAdapter(it) }
+        }
+        .collect { tags ->
+          _state.update { it.copy(allTags = tags) }
+        }
     }
     viewModelScope.launch(dispatcherProvider.default()) {
       _state.map { it.noteId }
@@ -190,16 +195,16 @@ class NoteEditViewModel(
     }
   }
 
-  fun onTagToggle(tag: Tag) {
+  fun onTagToggle(tag: TagChipState) {
     val noteId = _state.value.noteId
     val isSelected = tag.id in _state.value.selectedTagIds
     viewModelScope.launch(dispatcherProvider.io()) {
-      if (isSelected) {
-        tagAssignmentRepository.detach(noteId, TaggedItemType.NOTE, tag.id)
-      } else {
-        tagAssignmentRepository.attach(noteId, TaggedItemType.NOTE, tag.id)
-      }
-      scheduleBackgroundWorkUseCase(workType = WorkType.Upload, dataType = DataType.TagAssignments)
+      toggleTagAssignmentUseCase(
+        id = noteId,
+        taggedItemType = TaggedItemType.NOTE,
+        tagId = tag.id,
+        isSelected = isSelected
+      )
     }
   }
 

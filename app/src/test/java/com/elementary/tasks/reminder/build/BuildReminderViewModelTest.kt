@@ -1,10 +1,9 @@
 package com.elementary.tasks.reminder.build
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModelStore
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
-import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
-import com.github.naz013.logic.schedule.WorkType
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.utils.FeatureManager
@@ -30,30 +29,34 @@ import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
-import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
-import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
-import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
-import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
-import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.files.DataType
 import com.github.naz013.icalendar.ICalendarApi
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
+import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -108,6 +111,8 @@ class BuildReminderViewModelTest : BaseTest() {
   private val quickStartItemsProvider = mockk<QuickStartItemsProvider>()
   private val tagRepository = mockk<TagRepository>()
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
+  private val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>()
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   @Before
   override fun setUp() {
@@ -194,6 +199,8 @@ class BuildReminderViewModelTest : BaseTest() {
       quickStartItemsProvider = quickStartItemsProvider,
       tagRepository = tagRepository,
       tagAssignmentRepository = tagAssignmentRepository,
+      toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
+      tagChipStateAdapter = tagChipStateAdapter,
     )
 
   @Test
@@ -768,7 +775,7 @@ class BuildReminderViewModelTest : BaseTest() {
       coEvery { tagAssignmentRepository.attach(any(), any(), any()) } returns Unit
       val viewModel = createViewModel()
 
-      viewModel.onTagToggle(Tag(id = "tag-1", name = "Work", color = 0))
+      viewModel.onTagToggle(TagChipState(id = "tag-1", name = "Work", color = Color.Unspecified))
 
       coVerify { tagAssignmentRepository.attach(any(), any(), "tag-1") }
       verify {
