@@ -42,13 +42,11 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.files.DataType
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
-import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
@@ -772,17 +770,11 @@ class BuildReminderViewModelTest : BaseTest() {
   @Test
   fun `onTagToggle attaches an unselected tag and schedules an upload of the tag assignments snapshot`() =
     runTest {
-      coEvery { tagAssignmentRepository.attach(any(), any(), any()) } returns Unit
+      coEvery { toggleTagAssignmentUseCase.invoke(any(), any(), any(), any()) } returns Unit
       val viewModel = createViewModel()
 
       viewModel.onTagToggle(TagChipState(id = "tag-1", name = "Work", color = Color.Unspecified))
 
-      coVerify { tagAssignmentRepository.attach(any(), any(), "tag-1") }
-      verify {
-        scheduleBackgroundWorkUseCase(
-          workType = WorkType.Upload,
-          dataType = DataType.TagAssignments,
-        )
-      }
+      coVerify { toggleTagAssignmentUseCase.invoke(any(), any(), "tag-1", false) }
     }
 }
