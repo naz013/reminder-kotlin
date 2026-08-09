@@ -11,6 +11,7 @@ import com.github.naz013.repository.dao.EventOccurrenceDao
 import com.github.naz013.repository.dao.GoogleTaskListsDao
 import com.github.naz013.repository.dao.GoogleTasksDao
 import com.github.naz013.repository.dao.GroupV2Dao
+import com.github.naz013.repository.dao.HolidayDao
 import com.github.naz013.repository.dao.NotesDao
 import com.github.naz013.repository.dao.PlacesDao
 import com.github.naz013.repository.dao.RecentQueryDao
@@ -31,6 +32,7 @@ import com.github.naz013.repository.entity.EventOccurrenceEntity
 import com.github.naz013.repository.entity.GoogleTaskEntity
 import com.github.naz013.repository.entity.GoogleTaskListEntity
 import com.github.naz013.repository.entity.GroupV2Entity
+import com.github.naz013.repository.entity.HolidayEntity
 import com.github.naz013.repository.entity.ImageFileEntity
 import com.github.naz013.repository.entity.NoteEntity
 import com.github.naz013.repository.entity.PlaceEntity
@@ -66,6 +68,7 @@ import com.github.naz013.repository.migrations.MIGRATION_26_27
 import com.github.naz013.repository.migrations.MIGRATION_27_28
 import com.github.naz013.repository.migrations.MIGRATION_28_29
 import com.github.naz013.repository.migrations.MIGRATION_29_30
+import com.github.naz013.repository.migrations.MIGRATION_30_31
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
@@ -97,9 +100,10 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     WorkflowRuleEntity::class,
     WorkflowTemplateEntity::class,
     TagEntity::class,
-    TagAssignmentEntity::class
+    TagAssignmentEntity::class,
+    HolidayEntity::class
   ],
-  version = 30,
+  version = 31,
   exportSchema = false
 )
 internal abstract class AppDb : RoomDatabase() {
@@ -124,6 +128,7 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun eventHistoryDao(): EventHistoryDao
   abstract fun tagDao(): TagDao
   abstract fun tagAssignmentDao(): TagAssignmentDao
+  abstract fun holidayDao(): HolidayDao
 
   companion object {
 
@@ -162,7 +167,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_26_27,
             MIGRATION_27_28,
             MIGRATION_28_29,
-            MIGRATION_29_30
+            MIGRATION_29_30,
+            MIGRATION_30_31
           )
           .allowMainThreadQueries()
           .build()

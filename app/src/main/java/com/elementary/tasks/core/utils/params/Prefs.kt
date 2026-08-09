@@ -8,6 +8,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.simplemap.MapConfig
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.logic.schedule.WorkerNetworkType
+import java.util.Locale
 
 typealias PrefsObserver = (String) -> Unit
 
@@ -71,6 +72,14 @@ class Prefs(
   var googleCalendarReminderId: Long
     get() = getLong(PrefsConstants.GOOGLE_CALENDAR_ID, def = -1L)
     set(value) = putLong(PrefsConstants.GOOGLE_CALENDAR_ID, value)
+
+  var publicHolidaysEnabled: Boolean
+    get() = getBoolean(PrefsConstants.PUBLIC_HOLIDAYS_ENABLED, def = false)
+    set(value) = putBoolean(PrefsConstants.PUBLIC_HOLIDAYS_ENABLED, value)
+
+  var holidayCountryCode: String
+    get() = getString(PrefsConstants.PUBLIC_HOLIDAYS_COUNTRY, def = Locale.getDefault().country)
+    set(value) = putString(PrefsConstants.PUBLIC_HOLIDAYS_COUNTRY, value)
 
   var occurrenceMigrated: Boolean
     get() = getBoolean(PrefsConstants.OCCURRENCE_MIGRATED, def = false)

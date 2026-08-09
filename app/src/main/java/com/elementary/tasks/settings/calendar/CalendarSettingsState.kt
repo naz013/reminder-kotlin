@@ -11,6 +11,8 @@ data class CalendarSettingsState(
   val isCalendarSelected: Boolean = false,
   val isExportChecked: Boolean = false,
   val isScanChecked: Boolean = false,
+  val isHolidaysEnabled: Boolean = false,
+  val holidayCountryLabel: String = "",
   val dialog: CalendarSettingsDialog? = null,
 )
 
@@ -32,6 +34,11 @@ sealed class CalendarSettingsDialog {
     val calendars: List<GoogleCalendar>,
     val selectedPosition: Int,
   ) : CalendarSettingsDialog()
+
+  data class SelectCountry(
+    val options: List<String>,
+    val selectedIndex: Int,
+  ) : CalendarSettingsDialog()
 }
 
 enum class ColorPickerTarget { TODAY, REMINDER, BIRTHDAY }
@@ -39,4 +46,9 @@ enum class ColorPickerTarget { TODAY, REMINDER, BIRTHDAY }
 data class GoogleCalendar(
   val id: Long,
   val name: String?,
+)
+
+data class CountryOption(
+  val code: String,
+  val label: String,
 )

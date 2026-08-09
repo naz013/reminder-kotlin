@@ -19,5 +19,6 @@ class FeatureManager(
     REMINDER_BUILDER_V2("feature_builder_v2"),
     GEOCODING("feature_geocoding"),
     LOGS_IN_REVIEWS("feature_logs_in_reviews", false),
+    PUBLIC_HOLIDAYS("feature_public_holidays", false),
   }
 }

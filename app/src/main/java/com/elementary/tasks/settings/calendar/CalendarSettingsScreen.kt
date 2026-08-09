@@ -39,6 +39,12 @@ fun CalendarSettingsScreen(
   onExportToggle: () -> Unit,
   onScanToggle: () -> Unit,
   onDialogDismiss: () -> Unit,
+  isHolidaysSectionVisible: Boolean,
+  isHolidaysLocked: Boolean,
+  onHolidaysToggle: () -> Unit,
+  onHolidaysLockedClick: () -> Unit,
+  onHolidayCountryClick: () -> Unit,
+  onCountryOptionSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
@@ -113,6 +119,37 @@ fun CalendarSettingsScreen(
       enabled = state.isCalendarSelected,
       dividerBottom = true,
     )
+
+    if (isHolidaysSectionVisible) {
+      SettingsSectionHeader(stringResource(R.string.public_holidays))
+
+      if (isHolidaysLocked) {
+        SettingsItem(
+          title = stringResource(R.string.show_public_holidays),
+          subtitle = stringResource(R.string.public_holidays_locked_description),
+          icon = painterResource(R.drawable.ic_fluent_globe),
+          locked = true,
+          dividerBottom = true,
+          onClick = onHolidaysLockedClick,
+        )
+      } else {
+        SettingsSwitchItem(
+          title = stringResource(R.string.show_public_holidays),
+          checked = state.isHolidaysEnabled,
+          onCheckedChange = { onHolidaysToggle() },
+          icon = painterResource(R.drawable.ic_fluent_globe),
+          dividerBottom = true,
+        )
+        SettingsItem(
+          title = stringResource(R.string.public_holidays_country),
+          subtitle = state.holidayCountryLabel,
+          icon = painterResource(R.drawable.ic_fluent_calendar_star),
+          enabled = state.isHolidaysEnabled,
+          dividerBottom = true,
+          onClick = onHolidayCountryClick,
+        )
+      }
+    }
   }
 
   when (val dialog = state.dialog) {
@@ -132,6 +169,16 @@ fun CalendarSettingsScreen(
         options = dialog.calendars.map { it.name.orEmpty() },
         selectedIndex = dialog.selectedPosition,
         onOptionSelected = onGoogleCalendarOptionSelected,
+        onDismiss = onDialogDismiss,
+      )
+    }
+
+    is CalendarSettingsDialog.SelectCountry -> {
+      SingleChoiceDialog(
+        title = stringResource(R.string.public_holidays_country),
+        options = dialog.options,
+        selectedIndex = dialog.selectedIndex,
+        onOptionSelected = onCountryOptionSelected,
         onDismiss = onDialogDismiss,
       )
     }

@@ -20,6 +20,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
+import com.elementary.tasks.core.utils.FeatureManager
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -300,6 +301,10 @@ private fun CalendarEntry(
   val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
 
+  val buildInfo = koinInject<BuildInfo>()
+  val featureManager = koinInject<FeatureManager>()
+  val analyticsEventSender = koinInject<AnalyticsEventSender>()
+
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.calendar),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
@@ -324,6 +329,15 @@ private fun CalendarEntry(
       onExportToggle = viewModel::onExportToggle,
       onScanToggle = viewModel::onScanToggle,
       onDialogDismiss = viewModel::onDialogDismiss,
+      isHolidaysSectionVisible = featureManager.isFeatureEnabled(FeatureManager.Feature.PUBLIC_HOLIDAYS),
+      isHolidaysLocked = !buildInfo.isPro,
+      onHolidaysToggle = viewModel::onHolidaysToggle,
+      onHolidaysLockedClick = {
+        analyticsEventSender.send(FeatureGateTappedEvent(Feature.PUBLIC_HOLIDAYS))
+        backStack.add(SettingsNavKey.ProVersion)
+      },
+      onHolidayCountryClick = viewModel::onHolidayCountryClick,
+      onCountryOptionSelected = viewModel::onCountryOptionSelected,
       modifier = Modifier.padding(padding),
     )
   }
