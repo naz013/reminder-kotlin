@@ -7,6 +7,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
@@ -23,6 +26,7 @@ import com.elementary.tasks.groups.list.GroupsScreenState
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.navigation.nav3.hideKeyboard
 import com.elementary.tasks.notes.ObserveEvent
+import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.workflow.WorkflowNavKey
@@ -41,6 +45,18 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GroupsViewModel>()
 
   val dialogDispatcher = rememberDialogDispatcher()
+
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(viewModel, lifecycleOwner) {
+    val observer =
+      LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+          viewModel.refreshState()
+        }
+      }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
@@ -76,6 +92,18 @@ private fun GroupsDetailsEntry(
   val viewModel = koinViewModel<GroupDetailsViewModel> { parametersOf(key.id) }
   val dialogDispatcher = rememberDialogDispatcher()
 
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(viewModel, lifecycleOwner) {
+    val observer =
+      LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+          viewModel.refreshState()
+        }
+      }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
+
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is GroupDetailsViewModel.NavigationEvent.OpenEdit -> backStack.add(GroupsNavKey.Edit(event.id))
@@ -89,6 +117,9 @@ private fun GroupsDetailsEntry(
           onPositive = { viewModel.onDeleteConfirmed() }
         )
       }
+      is GroupDetailsViewModel.NavigationEvent.OpenAddReminder -> {
+        backStack.add(BuildReminderNavKey.Main(groupUuId = event.groupUuId))
+      }
       GroupDetailsViewModel.NavigationEvent.Deleted -> backStack.removeLastOrNull()
     }
   }
@@ -100,6 +131,7 @@ private fun GroupsDetailsEntry(
     onEditClick = viewModel::onEditClick,
     onDeleteClick = viewModel::onDeleteClick,
     onReminderClick = viewModel::onReminderClick,
+    onAddClick = viewModel::onAddReminderClicked,
     adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.Group) },
   )
 }

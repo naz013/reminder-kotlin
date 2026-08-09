@@ -23,6 +23,7 @@ import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.preset.BuilderItemsToBuilderPresetAdapter
 import com.elementary.tasks.reminder.build.preset.BuilderPresetToBiAdapter
 import com.elementary.tasks.reminder.build.preset.RecurParamsToBiAdapter
+import com.elementary.tasks.reminder.build.quickstart.FindGroupUseCase
 import com.elementary.tasks.reminder.build.quickstart.QuickStartItemsProvider
 import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
@@ -111,6 +112,7 @@ class BuildReminderViewModelTest : BaseTest() {
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>()
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
+  private val findGroupUseCase = mockk<FindGroupUseCase>(relaxed = true)
 
   @Before
   override fun setUp() {
@@ -152,12 +154,14 @@ class BuildReminderViewModelTest : BaseTest() {
     deepLinkText: String? = null,
   ): BuildReminderViewModel =
     BuildReminderViewModel(
-      initialId = initialId,
-      fromIntentItem = fromIntentItem,
-      deepLinkDateTimeType = deepLinkDateTimeType,
-      deepLinkDateTimeMillis = deepLinkDateTimeMillis,
-      deepLinkTodo = deepLinkTodo,
-      deepLinkText = deepLinkText,
+      navKey = BuildReminderNavKey.Main(
+        id = initialId,
+        fromIntentItem = fromIntentItem,
+        deepLinkDateTimeType = deepLinkDateTimeType,
+        deepLinkDateTimeMillis = deepLinkDateTimeMillis,
+        deepLinkTodo = deepLinkTodo,
+        deepLinkText = deepLinkText,
+      ),
       dispatcherProvider = mockDispatcherProvider(),
       placeRepository = placeRepository,
       analyticsEventSender = analyticsEventSender,
@@ -199,6 +203,7 @@ class BuildReminderViewModelTest : BaseTest() {
       tagAssignmentRepository = tagAssignmentRepository,
       toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
       tagChipStateAdapter = tagChipStateAdapter,
+      findGroupUseCase = findGroupUseCase,
     )
 
   @Test

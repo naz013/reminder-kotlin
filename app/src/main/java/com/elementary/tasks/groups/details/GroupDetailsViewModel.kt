@@ -38,6 +38,14 @@ class GroupDetailsViewModel(
 
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
+  fun refreshState() {
+    load()
+  }
+
+  fun onAddReminderClicked() {
+    navigationEvent.emit(NavigationEvent.OpenAddReminder(id))
+  }
+
   fun onEditClick() {
     navigationEvent.emit(NavigationEvent.OpenEdit(id))
   }
@@ -98,6 +106,8 @@ class GroupDetailsViewModel(
     data object Deleted : NavigationEvent
 
     data class OpenReminderPreview(val id: String) : NavigationEvent
+
+    data class OpenAddReminder(val groupUuId: String) : NavigationEvent
   }
 
   companion object {
