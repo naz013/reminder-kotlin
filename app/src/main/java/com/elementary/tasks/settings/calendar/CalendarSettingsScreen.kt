@@ -44,7 +44,6 @@ fun CalendarSettingsScreen(
   onHolidaysToggle: () -> Unit,
   onHolidaysLockedClick: () -> Unit,
   onHolidayCountryClick: () -> Unit,
-  onCountryOptionSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
@@ -169,16 +168,6 @@ fun CalendarSettingsScreen(
         options = dialog.calendars.map { it.name.orEmpty() },
         selectedIndex = dialog.selectedPosition,
         onOptionSelected = onGoogleCalendarOptionSelected,
-        onDismiss = onDialogDismiss,
-      )
-    }
-
-    is CalendarSettingsDialog.SelectCountry -> {
-      SingleChoiceDialog(
-        title = stringResource(R.string.public_holidays_country),
-        options = dialog.options,
-        selectedIndex = dialog.selectedIndex,
-        onOptionSelected = onCountryOptionSelected,
         onDismiss = onDialogDismiss,
       )
     }

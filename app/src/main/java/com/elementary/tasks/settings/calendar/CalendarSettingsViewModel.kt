@@ -34,7 +34,6 @@ class CalendarSettingsViewModel(
   private var selectedCalendarId: Long = -1L
   private var selectedCalendarName: String? = null
   private var calendars: List<GoogleCalendar> = emptyList()
-  private var countryOptions: List<CountryOption> = emptyList()
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.CALENDAR_SETTINGS))
@@ -154,27 +153,14 @@ class CalendarSettingsViewModel(
     refreshState()
   }
 
-  fun onHolidayCountryClick() {
-    val options = buildCountryOptions()
-    countryOptions = options
-    val selectedIndex = options.indexOfFirst { it.code == prefs.holidayCountryCode }.coerceAtLeast(0)
-    state.update {
-      it.copy(
-        dialog = CalendarSettingsDialog.SelectCountry(
-          options = options.map { option -> option.label },
-          selectedIndex = selectedIndex,
-        )
-      )
-    }
-  }
-
-  fun onCountryOptionSelected(index: Int) {
-    val country = countryOptions.getOrNull(index) ?: return
-    prefs.holidayCountryCode = country.code
+  /** Called once the user picks a country on the separate [com.elementary.tasks.settings.SettingsNavKey.SelectHolidayCountry]
+   *  screen and it pops back - see `HolidayCountryPickerResultHolder`. */
+  fun onHolidayCountryPicked(code: String) {
+    prefs.holidayCountryCode = code
     if (prefs.publicHolidaysEnabled) {
       holidaySyncScheduler.syncNow()
     }
-    dismissDialog()
+    refreshState()
   }
 
   private fun showColorPicker(
@@ -239,11 +225,6 @@ class CalendarSettingsViewModel(
     )
 
   private fun countryLabel(code: String): String = Locale("", code).displayCountry.ifBlank { code }
-
-  private fun buildCountryOptions(): List<CountryOption> =
-    Locale.getISOCountries()
-      .map { code -> CountryOption(code, countryLabel(code)) }
-      .sortedBy { it.label }
 
   companion object {
     private const val TAG = "CalendarSettingsViewModel"

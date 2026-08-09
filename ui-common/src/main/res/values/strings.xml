@@ -911,6 +911,7 @@
     <string name="show_public_holidays">Show public holidays</string>
     <string name="public_holidays_country">Country</string>
     <string name="public_holidays_locked_description">Show public holidays for your country in the calendar - available with Pro</string>
+    <string name="search_no_countries_found">No countries found</string>
     <string name="default_reminder_snooze_time">Default reminder snooze time</string>
     <string name="reminder_notification_repeating">Reminder notification repeating</string>
     <string name="repeat_reminder_notification_until_dismissed">Repeat reminder notification until dismissed</string>

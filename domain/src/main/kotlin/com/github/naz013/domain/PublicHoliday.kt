@@ -11,6 +11,9 @@ data class PublicHoliday(
   val type: String,
   val location: String?,
 ) {
+  val screenText: String
+    get() = nameLocal ?: name
+
   companion object {
     fun id(countryCode: String, date: LocalDate, name: String): String = "$countryCode:$date:$name"
   }

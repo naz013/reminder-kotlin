@@ -273,67 +273,29 @@ class CalendarSettingsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onHolidayCountryClick opens the country dialog seeded with the current selection`() {
-    every { prefs.holidayCountryCode } returns "US"
-
-    viewModel.onHolidayCountryClick()
-
-    val dialog = viewModel.state.value.dialog as? CalendarSettingsDialog.SelectCountry
-    assertEquals(usLabel(), dialog?.options?.get(dialog.selectedIndex))
-  }
-
-  @Test
-  fun `onCountryOptionSelected persists the chosen country and dismisses the dialog`() {
-    every { prefs.holidayCountryCode } returns "US"
+  fun `onHolidayCountryPicked persists the chosen country`() {
     every { prefs.publicHolidaysEnabled } returns false
-    viewModel.onHolidayCountryClick()
-    val dialog = viewModel.state.value.dialog as CalendarSettingsDialog.SelectCountry
-    val franceIndex = dialog.options.indexOf(frLabel())
 
-    viewModel.onCountryOptionSelected(franceIndex)
+    viewModel.onHolidayCountryPicked("FR")
 
     verify { prefs.holidayCountryCode = "FR" }
-    assertNull(viewModel.state.value.dialog)
   }
 
   @Test
-  fun `onCountryOptionSelected re-syncs when holidays are already enabled`() {
-    every { prefs.holidayCountryCode } returns "US"
+  fun `onHolidayCountryPicked re-syncs when holidays are already enabled`() {
     every { prefs.publicHolidaysEnabled } returns true
-    viewModel.onHolidayCountryClick()
-    val dialog = viewModel.state.value.dialog as CalendarSettingsDialog.SelectCountry
-    val franceIndex = dialog.options.indexOf(frLabel())
 
-    viewModel.onCountryOptionSelected(franceIndex)
+    viewModel.onHolidayCountryPicked("FR")
 
     verify { holidaySyncScheduler.syncNow() }
   }
 
   @Test
-  fun `onCountryOptionSelected does not re-sync when holidays are disabled`() {
-    every { prefs.holidayCountryCode } returns "US"
+  fun `onHolidayCountryPicked does not re-sync when holidays are disabled`() {
     every { prefs.publicHolidaysEnabled } returns false
-    viewModel.onHolidayCountryClick()
-    val dialog = viewModel.state.value.dialog as CalendarSettingsDialog.SelectCountry
-    val franceIndex = dialog.options.indexOf(frLabel())
 
-    viewModel.onCountryOptionSelected(franceIndex)
+    viewModel.onHolidayCountryPicked("FR")
 
     verify(exactly = 0) { holidaySyncScheduler.syncNow() }
-  }
-
-  // Country display names are resolved via java.util.Locale against the JVM's default locale,
-  // which varies by machine - compute expectations the same way rather than hardcoding English
-  // names like "France", so this test doesn't depend on the CI/dev machine's default locale.
-  private fun usLabel(): String = java.util.Locale("", "US").displayCountry
-  private fun frLabel(): String = java.util.Locale("", "FR").displayCountry
-
-  @Test
-  fun `onCountryOptionSelected is a no-op for an out-of-range index`() {
-    viewModel.onHolidayCountryClick()
-
-    viewModel.onCountryOptionSelected(9999)
-
-    verify(exactly = 0) { prefs.holidayCountryCode = any() }
   }
 }

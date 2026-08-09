@@ -15,6 +15,7 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListState
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.ReminderV2Repository
@@ -34,6 +35,7 @@ class WeekViewViewModelTest : BaseTest() {
   private val weekHeaderController = mockk<WeekHeaderController>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val getDayEventItemsUseCase = mockk<GetDayEventItemsUseCase>()
+  private val getDayHolidayUseCase = mockk<GetDayHolidayUseCase>()
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>(relaxed = true)
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>(relaxed = true)
@@ -58,6 +60,7 @@ class WeekViewViewModelTest : BaseTest() {
         weekHeaderController = weekHeaderController,
         dateTimeManager = dateTimeManager,
         getDayEventItemsUseCase = getDayEventItemsUseCase,
+        getDayHolidayUseCase = getDayHolidayUseCase,
         reminderV2Repository = reminderV2Repository,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
         toggleReminderStateUseCase = toggleReminderStateUseCase,
@@ -157,6 +160,26 @@ class WeekViewViewModelTest : BaseTest() {
       val result = viewModel.loadDayEvents(date)
 
       assertEquals(items, result)
+    }
+
+  @Test
+  fun `loadDayHoliday delegates to the use case`() =
+    runTest {
+      val date = LocalDate.of(2026, 7, 4)
+      val holiday = PublicHoliday(
+        id = "US:2026-07-04:Independence Day",
+        countryCode = "US",
+        date = date,
+        name = "Independence Day",
+        nameLocal = "Independence Day",
+        type = "National",
+        location = null,
+      )
+      coEvery { getDayHolidayUseCase(date) } returns holiday
+
+      val result = viewModel.loadDayHoliday(date)
+
+      assertEquals(holiday, result)
     }
 
   @Test

@@ -47,6 +47,7 @@ import com.elementary.tasks.home.agenda.ReminderAgendaRow
 import com.elementary.tasks.home.agenda.UiAgendaBirthday
 import com.elementary.tasks.home.agenda.UiAgendaItem
 import com.elementary.tasks.home.agenda.UiAgendaReminder
+import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -69,6 +70,7 @@ fun WeekViewScreen(
   onDayClick: (WeekDay) -> Unit,
   refreshSignal: Int,
   loadDayEvents: suspend (LocalDate) -> List<UiAgendaItem>,
+  loadDayHoliday: suspend (LocalDate) -> PublicHoliday?,
   onItemClick: (UiAgendaItem) -> Unit,
   onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
   onAddReminderClick: () -> Unit,
@@ -125,6 +127,7 @@ fun WeekViewScreen(
         date = dateForPosition(position),
         refreshSignal = refreshSignal,
         loadDayEvents = loadDayEvents,
+        loadDayHoliday = loadDayHoliday,
         onItemClick = onItemClick,
         onAgendaMenuAction = onAgendaMenuAction,
       )
@@ -226,58 +229,98 @@ private fun DayPage(
   date: LocalDate,
   refreshSignal: Int,
   loadDayEvents: suspend (LocalDate) -> List<UiAgendaItem>,
+  loadDayHoliday: suspend (LocalDate) -> PublicHoliday?,
   onItemClick: (UiAgendaItem) -> Unit,
   onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   var events by remember(date) { mutableStateOf<List<UiAgendaItem>?>(null) }
+  var holiday by remember(date) { mutableStateOf<PublicHoliday?>(null) }
 
   LaunchedEffect(date, refreshSignal) {
     events = loadDayEvents(date)
   }
 
-  when (val items = events) {
-    null -> {
-      Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
+  // Loaded independently of events - a banner popping in a moment later is fine, it's a secondary
+  // decoration and shouldn't block the day's agenda from rendering.
+  LaunchedEffect(date, refreshSignal) {
+    holiday = loadDayHoliday(date)
+  }
+
+  Column(modifier = modifier.fillMaxSize()) {
+    holiday?.let { HolidayBanner(holiday = it) }
+
+    when (val items = events) {
+      null -> {
+        Box(modifier = Modifier.weight(1f).fillMaxSize(), contentAlignment = Alignment.Center) {
+          CircularProgressIndicator()
+        }
       }
-    }
 
-    else -> {
-      if (items.isEmpty()) {
-        DayEmptyState(modifier = modifier.fillMaxSize())
-      } else {
-        LazyColumn(
-          modifier = modifier.fillMaxSize(),
-          contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          items(items, key = { it.id }) { item ->
-            when (item) {
-              is UiAgendaReminder -> {
-                ReminderAgendaRow(
-                  item = item,
-                  onClick = { onItemClick(item) },
-                  onMenuAction = { action -> onAgendaMenuAction(item, action) },
-                  modifier = Modifier.animateItem(),
-                )
+      else -> {
+        if (items.isEmpty()) {
+          DayEmptyState(modifier = Modifier.weight(1f).fillMaxSize())
+        } else {
+          LazyColumn(
+            modifier = Modifier.weight(1f).fillMaxSize(),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+          ) {
+            items(items, key = { it.id }) { item ->
+              when (item) {
+                is UiAgendaReminder -> {
+                  ReminderAgendaRow(
+                    item = item,
+                    onClick = { onItemClick(item) },
+                    onMenuAction = { action -> onAgendaMenuAction(item, action) },
+                    modifier = Modifier.animateItem(),
+                  )
+                }
+
+                is UiAgendaBirthday -> {
+                  BirthdayAgendaRow(
+                    item = item,
+                    onClick = { onItemClick(item) },
+                    onMenuAction = { action -> onAgendaMenuAction(item, action) },
+                    modifier = Modifier.animateItem(),
+                  )
+                }
+
+                else -> Unit
               }
-
-              is UiAgendaBirthday -> {
-                BirthdayAgendaRow(
-                  item = item,
-                  onClick = { onItemClick(item) },
-                  onMenuAction = { action -> onAgendaMenuAction(item, action) },
-                  modifier = Modifier.animateItem(),
-                )
-              }
-
-              else -> Unit
             }
           }
         }
       }
     }
+  }
+}
+
+@Composable
+private fun HolidayBanner(
+  holiday: PublicHoliday,
+  modifier: Modifier = Modifier,
+) {
+  Row(
+    modifier =
+      modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.tertiaryContainer)
+        .padding(horizontal = 16.dp, vertical = 10.dp),
+    horizontalArrangement = Arrangement.spacedBy(10.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Icon(
+      painter = painterResource(R.drawable.ic_fluent_globe),
+      contentDescription = null,
+      tint = MaterialTheme.colorScheme.onTertiaryContainer,
+      modifier = Modifier.size(20.dp),
+    )
+    Text(
+      text = if (holiday.type.isNotBlank()) "${holiday.screenText} – ${holiday.type}" else holiday.screenText,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.onTertiaryContainer,
+    )
   }
 }
 
@@ -330,6 +373,7 @@ private fun WeekViewScreenPreview() {
       onDayClick = {},
       refreshSignal = 0,
       loadDayEvents = { emptyList() },
+      loadDayHoliday = { null },
       onItemClick = {},
       onAgendaMenuAction = { _, _ -> },
       onAddReminderClick = {},
