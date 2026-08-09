@@ -9,7 +9,7 @@ import org.threeten.bp.LocalDate
  * given eventId - this is "times fired", not a true completed/not-completed signal, since
  * reminders have no such concept. See the Insights feature plan for this trade-off.
  */
-object ReminderStreakCalculator {
+internal object ReminderStreakCalculator {
 
   data class Streak(
     val eventId: String,

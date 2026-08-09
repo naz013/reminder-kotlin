@@ -208,7 +208,7 @@ dependencies {
   implementation(project(":feature-googletask"))
   implementation(project(":feature-reminder"))
   implementation(project(":tags"))
-  implementation(project(":insights"))
+  implementation(project(":feature-insights"))
   implementation(project(":localbackup"))
 
   implementation(project(":platform-common"))

@@ -43,7 +43,7 @@ private const val MIN_BAR_FRACTION = 0.02f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsightsScreen(
+internal fun InsightsScreen(
   state: InsightsScreenState,
   onBackClick: () -> Unit,
   modifier: Modifier = Modifier
