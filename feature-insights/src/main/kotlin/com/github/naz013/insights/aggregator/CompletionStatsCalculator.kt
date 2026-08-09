@@ -5,7 +5,7 @@ import com.github.naz013.domain.history.EventHistoricalRecordType
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 
-object CompletionStatsCalculator {
+internal object CompletionStatsCalculator {
 
   data class FiredCount(
     val eventId: String,
