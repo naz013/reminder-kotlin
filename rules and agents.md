@@ -35,10 +35,26 @@
     fallback (see `ReminderV2Mapper.toRecurrenceRule`), so one bad row can't take down an entire
     list load.
 
+## Feature Modules: `feature-*` / `ui-*` / `logic-*`
+Newer features (Google Tasks, Tags, Insights) are extracted out of `app` into a per-feature module
+family instead of living in `app`. Ongoing migration - not every feature has all three yet, check
+before assuming. Full guide + checklist for creating one: `docs/architecture.md` ("Feature Modules").
+- **`feature-<name>`**: screens, ViewModels, `<Feature>NavKey`/`<Feature>NavGraph`, own `KoinModule.kt`,
+  feature-private orchestration use cases. Only `app` depends on it; it never depends on `app` or on
+  another `feature-*` module.
+- **`ui-<name>`** (sibling, optional): reusable Compose building blocks for the feature's domain type
+  (item adapters, list items). No navigation, no ViewModels.
+- **`logic-<name>`** (sibling, optional): reusable business logic/use cases for the feature that
+  *other* features also need. No Compose. E.g. `feature-googletask` depends on `logic-reminder`, not
+  `feature-reminder`, to complete a linked reminder.
+- Add a `ui-*`/`logic-*` sibling only once a second consumer actually needs it - don't scaffold ahead
+  of need.
+
 ## Dependency Rules
 - Arrows: `A -> B` (A depends on B).
 - `usecase` -> `repository-api` (NOT `repository`).
 - `feature` -> `*-api` modules (for decoupling).
+- `feature-*` -> its own `ui-*`/`logic-*` siblings and other `logic-*` modules; never -> another `feature-*` or `app`.
 - `domain` is the root (no arrows outgoing).
 
 ## Build System
