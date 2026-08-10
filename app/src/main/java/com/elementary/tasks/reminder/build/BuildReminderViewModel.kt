@@ -32,6 +32,7 @@ import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
+import com.elementary.tasks.reminder.todo.TodoSeedHolder
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.AnalyticsReminderType
@@ -140,6 +141,7 @@ class BuildReminderViewModel(
   private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val findGroupUseCase: FindGroupUseCase,
+  private val todoSeedHolder: TodoSeedHolder,
 ) : ViewModel() {
 
   val initialId = navKey.id
@@ -215,6 +217,7 @@ class BuildReminderViewModel(
     super.onCleared()
     Logger.i(TAG, "View model cleared")
     selectorDialogDataHolder.selectorBuilderItems = emptyList()
+    todoSeedHolder.pendingSeed = null
     if (isPaused && !isSaving) {
       originalV2?.let { resumeReminder(it) }
     }
@@ -335,6 +338,8 @@ class BuildReminderViewModel(
         }
 
         navKey.deepLinkTodo -> readTodoDeepLink()
+
+        navKey.seedFromTodoEdit -> readTodoEditSeed()
 
         navKey.deepLinkText != null -> readTextDeepLink(navKey.deepLinkText)
 
@@ -479,6 +484,26 @@ class BuildReminderViewModel(
     addSubTasksItemToBuilder()
     addEmptySummaryItemToBuilderIfNeeded()
     updateSelector()
+  }
+
+  /** Seeds the builder from a not-yet-persisted [TodoSeedHolder.pendingSeed] left by
+   *  TodoEditViewModel's Extend action. Deliberately does not call [editReminder] - that would
+   *  set [isEdited]/[originalV2]/`canRemove`, treating a reminder that was never saved as an
+   *  existing DB row. [originalV2] staying null means [saveReminder] falls through to
+   *  [newBlankReminderV2], which reuses [stableReminderId] - equal to [navKey]'s id here - so tags
+   *  already attached from the Todo screen stay attached once this reminder is actually saved. */
+  private suspend fun readTodoEditSeed() {
+    while (builderItemsLogic.getAvailable().isEmpty()) {
+      delay(50.milliseconds)
+    }
+    Logger.i(TAG, "Handle reminder todo edit seed")
+    val seed = todoSeedHolder.pendingSeed ?: return
+    todoSeedHolder.pendingSeed = null
+    val builderItems = reminderToBiDecomposer(seed)
+    if (builderItems.isNotEmpty()) {
+      builderItemsLogic.setAll(builderItems)
+      updateSelector()
+    }
   }
 
   private suspend fun readTextDeepLink(text: String) {

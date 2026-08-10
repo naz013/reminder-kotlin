@@ -31,6 +31,7 @@ import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
+import com.elementary.tasks.reminder.todo.TodoSeedHolder
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.PresetAction
@@ -113,6 +114,7 @@ class BuildReminderViewModelTest : BaseTest() {
   private val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>()
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
   private val findGroupUseCase = mockk<FindGroupUseCase>(relaxed = true)
+  private val todoSeedHolder = TodoSeedHolder()
 
   @Before
   override fun setUp() {
@@ -152,6 +154,7 @@ class BuildReminderViewModelTest : BaseTest() {
     deepLinkDateTimeMillis: Long? = null,
     deepLinkTodo: Boolean = false,
     deepLinkText: String? = null,
+    seedFromTodoEdit: Boolean = false,
   ): BuildReminderViewModel =
     BuildReminderViewModel(
       navKey = BuildReminderNavKey.Main(
@@ -161,6 +164,7 @@ class BuildReminderViewModelTest : BaseTest() {
         deepLinkDateTimeMillis = deepLinkDateTimeMillis,
         deepLinkTodo = deepLinkTodo,
         deepLinkText = deepLinkText,
+        seedFromTodoEdit = seedFromTodoEdit,
       ),
       dispatcherProvider = mockDispatcherProvider(),
       placeRepository = placeRepository,
@@ -204,6 +208,7 @@ class BuildReminderViewModelTest : BaseTest() {
       toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
       tagChipStateAdapter = tagChipStateAdapter,
       findGroupUseCase = findGroupUseCase,
+      todoSeedHolder = todoSeedHolder,
     )
 
   @Test
@@ -247,6 +252,27 @@ class BuildReminderViewModelTest : BaseTest() {
     assertEquals(true, viewModel.state.value.canRemove)
     verify { builderItemsLogic.setAll(listOf(summaryItem())) }
     coVerify(exactly = 1) { pauseReminderUseCase(match { it.uuId == "42" }) }
+  }
+
+  @Test
+  fun `init with a seedFromTodoEdit deep link seeds builder items from the pending seed and clears it`() {
+    val seed = reminderV2Fixture(uuId = "todo-1")
+    todoSeedHolder.pendingSeed = seed
+    coEvery { reminderToBiDecomposer(seed) } returns listOf(summaryItem(), groupItem())
+
+    createViewModel(initialId = "todo-1", seedFromTodoEdit = true)
+
+    verify { builderItemsLogic.setAll(listOf(summaryItem(), groupItem())) }
+    assertNull(todoSeedHolder.pendingSeed)
+  }
+
+  @Test
+  fun `init with a seedFromTodoEdit deep link but no pending seed leaves builder items untouched`() {
+    todoSeedHolder.pendingSeed = null
+
+    createViewModel(initialId = "todo-1", seedFromTodoEdit = true)
+
+    verify(exactly = 0) { builderItemsLogic.setAll(any()) }
   }
 
   @Test
@@ -730,6 +756,7 @@ class BuildReminderViewModelTest : BaseTest() {
   fun `onCleared always refreshes widgets and clears the selector items`() {
     val viewModel = createViewModel()
     selectorDialogDataHolder.selectorBuilderItems = listOf(mockk(relaxed = true))
+    todoSeedHolder.pendingSeed = reminderV2Fixture()
     val store = ViewModelStore()
     store.put("build", viewModel)
 
@@ -738,6 +765,7 @@ class BuildReminderViewModelTest : BaseTest() {
     verify(exactly = 1) { appWidgetUpdater.updateAllWidgets() }
     verify(exactly = 1) { appWidgetUpdater.updateCalendarWidget() }
     assertEquals(emptyList<Any>(), selectorDialogDataHolder.selectorBuilderItems)
+    assertNull(todoSeedHolder.pendingSeed)
   }
 
   @Test

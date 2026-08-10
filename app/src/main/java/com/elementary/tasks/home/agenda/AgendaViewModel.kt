@@ -343,8 +343,8 @@ class AgendaViewModel(
     navigationEvent.value = Event(NavigationEvent.OpenNewReminder)
   }
 
-  fun onAddShoppingClick() {
-    navigationEvent.value = Event(NavigationEvent.OpenNewShoppingReminder)
+  fun onAddTodoClick() {
+    navigationEvent.value = Event(NavigationEvent.OpenNewTodo)
   }
 
   fun onAddBirthdayClick() {
@@ -388,7 +388,7 @@ class AgendaViewModel(
 
     data object OpenNewReminder : NavigationEvent
 
-    data object OpenNewShoppingReminder : NavigationEvent
+    data object OpenNewTodo : NavigationEvent
 
     data class OpenBirthdayPreview(
       val id: String,
