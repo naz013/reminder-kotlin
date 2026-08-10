@@ -62,7 +62,9 @@ class GetDayEventItemsUseCase(
         }
       }
 
-    return (occurrences + historyRecords).sortedBy { it.dateTime }
+    return (occurrences + historyRecords)
+      .distinctBy { Triple(it::class, it.id, it.dateTime) }
+      .sortedBy { it.dateTime }
   }
 
   private fun toUiAgendaReminder(
