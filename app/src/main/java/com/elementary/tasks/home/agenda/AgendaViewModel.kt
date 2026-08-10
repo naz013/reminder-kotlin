@@ -187,22 +187,31 @@ class AgendaViewModel(
     return byTag
   }
 
-  private fun filterBirthdays(
+  private suspend fun filterBirthdays(
     birthdays: List<Birthday>,
     query: String,
     smartList: SmartListFilter?,
     tagId: String?,
     groupId: String?,
   ): List<Birthday> {
-    // Birthdays have no tag or group concept, so an active Tag/Group filter is an explicit
-    // request to narrow down to labeled items - birthdays vacuously don't match and drop out.
-    if (tagId != null || groupId != null) return emptyList()
+    // Birthdays have no group concept, so an active Group filter is an explicit request to
+    // narrow down to grouped items - birthdays vacuously don't match and drop out.
+    if (groupId != null) return emptyList()
 
     val byQuery = if (query.isBlank()) birthdays else birthdays.filter(BirthdayQueryFilter(query))
-    if (smartList == null) return byQuery
-
-    val today = dateTimeManager.getCurrentDateTime().toLocalDate()
-    return byQuery.filter { birthdaySmartListPredicate.matches(smartList, it, today) }
+    val bySmartList =
+      if (smartList == null) {
+        byQuery
+      } else {
+        val today = dateTimeManager.getCurrentDateTime().toLocalDate()
+        byQuery.filter { birthdaySmartListPredicate.matches(smartList, it, today) }
+      }
+    return if (tagId == null) {
+      bySmartList
+    } else {
+      val taggedIds = tagAssignmentRepository.getItemIdsForTag(tagId, TaggedItemType.BIRTHDAY).toSet()
+      bySmartList.filter { it.uuId in taggedIds }
+    }
   }
 
   fun onSearchQueryChange(query: String) {

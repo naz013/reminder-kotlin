@@ -270,7 +270,7 @@ class AgendaViewModelTest {
     }
 
   @Test
-  fun `tag filter keeps only reminders returned by getItemIdsForTag and drops birthdays`() =
+  fun `tag filter keeps only reminders returned by getItemIdsForTag and drops untagged birthdays`() =
     runTest {
       coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
         listOf(
@@ -280,11 +280,34 @@ class AgendaViewModelTest {
       coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday("b1"))
       coEvery { tagAssignmentRepository.getItemIdsForTag("tag-1", TaggedItemType.REMINDER) } returns
         listOf("tagged")
+      coEvery { tagAssignmentRepository.getItemIdsForTag("tag-1", TaggedItemType.BIRTHDAY) } returns
+        emptyList()
 
       val result =
         viewModel.loadMerged("", AgendaCategory.entries.toSet(), smartList = null, tagId = "tag-1", groupId = null)
 
       assertEquals(listOf("tagged"), result.items.map { it.id })
+    }
+
+  @Test
+  fun `tag filter also keeps birthdays returned by getItemIdsForTag for the BIRTHDAY item type`() =
+    runTest {
+      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+        listOf(reminderV2(id = "untagged-reminder"))
+      coEvery { birthdayRepository.getAll() } returns
+        listOf(
+          reminderBirthday(id = "tagged-birthday"),
+          reminderBirthday(id = "untagged-birthday"),
+        )
+      coEvery { tagAssignmentRepository.getItemIdsForTag("tag-1", TaggedItemType.REMINDER) } returns
+        emptyList()
+      coEvery { tagAssignmentRepository.getItemIdsForTag("tag-1", TaggedItemType.BIRTHDAY) } returns
+        listOf("tagged-birthday")
+
+      val result =
+        viewModel.loadMerged("", AgendaCategory.entries.toSet(), smartList = null, tagId = "tag-1", groupId = null)
+
+      assertEquals(listOf("tagged-birthday"), result.items.map { it.id })
     }
 
   @Test

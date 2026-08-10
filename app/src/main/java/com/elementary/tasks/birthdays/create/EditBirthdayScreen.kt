@@ -47,6 +47,8 @@ import com.github.naz013.ui.common.compose.foundation.component.FormSwitchItem
 import com.github.naz013.ui.common.compose.foundation.component.PhoneNumberVisualTransformation
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.tag.TagChipPicker
+import com.github.naz013.ui.tag.TagChipState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +67,8 @@ fun EditBirthdayScreen(
   onCopyKeepClick: () -> Unit,
   onCopyReplaceClick: () -> Unit,
   onDialogDismiss: () -> Unit,
+  onTagToggle: (TagChipState) -> Unit,
+  onManageTagsClick: () -> Unit,
   adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
@@ -146,6 +150,16 @@ fun EditBirthdayScreen(
           )
         }
       }
+
+      SettingsSectionHeader(stringResource(R.string.tags))
+
+      TagChipPicker(
+        allTags = state.allTags,
+        selectedTagIds = state.selectedTagIds,
+        onToggle = onTagToggle,
+        onManageTagsClick = onManageTagsClick,
+        modifier = Modifier.fillMaxWidth(),
+      )
 
       SettingsSectionHeader(stringResource(R.string.attach_contact))
 
@@ -267,6 +281,8 @@ private fun EditBirthdayScreenPreview() {
       onCopyKeepClick = {},
       onCopyReplaceClick = {},
       onDialogDismiss = {},
+      onTagToggle = {},
+      onManageTagsClick = {},
       adsContent = {},
     )
   }

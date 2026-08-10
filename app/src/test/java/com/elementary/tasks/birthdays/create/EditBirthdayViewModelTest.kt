@@ -15,13 +15,18 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -39,6 +44,10 @@ class EditBirthdayViewModelTest : BaseTest() {
   private val saveBirthdayUseCase = mockk<SaveBirthdayUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val uiBirthdayEditAdapter = UiBirthdayEditAdapter()
+  private val tagRepository = mockk<TagRepository>()
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
+  private val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>()
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   @Before
   override fun setUp() {
@@ -48,6 +57,8 @@ class EditBirthdayViewModelTest : BaseTest() {
     every { dateTimeManager.formatBirthdayDate(any()) } returns "1999-10-01"
     every { dateTimeManager.getNowGmtDateTime() } returns "2024-01-01T00:00:00"
     every { contactsReader.getIdFromNumber(any()) } returns 0L
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
   }
 
   private fun createViewModel(
@@ -68,6 +79,10 @@ class EditBirthdayViewModelTest : BaseTest() {
       deleteBirthdayUseCase = deleteBirthdayUseCase,
       saveBirthdayUseCase = saveBirthdayUseCase,
       textProvider = textProvider,
+      tagRepository = tagRepository,
+      tagAssignmentRepository = tagAssignmentRepository,
+      toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
+      tagChipStateAdapter = tagChipStateAdapter,
     )
 
   @Test

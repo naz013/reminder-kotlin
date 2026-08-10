@@ -41,6 +41,10 @@ val birthdaysModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
+      get(),
+      get(),
       get()
     )
   }
@@ -55,6 +59,6 @@ val birthdaysModule = module {
     )
   }
 
-  factory { DeleteBirthdayUseCase(get(), get(), get(), get(), get()) }
+  factory { DeleteBirthdayUseCase(get(), get(), get(), get(), get(), get()) }
   factory { SaveBirthdayUseCase(get(), get(), get(), get(), get()) }
 }

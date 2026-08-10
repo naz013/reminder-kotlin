@@ -18,6 +18,8 @@ import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -25,9 +27,15 @@ import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -48,6 +56,10 @@ class EditBirthdayViewModel(
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
   private val saveBirthdayUseCase: SaveBirthdayUseCase,
   private val textProvider: TextProvider,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EditBirthdayState())
@@ -63,6 +75,33 @@ class EditBirthdayViewModel(
         hasId = key.id.isNullOrEmpty().not()
       )
     }
+    observeTags()
+  }
+
+  private fun observeTags() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll()
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tags ->
+          _state.update { it.copy(allTags = tags) }
+        }
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagAssignmentRepository.observeTagsForItem(_state.value.id, TaggedItemType.BIRTHDAY).collect { tags ->
+        _state.update { it.copy(selectedTagIds = tags.map(Tag::id).toSet()) }
+      }
+    }
+  }
+
+  fun onTagToggle(tag: TagChipState) {
+    val isSelected = tag.id in _state.value.selectedTagIds
+    viewModelScope.launch(dispatcherProvider.io()) {
+      toggleTagAssignmentUseCase(_state.value.id, TaggedItemType.BIRTHDAY, tag.id, isSelected)
+    }
+  }
+
+  fun onManageTagsClick() {
+    event.emit(ViewModelEvent.OpenManageTags)
   }
 
   fun onDateClicked() {
@@ -219,6 +258,7 @@ class EditBirthdayViewModel(
           updatedAt = dateTimeManager.getNowGmtDateTime(),
           ignoreYear = ignoreYear,
         ) ?: Birthday(
+          uuId = state.id,
           name = name,
           contactId = contactId,
           date = formattedDate,
@@ -300,6 +340,8 @@ class EditBirthdayViewModel(
       val title: String,
       val date: LocalDate
     ) : ViewModelEvent
+
+    data object OpenManageTags : ViewModelEvent
   }
 
   companion object {
