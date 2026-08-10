@@ -76,7 +76,7 @@ private fun PreviewEntry(
   viewModel.event.ObserveEvent { event ->
     when (event) {
       PreviewReminderViewModel.ViewModelEvent.MoveBack -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
 
       is PreviewReminderViewModel.ViewModelEvent.ShowError -> {
@@ -104,7 +104,7 @@ private fun PreviewEntry(
   val state by viewModel.state.collectAsState(PreviewReminderState())
   PreviewReminderScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onToggleClick = viewModel::onToggleClick,
     onEditClick = { appNavBridge.navigate(BuildReminderNavKey.Main(id = key.id)) },
     onShareClick = viewModel::shareReminder,
@@ -143,7 +143,7 @@ private fun FullscreenMapEntry(
   var mapController by remember { mutableStateOf<SimpleMapController?>(null) }
 
   BackHandler {
-    if (mapController?.onBackPressed() != false) backStack.removeLastOrNull()
+    if (mapController?.onBackPressed() != false && backStack.size > 1) backStack.removeLastOrNull()
   }
 
   val reminder by viewModel.reminder.collectAsState()
@@ -161,7 +161,7 @@ private fun FullscreenMapEntry(
       reminder?.let {
         FullscreenEmbeddedMap(
           reminder = it,
-          onBackClick = { backStack.removeLastOrNull() },
+          onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
           onControllerReady = { mapController = it },
         )
       }

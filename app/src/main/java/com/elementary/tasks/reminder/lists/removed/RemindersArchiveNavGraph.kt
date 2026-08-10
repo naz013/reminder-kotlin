@@ -59,7 +59,7 @@ private fun ListEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.state.collectAsState(RemindersArchiveScreenState())
   RemindersArchiveScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onDeleteAllClick = viewModel::onDeleteAllClick,
     onItemClick = viewModel::onItemClick,

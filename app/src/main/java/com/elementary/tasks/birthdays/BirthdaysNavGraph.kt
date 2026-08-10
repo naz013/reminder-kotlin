@@ -48,7 +48,7 @@ private fun PreviewEntry(
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is PreviewBirthdayViewModel.ViewModelEvent.MoveBack -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
 
       is PreviewBirthdayViewModel.ViewModelEvent.MakeCall -> {
@@ -64,7 +64,7 @@ private fun PreviewEntry(
   val state by viewModel.state.collectAsState(PreviewBirthdayState())
   PreviewBirthdayScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onEditClick = { backStack.add(BirthdaysNavKey.Edit(key.id)) },
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
@@ -92,7 +92,7 @@ private fun EditEntry(
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      is EditBirthdayViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+      is EditBirthdayViewModel.ViewModelEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
 
       is EditBirthdayViewModel.ViewModelEvent.OpenDatePicker -> {
         dateTimePicker.showDatePicker(
@@ -110,7 +110,7 @@ private fun EditEntry(
 
   EditBirthdayScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSaveClick = {
       if (state.number.isNotEmpty()) {
         permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { viewModel.onSaveClick() })

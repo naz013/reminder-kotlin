@@ -61,6 +61,8 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.tag.TagChipRow
+import com.github.naz013.ui.tag.TagChipState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,6 +137,9 @@ fun PreviewReminderScreen(
       state.remaining?.let { text -> item { DetailRow(icon = Icons.DUE, text = text) } }
       state.groupTitle?.let { text -> item { DetailRow(icon = Icons.GROUP, text = text) } }
       item { DetailRow(icon = Icons.PRIORITY, text = state.priorityTitle) }
+      if (state.tags.isNotEmpty()) {
+        item { TagsRow(tags = state.tags) }
+      }
       item { DetailRow(icon = Icons.ID, text = state.id) }
 
       if (state.targetType != null) {
@@ -309,6 +314,25 @@ private fun DetailRow(
           .weight(1f)
           .padding(start = 16.dp),
     )
+  }
+}
+
+@Composable
+private fun TagsRow(tags: List<TagChipState>) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+  ) {
+    Icon(
+      painter = painterResource(Icons.TAG),
+      contentDescription = null,
+      tint = MaterialTheme.colorScheme.onSurfaceVariant,
+      modifier = Modifier.size(24.dp),
+    )
+    TagChipRow(tags = tags, modifier = Modifier.padding(start = 16.dp))
   }
 }
 

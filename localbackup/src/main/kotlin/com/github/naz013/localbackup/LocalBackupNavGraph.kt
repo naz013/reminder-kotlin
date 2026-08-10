@@ -28,7 +28,7 @@ private fun LocalBackupEntry(
   val state by viewModel.state.collectAsState(LocalBackupState(mode = mode))
   LocalBackupScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onPassphraseChange = viewModel::onPassphraseChange,
     onConfirmPassphraseChange = viewModel::onConfirmPassphraseChange,
     onActionClick = viewModel::onActionClick

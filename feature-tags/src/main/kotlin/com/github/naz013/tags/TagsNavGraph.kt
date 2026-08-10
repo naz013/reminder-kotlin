@@ -37,7 +37,7 @@ private fun TagsManageEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.state.collectAsState(TagsScreenState())
   TagsScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onAddClick = viewModel::onAddClick,
     onTagClick = viewModel::onTagClick
   )
@@ -54,14 +54,14 @@ private fun TagsEditEntry(
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      TagEditViewModel.NavigationEvent.Back -> backStack.removeLastOrNull()
+      TagEditViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
     }
   }
 
   val state by viewModel.state.collectAsState(TagEditState())
   TagEditScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onNameChange = viewModel::onNameChanged,
     onColorSelected = viewModel::onColorSelected,
     onSaveClick = viewModel::onSaveClick,

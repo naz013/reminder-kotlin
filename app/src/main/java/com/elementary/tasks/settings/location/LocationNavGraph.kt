@@ -53,7 +53,7 @@ private fun LocationEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.location),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     LocationSettingsScreen(
       state = state,
@@ -82,7 +82,7 @@ private fun MapStyleEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.map_style),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     MapStyleScreen(
       state = state,

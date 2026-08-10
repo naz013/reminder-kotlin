@@ -56,6 +56,8 @@ val birthdaysModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
     )
   }
 

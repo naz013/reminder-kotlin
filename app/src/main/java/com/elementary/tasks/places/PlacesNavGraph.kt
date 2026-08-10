@@ -61,7 +61,7 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
       }
 
       is PlacesViewModel.NavigationEvent.MoveBack -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
 
       is PlacesViewModel.NavigationEvent.ShowToast -> {
@@ -94,7 +94,7 @@ private fun PlaceEditEntry(
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      EditPlaceViewModel.EditPlaceEvent.MoveBack -> backStack.removeLastOrNull()
+      EditPlaceViewModel.EditPlaceEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
 
       EditPlaceViewModel.EditPlaceEvent.NoLocationSelected -> {
         toastDispatcher.showToast(messageRes = R.string.you_dont_select_place)
@@ -127,7 +127,7 @@ private fun PlaceEditEntry(
   EditPlaceScreen(
     state = state,
     onBackClick = {
-      if (mapController?.onBackPressed() != false) backStack.removeLastOrNull()
+      if (mapController?.onBackPressed() != false && backStack.size > 1) backStack.removeLastOrNull()
     },
     onNameChange = viewModel::onNameChange,
     onSaveClick = viewModel::onSaveClick,

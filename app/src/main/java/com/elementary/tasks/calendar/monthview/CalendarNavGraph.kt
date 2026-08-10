@@ -102,7 +102,7 @@ private fun MonthEntry(backStack: MutableList<NavKey>) {
     onAddReminderClick = viewModel::onAddReminderClick,
     onAddBirthdayClick = viewModel::onAddBirthdayClick,
     onSettingsClick = viewModel::onSettingsClick,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   )
 }
 
@@ -203,6 +203,6 @@ private fun DayEntry(
     onAgendaMenuAction = viewModel::onAgendaMenuAction,
     onAddReminderClick = { viewModel.onAddReminderClick(state.selectedDate) },
     onAddBirthdayClick = { viewModel.onAddBirthdayClick(state.selectedDate) },
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   )
 }

@@ -88,7 +88,7 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.other),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     OtherSettingsScreen(
       state = state,
@@ -121,7 +121,7 @@ private fun OtherEntry(backStack: MutableList<NavKey>) {
 private fun PermissionsEntry(backStack: MutableList<NavKey>) {
   SettingsScaffold(
     title = stringResource(R.string.permissions),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsWebView(
       url = "file:///android_asset/files/permissions.html",
@@ -134,7 +134,7 @@ private fun PermissionsEntry(backStack: MutableList<NavKey>) {
 private fun OssEntry(backStack: MutableList<NavKey>) {
   SettingsScaffold(
     title = stringResource(R.string.open_source_licenses),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsWebView(
       url = "file:///android_asset/files/oss.html",
@@ -148,7 +148,7 @@ private fun PrivacyPolicyEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<PrivacyPolicyViewModel>()
   SettingsScaffold(
     title = stringResource(R.string.privacy_policy),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsWebView(url = viewModel.url, modifier = Modifier.padding(padding))
   }
@@ -159,7 +159,7 @@ private fun TermsEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<TermsViewModel>()
   SettingsScaffold(
     title = stringResource(R.string.terms_and_conditions),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsWebView(url = viewModel.url, modifier = Modifier.padding(padding))
   }
@@ -169,7 +169,7 @@ private fun TermsEntry(backStack: MutableList<NavKey>) {
 private fun GeminiFunctionsEntry(backStack: MutableList<NavKey>) {
   SettingsScaffold(
     title = stringResource(R.string.gemini_functions),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsWebView(
       url = "file:///android_asset/files/app_functions.html",
@@ -185,7 +185,7 @@ private fun WhatsNewEntry(backStack: MutableList<NavKey>) {
   WhatsNewScreen(
     versionAndDate = state.versionName + "\n" + state.lastUpdated,
     whatsNewText = state.whatsNewText,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   )
 }
 

@@ -242,7 +242,7 @@ private fun AgendaEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.agendaScreenState.collectAsState(AgendaScreenState())
   AgendaScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onCategoryToggle = viewModel::onCategoryToggle,
     onSmartListSelected = viewModel::onSmartListSelected,

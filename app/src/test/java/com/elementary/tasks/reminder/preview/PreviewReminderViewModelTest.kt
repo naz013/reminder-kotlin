@@ -31,10 +31,12 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.observer.TableChangeListener
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -44,6 +46,7 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -78,10 +81,13 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
   private val tableChangeListenerFactory = mockk<TableChangeListenerFactory>(relaxed = true)
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
     every { uiReminderCommonAdapter.getReminderStatus(any(), any()) } returns
       UiReminderStatus(title = "", active = true, removed = false)
     every { uiReminderCommonAdapter.getDueV2(any()) } returns
@@ -145,6 +151,8 @@ class PreviewReminderViewModelTest : BaseTest() {
       toggleReminderStateUseCase = toggleReminderStateUseCase,
       saveReminderUseCase = saveReminderUseCase,
       tableChangeListenerFactory = tableChangeListenerFactory,
+      tagAssignmentRepository = tagAssignmentRepository,
+      tagChipStateAdapter = tagChipStateAdapter,
     )
 
   @Test

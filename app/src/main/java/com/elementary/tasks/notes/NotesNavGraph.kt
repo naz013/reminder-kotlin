@@ -141,7 +141,7 @@ private fun NotesListEntry(backStack: MutableList<NavKey>) {
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,
     onGridToggleClick = viewModel::onGridToggleClick,
@@ -179,7 +179,7 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>) {
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,
     onGridToggleClick = viewModel::onGridToggleClick,
@@ -225,7 +225,7 @@ private fun NotePreviewEntry(
       }
 
       is PreviewNoteViewModel.ViewModelEvent.MoveBack -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
 
       is PreviewNoteViewModel.ViewModelEvent.ShareNote -> {
@@ -248,7 +248,7 @@ private fun NotePreviewEntry(
     state = state,
     actions =
       PreviewNoteActions(
-        onBackClick = { backStack.removeLastOrNull() },
+        onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
         onEditClick = viewModel::onEditClick,
         onStatusClick = {
           permissionRequester.request(Permissions.POST_NOTIFICATION, onGranted = { viewModel.onStatusClick() })
@@ -328,7 +328,7 @@ private fun NoteEditEntry(
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is NoteEditViewModel.ViewModelEvent.MoveBack -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
 
       is NoteEditViewModel.ViewModelEvent.Error -> {
@@ -370,7 +370,7 @@ private fun NoteEditEntry(
     onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
     actions =
       NoteEditActions(
-        onBackClick = { backStack.removeLastOrNull() },
+        onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
         onSaveClick = viewModel::onSaveClicked,
         onShareClick = viewModel::onShareClick,
         onDeleteClick = viewModel::onDeleteRequested,
@@ -434,7 +434,7 @@ private fun NoteImagePreviewEntry(
 
   ImagePreviewScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onPageChanged = viewModel::onPageChanged,
   )
 }

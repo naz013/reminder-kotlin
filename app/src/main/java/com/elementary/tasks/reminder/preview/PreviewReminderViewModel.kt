@@ -20,6 +20,7 @@ import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderPriority
@@ -39,11 +40,14 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -80,6 +84,8 @@ class PreviewReminderViewModel(
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val tableChangeListenerFactory: TableChangeListenerFactory,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewReminderState())
@@ -96,6 +102,13 @@ class PreviewReminderViewModel(
 
   init {
     reminderTableChangeListener.register()
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.REMINDER)
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tagChips ->
+          _state.update { it.copy(tags = tagChips) }
+        }
+    }
   }
 
   override fun onCleared() {
