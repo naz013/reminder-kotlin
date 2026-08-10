@@ -581,6 +581,7 @@
     <string name="pro_streaks_and_insights">- Streaks &amp; Insights dashboard</string>
     <string name="pro_local_encrypted_backup">- Local encrypted backup</string>
     <string name="pro_gemini_app_functions">- Gemini AppFunctions integration</string>
+    <string name="pro_public_holidays">- Public holidays in the calendar</string>
     <string name="pro_no_ads">- No Advertisement</string>
     <string name="pro_different_settings_for_birthdays">- Different settings for birthdays</string>
     <string name="pro_led_notification">- LED notification</string>

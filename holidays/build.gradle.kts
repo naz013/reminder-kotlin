@@ -23,7 +23,6 @@ dependencies {
   implementation(libs.grpc.android)
 
   implementation(libs.koin.android)
-  implementation(libs.gson)
   implementation(libs.threetenbp)
 
   testImplementation(libs.junit)

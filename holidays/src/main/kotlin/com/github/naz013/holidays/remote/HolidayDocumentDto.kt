@@ -1,35 +1,34 @@
 package com.github.naz013.holidays.remote
 
-import com.google.gson.annotations.SerializedName
+import com.google.firebase.firestore.PropertyName
 
 /**
  * Wire shape of `holidays/{countryCode}/{year}/data`, written by the Python upload pipeline
  * (see research/PUBLIC_HOLIDAY_INTEGRATION.md and PUBLIC_HOLIDAY_INTEGRATION_PLAN.md).
+ *
+ * Deserialized via [com.google.firebase.firestore.DocumentSnapshot.toObject], which is the
+ * Firestore SDK's own POJO mapper - it does NOT read Gson's `@SerializedName` (that annotation is
+ * silently ignored here), it needs Firestore's own [PropertyName] to remap a snake_case document
+ * field to a differently-named Kotlin property.
  */
 internal data class HolidayDocumentDto(
-  @SerializedName("country_code")
+  @PropertyName("country_code")
   val countryCode: String? = null,
-  @SerializedName("country_name")
+  @PropertyName("country_name")
   val countryName: String? = null,
-  @SerializedName("year")
   val year: Int? = null,
-  @SerializedName("holiday_count")
+  @PropertyName("holiday_count")
   val holidayCount: Int? = null,
-  @SerializedName("holidays")
   val holidays: List<HolidayItemDto>? = null,
-  @SerializedName("last_updated")
+  @PropertyName("last_updated")
   val lastUpdated: String? = null,
 )
 
 internal data class HolidayItemDto(
-  @SerializedName("name")
   val name: String? = null,
-  @SerializedName("name_local")
+  @PropertyName("name_local")
   val nameLocal: String? = null,
-  @SerializedName("date")
   val date: String? = null,
-  @SerializedName("type")
   val type: String? = null,
-  @SerializedName("location")
   val location: String? = null,
 )
