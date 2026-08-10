@@ -10,6 +10,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.googlecalendar.GoogleCalendarApi
+import com.github.naz013.holidaysapi.HolidaySyncScheduler
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class CalendarSettingsViewModel(
   private val dispatcherProvider: DispatcherProvider,
@@ -25,6 +27,7 @@ class CalendarSettingsViewModel(
   private val textProvider: TextProvider,
   analyticsEventSender: AnalyticsEventSender,
   private val themeProvider: ThemeProvider,
+  private val holidaySyncScheduler: HolidaySyncScheduler,
 ) : ViewModel() {
   val state: StateFlow<CalendarSettingsState> field = MutableStateFlow(buildState())
 
@@ -139,6 +142,27 @@ class CalendarSettingsViewModel(
     refreshState()
   }
 
+  fun onHolidaysToggle() {
+    val newValue = !prefs.publicHolidaysEnabled
+    prefs.publicHolidaysEnabled = newValue
+    if (newValue) {
+      holidaySyncScheduler.enable()
+    } else {
+      holidaySyncScheduler.disable()
+    }
+    refreshState()
+  }
+
+  /** Called once the user picks a country on the separate [com.elementary.tasks.settings.SettingsNavKey.SelectHolidayCountry]
+   *  screen and it pops back - see `HolidayCountryPickerResultHolder`. */
+  fun onHolidayCountryPicked(code: String) {
+    prefs.holidayCountryCode = code
+    if (prefs.publicHolidaysEnabled) {
+      holidaySyncScheduler.syncNow()
+    }
+    refreshState()
+  }
+
   private fun showColorPicker(
     target: ColorPickerTarget,
     currentColorIndex: Int,
@@ -189,6 +213,8 @@ class CalendarSettingsViewModel(
       isCalendarSelected = isCalendarSelected,
       isExportChecked = prefs.addRemindersToGoogleCalendar,
       isScanChecked = prefs.scanGoogleCalendarEvents,
+      isHolidaysEnabled = prefs.publicHolidaysEnabled,
+      holidayCountryLabel = countryLabel(prefs.holidayCountryCode),
     )
   }
 
@@ -197,6 +223,8 @@ class CalendarSettingsViewModel(
       textProvider.getString(R.string.sunday),
       textProvider.getString(R.string.monday),
     )
+
+  private fun countryLabel(code: String): String = Locale("", code).displayCountry.ifBlank { code }
 
   companion object {
     private const val TAG = "CalendarSettingsViewModel"

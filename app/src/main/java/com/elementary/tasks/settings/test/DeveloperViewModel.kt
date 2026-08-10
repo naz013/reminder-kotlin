@@ -29,6 +29,7 @@ import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.HolidayRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecentQueryRepository
@@ -52,6 +53,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import java.util.UUID
 
+@Suppress("LongParameterList") // one repository per clearable Table entry - inherent to this debug screen
 class DeveloperViewModel(
   private val legalDocumentRepository: LegalDocumentRepository,
   private val prefs: Prefs,
@@ -77,6 +79,7 @@ class DeveloperViewModel(
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val activateReminderUseCase: ActivateReminderUseCase,
+  private val holidayRepository: HolidayRepository,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
@@ -290,6 +293,7 @@ class DeveloperViewModel(
       Table.WorkflowTemplate -> workflowTemplateRepository.deleteAll()
       Table.Tag -> tagRepository.deleteAll()
       Table.TagAssignment -> tagAssignmentRepository.deleteAll()
+      Table.Holiday -> holidayRepository.deleteAll()
     }
   }
 

@@ -7,6 +7,7 @@ import com.github.naz013.repository.impl.EventOccurrenceRepositoryImpl
 import com.github.naz013.repository.impl.GoogleTaskListRepositoryImpl
 import com.github.naz013.repository.impl.GoogleTaskRepositoryImpl
 import com.github.naz013.repository.impl.GroupV2RepositoryImpl
+import com.github.naz013.repository.impl.HolidayRepositoryImpl
 import com.github.naz013.repository.impl.NoteRepositoryImpl
 import com.github.naz013.repository.impl.PlaceRepositoryImpl
 import com.github.naz013.repository.impl.RecentQueryRepositoryImpl
@@ -82,4 +83,5 @@ val repositoryModule = module {
   factory { EventHistoryRepositoryImpl(get<AppDb>().eventHistoryDao(), get()) as EventHistoryRepository }
   factory { WorkflowRuleRepositoryImpl(get<AppDb>().workflowRuleDao(), get()) as WorkflowRuleRepository }
   factory { WorkflowTemplateRepositoryImpl(get<AppDb>().workflowTemplateDao(), get()) as WorkflowTemplateRepository }
+  factory { HolidayRepositoryImpl(get<AppDb>().holidayDao(), get()) as HolidayRepository }
 }

@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +21,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
+import com.elementary.tasks.core.utils.FeatureManager
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -33,6 +35,8 @@ import com.elementary.tasks.settings.birthday.BirthdaySettingsScreen
 import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.calendar.CalendarSettingsScreen
 import com.elementary.tasks.settings.calendar.CalendarSettingsViewModel
+import com.elementary.tasks.settings.calendar.country.HolidayCountryScreen
+import com.elementary.tasks.settings.calendar.country.rememberHolidayCountryPickerResultHolder
 import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.general.GeneralSettingsEvent
 import com.elementary.tasks.settings.general.GeneralSettingsScreen
@@ -80,6 +84,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(backStack: MutableList<NavKey>) {
   entry<SettingsNavKey.Backup> { BackupEntry(backStack) }
   entry<SettingsNavKey.Reminders> { key -> RemindersEntry(key, backStack) }
   entry<SettingsNavKey.Calendar> { key -> CalendarEntry(key, backStack) }
+  entry<SettingsNavKey.SelectHolidayCountry> { SelectHolidayCountryEntry(backStack) }
   entry<SettingsNavKey.Birthday> { key -> BirthdayEntry(key, backStack) }
   entry<SettingsNavKey.Note> { key -> NoteEntry(key, backStack) }
   entry<SettingsNavKey.ManagePresets> { ManagePresetsEntry(backStack) }
@@ -300,6 +305,22 @@ private fun CalendarEntry(
   val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
 
+  val buildInfo = koinInject<BuildInfo>()
+  val featureManager = koinInject<FeatureManager>()
+  val analyticsEventSender = koinInject<AnalyticsEventSender>()
+
+  // SelectHolidayCountry is a separate Nav3 entry (its own ViewModelStoreOwner), so it can't call
+  // back into CalendarSettingsViewModel directly - resolved the same way ApplicationPickerResultHolder
+  // hands a picked value back once a picker entry pops on top of the one that pushed it.
+  val holidayCountryPickerResultHolder = rememberHolidayCountryPickerResultHolder()
+  LaunchedEffect(Unit) {
+    val code = holidayCountryPickerResultHolder.pendingCountryCode
+    if (code != null) {
+      holidayCountryPickerResultHolder.pendingCountryCode = null
+      viewModel.onHolidayCountryPicked(code)
+    }
+  }
+
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.calendar),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
@@ -324,9 +345,29 @@ private fun CalendarEntry(
       onExportToggle = viewModel::onExportToggle,
       onScanToggle = viewModel::onScanToggle,
       onDialogDismiss = viewModel::onDialogDismiss,
+      isHolidaysSectionVisible = featureManager.isFeatureEnabled(FeatureManager.Feature.PUBLIC_HOLIDAYS),
+      isHolidaysLocked = !buildInfo.isPro,
+      onHolidaysToggle = viewModel::onHolidaysToggle,
+      onHolidaysLockedClick = {
+        analyticsEventSender.send(FeatureGateTappedEvent(Feature.PUBLIC_HOLIDAYS))
+        backStack.add(SettingsNavKey.ProVersion)
+      },
+      onHolidayCountryClick = { backStack.add(SettingsNavKey.SelectHolidayCountry) },
       modifier = Modifier.padding(padding),
     )
   }
+}
+
+@Composable
+private fun SelectHolidayCountryEntry(backStack: MutableList<NavKey>) {
+  val resultHolder = rememberHolidayCountryPickerResultHolder()
+  HolidayCountryScreen(
+    onBackClick = { backStack.removeLastOrNull() },
+    onCountrySelected = { code ->
+      resultHolder.pendingCountryCode = code
+      backStack.removeLastOrNull()
+    },
+  )
 }
 
 @Composable

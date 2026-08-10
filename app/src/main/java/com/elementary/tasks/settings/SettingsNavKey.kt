@@ -24,6 +24,9 @@ sealed interface SettingsNavKey : NavKey {
   ) : SettingsNavKey
 
   @Serializable
+  data object SelectHolidayCountry : SettingsNavKey
+
+  @Serializable
   data class Birthday(
     val screenTitle: String? = null,
   ) : SettingsNavKey

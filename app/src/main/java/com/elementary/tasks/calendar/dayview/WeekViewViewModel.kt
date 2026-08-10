@@ -12,6 +12,7 @@ import com.elementary.tasks.home.agenda.UiAgendaReminder
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.feature.common.capitalizeFirstLetter
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -34,6 +35,7 @@ class WeekViewViewModel(
   private val weekHeaderController: WeekHeaderController,
   private val dateTimeManager: DateTimeManager,
   private val getDayEventItemsUseCase: GetDayEventItemsUseCase,
+  private val getDayHolidayUseCase: GetDayHolidayUseCase,
   private val reminderV2Repository: ReminderV2Repository,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
@@ -84,6 +86,9 @@ class WeekViewViewModel(
 
   suspend fun loadDayEvents(date: LocalDate): List<UiAgendaItem> =
     withContext(dispatcherProvider.default()) { getDayEventItemsUseCase(date) }
+
+  suspend fun loadDayHoliday(date: LocalDate): PublicHoliday? =
+    withContext(dispatcherProvider.default()) { getDayHolidayUseCase(date) }
 
   private suspend fun applyDate(date: LocalDate) {
     val days = weekHeaderController.calculateWeek(date)

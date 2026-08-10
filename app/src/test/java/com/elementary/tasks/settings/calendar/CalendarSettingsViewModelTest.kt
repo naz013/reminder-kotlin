@@ -10,6 +10,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.googlecalendar.CalendarItem
 import com.github.naz013.googlecalendar.GoogleCalendarApi
+import com.github.naz013.holidaysapi.HolidaySyncScheduler
 import com.github.naz013.ui.common.theme.ThemeProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -25,6 +26,7 @@ class CalendarSettingsViewModelTest : BaseTest() {
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>()
+  private val holidaySyncScheduler = mockk<HolidaySyncScheduler>(relaxed = true)
 
   private lateinit var viewModel: CalendarSettingsViewModel
 
@@ -39,6 +41,8 @@ class CalendarSettingsViewModelTest : BaseTest() {
     every { prefs.addRemindersToGoogleCalendar } returns false
     every { prefs.scanGoogleCalendarEvents } returns false
     every { prefs.hapticsEnabled } returns true
+    every { prefs.publicHolidaysEnabled } returns false
+    every { prefs.holidayCountryCode } returns "US"
     every { themeProvider.themedColor(any()) } returns Color.Red
     every { themeProvider.colorsForSliderThemed() } returns listOf(Color.Red, Color.Blue)
     every { calendarUtils.getCalendarById(any()) } returns null
@@ -51,6 +55,7 @@ class CalendarSettingsViewModelTest : BaseTest() {
         textProvider = textProvider,
         analyticsEventSender = analyticsEventSender,
         themeProvider = themeProvider,
+        holidaySyncScheduler = holidaySyncScheduler,
       )
   }
 
@@ -70,8 +75,15 @@ class CalendarSettingsViewModelTest : BaseTest() {
     every { prefs.googleCalendarReminderId } returns 7L
     every { calendarUtils.getCalendarById(7L) } returns CalendarItem("Work", 7L)
 
-    val vm =
-      CalendarSettingsViewModel(mockDispatcherProvider(), calendarUtils, prefs, textProvider, analyticsEventSender, themeProvider)
+    val vm = CalendarSettingsViewModel(
+      dispatcherProvider = mockDispatcherProvider(),
+      googleCalendarApi = calendarUtils,
+      prefs = prefs,
+      textProvider = textProvider,
+      analyticsEventSender = analyticsEventSender,
+      themeProvider = themeProvider,
+      holidaySyncScheduler = holidaySyncScheduler,
+    )
 
     assertEquals("Work", vm.state.value.selectedCalendarName)
     assertEquals(true, vm.state.value.isCalendarSelected)
@@ -193,8 +205,15 @@ class CalendarSettingsViewModelTest : BaseTest() {
   fun `onCalendarReset clears the selected calendar`() {
     every { prefs.googleCalendarReminderId } returns 7L
     every { calendarUtils.getCalendarById(7L) } returns CalendarItem("Work", 7L)
-    val vm =
-      CalendarSettingsViewModel(mockDispatcherProvider(), calendarUtils, prefs, textProvider, analyticsEventSender, themeProvider)
+    val vm = CalendarSettingsViewModel(
+      dispatcherProvider = mockDispatcherProvider(),
+      googleCalendarApi = calendarUtils,
+      prefs = prefs,
+      textProvider = textProvider,
+      analyticsEventSender = analyticsEventSender,
+      themeProvider = themeProvider,
+      holidaySyncScheduler = holidaySyncScheduler,
+    )
 
     vm.onCalendarReset()
 
@@ -243,5 +262,52 @@ class CalendarSettingsViewModelTest : BaseTest() {
     viewModel.onScanToggle()
 
     verify { prefs.scanGoogleCalendarEvents = true }
+  }
+
+  @Test
+  fun `onHolidaysToggle enables the pref and schedules sync when turning on`() {
+    every { prefs.publicHolidaysEnabled } returns false
+
+    viewModel.onHolidaysToggle()
+
+    verify { prefs.publicHolidaysEnabled = true }
+    verify { holidaySyncScheduler.enable() }
+  }
+
+  @Test
+  fun `onHolidaysToggle disables the pref and cancels sync when turning off`() {
+    every { prefs.publicHolidaysEnabled } returns true
+
+    viewModel.onHolidaysToggle()
+
+    verify { prefs.publicHolidaysEnabled = false }
+    verify { holidaySyncScheduler.disable() }
+  }
+
+  @Test
+  fun `onHolidayCountryPicked persists the chosen country`() {
+    every { prefs.publicHolidaysEnabled } returns false
+
+    viewModel.onHolidayCountryPicked("FR")
+
+    verify { prefs.holidayCountryCode = "FR" }
+  }
+
+  @Test
+  fun `onHolidayCountryPicked re-syncs when holidays are already enabled`() {
+    every { prefs.publicHolidaysEnabled } returns true
+
+    viewModel.onHolidayCountryPicked("FR")
+
+    verify { holidaySyncScheduler.syncNow() }
+  }
+
+  @Test
+  fun `onHolidayCountryPicked does not re-sync when holidays are disabled`() {
+    every { prefs.publicHolidaysEnabled } returns false
+
+    viewModel.onHolidayCountryPicked("FR")
+
+    verify(exactly = 0) { holidaySyncScheduler.syncNow() }
   }
 }

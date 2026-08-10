@@ -21,6 +21,7 @@ class ProVersionViewModelTest : BaseTest() {
     every { textProvider.getString(R.string.pro_streaks_and_insights) } returns "Streaks & Insights"
     every { textProvider.getString(R.string.pro_local_encrypted_backup) } returns "Local encrypted backup"
     every { textProvider.getString(R.string.pro_gemini_app_functions) } returns "Gemini AppFunctions"
+    every { textProvider.getString(R.string.pro_public_holidays) } returns "Public holidays"
     every { textProvider.getString(R.string.pro_no_ads) } returns "No ads"
     every { textProvider.getString(R.string.pro_icalendar_custom_reminder) } returns "iCalendar custom reminder"
     every { textProvider.getString(R.string.additional_font_styles_for_notes) } returns "More note fonts"
@@ -36,6 +37,7 @@ class ProVersionViewModelTest : BaseTest() {
         "Streaks & Insights",
         "Local encrypted backup",
         "Gemini AppFunctions",
+        "Public holidays",
         "No ads",
         "iCalendar custom reminder",
         "More note fonts",

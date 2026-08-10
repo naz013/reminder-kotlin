@@ -45,6 +45,7 @@ import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.files.fileModule
+import com.github.naz013.holidays.holidaysModule
 import com.github.naz013.icalendar.iCalendarModule
 import com.github.naz013.insights.insightsModule
 import com.github.naz013.legal.LegalDocumentRepository
@@ -167,6 +168,7 @@ class ReminderApp :
           settingsModule,
           legalModule,
           workModule,
+          holidaysModule,
           dateTimeCalculationsModule,
           libModule,
           intentModule,
