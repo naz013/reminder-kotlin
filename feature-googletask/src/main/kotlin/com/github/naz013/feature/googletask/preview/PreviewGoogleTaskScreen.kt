@@ -35,6 +35,8 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.tag.TagChipRow
+import com.github.naz013.ui.tag.TagChipState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -138,6 +140,9 @@ internal fun PreviewGoogleTaskScreen(
         icon = R.drawable.ic_fluent_flag,
         text = stringResource(if (task.isCompleted) R.string.completed else R.string.not_completed),
       )
+      if (state.tags.isNotEmpty()) {
+        TagsRow(tags = state.tags)
+      }
 
       adsContent()
     }
@@ -154,6 +159,25 @@ internal fun PreviewGoogleTaskScreen(
         TextButton(onClick = onDeleteDismiss) { Text(stringResource(R.string.no)) }
       },
     )
+  }
+}
+
+@Composable
+private fun TagsRow(tags: List<TagChipState>) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+  ) {
+    Icon(
+      painter = painterResource(R.drawable.ic_builder_group),
+      contentDescription = null,
+      tint = MaterialTheme.colorScheme.onSurfaceVariant,
+      modifier = Modifier.size(32.dp),
+    )
+    TagChipRow(tags = tags, modifier = Modifier.padding(start = 16.dp))
   }
 }
 
@@ -211,6 +235,7 @@ private fun PreviewGoogleTaskScreenPreview() {
               taskListName = "Groceries",
               taskListColor = Color(0xFF4CAF50).toArgb(),
             ),
+          tags = listOf(TagChipState(id = "1", name = "Errands", color = Color(0xFF4CAF50))),
         ),
       onBackClick = {},
       onEditClick = {},

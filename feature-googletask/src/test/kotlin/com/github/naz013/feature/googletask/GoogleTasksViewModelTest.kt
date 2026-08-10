@@ -13,15 +13,19 @@ import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.googletask.usecase.SyncAllGoogleTaskListsUseCase
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.getOrAwaitValue
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -30,6 +34,7 @@ import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -50,6 +55,9 @@ class GoogleTasksViewModelTest : BaseTest() {
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>()
   private val systemInfo = mockk<SystemInfo>()
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
+  private val tagRepository = mockk<TagRepository>()
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   private lateinit var viewModel: GoogleTasksViewModel
 
@@ -77,6 +85,25 @@ class GoogleTasksViewModelTest : BaseTest() {
       reminderId = "",
     )
 
+  private fun buildViewModel() =
+    GoogleTasksViewModel(
+      googleTasksApi = googleTasksApi,
+      dispatcherProvider = mockDispatcherProvider(),
+      appWidgetUpdater = appWidgetUpdater,
+      googleTaskRepository = googleTaskRepository,
+      googleTaskListRepository = googleTaskListRepository,
+      googleTaskItemStateAdapter = googleTaskItemStateAdapter,
+      syncAllGoogleTaskListsUseCase = syncAllGoogleTaskListsUseCase,
+      contextProvider = contextProvider,
+      analyticsEventSender = analyticsEventSender,
+      textProvider = textProvider,
+      googleTasksAuthManager = googleTasksAuthManager,
+      systemInfo = systemInfo,
+      tagAssignmentRepository = tagAssignmentRepository,
+      tagRepository = tagRepository,
+      tagChipStateAdapter = tagChipStateAdapter,
+    )
+
   @Before
   override fun setUp() {
     super.setUp()
@@ -85,22 +112,9 @@ class GoogleTasksViewModelTest : BaseTest() {
     coEvery { googleTaskListRepository.getAll() } returns emptyList()
     coEvery { googleTaskRepository.getAll() } returns emptyList()
     every { googleTaskItemStateAdapter.convert(any(), any()) } returns uiTask()
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
 
-    viewModel =
-      GoogleTasksViewModel(
-        googleTasksApi = googleTasksApi,
-        dispatcherProvider = mockDispatcherProvider(),
-        appWidgetUpdater = appWidgetUpdater,
-        googleTaskRepository = googleTaskRepository,
-        googleTaskListRepository = googleTaskListRepository,
-        googleTaskItemStateAdapter = googleTaskItemStateAdapter,
-        syncAllGoogleTaskListsUseCase = syncAllGoogleTaskListsUseCase,
-        contextProvider = contextProvider,
-        analyticsEventSender = analyticsEventSender,
-        textProvider = textProvider,
-        googleTasksAuthManager = googleTasksAuthManager,
-        systemInfo = systemInfo,
-      )
+    viewModel = buildViewModel()
   }
 
   private fun observeState(): () -> GoogleTasksState {
@@ -131,6 +145,42 @@ class GoogleTasksViewModelTest : BaseTest() {
       assertEquals(1, state.tasks.size)
       assertNotNull(state.fabContainerColor)
       assertNotNull(state.fabContentColor)
+    }
+
+  @Test
+  fun `onTagSelected filters tasks down to items carrying that tag`() =
+    runTest {
+      val t1 = task("t1")
+      val t2 = task("t2")
+      coEvery { googleTaskRepository.getAll() } returns listOf(t1, t2)
+      every { googleTaskItemStateAdapter.convert(t1, null) } returns uiTask("t1")
+      every { googleTaskItemStateAdapter.convert(t2, null) } returns uiTask("t2")
+      coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.GOOGLE_TASK) } returns listOf("t1")
+      val vm = buildViewModel()
+      vm.state.first()
+
+      vm.onTagSelected("tag1")
+
+      assertEquals(listOf("t1"), vm.state.first().tasks.map { it.id })
+    }
+
+  @Test
+  fun `onTagSelected twice with the same tag clears the filter`() =
+    runTest {
+      val t1 = task("t1")
+      val t2 = task("t2")
+      coEvery { googleTaskRepository.getAll() } returns listOf(t1, t2)
+      every { googleTaskItemStateAdapter.convert(t1, null) } returns uiTask("t1")
+      every { googleTaskItemStateAdapter.convert(t2, null) } returns uiTask("t2")
+      coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.GOOGLE_TASK) } returns listOf("t1")
+      val vm = buildViewModel()
+      vm.state.first()
+      vm.onTagSelected("tag1")
+
+      vm.onTagSelected("tag1")
+
+      assertEquals(null, vm.state.first().selectedTagId)
+      assertEquals(2, vm.state.first().tasks.size)
     }
 
   @Test

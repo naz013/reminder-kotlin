@@ -10,6 +10,7 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -18,8 +19,11 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -35,6 +39,8 @@ internal class PreviewGoogleTaskViewModel(
   private val googleTaskPreviewStateAdapter: GoogleTaskPreviewStateAdapter,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val textProvider: TextProvider,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewGoogleTaskState())
@@ -44,6 +50,13 @@ internal class PreviewGoogleTaskViewModel(
 
   init {
     analyticsEventSender.send(FeatureUsedEvent(Feature.GOOGLE_TASK_PREVIEW))
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.GOOGLE_TASK)
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tagChips ->
+          _state.update { it.copy(tags = tagChips) }
+        }
+    }
   }
 
   fun onDeleteClick() {
@@ -71,6 +84,7 @@ internal class PreviewGoogleTaskViewModel(
           googleTasksApi.deleteTask(googleTask).also {
             if (it) {
               googleTaskRepository.delete(googleTask.taskId)
+              tagAssignmentRepository.detachAll(googleTask.taskId, TaggedItemType.GOOGLE_TASK)
             }
           }
         } catch (e: Throwable) {

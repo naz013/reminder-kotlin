@@ -2,6 +2,7 @@ package com.github.naz013.feature.googletask.task
 
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.tag.TagChipState
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import java.util.UUID
@@ -27,6 +28,8 @@ internal data class EditGoogleTaskState(
   val canMove: Boolean = false,
   val canDelete: Boolean = false,
   val screenTitleRes: Int = R.string.new_task,
+  val allTags: List<TagChipState> = emptyList(),
+  val selectedTagIds: Set<String> = emptySet(),
 )
 
 internal sealed interface EditGoogleTaskDialog {

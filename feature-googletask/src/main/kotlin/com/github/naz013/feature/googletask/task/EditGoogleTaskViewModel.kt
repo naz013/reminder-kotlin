@@ -11,6 +11,8 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -19,12 +21,18 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.SaveOneTimeReminderUseCase
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -48,6 +56,10 @@ internal class EditGoogleTaskViewModel(
   private val saveOneTimeReminderUseCase: SaveOneTimeReminderUseCase,
   private val textProvider: TextProvider,
   private val preferences: GoogleTasksPreferences,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EditGoogleTaskState())
@@ -55,6 +67,53 @@ internal class EditGoogleTaskViewModel(
     .onStart { loadInternal() }
 
   val event: LiveData<Event<EditGoogleTaskEvent>> field = mutableLiveEventOf()
+
+  init {
+    observeTags()
+  }
+
+  private fun observeTags() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll()
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tags ->
+          _state.update { it.copy(allTags = tags) }
+        }
+    }
+    // A new task has no real id yet (Google assigns it on save) - selection starts empty and
+    // is reconciled against the real id once save succeeds, see reconcileTags().
+    val existingId = id
+    if (existingId != null) {
+      viewModelScope.launch(dispatcherProvider.default()) {
+        tagAssignmentRepository.observeTagsForItem(existingId, TaggedItemType.GOOGLE_TASK).collect { tags ->
+          _state.update { it.copy(selectedTagIds = tags.map(Tag::id).toSet()) }
+        }
+      }
+    }
+  }
+
+  fun onTagToggle(tag: TagChipState) {
+    _state.update {
+      val selectedTagIds = it.selectedTagIds
+      val newSelectedTagIds = if (tag.id in selectedTagIds) selectedTagIds - tag.id else selectedTagIds + tag.id
+      it.copy(selectedTagIds = newSelectedTagIds)
+    }
+  }
+
+  fun onManageTagsClick() {
+    event.emit(EditGoogleTaskEvent.OpenManageTags)
+  }
+
+  private suspend fun reconcileTags(taskId: String) {
+    val selectedTagIds = _state.value.selectedTagIds
+    val currentTagIds = tagAssignmentRepository.getTagsForItem(taskId, TaggedItemType.GOOGLE_TASK).map(Tag::id).toSet()
+    (selectedTagIds - currentTagIds).forEach { tagId ->
+      toggleTagAssignmentUseCase(taskId, TaggedItemType.GOOGLE_TASK, tagId, isSelected = false)
+    }
+    (currentTagIds - selectedTagIds).forEach { tagId ->
+      toggleTagAssignmentUseCase(taskId, TaggedItemType.GOOGLE_TASK, tagId, isSelected = true)
+    }
+  }
 
   fun onTitleChange(text: String) {
     _state.update { it.copy(title = text, titleError = false) }
@@ -273,6 +332,7 @@ internal class EditGoogleTaskViewModel(
         googleTasksApi.deleteTask(googleTask).also {
           if (it) {
             googleTaskRepository.delete(googleTask.taskId)
+            tagAssignmentRepository.detachAll(googleTask.taskId, TaggedItemType.GOOGLE_TASK)
           }
         }
       }
@@ -348,6 +408,7 @@ internal class EditGoogleTaskViewModel(
     val savedGoogleTask = withContext(dispatcherProvider.io()) {
       googleTasksApi.saveTask(googleTask)?.also {
         googleTaskRepository.save(it)
+        reconcileTags(it.taskId)
         onSuccess()
       }
     }
@@ -363,6 +424,7 @@ internal class EditGoogleTaskViewModel(
     val savedGoogleTask = withContext(dispatcherProvider.io()) {
       googleTasksApi.updateTask(googleTask)?.also {
         googleTaskRepository.save(it)
+        reconcileTags(it.taskId)
         onSuccess()
       }
     }
@@ -388,6 +450,7 @@ internal class EditGoogleTaskViewModel(
         googleTasksApi.moveTask(it, oldListId)
       }?.also {
         googleTaskRepository.save(it)
+        reconcileTags(it.taskId)
         onSuccess()
       }
     }
@@ -500,6 +563,8 @@ internal class EditGoogleTaskViewModel(
     data class ShowError(
       val message: String
     ) : EditGoogleTaskEvent
+
+    data object OpenManageTags : EditGoogleTaskEvent
   }
 
   companion object {

@@ -10,6 +10,7 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -19,6 +20,7 @@ import com.github.naz013.feature.googletask.GoogleTasksPreferences
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.usecase.googletasks.GetGoogleTaskListByIdUseCase
@@ -40,6 +42,7 @@ internal class EditGoogleTaskListViewModel(
   private val themeProvider: ThemeProvider,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val preferences: GoogleTasksPreferences,
+  private val tagAssignmentRepository: TagAssignmentRepository,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EditGoogleTaskListState())
@@ -86,9 +89,11 @@ internal class EditGoogleTaskListViewModel(
     val listId = _state.value.id
     Logger.i(TAG, "Deleting Google Task List ($listId)")
     viewModelScope.launch(dispatcherProvider.io()) {
+      val taskIds = googleTaskRepository.getAllByList(listId).map { it.taskId }
       if (googleTasksApi.deleteTaskList(listId)) {
         googleTaskListRepository.delete(listId)
         googleTaskRepository.deleteAll(listId)
+        taskIds.forEach { taskId -> tagAssignmentRepository.detachAll(taskId, TaggedItemType.GOOGLE_TASK) }
         if (_state.value.wasDefault) {
           googleTaskListRepository.getAll().firstOrNull()?.also {
             it.def = 1

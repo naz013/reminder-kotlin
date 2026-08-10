@@ -36,6 +36,9 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
+import com.github.naz013.ui.tag.TagChipPicker
+import com.github.naz013.ui.tag.TagChipState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +59,8 @@ internal fun EditGoogleTaskScreen(
   onListPicked: (String) -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDialogDismiss: () -> Unit,
+  onTagToggle: (TagChipState) -> Unit,
+  onManageTagsClick: () -> Unit,
   adsContent: @Composable () -> Unit,
 ) {
   Scaffold(
@@ -152,6 +157,16 @@ internal fun EditGoogleTaskScreen(
         value = state.listName,
         enabled = !state.isLoading,
         onClick = onListFieldClick,
+      )
+
+      SettingsSectionHeader(stringResource(R.string.tags))
+
+      TagChipPicker(
+        allTags = state.allTags,
+        selectedTagIds = state.selectedTagIds,
+        onToggle = onTagToggle,
+        onManageTagsClick = onManageTagsClick,
+        modifier = Modifier.fillMaxWidth(),
       )
 
       adsContent()
@@ -337,6 +352,8 @@ private fun EditGoogleTaskScreenPreview() {
       onListPicked = {},
       onDeleteConfirmed = {},
       onDialogDismiss = {},
+      onTagToggle = {},
+      onManageTagsClick = {},
       adsContent = {},
     )
   }

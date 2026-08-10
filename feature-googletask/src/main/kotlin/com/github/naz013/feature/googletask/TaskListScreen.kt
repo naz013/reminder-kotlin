@@ -1,6 +1,7 @@
 package com.github.naz013.feature.googletask
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -55,6 +56,7 @@ internal fun TaskListScreen(
   onTaskToggle: (String) -> Unit,
   onAddTaskClick: () -> Unit,
   onRefresh: () -> Unit,
+  onTagSelected: (String?) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -111,20 +113,36 @@ internal fun TaskListScreen(
           .fillMaxSize()
           .padding(padding),
     ) {
-      if (state.tasks.isEmpty()) {
-        GoogleTasksEmptyState(modifier = Modifier.fillMaxSize())
-      } else {
-        LazyColumn(
-          modifier = Modifier.fillMaxSize(),
-          contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          items(state.tasks, key = { it.id }) { task ->
-            GoogleTaskRow(
-              task = task,
-              onClick = { onTaskClick(task.id) },
-              onToggle = { onTaskToggle(task.id) },
-            )
+      Column(modifier = Modifier.fillMaxSize()) {
+        TagFilterRow(
+          allTags = state.allTags,
+          selectedTagId = state.selectedTagId,
+          onTagSelected = onTagSelected,
+          modifier = Modifier.padding(top = 8.dp),
+        )
+        if (state.tasks.isEmpty()) {
+          GoogleTasksEmptyState(
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .weight(1f),
+          )
+        } else {
+          LazyColumn(
+            modifier =
+              Modifier
+                .fillMaxSize()
+                .weight(1f),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+          ) {
+            items(state.tasks, key = { it.id }) { task ->
+              GoogleTaskRow(
+                task = task,
+                onClick = { onTaskClick(task.id) },
+                onToggle = { onTaskToggle(task.id) },
+              )
+            }
           }
         }
       }
@@ -198,6 +216,7 @@ private fun TaskListScreenPreview() {
       onTaskToggle = {},
       onAddTaskClick = {},
       onRefresh = {},
+      onTagSelected = {},
     )
   }
 }

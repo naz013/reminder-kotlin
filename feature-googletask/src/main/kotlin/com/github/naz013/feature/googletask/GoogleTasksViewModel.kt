@@ -16,6 +16,7 @@ import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -26,10 +27,15 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -48,6 +54,9 @@ internal class GoogleTasksViewModel(
   private val textProvider: TextProvider,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val systemInfo: SystemInfo,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagRepository: TagRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(GoogleTasksState())
@@ -56,8 +65,38 @@ internal class GoogleTasksViewModel(
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
+  private var loadedTasks: List<GoogleTaskItemState> = emptyList()
+
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.GOOGLE_TASKS_LIST))
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll()
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tags ->
+          _state.update { it.copy(allTags = tags) }
+        }
+    }
+  }
+
+  fun onTagSelected(tagId: String?) {
+    val newSelectedTagId = if (tagId != null && tagId == _state.value.selectedTagId) null else tagId
+    _state.update { it.copy(selectedTagId = newSelectedTagId) }
+    viewModelScope.launch(dispatcherProvider.main()) {
+      applyTagFilter()
+    }
+  }
+
+  private suspend fun applyTagFilter() {
+    val selectedTagId = _state.value.selectedTagId
+    val filtered = if (selectedTagId == null) {
+      loadedTasks
+    } else {
+      val ids = withContext(dispatcherProvider.io()) {
+        tagAssignmentRepository.getItemIdsForTag(selectedTagId, TaggedItemType.GOOGLE_TASK)
+      }.toSet()
+      loadedTasks.filter { it.id in ids }
+    }
+    _state.update { it.copy(tasks = filtered) }
   }
 
   fun onGoogleTasksAuthFailed() {
@@ -98,7 +137,7 @@ internal class GoogleTasksViewModel(
         googleTaskLists.associateBy { it.listId }
       }
 
-      val tasks = withContext(dispatcherProvider.io()) {
+      loadedTasks = withContext(dispatcherProvider.io()) {
         googleTaskRepository.getAll().map {
           googleTaskItemStateAdapter.convert(it, map[it.listId])
         }
@@ -112,11 +151,11 @@ internal class GoogleTasksViewModel(
       _state.update {
         it.copy(
           taskLists = googleTaskLists.map { list -> list.toEntry() },
-          tasks = tasks,
           fabContainerColor = defTaskList?.let { list -> Color(themedColor(list.color)) },
           fabContentColor = defTaskList?.let { list -> fabContentColor(list) },
         )
       }
+      applyTagFilter()
     }
   }
 
