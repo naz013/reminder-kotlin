@@ -94,7 +94,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(backStack: MutableList<NavKey>) {
   entry<SettingsNavKey.ProVersion> { ProVersionEntry(backStack) }
   entry<SettingsNavKey.Troubleshooting> { TroubleshootingEntry(backStack) }
   entry<SettingsNavKey.NotificationCustomizationHelp> {
-    NotificationCustomizationHelpScreen(onBackClick = { backStack.removeLastOrNull() })
+    NotificationCustomizationHelpScreen(onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() })
   }
 }
 
@@ -109,7 +109,7 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.action_settings),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsHubScreen(
       state = state,
@@ -151,7 +151,7 @@ private fun BackupEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.backup),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     BackupSettingsScreen(
       isLocalBackupLocked = !buildInfo.isPro,
@@ -188,7 +188,7 @@ private fun GeneralEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.general),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     GeneralSettingsScreen(
       modifier = Modifier.padding(padding),
@@ -241,7 +241,7 @@ private fun RemindersEntry(
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.reminders_),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     RemindersSettingsScreen(
       state = state,
@@ -325,7 +325,7 @@ private fun CalendarEntry(
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.calendar),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     CalendarSettingsScreen(
       state = state,
@@ -363,10 +363,10 @@ private fun CalendarEntry(
 private fun SelectHolidayCountryEntry(backStack: MutableList<NavKey>) {
   val resultHolder = rememberHolidayCountryPickerResultHolder()
   HolidayCountryScreen(
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onCountrySelected = { code ->
       resultHolder.pendingCountryCode = code
-      backStack.removeLastOrNull()
+      if (backStack.size > 1) backStack.removeLastOrNull()
     },
   )
 }
@@ -402,7 +402,7 @@ private fun BirthdayEntry(
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.birthdays),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     BirthdaySettingsScreen(
       state = state,
@@ -443,7 +443,7 @@ private fun NoteEntry(
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.notes),
     navigationIcon = settingsNavigationIcon(key.screenTitle),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     NoteSettingsScreen(
       state = state,
@@ -466,7 +466,7 @@ private fun ManagePresetsEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.recur_presets),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     ManagePresetsScreen(
       presets = state.presets,
@@ -506,7 +506,7 @@ private fun DeveloperEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = "Developer",
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     DeveloperScreen(
       state = state,
@@ -556,7 +556,7 @@ private fun ObjectExportEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = "Save object to File",
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     ObjectExportScreen(
       state = state,
@@ -573,7 +573,7 @@ private fun ProVersionEntry(backStack: MutableList<NavKey>) {
   val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
   ProVersionScreen(
     advantages = viewModel.state.advantages,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onBuyClick = {
       viewModel.onBuyClicked()
       googlePlayMarketLauncher.launch(
@@ -611,7 +611,7 @@ private fun TroubleshootingEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.troubleshooting),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     TroubleshootingScreen(
       state = state,

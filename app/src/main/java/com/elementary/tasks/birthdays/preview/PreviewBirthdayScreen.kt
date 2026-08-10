@@ -58,6 +58,8 @@ import com.elementary.tasks.core.data.ui.birthday.UiBirthdayPreview
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.tag.TagChipRow
+import com.github.naz013.ui.tag.TagChipState
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -131,7 +133,7 @@ fun PreviewBirthdayScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
       ) {
-        BirthdayDetails(birthday = birthday)
+        BirthdayDetails(birthday = birthday, tags = state.tags)
 
         if (birthday.hasBirthdayToday && birthday.number != null) {
           Row(
@@ -174,7 +176,10 @@ fun PreviewBirthdayScreen(
 }
 
 @Composable
-private fun BirthdayDetails(birthday: UiBirthdayPreview) {
+private fun BirthdayDetails(
+  birthday: UiBirthdayPreview,
+  tags: List<TagChipState>,
+) {
   if (birthday.photo != null) {
     AnimatedAvatar(photo = birthday.photo)
   }
@@ -209,6 +214,28 @@ private fun BirthdayDetails(birthday: UiBirthdayPreview) {
     AnimatedDetailRow(index = 4) {
       DetailRow(icon = R.drawable.ic_fluent_alert, text = it, contentDescription = stringResource(R.string.estimated_next_reminder))
     }
+  }
+  if (tags.isNotEmpty()) {
+    AnimatedDetailRow(index = 5) { TagsRow(tags = tags) }
+  }
+}
+
+@Composable
+private fun TagsRow(tags: List<TagChipState>) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, top = 12.dp),
+  ) {
+    Icon(
+      painter = painterResource(R.drawable.ic_builder_group),
+      contentDescription = null,
+      tint = MaterialTheme.colorScheme.onBackground,
+      modifier = Modifier.size(32.dp),
+    )
+    TagChipRow(tags = tags, modifier = Modifier.padding(start = 16.dp))
   }
 }
 

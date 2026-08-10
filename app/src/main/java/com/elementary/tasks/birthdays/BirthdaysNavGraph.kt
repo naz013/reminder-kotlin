@@ -25,6 +25,7 @@ import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
 import com.github.naz013.common.Permissions
+import com.github.naz013.tags.TagsNavKey
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -47,7 +48,7 @@ private fun PreviewEntry(
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is PreviewBirthdayViewModel.ViewModelEvent.MoveBack -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
 
       is PreviewBirthdayViewModel.ViewModelEvent.MakeCall -> {
@@ -63,7 +64,7 @@ private fun PreviewEntry(
   val state by viewModel.state.collectAsState(PreviewBirthdayState())
   PreviewBirthdayScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onEditClick = { backStack.add(BirthdaysNavKey.Edit(key.id)) },
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
@@ -91,7 +92,7 @@ private fun EditEntry(
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      is EditBirthdayViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+      is EditBirthdayViewModel.ViewModelEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
 
       is EditBirthdayViewModel.ViewModelEvent.OpenDatePicker -> {
         dateTimePicker.showDatePicker(
@@ -100,6 +101,8 @@ private fun EditEntry(
           onDateSelected = { viewModel.onDateChanged(it) },
         )
       }
+
+      is EditBirthdayViewModel.ViewModelEvent.OpenManageTags -> backStack.add(TagsNavKey.Manage)
     }
   }
 
@@ -107,7 +110,7 @@ private fun EditEntry(
 
   EditBirthdayScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSaveClick = {
       if (state.number.isNotEmpty()) {
         permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { viewModel.onSaveClick() })
@@ -127,6 +130,8 @@ private fun EditEntry(
     onCopyKeepClick = viewModel::onCopyKeepClick,
     onCopyReplaceClick = viewModel::onCopyReplaceClick,
     onDialogDismiss = viewModel::onDialogDismiss,
+    onTagToggle = viewModel::onTagToggle,
+    onManageTagsClick = viewModel::onManageTagsClick,
     adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) }
   )
 }

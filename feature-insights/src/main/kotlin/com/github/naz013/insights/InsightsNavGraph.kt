@@ -21,6 +21,6 @@ private fun InsightsDashboardEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.state.collectAsState(InsightsScreenState())
   InsightsScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() }
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() }
   )
 }

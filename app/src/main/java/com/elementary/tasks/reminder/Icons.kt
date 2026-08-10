@@ -48,4 +48,7 @@ object Icons {
 
   @DrawableRes
   val PERSON: Int = R.drawable.ic_fluent_person
+
+  @DrawableRes
+  val TAG: Int = R.drawable.ic_builder_group
 }

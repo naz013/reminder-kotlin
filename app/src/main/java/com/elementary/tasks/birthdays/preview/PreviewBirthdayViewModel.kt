@@ -8,13 +8,17 @@ import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,6 +31,8 @@ class PreviewBirthdayViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val uiBirthdayPreviewAdapter: UiBirthdayPreviewAdapter,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewBirthdayState())
@@ -34,6 +40,16 @@ class PreviewBirthdayViewModel(
     .onStart { load() }
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
+
+  init {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.BIRTHDAY)
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tagChips ->
+          _state.update { it.copy(tags = tagChips) }
+        }
+    }
+  }
 
   fun onSmsClicked() {
     _state.value.birthday?.number?.also {

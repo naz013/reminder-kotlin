@@ -10,11 +10,14 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -25,6 +28,8 @@ class PreviewBirthdayViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val uiBirthdayPreviewAdapter = mockk<UiBirthdayPreviewAdapter>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>(relaxed = true)
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   private lateinit var viewModel: PreviewBirthdayViewModel
 
@@ -37,6 +42,7 @@ class PreviewBirthdayViewModelTest : BaseTest() {
     val defaultBirthday = Birthday(uuId = "42", name = "Alice", syncState = SyncState.Synced)
     coEvery { birthdayRepository.getById("42") } returns defaultBirthday
     every { uiBirthdayPreviewAdapter.convert(any()) } returns uiBirthday()
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
     viewModel =
       PreviewBirthdayViewModel(
         id = "42",
@@ -45,6 +51,8 @@ class PreviewBirthdayViewModelTest : BaseTest() {
         analyticsEventSender = analyticsEventSender,
         uiBirthdayPreviewAdapter = uiBirthdayPreviewAdapter,
         deleteBirthdayUseCase = deleteBirthdayUseCase,
+        tagAssignmentRepository = tagAssignmentRepository,
+        tagChipStateAdapter = tagChipStateAdapter,
       )
   }
 

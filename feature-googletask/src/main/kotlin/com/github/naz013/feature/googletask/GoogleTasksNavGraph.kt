@@ -53,7 +53,7 @@ private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      GoogleTasksViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+      GoogleTasksViewModel.ViewModelEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
 
       GoogleTasksViewModel.ViewModelEvent.Login -> {
         permissionRequester.request(
@@ -100,7 +100,7 @@ private fun TaskListEntry(
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      TaskListViewModel.TaskListEvent.MoveBack -> backStack.removeLastOrNull()
+      TaskListViewModel.TaskListEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
 
       is TaskListViewModel.TaskListEvent.ShowError -> {
         toastDispatcher.showToast(message = event.message)
@@ -115,7 +115,7 @@ private fun TaskListEntry(
   val state by viewModel.state.collectAsState(TaskListState())
   TaskListScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onEditListClick = { viewModel.onEditClicked() },
     onDeleteListClick = viewModel::onDeleteListClick,
     onDeleteConfirmed = viewModel::deleteGoogleTaskList,
@@ -140,7 +140,7 @@ private fun TaskPreviewEntry(
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      PreviewGoogleTaskViewModel.PreviewGoogleTaskEvent.MoveBack -> backStack.removeLastOrNull()
+      PreviewGoogleTaskViewModel.PreviewGoogleTaskEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
       is PreviewGoogleTaskViewModel.PreviewGoogleTaskEvent.ShowError -> {
         toastDispatcher.showToast(message = event.message)
       }
@@ -150,7 +150,7 @@ private fun TaskPreviewEntry(
   val state by viewModel.state.collectAsState(PreviewGoogleTaskState())
   PreviewGoogleTaskScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onEditClick = { backStack.add(GoogleTasksNavKey.TaskEdit(id = key.id)) },
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
@@ -197,7 +197,7 @@ private fun TaskEditEntry(
         )
       }
 
-      EditGoogleTaskViewModel.EditGoogleTaskEvent.MoveBack -> backStack.removeLastOrNull()
+      EditGoogleTaskViewModel.EditGoogleTaskEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
 
       is EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowError -> {
         toastDispatcher.showToast(message = event.message)
@@ -209,7 +209,7 @@ private fun TaskEditEntry(
 
   EditGoogleTaskScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSaveClick = viewModel::save,
     onDeleteMenuClick = viewModel::onDeleteMenuClick,
     onMoveMenuClick = viewModel::onMoveMenuClick,
@@ -247,7 +247,7 @@ private fun ListEditEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       EditGoogleTaskListViewModel.EditGoogleTaskListEvent.MoveBack -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
 
       is EditGoogleTaskListViewModel.EditGoogleTaskListEvent.ShowError -> {
@@ -259,7 +259,7 @@ private fun ListEditEntry(
   val state by viewModel.state.collectAsState(EditGoogleTaskListState())
   EditGoogleTaskListScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSaveClick = viewModel::save,
     onDeleteMenuClick = viewModel::onDeleteClick,
     onNameChange = viewModel::onNameChange,

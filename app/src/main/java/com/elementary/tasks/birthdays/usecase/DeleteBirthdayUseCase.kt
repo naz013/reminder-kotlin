@@ -4,9 +4,11 @@ import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.EventOccurrenceRepository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.files.DataType
 
 class DeleteBirthdayUseCase(
@@ -15,6 +17,7 @@ class DeleteBirthdayUseCase(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
   private val eventOccurrenceRepository: EventOccurrenceRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
 ) {
   suspend operator fun invoke(id: String) {
     birthdayRepository.delete(id)
@@ -27,6 +30,7 @@ class DeleteBirthdayUseCase(
       id = id,
     )
     eventOccurrenceRepository.deleteByEventId(id)
+    tagAssignmentRepository.detachAll(id, TaggedItemType.BIRTHDAY)
     Logger.i(TAG, "Deleted birthday with id = $id")
   }
 

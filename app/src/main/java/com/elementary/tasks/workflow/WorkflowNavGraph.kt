@@ -28,7 +28,7 @@ private fun WorkflowGalleryEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.state.collectAsState()
   WorkflowGalleryScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onRuleEnabledChange = viewModel::onRuleEnabledChange,
     onDeleteRuleClick = viewModel::onDeleteRuleClick,
     onSaveRuleAsTemplateClick = viewModel::onSaveRuleAsTemplateClick,
@@ -46,7 +46,7 @@ private fun WorkflowRulesForGroupEntry(
   val state by viewModel.state.collectAsState()
   WorkflowRulesForGroupScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onRuleEnabledChange = viewModel::onRuleEnabledChange,
     onDeleteRuleClick = viewModel::onDeleteRuleClick,
     onSaveRuleAsTemplateClick = viewModel::onSaveRuleAsTemplateClick,
@@ -67,11 +67,11 @@ private fun WorkflowBuilderEntry(
   }
   val state by viewModel.state.collectAsState()
   LaunchedEffect(state.didSave) {
-    if (state.didSave) backStack.removeLastOrNull()
+    if (state.didSave && backStack.size > 1) backStack.removeLastOrNull()
   }
   WorkflowRuleBuilderScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onTriggerRowClick = viewModel::onTriggerRowClick,
     onRemoveTriggerClick = viewModel::onRemoveTriggerClick,
     onAddConditionClick = viewModel::onAddConditionClick,

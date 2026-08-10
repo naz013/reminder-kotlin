@@ -46,7 +46,7 @@ private fun SecurityEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.security),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SecuritySettingsScreen(
       state = state,
@@ -73,14 +73,14 @@ private fun AddPinEntry(backStack: MutableList<NavKey>) {
       }
 
       AddPinEvent.PinSaved -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
     }
   }
 
   SettingsScaffold(
     title = stringResource(R.string.add_pin),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     AddPinScreen(
       stage = state.stage,
@@ -105,14 +105,14 @@ private fun ChangePinEntry(backStack: MutableList<NavKey>) {
       }
 
       ChangePinEvent.PinSaved -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
     }
   }
 
   SettingsScaffold(
     title = stringResource(R.string.change_pin),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     ChangePinScreen(
       stage = state.stage,
@@ -137,14 +137,14 @@ private fun DisablePinEntry(backStack: MutableList<NavKey>) {
       }
 
       DisablePinEvent.PinCleared -> {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) backStack.removeLastOrNull()
       }
     }
   }
 
   SettingsScaffold(
     title = stringResource(R.string.disable_pin),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     DisablePinScreen(
       pin = state.pin,

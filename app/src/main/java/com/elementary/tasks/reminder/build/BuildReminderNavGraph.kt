@@ -46,10 +46,10 @@ import org.koin.core.parameter.parametersOf
 fun EntryProviderScope<NavKey>.buildReminderEntries(backStack: MutableList<NavKey>) {
   entry<BuildReminderNavKey.Main> { key -> MainEntry(key, backStack) }
   entry<BuildReminderNavKey.Help> {
-    ReminderHelpScreen(onBackClick = { backStack.removeLastOrNull() })
+    ReminderHelpScreen(onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() })
   }
   entry<BuildReminderNavKey.RecurHelp> {
-    RecurHelpScreen(onBackClick = { backStack.removeLastOrNull() })
+    RecurHelpScreen(onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() })
   }
   entry<BuildReminderNavKey.SelectApplication> { SelectApplicationEntry(backStack) }
 }
@@ -58,10 +58,10 @@ fun EntryProviderScope<NavKey>.buildReminderEntries(backStack: MutableList<NavKe
 private fun SelectApplicationEntry(backStack: MutableList<NavKey>) {
   val resultHolder = rememberApplicationPickerResultHolder()
   SelectApplicationScreen(
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onAppSelected = { packageName ->
       resultHolder.pendingPackageName = packageName
-      backStack.removeLastOrNull()
+      if (backStack.size > 1) backStack.removeLastOrNull()
     },
   )
 }
@@ -135,7 +135,7 @@ private fun MainEntry(
         playReviewLauncher.launchReviewFlow()
       }
 
-      BuildReminderViewModel.ViewModelEvent.MoveBack -> backStack.removeLastOrNull()
+      BuildReminderViewModel.ViewModelEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
 
       is BuildReminderViewModel.ViewModelEvent.ShowMessage -> {
         toastDispatcher.showToast(messageRes = event.messageRes)
@@ -156,7 +156,7 @@ private fun MainEntry(
     quickStartOptions = QuickStartOption.entries,
     allTags = state.allTags,
     selectedTagIds = state.selectedTagIds,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSaveClick = {
       askNotificationPermissionIfNeeded(permissionRequester) {
         askCopySaving(dialogDispatcher, state, viewModel)

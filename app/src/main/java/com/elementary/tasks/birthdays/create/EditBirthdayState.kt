@@ -2,6 +2,7 @@ package com.elementary.tasks.birthdays.create
 
 import android.graphics.Bitmap
 import com.elementary.tasks.R
+import com.github.naz013.ui.tag.TagChipState
 import org.threeten.bp.LocalDate
 
 data class EditBirthdayState(
@@ -21,6 +22,8 @@ data class EditBirthdayState(
   val selectedDate: LocalDate = LocalDate.now(),
   val hasSameInDb: Boolean = false,
   val isFromFile: Boolean = false,
+  val allTags: List<TagChipState> = emptyList(),
+  val selectedTagIds: Set<String> = emptySet(),
 )
 
 sealed interface EditBirthdayDialog {

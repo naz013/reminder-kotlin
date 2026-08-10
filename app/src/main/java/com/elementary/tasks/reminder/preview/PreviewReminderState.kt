@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderTarget
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.AttachmentFile
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
+import com.github.naz013.ui.tag.TagChipState
 
 data class PreviewReminderState(
   val id: String = "",
@@ -34,6 +35,7 @@ data class PreviewReminderState(
   val canCopy: Boolean = false,
   val canDelete: Boolean = false,
   val showDeleteConfirm: Boolean = false,
+  val tags: List<TagChipState> = emptyList(),
 )
 
 data class UiPreviewSubTask(

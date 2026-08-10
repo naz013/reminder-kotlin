@@ -77,7 +77,7 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.state.collectAsState(GroupsScreenState())
   GroupsScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onAddClick = viewModel::onAddClick,
     onGroupClick = viewModel::onGroupClick,
     onGroupMenuAction = viewModel::onGroupMenuAction,
@@ -120,14 +120,14 @@ private fun GroupsDetailsEntry(
       is GroupDetailsViewModel.NavigationEvent.OpenAddReminder -> {
         backStack.add(BuildReminderNavKey.Main(groupUuId = event.groupUuId))
       }
-      GroupDetailsViewModel.NavigationEvent.Deleted -> backStack.removeLastOrNull()
+      GroupDetailsViewModel.NavigationEvent.Deleted -> if (backStack.size > 1) backStack.removeLastOrNull()
     }
   }
 
   val state by viewModel.state.collectAsState(GroupDetailsState())
   GroupDetailsScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onEditClick = viewModel::onEditClick,
     onDeleteClick = viewModel::onDeleteClick,
     onReminderClick = viewModel::onReminderClick,
@@ -148,14 +148,14 @@ private fun GroupsEditEntry(
   }
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is EditGroupViewModel.NavigationEvent.Back -> backStack.removeLastOrNull()
+      is EditGroupViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
     }
   }
 
   val state by viewModel.state.collectAsState(EditGroupState())
   EditGroupScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSaveClick = viewModel::onSaveClick,
     onDeleteMenuClick = viewModel::onDeleteMenuClick,
     onNameChange = viewModel::onNameChanged,

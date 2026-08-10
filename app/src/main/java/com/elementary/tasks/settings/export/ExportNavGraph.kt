@@ -39,7 +39,7 @@ private fun CloudBackupEntry(backStack: MutableList<NavKey>) {
 
   SettingsScaffold(
     title = stringResource(R.string.cloud_backup),
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     CloudBackupSettingsScreen(
       state = state,
@@ -141,7 +141,7 @@ private fun CloudServicesEntry(backStack: MutableList<NavKey>) {
 
   CloudServicesScreen(
     state = state,
-    onBackClick = { backStack.removeLastOrNull() },
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onDropboxClick = { viewModel.onDropboxClicked() },
     onGoogleDriveClick = { viewModel.onGoogleDriveClicked() },
     onGoogleTasksClick = { viewModel.onGoogleTasksClicked() },
