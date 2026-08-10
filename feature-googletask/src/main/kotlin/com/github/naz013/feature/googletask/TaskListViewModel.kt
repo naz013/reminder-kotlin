@@ -9,6 +9,7 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -18,11 +19,16 @@ import com.github.naz013.feature.googletask.usecase.tasklist.SyncGoogleTaskList
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -39,6 +45,9 @@ internal class TaskListViewModel(
   private val syncGoogleTaskList: SyncGoogleTaskList,
   private val contextProvider: ContextProvider,
   private val textProvider: TextProvider,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagRepository: TagRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TaskListState())
@@ -47,8 +56,41 @@ internal class TaskListViewModel(
 
   val event: LiveData<Event<TaskListEvent>> field = mutableLiveEventOf()
 
+  private var loadedTasks: List<GoogleTaskItemState> = emptyList()
+
+  init {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll()
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tags ->
+          _state.update { it.copy(allTags = tags) }
+        }
+    }
+  }
+
   fun onEditClicked() {
     event.emit(TaskListEvent.EditTaskList(_state.value.listId))
+  }
+
+  fun onTagSelected(tagId: String?) {
+    val newSelectedTagId = if (tagId != null && tagId == _state.value.selectedTagId) null else tagId
+    _state.update { it.copy(selectedTagId = newSelectedTagId) }
+    viewModelScope.launch(dispatcherProvider.main()) {
+      applyTagFilter()
+    }
+  }
+
+  private suspend fun applyTagFilter() {
+    val selectedTagId = _state.value.selectedTagId
+    val filtered = if (selectedTagId == null) {
+      loadedTasks
+    } else {
+      val ids = withContext(dispatcherProvider.io()) {
+        tagAssignmentRepository.getItemIdsForTag(selectedTagId, TaggedItemType.GOOGLE_TASK)
+      }.toSet()
+      loadedTasks.filter { it.id in ids }
+    }
+    _state.update { it.copy(tasks = filtered) }
   }
 
   private fun load() {
@@ -58,7 +100,7 @@ internal class TaskListViewModel(
       } ?: run {
         return@launch
       }
-      val googleTasks = withContext(dispatcherProvider.io()) {
+      loadedTasks = withContext(dispatcherProvider.io()) {
         googleTaskRepository.getAllByList(listId).map {
           googleTaskItemStateAdapter.convert(it, googleTaskList)
         }
@@ -68,13 +110,13 @@ internal class TaskListViewModel(
         it.copy(
           listId = googleTaskList.listId,
           title = googleTaskList.title,
-          tasks = googleTasks,
           fabContainerColor = color.toColor(),
           fabContentColor = if (color.isColorDark()) Color.White else Color.Black,
           canDelete = !googleTaskList.isDefault(),
           isDefaultList = googleTaskList.isDefault(),
         )
       }
+      applyTagFilter()
     }
   }
 
@@ -116,6 +158,7 @@ internal class TaskListViewModel(
       withContext(dispatcherProvider.io()) {
         val googleTasks = googleTaskRepository.getAllByList(_state.value.listId, GoogleTask.TASKS_COMPLETE)
         googleTaskRepository.deleteAll(googleTasks.map { it.taskId })
+        googleTasks.forEach { tagAssignmentRepository.detachAll(it.taskId, TaggedItemType.GOOGLE_TASK) }
         googleTasksApi.clearTaskList(_state.value.listId)
       }
 
@@ -146,10 +189,12 @@ internal class TaskListViewModel(
     }
     viewModelScope.launch(dispatcherProvider.main()) {
       val deleted = withContext(dispatcherProvider.io()) {
+        val taskIds = googleTaskRepository.getAllByList(_state.value.listId).map { it.taskId }
         googleTasksApi.deleteTaskList(_state.value.listId).also {
           if (it) {
             googleTaskListRepository.delete(_state.value.listId)
             googleTaskRepository.deleteAll(_state.value.listId)
+            taskIds.forEach { taskId -> tagAssignmentRepository.detachAll(taskId, TaggedItemType.GOOGLE_TASK) }
             if (_state.value.isDefaultList) {
               googleTaskListRepository.getAll().firstOrNull()?.also { list ->
                 list.def = 1

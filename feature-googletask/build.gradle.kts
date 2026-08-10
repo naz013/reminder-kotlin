@@ -26,12 +26,15 @@ dependencies {
   implementation(project(":platform-common"))
   implementation(project(":ui-common"))
   implementation(project(":ui-googletask"))
+  implementation(project(":ui-tag"))
   implementation(project(":feature-common"))
+  implementation(project(":feature-tags"))
   implementation(project(":usecase:googletasks"))
   implementation(project(":analytics"))
   implementation(project(":date-calculations"))
   implementation(project(":logic-googletask"))
   implementation(project(":logic-reminder"))
+  implementation(project(":logic-tag"))
 
   implementation(libs.play.services.auth)
 

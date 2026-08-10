@@ -36,6 +36,7 @@ val featureGoogleTaskModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
@@ -43,6 +44,10 @@ val featureGoogleTaskModule = module {
     EditGoogleTaskViewModel(
       id,
       listId,
+      get(),
+      get(),
+      get(),
+      get(),
       get(),
       get(),
       get(),
@@ -67,11 +72,16 @@ val featureGoogleTaskModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
     )
   }
   viewModel { (listId: String) ->
     TaskListViewModel(
       listId,
+      get(),
+      get(),
+      get(),
       get(),
       get(),
       get(),

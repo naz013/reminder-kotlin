@@ -57,6 +57,7 @@ internal fun GoogleTasksScreen(
   onTaskClick: (String) -> Unit,
   onTaskToggle: (String) -> Unit,
   onRefresh: () -> Unit,
+  onTagSelected: (String?) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -125,6 +126,13 @@ internal fun GoogleTasksScreen(
             }
           }
         }
+
+        TagFilterRow(
+          allTags = state.allTags,
+          selectedTagId = state.selectedTagId,
+          onTagSelected = onTagSelected,
+          modifier = Modifier.padding(bottom = 8.dp),
+        )
 
         if (state.tasks.isEmpty()) {
           GoogleTasksEmptyState(
@@ -314,6 +322,7 @@ private fun GoogleTasksScreenPreview() {
       onTaskClick = {},
       onTaskToggle = {},
       onRefresh = {},
+      onTagSelected = {},
     )
   }
 }

@@ -7,10 +7,13 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.getOrAwaitValue
 import com.github.naz013.testing.mockDispatcherProvider
@@ -41,6 +44,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   private val themeProvider = mockk<ThemeProvider>()
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val prefs = mockk<GoogleTasksPreferences>(relaxed = true)
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
 
   private lateinit var viewModel: EditGoogleTaskListViewModel
 
@@ -57,6 +61,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
       themeProvider = themeProvider,
       appWidgetUpdater = appWidgetUpdater,
       preferences = prefs,
+      tagAssignmentRepository = tagAssignmentRepository,
     )
 
   @Before
@@ -65,6 +70,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
     every { themeProvider.colorsForSliderThemed() } returns listOf(Color(0xFFFF0000))
     coEvery { getGoogleTaskListByIdUseCase(any()) } returns null
     coEvery { googleTaskListRepository.getById(any()) } returns null
+    coEvery { googleTaskRepository.getAllByList(any()) } returns emptyList()
 
     viewModel = buildViewModel()
   }
@@ -203,6 +209,8 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
       coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
       val vm = buildViewModel(listId = "list1")
       vm.state.first()
+      val t1 = GoogleTask(taskId = "t1", listId = "list1")
+      coEvery { googleTaskRepository.getAllByList("list1") } returns listOf(t1)
       coEvery { googleTasksApi.deleteTaskList("list1") } returns true
       coEvery { googleTaskListRepository.delete("list1") } returns Unit
       coEvery { googleTaskRepository.deleteAll("list1") } returns Unit
@@ -211,6 +219,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
 
       coVerify(exactly = 1) { googleTaskListRepository.delete("list1") }
       coVerify(exactly = 1) { googleTaskRepository.deleteAll("list1") }
+      coVerify(exactly = 1) { tagAssignmentRepository.detachAll("t1", TaggedItemType.GOOGLE_TASK) }
       verify(exactly = 1) { appWidgetUpdater.updateScheduleWidget() }
       val event = vm.navigationEvent.getOrAwaitValue()
       assertEquals(EditGoogleTaskListViewModel.EditGoogleTaskListEvent.MoveBack, event?.getContentIfNotHandled())

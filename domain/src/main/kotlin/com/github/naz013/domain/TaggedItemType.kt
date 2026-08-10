@@ -3,5 +3,6 @@ package com.github.naz013.domain
 enum class TaggedItemType {
   REMINDER,
   NOTE,
-  BIRTHDAY
+  BIRTHDAY,
+  GOOGLE_TASK
 }

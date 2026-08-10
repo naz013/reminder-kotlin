@@ -17,6 +17,7 @@ import com.github.naz013.feature.googletask.task.EditGoogleTaskViewModel
 import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListScreen
 import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListState
 import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListViewModel
+import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.compose.hideKeyboard
@@ -86,6 +87,7 @@ private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
     onTaskClick = { id -> backStack.add(GoogleTasksNavKey.TaskPreview(id)) },
     onTaskToggle = viewModel::toggleTask,
     onRefresh = viewModel::sync,
+    onTagSelected = viewModel::onTagSelected,
   )
 }
 
@@ -125,6 +127,7 @@ private fun TaskListEntry(
     onTaskToggle = viewModel::toggleTask,
     onAddTaskClick = { backStack.add(GoogleTasksNavKey.TaskEdit(listId = key.listId)) },
     onRefresh = viewModel::sync,
+    onTagSelected = viewModel::onTagSelected,
   )
 }
 
@@ -202,6 +205,8 @@ private fun TaskEditEntry(
       is EditGoogleTaskViewModel.EditGoogleTaskEvent.ShowError -> {
         toastDispatcher.showToast(message = event.message)
       }
+
+      EditGoogleTaskViewModel.EditGoogleTaskEvent.OpenManageTags -> backStack.add(TagsNavKey.Manage)
     }
   }
 
@@ -223,6 +228,8 @@ private fun TaskEditEntry(
     onListPicked = viewModel::onListPicked,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDialogDismiss = viewModel::onDialogDismiss,
+    onTagToggle = viewModel::onTagToggle,
+    onManageTagsClick = viewModel::onManageTagsClick,
     adsContent = adsContent,
   )
 }

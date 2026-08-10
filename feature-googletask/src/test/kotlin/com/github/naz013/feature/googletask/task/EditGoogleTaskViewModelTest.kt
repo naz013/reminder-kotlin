@@ -9,16 +9,21 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
 import com.github.naz013.logic.reminder.SaveOneTimeReminderUseCase
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.getOrAwaitValue
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
 import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
 import io.mockk.coEvery
@@ -29,6 +34,7 @@ import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -50,6 +56,10 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   private val saveOneTimeReminderUseCase = mockk<SaveOneTimeReminderUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val prefs = mockk<GoogleTasksPreferences>(relaxed = true)
+  private val tagRepository = mockk<TagRepository>()
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
+  private val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>(relaxed = true)
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   private val listA = GoogleTaskList(listId = "list1", title = "Personal", color = 1)
   private val listB = GoogleTaskList(listId = "list2", title = "Work", color = 2)
@@ -73,6 +83,10 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     saveOneTimeReminderUseCase = saveOneTimeReminderUseCase,
     textProvider = textProvider,
     preferences = prefs,
+    tagRepository = tagRepository,
+    tagAssignmentRepository = tagAssignmentRepository,
+    toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
+    tagChipStateAdapter = tagChipStateAdapter,
   )
 
   @Before
@@ -91,6 +105,10 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     every { dateTimeManager.fromMillis(any()) } returns LocalDateTime.of(2026, 7, 24, 9, 0)
     every { dateTimeManager.fromGmtToLocal(any()) } returns LocalDateTime.of(2026, 7, 24, 9, 30)
     every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
+    coEvery { tagAssignmentRepository.getTagsForItem(any(), any()) } returns emptyList()
+    coEvery { tagAssignmentRepository.detachAll(any(), any()) } returns Unit
 
     viewModel = buildViewModel()
   }
@@ -370,6 +388,21 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `does not reset an unsaved list selection when state is collected again`() =
+    runTest {
+      viewModel.state.first()
+      viewModel.onListFieldClick()
+      viewModel.onListPicked("list2")
+      assertEquals("list2", viewModel.state.first().listId)
+
+      // Simulates the screen losing and regaining its collector - e.g. navigating to Manage
+      // Tags and back - which re-fires onStart{ loadInternal() } on the underlying flow.
+      val state = viewModel.state.first()
+
+      assertEquals("list2", state.listId)
+    }
+
+  @Test
   fun `onListPicked selects a new list when not moving`() {
     val latest = observeState()
     viewModel.onListFieldClick()
@@ -449,6 +482,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
       coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTaskRepository.delete("g1") }
+      coVerify(exactly = 1) { tagAssignmentRepository.detachAll("g1", TaggedItemType.GOOGLE_TASK) }
       val event = vm.event.getOrAwaitValue()
       assertEquals(EditGoogleTaskViewModel.EditGoogleTaskEvent.MoveBack, event?.getContentIfNotHandled())
     }

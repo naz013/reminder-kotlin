@@ -1,5 +1,6 @@
 package com.github.naz013.feature.googletask.preview
 
+import androidx.compose.ui.graphics.Color
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -8,18 +9,24 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.getOrAwaitValue
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -36,6 +43,8 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
   private val googleTaskPreviewStateAdapter = mockk<GoogleTaskPreviewStateAdapter>()
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   private lateinit var viewModel: PreviewGoogleTaskViewModel
 
@@ -57,6 +66,21 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
       taskListColor = 0,
     )
 
+  private fun buildViewModel() =
+    PreviewGoogleTaskViewModel(
+      id = id,
+      googleTasksApi = googleTasksApi,
+      dispatcherProvider = mockDispatcherProvider(),
+      googleTaskRepository = googleTaskRepository,
+      googleTaskListRepository = googleTaskListRepository,
+      analyticsEventSender = analyticsEventSender,
+      googleTaskPreviewStateAdapter = googleTaskPreviewStateAdapter,
+      appWidgetUpdater = appWidgetUpdater,
+      textProvider = textProvider,
+      tagAssignmentRepository = tagAssignmentRepository,
+      tagChipStateAdapter = tagChipStateAdapter,
+    )
+
   @Before
   override fun setUp() {
     super.setUp()
@@ -64,19 +88,9 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
     coEvery { googleTaskListRepository.getById("list1") } returns taskList()
     coEvery { googleTaskListRepository.defaultGoogleTaskList() } returns null
     every { googleTaskPreviewStateAdapter.convert(any(), any()) } returns uiPreview()
+    every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
 
-    viewModel =
-      PreviewGoogleTaskViewModel(
-        id = id,
-        googleTasksApi = googleTasksApi,
-        dispatcherProvider = mockDispatcherProvider(),
-        googleTaskRepository = googleTaskRepository,
-        googleTaskListRepository = googleTaskListRepository,
-        analyticsEventSender = analyticsEventSender,
-        googleTaskPreviewStateAdapter = googleTaskPreviewStateAdapter,
-        appWidgetUpdater = appWidgetUpdater,
-        textProvider = textProvider,
-      )
+    viewModel = buildViewModel()
   }
 
   @Test
@@ -91,6 +105,20 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
 
       assertEquals("Buy milk", state.task?.text)
       assertEquals("Work", state.task?.taskListName)
+    }
+
+  @Test
+  fun `loads tags for the task into state`() =
+    runTest {
+      val tag = Tag(id = "tag1", name = "Errands", color = 0)
+      val chip = TagChipState(id = "tag1", name = "Errands", color = Color.Red)
+      every { tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.GOOGLE_TASK) } returns flowOf(listOf(tag))
+      every { tagChipStateAdapter(tag) } returns chip
+      val vm = buildViewModel()
+
+      val state = vm.state.first()
+
+      assertEquals(listOf(chip), state.tags)
     }
 
   @Test
@@ -161,6 +189,7 @@ class PreviewGoogleTaskViewModelTest : BaseTest() {
       viewModel.onDeleteConfirmed()
 
       coVerify(exactly = 1) { googleTaskRepository.delete(id) }
+      coVerify(exactly = 1) { tagAssignmentRepository.detachAll(id, TaggedItemType.GOOGLE_TASK) }
       val event = viewModel.event.getOrAwaitValue()
       assertEquals(PreviewGoogleTaskViewModel.PreviewGoogleTaskEvent.MoveBack, event?.getContentIfNotHandled())
     }

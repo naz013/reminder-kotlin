@@ -1,15 +1,18 @@
 package com.github.naz013.feature.googletask.usecase.task
 
 import com.github.naz013.domain.GoogleTaskList
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.googletask.usecase.remote.DownloadGoogleTasks
 import com.github.naz013.feature.googletask.usecase.remote.UploadGoogleTask
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GoogleTaskRepository
+import com.github.naz013.repository.TagAssignmentRepository
 
 internal class SyncGoogleTasks(
   private val googleTaskRepository: GoogleTaskRepository,
   private val uploadGoogleTask: UploadGoogleTask,
   private val downloadGoogleTasks: DownloadGoogleTasks,
+  private val tagAssignmentRepository: TagAssignmentRepository,
 ) {
   suspend operator fun invoke(taskList: GoogleTaskList) {
     // Get local tasks
@@ -36,6 +39,7 @@ internal class SyncGoogleTasks(
     localDelete.map { it.taskId }
       .takeIf { it.isNotEmpty() }
       ?.let { googleTaskRepository.deleteAll(it) }
+    localDelete.forEach { tagAssignmentRepository.detachAll(it.taskId, TaggedItemType.GOOGLE_TASK) }
   }
 
   companion object {
