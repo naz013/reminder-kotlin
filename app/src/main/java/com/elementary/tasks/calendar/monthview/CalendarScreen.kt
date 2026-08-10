@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.calendar.monthview.monthgrid.MonthGridCell
+import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -64,6 +65,7 @@ fun CalendarScreen(
   buildGrid: (LocalDate) -> List<MonthGridCell>,
   refreshSignal: Int,
   loadMonthEvents: suspend (LocalDate) -> Map<LocalDate, List<Int>>,
+  loadMonthHolidays: suspend (LocalDate) -> Map<LocalDate, PublicHoliday>,
   onDayClick: (LocalDate) -> Unit,
   onAddReminderClick: (LocalDate) -> Unit,
   onAddBirthdayClick: (LocalDate) -> Unit,
@@ -117,6 +119,7 @@ fun CalendarScreen(
         buildGrid = buildGrid,
         refreshSignal = refreshSignal,
         loadMonthEvents = loadMonthEvents,
+        loadMonthHolidays = loadMonthHolidays,
         onDayClick = onDayClick,
         onAddReminderClick = onAddReminderClick,
         onAddBirthdayClick = onAddBirthdayClick,
@@ -150,6 +153,7 @@ private fun MonthPage(
   buildGrid: (LocalDate) -> List<MonthGridCell>,
   refreshSignal: Int,
   loadMonthEvents: suspend (LocalDate) -> Map<LocalDate, List<Int>>,
+  loadMonthHolidays: suspend (LocalDate) -> Map<LocalDate, PublicHoliday>,
   onDayClick: (LocalDate) -> Unit,
   onAddReminderClick: (LocalDate) -> Unit,
   onAddBirthdayClick: (LocalDate) -> Unit,
@@ -157,9 +161,16 @@ private fun MonthPage(
 ) {
   val grid = remember(monthDate) { buildGrid(monthDate) }
   var eventsByDay by remember(monthDate) { mutableStateOf<Map<LocalDate, List<Int>>?>(null) }
+  var holidaysByDay by remember(monthDate) { mutableStateOf<Map<LocalDate, PublicHoliday>>(emptyMap()) }
 
   LaunchedEffect(monthDate, refreshSignal) {
     eventsByDay = loadMonthEvents(monthDate)
+  }
+
+  // Loaded independently of eventsByDay - a holiday badge popping in a moment later than the
+  // reminder/birthday dots is fine, it's a secondary decoration and shouldn't block the page.
+  LaunchedEffect(monthDate, refreshSignal) {
+    holidaysByDay = loadMonthHolidays(monthDate)
   }
 
   when (val events = eventsByDay) {
@@ -177,6 +188,7 @@ private fun MonthPage(
               MonthDayCell(
                 cell = cell,
                 dotColors = events[cell.date].orEmpty(),
+                holiday = holidaysByDay[cell.date],
                 onClick = onDayClick,
                 onAddReminderClick = onAddReminderClick,
                 onAddBirthdayClick = onAddBirthdayClick,
@@ -194,6 +206,7 @@ private fun MonthPage(
 private fun MonthDayCell(
   cell: MonthGridCell,
   dotColors: List<Int>,
+  holiday: PublicHoliday?,
   onClick: (LocalDate) -> Unit,
   onAddReminderClick: (LocalDate) -> Unit,
   onAddBirthdayClick: (LocalDate) -> Unit,
@@ -239,6 +252,15 @@ private fun MonthDayCell(
                 .size(DOT_SIZE)
                 .clip(CircleShape)
                 .background(Color(color)),
+          )
+        }
+        if (holiday != null) {
+          Box(
+            modifier =
+              Modifier
+                .size(DOT_SIZE)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.tertiary),
           )
         }
       }
@@ -340,6 +362,7 @@ private fun CalendarScreenPreview() {
       },
       refreshSignal = 0,
       loadMonthEvents = { emptyMap() },
+      loadMonthHolidays = { emptyMap() },
       onDayClick = {},
       onAddReminderClick = {},
       onAddBirthdayClick = {},

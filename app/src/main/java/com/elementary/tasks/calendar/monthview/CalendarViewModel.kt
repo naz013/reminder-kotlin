@@ -11,6 +11,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -30,6 +31,7 @@ class CalendarViewModel(
   private val prefs: Prefs,
   private val monthGridFactory: MonthGridFactory,
   private val loadMonthEventsUseCase: LoadMonthEventsUseCase,
+  private val loadMonthHolidaysUseCase: LoadMonthHolidaysUseCase,
   private val analyticsEventSender: AnalyticsEventSender,
   private val textProvider: TextProvider,
 ) : ViewModel() {
@@ -75,6 +77,9 @@ class CalendarViewModel(
   suspend fun loadMonthEvents(monthDate: LocalDate): Map<LocalDate, List<Int>> =
     withContext(dispatcherProvider.default()) { loadMonthEventsUseCase(monthDate) }
 
+  suspend fun loadMonthHolidays(monthDate: LocalDate): Map<LocalDate, PublicHoliday> =
+    withContext(dispatcherProvider.default()) { loadMonthHolidaysUseCase(monthDate) }
+
   /** Called explicitly on every `ON_RESUME` from `CalendarNavGraph.kt`'s `MonthEntry` since this
    *  is a plain [ViewModel], not a lifecycle observer. */
   fun refresh() {
@@ -82,12 +87,6 @@ class CalendarViewModel(
       refreshSignal.update { it + 1 }
     }
     hasResumedBefore = true
-  }
-
-  /** Snaps the header/title back to the current month; the pager reset itself is driven by `MonthEntry`. */
-  fun resetToToday() {
-    lastPosition = CENTER_POSITION
-    applyMonth(initDate)
   }
 
   fun onDayClick(date: LocalDate) {

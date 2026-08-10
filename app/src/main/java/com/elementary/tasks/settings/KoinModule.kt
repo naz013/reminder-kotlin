@@ -4,6 +4,8 @@ import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.birthday.usecase.GetContactsWithMetadataUseCase
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.elementary.tasks.settings.calendar.CalendarSettingsViewModel
+import com.elementary.tasks.settings.calendar.country.HolidayCountryPickerResultHolder
+import com.elementary.tasks.settings.calendar.country.HolidayCountryViewModel
 import com.elementary.tasks.settings.calendar.usecase.ScanGoogleCalendarForNewEventsUseCase
 import com.elementary.tasks.settings.calendar.work.ScanGoogleCalendarEventsTask
 import com.elementary.tasks.settings.general.GeneralSettingsViewModel
@@ -43,6 +45,8 @@ val settingsModule = module {
   }
 
   viewModelOf(::CalendarSettingsViewModel)
+  viewModelOf(::HolidayCountryViewModel)
+  single { HolidayCountryPickerResultHolder() }
   viewModelOf(::BirthdaySettingsViewModel)
   viewModelOf(::GeneralSettingsViewModel)
   viewModelOf(::NoteSettingsViewModel)

@@ -18,6 +18,7 @@ class ProVersionViewModel(
           R.string.pro_streaks_and_insights,
           R.string.pro_local_encrypted_backup,
           R.string.pro_gemini_app_functions,
+          R.string.pro_public_holidays,
           R.string.pro_no_ads,
           R.string.pro_icalendar_custom_reminder,
           R.string.additional_font_styles_for_notes,

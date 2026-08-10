@@ -7,6 +7,7 @@ import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.PublicHoliday
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -22,6 +23,7 @@ class CalendarViewModelTest : BaseTest() {
   private val prefs = mockk<Prefs>()
   private val monthGridFactory = mockk<MonthGridFactory>()
   private val loadMonthEventsUseCase = mockk<LoadMonthEventsUseCase>()
+  private val loadMonthHolidaysUseCase = mockk<LoadMonthHolidaysUseCase>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
 
@@ -42,6 +44,7 @@ class CalendarViewModelTest : BaseTest() {
         prefs = prefs,
         monthGridFactory = monthGridFactory,
         loadMonthEventsUseCase = loadMonthEventsUseCase,
+        loadMonthHolidaysUseCase = loadMonthHolidaysUseCase,
         analyticsEventSender = analyticsEventSender,
         textProvider = textProvider,
       )
@@ -129,5 +132,25 @@ class CalendarViewModelTest : BaseTest() {
       val result = viewModel.loadMonthEvents(date)
 
       assertEquals(mapOf(date to listOf(1)), result)
+    }
+
+  @Test
+  fun `loadMonthHolidays delegates to the use case`() =
+    runTest {
+      val date = LocalDate.of(2026, 7, 1)
+      val holiday = PublicHoliday(
+        id = "US:2026-07-04:Independence Day",
+        countryCode = "US",
+        date = LocalDate.of(2026, 7, 4),
+        name = "Independence Day",
+        nameLocal = "Independence Day",
+        type = "National",
+        location = null,
+      )
+      coEvery { loadMonthHolidaysUseCase(date) } returns mapOf(holiday.date to holiday)
+
+      val result = viewModel.loadMonthHolidays(date)
+
+      assertEquals(mapOf(holiday.date to holiday), result)
     }
 }

@@ -1,6 +1,7 @@
 package com.elementary.tasks.calendar
 
 import com.elementary.tasks.calendar.dayview.GetDayEventItemsUseCase
+import com.elementary.tasks.calendar.dayview.GetDayHolidayUseCase
 import com.elementary.tasks.calendar.dayview.WeekViewViewModel
 import com.elementary.tasks.calendar.dayview.weekheader.WeekFactory
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
@@ -8,6 +9,7 @@ import com.elementary.tasks.calendar.history.AddReminderToHistoryUseCase
 import com.elementary.tasks.calendar.history.GetHistoryByDayUseCase
 import com.elementary.tasks.calendar.monthview.CalendarViewModel
 import com.elementary.tasks.calendar.monthview.LoadMonthEventsUseCase
+import com.elementary.tasks.calendar.monthview.LoadMonthHolidaysUseCase
 import com.elementary.tasks.calendar.monthview.monthgrid.MonthGridFactory
 import com.elementary.tasks.calendar.occurrence.CalculateBirthdayOccurrencesUseCase
 import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDateRangeUseCase
@@ -26,12 +28,16 @@ val calendarModule =
     factory { WeekFactory(get(), get(), get()) }
     factory { WeekHeaderController(get()) }
 
-    viewModel { (dateMillis: Long) -> WeekViewViewModel(dateMillis, get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { (dateMillis: Long) ->
+      WeekViewViewModel(dateMillis, get(), get(), get(), get(), get(), get(), get(), get(), get())
+    }
 
     factory { GetDayEventItemsUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { GetDayHolidayUseCase(get(), get()) }
 
     factory { MonthGridFactory(get()) }
     factory { LoadMonthEventsUseCase(get(), get(), get(), get(), get()) }
+    factory { LoadMonthHolidaysUseCase(get(), get()) }
     viewModelOf(::CalendarViewModel)
 
     factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get(), get()) }

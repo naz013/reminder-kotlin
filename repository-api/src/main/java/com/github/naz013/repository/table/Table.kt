@@ -22,4 +22,5 @@ enum class Table(val tableName: String) {
   EventHistory("EventHistory"),
   Tag("Tag"),
   TagAssignment("TagAssignment"),
+  Holiday("Holiday"),
 }

@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.eventaction.ResolvedEventAction
 import com.elementary.tasks.home.BannerState
@@ -22,6 +21,8 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import com.github.naz013.logging.Logger
@@ -40,7 +41,7 @@ class ScheduleHomeViewModel(
   private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val getNavigationItemsUseCase: GetNavigationItemsUseCase,
   private val prefs: Prefs,
-  private val featureManager: FeatureManager,
+  private val featureFlags: FeatureFlags,
   private val whatsNewManager: WhatsNewManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val legalDocumentRepository: LegalDocumentRepository,
@@ -206,7 +207,7 @@ class ScheduleHomeViewModel(
       Logger.v(TAG, "Privacy banner is shown")
       return BannerState.Privacy
     }
-    if (!prefs.isUserLogged && featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE)) {
+    if (!prefs.isUserLogged && featureFlags.isEnabled(FeatureFlag.GOOGLE_DRIVE)) {
       Logger.v(TAG, "Login banner is shown")
       return BannerState.Login
     }

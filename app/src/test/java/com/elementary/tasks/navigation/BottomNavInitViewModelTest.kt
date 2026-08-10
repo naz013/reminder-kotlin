@@ -4,7 +4,8 @@ import com.elementary.tasks.BaseTest
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
-import com.elementary.tasks.core.utils.FeatureManager
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
@@ -35,7 +36,7 @@ class BottomNavInitViewModelTest : BaseTest() {
   private val prefs = mockk<Prefs>(relaxed = true)
   private val activateAllActiveRemindersUseCase = mockk<ActivateAllActiveRemindersUseCase>(relaxed = true)
   private val notifier = mockk<Notifier>(relaxed = true)
-  private val featureManager = mockk<FeatureManager>()
+  private val featureFlags = mockk<FeatureFlags>()
   private val packageManagerWrapper = mockk<PackageManagerWrapper>()
   private val groupsUtil = mockk<GroupsUtil>(relaxed = true)
   private val noteImageMigration = mockk<NoteImageMigration>(relaxed = true)
@@ -57,7 +58,7 @@ class BottomNavInitViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    every { featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) } returns true
+    every { featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS) } returns true
     every { googleTasksAuthManager.isAuthorized() } returns true
     every { packageManagerWrapper.getVersionName() } returns "1.0.0"
 
@@ -82,7 +83,7 @@ class BottomNavInitViewModelTest : BaseTest() {
       activateAllActiveRemindersUseCase = activateAllActiveRemindersUseCase,
       dispatcherProvider = mockDispatcherProvider(),
       notifier = notifier,
-      featureManager = featureManager,
+      featureFlags = featureFlags,
       packageManagerWrapper = packageManagerWrapper,
       groupsUtil = groupsUtil,
       noteImageMigration = noteImageMigration,
@@ -102,7 +103,7 @@ class BottomNavInitViewModelTest : BaseTest() {
 
   @Test
   fun `isGoogleTasksEnabled is false when the feature flag is disabled`() {
-    every { featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) } returns false
+    every { featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS) } returns false
 
     val vm = createViewModel()
 

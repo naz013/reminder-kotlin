@@ -11,6 +11,8 @@ data class CalendarSettingsState(
   val isCalendarSelected: Boolean = false,
   val isExportChecked: Boolean = false,
   val isScanChecked: Boolean = false,
+  val isHolidaysEnabled: Boolean = false,
+  val holidayCountryLabel: String = "",
   val dialog: CalendarSettingsDialog? = null,
 )
 

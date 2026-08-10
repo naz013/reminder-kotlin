@@ -40,15 +40,16 @@ private fun MonthEntry(backStack: MutableList<NavKey>) {
 
   var pagerJumpRequest by remember { mutableStateOf<Int?>(null) }
 
-  // CalendarViewModel is a plain ViewModel (not a lifecycle observer) - resetToToday()/refresh()
-  // must be driven explicitly on every ON_RESUME, matching the old CalendarFragment.onResume().
+  // CalendarViewModel is a plain ViewModel (not a lifecycle observer) - refresh() must be driven
+  // explicitly on every ON_RESUME. Note this fires both on a genuine app foreground and whenever
+  // this entry is recomposed after returning from another in-app screen (LocalLifecycleOwner here
+  // is Activity-scoped and addObserver() replays ON_RESUME synchronously when already resumed) -
+  // so this must stay limited to a data refresh and never reset the selected month/pager position.
   val lifecycleOwner = LocalLifecycleOwner.current
   DisposableEffect(viewModel, lifecycleOwner) {
     val observer =
       LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_RESUME) {
-          pagerJumpRequest = CalendarViewModel.CENTER_POSITION
-          viewModel.resetToToday()
           viewModel.refresh()
         }
       }
@@ -96,6 +97,7 @@ private fun MonthEntry(backStack: MutableList<NavKey>) {
     buildGrid = viewModel::buildGrid,
     refreshSignal = refreshSignal,
     loadMonthEvents = viewModel::loadMonthEvents,
+    loadMonthHolidays = viewModel::loadMonthHolidays,
     onDayClick = viewModel::onDayClick,
     onAddReminderClick = viewModel::onAddReminderClick,
     onAddBirthdayClick = viewModel::onAddBirthdayClick,
@@ -196,6 +198,7 @@ private fun DayEntry(
     onDayClick = { day -> viewModel.selectDate(day.localDate) },
     refreshSignal = refreshSignal,
     loadDayEvents = viewModel::loadDayEvents,
+    loadDayHoliday = viewModel::loadDayHoliday,
     onItemClick = viewModel::onItemClick,
     onAgendaMenuAction = viewModel::onAgendaMenuAction,
     onAddReminderClick = { viewModel.onAddReminderClick(state.selectedDate) },

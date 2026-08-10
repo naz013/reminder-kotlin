@@ -581,6 +581,7 @@
     <string name="pro_streaks_and_insights">- Streaks &amp; Insights dashboard</string>
     <string name="pro_local_encrypted_backup">- Local encrypted backup</string>
     <string name="pro_gemini_app_functions">- Gemini AppFunctions integration</string>
+    <string name="pro_public_holidays">- Public holidays in the calendar</string>
     <string name="pro_no_ads">- No Advertisement</string>
     <string name="pro_different_settings_for_birthdays">- Different settings for birthdays</string>
     <string name="pro_led_notification">- LED notification</string>
@@ -907,6 +908,11 @@
     <string name="add_reminders_to_google_calendar">Add reminders to Google Calendar</string>
     <string name="scan_google_calendar_for_the_new_events">Scan Google Calendar for the new events</string>
     <string name="calendar_not_selected">Calendar not selected</string>
+    <string name="public_holidays">Public Holidays</string>
+    <string name="show_public_holidays">Show public holidays</string>
+    <string name="public_holidays_country">Country</string>
+    <string name="public_holidays_locked_description">Show public holidays for your country in the calendar - available with Pro</string>
+    <string name="search_no_countries_found">No countries found</string>
     <string name="default_reminder_snooze_time">Default reminder snooze time</string>
     <string name="reminder_notification_repeating">Reminder notification repeating</string>
     <string name="repeat_reminder_notification_until_dismissed">Repeat reminder notification until dismissed</string>
