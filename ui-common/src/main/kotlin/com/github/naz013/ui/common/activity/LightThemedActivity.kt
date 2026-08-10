@@ -4,8 +4,8 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.window.OnBackInvokedDispatcher
+import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.Module
@@ -20,7 +20,7 @@ import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-abstract class LightThemedActivity : AppCompatActivity() {
+abstract class LightThemedActivity : ComponentActivity() {
 
   private val themePreferences by inject<ThemePreferences>()
   protected val language by inject<Language>()
