@@ -68,6 +68,8 @@ class EditBirthdayViewModel(
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
+  private var hasCheckedArguments = false
+
   init {
     _state.update {
       it.copy(
@@ -114,6 +116,12 @@ class EditBirthdayViewModel(
   }
 
   private fun checkArguments() {
+    // state's onStart re-fires on every new collector (e.g. navigating to Manage Tags and back
+    // resubscribes after the screen's 5s WhileSubscribed grace period). Without this guard, every
+    // branch here would stomp on unsaved user input made before that round trip - reloading the
+    // saved birthday, re-reading the intent, or resetting the date back to today.
+    if (hasCheckedArguments) return
+    hasCheckedArguments = true
     when {
       key.fromIntentData -> onIntent()
       key.prefillDateEpochDay != null -> onDateChanged(LocalDate.ofEpochDay(key.prefillDateEpochDay))

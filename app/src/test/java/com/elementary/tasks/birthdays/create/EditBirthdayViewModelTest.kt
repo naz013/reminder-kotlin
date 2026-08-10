@@ -123,6 +123,23 @@ class EditBirthdayViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `does not reload birthday data on a second fresh state collection`() =
+    runTest {
+      val birthday = Birthday(uuId = "42", name = "Alice", date = "1999-10-01", syncState = SyncState.Synced)
+      coEvery { birthdayRepository.getById("42") } returns birthday
+      every { dateTimeManager.parseBirthdayDate("1999-10-01") } returns LocalDate.of(1999, 10, 1)
+      val viewModel = createViewModel(id = "42")
+
+      viewModel.state.first()
+      viewModel.state.first()
+
+      // checkArguments()/load() is guarded to run once - see EditBirthdayViewModel.hasCheckedArguments.
+      // Without the guard, navigating to Manage Tags and back re-subscribes `state`, re-running
+      // load() and silently overwriting any unsaved edit to a field it sets (name/number/date).
+      coVerify(exactly = 1) { birthdayRepository.getById("42") }
+    }
+
+  @Test
   fun `checkArguments loads birthday from intent and disables delete for imported items`() =
     runTest {
       val birthday =
@@ -157,8 +174,8 @@ class EditBirthdayViewModelTest : BaseTest() {
 
       viewModel.onSaveClick()
 
-      // A second, fresh collection re-runs checkArguments()/onIntent(), but neither touches
-      // `dialog`, so it doesn't clobber the CopyConflict value onSaveClick() just set.
+      // checkArguments() is guarded to run once (see EditBirthdayViewModel.hasCheckedArguments),
+      // so this second, fresh collection just re-reads current state without re-running onIntent().
       assertEquals(EditBirthdayDialog.CopyConflict, viewModel.state.first().dialog)
       coVerify(exactly = 0) { saveBirthdayUseCase(any()) }
     }
