@@ -3,7 +3,8 @@ package com.elementary.tasks.settings.other
 import android.content.Intent
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.FeatureManager
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
@@ -33,7 +34,7 @@ class OtherSettingsViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val contextProvider = mockk<ContextProvider>()
   private val systemInfo = mockk<SystemInfo>()
-  private val featureManager = mockk<FeatureManager>()
+  private val featureFlags = mockk<FeatureFlags>()
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
 
   private lateinit var viewModel: OtherSettingsViewModel
@@ -47,7 +48,7 @@ class OtherSettingsViewModelTest : BaseTest() {
     every { systemInfo.is13 } returns false
     every { systemInfo.is16 } returns true
     every { systemInfo.currentPackageName } returns "com.cray.software.justreminder"
-    every { featureManager.isFeatureEnabled(any()) } returns false
+    every { featureFlags.isEnabled(any()) } returns false
     every { packageManagerWrapper.getVersionName() } returns "1.0.0"
     // All permissions granted by default, so the missing-permissions list starts empty.
     every { Permissions.checkPermission(any(), any<String>()) } returns true
@@ -59,7 +60,7 @@ class OtherSettingsViewModelTest : BaseTest() {
         analyticsEventSender = analyticsEventSender,
         contextProvider = contextProvider,
         systemInfo = systemInfo,
-        featureManager = featureManager,
+        featureFlags = featureFlags,
         buildInfo = buildInfo,
       )
   }
@@ -162,7 +163,7 @@ class OtherSettingsViewModelTest : BaseTest() {
 
   @Test
   fun `onFeedbackClicked emits ShowFeedbackDialog with pro app source`() {
-    every { featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS) } returns true
+    every { featureFlags.isEnabled(FeatureFlag.LOGS_IN_REVIEWS) } returns true
     every { buildInfo.isPro } returns true
 
     viewModel.onFeedbackClicked()

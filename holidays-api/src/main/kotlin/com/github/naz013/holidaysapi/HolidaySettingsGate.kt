@@ -2,7 +2,7 @@ package com.github.naz013.holidaysapi
 
 /**
  * The single seam the public holiday feature uses to ask "is this feature currently allowed to
- * run" and "for which country" - implemented in `app` on top of `FeatureManager`/`Prefs`, so this
+ * run" and "for which country" - implemented in `app` on top of `FeatureFlags`/`Prefs`, so this
  * module never depends on either directly.
  */
 interface HolidaySettingsGate {

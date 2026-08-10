@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
 import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
-import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
@@ -15,6 +14,8 @@ import com.github.naz013.appwidgets.AppWidgetPreviewUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.repository.migration.GroupV2BackfillUseCase
 import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
 import com.github.naz013.scheduler.JobSchedulerApi
@@ -35,7 +36,7 @@ class BottomNavInitViewModel(
   private val activateAllActiveRemindersUseCase: ActivateAllActiveRemindersUseCase,
   private val dispatcherProvider: DispatcherProvider,
   private val notifier: Notifier,
-  featureManager: FeatureManager,
+  featureFlags: FeatureFlags,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val groupsUtil: GroupsUtil,
   private val noteImageMigration: NoteImageMigration,
@@ -48,7 +49,7 @@ class BottomNavInitViewModel(
   private val jobScheduler: JobSchedulerApi,
 ) : ViewModel() {
   val isGoogleTasksEnabled =
-    featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS) &&
+    featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS) &&
       googleTasksAuthManager.isAuthorized()
 
   private val _state = MutableStateFlow<BottomNavInitState>(BottomNavInitState.Loading)

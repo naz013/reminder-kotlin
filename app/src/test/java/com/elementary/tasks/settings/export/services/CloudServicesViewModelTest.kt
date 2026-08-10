@@ -2,7 +2,7 @@ package com.elementary.tasks.settings.export.services
 
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.FeatureManager
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.feature.googletask.usecase.SyncAllGoogleTaskListsUseCase
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -32,7 +32,7 @@ class CloudServicesViewModelTest : BaseTest() {
   private val syncAllGoogleTaskListsUseCase = mockk<SyncAllGoogleTaskListsUseCase>()
   private val googleTaskListRepository = mockk<GoogleTaskListRepository>(relaxed = true)
   private val googleTaskRepository = mockk<GoogleTaskRepository>(relaxed = true)
-  private val featureManager = mockk<FeatureManager>()
+  private val featureFlags = mockk<FeatureFlags>()
   private val googleDriveAuthManager = mockk<GoogleDriveAuthManager>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>(relaxed = true)
@@ -44,7 +44,7 @@ class CloudServicesViewModelTest : BaseTest() {
   override fun setUp() {
     super.setUp()
     coEvery { syncAllGoogleTaskListsUseCase() } just Runs
-    every { featureManager.isFeatureEnabled(any()) } returns true
+    every { featureFlags.isEnabled(any()) } returns true
     every { googleDriveAuthManager.isAuthorized() } returns false
     every { googleTasksAuthManager.isAuthorized() } returns false
     every { systemInfo.googlePlayServicesAvailable } returns true
@@ -56,7 +56,7 @@ class CloudServicesViewModelTest : BaseTest() {
         syncAllGoogleTaskListsUseCase = syncAllGoogleTaskListsUseCase,
         googleTaskListRepository = googleTaskListRepository,
         googleTaskRepository = googleTaskRepository,
-        featureManager = featureManager,
+        featureFlags = featureFlags,
         googleDriveAuthManager = googleDriveAuthManager,
         analyticsEventSender = analyticsEventSender,
         googleTasksAuthManager = googleTasksAuthManager,

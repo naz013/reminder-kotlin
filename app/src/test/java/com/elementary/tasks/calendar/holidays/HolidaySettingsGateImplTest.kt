@@ -1,7 +1,8 @@
 package com.elementary.tasks.calendar.holidays
 
-import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -11,18 +12,18 @@ import org.junit.Before
 import org.junit.Test
 
 class HolidaySettingsGateImplTest {
-  private val featureManager = mockk<FeatureManager>()
+  private val featureFlags = mockk<FeatureFlags>()
   private val prefs = mockk<Prefs>()
   private lateinit var gate: HolidaySettingsGateImpl
 
   @Before
   fun setUp() {
-    gate = HolidaySettingsGateImpl(featureManager, prefs)
+    gate = HolidaySettingsGateImpl(featureFlags, prefs)
   }
 
   @Test
   fun `isEnabled is true only when both the remote flag and the user toggle are on`() {
-    every { featureManager.isFeatureEnabled(FeatureManager.Feature.PUBLIC_HOLIDAYS) } returns true
+    every { featureFlags.isEnabled(FeatureFlag.PUBLIC_HOLIDAYS) } returns true
     every { prefs.publicHolidaysEnabled } returns true
 
     assertTrue(gate.isEnabled())
@@ -30,7 +31,7 @@ class HolidaySettingsGateImplTest {
 
   @Test
   fun `isEnabled is false when the remote flag is off even if the user toggle is on`() {
-    every { featureManager.isFeatureEnabled(FeatureManager.Feature.PUBLIC_HOLIDAYS) } returns false
+    every { featureFlags.isEnabled(FeatureFlag.PUBLIC_HOLIDAYS) } returns false
     every { prefs.publicHolidaysEnabled } returns true
 
     assertFalse(gate.isEnabled())
@@ -38,7 +39,7 @@ class HolidaySettingsGateImplTest {
 
   @Test
   fun `isEnabled is false when the user toggle is off even if the remote flag is on`() {
-    every { featureManager.isFeatureEnabled(FeatureManager.Feature.PUBLIC_HOLIDAYS) } returns true
+    every { featureFlags.isEnabled(FeatureFlag.PUBLIC_HOLIDAYS) } returns true
     every { prefs.publicHolidaysEnabled } returns false
 
     assertFalse(gate.isEnabled())

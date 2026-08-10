@@ -1,7 +1,8 @@
 package com.elementary.tasks.calendar.holidays
 
-import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.holidaysapi.HolidaySettingsGate
 
 /**
@@ -11,11 +12,11 @@ import com.github.naz013.holidaysapi.HolidaySettingsGate
  * is off, regardless of flavor - see PUBLIC_HOLIDAY_INTEGRATION_PLAN.md ("PRO gating").
  */
 class HolidaySettingsGateImpl(
-  private val featureManager: FeatureManager,
+  private val featureFlags: FeatureFlags,
   private val prefs: Prefs,
 ) : HolidaySettingsGate {
   override fun isEnabled(): Boolean =
-    featureManager.isFeatureEnabled(FeatureManager.Feature.PUBLIC_HOLIDAYS) && prefs.publicHolidaysEnabled
+    featureFlags.isEnabled(FeatureFlag.PUBLIC_HOLIDAYS) && prefs.publicHolidaysEnabled
 
   override fun countryCode(): String = prefs.holidayCountryCode
 }

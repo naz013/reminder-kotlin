@@ -29,6 +29,7 @@ import com.elementary.tasks.settings.test.DeveloperViewModel
 import com.elementary.tasks.settings.test.ObjectExportViewModel
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.github.naz013.cloudapi.CloudKeysStorage
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.holidaysapi.HolidaySettingsGate
 import com.github.naz013.logic.reminder.RecurEventManager
@@ -114,7 +115,7 @@ val utilModule = module {
   factory<BackgroundTask>(named(BirthdayEventTask.TASK_KEY)) { BirthdayEventTask(get()) }
   factory<BackgroundTask>(named(BirthdayPermanentEventTask.TASK_KEY)) { BirthdayPermanentEventTask(get(), get()) }
 
-  factory { FeatureManager(get()) }
+  factory { FeatureManager(get()) as FeatureFlags }
   factory { HolidaySettingsGateImpl(get(), get()) as HolidaySettingsGate }
   factory { GroupsUtil(get(), get(), get()) }
   factory { ImageDecoder(get(), get(), get()) }
