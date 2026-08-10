@@ -89,12 +89,6 @@ class CalendarViewModel(
     hasResumedBefore = true
   }
 
-  /** Snaps the header/title back to the current month; the pager reset itself is driven by `MonthEntry`. */
-  fun resetToToday() {
-    lastPosition = CENTER_POSITION
-    applyMonth(initDate)
-  }
-
   fun onDayClick(date: LocalDate) {
     val millis = dateTimeManager.toMillis(LocalDateTime.of(date, LocalTime.now()))
     navigationEvent.value = Event(NavigationEvent.OpenDayView(millis))
