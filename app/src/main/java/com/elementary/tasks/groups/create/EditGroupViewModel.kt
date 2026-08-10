@@ -68,6 +68,8 @@ class EditGroupViewModel(
 
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
+  private var hasLoaded = false
+
   init {
     _state.update {
       it.copy(
@@ -360,6 +362,12 @@ class EditGroupViewModel(
   }
 
   private fun load() {
+    // state's onStart re-fires on every new collector (e.g. opening "Workflow rules" or the
+    // notification-customization help from this screen and coming back resubscribes after the
+    // 5s WhileSubscribed grace period). Without this guard it would reload the saved group and
+    // stomp on any unsaved edits made before that round trip.
+    if (hasLoaded) return
+    hasLoaded = true
     viewModelScope.launch(dispatcherProvider.io()) {
       val groupFromFile = getFromIntentIfAvailable()
       if (groupFromFile != null) {

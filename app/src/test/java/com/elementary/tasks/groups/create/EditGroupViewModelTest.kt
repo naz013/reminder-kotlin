@@ -176,18 +176,18 @@ class EditGroupViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `reloads group data on each fresh state collection`() =
+  fun `does not reload group data on a second fresh state collection`() =
     runTest {
       viewModel.state.first()
       viewModel.state.first()
 
-      coVerify(exactly = 2) { groupV2Repository.getById("1") }
+      // load() is guarded to run once - see EditGroupViewModel.hasLoaded. Without the guard,
+      // navigating to a sub-screen (e.g. "Workflow rules") and back re-subscribes `state`,
+      // re-running load() and silently overwriting any unsaved edit to a field it sets
+      // (title/colorPosition/isDefault/notification).
+      coVerify(exactly = 1) { groupV2Repository.getById("1") }
     }
 
-  // `state` re-runs load() in onStart on every fresh collection (matching the confetti test in
-  // PreviewBirthdayViewModelTest), which would silently overwrite an in-memory edit to a field
-  // load() also sets (title/colorPosition/isDefault) if we called `.first()` again to inspect it.
-  // Observe through one persistent subscription instead so the mutation isn't clobbered by a reload.
   private fun observeState(): () -> EditGroupState {
     var latest = EditGroupState()
     CoroutineScope(Dispatchers.Unconfined).launch { viewModel.state.collect { latest = it } }
