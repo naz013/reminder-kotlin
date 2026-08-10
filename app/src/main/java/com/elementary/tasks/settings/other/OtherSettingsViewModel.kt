@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.FeatureManager
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
@@ -15,6 +14,8 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -32,7 +33,7 @@ class OtherSettingsViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val contextProvider: ContextProvider,
   private val systemInfo: SystemInfo,
-  private val featureManager: FeatureManager,
+  private val featureFlags: FeatureFlags,
   private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
@@ -65,7 +66,7 @@ class OtherSettingsViewModel(
       ViewModelEvent.ShowFeedbackDialog(
         title = textProvider.getString(R.string.share_your_experience),
         appSource = if (buildInfo.isPro) AppSource.PRO else AppSource.FREE,
-        allowLogsAttachment = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
+        allowLogsAttachment = featureFlags.isEnabled(FeatureFlag.LOGS_IN_REVIEWS),
       )
     )
   }

@@ -6,7 +6,7 @@ import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
-import com.elementary.tasks.core.utils.FeatureManager
+import com.github.naz013.featureflags.FeatureFlags
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.module.analytics.ReminderAnalyticsTracker
@@ -105,7 +105,7 @@ class BuildReminderViewModelTest : BaseTest() {
   private val pauseReminderUseCase = mockk<PauseReminderUseCase>(relaxed = true)
   private val resumeReminderUseCase = mockk<ResumeReminderUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
-  private val featureManager = mockk<FeatureManager>(relaxed = true)
+  private val featureFlags = mockk<FeatureFlags>(relaxed = true)
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
   private val quickStartItemsProvider = mockk<QuickStartItemsProvider>()
   private val tagRepository = mockk<TagRepository>()
@@ -196,7 +196,7 @@ class BuildReminderViewModelTest : BaseTest() {
       pauseReminderUseCase = pauseReminderUseCase,
       resumeReminderUseCase = resumeReminderUseCase,
       textProvider = textProvider,
-      featureManager = featureManager,
+      featureFlags = featureFlags,
       buildInfo = buildInfo,
       quickStartItemsProvider = quickStartItemsProvider,
       tagRepository = tagRepository,

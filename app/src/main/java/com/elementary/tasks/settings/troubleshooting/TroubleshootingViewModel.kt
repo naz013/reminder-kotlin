@@ -3,9 +3,10 @@ package com.elementary.tasks.settings.troubleshooting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.ContextProvider
@@ -28,7 +29,7 @@ class TroubleshootingViewModel(
   private val dispatcherProvider: DispatcherProvider,
   systemServiceProvider: SystemServiceProvider,
   private val packageManagerWrapper: PackageManagerWrapper,
-  private val featureManager: FeatureManager,
+  private val featureFlags: FeatureFlags,
   private val contextProvider: ContextProvider,
   private val cacheUtil: CacheUtil,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -77,7 +78,7 @@ class TroubleshootingViewModel(
 
   private fun checkLogs() {
     val enabled =
-      featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) &&
+      featureFlags.isEnabled(FeatureFlag.ALLOW_LOGS) &&
         hasLogFiles()
     Logger.d(TAG, "Logging is $enabled")
     _state.update {
@@ -97,7 +98,7 @@ class TroubleshootingViewModel(
 
   private fun checkEmptyView() {
     val optimizationDisabled = powerManager?.isIgnoringBatteryOptimizations(packageName()) ?: false
-    val logsEnabled = featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS)
+    val logsEnabled = featureFlags.isEnabled(FeatureFlag.ALLOW_LOGS)
     _state.update {
       it.copy(showEmptyView = optimizationDisabled && !logsEnabled)
     }

@@ -21,7 +21,8 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
-import com.elementary.tasks.core.utils.FeatureManager
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -306,7 +307,7 @@ private fun CalendarEntry(
   val state by viewModel.state.collectAsState()
 
   val buildInfo = koinInject<BuildInfo>()
-  val featureManager = koinInject<FeatureManager>()
+  val featureFlags = koinInject<FeatureFlags>()
   val analyticsEventSender = koinInject<AnalyticsEventSender>()
 
   // SelectHolidayCountry is a separate Nav3 entry (its own ViewModelStoreOwner), so it can't call
@@ -345,7 +346,7 @@ private fun CalendarEntry(
       onExportToggle = viewModel::onExportToggle,
       onScanToggle = viewModel::onScanToggle,
       onDialogDismiss = viewModel::onDialogDismiss,
-      isHolidaysSectionVisible = featureManager.isFeatureEnabled(FeatureManager.Feature.PUBLIC_HOLIDAYS),
+      isHolidaysSectionVisible = featureFlags.isEnabled(FeatureFlag.PUBLIC_HOLIDAYS),
       isHolidaysLocked = !buildInfo.isPro,
       onHolidaysToggle = viewModel::onHolidaysToggle,
       onHolidaysLockedClick = {

@@ -3,6 +3,8 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -11,7 +13,7 @@ import java.io.IOException
 
 class GeocoderTask(
   private val context: Context,
-  private val featureManager: FeatureManager,
+  private val featureFlags: FeatureFlags,
 ) {
   private var mJob: Job? = null
 
@@ -19,7 +21,7 @@ class GeocoderTask(
     address: String,
     listener: ((List<Address>) -> Unit)?,
   ) {
-    if (!featureManager.isFeatureEnabled(FeatureManager.Feature.GEOCODING)) {
+    if (!featureFlags.isEnabled(FeatureFlag.GEOCODING)) {
       listener?.invoke(emptyList())
       return
     }
@@ -44,7 +46,7 @@ class GeocoderTask(
   }
 
   fun getAddressForLocation(latLng: LatLng): String? {
-    if (!featureManager.isFeatureEnabled(FeatureManager.Feature.GEOCODING)) {
+    if (!featureFlags.isEnabled(FeatureFlag.GEOCODING)) {
       return null
     }
     val geocoder = Geocoder(context)

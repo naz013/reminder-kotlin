@@ -181,6 +181,7 @@ dependencies {
   implementation(project(":cloud-api"))
   implementation(project(":work-api"))
   implementation(project(":holidays-api"))
+  implementation(project(":feature-flags-api"))
   implementation(project(":appwidgets-api"))
   implementation(project(":navigation-api"))
   implementation(project(":icalendar-api"))

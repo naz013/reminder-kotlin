@@ -7,7 +7,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
 import com.elementary.tasks.core.data.ui.reminder.UiReminderType
-import com.elementary.tasks.core.utils.FeatureManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.module.analytics.ReminderAnalyticsTracker
@@ -59,6 +58,8 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.files.DataType
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.RecurParamType
@@ -131,7 +132,7 @@ class BuildReminderViewModel(
   private val pauseReminderUseCase: PauseReminderUseCase,
   private val resumeReminderUseCase: ResumeReminderUseCase,
   private val textProvider: TextProvider,
-  private val featureManager: FeatureManager,
+  private val featureFlags: FeatureFlags,
   private val buildInfo: BuildInfo,
   private val quickStartItemsProvider: QuickStartItemsProvider,
   private val tagRepository: TagRepository,
@@ -989,7 +990,7 @@ class BuildReminderViewModel(
       ViewModelEvent.ShowReviewDialog(
         title = textProvider.getString(titleRes),
         appSource = if (buildInfo.isPro) AppSource.PRO else AppSource.FREE,
-        canAttachLogs = featureManager.isFeatureEnabled(FeatureManager.Feature.LOGS_IN_REVIEWS),
+        canAttachLogs = featureFlags.isEnabled(FeatureFlag.LOGS_IN_REVIEWS),
       )
     )
   }

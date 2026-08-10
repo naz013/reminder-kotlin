@@ -1,7 +1,8 @@
 package com.elementary.tasks.home.scheduleview
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.utils.FeatureManager
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.eventaction.ResolvedEventAction
 import com.elementary.tasks.home.BannerState
@@ -35,7 +36,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>()
   private val getNavigationItemsUseCase = mockk<GetNavigationItemsUseCase>()
   private val prefs = mockk<Prefs>(relaxed = true)
-  private val featureManager = mockk<FeatureManager>()
+  private val featureFlags = mockk<FeatureFlags>()
   private val whatsNewManager = mockk<WhatsNewManager>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val legalDocumentRepository = mockk<LegalDocumentRepository>(relaxed = true)
@@ -55,7 +56,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
     coEvery { getNavigationItemsUseCase(any(), any()) } returns emptyList()
     every { legalDocumentRepository.hasUpdate(any()) } returns false
     every { prefs.isUserLogged } returns true
-    every { featureManager.isFeatureEnabled(any()) } returns false
+    every { featureFlags.isEnabled(any()) } returns false
     every { whatsNewManager.hasChanges() } returns false
 
     viewModel =
@@ -67,7 +68,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
         googleTasksAuthManager = googleTasksAuthManager,
         getNavigationItemsUseCase = getNavigationItemsUseCase,
         prefs = prefs,
-        featureManager = featureManager,
+        featureFlags = featureFlags,
         whatsNewManager = whatsNewManager,
         analyticsEventSender = analyticsEventSender,
         legalDocumentRepository = legalDocumentRepository,
@@ -153,7 +154,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
   fun `loadData shows the login banner when the user is logged out and google drive is enabled`() =
     runTest {
       every { prefs.isUserLogged } returns false
-      every { featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE) } returns true
+      every { featureFlags.isEnabled(FeatureFlag.GOOGLE_DRIVE) } returns true
 
       val state = viewModel.state.first()
 

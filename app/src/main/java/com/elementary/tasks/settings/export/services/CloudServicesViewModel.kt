@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.FeatureManager
 import com.github.naz013.feature.googletask.usecase.SyncAllGoogleTaskListsUseCase
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -35,7 +36,7 @@ class CloudServicesViewModel(
   private val syncAllGoogleTaskListsUseCase: SyncAllGoogleTaskListsUseCase,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleTaskRepository: GoogleTaskRepository,
-  private val featureManager: FeatureManager,
+  private val featureFlags: FeatureFlags,
   private val googleDriveAuthManager: GoogleDriveAuthManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
@@ -167,13 +168,13 @@ class CloudServicesViewModel(
   private fun loadState() {
     _state.update {
       it.copy(
-        isDropboxVisible = featureManager.isFeatureEnabled(FeatureManager.Feature.DROPBOX),
+        isDropboxVisible = featureFlags.isEnabled(FeatureFlag.DROPBOX),
         isGoogleDriveLoggedIn = googleDriveAuthManager.isAuthorized(),
         isGoogleTasksLoggedIn = googleTasksAuthManager.isAuthorized(),
         isGoogleDriveVisible = systemInfo.googlePlayServicesAvailable &&
-          featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_DRIVE),
+          featureFlags.isEnabled(FeatureFlag.GOOGLE_DRIVE),
         isGoogleTasksVisible = systemInfo.googlePlayServicesAvailable &&
-          featureManager.isFeatureEnabled(FeatureManager.Feature.GOOGLE_TASKS)
+          featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS)
       )
     }
   }

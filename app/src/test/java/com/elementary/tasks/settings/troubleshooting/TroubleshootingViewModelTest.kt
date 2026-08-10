@@ -1,7 +1,8 @@
 package com.elementary.tasks.settings.troubleshooting
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.utils.FeatureManager
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -28,7 +29,7 @@ class TroubleshootingViewModelTest : BaseTest() {
 
   private val systemServiceProvider = mockk<SystemServiceProvider>()
   private val packageManagerWrapper = mockk<PackageManagerWrapper>()
-  private val featureManager = mockk<FeatureManager>()
+  private val featureFlags = mockk<FeatureFlags>()
   private val contextProvider = mockk<ContextProvider>()
   private val cacheUtil = mockk<CacheUtil>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
@@ -42,7 +43,7 @@ class TroubleshootingViewModelTest : BaseTest() {
     dataDir = temporaryFolder.newFolder("dataDir")
     every { systemServiceProvider.providePowerManager() } returns null
     every { packageManagerWrapper.getPackageName() } returns "com.cray.software.justreminder"
-    every { featureManager.isFeatureEnabled(any()) } returns false
+    every { featureFlags.isEnabled(any()) } returns false
     every { contextProvider.context.dataDir } returns dataDir
 
     viewModel = newViewModel()
@@ -57,7 +58,7 @@ class TroubleshootingViewModelTest : BaseTest() {
       dispatcherProvider = mockDispatcherProvider(),
       systemServiceProvider = systemServiceProvider,
       packageManagerWrapper = packageManagerWrapper,
-      featureManager = featureManager,
+      featureFlags = featureFlags,
       contextProvider = contextProvider,
       cacheUtil = cacheUtil,
       analyticsEventSender = analyticsEventSender,
@@ -75,7 +76,7 @@ class TroubleshootingViewModelTest : BaseTest() {
   fun `hides send logs when the feature flag is disabled`() =
     runTest {
       writeLogFile()
-      every { featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) } returns false
+      every { featureFlags.isEnabled(FeatureFlag.ALLOW_LOGS) } returns false
 
       val state = viewModel.state.first()
 
@@ -85,7 +86,7 @@ class TroubleshootingViewModelTest : BaseTest() {
   @Test
   fun `hides send logs when the feature flag is enabled but no log file exists`() =
     runTest {
-      every { featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) } returns true
+      every { featureFlags.isEnabled(FeatureFlag.ALLOW_LOGS) } returns true
 
       val state = viewModel.state.first()
 
@@ -96,7 +97,7 @@ class TroubleshootingViewModelTest : BaseTest() {
   fun `shows send logs when the feature flag is enabled and a log file exists`() =
     runTest {
       writeLogFile()
-      every { featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) } returns true
+      every { featureFlags.isEnabled(FeatureFlag.ALLOW_LOGS) } returns true
 
       val state = viewModel.state.first()
 
@@ -143,7 +144,7 @@ class TroubleshootingViewModelTest : BaseTest() {
       val powerManager = mockk<android.os.PowerManager>()
       every { powerManager.isIgnoringBatteryOptimizations(any()) } returns true
       every { systemServiceProvider.providePowerManager() } returns powerManager
-      every { featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) } returns false
+      every { featureFlags.isEnabled(FeatureFlag.ALLOW_LOGS) } returns false
 
       val state = newViewModel().state.first()
 
@@ -156,7 +157,7 @@ class TroubleshootingViewModelTest : BaseTest() {
       val powerManager = mockk<android.os.PowerManager>()
       every { powerManager.isIgnoringBatteryOptimizations(any()) } returns true
       every { systemServiceProvider.providePowerManager() } returns powerManager
-      every { featureManager.isFeatureEnabled(FeatureManager.Feature.ALLOW_LOGS) } returns true
+      every { featureFlags.isEnabled(FeatureFlag.ALLOW_LOGS) } returns true
 
       val state = newViewModel().state.first()
 

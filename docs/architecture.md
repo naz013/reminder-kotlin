@@ -26,6 +26,7 @@ The project follows a **multi-module Clean Architecture** approach. Concerns are
 | `logging-api` | Kotlin library | `Logger` interface with no implementation. All other modules depend on this so that log calls compile without pulling in a concrete logging library. |
 | `logging` | Android library | Logback + SLF4J + Firebase Crashlytics implementation of `logging-api`. |
 | `navigation-api` | Android library | `DeepLinkDestination` and screen-navigation contracts shared between `app` and feature/widget modules. |
+| `feature-flags-api` | Kotlin library | `FeatureFlags` interface + `FeatureFlag` enum. Answers "is this feature enabled" without exposing where flags come from (SharedPreferences + Firebase Remote Config); implemented by `FeatureManager` in `app`. Any Kotlin-only module can depend on this without depending on `app`. |
 | `feature-common` | Android library | Shared Kotlin/Android utilities: coroutine `DispatcherProvider`, `SingleLiveEvent`, Flow extensions, `SystemServiceProvider`, etc. |
 | `platform-common` | Android library | Android-platform-level helpers: biometric auth, permission helpers, Google sign-in wrappers. |
 | `ui-common` | Android library | Shared Compose components, Material 3 theme tokens, reusable composables, and color-picker utilities. |
