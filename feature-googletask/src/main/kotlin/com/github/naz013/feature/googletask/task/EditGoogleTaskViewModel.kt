@@ -68,6 +68,8 @@ internal class EditGoogleTaskViewModel(
 
   val event: LiveData<Event<EditGoogleTaskEvent>> field = mutableLiveEventOf()
 
+  private var hasLoadedInitialState = false
+
   init {
     observeTags()
   }
@@ -482,6 +484,12 @@ internal class EditGoogleTaskViewModel(
 
 
   private fun loadInternal() {
+    // state's onStart re-fires on every new collector (e.g. navigating to Manage Tags and back
+    // resubscribes after the screen's 5s WhileSubscribed grace period), and this rebuilds
+    // listId/listName from scratch - without this guard it would stomp on an unsaved list-picker
+    // change made before that round trip.
+    if (hasLoadedInitialState) return
+    hasLoadedInitialState = true
     viewModelScope.launch(dispatcherProvider.main()) {
       val googleTaskLists = withContext(dispatcherProvider.io()) {
         getAllGoogleTaskListsUseCase()

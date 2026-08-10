@@ -388,6 +388,21 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `does not reset an unsaved list selection when state is collected again`() =
+    runTest {
+      viewModel.state.first()
+      viewModel.onListFieldClick()
+      viewModel.onListPicked("list2")
+      assertEquals("list2", viewModel.state.first().listId)
+
+      // Simulates the screen losing and regaining its collector - e.g. navigating to Manage
+      // Tags and back - which re-fires onStart{ loadInternal() } on the underlying flow.
+      val state = viewModel.state.first()
+
+      assertEquals("list2", state.listId)
+    }
+
+  @Test
   fun `onListPicked selects a new list when not moving`() {
     val latest = observeState()
     viewModel.onListFieldClick()
