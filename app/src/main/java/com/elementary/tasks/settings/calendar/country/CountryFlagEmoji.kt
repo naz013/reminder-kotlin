@@ -9,12 +9,10 @@ private const val REGIONAL_INDICATOR_OFFSET = 0x1F1E6 - 'A'.code
  * old Android versions) - a well-known, acceptable trade-off for this approach.
  */
 fun countryCodeToFlagEmoji(code: String): String {
-  if (code.length != 2) return code
+  val upper = code.uppercase()
+  if (upper.length != 2 || upper.any { it !in 'A'..'Z' }) return code
 
-  val chars = code.uppercase().map { char ->
-    if (char !in 'A'..'Z') return code
-    Character.toChars(char.code + REGIONAL_INDICATOR_OFFSET)
-  }
-
-  return chars.joinToString(separator = "") { String(it) }
+  return upper
+    .map { char -> String(Character.toChars(char.code + REGIONAL_INDICATOR_OFFSET)) }
+    .joinToString(separator = "")
 }

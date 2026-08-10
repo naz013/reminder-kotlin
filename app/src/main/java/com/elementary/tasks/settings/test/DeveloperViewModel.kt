@@ -53,6 +53,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import java.util.UUID
 
+@Suppress("LongParameterList") // one repository per clearable Table entry - inherent to this debug screen
 class DeveloperViewModel(
   private val legalDocumentRepository: LegalDocumentRepository,
   private val prefs: Prefs,

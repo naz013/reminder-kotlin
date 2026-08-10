@@ -68,8 +68,8 @@ import com.github.naz013.repository.migrations.MIGRATION_26_27
 import com.github.naz013.repository.migrations.MIGRATION_27_28
 import com.github.naz013.repository.migrations.MIGRATION_28_29
 import com.github.naz013.repository.migrations.MIGRATION_29_30
-import com.github.naz013.repository.migrations.MIGRATION_30_31
 import com.github.naz013.repository.migrations.MIGRATION_2_3
+import com.github.naz013.repository.migrations.MIGRATION_30_31
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
 import com.github.naz013.repository.migrations.MIGRATION_5_6
@@ -106,6 +106,7 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
   version = 31,
   exportSchema = false
 )
+@Suppress("TooManyFunctions") // one DAO accessor per entity - inherent to this class, not a smell
 internal abstract class AppDb : RoomDatabase() {
 
   abstract fun reminderDao(): ReminderDao

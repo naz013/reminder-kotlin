@@ -9,7 +9,10 @@ import com.github.naz013.repository.entity.HolidayEntity
 @Dao
 internal interface HolidayDao {
 
-  @Query("SELECT * FROM Holiday WHERE countryCode = :countryCode AND date BETWEEN :startDate AND :endDate ORDER BY date")
+  @Query(
+    "SELECT * FROM Holiday WHERE countryCode = :countryCode " +
+      "AND date BETWEEN :startDate AND :endDate ORDER BY date"
+  )
   suspend fun getByDateRange(countryCode: String, startDate: Long, endDate: Long): List<HolidayEntity>
 
   @Query("SELECT * FROM Holiday WHERE countryCode = :countryCode AND date = :date LIMIT 1")

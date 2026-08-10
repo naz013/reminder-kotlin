@@ -4,7 +4,6 @@ import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.logging.Logger
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import org.threeten.bp.LocalDate
 
 /**
  * Reads `holidays/{countryCode}/{year}/data` from Firestore. Mirrors
@@ -29,8 +28,9 @@ internal class HolidayFirestoreDataSource(
         return Result.success(emptyList())
       }
 
-      val document = snapshot.toObject(HolidayDocumentDto::class.java)
-      val holidays = document?.holidays.orEmpty().mapNotNull { it.toDomainOrNull(countryCode) }
+      @Suppress("UNCHECKED_CAST")
+      val rawHolidays = snapshot.get(FIELD_HOLIDAYS) as? List<Map<String, Any?>> ?: emptyList()
+      val holidays = rawHolidays.mapNotNull { it.toPublicHolidayOrNull(countryCode) }
 
       Logger.i(TAG, "Fetched ${holidays.size} holidays for $countryCode/$year")
       Result.success(holidays)
@@ -40,23 +40,10 @@ internal class HolidayFirestoreDataSource(
     }
   }
 
-  private fun HolidayItemDto.toDomainOrNull(countryCode: String): PublicHoliday? {
-    val holidayName = name?.takeIf { it.isNotBlank() } ?: return null
-    val parsedDate = date?.let { runCatching { LocalDate.parse(it) }.getOrNull() } ?: return null
-    return PublicHoliday(
-      id = PublicHoliday.id(countryCode, parsedDate, holidayName),
-      countryCode = countryCode,
-      date = parsedDate,
-      name = holidayName,
-      nameLocal = nameLocal,
-      type = type.orEmpty(),
-      location = location,
-    )
-  }
-
   companion object {
     private const val TAG = "HolidayFirestoreDataSource"
     private const val COLLECTION = "holidays"
     private const val DOCUMENT = "data"
+    private const val FIELD_HOLIDAYS = "holidays"
   }
 }

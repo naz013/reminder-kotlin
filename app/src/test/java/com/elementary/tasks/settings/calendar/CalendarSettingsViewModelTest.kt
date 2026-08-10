@@ -76,7 +76,13 @@ class CalendarSettingsViewModelTest : BaseTest() {
     every { calendarUtils.getCalendarById(7L) } returns CalendarItem("Work", 7L)
 
     val vm = CalendarSettingsViewModel(
-      mockDispatcherProvider(), calendarUtils, prefs, textProvider, analyticsEventSender, themeProvider, holidaySyncScheduler
+      dispatcherProvider = mockDispatcherProvider(),
+      googleCalendarApi = calendarUtils,
+      prefs = prefs,
+      textProvider = textProvider,
+      analyticsEventSender = analyticsEventSender,
+      themeProvider = themeProvider,
+      holidaySyncScheduler = holidaySyncScheduler,
     )
 
     assertEquals("Work", vm.state.value.selectedCalendarName)
@@ -200,7 +206,13 @@ class CalendarSettingsViewModelTest : BaseTest() {
     every { prefs.googleCalendarReminderId } returns 7L
     every { calendarUtils.getCalendarById(7L) } returns CalendarItem("Work", 7L)
     val vm = CalendarSettingsViewModel(
-      mockDispatcherProvider(), calendarUtils, prefs, textProvider, analyticsEventSender, themeProvider, holidaySyncScheduler
+      dispatcherProvider = mockDispatcherProvider(),
+      googleCalendarApi = calendarUtils,
+      prefs = prefs,
+      textProvider = textProvider,
+      analyticsEventSender = analyticsEventSender,
+      themeProvider = themeProvider,
+      holidaySyncScheduler = holidaySyncScheduler,
     )
 
     vm.onCalendarReset()
