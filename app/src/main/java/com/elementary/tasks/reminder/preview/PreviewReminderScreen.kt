@@ -16,8 +16,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -152,9 +154,12 @@ fun PreviewReminderScreen(
       }
 
       if (state.subTasks.isNotEmpty()) {
-        item { SectionHeader(text = stringResource(R.string.builder_sub_tasks)) }
-        items(state.subTasks, key = { it.id }) { subTask ->
-          SubTaskRow(subTask = subTask, onCheck = onSubTaskCheck, onRemove = onSubTaskRemove)
+        item {
+          SubTasksSection(
+            subTasks = state.subTasks,
+            onCheck = onSubTaskCheck,
+            onRemove = onSubTaskRemove,
+          )
         }
       }
 
@@ -421,11 +426,60 @@ private fun AttachmentRow(file: AttachmentFile) {
 }
 
 @Composable
+private fun SubTasksSection(
+  subTasks: List<UiPreviewSubTask>,
+  onCheck: (String) -> Unit,
+  onRemove: (String) -> Unit,
+) {
+  val checkedCount = subTasks.count { it.isChecked }
+  Column(modifier = Modifier.padding(top = 16.dp)) {
+    Row(
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .padding(start = 16.dp, end = 16.dp, bottom = 4.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Text(
+        text = stringResource(R.string.builder_sub_tasks),
+        style = MaterialTheme.typography.titleMedium,
+      )
+      Text(
+        text = "$checkedCount/${subTasks.size}",
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
+    }
+    Card(
+      modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    ) {
+      subTasks.forEachIndexed { index, subTask ->
+        SubTaskRow(subTask = subTask, onCheck = onCheck, onRemove = onRemove)
+        if (index != subTasks.lastIndex) {
+          HorizontalDivider(
+            modifier = Modifier.padding(start = 56.dp),
+            color = MaterialTheme.colorScheme.outlineVariant,
+          )
+        }
+      }
+    }
+  }
+}
+
+@Composable
 private fun SubTaskRow(
   subTask: UiPreviewSubTask,
   onCheck: (String) -> Unit,
   onRemove: (String) -> Unit,
 ) {
+  val contentColor =
+    if (subTask.isChecked) {
+      MaterialTheme.colorScheme.onSurfaceVariant
+    } else {
+      MaterialTheme.colorScheme.onSurface
+    }
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp),
@@ -441,11 +495,13 @@ private fun SubTaskRow(
             },
           ),
         contentDescription = null,
+        tint = if (subTask.isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
       )
     }
     Text(
       text = subTask.text,
       style = MaterialTheme.typography.bodyLarge,
+      color = contentColor,
       textDecoration = if (subTask.isChecked) TextDecoration.LineThrough else TextDecoration.None,
       modifier = Modifier.weight(1f),
     )
@@ -453,6 +509,7 @@ private fun SubTaskRow(
       Icon(
         painter = painterResource(R.drawable.ic_fluent_delete),
         contentDescription = stringResource(R.string.delete),
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
       )
     }
   }
@@ -607,6 +664,11 @@ private fun PreviewReminderScreenPreview() {
           dueDateTime = "Today, 18:00",
           repeat = "Once",
           priorityTitle = "Normal",
+          subTasks = listOf(
+            UiPreviewSubTask(id = "1", text = "Milk", isChecked = true),
+            UiPreviewSubTask(id = "2", text = "Eggs", isChecked = false),
+            UiPreviewSubTask(id = "3", text = "Bread", isChecked = false),
+          ),
         ),
       onBackClick = {},
       onToggleClick = {},

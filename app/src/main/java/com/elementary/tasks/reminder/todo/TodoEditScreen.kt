@@ -1,34 +1,37 @@
 package com.elementary.tasks.reminder.todo
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
-import com.elementary.tasks.reminder.build.GroupBuilderItem
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.reminder.build.SubTasksBuilderItem
-import com.elementary.tasks.reminder.build.valuedialog.editor.GroupValueEditor
 import com.elementary.tasks.reminder.build.valuedialog.editor.SubTasksValueEditor
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
-import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
+import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.tag.TagChipPicker
 import com.github.naz013.ui.tag.TagChipState
 
@@ -40,7 +43,7 @@ fun TodoEditScreen(
   onBackClick: () -> Unit,
   onTitleChange: (String) -> Unit,
   onSubTasksChanged: (SubTasksBuilderItem) -> Unit,
-  onGroupChanged: (GroupBuilderItem) -> Unit,
+  onGroupSelected: (UiGroupList?) -> Unit,
   onTagToggle: (TagChipState) -> Unit,
   onManageTagsClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -59,7 +62,14 @@ fun TodoEditScreen(
             onClick = onBackClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        actions = {
+          MenuTextButton(
+            text = stringResource(R.string.save),
+            enabled = state.canSave,
+            onClick = onSaveClick,
+          )
+        },
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
@@ -79,7 +89,7 @@ fun TodoEditScreen(
         modifier = Modifier.fillMaxWidth(),
       )
 
-      SettingsSectionHeader(stringResource(R.string.todo_items))
+      TodoSectionHeader(stringResource(R.string.todo_items))
 
       state.subTasksItem?.let { subTasksItem ->
         SubTasksValueEditor(
@@ -89,16 +99,15 @@ fun TodoEditScreen(
         )
       }
 
-      SettingsSectionHeader(stringResource(R.string.choose_group))
+      TodoSectionHeader(stringResource(R.string.group))
 
-      state.groupItem?.let { groupItem ->
-        GroupValueEditor(
-          builderItem = groupItem,
-          onValueChange = { updated -> onGroupChanged(updated as GroupBuilderItem) },
-        )
-      }
+      GroupChipRow(
+        availableGroups = state.availableGroups,
+        selectedGroup = state.selectedGroup,
+        onGroupSelected = onGroupSelected,
+      )
 
-      SettingsSectionHeader(stringResource(R.string.tags))
+      TodoSectionHeader(stringResource(R.string.tags))
 
       TagChipPicker(
         allTags = state.allTags,
@@ -108,21 +117,52 @@ fun TodoEditScreen(
         modifier = Modifier.fillMaxWidth(),
       )
 
-      Button(
-        onClick = onSaveClick,
-        enabled = state.canSave,
-        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
-      ) {
-        Text(stringResource(R.string.save))
-      }
-
-      OutlinedButton(
+      FilledTonalButton(
         onClick = onExtendClick,
         enabled = state.canSave,
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        shape = RoundedCornerShape(24.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
       ) {
         Text(stringResource(R.string.more_options))
       }
+    }
+  }
+}
+
+/** Local, screen-scoped section label - intentionally not `SettingsSectionHeader`, which is
+ *  reserved for Settings screens. */
+@Composable
+private fun TodoSectionHeader(text: String) {
+  Text(
+    text = text,
+    style = MaterialTheme.typography.titleSmall,
+    color = MaterialTheme.colorScheme.tertiary,
+    modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 8.dp),
+  )
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun GroupChipRow(
+  availableGroups: List<UiGroupList>,
+  selectedGroup: UiGroupList?,
+  onGroupSelected: (UiGroupList?) -> Unit,
+) {
+  FlowRow(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    FilterChip(
+      selected = selectedGroup == null,
+      onClick = { onGroupSelected(null) },
+      label = { Text(stringResource(R.string.smart_list_no_group)) },
+    )
+    availableGroups.forEach { group ->
+      FilterChip(
+        selected = selectedGroup?.id == group.id,
+        onClick = { onGroupSelected(group) },
+        label = { Text(group.title) },
+      )
     }
   }
 }

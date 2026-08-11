@@ -53,7 +53,7 @@ private fun TodoEditEntry(
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onTitleChange = viewModel::onTitleChange,
     onSubTasksChanged = viewModel::onSubTasksChanged,
-    onGroupChanged = viewModel::onGroupChanged,
+    onGroupSelected = viewModel::onGroupSelected,
     onTagToggle = viewModel::onTagToggle,
     onManageTagsClick = { backStack.add(TagsNavKey.Manage) },
     onSaveClick = viewModel::onSaveClick,

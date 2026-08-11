@@ -503,9 +503,9 @@ private fun AddMenuButton(
       onDismissRequest = { expanded = false },
       items =
         listOf(
-          PopupMenuItem(id = 0, title = stringResource(R.string.new_reminder), iconRes = R.drawable.ic_fluent_alert),
+          PopupMenuItem(id = 0, title = stringResource(R.string.reminder), iconRes = R.drawable.ic_fluent_alert),
           PopupMenuItem(id = 1, title = stringResource(R.string.todo), iconRes = R.drawable.ic_fluent_cart),
-          PopupMenuItem(id = 2, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake),
+          PopupMenuItem(id = 2, title = stringResource(R.string.birthday), iconRes = R.drawable.ic_fluent_food_cake),
         ),
       onItemClick = { id ->
         when (id) {

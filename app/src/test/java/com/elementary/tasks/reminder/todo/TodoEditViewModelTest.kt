@@ -3,9 +3,12 @@ package com.elementary.tasks.reminder.todo
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.mockDispatcherProvider
+import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
 import com.elementary.tasks.reminder.build.SubTasksBuilderItem
+import com.elementary.tasks.reminder.build.SummaryBuilderItem
 import com.elementary.tasks.reminder.build.bi.BiFactory
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
@@ -24,6 +27,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -61,7 +65,19 @@ class TodoEditViewModelTest : BaseTest() {
     )
 
   private fun groupItem() =
-    GroupBuilderItem(title = "group", description = null, groups = emptyList(), defaultGroup = null)
+    GroupBuilderItem(title = "group", description = null, groups = listOf(uiGroupFixture()), defaultGroup = null)
+
+  private fun uiGroupFixture(id: String = "g1", title: String = "Personal") =
+    UiGroupList(
+      id = id,
+      title = title,
+      color = 0,
+      colorPosition = 0,
+      contrastColor = 0,
+      isDefaultGroup = false,
+      canDelete = true,
+      canSetAsDefault = true,
+    )
 
   private fun reminderV2Fixture(uuId: String = "todo-1") =
     ReminderV2(uuId = uuId, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
@@ -82,11 +98,39 @@ class TodoEditViewModelTest : BaseTest() {
     )
 
   @Test
-  fun `init obtains a sub-tasks and a group builder item`() {
+  fun `init obtains a sub-tasks item and the available group list, defaulting to no group`() {
     val viewModel = createViewModel()
 
     assertNotNull(viewModel.state.value.subTasksItem)
-    assertNotNull(viewModel.state.value.groupItem)
+    assertEquals(listOf(uiGroupFixture()), viewModel.state.value.availableGroups)
+    assertEquals(null, viewModel.state.value.selectedGroup)
+  }
+
+  @Test
+  fun `onSaveClick with no group selected omits a group item entirely`() {
+    val viewModel = createViewModel()
+    val itemsSlot = slot<List<BuilderItem<*>>>()
+    every { biToReminderAdapter(any(), capture(itemsSlot), any()) } returns
+      BiToReminderAdapter.BuildResult.Success(reminderV2Fixture())
+
+    viewModel.onSaveClick()
+
+    assertEquals(0, itemsSlot.captured.filterIsInstance<GroupBuilderItem>().size)
+  }
+
+  @Test
+  fun `onSaveClick with a group selected includes a group item carrying that value`() {
+    val viewModel = createViewModel()
+    val group = uiGroupFixture()
+    viewModel.onGroupSelected(group)
+    val itemsSlot = slot<List<BuilderItem<*>>>()
+    every { biToReminderAdapter(any(), capture(itemsSlot), any()) } returns
+      BiToReminderAdapter.BuildResult.Success(reminderV2Fixture())
+
+    viewModel.onSaveClick()
+
+    val groupItem = itemsSlot.captured.filterIsInstance<GroupBuilderItem>().single()
+    assertEquals(group, groupItem.modifier.getValue())
   }
 
   @Test
@@ -100,6 +144,20 @@ class TodoEditViewModelTest : BaseTest() {
 
     coVerify(exactly = 1) { activateReminderUseCase(reminder, startAnyway = true) }
     assertEquals(TodoEditViewModel.ViewModelEvent.MoveBack, viewModel.event.value?.peekContent())
+  }
+
+  @Test
+  fun `onSaveClick builds a summary item whose value is the entered title, not its label`() {
+    val viewModel = createViewModel()
+    viewModel.onTitleChange("Groceries")
+    val itemsSlot = slot<List<BuilderItem<*>>>()
+    every { biToReminderAdapter(any(), capture(itemsSlot), any()) } returns
+      BiToReminderAdapter.BuildResult.Success(reminderV2Fixture())
+
+    viewModel.onSaveClick()
+
+    val summaryItem = itemsSlot.captured.filterIsInstance<SummaryBuilderItem>().single()
+    assertEquals("Groceries", summaryItem.modifier.getValue())
   }
 
   @Test

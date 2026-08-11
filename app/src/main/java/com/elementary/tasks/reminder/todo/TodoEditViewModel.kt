@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.ui.group.UiGroupList
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.GroupBuilderItem
 import com.elementary.tasks.reminder.build.SubTasksBuilderItem
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 class TodoEditViewModel(
@@ -62,8 +64,11 @@ class TodoEditViewModel(
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
       val subTasksItem = biFactory.create(BiType.SUB_TASKS) as SubTasksBuilderItem
-      val groupItem = biFactory.create(BiType.GROUP) as GroupBuilderItem
-      _state.update { it.copy(subTasksItem = subTasksItem, groupItem = groupItem) }
+      // Only the available group list is taken from here - "No group" is this screen's own
+      // default (see onSaveClick/onExtendClick), unlike the full builder's GroupBuilderItem,
+      // which always falls back to the app-wide default group.
+      val availableGroups = (biFactory.create(BiType.GROUP) as GroupBuilderItem).groups
+      _state.update { it.copy(subTasksItem = subTasksItem, availableGroups = availableGroups) }
     }
     observeTags()
   }
@@ -90,9 +95,8 @@ class TodoEditViewModel(
     _state.update { it.copy(subTasksItem = subTasksItem, canSave = subTasksItem.modifier.isCorrect()) }
   }
 
-  fun onGroupChanged(builderItem: BuilderItem<*>) {
-    val groupItem = builderItem as? GroupBuilderItem ?: return
-    _state.update { it.copy(groupItem = groupItem) }
+  fun onGroupSelected(group: UiGroupList?) {
+    _state.update { it.copy(selectedGroup = group) }
   }
 
   fun onTagToggle(tag: TagChipState) {
@@ -109,12 +113,14 @@ class TodoEditViewModel(
         is BiToReminderAdapter.BuildResult.Success -> {
           Logger.i(TAG, "Todo saved, id = ${result.reminderV2.uuId}")
           activateReminderUseCase(result.reminderV2, startAnyway = true)
-          event.emit(ViewModelEvent.MoveBack)
+          withContext(dispatcherProvider.main()) { event.emit(ViewModelEvent.MoveBack) }
         }
 
         is BiToReminderAdapter.BuildResult.Error -> {
           Logger.i(TAG, "Todo save failed, error = ${result.error}")
-          event.emit(ViewModelEvent.ShowMessage(R.string.builder_error_create_reminder))
+          withContext(dispatcherProvider.main()) {
+            event.emit(ViewModelEvent.ShowMessage(R.string.builder_error_create_reminder))
+          }
         }
       }
     }
@@ -127,23 +133,37 @@ class TodoEditViewModel(
         is BiToReminderAdapter.BuildResult.Success -> {
           Logger.i(TAG, "Todo extended into builder, id = ${result.reminderV2.uuId}")
           todoSeedHolder.pendingSeed = result.reminderV2
-          event.emit(ViewModelEvent.OpenBuilder(stableReminderId))
+          withContext(dispatcherProvider.main()) {
+            event.emit(ViewModelEvent.OpenBuilder(stableReminderId))
+          }
         }
 
         is BiToReminderAdapter.BuildResult.Error -> {
           Logger.i(TAG, "Todo extend failed, error = ${result.error}")
-          event.emit(ViewModelEvent.ShowMessage(R.string.builder_error_create_reminder))
+          withContext(dispatcherProvider.main()) {
+            event.emit(ViewModelEvent.ShowMessage(R.string.builder_error_create_reminder))
+          }
         }
       }
     }
   }
 
+  /** No group selected simply omits a [GroupBuilderItem] - [BiToReminderAdapter] resets
+   *  `groupId` to null before applying any item, so leaving the group item out is this screen's
+   *  true "no group" outcome, unlike [GroupModifier][com.elementary.tasks.reminder.build.bi.GroupModifier]'s
+   *  own null-falls-back-to-app-default-group behavior used by the full builder. */
   private fun currentBuilderItems(): List<BuilderItem<*>>? {
     val current = _state.value
     val subTasksItem = current.subTasksItem ?: return null
-    val groupItem = current.groupItem ?: return null
-    val summaryItem = SummaryBuilderItem(title = current.title, description = null)
-    return listOf(summaryItem, subTasksItem, groupItem)
+    val summaryItem =
+      SummaryBuilderItem(title = "", description = null).apply { modifier.update(current.title) }
+    val group = current.selectedGroup
+    val groupItem =
+      group?.let {
+        GroupBuilderItem(title = "", description = null, groups = current.availableGroups, defaultGroup = null)
+          .apply { modifier.update(it) }
+      }
+    return listOfNotNull(summaryItem, subTasksItem, groupItem)
   }
 
   private fun newBaseReminder(): ReminderV2 =
