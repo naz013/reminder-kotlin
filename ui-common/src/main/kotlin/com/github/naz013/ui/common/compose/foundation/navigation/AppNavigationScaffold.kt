@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -43,6 +44,13 @@ import kotlinx.coroutines.launch
 // here to center the header's menu button against the (also centered, in collapsed state) item
 // icons below it.
 private val RailCollapsedWidth = 96.dp
+
+// WideNavigationRail's header sits well below a standard 64dp TopAppBar's content row (measured:
+// the menu button centers 36dp lower than a TopAppBar title/nav-icon does on the same screen).
+// Shifting it up by that amount lines the toggle button up with the app bar in whatever screen is
+// showing in the content pane, so the rail reads as part of the same top row instead of floating
+// below it.
+private val RailHeaderAlignmentOffset = (-36).dp
 
 /**
  * Top-level app navigation chrome around [content]: a bottom [NavigationBar] on Compact width, a
@@ -83,7 +91,10 @@ fun <T> AppNavigationScaffold(
           // Fixed (not fillMaxWidth) so this centers correctly even when WideNavigationRail
           // measures the header under unbounded width constraints - matches the collapsed rail's
           // own width so the button lines up with the centered item icons below it.
-          Box(modifier = Modifier.width(RailCollapsedWidth), contentAlignment = Alignment.Center) {
+          Box(
+            modifier = Modifier.width(RailCollapsedWidth).offset(y = RailHeaderAlignmentOffset),
+            contentAlignment = Alignment.Center,
+          ) {
             MenuIconButton(
               icon = Icons.Default.Menu,
               contentDescription = stringResource(toggleDescriptionRes),
