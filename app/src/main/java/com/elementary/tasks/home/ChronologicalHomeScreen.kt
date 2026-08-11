@@ -66,6 +66,8 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.dynamicParameter
+import com.github.naz013.ui.common.compose.foundation.isDesktopScreen
+import com.github.naz013.ui.common.compose.foundation.isTabletScreen
 import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -92,6 +94,11 @@ fun ChronologicalHomeScreen(
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
+  // On Medium+ width, PersistentNavRailSceneDecoratorStrategy already wraps this screen in a
+  // navigation rail carrying the same destinations - showing the grid/row too would be
+  // redundant. Queried directly rather than passed in, so this stays in sync with the decorator
+  // without either side needing to coordinate a flag.
+  val showHeaderNavigation = !(isTabletScreen() || isDesktopScreen())
   val listState = rememberLazyListState()
   val isScrolled by remember {
     derivedStateOf {
@@ -121,21 +128,26 @@ fun ChronologicalHomeScreen(
         addMenuItems = state.addMenuItems,
         onAddMenuItemClick = onAddMenuItemClick,
         onSettingsClick = onSettingsClick,
+        // On Medium+ width, Settings is a rail item (see appRailDestinations in AppNavGraph.kt) -
+        // showing this button too would be a redundant second entry point.
+        showSettingsButton = showHeaderNavigation,
       )
-      AnimatedVisibility(
-        visible = isNavigationGridHidden && state.headerNavigationItems.isNotEmpty(),
-        enter =
-          fadeIn(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)) +
-            expandVertically(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)),
-        exit =
-          fadeOut(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)) +
-            shrinkVertically(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)),
-      ) {
-        HeaderNavigationRow(
-          modifier = Modifier.padding(bottom = 8.dp),
-          items = state.headerNavigationItems,
-          onItemClick = onHeaderNavigationItemClick,
-        )
+      if (showHeaderNavigation) {
+        AnimatedVisibility(
+          visible = isNavigationGridHidden && state.headerNavigationItems.isNotEmpty(),
+          enter =
+            fadeIn(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)) +
+              expandVertically(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)),
+          exit =
+            fadeOut(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)) +
+              shrinkVertically(animationSpec = tween(HEADER_COLLAPSE_ANIMATION_DURATION_MS)),
+        ) {
+          HeaderNavigationRow(
+            modifier = Modifier.padding(bottom = 8.dp),
+            items = state.headerNavigationItems,
+            onItemClick = onHeaderNavigationItemClick,
+          )
+        }
       }
     }
     LazyColumn(
@@ -143,12 +155,14 @@ fun ChronologicalHomeScreen(
       state = listState,
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-      item {
-        HeaderNavigationGrid(
-          modifier = Modifier.padding(top = 4.dp),
-          items = state.headerNavigationItems,
-          onItemClick = onHeaderNavigationItemClick,
-        )
+      if (showHeaderNavigation) {
+        item {
+          HeaderNavigationGrid(
+            modifier = Modifier.padding(top = 4.dp),
+            items = state.headerNavigationItems,
+            onItemClick = onHeaderNavigationItemClick,
+          )
+        }
       }
       when (state.listState) {
         is ListState.Ready -> {
@@ -195,6 +209,7 @@ private fun Header(
   addMenuItems: List<ScheduleHomeViewModel.EventType>,
   onAddMenuItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
   onSettingsClick: () -> Unit,
+  showSettingsButton: Boolean = true,
 ) {
   var addMenuExpanded by remember { mutableStateOf(false) }
   Greeting(
@@ -211,12 +226,14 @@ private fun Header(
           onAddMenuItemClick(it)
         },
       )
-      MenuIconButton(
-        modifier = Modifier.size(56.dp),
-        icon = AppIcons.Fluent.Settings,
-        onClick = onSettingsClick,
-        contentDescription = stringResource(R.string.action_settings),
-      )
+      if (showSettingsButton) {
+        MenuIconButton(
+          modifier = Modifier.size(56.dp),
+          icon = AppIcons.Fluent.Settings,
+          onClick = onSettingsClick,
+          contentDescription = stringResource(R.string.action_settings),
+        )
+      }
     },
   )
 }
