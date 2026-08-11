@@ -199,16 +199,22 @@ class NotesViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val note = noteRepository.getById(id)
       if (note == null) {
-        navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.failed_to_send_note)))
+        withContext(dispatcherProvider.main()) {
+          navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.failed_to_send_note)))
+        }
         return@launch
       }
       val file = createSharedNoteFileUseCase(note)
       if (file == null) {
-        navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.failed_to_send_note)))
+        withContext(dispatcherProvider.main()) {
+          navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.failed_to_send_note)))
+        }
         return@launch
       }
       if (!file.exists() || !file.canRead()) {
-        navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.error_sending)))
+        withContext(dispatcherProvider.main()) {
+          navigationEvent.emit(NavigationEvent.Error(textProvider.getText(R.string.error_sending)))
+        }
         return@launch
       }
       withContext(dispatcherProvider.main()) {
