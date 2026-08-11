@@ -15,8 +15,10 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.material3.rememberWideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -44,16 +46,16 @@ import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
-import com.elementary.tasks.workflow.WorkflowConfig
-import com.elementary.tasks.workflow.WorkflowNavKey
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.feature.googletask.googleTasksEntries
+import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.feature.workflow.workflowEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.localBackupEntries
 import com.github.naz013.tags.tagsEntries
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.navigation.AppDestination
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Root of the app's single Nav3 graph, hosted directly by
@@ -79,13 +81,15 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
   val appNavBridge = rememberAppNavBridge()
   val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
+  val viewModel = koinViewModel<AppNavGraphViewModel>()
+  val state by viewModel.state.collectAsStateWithLifecycle()
   // Remembered here, above NavDisplay, rather than inside AppNavigationScaffold itself - NavDisplay
   // disposes and recreates each scene's composition on navigation, so a rail state remembered
   // inside the decorated content would silently reset to collapsed on every navigation.
   val navRailState = rememberWideNavigationRailState()
   val persistentNavRailStrategy =
     PersistentNavRailSceneDecoratorStrategy(
-      destinations = appRailDestinations(),
+      destinations = appRailDestinations(isWorkflowEnabled = state.isWorkflowEnabled),
       backStack = backStack,
       railState = navRailState,
       onNavigate = { key -> backStack.navigateToRailDestination(key) },
@@ -168,9 +172,12 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
  * icon/label only, no live counts (see that class's doc for why). Mirrors Home's header
  * navigation grid (`GetNavigationItemsUseCase`) plus an explicit Home item, which - as the
  * graph's start destination - is always selected by default.
+ *
+ * [isWorkflowEnabled] comes from [AppNavGraphViewModel] rather than this Composable reading
+ * `WorkflowConfig` (or any other config source) itself.
  */
 @Composable
-private fun appRailDestinations(): List<AppDestination<NavKey>> =
+private fun appRailDestinations(isWorkflowEnabled: Boolean): List<AppDestination<NavKey>> =
   buildList {
     add(
       AppDestination(
@@ -214,7 +221,7 @@ private fun appRailDestinations(): List<AppDestination<NavKey>> =
         labelRes = R.string.groups,
       ),
     )
-    if (WorkflowConfig.isEnabled) {
+    if (isWorkflowEnabled) {
       add(
         AppDestination(
           key = WorkflowNavKey.Gallery,
