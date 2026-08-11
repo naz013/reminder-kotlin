@@ -16,6 +16,8 @@ jobs:
 
     - name: Clone repo
       uses: actions/checkout@v7
+      with:
+        token: ${{ secrets.RELEASE_PUSH_TOKEN }}
 
     - name: Validate Gradle wrapper
       uses: gradle/actions/wrapper-validation@v6
