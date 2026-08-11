@@ -27,7 +27,7 @@ import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationa
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.backup.BackupSettingsScreen

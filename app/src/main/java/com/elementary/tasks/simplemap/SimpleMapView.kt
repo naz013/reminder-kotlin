@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.common.Permissions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap

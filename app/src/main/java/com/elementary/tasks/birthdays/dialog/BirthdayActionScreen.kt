@@ -47,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.birthdays.actions.BirthdayAction
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
 import com.github.naz013.common.Permissions

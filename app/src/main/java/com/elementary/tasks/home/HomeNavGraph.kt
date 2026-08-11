@@ -23,7 +23,7 @@ import com.elementary.tasks.home.agenda.AgendaViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.lists.removed.RemindersArchiveNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey

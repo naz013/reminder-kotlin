@@ -16,7 +16,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.SettingsScaffold
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewScreen

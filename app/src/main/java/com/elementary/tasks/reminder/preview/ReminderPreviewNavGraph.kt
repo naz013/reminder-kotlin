@@ -23,7 +23,7 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderPlace
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.build.valuedialog.editor.ReminderMapMarker
 import com.elementary.tasks.settings.rememberSendIntentResolver

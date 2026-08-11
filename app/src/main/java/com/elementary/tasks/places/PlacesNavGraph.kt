@@ -14,7 +14,7 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.places.create.EditPlaceScreen
 import com.elementary.tasks.places.create.EditPlaceState
 import com.elementary.tasks.places.create.EditPlaceViewModel
