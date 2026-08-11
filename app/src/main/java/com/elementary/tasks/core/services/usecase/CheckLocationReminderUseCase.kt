@@ -4,7 +4,7 @@ import android.content.Context
 import android.location.Location
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.ui.DefaultDistanceFormatter
-import com.elementary.tasks.workflow.WorkflowTriggerRunner
+import com.github.naz013.feature.workflow.WorkflowTriggerRunner
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.LocationSettings
 import com.github.naz013.domain.reminder.v2.RecurrenceRule

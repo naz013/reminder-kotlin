@@ -225,6 +225,7 @@ dependencies {
   implementation(project(":feature-reminder"))
   implementation(project(":feature-tags"))
   implementation(project(":feature-insights"))
+  implementation(project(":feature-workflow"))
   implementation(project(":localbackup"))
 
   implementation(project(":platform-common"))

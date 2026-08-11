@@ -1,6 +1,6 @@
 package com.elementary.tasks.settings.reminders
 
-import com.elementary.tasks.workflow.WorkflowConfig
+import com.github.naz013.feature.workflow.WorkflowConfig
 import org.threeten.bp.LocalTime
 
 data class RemindersSettingsState(

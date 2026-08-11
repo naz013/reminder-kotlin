@@ -1,7 +1,7 @@
 package com.elementary.tasks.groups.create
 
 import androidx.compose.ui.graphics.Color
-import com.elementary.tasks.workflow.WorkflowConfig
+import com.github.naz013.feature.workflow.WorkflowConfig
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 
 data class EditGroupState(

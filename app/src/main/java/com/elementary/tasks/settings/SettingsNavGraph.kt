@@ -67,7 +67,7 @@ import com.elementary.tasks.settings.troubleshooting.TroubleshootingScreen
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingScreenState
 import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.elementary.tasks.settings.troubleshooting.rememberOptimizationSettingsLauncher
-import com.elementary.tasks.workflow.WorkflowNavKey
+import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.platform.SystemInfo

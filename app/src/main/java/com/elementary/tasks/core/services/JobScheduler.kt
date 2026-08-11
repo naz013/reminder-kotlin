@@ -12,8 +12,8 @@ import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
 import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
-import com.elementary.tasks.workflow.RunWorkflowRulesTask
-import com.elementary.tasks.workflow.RunWorkflowUnacknowledgedRulesTask
+import com.github.naz013.feature.workflow.RunWorkflowRulesTask
+import com.github.naz013.feature.workflow.RunWorkflowUnacknowledgedRulesTask
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.datecalc.DateTimeManager

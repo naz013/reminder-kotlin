@@ -71,7 +71,7 @@ import com.elementary.tasks.reminder.lists.removed.RemindersArchiveViewModel
 import com.elementary.tasks.reminder.preview.FullScreenMapViewModel
 import com.elementary.tasks.reminder.preview.PreviewReminderViewModel
 import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
-import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
+import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase

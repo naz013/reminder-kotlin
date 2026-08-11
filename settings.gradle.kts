@@ -69,6 +69,7 @@ include(":feature-googletask")
 include(":feature-reminder")
 include(":feature-tags")
 include(":feature-insights")
+include(":feature-workflow")
 
 include(":localbackup")
 
