@@ -232,6 +232,7 @@ dependencies {
 
   implementation(project(":ui-common"))
   implementation(project(":ui-googletask"))
+  implementation(project(":ui-note"))
   implementation(project(":ui-reminder"))
   implementation(project(":ui-tag"))
 

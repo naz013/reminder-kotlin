@@ -16,7 +16,7 @@ import androidx.annotation.IdRes
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.ui.note.UiNoteNotification
+import com.github.naz013.feature.note.UiNoteNotification
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.Notifier.Companion.CHANNEL_REMINDER

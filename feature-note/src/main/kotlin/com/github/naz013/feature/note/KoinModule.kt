@@ -1,8 +1,114 @@
 package com.github.naz013.feature.note
 
+import com.github.naz013.feature.note.create.NoteEditViewModel
+import com.github.naz013.feature.note.image.NoteImageMigration
+import com.github.naz013.feature.note.image.NoteImageRepository
+import com.github.naz013.feature.note.list.NotesViewModel
+import com.github.naz013.feature.note.preview.ImagePreviewViewModel
+import com.github.naz013.feature.note.preview.ImagesSingleton
+import com.github.naz013.feature.note.preview.PreviewNoteViewModel
+import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttachedReminder
+import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
+import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
+import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.SaveNoteUseCase
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val featureNoteModule = module {
-  factory { UiNoteImagesAdapter() }
-  factory { UiNoteListItemAdapter(get(), get()) }
-}
+val featureNoteModule =
+  module {
+    factoryOf(::DeleteNoteUseCase)
+    factoryOf(::SaveNoteUseCase)
+    factoryOf(::ChangeNoteArchiveStateUseCase)
+
+    factoryOf(::CreateSharedNoteFileUseCase)
+
+    factoryOf(::ReminderToUiNoteAttachedReminder)
+
+    factoryOf(::UiNoteEditAdapter)
+    factoryOf(::UiNotePreviewAdapter)
+    factoryOf(::UiNoteNotificationAdapter)
+
+    singleOf(::ImagesSingleton)
+
+    singleOf(::NoteImageRepository)
+    factoryOf(::NoteImageMigration)
+
+    viewModel { (id: String?, sharedText: String?, sharedImageUris: List<String>?, fromIntentData: Boolean) ->
+      NoteEditViewModel(
+        id,
+        sharedText,
+        sharedImageUris,
+        fromIntentData,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    viewModel { (position: Int) -> ImagePreviewViewModel(position, get(), get()) }
+    viewModel { (isArchived: Boolean) ->
+      NotesViewModel(
+        isArchived = isArchived,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+    viewModel { (id: String) ->
+      PreviewNoteViewModel(
+        id,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
+  }
