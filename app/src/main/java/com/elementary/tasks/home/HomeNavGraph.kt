@@ -27,6 +27,7 @@ import com.elementary.tasks.notes.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.lists.removed.RemindersArchiveNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
+import com.elementary.tasks.reminder.todo.TodoEditNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.other.OtherNavKey
@@ -118,6 +119,10 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
       is ScheduleHomeViewModel.ViewModelEvent.EventAction -> {
         eventActionDispatcher.dispatch(event.value)
       }
+
+      is ScheduleHomeViewModel.ViewModelEvent.OpenCreateTodo -> {
+        appNavBridge.navigate(TodoEditNavKey.Main())
+      }
     }
   }
 
@@ -171,8 +176,8 @@ private fun AgendaEntry(backStack: MutableList<NavKey>) {
         appNavBridge.navigate(BuildReminderNavKey.Main())
       }
 
-      AgendaViewModel.NavigationEvent.OpenNewShoppingReminder -> {
-        appNavBridge.navigate(BuildReminderNavKey.Main(deepLinkTodo = true))
+      AgendaViewModel.NavigationEvent.OpenNewTodo -> {
+        appNavBridge.navigate(TodoEditNavKey.Main())
       }
 
       is AgendaViewModel.NavigationEvent.OpenBirthdayPreview -> {
@@ -249,7 +254,7 @@ private fun AgendaEntry(backStack: MutableList<NavKey>) {
     onTagFilterSelected = viewModel::onTagFilterSelected,
     onGroupFilterSelected = viewModel::onGroupFilterSelected,
     onAddReminderClick = viewModel::onAddReminderClick,
-    onAddShoppingClick = viewModel::onAddShoppingClick,
+    onAddTodoClick = viewModel::onAddTodoClick,
     onAddBirthdayClick = viewModel::onAddBirthdayClick,
     onArchiveClick = viewModel::onArchiveClick,
     onGroupsClick = viewModel::onGroupsClick,

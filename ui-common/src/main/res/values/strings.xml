@@ -178,6 +178,8 @@
     <string name="location">Location</string>
     <string name="day_of_month">Day of month</string>
     <string name="shopping_list">Shopping list</string>
+    <string name="todo">Todo</string>
+    <string name="todo_items">Items</string>
     <string name="radius_x_m">"Radius %s m"</string>
     <string name="radius_x_ft">"Radius %s ft"</string>
     <string name="radius_x_km">"Radius %s km"</string>

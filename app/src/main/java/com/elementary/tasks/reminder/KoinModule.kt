@@ -76,6 +76,9 @@ import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
+import com.elementary.tasks.reminder.todo.TodoEditNavKey
+import com.elementary.tasks.reminder.todo.TodoEditViewModel
+import com.elementary.tasks.reminder.todo.TodoSeedHolder
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
@@ -96,6 +99,8 @@ val reminderModule =
     viewModel { (key: BuildReminderNavKey.Main) ->
       BuildReminderViewModel(
         key,
+        get(),
+        get(),
         get(),
         get(),
         get(),
@@ -217,6 +222,29 @@ val reminderModule =
 
     single { SelectorDialogDataHolder() }
     single { ApplicationPickerResultHolder() }
+    single { TodoSeedHolder() }
+
+    viewModel { (key: TodoEditNavKey.Main) ->
+      TodoEditViewModel(
+        key,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+      )
+    }
 
     factory { UiSelectorItemsAdapter(get(), get(), get(), get()) }
 
@@ -310,4 +338,6 @@ val reminderModule =
     factory { CreateReminderActionScreenStateUseCase(get(), get(), get(), get()) }
 
     factoryOf(::FindGroupUseCase)
+
+    factoryOf(::IsSimpleTodoReminderUseCase)
   }

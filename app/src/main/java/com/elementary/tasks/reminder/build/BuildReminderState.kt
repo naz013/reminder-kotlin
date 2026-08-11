@@ -4,6 +4,7 @@ import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.github.naz013.ui.tag.TagChipState
 
 data class BuildReminderState(
+  val isLoadingForEdit: Boolean = false,
   val builderItems: List<UiBuilderItem> = emptyList(),
   val prediction: ReminderPrediction? = null,
   val canSave: Boolean = false,

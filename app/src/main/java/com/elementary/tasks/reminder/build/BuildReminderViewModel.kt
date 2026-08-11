@@ -30,8 +30,10 @@ import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
+import com.elementary.tasks.reminder.IsSimpleTodoReminderUseCase
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
+import com.elementary.tasks.reminder.todo.TodoSeedHolder
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.AnalyticsReminderType
@@ -140,6 +142,8 @@ class BuildReminderViewModel(
   private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val findGroupUseCase: FindGroupUseCase,
+  private val todoSeedHolder: TodoSeedHolder,
+  private val isSimpleTodoReminderUseCase: IsSimpleTodoReminderUseCase,
 ) : ViewModel() {
 
   val initialId = navKey.id
@@ -150,7 +154,21 @@ class BuildReminderViewModel(
    *  from the very first frame, well before the reminder is actually saved. */
   private val stableReminderId: String = initialId.ifEmpty { UUID.randomUUID().toString() }
 
-  private val _state = MutableStateFlow(BuildReminderState())
+  /** True only when this session will go through [editReminderIfNeeded] - i.e. none of the
+   *  other deep-link branches in [handleDeepLink] apply and an id was given. Computed eagerly
+   *  (not inside handleDeepLink()'s async launch) so the very first frame already knows to show
+   *  a loading state instead of briefly flashing the empty-state illustration while
+   *  editReminderIfNeeded asynchronously decides whether to redirect to the Todo screen. */
+  private val isEditingById: Boolean =
+    initialId.isNotEmpty() &&
+      !navKey.fromIntentItem &&
+      !(navKey.deepLinkDateTimeType != null && navKey.deepLinkDateTimeMillis != null) &&
+      !navKey.deepLinkTodo &&
+      !navKey.seedFromTodoEdit &&
+      navKey.deepLinkText == null &&
+      navKey.groupUuId == null
+
+  private val _state = MutableStateFlow(BuildReminderState(isLoadingForEdit = isEditingById))
   val state: StateFlow<BuildReminderState> = _state.asStateFlow()
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
@@ -215,6 +233,7 @@ class BuildReminderViewModel(
     super.onCleared()
     Logger.i(TAG, "View model cleared")
     selectorDialogDataHolder.selectorBuilderItems = emptyList()
+    todoSeedHolder.pendingSeed = null
     if (isPaused && !isSaving) {
       originalV2?.let { resumeReminder(it) }
     }
@@ -336,11 +355,13 @@ class BuildReminderViewModel(
 
         navKey.deepLinkTodo -> readTodoDeepLink()
 
+        navKey.seedFromTodoEdit -> readTodoEditSeed()
+
         navKey.deepLinkText != null -> readTextDeepLink(navKey.deepLinkText)
 
         navKey.groupUuId != null -> readGroupDeepLink(navKey.groupUuId)
 
-        id.isNotEmpty() -> {
+        isEditingById -> {
           Logger.i(TAG, "Handle reminder ID Deep Link")
           editReminderIfNeeded(id)
         }
@@ -481,6 +502,38 @@ class BuildReminderViewModel(
     updateSelector()
   }
 
+  /** Seeds the builder from a [TodoSeedHolder.pendingSeed] left by TodoEditViewModel's Extend
+   *  action. For a brand-new, not-yet-persisted todo ([navKey.isEditingExtend] false) this
+   *  deliberately does not call [editReminder] - that would set [isEdited]/[originalV2]/
+   *  `canRemove`, treating a reminder that was never saved as an existing DB row. [originalV2]
+   *  staying null means [saveReminder] falls through to [newBlankReminderV2], which reuses
+   *  [stableReminderId] - equal to [navKey]'s id here - so tags already attached from the Todo
+   *  screen stay attached once this reminder is actually saved.
+   *
+   *  When extending a todo that was already being *edited* ([navKey.isEditingExtend] true), [seed]
+   *  is a real, already-persisted reminder - TodoEditViewModel paused it on load and resumed it
+   *  the moment its own screen was popped (before this one even mounts), so this must re-pause it
+   *  here too, otherwise it sits live/unpaused for the rest of this builder session. */
+  private suspend fun readTodoEditSeed() {
+    while (builderItemsLogic.getAvailable().isEmpty()) {
+      delay(50.milliseconds)
+    }
+    Logger.i(TAG, "Handle reminder todo edit seed")
+    val seed = todoSeedHolder.pendingSeed ?: return
+    todoSeedHolder.pendingSeed = null
+    if (navKey.isEditingExtend) {
+      isEdited = true
+      originalV2 = seed
+      _state.update { it.copy(canRemove = true, isRemoved = seed.isRemoved) }
+      pauseReminder(seed)
+    }
+    val builderItems = reminderToBiDecomposer(seed)
+    if (builderItems.isNotEmpty()) {
+      builderItemsLogic.setAll(builderItems)
+      updateSelector()
+    }
+  }
+
   private suspend fun readTextDeepLink(text: String) {
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50.milliseconds)
@@ -618,7 +671,19 @@ class BuildReminderViewModel(
 
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminderV2 = getReminderV2ByIdUseCase(id) ?: return@launch
+      val reminderV2 = getReminderV2ByIdUseCase(id)
+      if (reminderV2 == null) {
+        _state.update { it.copy(isLoadingForEdit = false) }
+        return@launch
+      }
+
+      if (isSimpleTodoReminderUseCase(reminderV2)) {
+        Logger.i(TAG, "Reminder is a simple todo, redirecting to Todo edit screen, id = $id")
+        withContext(dispatcherProvider.main()) {
+          event.emit(ViewModelEvent.RedirectToTodoEdit(id))
+        }
+        return@launch
+      }
 
       Logger.i(TAG, "Edit reminder by ID Deep Link, id = $id")
 
@@ -645,6 +710,7 @@ class BuildReminderViewModel(
       it.copy(
         canRemove = !isFromFile,
         isRemoved = reminderV2.isRemoved,
+        isLoadingForEdit = false,
       )
     }
 
@@ -1071,6 +1137,10 @@ class BuildReminderViewModel(
     ) : ViewModelEvent
 
     data object OpenManageTags : ViewModelEvent
+
+    data class RedirectToTodoEdit(
+      val id: String,
+    ) : ViewModelEvent
   }
 
   companion object {

@@ -31,6 +31,7 @@ import com.elementary.tasks.places.placesEntries
 import com.elementary.tasks.reminder.build.buildReminderEntries
 import com.elementary.tasks.reminder.lists.removed.remindersArchiveEntries
 import com.elementary.tasks.reminder.preview.reminderPreviewEntries
+import com.elementary.tasks.reminder.todo.todoEditEntries
 import com.elementary.tasks.settings.export.exportEntries
 import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
@@ -108,6 +109,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) }
         )
         buildReminderEntries(backStack)
+        todoEditEntries(backStack)
         calendarEntries(backStack)
         reminderPreviewEntries(backStack)
         remindersArchiveEntries(backStack)

@@ -241,6 +241,7 @@ private fun AddButton(
             ScheduleHomeViewModel.EventType.Birthday -> R.drawable.ic_fluent_food_cake
             ScheduleHomeViewModel.EventType.GoogleTask -> R.drawable.ic_builder_google_task_list
             ScheduleHomeViewModel.EventType.Note -> R.drawable.ic_fluent_note
+            ScheduleHomeViewModel.EventType.Todo -> R.drawable.ic_fluent_cart
           },
       )
     }

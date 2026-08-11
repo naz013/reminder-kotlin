@@ -72,7 +72,7 @@ fun AgendaScreen(
   onTagFilterSelected: (String?) -> Unit,
   onGroupFilterSelected: (String?) -> Unit,
   onAddReminderClick: () -> Unit,
-  onAddShoppingClick: () -> Unit,
+  onAddTodoClick: () -> Unit,
   onAddBirthdayClick: () -> Unit,
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
@@ -102,7 +102,7 @@ fun AgendaScreen(
           AgendaTopBar(
             onBackClick = onBackClick,
             onAddReminderClick = onAddReminderClick,
-            onAddShoppingClick = onAddShoppingClick,
+            onAddTodoClick = onAddTodoClick,
             onAddBirthdayClick = onAddBirthdayClick,
             onArchiveClick = onArchiveClick,
             onGroupsClick = onGroupsClick,
@@ -442,7 +442,7 @@ private fun AgendaEmptyState(modifier: Modifier = Modifier) {
 private fun AgendaTopBar(
   onBackClick: () -> Unit,
   onAddReminderClick: () -> Unit,
-  onAddShoppingClick: () -> Unit,
+  onAddTodoClick: () -> Unit,
   onAddBirthdayClick: () -> Unit,
   onArchiveClick: () -> Unit,
   onGroupsClick: () -> Unit,
@@ -462,7 +462,7 @@ private fun AgendaTopBar(
     actions = {
       AddMenuButton(
         onAddReminderClick = onAddReminderClick,
-        onAddShoppingClick = onAddShoppingClick,
+        onAddTodoClick = onAddTodoClick,
         onAddBirthdayClick = onAddBirthdayClick,
       )
       BadgedBox(
@@ -487,7 +487,7 @@ private fun AgendaTopBar(
 @Composable
 private fun AddMenuButton(
   onAddReminderClick: () -> Unit,
-  onAddShoppingClick: () -> Unit,
+  onAddTodoClick: () -> Unit,
   onAddBirthdayClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
@@ -503,14 +503,14 @@ private fun AddMenuButton(
       onDismissRequest = { expanded = false },
       items =
         listOf(
-          PopupMenuItem(id = 0, title = stringResource(R.string.new_reminder), iconRes = R.drawable.ic_fluent_alert),
-          PopupMenuItem(id = 1, title = stringResource(R.string.shopping_list), iconRes = R.drawable.ic_fluent_cart),
-          PopupMenuItem(id = 2, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake),
+          PopupMenuItem(id = 0, title = stringResource(R.string.reminder), iconRes = R.drawable.ic_fluent_alert),
+          PopupMenuItem(id = 1, title = stringResource(R.string.todo), iconRes = R.drawable.ic_fluent_cart),
+          PopupMenuItem(id = 2, title = stringResource(R.string.birthday), iconRes = R.drawable.ic_fluent_food_cake),
         ),
       onItemClick = { id ->
         when (id) {
           0 -> onAddReminderClick()
-          1 -> onAddShoppingClick()
+          1 -> onAddTodoClick()
           2 -> onAddBirthdayClick()
         }
       },
@@ -559,7 +559,7 @@ private fun AgendaScreenEmptyPreview() {
       onTagFilterSelected = {},
       onGroupFilterSelected = {},
       onAddReminderClick = {},
-      onAddShoppingClick = {},
+      onAddTodoClick = {},
       onAddBirthdayClick = {},
       onArchiveClick = {},
       onGroupsClick = {},
