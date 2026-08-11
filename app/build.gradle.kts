@@ -41,6 +41,10 @@ extensions.configure<ApplicationExtension> {
   val shouldSign = props.getProperty("signApk", "false").toBoolean()
   println("> Should sign APK = $shouldSign")
 
+  // Debug signing is only set up when a debug keystore is actually configured (local dev setups
+  // with a full keystore.properties). CI only provides free/pro release keystores.
+  val shouldSignDebug = shouldSign && props.getProperty("debugKeyStoreFile") != null
+
   if (shouldSign) {
     signingConfigs {
       create("freeApp") {
@@ -55,11 +59,13 @@ extensions.configure<ApplicationExtension> {
         keyAlias = props.getProperty("releaseProKeyAlias")
         keyPassword = props.getProperty("releaseProKeyPassword")
       }
-      create("debugApp") {
-        storeFile = file(props.getProperty("debugKeyStoreFile"))
-        storePassword = props.getProperty("debugKeyStorePassword")
-        keyAlias = props.getProperty("debugKeyAlias")
-        keyPassword = props.getProperty("debugKeyPassword")
+      if (shouldSignDebug) {
+        create("debugApp") {
+          storeFile = file(props.getProperty("debugKeyStoreFile"))
+          storePassword = props.getProperty("debugKeyStorePassword")
+          keyAlias = props.getProperty("debugKeyAlias")
+          keyPassword = props.getProperty("debugKeyPassword")
+        }
       }
     }
   }
@@ -125,7 +131,7 @@ extensions.configure<ApplicationExtension> {
     debug {
       buildConfigField("String", "BUILD_DATE", "\"${getDateAndTime()}\"")
       isMinifyEnabled = false
-      if (shouldSign) {
+      if (shouldSignDebug) {
         signingConfig = signingConfigs["debugApp"]
       }
     }
