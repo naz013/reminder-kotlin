@@ -34,11 +34,22 @@ jobs:
         # Extract version number from the tag name
         version_name=${GITHUB_REF#refs/tags/}
 
-        # Get existing version code from build.gradle
-        version_code=$(grep -o -E 'versionCode = [[:digit:]\.]+' app/build.gradle.kts | grep -o -E '[[:digit:]\.]+')
+        # Read the currently released version from master (the source of truth) rather than
+        # from this tag's own checkout, so re-running a release that already bumped master
+        # (e.g. retrying a run that failed later, at the Play Store upload) doesn't try to
+        # bump again and push a diverging commit.
+        git fetch origin master --quiet
+        master_version_code=$(git show origin/master:app/build.gradle.kts | grep -o -E 'versionCode = [[:digit:]]+' | grep -o -E '[[:digit:]]+')
+        master_version_name=$(git show origin/master:app/build.gradle.kts | grep -oP '(?<=versionName = ")[^"]+')
 
-        # Increment existing version code by 1
-        version_code=$((version_code + 1))
+        if [ "$master_version_name" = "$version_name" ]; then
+          # This tag's bump already landed on master - reuse it instead of bumping again.
+          version_code=$master_version_code
+          echo "SKIP_VERSION_PUSH=true" >> $GITHUB_ENV
+        else
+          version_code=$((master_version_code + 1))
+          echo "SKIP_VERSION_PUSH=false" >> $GITHUB_ENV
+        fi
 
         # Set environment variable for later use
         echo "VERSION_NAME=$version_name" >> $GITHUB_ENV
@@ -52,6 +63,7 @@ jobs:
         versionName: ${{ env.VERSION_NAME }}
 
     - name: Commit and push changes
+      if: env.SKIP_VERSION_PUSH != 'true'
       run: |
         git config user.email "github-actions@github.com"
         git config user.name "Github Actions"
