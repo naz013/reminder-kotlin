@@ -142,6 +142,7 @@ val reminderModule =
         get(),
         get(),
         get(),
+        get(),
       )
     }
 
@@ -226,6 +227,12 @@ val reminderModule =
     viewModel { (key: TodoEditNavKey.Main) ->
       TodoEditViewModel(
         key,
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
         get(),
         get(),
         get(),
@@ -331,4 +338,6 @@ val reminderModule =
     factory { CreateReminderActionScreenStateUseCase(get(), get(), get(), get()) }
 
     factoryOf(::FindGroupUseCase)
+
+    factoryOf(::IsSimpleTodoReminderUseCase)
   }

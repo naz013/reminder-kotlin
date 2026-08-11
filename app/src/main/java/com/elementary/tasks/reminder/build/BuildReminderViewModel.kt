@@ -30,6 +30,7 @@ import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.elementary.tasks.reminder.build.reminder.BiToReminderAdapter
 import com.elementary.tasks.reminder.build.reminder.ReminderToBiDecomposer
 import com.elementary.tasks.reminder.build.reminder.validation.PermissionValidator
+import com.elementary.tasks.reminder.IsSimpleTodoReminderUseCase
 import com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.elementary.tasks.reminder.scheduling.usecase.ResumeReminderUseCase
 import com.elementary.tasks.reminder.todo.TodoSeedHolder
@@ -142,6 +143,7 @@ class BuildReminderViewModel(
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val findGroupUseCase: FindGroupUseCase,
   private val todoSeedHolder: TodoSeedHolder,
+  private val isSimpleTodoReminderUseCase: IsSimpleTodoReminderUseCase,
 ) : ViewModel() {
 
   val initialId = navKey.id
@@ -486,12 +488,18 @@ class BuildReminderViewModel(
     updateSelector()
   }
 
-  /** Seeds the builder from a not-yet-persisted [TodoSeedHolder.pendingSeed] left by
-   *  TodoEditViewModel's Extend action. Deliberately does not call [editReminder] - that would
-   *  set [isEdited]/[originalV2]/`canRemove`, treating a reminder that was never saved as an
-   *  existing DB row. [originalV2] staying null means [saveReminder] falls through to
-   *  [newBlankReminderV2], which reuses [stableReminderId] - equal to [navKey]'s id here - so tags
-   *  already attached from the Todo screen stay attached once this reminder is actually saved. */
+  /** Seeds the builder from a [TodoSeedHolder.pendingSeed] left by TodoEditViewModel's Extend
+   *  action. For a brand-new, not-yet-persisted todo ([navKey.isEditingExtend] false) this
+   *  deliberately does not call [editReminder] - that would set [isEdited]/[originalV2]/
+   *  `canRemove`, treating a reminder that was never saved as an existing DB row. [originalV2]
+   *  staying null means [saveReminder] falls through to [newBlankReminderV2], which reuses
+   *  [stableReminderId] - equal to [navKey]'s id here - so tags already attached from the Todo
+   *  screen stay attached once this reminder is actually saved.
+   *
+   *  When extending a todo that was already being *edited* ([navKey.isEditingExtend] true), [seed]
+   *  is a real, already-persisted reminder - TodoEditViewModel paused it on load and resumed it
+   *  the moment its own screen was popped (before this one even mounts), so this must re-pause it
+   *  here too, otherwise it sits live/unpaused for the rest of this builder session. */
   private suspend fun readTodoEditSeed() {
     while (builderItemsLogic.getAvailable().isEmpty()) {
       delay(50.milliseconds)
@@ -499,6 +507,12 @@ class BuildReminderViewModel(
     Logger.i(TAG, "Handle reminder todo edit seed")
     val seed = todoSeedHolder.pendingSeed ?: return
     todoSeedHolder.pendingSeed = null
+    if (navKey.isEditingExtend) {
+      isEdited = true
+      originalV2 = seed
+      _state.update { it.copy(canRemove = true, isRemoved = seed.isRemoved) }
+      pauseReminder(seed)
+    }
     val builderItems = reminderToBiDecomposer(seed)
     if (builderItems.isNotEmpty()) {
       builderItemsLogic.setAll(builderItems)
@@ -644,6 +658,14 @@ class BuildReminderViewModel(
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminderV2 = getReminderV2ByIdUseCase(id) ?: return@launch
+
+      if (isSimpleTodoReminderUseCase(reminderV2)) {
+        Logger.i(TAG, "Reminder is a simple todo, redirecting to Todo edit screen, id = $id")
+        withContext(dispatcherProvider.main()) {
+          event.emit(ViewModelEvent.RedirectToTodoEdit(id))
+        }
+        return@launch
+      }
 
       Logger.i(TAG, "Edit reminder by ID Deep Link, id = $id")
 
@@ -1096,6 +1118,10 @@ class BuildReminderViewModel(
     ) : ViewModelEvent
 
     data object OpenManageTags : ViewModelEvent
+
+    data class RedirectToTodoEdit(
+      val id: String,
+    ) : ViewModelEvent
   }
 
   companion object {

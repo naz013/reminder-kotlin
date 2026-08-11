@@ -31,6 +31,7 @@ import com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.rememberUriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.build.valuedialog.editor.MapEditorScreen
 import com.elementary.tasks.reminder.recur.RecurHelpScreen
+import com.elementary.tasks.reminder.todo.TodoEditNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.domain.Place
 import com.github.naz013.logging.Logger
@@ -142,6 +143,11 @@ private fun MainEntry(
       }
 
       BuildReminderViewModel.ViewModelEvent.OpenManageTags -> backStack.add(TagsNavKey.Manage)
+
+      is BuildReminderViewModel.ViewModelEvent.RedirectToTodoEdit -> {
+        if (backStack.size > 1) backStack.removeLastOrNull()
+        backStack.add(TodoEditNavKey.Main(id = event.id))
+      }
     }
   }
 

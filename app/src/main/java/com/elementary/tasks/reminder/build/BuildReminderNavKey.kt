@@ -14,6 +14,7 @@ sealed interface BuildReminderNavKey : NavKey {
     val deepLinkText: String? = null,
     val groupUuId: String? = null,
     val seedFromTodoEdit: Boolean = false,
+    val isEditingExtend: Boolean = false,
   ) : BuildReminderNavKey {
 
     enum class DateTimeType {

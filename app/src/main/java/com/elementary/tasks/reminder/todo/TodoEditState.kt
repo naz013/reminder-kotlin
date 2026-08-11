@@ -12,4 +12,6 @@ data class TodoEditState(
   val allTags: List<TagChipState> = emptyList(),
   val selectedTagIds: Set<String> = emptySet(),
   val canSave: Boolean = false,
+  val isEditing: Boolean = false,
+  val isRemoved: Boolean = false,
 )
