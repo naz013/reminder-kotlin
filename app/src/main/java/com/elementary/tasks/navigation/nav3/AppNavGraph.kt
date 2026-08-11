@@ -10,6 +10,8 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
@@ -50,11 +52,18 @@ import com.github.naz013.tags.tagsEntries
  * `fun EntryProviderScope<NavKey>.xyzEntries(backStack)` extension in that feature's own
  * `XyzNavGraph.kt`; [AppNavBridge] lets a screen several NavEntries deep reach a destination
  * belonging to a different feature's graph without holding the backstack directly.
+ *
+ * [listDetailSceneStrategy] is registered here so any feature's `XyzNavGraph.kt` can opt an
+ * entry pair into a two-pane list-detail layout on Medium+ width just by tagging its `entry<>()`
+ * calls with `ListDetailSceneStrategy.listPane()`/`.detailPane()` - no other wiring needed. It is
+ * a no-op today: no entry anywhere in the graph carries that metadata yet.
  */
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
   val appNavBridge = rememberAppNavBridge()
+  val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
 
   DisposableEffect(backStack) {
     appNavBridge.attachOuterBackStack(backStack)
@@ -65,6 +74,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
     backStack = backStack,
     modifier = Modifier.fillMaxSize(),
     onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    sceneStrategies = listOf(listDetailSceneStrategy),
     entryDecorators =
       listOf(
         rememberSaveableStateHolderNavEntryDecorator(),
