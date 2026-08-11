@@ -1,0 +1,8 @@
+- Refreshed the application look
+- Added new notification override logic: Default -> Group -> Reminder
+- Added a title field to the Note builder
+- Added tags to Reminders, Birthdays, Notes and Google Tasks
+- Added Insights (PRO only)
+- Added local file backup (PRO only)
+- Added Public holidays to Calendar (PRO only)
+- Bug fixes and improvements
