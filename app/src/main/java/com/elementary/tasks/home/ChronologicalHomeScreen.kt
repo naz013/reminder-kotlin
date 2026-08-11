@@ -128,6 +128,9 @@ fun ChronologicalHomeScreen(
         addMenuItems = state.addMenuItems,
         onAddMenuItemClick = onAddMenuItemClick,
         onSettingsClick = onSettingsClick,
+        // On Medium+ width, Settings is a rail item (see appRailDestinations in AppNavGraph.kt) -
+        // showing this button too would be a redundant second entry point.
+        showSettingsButton = showHeaderNavigation,
       )
       if (showHeaderNavigation) {
         AnimatedVisibility(
@@ -206,6 +209,7 @@ private fun Header(
   addMenuItems: List<ScheduleHomeViewModel.EventType>,
   onAddMenuItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
   onSettingsClick: () -> Unit,
+  showSettingsButton: Boolean = true,
 ) {
   var addMenuExpanded by remember { mutableStateOf(false) }
   Greeting(
@@ -222,12 +226,14 @@ private fun Header(
           onAddMenuItemClick(it)
         },
       )
-      MenuIconButton(
-        modifier = Modifier.size(56.dp),
-        icon = AppIcons.Fluent.Settings,
-        onClick = onSettingsClick,
-        contentDescription = stringResource(R.string.action_settings),
-      )
+      if (showSettingsButton) {
+        MenuIconButton(
+          modifier = Modifier.size(56.dp),
+          icon = AppIcons.Fluent.Settings,
+          onClick = onSettingsClick,
+          contentDescription = stringResource(R.string.action_settings),
+        )
+      }
     },
   )
 }

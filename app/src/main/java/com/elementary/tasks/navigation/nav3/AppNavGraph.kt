@@ -41,6 +41,7 @@ import com.elementary.tasks.reminder.build.buildReminderEntries
 import com.elementary.tasks.reminder.lists.removed.remindersArchiveEntries
 import com.elementary.tasks.reminder.preview.reminderPreviewEntries
 import com.elementary.tasks.reminder.todo.todoEditEntries
+import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.exportEntries
 import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
@@ -230,6 +231,13 @@ private fun appRailDestinations(isWorkflowEnabled: Boolean): List<AppDestination
         ),
       )
     }
+    add(
+      AppDestination(
+        key = SettingsNavKey.Hub,
+        icon = painterResource(R.drawable.ic_fluent_settings),
+        labelRes = R.string.action_settings,
+      ),
+    )
   }
 
 /**
