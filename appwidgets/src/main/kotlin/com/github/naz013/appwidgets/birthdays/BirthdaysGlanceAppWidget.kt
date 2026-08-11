@@ -228,7 +228,10 @@ internal class BirthdaysGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         LazyColumn(
           modifier = GlanceModifier.fillMaxWidth(),
         ) {
-          items(state.items.size) { index: Int ->
+          items(
+            count = state.items.size,
+            itemId = { index -> state.items[index].uuId.hashCode().toLong() }
+          ) { index: Int ->
             BirthdayItem(
               context = context,
               data = state.items[index],
