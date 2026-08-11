@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.speech
+package com.github.naz013.common.speech
 
 sealed class SpeechError {
   data object AudioError : SpeechError()

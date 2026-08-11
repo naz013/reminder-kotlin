@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.os.datapicker.compose
+package com.github.naz013.common.datapicker.compose
 
 import android.content.Context
 import android.net.Uri
@@ -10,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.elementary.tasks.BuildConfig
 import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.logging.Logger
 import java.io.File
@@ -19,7 +18,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun rememberCameraPicker(onPhotoTaken: (Uri) -> Unit): () -> Unit {
+fun rememberCameraPicker(applicationId: String, onPhotoTaken: (Uri) -> Unit): () -> Unit {
   val context = LocalContext.current
   var pendingUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -33,10 +32,10 @@ fun rememberCameraPicker(onPhotoTaken: (Uri) -> Unit): () -> Unit {
       }
     }
 
-  return remember(launcher, context) {
+  return remember(launcher, context, applicationId) {
     {
       val photoFile = createImageFile(context)
-      val uri = UriUtil.getUri(context, photoFile, BuildConfig.APPLICATION_ID)
+      val uri = UriUtil.getUri(context, photoFile, applicationId)
       if (uri != null) {
         pendingUri = uri
         runCatching { launcher.launch(uri) }

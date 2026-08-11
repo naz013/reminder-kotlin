@@ -9,19 +9,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
+import com.elementary.tasks.BuildConfig
 import com.github.naz013.ui.common.permission.PermissionRequester
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
-import com.elementary.tasks.core.os.datapicker.compose.rememberCameraPicker
-import com.elementary.tasks.core.os.datapicker.compose.rememberGalleryPicker
-import com.elementary.tasks.core.speech.SpeechEngine
-import com.elementary.tasks.core.speech.SpeechEngineCallback
-import com.elementary.tasks.core.speech.SpeechError
-import com.elementary.tasks.core.speech.SpeechText
+import com.github.naz013.common.datapicker.compose.rememberCameraPicker
+import com.github.naz013.common.datapicker.compose.rememberGalleryPicker
+import com.github.naz013.common.speech.SpeechEngine
+import com.github.naz013.common.speech.SpeechEngineCallback
+import com.github.naz013.common.speech.SpeechError
+import com.github.naz013.common.speech.SpeechText
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.elementary.tasks.notes.create.EditTab
 import com.elementary.tasks.notes.create.NoteEditActions
@@ -276,8 +278,14 @@ private fun NoteEditEntry(
   val toastDispatcher = rememberToastDispatcher()
   val noteIntentSender = rememberNoteIntentSender()
   val context = LocalContext.current
-  val galleryPicker = rememberGalleryPicker { uris -> viewModel.addMultiple(uris) }
-  val cameraPicker = rememberCameraPicker { uri -> viewModel.addMultiple(listOf(uri)) }
+  val galleryPicker =
+    rememberGalleryPicker(chooserTitle = stringResource(R.string.gallery)) { uris ->
+      viewModel.addMultiple(uris)
+    }
+  val cameraPicker =
+    rememberCameraPicker(applicationId = BuildConfig.APPLICATION_ID) { uri ->
+      viewModel.addMultiple(listOf(uri))
+    }
   val permissionRequester = rememberPermissionRequesterRationale()
   val dateTimePicker = rememberDateTimePicker()
   val urlImagePickerState = rememberUrlImagePickerState()

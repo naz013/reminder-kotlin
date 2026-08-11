@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.os.datapicker.compose
+package com.github.naz013.common.datapicker.compose
 
 import android.app.Activity
 import android.content.Intent
@@ -8,10 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.elementary.tasks.R
 
 @Composable
-fun rememberGalleryPicker(onPicturesPicked: (List<Uri>) -> Unit): () -> Unit {
+fun rememberGalleryPicker(chooserTitle: String, onPicturesPicked: (List<Uri>) -> Unit): () -> Unit {
   val context = LocalContext.current
   val launcher =
     rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -26,7 +25,7 @@ fun rememberGalleryPicker(onPicturesPicked: (List<Uri>) -> Unit): () -> Unit {
         onPicturesPicked(uris)
       }
     }
-  return remember(launcher, context) {
+  return remember(launcher, context, chooserTitle) {
     {
       val intent =
         Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
@@ -34,7 +33,7 @@ fun rememberGalleryPicker(onPicturesPicked: (List<Uri>) -> Unit): () -> Unit {
           type = "image/*"
           putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         }
-      launcher.launch(Intent.createChooser(intent, context.getString(R.string.gallery)))
+      launcher.launch(Intent.createChooser(intent, chooserTitle))
     }
   }
 }

@@ -57,7 +57,7 @@ enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
 /**
  * One-shot signal that [NoteEditState.textFieldValue] was replaced programmatically (initial
  * load, speech recognition result, drag-drop parsed text, share-intent text) rather than by the
- * user typing — the [com.elementary.tasks.core.speech.SpeechEngine] instance is Context-bound and
+ * user typing — the [com.github.naz013.common.speech.SpeechEngine] instance is Context-bound and
  * lives outside the ViewModel, so it needs telling to resync its own text buffer to [text].
  */
 data class TextUpdate(

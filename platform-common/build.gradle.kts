@@ -1,5 +1,5 @@
 plugins {
-  id("reminder.android.library")
+  id("reminder.android.library.compose")
 }
 
 android {
@@ -20,6 +20,10 @@ dependencies {
   implementation(libs.threetenbp)
 
   implementation(libs.androidx.biometric)
+
+  implementation(platform(libs.compose.bom))
+  implementation(libs.compose.ui.ui)
+  implementation(libs.androidx.activity.compose)
 
   testImplementation(libs.junit)
   testImplementation(libs.mockk)

@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.speech
+package com.github.naz013.common.speech
 
 import com.github.naz013.logging.Logger
 

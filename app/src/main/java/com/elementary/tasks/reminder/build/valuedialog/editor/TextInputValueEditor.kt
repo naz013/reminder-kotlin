@@ -37,11 +37,11 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.elementary.tasks.R
-import com.elementary.tasks.core.speech.SpeechEngine
-import com.elementary.tasks.core.speech.SpeechEngineCallback
-import com.elementary.tasks.core.speech.SpeechError
-import com.elementary.tasks.core.speech.SpeechText
 import com.elementary.tasks.reminder.build.BuilderItem
+import com.github.naz013.common.speech.SpeechEngine
+import com.github.naz013.common.speech.SpeechEngineCallback
+import com.github.naz013.common.speech.SpeechError
+import com.github.naz013.common.speech.SpeechText
 import com.github.naz013.ui.common.compose.foundation.component.GradientHighlightTextField
 import com.github.naz013.ui.common.compose.foundation.component.TextHighlight
 
