@@ -1,5 +1,7 @@
 package com.github.naz013.feature.googletask
 
+import android.content.res.Resources
+import android.widget.Button
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -296,11 +298,14 @@ private fun NotLoggedInContent(
       modifier = Modifier.padding(horizontal = 24.dp),
     )
     val context = LocalContext.current
+    val fallbackText = stringResource(R.string.sign_in_with_google)
     AndroidView(
       modifier = Modifier.padding(top = 16.dp),
       factory = {
-        SignInButton(context).apply {
-          setSize(SignInButton.SIZE_WIDE)
+        try {
+          SignInButton(context).apply { setSize(SignInButton.SIZE_WIDE) }
+        } catch (_: Resources.NotFoundException) {
+          Button(context).apply { text = fallbackText }
         }
       },
       update = { button -> button.setOnClickListener { onConnectClick() } },

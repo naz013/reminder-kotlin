@@ -446,6 +446,7 @@
     <string name="quick_buttons">Quick buttons</string>
     <string name="list_item_background">Background of list item</string>
     <string name="you_not_logged_to_google_tasks">You not logged to Google Tasks</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
     <string name="header_background">Background of header</string>
     <string name="do_no_show_notifications_on_wear_devices">Do not show notifications on Wear OS</string>
     <string name="do_not_show_in_home_screen_widget">Do not show in home screen widget</string>
