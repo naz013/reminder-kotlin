@@ -271,12 +271,14 @@ class PreviewReminderViewModel(
       val reminder = reminderV2Repository.getById(id) ?: return@launch
       val file = backupTool.reminderToFile(reminder) ?: return@launch
       Logger.i(TAG, "Sharing reminder ${file.name}")
-      event.emit(
-        ViewModelEvent.ShareData(
-          file = file,
-          title = reminder.summary,
+      withContext(dispatcherProvider.main()) {
+        event.emit(
+          ViewModelEvent.ShareData(
+            file = file,
+            title = reminder.summary,
+          )
         )
-      )
+      }
     }
   }
 
