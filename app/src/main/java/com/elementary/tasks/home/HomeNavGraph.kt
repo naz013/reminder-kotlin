@@ -21,7 +21,6 @@ import com.elementary.tasks.home.agenda.AgendaScreen
 import com.elementary.tasks.home.agenda.AgendaScreenState
 import com.elementary.tasks.home.agenda.AgendaViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
-import com.elementary.tasks.navigation.nav3.PersistentNavRail
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
@@ -39,9 +38,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispa
 import org.koin.compose.viewmodel.koinViewModel
 
 fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
-  // Tagged so PersistentNavRailSceneDecoratorStrategy (registered in AppNavGraph) knows this
-  // destination gets the persistent nav rail on Medium+ width - see docs/adaptive-layouts.md.
-  entry<HomeNavKey.Main>(metadata = PersistentNavRail.metadata()) { HomeEntry(backStack) }
+  entry<HomeNavKey.Main> { HomeEntry(backStack) }
   entry<HomeNavKey.Agenda> { AgendaEntry(backStack) }
 }
 

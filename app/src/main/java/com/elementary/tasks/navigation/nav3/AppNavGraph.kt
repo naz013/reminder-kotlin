@@ -67,9 +67,10 @@ import com.github.naz013.ui.common.compose.foundation.navigation.AppDestination
  * calls with `ListDetailSceneStrategy.listPane()`/`.detailPane()` - no other wiring needed. It is
  * a no-op today: no entry anywhere in the graph carries that metadata yet.
  *
- * [PersistentNavRailSceneDecoratorStrategy] is registered the same way for the nav rail: an
- * entry opts in by tagging itself with [PersistentNavRail.metadata] (see `HomeNavGraph.kt`) and
- * the decorator wraps it in a rail on Medium+ width - no manual branching in the screen itself.
+ * [PersistentNavRailSceneDecoratorStrategy] is registered the same way for the nav rail: it wraps
+ * every scene (not just specific tagged entries) in a persistent navigation rail on Medium+
+ * width, with the app's top-level sections (Home, Calendar, Notes, ...) as selectable items - see
+ * that class's doc for how selection and navigation work off the shared [backStack].
  */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -79,8 +80,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
   val persistentNavRailStrategy =
     PersistentNavRailSceneDecoratorStrategy(
-      destinations = homeRailDestinations(),
-      onNavigate = { backStack.add(it) },
+      destinations = appRailDestinations(),
+      backStack = backStack,
+      onNavigate = { key -> backStack.navigateToRailDestination(key) },
     )
 
   DisposableEffect(backStack) {
@@ -156,13 +158,21 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
 }
 
 /**
- * Static mirror of Home's header navigation grid (see `GetNavigationItemsUseCase`), for the
- * persistent nav rail - icon/label only, no live counts (see
- * [PersistentNavRailSceneDecoratorStrategy]'s doc for why).
+ * The app's top-level sections for [PersistentNavRailSceneDecoratorStrategy] - static
+ * icon/label only, no live counts (see that class's doc for why). Mirrors Home's header
+ * navigation grid (`GetNavigationItemsUseCase`) plus an explicit Home item, which - as the
+ * graph's start destination - is always selected by default.
  */
 @Composable
-private fun homeRailDestinations(): List<AppDestination<NavKey>> =
+private fun appRailDestinations(): List<AppDestination<NavKey>> =
   buildList {
+    add(
+      AppDestination(
+        key = HomeNavKey.Main,
+        icon = painterResource(R.drawable.ic_fluent_home),
+        labelRes = R.string.home,
+      ),
+    )
     add(
       AppDestination(
         key = CalendarNavKey.Month,
@@ -208,6 +218,21 @@ private fun homeRailDestinations(): List<AppDestination<NavKey>> =
       )
     }
   }
+
+/**
+ * Click behavior for a [PersistentNavRailSceneDecoratorStrategy] item: if [key] is already
+ * somewhere on the backstack, pop back to it (dropping everything pushed above it, like tapping
+ * an already-selected tab); otherwise push it. Keeps the single flat backstack from growing
+ * unbounded as sections are revisited.
+ */
+private fun MutableList<NavKey>.navigateToRailDestination(key: NavKey) {
+  val existingIndex = indexOf(key)
+  if (existingIndex >= 0) {
+    while (size > existingIndex + 1) removeLastOrNull()
+  } else {
+    add(key)
+  }
+}
 
 private fun navScreenSpring() =
   spring<Float>(

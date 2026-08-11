@@ -13,44 +13,41 @@ import com.github.naz013.ui.common.compose.foundation.navigation.AppDestination
 import com.github.naz013.ui.common.compose.foundation.navigation.AppNavigationScaffold
 
 /**
- * Marks an `entry<>()` as eligible for the persistent nav rail applied by
- * [PersistentNavRailSceneDecoratorStrategy] - see docs/adaptive-layouts.md.
- */
-object PersistentNavRail {
-  private const val METADATA_KEY = "persistentNavRail"
-
-  fun metadata(): Map<String, Any> = mapOf(METADATA_KEY to true)
-
-  fun isEligible(scene: Scene<NavKey>): Boolean =
-    scene.entries.lastOrNull()?.metadata?.get(METADATA_KEY) == true
-}
-
-/**
- * Wraps a [Scene] whose top entry carries [PersistentNavRail.metadata] in
- * [AppNavigationScaffold] on Medium+ width, so that destination gets a persistent navigation
- * rail instead of whatever compact-width navigation UI it renders itself (e.g. Home's header
- * grid). On Compact width the scene is returned unchanged.
+ * Wraps every [Scene] in [AppNavigationScaffold] on Medium+ width - a persistent navigation rail
+ * shown regardless of which screen is open, not just Home (see docs/adaptive-layouts.md). On
+ * Compact width every scene is returned unchanged.
  *
- * [destinations] are static (icon/label only) and navigate via [onNavigate] directly - this
- * decorator is applied outside the Nav3 entry-scoped `ViewModelStoreOwner`
+ * [destinations] are the app's top-level sections (Home, Calendar, Notes, ...); each is a plain
+ * [NavKey] rather than something dynamic, so clicking one behaves like switching a tab: if that
+ * key is already somewhere on [backStack] it pops back to it, otherwise it's pushed. The selected
+ * item is derived the same way - the *deepest* entry on [backStack] that matches one of
+ * [destinations], so drilling into e.g. a note preview keeps "Notes" highlighted rather than
+ * losing selection. [HomeNavKey.Main][com.elementary.tasks.home.HomeNavKey] is always present at
+ * the bottom of [backStack] (the graph's start destination), so there is always a fallback match.
+ *
+ * This decorator is applied outside the Nav3 entry-scoped `ViewModelStoreOwner`
  * ([androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator] wraps each
- * entry's own content, not the chrome a [SceneDecoratorStrategy] adds around it), so it can't
- * safely reach into a screen's ViewModel for live data like badge counts - only NavKey-based
- * navigation is safe here.
+ * entry's own content, not the chrome a [SceneDecoratorStrategy] adds around it), so
+ * [destinations] can't safely carry per-screen ViewModel data like live badge counts - only
+ * NavKey-based navigation is safe here.
  */
 class PersistentNavRailSceneDecoratorStrategy(
   private val destinations: List<AppDestination<NavKey>>,
+  private val backStack: List<NavKey>,
   private val onNavigate: (NavKey) -> Unit,
 ) : SceneDecoratorStrategy<NavKey> {
+  private val destinationKeys = destinations.map { it.key }.toSet()
+
   override fun SceneDecoratorStrategyScope<NavKey>.decorateScene(scene: Scene<NavKey>): Scene<NavKey> {
-    if (!PersistentNavRail.isEligible(scene)) return scene
-    return NavRailDecoratedScene(scene, destinations, onNavigate)
+    val selectedKey = backStack.lastOrNull { it in destinationKeys }
+    return NavRailDecoratedScene(scene, destinations, selectedKey, onNavigate)
   }
 }
 
 private class NavRailDecoratedScene(
   private val scene: Scene<NavKey>,
   private val destinations: List<AppDestination<NavKey>>,
+  private val selectedKey: NavKey?,
   private val onNavigate: (NavKey) -> Unit,
 ) : Scene<NavKey> {
   // Derived from the wrapped scene's own key (class + key) so scene identity - and NavDisplay's
@@ -63,7 +60,7 @@ private class NavRailDecoratedScene(
     if (isTabletScreen() || isDesktopScreen()) {
       AppNavigationScaffold(
         destinations = destinations,
-        selectedKey = null,
+        selectedKey = selectedKey,
         onDestinationSelected = onNavigate,
         modifier = Modifier.fillMaxSize(),
         content = scene.content,
