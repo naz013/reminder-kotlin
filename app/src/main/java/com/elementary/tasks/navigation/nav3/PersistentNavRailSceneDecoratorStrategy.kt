@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation.nav3
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.WideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
@@ -30,17 +31,23 @@ import com.github.naz013.ui.common.compose.foundation.navigation.AppNavigationSc
  * entry's own content, not the chrome a [SceneDecoratorStrategy] adds around it), so
  * [destinations] can't safely carry per-screen ViewModel data like live badge counts - only
  * NavKey-based navigation is safe here.
+ *
+ * [railState] must be `remember`ed once above `NavDisplay` (see `AppNavGraph.kt`), not created
+ * fresh per scene: `NavDisplay` disposes and recreates each scene's composition on navigation, so
+ * a rail state `remember`ed inside the decorated content would reset to collapsed on every
+ * navigation instead of persisting the user's expanded/collapsed choice.
  */
 class PersistentNavRailSceneDecoratorStrategy(
   private val destinations: List<AppDestination<NavKey>>,
   private val backStack: List<NavKey>,
+  private val railState: WideNavigationRailState,
   private val onNavigate: (NavKey) -> Unit,
 ) : SceneDecoratorStrategy<NavKey> {
   private val destinationKeys = destinations.map { it.key }.toSet()
 
   override fun SceneDecoratorStrategyScope<NavKey>.decorateScene(scene: Scene<NavKey>): Scene<NavKey> {
     val selectedKey = backStack.lastOrNull { it in destinationKeys }
-    return NavRailDecoratedScene(scene, destinations, selectedKey, onNavigate)
+    return NavRailDecoratedScene(scene, destinations, selectedKey, railState, onNavigate)
   }
 }
 
@@ -48,6 +55,7 @@ private class NavRailDecoratedScene(
   private val scene: Scene<NavKey>,
   private val destinations: List<AppDestination<NavKey>>,
   private val selectedKey: NavKey?,
+  private val railState: WideNavigationRailState,
   private val onNavigate: (NavKey) -> Unit,
 ) : Scene<NavKey> {
   // Derived from the wrapped scene's own key (class + key) so scene identity - and NavDisplay's
@@ -62,6 +70,7 @@ private class NavRailDecoratedScene(
         destinations = destinations,
         selectedKey = selectedKey,
         onDestinationSelected = onNavigate,
+        railState = railState,
         modifier = Modifier.fillMaxSize(),
         content = scene.content,
       )

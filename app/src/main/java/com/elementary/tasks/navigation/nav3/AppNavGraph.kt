@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
+import androidx.compose.material3.rememberWideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
@@ -78,10 +79,15 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
   val appNavBridge = rememberAppNavBridge()
   val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
+  // Remembered here, above NavDisplay, rather than inside AppNavigationScaffold itself - NavDisplay
+  // disposes and recreates each scene's composition on navigation, so a rail state remembered
+  // inside the decorated content would silently reset to collapsed on every navigation.
+  val navRailState = rememberWideNavigationRailState()
   val persistentNavRailStrategy =
     PersistentNavRailSceneDecoratorStrategy(
       destinations = appRailDestinations(),
       backStack = backStack,
+      railState = navRailState,
       onNavigate = { key -> backStack.navigateToRailDestination(key) },
     )
 
