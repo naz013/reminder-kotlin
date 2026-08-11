@@ -3,6 +3,7 @@ package com.elementary.tasks.reminder.build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
@@ -84,6 +86,7 @@ private const val OVERFLOW_ITEM_REPORT_ISSUE = 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BuildReminderScreen(
+  isLoadingForEdit: Boolean,
   builderItems: List<UiBuilderItem>,
   prediction: ReminderPrediction?,
   canSave: Boolean,
@@ -170,7 +173,14 @@ fun BuildReminderScreen(
       }
     },
   ) { padding ->
-    if (builderItems.isEmpty()) {
+    if (isLoadingForEdit) {
+      Box(
+        modifier = Modifier.fillMaxSize().padding(padding),
+        contentAlignment = Alignment.Center,
+      ) {
+        CircularProgressIndicator()
+      }
+    } else if (builderItems.isEmpty()) {
       BuilderEmptyState(
         quickStartOptions = quickStartOptions,
         onQuickStartClick = onQuickStartClick,
@@ -508,6 +518,7 @@ private const val NOTE_BODY_MAX_LINES = 10
 private fun PreviewBuildReminderScreenEmpty() {
   AppTheme {
     BuildReminderScreen(
+      isLoadingForEdit = false,
       builderItems = emptyList(),
       prediction = null,
       canSave = false,

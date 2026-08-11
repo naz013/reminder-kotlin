@@ -152,6 +152,7 @@ private fun MainEntry(
   }
 
   BuildReminderScreen(
+    isLoadingForEdit = state.isLoadingForEdit,
     builderItems = state.builderItems,
     prediction = state.prediction,
     canSave = state.canSave,

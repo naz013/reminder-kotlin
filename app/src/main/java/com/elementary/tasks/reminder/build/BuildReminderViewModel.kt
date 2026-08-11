@@ -154,7 +154,21 @@ class BuildReminderViewModel(
    *  from the very first frame, well before the reminder is actually saved. */
   private val stableReminderId: String = initialId.ifEmpty { UUID.randomUUID().toString() }
 
-  private val _state = MutableStateFlow(BuildReminderState())
+  /** True only when this session will go through [editReminderIfNeeded] - i.e. none of the
+   *  other deep-link branches in [handleDeepLink] apply and an id was given. Computed eagerly
+   *  (not inside handleDeepLink()'s async launch) so the very first frame already knows to show
+   *  a loading state instead of briefly flashing the empty-state illustration while
+   *  editReminderIfNeeded asynchronously decides whether to redirect to the Todo screen. */
+  private val isEditingById: Boolean =
+    initialId.isNotEmpty() &&
+      !navKey.fromIntentItem &&
+      !(navKey.deepLinkDateTimeType != null && navKey.deepLinkDateTimeMillis != null) &&
+      !navKey.deepLinkTodo &&
+      !navKey.seedFromTodoEdit &&
+      navKey.deepLinkText == null &&
+      navKey.groupUuId == null
+
+  private val _state = MutableStateFlow(BuildReminderState(isLoadingForEdit = isEditingById))
   val state: StateFlow<BuildReminderState> = _state.asStateFlow()
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
@@ -347,7 +361,7 @@ class BuildReminderViewModel(
 
         navKey.groupUuId != null -> readGroupDeepLink(navKey.groupUuId)
 
-        id.isNotEmpty() -> {
+        isEditingById -> {
           Logger.i(TAG, "Handle reminder ID Deep Link")
           editReminderIfNeeded(id)
         }
@@ -657,7 +671,11 @@ class BuildReminderViewModel(
 
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminderV2 = getReminderV2ByIdUseCase(id) ?: return@launch
+      val reminderV2 = getReminderV2ByIdUseCase(id)
+      if (reminderV2 == null) {
+        _state.update { it.copy(isLoadingForEdit = false) }
+        return@launch
+      }
 
       if (isSimpleTodoReminderUseCase(reminderV2)) {
         Logger.i(TAG, "Reminder is a simple todo, redirecting to Todo edit screen, id = $id")
@@ -692,6 +710,7 @@ class BuildReminderViewModel(
       it.copy(
         canRemove = !isFromFile,
         isRemoved = reminderV2.isRemoved,
+        isLoadingForEdit = false,
       )
     }
 

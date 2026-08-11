@@ -256,6 +256,7 @@ class BuildReminderViewModelTest : BaseTest() {
 
     assertEquals(false, viewModel.state.value.isRemoved)
     assertEquals(true, viewModel.state.value.canRemove)
+    assertEquals(false, viewModel.state.value.isLoadingForEdit)
     verify { builderItemsLogic.setAll(listOf(summaryItem())) }
     coVerify(exactly = 1) { pauseReminderUseCase(match { it.uuId == "42" }) }
   }
@@ -274,6 +275,25 @@ class BuildReminderViewModelTest : BaseTest() {
     )
     coVerify(exactly = 0) { pauseReminderUseCase(any()) }
     verify(exactly = 0) { builderItemsLogic.setAll(any()) }
+    // Deliberately left true - the screen is being replaced by the redirect, so it should never
+    // fall through to rendering the empty-state illustration while that navigation completes.
+    assertEquals(true, viewModel.state.value.isLoadingForEdit)
+  }
+
+  @Test
+  fun `init with an unknown id deep link clears the loading flag instead of leaving it stuck`() {
+    coEvery { getReminderV2ByIdUseCase("missing") } returns null
+
+    val viewModel = createViewModel(initialId = "missing")
+
+    assertEquals(false, viewModel.state.value.isLoadingForEdit)
+  }
+
+  @Test
+  fun `a brand-new reminder with no id never shows the edit-loading state`() {
+    val viewModel = createViewModel()
+
+    assertEquals(false, viewModel.state.value.isLoadingForEdit)
   }
 
   @Test
@@ -287,6 +307,9 @@ class BuildReminderViewModelTest : BaseTest() {
     verify { builderItemsLogic.setAll(listOf(summaryItem(), groupItem())) }
     assertNull(todoSeedHolder.pendingSeed)
     assertEquals(false, viewModel.state.value.canRemove)
+    // seedFromTodoEdit is a different deep-link branch than plain id-editing, so it must never be
+    // mistaken for isEditingById and get stuck showing the edit-loading state.
+    assertEquals(false, viewModel.state.value.isLoadingForEdit)
     coVerify(exactly = 0) { pauseReminderUseCase(any()) }
   }
 
