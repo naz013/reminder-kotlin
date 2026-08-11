@@ -8,7 +8,7 @@ import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.reminder.process.ReminderNotificationHandler
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.scheduling.usecase.CompleteReminderUseCase
+import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider

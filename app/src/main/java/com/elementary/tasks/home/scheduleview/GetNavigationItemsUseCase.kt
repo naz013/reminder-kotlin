@@ -2,7 +2,7 @@ package com.elementary.tasks.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.home.HeaderNavigationItem
-import com.elementary.tasks.workflow.WorkflowConfig
+import com.github.naz013.feature.workflow.WorkflowConfig
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.GoogleTaskRepository

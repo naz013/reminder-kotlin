@@ -7,7 +7,7 @@ import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.mockDispatcherProvider
-import com.elementary.tasks.workflow.WorkflowTriggerRunner
+import com.github.naz013.feature.workflow.WorkflowTriggerRunner
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.datecalc.DateTimeManager

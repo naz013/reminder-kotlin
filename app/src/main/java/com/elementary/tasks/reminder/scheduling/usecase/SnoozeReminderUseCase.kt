@@ -1,12 +1,13 @@
 package com.elementary.tasks.reminder.scheduling.usecase
 
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.workflow.WorkflowTriggerRunner
+import com.github.naz013.feature.workflow.WorkflowTriggerRunner
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
 import com.github.naz013.logic.reminder.behavior.LocationBasedStrategyV2
+import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.scheduler.JobSchedulerApi
 
