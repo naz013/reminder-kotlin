@@ -5,9 +5,10 @@
         ⭐ Refresh the application look;\n
         ✅ Add new notification override logics: Default -> Group -> Reminder;\n
         ✅ Add title field to the Note builder;\n
-        ✅ Add tags to Notes and Reminders;\n
+        ✅ Add tags to Reminders, Birthdays, Notes and Google Tasks;\n
         ✅ Add Insights (for PRO only);\n
         ✅ Add Local file backup (for PRO only);\n
+        ✅ Add Public holidays to Calendar (for PRO only);\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">
