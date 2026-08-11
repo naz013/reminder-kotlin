@@ -35,7 +35,7 @@ import com.elementary.tasks.settings.export.syncSettingsModule
 import com.elementary.tasks.settings.settingsModule
 import com.elementary.tasks.simplemap.simpleMapKoinModule
 import com.elementary.tasks.telephony.intentModule
-import com.elementary.tasks.workflow.workflowModule
+import com.github.naz013.feature.workflow.workflowModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule

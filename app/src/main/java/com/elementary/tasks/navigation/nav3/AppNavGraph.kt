@@ -37,7 +37,7 @@ import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
-import com.elementary.tasks.workflow.workflowEntries
+import com.github.naz013.feature.workflow.workflowEntries
 import com.github.naz013.feature.googletask.googleTasksEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.localBackupEntries

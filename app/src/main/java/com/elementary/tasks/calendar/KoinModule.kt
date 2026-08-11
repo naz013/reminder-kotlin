@@ -5,7 +5,7 @@ import com.elementary.tasks.calendar.dayview.GetDayHolidayUseCase
 import com.elementary.tasks.calendar.dayview.WeekViewViewModel
 import com.elementary.tasks.calendar.dayview.weekheader.WeekFactory
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
-import com.elementary.tasks.calendar.history.AddReminderToHistoryUseCase
+import com.github.naz013.logic.reminder.usecase.AddReminderToHistoryUseCase
 import com.elementary.tasks.calendar.history.GetHistoryByDayUseCase
 import com.elementary.tasks.calendar.monthview.CalendarViewModel
 import com.elementary.tasks.calendar.monthview.LoadMonthEventsUseCase

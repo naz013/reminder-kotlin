@@ -3,7 +3,7 @@ package com.elementary.tasks.core.services.action.reminder
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.workflow.WorkflowTriggerRunner
+import com.github.naz013.feature.workflow.WorkflowTriggerRunner
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent

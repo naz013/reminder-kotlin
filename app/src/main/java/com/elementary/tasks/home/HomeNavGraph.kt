@@ -31,7 +31,7 @@ import com.elementary.tasks.reminder.todo.TodoEditNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.other.OtherNavKey
-import com.elementary.tasks.workflow.WorkflowNavKey
+import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher

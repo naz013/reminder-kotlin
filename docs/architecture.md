@@ -46,10 +46,11 @@ The project follows a **multi-module Clean Architecture** approach. Concerns are
 | `ui-tag` | Android library (Compose) | Reusable Tags Compose building blocks (chip picker, item styling) usable outside `feature-tags`. |
 | `logic-tag` | Kotlin library | Cross-feature tag logic, e.g. `ToggleTagAssignmentUseCase`, usable by any `feature-*` module that assigns tags. |
 | `feature-insights` | Android library (Compose) | Fully extracted **PRO-only** Streaks & Insights dashboard: screens, ViewModel, `InsightsNavKey`/`InsightsNavGraph`, aggregator classes (`ReminderStreakCalculator`, `CompletionStatsCalculator`), own `KoinModule`. Purely computed from `repository-api` — no schema of its own. Gated at runtime via `BuildInfo.isPro`, not a build-time flavor split. No sibling `ui-*`/`logic-*` module yet (nothing shared elsewhere). |
+| `feature-workflow` | Android library (Compose) | Fully extracted Workflow automation-rules feature: gallery/group/builder screens and ViewModels, `WorkflowNavKey`/`WorkflowNavGraph`, background-polling `BackgroundTask`s (`RunWorkflowRulesTask`, `RunWorkflowUnacknowledgedRulesTask`), own `KoinModule`. Reads through `usecase:reminders` (`WorkflowEngine` and friends) and depends on `logic-reminder` for `ActivateReminderUseCase`/`CompleteReminderUseCase` to finish the actions the pure-JVM engine can't apply itself. No sibling `ui-*`/`logic-*` module yet (nothing shared elsewhere). |
 | `feature-note` | Android library (Compose) | Partial extraction: only shared Compose components (`NoteListItemCard`) and adapters moved out of `app`; the Notes screens/ViewModels still live in `app` (`com.elementary.tasks.notes.*`). No nav graph of its own. |
 | `feature-reminder` | Android library (Compose) | Scaffolded, not yet populated — module and Gradle dependencies exist and are wired into `app`, but no source yet. Reminder screens still live in `app`. |
 | `ui-reminder` | Android library (Compose) | Scaffolded sibling of `feature-reminder`; no source yet. |
-| `logic-reminder` | Kotlin library | Populated ahead of `feature-reminder`'s extraction: reminder behavior strategies, occurrence calculators (`*OccurrenceCalculatorV2`), save/delete/activate/pause use cases. Already consumed cross-feature by `feature-googletask` (`CompleteRelatedGoogleTaskUseCase`). |
+| `logic-reminder` | Kotlin library | Populated ahead of `feature-reminder`'s extraction: reminder behavior strategies, occurrence calculators (`*OccurrenceCalculatorV2`), save/delete/activate/pause/complete use cases, `AddReminderToHistoryUseCase`. Already consumed cross-feature by `feature-googletask` (`CompleteRelatedGoogleTaskUseCase`) and `feature-workflow` (`ActivateReminderUseCase`/`CompleteReminderUseCase`). |
 | `logic-schedule` | Kotlin library | Background-work scheduling use cases (`ScheduleBackgroundWorkUseCase`, sync/upload/delete `BackgroundTask` impls) shared by multiple features via `work-api`. |
 | `localbackup` | Android library (Compose) | **PRO-only** local encrypted backup/restore. Owns the crypto (PBKDF2 + AES-GCM), the archive framing (reusing `files-api`'s `DataConverter`), and the passphrase Compose UI. Gated at runtime via `BuildInfo.isPro`. |
 
@@ -124,6 +125,9 @@ app
  ├── feature-insights (PRO at runtime — see "Runtime vs. build-time PRO gating" below)
  │     ├── domain / repository-api / logging-api / feature-common / platform-common / ui-common
  │     └── no persistent storage of its own; no sibling ui-*/logic-* module yet
+ ├── feature-workflow
+ │     ├── domain / repository-api / logging-api / work-api / feature-common / ui-common
+ │     └── usecase:reminders / logic-reminder; no sibling ui-*/logic-* module yet
  ├── feature-note (partial extraction — screens/ViewModels still in app)
  │     └── domain / logging-api / platform-common / ui-common
  ├── feature-reminder (scaffolded, no source yet)
@@ -241,7 +245,7 @@ This is a migration in progress, not a finished pattern applied uniformly:
 
 - **Fully extracted** — screens, ViewModels, nav graph, and Koin module all live in the `feature-*`
   module, wired via `xyzEntries()` in `AppNavGraph.kt`: `feature-googletask`, `feature-tags`,
-  `feature-insights`.
+  `feature-insights`, `feature-workflow`.
 - **Partially extracted** — only shared Compose components/adapters moved out; the actual screens and
   ViewModels still live in `app` (e.g. `com.elementary.tasks.notes.*`), and there is no
   `*NavGraph.kt`/`*NavKey.kt`: `feature-note`.
@@ -292,7 +296,7 @@ Modules that provide DI configuration:
 - `navigation-api/KoinModule.kt`
 - `feature-common/KoinModule.kt`
 - `app/core/utils/KoinModule.kt` (top-level wiring)
-- `feature-googletask/KoinModule.kt`, `ui-googletask/KoinModule.kt`, `feature-tags/KoinModule.kt`, `ui-tag/KoinModule.kt`, `logic-tag/KoinModule.kt`, `logic-reminder/KoinModule.kt`, `logic-schedule/KoinModule.kt`, `feature-insights/KoinModule.kt`, `localbackup/KoinModule.kt` — all added to `startKoin { modules(listOf(...)) }` like any other module (see "Runtime vs. build-time PRO gating" above for why `feature-insights`/`localbackup` aren't loaded conditionally despite being PRO features)
+- `feature-googletask/KoinModule.kt`, `ui-googletask/KoinModule.kt`, `feature-tags/KoinModule.kt`, `ui-tag/KoinModule.kt`, `logic-tag/KoinModule.kt`, `logic-reminder/KoinModule.kt`, `logic-schedule/KoinModule.kt`, `feature-insights/KoinModule.kt`, `feature-workflow/KoinModule.kt`, `localbackup/KoinModule.kt` — all added to `startKoin { modules(listOf(...)) }` like any other module (see "Runtime vs. build-time PRO gating" above for why `feature-insights`/`localbackup` aren't loaded conditionally despite being PRO features)
 - `appfunctions/KoinModule.kt` — the exception: loaded at runtime via `loadKoinModules(...)` from `app/src/pro`'s `AppFunctionsInitializer`, not added to `startKoin { modules(listOf(...)) }` (see "Flavor-gated modules" above)
 
 ---
