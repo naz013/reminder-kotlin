@@ -89,9 +89,22 @@ jobs:
           echo "✓ PRO_API_KEY secret is set"
         fi
 
+    - name: Decode release signing keystores
+      run: |
+        echo "${{ secrets.FREE_SIGN_KEY }}" | base64 --decode > "${{ github.workspace }}/free-release.jks"
+        echo "${{ secrets.PRO_SIGN_KEY }}" | base64 --decode > "${{ github.workspace }}/pro-release.jks"
+
     - name: Create keystore.properties file
       run: |
-        echo "signApk=false" >> keystore.properties
+        echo "signApk=true" >> keystore.properties
+        echo "releaseFreeKeyStoreFile=${{ github.workspace }}/free-release.jks" >> keystore.properties
+        echo "releaseFreeKeyStorePassword=${{ secrets.FREE_SIGN_KEY_STORE_PASSWORD }}" >> keystore.properties
+        echo "releaseFreeKeyAlias=${{ secrets.FREE_SIGN_KEY_ALIAS }}" >> keystore.properties
+        echo "releaseFreeKeyPassword=${{ secrets.FREE_SIGN_KEY_PASSWORD }}" >> keystore.properties
+        echo "releaseProKeyStoreFile=${{ github.workspace }}/pro-release.jks" >> keystore.properties
+        echo "releaseProKeyStorePassword=${{ secrets.PRO_SIGN_KEY_STORE_PASSWORD }}" >> keystore.properties
+        echo "releaseProKeyAlias=${{ secrets.PRO_SIGN_KEY_ALIAS }}" >> keystore.properties
+        echo "releaseProKeyPassword=${{ secrets.PRO_SIGN_KEY_PASSWORD }}" >> keystore.properties
         echo "freeApiKey=${{ secrets.FREE_API_KEY }}" >> keystore.properties
         echo "proApiKey=${{ secrets.PRO_API_KEY }}" >> keystore.properties
         echo "proPlacesApiKey=\"${{ secrets.PRO_PLACES_API_KEY }}\"" >> keystore.properties
@@ -148,49 +161,9 @@ jobs:
         DATA: ${{ secrets.GOOGLE_SERVICES }}
       run: echo $DATA > /home/runner/work/reminder-kotlin/reminder-kotlin/cloudtestadmin/google-services.json
 
-    - name: Build Release AAB
-      id: buildRelease
-      run: ./gradlew :app:bundleRelease -x :cloudtestadmin:bundleRelease -x :reviewsadmin:bundleRelease
-
     - name: Create service_account.json
       id: create-service-account
       run: echo '${{ secrets.SERVICE_ACCOUT_JSON }}' > service_account.json
 
-    - name: Sign Free AAB
-      id: sign-free
-      uses: r0adkll/sign-android-release@d5f8436b702872ad5cdb1e6e4d5c8b983d25a997 # v1, node24 (v1 tag itself is stale on node12)
-      with:
-        releaseDirectory: app/build/outputs/bundle/freeRelease
-        signingKeyBase64: ${{ secrets.FREE_SIGN_KEY }}
-        alias: ${{ secrets.FREE_SIGN_KEY_ALIAS }}
-        keyStorePassword: ${{ secrets.FREE_SIGN_KEY_STORE_PASSWORD }}
-        keyPassword: ${{ secrets.FREE_SIGN_KEY_PASSWORD }}
-
-    - name: Deploy FREE to Play Store (Alpha)
-      uses: r0adkll/upload-google-play@v1
-      with:
-        serviceAccountJson: service_account.json
-        packageName: com.cray.software.justreminder
-        releaseFiles: ${{ steps.sign-free.outputs.signedReleaseFile }}
-        track: production
-#        whatsNewDirectory: distribution/whatsnew
-#        changesNotSentForReview: true
-
-    - name: Sign Pro AAB
-      id: sign-pro
-      uses: r0adkll/sign-android-release@d5f8436b702872ad5cdb1e6e4d5c8b983d25a997 # v1, node24 (v1 tag itself is stale on node12)
-      with:
-        releaseDirectory: app/build/outputs/bundle/proRelease
-        signingKeyBase64: ${{ secrets.PRO_SIGN_KEY }}
-        alias: ${{ secrets.PRO_SIGN_KEY_ALIAS }}
-        keyStorePassword: ${{ secrets.PRO_SIGN_KEY_STORE_PASSWORD }}
-        keyPassword: ${{ secrets.PRO_SIGN_KEY_PASSWORD }}
-
-    - name: Deploy PRO to Play Store (Alpha)
-      uses: r0adkll/upload-google-play@v1
-      with:
-        serviceAccountJson: service_account.json
-        packageName: com.cray.software.justreminderpro
-        releaseFiles: ${{ steps.sign-pro.outputs.signedReleaseFile }}
-        track: production
-#        whatsNewDirectory: distribution/whatsnew
+    - name: Build, sign and publish FREE and PRO to Play Store
+      run: ./gradlew :app:publishBundle

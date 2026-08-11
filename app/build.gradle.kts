@@ -9,6 +9,7 @@ plugins {
   alias(libs.plugins.crashlytics.gradle)
   alias(libs.plugins.google.services)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.play.publisher)
 }
 
 extensions.configure<ApplicationExtension> {
@@ -151,6 +152,12 @@ extensions.configure<ApplicationExtension> {
   composeOptions {
     kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
   }
+}
+
+play {
+  serviceAccountCredentials.set(rootProject.file("service_account.json"))
+  track.set("production")
+  defaultToAppBundles.set(true)
 }
 
 kotlin {
