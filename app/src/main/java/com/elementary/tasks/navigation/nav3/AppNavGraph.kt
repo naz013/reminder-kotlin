@@ -15,6 +15,7 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -24,10 +25,13 @@ import androidx.navigation3.ui.NavDisplay
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.birthdaysEntries
+import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.calendar.monthview.calendarEntries
+import com.elementary.tasks.groups.GroupsNavKey
 import com.elementary.tasks.groups.groupsEntries
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
+import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.notesEntries
 import com.elementary.tasks.places.placesEntries
 import com.elementary.tasks.reminder.build.buildReminderEntries
@@ -39,11 +43,16 @@ import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
+import com.elementary.tasks.workflow.WorkflowConfig
+import com.elementary.tasks.workflow.WorkflowNavKey
 import com.elementary.tasks.workflow.workflowEntries
+import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.feature.googletask.googleTasksEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.localBackupEntries
 import com.github.naz013.tags.tagsEntries
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.navigation.AppDestination
 
 /**
  * Root of the app's single Nav3 graph, hosted directly by
@@ -57,6 +66,10 @@ import com.github.naz013.tags.tagsEntries
  * entry pair into a two-pane list-detail layout on Medium+ width just by tagging its `entry<>()`
  * calls with `ListDetailSceneStrategy.listPane()`/`.detailPane()` - no other wiring needed. It is
  * a no-op today: no entry anywhere in the graph carries that metadata yet.
+ *
+ * [PersistentNavRailSceneDecoratorStrategy] is registered the same way for the nav rail: an
+ * entry opts in by tagging itself with [PersistentNavRail.metadata] (see `HomeNavGraph.kt`) and
+ * the decorator wraps it in a rail on Medium+ width - no manual branching in the screen itself.
  */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -64,6 +77,11 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
   val appNavBridge = rememberAppNavBridge()
   val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
+  val persistentNavRailStrategy =
+    PersistentNavRailSceneDecoratorStrategy(
+      destinations = homeRailDestinations(),
+      onNavigate = { backStack.add(it) },
+    )
 
   DisposableEffect(backStack) {
     appNavBridge.attachOuterBackStack(backStack)
@@ -75,6 +93,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
     modifier = Modifier.fillMaxSize(),
     onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
     sceneStrategies = listOf(listDetailSceneStrategy),
+    sceneDecoratorStrategies = listOf(persistentNavRailStrategy),
     entryDecorators =
       listOf(
         rememberSaveableStateHolderNavEntryDecorator(),
@@ -135,6 +154,60 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
       },
   )
 }
+
+/**
+ * Static mirror of Home's header navigation grid (see `GetNavigationItemsUseCase`), for the
+ * persistent nav rail - icon/label only, no live counts (see
+ * [PersistentNavRailSceneDecoratorStrategy]'s doc for why).
+ */
+@Composable
+private fun homeRailDestinations(): List<AppDestination<NavKey>> =
+  buildList {
+    add(
+      AppDestination(
+        key = CalendarNavKey.Month,
+        icon = painterResource(R.drawable.ic_fluent_calendar),
+        labelRes = R.string.calendar,
+      ),
+    )
+    add(
+      AppDestination(
+        key = HomeNavKey.Agenda,
+        icon = painterResource(R.drawable.ic_fluent_timeline),
+        labelRes = R.string.agenda,
+      ),
+    )
+    add(
+      AppDestination(
+        key = NotesNavKey.List,
+        icon = painterResource(R.drawable.ic_fluent_note),
+        labelRes = R.string.notes,
+      ),
+    )
+    add(
+      AppDestination(
+        key = GoogleTasksNavKey.List,
+        icon = painterResource(R.drawable.ic_builder_google_task_list),
+        labelRes = R.string.google_tasks,
+      ),
+    )
+    add(
+      AppDestination(
+        key = GroupsNavKey.List,
+        icon = painterResource(R.drawable.ic_fluent_group),
+        labelRes = R.string.groups,
+      ),
+    )
+    if (WorkflowConfig.isEnabled) {
+      add(
+        AppDestination(
+          key = WorkflowNavKey.Gallery,
+          icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
+          labelRes = R.string.workflow_automations,
+        ),
+      )
+    }
+  }
 
 private fun navScreenSpring() =
   spring<Float>(

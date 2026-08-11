@@ -6,12 +6,14 @@ general module map - this file only covers the adaptive-layout pieces added on t
 ## Status
 
 **Phase 0 (done):** foundation only - dependencies, window/fold state, a nav-rail scaffold, the
-two-pane wiring hook, and preview tooling all live in `ui-common`. No screen has adopted any of it
-yet; behavior is unchanged.
+two-pane wiring hook, and preview tooling all live in `ui-common`.
 
-Planned next: Home screen adopts the nav rail (Phase 1), 2-3 List→Preview flows (Notes, Google
-Tasks, Agenda/Reminders) adopt two-pane (Phase 2), fold-posture-aware refinements and the
-remaining screens (Phase 3).
+**Phase 1 (done):** Home adopts the nav rail via `PersistentNavRailSceneDecoratorStrategy`, a
+`SceneDecoratorStrategy` registered in `AppNavGraph.kt` (see below) - no manual per-screen
+branching.
+
+Planned next: 2-3 List→Preview flows (Notes, Google Tasks, Agenda/Reminders) adopt two-pane
+(Phase 2), fold-posture-aware refinements and the remaining screens (Phase 3).
 
 ## Breakpoint reference
 
@@ -53,35 +55,54 @@ hinge splitting it), use `rememberAppWindowState()` /
    metadata (below). Don't reach for this on flows where the "detail" is a full-screen editor that
    doesn't make sense shrunk into a side pane.
 
-## Nav rail / bottom bar: `AppNavigationScaffold`
+## Nav rail / bottom bar: `AppNavigationScaffold` + `PersistentNavRailSceneDecoratorStrategy`
 
-Wraps Material3's `NavigationSuiteScaffold`: a bottom `NavigationBar` on Compact width, a
-`NavigationRail` on Medium+ - decided automatically from the window size class, not from our own
-`DeviceScreenConfiguration` enum (the library's calculation is the source of truth here so we stay
-aligned with Material3's own guidance instead of re-deriving it).
-
-`ui-common` only knows about the generic `AppDestination<T>` model (icon, label, badge, a caller-
+`AppNavigationScaffold` (`ui-common`) wraps Material3's `NavigationSuiteScaffold`: a bottom
+`NavigationBar` on Compact width, a `NavigationRail` on Medium+ - decided automatically from the
+window size class, not from our own `DeviceScreenConfiguration` enum (the library's calculation is
+the source of truth here so we stay aligned with Material3's own guidance instead of re-deriving
+it). `ui-common` only knows the generic `AppDestination<T>` model (icon, label, badge, a caller-
 supplied key) - it has no idea what a `NavKey` is, per the module dependency rules in
-`architecture.md` (`ui-common` doesn't depend on `navigation-api`'s concrete destinations). The
-`app` module is responsible for mapping its own top-level `NavKey`s onto `AppDestination`s and
-handling `onDestinationSelected`.
+`architecture.md`.
+
+Wiring which destinations get the rail uses Nav3's
+[scene decorators](https://developer.android.com/guide/navigation/navigation-3/scenes/scene-decorators)
+rather than a boolean threaded through screen composables - same idea as `ListDetailSceneStrategy`
+above: a `SceneDecoratorStrategy` registered once in `AppNavGraph.kt`, entries opt in via metadata.
+`PersistentNavRailSceneDecoratorStrategy` (`app`) checks whether the scene's top entry carries
+`PersistentNavRail.metadata()` and, if so and the width is Medium+, wraps `scene.content()` in
+`AppNavigationScaffold`:
 
 ```kotlin
-AppNavigationScaffold(
-  destinations = listOf(
-    AppDestination(key = HomeNavKey.Main, icon = AppIcons.Fluent.Calendar, labelRes = R.string.calendar),
-    AppDestination(key = NotesNavKey.List, icon = AppIcons.Fluent.Text, labelRes = R.string.notes),
-    // ...
-  ),
-  selectedKey = currentTopLevelKey,
-  onDestinationSelected = { backStack.add(it) },
-) {
-  AppNavGraph(...)
-}
+// AppNavGraph.kt
+val persistentNavRailStrategy = PersistentNavRailSceneDecoratorStrategy(
+  destinations = homeRailDestinations(),
+  onNavigate = { backStack.add(it) },
+)
+NavDisplay(
+  // ...
+  sceneDecoratorStrategies = listOf(persistentNavRailStrategy),
+)
+
+// HomeNavGraph.kt
+entry<HomeNavKey.Main>(metadata = PersistentNavRail.metadata()) { HomeEntry(backStack) }
 ```
 
-This has **not** been wired into `BottomNavActivity`/`AppNavGraph` yet (Phase 1) - Phase 0 only adds
-the reusable component.
+**Why the rail's destinations are static (icon/label, no live badge counts):** a
+`SceneDecoratorStrategy` runs *outside* the Nav3 entry-scoped `ViewModelStoreOwner` -
+`rememberViewModelStoreNavEntryDecorator()` wraps each entry's own `content`, not the chrome a
+decorator adds around it. So the decorator can't safely resolve `ScheduleHomeViewModel` a second
+time without either getting a different instance than the one `HomeEntry` uses, or duplicating its
+data fetch. Since navigation targets are just `NavKey`s, routing doesn't need the ViewModel at all
+- only the live subtitle counts Home's header grid shows would - so the rail intentionally drops
+those rather than risk a second ViewModel instance. If live counts on the rail matter later, fetch
+them independently (not via `ScheduleHomeViewModel`) in the decorated `Scene`'s `content`, e.g. via
+a plain Koin-injected use case rather than a ViewModel.
+
+Because the wrapping happens outside the screen, `ChronologicalHomeScreen` doesn't take a `showXxx`
+boolean either - it independently calls `isTabletScreen() || isDesktopScreen()` to decide whether
+to still render its own header grid/row. Both sides read the same ambient window-size state, so
+they can't drift out of sync without either needing to know about the other.
 
 ## Two-pane list-detail: `ListDetailSceneStrategy`
 

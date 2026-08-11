@@ -23,11 +23,15 @@ import com.github.naz013.ui.common.compose.foundation.preview.AppScreenSizePrevi
  * navigation rail on medium/expanded width, chosen automatically from the current window size
  * class. Selection state and the resulting navigation action are entirely the caller's
  * responsibility - this only renders the chrome around [content].
+ *
+ * [selectedKey] is nullable: some callers (e.g. a quick-launch panel where every destination
+ * navigates away rather than swapping a persistent tab) never have a "current" destination -
+ * pass `null` and every item renders unselected.
  */
 @Composable
 fun <T> AppNavigationScaffold(
   destinations: List<AppDestination<T>>,
-  selectedKey: T,
+  selectedKey: T?,
   onDestinationSelected: (T) -> Unit,
   modifier: Modifier = Modifier,
   content: @Composable () -> Unit,
@@ -77,6 +81,26 @@ private fun AppNavigationScaffoldPreview() {
       destinations = destinations,
       selectedKey = selectedKey,
       onDestinationSelected = { selectedKey = it },
+    ) {
+      Box(modifier = Modifier.fillMaxSize())
+    }
+  }
+}
+
+@AppScreenSizePreviews
+@Composable
+private fun AppNavigationScaffoldNoSelectionPreview() {
+  val destinations =
+    listOf(
+      AppDestination(key = "calendar", icon = AppIcons.Fluent.Calendar, labelRes = R.string.calendar),
+      AppDestination(key = "notes", icon = AppIcons.Fluent.Text, labelRes = R.string.notes),
+    )
+
+  AppTheme {
+    AppNavigationScaffold(
+      destinations = destinations,
+      selectedKey = null,
+      onDestinationSelected = {},
     ) {
       Box(modifier = Modifier.fillMaxSize())
     }

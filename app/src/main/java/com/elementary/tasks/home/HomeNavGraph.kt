@@ -21,6 +21,7 @@ import com.elementary.tasks.home.agenda.AgendaScreen
 import com.elementary.tasks.home.agenda.AgendaScreenState
 import com.elementary.tasks.home.agenda.AgendaViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
+import com.elementary.tasks.navigation.nav3.PersistentNavRail
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.elementary.tasks.notes.NotesNavKey
 import com.elementary.tasks.notes.ObserveEvent
@@ -38,7 +39,9 @@ import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispa
 import org.koin.compose.viewmodel.koinViewModel
 
 fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
-  entry<HomeNavKey.Main> { HomeEntry(backStack) }
+  // Tagged so PersistentNavRailSceneDecoratorStrategy (registered in AppNavGraph) knows this
+  // destination gets the persistent nav rail on Medium+ width - see docs/adaptive-layouts.md.
+  entry<HomeNavKey.Main>(metadata = PersistentNavRail.metadata()) { HomeEntry(backStack) }
   entry<HomeNavKey.Agenda> { AgendaEntry(backStack) }
 }
 
@@ -127,6 +130,9 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
   }
 
   val state by viewModel.state.collectAsState(HomeScreenState())
+  // The persistent nav rail on Medium+ width is applied around this entry by
+  // PersistentNavRailSceneDecoratorStrategy (registered in AppNavGraph), not here -
+  // ChronologicalHomeScreen decides on its own whether to still show the header grid/row.
   HomeScreen(
     modifier = Modifier
       .fillMaxSize()
