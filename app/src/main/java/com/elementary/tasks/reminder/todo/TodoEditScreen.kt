@@ -97,7 +97,7 @@ fun TodoEditScreen(
       OutlinedTextField(
         value = state.title,
         onValueChange = onTitleChange,
-        label = { Text(stringResource(R.string.builder_what_you_want_to_remind_you)) },
+        label = { Text(stringResource(R.string.title)) },
         modifier = Modifier.fillMaxWidth(),
       )
 

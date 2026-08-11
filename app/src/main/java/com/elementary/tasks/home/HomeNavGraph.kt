@@ -119,6 +119,10 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
       is ScheduleHomeViewModel.ViewModelEvent.EventAction -> {
         eventActionDispatcher.dispatch(event.value)
       }
+
+      is ScheduleHomeViewModel.ViewModelEvent.OpenCreateTodo -> {
+        appNavBridge.navigate(TodoEditNavKey.Main())
+      }
     }
   }
 

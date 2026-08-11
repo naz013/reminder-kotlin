@@ -79,6 +79,10 @@ class ScheduleHomeViewModel(
       EventType.Note -> {
         event.emit(ViewModelEvent.OpenCreateNote)
       }
+
+      EventType.Todo -> {
+        event.emit(ViewModelEvent.OpenCreateTodo)
+      }
     }
   }
 
@@ -262,15 +266,18 @@ class ScheduleHomeViewModel(
     data class EventAction(
       val value: ResolvedEventAction,
     ) : ViewModelEvent
+
+    data object OpenCreateTodo : ViewModelEvent
   }
 
   enum class EventType(
     @param:StringRes val title: Int,
   ) {
-    Reminder(R.string.add_reminder_menu),
-    Birthday(R.string.add_birthday),
-    GoogleTask(R.string.add_google_task),
-    Note(R.string.add_note),
+    Reminder(R.string.reminder),
+    Birthday(R.string.birthday),
+    GoogleTask(R.string.google_task),
+    Note(R.string.note),
+    Todo(R.string.todo)
   }
 
   companion object {
