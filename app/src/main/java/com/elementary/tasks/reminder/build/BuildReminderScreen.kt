@@ -62,6 +62,7 @@ import com.elementary.tasks.core.data.ui.note.UiNoteList
 import com.elementary.tasks.reminder.build.logic.builderstate.ReminderPrediction
 import com.elementary.tasks.reminder.build.quickstart.QuickStartOption
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton

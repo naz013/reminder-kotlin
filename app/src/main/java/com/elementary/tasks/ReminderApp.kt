@@ -28,7 +28,6 @@ import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcher
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
-import com.elementary.tasks.notes.noteModule
 import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.settings.export.syncSettingsModule
@@ -44,6 +43,7 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.note.featureNoteModule
+import com.github.naz013.ui.note.uiNoteModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.holidays.holidaysModule
 import com.github.naz013.icalendar.iCalendarModule
@@ -132,6 +132,7 @@ class ReminderApp :
           utilModule,
           featureCommonModule,
           featureNoteModule,
+          uiNoteModule,
           storageModule,
           viewModelModule,
           adapterModule,
@@ -144,7 +145,6 @@ class ReminderApp :
           calendarModule,
           homeModule,
           featureGoogleTaskModule,
-          noteModule,
           servicesModule,
           repositoryModule,
           cloudApiModule,

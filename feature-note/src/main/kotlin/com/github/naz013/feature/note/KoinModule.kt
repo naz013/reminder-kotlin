@@ -1,6 +1,8 @@
 package com.github.naz013.feature.note
 
 import com.github.naz013.feature.note.create.NoteEditViewModel
+import com.github.naz013.feature.note.create.drop.DroppedContentParser
+import com.github.naz013.feature.note.create.images.ImageDecoder
 import com.github.naz013.feature.note.image.NoteImageMigration
 import com.github.naz013.feature.note.image.NoteImageRepository
 import com.github.naz013.feature.note.list.NotesViewModel
@@ -35,6 +37,8 @@ val featureNoteModule =
 
     singleOf(::NoteImageRepository)
     factoryOf(::NoteImageMigration)
+    factoryOf(::ImageDecoder)
+    factoryOf(::DroppedContentParser)
 
     viewModel { (id: String?, sharedText: String?, sharedImageUris: List<String>?, fromIntentData: Boolean) ->
       NoteEditViewModel(

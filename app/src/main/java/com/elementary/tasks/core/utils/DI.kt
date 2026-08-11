@@ -5,7 +5,6 @@ import com.elementary.tasks.calendar.holidays.HolidaySettingsGateImpl
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
-import com.elementary.tasks.core.data.repository.NoteImageMigration
 import com.elementary.tasks.core.data.repository.ReminderSettingsRepositoryImpl
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.notes.AppNoteFontProvider
@@ -22,8 +21,6 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.BottomNavInitViewModel
-import com.elementary.tasks.notes.create.drop.DroppedContentParser
-import com.elementary.tasks.notes.create.images.ImageDecoder
 import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
 import com.elementary.tasks.settings.other.TermsViewModel
 import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
@@ -119,7 +116,6 @@ val utilModule = module {
   factory { JobScheduler(get(), get(), get(), get(), get(), get()) as JobSchedulerApi }
 
   factory { ActivateAllActiveRemindersUseCase(get(), get()) }
-  factory { NoteImageMigration(get(), get()) }
 
   factory<BackgroundTask>(named(AutoBackupEventTask.TASK_KEY)) { AutoBackupEventTask(get(), get()) }
   factory<BackgroundTask>(named(BirthdayEventTask.TASK_KEY)) { BirthdayEventTask(get()) }
@@ -128,8 +124,6 @@ val utilModule = module {
   factory { FeatureManager(get()) as FeatureFlags }
   factory { HolidaySettingsGateImpl(get(), get()) as HolidaySettingsGate }
   factory { GroupsUtil(get(), get(), get()) }
-  factory { ImageDecoder(get(), get(), get()) }
-  factory { DroppedContentParser(get()) }
 
   factory { DoNotDisturbManager(get(), get()) }
 

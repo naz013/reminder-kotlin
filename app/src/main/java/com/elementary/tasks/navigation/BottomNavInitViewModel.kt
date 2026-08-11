@@ -3,7 +3,7 @@ package com.elementary.tasks.navigation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
-import com.elementary.tasks.core.data.repository.NoteImageMigration
+import com.github.naz013.feature.note.image.NoteImageMigration
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PresetInitProcessor

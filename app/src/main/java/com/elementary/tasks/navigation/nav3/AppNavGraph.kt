@@ -19,6 +19,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.birthdaysEntries
@@ -26,17 +27,19 @@ import com.elementary.tasks.calendar.monthview.calendarEntries
 import com.elementary.tasks.groups.groupsEntries
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
-import com.elementary.tasks.notes.notesEntries
 import com.elementary.tasks.places.placesEntries
+import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.build.buildReminderEntries
 import com.elementary.tasks.reminder.lists.removed.remindersArchiveEntries
 import com.elementary.tasks.reminder.preview.reminderPreviewEntries
 import com.elementary.tasks.reminder.todo.todoEditEntries
+import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.exportEntries
 import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
+import com.github.naz013.feature.note.notesEntries
 import com.github.naz013.feature.workflow.workflowEntries
 import com.github.naz013.feature.googletask.googleTasksEntries
 import com.github.naz013.insights.insightsEntries
@@ -100,7 +103,13 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
     entryProvider =
       entryProvider {
         homeEntries(backStack)
-        notesEntries(backStack)
+        notesEntries(
+          backStack = backStack,
+          applicationId = BuildConfig.APPLICATION_ID,
+          onOpenNoteSettings = { title -> backStack.add(SettingsNavKey.Note(title)) },
+          onEditReminder = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.NotePreview) },
+        )
         groupsEntries(backStack)
         placesEntries(backStack)
         birthdaysEntries(backStack)

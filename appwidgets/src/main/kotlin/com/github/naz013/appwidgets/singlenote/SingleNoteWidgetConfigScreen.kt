@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.compose.WidgetConfigScaffold
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
-import com.github.naz013.feature.note.UiNoteImage
-import com.github.naz013.feature.note.UiNoteListItem
-import com.github.naz013.feature.note.compose.NoteListItemCard
+import com.github.naz013.ui.note.UiNoteImage
+import com.github.naz013.ui.note.UiNoteListItem
+import com.github.naz013.ui.note.CheckableNoteCard
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 import kotlin.math.roundToInt
@@ -169,10 +169,11 @@ internal fun SingleNoteWidgetConfigScreen(
     SectionTitle(stringResource(R.string.notes))
     Column {
       state.notes.forEach { note ->
-        NoteRow(
+        CheckableNoteCard(
           note = note,
-          isSelected = note.id == state.selectedNoteId,
+          selected = note.id == state.selectedNoteId,
           onClick = { onNoteSelected(note.id) },
+          modifier = Modifier.padding(top = 8.dp),
         )
       }
     }
@@ -209,33 +210,6 @@ private fun <T> AlignmentRow(
   }
 }
 
-@Composable
-private fun NoteRow(
-  note: UiNoteListItem,
-  isSelected: Boolean,
-  onClick: () -> Unit,
-) {
-  NoteListItemCard(
-    note = note,
-    onClick = onClick,
-    modifier = Modifier.padding(top = 8.dp),
-    border = if (isSelected) {
-      BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-    } else {
-      null
-    },
-    trailingContent = {
-      Icon(
-        painter = painterResource(
-          if (isSelected) R.drawable.ic_builder_google_task_list else R.drawable.ic_fluent_radio_button,
-        ),
-        contentDescription = null,
-        tint = note.textColor,
-        modifier = Modifier.padding(8.dp).size(24.dp),
-      )
-    },
-  )
-}
 
 @Preview(showBackground = true)
 @Composable
