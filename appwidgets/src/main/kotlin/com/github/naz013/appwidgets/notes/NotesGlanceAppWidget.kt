@@ -230,7 +230,10 @@ internal class NotesGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         )
       } else {
         LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
-          items(state.items.size) { index: Int ->
+          items(
+            count = state.items.size,
+            itemId = { index -> state.items[index].uuId.hashCode().toLong() }
+          ) { index: Int ->
             NoteItem(
               context = context,
               data = state.items[index]

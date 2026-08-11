@@ -231,7 +231,10 @@ internal class GoogleTasksGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         )
       } else {
         LazyColumn(modifier = GlanceModifier.fillMaxWidth()) {
-          items(state.items.size) { index: Int ->
+          items(
+            count = state.items.size,
+            itemId = { index -> state.items[index].taskId.hashCode().toLong() }
+          ) { index: Int ->
             Column(
               modifier = GlanceModifier.fillMaxWidth(),
             ) {
