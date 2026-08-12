@@ -1,7 +1,5 @@
 package com.github.naz013.feature.workflow.builder
 
-import com.github.naz013.testing.BaseTest
-import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -11,9 +9,11 @@ import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
-import com.github.naz013.usecase.reminders.CreateWorkflowRuleUseCase
+import com.github.naz013.testing.BaseTest
+import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
 import io.mockk.coEvery
 import io.mockk.coVerify

@@ -12,6 +12,7 @@ import com.github.naz013.ui.common.isAlmostTransparent
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
+import com.github.naz013.ui.note.UiNoteImagesAdapter
 
 class UiNoteListAdapter(
   private val dateTimeManager: DateTimeManager,

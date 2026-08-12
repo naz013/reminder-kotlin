@@ -1,0 +1,49 @@
+package com.github.naz013.feature.note.usecase
+
+import com.github.naz013.domain.note.ImageFile
+import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.note.image.NoteImageRepository
+import com.github.naz013.files.DataType
+import com.github.naz013.logging.Logger
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
+import com.github.naz013.repository.NoteRepository
+
+internal class SaveNoteUseCase(
+  private val noteRepository: NoteRepository,
+  private val noteImageRepository: NoteImageRepository,
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+) {
+  suspend operator fun invoke(noteWithImages: NoteWithImages) {
+    val note = noteWithImages.note ?: return
+    saveImages(noteWithImages.images, note.key)
+    noteRepository.save(note.copy(version = note.version + 1))
+    noteRepository.updateSyncState(note.key, SyncState.WaitingForUpload)
+    scheduleBackgroundWorkUseCase(
+      workType = WorkType.Upload,
+      dataType = DataType.Notes,
+      id = note.key,
+    )
+    Logger.i(TAG, "Saved note: ${note.key}")
+  }
+
+  private suspend fun saveImages(
+    list: List<ImageFile>,
+    id: String,
+  ) {
+    val oldList = noteRepository.getImagesByNoteId(id)
+    for (image in oldList) {
+      noteRepository.deleteImage(image.id)
+    }
+    noteImageRepository
+      .moveImagesToFolder(list, id)
+      .map { it.copy(noteId = id) }
+      .takeIf { it.isNotEmpty() }
+      ?.also { noteRepository.saveAll(it) }
+  }
+
+  companion object {
+    private const val TAG = "SaveNoteUseCase"
+  }
+}

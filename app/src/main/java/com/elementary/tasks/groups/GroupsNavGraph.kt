@@ -25,7 +25,7 @@ import com.elementary.tasks.groups.list.GroupsScreen
 import com.elementary.tasks.groups.list.GroupsScreenState
 import com.elementary.tasks.groups.list.GroupsViewModel
 import com.elementary.tasks.navigation.nav3.hideKeyboard
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey

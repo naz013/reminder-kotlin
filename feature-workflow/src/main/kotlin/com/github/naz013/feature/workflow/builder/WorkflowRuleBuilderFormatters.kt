@@ -2,11 +2,11 @@ package com.github.naz013.feature.workflow.builder
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.github.naz013.feature.workflow.R
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.feature.workflow.R
 
 /** Display name for a trigger/condition/action's *type*, used both for its picker-list option
  * and as the row title once configured - independent of any params it carries. */
@@ -26,7 +26,9 @@ fun workflowTriggerLabel(trigger: WorkflowTrigger): String = when (trigger) {
 fun workflowTriggerValue(trigger: WorkflowTrigger): String? = when (trigger) {
   is WorkflowTrigger.ReminderSnoozedNTimes -> "${trigger.count}"
   is WorkflowTrigger.ReminderAgeExceeded -> "${trigger.days} ${stringResource(R.string.days)}"
-  is WorkflowTrigger.ReminderUnacknowledgedFor -> "${trigger.minutes} ${stringResource(R.string.workflow_builder_minutes_unit)}"
+  is WorkflowTrigger.ReminderUnacknowledgedFor -> "${trigger.minutes} ${stringResource(
+    R.string.workflow_builder_minutes_unit
+  )}"
   else -> null
 }
 
@@ -47,7 +49,10 @@ fun workflowPriorityLabel(priority: ReminderPriority): String = when (priority) 
 }
 
 @Composable
-fun workflowConditionValue(condition: WorkflowCondition, groups: List<UiWorkflowGroupOption>): String = when (condition) {
+fun workflowConditionValue(
+  condition: WorkflowCondition,
+  groups: List<UiWorkflowGroupOption>
+): String = when (condition) {
   is WorkflowCondition.PriorityAtLeast -> workflowPriorityLabel(condition.priority)
   is WorkflowCondition.WithinTimeWindow ->
     "%02d:%02d–%02d:%02d".format(

@@ -19,7 +19,7 @@ import com.elementary.tasks.core.os.ContextSwitcher
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.elementary.tasks.groups.GroupsNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
-import com.elementary.tasks.notes.NotesNavKey
+import com.github.naz013.feature.note.NotesNavKey
 import com.elementary.tasks.places.PlacesNavKey
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey

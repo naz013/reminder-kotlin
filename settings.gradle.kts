@@ -44,6 +44,7 @@ include(":platform-common")
 
 include(":ui-common")
 include(":ui-googletask")
+include(":ui-note")
 include(":ui-reminder")
 include(":ui-tag")
 
@@ -74,9 +75,11 @@ include(":feature-workflow")
 include(":localbackup")
 
 include(":logic-googletask")
+include(":logic-note")
 include(":logic-reminder")
 include(":logic-schedule")
 include(":logic-tag")
+include(":logic-workflow")
 
 include(":testing")
 include(":scheduler-api")

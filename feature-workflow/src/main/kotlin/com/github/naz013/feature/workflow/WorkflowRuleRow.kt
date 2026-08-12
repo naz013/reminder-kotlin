@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.naz013.feature.workflow.R
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.AnchoredPopupMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
@@ -88,7 +87,12 @@ fun WorkflowRuleRow(
 private fun WorkflowRuleRowPreview() {
   AppTheme {
     WorkflowRuleRow(
-      rule = UiWorkflowRule(id = "1", title = "Archive completed reminders after 30 days", isEnabled = true, canSaveAsTemplate = false),
+      rule = UiWorkflowRule(
+        id = "1",
+        title = "Archive completed reminders after 30 days",
+        isEnabled = true,
+        canSaveAsTemplate = false
+      ),
       onEnabledChange = {},
       onDeleteClick = {},
       onSaveAsTemplateClick = {},

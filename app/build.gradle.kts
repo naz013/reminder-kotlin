@@ -232,6 +232,7 @@ dependencies {
 
   implementation(project(":ui-common"))
   implementation(project(":ui-googletask"))
+  implementation(project(":ui-note"))
   implementation(project(":ui-reminder"))
   implementation(project(":ui-tag"))
 
@@ -244,6 +245,7 @@ dependencies {
   implementation(project(":logic-reminder"))
   implementation(project(":logic-schedule"))
   implementation(project(":logic-tag"))
+  implementation(project(":logic-workflow"))
 
   implementation(libs.google.api.services.calendar) {
     exclude(group = "com.google.guava", module = "listenablefuture")

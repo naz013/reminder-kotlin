@@ -3,8 +3,8 @@ package com.github.naz013.appwidgets.singlenote
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
-import com.github.naz013.feature.note.UiNoteListItem
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.note.UiNoteListItem
 
 internal data class SingleNoteWidgetConfigState(
   val notes: List<UiNoteListItem> = emptyList(),

@@ -8,9 +8,9 @@ import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
-import com.github.naz013.usecase.reminders.CreateWorkflowRuleUseCase
 import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -42,7 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
-import com.elementary.tasks.notes.ObserveNonNull
+import com.github.naz013.ui.common.livedata.ObserveNonNull
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.controller.shopitems.SubTasksViewModel
 import com.github.naz013.datecalc.DateTimeManager

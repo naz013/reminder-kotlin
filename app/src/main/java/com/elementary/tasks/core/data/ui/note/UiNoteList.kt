@@ -3,6 +3,7 @@ package com.elementary.tasks.core.data.ui.note
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
+import com.github.naz013.ui.note.UiNoteImage
 
 data class UiNoteList(
   val id: String,

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.note.UiNoteList
+import com.github.naz013.ui.note.UiNoteImage
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.NoteBuilderItem
 import androidx.compose.ui.text.font.Typeface as ComposeTypeface

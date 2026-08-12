@@ -1,7 +1,6 @@
 package com.github.naz013.appwidgets.googletasks
 
 import com.github.naz013.appwidgets.R
-import com.github.naz013.appwidgets.WidgetUtils
 import com.github.naz013.appwidgets.googletasks.data.GoogleTasksAppWidgetState
 import com.github.naz013.appwidgets.googletasks.data.UiGoogleTaskWidgetItem
 import com.github.naz013.domain.GoogleTask

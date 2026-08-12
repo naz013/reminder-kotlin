@@ -21,7 +21,7 @@ import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationa
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.elementary.tasks.navigation.nav3.hideKeyboard
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
 import com.github.naz013.common.Permissions

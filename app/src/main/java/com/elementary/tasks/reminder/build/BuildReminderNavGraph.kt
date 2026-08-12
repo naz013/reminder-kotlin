@@ -20,7 +20,7 @@ import com.github.naz013.ui.common.permission.PermissionRequester
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
-import com.elementary.tasks.notes.ObserveEvent
+import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.reminder.build.adapter.rememberParamToTextAdapter
 import com.elementary.tasks.reminder.build.bi.BiGroup
 import com.elementary.tasks.reminder.build.help.ReminderHelpScreen

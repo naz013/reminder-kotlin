@@ -12,8 +12,8 @@ import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAda
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.note.UiNoteListItemAdapter
 import com.github.naz013.ui.common.adjustAlpha
+import com.github.naz013.ui.note.UiNoteListItemAdapter
 import com.github.naz013.usecase.notes.GetAllNotesUseCase
 import com.github.naz013.usecase.notes.GetNoteByIdUseCase
 import kotlinx.coroutines.Job

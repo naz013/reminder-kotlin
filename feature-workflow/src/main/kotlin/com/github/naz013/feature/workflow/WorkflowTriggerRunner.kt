@@ -1,10 +1,10 @@
 package com.github.naz013.feature.workflow
 
-import com.github.naz013.usecase.reminders.WorkflowEngine
+import com.github.naz013.logic.workflow.WorkflowEngine
 
 /**
  * Single entry point shared by the periodic polling tasks and every reactive trigger call site:
- * runs the relevant [WorkflowEngine] method(s), then dispatches any [PendingWorkflowAction][com.github.naz013.usecase.reminders.PendingWorkflowAction]
+ * runs the relevant [WorkflowEngine] method(s), then dispatches any [PendingWorkflowAction][com.github.naz013.logic.workflow.PendingWorkflowAction]
  * it returns via [WorkflowActionDispatcher].
  */
 class WorkflowTriggerRunner(

@@ -20,15 +20,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.naz013.feature.workflow.R
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.feature.workflow.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -123,7 +122,10 @@ fun WorkflowRuleBuilderScreen(
       item {
         TextButton(onClick = onAddConditionClick, modifier = Modifier.padding(start = 12.dp)) {
           Icon(imageVector = Icons.Default.Add, contentDescription = null)
-          Text(text = stringResource(R.string.workflow_builder_add_condition), modifier = Modifier.padding(start = 4.dp))
+          Text(
+            text = stringResource(R.string.workflow_builder_add_condition),
+            modifier = Modifier.padding(start = 4.dp)
+          )
         }
       }
 

@@ -1,13 +1,13 @@
 package com.github.naz013.feature.workflow
 
+import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
-import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.logic.workflow.PendingWorkflowAction
 import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.usecase.reminders.PendingWorkflowAction
 
 /**
- * Finishes the two [WorkflowAction] variants [WorkflowEngine][com.github.naz013.usecase.reminders.WorkflowEngine]
+ * Finishes the two [WorkflowAction] variants [WorkflowEngine][com.github.naz013.logic.workflow.WorkflowEngine]
  * (a pure-JVM module) can't apply itself, since both need `logic-reminder`'s
  * [ActivateReminderUseCase]/[CompleteReminderUseCase], which `usecase:reminders` doesn't depend on.
  */
