@@ -18,14 +18,17 @@ enum class DeviceScreenConfiguration {
         fun fromWindowSizeClass(windowSizeClass: WindowSizeClass): DeviceScreenConfiguration {
           Logger.d("DeviceScreenConfiguration", "fromWindowSizeClass: width=${windowSizeClass.minWidthDp}, height=${windowSizeClass.minHeightDp}")
             return when {
+                // Order matters: DesktopSmall's bounds (width/height >= MEDIUM) are a superset of
+                // TabletLandscape's and TabletPortrait's, so those two must be checked first or
+                // they're unreachable.
                 windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) &&
                         windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> DesktopNormal
-                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
-                        windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> DesktopSmall
                 windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) &&
                         windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> TabletLandscape
                 windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
                         windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> TabletPortrait
+                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
+                        windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> DesktopSmall
                 windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
                    windowSizeClass.minHeightDp < 480 -> MobileLandscape
                 else -> MobilePortrait

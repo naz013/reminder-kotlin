@@ -11,6 +11,7 @@ product flavors: `free` and `pro`.
 For deeper background, read (don't duplicate into this file):
 - `docs/app-overview.md` — full feature list and user-facing screens
 - `docs/architecture.md` — module inventory and dependency graph
+- `docs/adaptive-layouts.md` — tablet/desktop/foldable layout conventions (nav rail, two-pane, breakpoints)
 - `rules and agents.md` — condensed architecture rules referenced by the prompt files in `.github/prompts/`
 
 ## Build & Test Commands

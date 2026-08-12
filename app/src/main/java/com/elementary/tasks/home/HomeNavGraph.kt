@@ -127,6 +127,9 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
   }
 
   val state by viewModel.state.collectAsState(HomeScreenState())
+  // The persistent nav rail on Medium+ width is applied around this entry by
+  // PersistentNavRailSceneDecoratorStrategy (registered in AppNavGraph), not here -
+  // ChronologicalHomeScreen decides on its own whether to still show the header grid/row.
   HomeScreen(
     modifier = Modifier
       .fillMaxSize()

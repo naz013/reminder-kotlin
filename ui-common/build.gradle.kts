@@ -34,6 +34,10 @@ dependencies {
 
   implementation(libs.compose.material3.windowsizeclass)
   implementation(libs.compose.material3.adaptive.navigation.suite)
+  implementation(libs.compose.material3.adaptive)
+  implementation(libs.compose.material3.adaptive.layout)
+
+  implementation(libs.androidx.window)
 
   debugImplementation(libs.compose.ui.test.manifest)
   debugImplementation(libs.compose.ui.tooling)
