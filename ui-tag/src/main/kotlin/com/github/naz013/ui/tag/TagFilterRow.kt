@@ -1,4 +1,4 @@
-package com.github.naz013.feature.googletask
+package com.github.naz013.ui.tag
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,15 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.github.naz013.ui.tag.TagChipState
 
 /**
- * Single-select tag filter for a list of Google Tasks - unlike [com.github.naz013.ui.tag.TagChipPicker]
- * (multi-select, edit-only), only one tag can be active at a time and clicking the active chip
- * (or the "All" chip) clears the filter. Renders nothing when there are no tags in the app yet.
+ * Single-select tag filter for a list of items - unlike [TagChipPicker] (multi-select, edit-only),
+ * only one tag can be active at a time and clicking the active chip (or the "All" chip) clears the
+ * filter. Renders nothing when there are no tags in the app yet.
  */
 @Composable
-internal fun TagFilterRow(
+fun TagFilterRow(
   allTags: List<TagChipState>,
   selectedTagId: String?,
   onTagSelected: (String?) -> Unit,

@@ -165,6 +165,7 @@ private fun NotesListEntry(
     onNoteClick = viewModel::onNoteClick,
     onNoteMenuAction = viewModel::onNoteMenuAction,
     onImageClick = viewModel::onImageClick,
+    onTagSelected = viewModel::onTagSelected,
   )
 }
 
@@ -203,6 +204,7 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
     onNoteClick = viewModel::onNoteClick,
     onNoteMenuAction = viewModel::onNoteMenuAction,
     onImageClick = viewModel::onImageClick,
+    onTagSelected = viewModel::onTagSelected,
   )
 }
 

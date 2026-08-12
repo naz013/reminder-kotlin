@@ -47,6 +47,7 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.note.NoteCard
 import com.github.naz013.ui.note.UiNoteListItem
+import com.github.naz013.ui.tag.TagFilterRow
 
 private const val GRID_COLUMNS = 2
 
@@ -65,6 +66,7 @@ internal fun NotesScreen(
   onNoteClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
+  onTagSelected: (String?) -> Unit,
 ) {
   Scaffold(
     modifier = modifier,
@@ -97,6 +99,15 @@ internal fun NotesScreen(
           Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+      }
+
+      if (state.listState !is ListState.Loading) {
+        TagFilterRow(
+          allTags = state.allTags,
+          selectedTagId = state.selectedTagId,
+          onTagSelected = onTagSelected,
+          modifier = Modifier.padding(bottom = 8.dp),
         )
       }
 
@@ -448,6 +459,7 @@ private fun NotesScreenEmptyPreview() {
       onNoteClick = {},
       onNoteMenuAction = { _, _ -> },
       onImageClick = { _, _ -> },
+      onTagSelected = {},
     )
   }
 }

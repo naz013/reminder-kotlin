@@ -1,6 +1,7 @@
 package com.github.naz013.feature.note.list
 
 import com.github.naz013.ui.note.UiNoteListItem
+import com.github.naz013.ui.tag.TagChipState
 
 internal data class NotesScreenState(
   val listState: ListState = ListState.Loading,
@@ -8,6 +9,8 @@ internal data class NotesScreenState(
   val searchQuery: String = "",
   val sortOrder: String = NoteSortProcessor.DATE_ZA,
   val isArchived: Boolean = false,
+  val allTags: List<TagChipState> = emptyList(),
+  val selectedTagId: String? = null,
 )
 
 sealed interface ListState {

@@ -6,6 +6,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
@@ -18,6 +19,8 @@ import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.note.NoteNotifier
@@ -25,12 +28,14 @@ import com.github.naz013.ui.note.NotePreferences
 import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.note.UiNoteListItem
 import com.github.naz013.ui.note.UiNoteListItemAdapter
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -51,6 +56,9 @@ class NotesViewModelTest : BaseTest() {
   private val createSharedNoteFileUseCase = mockk<CreateSharedNoteFileUseCase>()
   private val imagesSingleton = mockk<ImagesSingleton>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
+  private val tagRepository = mockk<TagRepository>()
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   @Before
   override fun setUp() {
@@ -61,6 +69,8 @@ class NotesViewModelTest : BaseTest() {
     // constructed (independent of state collection), and every fresh state collection re-triggers
     // it via onStart{refresh()} - a default stub avoids an unstubbed-call failure everywhere.
     coEvery { noteRepository.getNotes(any(), any(), any()) } returns emptyList()
+    // init{} also eagerly collects the available tags, independent of state collection.
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
   }
 
   private fun note(
@@ -118,6 +128,9 @@ class NotesViewModelTest : BaseTest() {
       createSharedNoteFileUseCase = createSharedNoteFileUseCase,
       imagesSingleton = imagesSingleton,
       analyticsEventSender = analyticsEventSender,
+      tagRepository = tagRepository,
+      tagAssignmentRepository = tagAssignmentRepository,
+      tagChipStateAdapter = tagChipStateAdapter,
     )
 
   @Test
@@ -177,6 +190,43 @@ class NotesViewModelTest : BaseTest() {
 
       // Once from the init block's eager collection, plus once per state collection above.
       coVerify(atLeast = 3) { noteRepository.getNotes(any(), any(), any()) }
+    }
+
+  @Test
+  fun `onTagSelected filters notes down to items carrying that tag`() =
+    runTest {
+      val n1 = note(id = "1")
+      val n2 = note(id = "2")
+      coEvery { noteRepository.getNotes(false, "", NoteSortProcessor.DATE_ZA) } returns listOf(n1, n2)
+      every { uiNoteListItemAdapter.convert(n1) } returns uiItem(id = "1")
+      every { uiNoteListItemAdapter.convert(n2) } returns uiItem(id = "2")
+      coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.NOTE) } returns listOf("1")
+      val viewModel = createViewModel()
+
+      viewModel.onTagSelected("tag1")
+
+      val ready = viewModel.notesScreenState.first().listState as ListState.Ready
+      assertEquals(listOf("1"), ready.notes.map { it.id })
+    }
+
+  @Test
+  fun `onTagSelected twice with the same tag clears the filter`() =
+    runTest {
+      val n1 = note(id = "1")
+      val n2 = note(id = "2")
+      coEvery { noteRepository.getNotes(false, "", NoteSortProcessor.DATE_ZA) } returns listOf(n1, n2)
+      every { uiNoteListItemAdapter.convert(n1) } returns uiItem(id = "1")
+      every { uiNoteListItemAdapter.convert(n2) } returns uiItem(id = "2")
+      coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.NOTE) } returns listOf("1")
+      val viewModel = createViewModel()
+      viewModel.onTagSelected("tag1")
+
+      viewModel.onTagSelected("tag1")
+
+      val state = viewModel.notesScreenState.first()
+      assertEquals(null, state.selectedTagId)
+      val ready = state.listState as ListState.Ready
+      assertEquals(2, ready.notes.size)
     }
 
   @Test
