@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.text.UiTextFormat
-import com.elementary.tasks.groups.NotificationOverrideSubtitles
+import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.lists.data.UiReminderListState

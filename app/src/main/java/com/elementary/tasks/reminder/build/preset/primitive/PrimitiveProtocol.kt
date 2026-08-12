@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.preset.primitive
 
-import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.github.naz013.ui.group.UiGroupList
 import com.elementary.tasks.reminder.build.bi.CalendarDuration
 import com.elementary.tasks.reminder.build.bi.OtherParams
 import com.elementary.tasks.reminder.build.bi.TimerExclusion

@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.build.formatter
 
+import com.github.naz013.ui.notification.settings.Formatter
 import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.reminder.build.bi.TimerExclusion

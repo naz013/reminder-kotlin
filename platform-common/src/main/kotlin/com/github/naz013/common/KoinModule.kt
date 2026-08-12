@@ -2,7 +2,9 @@ package com.github.naz013.common
 
 import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.common.intent.IntentFactory
+import com.github.naz013.common.system.StringApiImpl
 import com.github.naz013.common.system.SystemInfoImpl
+import com.github.naz013.platform.StringApi
 import com.github.naz013.platform.SystemInfo
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -15,4 +17,6 @@ val platformCommonModule = module {
   factoryOf(::ContactsReader)
   factory { SystemInfoImpl(get(), get()) as SystemInfo }
   factoryOf(::IntentFactory)
+
+  single { StringApiImpl(get()) as StringApi }
 }

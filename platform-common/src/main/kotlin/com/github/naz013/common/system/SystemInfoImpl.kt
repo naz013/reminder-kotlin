@@ -81,6 +81,13 @@ internal class SystemInfoImpl(
   override val is12: Boolean = currentSdkLevel >= Build.VERSION_CODES.S
   override val is11: Boolean = currentSdkLevel >= Build.VERSION_CODES.R
 
+  override val applicationName: String
+    get() {
+      val packageManager = context.packageManager
+      val applicationInfo = context.applicationInfo
+      return packageManager.getApplicationLabel(applicationInfo).toString()
+    }
+
   override fun isAppInstalled(packageName: String): Boolean {
     val pm = context.packageManager
     return try {

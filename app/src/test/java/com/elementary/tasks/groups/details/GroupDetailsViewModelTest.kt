@@ -1,13 +1,13 @@
 package com.elementary.tasks.groups.details
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
+import com.github.naz013.ui.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.ui.UiTextElement
-import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.github.naz013.ui.group.UiGroupList
 import com.elementary.tasks.core.text.UiTextFormat
-import com.elementary.tasks.groups.NotificationOverrideSubtitleFormatter
-import com.elementary.tasks.groups.NotificationOverrideSubtitles
-import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
+import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitleFormatter
+import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
+import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions

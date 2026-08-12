@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.formatter.datetime
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.reminder.build.formatter.Formatter
+import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.datecalc.DateTimeManager
 
 class TimerFormatter(

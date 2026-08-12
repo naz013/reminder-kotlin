@@ -1,9 +1,9 @@
 package com.elementary.tasks.reminder.build.bi
 
 import android.util.Patterns
-import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.github.naz013.ui.group.UiGroupList
 import com.elementary.tasks.core.data.ui.note.UiNoteList
-import com.elementary.tasks.reminder.build.formatter.Formatter
+import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.Place

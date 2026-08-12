@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.todo
 
-import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.github.naz013.ui.group.UiGroupList
 import com.elementary.tasks.reminder.build.SubTasksBuilderItem
 import com.github.naz013.ui.tag.TagChipState
 

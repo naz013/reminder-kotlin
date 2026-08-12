@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.bi
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
+import com.github.naz013.ui.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.ApplicationBuilderItem
@@ -50,15 +50,15 @@ import com.elementary.tasks.reminder.build.formatter.ApplicationFormatter
 import com.elementary.tasks.reminder.build.formatter.AttachmentsFormatter
 import com.elementary.tasks.reminder.build.formatter.BypassDndFormatter
 import com.elementary.tasks.reminder.build.formatter.CalendarDurationFormatter
-import com.elementary.tasks.reminder.build.formatter.CategoryFormatter
-import com.elementary.tasks.reminder.build.formatter.DelayMinutesFormatter
+import com.github.naz013.ui.notification.settings.CategoryFormatter
+import com.github.naz013.ui.notification.settings.DelayMinutesFormatter
 import com.elementary.tasks.reminder.build.formatter.LedColorFormatter
-import com.elementary.tasks.reminder.build.formatter.LockScreenVisibilityFormatter
+import com.github.naz013.ui.notification.settings.LockScreenVisibilityFormatter
 import com.elementary.tasks.reminder.build.formatter.OtherParamsFormatter
-import com.elementary.tasks.reminder.build.formatter.PriorityFormatter
+import com.github.naz013.ui.notification.settings.PriorityFormatter
 import com.elementary.tasks.reminder.build.formatter.RepeatLimitFormatter
 import com.elementary.tasks.reminder.build.formatter.TimerExclusionFormatter
-import com.elementary.tasks.reminder.build.formatter.VibrationPatternFormatter
+import com.github.naz013.ui.notification.settings.VibrationPatternFormatter
 import com.elementary.tasks.reminder.build.formatter.WakeScreenFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.BeforeTimeFormatter
 import com.elementary.tasks.reminder.build.formatter.datetime.DateFormatter

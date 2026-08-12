@@ -4,7 +4,7 @@ import android.net.Uri
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
 import com.elementary.tasks.core.data.adapter.UiReminderPlaceAdapter
-import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
+import com.github.naz013.ui.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.data.ui.reminder.UiReminderStatus
