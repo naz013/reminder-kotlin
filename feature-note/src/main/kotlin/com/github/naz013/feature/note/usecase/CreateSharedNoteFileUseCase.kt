@@ -39,7 +39,8 @@ internal class CreateSharedNoteFileUseCase(
     val file = File(cacheDir, fileName)
     if (!withContext(Dispatchers.IO) {
         file.createNewFile()
-      }) {
+      }
+    ) {
       try {
         file.delete()
         withContext(Dispatchers.IO) {

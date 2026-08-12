@@ -2,11 +2,11 @@ package com.github.naz013.feature.note.create
 
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import com.github.naz013.feature.note.R
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.note.R
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.verify
@@ -19,7 +19,7 @@ import org.junit.Test
  * changes, color/opacity/font selection, tab expansion, reminder-attached toggle, speech
  * recognition callbacks, and the date/time picker click events.
  */
-class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
+internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
 
   @Test
   fun `onTextFieldValueChange updates the body text and clears a pending bold range`() {

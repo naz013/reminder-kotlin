@@ -5,7 +5,6 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.github.naz013.feature.note.R
 import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.logging.Logger
 import java.io.File

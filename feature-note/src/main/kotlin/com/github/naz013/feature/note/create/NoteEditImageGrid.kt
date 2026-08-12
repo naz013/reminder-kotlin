@@ -72,9 +72,9 @@ internal fun NoteEditImageGrid(
                 onClick = { onImageClick(index) },
                 onRemoveClick = { onRemoveClick(index) },
                 modifier =
-                  Modifier
-                    .width(cellSize)
-                    .padding(2.dp),
+                Modifier
+                  .width(cellSize)
+                  .padding(2.dp),
               )
             }
           }
@@ -101,21 +101,21 @@ private fun NoteEditImageItem(
     modifier = modifier,
     visibleState = visibleState,
     enter =
-      scaleIn(
-        animationSpec =
-          spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow,
-          ),
-        initialScale = 0f,
-      ) + fadeIn(animationSpec = tween(IMAGE_ANIMATION_DURATION_MS)),
+    scaleIn(
+      animationSpec =
+      spring(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessLow,
+      ),
+      initialScale = 0f,
+    ) + fadeIn(animationSpec = tween(IMAGE_ANIMATION_DURATION_MS)),
   ) {
     Box(
       modifier =
-        Modifier
-          .aspectRatio(1f)
-          .clip(MaterialTheme.shapes.small)
-          .background(MaterialTheme.colorScheme.surfaceVariant),
+      Modifier
+        .aspectRatio(1f)
+        .clip(MaterialTheme.shapes.small)
+        .background(MaterialTheme.colorScheme.surfaceVariant),
     ) {
       if (image.state == UiNoteImageState.LOADING) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).size(24.dp))
@@ -125,17 +125,17 @@ private fun NoteEditImageItem(
           contentDescription = null,
           contentScale = ContentScale.Crop,
           modifier =
-            Modifier
-              .fillMaxSize()
-              .clickable(onClick = onClick),
+          Modifier
+            .fillMaxSize()
+            .clickable(onClick = onClick),
         )
         Surface(
           modifier =
-            Modifier
-              .align(Alignment.TopEnd)
-              .padding(4.dp)
-              .size(20.dp)
-              .clickable(onClick = onRemoveClick),
+          Modifier
+            .align(Alignment.TopEnd)
+            .padding(4.dp)
+            .size(20.dp)
+            .clickable(onClick = onRemoveClick),
           shape = CircleShape,
           color = MaterialTheme.colorScheme.tertiary,
         ) {

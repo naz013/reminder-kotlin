@@ -1,11 +1,11 @@
 package com.github.naz013.feature.note.usecase
 
+import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.files.DataType
+import com.github.naz013.logging.Logger
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
-import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
-import com.github.naz013.files.DataType
 
 internal class ChangeNoteArchiveStateUseCase(
   private val noteRepository: NoteRepository,

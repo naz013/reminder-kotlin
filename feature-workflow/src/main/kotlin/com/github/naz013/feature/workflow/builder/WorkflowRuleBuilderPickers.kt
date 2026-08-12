@@ -22,13 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.github.naz013.feature.workflow.R
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.feature.workflow.R
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetItem
@@ -219,9 +219,23 @@ private fun ConditionParamForm(
       var toMinute by remember { mutableStateOf((condition.toMinuteOfDay % 60).toLong()) }
       Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
         Text(text = stringResource(R.string.from), style = MaterialTheme.typography.titleSmall)
-        TimeOfDayFields(hour = fromHour, minute = fromMinute, onHourChange = { fromHour = it }, onMinuteChange = { fromMinute = it })
-        Text(text = stringResource(R.string.to), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 12.dp))
-        TimeOfDayFields(hour = toHour, minute = toMinute, onHourChange = { toHour = it }, onMinuteChange = { toMinute = it })
+        TimeOfDayFields(
+          hour = fromHour,
+          minute = fromMinute,
+          onHourChange = { fromHour = it },
+          onMinuteChange = { fromMinute = it }
+        )
+        Text(
+          text = stringResource(R.string.to),
+          style = MaterialTheme.typography.titleSmall,
+          modifier = Modifier.padding(top = 12.dp)
+        )
+        TimeOfDayFields(
+          hour = toHour,
+          minute = toMinute,
+          onHourChange = { toHour = it },
+          onMinuteChange = { toMinute = it }
+        )
         Button(
           onClick = {
             onSave(
@@ -328,7 +342,10 @@ private fun ActionParamForm(
 ) {
   when (action) {
     is WorkflowAction.ApplyNotificationOverride ->
-      NotificationOverrideForm(override = action.override, onSave = { onSave(WorkflowAction.ApplyNotificationOverride(it)) })
+      NotificationOverrideForm(
+        override = action.override,
+        onSave = { onSave(WorkflowAction.ApplyNotificationOverride(it)) }
+      )
 
     is WorkflowAction.ActivateReminder -> {
       if (reminders.isEmpty()) {
@@ -356,7 +373,10 @@ private fun ActionParamForm(
 }
 
 @Composable
-private fun NotificationOverrideForm(override: NotificationSettingsOverride, onSave: (NotificationSettingsOverride) -> Unit) {
+private fun NotificationOverrideForm(
+  override: NotificationSettingsOverride,
+  onSave: (NotificationSettingsOverride) -> Unit
+) {
   var priority by remember { mutableStateOf(override.priority ?: ReminderPriority.NORMAL) }
   var bypassDnd by remember { mutableStateOf(override.bypassDoNotDisturb ?: false) }
   var wakeScreen by remember { mutableStateOf(override.wakeScreen ?: false) }

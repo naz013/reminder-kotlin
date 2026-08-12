@@ -1,7 +1,6 @@
 package com.github.naz013.feature.note
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -12,16 +11,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.naz013.feature.note.R
-import com.github.naz013.ui.common.permission.PermissionRequester
-import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
+import com.github.naz013.common.Permissions
 import com.github.naz013.common.datapicker.compose.rememberCameraPicker
 import com.github.naz013.common.datapicker.compose.rememberGalleryPicker
 import com.github.naz013.common.speech.SpeechEngine
 import com.github.naz013.common.speech.SpeechEngineCallback
 import com.github.naz013.common.speech.SpeechError
 import com.github.naz013.common.speech.SpeechText
-import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.feature.note.create.EditTab
 import com.github.naz013.feature.note.create.NoteEditActions
 import com.github.naz013.feature.note.create.NoteEditScreen
@@ -38,13 +34,15 @@ import com.github.naz013.feature.note.preview.PreviewNoteActions
 import com.github.naz013.feature.note.preview.PreviewNoteScreen
 import com.github.naz013.feature.note.preview.PreviewNoteState
 import com.github.naz013.feature.note.preview.PreviewNoteViewModel
-import com.github.naz013.common.Permissions
 import com.github.naz013.tags.TagsNavKey
-import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.ToastDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
+import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.ui.common.permission.PermissionRequester
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -62,61 +60,68 @@ fun EntryProviderScope<NavKey>.notesEntries(
   entry<NotesNavKey.ImagePreview> { key -> NoteImagePreviewEntry(key, backStack) }
 }
 
+/** Bundles [NotesListEntry]/[NotesArchiveEntry]'s shared navigation-event handler dependencies,
+ * which are otherwise identical across both call sites - keeps [handleNotesNavigationEvent] to a
+ * reasonable parameter count. */
+private class NotesNavHandlers(
+  val viewModel: NotesViewModel,
+  val backStack: MutableList<NavKey>,
+  val dialogDispatcher: DialogDispatcher,
+  val toastDispatcher: ToastDispatcher,
+  val noteIntentSender: NoteIntentSender,
+  val permissionRequester: PermissionRequester,
+  val onOpenNoteSettings: (String) -> Unit,
+)
+
 private fun handleNotesNavigationEvent(
   event: NotesViewModel.NavigationEvent,
-  viewModel: NotesViewModel,
-  backStack: MutableList<NavKey>,
-  dialogDispatcher: DialogDispatcher,
-  toastDispatcher: ToastDispatcher,
-  noteIntentSender: NoteIntentSender,
-  permissionRequester: PermissionRequester,
-  onOpenNoteSettings: (String) -> Unit,
+  handlers: NotesNavHandlers,
 ) {
   when (event) {
     is NotesViewModel.NavigationEvent.OpenNotePreview -> {
-      backStack.add(NotesNavKey.Preview(event.id))
+      handlers.backStack.add(NotesNavKey.Preview(event.id))
     }
 
     is NotesViewModel.NavigationEvent.OpenCreateNote -> {
-      backStack.add(NotesNavKey.Edit())
+      handlers.backStack.add(NotesNavKey.Edit())
     }
 
     is NotesViewModel.NavigationEvent.OpenEditNote -> {
-      backStack.add(NotesNavKey.Edit(event.id))
+      handlers.backStack.add(NotesNavKey.Edit(event.id))
     }
 
-    is NotesViewModel.NavigationEvent.OpenArchive -> backStack.add(NotesNavKey.Archive)
+    is NotesViewModel.NavigationEvent.OpenArchive -> handlers.backStack.add(NotesNavKey.Archive)
 
     is NotesViewModel.NavigationEvent.OpenSettings -> {
-      onOpenNoteSettings(event.title)
+      handlers.onOpenNoteSettings(event.title)
     }
 
     is NotesViewModel.NavigationEvent.OpenImagePreview -> {
-      backStack.add(NotesNavKey.ImagePreview(event.imagePosition))
+      handlers.backStack.add(NotesNavKey.ImagePreview(event.imagePosition))
     }
 
     is NotesViewModel.NavigationEvent.ShareNote -> {
-      noteIntentSender.send(event.summary, event.file)
+      handlers.noteIntentSender.send(event.summary, event.file)
     }
 
     is NotesViewModel.NavigationEvent.RequestNotificationPermission -> {
-      permissionRequester.request(
+      handlers.permissionRequester.request(
         Permissions.POST_NOTIFICATION,
-        onGranted = { viewModel.showNoteInNotification(event.id) },
+        onGranted = { handlers.viewModel.showNoteInNotification(event.id) },
       )
     }
 
     is NotesViewModel.NavigationEvent.ConfirmDelete -> {
-      dialogDispatcher.showDialog(
+      handlers.dialogDispatcher.showDialog(
         titleRes = R.string.delete_note_permanently,
         positiveButtonRes = R.string.yes,
         negativeButtonRes = R.string.cancel,
-        onPositive = { viewModel.deleteNote(event.id) }
+        onPositive = { handlers.viewModel.deleteNote(event.id) }
       )
     }
 
     is NotesViewModel.NavigationEvent.Error -> {
-      toastDispatcher.showToast(message = event.message)
+      handlers.toastDispatcher.showToast(message = event.message)
     }
   }
 }
@@ -134,9 +139,8 @@ private fun NotesListEntry(
   val toastDispatcher = rememberToastDispatcher()
   val noteIntentSender = rememberNoteIntentSender(applicationId)
 
-  viewModel.navigationEvent.ObserveEvent {
-    handleNotesNavigationEvent(
-      event = it,
+  val handlers =
+    NotesNavHandlers(
       viewModel = viewModel,
       backStack = backStack,
       dialogDispatcher = dialogDispatcher,
@@ -145,7 +149,7 @@ private fun NotesListEntry(
       permissionRequester = permissionRequester,
       onOpenNoteSettings = onOpenNoteSettings,
     )
-  }
+  viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, handlers) }
 
   val state by viewModel.notesScreenState.collectAsState(NotesScreenState())
   NotesScreen(
@@ -173,9 +177,8 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
   val toastDispatcher = rememberToastDispatcher()
   val noteIntentSender = rememberNoteIntentSender(applicationId)
 
-  viewModel.navigationEvent.ObserveEvent {
-    handleNotesNavigationEvent(
-      event = it,
+  val handlers =
+    NotesNavHandlers(
       viewModel = viewModel,
       backStack = backStack,
       dialogDispatcher = dialogDispatcher,
@@ -184,7 +187,7 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
       permissionRequester = permissionRequester,
       onOpenNoteSettings = {},
     )
-  }
+  viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, handlers) }
 
   val state by viewModel.notesScreenState.collectAsState(NotesScreenState())
   NotesScreen(
@@ -261,19 +264,19 @@ private fun NotePreviewEntry(
   PreviewNoteScreen(
     state = state,
     actions =
-      PreviewNoteActions(
-        onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
-        onEditClick = viewModel::onEditClick,
-        onStatusClick = {
-          permissionRequester.request(Permissions.POST_NOTIFICATION, onGranted = { viewModel.onStatusClick() })
-        },
-        onShareClick = viewModel::onShareClick,
-        onArchiveClick = viewModel::onArchiveClick,
-        onDeleteClick = viewModel::onDeleteClick,
-        onImageOpen = viewModel::onImageOpen,
-        onReminderEditClick = viewModel::onReminderEditClick,
-        onReminderDetachClick = viewModel::onReminderDetachClick,
-      ),
+    PreviewNoteActions(
+      onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+      onEditClick = viewModel::onEditClick,
+      onStatusClick = {
+        permissionRequester.request(Permissions.POST_NOTIFICATION, onGranted = { viewModel.onStatusClick() })
+      },
+      onShareClick = viewModel::onShareClick,
+      onArchiveClick = viewModel::onArchiveClick,
+      onDeleteClick = viewModel::onDeleteClick,
+      onImageOpen = viewModel::onImageOpen,
+      onReminderEditClick = viewModel::onReminderEditClick,
+      onReminderDetachClick = viewModel::onReminderDetachClick,
+    ),
     adsBanner = adsContent,
   )
 }
@@ -390,58 +393,58 @@ private fun NoteEditEntry(
     onTextFieldValueChange = viewModel::onTextFieldValueChange,
     onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
     actions =
-      NoteEditActions(
-        onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
-        onSaveClick = viewModel::onSaveClicked,
-        onShareClick = viewModel::onShareClick,
-        onDeleteClick = viewModel::onDeleteRequested,
-        onMicClick = {
-          permissionRequester.request(Permissions.RECORD_AUDIO, onGranted = {
-            if (speechEngine.isStarted()) {
-              speechEngine.stopListening()
-            } else {
-              speechEngine.startListening(speechCallback)
-            }
-          })
-        },
-        onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
-        onImageTabClick = { viewModel.onTabClicked(EditTab.IMAGE) },
-        onImagePickFromGallery = {
-          permissionRequester.request(Permissions.READ_EXTERNAL, onGranted = galleryPicker)
-          viewModel.collapseExpandedTab()
-        },
-        onImagePickFromCamera = {
-          permissionRequester.request(
-            listOf(Permissions.CAMERA, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL),
-            onGranted = { cameraPicker() },
-          )
-          viewModel.collapseExpandedTab()
-        },
-        onImagePickFromUrl = {
-          urlImagePickerState.start(context)
-          viewModel.collapseExpandedTab()
-        },
-        onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
-        onFontTabClick = { viewModel.onTabClicked(EditTab.FONT) },
-        onColorSelected = viewModel::onColorSelected,
-        onOpacityChanged = viewModel::onOpacityChanged,
-        onReminderAttachedChanged = viewModel::onReminderAttachedChanged,
-        onDateClick = viewModel::onDateClicked,
-        onTimeClick = viewModel::onTimeClicked,
-        onFontSizeChanged = viewModel::onFontSizeChanged,
-        onFieldFocused = viewModel::onFieldFocused,
-        onImageOpen = { position -> viewModel.onImageOpen(position) },
-        onImageRemove = viewModel::removeImage,
-        onFontStyleSelected = viewModel::onFontStyleChanged,
-        onDeleteConfirmed = viewModel::onDeleteConfirmed,
-        onSameNoteKeep = { viewModel.saveNote(newId = true) },
-        onSameNoteReplace = { viewModel.saveNote() },
-        onDialogDismiss = viewModel::onDialogDismissed,
-        onDrop = { clipData -> if (clipData.itemCount > 0) viewModel.parseDrop(clipData) },
-        onTagsTabClick = { viewModel.onTabClicked(EditTab.TAGS) },
-        onTagToggle = viewModel::onTagToggle,
-        onManageTagsClick = viewModel::onManageTagsClick,
-      ),
+    NoteEditActions(
+      onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+      onSaveClick = viewModel::onSaveClicked,
+      onShareClick = viewModel::onShareClick,
+      onDeleteClick = viewModel::onDeleteRequested,
+      onMicClick = {
+        permissionRequester.request(Permissions.RECORD_AUDIO, onGranted = {
+          if (speechEngine.isStarted()) {
+            speechEngine.stopListening()
+          } else {
+            speechEngine.startListening(speechCallback)
+          }
+        })
+      },
+      onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
+      onImageTabClick = { viewModel.onTabClicked(EditTab.IMAGE) },
+      onImagePickFromGallery = {
+        permissionRequester.request(Permissions.READ_EXTERNAL, onGranted = galleryPicker)
+        viewModel.collapseExpandedTab()
+      },
+      onImagePickFromCamera = {
+        permissionRequester.request(
+          listOf(Permissions.CAMERA, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL),
+          onGranted = { cameraPicker() },
+        )
+        viewModel.collapseExpandedTab()
+      },
+      onImagePickFromUrl = {
+        urlImagePickerState.start(context)
+        viewModel.collapseExpandedTab()
+      },
+      onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
+      onFontTabClick = { viewModel.onTabClicked(EditTab.FONT) },
+      onColorSelected = viewModel::onColorSelected,
+      onOpacityChanged = viewModel::onOpacityChanged,
+      onReminderAttachedChanged = viewModel::onReminderAttachedChanged,
+      onDateClick = viewModel::onDateClicked,
+      onTimeClick = viewModel::onTimeClicked,
+      onFontSizeChanged = viewModel::onFontSizeChanged,
+      onFieldFocused = viewModel::onFieldFocused,
+      onImageOpen = { position -> viewModel.onImageOpen(position) },
+      onImageRemove = viewModel::removeImage,
+      onFontStyleSelected = viewModel::onFontStyleChanged,
+      onDeleteConfirmed = viewModel::onDeleteConfirmed,
+      onSameNoteKeep = { viewModel.saveNote(newId = true) },
+      onSameNoteReplace = { viewModel.saveNote() },
+      onDialogDismiss = viewModel::onDialogDismissed,
+      onDrop = { clipData -> if (clipData.itemCount > 0) viewModel.parseDrop(clipData) },
+      onTagsTabClick = { viewModel.onTabClicked(EditTab.TAGS) },
+      onTagToggle = viewModel::onTagToggle,
+      onManageTagsClick = viewModel::onManageTagsClick,
+    ),
   )
 }
 

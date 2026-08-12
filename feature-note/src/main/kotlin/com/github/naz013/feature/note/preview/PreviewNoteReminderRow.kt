@@ -61,19 +61,19 @@ internal fun PreviewNoteReminderRow(
       AnimatedVisibility(
         visibleState = visibleState,
         enter =
-          fadeIn(animationSpec = tween(REMINDER_ANIMATION_DURATION_MS)) +
-            slideInVertically(
-              animationSpec = tween(REMINDER_ANIMATION_DURATION_MS),
-            ) { fullHeight -> fullHeight / 4 },
+        fadeIn(animationSpec = tween(REMINDER_ANIMATION_DURATION_MS)) +
+          slideInVertically(
+            animationSpec = tween(REMINDER_ANIMATION_DURATION_MS),
+          ) { fullHeight -> fullHeight / 4 },
       ) {
         PreviewNoteReminderCard(
           reminder = reminder,
           onEditClick = { onEditClick(reminder.id) },
           onDetachClick = { onDetachClick(reminder.id) },
           modifier =
-            Modifier
-              .width(REMINDER_CARD_WIDTH)
-              .padding(start = 16.dp),
+          Modifier
+            .width(REMINDER_CARD_WIDTH)
+            .padding(start = 16.dp),
         )
       }
     }
@@ -121,10 +121,10 @@ private fun PreviewNoteReminderCard(
       }
       Row(
         modifier =
-          Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(Alignment.End)
-            .padding(top = 16.dp),
+        Modifier
+          .fillMaxWidth()
+          .wrapContentWidth(Alignment.End)
+          .padding(top = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
       ) {
         TextButton(onClick = onEditClick) {

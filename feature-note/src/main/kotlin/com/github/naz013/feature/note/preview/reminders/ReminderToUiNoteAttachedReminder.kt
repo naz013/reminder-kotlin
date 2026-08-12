@@ -10,6 +10,8 @@ internal class ReminderToUiNoteAttachedReminder(
     UiNoteAttachedReminder(
       id = reminder.uuId,
       summary = reminder.summary,
-      dateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.getFullDateTime(dateTimeManager.utcToLocal(it)) } ?: "",
+      dateTime = reminder.schedule.eventDateTime?.let {
+        dateTimeManager.getFullDateTime(dateTimeManager.utcToLocal(it))
+      } ?: "",
     )
 }

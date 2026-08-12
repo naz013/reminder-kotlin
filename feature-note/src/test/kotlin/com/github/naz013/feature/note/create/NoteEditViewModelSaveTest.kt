@@ -1,16 +1,16 @@
 package com.github.naz013.feature.note.create
 
 import androidx.compose.ui.text.input.TextFieldValue
-import com.github.naz013.feature.note.R
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.note.R
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -28,7 +28,7 @@ import org.threeten.bp.LocalTime
  * note persistence, and the reminder attach/detach/reuse/outdated branches inside `createReminder`
  * and `saveReminder`.
  */
-class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
+internal class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
 
   @Test
   fun `onSaveClicked opens the same-note conflict dialog instead of saving when imported and a duplicate exists`() {

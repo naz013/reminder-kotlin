@@ -136,29 +136,29 @@ internal class NoteEditViewModel(
         colorIndex = colorCode,
         opacity = opacity,
         fontSize =
-          if (notePreferences.isNoteFontSizeRememberingEnabled) {
-            notePreferences.lastNoteFontSize
-          } else {
-            FontParams.DEFAULT_FONT_SIZE
-          },
+        if (notePreferences.isNoteFontSizeRememberingEnabled) {
+          notePreferences.lastNoteFontSize
+        } else {
+          FontParams.DEFAULT_FONT_SIZE
+        },
         fontStyle =
-          if (notePreferences.isNoteFontStyleRememberingEnabled) {
-            notePreferences.lastNoteFontStyle
-          } else {
-            FontParams.DEFAULT_FONT_STYLE
-          },
+        if (notePreferences.isNoteFontStyleRememberingEnabled) {
+          notePreferences.lastNoteFontStyle
+        } else {
+          FontParams.DEFAULT_FONT_STYLE
+        },
         titleFontSize =
-          if (notePreferences.isNoteFontSizeRememberingEnabled) {
-            notePreferences.lastNoteTitleFontSize
-          } else {
-            FontParams.DEFAULT_TITLE_FONT_SIZE
-          },
+        if (notePreferences.isNoteFontSizeRememberingEnabled) {
+          notePreferences.lastNoteTitleFontSize
+        } else {
+          FontParams.DEFAULT_TITLE_FONT_SIZE
+        },
         titleFontStyle =
-          if (notePreferences.isNoteFontStyleRememberingEnabled) {
-            notePreferences.lastNoteTitleFontStyle
-          } else {
-            FontParams.DEFAULT_FONT_STYLE
-          },
+        if (notePreferences.isNoteFontStyleRememberingEnabled) {
+          notePreferences.lastNoteTitleFontStyle
+        } else {
+          FontParams.DEFAULT_FONT_STYLE
+        },
         hasCamera = systemInfo.hasCamera,
         sliderColors = noteColorEngine.allColors(),
         noteColors = noteColorEngine.colorsFor(colorCode, opacity),
@@ -368,7 +368,6 @@ internal class NoteEditViewModel(
           } else {
             event.emit(ViewModelEvent.Error(textProvider.getText(R.string.error_sending)))
           }
-
         } else {
           event.emit(ViewModelEvent.Error(textProvider.getText(R.string.error_sending)))
         }
@@ -449,15 +448,15 @@ internal class NoteEditViewModel(
           titleFontSize = uiNoteEdit.titleFontSize,
           images = uiNoteEdit.images,
           textFieldValue =
-            TextFieldValue(
-              text = uiNoteEdit.text,
-              selection = TextRange(uiNoteEdit.text.length),
-            ),
+          TextFieldValue(
+            text = uiNoteEdit.text,
+            selection = TextRange(uiNoteEdit.text.length),
+          ),
           titleFieldValue =
-            TextFieldValue(
-              text = uiNoteEdit.title,
-              selection = TextRange(uiNoteEdit.title.length),
-            ),
+          TextFieldValue(
+            text = uiNoteEdit.title,
+            selection = TextRange(uiNoteEdit.title.length),
+          ),
           boldRange = null,
           noteId = noteWithImages.getKey(),
         )
@@ -526,7 +525,8 @@ internal class NoteEditViewModel(
       }
 
       val bos = ByteArrayOutputStream()
-      bitmap.compress(CompressFormat.PNG, 0 /*ignored for PNG*/, bos)
+      // Quality (2nd param) is ignored for PNG.
+      bitmap.compress(CompressFormat.PNG, 0, bos)
       val bitmapdata = bos.toByteArray()
       val bs = ByteArrayInputStream(bitmapdata)
 
@@ -785,13 +785,13 @@ internal class NoteEditViewModel(
 
     return (oldNote ?: NoteWithImages()).copy(
       images =
-        images.map {
-          ImageFile(
-            id = it.id,
-            fileName = it.fileName,
-            filePath = it.filePath,
-          )
-        },
+      images.map {
+        ImageFile(
+          id = it.id,
+          fileName = it.fileName,
+          filePath = it.filePath,
+        )
+      },
       note = note,
     )
   }

@@ -1,21 +1,6 @@
 package com.github.naz013.feature.note.list
 
 import androidx.compose.ui.graphics.Color
-import com.github.naz013.testing.BaseTest
-import com.github.naz013.feature.note.R
-import com.github.naz013.feature.note.UiNoteNotificationAdapter
-import com.github.naz013.ui.note.UiNoteImage
-import com.github.naz013.feature.note.UiNoteNotification
-import com.github.naz013.ui.note.NoteNotifier
-import com.github.naz013.ui.note.NotePreferences
-import com.github.naz013.ui.note.UiNoteListItem
-import com.github.naz013.ui.note.UiNoteListItemAdapter
-import com.github.naz013.testing.mockDispatcherProvider
-import com.github.naz013.feature.note.preview.ImagesSingleton
-import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
-import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
-import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
-import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -24,7 +9,22 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.note.R
+import com.github.naz013.feature.note.UiNoteNotification
+import com.github.naz013.feature.note.UiNoteNotificationAdapter
+import com.github.naz013.feature.note.preview.ImagesSingleton
+import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
+import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
+import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.testing.BaseTest
+import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.ui.note.NoteNotifier
+import com.github.naz013.ui.note.NotePreferences
+import com.github.naz013.ui.note.UiNoteImage
+import com.github.naz013.ui.note.UiNoteListItem
+import com.github.naz013.ui.note.UiNoteListItemAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -72,14 +72,14 @@ class NotesViewModelTest : BaseTest() {
   ): NoteWithImages =
     NoteWithImages(
       note =
-        Note(
-          key = id,
-          title = title,
-          summary = summary,
-          archived = archived,
-          color = color,
-          syncState = SyncState.Synced,
-        ),
+      Note(
+        key = id,
+        title = title,
+        summary = summary,
+        archived = archived,
+        color = color,
+        syncState = SyncState.Synced,
+      ),
     )
 
   private fun uiItem(

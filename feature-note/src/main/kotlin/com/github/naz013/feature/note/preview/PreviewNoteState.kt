@@ -2,8 +2,8 @@ package com.github.naz013.feature.note.preview
 
 import android.graphics.Typeface
 import androidx.compose.ui.graphics.Color
-import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
+import com.github.naz013.ui.note.UiNoteImage
 
 internal data class PreviewNoteState(
   val id: String = "",

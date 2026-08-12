@@ -4,9 +4,9 @@ import android.content.ClipData
 import android.net.Uri
 import androidx.compose.ui.text.input.TextFieldValue
 import com.github.naz013.feature.note.R
+import com.github.naz013.feature.note.create.drop.DroppedContentParser
 import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.note.UiNoteImageState
-import com.github.naz013.feature.note.create.drop.DroppedContentParser
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -18,7 +18,7 @@ import org.junit.Test
  * this ViewModel test) - these tests only verify how the ViewModel reacts to its
  * [DroppedContentParser.ParseResult].
  */
-class NoteEditViewModelDropTest : NoteEditViewModelTestSupport() {
+internal class NoteEditViewModelDropTest : NoteEditViewModelTestSupport() {
 
   private fun clipData(itemCount: Int = 1): ClipData {
     val clipData = mockk<ClipData>(relaxed = true)
@@ -31,7 +31,11 @@ class NoteEditViewModelDropTest : NoteEditViewModelTestSupport() {
     val viewModel = buildViewModel()
     viewModel.onTextFieldValueChange(TextFieldValue("Existing"))
     every { droppedContentParser.parse(any()) } returns
-      DroppedContentParser.ParseResult(textContent = listOf("Dropped line"), imageUris = emptyList(), unsupportedCount = 0)
+      DroppedContentParser.ParseResult(
+        textContent = listOf("Dropped line"),
+        imageUris = emptyList(),
+        unsupportedCount = 0,
+      )
 
     viewModel.parseDrop(clipData())
 
@@ -53,7 +57,11 @@ class NoteEditViewModelDropTest : NoteEditViewModelTestSupport() {
   fun `parseDrop joins multiple dropped text parts with newlines`() {
     val viewModel = buildViewModel()
     every { droppedContentParser.parse(any()) } returns
-      DroppedContentParser.ParseResult(textContent = listOf("Line 1", "Line 2"), imageUris = emptyList(), unsupportedCount = 0)
+      DroppedContentParser.ParseResult(
+        textContent = listOf("Line 1", "Line 2"),
+        imageUris = emptyList(),
+        unsupportedCount = 0,
+      )
 
     viewModel.parseDrop(clipData())
 

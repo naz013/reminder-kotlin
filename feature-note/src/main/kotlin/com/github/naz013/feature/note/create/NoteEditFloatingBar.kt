@@ -78,24 +78,24 @@ internal fun NoteEditFloatingBar(
   val barScale by animateFloatAsState(
     targetValue = if (pressedCount > 0) BAR_PRESSED_SCALE else 1f,
     animationSpec =
-      spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessMedium,
-      ),
+    spring(
+      dampingRatio = Spring.DampingRatioMediumBouncy,
+      stiffness = Spring.StiffnessMedium,
+    ),
     label = "bar_scale",
   )
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
     enter =
-      scaleIn(
-        animationSpec =
-          spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow,
-          ),
-        initialScale = 0f,
-      ) + fadeIn(animationSpec = tween(FLOATING_BAR_ANIMATION_DURATION_MS / 2)),
+    scaleIn(
+      animationSpec =
+      spring(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessLow,
+      ),
+      initialScale = 0f,
+    ) + fadeIn(animationSpec = tween(FLOATING_BAR_ANIMATION_DURATION_MS / 2)),
   ) {
     Surface(
       modifier = Modifier.scale(barScale),
@@ -106,9 +106,9 @@ internal fun NoteEditFloatingBar(
     ) {
       Row(
         modifier =
-          Modifier
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 6.dp, vertical = 6.dp),
+        Modifier
+          .horizontalScroll(rememberScrollState())
+          .padding(horizontal = 6.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         items.forEach { item ->
@@ -156,12 +156,12 @@ private fun NoteEditBarIconSlot(
     if (item.showBadge) {
       Box(
         modifier =
-          Modifier
-            .align(Alignment.TopEnd)
-            .padding(top = 8.dp, end = 8.dp)
-            .size(6.dp)
-            .clip(CircleShape)
-            .background(contentColor),
+        Modifier
+          .align(Alignment.TopEnd)
+          .padding(top = 8.dp, end = 8.dp)
+          .size(6.dp)
+          .clip(CircleShape)
+          .background(contentColor),
       )
     }
     if (item.selected) {

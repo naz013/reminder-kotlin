@@ -87,7 +87,7 @@ internal class ComposeResourceProvider(
   fun bestForegroundColor(
     background: Color,
     candidates: List<Color> = listOf(Color.Black, Color.White),
-    minimumRatio: Float = 4.5f  // 3f for large text/UI components, 7f for AAA
+    minimumRatio: Float = 4.5f // 3f for large text/UI components, 7f for AAA
   ): Color =
     candidates.maxBy { contrastRatio(background, it) }
       .let { best -> if (contrastRatio(background, best) >= minimumRatio) best else best }

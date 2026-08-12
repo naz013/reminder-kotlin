@@ -1,8 +1,6 @@
 package com.github.naz013.feature.note.create
 
 import android.net.Uri
-import com.github.naz013.ui.note.UiNoteImage
-import com.github.naz013.ui.note.UiNoteImageState
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.Note
@@ -10,6 +8,8 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.ui.note.UiNoteImage
+import com.github.naz013.ui.note.UiNoteImageState
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -30,7 +30,7 @@ import org.threeten.bp.LocalTime
  * shared text, shared image uris, from-intent-data, edit-existing-by-id) plus linked-reminder
  * loading. `loadFromFile(uri)` has its own test file since it needs `MemoryUtil` companion mocking.
  */
-class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
+internal class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
 
   @Test
   fun `initializes color, opacity and slider defaults for a brand-new note`() {
@@ -41,7 +41,14 @@ class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
     // getColorCode(palette=0, code=2) -> stubbed to 0*100+2 = 2
     assertEquals(2, state.colorIndex)
     assertEquals(80, state.opacity)
-    assertEquals(listOf(androidx.compose.ui.graphics.Color.Red, androidx.compose.ui.graphics.Color.Green, androidx.compose.ui.graphics.Color.Blue), state.sliderColors)
+    assertEquals(
+      listOf(
+        androidx.compose.ui.graphics.Color.Red,
+        androidx.compose.ui.graphics.Color.Green,
+        androidx.compose.ui.graphics.Color.Blue
+      ),
+      state.sliderColors
+    )
   }
 
   @Test
@@ -157,7 +164,9 @@ class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
 
   @Test
   fun `load reads the note from the intent data reader when opened from intent data`() {
-    val noteWithImages = NoteWithImages(note = Note(key = "from-intent", summary = "Hello", syncState = SyncState.Synced))
+    val noteWithImages = NoteWithImages(
+      note = Note(key = "from-intent", summary = "Hello", syncState = SyncState.Synced)
+    )
     every { intentDataReader.get(IntentKeys.INTENT_ITEM, NoteWithImages::class.java) } returns noteWithImages
     every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "from-intent", text = "Hello")
     coEvery { noteRepository.getById("from-intent") } returns null
@@ -194,7 +203,9 @@ class NoteEditViewModelLoadTest : NoteEditViewModelTestSupport() {
 
   @Test
   fun `loads an existing note by id into state for editing`() {
-    val noteWithImages = NoteWithImages(note = Note(key = "42", summary = "Body", title = "Title", syncState = SyncState.Synced))
+    val noteWithImages = NoteWithImages(
+      note = Note(key = "42", summary = "Body", title = "Title", syncState = SyncState.Synced)
+    )
     coEvery { noteRepository.getById("42") } returns noteWithImages
     val uiEdit =
       uiNoteEdit(

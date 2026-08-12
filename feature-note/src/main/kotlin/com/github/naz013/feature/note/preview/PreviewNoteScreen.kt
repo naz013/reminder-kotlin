@@ -49,9 +49,9 @@ internal fun PreviewNoteScreen(
 ) {
   Column(
     modifier =
-      modifier
-        .fillMaxSize()
-        .background(state.background),
+    modifier
+      .fillMaxSize()
+      .background(state.background),
   ) {
     TopAppBar(
       title = { },
@@ -91,30 +91,30 @@ internal fun PreviewNoteScreen(
           expanded = overflowExpanded,
           onDismissRequest = { overflowExpanded = false },
           items =
-            listOf(
-              PopupMenuItem(
-                id = OVERFLOW_ITEM_SHARE,
-                title = stringResource(R.string.share),
-                iconRes = R.drawable.ic_fluent_share_android,
-              ),
-              PopupMenuItem(
-                id = OVERFLOW_ITEM_ARCHIVE,
-                title =
-                  stringResource(
-                    if (state.isArchived) {
-                      R.string.notes_unarchive
-                    } else {
-                      R.string.notes_move_to_archive
-                    },
-                  ),
-                iconRes = R.drawable.ic_fluent_archive,
-              ),
-              PopupMenuItem(
-                id = OVERFLOW_ITEM_DELETE,
-                title = stringResource(R.string.delete),
-                iconRes = R.drawable.ic_fluent_delete,
-              ),
+          listOf(
+            PopupMenuItem(
+              id = OVERFLOW_ITEM_SHARE,
+              title = stringResource(R.string.share),
+              iconRes = R.drawable.ic_fluent_share_android,
             ),
+            PopupMenuItem(
+              id = OVERFLOW_ITEM_ARCHIVE,
+              title =
+              stringResource(
+                if (state.isArchived) {
+                  R.string.notes_unarchive
+                } else {
+                  R.string.notes_move_to_archive
+                },
+              ),
+              iconRes = R.drawable.ic_fluent_archive,
+            ),
+            PopupMenuItem(
+              id = OVERFLOW_ITEM_DELETE,
+              title = stringResource(R.string.delete),
+              iconRes = R.drawable.ic_fluent_delete,
+            ),
+          ),
           onItemClick = { id ->
             when (id) {
               OVERFLOW_ITEM_SHARE -> actions.onShareClick()
@@ -130,38 +130,38 @@ internal fun PreviewNoteScreen(
 
     Column(
       modifier =
-        Modifier
-          .fillMaxWidth()
-          .verticalScroll(rememberScrollState()),
+      Modifier
+        .fillMaxWidth()
+        .verticalScroll(rememberScrollState()),
     ) {
       if (state.title.isNotEmpty()) {
         Text(
           text = state.title,
           style =
-            MaterialTheme.typography.bodyLarge.copy(
-              color = state.content,
-              fontSize = state.titleTextSize.sp,
-              fontFamily = state.titleTypeface?.let { FontFamily(it) } ?: FontFamily.Default,
-              lineHeight = TextUnit.Unspecified,
-            ),
+          MaterialTheme.typography.bodyLarge.copy(
+            color = state.content,
+            fontSize = state.titleTextSize.sp,
+            fontFamily = state.titleTypeface?.let { FontFamily(it) } ?: FontFamily.Default,
+            lineHeight = TextUnit.Unspecified,
+          ),
           modifier = Modifier.padding(start = 24.dp, top = 24.dp, end = 24.dp),
         )
       }
       Text(
         text = state.text,
         style =
-          MaterialTheme.typography.bodyLarge.copy(
-            color = state.content,
-            fontSize = state.textSize.sp,
-            fontFamily = state.typeface?.let { FontFamily(it) } ?: FontFamily.Default,
-            lineHeight = TextUnit.Unspecified,
-          ),
+        MaterialTheme.typography.bodyLarge.copy(
+          color = state.content,
+          fontSize = state.textSize.sp,
+          fontFamily = state.typeface?.let { FontFamily(it) } ?: FontFamily.Default,
+          lineHeight = TextUnit.Unspecified,
+        ),
         modifier =
-          Modifier.padding(
-            start = 24.dp,
-            top = if (state.title.isNotEmpty()) 24.dp else 16.dp,
-            end = 24.dp,
-          ),
+        Modifier.padding(
+          start = 24.dp,
+          top = if (state.title.isNotEmpty()) 24.dp else 16.dp,
+          end = 24.dp,
+        ),
       )
 
       PreviewNoteImageCarousel(

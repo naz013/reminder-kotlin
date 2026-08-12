@@ -2,6 +2,7 @@ package com.github.naz013.feature.note.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +26,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,12 +41,12 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
-import com.github.naz013.ui.note.NoteCard
-import com.github.naz013.ui.note.UiNoteListItem
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
+import com.github.naz013.ui.note.NoteCard
+import com.github.naz013.ui.note.UiNoteListItem
 
 private const val GRID_COLUMNS = 2
 
@@ -84,9 +84,9 @@ internal fun NotesScreen(
   ) { padding ->
     Column(
       modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) {
       if (state.listState !is ListState.Empty || state.searchQuery.isNotEmpty()) {
         SearchBar(
@@ -94,9 +94,9 @@ internal fun NotesScreen(
           onQueryChange = onSearchQueryChange,
           placeholder = stringResource(R.string.search),
           modifier =
-            Modifier
-              .fillMaxWidth()
-              .padding(horizontal = 16.dp, vertical = 8.dp),
+          Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         )
       }
 
@@ -104,9 +104,9 @@ internal fun NotesScreen(
         is ListState.Loading -> {
           Box(
             modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentAlignment = Alignment.Center,
           ) {
             CircularProgressIndicator()
@@ -117,9 +117,9 @@ internal fun NotesScreen(
           NotesEmptyState(
             isArchived = state.isArchived,
             modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            Modifier
+              .fillMaxSize()
+              .weight(1f),
           )
         }
 
@@ -134,9 +134,9 @@ internal fun NotesScreen(
             onNoteMenuAction = onNoteMenuAction,
             onImageClick = onImageClick,
             modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            Modifier
+              .fillMaxSize()
+              .weight(1f),
           )
         }
       }
@@ -161,12 +161,12 @@ private fun NotesList(
     LazyColumn(
       modifier = modifier,
       contentPadding =
-        PaddingValues(
-          start = 16.dp,
-          end = 16.dp,
-          top = contentPadding.calculateTopPadding() + 8.dp,
-          bottom = contentPadding.calculateBottomPadding() + fabBottomPadding,
-        ),
+      PaddingValues(
+        start = 16.dp,
+        end = 16.dp,
+        top = contentPadding.calculateTopPadding() + 8.dp,
+        bottom = contentPadding.calculateBottomPadding() + fabBottomPadding,
+      ),
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
       items(notes, key = { it.id }) { note ->
@@ -190,12 +190,12 @@ private fun NotesList(
       columns = StaggeredGridCells.Fixed(GRID_COLUMNS),
       modifier = modifier,
       contentPadding =
-        PaddingValues(
-          start = 16.dp,
-          end = 16.dp,
-          top = contentPadding.calculateTopPadding() + 8.dp,
-          bottom = contentPadding.calculateBottomPadding() + fabBottomPadding,
-        ),
+      PaddingValues(
+        start = 16.dp,
+        end = 16.dp,
+        top = contentPadding.calculateTopPadding() + 8.dp,
+        bottom = contentPadding.calculateBottomPadding() + fabBottomPadding,
+      ),
       horizontalArrangement = Arrangement.spacedBy(8.dp),
       verticalItemSpacing = 8.dp,
     ) {
@@ -292,9 +292,9 @@ private fun NotesEmptyState(
     )
     Text(
       text =
-        stringResource(
-          if (isArchived) R.string.notes_archive_is_empty else R.string.no_notes,
-        ),
+      stringResource(
+        if (isArchived) R.string.notes_archive_is_empty else R.string.no_notes,
+      ),
       style = MaterialTheme.typography.bodyLarge,
       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
       modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
@@ -344,9 +344,9 @@ private fun NotesTopBar(
       )
     },
     colors =
-      TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.background,
-      ),
+    TopAppBarDefaults.topAppBarColors(
+      containerColor = MaterialTheme.colorScheme.background,
+    ),
   )
 }
 

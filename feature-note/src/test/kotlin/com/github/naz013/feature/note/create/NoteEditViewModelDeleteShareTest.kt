@@ -1,10 +1,10 @@
 package com.github.naz013.feature.note.create
 
 import androidx.compose.ui.text.input.TextFieldValue
-import com.github.naz013.feature.note.R
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.note.R
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -19,7 +19,7 @@ import java.io.File
  * Covers [NoteEditViewModel.onDeleteConfirmed] (delete) and [NoteEditViewModel.onShareClick]
  * (share). Both talk to their own mocked use case / repository and post a one-shot [event].
  */
-class NoteEditViewModelDeleteShareTest : NoteEditViewModelTestSupport() {
+internal class NoteEditViewModelDeleteShareTest : NoteEditViewModelTestSupport() {
 
   @Test
   fun `onDeleteConfirmed does nothing for a note that was never saved`() {

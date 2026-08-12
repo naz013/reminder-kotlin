@@ -40,7 +40,7 @@ internal class ImageDecoder(
 
   private fun createEmpty(count: Int): MutableList<UiNoteImage> {
     val mutableList = mutableListOf<UiNoteImage>()
-    for (i in 0 until count) {
+    repeat(count) {
       mutableList.add(
         UiNoteImage(
           id = 0,

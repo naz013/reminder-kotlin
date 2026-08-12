@@ -10,7 +10,7 @@ import org.junit.Test
  * Covers [NoteEditViewModel.onTagToggle]: attach/detach delegation to the tag assignment
  * repository and the resulting cloud-sync upload trigger for the whole tag-assignments snapshot.
  */
-class NoteEditViewModelTagsTest : NoteEditViewModelTestSupport() {
+internal class NoteEditViewModelTagsTest : NoteEditViewModelTestSupport() {
 
   @Test
   fun `onTagToggle attaches an unselected tag and schedules an upload of the tag assignments snapshot`() {

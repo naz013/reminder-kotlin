@@ -53,13 +53,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.naz013.feature.note.R
-import com.github.naz013.ui.note.NoteFontProvider
-import org.koin.compose.koinInject
 import com.github.naz013.common.uri.UriUtil
+import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.dragAndDropHighlight
+import com.github.naz013.ui.note.NoteFontProvider
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,14 +79,14 @@ internal fun NoteEditScreen(
 
   BoxWithConstraints(
     modifier =
-      modifier
-        .fillMaxSize()
-        .background(backgroundColor)
-        .dragAndDropHighlight(
-          dropHighlightColor,
-          onDrop = actions.onDrop,
-          mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN, UriUtil.ANY_MIME),
-        ),
+    modifier
+      .fillMaxSize()
+      .background(backgroundColor)
+      .dragAndDropHighlight(
+        dropHighlightColor,
+        onDrop = actions.onDrop,
+        mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN, UriUtil.ANY_MIME),
+      ),
   ) {
     val barMaxWidth = maxWidth - 32.dp
     Column(modifier = Modifier.fillMaxSize()) {
@@ -125,22 +125,22 @@ internal fun NoteEditScreen(
           }
         },
         colors =
-          TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            navigationIconContentColor = contentColor,
-            actionIconContentColor = contentColor,
-            titleContentColor = contentColor,
-          ),
+        TopAppBarDefaults.topAppBarColors(
+          containerColor = Color.Transparent,
+          navigationIconContentColor = contentColor,
+          actionIconContentColor = contentColor,
+          titleContentColor = contentColor,
+        ),
       )
 
       Column(
         modifier =
-          Modifier
-            .weight(1f)
-            .verticalScroll(rememberScrollState())
-            .pointerInput(Unit) {
-              detectTapGestures(onTap = { focusManager.clearFocus() })
-            }.padding(horizontal = 16.dp),
+        Modifier
+          .weight(1f)
+          .verticalScroll(rememberScrollState())
+          .pointerInput(Unit) {
+            detectTapGestures(onTap = { focusManager.clearFocus() })
+          }.padding(horizontal = 16.dp),
       ) {
         val context = LocalContext.current
         val noteFontProvider = koinInject<NoteFontProvider>()
@@ -158,61 +158,61 @@ internal fun NoteEditScreen(
           value = state.titleFieldValue,
           onValueChange = onTitleFieldValueChange,
           modifier =
-            Modifier
-              .fillMaxWidth()
-              .padding(top = 16.dp)
-              .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.TITLE) },
+          Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+            .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.TITLE) },
           textStyle =
-            MaterialTheme.typography.bodyLarge.copy(
-              color = contentColor,
-              fontSize = state.titleFontSize.sp,
-              fontFamily = titleFontFamily,
-              lineHeight = TextUnit.Unspecified,
-            ),
+          MaterialTheme.typography.bodyLarge.copy(
+            color = contentColor,
+            fontSize = state.titleFontSize.sp,
+            fontFamily = titleFontFamily,
+            lineHeight = TextUnit.Unspecified,
+          ),
           placeholder = { Text(stringResource(R.string.title)) },
           colors =
-            TextFieldDefaults.colors(
-              focusedContainerColor = Color.Transparent,
-              unfocusedContainerColor = Color.Transparent,
-              disabledContainerColor = Color.Transparent,
-              focusedIndicatorColor = Color.Transparent,
-              unfocusedIndicatorColor = Color.Transparent,
-              cursorColor = contentColor,
-              focusedTextColor = contentColor,
-              unfocusedTextColor = contentColor,
-              focusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
-              unfocusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
-            ),
+          TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = contentColor,
+            focusedTextColor = contentColor,
+            unfocusedTextColor = contentColor,
+            focusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
+            unfocusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
+          ),
         )
         TextField(
           value = state.textFieldValue,
           onValueChange = onTextFieldValueChange,
           modifier =
-            Modifier
-              .fillMaxWidth()
-              .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.BODY) },
+          Modifier
+            .fillMaxWidth()
+            .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.BODY) },
           textStyle =
-            MaterialTheme.typography.bodyLarge.copy(
-              color = contentColor,
-              fontSize = state.fontSize.sp,
-              fontFamily = fontFamily,
-              lineHeight = TextUnit.Unspecified,
-            ),
+          MaterialTheme.typography.bodyLarge.copy(
+            color = contentColor,
+            fontSize = state.fontSize.sp,
+            fontFamily = fontFamily,
+            lineHeight = TextUnit.Unspecified,
+          ),
           placeholder = { Text(stringResource(R.string.note)) },
           visualTransformation = boldRangeVisualTransformation(state.boldRange),
           colors =
-            TextFieldDefaults.colors(
-              focusedContainerColor = Color.Transparent,
-              unfocusedContainerColor = Color.Transparent,
-              disabledContainerColor = Color.Transparent,
-              focusedIndicatorColor = Color.Transparent,
-              unfocusedIndicatorColor = Color.Transparent,
-              cursorColor = contentColor,
-              focusedTextColor = contentColor,
-              unfocusedTextColor = contentColor,
-              focusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
-              unfocusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
-            ),
+          TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = contentColor,
+            focusedTextColor = contentColor,
+            unfocusedTextColor = contentColor,
+            focusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
+            unfocusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
+          ),
         )
 
         NoteEditImageGrid(
@@ -220,9 +220,9 @@ internal fun NoteEditScreen(
           onImageClick = actions.onImageOpen,
           onRemoveClick = actions.onImageRemove,
           modifier =
-            Modifier
-              .fillMaxWidth()
-              .padding(top = 16.dp),
+          Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
         )
 
         // Reserve space so the floating bar never overlaps the last content row.
@@ -234,24 +234,24 @@ internal fun NoteEditScreen(
     val barContentColor = MaterialTheme.colorScheme.onPrimaryContainer
     NoteEditFloatingBar(
       items =
-        noteEditBarItems(
-          state = state,
-          supportsSpeech = supportsSpeech,
-          contentColor = barContentColor,
-          barColor = barContainerColor,
-          barMaxWidth = barMaxWidth,
-          sliderColors = sliderColors,
-          actions = actions,
-        ),
+      noteEditBarItems(
+        state = state,
+        supportsSpeech = supportsSpeech,
+        contentColor = barContentColor,
+        barColor = barContainerColor,
+        barMaxWidth = barMaxWidth,
+        sliderColors = sliderColors,
+        actions = actions,
+      ),
       containerColor = barContainerColor,
       contentColor = barContentColor,
       modifier =
-        Modifier
-          .align(Alignment.BottomCenter)
-          .navigationBarsPadding()
-          .imePadding()
-          .padding(bottom = 24.dp)
-          .widthIn(max = barMaxWidth),
+      Modifier
+        .align(Alignment.BottomCenter)
+        .navigationBarsPadding()
+        .imePadding()
+        .padding(bottom = 24.dp)
+        .widthIn(max = barMaxWidth),
     )
   }
 
@@ -311,12 +311,12 @@ private fun noteEditBarItems(
           val swatch = sliderColors.getOrNull(state.colorIndex) ?: contentColor
           Box(
             modifier =
-              Modifier
-                .size(24.dp)
-                .clip(CircleShape)
-                .background(swatch.copy(alpha = state.opacity / 100f))
-                .border(2.dp, contentColor.copy(alpha = 0.6f), CircleShape)
-                .semantics { contentDescription = colorDescription },
+            Modifier
+              .size(24.dp)
+              .clip(CircleShape)
+              .background(swatch.copy(alpha = state.opacity / 100f))
+              .border(2.dp, contentColor.copy(alpha = 0.6f), CircleShape)
+              .semantics { contentDescription = colorDescription },
           )
         },
         bubbleContent = {
@@ -417,9 +417,12 @@ private fun noteEditBarItems(
     )
   }
 
+private fun IntRange.isOutOfBoundsFor(text: CharSequence): Boolean =
+  first < 0 || last >= text.length || first > last
+
 private fun boldRangeVisualTransformation(range: IntRange?): VisualTransformation =
   VisualTransformation { text ->
-    if (range == null || range.first < 0 || range.last >= text.length || range.first > range.last) {
+    if (range == null || range.isOutOfBoundsFor(text)) {
       TransformedText(text, OffsetMapping.Identity)
     } else {
       val annotated =

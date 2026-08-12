@@ -49,9 +49,9 @@ internal fun PreviewNoteImageCarousel(
     itemWidth = IMAGE_ITEM_WIDTH,
     itemSpacing = IMAGE_ITEM_SPACING,
     modifier =
-      modifier
-        .fillMaxWidth()
-        .height(IMAGE_CAROUSEL_HEIGHT),
+    modifier
+      .fillMaxWidth()
+      .height(IMAGE_CAROUSEL_HEIGHT),
   ) { index ->
     val image = images[index]
     val visibleState = remember(image.id) { MutableTransitionState(false) }
@@ -62,29 +62,29 @@ internal fun PreviewNoteImageCarousel(
     AnimatedVisibility(
       visibleState = visibleState,
       modifier =
-        Modifier
-          .height(IMAGE_CAROUSEL_HEIGHT)
-          .maskClip(MaterialTheme.shapes.medium),
+      Modifier
+        .height(IMAGE_CAROUSEL_HEIGHT)
+        .maskClip(MaterialTheme.shapes.medium),
       enter =
-        fadeIn(animationSpec = tween(IMAGE_ANIMATION_DURATION_MS)) +
-          scaleIn(
-            animationSpec =
-              spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessLow,
-              ),
-            initialScale = 0.85f,
+      fadeIn(animationSpec = tween(IMAGE_ANIMATION_DURATION_MS)) +
+        scaleIn(
+          animationSpec =
+          spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow,
           ),
+          initialScale = 0.85f,
+        ),
     ) {
       AsyncImage(
         model = image.filePath,
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier =
-          Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable { onImageClick(index) },
+        Modifier
+          .fillMaxSize()
+          .background(MaterialTheme.colorScheme.surfaceVariant)
+          .clickable { onImageClick(index) },
       )
     }
   }

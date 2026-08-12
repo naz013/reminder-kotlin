@@ -11,7 +11,6 @@ import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
 import com.github.naz013.appwidgets.singlenote.drawable.NoteTextDrawable
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.note.NoteWithImages
-import com.github.naz013.ui.note.UiNoteImagesAdapter
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.UnitsConverter
 import com.github.naz013.ui.common.font.FontApi
@@ -19,6 +18,7 @@ import com.github.naz013.ui.common.isAlmostTransparent
 import com.github.naz013.ui.common.isColorDark
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.common.view.ViewUtils
+import com.github.naz013.ui.note.UiNoteImagesAdapter
 
 internal class UiNoteWidgetAdapter(
   private val themeProvider: ThemeProvider,

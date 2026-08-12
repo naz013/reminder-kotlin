@@ -6,9 +6,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.feature.workflow.builder.WorkflowRuleBuilderScreen
 import com.github.naz013.feature.workflow.builder.WorkflowRuleBuilderViewModel
-import com.github.naz013.domain.workflow.WorkflowScopeType
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

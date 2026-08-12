@@ -1,10 +1,10 @@
 package com.github.naz013.feature.workflow
 
+import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
-import com.github.naz013.domain.workflow.WorkflowAction
-import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.logic.workflow.PendingWorkflowAction
+import com.github.naz013.repository.ReminderV2Repository
 
 /**
  * Finishes the two [WorkflowAction] variants [WorkflowEngine][com.github.naz013.logic.workflow.WorkflowEngine]

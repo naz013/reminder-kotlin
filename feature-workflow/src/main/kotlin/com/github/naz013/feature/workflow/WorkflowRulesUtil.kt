@@ -8,9 +8,9 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.repository.WorkflowTemplateRepository
-import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 
 /**
  * Seeds the built-in workflow template gallery on first run, and applies the archive template

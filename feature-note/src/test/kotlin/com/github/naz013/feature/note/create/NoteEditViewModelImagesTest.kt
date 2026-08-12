@@ -19,7 +19,7 @@ import org.junit.Test
  * picked/dropped uris via [com.github.naz013.feature.note.create.images.ImageDecoder], downloading an
  * image from a pasted url, removing an image, and opening the full-screen image preview.
  */
-class NoteEditViewModelImagesTest : NoteEditViewModelTestSupport() {
+internal class NoteEditViewModelImagesTest : NoteEditViewModelTestSupport() {
 
   @Test
   fun `addBitmap appends a loading placeholder then replaces it with the saved image`() {

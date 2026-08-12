@@ -34,10 +34,10 @@ internal class UiNotePreviewAdapter(
       uniqueId = noteWithImages.note?.uniqueId ?: 1133,
       textSize = textSize.toFloat(),
       titleTypeface =
-        noteFontProvider.getTypeface(
-          contextProvider.themedContext,
-          noteWithImages.getTitleFontStyle(),
-        ),
+      noteFontProvider.getTypeface(
+        contextProvider.themedContext,
+        noteWithImages.getTitleFontStyle(),
+      ),
       titleTextSize = titleTextSize.toFloat(),
       isArchived = noteWithImages.note?.archived ?: false,
     )

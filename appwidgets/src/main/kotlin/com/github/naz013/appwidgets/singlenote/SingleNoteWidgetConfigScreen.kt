@@ -1,6 +1,5 @@
 package com.github.naz013.appwidgets.singlenote
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
@@ -25,18 +23,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.compose.WidgetConfigScaffold
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
-import com.github.naz013.ui.note.UiNoteImage
-import com.github.naz013.ui.note.UiNoteListItem
-import com.github.naz013.ui.note.CheckableNoteCard
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
+import com.github.naz013.ui.note.CheckableNoteCard
+import com.github.naz013.ui.note.UiNoteImage
+import com.github.naz013.ui.note.UiNoteListItem
 import kotlin.math.roundToInt
 
 @Composable
@@ -209,7 +206,6 @@ private fun <T> AlignmentRow(
     }
   }
 }
-
 
 @Preview(showBackground = true)
 @Composable

@@ -1,22 +1,6 @@
 package com.github.naz013.feature.note.preview
 
 import androidx.compose.ui.graphics.Color
-import com.github.naz013.testing.BaseTest
-import com.github.naz013.feature.note.R
-import com.github.naz013.feature.note.UiNoteNotificationAdapter
-import com.github.naz013.feature.note.UiNotePreviewAdapter
-import com.github.naz013.ui.note.UiNoteImage
-import com.github.naz013.feature.note.UiNoteNotification
-import com.github.naz013.feature.note.UiNotePreview
-import com.github.naz013.ui.note.NoteNotifier
-import com.github.naz013.testing.mockDispatcherProvider
-import com.github.naz013.ui.note.NoteColorEngine
-import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttachedReminder
-import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
-import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
-import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
-import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
-import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -25,8 +9,24 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.note.R
+import com.github.naz013.feature.note.UiNoteNotification
+import com.github.naz013.feature.note.UiNoteNotificationAdapter
+import com.github.naz013.feature.note.UiNotePreview
+import com.github.naz013.feature.note.UiNotePreviewAdapter
+import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttachedReminder
+import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
+import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
+import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
+import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.testing.BaseTest
+import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.ui.note.NoteColorEngine
+import com.github.naz013.ui.note.NoteNotifier
+import com.github.naz013.ui.note.UiNoteImage
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -406,7 +406,9 @@ class PreviewNoteViewModelTest : BaseTest() {
       coVerify(exactly = 1) {
         saveReminderUseCase(
           match {
-            it.noteId == "" && it.sync.version == attached.sync.version + 1 && it.sync.syncState == SyncState.WaitingForUpload
+            it.noteId == "" &&
+              it.sync.version == attached.sync.version + 1 &&
+              it.sync.syncState == SyncState.WaitingForUpload
           },
         )
       }

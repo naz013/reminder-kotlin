@@ -32,9 +32,9 @@ fun CheckableNoteCard(
     trailingContent = {
       Icon(
         painter =
-          painterResource(
-            if (selected) R.drawable.ic_builder_google_task_list else R.drawable.ic_fluent_radio_button,
-          ),
+        painterResource(
+          if (selected) R.drawable.ic_builder_google_task_list else R.drawable.ic_fluent_radio_button,
+        ),
         contentDescription = null,
         tint = note.textColor,
         modifier = Modifier.padding(8.dp).size(24.dp),

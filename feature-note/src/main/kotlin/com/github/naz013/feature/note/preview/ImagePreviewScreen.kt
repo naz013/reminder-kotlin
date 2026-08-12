@@ -20,12 +20,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.note.R
-import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.note.UiNoteImage
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
 import me.saket.telephoto.zoomable.rememberZoomableState
@@ -40,9 +39,9 @@ internal fun ImagePreviewScreen(
 ) {
   Column(
     modifier =
-      modifier
-        .fillMaxSize()
-        .background(state.background),
+    modifier
+      .fillMaxSize()
+      .background(state.background),
   ) {
     TopAppBar(
       title = {
@@ -90,9 +89,11 @@ private fun ZoomableImagePage(image: UiNoteImage) {
   val zoomableImageState = rememberZoomableImageState(rememberZoomableState())
   Box(modifier = Modifier.fillMaxSize()) {
     if (!zoomableImageState.isImageDisplayed) {
-      CircularProgressIndicator(modifier = Modifier
-        .align(Alignment.Center)
-        .size(32.dp))
+      CircularProgressIndicator(
+        modifier = Modifier
+          .align(Alignment.Center)
+          .size(32.dp)
+      )
     }
     ZoomableAsyncImage(
       model = image.filePath,

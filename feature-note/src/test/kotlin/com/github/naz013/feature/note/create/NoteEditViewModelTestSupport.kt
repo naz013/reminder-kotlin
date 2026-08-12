@@ -3,27 +3,20 @@ package com.github.naz013.feature.note.create
 import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.graphics.Color
-import com.github.naz013.testing.BaseTest
-import com.github.naz013.feature.note.UiNoteEditAdapter
-import com.github.naz013.feature.note.image.NoteImageRepository
-import com.github.naz013.feature.note.UiNoteEdit
-import com.github.naz013.ui.note.UiNoteImage
-import com.github.naz013.ui.note.UiNoteImageState
-import com.github.naz013.feature.note.create.ImageLoader
-import com.github.naz013.ui.note.NotePreferences
-import com.github.naz013.testing.mockDispatcherProvider
-import com.github.naz013.ui.note.NoteColorEngine
-import com.github.naz013.feature.note.create.drop.DroppedContentParser
-import com.github.naz013.feature.note.create.images.ImageDecoder
-import com.github.naz013.feature.note.preview.ImagesSingleton
-import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
-import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
-import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.feature.note.UiNoteEdit
+import com.github.naz013.feature.note.UiNoteEditAdapter
+import com.github.naz013.feature.note.create.drop.DroppedContentParser
+import com.github.naz013.feature.note.create.images.ImageDecoder
+import com.github.naz013.feature.note.image.NoteImageRepository
+import com.github.naz013.feature.note.preview.ImagesSingleton
+import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
+import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
@@ -33,6 +26,12 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.testing.BaseTest
+import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.ui.note.NoteColorEngine
+import com.github.naz013.ui.note.NotePreferences
+import com.github.naz013.ui.note.UiNoteImage
+import com.github.naz013.ui.note.UiNoteImageState
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.every
@@ -54,7 +53,7 @@ import java.util.regex.Pattern
  * `onStart { load() }`), so reading `viewModel.state.value` directly after construction/actions is
  * safe and does not re-trigger `load()`.
  */
-open class NoteEditViewModelTestSupport : BaseTest() {
+internal open class NoteEditViewModelTestSupport : BaseTest() {
   protected val imageDecoder = mockk<ImageDecoder>()
   protected val noteRepository = mockk<NoteRepository>()
   protected val reminderV2Repository = mockk<ReminderV2Repository>()
@@ -140,7 +139,10 @@ open class NoteEditViewModelTestSupport : BaseTest() {
     val unsafe = unsafeField.get(null)
     val unsafeClass = unsafe.javaClass
     val base = unsafeClass.getMethod("staticFieldBase", java.lang.reflect.Field::class.java).invoke(unsafe, field)
-    val offset = unsafeClass.getMethod("staticFieldOffset", java.lang.reflect.Field::class.java).invoke(unsafe, field) as Long
+    val offset = unsafeClass.getMethod(
+      "staticFieldOffset",
+      java.lang.reflect.Field::class.java
+    ).invoke(unsafe, field) as Long
     val pattern = Pattern.compile("^(https?|ftp)://[^\\s/$.?#].\\S*$", Pattern.CASE_INSENSITIVE)
     unsafeClass.getMethod("putObject", Any::class.java, Long::class.javaPrimitiveType, Any::class.java)
       .invoke(unsafe, base, offset, pattern)
@@ -186,8 +188,10 @@ open class NoteEditViewModelTestSupport : BaseTest() {
     } answers {
       val uris = secondArg<List<Uri>>()
       val startCount = thirdArg<Int>()
+
       @Suppress("UNCHECKED_CAST")
       val onLoading = arg<(List<UiNoteImage>) -> Unit>(3)
+
       @Suppress("UNCHECKED_CAST")
       val onReady = arg<(Int, UiNoteImage) -> Unit>(4)
       val loading = uris.map { UiNoteImage(id = 0, fileName = "loading", state = UiNoteImageState.LOADING) }

@@ -86,22 +86,22 @@ fun NoteCard(
 
   Card(
     modifier =
-      modifier
-        .fillMaxWidth()
-        .clip(MaterialTheme.shapes.medium)
-        .clickable(onClick = onClick),
+    modifier
+      .fillMaxWidth()
+      .clip(MaterialTheme.shapes.medium)
+      .clickable(onClick = onClick),
     colors = CardDefaults.cardColors(containerColor = note.backgroundColor),
     border = border,
   ) {
     Box(modifier = Modifier.fillMaxWidth()) {
       Column(
         modifier =
-          Modifier.padding(
-            start = CONTENT_PADDING_HORIZONTAL,
-            top = CONTENT_PADDING_TOP,
-            end = CONTENT_PADDING_HORIZONTAL,
-            bottom = CONTENT_PADDING_BOTTOM,
-          ),
+        Modifier.padding(
+          start = CONTENT_PADDING_HORIZONTAL,
+          top = CONTENT_PADDING_TOP,
+          end = CONTENT_PADDING_HORIZONTAL,
+          bottom = CONTENT_PADDING_BOTTOM,
+        ),
       ) {
         if (note.title.isNotEmpty()) {
           Text(
@@ -126,12 +126,12 @@ fun NoteCard(
             maxLines = BODY_TEXT_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
             modifier =
-              Modifier
-                .fillMaxWidth()
-                .padding(
-                  top = if (note.title.isNotEmpty()) TEXT_BLOCK_SPACING else 0.dp,
-                  end = TEXT_END_PADDING,
-                ),
+            Modifier
+              .fillMaxWidth()
+              .padding(
+                top = if (note.title.isNotEmpty()) TEXT_BLOCK_SPACING else 0.dp,
+                end = TEXT_END_PADDING,
+              ),
           )
         }
         if (note.images.isNotEmpty()) {
@@ -155,19 +155,19 @@ private fun NoteCardImages(
       contentDescription = null,
       contentScale = ContentScale.Crop,
       modifier =
-        Modifier
-          .fillMaxWidth()
-          .height(dimensionResource(R.dimen.image_height_list))
-          .clip(MaterialTheme.shapes.small)
-          .clickable { onImageClick(images.first().id) },
+      Modifier
+        .fillMaxWidth()
+        .height(dimensionResource(R.dimen.image_height_list))
+        .clip(MaterialTheme.shapes.small)
+        .clickable { onImageClick(images.first().id) },
     )
     if (images.size > 1) {
       val scrollState = rememberScrollState()
       Row(
         modifier =
-          Modifier
-            .horizontalScroll(scrollState)
-            .padding(top = THUMBNAILS_TOP_PADDING),
+        Modifier
+          .horizontalScroll(scrollState)
+          .padding(top = THUMBNAILS_TOP_PADDING),
       ) {
         images.drop(1).forEach { image ->
           AsyncImage(
@@ -175,11 +175,11 @@ private fun NoteCardImages(
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier =
-              Modifier
-                .size(SECONDARY_IMAGE_SIZE)
-                .padding(end = 4.dp)
-                .clip(MaterialTheme.shapes.small)
-                .clickable { onImageClick(image.id) },
+            Modifier
+              .size(SECONDARY_IMAGE_SIZE)
+              .padding(end = 4.dp)
+              .clip(MaterialTheme.shapes.small)
+              .clickable { onImageClick(image.id) },
           )
         }
       }
@@ -193,18 +193,18 @@ private fun NoteCardPreview() {
   AppTheme {
     NoteCard(
       note =
-        UiNoteListItem(
-          id = "1",
-          title = "Shopping list",
-          text = "Milk, eggs, bread, butter, cheese, tomatoes, coffee",
-          backgroundColor = androidx.compose.ui.graphics.Color(0xFFFFF59D),
-          textColor = androidx.compose.ui.graphics.Color.Black,
-          fontStyle = 9,
-          fontSize = 14f,
-          titleFontStyle = 2,
-          titleFontSize = 20f,
-          images = emptyList(),
-        ),
+      UiNoteListItem(
+        id = "1",
+        title = "Shopping list",
+        text = "Milk, eggs, bread, butter, cheese, tomatoes, coffee",
+        backgroundColor = androidx.compose.ui.graphics.Color(0xFFFFF59D),
+        textColor = androidx.compose.ui.graphics.Color.Black,
+        fontStyle = 9,
+        fontSize = 14f,
+        titleFontStyle = 2,
+        titleFontSize = 20f,
+        images = emptyList(),
+      ),
       onClick = {},
     )
   }

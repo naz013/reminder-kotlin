@@ -41,11 +41,11 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.github.naz013.feature.note.R
-import com.github.naz013.ui.note.NoteFontProvider
-import org.koin.compose.koinInject
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
+import com.github.naz013.ui.note.NoteFontProvider
 import com.github.naz013.ui.tag.TagChipPicker
+import org.koin.compose.koinInject
 
 /**
  * The icon content for the mic/speech bar item — switches between a static mic icon, an
@@ -99,10 +99,10 @@ internal fun ReminderPanel(
         checked = state.isReminderAttached,
         onCheckedChange = actions.onReminderAttachedChanged,
         colors =
-          SwitchDefaults.colors(
-            checkedThumbColor = contentColor,
-            checkedTrackColor = contentColor.copy(alpha = 0.5f),
-          ),
+        SwitchDefaults.colors(
+          checkedThumbColor = contentColor,
+          checkedTrackColor = contentColor.copy(alpha = 0.5f),
+        ),
       )
       Text(
         text = stringResource(R.string.add_reminder),
@@ -124,9 +124,9 @@ internal fun ReminderPanel(
         color = contentColor.copy(alpha = dateTimeAlpha),
         style = MaterialTheme.typography.titleLarge,
         modifier =
-          Modifier
-            .padding(start = 24.dp)
-            .clickableIfEnabled(state.isReminderAttached, actions.onTimeClick),
+        Modifier
+          .padding(start = 24.dp)
+          .clickableIfEnabled(state.isReminderAttached, actions.onTimeClick),
       )
     }
   }
@@ -161,9 +161,9 @@ internal fun FontPanel(
         color = contentColor,
         style = MaterialTheme.typography.titleMedium,
         modifier =
-          Modifier
-            .padding(top = 8.dp)
-            .clickableIfEnabled(true) { showFontPicker = true },
+        Modifier
+          .padding(top = 8.dp)
+          .clickableIfEnabled(true) { showFontPicker = true },
       )
       if (showFontPicker) {
         CloudBubble(
@@ -194,11 +194,11 @@ internal fun FontPanel(
       onValueChange = { actions.onFontSizeChanged(it.toInt()) },
       valueRange = 6f..150f,
       colors =
-        SliderDefaults.colors(
-          thumbColor = contentColor,
-          activeTrackColor = contentColor,
-          inactiveTrackColor = contentColor.copy(alpha = 0.24f),
-        ),
+      SliderDefaults.colors(
+        thumbColor = contentColor,
+        activeTrackColor = contentColor,
+        inactiveTrackColor = contentColor.copy(alpha = 0.24f),
+      ),
     )
   }
 }
@@ -231,10 +231,10 @@ private fun ImageSourceRow(
     color = contentColor,
     style = MaterialTheme.typography.titleMedium,
     modifier =
-      Modifier
-        .fillMaxWidth()
-        .clickable(onClick = onClick)
-        .padding(vertical = 12.dp),
+    Modifier
+      .fillMaxWidth()
+      .clickable(onClick = onClick)
+      .padding(vertical = 12.dp),
   )
 }
 
@@ -334,20 +334,20 @@ private fun FontPickerList(
     itemsIndexed(fonts, key = { index, _ -> index }) { index, (name, fontFamily) ->
       Row(
         modifier =
-          Modifier
-            .fillMaxWidth()
-            .clickable { onSelected(index) }
-            .padding(vertical = 2.dp),
+        Modifier
+          .fillMaxWidth()
+          .clickable { onSelected(index) }
+          .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         RadioButton(
           selected = selected == index,
           onClick = { onSelected(index) },
           colors =
-            RadioButtonDefaults.colors(
-              selectedColor = contentColor,
-              unselectedColor = contentColor.copy(alpha = 0.6f),
-            ),
+          RadioButtonDefaults.colors(
+            selectedColor = contentColor,
+            unselectedColor = contentColor.copy(alpha = 0.6f),
+          ),
         )
         Text(
           text = name,

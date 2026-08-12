@@ -1,7 +1,7 @@
 package com.github.naz013.feature.workflow
 
-import com.github.naz013.feature.workflow.builder.WorkflowRuleBuilderViewModel
 import com.github.naz013.domain.workflow.WorkflowScopeType
+import com.github.naz013.feature.workflow.builder.WorkflowRuleBuilderViewModel
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel

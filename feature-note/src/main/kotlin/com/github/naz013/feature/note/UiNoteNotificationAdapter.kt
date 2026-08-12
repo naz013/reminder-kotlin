@@ -2,8 +2,6 @@ package com.github.naz013.feature.note
 
 import android.graphics.BitmapFactory
 import androidx.core.content.ContextCompat
-import com.github.naz013.feature.note.R
-import com.github.naz013.feature.note.UiNoteNotification
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.ui.common.isAlmostTransparent

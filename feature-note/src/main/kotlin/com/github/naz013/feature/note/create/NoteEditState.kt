@@ -2,9 +2,9 @@ package com.github.naz013.feature.note.create
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
-import com.github.naz013.ui.note.UiNoteImage
-import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.domain.font.FontParams
+import com.github.naz013.ui.note.NoteColorEngine
+import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.tag.TagChipState
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
