@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.BirthdaysNavKey
+import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher

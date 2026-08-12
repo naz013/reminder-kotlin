@@ -1,6 +1,6 @@
 package com.elementary.tasks.calendar.occurrence
 
-import com.elementary.tasks.calendar.occurrence.worker.CalculateBirthdayOccurrencesTask
+import com.github.naz013.logic.birthday.CalculateBirthdayOccurrencesTask
 import com.github.naz013.logic.reminder.work.CalculateReminderOccurrencesTask
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.BirthdayRepository

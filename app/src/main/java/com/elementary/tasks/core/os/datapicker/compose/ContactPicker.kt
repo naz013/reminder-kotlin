@@ -8,7 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.elementary.tasks.core.os.data.ContactData
+import com.github.naz013.feature.birthday.ContactData
 import com.github.naz013.feature.common.readString
 
 @Composable

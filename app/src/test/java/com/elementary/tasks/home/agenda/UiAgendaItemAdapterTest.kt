@@ -1,9 +1,9 @@
 package com.elementary.tasks.home.agenda
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
+import com.github.naz013.ui.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.ui.UiTextElement
-import com.elementary.tasks.core.data.ui.birthday.UiBirthdayList
+import com.github.naz013.ui.birthday.UiBirthdayList
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.elementary.tasks.reminder.lists.data.UiReminderListActions

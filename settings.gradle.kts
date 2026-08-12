@@ -60,6 +60,7 @@ include(":data:scheduler-api")
 
 // ui - shared Compose building blocks, no navigation/ViewModels
 include(":ui:ui-common")
+include(":ui:ui-birthday")
 include(":ui:ui-googletask")
 include(":ui:ui-group")
 include(":ui:ui-note")
@@ -68,6 +69,7 @@ include(":ui:ui-reminder")
 include(":ui:ui-tag")
 
 // logic - cross-feature business logic
+include(":logic:logic-birthday")
 include(":logic:logic-googletask")
 include(":logic:logic-group")
 include(":logic:logic-note")
@@ -78,6 +80,7 @@ include(":logic:logic-workflow")
 
 // feature - vertical feature slices, only :app depends on these
 include(":feature:feature-note")
+include(":feature:feature-birthday")
 include(":feature:feature-googletask")
 include(":feature:feature-group")
 include(":feature:feature-reminder")

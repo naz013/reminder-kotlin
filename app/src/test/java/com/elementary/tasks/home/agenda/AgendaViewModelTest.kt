@@ -1,7 +1,7 @@
 package com.elementary.tasks.home.agenda
 
-import com.elementary.tasks.birthdays.BirthdaySmartListPredicate
-import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
+import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
+import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.text.UiTextFormat
 import com.elementary.tasks.mockDispatcherProvider

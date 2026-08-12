@@ -2,7 +2,7 @@ package com.elementary.tasks.calendar.dayview
 
 import com.elementary.tasks.calendar.history.GetHistoryByDayUseCase
 import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDayUseCase
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
+import com.github.naz013.ui.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.home.agenda.AgendaCategory
 import com.elementary.tasks.home.agenda.UiAgendaBirthday
 import com.elementary.tasks.home.agenda.UiAgendaItem

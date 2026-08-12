@@ -3,6 +3,8 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import com.elementary.tasks.calendar.holidays.HolidaySettingsGateImpl
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
+import com.elementary.tasks.core.birthdays.AppBirthdayNotifier
+import com.elementary.tasks.core.birthdays.AppBirthdayPreferences
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.data.repository.ReminderSettingsRepositoryImpl
@@ -32,6 +34,8 @@ import com.github.naz013.cloudapi.CloudKeysStorage
 import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.holidaysapi.HolidaySettingsGate
+import com.github.naz013.logic.birthday.BirthdayNotifier
+import com.github.naz013.logic.birthday.BirthdayPreferences
 import com.github.naz013.logic.reminder.RecurEventManager
 import com.github.naz013.notification.NotificationApi
 import com.github.naz013.repository.ReminderSettingsRepository
@@ -110,6 +114,9 @@ val utilModule = module {
   factory { AppNotePreferences(get()) as NotePreferences }
   factory { AppNoteFontProvider() as NoteFontProvider }
   factory { AppNoteNotifier(get()) as NoteNotifier }
+
+  factory { AppBirthdayPreferences(get()) as BirthdayPreferences }
+  factory { AppBirthdayNotifier(get()) as BirthdayNotifier }
 
   factory { Notifier(get(), get(), get(), get(), get(), get(), get()) }
   factory { Notifier(get(), get(), get(), get(), get(), get(), get()) as NotificationApi }

@@ -3,9 +3,9 @@ package com.elementary.tasks.home.agenda
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.BirthdayQueryFilter
-import com.elementary.tasks.birthdays.BirthdaySmartListPredicate
-import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
+import com.github.naz013.logic.birthday.BirthdayQueryFilter
+import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
+import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.elementary.tasks.reminder.lists.filter.query.ReminderV2QueryFilterInstance
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
