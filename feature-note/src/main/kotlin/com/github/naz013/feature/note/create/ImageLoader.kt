@@ -5,7 +5,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.ImageResult
 
-class ImageLoader(
+internal class ImageLoader(
   private val context: Context,
 ) {
   private val internalImageLoader =

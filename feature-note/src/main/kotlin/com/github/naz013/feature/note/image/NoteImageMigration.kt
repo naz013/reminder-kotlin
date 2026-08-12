@@ -4,7 +4,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import java.util.UUID
 
-class NoteImageMigration(
+class NoteImageMigration internal constructor(
   private val noteRepository: NoteRepository,
   private val noteImageRepository: NoteImageRepository,
 ) {

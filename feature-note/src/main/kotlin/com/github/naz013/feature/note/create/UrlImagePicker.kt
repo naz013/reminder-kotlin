@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.naz013.feature.note.R
 
 @Stable
-class UrlImagePickerState internal constructor() {
+internal class UrlImagePickerState internal constructor() {
   internal var clipboardUrl: String? by mutableStateOf(null)
   internal var showUrlInput: Boolean by mutableStateOf(false)
 
@@ -43,11 +43,11 @@ class UrlImagePickerState internal constructor() {
 }
 
 @Composable
-fun rememberUrlImagePickerState(): UrlImagePickerState = remember { UrlImagePickerState() }
+internal fun rememberUrlImagePickerState(): UrlImagePickerState = remember { UrlImagePickerState() }
 
 /** Renders whichever step of the URL flow is pending on [state]; no-op while neither is active. */
 @Composable
-fun UrlImagePickerDialogs(
+internal fun UrlImagePickerDialogs(
   state: UrlImagePickerState,
   onUrlConfirmed: (String) -> Unit,
 ) {

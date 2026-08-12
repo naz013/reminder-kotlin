@@ -10,7 +10,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import java.util.UUID
 
-data class NoteEditState(
+internal data class NoteEditState(
   val colorIndex: Int = 0,
   val opacity: Int = 100,
   val noteColors: NoteColorEngine.Colors = NoteColorEngine.Colors(Color.Unspecified, Color.Unspecified),
@@ -43,16 +43,16 @@ data class NoteEditState(
   val selectedTagIds: Set<String> = emptySet(),
 )
 
-enum class EditTab { COLOR, FONT, REMINDER, IMAGE, TAGS }
+internal enum class EditTab { COLOR, FONT, REMINDER, IMAGE, TAGS }
 
 /** Which of the two text fields last had focus — drives which field's font size/style
  *  [com.elementary.tasks.notes.create.FontPanel] displays and edits. */
-enum class NoteTextField { TITLE, BODY }
+internal enum class NoteTextField { TITLE, BODY }
 
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
-enum class NoteEditDialog { DELETE, SAME_NOTE }
+internal enum class NoteEditDialog { DELETE, SAME_NOTE }
 
-enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
+internal enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
 
 /**
  * One-shot signal that [NoteEditState.textFieldValue] was replaced programmatically (initial
@@ -60,6 +60,6 @@ enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
  * user typing — the [com.github.naz013.common.speech.SpeechEngine] instance is Context-bound and
  * lives outside the ViewModel, so it needs telling to resync its own text buffer to [text].
  */
-data class TextUpdate(
+internal data class TextUpdate(
   val text: String,
 )

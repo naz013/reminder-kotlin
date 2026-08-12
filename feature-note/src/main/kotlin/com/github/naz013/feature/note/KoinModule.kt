@@ -1,5 +1,6 @@
 package com.github.naz013.feature.note
 
+import com.github.naz013.feature.note.create.ImageLoader
 import com.github.naz013.feature.note.create.NoteEditViewModel
 import com.github.naz013.feature.note.create.drop.DroppedContentParser
 import com.github.naz013.feature.note.create.images.ImageDecoder
@@ -19,100 +20,100 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val featureNoteModule =
-  module {
-    factoryOf(::DeleteNoteUseCase)
-    factoryOf(::SaveNoteUseCase)
-    factoryOf(::ChangeNoteArchiveStateUseCase)
+val featureNoteModule = module {
+  factoryOf(::DeleteNoteUseCase)
+  factoryOf(::SaveNoteUseCase)
+  factoryOf(::ChangeNoteArchiveStateUseCase)
 
-    factoryOf(::CreateSharedNoteFileUseCase)
+  factoryOf(::CreateSharedNoteFileUseCase)
 
-    factoryOf(::ReminderToUiNoteAttachedReminder)
+  factoryOf(::ReminderToUiNoteAttachedReminder)
 
-    factoryOf(::UiNoteEditAdapter)
-    factoryOf(::UiNotePreviewAdapter)
-    factoryOf(::UiNoteNotificationAdapter)
+  factoryOf(::UiNoteEditAdapter)
+  factoryOf(::UiNotePreviewAdapter)
+  factoryOf(::UiNoteNotificationAdapter)
 
-    singleOf(::ImagesSingleton)
+  singleOf(::ImagesSingleton)
+  factoryOf(::ImageLoader)
 
-    singleOf(::NoteImageRepository)
-    factoryOf(::NoteImageMigration)
-    factoryOf(::ImageDecoder)
-    factoryOf(::DroppedContentParser)
+  singleOf(::NoteImageRepository)
+  factoryOf(::NoteImageMigration)
+  factoryOf(::ImageDecoder)
+  factoryOf(::DroppedContentParser)
 
-    viewModel { (id: String?, sharedText: String?, sharedImageUris: List<String>?, fromIntentData: Boolean) ->
-      NoteEditViewModel(
-        id,
-        sharedText,
-        sharedImageUris,
-        fromIntentData,
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
-    viewModel { (position: Int) -> ImagePreviewViewModel(position, get(), get()) }
-    viewModel { (isArchived: Boolean) ->
-      NotesViewModel(
-        isArchived = isArchived,
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
-    viewModel { (id: String) ->
-      PreviewNoteViewModel(
-        id,
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
+  viewModel { (id: String?, sharedText: String?, sharedImageUris: List<String>?, fromIntentData: Boolean) ->
+    NoteEditViewModel(
+      id,
+      sharedText,
+      sharedImageUris,
+      fromIntentData,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    )
   }
+  viewModel { (position: Int) -> ImagePreviewViewModel(position, get(), get()) }
+  viewModel { (isArchived: Boolean) ->
+    NotesViewModel(
+      isArchived = isArchived,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    )
+  }
+  viewModel { (id: String) ->
+    PreviewNoteViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    )
+  }
+}

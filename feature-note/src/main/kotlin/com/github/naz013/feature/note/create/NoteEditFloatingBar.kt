@@ -50,7 +50,7 @@ private const val BAR_PRESSED_SCALE = 1.05f
  * @param bubbleContent when non-null, tapping this item opens a [CloudBubble] anchored
  *   to it; when null, [onClick] is a direct one-shot action (e.g. opening the image picker).
  */
-data class NoteEditBarItem(
+internal data class NoteEditBarItem(
   val id: String,
   val contentDescription: String,
   val selected: Boolean = false,
@@ -64,7 +64,7 @@ data class NoteEditBarItem(
 private val BAR_ITEM_SIZE = 52.dp
 
 @Composable
-fun NoteEditFloatingBar(
+internal fun NoteEditFloatingBar(
   items: List<NoteEditBarItem>,
   containerColor: Color,
   contentColor: Color,

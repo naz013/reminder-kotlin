@@ -5,7 +5,7 @@ package com.github.naz013.feature.note.preview
  * (screen -> top bar / image carousel / reminder row / dialogs) doesn't need a long parameter
  * list at every level.
  */
-data class PreviewNoteActions(
+internal data class PreviewNoteActions(
   val onBackClick: () -> Unit = {},
   val onEditClick: () -> Unit = {},
   val onStatusClick: () -> Unit = {},

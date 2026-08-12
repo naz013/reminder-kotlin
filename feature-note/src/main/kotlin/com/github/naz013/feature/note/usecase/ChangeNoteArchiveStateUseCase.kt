@@ -7,7 +7,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.files.DataType
 
-class ChangeNoteArchiveStateUseCase(
+internal class ChangeNoteArchiveStateUseCase(
   private val noteRepository: NoteRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {

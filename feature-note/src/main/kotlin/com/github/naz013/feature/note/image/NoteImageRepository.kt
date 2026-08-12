@@ -6,10 +6,9 @@ import com.github.naz013.logging.Logger
 import java.io.File
 import java.io.InputStream
 
-class NoteImageRepository(
+internal class NoteImageRepository(
   private val context: Context,
 ) {
-  fun readBytes(filePath: String): ByteArray? = File(filePath).takeIf { it.exists() }?.readBytes()
 
   fun saveBytesToFile(
     fileName: String,

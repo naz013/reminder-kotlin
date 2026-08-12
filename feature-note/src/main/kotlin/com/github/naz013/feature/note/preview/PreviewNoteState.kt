@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
 
-data class PreviewNoteState(
+internal data class PreviewNoteState(
   val id: String = "",
   val title: String = "",
   val text: String = "",

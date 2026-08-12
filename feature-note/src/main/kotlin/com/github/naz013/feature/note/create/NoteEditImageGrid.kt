@@ -51,7 +51,7 @@ private const val IMAGE_MAX_STAGGER_DELAY_MS = 180L
  * grid there would be measured with infinite height constraints and crash.
  */
 @Composable
-fun NoteEditImageGrid(
+internal fun NoteEditImageGrid(
   images: List<UiNoteImage>,
   onImageClick: (Int) -> Unit,
   onRemoveClick: (Int) -> Unit,

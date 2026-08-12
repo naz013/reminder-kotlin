@@ -2,7 +2,7 @@ package com.github.naz013.feature.note
 
 import com.github.naz013.ui.note.UiNoteImage
 
-data class UiNoteEdit(
+internal data class UiNoteEdit(
   val id: String,
   val text: String,
   val typeface: Int,

@@ -63,7 +63,7 @@ import com.github.naz013.ui.common.compose.foundation.dragAndDropHighlight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteEditScreen(
+internal fun NoteEditScreen(
   state: NoteEditState,
   onTextFieldValueChange: (TextFieldValue) -> Unit,
   onTitleFieldValueChange: (TextFieldValue) -> Unit,

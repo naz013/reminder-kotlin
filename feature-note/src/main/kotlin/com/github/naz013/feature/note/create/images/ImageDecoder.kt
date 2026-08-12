@@ -2,17 +2,17 @@ package com.github.naz013.feature.note.create.images
 
 import android.content.Context
 import android.net.Uri
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.note.image.NoteImageRepository
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.note.UiNoteImageState
-import com.github.naz013.feature.note.create.withUIContext
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class ImageDecoder(
+internal class ImageDecoder(
   private val context: Context,
   private val dispatcherProvider: DispatcherProvider,
   private val noteImageRepository: NoteImageRepository,
@@ -26,12 +26,12 @@ class ImageDecoder(
   ) {
     scope.launch(dispatcherProvider.default()) {
       val emptyList = createEmpty(list.size)
-      withUIContext {
+      withContext(dispatcherProvider.main()) {
         onLoading.invoke(emptyList)
       }
       list.forEachIndexed { index, uri ->
         val image = addImageFromUri(uri, emptyList[index])
-        withUIContext {
+        withContext(dispatcherProvider.main()) {
           onReady.invoke(index + startCount, image)
         }
       }

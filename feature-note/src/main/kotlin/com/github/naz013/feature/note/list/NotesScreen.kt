@@ -52,7 +52,7 @@ private const val GRID_COLUMNS = 2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotesScreen(
+internal fun NotesScreen(
   modifier: Modifier = Modifier,
   state: NotesScreenState,
   onBackClick: (() -> Unit)?,

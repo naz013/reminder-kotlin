@@ -10,7 +10,7 @@ import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.logging.Logger
 import java.io.File
 
-interface NoteIntentSender {
+internal interface NoteIntentSender {
   fun send(text: String?, file: File)
 }
 
@@ -53,7 +53,7 @@ private class NoteIntentSenderImpl(
 }
 
 @Composable
-fun rememberNoteIntentSender(applicationId: String): NoteIntentSender {
+internal fun rememberNoteIntentSender(applicationId: String): NoteIntentSender {
   val context = LocalContext.current
   return NoteIntentSenderImpl(context, applicationId)
 }

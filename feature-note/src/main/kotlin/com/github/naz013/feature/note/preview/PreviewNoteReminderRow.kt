@@ -40,7 +40,7 @@ private const val REMINDER_STAGGER_DELAY_MS = 40L
 private const val REMINDER_MAX_STAGGER_DELAY_MS = 200L
 
 @Composable
-fun PreviewNoteReminderRow(
+internal fun PreviewNoteReminderRow(
   reminders: List<UiNoteAttachedReminder>,
   onEditClick: (String) -> Unit,
   onDetachClick: (String) -> Unit,

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ImagePreviewViewModel(
+internal class ImagePreviewViewModel(
   private val initialPosition: Int,
   private val imagesSingleton: ImagesSingleton,
   private val dispatcherProvider: DispatcherProvider,

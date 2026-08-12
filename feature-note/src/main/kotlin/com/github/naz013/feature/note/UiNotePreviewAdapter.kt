@@ -6,7 +6,7 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.ui.note.NoteFontProvider
 import com.github.naz013.ui.note.UiNoteImagesAdapter
 
-class UiNotePreviewAdapter(
+internal class UiNotePreviewAdapter(
   private val contextProvider: ContextProvider,
   private val uiNoteImagesAdapter: UiNoteImagesAdapter,
   private val noteFontProvider: NoteFontProvider,

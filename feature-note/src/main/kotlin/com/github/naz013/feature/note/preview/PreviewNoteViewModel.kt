@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class PreviewNoteViewModel(
+internal class PreviewNoteViewModel(
   val key: String,
   private val dispatcherProvider: DispatcherProvider,
   private val noteRepository: NoteRepository,

@@ -8,7 +8,7 @@ import com.github.naz013.ui.tag.TagChipState
  * (screen -> top bar / bottom bar / image grid / dialogs) doesn't need a long parameter list
  * at every level.
  */
-data class NoteEditActions(
+internal data class NoteEditActions(
   val onBackClick: () -> Unit = {},
   val onSaveClick: () -> Unit = {},
   val onShareClick: () -> Unit = {},

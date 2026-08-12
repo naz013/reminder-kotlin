@@ -9,7 +9,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.TagAssignmentRepository
 
-class DeleteNoteUseCase(
+internal class DeleteNoteUseCase(
   private val noteRepository: NoteRepository,
   private val noteImageRepository: NoteImageRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,

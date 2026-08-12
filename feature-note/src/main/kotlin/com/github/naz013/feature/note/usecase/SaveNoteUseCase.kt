@@ -10,7 +10,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.files.DataType
 
-class SaveNoteUseCase(
+internal class SaveNoteUseCase(
   private val noteRepository: NoteRepository,
   private val noteImageRepository: NoteImageRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,

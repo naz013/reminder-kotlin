@@ -53,7 +53,7 @@ import com.github.naz013.ui.tag.TagChipPicker
  * floating bar's generic icon slot, so it deliberately doesn't include its own [IconButton].
  */
 @Composable
-fun MicIcon(
+internal fun MicIcon(
   speechState: SpeechUiState,
   contentColor: Color,
 ) {
@@ -88,7 +88,7 @@ fun MicIcon(
 }
 
 @Composable
-fun ReminderPanel(
+internal fun ReminderPanel(
   state: NoteEditState,
   contentColor: Color,
   actions: NoteEditActions,
@@ -138,7 +138,7 @@ fun ReminderPanel(
  * getting their own, matching the body's existing font controls exactly.
  */
 @Composable
-fun FontPanel(
+internal fun FontPanel(
   state: NoteEditState,
   contentColor: Color,
   containerColor: Color,
@@ -204,7 +204,7 @@ fun FontPanel(
 }
 
 @Composable
-fun ImageSourcePanel(
+internal fun ImageSourcePanel(
   hasCamera: Boolean,
   contentColor: Color,
   onGalleryClick: () -> Unit,
@@ -239,7 +239,7 @@ private fun ImageSourceRow(
 }
 
 @Composable
-fun TagsPanel(
+internal fun TagsPanel(
   state: NoteEditState,
   actions: NoteEditActions,
 ) {
@@ -254,7 +254,7 @@ fun TagsPanel(
 }
 
 @Composable
-fun ColorPanel(
+internal fun ColorPanel(
   colors: List<Color>,
   selectedIndex: Int,
   opacity: Int,

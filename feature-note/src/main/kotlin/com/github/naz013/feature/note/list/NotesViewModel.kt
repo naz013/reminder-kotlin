@@ -41,7 +41,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-class NotesViewModel(
+internal class NotesViewModel(
   private val isArchived: Boolean = false,
   private val dispatcherProvider: DispatcherProvider,
   private val textProvider: TextProvider,

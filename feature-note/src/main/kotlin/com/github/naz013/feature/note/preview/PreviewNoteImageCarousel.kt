@@ -37,7 +37,7 @@ private const val IMAGE_MAX_STAGGER_DELAY_MS = 180L
  *  RecyclerView + `CarouselLayoutManager` combination. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreviewNoteImageCarousel(
+internal fun PreviewNoteImageCarousel(
   images: List<UiNoteImage>,
   onImageClick: (Int) -> Unit,
   modifier: Modifier = Modifier,

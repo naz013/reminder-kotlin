@@ -3,7 +3,7 @@ package com.github.naz013.feature.note.preview
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.ui.note.UiNoteImage
 
-class ImagesSingleton {
+internal class ImagesSingleton {
   private var images: MutableList<UiNoteImage> = mutableListOf()
   private var color: Color = Color.Unspecified
 

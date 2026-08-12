@@ -32,7 +32,7 @@ import me.saket.telephoto.zoomable.rememberZoomableState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ImagePreviewScreen(
+internal fun ImagePreviewScreen(
   modifier: Modifier = Modifier,
   state: ImagePreviewState,
   onBackClick: () -> Unit,

@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
-class CreateSharedNoteFileUseCase(
+internal class CreateSharedNoteFileUseCase(
   private val context: Context,
   private val dataConverter: DataConverter
 ) {

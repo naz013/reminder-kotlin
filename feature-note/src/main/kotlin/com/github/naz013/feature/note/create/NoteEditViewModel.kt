@@ -12,19 +12,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.request.ImageRequest
-import com.github.naz013.feature.note.R
-import com.github.naz013.feature.note.UiNoteEditAdapter
-import com.github.naz013.feature.note.image.NoteImageRepository
-import com.github.naz013.ui.note.UiNoteImage
-import com.github.naz013.ui.note.UiNoteImageState
-import com.github.naz013.ui.note.NoteColorEngine
-import com.github.naz013.ui.note.NotePreferences
-import com.github.naz013.feature.note.create.drop.DroppedContentParser
-import com.github.naz013.feature.note.create.images.ImageDecoder
-import com.github.naz013.feature.note.preview.ImagesSingleton
-import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
-import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
-import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -49,6 +36,15 @@ import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.note.R
+import com.github.naz013.feature.note.UiNoteEditAdapter
+import com.github.naz013.feature.note.create.drop.DroppedContentParser
+import com.github.naz013.feature.note.create.images.ImageDecoder
+import com.github.naz013.feature.note.image.NoteImageRepository
+import com.github.naz013.feature.note.preview.ImagesSingleton
+import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
+import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
@@ -59,6 +55,10 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.note.NoteColorEngine
+import com.github.naz013.ui.note.NotePreferences
+import com.github.naz013.ui.note.UiNoteImage
+import com.github.naz013.ui.note.UiNoteImageState
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -80,7 +80,7 @@ import java.io.File
 import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class NoteEditViewModel(
+internal class NoteEditViewModel(
   private val id: String?,
   private val sharedText: String?,
   private val sharedImageUris: List<String>?,
@@ -521,7 +521,7 @@ class NoteEditViewModel(
       var mutable = _state.value.images.toMutableList()
       val position = mutable.size
       mutable.add(imageFile)
-      withUIContext {
+      withContext(dispatcherProvider.main()) {
         _state.update { it.copy(images = mutable) }
       }
 
@@ -543,7 +543,7 @@ class NoteEditViewModel(
       if (position < mutable.size) {
         mutable[position] = imageFile
       }
-      withUIContext {
+      withContext(dispatcherProvider.main()) {
         _state.update { it.copy(images = mutable) }
       }
     }

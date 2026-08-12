@@ -21,7 +21,7 @@ import com.tom_roush.pdfbox.text.PDFTextStripper
  *
  * @property context application context used for [android.content.ContentResolver] access.
  */
-class DroppedContentParser(
+internal class DroppedContentParser(
   private val context: Context,
 ) {
   /**

@@ -2,7 +2,7 @@ package com.github.naz013.feature.note.list
 
 import com.github.naz013.ui.note.UiNoteListItem
 
-data class NotesScreenState(
+internal data class NotesScreenState(
   val listState: ListState = ListState.Loading,
   val isGrid: Boolean = false,
   val searchQuery: String = "",

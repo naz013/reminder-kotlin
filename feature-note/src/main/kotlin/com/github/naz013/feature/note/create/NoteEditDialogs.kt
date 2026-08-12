@@ -9,7 +9,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.naz013.feature.note.R
 
 @Composable
-fun DeleteNoteDialog(
+internal fun DeleteNoteDialog(
   onDismiss: () -> Unit,
   onConfirm: () -> Unit,
 ) {
@@ -33,7 +33,7 @@ fun DeleteNoteDialog(
 }
 
 @Composable
-fun SameNoteDialog(
+internal fun SameNoteDialog(
   onDismiss: () -> Unit,
   onKeep: () -> Unit,
   onReplace: () -> Unit,

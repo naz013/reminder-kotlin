@@ -4,7 +4,7 @@ import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.ui.note.UiNoteImagesAdapter
 
-class UiNoteEditAdapter(
+internal class UiNoteEditAdapter(
   private val uiNoteImagesAdapter: UiNoteImagesAdapter,
 ) {
   fun convert(noteWithImages: NoteWithImages): UiNoteEdit {

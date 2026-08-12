@@ -41,7 +41,7 @@ private const val OVERFLOW_ITEM_DELETE = 2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreviewNoteScreen(
+internal fun PreviewNoteScreen(
   modifier: Modifier = Modifier,
   state: PreviewNoteState,
   actions: PreviewNoteActions,
