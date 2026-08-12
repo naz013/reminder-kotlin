@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -22,11 +24,14 @@ import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.NoteNotifier
 import com.github.naz013.ui.note.UiNoteImage
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -58,15 +63,19 @@ class PreviewNoteViewModelTest : BaseTest() {
   private val createSharedNoteFileUseCase = mockk<CreateSharedNoteFileUseCase>()
   private val imagesSingleton = mockk<ImagesSingleton>(relaxed = true)
   private val noteColorEngine = mockk<NoteColorEngine>()
+  private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
+  private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
   @Before
   override fun setUp() {
     super.setUp()
-    // PreviewNoteViewModel.state runs loadInternal() (which also runs loadReminders()) in onStart
-    // on every collection - default stubs avoid unstubbed-call failures for tests that don't care
-    // about note/reminder details but still collect state at least once.
+    // PreviewNoteViewModel.state runs loadInternal() (which also runs loadReminders() and
+    // loadTags()) in onStart on every collection - default stubs avoid unstubbed-call failures
+    // for tests that don't care about note/reminder/tag details but still collect state at least
+    // once.
     coEvery { noteRepository.getById(key) } returns null
     coEvery { reminderV2Repository.getByNoteId(key) } returns emptyList()
+    coEvery { tagAssignmentRepository.getTagsForItem(key, TaggedItemType.NOTE) } returns emptyList()
   }
 
   private fun note(
@@ -127,6 +136,8 @@ class PreviewNoteViewModelTest : BaseTest() {
       createSharedNoteFileUseCase = createSharedNoteFileUseCase,
       imagesSingleton = imagesSingleton,
       noteColorEngine = noteColorEngine,
+      tagAssignmentRepository = tagAssignmentRepository,
+      tagChipStateAdapter = tagChipStateAdapter,
     )
 
   @Test
@@ -175,6 +186,27 @@ class PreviewNoteViewModelTest : BaseTest() {
 
       assertEquals(1, state.reminders.size)
       assertEquals("r1", state.reminders.first().id)
+    }
+
+  @Test
+  fun `loads tags attached to the note`() =
+    runTest {
+      val n = note()
+      coEvery { noteRepository.getById(key) } returns n
+      every { uiNotePreviewAdapter.convert(n) } returns uiPreview()
+      every {
+        noteColorEngine.colorsForLegacy(any(), any(), any())
+      } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
+      val tag = Tag(id = "t1", name = "Work", color = 0xFF0000)
+      coEvery { tagAssignmentRepository.getTagsForItem(key, TaggedItemType.NOTE) } returns listOf(tag)
+      every { tagChipStateAdapter(tag) } returns TagChipState(id = "t1", name = "Work", color = Color.Red)
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertEquals(1, state.tags.size)
+      assertEquals("t1", state.tags.first().id)
+      assertEquals("Work", state.tags.first().name)
     }
 
   @Test
