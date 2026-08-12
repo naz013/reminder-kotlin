@@ -5,7 +5,7 @@ import com.elementary.tasks.reminder.lists.data.UiReminderListActions
 import com.elementary.tasks.reminder.lists.data.UiReminderListState
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2
-import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
+import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import org.threeten.bp.LocalDateTime
 
 data class AgendaScreenState(

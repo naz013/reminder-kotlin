@@ -12,10 +12,9 @@ import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAda
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.repository.NoteRepository
 import com.github.naz013.ui.common.adjustAlpha
 import com.github.naz013.ui.note.UiNoteListItemAdapter
-import com.github.naz013.usecase.notes.GetAllNotesUseCase
-import com.github.naz013.usecase.notes.GetNoteByIdUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,8 +29,7 @@ internal class SingleNoteWidgetConfigViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val prefsProvider: SingleNoteWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val getAllNotesUseCase: GetAllNotesUseCase,
-  private val getNoteByIdUseCase: GetNoteByIdUseCase,
+  private val noteRepository: NoteRepository,
   private val uiNoteListItemAdapter: UiNoteListItemAdapter,
   private val previewAdapter: RecyclableUiNoteWidgetAdapter,
   private val uiNoteWidgetAdapter: UiNoteWidgetAdapter,
@@ -61,7 +59,7 @@ internal class SingleNoteWidgetConfigViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val notes = getAllNotesUseCase(isArchived = false).map { uiNoteListItemAdapter.convert(it) }
+      val notes = noteRepository.getAll(isArchived = false).map { uiNoteListItemAdapter.convert(it) }
       _state.update { it.copy(notes = notes) }
 
       val storedId = prefsProvider.getNoteId()
@@ -158,7 +156,7 @@ internal class SingleNoteWidgetConfigViewModel(
     val noteId = s.selectedNoteId ?: return
     previewJob?.cancel()
     previewJob = viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = getNoteByIdUseCase(noteId) ?: return@launch
+      val noteWithImages = noteRepository.getById(noteId) ?: return@launch
       if (!isActive) return@launch
       val preview = previewAdapter.convertDp(
         noteWithImages = noteWithImages,

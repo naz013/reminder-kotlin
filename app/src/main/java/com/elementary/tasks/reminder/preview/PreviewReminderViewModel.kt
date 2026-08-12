@@ -14,9 +14,7 @@ import com.elementary.tasks.core.data.ui.reminder.UiReminderType
 import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.elementary.tasks.reminder.preview.data.UiCalendarEventList
-import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -33,6 +31,8 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
@@ -45,7 +45,6 @@ import com.github.naz013.repository.observer.TableChangeListenerFactory
 import com.github.naz013.repository.table.Table
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -61,7 +60,6 @@ import java.util.UUID
 class PreviewReminderViewModel(
   private val id: String,
   private val reminderV2Repository: ReminderV2Repository,
-  private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
   private val googleCalendarApi: GoogleCalendarApi,
   private val dispatcherProvider: DispatcherProvider,
   private val uiReminderPlaceAdapter: UiReminderPlaceAdapter,
@@ -317,7 +315,7 @@ class PreviewReminderViewModel(
   private fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = withContext(dispatcherProvider.io()) {
-        getReminderV2ByIdUseCase(id)
+        reminderV2Repository.getById(id)
       } ?: return@launch
       val reminderGroup = withContext(dispatcherProvider.io()) {
         reminder.groupId?.let { groupV2Repository.getById(it) }

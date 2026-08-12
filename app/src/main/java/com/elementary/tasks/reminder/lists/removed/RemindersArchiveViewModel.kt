@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.elementary.tasks.reminder.lists.filter.query.ReminderV2QueryFilterInstance
-import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
-import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -15,9 +13,10 @@ import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -30,7 +29,6 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(FlowPreview::class)
 class RemindersArchiveViewModel(
   private val reminderV2Repository: ReminderV2Repository,
-  private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase,
   private val groupV2Repository: GroupV2Repository,
   private val dispatcherProvider: DispatcherProvider,
   private val uiReminderListAdapter: UiReminderListAdapter,
@@ -110,7 +108,7 @@ class RemindersArchiveViewModel(
   private fun loadReminders() {
     viewModelScope.launch(dispatcherProvider.main()) {
       val allReminders = withContext(dispatcherProvider.io()) {
-        getRemindersV2ByRemovedStatusUseCase(removed = true)
+        reminderV2Repository.getByRemovedStatus(removed = true)
       }
       _state.update {
         it.copy(allReminders = allReminders)

@@ -20,14 +20,13 @@ import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
-import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
-import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -47,7 +46,6 @@ import org.threeten.bp.LocalDateTime
  */
 class AgendaViewModelTest {
   private val reminderV2Repository = mockk<ReminderV2Repository>()
-  private val getRemindersV2ByRemovedStatusUseCase = mockk<GetRemindersV2ByRemovedStatusUseCase>()
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val tagRepository = mockk<TagRepository>()
@@ -70,7 +68,7 @@ class AgendaViewModelTest {
     // mockDispatcherProvider() uses Dispatchers.Unconfined, so that eager call executes
     // synchronously here in setUp() before any test body runs. Stub safe defaults so it
     // doesn't crash on unmocked calls; individual tests override these as needed.
-    coEvery { getRemindersV2ByRemovedStatusUseCase(any()) } returns emptyList()
+    coEvery { reminderV2Repository.getByRemovedStatus(any()) } returns emptyList()
     coEvery { birthdayRepository.getAll() } returns emptyList()
     coEvery { tagRepository.getAll() } returns emptyList()
     coEvery { tagAssignmentRepository.getItemIdsForTag(any(), any()) } returns emptyList()
@@ -86,7 +84,6 @@ class AgendaViewModelTest {
       AgendaViewModel(
         dispatcherProvider = mockDispatcherProvider(),
         reminderV2Repository = reminderV2Repository,
-        getRemindersV2ByRemovedStatusUseCase = getRemindersV2ByRemovedStatusUseCase,
         groupV2Repository = groupV2Repository,
         birthdayRepository = birthdayRepository,
         tagRepository = tagRepository,
@@ -104,7 +101,7 @@ class AgendaViewModelTest {
     // Construction above already triggered one eager load via init{}. Clear recorded
     // invocations (keeping the stubbed answers) so each test's coVerify(exactly = ...)
     // reflects only the calls it makes explicitly through loadMerged().
-    clearMocks(getRemindersV2ByRemovedStatusUseCase, birthdayRepository, answers = false, recordedCalls = true)
+    clearMocks(reminderV2Repository, birthdayRepository, answers = false, recordedCalls = true)
   }
 
   @Test
@@ -114,14 +111,14 @@ class AgendaViewModelTest {
 
       val result = viewModel.loadMerged("", setOf(AgendaCategory.BIRTHDAYS))
 
-      coVerify(exactly = 0) { getRemindersV2ByRemovedStatusUseCase(any()) }
+      coVerify(exactly = 0) { reminderV2Repository.getByRemovedStatus(any()) }
       assertEquals(listOf("b1"), result.items.map { it.id })
     }
 
   @Test
   fun `loads only reminders and skips birthday repository when only Reminders category selected`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(reminderV2(id = "r1"))
 
       val result = viewModel.loadMerged("", setOf(AgendaCategory.REMINDERS))
@@ -133,7 +130,7 @@ class AgendaViewModelTest {
   @Test
   fun `filters out shopping-type reminders when only Reminders category is selected`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "normal"),
           reminderV2(id = "shopping", isShopping = true),
@@ -147,7 +144,7 @@ class AgendaViewModelTest {
   @Test
   fun `filters out normal reminders when only Shopping category is selected`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "normal"),
           reminderV2(id = "shopping", isShopping = true),
@@ -161,7 +158,7 @@ class AgendaViewModelTest {
   @Test
   fun `filters out location-type reminders when only Reminders category is selected`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "normal"),
           reminderV2(id = "location", isLocation = true),
@@ -175,7 +172,7 @@ class AgendaViewModelTest {
   @Test
   fun `filters out normal reminders when only Location category is selected`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "normal"),
           reminderV2(id = "location", isLocation = true),
@@ -189,7 +186,7 @@ class AgendaViewModelTest {
   @Test
   fun `loads reminders when only Location category is selected`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(reminderV2(id = "location", isLocation = true))
 
       val result = viewModel.loadMerged("", setOf(AgendaCategory.LOCATION))
@@ -201,7 +198,7 @@ class AgendaViewModelTest {
   @Test
   fun `search query filters reminders by summary and birthdays by name independently`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "match", summary = "Buy milk"),
           reminderV2(id = "no-match", summary = "Call mom"),
@@ -222,7 +219,7 @@ class AgendaViewModelTest {
     runTest {
       val result = viewModel.loadMerged("", emptySet())
 
-      coVerify(exactly = 0) { getRemindersV2ByRemovedStatusUseCase(any()) }
+      coVerify(exactly = 0) { reminderV2Repository.getByRemovedStatus(any()) }
       coVerify(exactly = 0) { birthdayRepository.getAll() }
       assertEquals(emptyList<UiAgendaItem>(), result.items)
     }
@@ -230,7 +227,7 @@ class AgendaViewModelTest {
   @Test
   fun `returns empty items when no reminders or birthdays match the search query`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(reminderV2(id = "r1", summary = "Call mom"))
       coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday("b1", name = "John"))
 
@@ -242,7 +239,7 @@ class AgendaViewModelTest {
   @Test
   fun `no group smart list keeps only reminders without a group`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "grouped", groupId = "group-1"),
           reminderV2(id = "ungrouped", groupId = null),
@@ -256,7 +253,7 @@ class AgendaViewModelTest {
   @Test
   fun `group filter keeps only reminders in that group and drops birthdays`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "in-group", groupId = "group-1"),
           reminderV2(id = "other-group", groupId = "group-2"),
@@ -272,7 +269,7 @@ class AgendaViewModelTest {
   @Test
   fun `tag filter keeps only reminders returned by getItemIdsForTag and drops untagged birthdays`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "tagged"),
           reminderV2(id = "not-tagged"),
@@ -292,7 +289,7 @@ class AgendaViewModelTest {
   @Test
   fun `tag filter also keeps birthdays returned by getItemIdsForTag for the BIRTHDAY item type`() =
     runTest {
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(reminderV2(id = "untagged-reminder"))
       coEvery { birthdayRepository.getAll() } returns
         listOf(
@@ -331,7 +328,7 @@ class AgendaViewModelTest {
       // before comparing - an identity conversion here keeps this test focused on the smart-list
       // predicate rather than the timezone math (covered separately).
       every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "today", eventDateTime = now.plusHours(1)),
           reminderV2(id = "tomorrow", eventDateTime = now.plusDays(1)),
@@ -354,7 +351,7 @@ class AgendaViewModelTest {
       val utcNow = localNow.minusHours(2)
       every { dateTimeManager.getCurrentDateTime() } returns localNow
       every { dateTimeManager.localToUtc(localNow) } returns utcNow
-      coEvery { getRemindersV2ByRemovedStatusUseCase(removed = false) } returns
+      coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns
         listOf(
           reminderV2(id = "due-in-one-local-hour", eventDateTime = utcNow.plusHours(1)),
           reminderV2(id = "genuinely-overdue", eventDateTime = utcNow.minusMinutes(1)),

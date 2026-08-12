@@ -14,7 +14,7 @@ import com.github.naz013.appfunctions.note.CreateSimpleNoteUseCase
 import com.github.naz013.appfunctions.note.NoteFunctionResult
 import com.github.naz013.appfunctions.note.SearchNotesParams
 import com.github.naz013.common.system.BuildInfo
-import com.github.naz013.usecase.notes.SearchNotesByTextUseCase
+import com.github.naz013.repository.NoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -34,7 +34,7 @@ abstract class BaseNoteAppFunctionService :
   KoinComponent {
   private val buildInfo: BuildInfo by inject()
   private val createSimpleNoteUseCase: CreateSimpleNoteUseCase by inject()
-  private val searchNotesByTextUseCase: SearchNotesByTextUseCase by inject()
+  private val noteRepository: NoteRepository by inject()
   private val analyticsEventSender: AnalyticsEventSender by inject()
 
   /**
@@ -72,7 +72,7 @@ abstract class BaseNoteAppFunctionService :
 
       analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_SEARCH_NOTES))
 
-      searchNotesByTextUseCase(params.query)
+      noteRepository.searchByText(params.query)
         .mapNotNull { it.note }
         .map { NoteFunctionResult(id = it.key, title = it.title, content = it.summary) }
     }

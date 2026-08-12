@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -57,7 +58,6 @@ import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSh
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
-import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 
 private val HEADER_ELEVATION = 3.dp
 

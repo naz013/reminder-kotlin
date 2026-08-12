@@ -13,7 +13,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.usecase.reminders.CountActiveRemindersV2ByGroupIdUseCase
+import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -26,7 +26,7 @@ class GroupsViewModel(
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val deleteGroupUseCase: DeleteGroupUseCase,
   private val makeGroupDefaultUseCase: MakeGroupDefaultUseCase,
-  private val countActiveRemindersV2ByGroupIdUseCase: CountActiveRemindersV2ByGroupIdUseCase,
+  private val reminderV2Repository: ReminderV2Repository,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(GroupsScreenState())
@@ -84,7 +84,7 @@ class GroupsViewModel(
         groupV2Repository
           .getAll()
           .map {
-            uiGroupListAdapter.convert(it, countActiveRemindersV2ByGroupIdUseCase(it.uuId))
+            uiGroupListAdapter.convert(it, reminderV2Repository.countActiveByGroupId(it.uuId))
           }.sortedWith(GROUP_ORDER)
 
       withContext(dispatcherProvider.main()) {

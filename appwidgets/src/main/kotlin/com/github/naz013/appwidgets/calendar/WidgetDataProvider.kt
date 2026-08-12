@@ -3,9 +3,9 @@ package com.github.naz013.appwidgets.calendar
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.feature.common.coroutine.invokeSuspend
-import com.github.naz013.usecase.birthdays.GetAllBirthdaysUseCase
-import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
-import com.github.naz013.usecase.reminders.GetOccurrencesByDateRangeUseCase
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.EventOccurrenceRepository
+import com.github.naz013.repository.ReminderV2Repository
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -19,9 +19,9 @@ import org.threeten.bp.LocalTime
  */
 internal class WidgetDataProvider(
   private val dateTimeManager: DateTimeManager,
-  private val getOccurrencesByDateRangeUseCase: GetOccurrencesByDateRangeUseCase,
-  private val getActiveRemindersV2UseCase: GetActiveRemindersV2UseCase,
-  private val getAllBirthdaysUseCase: GetAllBirthdaysUseCase,
+  private val eventOccurrenceRepository: EventOccurrenceRepository,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val birthdayRepository: BirthdayRepository,
 ) {
   private val data: MutableList<Item> = ArrayList()
   private var birthdayTime: LocalTime = LocalTime.now()
@@ -77,8 +77,9 @@ internal class WidgetDataProvider(
   private fun loadReminders() {
     val startDate = LocalDate.now()
     val endDate = startDate.plusDays(MAX_DAYS_COUNT)
-    val activeIds = invokeSuspend { getActiveRemindersV2UseCase() }.mapTo(HashSet()) { it.uuId }
-    val occurrences = invokeSuspend { getOccurrencesByDateRangeUseCase(startDate, endDate) }
+    val activeIds = invokeSuspend { reminderV2Repository.getAll(active = true, removed = false) }
+      .mapTo(HashSet()) { it.uuId }
+    val occurrences = invokeSuspend { eventOccurrenceRepository.getByDateRange(startDate, endDate) }
       .filter { it.type == OccurrenceType.Reminder && it.eventId in activeIds }
       .sortedBy { it.date }
 
@@ -92,7 +93,7 @@ internal class WidgetDataProvider(
   }
 
   private fun loadBirthdays() {
-    val birthdays = invokeSuspend { getAllBirthdaysUseCase() }
+    val birthdays = invokeSuspend { birthdayRepository.getAll() }
     for (item in birthdays) {
       val date = dateTimeManager.parseBirthdayDate(item.date) ?: continue
       data.add(Item(date, WidgetType.BIRTHDAY))

@@ -11,10 +11,10 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
-import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -30,13 +30,13 @@ import org.threeten.bp.LocalDateTime
 class WorkflowRuleBuilderViewModelTest : BaseTest() {
   private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
   private val createWorkflowRuleUseCase = mockk<CreateWorkflowRuleUseCase>(relaxed = true)
-  private val getActiveRemindersV2UseCase = mockk<GetActiveRemindersV2UseCase>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val groupV2Repository = mockk<GroupV2Repository>()
 
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { getActiveRemindersV2UseCase() } returns emptyList()
+    coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns emptyList()
     coEvery { groupV2Repository.getAll() } returns emptyList()
   }
 
@@ -52,7 +52,7 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
       mockDispatcherProvider(),
       workflowRuleRepository,
       createWorkflowRuleUseCase,
-      getActiveRemindersV2UseCase,
+      reminderV2Repository,
       groupV2Repository,
     )
 
@@ -204,7 +204,7 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
   @Test
   fun `loads available groups and active reminders for the pickers`() = runTest {
     coEvery { groupV2Repository.getAll() } returns listOf(GroupV2(uuId = "group-1", title = "Work"))
-    coEvery { getActiveRemindersV2UseCase() } returns listOf(
+    coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns listOf(
       ReminderV2(uuId = "reminder-1", summary = "Buy milk", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
     )
 

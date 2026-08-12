@@ -13,8 +13,8 @@ import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.query.GetActiveRemindersV2ByGroupIdUseCase
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.usecase.reminders.GetActiveRemindersV2ByGroupIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update

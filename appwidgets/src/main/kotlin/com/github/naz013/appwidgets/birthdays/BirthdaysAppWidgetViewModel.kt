@@ -1,10 +1,10 @@
 package com.github.naz013.appwidgets.birthdays
 
-import com.github.naz013.usecase.birthdays.GetAllBirthdaysUseCase
+import com.github.naz013.repository.BirthdayRepository
 
 internal class BirthdaysAppWidgetViewModel(
   private val prefsProvider: BirthdaysWidgetPrefsProvider,
-  private val getAllBirthdaysUseCase: GetAllBirthdaysUseCase,
+  private val birthdayRepository: BirthdayRepository,
   private val uiBirthdayWidgetListAdapter: UiBirthdayWidgetListAdapter,
 ) {
 
@@ -12,7 +12,7 @@ internal class BirthdaysAppWidgetViewModel(
     return BirthdaysAppWidgetState(
       widgetId = prefsProvider.widgetId,
       backgroundColor = prefsProvider.getWidgetBackground(),
-      items = getAllBirthdaysUseCase()
+      items = birthdayRepository.getAll()
         .map { uiBirthdayWidgetListAdapter.convert(it) }
         .sortedBy { it.millis }
     )

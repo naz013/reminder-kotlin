@@ -4,26 +4,26 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.googletasks.data.GoogleTasksAppWidgetState
 import com.github.naz013.appwidgets.googletasks.data.UiGoogleTaskWidgetItem
 import com.github.naz013.domain.GoogleTask
+import com.github.naz013.repository.GoogleTaskListRepository
+import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
-import com.github.naz013.usecase.googletasks.GetAllGoogleTasksUseCase
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 internal class GoogleTasksAppWidgetViewModel(
   private val prefsProvider: GoogleTasksWidgetPrefsProvider,
-  private val getAllGoogleTaskListsUseCase: GetAllGoogleTaskListsUseCase,
-  private val getAllGoogleTasksUseCase: GetAllGoogleTasksUseCase,
+  private val googleTaskListRepository: GoogleTaskListRepository,
+  private val googleTaskRepository: GoogleTaskRepository,
   private val themeProvider: ThemeProvider
 ) {
 
   suspend fun getState(): GoogleTasksAppWidgetState {
-    val listColors = getAllGoogleTaskListsUseCase().associate { it.listId to it.color }
+    val listColors = googleTaskListRepository.getAll().associate { it.listId to it.color }
     return GoogleTasksAppWidgetState(
       widgetId = prefsProvider.widgetId,
       backgroundColor = prefsProvider.getBackground(),
-      items = getAllGoogleTasksUseCase().map { it.toUiGoogleTaskWidgetItem(listColors) }
+      items = googleTaskRepository.getAll().map { it.toUiGoogleTaskWidgetItem(listColors) }
     )
   }
 

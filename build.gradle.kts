@@ -55,8 +55,4 @@ dependencies {
   kover(project(":legal-api"))
   kover(project(":files-api"))
   kover(project(":sync"))
-  kover(project(":usecase:reminders"))
-  kover(project(":usecase:notes"))
-  kover(project(":usecase:birthdays"))
-  kover(project(":usecase:googletasks"))
 }

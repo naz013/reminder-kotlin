@@ -15,6 +15,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
 import com.github.naz013.logic.reminder.SaveOneTimeReminderUseCase
 import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
+import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
@@ -24,8 +25,6 @@ import com.github.naz013.testing.getOrAwaitValue
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
-import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -48,11 +47,10 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
   private val googleTasksApi = mockk<GoogleTasksApi>()
   private val googleTaskRepository = mockk<GoogleTaskRepository>()
+  private val googleTaskListRepository = mockk<GoogleTaskListRepository>()
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
-  private val getAllGoogleTaskListsUseCase = mockk<GetAllGoogleTaskListsUseCase>()
-  private val getGoogleTaskByIdUseCase = mockk<GetGoogleTaskByIdUseCase>()
   private val saveOneTimeReminderUseCase = mockk<SaveOneTimeReminderUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val prefs = mockk<GoogleTasksPreferences>(relaxed = true)
@@ -75,11 +73,10 @@ class EditGoogleTaskViewModelTest : BaseTest() {
     googleTasksApi = googleTasksApi,
     dispatcherProvider = mockDispatcherProvider(),
     googleTaskRepository = googleTaskRepository,
+    googleTaskListRepository = googleTaskListRepository,
     reminderV2Repository = reminderV2Repository,
     dateTimeManager = dateTimeManager,
     analyticsEventSender = analyticsEventSender,
-    getAllGoogleTaskListsUseCase = getAllGoogleTaskListsUseCase,
-    getGoogleTaskByIdUseCase = getGoogleTaskByIdUseCase,
     saveOneTimeReminderUseCase = saveOneTimeReminderUseCase,
     textProvider = textProvider,
     preferences = prefs,
@@ -92,8 +89,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { getAllGoogleTaskListsUseCase() } returns listOf(listA, listB)
-    coEvery { getGoogleTaskByIdUseCase(any()) } returns null
+    coEvery { googleTaskListRepository.getAll() } returns listOf(listA, listB)
     coEvery { googleTaskRepository.getById(any()) } returns null
     coEvery { reminderV2Repository.getById(any()) } returns null
     every { prefs.is24HourFormat } returns true
@@ -137,7 +133,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `falls back to the default list when the initial list id is empty`() =
     runTest {
       val defaultList = listA.copy(def = 1)
-      coEvery { getAllGoogleTaskListsUseCase() } returns listOf(defaultList, listB)
+      coEvery { googleTaskListRepository.getAll() } returns listOf(defaultList, listB)
       val vm = buildViewModel(initialListId = "")
 
       val state = vm.state.first()
@@ -149,7 +145,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `loads an existing task into state for editing`() =
     runTest {
       val editedTask = GoogleTask(taskId = "g1", listId = "list2", title = "Buy milk", notes = "2%")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns editedTask
+      coEvery { googleTaskRepository.getById("g1") } returns editedTask
       val vm = buildViewModel(id = "g1")
 
       val state = vm.state.first()
@@ -168,7 +164,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `loads the due date when editing a task that has one`() =
     runTest {
       val editedTask = GoogleTask(taskId = "g1", listId = "list2", dueDate = 1_700_000_000_000L)
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns editedTask
+      coEvery { googleTaskRepository.getById("g1") } returns editedTask
       every { dateTimeManager.fromMillis(1_700_000_000_000L) } returns LocalDateTime.of(2026, 7, 24, 0, 0)
       val vm = buildViewModel(id = "g1")
 
@@ -182,7 +178,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `does not select a date when editing a task without a due date`() =
     runTest {
       val editedTask = GoogleTask(taskId = "g1", listId = "list2", dueDate = 0L)
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns editedTask
+      coEvery { googleTaskRepository.getById("g1") } returns editedTask
       val vm = buildViewModel(id = "g1")
 
       val state = vm.state.first()
@@ -194,7 +190,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `loads the linked reminder time when editing a task with a reminder`() =
     runTest {
       val editedTask = GoogleTask(taskId = "g1", listId = "list2", uuId = "r1")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns editedTask
+      coEvery { googleTaskRepository.getById("g1") } returns editedTask
       val eventDateTime = LocalDateTime.of(2026, 7, 24, 10, 0)
       val reminder = ReminderV2(
         uuId = "r1",
@@ -215,7 +211,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `does not set a time when the linked reminder cannot be found`() =
     runTest {
       val editedTask = GoogleTask(taskId = "g1", listId = "list2", uuId = "r2")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns editedTask
+      coEvery { googleTaskRepository.getById("g1") } returns editedTask
       coEvery { reminderV2Repository.getById("r2") } returns null
       val vm = buildViewModel(id = "g1")
 
@@ -368,7 +364,7 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
   @Test
   fun `onListFieldClick does nothing when there are no task lists`() {
-    coEvery { getAllGoogleTaskListsUseCase() } returns emptyList()
+    coEvery { googleTaskListRepository.getAll() } returns emptyList()
     val vm = buildViewModel()
     val latest = observeState(vm)
 
@@ -418,7 +414,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `onListPicked moves the task to a different list`() =
     runTest {
       val existingTask = GoogleTask(taskId = "g1", listId = "list1")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns existingTask
       coEvery { googleTaskRepository.getById("g1") } returns existingTask
       val movedTask = existingTask.copy(listId = "list2")
       coEvery { googleTasksApi.moveTask(any(), "list1") } returns movedTask
@@ -429,7 +424,8 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
       vm.onListPicked("list2")
 
-      coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
+      // Called twice: once by loadInternal() on state.first(), once by finishTaskMove().
+      coVerify(exactly = 2) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTaskRepository.save(movedTask) }
       val event = vm.event.getOrAwaitValue()
       assertEquals(EditGoogleTaskViewModel.EditGoogleTaskEvent.MoveBack, event?.getContentIfNotHandled())
@@ -471,7 +467,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `onDeleteConfirmed deletes the task and navigates back`() =
     runTest {
       val existingTask = GoogleTask(taskId = "g1")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns existingTask
       coEvery { googleTaskRepository.getById("g1") } returns existingTask
       coEvery { googleTasksApi.deleteTask(existingTask) } returns true
       coEvery { googleTaskRepository.delete("g1") } returns Unit
@@ -480,7 +475,8 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
       vm.onDeleteConfirmed()
 
-      coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
+      // Called twice: once by loadInternal() on state.first(), once by deleteGoogleTask().
+      coVerify(exactly = 2) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTaskRepository.delete("g1") }
       coVerify(exactly = 1) { tagAssignmentRepository.detachAll("g1", TaggedItemType.GOOGLE_TASK) }
       val event = vm.event.getOrAwaitValue()
@@ -491,7 +487,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `onDeleteConfirmed shows an error when the delete api call fails`() =
     runTest {
       val existingTask = GoogleTask(taskId = "g1")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns existingTask
       coEvery { googleTaskRepository.getById("g1") } returns existingTask
       coEvery { googleTasksApi.deleteTask(existingTask) } returns false
       every { textProvider.getString(R.string.failed_to_update_task) } returns "Failed"
@@ -585,7 +580,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `save updates an existing task in place`() =
     runTest {
       val editingTask = GoogleTask(taskId = "g1", listId = "list1", title = "Old")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns editingTask
       coEvery { googleTaskRepository.getById("g1") } returns editingTask
       val vm = buildViewModel(id = "g1")
       vm.state.first()
@@ -599,7 +593,8 @@ class EditGoogleTaskViewModelTest : BaseTest() {
       // Tightened from getById(any()): loadInternal() must have copied the real task id into
       // state (regression test for a bug where it never did, causing save() to always look up
       // by the freshly-generated default id and silently create a duplicate task instead).
-      coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
+      // Called twice: once by loadInternal() on state.first(), once by save().
+      coVerify(exactly = 2) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTaskRepository.save(updated) }
       coVerify(exactly = 0) { googleTasksApi.moveTask(any(), any()) }
       val event = vm.event.getOrAwaitValue()
@@ -610,7 +605,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `save updates and moves an existing task to a different list`() =
     runTest {
       val editingTask = GoogleTask(taskId = "g1", listId = "list1", title = "Old")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns editingTask
       coEvery { googleTaskRepository.getById("g1") } returns editingTask
       val vm = buildViewModel(id = "g1")
       vm.state.first()
@@ -624,7 +618,8 @@ class EditGoogleTaskViewModelTest : BaseTest() {
 
       vm.save()
 
-      coVerify(exactly = 1) { googleTaskRepository.getById("g1") }
+      // Called twice: once by loadInternal() on state.first(), once by save().
+      coVerify(exactly = 2) { googleTaskRepository.getById("g1") }
       coVerify(exactly = 1) { googleTasksApi.moveTask(updated, "list1") }
       coVerify(exactly = 1) { googleTaskRepository.save(updated) }
     }
@@ -633,7 +628,6 @@ class EditGoogleTaskViewModelTest : BaseTest() {
   fun `save shows an error when updating a task fails`() =
     runTest {
       val editingTask = GoogleTask(taskId = "g1", listId = "list1")
-      coEvery { getGoogleTaskByIdUseCase("g1") } returns editingTask
       coEvery { googleTaskRepository.getById("g1") } returns editingTask
       val vm = buildViewModel(id = "g1")
       vm.state.first()

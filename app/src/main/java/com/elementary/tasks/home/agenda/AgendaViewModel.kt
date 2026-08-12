@@ -9,7 +9,6 @@ import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
 import com.elementary.tasks.reminder.lists.filter.query.ReminderV2QueryFilterInstance
 import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
 import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
@@ -22,14 +21,14 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.logic.reminder.smartlist.ReminderSmartListPredicate
+import com.github.naz013.logic.reminder.smartlist.SmartListFilter
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
-import com.github.naz013.usecase.reminders.GetRemindersV2ByRemovedStatusUseCase
-import com.github.naz013.usecase.reminders.smartlist.ReminderSmartListPredicate
-import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +44,6 @@ import kotlinx.coroutines.launch
 class AgendaViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderV2Repository: ReminderV2Repository,
-  private val getRemindersV2ByRemovedStatusUseCase: GetRemindersV2ByRemovedStatusUseCase,
   private val groupV2Repository: GroupV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val tagRepository: TagRepository,
@@ -110,7 +108,7 @@ class AgendaViewModel(
 
   private suspend fun refreshHasAnyItems() {
     val hasAnyItems =
-      getRemindersV2ByRemovedStatusUseCase(removed = false).isNotEmpty() || birthdayRepository.getAll().isNotEmpty()
+      reminderV2Repository.getByRemovedStatus(removed = false).isNotEmpty() || birthdayRepository.getAll().isNotEmpty()
     _agendaScreenState.update { it.copy(hasAnyItems = hasAnyItems) }
   }
 
@@ -126,7 +124,7 @@ class AgendaViewModel(
         categories.contains(AgendaCategory.SHOPPING) ||
         categories.contains(AgendaCategory.LOCATION)
     val allReminders =
-      if (reminderCategoriesSelected) getRemindersV2ByRemovedStatusUseCase(removed = false) else emptyList()
+      if (reminderCategoriesSelected) reminderV2Repository.getByRemovedStatus(removed = false) else emptyList()
     val allBirthdays = if (categories.contains(AgendaCategory.BIRTHDAYS)) birthdayRepository.getAll() else emptyList()
     val groups = groupV2Repository.getAll()
     val tags = tagRepository.getAll()

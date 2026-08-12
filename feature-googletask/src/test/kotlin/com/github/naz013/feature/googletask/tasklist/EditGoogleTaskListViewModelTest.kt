@@ -19,7 +19,6 @@ import com.github.naz013.testing.getOrAwaitValue
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.usecase.googletasks.GetGoogleTaskListByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -39,7 +38,6 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   private val googleTaskRepository = mockk<GoogleTaskRepository>()
   private val googleTaskListRepository = mockk<GoogleTaskListRepository>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
-  private val getGoogleTaskListByIdUseCase = mockk<GetGoogleTaskListByIdUseCase>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>()
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
@@ -56,7 +54,6 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
       googleTaskRepository = googleTaskRepository,
       googleTaskListRepository = googleTaskListRepository,
       analyticsEventSender = analyticsEventSender,
-      getGoogleTaskListByIdUseCase = getGoogleTaskListByIdUseCase,
       textProvider = textProvider,
       themeProvider = themeProvider,
       appWidgetUpdater = appWidgetUpdater,
@@ -68,7 +65,6 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   override fun setUp() {
     super.setUp()
     every { themeProvider.colorsForSliderThemed() } returns listOf(Color(0xFFFF0000))
-    coEvery { getGoogleTaskListByIdUseCase(any()) } returns null
     coEvery { googleTaskListRepository.getById(any()) } returns null
     coEvery { googleTaskRepository.getAllByList(any()) } returns emptyList()
 
@@ -102,7 +98,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `loads an existing list into state for editing`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", color = 3, def = 0)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
+      coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
 
       val state = vm.state.first()
@@ -117,7 +113,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `marks the default list as locked and non-deletable`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", def = 1)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
+      coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
 
       val state = vm.state.first()
@@ -132,7 +128,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `marks a non-default list as deletable and unlocked`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", def = 0)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
+      coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
 
       val state = vm.state.first()
@@ -174,7 +170,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `onDefaultToggle does nothing when the list is locked as default`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", def = 1)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
+      coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
       val latest = observeState(vm)
 
@@ -206,7 +202,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `deleteGoogleTaskList deletes the list and navigates back`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", def = 0)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
+      coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
       vm.state.first()
       val t1 = GoogleTask(taskId = "t1", listId = "list1")
@@ -229,7 +225,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `deleteGoogleTaskList promotes another list to default when deleting the default list`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", def = 1)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
+      coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
       vm.state.first()
       val otherList = GoogleTaskList(listId = "list2", title = "Personal", def = 0)
@@ -248,7 +244,7 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `deleteGoogleTaskList shows an error when the api call fails`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", def = 0)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
+      coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
       vm.state.first()
       coEvery { googleTasksApi.deleteTaskList("list1") } returns false
@@ -331,7 +327,6 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `save updates an existing list and navigates back`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", def = 0)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
       coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
       vm.state.first()
@@ -351,7 +346,6 @@ class EditGoogleTaskListViewModelTest : BaseTest() {
   fun `save shows an error when updating a list fails`() =
     runTest {
       val list = GoogleTaskList(listId = "list1", title = "Work", def = 0)
-      coEvery { getGoogleTaskListByIdUseCase("list1") } returns list
       coEvery { googleTaskListRepository.getById("list1") } returns list
       val vm = buildViewModel(listId = "list1")
       vm.state.first()

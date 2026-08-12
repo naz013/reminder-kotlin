@@ -6,7 +6,6 @@ import com.elementary.tasks.BaseTest
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.elementary.tasks.core.data.ui.preset.UiPresetList
-import com.github.naz013.featureflags.FeatureFlags
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.module.analytics.ReminderAnalyticsTracker
@@ -45,6 +44,7 @@ import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
@@ -54,11 +54,11 @@ import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -85,7 +85,7 @@ class BuildReminderViewModelTest : BaseTest() {
   private val biToReminderAdapter = mockk<BiToReminderAdapter>()
   private val permissionValidator = mockk<PermissionValidator>()
   private val reminderToBiDecomposer = mockk<ReminderToBiDecomposer>()
-  private val getReminderV2ByIdUseCase = mockk<GetReminderV2ByIdUseCase>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val biFilter = mockk<BiFilter>()
   private val uiPresetListAdapter = mockk<UiPresetListAdapter>(relaxed = true)
   private val recurPresetRepository = mockk<RecurPresetRepository>(relaxed = true)
@@ -131,7 +131,7 @@ class BuildReminderViewModelTest : BaseTest() {
     // default here); its output is non-deterministic when the V1 fixture has no explicit
     // startTime (falls back to LocalDateTime.now()), so reminderToBiDecomposer stubs below match
     // on any() rather than an exact value.
-    coEvery { getReminderV2ByIdUseCase(any()) } returns null
+    coEvery { reminderV2Repository.getById(any()) } returns null
     every { isSimpleTodoReminderUseCase(any()) } returns false
     every { builderItemsLogic.getUsed() } returns emptyList()
     every { builderItemsLogic.getAvailable() } returns listOf(summaryItem())
@@ -183,7 +183,7 @@ class BuildReminderViewModelTest : BaseTest() {
       biToReminderAdapter = biToReminderAdapter,
       permissionValidator = permissionValidator,
       reminderToBiDecomposer = reminderToBiDecomposer,
-      getReminderV2ByIdUseCase = getReminderV2ByIdUseCase,
+      reminderV2Repository = reminderV2Repository,
       biFilter = biFilter,
       uiPresetListAdapter = uiPresetListAdapter,
       recurPresetRepository = recurPresetRepository,
@@ -249,7 +249,7 @@ class BuildReminderViewModelTest : BaseTest() {
   @Test
   fun `init with an id deep link edits the existing reminder`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
 
     val viewModel = createViewModel(initialId = "42")
@@ -264,7 +264,7 @@ class BuildReminderViewModelTest : BaseTest() {
   @Test
   fun `init with an id deep link for a simple todo redirects instead of editing`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     every { isSimpleTodoReminderUseCase(reminder) } returns true
 
     val viewModel = createViewModel(initialId = "42")
@@ -282,7 +282,7 @@ class BuildReminderViewModelTest : BaseTest() {
 
   @Test
   fun `init with an unknown id deep link clears the loading flag instead of leaving it stuck`() {
-    coEvery { getReminderV2ByIdUseCase("missing") } returns null
+    coEvery { reminderV2Repository.getById("missing") } returns null
 
     val viewModel = createViewModel(initialId = "missing")
 
@@ -337,7 +337,7 @@ class BuildReminderViewModelTest : BaseTest() {
 
   @Test
   fun `init with an unknown id deep link leaves state at its defaults`() {
-    coEvery { getReminderV2ByIdUseCase("missing") } returns null
+    coEvery { reminderV2Repository.getById("missing") } returns null
 
     val viewModel = createViewModel(initialId = "missing")
 
@@ -764,7 +764,7 @@ class BuildReminderViewModelTest : BaseTest() {
   fun `moveToTrash archives the original reminder when one was loaded for edit`() =
     runTest {
       val reminder = reminderV2Fixture(uuId = "42")
-      coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+      coEvery { reminderV2Repository.getById("42") } returns reminder
       coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       val viewModel = createViewModel(initialId = "42")
 
@@ -788,7 +788,7 @@ class BuildReminderViewModelTest : BaseTest() {
   fun `deleteReminder deletes and posts MoveBack when showMessage is true`() =
     runTest {
       val reminder = reminderV2Fixture(uuId = "42")
-      coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+      coEvery { reminderV2Repository.getById("42") } returns reminder
       coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       val viewModel = createViewModel(initialId = "42")
 
@@ -802,7 +802,7 @@ class BuildReminderViewModelTest : BaseTest() {
   fun `deleteReminder does not emit an event when showMessage is false`() =
     runTest {
       val reminder = reminderV2Fixture(uuId = "42")
-      coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+      coEvery { reminderV2Repository.getById("42") } returns reminder
       coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       val viewModel = createViewModel(initialId = "42")
 
@@ -831,7 +831,7 @@ class BuildReminderViewModelTest : BaseTest() {
   @Test
   fun `onCleared resumes the reminder when it was paused and not saving`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
     val viewModel = createViewModel(initialId = "42")
     val store = ViewModelStore()
@@ -846,7 +846,7 @@ class BuildReminderViewModelTest : BaseTest() {
   fun `onCleared does not resume the reminder while a save is in flight`() =
     runTest {
       val reminder = reminderV2Fixture(uuId = "42")
-      coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+      coEvery { reminderV2Repository.getById("42") } returns reminder
       coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
       every { biToReminderAdapter(any(), any(), any()) } returns
         BiToReminderAdapter.BuildResult.Success(reminderV2Fixture(uuId = "42"))

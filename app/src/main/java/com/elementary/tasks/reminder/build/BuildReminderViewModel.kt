@@ -77,12 +77,12 @@ import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -112,7 +112,7 @@ class BuildReminderViewModel(
   private val biToReminderAdapter: BiToReminderAdapter,
   private val permissionValidator: PermissionValidator,
   private val reminderToBiDecomposer: ReminderToBiDecomposer,
-  private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
+  private val reminderV2Repository: ReminderV2Repository,
   private val biFilter: BiFilter,
   private val uiPresetListAdapter: UiPresetListAdapter,
   private val recurPresetRepository: RecurPresetRepository,
@@ -671,7 +671,7 @@ class BuildReminderViewModel(
 
   private fun editReminderIfNeeded(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val reminderV2 = getReminderV2ByIdUseCase(id)
+      val reminderV2 = reminderV2Repository.getById(id)
       if (reminderV2 == null) {
         _state.update { it.copy(isLoadingForEdit = false) }
         return@launch
@@ -721,7 +721,7 @@ class BuildReminderViewModel(
   }
 
   private suspend fun findSame(id: String) {
-    val reminder = getReminderV2ByIdUseCase(id)
+    val reminder = reminderV2Repository.getById(id)
     _state.update { it.copy(hasSameInDb = reminder != null) }
     reminder?.also { pauseReminder(it) }
   }

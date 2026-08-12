@@ -23,7 +23,6 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.usecase.googletasks.GetGoogleTaskListByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -37,7 +36,6 @@ internal class EditGoogleTaskListViewModel(
   private val googleTaskRepository: GoogleTaskRepository,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val getGoogleTaskListByIdUseCase: GetGoogleTaskListByIdUseCase,
   private val textProvider: TextProvider,
   private val themeProvider: ThemeProvider,
   private val appWidgetUpdater: AppWidgetUpdater,
@@ -202,7 +200,7 @@ internal class EditGoogleTaskListViewModel(
       return
     }
     viewModelScope.launch(dispatcherProvider.io()) {
-      val editedTaskList = getGoogleTaskListByIdUseCase(listId)
+      val editedTaskList = googleTaskListRepository.getById(listId)
       editedTaskList?.also { list ->
         Logger.w(TAG, "Loaded Google Task List with id: $listId")
         _state.update {

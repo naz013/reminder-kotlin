@@ -3,7 +3,7 @@ package com.elementary.tasks.birthdays
 import com.github.naz013.datecalc.provideBirthdayDateCalculator
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
+import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test

@@ -12,8 +12,8 @@ import com.github.naz013.appwidgets.events.data.UiReminderWidgetShopList
 import com.github.naz013.appwidgets.events.data.UiShopListWidget
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.logging.Logger
-import com.github.naz013.usecase.birthdays.GetBirthdaysByDayMonthUseCase
-import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
+import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderV2Repository
 import java.text.SimpleDateFormat
 import java.util.GregorianCalendar
 import java.util.Locale
@@ -22,8 +22,8 @@ import java.util.UUID
 internal class EventsAppWidgetViewModel(
   private val prefsProvider: EventsWidgetPrefsProvider,
   private val dateTimeManager: DateTimeManager,
-  private val getActiveRemindersV2UseCase: GetActiveRemindersV2UseCase,
-  private val getBirthdaysByDayMonthUseCase: GetBirthdaysByDayMonthUseCase,
+  private val reminderV2Repository: ReminderV2Repository,
+  private val birthdayRepository: BirthdayRepository,
   private val uiReminderWidgetListAdapter: UiReminderWidgetListAdapter,
   private val uiBirthdayWidgetListAdapter: UiBirthdayWidgetListAdapter,
   private val appWidgetPreferences: AppWidgetPreferences
@@ -52,13 +52,13 @@ internal class EventsAppWidgetViewModel(
   }
 
   private suspend fun getEvents(): List<DateSorted> {
-    val events = getActiveRemindersV2UseCase()
+    val events = reminderV2Repository.getAll(active = true, removed = false)
       .map { uiReminderWidgetListAdapter.createV2(it) }
       .toMutableList()
 
     if (appWidgetPreferences.isBirthdayInWidgetEnabled) {
       val dateTime = dateTimeManager.getCurrentDateTime()
-      getBirthdaysByDayMonthUseCase(
+      birthdayRepository.getByDayMonth(
         dateTime.dayOfMonth,
         dateTime.monthValue - 1
       )

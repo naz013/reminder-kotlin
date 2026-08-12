@@ -236,11 +236,6 @@ dependencies {
   implementation(project(":ui-reminder"))
   implementation(project(":ui-tag"))
 
-  implementation(project(":usecase:googletasks"))
-  implementation(project(":usecase:birthdays"))
-  implementation(project(":usecase:notes"))
-  implementation(project(":usecase:reminders"))
-
   implementation(project(":logic-googletask"))
   implementation(project(":logic-reminder"))
   implementation(project(":logic-schedule"))

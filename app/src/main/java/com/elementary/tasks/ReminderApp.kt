@@ -71,10 +71,6 @@ import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.ui.googletask.uiGoogleTaskModule
 import com.github.naz013.ui.tag.uiTagModule
-import com.github.naz013.usecase.birthdays.birthdaysUseCaseModule
-import com.github.naz013.usecase.googletasks.googleTasksUseCaseModule
-import com.github.naz013.usecase.notes.notesUseCaseModule
-import com.github.naz013.usecase.reminders.remindersUseCaseModule
 import com.github.naz013.work.workModule
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import kotlinx.coroutines.CoroutineScope
@@ -153,10 +149,6 @@ class ReminderApp :
           navigationModule,
           uiCommonModule,
           appWidgetsModule,
-          googleTasksUseCaseModule,
-          birthdaysUseCaseModule,
-          remindersUseCaseModule,
-          notesUseCaseModule,
           iCalendarModule,
           navigationApiModule,
           cloudModule,

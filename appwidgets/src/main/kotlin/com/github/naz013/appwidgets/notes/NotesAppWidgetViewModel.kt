@@ -7,13 +7,13 @@ import com.github.naz013.appwidgets.notes.data.NotesAppWidgetState
 import com.github.naz013.appwidgets.notes.data.UiNoteWidgetItem
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.repository.NoteRepository
 import com.github.naz013.ui.common.isAlmostTransparent
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.usecase.notes.GetAllNotesUseCase
 
 internal class NotesAppWidgetViewModel(
   private val prefsProvider: NotesWidgetPrefsProvider,
-  private val getAllNotesUseCase: GetAllNotesUseCase,
+  private val noteRepository: NoteRepository,
   private val themeProvider: ThemeProvider
 ) {
 
@@ -22,7 +22,7 @@ internal class NotesAppWidgetViewModel(
     return NotesAppWidgetState(
       widgetId = prefsProvider.widgetId,
       backgroundColor = headerBackgroundColor,
-      items = getAllNotesUseCase().map { it.toUiNoteWidgetItem() }
+      items = noteRepository.getAll(isArchived = false).map { it.toUiNoteWidgetItem() }
     )
   }
 

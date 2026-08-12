@@ -3,21 +3,21 @@ package com.github.naz013.appwidgets.singlenote
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
+import com.github.naz013.repository.NoteRepository
 import com.github.naz013.ui.common.adjustAlpha
 import com.github.naz013.ui.common.context.dp2px
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.usecase.notes.GetNoteByIdUseCase
 
 internal class SingleNoteAppWidgetViewModel(
   private val context: Context,
   private val prefsProvider: SingleNoteWidgetPrefsProvider,
-  private val getNoteByIdUseCase: GetNoteByIdUseCase,
+  private val noteRepository: NoteRepository,
   private val uiNoteWidgetAdapter: UiNoteWidgetAdapter
 ) {
 
   suspend fun getState(): SingleNoteAppWidgetState {
     val noteId = prefsProvider.getNoteId()
-    val noteWithImages = noteId?.let { getNoteByIdUseCase(it) }
+    val noteWithImages = noteId?.let { noteRepository.getById(it) }
       ?: return SingleNoteAppWidgetState(prefsProvider.widgetId, null, null)
 
     val options = AppWidgetManager.getInstance(context).getAppWidgetOptions(prefsProvider.widgetId)

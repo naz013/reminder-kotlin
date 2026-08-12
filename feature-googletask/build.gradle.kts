@@ -29,7 +29,6 @@ dependencies {
   implementation(project(":ui-tag"))
   implementation(project(":feature-common"))
   implementation(project(":feature-tags"))
-  implementation(project(":usecase:googletasks"))
   implementation(project(":analytics"))
   implementation(project(":date-calculations"))
   implementation(project(":logic-googletask"))
