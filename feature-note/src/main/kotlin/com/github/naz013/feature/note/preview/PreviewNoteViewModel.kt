@@ -7,6 +7,7 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -24,8 +25,10 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.NoteNotifier
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -50,6 +53,8 @@ internal class PreviewNoteViewModel(
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val imagesSingleton: ImagesSingleton,
   private val noteColorEngine: NoteColorEngine,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
@@ -91,6 +96,7 @@ internal class PreviewNoteViewModel(
         }
       }
       loadReminders()
+      loadTags()
     }
   }
 
@@ -101,6 +107,16 @@ internal class PreviewNoteViewModel(
       }
     withContext(dispatcherProvider.main()) {
       _state.update { it.copy(reminders = reminders) }
+    }
+  }
+
+  private suspend fun loadTags() {
+    val tags =
+      tagAssignmentRepository.getTagsForItem(key, TaggedItemType.NOTE).map {
+        tagChipStateAdapter(it)
+      }
+    withContext(dispatcherProvider.main()) {
+      _state.update { it.copy(tags = tags) }
     }
   }
 

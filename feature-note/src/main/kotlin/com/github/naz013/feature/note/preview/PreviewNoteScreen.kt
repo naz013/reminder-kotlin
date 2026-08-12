@@ -34,6 +34,7 @@ import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.tag.TagChipRow
 
 private const val OVERFLOW_ITEM_SHARE = 0
 private const val OVERFLOW_ITEM_ARCHIVE = 1
@@ -162,6 +163,11 @@ internal fun PreviewNoteScreen(
           top = if (state.title.isNotEmpty()) 24.dp else 16.dp,
           end = 24.dp,
         ),
+      )
+
+      TagChipRow(
+        tags = state.tags,
+        modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
       )
 
       PreviewNoteImageCarousel(
