@@ -13,7 +13,7 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
-import com.github.naz013.usecase.reminders.CreateWorkflowRuleUseCase
+import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
 import io.mockk.coEvery
 import io.mockk.coVerify

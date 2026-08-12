@@ -6,7 +6,7 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.usecase.reminders.PendingWorkflowAction
+import com.github.naz013.logic.workflow.PendingWorkflowAction
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

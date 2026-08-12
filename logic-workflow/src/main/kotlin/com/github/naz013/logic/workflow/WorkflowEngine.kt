@@ -1,4 +1,4 @@
-package com.github.naz013.usecase.reminders
+package com.github.naz013.logic.workflow
 
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2

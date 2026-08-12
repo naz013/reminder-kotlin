@@ -53,6 +53,7 @@ import com.github.naz013.legal.legalModule
 import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.logic.reminder.logicReminderModule
+import com.github.naz013.logic.workflow.logicWorkflowModule
 import com.github.naz013.logic.schedule.logicScheduleModule
 import com.github.naz013.logic.tag.logicTagModule
 import com.github.naz013.navigation.ActivityDestination
@@ -173,6 +174,7 @@ class ReminderApp :
           libModule,
           intentModule,
           workflowModule,
+          logicWorkflowModule,
           fileModule,
           tagsModule,
           insightsModule,

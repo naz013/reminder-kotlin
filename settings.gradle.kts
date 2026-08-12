@@ -79,6 +79,7 @@ include(":logic-note")
 include(":logic-reminder")
 include(":logic-schedule")
 include(":logic-tag")
+include(":logic-workflow")
 
 include(":testing")
 include(":scheduler-api")

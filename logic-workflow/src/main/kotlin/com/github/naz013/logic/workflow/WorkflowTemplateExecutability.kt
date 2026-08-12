@@ -1,4 +1,4 @@
-package com.github.naz013.usecase.reminders
+package com.github.naz013.logic.workflow
 
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowTemplate

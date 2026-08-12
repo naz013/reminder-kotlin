@@ -1,4 +1,4 @@
-package com.github.naz013.usecase.reminders
+package com.github.naz013.logic.workflow
 
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride

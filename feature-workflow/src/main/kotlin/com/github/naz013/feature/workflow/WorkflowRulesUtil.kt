@@ -10,11 +10,11 @@ import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.repository.WorkflowTemplateRepository
-import com.github.naz013.usecase.reminders.ApplyWorkflowTemplateUseCase
+import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 
 /**
  * Seeds the built-in workflow template gallery on first run, and applies the archive template
- * globally to create the one live rule [com.github.naz013.usecase.reminders.WorkflowEngine]
+ * globally to create the one live rule [com.github.naz013.logic.workflow.WorkflowEngine]
  * actually runs today. There's no rule/template management UI yet (see
  * docs/workflow-engine-research.md) — the archive rule isn't user-configurable, and the other
  * seeded templates exist in the gallery for a future UI/engine phase to pick up.

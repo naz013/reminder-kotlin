@@ -8,10 +8,10 @@ import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.repository.WorkflowRuleRepository
-import com.github.naz013.usecase.reminders.ApplyWorkflowTemplateUseCase
-import com.github.naz013.usecase.reminders.GetWorkflowRulesForGroupUseCase
-import com.github.naz013.usecase.reminders.GetWorkflowTemplatesUseCase
-import com.github.naz013.usecase.reminders.SaveWorkflowRuleAsTemplateUseCase
+import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
+import com.github.naz013.logic.workflow.GetWorkflowRulesForGroupUseCase
+import com.github.naz013.logic.workflow.GetWorkflowTemplatesUseCase
+import com.github.naz013.logic.workflow.SaveWorkflowRuleAsTemplateUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

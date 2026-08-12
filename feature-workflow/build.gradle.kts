@@ -24,6 +24,7 @@ dependencies {
   implementation(project(":ui-common"))
   implementation(project(":usecase:reminders"))
   implementation(project(":logic-reminder"))
+  implementation(project(":logic-workflow"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)
