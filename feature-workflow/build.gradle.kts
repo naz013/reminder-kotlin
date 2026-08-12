@@ -22,7 +22,6 @@ dependencies {
 
   implementation(project(":feature-common"))
   implementation(project(":ui-common"))
-  implementation(project(":usecase:reminders"))
   implementation(project(":logic-reminder"))
   implementation(project(":logic-workflow"))
 

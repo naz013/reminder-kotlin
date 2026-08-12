@@ -22,6 +22,7 @@ import com.github.naz013.feature.googletask.GoogleTasksPreferences
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.SaveOneTimeReminderUseCase
 import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
+import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
@@ -29,8 +30,6 @@ import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import com.github.naz013.usecase.googletasks.GetAllGoogleTaskListsUseCase
-import com.github.naz013.usecase.googletasks.GetGoogleTaskByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -48,11 +47,10 @@ internal class EditGoogleTaskViewModel(
   private val googleTasksApi: GoogleTasksApi,
   private val dispatcherProvider: DispatcherProvider,
   private val googleTaskRepository: GoogleTaskRepository,
+  private val googleTaskListRepository: GoogleTaskListRepository,
   private val reminderV2Repository: ReminderV2Repository,
   private val dateTimeManager: DateTimeManager,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val getAllGoogleTaskListsUseCase: GetAllGoogleTaskListsUseCase,
-  private val getGoogleTaskByIdUseCase: GetGoogleTaskByIdUseCase,
   private val saveOneTimeReminderUseCase: SaveOneTimeReminderUseCase,
   private val textProvider: TextProvider,
   private val preferences: GoogleTasksPreferences,
@@ -492,10 +490,10 @@ internal class EditGoogleTaskViewModel(
     hasLoadedInitialState = true
     viewModelScope.launch(dispatcherProvider.main()) {
       val googleTaskLists = withContext(dispatcherProvider.io()) {
-        getAllGoogleTaskListsUseCase()
+        googleTaskListRepository.getAll()
       }
       val editedTask = withContext(dispatcherProvider.io()) {
-        id?.let { getGoogleTaskByIdUseCase(it) }
+        id?.let { googleTaskRepository.getById(it) }
       }
 
       val googleTaskList = when {

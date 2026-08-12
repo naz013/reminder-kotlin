@@ -18,10 +18,6 @@ dependencies {
   implementation(project(":analytics"))
   implementation(project(":platform-common"))
   implementation(project(":date-calculations"))
-  implementation(project(":usecase:reminders"))
-  implementation(project(":usecase:notes"))
-  implementation(project(":usecase:birthdays"))
-  implementation(project(":usecase:googletasks"))
   implementation(project(":cloud-api"))
   implementation(project(":cloud"))
 

@@ -26,11 +26,11 @@ import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
 import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -55,7 +55,7 @@ class TodoEditViewModelTest : BaseTest() {
   private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val todoSeedHolder = TodoSeedHolder()
   private val shopItemsFormatter = mockk<ShopItemsFormatter>(relaxed = true)
-  private val getReminderV2ByIdUseCase = mockk<GetReminderV2ByIdUseCase>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val reminderToBiDecomposer = mockk<ReminderToBiDecomposer>()
   private val pauseReminderUseCase = mockk<PauseReminderUseCase>(relaxed = true)
   private val resumeReminderUseCase = mockk<ResumeReminderUseCase>(relaxed = true)
@@ -71,7 +71,7 @@ class TodoEditViewModelTest : BaseTest() {
     coEvery { biFactory.create(BiType.GROUP) } returns groupItem()
     // No existing reminder by default - matches create-mode for every test that doesn't
     // explicitly stub a hit, including ones that pass a non-empty id only as a stable label.
-    coEvery { getReminderV2ByIdUseCase(any()) } returns null
+    coEvery { reminderV2Repository.getById(any()) } returns null
   }
 
   private fun subTasksItem() =
@@ -119,7 +119,7 @@ class TodoEditViewModelTest : BaseTest() {
       tagChipStateAdapter = tagChipStateAdapter,
       dateTimeManager = dateTimeManager,
       todoSeedHolder = todoSeedHolder,
-      getReminderV2ByIdUseCase = getReminderV2ByIdUseCase,
+      reminderV2Repository = reminderV2Repository,
       reminderToBiDecomposer = reminderToBiDecomposer,
       pauseReminderUseCase = pauseReminderUseCase,
       resumeReminderUseCase = resumeReminderUseCase,
@@ -139,7 +139,7 @@ class TodoEditViewModelTest : BaseTest() {
 
   @Test
   fun `init with an unknown id falls back to create-mode instead of leaving subTasksItem null`() {
-    coEvery { getReminderV2ByIdUseCase("missing") } returns null
+    coEvery { reminderV2Repository.getById("missing") } returns null
 
     val viewModel = createViewModel(id = "missing")
 
@@ -151,7 +151,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `init with an id loads the reminder, pauses it, and seeds title, subTasks and group`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     val loadedSubTasks = subTasksItemWithData()
     val loadedGroup = groupItem().apply { modifier.update(uiGroupFixture()) }
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem("Groceries"), loadedSubTasks, loadedGroup)
@@ -168,7 +168,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `init with an id but no group in the decomposed items still populates availableGroups`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(summaryItem("Groceries"), subTasksItemWithData())
 
     val viewModel = createViewModel(id = "42")
@@ -180,7 +180,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `init with an id sets canSave true when the loaded sub-tasks item is already correct`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(subTasksItemWithData())
 
     val viewModel = createViewModel(id = "42")
@@ -191,7 +191,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `init with an id carries forward extra builder items untouched on save`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     // Use a builder item type this screen never shows (not SUMMARY/SUB_TASKS/GROUP) to prove it
     // round-trips untouched - PRIORITY stands in for any such "extra" field.
     val priorityItem = mockk<BuilderItem<Any>>(relaxed = true)
@@ -210,7 +210,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `onSaveClick when editing rebuilds from originalV2 and marks isEdited true`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(subTasksItemWithData())
     val baseSlot = slot<ReminderV2>()
     val isEditedSlot = slot<Boolean>()
@@ -312,7 +312,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `onExtendClick while editing an existing reminder passes isEditing through OpenBuilder`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(subTasksItemWithData())
     every { biToReminderAdapter(any(), any(), any()) } returns
       BiToReminderAdapter.BuildResult.Success(reminder)
@@ -350,7 +350,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `moveToTrash archives the original reminder when one was loaded for edit`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(subTasksItemWithData())
     val viewModel = createViewModel(id = "42")
 
@@ -373,7 +373,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `deleteReminder deletes and posts MoveBack when showMessage is true`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(subTasksItemWithData())
     val viewModel = createViewModel(id = "42")
 
@@ -386,7 +386,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `deleteReminder does not emit an event when showMessage is false`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(subTasksItemWithData())
     val viewModel = createViewModel(id = "42")
 
@@ -399,7 +399,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `onCleared resumes the reminder when it was paused and not saving`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(subTasksItemWithData())
     val viewModel = createViewModel(id = "42")
     val store = ViewModelStore()
@@ -413,7 +413,7 @@ class TodoEditViewModelTest : BaseTest() {
   @Test
   fun `onCleared does not resume the reminder while a save is in flight`() {
     val reminder = reminderV2Fixture(uuId = "42")
-    coEvery { getReminderV2ByIdUseCase("42") } returns reminder
+    coEvery { reminderV2Repository.getById("42") } returns reminder
     coEvery { reminderToBiDecomposer(reminder) } returns listOf(subTasksItemWithData())
     every { biToReminderAdapter(any(), any(), any()) } returns
       BiToReminderAdapter.BuildResult.Success(reminder)

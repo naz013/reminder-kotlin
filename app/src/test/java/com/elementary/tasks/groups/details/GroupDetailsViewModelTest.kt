@@ -18,8 +18,8 @@ import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.reminder.query.GetActiveRemindersV2ByGroupIdUseCase
 import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.usecase.reminders.GetActiveRemindersV2ByGroupIdUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

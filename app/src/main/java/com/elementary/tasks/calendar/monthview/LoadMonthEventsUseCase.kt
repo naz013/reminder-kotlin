@@ -5,8 +5,8 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
 import org.threeten.bp.LocalDate
 
 /**
@@ -17,7 +17,7 @@ import org.threeten.bp.LocalDate
 class LoadMonthEventsUseCase(
   private val getOccurrencesByDateRangeUseCase: GetOccurrencesByDateRangeUseCase,
   private val birthdayRepository: BirthdayRepository,
-  private val getActiveRemindersV2UseCase: GetActiveRemindersV2UseCase,
+  private val reminderV2Repository: ReminderV2Repository,
   private val contextProvider: ContextProvider,
   private val prefs: Prefs,
 ) {
@@ -27,7 +27,7 @@ class LoadMonthEventsUseCase(
     val occurrences = getOccurrencesByDateRangeUseCase(startOfMonth, endOfMonth)
 
     val birthdayIds = birthdayRepository.getAll().mapTo(HashSet()) { it.uuId }
-    val reminderIds = getActiveRemindersV2UseCase().mapTo(HashSet()) { it.uuId }
+    val reminderIds = reminderV2Repository.getAll(active = true, removed = false).mapTo(HashSet()) { it.uuId }
 
     val birthdayColor = ThemeProvider.colorBirthdayCalendar(contextProvider.themedContext, prefs.birthdayLedColor)
     val reminderColor = ThemeProvider.colorReminderCalendar(contextProvider.themedContext, prefs.reminderColor)

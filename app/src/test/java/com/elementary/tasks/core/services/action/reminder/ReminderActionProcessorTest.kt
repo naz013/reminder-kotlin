@@ -7,7 +7,6 @@ import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.mockDispatcherProvider
-import com.github.naz013.feature.workflow.WorkflowTriggerRunner
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -17,9 +16,10 @@ import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.feature.workflow.WorkflowTriggerRunner
+import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.scheduler.JobSchedulerApi
-import com.github.naz013.usecase.reminders.ResolveReminderV2NotificationSettingsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

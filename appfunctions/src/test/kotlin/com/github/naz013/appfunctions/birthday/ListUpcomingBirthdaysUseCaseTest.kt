@@ -1,10 +1,10 @@
 package com.github.naz013.appfunctions.birthday
 
-import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.BirthdayDateCalculator
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.usecase.birthdays.GetAllBirthdaysUseCase
+import com.github.naz013.repository.BirthdayRepository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -17,10 +17,10 @@ import org.threeten.bp.LocalTime
 
 class ListUpcomingBirthdaysUseCaseTest {
 
-  private val getAllBirthdaysUseCase = mockk<GetAllBirthdaysUseCase>()
+  private val birthdayRepository = mockk<BirthdayRepository>()
   private val birthdayDateCalculator = mockk<BirthdayDateCalculator>()
   private val dateTimeManager = mockk<DateTimeManager>()
-  private val useCase = ListUpcomingBirthdaysUseCase(getAllBirthdaysUseCase, birthdayDateCalculator, dateTimeManager)
+  private val useCase = ListUpcomingBirthdaysUseCase(birthdayRepository, birthdayDateCalculator, dateTimeManager)
 
   private val now = LocalDateTime.of(2026, 8, 1, 0, 0)
   private val birthdayTime = LocalTime.of(9, 0)
@@ -29,7 +29,7 @@ class ListUpcomingBirthdaysUseCaseTest {
   fun `invoke returns only birthdays occurring within withinDays, soonest first`() = runTest {
     val soon = birthday(uuId = "soon", date = "1990-08-05")
     val far = birthday(uuId = "far", date = "1990-09-15")
-    coEvery { getAllBirthdaysUseCase() } returns listOf(far, soon)
+    coEvery { birthdayRepository.getAll() } returns listOf(far, soon)
     every { dateTimeManager.getCurrentDateTime() } returns now
     every { dateTimeManager.getBirthdayLocalTime() } returns birthdayTime
     every { dateTimeManager.parseBirthdayDate("1990-08-05") } returns LocalDate.of(1990, 8, 5)
@@ -49,7 +49,7 @@ class ListUpcomingBirthdaysUseCaseTest {
   @Test
   fun `invoke skips birthdays whose stored date cannot be parsed`() = runTest {
     val unparsable = birthday(uuId = "bad", date = "not-a-date")
-    coEvery { getAllBirthdaysUseCase() } returns listOf(unparsable)
+    coEvery { birthdayRepository.getAll() } returns listOf(unparsable)
     every { dateTimeManager.getCurrentDateTime() } returns now
     every { dateTimeManager.getBirthdayLocalTime() } returns birthdayTime
     every { dateTimeManager.parseBirthdayDate("not-a-date") } returns null

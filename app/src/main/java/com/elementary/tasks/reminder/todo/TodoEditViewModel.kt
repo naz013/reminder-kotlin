@@ -29,11 +29,11 @@ import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
 import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import com.github.naz013.usecase.reminders.GetReminderV2ByIdUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,7 +57,7 @@ class TodoEditViewModel(
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val dateTimeManager: DateTimeManager,
   private val todoSeedHolder: TodoSeedHolder,
-  private val getReminderV2ByIdUseCase: GetReminderV2ByIdUseCase,
+  private val reminderV2Repository: ReminderV2Repository,
   private val reminderToBiDecomposer: ReminderToBiDecomposer,
   private val pauseReminderUseCase: PauseReminderUseCase,
   private val resumeReminderUseCase: ResumeReminderUseCase,
@@ -109,7 +109,7 @@ class TodoEditViewModel(
   }
 
   private suspend fun loadExistingReminder(id: String): Boolean {
-    val reminder = getReminderV2ByIdUseCase(id) ?: return false
+    val reminder = reminderV2Repository.getById(id) ?: return false
     Logger.i(TAG, "Loaded existing reminder for Todo edit, id = $id")
 
     originalV2 = reminder

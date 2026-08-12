@@ -1,13 +1,13 @@
 package com.github.naz013.appfunctions.birthday
 
-import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.BirthdayDateCalculator
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
-import com.github.naz013.usecase.birthdays.GetAllBirthdaysUseCase
+import com.github.naz013.repository.BirthdayRepository
 import org.threeten.bp.LocalTime
 
-class ListUpcomingBirthdaysUseCase(
-  private val getAllBirthdaysUseCase: GetAllBirthdaysUseCase,
+internal class ListUpcomingBirthdaysUseCase(
+  private val birthdayRepository: BirthdayRepository,
   private val birthdayDateCalculator: BirthdayDateCalculator,
   private val dateTimeManager: DateTimeManager,
 ) {
@@ -16,7 +16,7 @@ class ListUpcomingBirthdaysUseCase(
     val birthdayTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.MIDNIGHT
     val limit = now.plusDays(withinDays.toLong())
 
-    return getAllBirthdaysUseCase()
+    return birthdayRepository.getAll()
       .mapNotNull { birthday ->
         val birthDate = dateTimeManager.parseBirthdayDate(birthday.date) ?: return@mapNotNull null
         val nextOccurrence =

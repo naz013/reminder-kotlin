@@ -15,9 +15,9 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.usecase.reminders.GetRemindersV2InRangeUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -33,7 +33,7 @@ import org.threeten.bp.LocalDateTime
 
 class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
   private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
-  private val getRemindersV2InRangeUseCase = mockk<GetRemindersV2InRangeUseCase>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val birthdayRepository = mockk<com.github.naz013.repository.BirthdayRepository>(relaxed = true)
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val modelDateTimeFormatter = mockk<ModelDateTimeFormatter>(relaxed = true)
@@ -70,14 +70,14 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
     every { dateTimeManager.getCurrentDateTime() } returns day
     every { modelDateTimeFormatter.getRemaining(any<LocalDateTime>(), any<LocalDateTime>()) } returns "remaining"
-    coEvery { getRemindersV2InRangeUseCase(any(), any()) } returns emptyList()
+    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns emptyList()
     coEvery { groupV2Repository.getAll() } returns emptyList()
     coEvery { birthdayRepository.getAll(any()) } returns emptyList()
 
     useCase = GetActiveEventsForTheDayUseCase(
       dispatcherProvider = mockDispatcherProvider(),
       dateTimeManager = dateTimeManager,
-      getRemindersV2InRangeUseCase = getRemindersV2InRangeUseCase,
+      reminderV2Repository = reminderV2Repository,
       birthdayRepository = birthdayRepository,
       groupV2Repository = groupV2Repository,
       modelDateTimeFormatter = modelDateTimeFormatter,
@@ -98,7 +98,7 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
   fun `maps a reminder into a HomeEvent with its group name and color`() = runTest {
     val group = GroupV2(uuId = "g1", title = "Work", color = 3)
     coEvery { groupV2Repository.getAll() } returns listOf(group)
-    coEvery { getRemindersV2InRangeUseCase(any(), any()) } returns listOf(reminder(groupId = "g1"))
+    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns listOf(reminder(groupId = "g1"))
 
     val events = useCase(this, day)
 
@@ -109,7 +109,8 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
 
   @Test
   fun `skips a reminder with no event date time`() = runTest {
-    coEvery { getRemindersV2InRangeUseCase(any(), any()) } returns listOf(reminder(eventDateTime = null))
+    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns
+      listOf(reminder(eventDateTime = null))
 
     val events = useCase(this, day)
 
@@ -118,7 +119,7 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
 
   @Test
   fun `maps a Call action into a MakeCall event action`() = runTest {
-    coEvery { getRemindersV2InRangeUseCase(any(), any()) } returns
+    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns
       listOf(reminder(action = ReminderAction.Call("+123")))
 
     val event = useCase(this, day).single()
@@ -129,7 +130,8 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
 
   @Test
   fun `has no event action for a reminder with no action`() = runTest {
-    coEvery { getRemindersV2InRangeUseCase(any(), any()) } returns listOf(reminder(action = ReminderAction.None))
+    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns
+      listOf(reminder(action = ReminderAction.None))
 
     val event = useCase(this, day).single()
 
@@ -140,7 +142,7 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
   fun `formats the shopping list as the secondary text for a Shopping action`() = runTest {
     every { shopItemsFormatter.formatV2(any()) } returns "formatted list"
     val items = listOf(ShopItemV2(summary = "Milk", createdAt = day))
-    coEvery { getRemindersV2InRangeUseCase(any(), any()) } returns
+    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns
       listOf(reminder(action = ReminderAction.Shopping, shoppingItems = items))
 
     val event = useCase(this, day).single()

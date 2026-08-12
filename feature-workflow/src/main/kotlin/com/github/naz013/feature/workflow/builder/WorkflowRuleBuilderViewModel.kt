@@ -10,8 +10,8 @@ import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
-import com.github.naz013.usecase.reminders.GetActiveRemindersV2UseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -30,7 +30,7 @@ class WorkflowRuleBuilderViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val createWorkflowRuleUseCase: CreateWorkflowRuleUseCase,
-  private val getActiveRemindersV2UseCase: GetActiveRemindersV2UseCase,
+  private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
 ) : ViewModel() {
 
@@ -43,7 +43,8 @@ class WorkflowRuleBuilderViewModel(
 
   private suspend fun loadData() {
     val groups = groupV2Repository.getAll().map { UiWorkflowGroupOption(id = it.uuId, title = it.title) }
-    val reminders = getActiveRemindersV2UseCase().map { UiWorkflowReminderOption(id = it.uuId, title = it.summary) }
+    val reminders = reminderV2Repository.getAll(active = true, removed = false)
+      .map { UiWorkflowReminderOption(id = it.uuId, title = it.summary) }
     val existingRule = editingRuleId?.let { workflowRuleRepository.getById(it) }
     withContext(dispatcherProvider.main()) {
       state.update {

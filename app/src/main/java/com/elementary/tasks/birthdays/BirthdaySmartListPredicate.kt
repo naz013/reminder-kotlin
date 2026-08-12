@@ -2,7 +2,7 @@ package com.elementary.tasks.birthdays
 
 import com.github.naz013.datecalc.BirthdayDateCalculator
 import com.github.naz013.domain.Birthday
-import com.github.naz013.usecase.reminders.smartlist.SmartListFilter
+import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import org.threeten.bp.LocalDate
 
 /**

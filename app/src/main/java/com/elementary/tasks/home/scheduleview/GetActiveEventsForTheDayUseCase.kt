@@ -2,9 +2,9 @@ package com.elementary.tasks.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.eventaction.ResolvedEventAction
 import com.elementary.tasks.home.HomeEvent
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
@@ -16,10 +16,10 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import com.github.naz013.ui.common.theme.ThemeProvider
-import com.github.naz013.usecase.reminders.GetRemindersV2InRangeUseCase
 import kotlinx.coroutines.CoroutineScope
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -28,7 +28,7 @@ import org.threeten.bp.LocalTime
 class GetActiveEventsForTheDayUseCase(
   private val dispatcherProvider: DispatcherProvider,
   private val dateTimeManager: DateTimeManager,
-  private val getRemindersV2InRangeUseCase: GetRemindersV2InRangeUseCase,
+  private val reminderV2Repository: ReminderV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val groupV2Repository: GroupV2Repository,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
@@ -49,9 +49,10 @@ class GetActiveEventsForTheDayUseCase(
   private suspend fun loadReminders(day: LocalDateTime): List<HomeEvent> {
     val groupsMap = groupV2Repository.getAll().associateBy { it.uuId }
     val dayStart = day.toLocalDate().atStartOfDay()
-    val reminders = getRemindersV2InRangeUseCase(
-      dateTimeManager.localToUtc(dayStart),
-      dateTimeManager.localToUtc(dayStart.plusDays(1)),
+    val reminders = reminderV2Repository.getActiveInRange(
+      removed = false,
+      from = dateTimeManager.localToUtc(dayStart),
+      to = dateTimeManager.localToUtc(dayStart.plusDays(1)),
     )
     return reminders.mapNotNull { toHomeEvent(it, it.groupId?.let { groupId -> groupsMap[groupId] }) }
   }
