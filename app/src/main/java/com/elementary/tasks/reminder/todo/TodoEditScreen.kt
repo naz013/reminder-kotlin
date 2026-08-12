@@ -27,7 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.github.naz013.ui.group.UiGroupList
 import com.elementary.tasks.reminder.build.SubTasksBuilderItem
 import com.elementary.tasks.reminder.build.valuedialog.editor.SubTasksValueEditor
 import com.github.naz013.datecalc.DateTimeManager

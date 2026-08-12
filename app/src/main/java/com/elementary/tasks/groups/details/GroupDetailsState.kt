@@ -1,6 +1,6 @@
 package com.elementary.tasks.groups.details
 
-import com.elementary.tasks.groups.NotificationOverrideSubtitles
+import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
 import com.elementary.tasks.reminder.lists.data.UiReminderList
 
 data class GroupDetailsState(

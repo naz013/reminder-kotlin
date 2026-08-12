@@ -3,11 +3,11 @@ package com.elementary.tasks.core.data.adapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
 import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
-import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
+import com.github.naz013.ui.group.UiGroupListAdapter
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 

@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.build.quickstart
 
-import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.elementary.tasks.core.data.ui.group.UiGroupList
+import com.github.naz013.ui.group.UiGroupListAdapter
+import com.github.naz013.ui.group.UiGroupList
 import com.github.naz013.repository.GroupV2Repository
 
 class FindGroupUseCase(

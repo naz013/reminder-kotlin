@@ -3,8 +3,8 @@ package com.elementary.tasks.settings.reminders
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.VibrationPlayer
-import com.elementary.tasks.core.utils.VibrationPresets
+import com.github.naz013.ui.notification.settings.VibrationPlayer
+import com.github.naz013.ui.notification.settings.VibrationPresets
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature

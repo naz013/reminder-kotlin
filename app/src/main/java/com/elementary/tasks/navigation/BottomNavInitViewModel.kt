@@ -8,7 +8,7 @@ import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.groups.GroupsUtil
+import com.github.naz013.ui.group.GroupsUtil
 import com.github.naz013.feature.workflow.WorkflowRulesUtil
 import com.github.naz013.appwidgets.AppWidgetPreviewUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager

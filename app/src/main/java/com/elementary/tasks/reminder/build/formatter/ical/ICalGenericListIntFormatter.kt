@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.formatter.ical
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.reminder.build.formatter.Formatter
+import com.github.naz013.ui.notification.settings.Formatter
 import org.threeten.bp.LocalDate
 
 class ICalGenericListIntFormatter(

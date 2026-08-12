@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.build.formatter.`object`
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.reminder.build.formatter.Formatter
+import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 

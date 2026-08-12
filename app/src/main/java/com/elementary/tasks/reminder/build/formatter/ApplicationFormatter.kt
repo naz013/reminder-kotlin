@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.build.formatter
 
+import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.common.PackageManagerWrapper
 
 class ApplicationFormatter(

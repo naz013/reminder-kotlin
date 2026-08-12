@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.build.formatter.datetime
 
-import com.elementary.tasks.reminder.build.formatter.Formatter
+import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.datecalc.DateTimeManager
 import org.threeten.bp.LocalTime
 

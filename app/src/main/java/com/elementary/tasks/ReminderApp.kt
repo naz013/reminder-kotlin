@@ -20,7 +20,8 @@ import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
-import com.elementary.tasks.groups.groupModule
+import com.elementary.tasks.groups.details.groupDetailsModule
+import com.github.naz013.group.groupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
 import com.elementary.tasks.module.platform.InstallReferrerReader
@@ -154,6 +155,7 @@ class ReminderApp :
           cloudModule,
           syncApiModule,
           groupModule,
+          groupDetailsModule,
           placeKoinModule,
           simpleMapKoinModule,
           reviewsKoinModule,

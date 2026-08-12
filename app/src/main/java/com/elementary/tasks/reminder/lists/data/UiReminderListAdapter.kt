@@ -2,7 +2,7 @@ package com.elementary.tasks.reminder.lists.data
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.adapter.UiReminderCommonAdapter
-import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
+import com.github.naz013.ui.group.UiGroupListAdapter
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.data.ui.reminder.UiReminderDueData
 import com.elementary.tasks.core.text.UiTextFormat

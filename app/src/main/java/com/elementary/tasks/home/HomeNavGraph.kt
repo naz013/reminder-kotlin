@@ -16,7 +16,7 @@ import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
-import com.elementary.tasks.groups.GroupsNavKey
+import com.github.naz013.group.GroupsNavKey
 import com.elementary.tasks.home.agenda.AgendaScreen
 import com.elementary.tasks.home.agenda.AgendaScreenState
 import com.elementary.tasks.home.agenda.AgendaViewModel

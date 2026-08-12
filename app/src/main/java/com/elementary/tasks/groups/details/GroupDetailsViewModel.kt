@@ -3,9 +3,9 @@ package com.elementary.tasks.groups.details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.data.adapter.group.UiGroupListAdapter
-import com.elementary.tasks.groups.NotificationOverrideSubtitleFormatter
-import com.elementary.tasks.groups.usecase.DeleteGroupUseCase
+import com.github.naz013.ui.group.UiGroupListAdapter
+import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitleFormatter
+import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event

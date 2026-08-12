@@ -19,7 +19,7 @@ import com.elementary.tasks.core.utils.io.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.elementary.tasks.groups.GroupsUtil
+import com.github.naz013.ui.group.GroupsUtil
 import com.elementary.tasks.navigation.BottomNavInitViewModel
 import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
 import com.elementary.tasks.settings.other.TermsViewModel

@@ -31,8 +31,7 @@ import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.birthdaysEntries
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.calendar.monthview.calendarEntries
-import com.elementary.tasks.groups.GroupsNavKey
-import com.elementary.tasks.groups.groupsEntries
+import com.elementary.tasks.groups.groupDetailsEntries
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
 import com.elementary.tasks.places.placesEntries
@@ -53,6 +52,8 @@ import com.github.naz013.feature.note.NotesNavKey
 import com.github.naz013.feature.note.notesEntries
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.feature.workflow.workflowEntries
+import com.github.naz013.group.GroupsNavKey
+import com.github.naz013.group.groupsEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.localBackupEntries
 import com.github.naz013.tags.tagsEntries
@@ -151,7 +152,12 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onEditReminder = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.NotePreview) },
         )
-        groupsEntries(backStack)
+        groupsEntries(
+          backStack = backStack,
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Group) },
+          onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
+        )
+        groupDetailsEntries(backStack)
         placesEntries(backStack)
         birthdaysEntries(backStack)
         googleTasksEntries(

@@ -9,8 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.elementary.tasks.core.utils.VibrationPlayer
-import com.elementary.tasks.core.utils.VibrationPresets
+import com.github.naz013.ui.notification.settings.VibrationPlayer
+import com.github.naz013.ui.notification.settings.VibrationPresets
 import com.elementary.tasks.reminder.build.BuilderItem
 import com.elementary.tasks.reminder.build.VibrationPatternBuilderItem
 import com.github.naz013.ui.common.compose.foundation.component.WheelPicker
