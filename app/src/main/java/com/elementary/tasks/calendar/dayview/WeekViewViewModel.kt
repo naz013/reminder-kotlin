@@ -3,7 +3,7 @@ package com.elementary.tasks.calendar.dayview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
+import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.home.agenda.AgendaMenuAction
 import com.elementary.tasks.home.agenda.UiAgendaBirthday

@@ -1,7 +1,7 @@
 package com.elementary.tasks.calendar.dayview
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.birthdays.usecase.DeleteBirthdayUseCase
+import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.elementary.tasks.calendar.dayview.weekheader.WeekHeaderController
 import com.elementary.tasks.core.data.ui.UiTextElement
 import com.elementary.tasks.core.text.UiTextFormat

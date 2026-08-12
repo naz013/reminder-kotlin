@@ -13,7 +13,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.BirthdaysNavKey
+import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.elementary.tasks.calendar.dayview.WeekViewScreen
 import com.elementary.tasks.calendar.dayview.WeekViewViewModel
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale

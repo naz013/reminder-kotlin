@@ -31,9 +31,9 @@ import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.backup.BackupSettingsScreen
-import com.elementary.tasks.settings.birthday.BirthdaySettingsEvent
-import com.elementary.tasks.settings.birthday.BirthdaySettingsScreen
-import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
+import com.github.naz013.feature.birthday.settings.BirthdaySettingsEvent
+import com.github.naz013.feature.birthday.settings.BirthdaySettingsScreen
+import com.github.naz013.feature.birthday.settings.BirthdaySettingsViewModel
 import com.elementary.tasks.settings.calendar.CalendarSettingsScreen
 import com.elementary.tasks.settings.calendar.CalendarSettingsViewModel
 import com.elementary.tasks.settings.calendar.country.HolidayCountryScreen

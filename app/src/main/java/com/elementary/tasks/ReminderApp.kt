@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.appfunctions.AppFunctionsInitializer
-import com.elementary.tasks.birthdays.birthdaysModule
 import com.elementary.tasks.calendar.calendarModule
 import com.elementary.tasks.core.cloud.cloudModule
 import com.elementary.tasks.core.data.adapter.adapterModule
@@ -42,8 +41,10 @@ import com.github.naz013.common.platformCommonModule
 import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
+import com.github.naz013.feature.birthday.featureBirthdayModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.note.featureNoteModule
+import com.github.naz013.ui.birthday.uiBirthdayModule
 import com.github.naz013.ui.note.uiNoteModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.holidays.holidaysModule
@@ -53,6 +54,7 @@ import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.legalModule
 import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
+import com.github.naz013.logic.birthday.logicBirthdayModule
 import com.github.naz013.logic.reminder.logicReminderModule
 import com.github.naz013.logic.workflow.logicWorkflowModule
 import com.github.naz013.logic.schedule.logicScheduleModule
@@ -139,7 +141,9 @@ class ReminderApp :
           reminderModule,
           osModule,
           newUtilsModule,
-          birthdaysModule,
+          featureBirthdayModule,
+          uiBirthdayModule,
+          logicBirthdayModule,
           calendarModule,
           homeModule,
           featureGoogleTaskModule,

@@ -1,8 +1,5 @@
 package com.elementary.tasks.settings
 
-import com.elementary.tasks.settings.birthday.BirthdaySettingsViewModel
-import com.elementary.tasks.settings.birthday.usecase.GetContactsWithMetadataUseCase
-import com.elementary.tasks.settings.birthday.work.CheckBirthdaysTask
 import com.elementary.tasks.settings.calendar.CalendarSettingsViewModel
 import com.elementary.tasks.settings.calendar.country.HolidayCountryPickerResultHolder
 import com.elementary.tasks.settings.calendar.country.HolidayCountryViewModel
@@ -26,19 +23,9 @@ import org.koin.dsl.module
 
 val settingsModule = module {
   factoryOf(::ScanGoogleCalendarForNewEventsUseCase)
-  factoryOf(::GetContactsWithMetadataUseCase)
 
   factory<BackgroundTask>(named(ScanGoogleCalendarEventsTask.TASK_KEY)) {
     ScanGoogleCalendarEventsTask(
-      get(),
-      get()
-    )
-  }
-  factory<BackgroundTask>(named(CheckBirthdaysTask.TASK_KEY)) {
-    CheckBirthdaysTask(
-      get(),
-      get(),
-      get(),
       get(),
       get()
     )
@@ -47,7 +34,6 @@ val settingsModule = module {
   viewModelOf(::CalendarSettingsViewModel)
   viewModelOf(::HolidayCountryViewModel)
   single { HolidayCountryPickerResultHolder() }
-  viewModelOf(::BirthdaySettingsViewModel)
   viewModelOf(::GeneralSettingsViewModel)
   viewModelOf(::NoteSettingsViewModel)
   viewModelOf(::SecuritySettingsViewModel)

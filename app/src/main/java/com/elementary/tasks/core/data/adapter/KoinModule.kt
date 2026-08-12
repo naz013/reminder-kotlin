@@ -1,8 +1,5 @@
 package com.elementary.tasks.core.data.adapter
 
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayEditAdapter
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayListAdapter
-import com.elementary.tasks.core.data.adapter.birthday.UiBirthdayPreviewAdapter
 import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
 import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
@@ -14,10 +11,6 @@ import org.koin.dsl.module
 val adapterModule = module {
   factory { UiReminderPlaceAdapter() }
   factory { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get(), get()) }
-
-  factory { UiBirthdayListAdapter(get(), get(), get()) }
-  factory { UiBirthdayEditAdapter() }
-  factory { UiBirthdayPreviewAdapter(get(), get(), get()) }
 
   factory { GoogleTaskItemStateAdapter(get()) }
 

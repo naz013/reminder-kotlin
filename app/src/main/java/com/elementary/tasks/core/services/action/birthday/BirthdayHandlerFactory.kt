@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.services.action.birthday
 
-import com.elementary.tasks.birthdays.usecase.SaveBirthdayUseCase
+import com.github.naz013.logic.birthday.SaveBirthdayUseCase
 import com.elementary.tasks.core.services.action.ActionHandler
 import com.elementary.tasks.core.services.action.CancelNotificationDecorator
 import com.elementary.tasks.core.services.action.LoudNotificationStyle

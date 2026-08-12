@@ -11,11 +11,9 @@ import com.elementary.tasks.calendar.monthview.CalendarViewModel
 import com.elementary.tasks.calendar.monthview.LoadMonthEventsUseCase
 import com.elementary.tasks.calendar.monthview.LoadMonthHolidaysUseCase
 import com.elementary.tasks.calendar.monthview.monthgrid.MonthGridFactory
-import com.elementary.tasks.calendar.occurrence.CalculateBirthdayOccurrencesUseCase
 import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDateRangeUseCase
 import com.elementary.tasks.calendar.occurrence.GetOccurrencesByDayUseCase
 import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
-import com.elementary.tasks.calendar.occurrence.worker.CalculateBirthdayOccurrencesTask
 import com.github.naz013.logic.reminder.work.CalculateReminderOccurrencesTask
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.viewModel
@@ -40,10 +38,8 @@ val calendarModule =
     factory { LoadMonthHolidaysUseCase(get(), get()) }
     viewModelOf(::CalendarViewModel)
 
-    factory { CalculateBirthdayOccurrencesUseCase(get(), get(), get(), get(), get()) }
     factory { MigrateExistingEventOccurrencesUseCase(get(), get(), get()) }
 
-    factory<BackgroundTask>(named(CalculateBirthdayOccurrencesTask.TASK_KEY)) { CalculateBirthdayOccurrencesTask(get()) }
     factory<BackgroundTask>(named(CalculateReminderOccurrencesTask.TASK_KEY)) { CalculateReminderOccurrencesTask(get()) }
 
     factory { GetOccurrencesByDateRangeUseCase(get()) }

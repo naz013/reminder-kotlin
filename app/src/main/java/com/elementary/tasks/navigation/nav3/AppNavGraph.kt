@@ -28,13 +28,15 @@ import androidx.navigation3.ui.NavDisplay
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
-import com.elementary.tasks.birthdays.birthdaysEntries
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.calendar.monthview.calendarEntries
+import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
 import com.elementary.tasks.groups.groupDetailsEntries
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
 import com.elementary.tasks.places.placesEntries
+import com.elementary.tasks.telephony.rememberPhoneCaller
+import com.elementary.tasks.telephony.rememberSmsSender
 import com.elementary.tasks.reminder.build.BuildReminderNavKey
 import com.elementary.tasks.reminder.build.buildReminderEntries
 import com.elementary.tasks.reminder.lists.removed.remindersArchiveEntries
@@ -46,6 +48,7 @@ import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
+import com.github.naz013.feature.birthday.birthdaysEntries
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.feature.googletask.googleTasksEntries
 import com.github.naz013.feature.note.NotesNavKey
@@ -84,6 +87,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
   val appNavBridge = rememberAppNavBridge()
+  val phoneCaller = rememberPhoneCaller()
+  val smsSender = rememberSmsSender()
   val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
   val viewModel = koinViewModel<AppNavGraphViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -159,7 +164,13 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         groupDetailsEntries(backStack)
         placesEntries(backStack)
-        birthdaysEntries(backStack)
+        birthdaysEntries(
+          backStack = backStack,
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) },
+          onCallClick = { number -> phoneCaller.call(number) },
+          onSmsClick = { number -> smsSender.send(number, null) },
+          rememberContactPicker = { onContactPicked -> rememberContactPicker(onContactPicked) },
+        )
         googleTasksEntries(
           backStack = backStack,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) }

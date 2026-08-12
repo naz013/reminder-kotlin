@@ -13,7 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.BirthdaysNavKey
+import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.core.os.ContextSwitcher
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
