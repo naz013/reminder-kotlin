@@ -9,6 +9,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -23,10 +24,13 @@ import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.note.NoteNotifier
 import com.github.naz013.ui.note.NotePreferences
 import com.github.naz013.ui.note.UiNoteListItem
 import com.github.naz013.ui.note.UiNoteListItemAdapter
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +38,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -57,6 +62,9 @@ internal class NotesViewModel(
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val imagesSingleton: ImagesSingleton,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _notesScreenState = MutableStateFlow(
@@ -78,28 +86,50 @@ internal class NotesViewModel(
 
   private val searchQuery = MutableStateFlow("")
   private val sortOrder = MutableStateFlow(notePreferences.noteOrder)
+  private val selectedTagId = MutableStateFlow<String?>(null)
   private val refreshSignal = MutableStateFlow(0)
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
     viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll()
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tags ->
+          _notesScreenState.update { it.copy(allTags = tags) }
+        }
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
       combine(
         searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
         sortOrder,
+        selectedTagId,
         refreshSignal,
-      ) { query, order, _ -> query to order }
-        .flatMapLatest { (query, order) ->
+      ) { query, order, tagId, _ -> Triple(query, order, tagId) }
+        .flatMapLatest { (query, order, tagId) ->
           flow {
-            emit(
-              noteRepository.getNotes(
-                isArchived = isArchived,
-                query = query.lowercase(),
-                sortOrder = order
-              )
+            val notes = noteRepository.getNotes(
+              isArchived = isArchived,
+              query = query.lowercase(),
+              sortOrder = order
             )
+            val filtered = if (tagId == null) {
+              notes
+            } else {
+              val ids = withContext(dispatcherProvider.io()) {
+                tagAssignmentRepository.getItemIdsForTag(tagId, TaggedItemType.NOTE)
+              }.toSet()
+              notes.filter { it.note?.key in ids }
+            }
+            emit(filtered)
           }
         }.collect { applyList(it) }
     }
+  }
+
+  fun onTagSelected(tagId: String?) {
+    val newSelectedTagId = if (tagId != null && tagId == selectedTagId.value) null else tagId
+    _notesScreenState.update { it.copy(selectedTagId = newSelectedTagId) }
+    selectedTagId.value = newSelectedTagId
   }
 
   private fun refresh() {
