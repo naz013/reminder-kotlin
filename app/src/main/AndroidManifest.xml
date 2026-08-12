@@ -215,6 +215,19 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".core.services.BirthdayActionReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".core.services.PermanentBirthdayReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".core.services.ReminderActionReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".core.services.PermanentReminderReceiver"
+            android:exported="false" />
+
         <service
             android:name=".core.services.GeolocationService"
             android:enabled="true"
