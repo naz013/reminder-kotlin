@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class EditGroupViewModel(
+internal class EditGroupViewModel(
   private val id: String,
   private val fromIntentData: Boolean,
   private val dispatcherProvider: DispatcherProvider,

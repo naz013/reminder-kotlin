@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class GroupsViewModel(
+internal class GroupsViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val groupV2Repository: GroupV2Repository,
   private val uiGroupListAdapter: UiGroupListAdapter,

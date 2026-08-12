@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.feature.workflow.WorkflowConfig
 
-data class EditGroupState(
+internal data class EditGroupState(
   val id: String? = null,
   val title: String = "",
   val titleError: Boolean = false,
@@ -35,11 +35,11 @@ data class EditGroupState(
     get() = id.isNullOrEmpty().not()
 }
 
-enum class GroupNotificationDialogKind {
+internal enum class GroupNotificationDialogKind {
   VIBRATE, REPEAT_NOTIFICATION, BYPASS_DND, WAKE_SCREEN, PRIORITY, CATEGORY, LOCK_SCREEN_VISIBILITY, VIBRATION_PATTERN
 }
 
-sealed interface EditGroupDialog {
+internal sealed interface EditGroupDialog {
   data object CopyConflict : EditGroupDialog
 
   data object DeleteConfirm : EditGroupDialog

@@ -9,6 +9,7 @@ android {
 dependencies {
   implementation(project(":domain"))
   implementation(project(":repository-api"))
+  implementation(project(":platform-api"))
   implementation(project(":platform-common"))
   implementation(project(":ui-common"))
   implementation(project(":date-calculations"))

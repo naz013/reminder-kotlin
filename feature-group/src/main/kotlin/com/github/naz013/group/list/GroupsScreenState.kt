@@ -2,11 +2,11 @@ package com.github.naz013.group.list
 
 import com.github.naz013.ui.group.UiGroupList
 
-data class GroupsScreenState(
+internal data class GroupsScreenState(
   val listState: ListState = ListState.Loading,
 )
 
-sealed interface ListState {
+internal sealed interface ListState {
   data object Loading : ListState
 
   data class Ready(
@@ -16,4 +16,4 @@ sealed interface ListState {
   data object Empty : ListState
 }
 
-enum class GroupMenuAction { EDIT, DELETE, MAKE_DEFAULT }
+internal enum class GroupMenuAction { EDIT, DELETE, MAKE_DEFAULT }

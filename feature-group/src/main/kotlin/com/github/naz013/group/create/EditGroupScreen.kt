@@ -41,7 +41,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditGroupScreen(
+internal fun EditGroupScreen(
   modifier: Modifier = Modifier,
   state: EditGroupState,
   onBackClick: () -> Unit,

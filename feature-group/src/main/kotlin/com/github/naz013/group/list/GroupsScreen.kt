@@ -31,7 +31,7 @@ import com.github.naz013.ui.group.UiGroupList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupsScreen(
+internal fun GroupsScreen(
   state: GroupsScreenState,
   onBackClick: () -> Unit,
   onAddClick: () -> Unit,

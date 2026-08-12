@@ -36,7 +36,7 @@ import com.github.naz013.ui.group.UiGroupList
 private val COLOR_DOT_SIZE = 14.dp
 
 @Composable
-fun GroupListItem(
+internal fun GroupListItem(
   group: UiGroupList,
   onClick: () -> Unit,
   onMenuAction: (GroupMenuAction) -> Unit,

@@ -26,6 +26,8 @@ interface SystemInfo {
   val minSdkLevel: Int
   val maxSdkLevel: Int
 
+  val applicationName: String
+
   fun isAppInstalled(packageName: String): Boolean
 
   companion object {

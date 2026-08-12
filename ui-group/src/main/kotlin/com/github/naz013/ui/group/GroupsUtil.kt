@@ -1,15 +1,15 @@
 package com.github.naz013.ui.group
 
-import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.platform.StringApi
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.ui.common.R
 import java.util.Random
 
 class GroupsUtil(
-  private val textProvider: TextProvider,
+  private val stringApi: StringApi,
   private val groupV2Repository: GroupV2Repository,
   private val dateTimeManager: DateTimeManager,
 ) {
@@ -26,7 +26,7 @@ class GroupsUtil(
       groupV2Repository.save(
         GroupV2(
           uuId = getGroupId(1),
-          title = textProvider.getText(R.string.general),
+          title = stringApi.getString(R.string.general),
           color = random.nextInt(16),
           isDefault = true,
           createdAt = dateTimeManager.getCurrentDateTime(),
@@ -36,7 +36,7 @@ class GroupsUtil(
       groupV2Repository.save(
         GroupV2(
           uuId = getGroupId(2),
-          title = textProvider.getText(R.string.work),
+          title = stringApi.getString(R.string.work),
           color = random.nextInt(16),
           isDefault = false,
           createdAt = dateTimeManager.getCurrentDateTime(),
@@ -46,7 +46,7 @@ class GroupsUtil(
       groupV2Repository.save(
         GroupV2(
           uuId = getGroupId(3),
-          title = textProvider.getText(R.string.personal),
+          title = stringApi.getString(R.string.personal),
           color = random.nextInt(16),
           isDefault = false,
           createdAt = dateTimeManager.getCurrentDateTime(),
