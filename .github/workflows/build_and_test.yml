@@ -34,7 +34,7 @@ jobs:
         google-services-cloudtestadmin: ${{ secrets.GOOGLE_SERVICES }}
 
     - name: Run Detekt static analysis
-      run: ./gradlew detekt detektReportMerge --continue -x :cloudtestadmin:detekt -x :reviewsadmin:detekt
+      run: ./gradlew detekt detektReportMerge --continue -x :admin:cloudtestadmin:detekt -x :admin:reviewsadmin:detekt
       continue-on-error: true
 
     - name: Upload Detekt SARIF to GitHub Code Scanning
@@ -59,7 +59,7 @@ jobs:
         google-services-cloudtestadmin: ${{ secrets.GOOGLE_SERVICES }}
 
     - name: Run all unit tests (Android modules)
-      run: ./gradlew testProDebugUnitTest --continue -x :cloudtestadmin:testDebugUnitTest -x :reviewsadmin:testDebugUnitTest
+      run: ./gradlew testProDebugUnitTest --continue -x :admin:cloudtestadmin:testDebugUnitTest -x :admin:reviewsadmin:testDebugUnitTest
 
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v6
@@ -105,10 +105,10 @@ jobs:
         google-services-cloudtestadmin: ${{ secrets.GOOGLE_SERVICES }}
 
     - name: Run all unit tests (Kotlin modules)
-      run: ./gradlew test --continue -x :cloudtestadmin:test -x :reviewsadmin:test -x :reviews:test
+      run: ./gradlew test --continue -x :admin:cloudtestadmin:test -x :admin:reviewsadmin:test -x :admin:reviews:test
 
     - name: Generate coverage report
-      run: ./gradlew koverXmlReport --continue -x :cloudtestadmin:koverXmlReport -x :reviewsadmin:koverXmlReport
+      run: ./gradlew koverXmlReport --continue -x :admin:cloudtestadmin:koverXmlReport -x :admin:reviewsadmin:koverXmlReport
       if: always()
 
     - name: Publish coverage to PR comment

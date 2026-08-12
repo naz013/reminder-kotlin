@@ -45,14 +45,14 @@ subprojects {
 // Aggregate coverage from JVM-only modules (Android modules are excluded to avoid
 // variant-selection complexity; per-module koverXmlReport tasks work for those).
 dependencies {
-  kover(project(":domain"))
-  kover(project(":date-calculations"))
-  kover(project(":logging-api"))
-  kover(project(":navigation-api"))
-  kover(project(":repository-api"))
-  kover(project(":cloud-api"))
-  kover(project(":work-api"))
-  kover(project(":legal-api"))
-  kover(project(":files-api"))
-  kover(project(":sync"))
+  kover(project(":core:domain"))
+  kover(project(":core:date-calculations"))
+  kover(project(":core:logging-api"))
+  kover(project(":core:navigation-api"))
+  kover(project(":data:repository-api"))
+  kover(project(":data:cloud-api"))
+  kover(project(":data:work-api"))
+  kover(project(":data:legal-api"))
+  kover(project(":data:files-api"))
+  kover(project(":data:sync"))
 }

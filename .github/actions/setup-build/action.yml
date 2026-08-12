@@ -9,7 +9,7 @@ inputs:
     description: Contents of app/src/free/google-services.json
     required: true
   google-services-cloudtestadmin:
-    description: Contents of cloudtestadmin/google-services.json
+    description: Contents of admin/cloudtestadmin/google-services.json
     required: true
 
 runs:
@@ -46,4 +46,4 @@ runs:
       shell: bash
       env:
         DATA: ${{ inputs.google-services-cloudtestadmin }}
-      run: echo "$DATA" > cloudtestadmin/google-services.json
+      run: echo "$DATA" > admin/cloudtestadmin/google-services.json

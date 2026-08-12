@@ -1,15 +1,22 @@
 # Reminder Kotlin Project Rules
 
 ## Architecture: Multi-module Clean Architecture
-- **domain**: Pure Kotlin, zero external dependencies. Foundation for all.
-- **repository-api**: Interfaces + domain. No implementation.
-- **repository**: Room implementation of `repository-api`.
-- **cloud-api**: Cloud storage interfaces.
-- **cloud**: Implementations (Google Drive/Tasks, Dropbox).
-- **usecase:* modules**: Pure logic. Depend ONLY on `repository-api` (never `repository`).
-- **sync**: Orchestration via `cloud-api` and `repository-api`.
+Modules are nested under seven group folders (`core/`, `data/`, `ui/`, `logic/`, `feature/`,
+`extensions/`, `admin/`) plus `app` at the root — e.g. `repository-api` is `:data:repository-api`, not
+`:repository-api`. See `docs/architecture.md` ("Module Groups") for the full mapping. Leaf module names
+below are unqualified for readability; prepend the group to get the real Gradle path.
+
+- **domain** (`core/`): Pure Kotlin, zero external dependencies. Foundation for all.
+- **repository-api** (`data/`): Interfaces + domain. No implementation.
+- **repository** (`data/`): Room implementation of `repository-api`.
+- **cloud-api** (`data/`): Cloud storage interfaces.
+- **cloud** (`data/`): Implementations (Google Drive/Tasks, Dropbox).
+- **usecase:* modules**: Pure logic. Depend ONLY on `repository-api` (never `repository`). **Stale** —
+  no `usecase:*` modules exist in `settings.gradle.kts` today; see the "Known doc gap" callout in
+  `docs/architecture.md`'s Module Inventory before relying on this.
+- **sync** (`data/`): Orchestration via `cloud-api` and `repository-api`.
 - **app**: Entry point. Wires implementations via Koin.
-- **ui-common**: Shared Compose components + Material 3 tokens.
+- **ui-common** (`ui/`): Shared Compose components + Material 3 tokens.
 
 ## Coding Standards
 - **Language**: Kotlin.

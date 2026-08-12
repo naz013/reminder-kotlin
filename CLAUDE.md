@@ -26,12 +26,16 @@ under `build-logic/convention` (`reminder.kotlin.jvm`, `reminder.android.library
 `android { namespace = "..." }`, and its `dependencies {}` block — put any genuinely module-specific Android
 config there, not in the convention plugin.
 
+Modules are nested under group folders (`core/`, `data/`, `ui/`, `logic/`, `feature/`, `extensions/`,
+`admin/`) plus `app` at the repo root — e.g. `repository-api` is Gradle path `:data:repository-api`, not
+`:repository-api`. See `docs/architecture.md` ("Module Groups") for the full group → module mapping.
+
 ```bash
 # Build a flavor (debug)
 ./gradlew assembleFreeDebug
 ./gradlew assembleProDebug
 
-# Run Kotlin-only module unit tests (domain, usecase:*, sync, cloud-api, etc.)
+# Run Kotlin-only module unit tests (core:domain, data:sync, data:cloud-api, etc.)
 ./gradlew test
 
 # Run Android module unit tests for a specific flavor
@@ -39,7 +43,7 @@ config there, not in the convention plugin.
 ./gradlew testFreeDebugUnitTest
 
 # Run every test in one module
-./gradlew :usecase:reminders:test
+./gradlew :logic:logic-reminder:test
 ./gradlew :app:testProDebugUnitTest
 
 # Run a single test class
@@ -47,7 +51,8 @@ config there, not in the convention plugin.
 ```
 
 CI (`.github/workflows/build_and_test.yml`) runs `testProDebugUnitTest` for Android modules and `test` for
-pure-Kotlin modules, excluding `:cloudtestadmin`, `:reviewsadmin`, and `:reviews` (admin/debug-only modules).
+pure-Kotlin modules, excluding `:admin:cloudtestadmin`, `:admin:reviewsadmin`, and `:admin:reviews`
+(admin/debug-only modules).
 `app/src/free/google-services.json` and `app/src/pro/google-services.json` are required for the `app` module
 to build and already exist in this checkout — don't remove them.
 
@@ -65,29 +70,33 @@ upper layers, and `*-api` modules contain interfaces only — implementations li
 module.**
 
 ```
-domain            pure Kotlin models/enums, zero dependencies (the foundation)
-repository-api    repository interfaces, depends on domain
-repository        Room implementation of repository-api (DAOs, entities, entity<->domain mappers)
-cloud-api         interfaces for Google Drive/Tasks + Dropbox access
-cloud             concrete cloud-api implementations
-usecase:reminders, usecase:notes, usecase:birthdays, usecase:googletasks
-                  pure read-logic per feature; depend ONLY on repository-api, never repository
-sync              cloud-provider-agnostic sync orchestration; depends on cloud-api + repository-api
-icalendar         .ics serialization + RRULE evaluation (lib-recur)
-logging-api / logging   Logger interface, with Logback+SLF4J+Crashlytics implementation
-analytics         Firebase Analytics wrapper
-navigation-api    DeepLinkDestination contracts shared across app/widgets
-feature-common    DispatcherProvider, SingleLiveEvent, Flow extensions (Kotlin/Android utils)
-platform-common   biometric auth, permissions, Google sign-in helpers
-ui-common         shared Compose components + Material 3 tokens
-appwidgets        home-screen widgets; aggregates the usecase:* modules
-reviews / reviewsadmin / cloudtestadmin   in-app review flow + debug-only admin tooling
+core:domain            pure Kotlin models/enums, zero dependencies (the foundation)
+data:repository-api    repository interfaces, depends on domain
+data:repository        Room implementation of repository-api (DAOs, entities, entity<->domain mappers)
+data:cloud-api         interfaces for Google Drive/Tasks + Dropbox access
+data:cloud             concrete cloud-api implementations
+data:sync              cloud-provider-agnostic sync orchestration; depends on cloud-api + repository-api
+data:icalendar         .ics serialization + RRULE evaluation (lib-recur)
+core:logging-api / core:logging   Logger interface, with Logback+SLF4J+Crashlytics implementation
+core:analytics         Firebase Analytics wrapper
+core:navigation-api    DeepLinkDestination contracts shared across app/widgets
+core:feature-common    DispatcherProvider, SingleLiveEvent, Flow extensions (Kotlin/Android utils)
+core:platform-common   biometric auth, permissions, Google sign-in helpers
+ui:ui-common           shared Compose components + Material 3 tokens
+extensions:appwidgets  home-screen widgets, aggregating feature/logic modules per data type
+admin:reviews / admin:reviewsadmin / admin:cloudtestadmin   in-app review flow + debug-only admin tooling
 app               the only module that wires concrete Koin bindings; hosts all UI (Activities/Fragments/
                   Compose), ViewModels, and the nav graph
 ```
 
-Per-feature vertical slice: `app` ViewModel/UI uses `usecase:*` for reads and calls `repository-api` directly
-for writes → `usecase:*` calls `repository-api` → `repository` implements it against Room.
+See `docs/architecture.md` ("Module Groups") for the full group → module mapping — `feature:*`, `ui:*`,
+and `logic:*` module families aren't repeated here.
+
+Per-feature vertical slice: `app` ViewModel/UI reads and writes through `repository-api` directly, or
+through a `logic:*` module's use cases where the logic is shared across features → `repository-api` →
+`repository` implements it against Room. (An older `usecase:*` read-only layer described elsewhere in
+this repo's docs no longer exists as a module family — see the "Known doc gap" note in
+`docs/architecture.md`'s Module Inventory; don't assume it's still there.)
 
 Each module that exposes injectables declares its own `KoinModule.kt` with a `module { }` block; `app`
 collects all of them into `startKoin {}`. Never call `GlobalContext.get()` outside DI wiring code.
