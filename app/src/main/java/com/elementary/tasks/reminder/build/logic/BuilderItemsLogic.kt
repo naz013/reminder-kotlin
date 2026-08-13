@@ -12,7 +12,13 @@ class BuilderItemsLogic(
   }
 
   fun setAll(builderItems: List<BuilderItem<*>>) {
-    builderItemsHolder.setAll(builderItems)
+    // Same invariant as addNew(): getUsed() must never contain two items with the same biType,
+    // since BuildReminderScreen keys its LazyColumn rows by biType. Unlike addNew() this list can
+    // come from decomposing a persisted reminder (ReminderToBiDecomposer) - a reminder whose
+    // recurrence rule failed to parse (e.g. a legacy row with minified Gson field names) falls
+    // back to a different recurrence type than the one its saved builderScheme was written for,
+    // which can yield a duplicate-biType list here. Dedupe defensively rather than crash.
+    builderItemsHolder.setAll(builderItems.distinctBy { it.biType })
   }
 
   fun addNew(builderItem: BuilderItem<*>) {

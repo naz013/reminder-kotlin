@@ -94,4 +94,16 @@ class BuilderItemsLogicTest : BaseTest() {
 
     assertEquals(1, logic.getUsed().count { it.biType == BiType.DATE })
   }
+
+  @Test
+  fun `setAll dedupes items with the same biType`() {
+    // Simulates decomposing a persisted reminder whose recurrence rule failed to parse and fell
+    // back to a different recurrence type than the one its saved builderScheme was written for
+    // (see ReminderToBiDecomposer) - the resulting list can contain a duplicate biType, which
+    // must not reach getUsed() since BuildReminderScreen keys its LazyColumn rows by biType.
+    logic.setAll(listOf(dateItem(), timeItem(), dateItem()))
+
+    assertEquals(1, logic.getUsed().count { it.biType == BiType.DATE })
+    assertEquals(2, logic.getUsed().size)
+  }
 }
