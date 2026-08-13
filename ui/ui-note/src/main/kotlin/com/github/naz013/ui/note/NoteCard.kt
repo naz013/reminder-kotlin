@@ -1,7 +1,9 @@
 package com.github.naz013.ui.note
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -53,12 +55,14 @@ private val THUMBNAILS_TOP_PADDING = 4.dp
  * pickers) so they can't drift out of sync with each other. Overflow menus and selection
  * indicators are not built in - callers supply them via [trailingContent].
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteCard(
   note: UiNoteListItem,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
   border: BorderStroke? = null,
+  onLongClick: (() -> Unit)? = null,
   onImageClick: (imageId: Int) -> Unit = {},
   trailingContent: @Composable BoxScope.() -> Unit = {},
 ) {
@@ -89,7 +93,7 @@ fun NoteCard(
     modifier
       .fillMaxWidth()
       .clip(MaterialTheme.shapes.medium)
-      .clickable(onClick = onClick),
+      .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     colors = CardDefaults.cardColors(containerColor = note.backgroundColor),
     border = border,
   ) {

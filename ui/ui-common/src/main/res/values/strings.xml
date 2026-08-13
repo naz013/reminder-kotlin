@@ -952,6 +952,7 @@
     <string name="delete_birthday_permanently">Delete birthday permanently?</string>
     <string name="delete_note_permanently">Delete note permanently?</string>
     <string name="delete_group_permanently">Delete group permanently?</string>
+    <string name="notes_delete_selected_permanently">Delete %1$d notes permanently?</string>
 
     <string name="share_send_note">Send note…</string>
 
@@ -1105,6 +1106,7 @@
     <string name="backup_export_success">Backup saved successfully.</string>
     <string name="backup_export_failed">Could not save the backup. Please try again.</string>
     <string name="backup_import_success">Restored %1$d items successfully.</string>
+    <string name="notes_selected_count">%1$d selected</string>
     <string name="backup_import_failed">Could not restore the backup. Please try again.</string>
     <string name="backup_wrong_passphrase">Incorrect passphrase, or the file is corrupted.</string>
     <string name="backup_invalid_file">This file is not a valid Reminder backup.</string>

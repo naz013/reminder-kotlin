@@ -23,6 +23,8 @@ import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.NoteNotifier
 import com.github.naz013.ui.note.NotePreferences
 import com.github.naz013.ui.note.UiNoteImage
@@ -34,8 +36,11 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -59,6 +64,7 @@ class NotesViewModelTest : BaseTest() {
   private val tagRepository = mockk<TagRepository>()
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
+  private val noteColorEngine = NoteColorEngine(mockk<ThemeProvider>(relaxed = true), mockk(relaxed = true))
 
   @Before
   override fun setUp() {
@@ -131,6 +137,7 @@ class NotesViewModelTest : BaseTest() {
       tagRepository = tagRepository,
       tagAssignmentRepository = tagAssignmentRepository,
       tagChipStateAdapter = tagChipStateAdapter,
+      noteColorEngine = noteColorEngine,
     )
 
   @Test
@@ -545,5 +552,207 @@ class NotesViewModelTest : BaseTest() {
       viewModel.showNoteInNotification("7")
 
       verify(exactly = 0) { noteNotifier.showNoteNotification(any(), any(), any()) }
+    }
+
+  /**
+   * `notesScreenState` refreshes from the repository on every fresh collection (see
+   * `onStart { refresh() }` in the view model), so repeatedly calling `.first()` would wipe
+   * in-memory selection changes on each read. Subscribing once here - eagerly, since the whole
+   * suite runs on [Dispatchers.Unconfined] - keeps a live view of state without re-triggering
+   * that refresh.
+   */
+  private fun TestScope.readyViewModel(
+    ids: List<String>,
+    isArchived: Boolean = false,
+  ): Pair<NotesViewModel, () -> NotesScreenState> {
+    val notes = ids.map { note(id = it) }
+    coEvery { noteRepository.getNotes(isArchived, "", NoteSortProcessor.DATE_ZA) } returns notes
+    notes.forEachIndexed { index, n -> every { uiNoteListItemAdapter.convert(n) } returns uiItem(id = ids[index]) }
+    val viewModel = createViewModel(isArchived = isArchived)
+    var latest = NotesScreenState()
+    backgroundScope.launch(Dispatchers.Unconfined) {
+      viewModel.notesScreenState.collect { latest = it }
+    }
+    return viewModel to { latest }
+  }
+
+  @Test
+  fun `onNoteLongClick selects the note and enters selection mode`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("1", "2"))
+
+      viewModel.onNoteLongClick("1")
+
+      val ready = state().listState as ListState.Ready
+      assertEquals(1, state().selectedCount)
+      assertEquals(true, ready.notes.first { it.id == "1" }.isSelected)
+      assertEquals(false, ready.notes.first { it.id == "2" }.isSelected)
+    }
+
+  @Test
+  fun `onNoteClick toggles selection while in selection mode instead of opening the note`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("1", "2"))
+      viewModel.onNoteLongClick("1")
+
+      viewModel.onNoteClick("2")
+
+      val ready = state().listState as ListState.Ready
+      assertEquals(2, state().selectedCount)
+      assertEquals(true, ready.notes.first { it.id == "2" }.isSelected)
+      assertEquals(null, viewModel.navigationEvent.value)
+    }
+
+  @Test
+  fun `onNoteClick exits selection mode automatically after the last note is deselected`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("1", "2"))
+      viewModel.onNoteLongClick("1")
+
+      viewModel.onNoteClick("1")
+
+      assertEquals(0, state().selectedCount)
+
+      viewModel.onNoteClick("2")
+
+      assertEquals(
+        NotesViewModel.NavigationEvent.OpenNotePreview("2"),
+        viewModel.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onSelectionCancel clears all selected notes`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("1", "2"))
+      viewModel.onNoteLongClick("1")
+      viewModel.onNoteClick("2")
+
+      viewModel.onSelectionCancel()
+
+      assertEquals(0, state().selectedCount)
+      val ready = state().listState as ListState.Ready
+      assertEquals(false, ready.notes.any { it.isSelected })
+    }
+
+  @Test
+  fun `onDeleteSelectedClick posts ConfirmDeleteSelected with the selected ids and a formatted title`() =
+    runTest {
+      every { textProvider.getText(R.string.notes_delete_selected_permanently, 2) } returns "Delete 2 notes permanently?"
+      val (viewModel, _) = readyViewModel(listOf("1", "2"))
+      viewModel.onNoteLongClick("1")
+      viewModel.onNoteClick("2")
+
+      viewModel.onDeleteSelectedClick()
+
+      assertEquals(
+        NotesViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("1", "2"), "Delete 2 notes permanently?"),
+        viewModel.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onDeleteSelectedClick does nothing when nothing is selected`() =
+    runTest {
+      val (viewModel, _) = readyViewModel(listOf("1"))
+
+      viewModel.onDeleteSelectedClick()
+
+      assertEquals(null, viewModel.navigationEvent.value)
+    }
+
+  @Test
+  fun `deleteSelectedNotes deletes each note, clears selection, refreshes and updates the widget`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("1", "2"), isArchived = false)
+      viewModel.onNoteLongClick("1")
+      viewModel.onNoteClick("2")
+
+      viewModel.deleteSelectedNotes(setOf("1", "2"))
+
+      coVerify(exactly = 1) { deleteNoteUseCase("1") }
+      coVerify(exactly = 1) { deleteNoteUseCase("2") }
+      assertEquals(0, state().selectedCount)
+      verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `deleteSelectedNotes does not update the widget on the archive screen`() =
+    runTest {
+      val (viewModel, _) = readyViewModel(listOf("1"), isArchived = true)
+      viewModel.onNoteLongClick("1")
+
+      viewModel.deleteSelectedNotes(setOf("1"))
+
+      coVerify(exactly = 1) { deleteNoteUseCase("1") }
+      verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `onArchiveSelectedClick archives selected notes and clears selection`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("1", "2"), isArchived = false)
+      viewModel.onNoteLongClick("1")
+      viewModel.onNoteClick("2")
+
+      viewModel.onArchiveSelectedClick()
+
+      coVerify(exactly = 1) { changeNoteArchiveStateUseCase("1", true) }
+      coVerify(exactly = 1) { changeNoteArchiveStateUseCase("2", true) }
+      assertEquals(0, state().selectedCount)
+      verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `onArchiveSelectedClick unarchives selected notes on the archive screen`() =
+    runTest {
+      val (viewModel, _) = readyViewModel(listOf("1"), isArchived = true)
+      viewModel.onNoteLongClick("1")
+
+      viewModel.onArchiveSelectedClick()
+
+      coVerify(exactly = 1) { changeNoteArchiveStateUseCase("1", false) }
+    }
+
+  @Test
+  fun `onArchiveSelectedClick does nothing when nothing is selected`() =
+    runTest {
+      val (viewModel, _) = readyViewModel(listOf("1"))
+
+      viewModel.onArchiveSelectedClick()
+
+      coVerify(exactly = 0) { changeNoteArchiveStateUseCase(any(), any()) }
+    }
+
+  @Test
+  fun `applySelectedColor converts the picked index to legacy color and palette for each selected note`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("1", "2"))
+      viewModel.onNoteLongClick("1")
+      viewModel.onNoteClick("2")
+      val n1 = note(id = "1")
+      val n2 = note(id = "2")
+      coEvery { noteRepository.getById("1") } returns n1
+      coEvery { noteRepository.getById("2") } returns n2
+
+      viewModel.applySelectedColor(25)
+
+      assertEquals(noteColorEngine.getLegacyColorCode(25), n1.note?.color)
+      assertEquals(noteColorEngine.getLegacyPalette(25), n1.note?.palette)
+      assertEquals(noteColorEngine.getLegacyColorCode(25), n2.note?.color)
+      coVerify(exactly = 1) { saveNoteUseCase(n1) }
+      coVerify(exactly = 1) { saveNoteUseCase(n2) }
+      assertEquals(0, state().selectedCount)
+      verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `applySelectedColor does nothing when nothing is selected`() =
+    runTest {
+      val (viewModel, _) = readyViewModel(listOf("1"))
+
+      viewModel.applySelectedColor(3)
+
+      coVerify(exactly = 0) { saveNoteUseCase(any()) }
     }
 }

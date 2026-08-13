@@ -13,4 +13,5 @@ data class UiNoteListItem(
   val titleFontStyle: Int,
   val titleFontSize: Float,
   val images: List<UiNoteImage>,
+  val isSelected: Boolean = false,
 )
