@@ -1117,4 +1117,19 @@
 
     <string name="type">Typ</string>
     <string name="smart_lists">Chytré seznamy</string>
+    <string name="note_selected_count_one">Vybrána %1$d poznámka</string>
+    <string name="note_selected_count_other">Vybráno %1$d poznámek</string>
+    <string name="notes_delete_selected_permanently">Trvale smazat %1$d poznámek?</string>
+    <string name="home">Domů</string>
+    <string name="expand_navigation">Rozbalit navigaci</string>
+    <string name="collapse_navigation">Sbalit navigaci</string>
+    <string name="todo">Úkoly</string>
+    <string name="todo_items">Položky</string>
+    <string name="sign_in_with_google">Přihlásit se přes Google</string>
+    <string name="pro_public_holidays">- Státní svátky v kalendáři</string>
+    <string name="public_holidays">Státní svátky</string>
+    <string name="show_public_holidays">Zobrazit státní svátky</string>
+    <string name="public_holidays_country">Země</string>
+    <string name="public_holidays_locked_description">Zobrazit státní svátky pro vaši zemi v kalendáři - dostupné s Pro</string>
+    <string name="search_no_countries_found">Nebyly nalezeny žádné země</string>
 </resources>

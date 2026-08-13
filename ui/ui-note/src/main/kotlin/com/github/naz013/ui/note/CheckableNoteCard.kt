@@ -17,10 +17,10 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun CheckableNoteCard(
+  modifier: Modifier = Modifier,
   note: UiNoteListItem,
   selected: Boolean,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
   onImageClick: (imageId: Int) -> Unit = {},
 ) {
   NoteCard(
@@ -31,13 +31,14 @@ fun CheckableNoteCard(
     onImageClick = onImageClick,
     trailingContent = {
       Icon(
-        painter =
-        painterResource(
+        painter = painterResource(
           if (selected) R.drawable.ic_builder_google_task_list else R.drawable.ic_fluent_radio_button,
         ),
         contentDescription = null,
         tint = note.textColor,
-        modifier = Modifier.padding(8.dp).size(24.dp),
+        modifier = Modifier
+          .padding(8.dp)
+          .size(24.dp),
       )
     },
   )

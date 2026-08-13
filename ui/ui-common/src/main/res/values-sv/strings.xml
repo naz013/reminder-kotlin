@@ -1115,4 +1115,19 @@
 
     <string name="type">Typ</string>
     <string name="smart_lists">Smarta listor</string>
+    <string name="note_selected_count_one">%1$d anteckning vald</string>
+    <string name="note_selected_count_other">%1$d anteckningar valda</string>
+    <string name="notes_delete_selected_permanently">Ta bort %1$d anteckningar permanent?</string>
+    <string name="home">Start</string>
+    <string name="expand_navigation">Expandera navigering</string>
+    <string name="collapse_navigation">Komprimera navigering</string>
+    <string name="todo">Att göra</string>
+    <string name="todo_items">Objekt</string>
+    <string name="sign_in_with_google">Logga in med Google</string>
+    <string name="pro_public_holidays">- Helgdagar i kalendern</string>
+    <string name="public_holidays">Helgdagar</string>
+    <string name="show_public_holidays">Visa helgdagar</string>
+    <string name="public_holidays_country">Land</string>
+    <string name="public_holidays_locked_description">Visa helgdagar för ditt land i kalendern - tillgängligt med Pro</string>
+    <string name="search_no_countries_found">Inga länder hittades</string>
 </resources>

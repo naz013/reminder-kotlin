@@ -1117,4 +1117,19 @@
 
     <string name="type">Tip</string>
     <string name="smart_lists">Liste inteligente</string>
+    <string name="note_selected_count_one">%1$d notiță selectată</string>
+    <string name="note_selected_count_other">%1$d notițe selectate</string>
+    <string name="notes_delete_selected_permanently">Ștergere %1$d notițe permanent?</string>
+    <string name="home">Acasă</string>
+    <string name="expand_navigation">Extinde navigarea</string>
+    <string name="collapse_navigation">Restrânge navigarea</string>
+    <string name="todo">Sarcini</string>
+    <string name="todo_items">Elemente</string>
+    <string name="sign_in_with_google">Conectează-te cu Google</string>
+    <string name="pro_public_holidays">- Sărbători legale în calendar</string>
+    <string name="public_holidays">Sărbători legale</string>
+    <string name="show_public_holidays">Afișează sărbătorile legale</string>
+    <string name="public_holidays_country">Țară</string>
+    <string name="public_holidays_locked_description">Afișează sărbătorile legale din țara ta în calendar - disponibil cu Pro</string>
+    <string name="search_no_countries_found">Nu s-a găsit nicio țară</string>
 </resources>

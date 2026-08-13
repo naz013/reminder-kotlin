@@ -1118,4 +1118,19 @@
 
     <string name="type">Тип</string>
     <string name="smart_lists">Интелигентни списъци</string>
+    <string name="note_selected_count_one">Избрана е %1$d бележка</string>
+    <string name="note_selected_count_other">Избрани са %1$d бележки</string>
+    <string name="notes_delete_selected_permanently">Изтриване на %1$d бележки окончателно?</string>
+    <string name="home">Начало</string>
+    <string name="expand_navigation">Разгъване на навигацията</string>
+    <string name="collapse_navigation">Свиване на навигацията</string>
+    <string name="todo">Задачи</string>
+    <string name="todo_items">Елементи</string>
+    <string name="sign_in_with_google">Вход с Google</string>
+    <string name="pro_public_holidays">- Официални празници в календара</string>
+    <string name="public_holidays">Официални празници</string>
+    <string name="show_public_holidays">Показване на официалните празници</string>
+    <string name="public_holidays_country">Държава</string>
+    <string name="public_holidays_locked_description">Показвайте официалните празници за вашата държава в календара - налично с Pro</string>
+    <string name="search_no_countries_found">Няма намерени държави</string>
 </resources>

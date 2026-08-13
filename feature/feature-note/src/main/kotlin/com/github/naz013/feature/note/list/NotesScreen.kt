@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.SortByAlpha
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,6 +45,8 @@ import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
+import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
@@ -182,6 +184,7 @@ internal fun NotesScreen(
 
 @Composable
 private fun NotesList(
+  modifier: Modifier = Modifier,
   notes: List<UiNoteListItem>,
   isGrid: Boolean,
   isArchived: Boolean,
@@ -192,7 +195,6 @@ private fun NotesList(
   onNoteLongClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val fabBottomPadding = if (hasFab) 88.dp else 0.dp
   if (isGrid) {
@@ -215,9 +217,11 @@ private fun NotesList(
           onImageClick = { imageId -> if (isSelectionMode) onNoteClick(note.id) else onImageClick(note, imageId) },
           modifier = Modifier.animateItem(),
           trailingContent = {
-            if (isSelectionMode) {
-              Checkbox(checked = note.isSelected, onCheckedChange = { onNoteClick(note.id) })
-            } else {
+            SelectionOverlay(
+              isSelectionMode = isSelectionMode,
+              isSelected = note.isSelected,
+              onToggleSelected = { onNoteClick(note.id) },
+            ) {
               NoteOverflowMenu(
                 isArchived = isArchived,
                 textColor = note.textColor,
@@ -250,9 +254,11 @@ private fun NotesList(
           onImageClick = { imageId -> if (isSelectionMode) onNoteClick(note.id) else onImageClick(note, imageId) },
           modifier = Modifier.animateItem(),
           trailingContent = {
-            if (isSelectionMode) {
-              Checkbox(checked = note.isSelected, onCheckedChange = { onNoteClick(note.id) })
-            } else {
+            SelectionOverlay(
+              isSelectionMode = isSelectionMode,
+              isSelected = note.isSelected,
+              onToggleSelected = { onNoteClick(note.id) },
+            ) {
               NoteOverflowMenu(
                 isArchived = isArchived,
                 textColor = note.textColor,
@@ -398,7 +404,8 @@ private fun NotesTopBar(
   )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+private enum class NotesSelectionAction { CHANGE_COLOR, ARCHIVE, DELETE }
+
 @Composable
 private fun NotesSelectionTopBar(
   selectedCount: Int,
@@ -408,39 +415,47 @@ private fun NotesSelectionTopBar(
   onArchiveClick: () -> Unit,
   onChangeColorClick: () -> Unit,
 ) {
-  TopAppBar(
-    title = { Text(stringResource(R.string.notes_selected_count, selectedCount)) },
-    navigationIcon = {
-      MenuIconButton(
-        icon = AppIcons.Fluent.Dismiss,
-        contentDescription = stringResource(R.string.cancel),
-        onClick = onCancelClick,
-      )
+  SelectionTopBar(
+    title = pluralStringResource(R.plurals.notes_selected_count, selectedCount, selectedCount),
+    onCancelClick = onCancelClick,
+    actions = notesSelectionMenuItems(isArchived),
+    onActionClick = { id ->
+      when (NotesSelectionAction.entries[id]) {
+        NotesSelectionAction.CHANGE_COLOR -> onChangeColorClick()
+        NotesSelectionAction.ARCHIVE -> onArchiveClick()
+        NotesSelectionAction.DELETE -> onDeleteClick()
+      }
     },
-    actions = {
-      MenuIconButton(
-        icon = AppIcons.Fluent.ColorBackground,
-        contentDescription = stringResource(R.string.acc_select_color),
-        onClick = onChangeColorClick,
-      )
-      MenuIconButton(
-        icon = painterResource(R.drawable.ic_fluent_archive),
-        contentDescription =
-        stringResource(if (isArchived) R.string.notes_unarchive else R.string.notes_move_to_archive),
-        onClick = onArchiveClick,
-      )
-      MenuIconButton(
-        icon = painterResource(R.drawable.ic_fluent_delete),
-        contentDescription = stringResource(R.string.delete),
-        onClick = onDeleteClick,
-      )
-    },
-    colors =
-    TopAppBarDefaults.topAppBarColors(
-      containerColor = MaterialTheme.colorScheme.background,
-    ),
   )
 }
+
+@Composable
+private fun notesSelectionMenuItems(isArchived: Boolean): List<PopupMenuItem> =
+  buildList {
+    if (!isArchived) {
+      add(
+        PopupMenuItem(
+          id = NotesSelectionAction.CHANGE_COLOR.ordinal,
+          title = stringResource(R.string.change_color),
+          iconRes = R.drawable.ic_fluent_color_background,
+        )
+      )
+    }
+    add(
+      PopupMenuItem(
+        id = NotesSelectionAction.ARCHIVE.ordinal,
+        title = stringResource(if (isArchived) R.string.notes_unarchive else R.string.notes_move_to_archive),
+        iconRes = R.drawable.ic_fluent_archive,
+      )
+    )
+    add(
+      PopupMenuItem(
+        id = NotesSelectionAction.DELETE.ordinal,
+        title = stringResource(R.string.delete),
+        iconRes = R.drawable.ic_fluent_delete,
+      )
+    )
+  }
 
 @Composable
 private fun SortMenuButton(

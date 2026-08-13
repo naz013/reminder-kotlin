@@ -2,7 +2,6 @@ package com.github.naz013.ui.note
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -58,9 +57,9 @@ private val THUMBNAILS_TOP_PADDING = 4.dp
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteCard(
+  modifier: Modifier = Modifier,
   note: UiNoteListItem,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
   border: BorderStroke? = null,
   onLongClick: (() -> Unit)? = null,
   onImageClick: (imageId: Int) -> Unit = {},
@@ -68,29 +67,25 @@ fun NoteCard(
 ) {
   val context = LocalContext.current
   val noteFontProvider = koinInject<NoteFontProvider>()
-  val bodyFontFamily =
-    remember(note.fontStyle) {
-      noteFontProvider.getTypeface(context, note.fontStyle)?.let {
-        FontFamily(androidx.compose.ui.text.font.Typeface(it))
-      }
+  val bodyFontFamily = remember(note.fontStyle) {
+    noteFontProvider.getTypeface(context, note.fontStyle)?.let {
+      FontFamily(androidx.compose.ui.text.font.Typeface(it))
     }
-  val titleFontFamily =
-    remember(note.titleFontStyle) {
-      noteFontProvider.getTypeface(context, note.titleFontStyle)?.let {
-        FontFamily(androidx.compose.ui.text.font.Typeface(it))
-      }
+  }
+  val titleFontFamily = remember(note.titleFontStyle) {
+    noteFontProvider.getTypeface(context, note.titleFontStyle)?.let {
+      FontFamily(androidx.compose.ui.text.font.Typeface(it))
     }
+  }
 
-  val bodyText =
-    if (note.text.length > BODY_TEXT_MAX_CHARS) {
-      note.text.substring(0, BODY_TEXT_MAX_CHARS) + "..."
-    } else {
-      note.text
-    }
+  val bodyText = if (note.text.length > BODY_TEXT_MAX_CHARS) {
+    note.text.substring(0, BODY_TEXT_MAX_CHARS) + "..."
+  } else {
+    note.text
+  }
 
   Card(
-    modifier =
-    modifier
+    modifier = modifier
       .fillMaxWidth()
       .clip(MaterialTheme.shapes.medium)
       .combinedClickable(onClick = onClick, onLongClick = onLongClick),
@@ -99,8 +94,7 @@ fun NoteCard(
   ) {
     Box(modifier = Modifier.fillMaxWidth()) {
       Column(
-        modifier =
-        Modifier.padding(
+        modifier = Modifier.padding(
           start = CONTENT_PADDING_HORIZONTAL,
           top = CONTENT_PADDING_TOP,
           end = CONTENT_PADDING_HORIZONTAL,
@@ -117,7 +111,9 @@ fun NoteCard(
             lineHeight = note.titleFontSize.sp * LINE_HEIGHT_RATIO,
             maxLines = TITLE_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth().padding(end = TEXT_END_PADDING),
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(end = TEXT_END_PADDING),
           )
         }
         if (bodyText.isNotEmpty()) {
@@ -129,8 +125,7 @@ fun NoteCard(
             lineHeight = note.fontSize.sp * LINE_HEIGHT_RATIO,
             maxLines = BODY_TEXT_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
-            modifier =
-            Modifier
+            modifier = Modifier
               .fillMaxWidth()
               .padding(
                 top = if (note.title.isNotEmpty()) TEXT_BLOCK_SPACING else 0.dp,
@@ -139,7 +134,11 @@ fun NoteCard(
           )
         }
         if (note.images.isNotEmpty()) {
-          NoteCardImages(images = note.images, onImageClick = onImageClick)
+          NoteCardImages(
+            images = note.images,
+            onImageClick = onImageClick,
+            onLongClick = onLongClick,
+          )
         }
       }
       Box(modifier = Modifier.align(Alignment.TopEnd), content = trailingContent)
@@ -149,27 +148,29 @@ fun NoteCard(
 
 @Composable
 private fun NoteCardImages(
+  modifier: Modifier = Modifier,
   images: List<UiNoteImage>,
   onImageClick: (imageId: Int) -> Unit,
-  modifier: Modifier = Modifier,
+  onLongClick: (() -> Unit)? = null,
 ) {
   Column(modifier = modifier) {
     AsyncImage(
       model = images.first().filePath,
       contentDescription = null,
       contentScale = ContentScale.Crop,
-      modifier =
-      Modifier
+      modifier = Modifier
         .fillMaxWidth()
         .height(dimensionResource(R.dimen.image_height_list))
         .clip(MaterialTheme.shapes.small)
-        .clickable { onImageClick(images.first().id) },
+        .combinedClickable(
+          onClick = { onImageClick(images.first().id) },
+          onLongClick = onLongClick
+        ),
     )
     if (images.size > 1) {
       val scrollState = rememberScrollState()
       Row(
-        modifier =
-        Modifier
+        modifier = Modifier
           .horizontalScroll(scrollState)
           .padding(top = THUMBNAILS_TOP_PADDING),
       ) {
@@ -178,12 +179,14 @@ private fun NoteCardImages(
             model = image.filePath,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier =
-            Modifier
+            modifier = Modifier
               .size(SECONDARY_IMAGE_SIZE)
               .padding(end = 4.dp)
               .clip(MaterialTheme.shapes.small)
-              .clickable { onImageClick(image.id) },
+              .combinedClickable(
+                onClick = { onImageClick(image.id) },
+                onLongClick = onLongClick
+              ),
           )
         }
       }
@@ -196,8 +199,7 @@ private fun NoteCardImages(
 private fun NoteCardPreview() {
   AppTheme {
     NoteCard(
-      note =
-      UiNoteListItem(
+      note = UiNoteListItem(
         id = "1",
         title = "Shopping list",
         text = "Milk, eggs, bread, butter, cheese, tomatoes, coffee",

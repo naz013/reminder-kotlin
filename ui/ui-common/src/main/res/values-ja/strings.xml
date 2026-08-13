@@ -1117,4 +1117,19 @@
 
     <string name="type">タイプ</string>
     <string name="smart_lists">スマートリスト</string>
+    <string name="note_selected_count_one">%1$d件のメモを選択中</string>
+    <string name="note_selected_count_other">%1$d件のメモを選択中</string>
+    <string name="notes_delete_selected_permanently">%1$d件のメモを完全に削除しますか?</string>
+    <string name="home">ホーム</string>
+    <string name="expand_navigation">ナビゲーションを展開</string>
+    <string name="collapse_navigation">ナビゲーションを折りたたむ</string>
+    <string name="todo">To Do</string>
+    <string name="todo_items">項目</string>
+    <string name="sign_in_with_google">Google でログイン</string>
+    <string name="pro_public_holidays">- カレンダーに祝日を表示</string>
+    <string name="public_holidays">祝日</string>
+    <string name="show_public_holidays">祝日を表示</string>
+    <string name="public_holidays_country">国</string>
+    <string name="public_holidays_locked_description">カレンダーにあなたの国の祝日を表示 - Pro版で利用可能</string>
+    <string name="search_no_countries_found">国が見つかりません</string>
 </resources>

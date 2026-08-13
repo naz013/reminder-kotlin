@@ -1115,4 +1115,19 @@
 
     <string name="type">Type</string>
     <string name="smart_lists">Smarte lister</string>
+    <string name="note_selected_count_one">%1$d notat valgt</string>
+    <string name="note_selected_count_other">%1$d notater valgt</string>
+    <string name="notes_delete_selected_permanently">Slette %1$d notater permanent?</string>
+    <string name="home">Hjem</string>
+    <string name="expand_navigation">Utvid navigasjon</string>
+    <string name="collapse_navigation">Skjul navigasjon</string>
+    <string name="todo">Gjøremål</string>
+    <string name="todo_items">Elementer</string>
+    <string name="sign_in_with_google">Logg på med Google</string>
+    <string name="pro_public_holidays">- Offentlige høytider i kalenderen</string>
+    <string name="public_holidays">Offentlige høytider</string>
+    <string name="show_public_holidays">Vis offentlige høytider</string>
+    <string name="public_holidays_country">Land</string>
+    <string name="public_holidays_locked_description">Vis offentlige høytider for landet ditt i kalenderen - tilgjengelig med Pro</string>
+    <string name="search_no_countries_found">Fant ingen land</string>
 </resources>

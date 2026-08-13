@@ -1118,4 +1118,19 @@
 
     <string name="type">Тип</string>
     <string name="smart_lists">Розумні списки</string>
+    <string name="note_selected_count_one">Вибрано %1$d нотатку</string>
+    <string name="note_selected_count_other">Вибрано %1$d нотаток</string>
+    <string name="notes_delete_selected_permanently">Видалити %1$d нотаток назавжди?</string>
+    <string name="home">Головна</string>
+    <string name="expand_navigation">Розгорнути навігацію</string>
+    <string name="collapse_navigation">Згорнути навігацію</string>
+    <string name="todo">Завдання</string>
+    <string name="todo_items">Елементи</string>
+    <string name="sign_in_with_google">Увійти через Google</string>
+    <string name="pro_public_holidays">- Державні свята в календарі</string>
+    <string name="public_holidays">Державні свята</string>
+    <string name="show_public_holidays">Показувати державні свята</string>
+    <string name="public_holidays_country">Країна</string>
+    <string name="public_holidays_locked_description">Показувати державні свята вашої країни в календарі - доступно з Pro</string>
+    <string name="search_no_countries_found">Країн не знайдено</string>
 </resources>

@@ -26,6 +26,11 @@ import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.common.selection.clearSelection
+import com.github.naz013.ui.common.selection.select
+import com.github.naz013.ui.common.selection.selectedCount
+import com.github.naz013.ui.common.selection.selectedIds
+import com.github.naz013.ui.common.selection.toggleSelection
 import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.NoteNotifier
 import com.github.naz013.ui.note.NotePreferences
@@ -178,33 +183,31 @@ internal class NotesViewModel(
 
   fun onNoteClick(id: String) {
     if (_notesScreenState.value.selectedCount > 0) {
-      updateSelection { note -> if (note.id == id) note.copy(isSelected = !note.isSelected) else note }
+      updateSelection { it.toggleSelection(id) }
     } else {
       navigationEvent.emit(NavigationEvent.OpenNotePreview(id))
     }
   }
 
   fun onNoteLongClick(id: String) {
-    updateSelection { note -> if (note.id == id) note.copy(isSelected = true) else note }
+    updateSelection { it.select(id) }
   }
 
   fun onSelectionCancel() {
-    updateSelection { note -> note.copy(isSelected = false) }
+    updateSelection { it.clearSelection() }
   }
 
-  private fun updateSelection(transform: (UiNoteListItem) -> UiNoteListItem) {
+  private fun updateSelection(transform: (List<UiNoteListItem>) -> List<UiNoteListItem>) {
     _notesScreenState.update { state ->
       val listState = state.listState
       if (listState !is ListState.Ready) return@update state
-      val notes = listState.notes.map(transform)
-      state.copy(listState = ListState.Ready(notes), selectedCount = notes.count { it.isSelected })
+      val notes = transform(listState.notes)
+      state.copy(listState = ListState.Ready(notes), selectedCount = notes.selectedCount())
     }
   }
 
-  private fun selectedIds(): Set<String> {
-    val listState = _notesScreenState.value.listState
-    return (listState as? ListState.Ready)?.notes.orEmpty().filter { it.isSelected }.map { it.id }.toSet()
-  }
+  private fun selectedIds(): Set<String> =
+    (_notesScreenState.value.listState as? ListState.Ready)?.notes.orEmpty().selectedIds()
 
   fun onDeleteSelectedClick() {
     val ids = selectedIds()
