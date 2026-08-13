@@ -1118,4 +1118,19 @@
 
     <string name="type">类型</string>
     <string name="smart_lists">智能列表</string>
+    <string name="note_selected_count_one">已选择 %1$d 篇笔记</string>
+    <string name="note_selected_count_other">已选择 %1$d 篇笔记</string>
+    <string name="notes_delete_selected_permanently">永久删除 %1$d 篇笔记?</string>
+    <string name="home">首页</string>
+    <string name="expand_navigation">展开导航</string>
+    <string name="collapse_navigation">收起导航</string>
+    <string name="todo">待办事项</string>
+    <string name="todo_items">项目</string>
+    <string name="sign_in_with_google">使用 Google 账号登录</string>
+    <string name="pro_public_holidays">- 日历中显示公众假期</string>
+    <string name="public_holidays">公众假期</string>
+    <string name="show_public_holidays">显示公众假期</string>
+    <string name="public_holidays_country">国家/地区</string>
+    <string name="public_holidays_locked_description">在日历中显示您所在国家/地区的公众假期 - Pro 版可用</string>
+    <string name="search_no_countries_found">未找到国家/地区</string>
 </resources>

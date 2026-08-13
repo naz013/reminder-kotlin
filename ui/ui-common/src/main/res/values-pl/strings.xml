@@ -1117,4 +1117,19 @@
 
     <string name="type">Typ</string>
     <string name="smart_lists">Inteligentne listy</string>
+    <string name="note_selected_count_one">Zaznaczono %1$d notatkę</string>
+    <string name="note_selected_count_other">Zaznaczono %1$d notatek</string>
+    <string name="notes_delete_selected_permanently">Usunąć %1$d notatek na stałe?</string>
+    <string name="home">Strona główna</string>
+    <string name="expand_navigation">Rozwiń nawigację</string>
+    <string name="collapse_navigation">Zwiń nawigację</string>
+    <string name="todo">Lista zadań</string>
+    <string name="todo_items">Elementy</string>
+    <string name="sign_in_with_google">Zaloguj się przez Google</string>
+    <string name="pro_public_holidays">- Święta państwowe w kalendarzu</string>
+    <string name="public_holidays">Święta państwowe</string>
+    <string name="show_public_holidays">Pokaż święta państwowe</string>
+    <string name="public_holidays_country">Kraj</string>
+    <string name="public_holidays_locked_description">Pokazuj święta państwowe dla Twojego kraju w kalendarzu - dostępne w wersji Pro</string>
+    <string name="search_no_countries_found">Nie znaleziono krajów</string>
 </resources>

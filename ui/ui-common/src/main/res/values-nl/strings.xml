@@ -1115,4 +1115,19 @@
 
     <string name="type">Type</string>
     <string name="smart_lists">Slimme lijsten</string>
+    <string name="note_selected_count_one">%1$d notitie geselecteerd</string>
+    <string name="note_selected_count_other">%1$d notities geselecteerd</string>
+    <string name="notes_delete_selected_permanently">%1$d notities permanent verwijderen?</string>
+    <string name="home">Start</string>
+    <string name="expand_navigation">Navigatie uitvouwen</string>
+    <string name="collapse_navigation">Navigatie samenvouwen</string>
+    <string name="todo">Taken</string>
+    <string name="todo_items">Items</string>
+    <string name="sign_in_with_google">Inloggen met Google</string>
+    <string name="pro_public_holidays">- Feestdagen in de agenda</string>
+    <string name="public_holidays">Feestdagen</string>
+    <string name="show_public_holidays">Feestdagen weergeven</string>
+    <string name="public_holidays_country">Land</string>
+    <string name="public_holidays_locked_description">Toon feestdagen voor jouw land in de agenda - beschikbaar met Pro</string>
+    <string name="search_no_countries_found">Geen landen gevonden</string>
 </resources>

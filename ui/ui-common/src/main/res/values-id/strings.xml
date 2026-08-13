@@ -1115,4 +1115,19 @@
 
     <string name="type">Jenis</string>
     <string name="smart_lists">Daftar Pintar</string>
+    <string name="note_selected_count_one">%1$d catatan dipilih</string>
+    <string name="note_selected_count_other">%1$d catatan dipilih</string>
+    <string name="notes_delete_selected_permanently">Hapus %1$d catatan secara permanen?</string>
+    <string name="home">Beranda</string>
+    <string name="expand_navigation">Perluas navigasi</string>
+    <string name="collapse_navigation">Ciutkan navigasi</string>
+    <string name="todo">Tugas</string>
+    <string name="todo_items">Item</string>
+    <string name="sign_in_with_google">Login dengan Google</string>
+    <string name="pro_public_holidays">- Hari libur nasional di kalender</string>
+    <string name="public_holidays">Hari Libur Nasional</string>
+    <string name="show_public_holidays">Tampilkan hari libur nasional</string>
+    <string name="public_holidays_country">Negara</string>
+    <string name="public_holidays_locked_description">Tampilkan hari libur nasional negara Anda di kalender - tersedia dengan Pro</string>
+    <string name="search_no_countries_found">Tidak ada negara ditemukan</string>
 </resources>

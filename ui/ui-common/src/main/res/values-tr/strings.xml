@@ -1118,4 +1118,19 @@
 
     <string name="type">Tür</string>
     <string name="smart_lists">Akıllı Listeler</string>
+    <string name="note_selected_count_one">%1$d not seçildi</string>
+    <string name="note_selected_count_other">%1$d not seçildi</string>
+    <string name="notes_delete_selected_permanently">%1$d not kalıcı olarak silinsin mi?</string>
+    <string name="home">Ana Sayfa</string>
+    <string name="expand_navigation">Gezinmeyi genişlet</string>
+    <string name="collapse_navigation">Gezinmeyi daralt</string>
+    <string name="todo">Yapılacaklar</string>
+    <string name="todo_items">Öğeler</string>
+    <string name="sign_in_with_google">Google ile oturum aç</string>
+    <string name="pro_public_holidays">- Takvimde resmi tatiller</string>
+    <string name="public_holidays">Resmi Tatiller</string>
+    <string name="show_public_holidays">Resmi tatilleri göster</string>
+    <string name="public_holidays_country">Ülke</string>
+    <string name="public_holidays_locked_description">Takviminde ülkenizin resmi tatillerini gösterin - Pro sürümde kullanılabilir</string>
+    <string name="search_no_countries_found">Ülke bulunamadı</string>
 </resources>

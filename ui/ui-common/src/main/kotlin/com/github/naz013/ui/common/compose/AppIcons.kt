@@ -31,6 +31,7 @@ object AppIcons {
     val CloudBackup: Painter @Composable get() = painterResource(R.drawable.ic_fluent_cloud_backup)
     val DocumentTopRight: Painter @Composable get() = painterResource(R.drawable.ic_fluent_document_top_right)
     val Delete: Painter @Composable get() = painterResource(R.drawable.ic_fluent_delete)
+    val ColorBackground: Painter @Composable get() = painterResource(R.drawable.ic_fluent_color_background)
   }
 
   object Builder {

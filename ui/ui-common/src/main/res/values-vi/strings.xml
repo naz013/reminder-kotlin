@@ -1115,4 +1115,19 @@
 
     <string name="type">Loại</string>
     <string name="smart_lists">Danh sách thông minh</string>
+    <string name="note_selected_count_one">%1$d ghi chú được chọn</string>
+    <string name="note_selected_count_other">%1$d ghi chú được chọn</string>
+    <string name="notes_delete_selected_permanently">Xóa vĩnh viễn %1$d ghi chú?</string>
+    <string name="home">Trang chủ</string>
+    <string name="expand_navigation">Mở rộng điều hướng</string>
+    <string name="collapse_navigation">Thu gọn điều hướng</string>
+    <string name="todo">Việc cần làm</string>
+    <string name="todo_items">Mục</string>
+    <string name="sign_in_with_google">Đăng nhập bằng Google</string>
+    <string name="pro_public_holidays">- Ngày lễ trong lịch</string>
+    <string name="public_holidays">Ngày lễ</string>
+    <string name="show_public_holidays">Hiển thị ngày lễ</string>
+    <string name="public_holidays_country">Quốc gia</string>
+    <string name="public_holidays_locked_description">Hiển thị ngày lễ của quốc gia bạn trong lịch - có sẵn với bản Pro</string>
+    <string name="search_no_countries_found">Không tìm thấy quốc gia</string>
 </resources>

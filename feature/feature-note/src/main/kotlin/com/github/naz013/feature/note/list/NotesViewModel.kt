@@ -26,6 +26,12 @@ import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.common.selection.clearSelection
+import com.github.naz013.ui.common.selection.select
+import com.github.naz013.ui.common.selection.selectedCount
+import com.github.naz013.ui.common.selection.selectedIds
+import com.github.naz013.ui.common.selection.toggleSelection
+import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.NoteNotifier
 import com.github.naz013.ui.note.NotePreferences
 import com.github.naz013.ui.note.UiNoteListItem
@@ -65,6 +71,7 @@ internal class NotesViewModel(
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val tagChipStateAdapter: TagChipStateAdapter,
+  private val noteColorEngine: NoteColorEngine,
 ) : ViewModel() {
 
   private val _notesScreenState = MutableStateFlow(
@@ -175,7 +182,101 @@ internal class NotesViewModel(
   }
 
   fun onNoteClick(id: String) {
-    navigationEvent.emit(NavigationEvent.OpenNotePreview(id))
+    if (_notesScreenState.value.selectedCount > 0) {
+      updateSelection { it.toggleSelection(id) }
+    } else {
+      navigationEvent.emit(NavigationEvent.OpenNotePreview(id))
+    }
+  }
+
+  fun onNoteLongClick(id: String) {
+    updateSelection { it.select(id) }
+  }
+
+  fun onSelectionCancel() {
+    updateSelection { it.clearSelection() }
+  }
+
+  private fun updateSelection(transform: (List<UiNoteListItem>) -> List<UiNoteListItem>) {
+    _notesScreenState.update { state ->
+      val listState = state.listState
+      if (listState !is ListState.Ready) return@update state
+      val notes = transform(listState.notes)
+      state.copy(listState = ListState.Ready(notes), selectedCount = notes.selectedCount())
+    }
+  }
+
+  private fun selectedIds(): Set<String> =
+    (_notesScreenState.value.listState as? ListState.Ready)?.notes.orEmpty().selectedIds()
+
+  fun onDeleteSelectedClick() {
+    val ids = selectedIds()
+    if (ids.isNotEmpty()) {
+      navigationEvent.emit(
+        NavigationEvent.ConfirmDeleteSelected(
+          ids = ids,
+          title = textProvider.getText(R.string.notes_delete_selected_permanently, ids.size),
+        )
+      )
+    }
+  }
+
+  fun deleteSelectedNotes(ids: Set<String>) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      ids.forEach { deleteNoteUseCase(it) }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
+      refresh()
+
+      if (!isArchived) {
+        withContext(dispatcherProvider.main()) {
+          appWidgetUpdater.updateNotesWidget()
+        }
+      }
+    }
+  }
+
+  fun onArchiveSelectedClick() {
+    val ids = selectedIds()
+    if (ids.isEmpty()) return
+    viewModelScope.launch(dispatcherProvider.default()) {
+      ids.forEach { changeNoteArchiveStateUseCase(it, !isArchived) }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
+      refresh()
+
+      withContext(dispatcherProvider.main()) {
+        appWidgetUpdater.updateNotesWidget()
+      }
+    }
+  }
+
+  fun applySelectedColor(colorIndex: Int) {
+    val ids = selectedIds()
+    if (ids.isEmpty()) return
+    viewModelScope.launch(dispatcherProvider.default()) {
+      ids.forEach { id ->
+        val noteWithImages = noteRepository.getById(id) ?: return@forEach
+        val note = noteWithImages.note ?: return@forEach
+        note.color = noteColorEngine.getLegacyColorCode(colorIndex)
+        note.palette = noteColorEngine.getLegacyPalette(colorIndex)
+        note.updatedAt = DateTimeManager.gmtDateTime
+        saveNoteUseCase(noteWithImages)
+      }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
+      refresh()
+
+      withContext(dispatcherProvider.main()) {
+        appWidgetUpdater.updateNotesWidget()
+      }
+    }
   }
 
   fun onImageClick(
@@ -332,6 +433,11 @@ internal class NotesViewModel(
 
     data class ConfirmDelete(
       val id: String,
+    ) : NavigationEvent
+
+    data class ConfirmDeleteSelected(
+      val ids: Set<String>,
+      val title: String,
     ) : NavigationEvent
 
     data class Error(val message: String) : NavigationEvent

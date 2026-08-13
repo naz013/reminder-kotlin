@@ -26,9 +26,6 @@
     <string name="google_drive">Google Drive™</string>
     <string name="dropbox">Dropbox</string>
     <string name="notes">Notes</string>
-    <string name="home">Home</string>
-    <string name="expand_navigation">Expand navigation</string>
-    <string name="collapse_navigation">Collapse navigation</string>
     <string name="task">Task</string>
     <string name="note">Note</string>
     <string name="save">Save</string>
@@ -181,8 +178,6 @@
     <string name="location">Location</string>
     <string name="day_of_month">Day of month</string>
     <string name="shopping_list">Shopping list</string>
-    <string name="todo">Todo</string>
-    <string name="todo_items">Items</string>
     <string name="radius_x_m">"Radius %s m"</string>
     <string name="radius_x_ft">"Radius %s ft"</string>
     <string name="radius_x_km">"Radius %s km"</string>
@@ -449,7 +444,6 @@
     <string name="quick_buttons">Quick buttons</string>
     <string name="list_item_background">Background of list item</string>
     <string name="you_not_logged_to_google_tasks">You not logged to Google Tasks</string>
-    <string name="sign_in_with_google">Sign in with Google</string>
     <string name="header_background">Background of header</string>
     <string name="do_no_show_notifications_on_wear_devices">Do not show notifications on Wear OS</string>
     <string name="do_not_show_in_home_screen_widget">Do not show in home screen widget</string>
@@ -587,7 +581,6 @@
     <string name="pro_streaks_and_insights">- Streaks &amp; Insights dashboard</string>
     <string name="pro_local_encrypted_backup">- Local encrypted backup</string>
     <string name="pro_gemini_app_functions">- Gemini AppFunctions integration</string>
-    <string name="pro_public_holidays">- Public holidays in the calendar</string>
     <string name="pro_no_ads">- No Advertisement</string>
     <string name="pro_different_settings_for_birthdays">- Different settings for birthdays</string>
     <string name="pro_led_notification">- LED notification</string>
@@ -914,11 +907,6 @@
     <string name="add_reminders_to_google_calendar">Add reminders to Google Calendar</string>
     <string name="scan_google_calendar_for_the_new_events">Scan Google Calendar for the new events</string>
     <string name="calendar_not_selected">Calendar not selected</string>
-    <string name="public_holidays">Public Holidays</string>
-    <string name="show_public_holidays">Show public holidays</string>
-    <string name="public_holidays_country">Country</string>
-    <string name="public_holidays_locked_description">Show public holidays for your country in the calendar - available with Pro</string>
-    <string name="search_no_countries_found">No countries found</string>
     <string name="default_reminder_snooze_time">Default reminder snooze time</string>
     <string name="reminder_notification_repeating">Reminder notification repeating</string>
     <string name="repeat_reminder_notification_until_dismissed">Repeat reminder notification until dismissed</string>
@@ -1128,4 +1116,21 @@
 
     <string name="type">Type</string>
     <string name="smart_lists">Smart Lists</string>
+
+    <string name="note_selected_count_one">%1$d note selected</string>
+    <string name="note_selected_count_other">%1$d notes selected</string>
+
+    <string name="notes_delete_selected_permanently">Delete %1$d notes permanently?</string>
+    <string name="home">Home</string>
+    <string name="expand_navigation">Expand navigation</string>
+    <string name="collapse_navigation">Collapse navigation</string>
+    <string name="todo">Todo</string>
+    <string name="todo_items">Items</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="pro_public_holidays">- Public holidays in the calendar</string>
+    <string name="public_holidays">Public Holidays</string>
+    <string name="show_public_holidays">Show public holidays</string>
+    <string name="public_holidays_country">Country</string>
+    <string name="public_holidays_locked_description">Show public holidays for your country in the calendar - available with Pro</string>
+    <string name="search_no_countries_found">No countries found</string>
 </resources>

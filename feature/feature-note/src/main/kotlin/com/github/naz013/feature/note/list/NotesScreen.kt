@@ -1,5 +1,6 @@
 package com.github.naz013.feature.note.list
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -33,8 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +45,8 @@ import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
+import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
@@ -64,24 +69,44 @@ internal fun NotesScreen(
   onSettingsClick: (() -> Unit)?,
   onAddClick: (() -> Unit)?,
   onNoteClick: (String) -> Unit,
+  onNoteLongClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
   onTagSelected: (String?) -> Unit,
+  onSelectionCancel: () -> Unit,
+  onDeleteSelectedClick: () -> Unit,
+  onArchiveSelectedClick: () -> Unit,
+  onChangeColorClick: () -> Unit,
 ) {
+  val isSelectionMode = state.selectedCount > 0
+
+  BackHandler(enabled = isSelectionMode) { onSelectionCancel() }
+
   Scaffold(
     modifier = modifier,
     topBar = {
-      NotesTopBar(
-        title = stringResource(if (state.isArchived) R.string.notes_archive else R.string.notes),
-        onBackClick = onBackClick,
-        isGrid = state.isGrid,
-        onGridToggleClick = onGridToggleClick,
-        sortOrder = state.sortOrder,
-        onSortOrderSelected = onSortOrderSelected,
-        onArchiveClick = onArchiveClick,
-        onSettingsClick = onSettingsClick,
-        onAddClick = onAddClick
-      )
+      if (isSelectionMode) {
+        NotesSelectionTopBar(
+          selectedCount = state.selectedCount,
+          isArchived = state.isArchived,
+          onCancelClick = onSelectionCancel,
+          onDeleteClick = onDeleteSelectedClick,
+          onArchiveClick = onArchiveSelectedClick,
+          onChangeColorClick = onChangeColorClick,
+        )
+      } else {
+        NotesTopBar(
+          title = stringResource(if (state.isArchived) R.string.notes_archive else R.string.notes),
+          onBackClick = onBackClick,
+          isGrid = state.isGrid,
+          onGridToggleClick = onGridToggleClick,
+          sortOrder = state.sortOrder,
+          onSortOrderSelected = onSortOrderSelected,
+          onArchiveClick = onArchiveClick,
+          onSettingsClick = onSettingsClick,
+          onAddClick = onAddClick
+        )
+      }
     },
   ) { padding ->
     Column(
@@ -139,9 +164,11 @@ internal fun NotesScreen(
             notes = listState.notes,
             isGrid = state.isGrid,
             isArchived = state.isArchived,
+            isSelectionMode = isSelectionMode,
             contentPadding = PaddingValues(),
             hasFab = onAddClick != null,
             onNoteClick = onNoteClick,
+            onNoteLongClick = onNoteLongClick,
             onNoteMenuAction = onNoteMenuAction,
             onImageClick = onImageClick,
             modifier =
@@ -157,15 +184,17 @@ internal fun NotesScreen(
 
 @Composable
 private fun NotesList(
+  modifier: Modifier = Modifier,
   notes: List<UiNoteListItem>,
   isGrid: Boolean,
   isArchived: Boolean,
+  isSelectionMode: Boolean,
   contentPadding: PaddingValues,
   hasFab: Boolean,
   onNoteClick: (String) -> Unit,
+  onNoteLongClick: (String) -> Unit,
   onNoteMenuAction: (UiNoteListItem, NoteMenuAction) -> Unit,
   onImageClick: (UiNoteListItem, Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val fabBottomPadding = if (hasFab) 88.dp else 0.dp
   if (isGrid) {
@@ -184,14 +213,21 @@ private fun NotesList(
         NoteCard(
           note = note,
           onClick = { onNoteClick(note.id) },
-          onImageClick = { imageId -> onImageClick(note, imageId) },
+          onLongClick = { onNoteLongClick(note.id) },
+          onImageClick = { imageId -> if (isSelectionMode) onNoteClick(note.id) else onImageClick(note, imageId) },
           modifier = Modifier.animateItem(),
           trailingContent = {
-            NoteOverflowMenu(
-              isArchived = isArchived,
-              textColor = note.textColor,
-              onMenuAction = { action -> onNoteMenuAction(note, action) },
-            )
+            SelectionOverlay(
+              isSelectionMode = isSelectionMode,
+              isSelected = note.isSelected,
+              onToggleSelected = { onNoteClick(note.id) },
+            ) {
+              NoteOverflowMenu(
+                isArchived = isArchived,
+                textColor = note.textColor,
+                onMenuAction = { action -> onNoteMenuAction(note, action) },
+              )
+            }
           },
         )
       }
@@ -214,14 +250,21 @@ private fun NotesList(
         NoteCard(
           note = note,
           onClick = { onNoteClick(note.id) },
-          onImageClick = { imageId -> onImageClick(note, imageId) },
+          onLongClick = { onNoteLongClick(note.id) },
+          onImageClick = { imageId -> if (isSelectionMode) onNoteClick(note.id) else onImageClick(note, imageId) },
           modifier = Modifier.animateItem(),
           trailingContent = {
-            NoteOverflowMenu(
-              isArchived = isArchived,
-              textColor = note.textColor,
-              onMenuAction = { action -> onNoteMenuAction(note, action) },
-            )
+            SelectionOverlay(
+              isSelectionMode = isSelectionMode,
+              isSelected = note.isSelected,
+              onToggleSelected = { onNoteClick(note.id) },
+            ) {
+              NoteOverflowMenu(
+                isArchived = isArchived,
+                textColor = note.textColor,
+                onMenuAction = { action -> onNoteMenuAction(note, action) },
+              )
+            }
           },
         )
       }
@@ -361,6 +404,59 @@ private fun NotesTopBar(
   )
 }
 
+private enum class NotesSelectionAction { CHANGE_COLOR, ARCHIVE, DELETE }
+
+@Composable
+private fun NotesSelectionTopBar(
+  selectedCount: Int,
+  isArchived: Boolean,
+  onCancelClick: () -> Unit,
+  onDeleteClick: () -> Unit,
+  onArchiveClick: () -> Unit,
+  onChangeColorClick: () -> Unit,
+) {
+  SelectionTopBar(
+    title = pluralStringResource(R.plurals.notes_selected_count, selectedCount, selectedCount),
+    onCancelClick = onCancelClick,
+    actions = notesSelectionMenuItems(isArchived),
+    onActionClick = { id ->
+      when (NotesSelectionAction.entries[id]) {
+        NotesSelectionAction.CHANGE_COLOR -> onChangeColorClick()
+        NotesSelectionAction.ARCHIVE -> onArchiveClick()
+        NotesSelectionAction.DELETE -> onDeleteClick()
+      }
+    },
+  )
+}
+
+@Composable
+private fun notesSelectionMenuItems(isArchived: Boolean): List<PopupMenuItem> =
+  buildList {
+    if (!isArchived) {
+      add(
+        PopupMenuItem(
+          id = NotesSelectionAction.CHANGE_COLOR.ordinal,
+          title = stringResource(R.string.change_color),
+          iconRes = R.drawable.ic_fluent_color_background,
+        )
+      )
+    }
+    add(
+      PopupMenuItem(
+        id = NotesSelectionAction.ARCHIVE.ordinal,
+        title = stringResource(if (isArchived) R.string.notes_unarchive else R.string.notes_move_to_archive),
+        iconRes = R.drawable.ic_fluent_archive,
+      )
+    )
+    add(
+      PopupMenuItem(
+        id = NotesSelectionAction.DELETE.ordinal,
+        title = stringResource(R.string.delete),
+        iconRes = R.drawable.ic_fluent_delete,
+      )
+    )
+  }
+
 @Composable
 private fun SortMenuButton(
   sortOrder: String,
@@ -457,9 +553,14 @@ private fun NotesScreenEmptyPreview() {
       onSettingsClick = {},
       onAddClick = {},
       onNoteClick = {},
+      onNoteLongClick = {},
       onNoteMenuAction = { _, _ -> },
       onImageClick = { _, _ -> },
       onTagSelected = {},
+      onSelectionCancel = {},
+      onDeleteSelectedClick = {},
+      onArchiveSelectedClick = {},
+      onChangeColorClick = {},
     )
   }
 }

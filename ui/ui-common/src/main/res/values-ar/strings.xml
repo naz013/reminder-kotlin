@@ -1115,4 +1115,19 @@
 
     <string name="type">النوع</string>
     <string name="smart_lists">القوائم الذكية</string>
+    <string name="note_selected_count_one">تم تحديد ملاحظة واحدة</string>
+    <string name="note_selected_count_other">تم تحديد %1$d ملاحظات</string>
+    <string name="notes_delete_selected_permanently">حذف %1$d ملاحظات نهائيًا؟</string>
+    <string name="home">الرئيسية</string>
+    <string name="expand_navigation">توسيع التنقل</string>
+    <string name="collapse_navigation">طي التنقل</string>
+    <string name="todo">المهام</string>
+    <string name="todo_items">العناصر</string>
+    <string name="sign_in_with_google">تسجيل الدخول باستخدام Google</string>
+    <string name="pro_public_holidays">- أيام العطل الرسمية في التقويم</string>
+    <string name="public_holidays">أيام العطل الرسمية</string>
+    <string name="show_public_holidays">إظهار أيام العطل الرسمية</string>
+    <string name="public_holidays_country">الدولة</string>
+    <string name="public_holidays_locked_description">إظهار أيام العطل الرسمية لبلدك في التقويم - متوفر مع الإصدار المدفوع</string>
+    <string name="search_no_countries_found">لم يتم العثور على دول</string>
 </resources>

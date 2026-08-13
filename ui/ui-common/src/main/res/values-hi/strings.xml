@@ -1119,4 +1119,19 @@
 
     <string name="type">प्रकार</string>
     <string name="smart_lists">स्मार्ट सूचियाँ</string>
+    <string name="note_selected_count_one">%1$d नोट चयनित</string>
+    <string name="note_selected_count_other">%1$d नोट्स चयनित</string>
+    <string name="notes_delete_selected_permanently">%1$d नोट्स को स्थायी रूप से हटाएं?</string>
+    <string name="home">होम</string>
+    <string name="expand_navigation">नेविगेशन विस्तृत करें</string>
+    <string name="collapse_navigation">नेविगेशन संक्षिप्त करें</string>
+    <string name="todo">कार्य सूची</string>
+    <string name="todo_items">आइटम</string>
+    <string name="sign_in_with_google">Google से साइन इन करें</string>
+    <string name="pro_public_holidays">- कैलेंडर में सार्वजनिक अवकाश</string>
+    <string name="public_holidays">सार्वजनिक अवकाश</string>
+    <string name="show_public_holidays">सार्वजनिक अवकाश दिखाएं</string>
+    <string name="public_holidays_country">देश</string>
+    <string name="public_holidays_locked_description">कैलेंडर में अपने देश के सार्वजनिक अवकाश दिखाएं - Pro के साथ उपलब्ध</string>
+    <string name="search_no_countries_found">कोई देश नहीं मिला</string>
 </resources>

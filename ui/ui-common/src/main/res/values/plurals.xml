@@ -19,4 +19,9 @@
         <item quantity="one">@string/group_x_reminder</item>
         <item quantity="other">@string/group_x_reminders</item>
     </plurals>
+
+    <plurals name="notes_selected_count" >
+        <item quantity="one">@string/note_selected_count_one</item>
+        <item quantity="other">@string/note_selected_count_other</item>
+    </plurals>
 </resources>

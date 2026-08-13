@@ -1115,4 +1115,19 @@
 
     <string name="type">ประเภท</string>
     <string name="smart_lists">รายการอัจฉริยะ</string>
+    <string name="note_selected_count_one">เลือก %1$d โน้ตแล้ว</string>
+    <string name="note_selected_count_other">เลือก %1$d โน้ตแล้ว</string>
+    <string name="notes_delete_selected_permanently">ลบ %1$d โน้ตอย่างถาวร?</string>
+    <string name="home">หน้าแรก</string>
+    <string name="expand_navigation">ขยายการนำทาง</string>
+    <string name="collapse_navigation">ยุบการนำทาง</string>
+    <string name="todo">สิ่งที่ต้องทำ</string>
+    <string name="todo_items">รายการ</string>
+    <string name="sign_in_with_google">ลงชื่อเข้าใช้ด้วย Google</string>
+    <string name="pro_public_holidays">- วันหยุดราชการในปฏิทิน</string>
+    <string name="public_holidays">วันหยุดราชการ</string>
+    <string name="show_public_holidays">แสดงวันหยุดราชการ</string>
+    <string name="public_holidays_country">ประเทศ</string>
+    <string name="public_holidays_locked_description">แสดงวันหยุดราชการของประเทศคุณในปฏิทิน - ใช้ได้กับ Pro</string>
+    <string name="search_no_countries_found">ไม่พบประเทศ</string>
 </resources>

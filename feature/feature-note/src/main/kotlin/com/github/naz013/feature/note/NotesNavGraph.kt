@@ -36,6 +36,7 @@ import com.github.naz013.feature.note.preview.PreviewNoteState
 import com.github.naz013.feature.note.preview.PreviewNoteViewModel
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.ToastDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
@@ -43,6 +44,8 @@ import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.PermissionRequester
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
+import com.github.naz013.ui.note.NoteColorEngine
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -120,6 +123,15 @@ private fun handleNotesNavigationEvent(
       )
     }
 
+    is NotesViewModel.NavigationEvent.ConfirmDeleteSelected -> {
+      handlers.dialogDispatcher.showDialog(
+        title = event.title,
+        positiveButtonRes = R.string.yes,
+        negativeButtonRes = R.string.cancel,
+        onPositive = { handlers.viewModel.deleteSelectedNotes(event.ids) }
+      )
+    }
+
     is NotesViewModel.NavigationEvent.Error -> {
       handlers.toastDispatcher.showToast(message = event.message)
     }
@@ -138,6 +150,8 @@ private fun NotesListEntry(
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
   val noteIntentSender = rememberNoteIntentSender(applicationId)
+  val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
+  val noteColorEngine = koinInject<NoteColorEngine>()
 
   val handlers =
     NotesNavHandlers(
@@ -163,9 +177,21 @@ private fun NotesListEntry(
     onSettingsClick = viewModel::onSettingsClick,
     onAddClick = viewModel::onAddClick,
     onNoteClick = viewModel::onNoteClick,
+    onNoteLongClick = viewModel::onNoteLongClick,
     onNoteMenuAction = viewModel::onNoteMenuAction,
     onImageClick = viewModel::onImageClick,
     onTagSelected = viewModel::onTagSelected,
+    onSelectionCancel = viewModel::onSelectionCancel,
+    onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
+    onArchiveSelectedClick = viewModel::onArchiveSelectedClick,
+    onChangeColorClick = {
+      colorPickerDialogDispatcher.showDialog(
+        titleRes = R.string.acc_select_color,
+        colors = noteColorEngine.allColors(),
+        selectedIndex = 0,
+        onColorSelected = viewModel::applySelectedColor,
+      )
+    },
   )
 }
 
@@ -177,6 +203,8 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
   val noteIntentSender = rememberNoteIntentSender(applicationId)
+  val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
+  val noteColorEngine = koinInject<NoteColorEngine>()
 
   val handlers =
     NotesNavHandlers(
@@ -202,9 +230,21 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
     onSettingsClick = null,
     onAddClick = null,
     onNoteClick = viewModel::onNoteClick,
+    onNoteLongClick = viewModel::onNoteLongClick,
     onNoteMenuAction = viewModel::onNoteMenuAction,
     onImageClick = viewModel::onImageClick,
     onTagSelected = viewModel::onTagSelected,
+    onSelectionCancel = viewModel::onSelectionCancel,
+    onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
+    onArchiveSelectedClick = viewModel::onArchiveSelectedClick,
+    onChangeColorClick = {
+      colorPickerDialogDispatcher.showDialog(
+        titleRes = R.string.acc_select_color,
+        colors = noteColorEngine.allColors(),
+        selectedIndex = 0,
+        onColorSelected = viewModel::applySelectedColor,
+      )
+    },
   )
 }
 

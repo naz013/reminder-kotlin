@@ -12,6 +12,7 @@ For deeper background, read (don't duplicate into this file):
 - `docs/app-overview.md` — full feature list and user-facing screens
 - `docs/architecture.md` — module inventory and dependency graph
 - `docs/adaptive-layouts.md` — tablet/desktop/foldable layout conventions (nav rail, two-pane, breakpoints)
+- `docs/multiselect.md` — long-press bulk-selection pattern (`Selectable`, `SelectionTopBar`, `SelectionOverlay`)
 - `rules and agents.md` — condensed architecture rules referenced by the prompt files in `.github/prompts/`
 
 ## Build & Test Commands
@@ -109,10 +110,16 @@ collects all of them into `startKoin {}`. Never call `GlobalContext.get()` outsi
 - New screens: Jetpack Compose + Material 3, stateless composables driven by a ViewModel exposing
   `StateFlow`/`LiveData`, connected via `collectAsStateWithLifecycle()`. Legacy XML/View screens may remain
   but shouldn't be extended. Reuse `ui-common` before adding new shared components.
+- Composable functions take `modifier: Modifier = Modifier` as their first parameter, before every other
+  parameter (required ones included) — matches the official Compose API guidelines and keeps call sites
+  consistent across the codebase.
 - No logic in Fragments, Activities, or Compose screens — they only render state and forward user actions
   to the ViewModel (`onSomeClick = { viewModel.onSomeClick() }`). Anything beyond that (business logic,
   branching, calls into use cases/repositories/DI singletons, formatting decisions) belongs in the
   ViewModel. UI classes should stay thin enough to read at a glance.
+- New `<string>`/`<plurals>` resources are appended at the end of `strings.xml` (before `</resources>`),
+  not inserted next to whatever existing entry looks topically related — keeps diffs additive-only and
+  merge conflicts rare. Translate into every `values-*/strings.xml` the app ships, appended the same way.
 - Logging only through the `Logger` interface (`logging-api`) — never `println`/`android.util.Log`.
 - Room Entity <-> domain-model mapping is mandatory at the `repository` boundary; domain models must stay
   free of Room/Gson annotations.

@@ -97,6 +97,7 @@ val featureNoteModule = module {
       get(),
       get(),
       get(),
+      get(),
     )
   }
   viewModel { (id: String) ->

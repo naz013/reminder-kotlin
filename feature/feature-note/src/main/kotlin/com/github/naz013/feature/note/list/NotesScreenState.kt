@@ -11,6 +11,7 @@ internal data class NotesScreenState(
   val isArchived: Boolean = false,
   val allTags: List<TagChipState> = emptyList(),
   val selectedTagId: String? = null,
+  val selectedCount: Int = 0,
 )
 
 sealed interface ListState {

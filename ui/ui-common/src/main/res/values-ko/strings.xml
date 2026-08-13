@@ -1117,4 +1117,19 @@
 
     <string name="type">유형</string>
     <string name="smart_lists">스마트 목록</string>
+    <string name="note_selected_count_one">메모 %1$d개 선택됨</string>
+    <string name="note_selected_count_other">메모 %1$d개 선택됨</string>
+    <string name="notes_delete_selected_permanently">%1$d개의 메모를 영구 삭제하시겠습니까?</string>
+    <string name="home">홈</string>
+    <string name="expand_navigation">탐색 펼치기</string>
+    <string name="collapse_navigation">탐색 접기</string>
+    <string name="todo">할 일</string>
+    <string name="todo_items">항목</string>
+    <string name="sign_in_with_google">Google 계정으로 로그인</string>
+    <string name="pro_public_holidays">- 캘린더에 공휴일 표시</string>
+    <string name="public_holidays">공휴일</string>
+    <string name="show_public_holidays">공휴일 표시</string>
+    <string name="public_holidays_country">국가</string>
+    <string name="public_holidays_locked_description">캘린더에 내 국가의 공휴일 표시 - Pro에서 사용 가능</string>
+    <string name="search_no_countries_found">국가를 찾을 수 없습니다</string>
 </resources>
