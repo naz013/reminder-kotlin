@@ -146,7 +146,7 @@ fun rememberPermissionRequesterRationale(): PermissionRequester {
       if (results.entries.isEmpty()) {
         return@rememberLauncherForActivityResult
       }
-      val (permission, isGranted) = results.entries.first()
+      val [permission, isGranted] = results.entries.first()
       requester.onSystemResult(permission, isGranted)
     }
   requester.launchSystemPrompt = { permission -> launcher.launch(arrayOf(permission)) }
