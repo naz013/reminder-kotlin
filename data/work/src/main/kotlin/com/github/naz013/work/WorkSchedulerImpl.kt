@@ -3,12 +3,14 @@ package com.github.naz013.work
 import android.content.Context
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.github.naz013.logging.Logger
 import com.github.naz013.workapi.ExistingWorkPolicy
 import com.github.naz013.workapi.PeriodicWorkRequest
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
 import com.github.naz013.workapi.WorkState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import java.util.concurrent.TimeUnit
@@ -17,10 +19,16 @@ import androidx.work.PeriodicWorkRequest as AndroidPeriodicWorkRequest
 class WorkSchedulerImpl(
   private val context: Context,
 ) : WorkScheduler {
-  private fun workManager(): WorkManager = WorkManager.getInstance(context)
+  // WorkManager.getInstance() throws IllegalStateException on devices where WorkManager
+  // failed to initialize (e.g. OEM Android 14 builds missing JobScheduler.forNamespace).
+  // Treated as absent rather than fatal so callers degrade instead of crashing.
+  private fun workManagerOrNull(): WorkManager? =
+    runCatching { WorkManager.getInstance(context) }
+      .onFailure { Logger.w("WorkScheduler", "WorkManager is unavailable: ${it.message}") }
+      .getOrNull()
 
   override fun enqueue(request: WorkRequest): String {
-    workManager().enqueue(request.toOneTimeWorkRequest())
+    workManagerOrNull()?.enqueue(request.toOneTimeWorkRequest())
     return request.tag
   }
 
@@ -29,28 +37,29 @@ class WorkSchedulerImpl(
     policy: ExistingWorkPolicy,
     request: WorkRequest,
   ): String {
-    workManager().enqueueUniqueWork(uniqueName, policy.toAndroidPolicy(), request.toOneTimeWorkRequest())
+    workManagerOrNull()?.enqueueUniqueWork(uniqueName, policy.toAndroidPolicy(), request.toOneTimeWorkRequest())
     return uniqueName
   }
 
   override fun enqueuePeriodic(request: PeriodicWorkRequest): String {
-    workManager().enqueue(request.toAndroidPeriodicWorkRequest())
+    workManagerOrNull()?.enqueue(request.toAndroidPeriodicWorkRequest())
     return request.tag
   }
 
   override fun cancelByTag(tag: String) {
-    workManager().cancelAllWorkByTag(tag)
+    workManagerOrNull()?.cancelAllWorkByTag(tag)
   }
 
   override fun cancelUniqueWork(uniqueName: String) {
-    workManager().cancelUniqueWork(uniqueName)
+    workManagerOrNull()?.cancelUniqueWork(uniqueName)
   }
 
   override fun observeUniqueWork(uniqueName: String): Flow<WorkState> =
-    workManager()
-      .getWorkInfosForUniqueWorkFlow(uniqueName)
-      .mapNotNull { it.firstOrNull() }
-      .map { it.toWorkState() }
+    workManagerOrNull()
+      ?.getWorkInfosForUniqueWorkFlow(uniqueName)
+      ?.mapNotNull { it.firstOrNull() }
+      ?.map { it.toWorkState() }
+      ?: flowOf(WorkState.Failed)
 
   private fun WorkRequest.toOneTimeWorkRequest(): OneTimeWorkRequest =
     OneTimeWorkRequest
