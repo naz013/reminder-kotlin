@@ -18,8 +18,8 @@ extensions.configure<ApplicationExtension> {
 
   defaultConfig {
     applicationId = "com.cray.software.justreminder"
-    versionCode = 352
-    versionName = "10.1.5"
+    versionCode = 353
+    versionName = "10.2.0"
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
