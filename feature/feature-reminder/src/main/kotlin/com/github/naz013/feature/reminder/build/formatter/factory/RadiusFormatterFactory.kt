@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.formatter.factory
 
 import android.content.Context
 import com.github.naz013.logic.reminder.ReminderPreferences
-import com.github.naz013.feature.reminder.util.DefaultRadiusFormatter
+import com.github.naz013.ui.map.DefaultRadiusFormatter
 
 class RadiusFormatterFactory(
   private val context: Context,

@@ -32,7 +32,6 @@ import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.settings.export.syncSettingsModule
 import com.elementary.tasks.settings.settingsModule
-import com.elementary.tasks.simplemap.simpleMapKoinModule
 import com.elementary.tasks.telephony.intentModule
 import com.github.naz013.feature.workflow.workflowModule
 import com.github.naz013.appwidgets.appWidgetsModule
@@ -46,6 +45,7 @@ import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.feature.reminder.featureReminderModule
 import com.github.naz013.ui.birthday.uiBirthdayModule
+import com.github.naz013.ui.map.uiMapModule
 import com.github.naz013.ui.note.uiNoteModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.holidays.holidaysModule
@@ -162,7 +162,7 @@ class ReminderApp :
           groupModule,
           groupDetailsModule,
           placeKoinModule,
-          simpleMapKoinModule,
+          uiMapModule,
           reviewsKoinModule,
           syncSettingsModule,
           settingsModule,

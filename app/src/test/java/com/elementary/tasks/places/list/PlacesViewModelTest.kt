@@ -5,7 +5,7 @@ import com.elementary.tasks.R
 import com.github.naz013.feature.reminder.util.BackupTool
 import com.elementary.tasks.mockDispatcherProvider
 import com.elementary.tasks.places.usecase.DeletePlaceUseCase
-import com.elementary.tasks.simplemap.MapStyle
+import com.github.naz013.ui.map.MapStyle
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentFactory

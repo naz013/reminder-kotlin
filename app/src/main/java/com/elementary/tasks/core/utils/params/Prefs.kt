@@ -5,7 +5,7 @@ import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.naz013.feature.reminder.util.LED
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.simplemap.MapConfig
+import com.github.naz013.ui.map.MapConfig
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.logic.schedule.WorkerNetworkType
 import java.util.Locale

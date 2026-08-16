@@ -22,9 +22,9 @@ import com.elementary.tasks.places.list.PlacesScreen
 import com.elementary.tasks.places.list.PlacesScreenState
 import com.elementary.tasks.places.list.PlacesViewModel
 import com.elementary.tasks.settings.rememberSendIntentResolver
-import com.elementary.tasks.simplemap.MapParams
-import com.elementary.tasks.simplemap.SimpleMapController
-import com.elementary.tasks.simplemap.SimpleMapView
+import com.github.naz013.ui.map.MapParams
+import com.github.naz013.ui.map.SimpleMapController
+import com.github.naz013.ui.map.SimpleMapView
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel

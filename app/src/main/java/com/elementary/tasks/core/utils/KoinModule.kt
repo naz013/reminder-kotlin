@@ -10,6 +10,5 @@ import org.koin.dsl.module
 val newUtilsModule = module {
   singleOf(::ImageLoader)
   factoryOf(::UriHelper)
-  factoryOf(::GeocoderTask)
   factory { VibrationPlayer(get<ContextProvider>().context) }
 }

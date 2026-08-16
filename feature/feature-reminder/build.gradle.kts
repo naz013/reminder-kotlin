@@ -38,6 +38,7 @@ dependencies {
   implementation(project(":ui:ui-tag"))
   implementation(project(":ui:ui-group"))
   implementation(project(":ui:ui-googletask"))
+  implementation(project(":ui:ui-map"))
   implementation(project(":ui:ui-notification-settings"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-schedule"))

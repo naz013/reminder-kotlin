@@ -1,6 +1,6 @@
 package com.github.naz013.feature.reminder.build.formatter.`object`
 
-import com.github.naz013.feature.reminder.util.DefaultRadiusFormatter
+import com.github.naz013.ui.map.DefaultRadiusFormatter
 import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.domain.Place
 

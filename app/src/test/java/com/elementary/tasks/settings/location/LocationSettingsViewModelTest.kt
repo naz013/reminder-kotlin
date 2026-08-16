@@ -2,7 +2,7 @@ package com.elementary.tasks.settings.location
 
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.simplemap.MapStyle
+import com.github.naz013.ui.map.MapStyle
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.TextProvider
 import com.github.naz013.platform.SystemInfo

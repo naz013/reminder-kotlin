@@ -236,6 +236,7 @@ dependencies {
   implementation(project(":ui:ui-birthday"))
   implementation(project(":ui:ui-googletask"))
   implementation(project(":ui:ui-group"))
+  implementation(project(":ui:ui-map"))
   implementation(project(":ui:ui-note"))
   implementation(project(":ui:ui-notification-settings"))
   implementation(project(":ui:ui-reminder"))
@@ -291,7 +292,6 @@ dependencies {
   implementation(libs.play.services.location)
   implementation(libs.play.services.maps)
   implementation(libs.play.services.auth)
-  implementation(libs.maps.compose)
 
   "freeImplementation"(libs.ads.mobile.sdk)
   "freeImplementation"(libs.user.messaging.platform)

@@ -27,6 +27,7 @@ import com.github.naz013.feature.reminder.build.quickstart.QuickStartOption
 import com.github.naz013.feature.reminder.build.selectordialog.BuilderSelectorSheet
 import com.github.naz013.feature.reminder.build.selectordialog.rememberSelectorDialogDataHolder
 import com.github.naz013.feature.reminder.build.valuedialog.ValueEditorSheet
+import com.github.naz013.feature.reminder.build.valuedialog.editor.MapEditorScreen
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.rememberUriToAttachmentFileAdapter
 import com.github.naz013.feature.reminder.recur.RecurHelpScreen
 import com.github.naz013.datecalc.DateTimeManager
@@ -47,15 +48,9 @@ fun EntryProviderScope<NavKey>.buildReminderEntries(
   backStack: MutableList<NavKey>,
   rememberContactPhonePicker: @Composable () -> ((onResult: (String) -> Unit) -> Unit),
   rememberMultipleUriPicker: @Composable () -> ((onResult: (List<Uri>) -> Unit) -> Unit),
-  mapEditorContent: @Composable (
-    builderItem: BuilderItem<Place>,
-    dateTimeManager: DateTimeManager,
-    onDismissRequest: () -> Unit,
-    onValueChange: (BuilderItem<*>) -> Unit,
-  ) -> Unit,
 ) {
   entry<BuildReminderNavKey.Main> { key ->
-    MainEntry(key, backStack, rememberContactPhonePicker, rememberMultipleUriPicker, mapEditorContent)
+    MainEntry(key, backStack, rememberContactPhonePicker, rememberMultipleUriPicker)
   }
   entry<BuildReminderNavKey.Help> {
     ReminderHelpScreen(onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() })
@@ -84,12 +79,6 @@ private fun MainEntry(
   backStack: MutableList<NavKey>,
   rememberContactPhonePicker: @Composable () -> ((onResult: (String) -> Unit) -> Unit),
   rememberMultipleUriPicker: @Composable () -> ((onResult: (List<Uri>) -> Unit) -> Unit),
-  mapEditorContent: @Composable (
-    builderItem: BuilderItem<Place>,
-    dateTimeManager: DateTimeManager,
-    onDismissRequest: () -> Unit,
-    onValueChange: (BuilderItem<*>) -> Unit,
-  ) -> Unit,
 ) {
   // Passed as the single Main key object, not 6 loose positional values: Koin's parameter
   // resolution matches by KClass, and two same-typed values (id: String, deepLinkText: String?)
@@ -224,11 +213,11 @@ private fun MainEntry(
     // ValueEditorSheet's AppModalBottomSheet (see MapEditorScreen's kdoc).
     if (item is ArrivingCoordinatesBuilderItem || item is LeavingCoordinatesBuilderItem) {
       @Suppress("UNCHECKED_CAST")
-      mapEditorContent(
-        item as BuilderItem<Place>,
-        dateTimeManager,
-        { viewModel.onEditDialogDismissed() },
-        { updated -> viewModel.updateValue(position, updated) },
+      MapEditorScreen(
+        builderItem = item as BuilderItem<Place>,
+        dateTimeManager = dateTimeManager,
+        onDismissRequest = { viewModel.onEditDialogDismissed() },
+        onValueChange = { updated -> viewModel.updateValue(position, updated) },
       )
     } else {
       ValueEditorSheet(

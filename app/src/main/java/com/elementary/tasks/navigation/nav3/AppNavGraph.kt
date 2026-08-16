@@ -41,9 +41,6 @@ import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.build.buildReminderEntries
-import com.elementary.tasks.reminder.build.valuedialog.editor.MapEditorScreen
-import com.elementary.tasks.reminder.preview.EmbeddedMap
-import com.elementary.tasks.reminder.preview.FullscreenMapEntry
 import com.github.naz013.feature.reminder.lists.removed.remindersArchiveEntries
 import com.github.naz013.feature.reminder.preview.reminderPreviewEntries
 import com.elementary.tasks.settings.rememberSendIntentResolver
@@ -188,14 +185,6 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           backStack = backStack,
           rememberContactPhonePicker = { rememberContactPhonePicker() },
           rememberMultipleUriPicker = { rememberMultipleUriPicker() },
-          mapEditorContent = { builderItem, dateTimeManager, onDismissRequest, onValueChange ->
-            MapEditorScreen(
-              builderItem = builderItem,
-              dateTimeManager = dateTimeManager,
-              onDismissRequest = onDismissRequest,
-              onValueChange = onValueChange,
-            )
-          },
         )
         todoEditEntries(
           backStack = backStack,
@@ -212,8 +201,6 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenGoogleTask = { taskId ->
             appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = taskId))
           },
-          embeddedMapContent = { places, onMapClick -> EmbeddedMap(places = places, onMapClick = onMapClick) },
-          fullscreenMapEntryContent = { key, entryBackStack -> FullscreenMapEntry(key, entryBackStack) },
         )
         remindersArchiveEntries(
           backStack = backStack,

@@ -11,7 +11,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.ui.common.R
-import com.github.naz013.ui.reminder.UiReminderPlace
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
@@ -28,8 +27,6 @@ fun EntryProviderScope<NavKey>.reminderPreviewEntries(
   onOpenIntent: (intent: Intent, title: String) -> Unit,
   onOpenNote: (noteId: String) -> Unit,
   onOpenGoogleTask: (taskId: String) -> Unit,
-  embeddedMapContent: @Composable (places: List<UiReminderPlace>, onMapClick: () -> Unit) -> Unit,
-  fullscreenMapEntryContent: @Composable (key: ReminderPreviewNavKey.FullscreenMap, backStack: MutableList<NavKey>) -> Unit,
 ) {
   entry<ReminderPreviewNavKey.Preview> { key ->
     PreviewEntry(
@@ -41,10 +38,9 @@ fun EntryProviderScope<NavKey>.reminderPreviewEntries(
       onOpenIntent,
       onOpenNote,
       onOpenGoogleTask,
-      embeddedMapContent,
     )
   }
-  entry<ReminderPreviewNavKey.FullscreenMap> { key -> fullscreenMapEntryContent(key, backStack) }
+  entry<ReminderPreviewNavKey.FullscreenMap> { key -> FullscreenMapEntry(key, backStack) }
 }
 
 @Composable
@@ -57,7 +53,6 @@ private fun PreviewEntry(
   onOpenIntent: (intent: Intent, title: String) -> Unit,
   onOpenNote: (noteId: String) -> Unit,
   onOpenGoogleTask: (taskId: String) -> Unit,
-  embeddedMapContent: @Composable (places: List<UiReminderPlace>, onMapClick: () -> Unit) -> Unit,
 ) {
   val viewModel = koinViewModel<PreviewReminderViewModel> { parametersOf(key.id) }
 
@@ -132,7 +127,7 @@ private fun PreviewEntry(
     onCalendarOpenClick = { viewModel.onOpenCalendarClicked(it.id) },
     onCalendarRemoveClick = { viewModel.deleteEvent(it) },
     mapContent = {
-      embeddedMapContent(state.places) { backStack.add(ReminderPreviewNavKey.FullscreenMap(key.id)) }
+      EmbeddedMap(state.places) { backStack.add(ReminderPreviewNavKey.FullscreenMap(key.id)) }
     },
     adsContent = adsContent,
   )

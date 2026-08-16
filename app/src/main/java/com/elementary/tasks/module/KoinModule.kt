@@ -14,6 +14,7 @@ import com.elementary.tasks.module.platform.DateTimePreferencesImpl
 import com.elementary.tasks.module.platform.InstallReferrerReader
 import com.elementary.tasks.module.sync.SyncDataConverterImpl
 import com.elementary.tasks.module.uicommon.AppPreferencesImpl
+import com.elementary.tasks.module.uimap.MapPreferencesImpl
 import com.elementary.tasks.module.uicommon.AuthPreferencesImpl
 import com.elementary.tasks.module.uicommon.FontApiImpl
 import com.elementary.tasks.module.uicommon.LocalePreferencesImpl
@@ -32,6 +33,7 @@ import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCase
 import com.github.naz013.logic.schedule.SchedulePreferences
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.ui.common.font.FontApi
+import com.github.naz013.ui.map.MapPreferences
 import com.github.naz013.ui.common.locale.LocalePreferences
 import com.github.naz013.ui.common.login.AuthPreferences
 import com.github.naz013.ui.common.preferences.AppPreferences
@@ -76,4 +78,7 @@ val libModule = module {
 
   // location api
   factory { LocationTrackingApiImpl(get()) as LocationTrackingApi }
+
+  // ui-map
+  factory { MapPreferencesImpl(get()) as MapPreferences }
 }
