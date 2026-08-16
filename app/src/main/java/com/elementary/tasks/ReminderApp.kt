@@ -126,7 +126,14 @@ class ReminderApp :
     startKoin {
       logger(logger)
       androidContext(this@ReminderApp)
-      workManagerFactory()
+      try {
+        workManagerFactory()
+      } catch (t: Throwable) {
+        // Some OEM Android 14 builds report SDK_INT 34 but ship a framework.jar missing
+        // JobScheduler.forNamespace(), which WorkManager calls unconditionally on init.
+        // Swallow it so the rest of DI still wires up; WorkScheduler falls back to no-ops.
+        com.github.naz013.logging.Logger.e("App", "Failed to initialize WorkManager", t)
+      }
       modules(
         listOf(
           utilModule,
