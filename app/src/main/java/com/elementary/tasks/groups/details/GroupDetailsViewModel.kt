@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.ui.group.UiGroupListAdapter
 import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitleFormatter
 import com.github.naz013.logic.group.DeleteGroupUseCase
-import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
+import com.github.naz013.feature.reminder.lists.data.UiReminderListAdapter
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit

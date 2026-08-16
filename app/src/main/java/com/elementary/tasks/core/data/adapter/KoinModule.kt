@@ -1,8 +1,8 @@
 package com.elementary.tasks.core.data.adapter
 
-import com.elementary.tasks.core.data.adapter.note.UiNoteListAdapter
 import com.elementary.tasks.core.data.adapter.place.UiPlaceListAdapter
-import com.elementary.tasks.core.data.adapter.preset.UiPresetListAdapter
+import com.github.naz013.feature.reminder.UiReminderCommonAdapter
+import com.github.naz013.feature.reminder.UiReminderPlaceAdapter
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.ui.group.UiGroupListAdapter
 import org.koin.core.module.dsl.factoryOf
@@ -16,9 +16,5 @@ val adapterModule = module {
 
   factory { UiGroupListAdapter(get()) }
 
-  factory { UiNoteListAdapter(get(), get(), get(), get()) }
-
   factoryOf(::UiPlaceListAdapter)
-
-  factoryOf(::UiPresetListAdapter)
 }

@@ -2,7 +2,7 @@ package com.elementary.tasks.home.agenda
 
 import com.elementary.tasks.R
 import com.github.naz013.ui.birthday.UiBirthdayListAdapter
-import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
+import com.github.naz013.feature.reminder.lists.data.UiReminderListAdapter
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday

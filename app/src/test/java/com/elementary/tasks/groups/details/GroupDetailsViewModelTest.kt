@@ -2,17 +2,17 @@ package com.elementary.tasks.groups.details
 
 import com.elementary.tasks.BaseTest
 import com.github.naz013.ui.group.UiGroupListAdapter
-import com.elementary.tasks.core.data.ui.UiTextElement
+import com.github.naz013.ui.common.text.UiTextElement
 import com.github.naz013.ui.group.UiGroupList
-import com.elementary.tasks.core.text.UiTextFormat
+import com.github.naz013.ui.common.text.UiTextFormat
 import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitleFormatter
 import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.elementary.tasks.mockDispatcherProvider
-import com.elementary.tasks.reminder.lists.data.UiReminderList
-import com.elementary.tasks.reminder.lists.data.UiReminderListActions
-import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
-import com.elementary.tasks.reminder.lists.data.UiReminderListState
+import com.github.naz013.feature.reminder.lists.data.UiReminderList
+import com.github.naz013.feature.reminder.lists.data.UiReminderListActions
+import com.github.naz013.feature.reminder.lists.data.UiReminderListAdapter
+import com.github.naz013.feature.reminder.lists.data.UiReminderListState
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderSchedule

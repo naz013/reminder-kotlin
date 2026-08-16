@@ -35,7 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
-import com.elementary.tasks.reminder.build.BuilderItem
+import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Place
 import kotlinx.coroutines.launch
@@ -46,7 +46,7 @@ private val DISMISS_DRAG_THRESHOLD = 120.dp
 
 /**
  * Bottom-sheet-styled, swipe-to-dismiss host for [MapValueEditor], used instead of
- * [com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet]'s `AppModalBottomSheet` for
+ * [com.github.naz013.feature.reminder.build.valuedialog.ValueEditorSheet]'s `AppModalBottomSheet` for
  * the Arriving/Leaving coordinates editors - that composable renders in a separate Compose
  * `Popup`/`Dialog` window, so a manually-dragged sheet is used here instead to keep the map in the
  * reminder builder's own composition (same window, no Popup), while still supporting

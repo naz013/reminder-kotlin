@@ -2,14 +2,14 @@ package com.elementary.tasks.home.agenda
 
 import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
 import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
-import com.elementary.tasks.core.data.ui.UiTextElement
-import com.elementary.tasks.core.text.UiTextFormat
+import com.github.naz013.ui.common.text.UiTextElement
+import com.github.naz013.ui.common.text.UiTextFormat
 import com.elementary.tasks.mockDispatcherProvider
-import com.elementary.tasks.reminder.lists.data.UiReminderListActions
-import com.elementary.tasks.reminder.lists.data.UiReminderListState
-import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.feature.reminder.lists.data.UiReminderListActions
+import com.github.naz013.feature.reminder.lists.data.UiReminderListState
+import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
+import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.provideBirthdayDateCalculator
 import com.github.naz013.domain.Birthday

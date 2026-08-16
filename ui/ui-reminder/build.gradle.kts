@@ -9,6 +9,7 @@ android {
 dependencies {
   implementation(project(":core:domain"))
   implementation(project(":core:logging-api"))
+  implementation(project(":core:analytics"))
   implementation(project(":ui:ui-common"))
   implementation(project(":core:platform-common"))
 
@@ -16,6 +17,7 @@ dependencies {
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.biometric.compose)
   implementation(libs.material)
+  implementation(libs.play.services.maps)
 
   implementation(libs.threetenbp)
 

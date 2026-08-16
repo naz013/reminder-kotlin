@@ -2,8 +2,8 @@ package com.elementary.tasks.core.utils
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.build.preset.BuilderPresetsGenerateUseCase
-import com.elementary.tasks.reminder.build.preset.DefaultPresetsGenerateUseCase
+import com.github.naz013.feature.reminder.build.preset.BuilderPresetsGenerateUseCase
+import com.github.naz013.feature.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset

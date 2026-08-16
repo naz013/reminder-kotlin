@@ -9,8 +9,8 @@ import com.elementary.tasks.home.agenda.AgendaMenuAction
 import com.elementary.tasks.home.agenda.UiAgendaBirthday
 import com.elementary.tasks.home.agenda.UiAgendaItem
 import com.elementary.tasks.home.agenda.UiAgendaReminder
-import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
+import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.feature.common.capitalizeFirstLetter

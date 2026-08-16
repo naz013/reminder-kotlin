@@ -19,8 +19,8 @@ import com.elementary.tasks.calendar.dayview.WeekViewViewModel
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.github.naz013.ui.common.livedata.ObserveEvent
-import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
+import com.github.naz013.feature.reminder.build.BuildReminderNavKey
+import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher

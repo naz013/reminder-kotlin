@@ -1,7 +1,7 @@
 package com.elementary.tasks.groups.details
 
 import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
-import com.elementary.tasks.reminder.lists.data.UiReminderList
+import com.github.naz013.feature.reminder.lists.data.UiReminderList
 
 data class GroupDetailsState(
   val isLoading: Boolean = true,

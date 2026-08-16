@@ -30,12 +30,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.ui.UiTextElement
-import com.elementary.tasks.core.text.UiTextFormat
+import com.github.naz013.ui.common.text.UiTextElement
+import com.github.naz013.ui.common.text.UiTextFormat
 import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
-import com.elementary.tasks.reminder.lists.data.UiReminderList
-import com.elementary.tasks.reminder.lists.data.UiReminderListActions
-import com.elementary.tasks.reminder.lists.data.UiReminderListState
+import com.github.naz013.feature.reminder.lists.data.UiReminderList
+import com.github.naz013.feature.reminder.lists.data.UiReminderListActions
+import com.github.naz013.feature.reminder.lists.data.UiReminderListState
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton

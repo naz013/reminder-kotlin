@@ -1,12 +1,13 @@
 package com.elementary.tasks.module
 
 import com.elementary.tasks.module.analytics.AnalyticsStateProviderImpl
-import com.elementary.tasks.module.analytics.ReminderAnalyticsTracker
 import com.elementary.tasks.module.appwidgets.AppWidgetPreferencesImpl
 import com.elementary.tasks.module.appwidgets.NoteWidgetPreferencesImpl
 import com.elementary.tasks.module.featuregoogletask.GoogleTasksPreferencesImpl
 import com.elementary.tasks.module.locationapi.LocationTrackingApiImpl
+import com.elementary.tasks.module.logicreminder.AppReminderNotifier
 import com.elementary.tasks.module.logicreminder.ReminderPreferencesImpl
+import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCaseImpl
 import com.elementary.tasks.module.logicschedule.SchedulePreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
 import com.elementary.tasks.module.platform.DateTimePreferencesImpl
@@ -25,7 +26,9 @@ import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
 import com.github.naz013.location.LocationTrackingApi
+import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.logic.reminder.ReminderPreferences
+import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCase
 import com.github.naz013.logic.schedule.SchedulePreferences
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.ui.common.font.FontApi
@@ -55,7 +58,6 @@ val libModule = module {
 
   // analytics
   single { initializeAnalytics(get(), get()) }
-  factory { ReminderAnalyticsTracker(get()) }
   factory { AnalyticsStateProviderImpl(get()) as AnalyticsStateProvider }
 
   // sync
@@ -69,6 +71,8 @@ val libModule = module {
 
   // logic reminder
   factory { ReminderPreferencesImpl(get()) as ReminderPreferences }
+  factory { AppReminderNotifier(get(), get(), get(), get()) as ReminderNotifier }
+  factory { SnoozeReminderUseCaseImpl(get(), get(), get(), get(), get(), get()) as SnoozeReminderUseCase }
 
   // location api
   factory { LocationTrackingApiImpl(get()) as LocationTrackingApi }

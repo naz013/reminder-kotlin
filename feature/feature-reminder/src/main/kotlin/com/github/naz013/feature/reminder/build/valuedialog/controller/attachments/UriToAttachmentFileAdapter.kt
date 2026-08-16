@@ -1,0 +1,60 @@
+package com.github.naz013.feature.reminder.build.valuedialog.controller.attachments
+
+import android.net.Uri
+import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
+import com.github.naz013.ui.common.R
+import com.github.naz013.feature.reminder.util.UriHelper
+import com.github.naz013.logging.Logger
+import org.koin.compose.koinInject
+
+class UriToAttachmentFileAdapter(
+  private val uriHelper: UriHelper,
+) {
+  operator fun invoke(uri: Uri): AttachmentFile {
+    Logger.d(TAG, "invoke: $uri")
+    val type = getAttachmentType(uriHelper.getMimeType(uri) ?: "")
+    val fileName =
+      try {
+        uriHelper.getFileName(uri) ?: "NA"
+      } catch (e: Throwable) {
+        Logger.d(TAG, "get fileName: $e")
+        uri.toString()
+      }
+    Logger.d(TAG, "fileName: $fileName")
+    return AttachmentFile(
+      uri = uri,
+      name = fileName,
+      icon = getIcon(type),
+      type = type,
+    )
+  }
+
+  private fun getAttachmentType(type: String): AttachmentType {
+    Logger.d(TAG, "getAttachmentType: $type")
+    return when {
+      type.contains("gif") -> AttachmentType.GIF
+      type.contains("image") -> AttachmentType.IMAGE
+      type.contains("video") -> AttachmentType.VIDEO
+      type.contains("audio") -> AttachmentType.AUDIO
+      else -> AttachmentType.FILE
+    }
+  }
+
+  @DrawableRes
+  private fun getIcon(type: AttachmentType): Int =
+    when (type) {
+      AttachmentType.IMAGE -> R.drawable.ic_fluent_image
+      AttachmentType.VIDEO -> R.drawable.ic_fluent_movies_and_tv
+      AttachmentType.AUDIO -> R.drawable.ic_builder_melody
+      AttachmentType.GIF -> R.drawable.ic_fluent_gif
+      else -> R.drawable.ic_fluent_document
+    }
+
+  companion object {
+    private const val TAG = "UriToAttachmentFileAdapter"
+  }
+}
+
+@Composable
+fun rememberUriToAttachmentFileAdapter(): UriToAttachmentFileAdapter = koinInject()

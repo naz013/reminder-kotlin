@@ -44,6 +44,7 @@ import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.birthday.featureBirthdayModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.note.featureNoteModule
+import com.github.naz013.feature.reminder.featureReminderModule
 import com.github.naz013.ui.birthday.uiBirthdayModule
 import com.github.naz013.ui.note.uiNoteModule
 import com.github.naz013.files.fileModule
@@ -180,6 +181,7 @@ class ReminderApp :
           uiGoogleTaskModule,
           logicScheduleModule,
           logicReminderModule,
+          featureReminderModule,
           uiTagModule,
           logicTagModule,
         ),

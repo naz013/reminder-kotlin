@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.elementary.tasks.reminder.build.BuilderItem
+import com.github.naz013.feature.reminder.build.BuilderItem
 import com.elementary.tasks.simplemap.MapMarker
 import com.elementary.tasks.simplemap.MapParams
 import com.elementary.tasks.simplemap.SimpleMapView

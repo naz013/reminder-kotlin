@@ -2,7 +2,7 @@ package com.elementary.tasks.core.services.action.birthday
 
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.LED
+import com.github.naz013.feature.reminder.util.LED
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.TextProvider
 
@@ -20,9 +20,9 @@ class BirthdayDataProvider(
     }
 
   fun getLedColor(): Int {
-    var ledColor = LED.getLED(prefs.ledColor)
+    var ledColor = LED.getLED(prefs.ledColor, BuildParams.isPro)
     if (BuildParams.isPro && !prefs.isBirthdayGlobalEnabled) {
-      ledColor = LED.getLED(prefs.birthdayLedColor)
+      ledColor = LED.getLED(prefs.birthdayLedColor, BuildParams.isPro)
     }
     return ledColor
   }

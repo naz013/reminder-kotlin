@@ -17,8 +17,8 @@ import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.groups.details.GroupDetailsScreen
 import com.elementary.tasks.groups.details.GroupDetailsState
 import com.elementary.tasks.groups.details.GroupDetailsViewModel
-import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
+import com.github.naz013.feature.reminder.build.BuildReminderNavKey
+import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.group.GroupsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.livedata.ObserveEvent
@@ -27,7 +27,7 @@ import org.koin.core.parameter.parametersOf
 
 /**
  * Registers the group details entry. This stays in `app` rather than `feature-group` because it
- * reuses [com.elementary.tasks.reminder.lists.data.UiReminderList] and navigates into the
+ * reuses [com.github.naz013.feature.reminder.lists.data.UiReminderList] and navigates into the
  * reminder-build/reminder-preview features, none of which are extracted yet.
  */
 fun EntryProviderScope<NavKey>.groupDetailsEntries(backStack: MutableList<NavKey>) {

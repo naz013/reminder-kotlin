@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.utils
 
-import com.elementary.tasks.core.utils.io.UriHelper
+import com.github.naz013.feature.reminder.util.UriHelper
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.ui.notification.settings.VibrationPlayer
 import org.koin.core.module.dsl.factoryOf

@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.logic.birthday.BirthdayQueryFilter
 import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
 import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
-import com.elementary.tasks.reminder.lists.filter.query.ReminderV2QueryFilterInstance
-import com.elementary.tasks.reminder.scheduling.usecase.SkipReminderUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.ToggleReminderStateUseCase
-import com.elementary.tasks.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.feature.reminder.lists.filter.query.ReminderV2QueryFilterInstance
+import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
+import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Tag

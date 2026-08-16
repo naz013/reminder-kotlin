@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils.params
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
-import com.elementary.tasks.core.utils.LED
+import com.github.naz013.feature.reminder.util.LED
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.simplemap.MapConfig
 import com.github.naz013.domain.font.FontParams

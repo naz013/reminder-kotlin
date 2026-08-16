@@ -31,17 +31,24 @@ import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.calendar.monthview.calendarEntries
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
+import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
+import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
 import com.elementary.tasks.groups.groupDetailsEntries
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
 import com.elementary.tasks.places.placesEntries
 import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
-import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.elementary.tasks.reminder.build.buildReminderEntries
-import com.elementary.tasks.reminder.lists.removed.remindersArchiveEntries
-import com.elementary.tasks.reminder.preview.reminderPreviewEntries
-import com.elementary.tasks.reminder.todo.todoEditEntries
+import com.github.naz013.feature.reminder.build.BuildReminderNavKey
+import com.github.naz013.feature.reminder.build.buildReminderEntries
+import com.elementary.tasks.reminder.build.valuedialog.editor.MapEditorScreen
+import com.elementary.tasks.reminder.preview.EmbeddedMap
+import com.elementary.tasks.reminder.preview.FullscreenMapEntry
+import com.github.naz013.feature.reminder.lists.removed.remindersArchiveEntries
+import com.github.naz013.feature.reminder.preview.reminderPreviewEntries
+import com.elementary.tasks.settings.rememberSendIntentResolver
+import com.elementary.tasks.share.rememberFileIntentSender
+import com.github.naz013.feature.reminder.todo.todoEditEntries
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.exportEntries
 import com.elementary.tasks.settings.location.locationEntries
@@ -89,6 +96,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val appNavBridge = rememberAppNavBridge()
   val phoneCaller = rememberPhoneCaller()
   val smsSender = rememberSmsSender()
+  val fileIntentSender = rememberFileIntentSender()
+  val intentResolver = rememberSendIntentResolver()
   val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
   val viewModel = koinViewModel<AppNavGraphViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -175,11 +184,41 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           backStack = backStack,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) }
         )
-        buildReminderEntries(backStack)
-        todoEditEntries(backStack)
+        buildReminderEntries(
+          backStack = backStack,
+          rememberContactPhonePicker = { rememberContactPhonePicker() },
+          rememberMultipleUriPicker = { rememberMultipleUriPicker() },
+          mapEditorContent = { builderItem, dateTimeManager, onDismissRequest, onValueChange ->
+            MapEditorScreen(
+              builderItem = builderItem,
+              dateTimeManager = dateTimeManager,
+              onDismissRequest = onDismissRequest,
+              onValueChange = onValueChange,
+            )
+          },
+        )
+        todoEditEntries(
+          backStack = backStack,
+          navigateBeyondBackStack = { key -> appNavBridge.navigate(key) },
+        )
         calendarEntries(backStack)
-        reminderPreviewEntries(backStack)
-        remindersArchiveEntries(backStack)
+        reminderPreviewEntries(
+          backStack = backStack,
+          navigateBeyondBackStack = { keys -> appNavBridge.navigate(*keys.toTypedArray()) },
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.ReminderPreview) },
+          onShareFile = { title, file -> fileIntentSender.send(title, file) },
+          onOpenIntent = { intent, title -> intentResolver.resolve(intent, title) },
+          onOpenNote = { noteId -> appNavBridge.navigate(NotesNavKey.List, NotesNavKey.Preview(noteId)) },
+          onOpenGoogleTask = { taskId ->
+            appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = taskId))
+          },
+          embeddedMapContent = { places, onMapClick -> EmbeddedMap(places = places, onMapClick = onMapClick) },
+          fullscreenMapEntryContent = { key, entryBackStack -> FullscreenMapEntry(key, entryBackStack) },
+        )
+        remindersArchiveEntries(
+          backStack = backStack,
+          navigateBeyondBackStack = { key -> appNavBridge.navigate(key) },
+        )
         settingsEntries(backStack)
         securityEntries(backStack)
         locationEntries(backStack)
