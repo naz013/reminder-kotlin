@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import com.elementary.tasks.core.services.alarm.AlarmReceiver
 import com.elementary.tasks.core.services.event.AutoBackupEventTask
@@ -254,11 +255,30 @@ class JobScheduler(
         flags = PendingIntent.FLAG_CANCEL_CURRENT,
         ignoreIn13 = false,
       )
-    systemServiceProvider.provideAlarmManager()?.setExactAndAllowWhileIdle(
-      AlarmManager.RTC_WAKEUP,
-      millis,
-      pendingIntent,
-    )
+    val alarmManager = systemServiceProvider.provideAlarmManager()
+    if (alarmManager == null) {
+      Logger.e(TAG, "Cannot schedule alarm for action=$action: AlarmManager is unavailable")
+      return
+    }
+    try {
+      if (canScheduleExactAlarms(alarmManager)) {
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
+      } else {
+        Logger.w(TAG, "Exact alarms are not permitted, scheduling an inexact alarm for action=$action instead")
+        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
+      }
+    } catch (e: SecurityException) {
+      Logger.e(TAG, "Failed to schedule exact alarm for action=$action, falling back to an inexact alarm", e)
+      alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
+    }
+  }
+
+  private fun canScheduleExactAlarms(alarmManager: AlarmManager): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      alarmManager.canScheduleExactAlarms()
+    } else {
+      true
+    }
   }
 
   private fun cancelReminder(uuId: String) {
