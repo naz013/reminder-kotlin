@@ -6,15 +6,16 @@ import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
-import com.elementary.tasks.settings.rememberSendEmailResolver
 import com.elementary.tasks.telephony.rememberApplicationLauncher
 import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
 import com.elementary.tasks.telephony.rememberUrlLauncher
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.reminder.dialog.ReminderActionScreen
+import com.github.naz013.feature.settings.rememberSendEmailResolver
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.Navigator
@@ -31,7 +32,7 @@ class ReminderActionActivity : ComposeActivity() {
   override fun ActivityContent() {
     val phoneCaller = rememberPhoneCaller()
     val smsSender = rememberSmsSender()
-    val sendEmailResolver = rememberSendEmailResolver()
+    val sendEmailResolver = rememberSendEmailResolver(BuildConfig.APPLICATION_ID)
     val applicationLauncher = rememberApplicationLauncher()
     val urlLauncher = rememberUrlLauncher()
     ReminderActionScreen(

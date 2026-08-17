@@ -7,4 +7,5 @@ class BuildInfoImpl : BuildInfo {
   override val isPro: Boolean = BuildConfig.IS_PRO
   override val isDebug: Boolean = BuildConfig.DEBUG
   override val applicationId: String = BuildConfig.APPLICATION_ID
+  override val buildDate: String = BuildConfig.BUILD_DATE
 }

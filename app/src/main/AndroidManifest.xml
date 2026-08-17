@@ -206,16 +206,6 @@
         </receiver>
 
         <receiver
-            android:name=".settings.calendar.GoogleCalendarReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PROVIDER_CHANGED"/>
-                <data android:scheme="content"/>
-                <data android:host="com.android.calendar"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver
             android:name=".core.services.BirthdayActionReceiver"
             android:exported="false" />
         <receiver

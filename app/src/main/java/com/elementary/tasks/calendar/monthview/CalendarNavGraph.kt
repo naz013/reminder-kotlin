@@ -21,7 +21,7 @@ import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
-import com.elementary.tasks.settings.SettingsNavKey
+import com.github.naz013.feature.settings.SettingsNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel

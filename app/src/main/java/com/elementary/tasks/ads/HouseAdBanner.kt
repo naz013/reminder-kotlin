@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elementary.tasks.R
-import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
+import com.github.naz013.feature.settings.proversion.rememberGooglePlayMarketLauncher
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.ProBuyClickedEvent
 import com.github.naz013.platform.SystemInfo

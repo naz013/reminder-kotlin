@@ -228,6 +228,7 @@ dependencies {
   implementation(project(":feature:feature-tags"))
   implementation(project(":feature:feature-insights"))
   implementation(project(":feature:feature-workflow"))
+  implementation(project(":feature:feature-settings"))
   implementation(project(":extensions:localbackup"))
 
   implementation(project(":core:platform-common"))

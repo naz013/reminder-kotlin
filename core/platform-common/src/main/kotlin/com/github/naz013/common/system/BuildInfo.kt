@@ -4,4 +4,5 @@ interface BuildInfo {
   val isPro: Boolean
   val isDebug: Boolean
   val applicationId: String
+  val buildDate: String
 }

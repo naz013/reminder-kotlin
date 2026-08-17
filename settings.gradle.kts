@@ -88,6 +88,7 @@ include(":feature:feature-reminder")
 include(":feature:feature-tags")
 include(":feature:feature-insights")
 include(":feature:feature-workflow")
+include(":feature:feature-settings")
 
 // extensions - cross-feature, flavor/runtime-gated additions app pulls in as a unit
 include(":extensions:appwidgets")

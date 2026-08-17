@@ -1,10 +1,11 @@
 package com.elementary.tasks.eventaction
 
 import androidx.compose.runtime.Composable
+import com.elementary.tasks.BuildConfig
 import com.github.naz013.ui.common.permission.PermissionRequester
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
-import com.elementary.tasks.settings.SendEmailResolver
-import com.elementary.tasks.settings.rememberSendEmailResolver
+import com.github.naz013.feature.settings.SendEmailResolver
+import com.github.naz013.feature.settings.rememberSendEmailResolver
 import com.elementary.tasks.telephony.ApplicationLauncher
 import com.elementary.tasks.telephony.PhoneCaller
 import com.elementary.tasks.telephony.SmsSender
@@ -67,7 +68,7 @@ fun rememberEventActionDispatcher(): EventActionDispatcher {
   return EventActionDispatcherImpl(
     applicationLauncher = rememberApplicationLauncher(),
     urlLauncher = rememberUrlLauncher(),
-    emailResolver = rememberSendEmailResolver(),
+    emailResolver = rememberSendEmailResolver(BuildConfig.APPLICATION_ID),
     phoneCaller = rememberPhoneCaller(),
     smsSender = rememberSmsSender(),
     permissionRequester = rememberPermissionRequesterRationale(),

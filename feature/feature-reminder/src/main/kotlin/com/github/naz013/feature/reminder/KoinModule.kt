@@ -36,6 +36,7 @@ import com.github.naz013.feature.reminder.build.preset.BuilderPresetToBiAdapter
 import com.github.naz013.feature.reminder.build.preset.BuilderPresetsGenerateUseCase
 import com.github.naz013.feature.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.github.naz013.feature.reminder.build.preset.ManagePresetsViewModel
+import com.github.naz013.feature.reminder.settings.RemindersSettingsViewModel
 import com.github.naz013.feature.reminder.build.preset.PresetInitProcessor
 import com.github.naz013.feature.reminder.build.preset.RecurParamsToBiAdapter
 import com.github.naz013.feature.reminder.build.preset.primitive.PrimitiveProtocol
@@ -93,6 +94,7 @@ val featureReminderModule = module {
   factory { CreateReminderActionScreenStateUseCase(get(), get(), get(), get()) }
 
   viewModelOf(::RemindersArchiveViewModel)
+  viewModelOf(::RemindersSettingsViewModel)
 
   viewModel { (id: String) ->
     PreviewReminderViewModel(

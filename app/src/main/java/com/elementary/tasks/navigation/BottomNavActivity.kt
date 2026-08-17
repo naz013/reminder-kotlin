@@ -23,8 +23,8 @@ import com.github.naz013.feature.note.NotesNavKey
 import com.elementary.tasks.places.PlacesNavKey
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
-import com.elementary.tasks.settings.SettingsNavKey
-import com.elementary.tasks.settings.export.work.BackupSettingsTask
+import com.github.naz013.feature.settings.SettingsNavKey
+import com.github.naz013.feature.settings.export.work.BackupSettingsTask
 import com.elementary.tasks.splash.ShortcutDestination
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger

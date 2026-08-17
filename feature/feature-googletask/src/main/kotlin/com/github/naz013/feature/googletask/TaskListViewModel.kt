@@ -15,8 +15,8 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
-import com.github.naz013.feature.googletask.usecase.tasklist.SyncGoogleTaskList
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.googletask.usecase.tasklist.SyncGoogleTaskList
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.TagAssignmentRepository
