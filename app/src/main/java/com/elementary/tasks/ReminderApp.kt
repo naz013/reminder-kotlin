@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.appfunctions.AppFunctionsInitializer
-import com.elementary.tasks.calendar.calendarModule
 import com.elementary.tasks.core.cloud.cloudModule
 import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
@@ -33,6 +32,7 @@ import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
 import com.github.naz013.datecalc.dateTimeCalculationsModule
 import com.github.naz013.feature.birthday.featureBirthdayModule
+import com.github.naz013.feature.calendar.featureCalendarModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
@@ -66,6 +66,7 @@ import com.github.naz013.reviews.config.SecondaryFirebaseConfig
 import com.github.naz013.reviews.reviewsKoinModule
 import com.github.naz013.sync.syncApiModule
 import com.github.naz013.tags.tagsModule
+import com.github.naz013.ui.agenda.uiAgendaModule
 import com.github.naz013.ui.birthday.uiBirthdayModule
 import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
@@ -73,6 +74,7 @@ import com.github.naz013.ui.googletask.uiGoogleTaskModule
 import com.github.naz013.ui.group.uiGroupModule
 import com.github.naz013.ui.map.uiMapModule
 import com.github.naz013.ui.note.uiNoteModule
+import com.github.naz013.ui.reminder.uiReminderModule
 import com.github.naz013.ui.tag.uiTagModule
 import com.github.naz013.work.workModule
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
@@ -150,7 +152,7 @@ class ReminderApp :
           featureBirthdayModule,
           uiBirthdayModule,
           logicBirthdayModule,
-          calendarModule,
+          featureCalendarModule,
           homeModule,
           featureGoogleTaskModule,
           logicGoogleTaskModule,
@@ -188,7 +190,9 @@ class ReminderApp :
           featureReminderModule,
           uiTagModule,
           logicTagModule,
-          uiGroupModule
+          uiGroupModule,
+          uiAgendaModule,
+          uiReminderModule
         ),
       )
     }

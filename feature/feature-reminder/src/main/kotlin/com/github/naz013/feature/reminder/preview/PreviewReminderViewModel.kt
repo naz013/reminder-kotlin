@@ -15,7 +15,7 @@ import com.github.naz013.feature.reminder.util.BackupTool
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.github.naz013.feature.reminder.preview.data.UiCalendarEventList
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
-import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.TaggedItemType

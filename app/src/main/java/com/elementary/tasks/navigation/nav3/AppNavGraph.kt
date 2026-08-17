@@ -30,8 +30,8 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
-import com.elementary.tasks.calendar.monthview.CalendarNavKey
-import com.elementary.tasks.calendar.monthview.calendarEntries
+import com.github.naz013.feature.calendar.monthview.CalendarNavKey
+import com.github.naz013.feature.calendar.monthview.calendarEntries
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
@@ -47,6 +47,7 @@ import com.elementary.tasks.settings.RemindersCrossFeatureEntry
 import com.elementary.tasks.share.rememberFileIntentSender
 import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
+import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.github.naz013.feature.birthday.birthdaysEntries
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.feature.googletask.googleTasksEntries
@@ -203,7 +204,23 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           backStack = backStack,
           navigateBeyondBackStack = { key -> appNavBridge.navigate(key) },
         )
-        calendarEntries(backStack)
+        calendarEntries(
+          backStack = backStack,
+          onOpenNewReminder = { dateMillis ->
+            backStack.add(
+              BuildReminderNavKey.Main(
+                deepLinkDateTimeType = BuildReminderNavKey.Main.DateTimeType.Date,
+                deepLinkDateTimeMillis = dateMillis,
+              ),
+            )
+          },
+          onOpenReminderEdit = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
+          onOpenReminderPreview = { id -> backStack.add(ReminderPreviewNavKey.Preview(id)) },
+          onOpenNewBirthday = { epochDay -> backStack.add(BirthdaysNavKey.Edit(prefillDateEpochDay = epochDay)) },
+          onOpenBirthdayPreview = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
+          onOpenBirthdayEdit = { id -> backStack.add(BirthdaysNavKey.Edit(id)) },
+          onOpenSettings = { title -> backStack.add(SettingsNavKey.Calendar(title)) },
+        )
         reminderPreviewEntries(
           backStack = backStack,
           navigateBeyondBackStack = { keys -> appNavBridge.navigate(*keys.toTypedArray()) },

@@ -222,6 +222,7 @@ dependencies {
   implementation(project(":core:feature-common"))
   implementation(project(":feature:feature-note"))
   implementation(project(":feature:feature-birthday"))
+  implementation(project(":feature:feature-calendar"))
   implementation(project(":feature:feature-googletask"))
   implementation(project(":feature:feature-group"))
   implementation(project(":feature:feature-reminder"))
@@ -234,6 +235,7 @@ dependencies {
   implementation(project(":core:platform-common"))
 
   implementation(project(":ui:ui-common"))
+  implementation(project(":ui:ui-agenda"))
   implementation(project(":ui:ui-birthday"))
   implementation(project(":ui:ui-googletask"))
   implementation(project(":ui:ui-group"))
