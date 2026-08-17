@@ -23,8 +23,6 @@ dependencies {
   implementation(project(":logic:logic-workflow"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":ui:ui-notification-settings"))
-  implementation(project(":feature:feature-workflow"))
-  implementation(project(":feature:feature-reminder"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)

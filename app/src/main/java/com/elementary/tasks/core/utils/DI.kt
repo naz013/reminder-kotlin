@@ -5,7 +5,7 @@ import com.elementary.tasks.calendar.holidays.HolidaySettingsGateImpl
 import com.elementary.tasks.core.birthdays.AppBirthdayNotifier
 import com.elementary.tasks.core.birthdays.AppBirthdayPreferences
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
-import com.elementary.tasks.core.cloud.DropboxLogin
+import com.github.naz013.feature.settings.export.DropboxLogin
 import com.elementary.tasks.core.data.repository.ReminderSettingsRepositoryImpl
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.notes.AppNoteFontProvider
@@ -20,13 +20,6 @@ import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.navigation.BottomNavInitViewModel
-import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
-import com.elementary.tasks.settings.other.TermsViewModel
-import com.elementary.tasks.settings.other.whatsnew.WhatsNewViewModel
-import com.elementary.tasks.settings.proversion.ProVersionViewModel
-import com.elementary.tasks.settings.test.DeveloperViewModel
-import com.elementary.tasks.settings.test.ObjectExportViewModel
-import com.elementary.tasks.settings.troubleshooting.TroubleshootingViewModel
 import com.github.naz013.cloudapi.CloudKeysStorage
 import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.googlecalendar.GoogleCalendarApi
@@ -43,51 +36,12 @@ import com.github.naz013.ui.note.NotePreferences
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val viewModelModule = module {
-  viewModelOf(::ProVersionViewModel)
-
   viewModelOf(::BottomNavInitViewModel)
-
-  viewModelOf(::TroubleshootingViewModel)
-
-  viewModelOf(::PrivacyPolicyViewModel)
-  viewModelOf(::TermsViewModel)
-  viewModelOf(::WhatsNewViewModel)
-  viewModel {
-    DeveloperViewModel(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-    )
-  }
-  viewModelOf(::ObjectExportViewModel)
 }
 
 val storageModule = module {

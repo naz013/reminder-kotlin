@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -28,6 +29,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
+import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.calendar.monthview.calendarEntries
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
@@ -35,14 +37,13 @@ import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
+import com.elementary.tasks.navigation.BottomNavActivity
+import com.elementary.tasks.places.PlacesNavKey
 import com.elementary.tasks.places.placesEntries
-import com.elementary.tasks.settings.SettingsNavKey
-import com.elementary.tasks.settings.export.exportEntries
-import com.elementary.tasks.settings.location.locationEntries
-import com.elementary.tasks.settings.other.otherEntries
-import com.elementary.tasks.settings.rememberSendIntentResolver
-import com.elementary.tasks.settings.security.securityEntries
-import com.elementary.tasks.settings.settingsEntries
+import com.elementary.tasks.reminder.dialog.ReminderActionActivity
+import com.elementary.tasks.settings.BirthdayCrossFeatureEntry
+import com.elementary.tasks.settings.ManagePresetsCrossFeatureEntry
+import com.elementary.tasks.settings.RemindersCrossFeatureEntry
 import com.elementary.tasks.share.rememberFileIntentSender
 import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
@@ -54,13 +55,23 @@ import com.github.naz013.feature.note.notesEntries
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.build.buildReminderEntries
 import com.github.naz013.feature.reminder.lists.removed.remindersArchiveEntries
+import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.feature.reminder.preview.reminderPreviewEntries
+import com.github.naz013.feature.reminder.settings.help.NotificationCustomizationHelpScreen
 import com.github.naz013.feature.reminder.todo.todoEditEntries
+import com.github.naz013.feature.settings.SettingsNavKey
+import com.github.naz013.feature.settings.export.exportEntries
+import com.github.naz013.feature.settings.location.locationEntries
+import com.github.naz013.feature.settings.other.otherEntries
+import com.github.naz013.feature.settings.rememberSendIntentResolver
+import com.github.naz013.feature.settings.security.securityEntries
+import com.github.naz013.feature.settings.settingsEntries
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.feature.workflow.workflowEntries
 import com.github.naz013.group.GroupsNavKey
 import com.github.naz013.group.groupsEntries
 import com.github.naz013.insights.insightsEntries
+import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.localbackup.localBackupEntries
 import com.github.naz013.tags.tagsEntries
 import com.github.naz013.ui.common.R
@@ -88,6 +99,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
+  val context = LocalContext.current
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
   val appNavBridge = rememberAppNavBridge()
   val phoneCaller = rememberPhoneCaller()
@@ -166,6 +178,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           backStack = backStack,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Group) },
           onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
+          onNewReminderClick = { backStack.add(BuildReminderNavKey.Main(groupUuId = it)) },
+          onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
+          onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
         )
         placesEntries(backStack)
         birthdaysEntries(
@@ -204,10 +219,31 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           backStack = backStack,
           navigateBeyondBackStack = { key -> appNavBridge.navigate(key) },
         )
-        settingsEntries(backStack)
+        settingsEntries(
+          backStack = backStack,
+          applicationId = BuildConfig.APPLICATION_ID,
+          restartActivityClass = BottomNavActivity::class.java,
+          remindersEntry = { key, entryBackStack -> RemindersCrossFeatureEntry(key, entryBackStack) },
+          birthdayEntry = { key, entryBackStack -> BirthdayCrossFeatureEntry(key, entryBackStack) },
+          managePresetsEntry = { entryBackStack -> ManagePresetsCrossFeatureEntry(entryBackStack) },
+          notificationCustomizationHelpEntry = { onBackClick ->
+            NotificationCustomizationHelpScreen(onBackClick = onBackClick)
+          },
+          onOpenLocalBackupExport = { uri -> backStack.add(LocalBackupNavKey.Export(uri)) },
+          onOpenLocalBackupImport = { uri -> backStack.add(LocalBackupNavKey.Import(uri)) },
+          onOpenReminderActionTest = { reminderId -> ReminderActionActivity.mockTest(context, reminderId) },
+          onOpenBirthdayActionTest = { birthdayId -> BirthdayActionActivity.mockTest(context, birthdayId) },
+        )
         securityEntries(backStack)
-        locationEntries(backStack)
-        otherEntries(backStack)
+        locationEntries(
+          backStack = backStack,
+          onOpenPlaces = { backStack.add(PlacesNavKey.List) },
+        )
+        otherEntries(
+          backStack = backStack,
+          onOpenTroubleshooting = { backStack.add(SettingsNavKey.Troubleshooting) },
+          onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
+        )
         exportEntries(backStack)
         workflowEntries(backStack)
         tagsEntries(backStack, adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Tag) })

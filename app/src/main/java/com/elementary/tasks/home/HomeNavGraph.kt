@@ -28,9 +28,9 @@ import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.lists.removed.RemindersArchiveNavKey
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.feature.reminder.todo.TodoEditNavKey
-import com.elementary.tasks.settings.SettingsNavKey
-import com.elementary.tasks.settings.export.ExportNavKey
-import com.elementary.tasks.settings.other.OtherNavKey
+import com.github.naz013.feature.settings.SettingsNavKey
+import com.github.naz013.feature.settings.export.ExportNavKey
+import com.github.naz013.feature.settings.other.OtherNavKey
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.common.Permissions
 import com.github.naz013.tags.TagsNavKey

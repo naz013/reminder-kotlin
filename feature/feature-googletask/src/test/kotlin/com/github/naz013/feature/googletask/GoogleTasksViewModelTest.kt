@@ -14,7 +14,7 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.TaggedItemType
-import com.github.naz013.feature.googletask.usecase.SyncAllGoogleTaskListsUseCase
+import com.github.naz013.logic.googletask.usecase.SyncAllGoogleTaskListsUseCase
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository

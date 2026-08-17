@@ -4,6 +4,16 @@ import com.elementary.tasks.module.analytics.AnalyticsStateProviderImpl
 import com.elementary.tasks.module.appwidgets.AppWidgetPreferencesImpl
 import com.elementary.tasks.module.appwidgets.NoteWidgetPreferencesImpl
 import com.elementary.tasks.module.featuregoogletask.GoogleTasksPreferencesImpl
+import com.elementary.tasks.module.featuresettings.CalendarSettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.CloudBackupSettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.DeveloperSettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.GeneralSettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.LocationSettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.NoteSettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.SecuritySettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.SettingsHubDoNotDisturbCheckerImpl
+import com.elementary.tasks.module.featuresettings.SettingsHubRemoteMessagesImpl
+import com.elementary.tasks.module.featuresettings.TroubleshootingCacheUtilImpl
 import com.elementary.tasks.module.locationapi.LocationTrackingApiImpl
 import com.elementary.tasks.module.logicreminder.AppReminderNotifier
 import com.elementary.tasks.module.logicreminder.ReminderPreferencesImpl
@@ -26,6 +36,16 @@ import com.github.naz013.appwidgets.singlenote.NoteWidgetPreferences
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
+import com.github.naz013.feature.settings.NoteSettingsPreferences
+import com.github.naz013.feature.settings.SettingsHubDoNotDisturbChecker
+import com.github.naz013.feature.settings.SettingsHubRemoteMessages
+import com.github.naz013.feature.settings.calendar.CalendarSettingsPreferences
+import com.github.naz013.feature.settings.debug.DeveloperSettingsPreferences
+import com.github.naz013.feature.settings.export.CloudBackupSettingsPreferences
+import com.github.naz013.feature.settings.general.GeneralSettingsPreferences
+import com.github.naz013.feature.settings.location.LocationSettingsPreferences
+import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
+import com.github.naz013.feature.settings.troubleshooting.TroubleshootingCacheUtil
 import com.github.naz013.location.LocationTrackingApi
 import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.logic.reminder.ReminderPreferences
@@ -67,6 +87,18 @@ val libModule = module {
 
   // feature google task
   factory { GoogleTasksPreferencesImpl(get()) as GoogleTasksPreferences }
+
+  // feature settings
+  factory { GeneralSettingsPreferencesImpl(get()) as GeneralSettingsPreferences }
+  factory { TroubleshootingCacheUtilImpl(get()) as TroubleshootingCacheUtil }
+  factory { SecuritySettingsPreferencesImpl(get()) as SecuritySettingsPreferences }
+  factory { LocationSettingsPreferencesImpl(get()) as LocationSettingsPreferences }
+  factory { CalendarSettingsPreferencesImpl(get()) as CalendarSettingsPreferences }
+  factory { CloudBackupSettingsPreferencesImpl(get()) as CloudBackupSettingsPreferences }
+  factory { NoteSettingsPreferencesImpl(get()) as NoteSettingsPreferences }
+  factory { DeveloperSettingsPreferencesImpl(get()) as DeveloperSettingsPreferences }
+  factory { SettingsHubDoNotDisturbCheckerImpl(get(), get()) as SettingsHubDoNotDisturbChecker }
+  factory { SettingsHubRemoteMessagesImpl(get()) as SettingsHubRemoteMessages }
 
   // logic schedule
   factory { SchedulePreferencesImpl(get()) as SchedulePreferences }

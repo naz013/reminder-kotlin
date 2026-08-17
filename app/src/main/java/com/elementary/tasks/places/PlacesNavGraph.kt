@@ -21,7 +21,7 @@ import com.elementary.tasks.places.create.EditPlaceViewModel
 import com.elementary.tasks.places.list.PlacesScreen
 import com.elementary.tasks.places.list.PlacesScreenState
 import com.elementary.tasks.places.list.PlacesViewModel
-import com.elementary.tasks.settings.rememberSendIntentResolver
+import com.github.naz013.feature.settings.rememberSendIntentResolver
 import com.github.naz013.ui.map.MapParams
 import com.github.naz013.ui.map.SimpleMapController
 import com.github.naz013.ui.map.SimpleMapView

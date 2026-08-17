@@ -27,8 +27,6 @@ import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
 import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
-import com.elementary.tasks.settings.export.syncSettingsModule
-import com.elementary.tasks.settings.settingsModule
 import com.elementary.tasks.telephony.intentModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
@@ -40,6 +38,7 @@ import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.feature.reminder.featureReminderModule
+import com.github.naz013.feature.settings.featureSettingsModule
 import com.github.naz013.feature.workflow.workflowModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.group.groupModule
@@ -51,6 +50,7 @@ import com.github.naz013.legal.legalModule
 import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.logic.birthday.logicBirthdayModule
+import com.github.naz013.logic.googletask.logicGoogleTaskModule
 import com.github.naz013.logic.reminder.logicReminderModule
 import com.github.naz013.logic.schedule.logicScheduleModule
 import com.github.naz013.logic.tag.logicTagModule
@@ -153,6 +153,7 @@ class ReminderApp :
           calendarModule,
           homeModule,
           featureGoogleTaskModule,
+          logicGoogleTaskModule,
           servicesModule,
           repositoryModule,
           cloudApiModule,
@@ -168,8 +169,7 @@ class ReminderApp :
           placeKoinModule,
           uiMapModule,
           reviewsKoinModule,
-          syncSettingsModule,
-          settingsModule,
+          featureSettingsModule,
           legalModule,
           workModule,
           holidaysModule,
