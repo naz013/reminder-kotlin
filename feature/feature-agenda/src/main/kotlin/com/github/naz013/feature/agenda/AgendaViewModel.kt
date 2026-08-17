@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.agenda
+package com.github.naz013.feature.agenda
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.logic.birthday.BirthdayQueryFilter
 import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
 import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
-import com.github.naz013.feature.reminder.lists.filter.query.ReminderV2QueryFilterInstance
+import com.github.naz013.logic.reminder.filter.ReminderV2QueryFilterInstance
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase

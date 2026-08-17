@@ -1,6 +1,5 @@
 package com.elementary.tasks.home
 
-import com.elementary.tasks.home.agenda.AgendaViewModel
 import com.elementary.tasks.home.scheduleview.GetActiveEventsForTheDayUseCase
 import com.elementary.tasks.home.scheduleview.GetGreetingTextUseCase
 import com.elementary.tasks.home.scheduleview.GetNavigationItemsUseCase
@@ -17,5 +16,4 @@ val homeModule = module {
   factoryOf(::GetNavigationItemsUseCase)
 
   viewModelOf(::ScheduleHomeViewModel)
-  viewModelOf(::AgendaViewModel)
 }
