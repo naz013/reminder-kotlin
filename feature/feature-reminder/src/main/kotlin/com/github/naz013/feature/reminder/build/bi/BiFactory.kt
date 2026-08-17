@@ -71,7 +71,7 @@ import com.github.naz013.feature.reminder.build.formatter.datetime.TimerFormatte
 import com.github.naz013.feature.reminder.build.formatter.datetime.WeekdayArrayFormatter
 import com.github.naz013.feature.reminder.build.formatter.`object`.NoteFormatter
 import com.github.naz013.feature.reminder.build.formatter.`object`.PlaceFormatter
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.ui.map.DefaultRadiusFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.ContextProvider

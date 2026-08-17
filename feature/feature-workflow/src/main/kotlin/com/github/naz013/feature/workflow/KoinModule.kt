@@ -11,8 +11,6 @@ import org.koin.dsl.module
 
 val workflowModule = module {
   factoryOf(::WorkflowRulesUtil)
-  factoryOf(::WorkflowActionDispatcher)
-  factoryOf(::WorkflowTriggerRunner)
   factory<BackgroundTask>(named(RunWorkflowRulesTask.TASK_KEY)) { RunWorkflowRulesTask(get()) }
   factory<BackgroundTask>(named(RunWorkflowUnacknowledgedRulesTask.TASK_KEY)) {
     RunWorkflowUnacknowledgedRulesTask(get())

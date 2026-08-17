@@ -20,7 +20,7 @@ import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.group.GroupsNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
 import com.github.naz013.feature.note.NotesNavKey
-import com.elementary.tasks.places.PlacesNavKey
+import com.github.naz013.feature.places.PlacesNavKey
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.feature.settings.SettingsNavKey

@@ -2,18 +2,19 @@ package com.elementary.tasks.eventaction
 
 import androidx.compose.runtime.Composable
 import com.elementary.tasks.BuildConfig
+import com.github.naz013.feature.home.ResolvedEventAction
 import com.github.naz013.ui.common.permission.PermissionRequester
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.feature.settings.SendEmailResolver
 import com.github.naz013.feature.settings.rememberSendEmailResolver
-import com.elementary.tasks.telephony.ApplicationLauncher
-import com.elementary.tasks.telephony.PhoneCaller
-import com.elementary.tasks.telephony.SmsSender
-import com.elementary.tasks.telephony.UrlLauncher
-import com.elementary.tasks.telephony.rememberApplicationLauncher
-import com.elementary.tasks.telephony.rememberPhoneCaller
-import com.elementary.tasks.telephony.rememberSmsSender
-import com.elementary.tasks.telephony.rememberUrlLauncher
+import com.github.naz013.ui.common.compose.foundation.telephony.ApplicationLauncher
+import com.github.naz013.ui.common.compose.foundation.telephony.PhoneCaller
+import com.github.naz013.ui.common.compose.foundation.telephony.SmsSender
+import com.github.naz013.ui.common.compose.foundation.telephony.UrlLauncher
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberApplicationLauncher
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberPhoneCaller
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberSmsSender
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberUrlLauncher
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 

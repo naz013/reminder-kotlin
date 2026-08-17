@@ -19,6 +19,7 @@ dependencies {
   implementation(project(":core:date-calculations"))
 
   implementation(libs.koin.android)
+  implementation(libs.koin.androidx.compose)
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.biometric.compose)
   implementation(libs.material)

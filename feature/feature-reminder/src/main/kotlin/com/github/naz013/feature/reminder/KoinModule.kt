@@ -17,7 +17,6 @@ import com.github.naz013.feature.reminder.build.bi.BiFilter
 import com.github.naz013.feature.reminder.build.bi.LocationFilter
 import com.github.naz013.feature.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.github.naz013.feature.reminder.build.formatter.factory.RadiusFormatterFactory
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.feature.reminder.build.logic.BuilderItemBlockedByConstraintCalculator
 import com.github.naz013.feature.reminder.build.logic.BuilderItemMandatoryIfConstraintCalculator
 import com.github.naz013.feature.reminder.build.logic.BuilderItemPermissionConstraintCalculator
@@ -79,7 +78,6 @@ import com.github.naz013.feature.reminder.preview.PreviewReminderViewModel
 import com.github.naz013.feature.reminder.todo.TodoEditNavKey
 import com.github.naz013.feature.reminder.todo.TodoEditViewModel
 import com.github.naz013.feature.reminder.todo.TodoSeedHolder
-import com.github.naz013.feature.reminder.util.BackupTool
 import com.github.naz013.feature.reminder.util.UriHelper
 import com.github.naz013.ui.reminder.UiReminderListAdapter
 import org.koin.core.module.dsl.factoryOf
@@ -332,8 +330,6 @@ val featureReminderModule = module {
 
   factoryOf(::QuickStartItemsProvider)
 
-  factory { ShopItemsFormatter(get()) }
-
   single { RadiusFormatterFactory(get(), get()) }
   single { PlaceFormatterFactory(get()) }
 
@@ -346,6 +342,5 @@ val featureReminderModule = module {
   factory { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get(), get()) }
 
   factoryOf(::UriHelper)
-  singleOf(::BackupTool)
   factoryOf(::PresetInitProcessor)
 }

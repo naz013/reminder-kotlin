@@ -224,6 +224,7 @@ dependencies {
   implementation(project(":feature:feature-birthday"))
   implementation(project(":feature:feature-calendar"))
   implementation(project(":feature:feature-agenda"))
+  implementation(project(":feature:feature-home"))
   implementation(project(":feature:feature-googletask"))
   implementation(project(":feature:feature-group"))
   implementation(project(":feature:feature-reminder"))
@@ -231,6 +232,7 @@ dependencies {
   implementation(project(":feature:feature-insights"))
   implementation(project(":feature:feature-workflow"))
   implementation(project(":feature:feature-settings"))
+  implementation(project(":feature:feature-places"))
   implementation(project(":extensions:localbackup"))
 
   implementation(project(":core:platform-common"))

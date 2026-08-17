@@ -17,16 +17,12 @@ import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
-import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
 import com.elementary.tasks.module.platform.InstallReferrerReader
 import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcher
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
-import com.elementary.tasks.places.placeKoinModule
-import com.elementary.tasks.reminder.reminderModule
-import com.elementary.tasks.telephony.intentModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
@@ -37,7 +33,9 @@ import com.github.naz013.feature.calendar.featureCalendarModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
+import com.github.naz013.feature.home.featureHomeModule
 import com.github.naz013.feature.note.featureNoteModule
+import com.github.naz013.feature.places.featurePlacesModule
 import com.github.naz013.feature.reminder.featureReminderModule
 import com.github.naz013.feature.settings.featureSettingsModule
 import com.github.naz013.feature.workflow.workflowModule
@@ -147,7 +145,6 @@ class ReminderApp :
           viewModelModule,
           actionModule,
           uiUtilsModule,
-          reminderModule,
           osModule,
           newUtilsModule,
           featureBirthdayModule,
@@ -155,7 +152,7 @@ class ReminderApp :
           logicBirthdayModule,
           featureCalendarModule,
           featureAgendaModule,
-          homeModule,
+          featureHomeModule,
           featureGoogleTaskModule,
           logicGoogleTaskModule,
           servicesModule,
@@ -170,7 +167,7 @@ class ReminderApp :
           cloudModule,
           syncApiModule,
           groupModule,
-          placeKoinModule,
+          featurePlacesModule,
           uiMapModule,
           reviewsKoinModule,
           featureSettingsModule,
@@ -179,7 +176,6 @@ class ReminderApp :
           holidaysModule,
           dateTimeCalculationsModule,
           libModule,
-          intentModule,
           workflowModule,
           logicWorkflowModule,
           fileModule,

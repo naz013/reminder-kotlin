@@ -25,6 +25,7 @@ dependencies {
   implementation(project(":core:feature-flags-api"))
   implementation(project(":data:repository-api"))
   implementation(project(":data:files-api"))
+  implementation(project(":data:files"))
   implementation(project(":data:cloud-api"))
   implementation(project(":data:icalendar-api"))
   implementation(project(":data:googlecalendar-api"))

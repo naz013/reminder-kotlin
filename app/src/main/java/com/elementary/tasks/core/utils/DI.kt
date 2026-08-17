@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import com.elementary.tasks.core.calendar.AppCalendarPreferences
+import com.elementary.tasks.core.home.AppHomePreferences
 import com.elementary.tasks.core.holidays.HolidaySettingsGateImpl
 import com.elementary.tasks.core.birthdays.AppBirthdayNotifier
 import com.elementary.tasks.core.birthdays.AppBirthdayPreferences
@@ -23,6 +24,7 @@ import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.navigation.BottomNavInitViewModel
 import com.github.naz013.cloudapi.CloudKeysStorage
 import com.github.naz013.feature.calendar.CalendarPreferences
+import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.holidaysapi.HolidaySettingsGate
@@ -81,6 +83,7 @@ val utilModule = module {
   factory { FeatureManager(get()) as FeatureFlags }
   factory { HolidaySettingsGateImpl(get(), get()) as HolidaySettingsGate }
   factory { AppCalendarPreferences(get()) as CalendarPreferences }
+  factory { AppHomePreferences(get()) as HomePreferences }
 
   factory { DoNotDisturbManager(get(), get()) }
 

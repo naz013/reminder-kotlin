@@ -42,7 +42,7 @@ class GoogleTasksLoginState internal constructor(
 /**
  * Compose replacement for [com.elementary.tasks.core.cloud.GoogleLogin] scoped to Google Tasks
  * sign-in only (Drive sign-in stays on the legacy class for now). See
- * [com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker] for the same
+ * [com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker] for the same
  * `rememberLauncherForActivityResult`-based pattern.
  */
 @Composable

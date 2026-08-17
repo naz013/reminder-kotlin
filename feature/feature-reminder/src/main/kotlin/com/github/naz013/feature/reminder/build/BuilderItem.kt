@@ -67,7 +67,7 @@ import com.github.naz013.feature.reminder.build.formatter.ical.ICalFreqFormatter
 import com.github.naz013.feature.reminder.build.formatter.ical.ICalListDayValueFormatter
 import com.github.naz013.feature.reminder.build.formatter.`object`.NoteFormatter
 import com.github.naz013.feature.reminder.build.formatter.`object`.PlaceFormatter
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.system.Module

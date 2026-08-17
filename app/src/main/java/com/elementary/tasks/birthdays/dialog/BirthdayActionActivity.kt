@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
-import com.elementary.tasks.telephony.rememberPhoneCaller
-import com.elementary.tasks.telephony.rememberSmsSender
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberPhoneCaller
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberSmsSender
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.birthday.dialog.BirthdayActionScreen
 import com.github.naz013.ui.common.compose.ComposeActivity

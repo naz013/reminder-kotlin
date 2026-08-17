@@ -9,7 +9,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.reminder.UiReminderCommonAdapter
 import com.github.naz013.feature.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.github.naz013.feature.reminder.build.formatter.`object`.PlaceFormatter
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.logic.reminder.RecurEventManager
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.UnitsConverter
