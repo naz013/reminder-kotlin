@@ -31,6 +31,7 @@ import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
 import com.github.naz013.datecalc.dateTimeCalculationsModule
+import com.github.naz013.feature.agenda.featureAgendaModule
 import com.github.naz013.feature.birthday.featureBirthdayModule
 import com.github.naz013.feature.calendar.featureCalendarModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -153,6 +154,7 @@ class ReminderApp :
           uiBirthdayModule,
           logicBirthdayModule,
           featureCalendarModule,
+          featureAgendaModule,
           homeModule,
           featureGoogleTaskModule,
           logicGoogleTaskModule,

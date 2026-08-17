@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.ui.reminder.UiReminderListAdapter
-import com.github.naz013.feature.reminder.lists.filter.query.ReminderV2QueryFilterInstance
+import com.github.naz013.logic.reminder.filter.ReminderV2QueryFilterInstance
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event

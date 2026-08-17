@@ -1,10 +1,10 @@
-package com.elementary.tasks.home.agenda
+package com.github.naz013.feature.agenda
 
 import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
 import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.github.naz013.ui.common.text.UiTextElement
 import com.github.naz013.ui.common.text.UiTextFormat
-import com.elementary.tasks.mockDispatcherProvider
+import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
@@ -47,7 +47,7 @@ import org.threeten.bp.LocalDateTime
  * Unit tests for [AgendaViewModel]'s merge/sort/filter pipeline ([AgendaViewModel.loadMerged]).
  * [UiAgendaItemAdapter] is mocked so these tests can focus purely on which reminders/birthdays make
  * it through category and search-query filtering, rather than on presentation formatting (covered
- * separately by [UiAgendaItemAdapterTest]).
+ * separately by ui-agenda's own UiAgendaItemAdapterTest).
  */
 class AgendaViewModelTest {
   private val reminderV2Repository = mockk<ReminderV2Repository>()

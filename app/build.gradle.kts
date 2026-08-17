@@ -223,6 +223,7 @@ dependencies {
   implementation(project(":feature:feature-note"))
   implementation(project(":feature:feature-birthday"))
   implementation(project(":feature:feature-calendar"))
+  implementation(project(":feature:feature-agenda"))
   implementation(project(":feature:feature-googletask"))
   implementation(project(":feature:feature-group"))
   implementation(project(":feature:feature-reminder"))

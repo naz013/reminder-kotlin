@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.agenda
+package com.github.naz013.feature.agenda
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.elementary.tasks.R
+import com.github.naz013.ui.common.R
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.logic.reminder.smartlist.SmartListFilter

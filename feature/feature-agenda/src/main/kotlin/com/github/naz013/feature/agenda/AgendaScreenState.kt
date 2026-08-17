@@ -1,4 +1,4 @@
-package com.elementary.tasks.home.agenda
+package com.github.naz013.feature.agenda
 
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2

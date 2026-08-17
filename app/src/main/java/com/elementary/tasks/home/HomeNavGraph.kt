@@ -10,36 +10,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.elementary.tasks.R
+import com.github.naz013.feature.agenda.AgendaNavKey
 import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.github.naz013.feature.calendar.monthview.CalendarNavKey
-import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.group.GroupsNavKey
-import com.elementary.tasks.home.agenda.AgendaScreen
-import com.elementary.tasks.home.agenda.AgendaScreenState
-import com.elementary.tasks.home.agenda.AgendaViewModel
 import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.github.naz013.feature.note.NotesNavKey
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
-import com.github.naz013.feature.reminder.lists.removed.RemindersArchiveNavKey
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.feature.reminder.todo.TodoEditNavKey
 import com.github.naz013.feature.settings.SettingsNavKey
 import com.github.naz013.feature.settings.export.ExportNavKey
 import com.github.naz013.feature.settings.other.OtherNavKey
 import com.github.naz013.feature.workflow.WorkflowNavKey
-import com.github.naz013.common.Permissions
-import com.github.naz013.tags.TagsNavKey
-import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
 fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
   entry<HomeNavKey.Main> { HomeEntry(backStack) }
-  entry<HomeNavKey.Agenda> { AgendaEntry(backStack) }
 }
 
 @Composable
@@ -81,7 +72,7 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenAgenda -> {
-        backStack.add(HomeNavKey.Agenda)
+        backStack.add(AgendaNavKey.List)
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenNotes -> {
@@ -155,114 +146,5 @@ private fun HomeEntry(backStack: MutableList<NavKey>) {
         onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },
       )
     },
-  )
-}
-
-@Composable
-private fun AgendaEntry(backStack: MutableList<NavKey>) {
-  val viewModel = koinViewModel<AgendaViewModel>()
-  val appNavBridge = rememberAppNavBridge()
-  val permissionRequester = rememberPermissionRequesterRationale()
-  val dialogDispatcher = rememberDialogDispatcher()
-
-  viewModel.navigationEvent.ObserveEvent { event ->
-    when (event) {
-      is AgendaViewModel.NavigationEvent.OpenReminderPreview -> {
-        backStack.add(ReminderPreviewNavKey.Preview(event.id))
-      }
-
-      is AgendaViewModel.NavigationEvent.OpenReminderEdit -> {
-        appNavBridge.navigate(BuildReminderNavKey.Main(id = event.id))
-      }
-
-      AgendaViewModel.NavigationEvent.OpenNewReminder -> {
-        appNavBridge.navigate(BuildReminderNavKey.Main())
-      }
-
-      AgendaViewModel.NavigationEvent.OpenNewTodo -> {
-        appNavBridge.navigate(TodoEditNavKey.Main())
-      }
-
-      is AgendaViewModel.NavigationEvent.OpenBirthdayPreview -> {
-        appNavBridge.navigate(BirthdaysNavKey.Preview(event.id))
-      }
-
-      is AgendaViewModel.NavigationEvent.OpenBirthdayEdit -> {
-        appNavBridge.navigate(BirthdaysNavKey.Edit(event.id))
-      }
-
-      AgendaViewModel.NavigationEvent.OpenNewBirthday -> {
-        appNavBridge.navigate(BirthdaysNavKey.Edit())
-      }
-
-      AgendaViewModel.NavigationEvent.OpenArchive -> {
-        backStack.add(RemindersArchiveNavKey.List)
-      }
-
-      AgendaViewModel.NavigationEvent.OpenGroups -> {
-        appNavBridge.navigate(GroupsNavKey.List)
-      }
-
-      AgendaViewModel.NavigationEvent.OpenTags -> {
-        backStack.add(TagsNavKey.Manage)
-      }
-
-      is AgendaViewModel.NavigationEvent.RequestGpsPermission -> {
-        permissionRequester.request(
-          listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
-          onGranted = { viewModel.toggleReminder(event.id) },
-        )
-      }
-
-      is AgendaViewModel.NavigationEvent.ConfirmArchiveReminder -> {
-        dialogDispatcher.showDialog(
-          titleRes = R.string.move_to_archive,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = {
-            viewModel.moveReminderToArchive(event.id)
-          }
-        )
-      }
-
-      is AgendaViewModel.NavigationEvent.ConfirmDeleteReminder -> {
-        dialogDispatcher.showDialog(
-          textRes = R.string.delete_reminder_permanently,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = {
-            viewModel.deleteReminder(event.id)
-          }
-        )
-      }
-
-      is AgendaViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
-        dialogDispatcher.showDialog(
-          textRes = R.string.delete_birthday_permanently,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = { viewModel.deleteBirthday(event.id) }
-        )
-      }
-    }
-  }
-
-  val state by viewModel.agendaScreenState.collectAsState(AgendaScreenState())
-  AgendaScreen(
-    state = state,
-    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
-    onSearchQueryChange = viewModel::onSearchQueryChange,
-    onCategoryToggle = viewModel::onCategoryToggle,
-    onSmartListSelected = viewModel::onSmartListSelected,
-    onTagFilterSelected = viewModel::onTagFilterSelected,
-    onGroupFilterSelected = viewModel::onGroupFilterSelected,
-    onAddReminderClick = viewModel::onAddReminderClick,
-    onAddTodoClick = viewModel::onAddTodoClick,
-    onAddBirthdayClick = viewModel::onAddBirthdayClick,
-    onArchiveClick = viewModel::onArchiveClick,
-    onGroupsClick = viewModel::onGroupsClick,
-    onTagsClick = viewModel::onTagsClick,
-    onItemClick = viewModel::onItemClick,
-    onAgendaMenuAction = viewModel::onAgendaMenuAction,
   )
 }

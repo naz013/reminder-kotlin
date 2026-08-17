@@ -30,6 +30,8 @@ import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
+import com.github.naz013.feature.agenda.AgendaNavKey
+import com.github.naz013.feature.agenda.agendaEntries
 import com.github.naz013.feature.calendar.monthview.CalendarNavKey
 import com.github.naz013.feature.calendar.monthview.calendarEntries
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
@@ -55,10 +57,12 @@ import com.github.naz013.feature.note.NotesNavKey
 import com.github.naz013.feature.note.notesEntries
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.build.buildReminderEntries
+import com.github.naz013.feature.reminder.lists.removed.RemindersArchiveNavKey
 import com.github.naz013.feature.reminder.lists.removed.remindersArchiveEntries
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.feature.reminder.preview.reminderPreviewEntries
 import com.github.naz013.feature.reminder.settings.help.NotificationCustomizationHelpScreen
+import com.github.naz013.feature.reminder.todo.TodoEditNavKey
 import com.github.naz013.feature.reminder.todo.todoEditEntries
 import com.github.naz013.feature.settings.SettingsNavKey
 import com.github.naz013.feature.settings.export.exportEntries
@@ -74,6 +78,7 @@ import com.github.naz013.group.groupsEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.localbackup.localBackupEntries
+import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.tags.tagsEntries
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.navigation.AppDestination
@@ -221,6 +226,19 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenBirthdayEdit = { id -> backStack.add(BirthdaysNavKey.Edit(id)) },
           onOpenSettings = { title -> backStack.add(SettingsNavKey.Calendar(title)) },
         )
+        agendaEntries(
+          backStack = backStack,
+          onOpenReminderPreview = { id -> backStack.add(ReminderPreviewNavKey.Preview(id)) },
+          onOpenReminderEdit = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
+          onOpenNewReminder = { backStack.add(BuildReminderNavKey.Main()) },
+          onOpenNewTodo = { backStack.add(TodoEditNavKey.Main()) },
+          onOpenBirthdayPreview = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
+          onOpenBirthdayEdit = { id -> backStack.add(BirthdaysNavKey.Edit(id)) },
+          onOpenNewBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
+          onOpenArchive = { backStack.add(RemindersArchiveNavKey.List) },
+          onOpenGroups = { backStack.add(GroupsNavKey.List) },
+          onOpenTags = { backStack.add(TagsNavKey.Manage) },
+        )
         reminderPreviewEntries(
           backStack = backStack,
           navigateBeyondBackStack = { keys -> appNavBridge.navigate(*keys.toTypedArray()) },
@@ -298,7 +316,7 @@ private fun appRailDestinations(isWorkflowEnabled: Boolean): List<AppDestination
     )
     add(
       AppDestination(
-        key = HomeNavKey.Agenda,
+        key = AgendaNavKey.List,
         icon = painterResource(R.drawable.ic_fluent_timeline),
         labelRes = R.string.agenda,
       ),
