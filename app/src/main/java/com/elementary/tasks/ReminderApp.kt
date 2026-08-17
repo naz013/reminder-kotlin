@@ -24,7 +24,6 @@ import com.elementary.tasks.navigation.NavigationDispatcher
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
 import com.elementary.tasks.places.placeKoinModule
-import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.telephony.intentModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
@@ -147,7 +146,6 @@ class ReminderApp :
           viewModelModule,
           actionModule,
           uiUtilsModule,
-          reminderModule,
           osModule,
           newUtilsModule,
           featureBirthdayModule,

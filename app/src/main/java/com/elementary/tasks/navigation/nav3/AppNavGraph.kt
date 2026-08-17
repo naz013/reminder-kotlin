@@ -35,8 +35,6 @@ import com.github.naz013.feature.agenda.agendaEntries
 import com.github.naz013.feature.calendar.monthview.CalendarNavKey
 import com.github.naz013.feature.calendar.monthview.calendarEntries
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
-import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
-import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.github.naz013.feature.home.HomeNavKey
 import com.github.naz013.feature.home.homeEntries
@@ -224,7 +222,6 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) },
           onCallClick = { number -> phoneCaller.call(number) },
           onSmsClick = { number -> smsSender.send(number, null) },
-          rememberContactPicker = { onContactPicked -> rememberContactPicker(onContactPicked) },
         )
         googleTasksEntries(
           backStack = backStack,
@@ -233,7 +230,6 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         buildReminderEntries(
           backStack = backStack,
           rememberContactPhonePicker = { rememberContactPhonePicker() },
-          rememberMultipleUriPicker = { rememberMultipleUriPicker() },
         )
         todoEditEntries(
           backStack = backStack,

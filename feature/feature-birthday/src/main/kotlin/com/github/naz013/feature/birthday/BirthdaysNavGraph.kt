@@ -26,10 +26,9 @@ fun EntryProviderScope<NavKey>.birthdaysEntries(
   adsContent: @Composable () -> Unit,
   onCallClick: (String) -> Unit,
   onSmsClick: (String) -> Unit,
-  rememberContactPicker: @Composable ((ContactData) -> Unit) -> () -> Unit,
 ) {
   entry<BirthdaysNavKey.Preview> { key -> PreviewEntry(key, backStack, adsContent, onCallClick, onSmsClick) }
-  entry<BirthdaysNavKey.Edit> { key -> EditEntry(key, backStack, adsContent, rememberContactPicker) }
+  entry<BirthdaysNavKey.Edit> { key -> EditEntry(key, backStack, adsContent) }
 }
 
 @Composable
@@ -79,7 +78,6 @@ private fun EditEntry(
   key: BirthdaysNavKey.Edit,
   backStack: MutableList<NavKey>,
   adsContent: @Composable () -> Unit,
-  rememberContactPicker: @Composable ((ContactData) -> Unit) -> () -> Unit,
 ) {
   val viewModel = koinViewModel<EditBirthdayViewModel> { parametersOf(key) }
   val context = LocalContext.current

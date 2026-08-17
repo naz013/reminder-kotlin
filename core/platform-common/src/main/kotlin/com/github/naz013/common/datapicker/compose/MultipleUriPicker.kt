@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.os.datapicker.compose
+package com.github.naz013.common.datapicker.compose
 
 import android.app.Activity
 import android.content.Intent

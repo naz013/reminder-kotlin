@@ -1,6 +1,5 @@
 package com.github.naz013.feature.reminder.build
 
-import android.net.Uri
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.common.datapicker.compose.rememberMultipleUriPicker
 import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.apps.SelectApplicationScreen
 import com.github.naz013.feature.reminder.compose.rememberDateTimeManager
@@ -47,10 +47,9 @@ import org.koin.core.parameter.parametersOf
 fun EntryProviderScope<NavKey>.buildReminderEntries(
   backStack: MutableList<NavKey>,
   rememberContactPhonePicker: @Composable () -> ((onResult: (String) -> Unit) -> Unit),
-  rememberMultipleUriPicker: @Composable () -> ((onResult: (List<Uri>) -> Unit) -> Unit),
 ) {
   entry<BuildReminderNavKey.Main> { key ->
-    MainEntry(key, backStack, rememberContactPhonePicker, rememberMultipleUriPicker)
+    MainEntry(key, backStack, rememberContactPhonePicker)
   }
   entry<BuildReminderNavKey.Help> {
     ReminderHelpScreen(onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() })
@@ -78,7 +77,6 @@ private fun MainEntry(
   key: BuildReminderNavKey.Main,
   backStack: MutableList<NavKey>,
   rememberContactPhonePicker: @Composable () -> ((onResult: (String) -> Unit) -> Unit),
-  rememberMultipleUriPicker: @Composable () -> ((onResult: (List<Uri>) -> Unit) -> Unit),
 ) {
   // Passed as the single Main key object, not 6 loose positional values: Koin's parameter
   // resolution matches by KClass, and two same-typed values (id: String, deepLinkText: String?)
