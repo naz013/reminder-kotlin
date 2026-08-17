@@ -23,7 +23,6 @@ import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcher
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
-import com.elementary.tasks.telephony.intentModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
@@ -177,7 +176,6 @@ class ReminderApp :
           holidaysModule,
           dateTimeCalculationsModule,
           libModule,
-          intentModule,
           workflowModule,
           logicWorkflowModule,
           fileModule,

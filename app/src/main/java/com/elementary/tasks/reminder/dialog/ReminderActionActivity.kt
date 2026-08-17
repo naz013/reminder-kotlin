@@ -9,10 +9,10 @@ import androidx.compose.ui.Modifier
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
-import com.elementary.tasks.telephony.rememberApplicationLauncher
-import com.elementary.tasks.telephony.rememberPhoneCaller
-import com.elementary.tasks.telephony.rememberSmsSender
-import com.elementary.tasks.telephony.rememberUrlLauncher
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberApplicationLauncher
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberPhoneCaller
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberSmsSender
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberUrlLauncher
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.feature.reminder.dialog.ReminderActionScreen
 import com.github.naz013.feature.settings.rememberSendEmailResolver

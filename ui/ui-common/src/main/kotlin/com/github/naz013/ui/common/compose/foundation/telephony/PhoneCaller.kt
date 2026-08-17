@@ -1,17 +1,12 @@
-package com.elementary.tasks.telephony
+package com.github.naz013.ui.common.compose.foundation.telephony
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.elementary.tasks.BuildConfig
-import com.elementary.tasks.R
-import com.github.naz013.common.uri.UriUtil
-import com.github.naz013.logging.Logger
-import java.io.File
+import com.github.naz013.ui.common.R
 import androidx.core.net.toUri
 
 interface PhoneCaller {

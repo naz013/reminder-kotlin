@@ -45,9 +45,9 @@ import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.BirthdayCrossFeatureEntry
 import com.elementary.tasks.settings.ManagePresetsCrossFeatureEntry
 import com.elementary.tasks.settings.RemindersCrossFeatureEntry
-import com.elementary.tasks.share.rememberFileIntentSender
-import com.elementary.tasks.telephony.rememberPhoneCaller
-import com.elementary.tasks.telephony.rememberSmsSender
+import com.github.naz013.ui.common.compose.foundation.share.rememberFileIntentSender
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberPhoneCaller
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberSmsSender
 import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.github.naz013.feature.birthday.birthdaysEntries
 import com.github.naz013.feature.googletask.GoogleTasksNavKey

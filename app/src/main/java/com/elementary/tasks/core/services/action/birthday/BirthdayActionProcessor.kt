@@ -3,8 +3,8 @@ package com.elementary.tasks.core.services.action.birthday
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.telephony.PhoneCaller
-import com.elementary.tasks.telephony.SmsSender
+import com.github.naz013.ui.common.compose.foundation.telephony.PhoneCaller
+import com.github.naz013.ui.common.compose.foundation.telephony.SmsSender
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
