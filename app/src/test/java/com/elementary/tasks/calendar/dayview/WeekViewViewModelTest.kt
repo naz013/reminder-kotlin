@@ -10,8 +10,8 @@ import com.elementary.tasks.home.agenda.AgendaMenuAction
 import com.elementary.tasks.home.agenda.UiAgendaBirthday
 import com.elementary.tasks.home.agenda.UiAgendaReminder
 import com.elementary.tasks.mockDispatcherProvider
-import com.github.naz013.feature.reminder.lists.data.UiReminderListActions
-import com.github.naz013.feature.reminder.lists.data.UiReminderListState
+import com.github.naz013.ui.reminder.UiReminderListActions
+import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager

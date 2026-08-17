@@ -69,7 +69,7 @@ import com.github.naz013.feature.reminder.build.selectordialog.SelectorDialogDat
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.github.naz013.feature.reminder.dialog.CreateReminderActionScreenStateUseCase
 import com.github.naz013.feature.reminder.dialog.ReminderActionActivityViewModel
-import com.github.naz013.feature.reminder.lists.data.UiReminderListAdapter
+import com.github.naz013.feature.reminder.lists.UiReminderListAdapterImpl
 import com.github.naz013.feature.reminder.lists.removed.RemindersArchiveViewModel
 import com.github.naz013.feature.reminder.note.UiNoteListAdapter
 import com.github.naz013.feature.reminder.preset.UiPresetListAdapter
@@ -81,6 +81,7 @@ import com.github.naz013.feature.reminder.todo.TodoSeedHolder
 import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.feature.reminder.util.BackupTool
 import com.github.naz013.feature.reminder.util.UriHelper
+import com.github.naz013.ui.reminder.UiReminderListAdapter
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -126,7 +127,11 @@ val featureReminderModule = module {
 
   viewModel { (id: String) -> FullScreenMapViewModel(id, get(), get()) }
 
-  factoryOf(::UiReminderListAdapter)
+  factory {
+    UiReminderListAdapterImpl(
+      get(), get(), get(), get(), get(), get(), get(), get(), get()
+    ) as UiReminderListAdapter
+  }
 
   viewModel { (id: String) ->
     ReminderActionActivityViewModel(

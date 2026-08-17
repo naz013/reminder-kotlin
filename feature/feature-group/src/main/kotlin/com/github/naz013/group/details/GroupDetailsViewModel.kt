@@ -1,27 +1,27 @@
-package com.elementary.tasks.groups.details
+package com.github.naz013.group.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.ui.group.UiGroupListAdapter
-import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitleFormatter
-import com.github.naz013.logic.group.DeleteGroupUseCase
-import com.github.naz013.feature.reminder.lists.data.UiReminderListAdapter
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.logic.reminder.query.GetActiveRemindersV2ByGroupIdUseCase
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.ui.group.UiGroupListAdapter
+import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitleFormatter
+import com.github.naz013.ui.reminder.UiReminderListAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class GroupDetailsViewModel(
+internal class GroupDetailsViewModel(
   private val id: String,
   private val dispatcherProvider: DispatcherProvider,
   private val groupV2Repository: GroupV2Repository,

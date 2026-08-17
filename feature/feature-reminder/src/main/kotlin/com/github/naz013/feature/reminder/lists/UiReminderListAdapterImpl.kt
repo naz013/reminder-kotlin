@@ -1,4 +1,4 @@
-package com.github.naz013.feature.reminder.lists.data
+package com.github.naz013.feature.reminder.lists
 
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -20,8 +20,12 @@ import com.github.naz013.ui.common.text.UiTextStyle
 import com.github.naz013.ui.common.theme.ColorProvider
 import com.github.naz013.ui.group.UiGroupListAdapter
 import com.github.naz013.ui.reminder.UiReminderDueData
+import com.github.naz013.ui.reminder.UiReminderList
+import com.github.naz013.ui.reminder.UiReminderListActions
+import com.github.naz013.ui.reminder.UiReminderListAdapter
+import com.github.naz013.ui.reminder.UiReminderListState
 
-class UiReminderListAdapter internal constructor(
+internal class UiReminderListAdapterImpl(
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,
   private val unitsConverter: UnitsConverter,
   private val colorProvider: ColorProvider,
@@ -31,12 +35,12 @@ class UiReminderListAdapter internal constructor(
   private val dateTimeManager: DateTimeManager,
   private val recurEventManager: RecurEventManager,
   private val placeFormatterFactory: PlaceFormatterFactory,
-) {
+) : UiReminderListAdapter {
   private val placeFormatter: PlaceFormatter by lazy { placeFormatterFactory.create() }
 
   /** [group] is resolved by the caller (V2 doesn't denormalize group title/color onto the
    * reminder the way V1 does). */
-  fun createV2(
+  override fun createV2(
     data: ReminderV2,
     group: GroupV2?,
   ): UiReminderList {

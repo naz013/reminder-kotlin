@@ -12,6 +12,7 @@ dependencies {
   implementation(project(":core:analytics"))
   implementation(project(":ui:ui-common"))
   implementation(project(":core:platform-common"))
+  implementation(project(":core:date-calculations"))
 
   implementation(libs.koin.android)
   implementation(libs.androidx.core.ktx)

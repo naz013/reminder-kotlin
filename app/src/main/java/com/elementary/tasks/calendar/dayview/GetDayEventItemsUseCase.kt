@@ -7,7 +7,7 @@ import com.elementary.tasks.home.agenda.AgendaCategory
 import com.elementary.tasks.home.agenda.UiAgendaBirthday
 import com.elementary.tasks.home.agenda.UiAgendaItem
 import com.elementary.tasks.home.agenda.UiAgendaReminder
-import com.github.naz013.feature.reminder.lists.data.UiReminderListAdapter
+import com.github.naz013.ui.reminder.UiReminderListAdapter
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.history.EventHistoricalRecordType

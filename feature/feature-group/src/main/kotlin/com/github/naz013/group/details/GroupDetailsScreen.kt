@@ -1,4 +1,4 @@
-package com.elementary.tasks.groups.details
+package com.github.naz013.group.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,13 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.elementary.tasks.R
-import com.github.naz013.ui.common.text.UiTextElement
-import com.github.naz013.ui.common.text.UiTextFormat
-import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
-import com.github.naz013.feature.reminder.lists.data.UiReminderList
-import com.github.naz013.feature.reminder.lists.data.UiReminderListActions
-import com.github.naz013.feature.reminder.lists.data.UiReminderListState
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -44,12 +38,18 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.toColor
+import com.github.naz013.ui.common.text.UiTextElement
+import com.github.naz013.ui.common.text.UiTextFormat
+import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
+import com.github.naz013.ui.reminder.UiReminderList
+import com.github.naz013.ui.reminder.UiReminderListActions
+import com.github.naz013.ui.reminder.UiReminderListState
 
 private val COLOR_DOT_SIZE = 14.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupDetailsScreen(
+internal fun GroupDetailsScreen(
   modifier: Modifier = Modifier,
   state: GroupDetailsState,
   onBackClick: () -> Unit,

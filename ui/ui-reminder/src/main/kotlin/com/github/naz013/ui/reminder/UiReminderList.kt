@@ -1,4 +1,4 @@
-package com.github.naz013.feature.reminder.lists.data
+package com.github.naz013.ui.reminder
 
 import com.github.naz013.ui.common.text.UiTextElement
 import org.threeten.bp.LocalDateTime

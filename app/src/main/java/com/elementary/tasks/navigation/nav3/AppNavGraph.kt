@@ -30,33 +30,32 @@ import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
 import com.elementary.tasks.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.calendar.monthview.calendarEntries
-import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
+import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
-import com.elementary.tasks.groups.groupDetailsEntries
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
 import com.elementary.tasks.places.placesEntries
-import com.elementary.tasks.telephony.rememberPhoneCaller
-import com.elementary.tasks.telephony.rememberSmsSender
-import com.github.naz013.feature.reminder.build.BuildReminderNavKey
-import com.github.naz013.feature.reminder.build.buildReminderEntries
-import com.github.naz013.feature.reminder.lists.removed.remindersArchiveEntries
-import com.github.naz013.feature.reminder.preview.reminderPreviewEntries
-import com.elementary.tasks.settings.rememberSendIntentResolver
-import com.elementary.tasks.share.rememberFileIntentSender
-import com.github.naz013.feature.reminder.todo.todoEditEntries
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.exportEntries
 import com.elementary.tasks.settings.location.locationEntries
 import com.elementary.tasks.settings.other.otherEntries
+import com.elementary.tasks.settings.rememberSendIntentResolver
 import com.elementary.tasks.settings.security.securityEntries
 import com.elementary.tasks.settings.settingsEntries
+import com.elementary.tasks.share.rememberFileIntentSender
+import com.elementary.tasks.telephony.rememberPhoneCaller
+import com.elementary.tasks.telephony.rememberSmsSender
 import com.github.naz013.feature.birthday.birthdaysEntries
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.feature.googletask.googleTasksEntries
 import com.github.naz013.feature.note.NotesNavKey
 import com.github.naz013.feature.note.notesEntries
+import com.github.naz013.feature.reminder.build.BuildReminderNavKey
+import com.github.naz013.feature.reminder.build.buildReminderEntries
+import com.github.naz013.feature.reminder.lists.removed.remindersArchiveEntries
+import com.github.naz013.feature.reminder.preview.reminderPreviewEntries
+import com.github.naz013.feature.reminder.todo.todoEditEntries
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.feature.workflow.workflowEntries
 import com.github.naz013.group.GroupsNavKey
@@ -168,7 +167,6 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Group) },
           onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
         )
-        groupDetailsEntries(backStack)
         placesEntries(backStack)
         birthdaysEntries(
           backStack = backStack,

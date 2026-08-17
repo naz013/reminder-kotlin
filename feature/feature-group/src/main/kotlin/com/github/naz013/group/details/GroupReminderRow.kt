@@ -1,13 +1,12 @@
-package com.elementary.tasks.groups.details
+package com.github.naz013.group.details
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.naz013.ui.common.compose.foundation.component.AgendaListItem
-import com.github.naz013.feature.reminder.lists.data.UiReminderList
+import com.github.naz013.ui.reminder.UiReminderList
 
-/** Thin wrapper around [AgendaListItem] for a group's reminders: tap-through only, no per-row menu. */
 @Composable
-fun GroupReminderRow(
+internal fun GroupReminderRow(
   item: UiReminderList,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,

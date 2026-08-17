@@ -1,8 +1,8 @@
 package com.elementary.tasks.home.agenda
 
 import com.github.naz013.ui.common.text.UiTextElement
-import com.github.naz013.feature.reminder.lists.data.UiReminderListActions
-import com.github.naz013.feature.reminder.lists.data.UiReminderListState
+import com.github.naz013.ui.reminder.UiReminderListActions
+import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.logic.reminder.smartlist.SmartListFilter

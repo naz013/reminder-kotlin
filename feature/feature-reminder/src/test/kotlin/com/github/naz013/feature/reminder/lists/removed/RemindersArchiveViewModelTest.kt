@@ -2,10 +2,10 @@ package com.github.naz013.feature.reminder.lists.removed
 
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
-import com.github.naz013.feature.reminder.lists.data.UiReminderList
-import com.github.naz013.feature.reminder.lists.data.UiReminderListActions
-import com.github.naz013.feature.reminder.lists.data.UiReminderListAdapter
-import com.github.naz013.feature.reminder.lists.data.UiReminderListState
+import com.github.naz013.ui.reminder.UiReminderList
+import com.github.naz013.ui.reminder.UiReminderListActions
+import com.github.naz013.ui.reminder.UiReminderListAdapter
+import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase

@@ -1,6 +1,6 @@
 package com.github.naz013.feature.reminder.lists.removed
 
-import com.github.naz013.feature.reminder.lists.data.UiReminderList
+import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
 data class RemindersArchiveScreenState(

@@ -5,8 +5,8 @@ import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.github.naz013.ui.common.text.UiTextElement
 import com.github.naz013.ui.common.text.UiTextFormat
 import com.elementary.tasks.mockDispatcherProvider
-import com.github.naz013.feature.reminder.lists.data.UiReminderListActions
-import com.github.naz013.feature.reminder.lists.data.UiReminderListState
+import com.github.naz013.ui.reminder.UiReminderListActions
+import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase

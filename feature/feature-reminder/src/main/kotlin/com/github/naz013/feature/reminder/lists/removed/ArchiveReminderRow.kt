@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.AgendaListItem
-import com.github.naz013.feature.reminder.lists.data.UiReminderList
+import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 @Composable
