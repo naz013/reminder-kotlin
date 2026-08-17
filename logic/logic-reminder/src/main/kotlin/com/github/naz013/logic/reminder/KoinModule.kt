@@ -18,6 +18,8 @@ import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveOneTimeReminderUseCaseImpl
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
+import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCase
+import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCaseImpl
 import com.github.naz013.logic.reminder.usecase.StartLocationTrackingUseCase
 import com.github.naz013.logic.reminder.usecase.StopLocationTrackingUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
@@ -62,4 +64,6 @@ val logicReminderModule = module {
   factoryOf(::SkipReminderUseCase)
   factoryOf(::ToggleReminderStateUseCase)
   factory { EventDateTimeCalculatorV2(get(), get()) }
+
+  factory { SnoozeReminderUseCaseImpl(get(), get(), get(), get(), get(), get()) as SnoozeReminderUseCase }
 }

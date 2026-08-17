@@ -9,7 +9,7 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.feature.workflow.WorkflowTriggerRunner
+import com.github.naz013.logic.workflow.WorkflowTriggerRunner
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
 import com.github.naz013.repository.ReminderV2Repository

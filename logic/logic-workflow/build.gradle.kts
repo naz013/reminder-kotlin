@@ -7,6 +7,7 @@ dependencies {
   implementation(project(":core:domain"))
   implementation(project(":data:repository-api"))
   implementation(project(":data:work-api"))
+  implementation(project(":logic:logic-reminder"))
 
   implementation(libs.koin.core)
   implementation(libs.threetenbp)

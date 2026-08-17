@@ -16,7 +16,7 @@ import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.feature.workflow.WorkflowTriggerRunner
+import com.github.naz013.logic.workflow.WorkflowTriggerRunner
 import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.scheduler.JobSchedulerApi

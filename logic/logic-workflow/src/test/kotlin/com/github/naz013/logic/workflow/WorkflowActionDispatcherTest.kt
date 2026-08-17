@@ -1,11 +1,10 @@
-package com.github.naz013.feature.workflow
+package com.github.naz013.logic.workflow
 
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
-import com.github.naz013.logic.workflow.PendingWorkflowAction
 import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.coVerify

@@ -1,9 +1,14 @@
 package com.github.naz013.logic.workflow
 
+import com.github.naz013.logic.reminder.ReminderWorkflowTrigger
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val logicWorkflowModule = module {
   factory { WorkflowEngine(get(), get(), get(), get()) }
+  factoryOf(::WorkflowActionDispatcher)
+  factoryOf(::WorkflowTriggerRunner)
+  factory<ReminderWorkflowTrigger> { get<WorkflowTriggerRunner>() }
   factory { ApplyWorkflowTemplateUseCase(get(), get()) }
   factory { SaveWorkflowRuleAsTemplateUseCase(get(), get()) }
   factory { CreateWorkflowRuleUseCase(get()) }
