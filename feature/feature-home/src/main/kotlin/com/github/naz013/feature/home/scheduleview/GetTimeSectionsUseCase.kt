@@ -1,7 +1,7 @@
-package com.elementary.tasks.home.scheduleview
+package com.github.naz013.feature.home.scheduleview
 
-import com.elementary.tasks.home.HomeEvent
-import com.elementary.tasks.home.TimeSection
+import com.github.naz013.feature.home.HomeEvent
+import com.github.naz013.feature.home.TimeSection
 import com.github.naz013.datecalc.DateTimeManager
 
 class GetTimeSectionsUseCase(

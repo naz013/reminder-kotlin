@@ -17,7 +17,6 @@ import com.github.naz013.feature.reminder.build.bi.BiFilter
 import com.github.naz013.feature.reminder.build.bi.LocationFilter
 import com.github.naz013.feature.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.github.naz013.feature.reminder.build.formatter.factory.RadiusFormatterFactory
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.feature.reminder.build.logic.BuilderItemBlockedByConstraintCalculator
 import com.github.naz013.feature.reminder.build.logic.BuilderItemMandatoryIfConstraintCalculator
 import com.github.naz013.feature.reminder.build.logic.BuilderItemPermissionConstraintCalculator
@@ -331,8 +330,6 @@ val featureReminderModule = module {
   factory { DefaultPresetsGenerateUseCase(get(), get(), get(), get()) }
 
   factoryOf(::QuickStartItemsProvider)
-
-  factory { ShopItemsFormatter(get()) }
 
   single { RadiusFormatterFactory(get(), get()) }
   single { PlaceFormatterFactory(get()) }

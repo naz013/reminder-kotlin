@@ -1,17 +1,16 @@
-package com.elementary.tasks.home.scheduleview
+package com.github.naz013.feature.home.scheduleview
 
-import com.elementary.tasks.BaseTest
+import com.github.naz013.testing.BaseTest
 import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.featureflags.FeatureFlags
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.eventaction.ResolvedEventAction
-import com.elementary.tasks.home.BannerState
-import com.elementary.tasks.home.HeaderNavigationItem
-import com.elementary.tasks.home.HomeEvent
-import com.elementary.tasks.home.HomeScreenState
-import com.elementary.tasks.home.ListState
-import com.elementary.tasks.mockDispatcherProvider
-import com.elementary.tasks.whatsnew.WhatsNewManager
+import com.github.naz013.feature.home.HomePreferences
+import com.github.naz013.feature.home.ResolvedEventAction
+import com.github.naz013.feature.home.BannerState
+import com.github.naz013.feature.home.HeaderNavigationItem
+import com.github.naz013.feature.home.HomeEvent
+import com.github.naz013.feature.home.HomeScreenState
+import com.github.naz013.feature.home.ListState
+import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.legal.LegalDocumentRepository
@@ -35,7 +34,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
   private val getGreetingTextUseCase = mockk<GetGreetingTextUseCase>()
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>()
   private val getNavigationItemsUseCase = mockk<GetNavigationItemsUseCase>()
-  private val prefs = mockk<Prefs>(relaxed = true)
+  private val homePreferences = mockk<HomePreferences>(relaxed = true)
   private val featureFlags = mockk<FeatureFlags>()
   private val whatsNewManager = mockk<WhatsNewManager>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
@@ -55,7 +54,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
     every { getTimeSectionsUseCase(any()) } returns emptyList()
     coEvery { getNavigationItemsUseCase(any(), any()) } returns emptyList()
     every { legalDocumentRepository.hasUpdate(any()) } returns false
-    every { prefs.isUserLogged } returns true
+    every { homePreferences.isUserLogged } returns true
     every { featureFlags.isEnabled(any()) } returns false
     every { whatsNewManager.hasChanges() } returns false
 
@@ -67,7 +66,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
         getGreetingTextUseCase = getGreetingTextUseCase,
         googleTasksAuthManager = googleTasksAuthManager,
         getNavigationItemsUseCase = getNavigationItemsUseCase,
-        prefs = prefs,
+        homePreferences = homePreferences,
         featureFlags = featureFlags,
         whatsNewManager = whatsNewManager,
         analyticsEventSender = analyticsEventSender,
@@ -131,7 +130,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
         )
       coEvery { getActiveEventsForTheDayUseCase(any(), any()) } returns listOf(event)
       every { getTimeSectionsUseCase(listOf(event)) } returns
-        listOf(com.elementary.tasks.home.TimeSection(time = "9:00", event = event))
+        listOf(com.github.naz013.feature.home.TimeSection(time = "9:00", event = event))
 
       val state = viewModel.state.first()
 
@@ -153,7 +152,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
   @Test
   fun `loadData shows the login banner when the user is logged out and google drive is enabled`() =
     runTest {
-      every { prefs.isUserLogged } returns false
+      every { homePreferences.isUserLogged } returns false
       every { featureFlags.isEnabled(FeatureFlag.GOOGLE_DRIVE) } returns true
 
       val state = viewModel.state.first()
@@ -243,7 +242,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
   fun `onLoginDismissClick marks the user logged in without posting an event`() {
     viewModel.onLoginDismissClick()
 
-    verify { prefs.isUserLogged = true }
+    verify { homePreferences.isUserLogged = true }
     assertEquals(null, viewModel.event.value?.peekContent())
   }
 
@@ -251,7 +250,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
   fun `onLoginClick marks the user logged in and posts OpenCloudDrives`() {
     viewModel.onLoginClick()
 
-    verify { prefs.isUserLogged = true }
+    verify { homePreferences.isUserLogged = true }
     assertEquals(
       ScheduleHomeViewModel.ViewModelEvent.OpenCloudDrives,
       viewModel.event.value?.peekContent(),

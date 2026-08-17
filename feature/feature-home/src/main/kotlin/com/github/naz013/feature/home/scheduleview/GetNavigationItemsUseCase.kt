@@ -1,7 +1,7 @@
-package com.elementary.tasks.home.scheduleview
+package com.github.naz013.feature.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
-import com.elementary.tasks.home.HeaderNavigationItem
+import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider

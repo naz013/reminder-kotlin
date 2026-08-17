@@ -1,26 +1,26 @@
-package com.elementary.tasks.whatsnew
+package com.github.naz013.feature.home.scheduleview
 
-import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.common.PackageManagerWrapper
 
 class WhatsNewManager(
-  private val prefs: Prefs,
+  private val homePreferences: HomePreferences,
   private val packageManagerWrapper: PackageManagerWrapper,
 ) {
   fun hasChanges(): Boolean {
     val versionCode = packageManagerWrapper.getVersionCode()
-    val prefsVersionCode = prefs.lastVersionCode
+    val prefsVersionCode = homePreferences.lastVersionCode
     return if (prefsVersionCode < versionCode) {
       true
     } else {
       if (prefsVersionCode != versionCode) {
-        prefs.lastVersionCode = versionCode
+        homePreferences.lastVersionCode = versionCode
       }
       false
     }
   }
 
   fun hideWhatsNew() {
-    prefs.lastVersionCode = packageManagerWrapper.getVersionCode()
+    homePreferences.lastVersionCode = packageManagerWrapper.getVersionCode()
   }
 }

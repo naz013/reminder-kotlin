@@ -11,7 +11,7 @@ import com.github.naz013.feature.reminder.build.GroupBuilderItem
 import com.github.naz013.feature.reminder.build.SubTasksBuilderItem
 import com.github.naz013.feature.reminder.build.SummaryBuilderItem
 import com.github.naz013.feature.reminder.build.bi.BiFactory
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.feature.reminder.build.reminder.BiToReminderAdapter
 import com.github.naz013.feature.reminder.build.reminder.ReminderToBiDecomposer
 import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase

@@ -2,6 +2,7 @@ package com.elementary.tasks.eventaction
 
 import androidx.compose.runtime.Composable
 import com.elementary.tasks.BuildConfig
+import com.github.naz013.feature.home.ResolvedEventAction
 import com.github.naz013.ui.common.permission.PermissionRequester
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.feature.settings.SendEmailResolver

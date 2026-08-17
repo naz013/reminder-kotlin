@@ -1,11 +1,11 @@
-package com.elementary.tasks.home.scheduleview
+package com.github.naz013.feature.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
-import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.eventaction.ResolvedEventAction
-import com.elementary.tasks.home.HomeEvent
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.ui.common.R
+import com.github.naz013.feature.home.HomePreferences
+import com.github.naz013.feature.home.ResolvedEventAction
+import com.github.naz013.feature.home.HomeEvent
+import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -35,7 +35,7 @@ class GetActiveEventsForTheDayUseCase(
   private val textProvider: TextProvider,
   private val shopItemsFormatter: ShopItemsFormatter,
   private val contextProvider: ContextProvider,
-  private val prefs: Prefs,
+  private val homePreferences: HomePreferences,
 ) {
   suspend operator fun invoke(
     scope: CoroutineScope,
@@ -187,7 +187,7 @@ class GetActiveEventsForTheDayUseCase(
       )
     val color =
       ThemeProvider
-        .colorBirthdayCalendar(contextProvider.context, prefs.birthdayColor)
+        .colorBirthdayCalendar(contextProvider.context, homePreferences.birthdayColor)
         .toColor()
     return HomeEvent(
       id = birthday.uuId,

@@ -17,7 +17,6 @@ import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
-import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
 import com.elementary.tasks.module.platform.InstallReferrerReader
 import com.elementary.tasks.navigation.NavigationConsumer
@@ -37,6 +36,7 @@ import com.github.naz013.feature.calendar.featureCalendarModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
+import com.github.naz013.feature.home.featureHomeModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.feature.reminder.featureReminderModule
 import com.github.naz013.feature.settings.featureSettingsModule
@@ -155,7 +155,7 @@ class ReminderApp :
           logicBirthdayModule,
           featureCalendarModule,
           featureAgendaModule,
-          homeModule,
+          featureHomeModule,
           featureGoogleTaskModule,
           logicGoogleTaskModule,
           servicesModule,

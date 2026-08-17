@@ -37,8 +37,9 @@ import com.github.naz013.feature.calendar.monthview.calendarEntries
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPicker
 import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
-import com.elementary.tasks.home.HomeNavKey
-import com.elementary.tasks.home.homeEntries
+import com.elementary.tasks.eventaction.rememberEventActionDispatcher
+import com.github.naz013.feature.home.HomeNavKey
+import com.github.naz013.feature.home.homeEntries
 import com.elementary.tasks.navigation.BottomNavActivity
 import com.elementary.tasks.places.PlacesNavKey
 import com.elementary.tasks.places.placesEntries
@@ -65,8 +66,10 @@ import com.github.naz013.feature.reminder.settings.help.NotificationCustomizatio
 import com.github.naz013.feature.reminder.todo.TodoEditNavKey
 import com.github.naz013.feature.reminder.todo.todoEditEntries
 import com.github.naz013.feature.settings.SettingsNavKey
+import com.github.naz013.feature.settings.export.ExportNavKey
 import com.github.naz013.feature.settings.export.exportEntries
 import com.github.naz013.feature.settings.location.locationEntries
+import com.github.naz013.feature.settings.other.OtherNavKey
 import com.github.naz013.feature.settings.other.otherEntries
 import com.github.naz013.feature.settings.rememberSendIntentResolver
 import com.github.naz013.feature.settings.security.securityEntries
@@ -108,6 +111,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val context = LocalContext.current
   val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
   val appNavBridge = rememberAppNavBridge()
+  val eventActionDispatcher = rememberEventActionDispatcher()
   val phoneCaller = rememberPhoneCaller()
   val smsSender = rememberSmsSender()
   val fileIntentSender = rememberFileIntentSender()
@@ -172,7 +176,33 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
     },
     entryProvider =
       entryProvider {
-        homeEntries(backStack)
+        homeEntries(
+          backStack = backStack,
+          onOpenReminderPreview = { id -> backStack.add(ReminderPreviewNavKey.Preview(id)) },
+          onOpenBirthdayPreview = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
+          onOpenSettings = { backStack.add(SettingsNavKey.Hub) },
+          onOpenCreateReminder = { backStack.add(BuildReminderNavKey.Main()) },
+          onOpenCreateBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
+          onOpenCreateGoogleTask = {
+            backStack.add(GoogleTasksNavKey.List)
+            backStack.add(GoogleTasksNavKey.TaskEdit())
+          },
+          onOpenCalendar = { backStack.add(CalendarNavKey.Month) },
+          onOpenAgenda = { backStack.add(AgendaNavKey.List) },
+          onOpenNotes = { backStack.add(NotesNavKey.List) },
+          onOpenGoogleTasks = { backStack.add(GoogleTasksNavKey.List) },
+          onOpenGroups = { backStack.add(GroupsNavKey.List) },
+          onOpenWorkflowGallery = { backStack.add(WorkflowNavKey.Gallery) },
+          onOpenPrivacyPolicy = { backStack.add(OtherNavKey.PrivacyPolicy) },
+          onOpenCloudDrives = { backStack.add(ExportNavKey.CloudServices) },
+          onOpenWhatsNew = { backStack.add(OtherNavKey.WhatsNew) },
+          onOpenCreateNote = {
+            backStack.add(NotesNavKey.List)
+            backStack.add(NotesNavKey.Edit())
+          },
+          onOpenCreateTodo = { backStack.add(TodoEditNavKey.Main()) },
+          onEventAction = { action -> eventActionDispatcher.dispatch(action) },
+        )
         notesEntries(
           backStack = backStack,
           applicationId = BuildConfig.APPLICATION_ID,

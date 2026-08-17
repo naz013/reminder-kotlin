@@ -1,4 +1,4 @@
-package com.elementary.tasks.home
+package com.github.naz013.feature.home
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

@@ -1,4 +1,4 @@
-package com.elementary.tasks.home
+package com.github.naz013.feature.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,109 +10,152 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.naz013.feature.agenda.AgendaNavKey
-import com.github.naz013.feature.birthday.BirthdaysNavKey
-import com.github.naz013.feature.calendar.monthview.CalendarNavKey
-import com.elementary.tasks.eventaction.rememberEventActionDispatcher
-import com.github.naz013.feature.googletask.GoogleTasksNavKey
-import com.github.naz013.group.GroupsNavKey
-import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
-import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
-import com.github.naz013.feature.note.NotesNavKey
+import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
 import com.github.naz013.ui.common.livedata.ObserveEvent
-import com.github.naz013.feature.reminder.build.BuildReminderNavKey
-import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
-import com.github.naz013.feature.reminder.todo.TodoEditNavKey
-import com.github.naz013.feature.settings.SettingsNavKey
-import com.github.naz013.feature.settings.export.ExportNavKey
-import com.github.naz013.feature.settings.other.OtherNavKey
-import com.github.naz013.feature.workflow.WorkflowNavKey
 import org.koin.compose.viewmodel.koinViewModel
 
-fun EntryProviderScope<NavKey>.homeEntries(backStack: MutableList<NavKey>) {
-  entry<HomeNavKey.Main> { HomeEntry(backStack) }
+fun EntryProviderScope<NavKey>.homeEntries(
+  backStack: MutableList<NavKey>,
+  onOpenReminderPreview: (id: String) -> Unit,
+  onOpenBirthdayPreview: (id: String) -> Unit,
+  onOpenSettings: () -> Unit,
+  onOpenCreateReminder: () -> Unit,
+  onOpenCreateBirthday: () -> Unit,
+  onOpenCreateGoogleTask: () -> Unit,
+  onOpenCalendar: () -> Unit,
+  onOpenAgenda: () -> Unit,
+  onOpenNotes: () -> Unit,
+  onOpenGoogleTasks: () -> Unit,
+  onOpenGroups: () -> Unit,
+  onOpenWorkflowGallery: () -> Unit,
+  onOpenPrivacyPolicy: () -> Unit,
+  onOpenCloudDrives: () -> Unit,
+  onOpenWhatsNew: () -> Unit,
+  onOpenCreateNote: () -> Unit,
+  onOpenCreateTodo: () -> Unit,
+  onEventAction: (ResolvedEventAction) -> Unit,
+) {
+  entry<HomeNavKey.Main> {
+    HomeEntry(
+      onOpenReminderPreview = onOpenReminderPreview,
+      onOpenBirthdayPreview = onOpenBirthdayPreview,
+      onOpenSettings = onOpenSettings,
+      onOpenCreateReminder = onOpenCreateReminder,
+      onOpenCreateBirthday = onOpenCreateBirthday,
+      onOpenCreateGoogleTask = onOpenCreateGoogleTask,
+      onOpenCalendar = onOpenCalendar,
+      onOpenAgenda = onOpenAgenda,
+      onOpenNotes = onOpenNotes,
+      onOpenGoogleTasks = onOpenGoogleTasks,
+      onOpenGroups = onOpenGroups,
+      onOpenWorkflowGallery = onOpenWorkflowGallery,
+      onOpenPrivacyPolicy = onOpenPrivacyPolicy,
+      onOpenCloudDrives = onOpenCloudDrives,
+      onOpenWhatsNew = onOpenWhatsNew,
+      onOpenCreateNote = onOpenCreateNote,
+      onOpenCreateTodo = onOpenCreateTodo,
+      onEventAction = onEventAction,
+    )
+  }
 }
 
 @Composable
-private fun HomeEntry(backStack: MutableList<NavKey>) {
+private fun HomeEntry(
+  onOpenReminderPreview: (id: String) -> Unit,
+  onOpenBirthdayPreview: (id: String) -> Unit,
+  onOpenSettings: () -> Unit,
+  onOpenCreateReminder: () -> Unit,
+  onOpenCreateBirthday: () -> Unit,
+  onOpenCreateGoogleTask: () -> Unit,
+  onOpenCalendar: () -> Unit,
+  onOpenAgenda: () -> Unit,
+  onOpenNotes: () -> Unit,
+  onOpenGoogleTasks: () -> Unit,
+  onOpenGroups: () -> Unit,
+  onOpenWorkflowGallery: () -> Unit,
+  onOpenPrivacyPolicy: () -> Unit,
+  onOpenCloudDrives: () -> Unit,
+  onOpenWhatsNew: () -> Unit,
+  onOpenCreateNote: () -> Unit,
+  onOpenCreateTodo: () -> Unit,
+  onEventAction: (ResolvedEventAction) -> Unit,
+) {
   val viewModel = koinViewModel<ScheduleHomeViewModel>()
-  val appNavBridge = rememberAppNavBridge()
-  val eventActionDispatcher = rememberEventActionDispatcher()
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is ScheduleHomeViewModel.ViewModelEvent.OpenReminderDetails -> {
-        backStack.add(ReminderPreviewNavKey.Preview(event.uuid))
+        onOpenReminderPreview(event.uuid)
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenBirthdayDetails -> {
-        appNavBridge.navigate(BirthdaysNavKey.Preview(event.uuid))
+        onOpenBirthdayPreview(event.uuid)
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.ShowEventTypeSelection -> Unit
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenSettings -> {
-        backStack.add(SettingsNavKey.Hub)
+        onOpenSettings()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenCreateReminder -> {
-        appNavBridge.navigate(BuildReminderNavKey.Main())
+        onOpenCreateReminder()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenCreateBirthday -> {
-        appNavBridge.navigate(BirthdaysNavKey.Edit())
+        onOpenCreateBirthday()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenCreateGoogleTask -> {
-        appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit())
+        onOpenCreateGoogleTask()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenCalendar -> {
-        backStack.add(CalendarNavKey.Month)
+        onOpenCalendar()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenAgenda -> {
-        backStack.add(AgendaNavKey.List)
+        onOpenAgenda()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenNotes -> {
-        appNavBridge.navigate(NotesNavKey.List)
+        onOpenNotes()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks -> {
-        appNavBridge.navigate(GoogleTasksNavKey.List)
+        onOpenGoogleTasks()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenGroups -> {
-        appNavBridge.navigate(GroupsNavKey.List)
+        onOpenGroups()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery -> {
-        appNavBridge.navigate(WorkflowNavKey.Gallery)
+        onOpenWorkflowGallery()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenPrivacy -> {
-        backStack.add(OtherNavKey.PrivacyPolicy)
+        onOpenPrivacyPolicy()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenCloudDrives -> {
-        backStack.add(ExportNavKey.CloudServices)
+        onOpenCloudDrives()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenWhatsNew -> {
-        backStack.add(OtherNavKey.WhatsNew)
+        onOpenWhatsNew()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenCreateNote -> {
-        appNavBridge.navigate(NotesNavKey.List, NotesNavKey.Edit())
+        onOpenCreateNote()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.EventAction -> {
-        eventActionDispatcher.dispatch(event.value)
+        onEventAction(event.value)
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenCreateTodo -> {
-        appNavBridge.navigate(TodoEditNavKey.Main())
+        onOpenCreateTodo()
       }
     }
   }

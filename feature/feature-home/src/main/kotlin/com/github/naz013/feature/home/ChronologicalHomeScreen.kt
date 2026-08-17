@@ -1,4 +1,4 @@
-package com.elementary.tasks.home
+package com.github.naz013.feature.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -58,8 +58,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.elementary.tasks.eventaction.ResolvedEventAction
-import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
+import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton

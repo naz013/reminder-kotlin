@@ -1,17 +1,16 @@
-package com.elementary.tasks.home.scheduleview
+package com.github.naz013.feature.home.scheduleview
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.eventaction.ResolvedEventAction
-import com.elementary.tasks.home.BannerState
-import com.elementary.tasks.home.HeaderNavigationItem
-import com.elementary.tasks.home.HomeEvent
-import com.elementary.tasks.home.HomeScreenState
-import com.elementary.tasks.home.ListState
-import com.elementary.tasks.whatsnew.WhatsNewManager
+import com.github.naz013.feature.home.HomePreferences
+import com.github.naz013.feature.home.ResolvedEventAction
+import com.github.naz013.feature.home.BannerState
+import com.github.naz013.feature.home.HeaderNavigationItem
+import com.github.naz013.feature.home.HomeEvent
+import com.github.naz013.feature.home.HomeScreenState
+import com.github.naz013.feature.home.ListState
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -40,7 +39,7 @@ class ScheduleHomeViewModel(
   private val getGreetingTextUseCase: GetGreetingTextUseCase,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val getNavigationItemsUseCase: GetNavigationItemsUseCase,
-  private val prefs: Prefs,
+  private val homePreferences: HomePreferences,
   private val featureFlags: FeatureFlags,
   private val whatsNewManager: WhatsNewManager,
   private val analyticsEventSender: AnalyticsEventSender,
@@ -105,7 +104,7 @@ class ScheduleHomeViewModel(
 
   fun onLoginDismissClick() {
     Logger.i(TAG, "On login dismiss click")
-    prefs.isUserLogged = true
+    homePreferences.isUserLogged = true
     _state.update {
       it.copy(bannerState = getBannerState())
     }
@@ -113,7 +112,7 @@ class ScheduleHomeViewModel(
 
   fun onLoginClick() {
     Logger.i(TAG, "On login click")
-    prefs.isUserLogged = true
+    homePreferences.isUserLogged = true
     _state.update {
       it.copy(bannerState = getBannerState())
     }
@@ -211,7 +210,7 @@ class ScheduleHomeViewModel(
       Logger.v(TAG, "Privacy banner is shown")
       return BannerState.Privacy
     }
-    if (!prefs.isUserLogged && featureFlags.isEnabled(FeatureFlag.GOOGLE_DRIVE)) {
+    if (!homePreferences.isUserLogged && featureFlags.isEnabled(FeatureFlag.GOOGLE_DRIVE)) {
       Logger.v(TAG, "Login banner is shown")
       return BannerState.Login
     }

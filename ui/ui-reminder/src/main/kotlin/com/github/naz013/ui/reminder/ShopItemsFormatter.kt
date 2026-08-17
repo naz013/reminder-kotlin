@@ -1,4 +1,4 @@
-package com.github.naz013.feature.reminder.build.formatter.`object`
+package com.github.naz013.ui.reminder
 
 import android.content.Context
 import com.github.naz013.ui.common.R

@@ -1,9 +1,8 @@
-package com.elementary.tasks.home
+package com.github.naz013.feature.home
 
 import androidx.compose.ui.graphics.Color
-import com.elementary.tasks.R
-import com.elementary.tasks.eventaction.ResolvedEventAction
-import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
+import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
+import com.github.naz013.ui.common.R
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 

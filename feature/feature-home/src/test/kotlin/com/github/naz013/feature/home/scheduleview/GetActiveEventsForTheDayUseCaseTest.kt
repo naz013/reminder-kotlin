@@ -1,11 +1,11 @@
-package com.elementary.tasks.home.scheduleview
+package com.github.naz013.feature.home.scheduleview
 
 import android.content.Context
-import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.eventaction.ResolvedEventAction
-import com.elementary.tasks.mockDispatcherProvider
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.testing.BaseTest
+import com.github.naz013.feature.home.HomePreferences
+import com.github.naz013.feature.home.ResolvedEventAction
+import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -40,7 +40,7 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val shopItemsFormatter = mockk<ShopItemsFormatter>(relaxed = true)
   private val contextProvider = mockk<ContextProvider>()
-  private val prefs = mockk<Prefs>(relaxed = true)
+  private val homePreferences = mockk<HomePreferences>(relaxed = true)
 
   private lateinit var useCase: GetActiveEventsForTheDayUseCase
 
@@ -84,7 +84,7 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
       textProvider = textProvider,
       shopItemsFormatter = shopItemsFormatter,
       contextProvider = contextProvider,
-      prefs = prefs,
+      homePreferences = homePreferences,
     )
   }
 

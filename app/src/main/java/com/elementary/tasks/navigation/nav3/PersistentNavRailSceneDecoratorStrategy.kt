@@ -23,7 +23,7 @@ import com.github.naz013.ui.common.compose.foundation.navigation.AppNavigationSc
  * key is already somewhere on [backStack] it pops back to it, otherwise it's pushed. The selected
  * item is derived the same way - the *deepest* entry on [backStack] that matches one of
  * [destinations], so drilling into e.g. a note preview keeps "Notes" highlighted rather than
- * losing selection. [HomeNavKey.Main][com.elementary.tasks.home.HomeNavKey] is always present at
+ * losing selection. [HomeNavKey.Main][com.github.naz013.feature.home.HomeNavKey] is always present at
  * the bottom of [backStack] (the graph's start destination), so there is always a fallback match.
  *
  * This decorator is applied outside the Nav3 entry-scoped `ViewModelStoreOwner`

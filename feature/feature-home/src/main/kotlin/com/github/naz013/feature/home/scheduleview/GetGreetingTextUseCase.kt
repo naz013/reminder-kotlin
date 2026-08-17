@@ -1,6 +1,6 @@
-package com.elementary.tasks.home.scheduleview
+package com.github.naz013.feature.home.scheduleview
 
-import com.elementary.tasks.R
+import com.github.naz013.ui.common.R
 import com.github.naz013.common.TextProvider
 import org.threeten.bp.LocalTime
 
