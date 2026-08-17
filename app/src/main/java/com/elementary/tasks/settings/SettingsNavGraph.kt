@@ -28,7 +28,7 @@ import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
-import com.elementary.tasks.reminder.build.preset.ManagePresetsViewModel
+import com.github.naz013.feature.reminder.build.preset.ManagePresetsViewModel
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.backup.BackupSettingsScreen
 import com.github.naz013.feature.birthday.settings.BirthdaySettingsEvent
@@ -51,11 +51,11 @@ import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
-import com.elementary.tasks.settings.reminders.ManagePresetsScreen
-import com.elementary.tasks.settings.reminders.RemindersSettingsEvent
-import com.elementary.tasks.settings.reminders.RemindersSettingsScreen
-import com.elementary.tasks.settings.reminders.RemindersSettingsViewModel
-import com.elementary.tasks.settings.reminders.help.NotificationCustomizationHelpScreen
+import com.github.naz013.feature.reminder.settings.ManagePresetsScreen
+import com.github.naz013.feature.reminder.settings.RemindersSettingsEvent
+import com.github.naz013.feature.reminder.settings.RemindersSettingsScreen
+import com.github.naz013.feature.reminder.settings.RemindersSettingsViewModel
+import com.github.naz013.feature.reminder.settings.help.NotificationCustomizationHelpScreen
 import com.elementary.tasks.settings.security.SecurityNavKey
 import com.elementary.tasks.settings.test.DeveloperEvent
 import com.elementary.tasks.settings.test.DeveloperScreen

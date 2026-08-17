@@ -24,10 +24,10 @@ import com.elementary.tasks.home.scheduleview.ScheduleHomeViewModel
 import com.elementary.tasks.navigation.nav3.rememberAppNavBridge
 import com.github.naz013.feature.note.NotesNavKey
 import com.github.naz013.ui.common.livedata.ObserveEvent
-import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.elementary.tasks.reminder.lists.removed.RemindersArchiveNavKey
-import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
-import com.elementary.tasks.reminder.todo.TodoEditNavKey
+import com.github.naz013.feature.reminder.build.BuildReminderNavKey
+import com.github.naz013.feature.reminder.lists.removed.RemindersArchiveNavKey
+import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
+import com.github.naz013.feature.reminder.todo.TodoEditNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.ExportNavKey
 import com.elementary.tasks.settings.other.OtherNavKey

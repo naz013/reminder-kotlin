@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.elementary.tasks.R
+import com.github.naz013.ui.common.compose.foundation.component.AgendaListItem
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 /**

@@ -7,7 +7,7 @@ import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.places.PlacesNavKey
 import com.elementary.tasks.places.usecase.DeletePlaceUseCase
 import com.elementary.tasks.places.usecase.SavePlaceUseCase
-import com.elementary.tasks.simplemap.MarkerState
+import com.github.naz013.ui.map.MarkerState
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Place

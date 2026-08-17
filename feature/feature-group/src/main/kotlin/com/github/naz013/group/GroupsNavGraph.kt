@@ -10,10 +10,15 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.reminder.build.BuildReminderNavKey
+import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.group.create.EditGroupScreen
 import com.github.naz013.group.create.EditGroupState
 import com.github.naz013.group.create.EditGroupViewModel
+import com.github.naz013.group.details.GroupDetailsScreen
+import com.github.naz013.group.details.GroupDetailsState
+import com.github.naz013.group.details.GroupDetailsViewModel
 import com.github.naz013.group.list.GroupsScreen
 import com.github.naz013.group.list.GroupsScreenState
 import com.github.naz013.group.list.GroupsViewModel
@@ -36,6 +41,7 @@ fun EntryProviderScope<NavKey>.groupsEntries(
 ) {
   entry<GroupsNavKey.List> { GroupsListEntry(backStack) }
   entry<GroupsNavKey.Edit> { key -> GroupsEditEntry(key, backStack, adsContent, onNotificationHelpClick) }
+  entry<GroupsNavKey.Details> { key -> GroupsDetailsEntry(key, backStack, adsContent) }
 }
 
 @Composable
@@ -130,6 +136,59 @@ private fun GroupsEditEntry(
     onCopyKeepClick = viewModel::onCopyKeepClick,
     onCopyReplaceClick = viewModel::onCopyReplaceClick,
     onDialogDismiss = viewModel::onDialogDismiss,
+    adsContent = adsContent,
+  )
+}
+
+@Composable
+private fun GroupsDetailsEntry(
+  key: GroupsNavKey.Details,
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
+) {
+  val viewModel = koinViewModel<GroupDetailsViewModel> { parametersOf(key.id) }
+  val dialogDispatcher = rememberDialogDispatcher()
+
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(viewModel, lifecycleOwner) {
+    val observer =
+      LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+          viewModel.refreshState()
+        }
+      }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
+
+  viewModel.navigationEvent.ObserveEvent { event ->
+    when (event) {
+      is GroupDetailsViewModel.NavigationEvent.OpenEdit -> backStack.add(GroupsNavKey.Edit(event.id))
+      is GroupDetailsViewModel.NavigationEvent.OpenReminderPreview ->
+        backStack.add(ReminderPreviewNavKey.Preview(event.id))
+      is GroupDetailsViewModel.NavigationEvent.ConfirmDelete -> {
+        dialogDispatcher.showDialog(
+          titleRes = R.string.delete_group_permanently,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.onDeleteConfirmed() }
+        )
+      }
+      is GroupDetailsViewModel.NavigationEvent.OpenAddReminder -> {
+        backStack.add(BuildReminderNavKey.Main(groupUuId = event.groupUuId))
+      }
+      GroupDetailsViewModel.NavigationEvent.Deleted -> if (backStack.size > 1) backStack.removeLastOrNull()
+    }
+  }
+
+  val state by viewModel.state.collectAsState(GroupDetailsState())
+  GroupDetailsScreen(
+    state = state,
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onEditClick = viewModel::onEditClick,
+    onDeleteClick = viewModel::onDeleteClick,
+    onReminderClick = viewModel::onReminderClick,
+    onAddClick = viewModel::onAddReminderClicked,
     adsContent = adsContent,
   )
 }

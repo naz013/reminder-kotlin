@@ -7,7 +7,6 @@ import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.appfunctions.AppFunctionsInitializer
 import com.elementary.tasks.calendar.calendarModule
 import com.elementary.tasks.core.cloud.cloudModule
-import com.elementary.tasks.core.data.adapter.adapterModule
 import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
 import com.elementary.tasks.core.services.servicesModule
@@ -19,8 +18,6 @@ import com.elementary.tasks.core.utils.storageModule
 import com.elementary.tasks.core.utils.ui.uiUtilsModule
 import com.elementary.tasks.core.utils.utilModule
 import com.elementary.tasks.core.utils.viewModelModule
-import com.elementary.tasks.groups.details.groupDetailsModule
-import com.github.naz013.group.groupModule
 import com.elementary.tasks.home.homeModule
 import com.elementary.tasks.module.libModule
 import com.elementary.tasks.module.platform.InstallReferrerReader
@@ -32,21 +29,20 @@ import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.reminder.reminderModule
 import com.elementary.tasks.settings.export.syncSettingsModule
 import com.elementary.tasks.settings.settingsModule
-import com.elementary.tasks.simplemap.simpleMapKoinModule
 import com.elementary.tasks.telephony.intentModule
-import com.github.naz013.feature.workflow.workflowModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
 import com.github.naz013.datecalc.dateTimeCalculationsModule
+import com.github.naz013.feature.birthday.featureBirthdayModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
-import com.github.naz013.feature.birthday.featureBirthdayModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.note.featureNoteModule
-import com.github.naz013.ui.birthday.uiBirthdayModule
-import com.github.naz013.ui.note.uiNoteModule
+import com.github.naz013.feature.reminder.featureReminderModule
+import com.github.naz013.feature.workflow.workflowModule
 import com.github.naz013.files.fileModule
+import com.github.naz013.group.groupModule
 import com.github.naz013.holidays.holidaysModule
 import com.github.naz013.icalendar.iCalendarModule
 import com.github.naz013.insights.insightsModule
@@ -56,9 +52,9 @@ import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.logic.birthday.logicBirthdayModule
 import com.github.naz013.logic.reminder.logicReminderModule
-import com.github.naz013.logic.workflow.logicWorkflowModule
 import com.github.naz013.logic.schedule.logicScheduleModule
 import com.github.naz013.logic.tag.logicTagModule
+import com.github.naz013.logic.workflow.logicWorkflowModule
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
@@ -70,9 +66,13 @@ import com.github.naz013.reviews.config.SecondaryFirebaseConfig
 import com.github.naz013.reviews.reviewsKoinModule
 import com.github.naz013.sync.syncApiModule
 import com.github.naz013.tags.tagsModule
+import com.github.naz013.ui.birthday.uiBirthdayModule
 import com.github.naz013.ui.common.locale.Language
 import com.github.naz013.ui.common.uiCommonModule
 import com.github.naz013.ui.googletask.uiGoogleTaskModule
+import com.github.naz013.ui.group.uiGroupModule
+import com.github.naz013.ui.map.uiMapModule
+import com.github.naz013.ui.note.uiNoteModule
 import com.github.naz013.ui.tag.uiTagModule
 import com.github.naz013.work.workModule
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
@@ -142,7 +142,6 @@ class ReminderApp :
           uiNoteModule,
           storageModule,
           viewModelModule,
-          adapterModule,
           actionModule,
           uiUtilsModule,
           reminderModule,
@@ -166,9 +165,8 @@ class ReminderApp :
           cloudModule,
           syncApiModule,
           groupModule,
-          groupDetailsModule,
           placeKoinModule,
-          simpleMapKoinModule,
+          uiMapModule,
           reviewsKoinModule,
           syncSettingsModule,
           settingsModule,
@@ -187,8 +185,10 @@ class ReminderApp :
           uiGoogleTaskModule,
           logicScheduleModule,
           logicReminderModule,
+          featureReminderModule,
           uiTagModule,
           logicTagModule,
+          uiGroupModule
         ),
       )
     }

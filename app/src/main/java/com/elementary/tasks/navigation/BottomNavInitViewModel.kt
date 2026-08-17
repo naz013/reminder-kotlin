@@ -6,7 +6,7 @@ import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesU
 import com.github.naz013.feature.note.image.NoteImageMigration
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.PresetInitProcessor
+import com.github.naz013.feature.reminder.build.preset.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.ui.group.GroupsUtil
 import com.github.naz013.feature.workflow.WorkflowRulesUtil

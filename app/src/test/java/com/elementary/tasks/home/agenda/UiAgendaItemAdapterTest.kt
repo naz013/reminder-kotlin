@@ -2,13 +2,13 @@ package com.elementary.tasks.home.agenda
 
 import com.elementary.tasks.R
 import com.github.naz013.ui.birthday.UiBirthdayListAdapter
-import com.elementary.tasks.core.data.ui.UiTextElement
+import com.github.naz013.ui.common.text.UiTextElement
 import com.github.naz013.ui.birthday.UiBirthdayList
-import com.elementary.tasks.core.text.UiTextFormat
-import com.elementary.tasks.reminder.lists.data.UiReminderList
-import com.elementary.tasks.reminder.lists.data.UiReminderListActions
-import com.elementary.tasks.reminder.lists.data.UiReminderListAdapter
-import com.elementary.tasks.reminder.lists.data.UiReminderListState
+import com.github.naz013.ui.common.text.UiTextFormat
+import com.github.naz013.ui.reminder.UiReminderList
+import com.github.naz013.ui.reminder.UiReminderListActions
+import com.github.naz013.ui.reminder.UiReminderListAdapter
+import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday

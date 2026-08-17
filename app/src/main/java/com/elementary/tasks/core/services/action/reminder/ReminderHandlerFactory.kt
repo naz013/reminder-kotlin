@@ -9,7 +9,7 @@ import com.elementary.tasks.core.services.action.reminder.process.ReminderNotifi
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
-import com.elementary.tasks.reminder.scheduling.usecase.SnoozeReminderUseCase
+import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCase
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.NotificationSettings

@@ -43,12 +43,6 @@ fun rememberContactPicker(onContactPicked: (ContactData) -> Unit): () -> Unit {
   }
 }
 
-/**
- * Same picker as [rememberContactPicker], but shaped for callers that need a per-call result
- * callback rather than one fixed at remember-time - matches
- * [com.elementary.tasks.reminder.build.valuedialog.ValueEditorSheet]'s
- * `onPickContact: (onResult: (phone: String) -> Unit) -> Unit`.
- */
 @Composable
 fun rememberContactPhonePicker(): (onResult: (String) -> Unit) -> Unit {
   val context = LocalContext.current

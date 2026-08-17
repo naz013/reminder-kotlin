@@ -1,7 +1,7 @@
 package com.elementary.tasks.navigation.nav3
 
 import com.elementary.tasks.BaseTest
-import com.github.naz013.feature.workflow.WorkflowConfig
+import com.github.naz013.logic.workflow.WorkflowConfig
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

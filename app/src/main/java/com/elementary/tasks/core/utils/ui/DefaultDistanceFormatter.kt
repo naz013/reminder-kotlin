@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils.ui
 import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.UnitConverter
+import com.github.naz013.ui.common.format.ValueFormatter
 import com.github.naz013.common.TextProvider
 
 open class DefaultDistanceFormatter(

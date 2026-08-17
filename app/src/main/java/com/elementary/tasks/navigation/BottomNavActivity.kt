@@ -21,8 +21,8 @@ import com.github.naz013.group.GroupsNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
 import com.github.naz013.feature.note.NotesNavKey
 import com.elementary.tasks.places.PlacesNavKey
-import com.elementary.tasks.reminder.build.BuildReminderNavKey
-import com.elementary.tasks.reminder.preview.ReminderPreviewNavKey
+import com.github.naz013.feature.reminder.build.BuildReminderNavKey
+import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.elementary.tasks.settings.SettingsNavKey
 import com.elementary.tasks.settings.export.work.BackupSettingsTask
 import com.elementary.tasks.splash.ShortcutDestination

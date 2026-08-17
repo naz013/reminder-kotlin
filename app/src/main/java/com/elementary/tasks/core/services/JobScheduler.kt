@@ -10,7 +10,7 @@ import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.event.BirthdayEventTask
 import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.reminder.scheduling.alarmmanager.v2.EventDateTimeCalculatorV2
+import com.github.naz013.logic.reminder.scheduling.EventDateTimeCalculatorV2
 import com.github.naz013.feature.birthday.settings.work.CheckBirthdaysTask
 import com.github.naz013.feature.workflow.RunWorkflowRulesTask
 import com.github.naz013.feature.workflow.RunWorkflowUnacknowledgedRulesTask

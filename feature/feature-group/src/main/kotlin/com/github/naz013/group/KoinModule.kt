@@ -1,6 +1,7 @@
 package com.github.naz013.group
 
 import com.github.naz013.group.create.EditGroupViewModel
+import com.github.naz013.group.details.GroupDetailsViewModel
 import com.github.naz013.group.list.GroupsViewModel
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.logic.group.MakeGroupDefaultUseCase
@@ -11,31 +12,42 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val groupModule =
-  module {
-    factoryOf(::DeleteGroupUseCase)
-    factoryOf(::SaveGroupUseCase)
-    factoryOf(::MakeGroupDefaultUseCase)
-    factoryOf(::NotificationOverrideSubtitleFormatter)
+val groupModule = module {
+  factoryOf(::DeleteGroupUseCase)
+  factoryOf(::SaveGroupUseCase)
+  factoryOf(::MakeGroupDefaultUseCase)
+  factoryOf(::NotificationOverrideSubtitleFormatter)
 
-    viewModelOf(::GroupsViewModel)
-    viewModel { (id: String, fromIntentData: Boolean) ->
-      EditGroupViewModel(
-        id,
-        fromIntentData,
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-      )
-    }
+  viewModelOf(::GroupsViewModel)
+  viewModel { (id: String, fromIntentData: Boolean) ->
+    EditGroupViewModel(
+      id,
+      fromIntentData,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    )
   }
+  viewModel { (id: String) ->
+    GroupDetailsViewModel(
+      id,
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get()
+    )
+  }
+}

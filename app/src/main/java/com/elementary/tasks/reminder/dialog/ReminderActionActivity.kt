@@ -8,7 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.elementary.tasks.ads.AdBanner
 import com.elementary.tasks.ads.NormalAdBanner
+import com.elementary.tasks.settings.rememberSendEmailResolver
+import com.elementary.tasks.telephony.rememberApplicationLauncher
+import com.elementary.tasks.telephony.rememberPhoneCaller
+import com.elementary.tasks.telephony.rememberSmsSender
+import com.elementary.tasks.telephony.rememberUrlLauncher
 import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.reminder.dialog.ReminderActionScreen
 import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.Navigator
@@ -23,6 +29,11 @@ class ReminderActionActivity : ComposeActivity() {
 
   @Composable
   override fun ActivityContent() {
+    val phoneCaller = rememberPhoneCaller()
+    val smsSender = rememberSmsSender()
+    val sendEmailResolver = rememberSendEmailResolver()
+    val applicationLauncher = rememberApplicationLauncher()
+    val urlLauncher = rememberUrlLauncher()
     ReminderActionScreen(
       id = getId(),
       onFinish = { finish() },
@@ -41,6 +52,11 @@ class ReminderActionActivity : ComposeActivity() {
         )
         finish()
       },
+      onCallClick = { number -> phoneCaller.call(number) },
+      onSmsClick = { target, message -> smsSender.send(target, message) },
+      onEmailClick = { email, subject, message -> sendEmailResolver.send(email, subject, message, null) },
+      onAppClick = { target -> applicationLauncher.launch(target) },
+      onUrlClick = { target -> urlLauncher.launch(target) },
       adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.ActionScreen) }
     )
   }

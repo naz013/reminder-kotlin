@@ -2,7 +2,7 @@ package com.elementary.tasks.core.services.action.reminder
 
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.LED
+import com.github.naz013.feature.reminder.util.LED
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.TextProvider
 
@@ -15,7 +15,7 @@ class ReminderDataProvider(
       if (reminderColor != -1) {
         reminderColor
       } else {
-        LED.getLED(prefs.ledColor)
+        LED.getLED(prefs.ledColor, BuildParams.isPro)
       }
     } else {
       return null

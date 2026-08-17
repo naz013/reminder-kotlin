@@ -1,7 +1,7 @@
 package com.elementary.tasks.navigation.nav3
 
 import androidx.lifecycle.ViewModel
-import com.github.naz013.feature.workflow.WorkflowConfig
+import com.github.naz013.logic.workflow.WorkflowConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

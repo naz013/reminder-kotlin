@@ -1,7 +1,7 @@
 package com.elementary.tasks.places.create
 
-import com.elementary.tasks.simplemap.MapConfig
-import com.elementary.tasks.simplemap.MapMarker
+import com.github.naz013.ui.map.MapConfig
+import com.github.naz013.ui.map.MapMarker
 import com.github.naz013.ui.common.R
 import com.google.android.gms.maps.model.LatLng
 import java.util.UUID

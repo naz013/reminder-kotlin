@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BuildParams
 import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.simplemap.DefaultRadiusFormatter
-import com.elementary.tasks.simplemap.MapConfig
-import com.elementary.tasks.simplemap.MapStyle
+import com.github.naz013.ui.map.DefaultRadiusFormatter
+import com.github.naz013.ui.map.MapConfig
+import com.github.naz013.ui.map.MapStyle
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent

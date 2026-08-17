@@ -2,7 +2,7 @@ package com.github.naz013.group.create
 
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
-import com.github.naz013.feature.workflow.WorkflowConfig
+import com.github.naz013.logic.workflow.WorkflowConfig
 
 internal data class EditGroupState(
   val id: String? = null,

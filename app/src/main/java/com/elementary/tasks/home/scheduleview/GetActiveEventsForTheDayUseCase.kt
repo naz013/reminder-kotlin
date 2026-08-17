@@ -5,7 +5,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.eventaction.ResolvedEventAction
 import com.elementary.tasks.home.HomeEvent
-import com.elementary.tasks.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
