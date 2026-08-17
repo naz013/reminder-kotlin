@@ -10,9 +10,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.naz013.feature.reminder.build.BuildReminderNavKey
-import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
-import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.group.create.EditGroupScreen
 import com.github.naz013.group.create.EditGroupState
 import com.github.naz013.group.create.EditGroupViewModel
@@ -38,10 +35,17 @@ fun EntryProviderScope<NavKey>.groupsEntries(
   backStack: MutableList<NavKey>,
   adsContent: @Composable () -> Unit = {},
   onNotificationHelpClick: () -> Unit = {},
+  onNewReminderClick: (groupUuId: String) -> Unit = {},
+  onReminderPreviewClick: (reminderUuId: String) -> Unit = {},
+  onRulesForGroupClick: (groupUuId: String) -> Unit = {},
 ) {
   entry<GroupsNavKey.List> { GroupsListEntry(backStack) }
-  entry<GroupsNavKey.Edit> { key -> GroupsEditEntry(key, backStack, adsContent, onNotificationHelpClick) }
-  entry<GroupsNavKey.Details> { key -> GroupsDetailsEntry(key, backStack, adsContent) }
+  entry<GroupsNavKey.Edit> { key ->
+    GroupsEditEntry(key, backStack, adsContent, onNotificationHelpClick, onRulesForGroupClick)
+  }
+  entry<GroupsNavKey.Details> { key ->
+    GroupsDetailsEntry(key, backStack, adsContent, onNewReminderClick, onReminderPreviewClick)
+  }
 }
 
 @Composable
@@ -94,6 +98,7 @@ private fun GroupsEditEntry(
   backStack: MutableList<NavKey>,
   adsContent: @Composable () -> Unit,
   onNotificationHelpClick: () -> Unit,
+  onRulesForGroupClick: (groupUuId: String) -> Unit,
 ) {
   val viewModel = koinViewModel<EditGroupViewModel> { parametersOf(key.id, key.fromIntentData) }
   val context = LocalContext.current
@@ -116,7 +121,7 @@ private fun GroupsEditEntry(
     onColorSelected = viewModel::onColorSelected,
     onDefaultCheckChanged = viewModel::onDefaultCheckChanged,
     onWorkflowRulesClick = {
-      state.id?.let { groupId -> backStack.add(WorkflowNavKey.RulesForGroup(groupId)) }
+      state.id?.let { groupId -> onRulesForGroupClick(groupId) }
     },
     onVibrateClick = viewModel::onVibrateClick,
     onRepeatNotificationClick = viewModel::onRepeatNotificationClick,
@@ -145,6 +150,8 @@ private fun GroupsDetailsEntry(
   key: GroupsNavKey.Details,
   backStack: MutableList<NavKey>,
   adsContent: @Composable () -> Unit,
+  onNewReminderClick: (groupUuId: String) -> Unit = {},
+  onReminderPreviewClick: (reminderUuId: String) -> Unit = {},
 ) {
   val viewModel = koinViewModel<GroupDetailsViewModel> { parametersOf(key.id) }
   val dialogDispatcher = rememberDialogDispatcher()
@@ -164,8 +171,7 @@ private fun GroupsDetailsEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is GroupDetailsViewModel.NavigationEvent.OpenEdit -> backStack.add(GroupsNavKey.Edit(event.id))
-      is GroupDetailsViewModel.NavigationEvent.OpenReminderPreview ->
-        backStack.add(ReminderPreviewNavKey.Preview(event.id))
+      is GroupDetailsViewModel.NavigationEvent.OpenReminderPreview -> onReminderPreviewClick(event.id)
       is GroupDetailsViewModel.NavigationEvent.ConfirmDelete -> {
         dialogDispatcher.showDialog(
           titleRes = R.string.delete_group_permanently,
@@ -174,9 +180,11 @@ private fun GroupsDetailsEntry(
           onPositive = { viewModel.onDeleteConfirmed() }
         )
       }
+
       is GroupDetailsViewModel.NavigationEvent.OpenAddReminder -> {
-        backStack.add(BuildReminderNavKey.Main(groupUuId = event.groupUuId))
+        onNewReminderClick(event.groupUuId)
       }
+
       GroupDetailsViewModel.NavigationEvent.Deleted -> if (backStack.size > 1) backStack.removeLastOrNull()
     }
   }

@@ -38,19 +38,12 @@ import com.elementary.tasks.core.os.datapicker.compose.rememberMultipleUriPicker
 import com.elementary.tasks.home.HomeNavKey
 import com.elementary.tasks.home.homeEntries
 import com.elementary.tasks.navigation.BottomNavActivity
-import com.elementary.tasks.places.placesEntries
 import com.elementary.tasks.places.PlacesNavKey
+import com.elementary.tasks.places.placesEntries
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.BirthdayCrossFeatureEntry
 import com.elementary.tasks.settings.ManagePresetsCrossFeatureEntry
 import com.elementary.tasks.settings.RemindersCrossFeatureEntry
-import com.github.naz013.feature.settings.SettingsNavKey
-import com.github.naz013.feature.settings.export.exportEntries
-import com.github.naz013.feature.settings.location.locationEntries
-import com.github.naz013.feature.settings.other.otherEntries
-import com.github.naz013.feature.settings.rememberSendIntentResolver
-import com.github.naz013.feature.settings.security.securityEntries
-import com.github.naz013.feature.settings.settingsEntries
 import com.elementary.tasks.share.rememberFileIntentSender
 import com.elementary.tasks.telephony.rememberPhoneCaller
 import com.elementary.tasks.telephony.rememberSmsSender
@@ -62,9 +55,17 @@ import com.github.naz013.feature.note.notesEntries
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.build.buildReminderEntries
 import com.github.naz013.feature.reminder.lists.removed.remindersArchiveEntries
+import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
 import com.github.naz013.feature.reminder.preview.reminderPreviewEntries
 import com.github.naz013.feature.reminder.settings.help.NotificationCustomizationHelpScreen
 import com.github.naz013.feature.reminder.todo.todoEditEntries
+import com.github.naz013.feature.settings.SettingsNavKey
+import com.github.naz013.feature.settings.export.exportEntries
+import com.github.naz013.feature.settings.location.locationEntries
+import com.github.naz013.feature.settings.other.otherEntries
+import com.github.naz013.feature.settings.rememberSendIntentResolver
+import com.github.naz013.feature.settings.security.securityEntries
+import com.github.naz013.feature.settings.settingsEntries
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.feature.workflow.workflowEntries
 import com.github.naz013.group.GroupsNavKey
@@ -177,6 +178,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           backStack = backStack,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Group) },
           onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
+          onNewReminderClick = { backStack.add(BuildReminderNavKey.Main(groupUuId = it)) },
+          onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
+          onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
         )
         placesEntries(backStack)
         birthdaysEntries(
