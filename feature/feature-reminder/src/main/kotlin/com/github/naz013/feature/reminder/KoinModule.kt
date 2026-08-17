@@ -79,7 +79,6 @@ import com.github.naz013.feature.reminder.preview.PreviewReminderViewModel
 import com.github.naz013.feature.reminder.todo.TodoEditNavKey
 import com.github.naz013.feature.reminder.todo.TodoEditViewModel
 import com.github.naz013.feature.reminder.todo.TodoSeedHolder
-import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.feature.reminder.util.BackupTool
 import com.github.naz013.feature.reminder.util.UriHelper
 import com.github.naz013.ui.reminder.UiReminderListAdapter
@@ -150,8 +149,6 @@ val featureReminderModule = module {
       get(),
     )
   }
-
-  factory { MoveReminderToArchiveUseCase(get(), get()) }
 
   viewModelOf(::SelectApplicationViewModel)
 

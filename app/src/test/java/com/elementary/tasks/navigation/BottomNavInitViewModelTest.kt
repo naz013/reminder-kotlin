@@ -1,7 +1,7 @@
 package com.elementary.tasks.navigation
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
+import com.github.naz013.feature.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
 import com.github.naz013.feature.note.image.NoteImageMigration
 import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.github.naz013.featureflags.FeatureFlag

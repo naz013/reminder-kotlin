@@ -33,7 +33,7 @@ import com.github.naz013.feature.reminder.IsSimpleTodoReminderUseCase
 import com.github.naz013.feature.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
 import com.github.naz013.feature.reminder.todo.TodoSeedHolder
-import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.AnalyticsReminderType
 import com.github.naz013.analytics.Feature

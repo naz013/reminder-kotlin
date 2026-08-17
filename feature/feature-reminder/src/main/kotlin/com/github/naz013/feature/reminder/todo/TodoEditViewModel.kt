@@ -13,7 +13,7 @@ import com.github.naz013.feature.reminder.build.bi.BiFactory
 import com.github.naz013.feature.reminder.build.reminder.BiToReminderAdapter
 import com.github.naz013.feature.reminder.build.reminder.ReminderToBiDecomposer
 import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
-import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType

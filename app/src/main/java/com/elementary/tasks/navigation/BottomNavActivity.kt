@@ -14,7 +14,7 @@ import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.github.naz013.feature.birthday.BirthdaysNavKey
-import com.elementary.tasks.calendar.monthview.CalendarNavKey
+import com.github.naz013.feature.calendar.monthview.CalendarNavKey
 import com.elementary.tasks.core.os.ContextSwitcher
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.group.GroupsNavKey

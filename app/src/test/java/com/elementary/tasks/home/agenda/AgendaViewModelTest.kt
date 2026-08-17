@@ -9,7 +9,7 @@ import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
-import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.provideBirthdayDateCalculator
 import com.github.naz013.domain.Birthday
@@ -27,6 +27,11 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.agenda.AgendaCategory
+import com.github.naz013.ui.agenda.UiAgendaBirthday
+import com.github.naz013.ui.agenda.UiAgendaItem
+import com.github.naz013.ui.agenda.UiAgendaItemAdapter
+import com.github.naz013.ui.agenda.UiAgendaReminder
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
