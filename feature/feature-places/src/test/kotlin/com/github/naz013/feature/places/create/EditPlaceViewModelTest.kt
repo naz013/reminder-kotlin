@@ -1,11 +1,11 @@
-package com.elementary.tasks.places.create
+package com.github.naz013.feature.places.create
 
-import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.mockDispatcherProvider
-import com.elementary.tasks.places.PlacesNavKey
-import com.elementary.tasks.places.usecase.DeletePlaceUseCase
-import com.elementary.tasks.places.usecase.SavePlaceUseCase
+import com.github.naz013.testing.BaseTest
+import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.feature.places.PlacesNavKey
+import com.github.naz013.feature.places.usecase.DeletePlaceUseCase
+import com.github.naz013.feature.places.usecase.SavePlaceUseCase
+import com.github.naz013.ui.map.MapPreferences
 import com.github.naz013.ui.map.MarkerState
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -32,7 +32,7 @@ import org.junit.Test
 class EditPlaceViewModelTest : BaseTest() {
   private val placeRepository = mockk<PlaceRepository>()
   private val dateTimeManager = mockk<DateTimeManager>()
-  private val prefs = mockk<Prefs>(relaxed = true)
+  private val mapPreferences = mockk<MapPreferences>(relaxed = true)
   private val intentDataReader = mockk<IntentDataReader>()
   private val deletePlaceUseCase = mockk<DeletePlaceUseCase>(relaxed = true)
   private val savePlaceUseCase = mockk<SavePlaceUseCase>(relaxed = true)
@@ -54,7 +54,7 @@ class EditPlaceViewModelTest : BaseTest() {
     dispatcherProvider = mockDispatcherProvider(),
     placeRepository = placeRepository,
     dateTimeManager = dateTimeManager,
-    prefs = prefs,
+    mapPreferences = mapPreferences,
     intentDataReader = intentDataReader,
     deletePlaceUseCase = deletePlaceUseCase,
     savePlaceUseCase = savePlaceUseCase,
@@ -63,8 +63,8 @@ class EditPlaceViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    every { prefs.markerStyle } returns 2
-    every { prefs.radius } returns 75
+    every { mapPreferences.markerStyle } returns 2
+    every { mapPreferences.radius } returns 75
     every { dateTimeManager.getNowGmtDateTime() } returns "2026-07-24T10:00:00"
     coEvery { placeRepository.getById(any()) } returns null
 
@@ -224,7 +224,7 @@ class EditPlaceViewModelTest : BaseTest() {
   @Test
   fun `onMarkerPlaced updates location fields and auto-fills empty name from address`() {
     // `state` re-runs loadInitial() in onStart on every fresh collection, which would reset
-    // markerStyle/markerRadius back to the prefs defaults if we called `.first()` again to
+    // markerStyle/markerRadius back to the mapPreferences defaults if we called `.first()` again to
     // inspect them. Observe through one persistent subscription instead of re-collecting.
     var latest = EditPlaceState()
     CoroutineScope(Dispatchers.Unconfined).launch { viewModel.state.collect { latest = it } }

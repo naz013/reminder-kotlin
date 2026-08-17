@@ -1,4 +1,4 @@
-package com.elementary.tasks.places
+package com.github.naz013.feature.places
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

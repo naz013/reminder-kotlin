@@ -23,7 +23,6 @@ import com.elementary.tasks.navigation.NavigationConsumer
 import com.elementary.tasks.navigation.NavigationDispatcher
 import com.elementary.tasks.navigation.NavigationObservable
 import com.elementary.tasks.navigation.navigationModule
-import com.elementary.tasks.places.placeKoinModule
 import com.elementary.tasks.telephony.intentModule
 import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
@@ -37,6 +36,7 @@ import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.home.featureHomeModule
 import com.github.naz013.feature.note.featureNoteModule
+import com.github.naz013.feature.places.featurePlacesModule
 import com.github.naz013.feature.reminder.featureReminderModule
 import com.github.naz013.feature.settings.featureSettingsModule
 import com.github.naz013.feature.workflow.workflowModule
@@ -168,7 +168,7 @@ class ReminderApp :
           cloudModule,
           syncApiModule,
           groupModule,
-          placeKoinModule,
+          featurePlacesModule,
           uiMapModule,
           reviewsKoinModule,
           featureSettingsModule,

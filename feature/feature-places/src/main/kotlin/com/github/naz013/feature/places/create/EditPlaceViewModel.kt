@@ -1,12 +1,12 @@
-package com.elementary.tasks.places.create
+package com.github.naz013.feature.places.create
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.core.utils.params.Prefs
-import com.elementary.tasks.places.PlacesNavKey
-import com.elementary.tasks.places.usecase.DeletePlaceUseCase
-import com.elementary.tasks.places.usecase.SavePlaceUseCase
+import com.github.naz013.ui.map.MapPreferences
+import com.github.naz013.feature.places.PlacesNavKey
+import com.github.naz013.feature.places.usecase.DeletePlaceUseCase
+import com.github.naz013.feature.places.usecase.SavePlaceUseCase
 import com.github.naz013.ui.map.MarkerState
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
@@ -34,7 +34,7 @@ class EditPlaceViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val placeRepository: PlaceRepository,
   private val dateTimeManager: DateTimeManager,
-  private val prefs: Prefs,
+  private val mapPreferences: MapPreferences,
   private val intentDataReader: IntentDataReader,
   private val deletePlaceUseCase: DeletePlaceUseCase,
   private val savePlaceUseCase: SavePlaceUseCase,
@@ -123,8 +123,8 @@ class EditPlaceViewModel(
   private fun loadInitial() {
     _state.update {
       it.copy(
-        markerStyle = prefs.markerStyle,
-        markerRadius = prefs.radius,
+        markerStyle = mapPreferences.markerStyle,
+        markerRadius = mapPreferences.radius,
       )
     }
     if (!key.fromIntentData) {

@@ -39,8 +39,8 @@ import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.github.naz013.feature.home.HomeNavKey
 import com.github.naz013.feature.home.homeEntries
 import com.elementary.tasks.navigation.BottomNavActivity
-import com.elementary.tasks.places.PlacesNavKey
-import com.elementary.tasks.places.placesEntries
+import com.github.naz013.feature.places.PlacesNavKey
+import com.github.naz013.feature.places.placesEntries
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.BirthdayCrossFeatureEntry
 import com.elementary.tasks.settings.ManagePresetsCrossFeatureEntry
@@ -69,7 +69,7 @@ import com.github.naz013.feature.settings.export.exportEntries
 import com.github.naz013.feature.settings.location.locationEntries
 import com.github.naz013.feature.settings.other.OtherNavKey
 import com.github.naz013.feature.settings.other.otherEntries
-import com.github.naz013.feature.settings.rememberSendIntentResolver
+import com.github.naz013.ui.common.compose.foundation.intent.rememberSendIntentResolver
 import com.github.naz013.feature.settings.security.securityEntries
 import com.github.naz013.feature.settings.settingsEntries
 import com.github.naz013.feature.workflow.WorkflowNavKey
@@ -216,7 +216,10 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
           onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
         )
-        placesEntries(backStack)
+        placesEntries(
+          backStack = backStack,
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Place) },
+        )
         birthdaysEntries(
           backStack = backStack,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) },

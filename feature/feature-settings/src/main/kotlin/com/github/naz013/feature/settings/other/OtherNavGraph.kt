@@ -19,7 +19,7 @@ import com.github.naz013.feature.settings.other.whatsnew.WhatsNewScreen
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewState
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewViewModel
 import com.github.naz013.feature.settings.proversion.rememberGooglePlayMarketLauncher
-import com.github.naz013.feature.settings.rememberSendIntentResolver
+import com.github.naz013.ui.common.compose.foundation.intent.rememberSendIntentResolver
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher

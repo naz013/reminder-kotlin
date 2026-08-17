@@ -1,12 +1,12 @@
-package com.elementary.tasks.places.list
+package com.github.naz013.feature.places.list
 
 import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elementary.tasks.R
-import com.github.naz013.feature.reminder.util.BackupTool
-import com.elementary.tasks.places.usecase.DeletePlaceUseCase
+import com.github.naz013.ui.common.R
+import com.github.naz013.files.BackupTool
+import com.github.naz013.feature.places.usecase.DeletePlaceUseCase
 import com.github.naz013.ui.map.MapStyle
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager

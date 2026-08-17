@@ -1,4 +1,4 @@
-package com.elementary.tasks.places.usecase
+package com.github.naz013.feature.places.usecase
 
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType

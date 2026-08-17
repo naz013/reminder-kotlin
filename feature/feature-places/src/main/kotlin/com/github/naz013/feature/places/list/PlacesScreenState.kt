@@ -1,4 +1,4 @@
-package com.elementary.tasks.places.list
+package com.github.naz013.feature.places.list
 
 import androidx.compose.ui.graphics.Color
 import com.google.android.gms.maps.model.LatLng

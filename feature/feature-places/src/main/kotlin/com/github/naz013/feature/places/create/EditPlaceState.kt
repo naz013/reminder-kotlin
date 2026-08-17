@@ -1,4 +1,4 @@
-package com.elementary.tasks.places.create
+package com.github.naz013.feature.places.create
 
 import com.github.naz013.ui.map.MapConfig
 import com.github.naz013.ui.map.MapMarker

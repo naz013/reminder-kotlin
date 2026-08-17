@@ -1,7 +1,6 @@
-package com.elementary.tasks.places
+package com.github.naz013.feature.places
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,17 +10,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.elementary.tasks.R
-import com.elementary.tasks.ads.AdBanner
-import com.elementary.tasks.ads.NormalAdBanner
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.livedata.ObserveEvent
-import com.elementary.tasks.places.create.EditPlaceScreen
-import com.elementary.tasks.places.create.EditPlaceState
-import com.elementary.tasks.places.create.EditPlaceViewModel
-import com.elementary.tasks.places.list.PlacesScreen
-import com.elementary.tasks.places.list.PlacesScreenState
-import com.elementary.tasks.places.list.PlacesViewModel
-import com.github.naz013.feature.settings.rememberSendIntentResolver
+import com.github.naz013.feature.places.create.EditPlaceScreen
+import com.github.naz013.feature.places.create.EditPlaceState
+import com.github.naz013.feature.places.create.EditPlaceViewModel
+import com.github.naz013.feature.places.list.PlacesScreen
+import com.github.naz013.feature.places.list.PlacesScreenState
+import com.github.naz013.feature.places.list.PlacesViewModel
+import com.github.naz013.ui.common.compose.foundation.intent.rememberSendIntentResolver
 import com.github.naz013.ui.map.MapParams
 import com.github.naz013.ui.map.SimpleMapController
 import com.github.naz013.ui.map.SimpleMapView
@@ -30,9 +27,12 @@ import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDisp
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-fun EntryProviderScope<NavKey>.placesEntries(backStack: MutableList<NavKey>) {
+fun EntryProviderScope<NavKey>.placesEntries(
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
+) {
   entry<PlacesNavKey.List> { PlacesListEntry(backStack) }
-  entry<PlacesNavKey.Edit> { key -> PlaceEditEntry(key, backStack) }
+  entry<PlacesNavKey.Edit> { key -> PlaceEditEntry(key, backStack, adsContent) }
 }
 
 @Composable
@@ -85,6 +85,7 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
 private fun PlaceEditEntry(
   key: PlacesNavKey.Edit,
   backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<EditPlaceViewModel> { parametersOf(key) }
   val dialogDispatcher = rememberDialogDispatcher()
@@ -149,6 +150,6 @@ private fun PlaceEditEntry(
         modifier = Modifier.fillMaxSize(),
       )
     },
-    adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), adBanner = AdBanner.Place) },
+    adsContent = adsContent,
   )
 }

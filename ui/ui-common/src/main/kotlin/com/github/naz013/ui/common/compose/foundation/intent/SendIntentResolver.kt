@@ -1,4 +1,4 @@
-package com.github.naz013.feature.settings
+package com.github.naz013.ui.common.compose.foundation.intent
 
 import android.content.Intent
 import android.widget.Toast
