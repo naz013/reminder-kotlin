@@ -1,5 +1,6 @@
-package com.github.naz013.feature.reminder.settings.reminders
+package com.github.naz013.feature.reminder.settings
 
+import com.github.naz013.logic.workflow.WorkflowConfig
 import org.threeten.bp.LocalTime
 
 data class RemindersSettingsState(

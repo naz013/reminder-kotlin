@@ -11,9 +11,9 @@ import org.koin.compose.koinInject
  * and can only carry primitives. Same pattern as
  * [com.elementary.tasks.reminder.build.selectordialog.SelectorDialogDataHolder].
  */
-class TodoSeedHolder {
+internal class TodoSeedHolder {
   var pendingSeed: ReminderV2? = null
 }
 
 @Composable
-fun rememberTodoSeedHolder(): TodoSeedHolder = koinInject()
+internal fun rememberTodoSeedHolder(): TodoSeedHolder = koinInject()

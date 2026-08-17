@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.logic.builderstate
 
 import com.github.naz013.domain.reminder.BiType
 
-sealed class BuilderError {
+internal sealed class BuilderError {
   data object Unknown : BuilderError()
 
   data object InvalidState : BuilderError()

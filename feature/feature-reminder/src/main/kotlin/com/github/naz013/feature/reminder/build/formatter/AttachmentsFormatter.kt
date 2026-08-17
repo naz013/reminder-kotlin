@@ -4,7 +4,7 @@ import com.github.naz013.ui.notification.settings.Formatter
 import android.content.Context
 import com.github.naz013.ui.common.R
 
-class AttachmentsFormatter(
+internal class AttachmentsFormatter(
   private val context: Context,
 ) : Formatter<List<String>>() {
   override fun format(attachments: List<String>): String =

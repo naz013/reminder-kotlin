@@ -15,7 +15,7 @@ import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 
-class ActionDecomposer(
+internal class ActionDecomposer(
   private val dateTimeManager: DateTimeManager,
   private val biFactory: BiFactory,
 ) {

@@ -26,7 +26,7 @@ import com.github.naz013.ui.common.R
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ReminderActionActivityViewModel(
+internal class ReminderActionActivityViewModel(
   private val id: String,
   private val reminderV2Repository: ReminderV2Repository,
   private val dispatcherProvider: DispatcherProvider,

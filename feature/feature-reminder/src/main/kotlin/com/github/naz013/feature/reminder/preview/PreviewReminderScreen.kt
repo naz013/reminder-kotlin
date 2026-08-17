@@ -68,7 +68,7 @@ import com.github.naz013.ui.tag.TagChipState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreviewReminderScreen(
+internal fun PreviewReminderScreen(
   modifier: Modifier = Modifier,
   state: PreviewReminderState,
   onBackClick: () -> Unit,

@@ -12,7 +12,7 @@ import com.github.naz013.icalendar.DateTimeStartTag
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.RecurrenceRuleTag
 
-class ICalDecomposer(
+internal class ICalDecomposer(
   private val biFactory: BiFactory,
   private val ICalendarApi: ICalendarApi,
   private val recurParamsToBiAdapter: RecurParamsToBiAdapter,

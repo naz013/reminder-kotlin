@@ -7,7 +7,7 @@ import com.github.naz013.platform.SystemInfo
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.logging.Logger
 
-class BiFilter(
+internal class BiFilter(
   private val locationFilter: LocationFilter,
   private val buildInfo: BuildInfo
 ) {
@@ -31,7 +31,7 @@ class BiFilter(
   }
 }
 
-class LocationFilter(
+internal class LocationFilter(
   systemInfo: SystemInfo
 ) {
   private val hasLocation = systemInfo.hasLocation

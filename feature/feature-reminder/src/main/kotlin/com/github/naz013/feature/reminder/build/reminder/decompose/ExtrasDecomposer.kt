@@ -31,7 +31,7 @@ import com.github.naz013.domain.reminder.v2.repeatLimitOrDefault
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.repository.GoogleTaskListRepository
 
-class ExtrasDecomposer(
+internal class ExtrasDecomposer(
   private val biFactory: BiFactory,
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleCalendarApi: GoogleCalendarApi,

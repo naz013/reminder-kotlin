@@ -4,7 +4,7 @@ import android.content.Context
 import com.github.naz013.feature.reminder.build.bi.BuilderItemConstraints
 import com.github.naz013.common.Permissions
 
-class BuilderItemPermissionConstraintCalculator(
+internal class BuilderItemPermissionConstraintCalculator(
   private val context: Context,
 ) {
   operator fun invoke(item: BuilderItemConstraints): List<String> =

@@ -6,7 +6,7 @@ import com.github.naz013.feature.reminder.build.SubTasksBuilderItem
 import com.github.naz013.feature.reminder.build.preset.primitive.PrimitiveProtocol
 import com.google.gson.Gson
 
-class BiValueToBuilderSchemeValue(
+internal class BiValueToBuilderSchemeValue(
   private val primitiveProtocol: PrimitiveProtocol,
 ) {
   operator fun invoke(builderItem: BuilderItem<*>): String {

@@ -4,7 +4,7 @@ import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.datecalc.DateTimeManager
 import org.threeten.bp.LocalDate
 
-class DayOfYearFormatter(
+internal class DayOfYearFormatter(
   private val dateTimeManager: DateTimeManager,
 ) : Formatter<Int>() {
   override fun format(dayOfYear: Int): String {

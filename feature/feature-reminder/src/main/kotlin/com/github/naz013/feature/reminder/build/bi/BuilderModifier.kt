@@ -15,7 +15,7 @@ import com.github.naz013.googlecalendar.CalendarItem
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
-abstract class BuilderModifier<T>(
+internal abstract class BuilderModifier<T>(
   protected val storage: BiStorage<T>,
 ) {
   abstract fun getUiRepresentation(emptyText: String): String
@@ -31,7 +31,7 @@ abstract class BuilderModifier<T>(
   abstract fun setDefault()
 }
 
-abstract class DefaultModifier<T>(
+internal abstract class DefaultModifier<T>(
   storage: BiStorage<T>,
 ) : BuilderModifier<T>(storage) {
   override fun getUiRepresentation(emptyText: String): String = storage.value?.toString() ?: emptyText
@@ -51,7 +51,7 @@ abstract class DefaultModifier<T>(
   }
 }
 
-class TimerExclusionModifier(
+internal class TimerExclusionModifier(
   private val formatter: Formatter<TimerExclusion>,
 ) : DefaultModifier<TimerExclusion>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -72,7 +72,7 @@ class TimerExclusionModifier(
     } ?: reminder
 }
 
-open class IntModifier(
+internal open class IntModifier(
   private val formatter: Formatter<Int>,
   private val initValue: Int? = null,
 ) : DefaultModifier<Int>(DefaultBiStorage(initValue)) {
@@ -86,7 +86,7 @@ open class IntModifier(
   }
 }
 
-open class BooleanModifier(
+internal open class BooleanModifier(
   private val formatter: Formatter<Boolean>,
   private val initValue: Boolean? = null,
 ) : DefaultModifier<Boolean>(DefaultBiStorage(initValue)) {
@@ -100,7 +100,7 @@ open class BooleanModifier(
   }
 }
 
-open class ListIntModifier(
+internal open class ListIntModifier(
   private val formatter: Formatter<List<Int>>,
 ) : DefaultModifier<List<Int>>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -109,7 +109,7 @@ open class ListIntModifier(
   }
 }
 
-open class ListLongModifier(
+internal open class ListLongModifier(
   private val formatter: Formatter<List<Long>>,
 ) : DefaultModifier<List<Long>>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -118,7 +118,7 @@ open class ListLongModifier(
   }
 }
 
-open class LongModifier(
+internal open class LongModifier(
   private val formatter: Formatter<Long>,
   private val initValue: Long? = null,
 ) : DefaultModifier<Long>(DefaultBiStorage(initValue)) {
@@ -132,7 +132,7 @@ open class LongModifier(
   }
 }
 
-class DateModifier(
+internal class DateModifier(
   private val formatter: Formatter<LocalDate>,
 ) : DefaultModifier<LocalDate>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -143,7 +143,7 @@ class DateModifier(
   override fun isCorrect(): Boolean = storage.value != null
 }
 
-class TimeModifier(
+internal class TimeModifier(
   private val formatter: Formatter<LocalTime>,
 ) : DefaultModifier<LocalTime>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -154,11 +154,11 @@ class TimeModifier(
   override fun isCorrect(): Boolean = storage.value != null
 }
 
-class SummaryModifier : StringModifier() {
+internal class SummaryModifier : StringModifier() {
   override fun putInto(reminder: ReminderV2): ReminderV2 = reminder.copy(summary = getValue() ?: "")
 }
 
-class EmailModifier : StringModifier() {
+internal class EmailModifier : StringModifier() {
   override fun isCorrect(): Boolean = getValue()?.matches(EMAIL_REGEX) == true
 
   companion object {
@@ -166,17 +166,17 @@ class EmailModifier : StringModifier() {
   }
 }
 
-class WebAddressModifier : StringModifier() {
+internal class WebAddressModifier : StringModifier() {
   override fun isCorrect(): Boolean = getValue()?.let { Patterns.WEB_URL.matcher(it).matches() } ?: false
 }
 
-abstract class StringModifier(
+internal abstract class StringModifier(
   storage: BiStorage<String> = DefaultBiStorage(),
 ) : DefaultModifier<String>(storage) {
   override fun getUiRepresentation(emptyText: String): String = storage.value ?: ""
 }
 
-open class ListStringModifier(
+internal open class ListStringModifier(
   private val formatter: Formatter<List<String>>,
 ) : DefaultModifier<List<String>>(DefaultBiStorage()) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -185,9 +185,9 @@ open class ListStringModifier(
   }
 }
 
-open class DefaultStringModifier : StringModifier()
+internal open class DefaultStringModifier : StringModifier()
 
-open class FormattedStringModifier(
+internal open class FormattedStringModifier(
   private val formatter: Formatter<String>,
 ) : DefaultStringModifier() {
   override fun getUiRepresentation(emptyText: String): String {
@@ -196,7 +196,7 @@ open class FormattedStringModifier(
   }
 }
 
-class GroupModifier(
+internal class GroupModifier(
   private val initValue: UiGroupList?,
 ) : DefaultModifier<UiGroupList>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -212,7 +212,7 @@ class GroupModifier(
     reminder.copy(groupId = storage.value?.id ?: initValue?.id)
 }
 
-class PhoneNumberModifier : StringModifier() {
+internal class PhoneNumberModifier : StringModifier() {
   override fun isCorrect(): Boolean {
     val value = getValue()
     if (value.isNullOrBlank()) return false
@@ -220,7 +220,7 @@ class PhoneNumberModifier : StringModifier() {
   }
 }
 
-class GoogleTaskListModifier(
+internal class GoogleTaskListModifier(
   private val initValue: GoogleTaskList? = null,
 ) : DefaultModifier<GoogleTaskList>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -236,7 +236,7 @@ class GoogleTaskListModifier(
     reminder.copy(taskExport = storage.value?.let { TaskExportSettings(taskListId = it.listId) })
 }
 
-class GoogleCalendarModifier(
+internal class GoogleCalendarModifier(
   private val initValue: CalendarItem? = null,
 ) : DefaultModifier<CalendarItem>(DefaultBiStorage(initValue)) {
   override fun getUiRepresentation(emptyText: String): String {
@@ -249,7 +249,7 @@ class GoogleCalendarModifier(
   }
 }
 
-class GoogleCalendarDurationModifier(
+internal class GoogleCalendarDurationModifier(
   private val formatter: Formatter<CalendarDuration>,
   private val initValue: CalendarDuration? = null,
 ) : DefaultModifier<CalendarDuration>(DefaultBiStorage(initValue)) {
@@ -263,7 +263,7 @@ class GoogleCalendarDurationModifier(
   }
 }
 
-class OtherParamsModifier(
+internal class OtherParamsModifier(
   private val formatter: Formatter<OtherParams>,
   private val initValue: OtherParams? = OtherParams(),
 ) : DefaultModifier<OtherParams>(DefaultBiStorage(initValue)) {
@@ -288,7 +288,7 @@ class OtherParamsModifier(
     } ?: reminder
 }
 
-class ShopItemsModifier(
+internal class ShopItemsModifier(
   private val formatter: Formatter<List<ShopItem>>,
   private val dateTimeManager: DateTimeManager,
   private val initValue: List<ShopItem>? = emptyList(),
@@ -319,7 +319,7 @@ class ShopItemsModifier(
     )
 }
 
-class PlaceModifier(
+internal class PlaceModifier(
   private val formatter: Formatter<Place>,
   private val initValue: Place? = null,
 ) : DefaultModifier<Place>(DefaultBiStorage(initValue)) {
@@ -335,7 +335,7 @@ class PlaceModifier(
   override fun isCorrect(): Boolean = storage.value != null
 }
 
-class NoteModifier(
+internal class NoteModifier(
   private val formatter: Formatter<UiNoteList>,
   private val initValue: UiNoteList? = null,
 ) : DefaultModifier<UiNoteList>(DefaultBiStorage(initValue)) {
@@ -353,7 +353,7 @@ class NoteModifier(
   override fun isCorrect(): Boolean = storage.value != null
 }
 
-class RecurParamModifier<T>(
+internal class RecurParamModifier<T>(
   private val initValue: T,
   private val formatter: Formatter<T>? = null,
 ) : DefaultModifier<T>(DefaultBiStorage(initValue)) {

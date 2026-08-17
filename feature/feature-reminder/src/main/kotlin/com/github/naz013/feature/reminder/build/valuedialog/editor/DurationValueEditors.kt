@@ -22,7 +22,7 @@ import com.github.naz013.ui.common.compose.foundation.component.ValueAndTypePick
 /** "Before the reminder fires" duration (N seconds/minutes/hours/days/weeks/months). Replaces
  *  `BeforeTimeController` with [ValueAndTypePicker]. */
 @Composable
-fun BeforeTimeValueEditor(
+internal fun BeforeTimeValueEditor(
   builderItem: BeforeTimeBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -54,7 +54,7 @@ fun BeforeTimeValueEditor(
 /** Repeat time duration (N seconds/minutes/hours/days/weeks/months). Replaces
  *  `RepeatTimeController` with [ValueAndTypePicker]. */
 @Composable
-fun RepeatTimeValueEditor(
+internal fun RepeatTimeValueEditor(
   builderItem: RepeatTimeBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -86,7 +86,7 @@ fun RepeatTimeValueEditor(
 /** Plain repeat interval count (a unit-less number of repeats). Replaces
  *  `RepeatIntervalController`'s `NumberValuePickerView` with [NumberStepperField]. */
 @Composable
-fun RepeatIntervalValueEditor(
+internal fun RepeatIntervalValueEditor(
   builderItem: RepeatIntervalBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -108,7 +108,7 @@ fun RepeatIntervalValueEditor(
  *  domain field is already minutes). Reuses [NumberStepperField] the same way
  *  [RepeatIntervalValueEditor] does. */
 @Composable
-fun DelayMinutesValueEditor(
+internal fun DelayMinutesValueEditor(
   builderItem: DelayMinutesBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,

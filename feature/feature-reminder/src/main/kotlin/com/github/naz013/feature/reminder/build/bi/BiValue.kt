@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class TimerExclusion(
+internal data class TimerExclusion(
   @SerializedName("hours")
   var hours: List<Int>,
   @SerializedName("from")
@@ -14,7 +14,7 @@ data class TimerExclusion(
 )
 
 @Keep
-data class CalendarDuration(
+internal data class CalendarDuration(
   @SerializedName("allDay")
   var allDay: Boolean,
   @SerializedName("millis")
@@ -22,7 +22,7 @@ data class CalendarDuration(
 )
 
 @Keep
-data class OtherParams(
+internal data class OtherParams(
   @SerializedName("useGlobal")
   var useGlobal: Boolean = true,
   @SerializedName("vibrate")

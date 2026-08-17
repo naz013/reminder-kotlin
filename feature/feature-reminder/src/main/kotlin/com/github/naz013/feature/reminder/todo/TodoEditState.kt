@@ -4,7 +4,7 @@ import com.github.naz013.ui.group.UiGroupList
 import com.github.naz013.feature.reminder.build.SubTasksBuilderItem
 import com.github.naz013.ui.tag.TagChipState
 
-data class TodoEditState(
+internal data class TodoEditState(
   val title: String = "",
   val subTasksItem: SubTasksBuilderItem? = null,
   val availableGroups: List<UiGroupList> = emptyList(),

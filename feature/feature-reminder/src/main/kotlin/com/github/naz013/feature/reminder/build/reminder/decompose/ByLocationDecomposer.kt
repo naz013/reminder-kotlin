@@ -12,7 +12,7 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import org.threeten.bp.LocalDateTime
 
-class ByLocationDecomposer(
+internal class ByLocationDecomposer(
   private val dateTimeManager: DateTimeManager,
   private val biFactory: BiFactory,
 ) {

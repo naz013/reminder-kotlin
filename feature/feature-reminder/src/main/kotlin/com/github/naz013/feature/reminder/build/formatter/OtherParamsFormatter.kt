@@ -5,7 +5,7 @@ import android.content.Context
 import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.bi.OtherParams
 
-class OtherParamsFormatter(
+internal class OtherParamsFormatter(
   private val context: Context,
 ) : Formatter<OtherParams>() {
   override fun format(otherParams: OtherParams): String =

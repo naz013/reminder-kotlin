@@ -1,5 +1,5 @@
 package com.github.naz013.feature.reminder
 
-object DayOfMonth {
+internal object DayOfMonth {
   const val LastDayOfMonth = 0
 }

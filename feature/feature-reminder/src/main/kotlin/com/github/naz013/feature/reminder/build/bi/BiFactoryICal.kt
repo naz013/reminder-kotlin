@@ -33,7 +33,7 @@ import com.github.naz013.common.ContextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.BiType
 
-class BiFactoryICal(
+internal class BiFactoryICal(
   contextProvider: ContextProvider,
   private val biTypeForUiAdapter: BiTypeForUiAdapter,
   private val dateTimeManager: DateTimeManager,

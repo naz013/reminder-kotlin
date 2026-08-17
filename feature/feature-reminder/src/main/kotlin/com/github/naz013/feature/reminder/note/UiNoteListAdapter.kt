@@ -14,7 +14,7 @@ import com.github.naz013.ui.common.view.ViewUtils
 import com.github.naz013.ui.note.NoteFontProvider
 import com.github.naz013.ui.note.UiNoteImagesAdapter
 
-class UiNoteListAdapter(
+internal class UiNoteListAdapter(
   private val dateTimeManager: DateTimeManager,
   private val themeProvider: ThemeProvider,
   private val contextProvider: ContextProvider,

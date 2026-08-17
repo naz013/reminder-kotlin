@@ -10,7 +10,7 @@ import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
-class ByDateDecomposer(
+internal class ByDateDecomposer(
   private val dateTimeManager: DateTimeManager,
   private val biFactory: BiFactory,
 ) {

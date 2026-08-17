@@ -29,7 +29,7 @@ import com.github.naz013.ui.common.compose.foundation.component.ValueAndTypePick
 /** Notification override switches (use global defaults, or vibrate/voice/repeat individually).
  *  Replaces `OtherParamsController`. */
 @Composable
-fun OtherParamsValueEditor(
+internal fun OtherParamsValueEditor(
   builderItem: BuilderItem<OtherParams>,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
@@ -84,7 +84,7 @@ fun OtherParamsValueEditor(
 /** Google Calendar event duration - a value+type wheel duration, or "all day" (which disables
  *  the wheel). Replaces `GoogleCalendarDurationController`. */
 @Composable
-fun GoogleCalendarDurationValueEditor(
+internal fun GoogleCalendarDurationValueEditor(
   builderItem: GoogleCalendarDurationBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,

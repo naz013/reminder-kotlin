@@ -21,7 +21,7 @@ private val DEFAULT_PRESET_INDEX = VibrationPresets.ALL.indexOfFirst { it.patter
  *  app, so this picks from [VibrationPresets.ALL] the same way [PriorityValueEditor] picks from a
  *  fixed option list. */
 @Composable
-fun VibrationPatternValueEditor(
+internal fun VibrationPatternValueEditor(
   builderItem: VibrationPatternBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,

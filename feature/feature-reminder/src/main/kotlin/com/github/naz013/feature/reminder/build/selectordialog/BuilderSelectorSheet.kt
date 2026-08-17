@@ -51,7 +51,7 @@ private val LIST_MAX_HEIGHT = 420.dp
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BuilderSelectorSheet(
+internal fun BuilderSelectorSheet(
   tabs: List<SelectorTab>,
   builderItems: List<UiSelectorItem>,
   presets: List<UiPresetList>,

@@ -83,7 +83,7 @@ import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 
-class BiFactory(
+internal class BiFactory(
   private val contextProvider: ContextProvider,
   private val biTypeForUiAdapter: BiTypeForUiAdapter,
   private val dateTimeManager: DateTimeManager,

@@ -10,7 +10,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ReminderAction as DomainReminderAction
 import com.github.naz013.logging.Logger
 
-class CreateReminderActionScreenStateUseCase(
+internal class CreateReminderActionScreenStateUseCase(
   private val getReminderActionsUseCase: GetReminderActionsUseCase,
   private val textProvider: TextProvider,
   private val contactsReader: ContactsReader,

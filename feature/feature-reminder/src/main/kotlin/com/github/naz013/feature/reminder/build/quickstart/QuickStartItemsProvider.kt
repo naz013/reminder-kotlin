@@ -27,7 +27,7 @@ import org.threeten.bp.LocalTime
  * "Alarm clock" in Manage Presets), so it stays available even if the user edits or deletes their
  * saved presets.
  */
-class QuickStartItemsProvider(
+internal class QuickStartItemsProvider(
   private val biFactory: BiFactory,
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,

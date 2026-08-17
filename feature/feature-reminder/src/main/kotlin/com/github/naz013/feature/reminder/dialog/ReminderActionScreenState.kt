@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.github.naz013.feature.reminder.actions.ReminderAction
 
-data class ReminderActionScreenState(
+internal data class ReminderActionScreenState(
   val id: String,
   val header: ReminderActionScreenHeader,
   val todoList: ReminderActionScreenTodoList?,
@@ -12,23 +12,23 @@ data class ReminderActionScreenState(
   val secondaryActions: List<ReminderActionScreenActionItem>,
 )
 
-data class ReminderActionScreenActionItem(
+internal data class ReminderActionScreenActionItem(
   val action: ReminderAction,
   val text: String,
   val iconRes: Int,
 )
 
-data class ReminderActionScreenTodoList(
+internal data class ReminderActionScreenTodoList(
   val items: List<ReminderActionScreenTodoItem>,
 )
 
-data class ReminderActionScreenTodoItem(
+internal data class ReminderActionScreenTodoItem(
   val id: String,
   val text: String,
   val isCompleted: Boolean,
 )
 
-sealed class ReminderActionScreenHeader {
+internal sealed class ReminderActionScreenHeader {
   data class SimpleWithSummary(
     val text: String,
   ) : ReminderActionScreenHeader()

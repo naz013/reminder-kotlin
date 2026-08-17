@@ -43,6 +43,7 @@ dependencies {
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-schedule"))
   implementation(project(":logic:logic-tag"))
+  implementation(project(":logic:logic-workflow"))
   implementation(project(":feature:feature-tags"))
 
   implementation(libs.koin.android)

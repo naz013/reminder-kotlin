@@ -6,7 +6,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.bi.CalendarDuration
 import com.github.naz013.datecalc.DateTimeManager
 
-class CalendarDurationFormatter(
+internal class CalendarDurationFormatter(
   private val context: Context,
   private val dateTimeManager: DateTimeManager,
 ) : Formatter<CalendarDuration>() {

@@ -5,7 +5,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import com.github.naz013.feature.common.readString
 
-class UriHelper(
+internal class UriHelper(
   private val context: Context,
 ) {
 

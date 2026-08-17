@@ -14,10 +14,10 @@ import org.koin.compose.koinInject
  */
 
 @Composable
-fun rememberDateTimeManager(): DateTimeManager = koinInject()
+internal fun rememberDateTimeManager(): DateTimeManager = koinInject()
 
 @Composable
-fun rememberGoogleCalendarApi(): GoogleCalendarApi = koinInject()
+internal fun rememberGoogleCalendarApi(): GoogleCalendarApi = koinInject()
 
 @Composable
-fun rememberPackageManagerWrapper(): PackageManagerWrapper = koinInject()
+internal fun rememberPackageManagerWrapper(): PackageManagerWrapper = koinInject()

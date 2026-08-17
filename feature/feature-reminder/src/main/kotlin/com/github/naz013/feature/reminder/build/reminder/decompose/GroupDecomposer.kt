@@ -8,7 +8,7 @@ import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.GroupV2Repository
 
-class GroupDecomposer(
+internal class GroupDecomposer(
   private val biFactory: BiFactory,
   private val groupV2Repository: GroupV2Repository,
   private val uiGroupListAdapter: UiGroupListAdapter,

@@ -6,7 +6,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.bi.TimerExclusion
 import com.github.naz013.datecalc.DateTimeManager
 
-class TimerExclusionFormatter(
+internal class TimerExclusionFormatter(
   private val context: Context,
   private val dateTimeManager: DateTimeManager,
 ) : Formatter<TimerExclusion>() {

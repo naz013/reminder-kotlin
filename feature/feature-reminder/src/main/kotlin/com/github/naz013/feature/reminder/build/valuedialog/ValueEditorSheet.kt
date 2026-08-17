@@ -122,7 +122,7 @@ import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSh
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ValueEditorSheet(
+internal fun ValueEditorSheet(
   builderItem: BuilderItem<*>,
   onDismissRequest: () -> Unit,
   onValueChange: (BuilderItem<*>) -> Unit,

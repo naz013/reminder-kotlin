@@ -12,7 +12,7 @@ import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 
-class BuilderErrorFinder(
+internal class BuilderErrorFinder(
   private val builderStateCalculator: BuilderStateCalculator,
   private val reminderValidator: ReminderValidator,
   private val recurrenceRuleCalculator: RecurrenceRuleCalculator,

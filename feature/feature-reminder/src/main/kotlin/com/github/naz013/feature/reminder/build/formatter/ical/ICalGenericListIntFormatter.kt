@@ -5,7 +5,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.notification.settings.Formatter
 import org.threeten.bp.LocalDate
 
-class ICalGenericListIntFormatter(
+internal class ICalGenericListIntFormatter(
   private val context: Context,
 ) : Formatter<List<Int>>() {
   private val date = LocalDate.now().withDayOfMonth(15)

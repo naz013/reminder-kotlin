@@ -18,7 +18,7 @@ import com.github.naz013.feature.reminder.build.BuilderItem
  *  validation (validation stays in [com.elementary.tasks.reminder.build.bi.BuilderModifier] -
  *  unchanged by this port). */
 @Composable
-fun SimpleTextValueEditor(
+internal fun SimpleTextValueEditor(
   builderItem: BuilderItem<String>,
   onValueChange: (BuilderItem<*>) -> Unit,
   keyboardType: KeyboardType,

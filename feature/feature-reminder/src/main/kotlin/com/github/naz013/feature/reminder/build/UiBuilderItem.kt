@@ -3,7 +3,7 @@ package com.github.naz013.feature.reminder.build
 import com.github.naz013.feature.reminder.note.UiNoteList
 import com.github.naz013.feature.reminder.build.bi.BuilderItemError
 
-sealed class UiBuilderItem {
+internal sealed class UiBuilderItem {
   abstract val key: Any
   abstract val builderItem: BuilderItem<*>
   abstract val state: UiListBuilderItemState
@@ -11,7 +11,7 @@ sealed class UiBuilderItem {
   abstract val errorText: String
 }
 
-data class UiListBuilderItem(
+internal data class UiListBuilderItem(
   override val builderItem: BuilderItem<*>,
   override val state: UiListBuilderItemState,
   override val value: String,
@@ -20,7 +20,7 @@ data class UiListBuilderItem(
   override val key: Any = builderItem.biType
 }
 
-data class UiListNoteBuilderItem(
+internal data class UiListNoteBuilderItem(
   override val builderItem: NoteBuilderItem,
   override val state: UiListBuilderItemState,
   override val value: String,
@@ -30,7 +30,7 @@ data class UiListNoteBuilderItem(
   override val key: Any = builderItem.biType
 }
 
-sealed class UiListBuilderItemState {
+internal sealed class UiListBuilderItemState {
   data object EmptyState : UiListBuilderItemState()
 
   data object DoneState : UiListBuilderItemState()

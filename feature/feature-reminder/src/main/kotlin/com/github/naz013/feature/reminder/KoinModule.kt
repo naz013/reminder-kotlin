@@ -1,6 +1,7 @@
 package com.github.naz013.feature.reminder
 
 import com.github.naz013.feature.reminder.actions.GetReminderActionsUseCase
+import com.github.naz013.feature.reminder.analytics.ReminderAnalyticsTracker
 import com.github.naz013.feature.reminder.apps.SelectApplicationViewModel
 import com.github.naz013.feature.reminder.build.ApplicationPickerResultHolder
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
@@ -35,6 +36,7 @@ import com.github.naz013.feature.reminder.build.preset.BuilderPresetToBiAdapter
 import com.github.naz013.feature.reminder.build.preset.BuilderPresetsGenerateUseCase
 import com.github.naz013.feature.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.github.naz013.feature.reminder.build.preset.ManagePresetsViewModel
+import com.github.naz013.feature.reminder.build.preset.PresetInitProcessor
 import com.github.naz013.feature.reminder.build.preset.RecurParamsToBiAdapter
 import com.github.naz013.feature.reminder.build.preset.primitive.PrimitiveProtocol
 import com.github.naz013.feature.reminder.build.quickstart.FindGroupUseCase
@@ -73,12 +75,14 @@ import com.github.naz013.feature.reminder.note.UiNoteListAdapter
 import com.github.naz013.feature.reminder.preset.UiPresetListAdapter
 import com.github.naz013.feature.reminder.preview.FullScreenMapViewModel
 import com.github.naz013.feature.reminder.preview.PreviewReminderViewModel
-import com.github.naz013.feature.reminder.analytics.ReminderAnalyticsTracker
 import com.github.naz013.feature.reminder.todo.TodoEditNavKey
 import com.github.naz013.feature.reminder.todo.TodoEditViewModel
 import com.github.naz013.feature.reminder.todo.TodoSeedHolder
 import com.github.naz013.feature.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.feature.reminder.util.BackupTool
+import com.github.naz013.feature.reminder.util.UriHelper
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -332,4 +336,12 @@ val featureReminderModule = module {
   factoryOf(::FindGroupUseCase)
 
   factoryOf(::IsSimpleTodoReminderUseCase)
+
+  factory { UiReminderPlaceAdapter() }
+
+  factory { UiReminderCommonAdapter(get(), get(), get(), get(), get(), get(), get()) }
+
+  factoryOf(::UriHelper)
+  singleOf(::BackupTool)
+  factoryOf(::PresetInitProcessor)
 }

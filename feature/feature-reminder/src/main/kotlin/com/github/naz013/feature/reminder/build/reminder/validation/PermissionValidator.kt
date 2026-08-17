@@ -5,7 +5,7 @@ import com.github.naz013.feature.reminder.build.bi.constraint.PermissionConstrai
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.Permissions
 
-class PermissionValidator(
+internal class PermissionValidator(
   private val contextProvider: ContextProvider,
 ) {
   operator fun invoke(items: List<BuilderItem<*>>): Result {

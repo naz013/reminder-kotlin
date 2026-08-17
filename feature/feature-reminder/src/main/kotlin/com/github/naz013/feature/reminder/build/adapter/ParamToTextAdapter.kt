@@ -9,7 +9,7 @@ import com.github.naz013.icalendar.FreqType
 import com.github.naz013.icalendar.RecurParamType
 import org.koin.compose.koinInject
 
-class ParamToTextAdapter(
+internal class ParamToTextAdapter(
   private val textProvider: TextProvider,
 ) {
   fun getTypeText(recurParamType: RecurParamType): String =
@@ -53,4 +53,4 @@ class ParamToTextAdapter(
 }
 
 @Composable
-fun rememberParamToTextAdapter(): ParamToTextAdapter = koinInject()
+internal fun rememberParamToTextAdapter(): ParamToTextAdapter = koinInject()

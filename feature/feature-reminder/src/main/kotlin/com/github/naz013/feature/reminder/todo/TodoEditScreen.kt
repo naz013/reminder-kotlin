@@ -40,7 +40,7 @@ import com.github.naz013.ui.tag.TagChipState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoEditScreen(
+internal fun TodoEditScreen(
   state: TodoEditState,
   dateTimeManager: DateTimeManager,
   onBackClick: () -> Unit,

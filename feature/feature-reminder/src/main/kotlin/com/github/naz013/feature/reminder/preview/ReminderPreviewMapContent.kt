@@ -28,7 +28,7 @@ import org.koin.core.parameter.parametersOf
  * the pre-`ui-map` extraction, there's no cross-feature `simplemap` dependency to avoid any more.
  */
 @Composable
-fun EmbeddedMap(
+internal fun EmbeddedMap(
   places: List<UiReminderPlace>,
   onMapClick: () -> Unit,
 ) {
@@ -87,7 +87,7 @@ private fun FullscreenEmbeddedMap(
 }
 
 @Composable
-fun FullscreenMapEntry(
+internal fun FullscreenMapEntry(
   key: ReminderPreviewNavKey.FullscreenMap,
   backStack: MutableList<NavKey>,
 ) {

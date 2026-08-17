@@ -24,6 +24,10 @@ below are unqualified for readability; prepend the group to get the real Gradle 
 - **Dependency Injection**: Koin. Use `KoinModule.kt` in each module.
 - **State**: MVVM with `StateFlow` / `LiveData`.
 - **Log**: Use `logging-api` (`Logger` interface) to avoid concrete coupling.
+- **Visibility**: mark a class or top-level function/property `internal` if nothing outside its own
+  Gradle module references it by name. Widen to `public` only once a real cross-module caller shows up
+  — including a `KoinModule.kt` living in a different module than the class it binds, which this repo
+  does allow.
 - **Persistence**: Room (SQLite). Mappings between Entity and Domain are mandatory.
 - **JSON**: Every field Gson touches (`Gson().toJson(...)` / `fromJson(...)`, directly or via
   `TypeToken`) needs `@SerializedName` - unannotated Gson field reflection is not safe under

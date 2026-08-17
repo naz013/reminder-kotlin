@@ -6,7 +6,7 @@ import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.feature.reminder.build.UiSelectorItem
 import org.koin.compose.koinInject
 
-class SelectorDialogDataHolder(
+internal class SelectorDialogDataHolder(
   private val buildInfo: BuildInfo,
 ) {
   var selectorBuilderItems: List<UiSelectorItem> = emptyList()
@@ -22,4 +22,4 @@ class SelectorDialogDataHolder(
 }
 
 @Composable
-fun rememberSelectorDialogDataHolder(): SelectorDialogDataHolder = koinInject()
+internal fun rememberSelectorDialogDataHolder(): SelectorDialogDataHolder = koinInject()

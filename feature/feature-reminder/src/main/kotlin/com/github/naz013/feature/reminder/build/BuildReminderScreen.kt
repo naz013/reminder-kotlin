@@ -86,7 +86,7 @@ private const val OVERFLOW_ITEM_REPORT_ISSUE = 2
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BuildReminderScreen(
+internal fun BuildReminderScreen(
   isLoadingForEdit: Boolean,
   builderItems: List<UiBuilderItem>,
   prediction: ReminderPrediction?,

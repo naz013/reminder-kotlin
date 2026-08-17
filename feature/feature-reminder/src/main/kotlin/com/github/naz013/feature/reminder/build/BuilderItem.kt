@@ -100,7 +100,7 @@ import com.github.naz013.icalendar.WeekStartRecurParam
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
-abstract class BuilderItem<T> {
+internal abstract class BuilderItem<T> {
   @get:DrawableRes
   abstract val iconRes: Int
   abstract val title: String
@@ -119,9 +119,9 @@ abstract class BuilderItem<T> {
   }
 }
 
-abstract class StringBuilderItem : BuilderItem<String>()
+internal abstract class StringBuilderItem : BuilderItem<String>()
 
-data class SummaryBuilderItem(
+internal data class SummaryBuilderItem(
   override val title: String,
   override val description: String?,
 ) : StringBuilderItem() {
@@ -132,7 +132,7 @@ data class SummaryBuilderItem(
   override val biGroup: BiGroup = BiGroup.PARAMS
 }
 
-data class DescriptionBuilderItem(
+internal data class DescriptionBuilderItem(
   override val title: String,
   override val description: String?,
 ) : StringBuilderItem() {
@@ -146,7 +146,7 @@ data class DescriptionBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class DateBuilderItem(
+internal data class DateBuilderItem(
   override val title: String,
   override val description: String?,
   private val dateFormatter: DateFormatter,
@@ -173,7 +173,7 @@ data class DateBuilderItem(
     }
 }
 
-data class TimeBuilderItem(
+internal data class TimeBuilderItem(
   override val title: String,
   override val description: String?,
   private val timeFormatter: TimeFormatter,
@@ -202,7 +202,7 @@ data class TimeBuilderItem(
     }
 }
 
-data class DaysOfWeekBuilderItem(
+internal data class DaysOfWeekBuilderItem(
   override val title: String,
   override val description: String?,
   private val weekdayArrayFormatter: WeekdayArrayFormatter,
@@ -230,7 +230,7 @@ data class DaysOfWeekBuilderItem(
     }
 }
 
-data class DayOfMonthBuilderItem(
+internal data class DayOfMonthBuilderItem(
   override val title: String,
   override val description: String?,
   private val dayOfMonthFormatter: DayOfMonthFormatter,
@@ -258,7 +258,7 @@ data class DayOfMonthBuilderItem(
     }
 }
 
-data class DayOfYearBuilderItem(
+internal data class DayOfYearBuilderItem(
   override val title: String,
   override val description: String?,
   private val dayOfYearFormatter: DayOfYearFormatter,
@@ -286,7 +286,7 @@ data class DayOfYearBuilderItem(
     }
 }
 
-data class TimerBuilderItem(
+internal data class TimerBuilderItem(
   override val title: String,
   override val description: String?,
   private val timerFormatter: TimerFormatter,
@@ -313,7 +313,7 @@ data class TimerBuilderItem(
     }
 }
 
-data class TimerExclusionBuilderItem(
+internal data class TimerExclusionBuilderItem(
   override val title: String,
   override val description: String?,
   private val timerExclusionFormatter: TimerExclusionFormatter,
@@ -342,7 +342,7 @@ data class TimerExclusionBuilderItem(
     }
 }
 
-data class GroupBuilderItem(
+internal data class GroupBuilderItem(
   override val title: String,
   override val description: String?,
   val groups: List<UiGroupList>,
@@ -355,7 +355,7 @@ data class GroupBuilderItem(
   override val biGroup: BiGroup = BiGroup.PARAMS
 }
 
-data class BeforeTimeBuilderItem(
+internal data class BeforeTimeBuilderItem(
   override val title: String,
   override val description: String?,
   private val beforeTimeFormatter: BeforeTimeFormatter,
@@ -389,7 +389,7 @@ data class BeforeTimeBuilderItem(
     }
 }
 
-data class RepeatTimeBuilderItem(
+internal data class RepeatTimeBuilderItem(
   override val title: String,
   override val description: String?,
   private val repeatTimeFormatter: RepeatTimeFormatter,
@@ -419,7 +419,7 @@ data class RepeatTimeBuilderItem(
     }
 }
 
-data class RepeatIntervalBuilderItem(
+internal data class RepeatIntervalBuilderItem(
   override val title: String,
   override val description: String?,
   private val repeatIntervalFormatter: RepeatIntervalFormatter,
@@ -448,7 +448,7 @@ data class RepeatIntervalBuilderItem(
     }
 }
 
-data class RepeatLimitBuilderItem(
+internal data class RepeatLimitBuilderItem(
   override val title: String,
   override val description: String?,
   val repeatLimitFormatter: RepeatLimitFormatter,
@@ -476,7 +476,7 @@ data class RepeatLimitBuilderItem(
     }
 }
 
-data class PriorityBuilderItem(
+internal data class PriorityBuilderItem(
   override val title: String,
   override val description: String?,
   private val priorityFormatter: PriorityFormatter,
@@ -499,7 +499,7 @@ data class PriorityBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class LedColorBuilderItem(
+internal data class LedColorBuilderItem(
   override val title: String,
   override val description: String?,
   private val ledColorFormatter: LedColorFormatter,
@@ -515,7 +515,7 @@ data class LedColorBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class CategoryBuilderItem(
+internal data class CategoryBuilderItem(
   override val title: String,
   override val description: String?,
   private val categoryFormatter: CategoryFormatter,
@@ -537,7 +537,7 @@ data class CategoryBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class LockScreenVisibilityBuilderItem(
+internal data class LockScreenVisibilityBuilderItem(
   override val title: String,
   override val description: String?,
   private val lockScreenVisibilityFormatter: LockScreenVisibilityFormatter,
@@ -559,7 +559,7 @@ data class LockScreenVisibilityBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class BypassDndBuilderItem(
+internal data class BypassDndBuilderItem(
   override val title: String,
   override val description: String?,
   private val bypassDndFormatter: BypassDndFormatter,
@@ -577,7 +577,7 @@ data class BypassDndBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class WakeScreenBuilderItem(
+internal data class WakeScreenBuilderItem(
   override val title: String,
   override val description: String?,
   private val wakeScreenFormatter: WakeScreenFormatter,
@@ -595,7 +595,7 @@ data class WakeScreenBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class VibrationPatternBuilderItem(
+internal data class VibrationPatternBuilderItem(
   override val title: String,
   override val description: String?,
   private val vibrationPatternFormatter: VibrationPatternFormatter,
@@ -613,7 +613,7 @@ data class VibrationPatternBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class DelayMinutesBuilderItem(
+internal data class DelayMinutesBuilderItem(
   override val title: String,
   override val description: String?,
   private val delayMinutesFormatter: DelayMinutesFormatter,
@@ -631,7 +631,7 @@ data class DelayMinutesBuilderItem(
   override val biGroup: BiGroup = BiGroup.PARAMS
 }
 
-data class AttachmentsBuilderItem(
+internal data class AttachmentsBuilderItem(
   override val title: String,
   override val description: String?,
   private val attachmentsFormatter: AttachmentsFormatter,
@@ -647,7 +647,7 @@ data class AttachmentsBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class PhoneCallBuilderItem(
+internal data class PhoneCallBuilderItem(
   override val title: String,
   override val description: String?,
 ) : StringBuilderItem() {
@@ -679,7 +679,7 @@ data class PhoneCallBuilderItem(
     }
 }
 
-data class SmsBuilderItem(
+internal data class SmsBuilderItem(
   override val title: String,
   override val description: String?,
 ) : StringBuilderItem() {
@@ -710,7 +710,7 @@ data class SmsBuilderItem(
     }
 }
 
-data class GoogleTaskListBuilderItem(
+internal data class GoogleTaskListBuilderItem(
   override val title: String,
   override val description: String?,
   val taskLists: List<GoogleTaskList>,
@@ -742,7 +742,7 @@ data class GoogleTaskListBuilderItem(
     }
 }
 
-data class GoogleCalendarBuilderItem(
+internal data class GoogleCalendarBuilderItem(
   override val title: String,
   override val description: String?,
 ) : BuilderItem<CalendarItem>() {
@@ -775,7 +775,7 @@ data class GoogleCalendarBuilderItem(
     }
 }
 
-data class GoogleCalendarDurationBuilderItem(
+internal data class GoogleCalendarDurationBuilderItem(
   override val title: String,
   override val description: String?,
   private val calendarDurationFormatter: CalendarDurationFormatter,
@@ -801,7 +801,7 @@ data class GoogleCalendarDurationBuilderItem(
     }
 }
 
-data class EmailBuilderItem(
+internal data class EmailBuilderItem(
   override val title: String,
   override val description: String?,
 ) : StringBuilderItem() {
@@ -832,7 +832,7 @@ data class EmailBuilderItem(
     }
 }
 
-data class EmailSubjectBuilderItem(
+internal data class EmailSubjectBuilderItem(
   override val title: String,
   override val description: String?,
 ) : StringBuilderItem() {
@@ -854,7 +854,7 @@ data class EmailSubjectBuilderItem(
     }
 }
 
-data class WebAddressBuilderItem(
+internal data class WebAddressBuilderItem(
   override val title: String,
   override val description: String?,
 ) : StringBuilderItem() {
@@ -885,7 +885,7 @@ data class WebAddressBuilderItem(
     }
 }
 
-data class ApplicationBuilderItem(
+internal data class ApplicationBuilderItem(
   override val title: String,
   override val description: String?,
   private val applicationFormatter: ApplicationFormatter,
@@ -918,7 +918,7 @@ data class ApplicationBuilderItem(
     }
 }
 
-data class OtherParamsBuilderItem(
+internal data class OtherParamsBuilderItem(
   override val title: String,
   override val description: String?,
   private val otherParamsFormatter: OtherParamsFormatter,
@@ -930,7 +930,7 @@ data class OtherParamsBuilderItem(
   override val biGroup: BiGroup = BiGroup.EXTRA
 }
 
-data class SubTasksBuilderItem(
+internal data class SubTasksBuilderItem(
   override val title: String,
   override val description: String?,
   private val shopItemsFormatter: ShopItemsFormatter,
@@ -953,7 +953,7 @@ data class SubTasksBuilderItem(
     }
 }
 
-data class ArrivingCoordinatesBuilderItem(
+internal data class ArrivingCoordinatesBuilderItem(
   override val title: String,
   override val description: String?,
   private val placeFormatter: PlaceFormatter,
@@ -984,7 +984,7 @@ data class ArrivingCoordinatesBuilderItem(
     }
 }
 
-data class LeavingCoordinatesBuilderItem(
+internal data class LeavingCoordinatesBuilderItem(
   override val title: String,
   override val description: String?,
   private val placeFormatter: PlaceFormatter,
@@ -1015,7 +1015,7 @@ data class LeavingCoordinatesBuilderItem(
     }
 }
 
-data class LocationDelayDateBuilderItem(
+internal data class LocationDelayDateBuilderItem(
   override val title: String,
   override val description: String?,
   private val dateFormatter: DateFormatter,
@@ -1045,7 +1045,7 @@ data class LocationDelayDateBuilderItem(
     }
 }
 
-data class LocationDelayTimeBuilderItem(
+internal data class LocationDelayTimeBuilderItem(
   override val title: String,
   override val description: String?,
   private val timeFormatter: TimeFormatter,
@@ -1075,7 +1075,7 @@ data class LocationDelayTimeBuilderItem(
     }
 }
 
-data class NoteBuilderItem(
+internal data class NoteBuilderItem(
   override val title: String,
   override val description: String?,
   val notes: List<UiNoteList>,
@@ -1095,7 +1095,7 @@ data class NoteBuilderItem(
     }
 }
 
-sealed class ICalBuilderItem<T>(
+internal sealed class ICalBuilderItem<T>(
   initValue: T,
   formatter: Formatter<T>? = null,
 ) : BuilderItem<T>() {
@@ -1108,7 +1108,7 @@ sealed class ICalBuilderItem<T>(
   open fun createRecurParam(value: T): RecurParam? = null
 }
 
-data class ICalFrequencyBuilderItem(
+internal data class ICalFrequencyBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: ICalFreqFormatter,
@@ -1133,7 +1133,7 @@ data class ICalFrequencyBuilderItem(
   override fun createRecurParam(value: FreqType): RecurParam = FreqRecurParam(value)
 }
 
-sealed class ICalIntBuilderItem(
+internal sealed class ICalIntBuilderItem(
   initValue: Int,
   open val formatter: Formatter<Int>,
 ) : ICalBuilderItem<Int>(initValue, formatter) {
@@ -1141,7 +1141,7 @@ sealed class ICalIntBuilderItem(
   abstract val maxValue: Int
 }
 
-data class ICalIntervalBuilderItem(
+internal data class ICalIntervalBuilderItem(
   override val title: String,
   override val description: String?,
   override val formatter: Formatter<Int>,
@@ -1168,7 +1168,7 @@ data class ICalIntervalBuilderItem(
   override fun createRecurParam(value: Int): RecurParam = IntervalRecurParam(value)
 }
 
-data class ICalCountBuilderItem(
+internal data class ICalCountBuilderItem(
   override val title: String,
   override val description: String?,
   override val formatter: Formatter<Int>,
@@ -1195,7 +1195,7 @@ data class ICalCountBuilderItem(
   override fun createRecurParam(value: Int): RecurParam = CountRecurParam(value)
 }
 
-data class ICalUntilDateBuilderItem(
+internal data class ICalUntilDateBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: DateFormatter,
@@ -1220,7 +1220,7 @@ data class ICalUntilDateBuilderItem(
     }
 }
 
-data class ICalUntilTimeBuilderItem(
+internal data class ICalUntilTimeBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: TimeFormatter,
@@ -1245,7 +1245,7 @@ data class ICalUntilTimeBuilderItem(
     }
 }
 
-data class ICalStartDateBuilderItem(
+internal data class ICalStartDateBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: DateFormatter,
@@ -1269,7 +1269,7 @@ data class ICalStartDateBuilderItem(
     }
 }
 
-data class ICalStartTimeBuilderItem(
+internal data class ICalStartTimeBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: TimeFormatter,
@@ -1293,7 +1293,7 @@ data class ICalStartTimeBuilderItem(
     }
 }
 
-sealed class ICalListIntBuilderItem(
+internal sealed class ICalListIntBuilderItem(
   initValue: List<Int>,
   val minValue: Int,
   val maxValue: Int,
@@ -1301,7 +1301,7 @@ sealed class ICalListIntBuilderItem(
   formatter: Formatter<List<Int>>? = null,
 ) : ICalBuilderItem<List<Int>>(initValue, formatter)
 
-data class ICalByMonthBuilderItem(
+internal data class ICalByMonthBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: Formatter<List<Int>>,
@@ -1331,7 +1331,7 @@ data class ICalByMonthBuilderItem(
   override fun createRecurParam(value: List<Int>): RecurParam = ByMonthRecurParam(value)
 }
 
-data class ICalByDayBuilderItem(
+internal data class ICalByDayBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: ICalListDayValueFormatter,
@@ -1356,7 +1356,7 @@ data class ICalByDayBuilderItem(
   override fun createRecurParam(value: List<DayValue>): RecurParam = ByDayRecurParam(value)
 }
 
-data class ICalByMonthDayBuilderItem(
+internal data class ICalByMonthDayBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: Formatter<List<Int>>,
@@ -1387,7 +1387,7 @@ data class ICalByMonthDayBuilderItem(
   override fun createRecurParam(value: List<Int>): RecurParam = ByMonthDayRecurParam(value)
 }
 
-data class ICalByHourBuilderItem(
+internal data class ICalByHourBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: Formatter<List<Int>>,
@@ -1417,7 +1417,7 @@ data class ICalByHourBuilderItem(
   override fun createRecurParam(value: List<Int>): RecurParam = ByHourRecurParam(value)
 }
 
-data class ICalByMinuteBuilderItem(
+internal data class ICalByMinuteBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: Formatter<List<Int>>,
@@ -1447,7 +1447,7 @@ data class ICalByMinuteBuilderItem(
   override fun createRecurParam(value: List<Int>): RecurParam = ByMinuteRecurParam(value)
 }
 
-data class ICalByYearDayBuilderItem(
+internal data class ICalByYearDayBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: Formatter<List<Int>>,
@@ -1478,7 +1478,7 @@ data class ICalByYearDayBuilderItem(
   override fun createRecurParam(value: List<Int>): RecurParam = ByYearDayRecurParam(value)
 }
 
-data class ICalByWeekNoBuilderItem(
+internal data class ICalByWeekNoBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: Formatter<List<Int>>,
@@ -1509,7 +1509,7 @@ data class ICalByWeekNoBuilderItem(
   override fun createRecurParam(value: List<Int>): RecurParam = ByWeekNumberRecurParam(value)
 }
 
-data class ICalBySetPosBuilderItem(
+internal data class ICalBySetPosBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: Formatter<List<Int>>,
@@ -1540,7 +1540,7 @@ data class ICalBySetPosBuilderItem(
   override fun createRecurParam(value: List<Int>): RecurParam = BySetPosRecurParam(value)
 }
 
-data class ICalWeekStartBuilderItem(
+internal data class ICalWeekStartBuilderItem(
   override val title: String,
   override val description: String?,
   private val formatter: ICalDayValueFormatter,

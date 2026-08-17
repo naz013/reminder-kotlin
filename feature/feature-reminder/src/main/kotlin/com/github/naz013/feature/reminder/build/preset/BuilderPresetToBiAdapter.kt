@@ -117,7 +117,7 @@ import com.github.naz013.domain.reminder.BiType.TIME
 import com.github.naz013.domain.reminder.BiType.VIBRATION_PATTERN
 import com.github.naz013.domain.reminder.BiType.WAKE_SCREEN
 
-class BuilderPresetToBiAdapter(
+internal class BuilderPresetToBiAdapter(
   private val biFactory: BiFactory,
   private val biTypeToBiValue: BiTypeToBiValue,
 ) {

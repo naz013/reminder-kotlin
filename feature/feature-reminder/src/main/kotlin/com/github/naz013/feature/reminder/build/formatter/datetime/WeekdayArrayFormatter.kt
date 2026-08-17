@@ -5,7 +5,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.notification.settings.Formatter
 
 @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-class WeekdayArrayFormatter(
+internal class WeekdayArrayFormatter(
   private val context: Context,
 ) : Formatter<List<Int>>() {
   override fun format(daysOfWeek: List<Int>): String {

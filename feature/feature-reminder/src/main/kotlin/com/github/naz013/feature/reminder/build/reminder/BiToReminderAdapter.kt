@@ -14,7 +14,7 @@ import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 
-class BiToReminderAdapter(
+internal class BiToReminderAdapter(
   private val builderStateCalculator: BuilderStateCalculator,
   private val reminderValidator: ReminderValidator,
   private val recurrenceRuleCalculator: RecurrenceRuleCalculator,

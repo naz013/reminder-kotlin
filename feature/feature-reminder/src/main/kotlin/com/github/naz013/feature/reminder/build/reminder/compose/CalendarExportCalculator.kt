@@ -6,7 +6,7 @@ import com.github.naz013.feature.reminder.build.GoogleCalendarDurationBuilderIte
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
 
-class CalendarExportCalculator {
+internal class CalendarExportCalculator {
   operator fun invoke(itemsMap: Map<BiType, BuilderItem<*>>): CalendarExportSettings? {
     val calendar = (itemsMap[BiType.GOOGLE_CALENDAR] as? GoogleCalendarBuilderItem)?.modifier?.getValue() ?: return null
     val duration = (itemsMap[BiType.GOOGLE_CALENDAR_DURATION] as? GoogleCalendarDurationBuilderItem)?.modifier?.getValue()

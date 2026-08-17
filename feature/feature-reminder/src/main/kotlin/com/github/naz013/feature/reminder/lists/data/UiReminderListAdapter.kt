@@ -1,27 +1,27 @@
 package com.github.naz013.feature.reminder.lists.data
 
-import com.github.naz013.ui.common.R
-import com.github.naz013.feature.reminder.UiReminderCommonAdapter
-import com.github.naz013.ui.group.UiGroupListAdapter
-import com.github.naz013.ui.common.text.UiTextElement
-import com.github.naz013.ui.reminder.UiReminderDueData
-import com.github.naz013.ui.common.text.UiTextFormat
-import com.github.naz013.ui.common.text.UiTextStyle
-import com.github.naz013.logic.reminder.RecurEventManager
-import com.github.naz013.feature.reminder.build.formatter.factory.PlaceFormatterFactory
-import com.github.naz013.feature.reminder.build.formatter.`object`.PlaceFormatter
-import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.GroupV2
-import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.feature.reminder.UiReminderCommonAdapter
+import com.github.naz013.feature.reminder.build.formatter.factory.PlaceFormatterFactory
+import com.github.naz013.feature.reminder.build.formatter.`object`.PlaceFormatter
+import com.github.naz013.feature.reminder.build.formatter.`object`.ShopItemsFormatter
+import com.github.naz013.logic.reminder.RecurEventManager
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.UnitsConverter
 import com.github.naz013.ui.common.adjustAlpha
+import com.github.naz013.ui.common.text.UiTextElement
+import com.github.naz013.ui.common.text.UiTextFormat
+import com.github.naz013.ui.common.text.UiTextStyle
 import com.github.naz013.ui.common.theme.ColorProvider
+import com.github.naz013.ui.group.UiGroupListAdapter
+import com.github.naz013.ui.reminder.UiReminderDueData
 
-class UiReminderListAdapter(
+class UiReminderListAdapter internal constructor(
   private val uiReminderCommonAdapter: UiReminderCommonAdapter,
   private val unitsConverter: UnitsConverter,
   private val colorProvider: ColorProvider,

@@ -4,7 +4,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.logic.builderstate.BuilderError
 import com.github.naz013.common.TextProvider
 
-class BuilderErrorToTextAdapter(
+internal class BuilderErrorToTextAdapter(
   private val biTypeForUiAdapter: BiTypeForUiAdapter,
   private val textProvider: TextProvider,
 ) {

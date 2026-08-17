@@ -16,11 +16,9 @@ import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.event.BirthdayEventTask
 import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
-import com.github.naz013.feature.reminder.util.BackupTool
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
-import com.github.naz013.ui.group.GroupsUtil
 import com.elementary.tasks.navigation.BottomNavInitViewModel
 import com.elementary.tasks.settings.other.PrivacyPolicyViewModel
 import com.elementary.tasks.settings.other.TermsViewModel
@@ -98,10 +96,8 @@ val storageModule = module {
 }
 
 val utilModule = module {
-  factoryOf(::PresetInitProcessor)
   factory { GoogleCalendarUtils(get(), get(), get(), get()) as GoogleCalendarApi }
 
-  singleOf(::BackupTool)
   singleOf(::CacheUtil)
 
   factoryOf(::RecurEventManager)
@@ -128,7 +124,6 @@ val utilModule = module {
 
   factory { FeatureManager(get()) as FeatureFlags }
   factory { HolidaySettingsGateImpl(get(), get()) as HolidaySettingsGate }
-  factory { GroupsUtil(get(), get(), get()) }
 
   factory { DoNotDisturbManager(get(), get()) }
 

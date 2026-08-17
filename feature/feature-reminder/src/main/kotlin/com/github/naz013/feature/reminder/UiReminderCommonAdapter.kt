@@ -23,7 +23,7 @@ import com.github.naz013.icalendar.TagType
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import org.threeten.bp.LocalDateTime
 
-class UiReminderCommonAdapter(
+internal class UiReminderCommonAdapter(
   private val textProvider: TextProvider,
   private val dateTimeManager: DateTimeManager,
   private val contactsReader: ContactsReader,

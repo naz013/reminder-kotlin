@@ -30,7 +30,7 @@ private const val REPEAT_LIMIT_STEPS = 365
 /** Priority wheel (Lowest..Highest, `@array/priorities`). Replaces `PriorityController`'s
  *  `VerticalWheelSelector` with [WheelPicker]. */
 @Composable
-fun PriorityValueEditor(
+internal fun PriorityValueEditor(
   builderItem: PriorityBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -55,7 +55,7 @@ fun PriorityValueEditor(
 /** Repeat-limit slider (-1 = no limit, 0..365 = number of repeats). Replaces
  *  `RepeatLimitController`'s custom `ValueSliderView` with a Material 3 [Slider]. */
 @Composable
-fun RepeatLimitValueEditor(
+internal fun RepeatLimitValueEditor(
   builderItem: RepeatLimitBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,

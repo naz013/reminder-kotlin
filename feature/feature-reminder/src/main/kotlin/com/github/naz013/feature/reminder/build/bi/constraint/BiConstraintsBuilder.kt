@@ -3,7 +3,7 @@ package com.github.naz013.feature.reminder.build.bi.constraint
 import com.github.naz013.feature.reminder.build.bi.BiGroup
 import com.github.naz013.domain.reminder.BiType
 
-class BiConstraints(
+internal class BiConstraints(
   val constraints: List<BiConstraint<*>>,
 ) {
   private constructor(builder: Builder) : this(builder.constraints)
@@ -69,7 +69,7 @@ class BiConstraints(
   }
 }
 
-inline fun constraints(block: BiConstraints.Builder.() -> Unit): List<BiConstraint<*>> =
+internal inline fun constraints(block: BiConstraints.Builder.() -> Unit): List<BiConstraint<*>> =
   BiConstraints
     .Builder()
     .apply(block)

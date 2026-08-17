@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class TodoEditViewModel(
+internal class TodoEditViewModel(
   private val navKey: TodoEditNavKey.Main,
   private val dispatcherProvider: DispatcherProvider,
   private val biFactory: BiFactory,

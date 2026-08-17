@@ -4,7 +4,7 @@ import android.content.Context
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.ui.map.DefaultRadiusFormatter
 
-class RadiusFormatterFactory(
+internal class RadiusFormatterFactory(
   private val context: Context,
   private val reminderPreferences: ReminderPreferences,
 ) {

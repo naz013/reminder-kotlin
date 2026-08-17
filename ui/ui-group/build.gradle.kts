@@ -17,6 +17,9 @@ dependencies {
   implementation(libs.androidx.core.ktx)
   implementation(libs.threetenbp)
 
+  implementation(libs.koin.android)
+  implementation(libs.koin.androidx.compose)
+
   testImplementation(libs.junit)
   testImplementation(libs.mockk)
 }

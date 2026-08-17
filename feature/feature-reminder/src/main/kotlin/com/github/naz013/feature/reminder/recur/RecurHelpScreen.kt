@@ -28,7 +28,7 @@ private const val URL = "file:///android_asset/files/doc_rfc_5545.html"
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RecurHelpScreen(onBackClick: () -> Unit) {
+internal fun RecurHelpScreen(onBackClick: () -> Unit) {
   Scaffold(
     topBar = {
       TopAppBar(

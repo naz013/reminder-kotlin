@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.bi
 
 import com.github.naz013.domain.reminder.BiType
 
-enum class BiGroup(
+internal enum class BiGroup(
   val types: List<BiType> = emptyList(),
 ) {
   CORE,

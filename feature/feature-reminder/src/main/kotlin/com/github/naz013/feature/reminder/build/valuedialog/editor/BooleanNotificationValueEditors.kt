@@ -19,7 +19,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchIt
  *  [com.elementary.tasks.reminder.build.PriorityBuilderItem] work rather than the deprecated
  *  [com.elementary.tasks.reminder.build.OtherParamsBuilderItem] "use global" blanket-flag design. */
 @Composable
-fun BypassDndValueEditor(
+internal fun BypassDndValueEditor(
   builderItem: BypassDndBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
@@ -42,7 +42,7 @@ fun BypassDndValueEditor(
 
 /** Single "wake screen" toggle, same presence-is-the-override pattern as [BypassDndValueEditor]. */
 @Composable
-fun WakeScreenValueEditor(
+internal fun WakeScreenValueEditor(
   builderItem: WakeScreenBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {

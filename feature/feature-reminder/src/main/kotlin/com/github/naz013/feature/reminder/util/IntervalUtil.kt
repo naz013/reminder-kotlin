@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.util
 
 import com.github.naz013.datecalc.DateTimeManager
 
-object IntervalUtil {
+internal object IntervalUtil {
   private const val DAY_CHECKED = 1
   private const val REPEAT_CODE_ONCE = 0
   const val INTERVAL_DAY = 1

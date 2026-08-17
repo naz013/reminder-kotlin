@@ -14,7 +14,7 @@ import com.google.gson.Gson
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
-class PrimitiveProtocol {
+internal class PrimitiveProtocol {
   fun asString(any: Any): String =
     when (any) {
       is Int -> any.asString()

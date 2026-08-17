@@ -1,4 +1,4 @@
-package com.github.naz013.feature.workflow
+package com.github.naz013.logic.workflow
 
 object WorkflowConfig {
   val isEnabled: Boolean

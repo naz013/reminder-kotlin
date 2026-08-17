@@ -12,7 +12,7 @@ import com.github.naz013.feature.reminder.build.bi.BuilderItemConstraints
 import com.github.naz013.feature.reminder.build.bi.BuilderItemError
 import com.github.naz013.feature.reminder.build.bi.ProcessedBuilderItems
 
-class UiBuilderItemsAdapter(
+internal class UiBuilderItemsAdapter(
   private val requiresAllConstraintCalculator: BuilderItemRequiresAllConstraintCalculator,
   private val requiresAnyConstraintCalculator: BuilderItemRequiresAnyConstraintCalculator,
   private val permissionConstraintCalculator: BuilderItemPermissionConstraintCalculator,

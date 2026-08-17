@@ -51,7 +51,7 @@ private val GRID_MAX_HEIGHT = 320.dp
  * Fragment-registered `MultipleUriPicker` launcher.
  */
 @Composable
-fun AttachmentsValueEditor(
+internal fun AttachmentsValueEditor(
   builderItem: BuilderItem<List<String>>,
   attachmentFileAdapter: UriToAttachmentFileAdapter,
   onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,

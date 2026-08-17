@@ -10,7 +10,7 @@ import com.github.naz013.feature.reminder.build.valuedialog.controller.attachmen
 import com.github.naz013.feature.reminder.preview.data.UiCalendarEventList
 import com.github.naz013.ui.tag.TagChipState
 
-data class PreviewReminderState(
+internal data class PreviewReminderState(
   val id: String = "",
   val isLoading: Boolean = true,
   val status: UiReminderStatus? = null,
@@ -38,7 +38,7 @@ data class PreviewReminderState(
   val tags: List<TagChipState> = emptyList(),
 )
 
-data class UiPreviewSubTask(
+internal data class UiPreviewSubTask(
   val id: String,
   val text: String,
   val isChecked: Boolean,

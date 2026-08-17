@@ -12,7 +12,7 @@ import com.github.naz013.feature.reminder.build.reminder.decompose.TypeDecompose
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
-class ReminderToBiDecomposer(
+internal class ReminderToBiDecomposer(
   private val biFactory: BiFactory,
   private val typeDecomposer: TypeDecomposer,
   private val actionDecomposer: ActionDecomposer,

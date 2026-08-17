@@ -8,7 +8,7 @@ import com.github.naz013.feature.reminder.util.UriHelper
 import com.github.naz013.logging.Logger
 import org.koin.compose.koinInject
 
-class UriToAttachmentFileAdapter(
+internal class UriToAttachmentFileAdapter(
   private val uriHelper: UriHelper,
 ) {
   operator fun invoke(uri: Uri): AttachmentFile {
@@ -57,4 +57,4 @@ class UriToAttachmentFileAdapter(
 }
 
 @Composable
-fun rememberUriToAttachmentFileAdapter(): UriToAttachmentFileAdapter = koinInject()
+internal fun rememberUriToAttachmentFileAdapter(): UriToAttachmentFileAdapter = koinInject()

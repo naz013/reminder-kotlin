@@ -1,4 +1,4 @@
-package com.github.naz013.feature.reminder.settings.reminders.help
+package com.github.naz013.feature.reminder.settings.help
 
 import android.view.ViewGroup
 import android.webkit.WebView

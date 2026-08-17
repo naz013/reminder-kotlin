@@ -45,7 +45,7 @@ import org.koin.androidx.compose.koinViewModel
 @Deprecated("After S")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectApplicationScreen(
+internal fun SelectApplicationScreen(
   onBackClick: () -> Unit,
   onAppSelected: (String) -> Unit,
   modifier: Modifier = Modifier,

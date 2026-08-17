@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 
 @Composable
-fun ReminderFullscreenMapScreen(
+internal fun ReminderFullscreenMapScreen(
   isLoading: Boolean,
   onMoveToPlaceClick: () -> Unit,
   mapContent: @Composable () -> Unit,

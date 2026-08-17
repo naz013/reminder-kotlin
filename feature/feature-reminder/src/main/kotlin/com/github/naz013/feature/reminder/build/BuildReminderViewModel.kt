@@ -97,7 +97,7 @@ import org.threeten.bp.LocalTime
 import java.util.UUID
 import kotlin.time.Duration.Companion.milliseconds
 
-class BuildReminderViewModel(
+internal class BuildReminderViewModel(
   private val navKey: BuildReminderNavKey.Main,
   private val dispatcherProvider: DispatcherProvider,
   private val placeRepository: PlaceRepository,

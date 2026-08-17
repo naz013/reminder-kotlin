@@ -31,7 +31,7 @@ import com.github.naz013.ui.common.compose.TopAppbarColor
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReminderHelpScreen(onBackClick: () -> Unit) {
+internal fun ReminderHelpScreen(onBackClick: () -> Unit) {
   // Track whether the WebView has been scrolled
   var isScrolled by remember { mutableStateOf(false) }
 

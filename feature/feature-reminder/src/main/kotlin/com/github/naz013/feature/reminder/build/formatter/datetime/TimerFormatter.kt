@@ -5,7 +5,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.datecalc.DateTimeManager
 
-class TimerFormatter(
+internal class TimerFormatter(
   private val context: Context,
 ) : Formatter<Long>() {
   override fun format(millis: Long): String {

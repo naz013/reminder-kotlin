@@ -6,7 +6,7 @@ import com.github.naz013.analytics.AnalyticsTracker
 import com.github.naz013.analytics.Event
 import com.github.naz013.analytics.ReminderFeatureUsedEvent
 
-class ReminderAnalyticsTracker(
+internal class ReminderAnalyticsTracker(
   private val analyticsEventSender: AnalyticsEventSender,
 ) : AnalyticsTracker() {
   fun startTracking() {

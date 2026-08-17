@@ -3,7 +3,7 @@ package com.github.naz013.feature.reminder.build.bi
 import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.domain.reminder.BiType
 
-data class ProcessedBuilderItems(
+internal data class ProcessedBuilderItems(
   val typeMap: Map<BiType, BuilderItem<*>>,
   val groupMap: Map<BiGroup, List<BuilderItem<*>>>,
 ) {

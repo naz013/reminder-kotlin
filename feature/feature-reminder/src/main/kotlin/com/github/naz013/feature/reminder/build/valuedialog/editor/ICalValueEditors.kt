@@ -33,7 +33,7 @@ private val GRID_MAX_HEIGHT = 320.dp
 /** RRULE frequency wheel (Daily/Weekly/Monthly/Yearly/Hourly/Minutely). Replaces
  *  `ICalFreqController`. */
 @Composable
-fun ICalFreqValueEditor(
+internal fun ICalFreqValueEditor(
   builderItem: BuilderItem<FreqType>,
   paramToTextAdapter: ParamToTextAdapter,
   onValueChange: (BuilderItem<*>) -> Unit,
@@ -59,7 +59,7 @@ fun ICalFreqValueEditor(
 
 /** RRULE week-start-day wheel (Mon..Sun). Replaces `ICalWeekStartController`. */
 @Composable
-fun ICalWeekStartValueEditor(
+internal fun ICalWeekStartValueEditor(
   builderItem: BuilderItem<DayValue>,
   paramToTextAdapter: ParamToTextAdapter,
   onValueChange: (BuilderItem<*>) -> Unit,
@@ -86,7 +86,7 @@ fun ICalWeekStartValueEditor(
 /** RRULE numeric parameter slider (e.g. interval, count), ranged per-item via [ICalIntBuilderItem]'s
  *  own `minValue`/`maxValue`. Replaces `ICalIntController`. */
 @Composable
-fun ICalIntValueEditor(
+internal fun ICalIntValueEditor(
   builderItem: ICalIntBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -125,7 +125,7 @@ fun ICalIntValueEditor(
  *  [ICalListIntBuilderItem]'s own `minValue`/`maxValue`/`excludedValues`. Replaces
  *  `ICalIntListController`. */
 @Composable
-fun ICalIntListValueEditor(
+internal fun ICalIntListValueEditor(
   builderItem: ICalListIntBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
@@ -151,7 +151,7 @@ fun ICalIntListValueEditor(
 
 /** RRULE by-day multi-select grid (Mon..Sun). Replaces `ICalDayValueListController`. */
 @Composable
-fun ICalDayValueListValueEditor(
+internal fun ICalDayValueListValueEditor(
   builderItem: BuilderItem<List<DayValue>>,
   paramToTextAdapter: ParamToTextAdapter,
   onValueChange: (BuilderItem<*>) -> Unit,

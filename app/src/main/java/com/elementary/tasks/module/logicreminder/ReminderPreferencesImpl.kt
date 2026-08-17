@@ -119,4 +119,12 @@ class ReminderPreferencesImpl(
   override var defaultLockScreenVisibility: String
     get() = prefs.defaultLockScreenVisibility
     set(value) { prefs.defaultLockScreenVisibility = value }
+
+  override var initPresets: Boolean
+    get() = prefs.initPresets
+    set(value) { prefs.initPresets = value }
+
+  override var initDefaultPresets: Boolean
+    get() = prefs.initDefaultPresets
+    set(value) { prefs.initDefaultPresets = value }
 }

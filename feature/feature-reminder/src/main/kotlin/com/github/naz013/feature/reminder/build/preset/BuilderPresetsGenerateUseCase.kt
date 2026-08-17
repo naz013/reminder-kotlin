@@ -28,7 +28,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-class BuilderPresetsGenerateUseCase(
+internal class BuilderPresetsGenerateUseCase(
   private val contextProvider: ContextProvider,
   private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
   private val biFactory: BiFactory,

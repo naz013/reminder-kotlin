@@ -5,7 +5,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.datecalc.DateTimeManager
 
-class BeforeTimeFormatter(
+internal class BeforeTimeFormatter(
   private val context: Context,
   private val dateTimeManager: DateTimeManager,
 ) : Formatter<Long>() {

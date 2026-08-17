@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.bi
 
 import com.github.naz013.feature.reminder.build.BuilderItem
 
-class BiComparator : Comparator<BuilderItem<*>> {
+internal class BiComparator : Comparator<BuilderItem<*>> {
   override fun compare(
     o1: BuilderItem<*>?,
     o2: BuilderItem<*>?,

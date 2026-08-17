@@ -40,7 +40,7 @@ private enum class ExclusionMode { HOURS, INTERVAL }
  * range. Replaces `CountdownExclusionController`.
  */
 @Composable
-fun CountdownExclusionValueEditor(
+internal fun CountdownExclusionValueEditor(
   builderItem: BuilderItem<TimerExclusion>,
   dateTimeManager: DateTimeManager,
   is24HourFormat: Boolean,

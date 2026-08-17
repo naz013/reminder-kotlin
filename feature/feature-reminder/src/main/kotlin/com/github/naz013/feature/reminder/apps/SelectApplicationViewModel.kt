@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @Deprecated("After S")
-class SelectApplicationViewModel(
+internal class SelectApplicationViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val packageManagerWrapper: PackageManagerWrapper,
 ) : ViewModel() {

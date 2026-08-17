@@ -42,7 +42,7 @@ import com.github.naz013.ui.common.compose.foundation.component.PhoneNumberVisua
  * [onPickApplication]'s call site in `BuildReminderNavGraph` for the round trip.
  */
 @Composable
-fun ApplicationValueEditor(
+internal fun ApplicationValueEditor(
   builderItem: BuilderItem<String>,
   packageManagerWrapper: PackageManagerWrapper,
   onPickApplication: () -> Unit,
@@ -91,7 +91,7 @@ fun ApplicationValueEditor(
  * which owns the READ_CONTACTS permission check and the Fragment-registered launcher.
  */
 @Composable
-fun PhoneInputValueEditor(
+internal fun PhoneInputValueEditor(
   builderItem: BuilderItem<String>,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   onValueChange: (BuilderItem<*>) -> Unit,

@@ -36,7 +36,7 @@ data class ComposedRecurrence(
   val location: LocationSettings? = null,
 )
 
-class RecurrenceRuleCalculator(
+internal class RecurrenceRuleCalculator(
   private val dateTimeManager: DateTimeManager,
   private val iCalDateTimeCalculator: ICalDateTimeCalculator,
   private val recurrenceCalculator: RecurrenceCalculator,

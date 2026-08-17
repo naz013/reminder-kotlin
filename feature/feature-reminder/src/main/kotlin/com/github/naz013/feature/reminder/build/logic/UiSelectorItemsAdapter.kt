@@ -9,7 +9,7 @@ import com.github.naz013.feature.reminder.build.bi.BuilderItemError
 import com.github.naz013.feature.reminder.build.bi.ProcessedBuilderItems
 import com.github.naz013.domain.reminder.BiType
 
-class UiSelectorItemsAdapter(
+internal class UiSelectorItemsAdapter(
   private val blockedByConstraintCalculator: BuilderItemBlockedByConstraintCalculator,
   private val permissionConstraintCalculator: BuilderItemPermissionConstraintCalculator,
   private val mandatoryIfConstraintCalculator: BuilderItemMandatoryIfConstraintCalculator,

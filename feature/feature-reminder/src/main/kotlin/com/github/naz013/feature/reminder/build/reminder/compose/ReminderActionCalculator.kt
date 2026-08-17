@@ -10,7 +10,7 @@ import com.github.naz013.feature.reminder.build.WebAddressBuilderItem
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.ReminderAction
 
-class ReminderActionCalculator {
+internal class ReminderActionCalculator {
   operator fun invoke(itemsMap: Map<BiType, BuilderItem<*>>): ReminderAction {
     val sms = (itemsMap[BiType.SMS] as? SmsBuilderItem)?.modifier?.takeIf { it.isCorrect() }?.getValue()
     if (sms != null) return ReminderAction.Sms(sms, "")

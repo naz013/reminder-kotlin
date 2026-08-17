@@ -54,7 +54,7 @@ private val DISMISS_DRAG_THRESHOLD = 120.dp
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapEditorScreen(
+internal fun MapEditorScreen(
   builderItem: BuilderItem<Place>,
   dateTimeManager: DateTimeManager,
   onDismissRequest: () -> Unit,

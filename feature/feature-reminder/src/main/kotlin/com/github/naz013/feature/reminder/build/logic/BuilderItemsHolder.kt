@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.logic
 
 import com.github.naz013.feature.reminder.build.BuilderItem
 
-class BuilderItemsHolder {
+internal class BuilderItemsHolder {
   private val items = mutableListOf<BuilderItem<*>>()
 
   fun addAll(builderItems: List<BuilderItem<*>>) {

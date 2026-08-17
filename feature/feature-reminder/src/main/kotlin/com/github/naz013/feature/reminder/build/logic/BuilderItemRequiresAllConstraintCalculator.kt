@@ -4,7 +4,7 @@ import com.github.naz013.feature.reminder.build.bi.BuilderItemConstraints
 import com.github.naz013.feature.reminder.build.bi.ProcessedBuilderItems
 import com.github.naz013.domain.reminder.BiType
 
-class BuilderItemRequiresAllConstraintCalculator {
+internal class BuilderItemRequiresAllConstraintCalculator {
   operator fun invoke(
     item: BuilderItemConstraints,
     processedBuilderItems: ProcessedBuilderItems,

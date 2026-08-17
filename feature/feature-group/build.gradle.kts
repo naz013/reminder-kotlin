@@ -19,6 +19,7 @@ dependencies {
   implementation(project(":ui:ui-common"))
   implementation(project(":ui:ui-group"))
   implementation(project(":logic:logic-group"))
+  implementation(project(":logic:logic-workflow"))
   implementation(project(":ui:ui-notification-settings"))
   implementation(project(":feature:feature-workflow"))
 

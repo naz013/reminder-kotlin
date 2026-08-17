@@ -49,7 +49,7 @@ private const val BODY_MAX_LINES = 5
  * builder list's note-preview row. Replaces `NoteController`.
  */
 @Composable
-fun NoteValueEditor(
+internal fun NoteValueEditor(
   builderItem: NoteBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {

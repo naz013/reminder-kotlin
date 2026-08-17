@@ -33,7 +33,7 @@ import com.github.naz013.icalendar.RecurParam
 import com.github.naz013.icalendar.UntilRecurParam
 import com.github.naz013.icalendar.WeekStartRecurParam
 
-class RecurParamsToBiAdapter(
+internal class RecurParamsToBiAdapter(
   private val biFactory: BiFactory,
 ) {
   suspend operator fun invoke(params: List<RecurParam>): List<BuilderItem<*>> = params.map { it.toBuilderItem() }.flatten()

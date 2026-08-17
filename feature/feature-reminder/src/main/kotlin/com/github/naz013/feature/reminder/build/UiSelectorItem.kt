@@ -1,12 +1,12 @@
 package com.github.naz013.feature.reminder.build
 
-data class UiSelectorItem(
+internal data class UiSelectorItem(
   val builderItem: BuilderItem<*>,
   val state: UiSelectorItemState,
   val requiredMessage: String? = null,
 )
 
-sealed class UiSelectorItemState {
+internal sealed class UiSelectorItemState {
   data object UiSelectorAvailable : UiSelectorItemState()
 
   data class UiSelectorUnavailable(

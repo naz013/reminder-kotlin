@@ -32,7 +32,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-class DefaultPresetsGenerateUseCase(
+internal class DefaultPresetsGenerateUseCase(
   private val builderItemsToBuilderPresetAdapter: BuilderItemsToBuilderPresetAdapter,
   private val biFactory: BiFactory,
   private val dateTimeManager: DateTimeManager,

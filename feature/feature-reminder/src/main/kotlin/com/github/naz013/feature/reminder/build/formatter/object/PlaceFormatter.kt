@@ -4,7 +4,7 @@ import com.github.naz013.ui.map.DefaultRadiusFormatter
 import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.domain.Place
 
-class PlaceFormatter(
+internal class PlaceFormatter(
   private val radiusFormatter: DefaultRadiusFormatter,
 ) : Formatter<Place>() {
   override fun format(place: Place): String {

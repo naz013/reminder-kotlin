@@ -57,7 +57,7 @@ import org.threeten.bp.LocalTime
 import java.io.File
 import java.util.UUID
 
-class PreviewReminderViewModel(
+internal class PreviewReminderViewModel(
   private val id: String,
   private val reminderV2Repository: ReminderV2Repository,
   private val googleCalendarApi: GoogleCalendarApi,

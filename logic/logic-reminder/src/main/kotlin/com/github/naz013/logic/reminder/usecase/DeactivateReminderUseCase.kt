@@ -22,6 +22,8 @@ class DeactivateReminderUseCase(
   private val updatePermanentReminderNotificationUseCase: UpdatePermanentReminderNotificationUseCase,
   private val eventOccurrenceRepository: EventOccurrenceRepository,
 ) {
+
+  @IgnorableReturnValue
   suspend operator fun invoke(reminder: ReminderV2): ReminderV2 {
     Logger.d(TAG, "Deactivating reminder id=${reminder.uuId}")
     val reminder =

@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import com.github.naz013.ui.note.UiNoteImage
 
-data class UiNoteList(
+internal data class UiNoteList(
   val id: String,
   val text: String,
   val title: String,

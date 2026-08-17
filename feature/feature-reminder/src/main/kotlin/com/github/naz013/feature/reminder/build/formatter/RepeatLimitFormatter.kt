@@ -4,7 +4,7 @@ import com.github.naz013.ui.notification.settings.Formatter
 import android.content.Context
 import com.github.naz013.ui.common.R
 
-class RepeatLimitFormatter(
+internal class RepeatLimitFormatter(
   private val context: Context,
 ) : Formatter<Int>() {
   override fun format(value: Int): String =

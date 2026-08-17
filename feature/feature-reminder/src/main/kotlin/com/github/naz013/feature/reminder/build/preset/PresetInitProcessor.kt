@@ -1,32 +1,30 @@
-package com.elementary.tasks.core.utils
+package com.github.naz013.feature.reminder.build.preset
 
-import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.reminder.build.preset.BuilderPresetsGenerateUseCase
-import com.github.naz013.feature.reminder.build.preset.DefaultPresetsGenerateUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.icalendar.TagType
+import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.repository.RecurPresetRepository
+import com.github.naz013.ui.common.R
 import org.threeten.bp.LocalDateTime
 
-class PresetInitProcessor(
+class PresetInitProcessor internal constructor(
   private val recurPresetRepository: RecurPresetRepository,
-  private val prefs: Prefs,
+  private val preferences: ReminderPreferences,
   private val textProvider: TextProvider,
   private val builderPresetsGenerateUseCase: BuilderPresetsGenerateUseCase,
   private val builderDefaultPresetsGenerateUseCase: DefaultPresetsGenerateUseCase,
 ) {
   suspend fun run() {
-    if (prefs.initPresets) {
-      prefs.initPresets = false
+    if (preferences.initPresets) {
+      preferences.initPresets = false
       createRecurPresets().forEach { savePreset(it) }
       builderPresetsGenerateUseCase().forEach { savePreset(it) }
     }
-    if (prefs.initDefaultPresets) {
-      prefs.initDefaultPresets = false
+    if (preferences.initDefaultPresets) {
+      preferences.initDefaultPresets = false
       builderDefaultPresetsGenerateUseCase().forEach { savePreset(it) }
     }
   }

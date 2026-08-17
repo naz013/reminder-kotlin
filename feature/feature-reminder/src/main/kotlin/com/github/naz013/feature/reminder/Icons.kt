@@ -3,7 +3,7 @@ package com.github.naz013.feature.reminder
 import androidx.annotation.DrawableRes
 import com.github.naz013.ui.common.R
 
-object Icons {
+internal object Icons {
   @DrawableRes
   val SUMMARY: Int = R.drawable.ic_fluent_text
 

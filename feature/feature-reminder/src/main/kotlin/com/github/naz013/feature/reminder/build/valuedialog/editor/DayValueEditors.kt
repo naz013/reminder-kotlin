@@ -31,7 +31,7 @@ private const val LAST_DAY_VALUE = 0
 
 /** Single-select day-of-month wheel (1..28, plus "Last day"). Replaces `DayOfMonthController`. */
 @Composable
-fun DayOfMonthValueEditor(
+internal fun DayOfMonthValueEditor(
   builderItem: BuilderItem<Int>,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -60,7 +60,7 @@ fun DayOfMonthValueEditor(
 
 /** Single-select day-of-year grid (1..365). Replaces `DayOfYearController`. */
 @Composable
-fun DayOfYearValueEditor(
+internal fun DayOfYearValueEditor(
   builderItem: BuilderItem<Int>,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
@@ -90,7 +90,7 @@ fun DayOfYearValueEditor(
  * the legacy toggle-button row - [DISPLAY_TO_STORAGE_INDEX] converts between the two.
  */
 @Composable
-fun DaysOfWeekValueEditor(
+internal fun DaysOfWeekValueEditor(
   builderItem: BuilderItem<List<Int>>,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {

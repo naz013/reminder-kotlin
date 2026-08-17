@@ -6,7 +6,7 @@ import com.github.naz013.feature.reminder.build.ReadyState
 import com.github.naz013.feature.reminder.build.reminder.compose.ComposedRecurrence
 import com.github.naz013.logging.Logger
 
-class BuilderStateCalculator {
+internal class BuilderStateCalculator {
   operator fun invoke(composedRecurrence: ComposedRecurrence?): BuilderState =
     if (composedRecurrence != null) {
       Logger.i(TAG, "Builder state is ready")

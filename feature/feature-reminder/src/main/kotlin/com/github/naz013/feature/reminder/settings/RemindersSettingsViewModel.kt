@@ -1,4 +1,4 @@
-package com.github.naz013.feature.reminder.settings.reminders
+package com.github.naz013.feature.reminder.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

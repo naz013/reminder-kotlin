@@ -9,7 +9,7 @@ import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.icalendar.ICalendarApi
 
-class ReminderPredictionCalculator(
+internal class ReminderPredictionCalculator(
   private val dateTimeManager: DateTimeManager,
   private val iCalendarApi: ICalendarApi,
   private val textProvider: TextProvider,

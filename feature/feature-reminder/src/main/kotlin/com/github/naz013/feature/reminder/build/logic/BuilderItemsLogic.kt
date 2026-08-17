@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.logic
 
 import com.github.naz013.feature.reminder.build.BuilderItem
 
-class BuilderItemsLogic(
+internal class BuilderItemsLogic(
   private val builderItemsHolder: BuilderItemsHolder,
 ) {
   private var items = emptyList<BuilderItem<*>>()

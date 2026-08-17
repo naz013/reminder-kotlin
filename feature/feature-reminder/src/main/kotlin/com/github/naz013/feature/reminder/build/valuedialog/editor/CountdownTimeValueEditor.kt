@@ -56,7 +56,7 @@ private val KEYPAD_ROWS = listOf(
  * `TimerPickerView`.
  */
 @Composable
-fun CountdownTimeValueEditor(
+internal fun CountdownTimeValueEditor(
   builderItem: BuilderItem<Long>,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {

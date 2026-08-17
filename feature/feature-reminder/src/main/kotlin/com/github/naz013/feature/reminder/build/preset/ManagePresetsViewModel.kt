@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ManagePresetsViewModel(
+class ManagePresetsViewModel internal constructor(
   private val dispatcherProvider: DispatcherProvider,
   private val uiPresetListAdapter: UiPresetListAdapter,
   private val recurPresetRepository: RecurPresetRepository,

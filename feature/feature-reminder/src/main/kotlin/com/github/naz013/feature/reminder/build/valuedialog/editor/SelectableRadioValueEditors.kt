@@ -23,7 +23,7 @@ import com.github.naz013.ui.common.compose.foundation.component.WheelPicker
  *  the legacy Clear button was never shown, but the default-on-clear intent is preserved by
  *  seeding local state from the current value, which already falls back to the default group. */
 @Composable
-fun GroupValueEditor(
+internal fun GroupValueEditor(
   builderItem: GroupBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -51,7 +51,7 @@ fun GroupValueEditor(
 
 /** Single-select Google Task list picker. Replaces `GoogleTaskListController`. */
 @Composable
-fun GoogleTaskListValueEditor(
+internal fun GoogleTaskListValueEditor(
   builderItem: GoogleTaskListBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -79,7 +79,7 @@ fun GoogleTaskListValueEditor(
 
 /** Notification category wheel (Default/Alarm/Event/Call). */
 @Composable
-fun CategoryValueEditor(
+internal fun CategoryValueEditor(
   builderItem: CategoryBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -108,7 +108,7 @@ fun CategoryValueEditor(
 
 /** Lock-screen visibility wheel (Show full content/Hide sensitive content/Hide completely). */
 @Composable
-fun LockScreenVisibilityValueEditor(
+internal fun LockScreenVisibilityValueEditor(
   builderItem: LockScreenVisibilityBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
   hapticFeedbackEnabled: Boolean = true,
@@ -135,7 +135,7 @@ fun LockScreenVisibilityValueEditor(
 }
 
 @Composable
-fun GoogleCalendarValueEditor(
+internal fun GoogleCalendarValueEditor(
   builderItem: GoogleCalendarBuilderItem,
   googleCalendarApi: GoogleCalendarApi,
   onValueChange: (BuilderItem<*>) -> Unit,

@@ -7,12 +7,6 @@ sealed class UiReminderEventsList {
   abstract val id: String
 }
 
-data class UiReminderListHeader(
-  val mainText: UiTextElement,
-) : UiReminderEventsList() {
-  override val id: String = mainText.text
-}
-
 data class UiReminderList(
   override val id: String,
   val noteId: String?,

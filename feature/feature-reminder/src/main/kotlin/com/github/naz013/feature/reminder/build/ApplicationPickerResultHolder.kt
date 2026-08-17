@@ -10,9 +10,9 @@ import org.koin.compose.koinInject
  * `pendingConfigRefresh` flag works around for [BuildReminderNavKey.Configure] in
  * `BuildReminderNavGraph`, just carrying a value instead of only a boolean.
  */
-class ApplicationPickerResultHolder {
+internal class ApplicationPickerResultHolder {
   var pendingPackageName: String? = null
 }
 
 @Composable
-fun rememberApplicationPickerResultHolder(): ApplicationPickerResultHolder = koinInject()
+internal fun rememberApplicationPickerResultHolder(): ApplicationPickerResultHolder = koinInject()

@@ -10,7 +10,7 @@ import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
-class ByTimerDecomposer(
+internal class ByTimerDecomposer(
   private val biFactory: BiFactory,
 ) {
   suspend operator fun invoke(reminder: ReminderV2): List<BuilderItem<*>> {

@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.github.naz013.ui.common.R
 
-enum class ReminderAction(
+internal enum class ReminderAction(
   @param:StringRes val titleRes: Int,
   @param:DrawableRes val iconRes: Int,
   val category: ActionCategory,
@@ -27,7 +27,7 @@ enum class ReminderAction(
   ShowNotification(R.string.keep_notification, R.drawable.ic_fluent_heart, ActionCategory.Secondary),
 }
 
-enum class ActionCategory {
+internal enum class ActionCategory {
   Main,
   Secondary,
   Action,

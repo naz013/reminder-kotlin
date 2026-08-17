@@ -8,7 +8,7 @@ import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.NoteRepository
 
-class NoteDecomposer(
+internal class NoteDecomposer(
   private val biFactory: BiFactory,
   private val noteRepository: NoteRepository,
   private val uiNoteListAdapter: UiNoteListAdapter,

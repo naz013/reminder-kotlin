@@ -107,6 +107,11 @@ collects all of them into `startKoin {}`. Never call `GlobalContext.get()` outsi
 - Kotlin idioms (data/sealed classes, extension functions); prefer `val`; coroutines (`suspend`/`Flow`/
   `StateFlow`) everywhere — no raw threads or `AsyncTask`. Use `DispatcherProvider` from `feature-common`
   instead of hardcoding `Dispatchers.IO`.
+- A class or top-level function/property used only within its own Gradle module should be marked
+  `internal`, not left implicitly `public`. Only widen it back to `public` once another module's source
+  actually references it by name — including a `KoinModule.kt` that registers it from a different module
+  than the one the class lives in, which does happen here since a class's Koin binding doesn't have to be
+  declared in the same module as the class itself.
 - New screens: Jetpack Compose + Material 3, stateless composables driven by a ViewModel exposing
   `StateFlow`/`LiveData`, connected via `collectAsStateWithLifecycle()`. Legacy XML/View screens may remain
   but shouldn't be extended. Reuse `ui-common` before adding new shared components.

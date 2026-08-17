@@ -6,7 +6,7 @@ import com.github.naz013.ui.notification.settings.Formatter
 import com.github.naz013.datecalc.DateTimeManager
 import org.threeten.bp.LocalDate
 
-class ICalByMonthFormatter(
+internal class ICalByMonthFormatter(
   private val context: Context,
   private val dateTimeManager: DateTimeManager,
 ) : Formatter<List<Int>>() {

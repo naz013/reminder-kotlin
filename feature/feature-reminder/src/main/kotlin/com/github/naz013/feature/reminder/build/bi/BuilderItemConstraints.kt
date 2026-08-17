@@ -8,7 +8,7 @@ import com.github.naz013.feature.reminder.build.bi.constraint.RequiresAllConstra
 import com.github.naz013.feature.reminder.build.bi.constraint.RequiresAnyOfConstraint
 import com.github.naz013.domain.reminder.BiType
 
-data class BuilderItemConstraints(
+internal data class BuilderItemConstraints(
   val constraints: List<BiConstraint<*>>,
 ) {
   val requiresAny: List<RequiresAnyOfConstraint<*>> by lazy {

@@ -1,6 +1,6 @@
 package com.github.naz013.feature.reminder.preview.data
 
-data class UiCalendarEventList(
+internal data class UiCalendarEventList(
   val title: String,
   val description: String,
   val calendarName: String?,

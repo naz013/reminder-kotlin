@@ -7,7 +7,7 @@ import com.github.naz013.feature.reminder.build.bi.BuilderItemError
 import com.github.naz013.common.Permissions
 import com.github.naz013.domain.reminder.BiType
 
-class BiErrorForUiAdapter(
+internal class BiErrorForUiAdapter(
   private val context: Context,
   private val biTypeForUiAdapter: BiTypeForUiAdapter,
 ) {

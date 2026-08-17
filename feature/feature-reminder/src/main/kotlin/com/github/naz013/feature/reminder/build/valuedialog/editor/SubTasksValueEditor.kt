@@ -61,7 +61,7 @@ private val LIST_MAX_HEIGHT = 400.dp
  * the row rendering and per-row focus requesting.
  */
 @Composable
-fun SubTasksValueEditor(
+internal fun SubTasksValueEditor(
   builderItem: BuilderItem<List<ShopItem>>,
   dateTimeManager: DateTimeManager,
   onValueChange: (BuilderItem<*>) -> Unit,

@@ -22,7 +22,7 @@ import com.github.naz013.icalendar.UtcDateTime
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
 
-class ICalDateTimeCalculator(
+internal class ICalDateTimeCalculator(
   private val iCalendarApi: ICalendarApi,
   private val dateTimeManager: DateTimeManager,
 ) {

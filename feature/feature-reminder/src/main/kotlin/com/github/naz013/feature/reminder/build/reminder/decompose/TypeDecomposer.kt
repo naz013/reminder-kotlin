@@ -4,7 +4,7 @@ import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
-class TypeDecomposer(
+internal class TypeDecomposer(
   private val byDateDecomposer: ByDateDecomposer,
   private val byTimerDecomposer: ByTimerDecomposer,
   private val byWeekdaysDecomposer: ByWeekdaysDecomposer,

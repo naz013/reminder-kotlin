@@ -23,7 +23,7 @@ data class ReminderMapMarker(
 
 /** Location picker for the Arriving/Leaving coordinates editor. */
 @Composable
-fun MapValueEditor(
+internal fun MapValueEditor(
   builderItem: BuilderItem<Place>,
   dateTimeManager: DateTimeManager,
   onValueChange: (BuilderItem<*>) -> Unit,

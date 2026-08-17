@@ -24,7 +24,7 @@ import org.threeten.bp.ZoneOffset
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateValueEditor(
+internal fun DateValueEditor(
   builderItem: BuilderItem<LocalDate>,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
@@ -50,7 +50,7 @@ fun DateValueEditor(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimeValueEditor(
+internal fun TimeValueEditor(
   builderItem: BuilderItem<LocalTime>,
   is24HourFormat: Boolean,
   onValueChange: (BuilderItem<*>) -> Unit,

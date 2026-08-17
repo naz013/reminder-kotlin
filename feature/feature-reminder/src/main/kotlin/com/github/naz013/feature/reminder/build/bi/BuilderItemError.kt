@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.bi
 
 import com.github.naz013.domain.reminder.BiType
 
-sealed class BuilderItemError {
+internal sealed class BuilderItemError {
   data class RequiresAllConstraintError(
     val constraints: List<BiType>,
   ) : BuilderItemError()

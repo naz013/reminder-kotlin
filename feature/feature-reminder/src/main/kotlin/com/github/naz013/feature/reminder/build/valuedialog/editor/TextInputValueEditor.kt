@@ -60,7 +60,7 @@ private enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
  * `BasicTextField` under the hood (no Material chrome).
  */
 @Composable
-fun TextInputValueEditor(
+internal fun TextInputValueEditor(
   builderItem: BuilderItem<String>,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {

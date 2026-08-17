@@ -51,11 +51,11 @@ import com.elementary.tasks.settings.proversion.rememberGooglePlayMarketLauncher
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
-import com.github.naz013.feature.reminder.settings.reminders.ManagePresetsScreen
-import com.github.naz013.feature.reminder.settings.reminders.RemindersSettingsEvent
-import com.github.naz013.feature.reminder.settings.reminders.RemindersSettingsScreen
-import com.github.naz013.feature.reminder.settings.reminders.RemindersSettingsViewModel
-import com.github.naz013.feature.reminder.settings.reminders.help.NotificationCustomizationHelpScreen
+import com.github.naz013.feature.reminder.settings.ManagePresetsScreen
+import com.github.naz013.feature.reminder.settings.RemindersSettingsEvent
+import com.github.naz013.feature.reminder.settings.RemindersSettingsScreen
+import com.github.naz013.feature.reminder.settings.RemindersSettingsViewModel
+import com.github.naz013.feature.reminder.settings.help.NotificationCustomizationHelpScreen
 import com.elementary.tasks.settings.security.SecurityNavKey
 import com.elementary.tasks.settings.test.DeveloperEvent
 import com.elementary.tasks.settings.test.DeveloperScreen

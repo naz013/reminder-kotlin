@@ -26,7 +26,7 @@ import com.github.naz013.ui.common.compose.AppTheme
  * Reused by both the preset management screen (deletable) and preset picker UIs (not deletable).
  */
 @Composable
-fun PresetListItem(
+internal fun PresetListItem(
   modifier: Modifier = Modifier,
   preset: UiPresetList,
   onClick: () -> Unit = {},

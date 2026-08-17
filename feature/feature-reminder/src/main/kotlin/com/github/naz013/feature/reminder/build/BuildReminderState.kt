@@ -3,7 +3,7 @@ package com.github.naz013.feature.reminder.build
 import com.github.naz013.feature.reminder.build.logic.builderstate.ReminderPrediction
 import com.github.naz013.ui.tag.TagChipState
 
-data class BuildReminderState(
+internal data class BuildReminderState(
   val isLoadingForEdit: Boolean = false,
   val builderItems: List<UiBuilderItem> = emptyList(),
   val prediction: ReminderPrediction? = null,

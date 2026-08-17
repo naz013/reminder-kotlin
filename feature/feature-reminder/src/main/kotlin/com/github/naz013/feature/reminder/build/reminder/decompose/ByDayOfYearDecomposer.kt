@@ -11,7 +11,7 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import org.threeten.bp.LocalDate
 
-class ByDayOfYearDecomposer(
+internal class ByDayOfYearDecomposer(
   private val dateTimeManager: DateTimeManager,
   private val biFactory: BiFactory,
 ) {

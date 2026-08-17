@@ -6,7 +6,7 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.icalendar.RecurParamType
 
-class BiTypeForUiAdapter(
+internal class BiTypeForUiAdapter(
   private val textProvider: TextProvider,
   private val paramToTextAdapter: ParamToTextAdapter,
 ) {

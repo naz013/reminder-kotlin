@@ -37,7 +37,7 @@ private const val DEFAULT_LED_INDEX = 2
 /** LED notification color swatch row. Replaces `LedColorController`'s `RadioGroup` of tinted
  *  `RadioButton`s with a row of tappable colored circles. */
 @Composable
-fun LedColorValueEditor(
+internal fun LedColorValueEditor(
   builderItem: LedColorBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
 ) {
