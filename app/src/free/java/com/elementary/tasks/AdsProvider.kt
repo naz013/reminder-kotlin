@@ -41,7 +41,7 @@ class AdsProvider {
             }
           },
           { formError ->
-            // Handle the error.
+            Logger.e(TAG, "Consent info update failed: ${formError.message}")
           },
         )
       }
@@ -59,6 +59,7 @@ class AdsProvider {
         }
       },
       { formError ->
+        Logger.e(TAG, "Consent form load failed: ${formError.message}")
       },
     )
   }

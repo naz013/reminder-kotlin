@@ -57,7 +57,7 @@ class RotatingBannerAdsProvider(
     } else {
       loadAds()
     }
-  }.getOrNull() ?: false
+  }.onFailure { Logger.e(TAG, "Failed to load ads", it) }.getOrNull() ?: false
 
   /** Shows a self-promoted "PRO" creative instead of a network ad, trading a slice of ad revenue
    *  on this one impression for a direct, zero-cash-cost upsell touchpoint. */
