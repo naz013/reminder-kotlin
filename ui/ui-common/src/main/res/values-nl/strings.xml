@@ -1130,4 +1130,6 @@
     <string name="public_holidays_country">Land</string>
     <string name="public_holidays_locked_description">Toon feestdagen voor jouw land in de agenda - beschikbaar met Pro</string>
     <string name="search_no_countries_found">Geen landen gevonden</string>
+    <string name="select_reminder_or_birthday_to_see_details">Selecteer een herinnering of verjaardag om de details te bekijken</string>
+    <string name="acc_close">Sluiten</string>
 </resources>

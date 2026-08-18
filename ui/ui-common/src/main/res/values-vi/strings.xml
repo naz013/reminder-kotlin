@@ -1130,4 +1130,6 @@
     <string name="public_holidays_country">Quốc gia</string>
     <string name="public_holidays_locked_description">Hiển thị ngày lễ của quốc gia bạn trong lịch - có sẵn với bản Pro</string>
     <string name="search_no_countries_found">Không tìm thấy quốc gia</string>
+    <string name="select_reminder_or_birthday_to_see_details">Chọn lời nhắc hoặc sinh nhật để xem chi tiết</string>
+    <string name="acc_close">Đóng</string>
 </resources>

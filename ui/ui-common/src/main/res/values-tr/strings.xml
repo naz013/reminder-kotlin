@@ -1133,4 +1133,6 @@
     <string name="public_holidays_country">Ülke</string>
     <string name="public_holidays_locked_description">Takviminde ülkenizin resmi tatillerini gösterin - Pro sürümde kullanılabilir</string>
     <string name="search_no_countries_found">Ülke bulunamadı</string>
+    <string name="select_reminder_or_birthday_to_see_details">Ayrıntıları görmek için bir hatırlatıcı veya doğum günü seçin</string>
+    <string name="acc_close">Kapat</string>
 </resources>

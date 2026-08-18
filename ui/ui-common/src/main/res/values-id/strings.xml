@@ -1130,4 +1130,6 @@
     <string name="public_holidays_country">Negara</string>
     <string name="public_holidays_locked_description">Tampilkan hari libur nasional negara Anda di kalender - tersedia dengan Pro</string>
     <string name="search_no_countries_found">Tidak ada negara ditemukan</string>
+    <string name="select_reminder_or_birthday_to_see_details">Pilih pengingat atau ulang tahun untuk melihat detailnya</string>
+    <string name="acc_close">Tutup</string>
 </resources>

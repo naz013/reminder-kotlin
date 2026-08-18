@@ -1130,4 +1130,6 @@
     <string name="public_holidays_country">Land</string>
     <string name="public_holidays_locked_description">Vis offentlige høytider for landet ditt i kalenderen - tilgjengelig med Pro</string>
     <string name="search_no_countries_found">Fant ingen land</string>
+    <string name="select_reminder_or_birthday_to_see_details">Velg en påminnelse eller bursdag for å se detaljer</string>
+    <string name="acc_close">Lukk</string>
 </resources>

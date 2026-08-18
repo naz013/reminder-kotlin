@@ -1,5 +1,6 @@
 package com.github.naz013.ui.common.compose.foundation.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +32,10 @@ fun DetailPanePlaceholder(
   modifier: Modifier = Modifier,
   icon: Painter? = null,
 ) {
-  Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+  Box(
+    modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+    contentAlignment = Alignment.Center,
+  ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       if (icon != null) {
         Icon(

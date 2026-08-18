@@ -1,9 +1,12 @@
 package com.github.naz013.feature.birthday
 
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -21,13 +24,20 @@ import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.birthdaysEntries(
   backStack: MutableList<NavKey>,
+  isRenderedAsDetailPane: (NavKey) -> Boolean,
   adsContent: @Composable () -> Unit,
   onCallClick: (String) -> Unit,
   onSmsClick: (String) -> Unit,
 ) {
-  entry<BirthdaysNavKey.Preview> { key -> PreviewEntry(key, backStack, adsContent, onCallClick, onSmsClick) }
+  entry<BirthdaysNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+    // Fixed at first composition, not re-read on every recomposition - see the matching comment
+    // in ReminderPreviewNavGraph.kt.
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    PreviewEntry(key, backStack, renderAsDetailPane, adsContent, onCallClick, onSmsClick)
+  }
   entry<BirthdaysNavKey.Edit> { key -> EditEntry(key, backStack, adsContent) }
 }
 
@@ -35,6 +45,7 @@ fun EntryProviderScope<NavKey>.birthdaysEntries(
 private fun PreviewEntry(
   key: BirthdaysNavKey.Preview,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
   adsContent: @Composable () -> Unit,
   onCallClick: (String) -> Unit,
   onSmsClick: (String) -> Unit,
@@ -62,6 +73,7 @@ private fun PreviewEntry(
   val state by viewModel.state.collectAsState(PreviewBirthdayState())
   PreviewBirthdayScreen(
     state = state,
+    renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onEditClick = { backStack.add(BirthdaysNavKey.Edit(key.id)) },
     onDeleteClick = viewModel::onDeleteClick,

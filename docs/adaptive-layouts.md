@@ -13,7 +13,9 @@ two-pane wiring hook, and preview tooling all live in `ui-common`.
 branching.
 
 Planned next: 2-3 List→Preview flows (Notes, Google Tasks, Agenda/Reminders) adopt two-pane
-(Phase 2), fold-posture-aware refinements and the remaining screens (Phase 3).
+(Phase 2), fold-posture-aware refinements and the remaining screens (Phase 3). See
+`docs/home-two-pane-design.md` for a concrete Phase 2 proposal (Home list + reminder/birthday
+preview) - the first one written up in detail, not yet implemented.
 
 ## Breakpoint reference
 

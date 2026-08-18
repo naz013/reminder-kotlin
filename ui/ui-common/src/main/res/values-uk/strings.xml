@@ -1133,4 +1133,6 @@
     <string name="public_holidays_country">Країна</string>
     <string name="public_holidays_locked_description">Показувати державні свята вашої країни в календарі - доступно з Pro</string>
     <string name="search_no_countries_found">Країн не знайдено</string>
+    <string name="select_reminder_or_birthday_to_see_details">Виберіть нагадування або день народження, щоб побачити деталі</string>
+    <string name="acc_close">Закрити</string>
 </resources>

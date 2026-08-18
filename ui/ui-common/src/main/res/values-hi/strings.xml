@@ -1134,4 +1134,6 @@
     <string name="public_holidays_country">देश</string>
     <string name="public_holidays_locked_description">कैलेंडर में अपने देश के सार्वजनिक अवकाश दिखाएं - Pro के साथ उपलब्ध</string>
     <string name="search_no_countries_found">कोई देश नहीं मिला</string>
+    <string name="select_reminder_or_birthday_to_see_details">विवरण देखने के लिए एक रिमाइंडर या जन्मदिन चुनें</string>
+    <string name="acc_close">बंद करें</string>
 </resources>

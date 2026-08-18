@@ -1132,4 +1132,6 @@
     <string name="public_holidays_country">Paese</string>
     <string name="public_holidays_locked_description">Mostra le festività pubbliche del tuo paese nel calendario - disponibile con Pro</string>
     <string name="search_no_countries_found">Nessun paese trovato</string>
+    <string name="select_reminder_or_birthday_to_see_details">Seleziona un promemoria o un compleanno per vedere i dettagli</string>
+    <string name="acc_close">Chiudi</string>
 </resources>
