@@ -10,9 +10,15 @@ appId: com.cray.software.justreminderpro
 # Sets the reminder's priority via the Priority builder item so D2/D3/D4 can exercise the
 # quiet-hours priority threshold (see DoNotDisturbManager.applyDoNotDisturb).
 #
-# Params (pass via `runFlow: { file: ..., env: { PRIORITY_LABEL: ... } }`):
+# Params (pass via `runFlow: { file: ..., env: { PRIORITY_LABEL: ..., SUMMARY: ... } }`):
 #   PRIORITY_LABEL - one of "Lowest" / "Low" / "Normal" / "High" / "Highest"
 #     (see PriorityValueEditor / @array/priorities).
+#   SUMMARY - free text set as the reminder's Summary builder item. `ReminderNotificationHandler.
+#     contentTitle` renders this verbatim as the fired notification's title (`contentText` is
+#     always just the app name - see that class), so callers assert on this exact string in the
+#     shade afterward instead of the app-name text every reminder's notification would show
+#     regardless of which one actually fired - that only proved *a* notification appeared, not
+#     that it was *this* one.
 #
 # UI flow grounded in feature/feature-reminder/.../build/BuildReminderNavGraph.kt (FAB -> add-item
 # selector -> value editor sheet, editing commits live so closing the sheet is enough - see
@@ -82,6 +88,22 @@ appId: com.cray.software.justreminderpro
     commands:
       - tapOn: "^High$"
 - tapOn: "^${PRIORITY_LABEL}$"
+- tapOn:
+    point: "90%, 16%"
+# Confirmed live (real device, API 30): `below: "What you want to remind you"` correctly focuses
+# the empty Summary field (which has no placeholder/label of its own to tap by text - see
+# TextInputValueEditor.kt) by targeting whatever's directly below that item's description text,
+# which ValueEditorSheet renders as a subtitle right above the field's editor content for every
+# item type.
+- tapOn: "Add"
+- tapOn: "Search parameters…"
+- inputText: "Summary"
+- hideKeyboard
+- tapOn: "What you want to remind you"
+- tapOn:
+    below: "What you want to remind you"
+- inputText: "${SUMMARY}"
+- hideKeyboard
 - tapOn:
     point: "90%, 16%"
 - tapOn: "Save"

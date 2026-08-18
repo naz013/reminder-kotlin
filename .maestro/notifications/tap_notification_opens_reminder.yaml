@@ -1,0 +1,44 @@
+appId: com.cray.software.justreminderpro
+tags:
+  - notifications
+---
+# D9: tapping a fired notification opens the *correct* reminder, not just some screen.
+#
+# Corrects an assumption in docs/e2e-testing.md's D9 row ("opens the correct reminder preview/edit
+# screen") - reading ReminderNotificationHandler.contentPendingIntent shows the notification's
+# click target actually launches ReminderActionActivity (the Complete/Snooze action picker screen,
+# see CreateReminderActionScreenStateUseCase.kt), not a preview/edit screen. That screen does
+# render `reminder.summary` directly (confirmed by reading that file), so asserting on this
+# reminder's own unique Summary text there is still a real check that the deep link opened *this*
+# reminder specifically, not a generic/wrong one.
+#
+# Confirmed live (real device, API 30): tapping the notification's visible title text does
+# register as a tap on the whole notification row, and correctly opens ReminderActionActivity
+# showing this specific reminder's own Summary text and its "Complete" action.
+- launchApp:
+    clearState: true
+    permissions:
+      notifications: allow
+- tapOn:
+    text: "Accept"
+    optional: true
+- tapOn:
+    text: "Dismiss"
+    optional: true
+- runFlow:
+    file: flows/create_countdown_reminder.yaml
+    env:
+      PRIORITY_LABEL: "Normal"
+      SUMMARY: "D9 tap opens this reminder"
+- swipe:
+    start: "50%, 2%"
+    end: "50%, 75%"
+- extendedWaitUntil:
+    visible: "D9 tap opens this reminder"
+    timeout: 90000
+- tapOn: "D9 tap opens this reminder"
+# ReminderActionActivity's main action for a plain active reminder is "Complete" (see
+# GetReminderActionsUseCase/ReminderAction.Complete) - both assertions together confirm we landed
+# on this specific reminder's action screen, not merely that some Activity opened.
+- assertVisible: "D9 tap opens this reminder"
+- assertVisible: "Complete"

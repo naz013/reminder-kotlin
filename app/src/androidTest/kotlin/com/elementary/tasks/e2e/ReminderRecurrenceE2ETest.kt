@@ -152,10 +152,20 @@ class ReminderRecurrenceE2ETest : KoinTest {
   /** Scrolls the current sheet's lazy list/grid (`DayOfMonthValueEditor`'s `WheelPicker` or
    *  `DayOfYearValueEditor`'s `SelectableChipGrid`, both backed by a Lazy* layout) so that
    *  [index] is composed and clickable - needed for any target beyond what's composed by default,
-   *  unlike e.g. day 1 or day 10 which [addBuilderItem]'s callers rely on already being visible. */
+   *  unlike e.g. day 1 or day 10 which [addBuilderItem]'s callers rely on already being visible.
+   *
+   *  Confirmed live (real device, API 30): the main builder screen's own `BuilderListItemCard`
+   *  list stays in the semantics tree - and matches `hasScrollToIndexAction()` too - even while a
+   *  `ValueEditorSheet` is open on top of it, so `onNode(hasScrollToIndexAction())` throws
+   *  "found 2 nodes" instead of finding the sheet's list uniquely. `onAllNodes(...).onLast()`
+   *  reliably picks the sheet's list instead: confirmed live across both call sites (the
+   *  day-of-month wheel and the day-of-year grid) that it's always the higher-id / later-composed
+   *  node, i.e. whatever was composed most recently - the sheet, since it opens after the
+   *  underlying screen. */
   private fun scrollLazyListToIndex(index: Int) {
     composeRule
-      .onNode(hasScrollToIndexAction(), useUnmergedTree = true)
+      .onAllNodes(hasScrollToIndexAction(), useUnmergedTree = true)
+      .onLast()
       .performScrollToIndex(index)
     composeRule.waitForIdle()
   }
@@ -250,24 +260,72 @@ class ReminderRecurrenceE2ETest : KoinTest {
     composeRule.onNodeWithText(r(R.string.save)).performClick()
   }
 
+  /** Dismisses Home's first-run Privacy Policy consent banner (`ScheduleHomeViewModel`'s
+   *  `BannerState.Privacy`, gated on `LegalDocumentRepository`'s on-device SharedPreferences flag
+   *  - not reset by [testRepositoryModule] or between test methods sharing one app install) if
+   *  it's currently showing; a no-op otherwise.
+   *
+   *  Confirmed live (real device, API 30, running this class's tests in isolation): unlike this
+   *  file's other interactions - which fire a target's semantics `OnClick` action directly,
+   *  bypassing normal touch-dispatch ordering, which is why e.g. [navigateToNewReminderBuilder]'s
+   *  FAB tap works even with a dialog visually on top - this banner genuinely blocks navigation
+   *  while shown: a run landed on this exact failure, [navigateToEditReminderBuilder] stuck on
+   *  Home (confirmed via `composeRule.onRoot().printToLog(...)`) instead of on
+   *  PreviewReminderScreen after tapping the target row. */
+  private fun dismissPrivacyBannerIfShown() {
+    val acceptLabel = r(R.string.accept)
+    if (composeRule.onAllNodesWithText(acceptLabel).fetchSemanticsNodes().isNotEmpty()) {
+      composeRule.onNodeWithText(acceptLabel).performClick()
+      composeRule.waitForIdle()
+    }
+  }
+
   /** Home -> reminder details -> builder in edit mode, the only path there is (see
    *  [navigateToNewReminderBuilder]'s kdoc for the equivalent "no direct seam" situation for
    *  create). [summary] must uniquely identify the target row - the home list only ever shows
    *  today's active reminders (`GetActiveEventsForTheDayUseCase`), and its row text is exactly the
    *  reminder's `Summary` builder item value, falling back to a shared non-unique placeholder when
    *  absent - so every test using this helper adds a `Summary` item with a fresh [UUID] to make its
-   *  own row unambiguous, since the database isn't reset between tests. */
+   *  own row unambiguous, since the database isn't reset between tests.
+   *
+   *  Confirmed live (real device, API 30): the Home -> `PreviewReminderScreen` navigation this tap
+   *  triggers is a genuine intermittent flake, not a locator bug - across several back-to-back
+   *  runs (both in isolation and as part of the full class, with no code changes in between) a
+   *  single tap + 20s wait passed some runs and missed "More options" entirely on others, with one
+   *  run's `printToLog` dump confirming the tap never even left Home that time (stuck behind
+   *  [dismissPrivacyBannerIfShown]'s banner) while a different failing run showed no banner at
+   *  all - i.e. more than one distinct cause can produce the same symptom here. Retrying the tap
+   *  (rather than just a single longer wait) is the general-purpose mitigation: cheap when the
+   *  first attempt already worked, and self-corrects when it doesn't, regardless of which
+   *  underlying cause was at fault that time.
+   *
+   *  Confirmed live the unsafe way *not* to recover between attempts: `Espresso.pressBack()` when
+   *  the tap never actually left Home throws (`BottomNavActivity` is the root of its own back
+   *  stack, so there's nothing for Back to pop there - matches the identical warning already
+   *  documented for the Maestro flows' cleanup step). So each retry only re-taps if the summary
+   *  row is still visible (i.e. we're confirmed still on Home, safe to retry) and never presses
+   *  Back at all - if a tap left Home for some third, unrecognized state, this just keeps waiting
+   *  rather than risk closing the Activity. */
   private fun navigateToEditReminderBuilder(summary: String) {
     composeRule.waitUntil(timeoutMillis = 10_000) {
       composeRule.onAllNodesWithText(summary).fetchSemanticsNodes().isNotEmpty()
     }
-    composeRule.onNodeWithText(summary).performClick()
-    composeRule.waitForIdle()
-
     val moreOptionsLabel = r(R.string.more_options)
-    composeRule.waitUntil(timeoutMillis = 10_000) {
-      composeRule.onAllNodesWithContentDescription(moreOptionsLabel).fetchSemanticsNodes().isNotEmpty()
+    var reachedPreview = false
+    repeat(3) {
+      if (reachedPreview) return@repeat
+      dismissPrivacyBannerIfShown()
+      if (composeRule.onAllNodesWithText(summary).fetchSemanticsNodes().isNotEmpty()) {
+        composeRule.onNodeWithText(summary).performClick()
+        composeRule.waitForIdle()
+      }
+      reachedPreview = runCatching {
+        composeRule.waitUntil(timeoutMillis = 8_000) {
+          composeRule.onAllNodesWithContentDescription(moreOptionsLabel).fetchSemanticsNodes().isNotEmpty()
+        }
+      }.isSuccess
     }
+    check(reachedPreview) { "Did not land on the reminder details screen after 3 attempts" }
     composeRule.onNodeWithContentDescription(moreOptionsLabel).performClick()
     composeRule.waitForIdle()
     composeRule.onNodeWithText(r(R.string.edit)).performClick()
