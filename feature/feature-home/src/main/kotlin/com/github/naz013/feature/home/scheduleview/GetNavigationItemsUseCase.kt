@@ -57,7 +57,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.agenda,
-          iconRes = R.drawable.ic_fluent_timeline,
+          iconRes = R.drawable.ic_fluent_calendar_agenda,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenAgenda,
           subtitle = "${reminderV2Repository.getAll(active = true, removed = false).size}",

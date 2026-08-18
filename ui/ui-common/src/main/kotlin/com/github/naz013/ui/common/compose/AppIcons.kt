@@ -37,6 +37,10 @@ object AppIcons {
     val Calendar3Day: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar_3_day)
     val CalendarWorkWeek: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar_work_week)
     val CalendarMonth: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar_month)
+    val Filter: Painter @Composable get() = painterResource(R.drawable.ic_fluent_filter)
+    val MoreVertical: Painter @Composable get() = painterResource(R.drawable.ic_fluent_more_vertical)
+    val Heart: Painter @Composable get() = painterResource(R.drawable.ic_fluent_heart)
+    val ShareAndroid: Painter @Composable get() = painterResource(R.drawable.ic_fluent_share_android)
   }
 
   object Builder {

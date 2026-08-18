@@ -14,8 +14,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,11 +34,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.AttachmentFile
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.AttachmentType
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 
 private val GRID_MAX_HEIGHT = 320.dp
 
@@ -138,7 +137,7 @@ private fun AttachmentCell(attachmentFile: AttachmentFile, onRemove: () -> Unit)
     }
     IconButton(onClick = onRemove, modifier = Modifier.align(Alignment.TopEnd).size(24.dp)) {
       Icon(
-        imageVector = Icons.Filled.Close,
+        painter = AppIcons.Fluent.Dismiss,
         contentDescription = null,
         tint = MaterialTheme.colorScheme.onSurface,
       )

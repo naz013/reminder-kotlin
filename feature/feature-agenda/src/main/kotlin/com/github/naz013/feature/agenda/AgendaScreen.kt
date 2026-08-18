@@ -27,7 +27,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,7 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.naz013.ui.common.R
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.logic.reminder.smartlist.SmartListFilter
@@ -58,6 +56,7 @@ import com.github.naz013.ui.agenda.UiAgendaBirthday
 import com.github.naz013.ui.agenda.UiAgendaHeader
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaReminder
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -431,7 +430,7 @@ private fun AgendaEmptyState(modifier: Modifier = Modifier) {
     verticalArrangement = Arrangement.Center,
   ) {
     Icon(
-      painter = painterResource(R.drawable.ic_fluent_alert),
+      painter = painterResource(R.drawable.ic_fluent_calendar_agenda),
       contentDescription = null,
       modifier = Modifier.size(64.dp),
       tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),

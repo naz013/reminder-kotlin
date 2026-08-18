@@ -11,8 +11,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -42,12 +40,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.github.naz013.ui.common.R
-import com.github.naz013.ui.common.livedata.ObserveNonNull
-import com.github.naz013.feature.reminder.build.BuilderItem
-import com.github.naz013.feature.reminder.build.valuedialog.controller.shopitems.SubTasksViewModel
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.ShopItem
+import com.github.naz013.feature.reminder.build.BuilderItem
+import com.github.naz013.feature.reminder.build.valuedialog.controller.shopitems.SubTasksViewModel
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.livedata.ObserveNonNull
 
 private val LIST_MAX_HEIGHT = 400.dp
 
@@ -182,7 +181,7 @@ private fun ShopItemRow(
         modifier = Modifier.size(40.dp).testTag(shopItemRemoveTestTag(item.uuId)),
       ) {
         Icon(
-          imageVector = Icons.Filled.Close,
+          painter = AppIcons.Fluent.Dismiss,
           contentDescription = null,
           tint = MaterialTheme.colorScheme.onSurface,
         )
