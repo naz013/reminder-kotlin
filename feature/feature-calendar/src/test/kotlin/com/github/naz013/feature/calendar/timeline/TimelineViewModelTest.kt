@@ -84,8 +84,13 @@ class TimelineViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `applies a title on creation`() {
+  fun `applies a range title on creation for multi-day spans`() {
     assertEquals("15 – 15 July", viewModel(daySpan = 3).state.value.title)
+  }
+
+  @Test
+  fun `applies a single-date title for the 1-day span`() {
+    assertEquals("15 July", viewModel(daySpan = 1).state.value.title)
   }
 
   @Test

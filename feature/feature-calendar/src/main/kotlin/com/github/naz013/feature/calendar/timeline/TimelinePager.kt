@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -29,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,12 +52,15 @@ import com.github.naz013.ui.agenda.UiAgendaBirthday
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaReminder
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.domain.PublicHoliday
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
 
 private val HOUR_HEIGHT = 56.dp
 private val AXIS_WIDTH = 52.dp
 private val EVENT_BLOCK_MIN_HEIGHT = 26.dp
+private const val INITIAL_SCROLL_LEAD_HOURS = 2f
 
 /**
  * Vertical hour-timeline pager shared by the 3-day and 7-day calendar modes. Each page shows one
@@ -83,6 +88,10 @@ fun TimelinePager(
   val pagerState = rememberPagerState(initialPage = initialPagerPosition) { Int.MAX_VALUE }
   // Hoisted above the pager so swiping between windows keeps the same vertical scroll offset.
   val scrollState = rememberScrollState()
+  // Guards the scroll-to-now effect below to fire exactly once - on whichever page is initially
+  // shown, once its content has actually loaded (scrollState has nothing to scroll to before
+  // then). Not reset on further swipes, so the user's own scroll position sticks afterwards.
+  val hasScrolledToNow = remember { mutableStateOf(false) }
 
   LaunchedEffect(pagerState) {
     snapshotFlow { pagerState.settledPage }.collect { position -> onPageSettled(position) }
@@ -103,6 +112,8 @@ fun TimelinePager(
       daysForWindow = daysForWindow,
       hourLabels = hourLabels,
       scrollState = scrollState,
+      isInitialPage = position == initialPagerPosition,
+      hasScrolledToNow = hasScrolledToNow,
       refreshSignal = refreshSignal,
       loadWindowEvents = loadWindowEvents,
       loadWindowHolidays = loadWindowHolidays,
@@ -118,6 +129,8 @@ private fun TimelinePage(
   daysForWindow: (LocalDate) -> List<TimelineDay>,
   hourLabels: List<String>,
   scrollState: androidx.compose.foundation.ScrollState,
+  isInitialPage: Boolean,
+  hasScrolledToNow: MutableState<Boolean>,
   refreshSignal: Int,
   loadWindowEvents: suspend (LocalDate) -> Map<LocalDate, List<UiAgendaItem>>,
   loadWindowHolidays: suspend (LocalDate) -> Map<LocalDate, PublicHoliday>,
@@ -139,14 +152,18 @@ private fun TimelinePage(
   }
 
   Column(modifier = modifier.fillMaxSize()) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-      Spacer(modifier = Modifier.width(AXIS_WIDTH))
-      days.forEach { day ->
-        TimelineDayHeader(
-          day = day,
-          onClick = { onDayHeaderClick(day.date) },
-          modifier = Modifier.weight(1f),
-        )
+    // A single day is already named in the app bar title, so the weekday/date header (which
+    // otherwise also acts as the "jump to this day" control for multi-day windows) is redundant.
+    if (days.size > 1) {
+      Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.width(AXIS_WIDTH))
+        days.forEach { day ->
+          TimelineDayHeader(
+            day = day,
+            onClick = { onDayHeaderClick(day.date) },
+            modifier = Modifier.weight(1f),
+          )
+        }
       }
     }
     TimelineHolidayRow(days = days, holidaysByDay = holidaysByDay, modifier = Modifier.fillMaxWidth())
@@ -160,6 +177,17 @@ private fun TimelinePage(
       }
 
       else -> {
+        if (isInitialPage && !hasScrolledToNow.value) {
+          val density = LocalDensity.current
+          LaunchedEffect(Unit) {
+            val now = LocalTime.now()
+            val hourHeightPx = with(density) { HOUR_HEIGHT.toPx() }
+            val target =
+              (((now.hour + now.minute / 60f) - INITIAL_SCROLL_LEAD_HOURS) * hourHeightPx).toInt().coerceAtLeast(0)
+            scrollState.scrollTo(target)
+            hasScrolledToNow.value = true
+          }
+        }
         Row(
           modifier =
             Modifier
@@ -246,29 +274,51 @@ private fun HolidayChip(
   holiday: PublicHoliday,
   modifier: Modifier = Modifier,
 ) {
-  Row(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(6.dp))
-        .background(MaterialTheme.colorScheme.tertiaryContainer)
-        .padding(horizontal = 4.dp, vertical = 3.dp),
-    horizontalArrangement = Arrangement.spacedBy(3.dp),
-    verticalAlignment = Alignment.CenterVertically,
-  ) {
-    Icon(
-      painter = painterResource(R.drawable.ic_fluent_globe),
-      contentDescription = null,
-      tint = MaterialTheme.colorScheme.onTertiaryContainer,
-      modifier = Modifier.size(12.dp),
-    )
-    Text(
-      text = holiday.screenText,
-      style = MaterialTheme.typography.labelSmall,
-      color = MaterialTheme.colorScheme.onTertiaryContainer,
-      maxLines = 1,
-      overflow = TextOverflow.Ellipsis,
-    )
+  var expanded by remember { mutableStateOf(false) }
+  val containerColor = MaterialTheme.colorScheme.tertiaryContainer
+  val contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+
+  Box(modifier = modifier) {
+    Row(
+      modifier =
+        Modifier
+          .fillMaxWidth()
+          .clip(RoundedCornerShape(6.dp))
+          .background(containerColor)
+          .clickable { expanded = true }
+          .padding(horizontal = 4.dp, vertical = 3.dp),
+      horizontalArrangement = Arrangement.spacedBy(3.dp),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Icon(
+        painter = painterResource(R.drawable.ic_fluent_globe),
+        contentDescription = null,
+        tint = contentColor,
+        modifier = Modifier.size(12.dp),
+      )
+      Text(
+        text = holiday.screenText,
+        style = MaterialTheme.typography.labelSmall,
+        color = contentColor,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+      )
+    }
+
+    if (expanded) {
+      CloudBubble(
+        onDismissRequest = { expanded = false },
+        containerColor = containerColor,
+        contentColor = contentColor,
+        modifier = Modifier.widthIn(max = 260.dp),
+      ) {
+        Text(
+          text = if (holiday.type.isNotBlank()) "${holiday.screenText} – ${holiday.type}" else holiday.screenText,
+          style = MaterialTheme.typography.bodyMedium,
+          color = contentColor,
+        )
+      }
+    }
   }
 }
 
@@ -328,20 +378,26 @@ private fun TimelineDayColumn(
         width = eventLaneWidth,
         xOffset = eventLaneWidth * positionedEvent.lane,
         topOffset = HOUR_HEIGHT * (positionedEvent.startMinutes / MINUTES_IN_HOUR.toFloat()),
-        onClick = { onItemClick(positionedEvent.item) },
+        onItemClick = onItemClick,
       )
     }
   }
 }
 
+/**
+ * Tapping the block itself opens a [CloudBubble] (same pattern as [HolidayChip]) showing the
+ * event's full, untruncated text in the block's own colors; tapping *that* bubble is what
+ * actually opens the event's details, via [onItemClick].
+ */
 @Composable
 private fun TimelineEventBlock(
   item: UiAgendaItem,
   width: Dp,
   xOffset: Dp,
   topOffset: Dp,
-  onClick: () -> Unit,
+  onItemClick: (UiAgendaItem) -> Unit,
 ) {
+  var expanded by remember { mutableStateOf(false) }
   val container: Color
   val content: Color
   when (item) {
@@ -360,6 +416,12 @@ private fun TimelineEventBlock(
       is UiAgendaBirthday -> item.name
       else -> ""
     }
+  val subtitle =
+    when (item) {
+      is UiAgendaReminder -> item.secondaryText?.text
+      is UiAgendaBirthday -> item.ageFormatted
+      else -> null
+    }
 
   Box(
     modifier =
@@ -371,7 +433,7 @@ private fun TimelineEventBlock(
         .padding(horizontal = 1.dp, vertical = 1.dp)
         .clip(RoundedCornerShape(6.dp))
         .background(container)
-        .clickable(onClick = onClick)
+        .clickable { expanded = true }
         .padding(horizontal = 6.dp, vertical = 3.dp),
   ) {
     Text(
@@ -381,5 +443,34 @@ private fun TimelineEventBlock(
       maxLines = 2,
       overflow = TextOverflow.Ellipsis,
     )
+
+    if (expanded) {
+      CloudBubble(
+        onDismissRequest = { expanded = false },
+        containerColor = container,
+        contentColor = content,
+        modifier = Modifier.widthIn(min = 160.dp, max = 260.dp),
+      ) {
+        Column(
+          modifier =
+            Modifier
+              .clip(MaterialTheme.shapes.small)
+              .clickable {
+                expanded = false
+                onItemClick(item)
+              },
+        ) {
+          Text(text = title, style = MaterialTheme.typography.titleMedium, color = content)
+          if (!subtitle.isNullOrBlank()) {
+            Text(
+              text = subtitle,
+              style = MaterialTheme.typography.bodySmall,
+              color = content.copy(alpha = 0.85f),
+              modifier = Modifier.padding(top = 2.dp),
+            )
+          }
+        }
+      }
+    }
   }
 }

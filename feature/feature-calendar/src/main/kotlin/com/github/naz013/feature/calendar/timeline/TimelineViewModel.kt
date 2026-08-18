@@ -138,10 +138,14 @@ class TimelineViewModel(
   }
 
   private fun applyWindow(windowStart: LocalDate) {
-    val windowEnd = windowStart.plusDays(daySpan - 1L)
     val title =
-      "${dateTimeManager.formatCalendarDay(windowStart)} – " +
-        "${dateTimeManager.formatCalendarDay(windowEnd)} ${dateTimeManager.formatMonth(windowEnd)}"
+      if (daySpan == 1) {
+        "${dateTimeManager.formatCalendarDay(windowStart)} ${dateTimeManager.formatMonth(windowStart)}"
+      } else {
+        val windowEnd = windowStart.plusDays(daySpan - 1L)
+        "${dateTimeManager.formatCalendarDay(windowStart)} – " +
+          "${dateTimeManager.formatCalendarDay(windowEnd)} ${dateTimeManager.formatMonth(windowEnd)}"
+      }
     state.update { it.copy(title = title.capitalizeFirstLetter()) }
   }
 
