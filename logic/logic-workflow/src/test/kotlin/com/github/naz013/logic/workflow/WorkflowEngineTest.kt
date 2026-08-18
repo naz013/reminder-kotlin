@@ -19,6 +19,7 @@ import com.github.naz013.workapi.PeriodicWorkRequest
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
 import com.github.naz013.workapi.WorkState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -614,6 +615,11 @@ private class FakeReminderV2Repository(
     from: LocalDateTime,
     to: LocalDateTime
   ): List<ReminderV2> = emptyList()
+  override fun observeActiveInRange(
+    removed: Boolean,
+    from: LocalDateTime,
+    to: LocalDateTime
+  ): Flow<List<ReminderV2>> = emptyFlow()
   override suspend fun getByGroupId(groupId: String): List<ReminderV2> =
     reminders.values.filter { it.groupId == groupId }
   override suspend fun countActiveByGroupId(groupId: String): Int =

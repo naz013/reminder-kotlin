@@ -10,6 +10,8 @@ import com.github.naz013.repository.entity.toEntity
 import com.github.naz013.repository.entity.toEpochMillisUtc
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.threeten.bp.LocalDateTime
 
 internal class ReminderV2RepositoryImpl(
@@ -58,6 +60,18 @@ internal class ReminderV2RepositoryImpl(
       toMillis = to.toEpochMillisUtc()
     ).map { it.toDomain() }
   }
+
+  override fun observeActiveInRange(
+    removed: Boolean,
+    from: LocalDateTime,
+    to: LocalDateTime
+  ): Flow<List<ReminderV2>> =
+    dao.observeActiveInRange(
+      removed = removed,
+      active = true,
+      fromMillis = from.toEpochMillisUtc(),
+      toMillis = to.toEpochMillisUtc()
+    ).map { list -> list.map { it.toDomain() } }
 
   override suspend fun getByGroupId(groupId: String): List<ReminderV2> {
     Logger.d(TAG, "Get reminders by group id: $groupId")

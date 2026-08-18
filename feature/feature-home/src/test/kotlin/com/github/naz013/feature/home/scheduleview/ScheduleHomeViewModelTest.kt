@@ -20,6 +20,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -50,7 +51,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
     // instant, which won't match the real call's (different) instant. Use any() instead.
     every { getGreetingTextUseCase(any()) } returns "Good morning"
     every { googleTasksAuthManager.isAuthorized() } returns true
-    coEvery { getActiveEventsForTheDayUseCase(any(), any()) } returns emptyList()
+    every { getActiveEventsForTheDayUseCase(any()) } returns flowOf(emptyList())
     every { getTimeSectionsUseCase(any()) } returns emptyList()
     coEvery { getNavigationItemsUseCase(any(), any()) } returns emptyList()
     every { legalDocumentRepository.hasUpdate(any()) } returns false
@@ -128,7 +129,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
           time = LocalTime.of(9, 0),
           type = HomeEvent.EventType.Reminder,
         )
-      coEvery { getActiveEventsForTheDayUseCase(any(), any()) } returns listOf(event)
+      every { getActiveEventsForTheDayUseCase(any()) } returns flowOf(listOf(event))
       every { getTimeSectionsUseCase(listOf(event)) } returns
         listOf(com.github.naz013.feature.home.TimeSection(time = "9:00", event = event))
 

@@ -4,6 +4,8 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.ReminderV2Repository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -61,6 +63,11 @@ private class FakeGroupReminderV2Repository(
     from: LocalDateTime,
     to: LocalDateTime
   ): List<ReminderV2> = emptyList()
+  override fun observeActiveInRange(
+    removed: Boolean,
+    from: LocalDateTime,
+    to: LocalDateTime
+  ): Flow<List<ReminderV2>> = emptyFlow()
   override suspend fun getByGroupId(groupId: String): List<ReminderV2> = byGroupId[groupId].orEmpty()
   override suspend fun countActiveByGroupId(groupId: String): Int = 0
   override suspend fun getByNoteId(noteId: String): List<ReminderV2> = emptyList()

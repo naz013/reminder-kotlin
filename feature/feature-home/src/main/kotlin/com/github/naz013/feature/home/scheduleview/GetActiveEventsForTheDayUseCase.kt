@@ -13,20 +13,19 @@ import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import com.github.naz013.ui.common.theme.ThemeProvider
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 class GetActiveEventsForTheDayUseCase(
-  private val dispatcherProvider: DispatcherProvider,
   private val dateTimeManager: DateTimeManager,
   private val reminderV2Repository: ReminderV2Repository,
   private val birthdayRepository: BirthdayRepository,
@@ -37,29 +36,20 @@ class GetActiveEventsForTheDayUseCase(
   private val contextProvider: ContextProvider,
   private val homePreferences: HomePreferences,
 ) {
-  suspend operator fun invoke(
-    scope: CoroutineScope,
-    day: LocalDateTime,
-  ): List<HomeEvent> {
-    val reminders = loadReminders(day)
-    val birthdays = loadBirthdays(day)
-    return (reminders + birthdays).sortedBy { it.time }
-  }
-
-  private suspend fun loadReminders(day: LocalDateTime): List<HomeEvent> {
-    val groupsMap = groupV2Repository.getAll().associateBy { it.uuId }
+  operator fun invoke(day: LocalDateTime): Flow<List<HomeEvent>> {
     val dayStart = day.toLocalDate().atStartOfDay()
-    val reminders = reminderV2Repository.getActiveInRange(
+    val remindersFlow = reminderV2Repository.observeActiveInRange(
       removed = false,
       from = dateTimeManager.localToUtc(dayStart),
       to = dateTimeManager.localToUtc(dayStart.plusDays(1)),
     )
-    return reminders.mapNotNull { toHomeEvent(it, it.groupId?.let { groupId -> groupsMap[groupId] }) }
-  }
-
-  private suspend fun loadBirthdays(day: LocalDateTime): List<HomeEvent> {
-    val birthdays = birthdayRepository.getAll(dateTimeManager.getBirthdayDayMonth(day))
-    return birthdays.map { toHomeEvent(it) }
+    val birthdaysFlow = birthdayRepository.observeAll(dateTimeManager.getBirthdayDayMonth(day))
+    return combine(remindersFlow, birthdaysFlow) { reminders, birthdays ->
+      val groupsMap = groupV2Repository.getAll().associateBy { it.uuId }
+      val reminderEvents = reminders.mapNotNull { toHomeEvent(it, it.groupId?.let { groupId -> groupsMap[groupId] }) }
+      val birthdayEvents = birthdays.map { toHomeEvent(it) }
+      (reminderEvents + birthdayEvents).sortedBy { it.time }
+    }
   }
 
   private fun toHomeEvent(
