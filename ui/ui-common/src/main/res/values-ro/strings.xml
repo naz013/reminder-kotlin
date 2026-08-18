@@ -1134,4 +1134,5 @@
     <string name="search_no_countries_found">Nu s-a găsit nicio țară</string>
     <string name="select_reminder_or_birthday_to_see_details">Selectați un memento sau o zi de naștere pentru a vedea detaliile</string>
     <string name="acc_close">Închide</string>
+    <string name="turn_on">Pornire</string>
 </resources>

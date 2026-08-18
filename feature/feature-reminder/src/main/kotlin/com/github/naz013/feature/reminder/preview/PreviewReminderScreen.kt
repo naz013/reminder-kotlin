@@ -1,10 +1,12 @@
 package com.github.naz013.feature.reminder.preview
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,18 +15,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -127,25 +131,10 @@ internal fun PreviewReminderScreen(
     }
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-      state.status?.let { status ->
-        item { StatusRow(status = status, onToggleClick = onToggleClick) }
-      }
+      item { HeaderCard(state = state, onToggleClick = onToggleClick) }
 
       item { SectionHeader(text = stringResource(R.string.details)) }
-      if (state.summary.isNotEmpty()) {
-        item { DetailRow(icon = Icons.SUMMARY, text = state.summary) }
-      }
-      state.description?.let { text -> item { DetailRow(icon = Icons.DESCRIPTION, text = text) } }
-      state.dueDateTime?.let { text -> item { DetailRow(icon = Icons.DUE, text = text) } }
-      state.before?.let { text -> item { DetailRow(icon = Icons.DUE, text = text) } }
-      item { DetailRow(icon = Icons.REPEAT, text = state.repeat) }
-      state.remaining?.let { text -> item { DetailRow(icon = Icons.DUE, text = text) } }
-      state.groupTitle?.let { text -> item { DetailRow(icon = Icons.GROUP, text = text) } }
-      item { DetailRow(icon = Icons.PRIORITY, text = state.priorityTitle) }
-      if (state.tags.isNotEmpty()) {
-        item { TagsRow(tags = state.tags) }
-      }
-      item { DetailRow(icon = Icons.ID, text = state.id) }
+      item { DetailsCard(rows = detailRows(state)) }
 
       if (state.targetType != null) {
         item { TargetInfoSection(state = state) }
@@ -260,23 +249,73 @@ private enum class OverflowAction {
 }
 
 @Composable
+private fun HeaderCard(
+  state: PreviewReminderState,
+  onToggleClick: () -> Unit,
+) {
+  Card(
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      if (state.summary.isNotEmpty()) {
+        Text(text = state.summary, style = MaterialTheme.typography.titleLarge)
+      }
+      state.description?.takeIf { it.isNotEmpty() }?.let { text ->
+        Text(
+          text = text,
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(top = 4.dp),
+        )
+      }
+      state.status?.let { status ->
+        Spacer(modifier = Modifier.height(16.dp))
+        StatusRow(status = status, onToggleClick = onToggleClick)
+      }
+    }
+  }
+}
+
+@Composable
 private fun StatusRow(
   status: UiReminderStatus,
   onToggleClick: () -> Unit,
 ) {
   Row(
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 12.dp),
+    modifier = Modifier.fillMaxWidth(),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
-    Text(
-      text = if (status.active) stringResource(R.string.enabled4) else stringResource(R.string.disabled),
-      style = MaterialTheme.typography.headlineSmall,
-    )
-    Switch(checked = status.active, onCheckedChange = { onToggleClick() }, enabled = status.canToggle)
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Box(
+        modifier =
+          Modifier
+            .size(8.dp)
+            .clip(CircleShape)
+            .background(if (status.active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
+      )
+      Text(
+        text = if (status.active) stringResource(R.string.enabled4) else stringResource(R.string.disabled),
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.padding(start = 8.dp),
+      )
+    }
+    FilledTonalButton(
+      onClick = onToggleClick,
+      enabled = status.canToggle,
+      colors =
+        if (status.active) {
+          ButtonDefaults.filledTonalButtonColors()
+        } else {
+          ButtonDefaults.filledTonalButtonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+          )
+        },
+    ) {
+      Text(text = stringResource(if (status.active) R.string.turn_off else R.string.turn_on))
+    }
   }
 }
 
@@ -325,8 +364,28 @@ private fun DetailRow(
   }
 }
 
+private data class DetailItem(
+  val icon: Int,
+  val text: String,
+  val textDecoration: TextDecoration = TextDecoration.None,
+)
+
+private fun detailRows(state: PreviewReminderState): List<@Composable () -> Unit> =
+  buildList {
+    state.dueDateTime?.let { text -> add { DetailRow(icon = Icons.DUE, text = text) } }
+    state.before?.let { text -> add { DetailRow(icon = Icons.DUE, text = text) } }
+    add { DetailRow(icon = Icons.REPEAT, text = state.repeat) }
+    state.remaining?.let { text -> add { DetailRow(icon = Icons.DUE, text = text) } }
+    state.groupTitle?.let { text -> add { DetailRow(icon = Icons.GROUP, text = text) } }
+    add { DetailRow(icon = Icons.PRIORITY, text = state.priorityTitle) }
+    if (state.tags.isNotEmpty()) {
+      add { TagsDetailRow(tags = state.tags) }
+    }
+    add { DetailRow(icon = Icons.ID, text = state.id) }
+  }
+
 @Composable
-private fun TagsRow(tags: List<TagChipState>) {
+private fun TagsDetailRow(tags: List<TagChipState>) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier =
@@ -344,40 +403,70 @@ private fun TagsRow(tags: List<TagChipState>) {
   }
 }
 
+private fun targetInfoItems(state: PreviewReminderState): List<DetailItem> {
+  val type = state.targetType ?: return emptyList()
+  return buildList {
+    when {
+      type.isCall() -> {
+        (state.target as? UiCallTarget)?.name?.let { add(DetailItem(Icons.PERSON, it)) }
+        add(DetailItem(Icons.MAKE_CALL, state.rawTarget))
+      }
+
+      type.isSms() -> {
+        (state.target as? UiSmsTarget)?.name?.let { add(DetailItem(Icons.PERSON, it)) }
+        add(DetailItem(Icons.SEND_SMS, state.rawTarget))
+      }
+
+      type.isApp() -> {
+        val name = (state.target as? UiAppTarget)?.name
+        add(DetailItem(Icons.OPEN_APP, name ?: state.rawTarget))
+      }
+
+      type.isLink() -> {
+        add(DetailItem(Icons.OPEN_LINK, state.rawTarget, TextDecoration.Underline))
+      }
+
+      type.isEmail() -> {
+        val emailTarget = state.target as? UiEmailTarget
+        emailTarget?.name?.let { add(DetailItem(Icons.PERSON, it)) }
+        add(DetailItem(Icons.SEND_EMAIL, state.rawTarget, TextDecoration.Underline))
+        emailTarget
+          ?.subject
+          ?.takeIf { it.isNotEmpty() }
+          ?.let { add(DetailItem(Icons.EMAIL_SUBJECT, it, TextDecoration.Underline)) }
+      }
+    }
+  }
+}
+
+@Composable
+private fun DetailsCard(rows: List<@Composable () -> Unit>) {
+  if (rows.isEmpty()) return
+  Card(
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+  ) {
+    rows.forEachIndexed { index, row ->
+      row()
+      if (index != rows.lastIndex) {
+        HorizontalDivider(
+          modifier = Modifier.padding(start = 56.dp),
+          color = MaterialTheme.colorScheme.outlineVariant,
+        )
+      }
+    }
+  }
+}
+
 @Composable
 private fun TargetInfoSection(state: PreviewReminderState) {
   val type = state.targetType ?: return
   SectionHeader(text = targetHeaderText(type))
-  when {
-    type.isCall() -> {
-      (state.target as? UiCallTarget)?.name?.let { DetailRow(icon = Icons.PERSON, text = it) }
-      DetailRow(icon = Icons.MAKE_CALL, text = state.rawTarget)
+  val rows: List<@Composable () -> Unit> =
+    targetInfoItems(state).map { item ->
+      { DetailRow(icon = item.icon, text = item.text, textDecoration = item.textDecoration) }
     }
-
-    type.isSms() -> {
-      (state.target as? UiSmsTarget)?.name?.let { DetailRow(icon = Icons.PERSON, text = it) }
-      DetailRow(icon = Icons.SEND_SMS, text = state.rawTarget)
-    }
-
-    type.isApp() -> {
-      val name = (state.target as? UiAppTarget)?.name
-      DetailRow(icon = Icons.OPEN_APP, text = name ?: state.rawTarget)
-    }
-
-    type.isLink() -> {
-      DetailRow(icon = Icons.OPEN_LINK, text = state.rawTarget, textDecoration = TextDecoration.Underline)
-    }
-
-    type.isEmail() -> {
-      val emailTarget = state.target as? UiEmailTarget
-      emailTarget?.name?.let { DetailRow(icon = Icons.PERSON, text = it) }
-      DetailRow(icon = Icons.SEND_EMAIL, text = state.rawTarget, textDecoration = TextDecoration.Underline)
-      emailTarget
-        ?.subject
-        ?.takeIf { it.isNotEmpty() }
-        ?.let { DetailRow(icon = Icons.EMAIL_SUBJECT, text = it, textDecoration = TextDecoration.Underline) }
-    }
-  }
+  DetailsCard(rows = rows)
 }
 
 @Composable

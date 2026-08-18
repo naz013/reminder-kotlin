@@ -1135,4 +1135,5 @@
     <string name="search_no_countries_found">未找到国家/地区</string>
     <string name="select_reminder_or_birthday_to_see_details">选择提醒事项或生日以查看详细信息</string>
     <string name="acc_close">关闭</string>
+    <string name="turn_on">开启</string>
 </resources>

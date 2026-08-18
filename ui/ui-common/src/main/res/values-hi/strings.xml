@@ -1136,4 +1136,5 @@
     <string name="search_no_countries_found">कोई देश नहीं मिला</string>
     <string name="select_reminder_or_birthday_to_see_details">विवरण देखने के लिए एक रिमाइंडर या जन्मदिन चुनें</string>
     <string name="acc_close">बंद करें</string>
+    <string name="turn_on">चालू करें</string>
 </resources>
