@@ -23,6 +23,7 @@ extensions.configure<ApplicationExtension> {
     multiDexEnabled = true
     renderscriptTargetApi = 23
     renderscriptSupportModeEnabled = true
+    testInstrumentationRunnerArguments["clearPackageData"] = "true"
   }
   buildFeatures {
     viewBinding = true
@@ -143,6 +144,8 @@ extensions.configure<ApplicationExtension> {
       isReturnDefaultValues = true
       isIncludeAndroidResources = true
     }
+    execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    animationsDisabled = true
   }
   configurations.configureEach {
     resolutionStrategy {
@@ -354,4 +357,16 @@ dependencies {
   testImplementation(libs.androidx.lifecycle.runtime.testing)
   testImplementation(libs.kotlinx.coroutines.test)
   testImplementation(libs.robolectric)
+
+  androidTestImplementation(testFixtures(project(":data:repository")))
+  androidTestImplementation(libs.androidx.test.core)
+  androidTestImplementation(libs.androidx.test.runner)
+  androidTestImplementation(libs.androidx.test.rules)
+  androidTestImplementation(libs.androidx.test.ext.junit)
+  androidTestImplementation(libs.espresso.core)
+  androidTestImplementation(platform(libs.compose.bom))
+  androidTestImplementation(libs.compose.ui.test.junit4)
+  androidTestImplementation(libs.mockk.android)
+  androidTestImplementation(libs.koin.test)
+  androidTestUtil(libs.androidx.test.orchestrator)
 }

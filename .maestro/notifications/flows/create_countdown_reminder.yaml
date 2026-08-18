@@ -1,0 +1,87 @@
+appId: com.cray.software.justreminderpro
+---
+# Reusable subflow (invoked via `runFlow`) - runs in the caller's already-launched app context,
+# expected to start from the app's home screen. Maestro requires the `appId`/`---` header on
+# every flow file, subflows included (confirmed live: "Config Section Required" without it).
+#
+# Creates a reminder using a Countdown recurrence (RecurrenceRule.Countdown) fired ~65s from now -
+# per docs/e2e-testing.md #4, this is the one recurrence type worth using purely as a
+# delivery-timing vehicle, avoiding a real-time wait for a Date+Time reminder to become due.
+# Sets the reminder's priority via the Priority builder item so D2/D3/D4 can exercise the
+# quiet-hours priority threshold (see DoNotDisturbManager.applyDoNotDisturb).
+#
+# Params (pass via `runFlow: { file: ..., env: { PRIORITY_LABEL: ... } }`):
+#   PRIORITY_LABEL - one of "Lowest" / "Low" / "Normal" / "High" / "Highest"
+#     (see PriorityValueEditor / @array/priorities).
+#
+# UI flow grounded in feature/feature-reminder/.../build/BuildReminderNavGraph.kt (FAB -> add-item
+# selector -> value editor sheet, editing commits live so closing the sheet is enough - see
+# ValueEditorSheet's own kdoc) and .../valuedialog/editor/CountdownTimeValueEditor.kt (numeric
+# keypad, HHMMSS window shifted left per digit: pressing 1,0,5 yields 00:01:05 = 65s).
+# Confirmed live: the Priority `WheelPicker` only shows 3 of its 5 values at once (Low/Normal/
+# High by default - Lowest/Highest aren't composed at all until scrolled into view). Two things
+# that *don't* work here, confirmed live: `scrollUntilVisible` finds no scrollable container of
+# its own on this custom wheel and swipes the *sheet* instead, silently dismissing it; a bare
+# swipe gesture over the wheel's own area has no visible effect at all (fling behavior likely
+# eats a short/fast swipe before it crosses an item boundary). What does work (see
+# `WheelPicker.kt`): every row - including ones not yet centered - is individually `clickable`
+# and immediately calls `animateScrollToItem` + selects on tap, so tapping the *last visible*
+# item ("High") first scrolls the window down enough to compose "Highest" as newly visible,
+# which can then be tapped directly. Only handles this batch's two actual targets (Normal,
+# already visible; Highest, one "High" tap away) - not a general solution for Lowest/Low.
+#
+# Confirmed live: the home screen's "Add" FAB opens a Birthday/Note/Reminder dropdown first (not
+# a direct navigation to the builder) - "Reminder" has to be tapped before the second "Add" (the
+# builder's own FAB, opening the item-type picker) becomes reachable. Also confirmed live: the
+# item-type picker's unfiltered list doesn't show "Countdown"/"Priority" without scrolling, so
+# each is found via the picker's own search field first (placeholder "Search parameters…").
+#
+# Confirmed live (via `adb shell uiautomator dump`, since Maestro's own errors alone weren't
+# enough to explain a "Countdownqpt" garbled search query - see git history if this needs
+# revisiting): after typing "Countdown", the search field's own text becomes indistinguishable
+# from the result row's title text, so `tapOn: "Countdown"` (anchored or not) kept re-focusing
+# the field instead of the row, silently reopening the keyboard - whose QWERTY hint-number labels
+# (Q=1, P=0, T=5) is where the garbled "qpt" was coming from. Fixed by tapping each item's unique
+# *description* text instead of its title (visible below the title in the picker, e.g. "Set
+# countdown time" - see BiFactory.kt) - that text is never typed into the search field, so it's
+# never ambiguous with it.
+#
+# Confirmed live: the keypad's 0/backspace row sits just below the fold on this device (1-9 fit,
+# 0 doesn't) - a small swipe brings it into view before tapping it.
+#
+# Confirmed live: `pressKey: Back` does not close this sheet the way `Espresso.pressBack()` does
+# for the same sheet in the Compose instrumented test - it's a real Maestro/UiAutomator-vs-Espresso
+# behavioral difference, not a locator mistake (verified via screenshot: identical sheet state
+# before and after the key press). `ValueEditorSheet`'s own close icon has `contentDescription =
+# null` in source (see its kdoc - closing "any way" was the assumption, back press included), so
+# it can't be targeted by text either - tapping its fixed on-screen position (top-right of every
+# editor sheet, same position regardless of which item is open) is the reliable alternative.
+- tapOn: "Add"
+- tapOn: "Reminder"
+- tapOn: "Add"
+- tapOn: "Search parameters…"
+- inputText: "Countdown"
+- hideKeyboard
+- tapOn: "Set countdown time"
+- tapOn: "^1$"
+- swipe:
+    start: "50%, 80%"
+    end: "50%, 60%"
+- tapOn: "^0$"
+- tapOn: "^5$"
+- tapOn:
+    point: "90%, 16%"
+- tapOn: "Add"
+- tapOn: "Search parameters…"
+- inputText: "Priority"
+- hideKeyboard
+- tapOn: "Set priority for the notification"
+- runFlow:
+    when:
+      notVisible: "^${PRIORITY_LABEL}$"
+    commands:
+      - tapOn: "^High$"
+- tapOn: "^${PRIORITY_LABEL}$"
+- tapOn:
+    point: "90%, 16%"
+- tapOn: "Save"

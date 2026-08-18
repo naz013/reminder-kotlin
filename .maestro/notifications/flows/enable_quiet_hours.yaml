@@ -1,0 +1,63 @@
+appId: com.cray.software.justreminderpro
+---
+# Reusable subflow (invoked via `runFlow`), inherits the already-launched app context from the
+# caller. Maestro requires the `appId`/`---` header on every flow file, subflows included
+# (confirmed live: "Config Section Required" without it).
+#
+# Navigates Home -> Settings -> Reminders and turns on quiet hours ("Do not disturb" under
+# RemindersSettingsScreen, see feature/feature-reminder/.../settings/RemindersSettingsScreen.kt).
+# Widens the window to 00:00-23:55 instead of the app default (20:00-07:00, see
+# Prefs.doNotDisturbFrom/To) so "now" always falls inside it regardless of when this flow runs -
+# the D2/D3/D4 tests need the window to reliably contain "now" without a real-time wait. 23:55
+# rather than 23:59 because the picker's minute dial (see below) only has 5-minute tap targets -
+# still, at worst, a 5-minute-wide gap right at midnight, which is an acceptable/negligible miss
+# for what this window needs to guarantee.
+#
+# Params (pass via `runFlow: { file: ..., env: { DND_IGNORE_LABEL: ... } }`):
+#   DND_IGNORE_LABEL - visible text of the option to pick in the "Allow ignoring when priority"
+#     dialog. Options (see RemindersSettingsViewModel#ignoreOptions()):
+#     "Lowest and above" / "Low and above" / "Normal and above" / "High and above" / "Highest"
+#     / "Do not allow" (index 5 - unconditional suppression, D4).
+#
+# Confirmed live: "Do not disturb" appears twice on this screen with identical text - once as
+# the section header (`SettingsSectionHeader`, non-interactive) and once as the switch row's own
+# title (`SettingsSwitchItem`) right below it. `tapOn: "Do not disturb"` matched the header (the
+# first/earlier match), leaving the switch untouched - `index: 1` selects the second match (the
+# actual switch row) instead.
+- tapOn: "Settings"
+- tapOn: "Reminders"
+- scrollUntilVisible:
+    element:
+      text: "Do not disturb"
+    direction: DOWN
+- tapOn:
+    text: "Do not disturb"
+    index: 1
+# Confirmed live: this dialog is the plain `androidx.compose.material3.TimePicker` used directly
+# by `DateTimePickerState.kt` (see `TimePickerRequestDialog`) - no "switch to text input" toggle
+# exists here at all (that assumption, made before ever running this live, was wrong; it's a
+# different, simpler dialog than the reminder builder's own `TimeValueEditor`). Driven via the
+# dial instead: tap an hour position (12 o'clock = the FROM/TO ambiguity-free target as long as
+# the *current* live time isn't also 12 o'clock - narrow, accepted risk), the AM/PM control, the
+# "Select minutes" mode switch, then a minute position, matching the pattern confirmed live for
+# the reminder builder's own TimePicker in ReminderRecurrenceE2ETest.kt.
+- tapOn: "From"
+- tapOn: "12 o'clock"
+- tapOn: "AM"
+- tapOn: "Select minutes"
+- tapOn: "0 minutes"
+- tapOn: "OK"
+- scrollUntilVisible:
+    element:
+      text: "To"
+    direction: DOWN
+- tapOn: "To"
+- tapOn: "11 o'clock"
+- tapOn: "PM"
+- tapOn: "Select minutes"
+- tapOn: "55 minutes"
+- tapOn: "OK"
+- tapOn: "Allow ignoring when priority"
+- tapOn: "${DND_IGNORE_LABEL}"
+- pressKey: Back
+- pressKey: Back

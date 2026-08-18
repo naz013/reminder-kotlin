@@ -5,6 +5,11 @@ plugins {
 
 android {
   namespace = "com.github.naz013.repository"
+
+  @Suppress("UnstableApiUsage")
+  testFixtures {
+    enable = true
+  }
 }
 
 dependencies {
@@ -27,4 +32,11 @@ dependencies {
   testImplementation(libs.junit)
   testImplementation(libs.mockk)
   testImplementation(libs.kotlinx.coroutines.test)
+
+  // TestRepositoryModule (instrumented-test Koin seam, published to other modules' androidTest
+  // source sets) needs these on its own compile classpath - it isn't implicitly inherited from
+  // the `implementation` deps above, only from this module's own `main` source set.
+  testFixturesImplementation(project(":data:repository-api"))
+  testFixturesImplementation(libs.androidx.room.runtime)
+  testFixturesImplementation(libs.koin.core)
 }

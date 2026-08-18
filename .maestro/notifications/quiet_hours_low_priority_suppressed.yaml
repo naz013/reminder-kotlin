@@ -1,0 +1,45 @@
+appId: com.cray.software.justreminderpro
+tags:
+  - notifications
+---
+# D2: quiet hours enabled, due time inside the window, reminder priority below the
+# "ignore when priority" threshold -> notification suppressed (DoNotDisturbManager.
+# applyDoNotDisturb: priority < prefs.doNotDisturbIgnore).
+# Threshold = "High and above" (index 3): a Normal-priority (index 2) reminder is below it.
+- launchApp:
+    clearState: true
+    permissions:
+      notifications: allow
+# clearState means this is a genuinely fresh install, which shows a Privacy Policy consent
+# dialog and (separately) a cloud-backup-restore prompt before the home screen - confirmed live,
+# neither is in docs/e2e-testing.md. `optional: true` so this is a no-op if they don't appear.
+- tapOn:
+    text: "Accept"
+    optional: true
+- tapOn:
+    text: "Dismiss"
+    optional: true
+- runFlow:
+    file: flows/enable_quiet_hours.yaml
+    env:
+      DND_IGNORE_LABEL: "High and above"
+- runFlow:
+    file: flows/create_countdown_reminder.yaml
+    env:
+      PRIORITY_LABEL: "Normal"
+- swipe:
+    start: "50%, 2%"
+    end: "50%, 75%"
+- extendedWaitUntil:
+    notVisible: "Reminder PRO"
+    timeout: 90000
+# Close the shade we just opened, so a following flow in the same batch doesn't inherit it open
+# (CI always starts from a fresh emulator boot, so this only matters for local back-to-back
+# re-runs). Confirmed live this is NOT safe to do defensively at the *start* of a flow: pressing
+# Back when nothing is open (e.g. right after a truly fresh `launchApp`) exits BottomNavActivity
+# entirely (it's the root of its own back stack, so back finishes it) - `tapOn: "Settings"` then
+# matches the *home-screen launcher's* Settings app icon instead of the in-app one, since we're
+# no longer inside the app at all. Two presses here are safe because we know the shade is open
+# (we just swiped it open ourselves): one collapses quick-settings if it expanded, one closes it.
+- pressKey: Back
+- pressKey: Back
