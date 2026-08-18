@@ -1132,4 +1132,5 @@
     <string name="search_no_countries_found">Ingen lande fundet</string>
     <string name="select_reminder_or_birthday_to_see_details">Vælg en påmindelse eller fødselsdag for at se detaljer</string>
     <string name="acc_close">Luk</string>
+    <string name="turn_on">Tænd</string>
 </resources>

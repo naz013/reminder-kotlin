@@ -1133,4 +1133,5 @@
     <string name="search_no_countries_found">Страны не найдены</string>
     <string name="select_reminder_or_birthday_to_see_details">Выберите напоминание или день рождения, чтобы увидеть подробности</string>
     <string name="acc_close">Закрыть</string>
+    <string name="turn_on">Включить</string>
 </resources>

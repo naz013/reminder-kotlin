@@ -1135,4 +1135,5 @@
     <string name="search_no_countries_found">Няма намерени държави</string>
     <string name="select_reminder_or_birthday_to_see_details">Изберете напомняне или рожден ден, за да видите подробности</string>
     <string name="acc_close">Затвори</string>
+    <string name="turn_on">Включване</string>
 </resources>

@@ -1134,4 +1134,5 @@
     <string name="search_no_countries_found">Aucun pays trouvé</string>
     <string name="select_reminder_or_birthday_to_see_details">Sélectionnez un rappel ou un anniversaire pour voir les détails</string>
     <string name="acc_close">Fermer</string>
+    <string name="turn_on">Allumer</string>
 </resources>

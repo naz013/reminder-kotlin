@@ -1134,4 +1134,5 @@
     <string name="search_no_countries_found">Nie znaleziono krajów</string>
     <string name="select_reminder_or_birthday_to_see_details">Wybierz przypomnienie lub urodziny, aby zobaczyć szczegóły</string>
     <string name="acc_close">Zamknij</string>
+    <string name="turn_on">Włącz</string>
 </resources>
