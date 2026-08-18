@@ -247,6 +247,15 @@ Notes:
   `smoke`-tagged Maestro subset + Tier-A/B Compose tests on every PR (one API level, e.g. 34),
   and the full matrix + full Maestro tag set on `master`-merge / nightly, to keep PR feedback
   fast.
+- **Nightly failure notification**: `test_e2e` (the job as actually implemented in
+  `build_and_test.yml` — single API level 34, schedule-triggered only, not the illustrative 5-cell
+  matrix above) keeps one persistent GitHub Issue labeled `e2e-nightly-failure` as its status: a
+  failing run opens/reopens it with a comment linking the run and the commit range since the last
+  green nightly run (via the Actions API, filtered to `event: schedule`, `status: success`); the
+  next passing run comments and closes it. This is how "did last night's merge break e2e" gets
+  surfaced without anyone having to read through Actions run history — there's no separate
+  historical trend dashboard, since GitHub's own Actions run list already shows that chronologically
+  per-run.
 - **Always use the `pro` flavor debug variant** here per this repo's existing convention (never
   `free`, unless the change is free-flavor-specific) — matches
   `applicationId = "com.cray.software.justreminderpro"`.
