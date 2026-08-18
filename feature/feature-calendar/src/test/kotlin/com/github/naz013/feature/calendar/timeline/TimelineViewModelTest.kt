@@ -245,4 +245,18 @@ class TimelineViewModelTest : BaseTest() {
       vm.navigationEvent.value?.peekContent(),
     )
   }
+
+  @Test
+  fun `scrollOffset starts unset so the timeline knows to scroll to now`() {
+    assertEquals(TimelineViewModel.NO_SCROLL_OFFSET, viewModel(daySpan = 3).scrollOffset)
+  }
+
+  @Test
+  fun `onScrollOffsetChanged persists the offset so it survives leaving and returning to the screen`() {
+    val vm = viewModel(daySpan = 3)
+
+    vm.onScrollOffsetChanged(842)
+
+    assertEquals(842, vm.scrollOffset)
+  }
 }

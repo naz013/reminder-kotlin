@@ -48,6 +48,8 @@ fun TimelineScreen(
   onAddReminderClick: () -> Unit,
   onAddBirthdayClick: () -> Unit,
   onBackClick: () -> Unit,
+  initialScrollOffset: Int,
+  onScrollOffsetChanged: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -87,6 +89,8 @@ fun TimelineScreen(
         loadWindowHolidays = loadWindowHolidays,
         onItemClick = onItemClick,
         onDayHeaderClick = onDayHeaderClick,
+        initialScrollOffset = initialScrollOffset,
+        onScrollOffsetChanged = onScrollOffsetChanged,
       )
     }
   }

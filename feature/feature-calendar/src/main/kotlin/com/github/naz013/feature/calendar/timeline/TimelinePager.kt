@@ -83,15 +83,25 @@ fun TimelinePager(
   loadWindowHolidays: suspend (LocalDate) -> Map<LocalDate, PublicHoliday>,
   onItemClick: (UiAgendaItem) -> Unit,
   onDayHeaderClick: (LocalDate) -> Unit,
+  initialScrollOffset: Int,
+  onScrollOffsetChanged: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val pagerState = rememberPagerState(initialPage = initialPagerPosition) { Int.MAX_VALUE }
   // Hoisted above the pager so swiping between windows keeps the same vertical scroll offset.
-  val scrollState = rememberScrollState()
-  // Guards the scroll-to-now effect below to fire exactly once - on whichever page is initially
-  // shown, once its content has actually loaded (scrollState has nothing to scroll to before
-  // then). Not reset on further swipes, so the user's own scroll position sticks afterwards.
-  val hasScrolledToNow = remember { mutableStateOf(false) }
+  // Seeded from initialScrollOffset (persisted in the ViewModel) rather than always starting at
+  // 0, since navigating away to a reminder/birthday preview and back tears down and recreates
+  // this whole composable - a plain remember here would forget the scroll position every time.
+  val scrollState = rememberScrollState(initial = initialScrollOffset.coerceAtLeast(0))
+  // Guards the scroll-to-now effect below: only run it when there's no persisted offset to
+  // restore (i.e. this mode has never been scrolled before), and even then only once - on
+  // whichever page is initially shown, once its content has actually loaded (scrollState has
+  // nothing to scroll to before then).
+  val hasScrolledToNow = remember { mutableStateOf(initialScrollOffset != TimelineViewModel.NO_SCROLL_OFFSET) }
+
+  LaunchedEffect(scrollState) {
+    snapshotFlow { scrollState.value }.collect { onScrollOffsetChanged(it) }
+  }
 
   LaunchedEffect(pagerState) {
     snapshotFlow { pagerState.settledPage }.collect { position -> onPageSettled(position) }

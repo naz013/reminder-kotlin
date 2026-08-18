@@ -59,6 +59,15 @@ class TimelineViewModel(
   var lastPosition: Int = CENTER_POSITION
     private set
 
+  /** Vertical scroll offset (px) last seen for this mode, or [NO_SCROLL_OFFSET] if it was never
+   * set - i.e. this mode hasn't been opened yet this ViewModel's lifetime, so it should scroll to
+   * the current time instead of restoring a position. Kept here (not plain Compose `remember`)
+   * because navigating away to a reminder/birthday preview and back tears down and recreates the
+   * timeline's composables while this ViewModel instance survives - only state held here (like
+   * [lastPosition]) actually comes back with you. */
+  var scrollOffset: Int = NO_SCROLL_OFFSET
+    private set
+
   init {
     refreshSignal.update { it + 1 }
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -102,6 +111,10 @@ class TimelineViewModel(
 
   fun updateLastPosition(position: Int) {
     lastPosition = position
+  }
+
+  fun onScrollOffsetChanged(offset: Int) {
+    scrollOffset = offset
   }
 
   fun onPageSettled(position: Int) {
@@ -181,6 +194,7 @@ class TimelineViewModel(
 
   companion object {
     const val CENTER_POSITION = Int.MAX_VALUE / 2
+    const val NO_SCROLL_OFFSET = -1
     private const val DAYS_IN_WEEK = 7
   }
 }

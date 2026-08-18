@@ -212,5 +212,7 @@ private fun TimelineMode(
     onAddReminderClick = { viewModel.onAddReminderClick(anchorDate) },
     onAddBirthdayClick = { viewModel.onAddBirthdayClick(anchorDate) },
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    initialScrollOffset = viewModel.scrollOffset,
+    onScrollOffsetChanged = viewModel::onScrollOffsetChanged,
   )
 }
