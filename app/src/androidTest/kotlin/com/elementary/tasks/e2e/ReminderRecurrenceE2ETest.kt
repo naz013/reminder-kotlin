@@ -13,6 +13,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.elementary.tasks.navigation.BottomNavActivity
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
@@ -21,9 +23,12 @@ import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.reminder.build.valuedialog.editor.shopItemCheckTestTag
+import com.github.naz013.feature.reminder.build.valuedialog.editor.shopItemRemoveTestTag
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.testfixtures.testRepositoryModule
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.builderItemRemoveTestTag
@@ -91,6 +96,8 @@ class ReminderRecurrenceE2ETest : KoinTest {
   private val reminderV2Repository: ReminderV2Repository by inject()
   private val groupV2Repository: GroupV2Repository by inject()
   private val noteRepository: NoteRepository by inject()
+  private val tagRepository: TagRepository by inject()
+  private val tagAssignmentRepository: TagAssignmentRepository by inject()
   private val dateTimeManager: DateTimeManager by inject()
 
   /** Resets before every test so tests that don't touch it (all but the day-of-month/day-of-year
@@ -723,10 +730,8 @@ class ReminderRecurrenceE2ETest : KoinTest {
    *  randomly generated and never exposed to the test, only the fixed prefix is known ahead of
    *  time (`shopItemCheckTestTag("")` gives that prefix without duplicating its literal).
    *
-   *  Only exercises add + check-off, not remove - `ShopItemRow`'s remove button only composes
-   *  once its row is both focused *and* non-empty, and this file has no proven way yet to assert
-   *  real Android focus state from a semantics-only interaction; left for a follow-up rather than
-   *  guessed at. */
+   *  Exercises add + check-off; see [removingASubTaskPersistsOnlyTheRemainingItem] below for the
+   *  remove case, which needs its own real-focus setup and doesn't fit naturally into this test. */
   @Test
   fun addingSubTasksAndCheckingOneOffPersistsTheFinalShoppingListState() {
     val idsBefore = captureExistingReminderIds()
@@ -760,6 +765,73 @@ class ReminderRecurrenceE2ETest : KoinTest {
     val eggs = activeItems.single { it.summary == "Buy eggs" }
     assertTrue(milk.isChecked)
     assertFalse(eggs.isChecked)
+  }
+
+  /** B6 remainder: removes one of two shopping-list rows and confirms only the other survives.
+   *  `ShopItemRow`'s remove button only composes once its row is both focused *and* non-empty
+   *  (see `ShopItemRow` in `SubTasksValueEditor.kt`), so after typing both items - which leaves
+   *  the *second* row ("Buy eggs") focused, since it was the freshly-added row that received the
+   *  text input - this refocuses the first row ("Buy milk") by tapping directly on its own text,
+   *  the same real Android focus system a user's tap would trigger (not a semantics-only fake).
+   *  Only one row is focused at a time, so [shopItemRemoveTestTag]'s fixed prefix - already
+   *  scaffolded on the composable, previously unused - uniquely matches exactly one remove button
+   *  at each point, the same trick [shopItemCheckTestTag] already relies on for the checkbox. */
+  @Test
+  fun removingASubTaskPersistsOnlyTheRemainingItem() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.builder_sub_tasks))
+    composeRule.onAllNodes(hasSetTextAction(), useUnmergedTree = true)[0].performTextInput("Buy milk")
+    composeRule.waitForIdle()
+    composeRule.onAllNodes(hasImeAction(ImeAction.Next), useUnmergedTree = true)[0].performImeAction()
+    composeRule.waitForIdle()
+    composeRule.onAllNodes(hasSetTextAction(), useUnmergedTree = true)[1].performTextInput("Buy eggs")
+    composeRule.waitForIdle()
+
+    composeRule
+      .onNode(hasText("Buy milk") and hasSetTextAction(), useUnmergedTree = true)
+      .performClick()
+    composeRule.waitForIdle()
+
+    val removeTagPrefix = shopItemRemoveTestTag("")
+    val removeButtonMatcher =
+      SemanticsMatcher("shop item remove button") { node ->
+        node.config.getOrNull(SemanticsProperties.TestTag)?.startsWith(removeTagPrefix) == true
+      }
+    composeRule.onAllNodes(removeButtonMatcher, useUnmergedTree = true).onFirst().performClick()
+    composeRule.waitForIdle()
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    val activeItems = created.shoppingItems.filterNot { it.isDeleted }
+    assertEquals(1, activeItems.size)
+    assertEquals("Buy eggs", activeItems.single().summary)
+  }
+
+  /** A25: a reminder built from Sub-tasks only, with no Date/Time/Timer/DaysOfWeek/DayOfMonth/
+   *  DayOfYear item at all, still saves - `RecurrenceRuleCalculator`'s `hasShop` branch falls
+   *  through to `emptySchedule()` (confirmed by reading that file) when every other schedule
+   *  signal is absent, producing `RecurrenceRule.Once` with a null `eventDateTime` rather than
+   *  failing to build. `SubTasksBuilderItem`'s own constraints only block the action-type items
+   *  (Call/Email/Link/App/SMS), not Date/Time, so nothing here needs to be removed first. */
+  @Test
+  fun savesAShoppingListReminderWithNoDateOrTimeUsingEmptySchedule() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.builder_sub_tasks))
+    composeRule.onAllNodes(hasSetTextAction(), useUnmergedTree = true)[0].performTextInput("Buy milk")
+    composeRule.waitForIdle()
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(RecurrenceRule.Once, created.recurrence)
+    assertEquals(null, created.schedule.eventDateTime)
   }
 
   /** B7: assigns a Group on create and confirms the persisted `groupId` matches. The Group picker
@@ -1094,6 +1166,59 @@ class ReminderRecurrenceE2ETest : KoinTest {
 
     val created = awaitNewReminder(idsBefore)
     assertEquals(note.key, created.noteId)
+  }
+
+  /** B8: assigns a tag on create and confirms the assignment persists against the reminder's own
+   *  id, not the item picker/builder mechanism - tags aren't a `BuilderItem` at all. `TagsRow`
+   *  (`BuildReminderScreen.kt`) is a fixed row rendered inside the same `LazyColumn` as the picked
+   *  builder items themselves, so it only composes once at least one item has been added (the
+   *  empty-builder state renders `BuilderEmptyState` instead) - [addDateAndTime] both satisfies
+   *  that and gives the reminder a schedule to save. `BuildReminderViewModel.onTagToggle` writes
+   *  through `ToggleTagAssignmentUseCase` against a `stableReminderId` generated up front for the
+   *  whole editing session (see that field's own kdoc), which is also the exact `uuId` Save
+   *  eventually persists the reminder under - so the assignment created here is already attached
+   *  to the right id before Save is even tapped, confirmed by re-querying
+   *  `tagAssignmentRepository` afterward by [created]'s id, not by re-reading in-memory state.
+   *  `TagChipPicker`'s chip is a plain `FilterChip` labelled with the tag's name (`TagChipPicker.kt`),
+   *  so it's locatable the same way every other by-name click in this file is.
+   *
+   *  Only covers "assignment on create," not "filter reminder list by tag" - that's a separate
+   *  list/Home-screen rendering concern, the same split already applied to B7/B9 (see this file's
+   *  §5 notes).
+   *
+   *  Also bundles in B17 (`DescriptionBuilderItem`'s own persistence, `builder_details` in the item
+   *  picker) rather than giving it a dedicated test, per docs/e2e-testing.md's own note that a
+   *  standalone test for it is low value on its own - Description has otherwise only ever been
+   *  exercised incidentally as test scaffolding via Summary, never asserted on directly. Needed new
+   *  `factory<TagRepository>`/`factory<TagAssignmentRepository>` entries in `testRepositoryModule`
+   *  (plus a no-op `TagSyncTrigger` fake, since its one real implementation lives in `app` and
+   *  schedules cloud-sync work irrelevant here), same reasoning as B10's new `NoteRepository`
+   *  entry. */
+  @Test
+  fun assigningATagAndADescriptionOnCreatePersistsBoth() {
+    val tag = Tag(name = "Errands ${UUID.randomUUID()}", color = 0xFF00FF00.toInt())
+    runBlocking { tagRepository.save(tag) }
+
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addDateAndTime()
+
+    addBuilderItem(r(R.string.builder_details))
+    val uniqueDescription = "Details ${UUID.randomUUID()}"
+    composeRule.onNode(hasSetTextAction(), useUnmergedTree = true).performTextInput(uniqueDescription)
+    composeRule.waitForIdle()
+    closeValueEditor()
+
+    clickText(tag.name)
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(uniqueDescription, created.description)
+
+    val assignedTags = runBlocking { tagAssignmentRepository.getTagsForItem(created.uuId, TaggedItemType.REMINDER) }
+    assertTrue(assignedTags.any { it.id == tag.id })
   }
 
   /** A5: Countdown timer + exclusion window - the excluded hours persist onto the reminder's own

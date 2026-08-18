@@ -6,9 +6,14 @@ import com.github.naz013.repository.AppDb
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
+import com.github.naz013.repository.TagSyncTrigger
 import com.github.naz013.repository.impl.GroupV2RepositoryImpl
 import com.github.naz013.repository.impl.NoteRepositoryImpl
 import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
+import com.github.naz013.repository.impl.TagAssignmentRepositoryImpl
+import com.github.naz013.repository.impl.TagRepositoryImpl
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -36,5 +41,20 @@ fun testRepositoryModule(context: Context): Module = module {
   }
   factory<NoteRepository> {
     NoteRepositoryImpl(get<AppDb>().notesDao(), get())
+  }
+  // TagSyncTrigger's only real implementation lives in `app` (schedules a cloud-sync upload) -
+  // irrelevant to what these tests assert, so a no-op fake stands in for it here.
+  factory<TagSyncTrigger> {
+    object : TagSyncTrigger {
+      override fun onTagSaved(id: String) = Unit
+
+      override fun onTagDeleted(id: String) = Unit
+    }
+  }
+  factory<TagRepository> {
+    TagRepositoryImpl(get<AppDb>().tagDao(), get(), get())
+  }
+  factory<TagAssignmentRepository> {
+    TagAssignmentRepositoryImpl(get<AppDb>().tagAssignmentDao(), get())
   }
 }
