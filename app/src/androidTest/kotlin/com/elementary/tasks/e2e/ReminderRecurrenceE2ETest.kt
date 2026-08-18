@@ -1096,6 +1096,45 @@ class ReminderRecurrenceE2ETest : KoinTest {
     assertEquals(note.key, created.noteId)
   }
 
+  /** A5: Countdown timer + exclusion window - the excluded hours persist onto the reminder's own
+   *  `NotificationSettingsOverride` (`TimerExclusionModifier.putInto`: `activeHours`/
+   *  `quietHoursFrom`/`quietHoursTo` - all nullable there, unlike the fully-resolved
+   *  `NotificationSettings` shape used elsewhere in this codebase), not the `RecurrenceRule`
+   *  itself.
+   *
+   *  `RecurrenceRuleCalculator.fromTimer()` doesn't read the exclusion at all - only
+   *  `COUNTDOWN_TIMER`/`REPEAT_TIME` (confirmed by reading that file). The exclusion only feeds
+   *  into `RecurrenceCalculator.findNextTimerDateTime`'s `excludedHours` param, which runs when
+   *  computing the *next* fire after a repeat, not at initial save - the same "would need to wait
+   *  for a real fire to observe" limitation A27 hit. So this verifies the configuration round-trips
+   *  correctly through the builder and repository, not that a fire actually gets skipped - matching
+   *  docs/e2e-testing.md's own guidance to keep scheduling-correctness tests at the "computed
+   *  value" level (A-section) rather than "waited for it to happen" (D-section/Maestro
+   *  territory). */
+  @Test
+  fun addingATimerExclusionWindowPersistsTheExcludedHours() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.builder_countdown))
+    pressCountdownDigits(1, 0, 0)
+    closeValueEditor()
+
+    // CountdownExclusionValueEditor defaults to "Hours" mode (multi-select 0..23 grid) for a
+    // freshly-added, untouched item - no need to tap the mode radio row explicitly.
+    addBuilderItem(r(R.string.builder_countdown_exclusion))
+    clickText("1")
+    clickText("2")
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(listOf(1, 2), created.notification.activeHours?.sorted())
+    assertEquals("", created.notification.quietHoursFrom)
+    assertEquals("", created.notification.quietHoursTo)
+  }
+
   companion object {
     /** Runs before the very first [BottomNavActivity] is created for this class (JUnit applies
      *  `@Rule`s - including the compose rule's activity launch - only around `@Before`/`@Test`, not
