@@ -7,6 +7,7 @@ import com.github.naz013.feature.settings.calendar.usecase.ScanGoogleCalendarFor
 import com.github.naz013.feature.settings.calendar.work.ScanGoogleCalendarEventsTask
 import com.github.naz013.feature.settings.debug.DeveloperViewModel
 import com.github.naz013.feature.settings.debug.ObjectExportViewModel
+import com.github.naz013.feature.settings.debug.PopulateCalendarDemoDataUseCase
 import com.github.naz013.feature.settings.export.CloudBackupSettingsViewModel
 import com.github.naz013.feature.settings.export.services.CloudServicesViewModel
 import com.github.naz013.feature.settings.export.work.BackupSettingsTask
@@ -76,6 +77,15 @@ val featureSettingsModule = module {
 
   viewModelOf(::SettingsHubViewModel)
   viewModelOf(::NoteSettingsViewModel)
+  factory {
+    PopulateCalendarDemoDataUseCase(
+      reminderV2Repository = get(),
+      birthdayRepository = get(),
+      eventOccurrenceRepository = get(),
+      groupV2Repository = get(),
+      dateTimeManager = get(),
+    )
+  }
   viewModel {
     DeveloperViewModel(
       legalDocumentRepository = get(),
@@ -103,6 +113,7 @@ val featureSettingsModule = module {
       tagAssignmentRepository = get(),
       activateReminderUseCase = get(),
       holidayRepository = get(),
+      populateCalendarDemoDataUseCase = get(),
     )
   }
   viewModelOf(::ObjectExportViewModel)

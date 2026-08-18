@@ -41,6 +41,8 @@ fun DeveloperScreen(
   onClearAllTablesDismiss: () -> Unit,
   onInsertDemoDataClick: () -> Unit,
   onInsertInsightsDemoDataClick: () -> Unit,
+  onPopulateCalendarNormalDataClick: () -> Unit,
+  onPopulateCalendarMassiveDataClick: () -> Unit,
   onDialogOptionSelected: (Int) -> Unit,
   onDialogConfirm: () -> Unit,
   onDialogDismiss: () -> Unit,
@@ -115,6 +117,18 @@ fun DeveloperScreen(
       title = "Insert Insights Demo Data",
       subtitle = "Adds habit reminders with fabricated fire history, so the Insights screen has streaks and charts to show",
       onClick = onInsertInsightsDemoDataClick,
+    )
+    HorizontalDivider()
+    DeveloperOption(
+      title = "Populate Calendar (Normal)",
+      subtitle = "Adds dozens of reminders with different recurrence and a few birthdays, with occurrences, to populate the calendar views",
+      onClick = onPopulateCalendarNormalDataClick,
+    )
+    HorizontalDivider()
+    DeveloperOption(
+      title = "Populate Calendar (Massive)",
+      subtitle = "Same as above but with a massive amount of reminders and birthdays, to stress-test the Month/Day/3-day/7-day views",
+      onClick = onPopulateCalendarMassiveDataClick,
     )
     HorizontalDivider()
   }
