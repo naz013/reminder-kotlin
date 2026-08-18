@@ -37,6 +37,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -49,6 +50,16 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.ShopItem
 
 private val LIST_MAX_HEIGHT = 400.dp
+
+/** Semantics test tag for a shopping-list row's checkbox, parameterized by [itemId] (`ShopItem
+ *  .uuId`) since a list can have several rows and the checkbox itself carries no text/content
+ *  description (see [ShopItemRow]). Exposed so instrumented tests can toggle a specific row via
+ *  `onNodeWithTag(shopItemCheckTestTag(item.uuId))`. */
+fun shopItemCheckTestTag(itemId: String): String = "shop_item_check_$itemId"
+
+/** Same as [shopItemCheckTestTag] but for a row's remove button - only composed once that row is
+ *  focused with non-empty text (see [ShopItemRow]). */
+fun shopItemRemoveTestTag(itemId: String): String = "shop_item_remove_$itemId"
 
 /**
  * Editable shopping/checklist grid: type to add text, Enter/Done adds the next row and focuses
@@ -115,7 +126,10 @@ private fun ShopItemRow(
   }
 
   Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-    IconButton(onClick = onCheckClick, modifier = Modifier.size(40.dp)) {
+    IconButton(
+      onClick = onCheckClick,
+      modifier = Modifier.size(40.dp).testTag(shopItemCheckTestTag(item.uuId)),
+    ) {
       Icon(
         painter = painterResource(
           if (item.isChecked) R.drawable.ic_fluent_checkbox_checked else R.drawable.ic_fluent_checkbox_unchecked,
@@ -163,7 +177,10 @@ private fun ShopItemRow(
       )
     }
     if (isFocused && text.isNotEmpty()) {
-      IconButton(onClick = onRemoveClick, modifier = Modifier.size(40.dp)) {
+      IconButton(
+        onClick = onRemoveClick,
+        modifier = Modifier.size(40.dp).testTag(shopItemRemoveTestTag(item.uuId)),
+      ) {
         Icon(
           imageVector = Icons.Filled.Close,
           contentDescription = null,

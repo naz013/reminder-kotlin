@@ -2,6 +2,8 @@ package com.elementary.tasks.e2e
 
 import android.os.Build
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.text.input.ImeAction
@@ -11,8 +13,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.elementary.tasks.navigation.BottomNavActivity
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.feature.reminder.build.valuedialog.editor.shopItemCheckTestTag
+import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.testfixtures.testRepositoryModule
 import com.github.naz013.ui.common.R
@@ -21,6 +26,8 @@ import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
@@ -71,6 +78,7 @@ class ReminderRecurrenceE2ETest : KoinTest {
     }
 
   private val reminderV2Repository: ReminderV2Repository by inject()
+  private val groupV2Repository: GroupV2Repository by inject()
   private val dateTimeManager: DateTimeManager by inject()
 
   /** Resets before every test so tests that don't touch it (all but the day-of-month/day-of-year
@@ -201,10 +209,23 @@ class ReminderRecurrenceE2ETest : KoinTest {
    *  landing on the actual dial position. Also confirmed live: tapping an hour position does
    *  *not* auto-advance to minute-select mode (unlike this app's own live-commit editors) -
    *  `"Select minutes"` has to be tapped explicitly first. Values are Material3's own English
-   *  accessibility strings, not this app's string resources. */
+   *  accessibility strings, not this app's string resources.
+   *
+   *  Confirmed live (real device, run at 12:22 local time): without an explicit AM tap, the
+   *  picker's AM/PM segment defaults to whichever half of the day it's currently running in -
+   *  produced 22:30 instead of 10:30 when run past noon. Every test that only asserts on
+   *  `RecurrenceRule` fields (not `schedule.eventDateTime`) was silently immune to this - it only
+   *  surfaced once a test (the day-of-month/day-of-year edge cases) started asserting on the
+   *  exact persisted time. Tapping "AM" unconditionally (same idiom as the `enable_quiet_hours
+   *  .yaml` Maestro flow's `tapOn: "AM"`, which this mirrors) is a harmless no-op when it's
+   *  already selected. */
   private fun setTime() {
     composeRule
       .onNode(hasContentDescription("10 o'clock") and !hasText("10"), useUnmergedTree = true)
+      .performClick()
+    composeRule.waitForIdle()
+    composeRule
+      .onNode(hasText("AM"), useUnmergedTree = true)
       .performClick()
     composeRule.waitForIdle()
     composeRule
@@ -681,6 +702,217 @@ class ReminderRecurrenceE2ETest : KoinTest {
     // sun, mon, tue, wed, thu, fri, sat - Monday sets index 1, same convention as the create-flow
     // weekly tests above.
     assertEquals(RecurrenceRule.Weekly(weekdays = listOf(0, 1, 0, 0, 0, 0, 0)), updated?.recurrence)
+  }
+
+  /** B6: adds two shopping-list items and checks one off, then confirms both details persist -
+   *  including the checked state - through the real repository. `ShopItemRow`'s checkbox carries
+   *  no text/content description (see that composable), so this drives it via
+   *  [shopItemCheckTestTag]'s prefix rather than an exact tag - the row's real `ShopItem.uuId` is
+   *  randomly generated and never exposed to the test, only the fixed prefix is known ahead of
+   *  time (`shopItemCheckTestTag("")` gives that prefix without duplicating its literal).
+   *
+   *  Only exercises add + check-off, not remove - `ShopItemRow`'s remove button only composes
+   *  once its row is both focused *and* non-empty, and this file has no proven way yet to assert
+   *  real Android focus state from a semantics-only interaction; left for a follow-up rather than
+   *  guessed at. */
+  @Test
+  fun addingSubTasksAndCheckingOneOffPersistsTheFinalShoppingListState() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.builder_sub_tasks))
+    // The sheet opens with one empty, auto-focused row already showing (SubTasksValueEditor).
+    composeRule.onAllNodes(hasSetTextAction(), useUnmergedTree = true)[0].performTextInput("Buy milk")
+    composeRule.waitForIdle()
+    // Enter/Next on a non-empty row appends a second, now-focused empty row - both fields stay in
+    // the tree afterward (the first one just loses focus), so indices 0/1 address them in order.
+    composeRule.onAllNodes(hasImeAction(ImeAction.Next), useUnmergedTree = true)[0].performImeAction()
+    composeRule.waitForIdle()
+    composeRule.onAllNodes(hasSetTextAction(), useUnmergedTree = true)[1].performTextInput("Buy eggs")
+    composeRule.waitForIdle()
+
+    val checkTagPrefix = shopItemCheckTestTag("")
+    val checkboxMatcher =
+      SemanticsMatcher("shop item checkbox") { node ->
+        node.config.getOrNull(SemanticsProperties.TestTag)?.startsWith(checkTagPrefix) == true
+      }
+    composeRule.onAllNodes(checkboxMatcher, useUnmergedTree = true)[0].performClick()
+    composeRule.waitForIdle()
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    val activeItems = created.shoppingItems.filterNot { it.isDeleted }
+    val milk = activeItems.single { it.summary == "Buy milk" }
+    val eggs = activeItems.single { it.summary == "Buy eggs" }
+    assertTrue(milk.isChecked)
+    assertFalse(eggs.isChecked)
+  }
+
+  /** B7: assigns a Group on create and confirms the persisted `groupId` matches. The Group picker
+   *  (`GroupValueEditor`) is a `WheelPicker` fed entirely from `GroupV2Repository.getAll()`
+   *  (`BiFactory.kt`) - on the empty in-memory DB `testRepositoryModule` provides, that list
+   *  starts empty and `WheelPicker` renders nothing at all for an empty item list (confirmed by
+   *  reading that file's `if (items.isEmpty()) return`), so this seeds one group directly through
+   *  `groupV2Repository` first. Doing that through the repository rather than the UI is fine here
+   *  - there's no in-scope UI path to *create* a group from the reminder builder at all, only to
+   *  pick an existing one, so seeding one is equivalent to "a group already exists," not a
+   *  shortcut around the behavior actually under test. */
+  @Test
+  fun assigningAGroupOnCreatePersistsItsGroupId() {
+    val group = GroupV2(title = "Work ${UUID.randomUUID()}")
+    runBlocking { groupV2Repository.save(group) }
+
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.builder_date))
+    setDateToday()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.group))
+    clickText(group.title)
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(group.uuId, created.groupId)
+  }
+
+  /** B15: `RepeatLimitBuilderItem`'s `requiresAny(DAY_OF_YEAR, DAY_OF_MONTH, DAYS_OF_WEEK,
+   *  REPEAT_TIME)` constraint (`BuilderItem.kt`) is validated live as items are added/removed -
+   *  adding Repeat limit while none of those are present surfaces a "Requires any of: ..." error
+   *  on its own row (`UiBuilderItemsAdapter`), which clears once Repeat (`REPEAT_TIME`) is added.
+   *  Date+Time are added first specifically so the *overall* reminder is valid throughout (Time
+   *  alone would itself be invalid per `BuilderErrorFinder.findErrorTime`), keeping this test
+   *  about the one constraint it's targeting rather than tangled up with a second, unrelated
+   *  validation failure.
+   *
+   *  Asserts on the error message's fixed "Requires any of:" prefix only, not the full list of
+   *  type names that follows it - `BuilderItemRequiresAnyConstraintCalculator` collects the
+   *  missing types into a `HashSet` before joining them into the message, so their order isn't
+   *  guaranteed to be stable across runs. */
+  @Test
+  fun addingRepeatLimitWithoutARequiredCompanionShowsAValidationErrorThatClears() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.builder_date))
+    setDateToday()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.repeat_limit))
+    closeValueEditor()
+
+    val requiresAnyPrefix = r(R.string.builder_requires_any_of_x).substringBefore('%')
+    composeRule.onNodeWithText(requiresAnyPrefix, substring = true).assertIsDisplayed()
+
+    addBuilderItem(r(R.string.repeat))
+    setRepeatTimeSeconds(30)
+    closeValueEditor()
+
+    composeRule.onAllNodesWithText(requiresAnyPrefix, substring = true).assertCountEquals(0)
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(RecurrenceRule.Daily(repeatInterval = 30_000L, repeatLimit = -1), created.recurrence)
+  }
+
+  /** B16: adding Timer, then trying to add Date (blocked by Timer per `TimerBuilderItem`'s
+   *  `blockedBy(BiType.DATE, ...)` / `DateBuilderItem`'s symmetric `blockedBy(...,
+   *  BiType.COUNTDOWN_TIMER, ...)`) is prevented at selection time, not allowed-then-cleared:
+   *  `UiSelectorItemsAdapter` marks a blocked item `UiSelectorUnavailable` with a "Blocked by:
+   *  ..." message, and `BuilderSelectorSheet`'s `SelectorItemRow` only attaches a `clickable`
+   *  modifier `if (available)` - an unavailable row has no click handler at all (confirmed by
+   *  reading that file, not live).
+   *
+   *  Only Timer is active when Date is searched for, so the message's single-type substitution is
+   *  deterministic - unlike [addingRepeatLimitWithoutARequiredCompanionShowsAValidationErrorThatClears]'s
+   *  multi-type case, this one is safe to assert on in full. The final Save+assert is what proves
+   *  the block actually held: if Date had been added anyway, the recurrence calculator would see
+   *  two active core types at once and return `null` (`RecurrenceRuleCalculator.isOnlyOneActive`),
+   *  which would leave nothing to persist as a plain `Countdown`.
+   *
+   *  Confirmed live: searching "Date" surfaces more than just the Date item itself (Location Delay
+   *  Date, and the iCal start/until date items also match, since the picker searches title +
+   *  description) - several of those are *also* blocked by Timer right now, each rendering the
+   *  identical "Blocked by: Countdown" text, so matching on that message text alone hit 3 nodes,
+   *  not 1. `hasAnySibling` scopes to the message text that shares a parent with the exact "Date"
+   *  title specifically (`SelectorItemRow`'s `Column` holds title/description/message as sibling
+   *  `Text`s), landing on that one row unambiguously. */
+  @Test
+  fun aBlockedBuilderCombinationIsUnselectableInThePicker() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.builder_countdown))
+    pressCountdownDigits(1, 0, 0)
+    closeValueEditor()
+
+    val addLabel = r(R.string.acc_add)
+    composeRule.onAllNodesWithContentDescription(addLabel).onFirst().performClick()
+    composeRule.waitForIdle()
+    composeRule
+      .onNode(hasImeAction(ImeAction.Search), useUnmergedTree = true)
+      .performTextInput(r(R.string.builder_date))
+    composeRule.waitForIdle()
+
+    // Confirmed live: searching "Date" surfaces more than just the Date item itself (Location
+    // Delay Date, and the iCal start/until date items also match on description text), and
+    // several of those are *also* blocked by Timer right now, each rendering the byte-identical
+    // "Blocked by: Countdown" message - so matching on that text alone hits 3 nodes, not 1, and
+    // `hasAnySibling` doesn't scope it down either (confirmed live too: title/description/message
+    // aren't direct semantics siblings the way SelectorItemRow's source layout suggested). What
+    // does reliably identify the right one, confirmed live via bounds logging: the Date row's own
+    // "Blocked by" message sits ~112px directly below its exact "Date" title with nothing else in
+    // between, while every other row's title/message pair is 200px+ away - so this finds the
+    // closest "Blocked by" message below the exact "Date" title instead of matching on text alone.
+    // Same search-field ambiguity addBuilderItem's own kdoc documents (the field's own typed text
+    // matches too) - excluding editable nodes lands on the actual row title, not the field.
+    val dateTitleBounds =
+      composeRule
+        .onNode(
+          hasText(r(R.string.builder_date), substring = false) and !hasSetTextAction(),
+          useUnmergedTree = true,
+        )
+        .fetchSemanticsNode()
+        .boundsInRoot
+
+    val expectedBlockedMessage =
+      composeRule.activity.getString(R.string.builder_blocked_by_x, r(R.string.builder_countdown))
+    val blockedMessagesBelowDate =
+      composeRule
+        .onAllNodes(hasText(expectedBlockedMessage, substring = true), useUnmergedTree = true)
+        .fetchSemanticsNodes()
+        .filter { it.boundsInRoot.top >= dateTitleBounds.bottom }
+        .sortedBy { it.boundsInRoot.top - dateTitleBounds.bottom }
+
+    assertTrue(
+      "Expected a 'Blocked by' message directly below the Date row's title",
+      blockedMessagesBelowDate.isNotEmpty(),
+    )
+
+    Espresso.pressBack()
+    composeRule.waitForIdle()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(
+      RecurrenceRule.Countdown(after = 60_000L, repeatInterval = 0, repeatLimit = -1),
+      created.recurrence,
+    )
   }
 
   companion object {
