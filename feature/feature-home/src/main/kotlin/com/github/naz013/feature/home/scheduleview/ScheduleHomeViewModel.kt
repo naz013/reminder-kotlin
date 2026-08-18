@@ -11,6 +11,7 @@ import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomeScreenState
 import com.github.naz013.feature.home.ListState
+import com.github.naz013.feature.home.withSelectedEvent
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
@@ -27,6 +28,9 @@ import com.github.naz013.legal.LegalDocumentType
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,7 +51,9 @@ class ScheduleHomeViewModel(
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(HomeScreenState())
-  val state = _state.stateInWhileSubscribed(HomeScreenState())
+  private val _selectedEventId = MutableStateFlow<String?>(null)
+  val state = combine(_state, _selectedEventId, HomeScreenState::withSelectedEvent)
+    .stateInWhileSubscribed(HomeScreenState())
     .onStart { loadData() }
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
@@ -155,6 +161,10 @@ class ScheduleHomeViewModel(
     }
   }
 
+  fun onSelectedEventIdChanged(id: String?) {
+    _selectedEventId.value = id
+  }
+
   fun onEventActionClicked(eventAction: HomeEvent.EventAction) {
     Logger.i(
       TAG,
@@ -193,15 +203,16 @@ class ScheduleHomeViewModel(
       }
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      val now = LocalDateTime.now()
-      val events = getActiveEventsForTheDayUseCase(this, now)
-      val sections = getTimeSectionsUseCase(events)
-      Logger.d(TAG, "Loaded ${sections.size} sections")
-      _state.update {
-        it.copy(
-          listState = if (sections.isEmpty()) ListState.Empty else ListState.Ready(sections),
-        )
-      }
+      getActiveEventsForTheDayUseCase(LocalDateTime.now())
+        .map { events -> getTimeSectionsUseCase(events) }
+        .collect { sections ->
+          Logger.d(TAG, "Loaded ${sections.size} sections")
+          _state.update {
+            it.copy(
+              listState = if (sections.isEmpty()) ListState.Empty else ListState.Ready(sections),
+            )
+          }
+        }
     }
   }
 

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.github.naz013.repository.entity.BirthdayEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface BirthdaysDao {
@@ -20,6 +21,9 @@ internal interface BirthdaysDao {
 
   @Query("SELECT * FROM Birthday WHERE dayMonth=:dayMonth")
   fun getAll(dayMonth: String): List<BirthdayEntity>
+
+  @Query("SELECT * FROM Birthday WHERE dayMonth=:dayMonth")
+  fun observeAll(dayMonth: String): Flow<List<BirthdayEntity>>
 
   @Query("SELECT uuId FROM Birthday WHERE syncState IN (:syncStates)")
   fun getBySyncStates(syncStates: List<String>): List<String>

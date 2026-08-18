@@ -2,6 +2,7 @@ package com.github.naz013.repository
 
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import kotlinx.coroutines.flow.Flow
 import org.threeten.bp.LocalDateTime
 
 interface ReminderV2Repository {
@@ -16,6 +17,11 @@ interface ReminderV2Repository {
     from: LocalDateTime,
     to: LocalDateTime
   ): List<ReminderV2>
+  fun observeActiveInRange(
+    removed: Boolean,
+    from: LocalDateTime,
+    to: LocalDateTime
+  ): Flow<List<ReminderV2>>
   suspend fun getByGroupId(groupId: String): List<ReminderV2>
   suspend fun countActiveByGroupId(groupId: String): Int
   suspend fun clearGroupId(groupId: String)

@@ -4,7 +4,6 @@ import android.content.Context
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.ResolvedEventAction
-import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
@@ -23,6 +22,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -70,12 +71,11 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
     every { dateTimeManager.getCurrentDateTime() } returns day
     every { modelDateTimeFormatter.getRemaining(any<LocalDateTime>(), any<LocalDateTime>()) } returns "remaining"
-    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns emptyList()
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns flowOf(emptyList())
     coEvery { groupV2Repository.getAll() } returns emptyList()
-    coEvery { birthdayRepository.getAll(any()) } returns emptyList()
+    every { birthdayRepository.observeAll(any()) } returns flowOf(emptyList())
 
     useCase = GetActiveEventsForTheDayUseCase(
-      dispatcherProvider = mockDispatcherProvider(),
       dateTimeManager = dateTimeManager,
       reminderV2Repository = reminderV2Repository,
       birthdayRepository = birthdayRepository,
@@ -98,9 +98,10 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
   fun `maps a reminder into a HomeEvent with its group name and color`() = runTest {
     val group = GroupV2(uuId = "g1", title = "Work", color = 3)
     coEvery { groupV2Repository.getAll() } returns listOf(group)
-    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns listOf(reminder(groupId = "g1"))
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns
+      flowOf(listOf(reminder(groupId = "g1")))
 
-    val events = useCase(this, day)
+    val events = useCase(day).first()
 
     val event = events.single()
     assertEquals("Test reminder", event.text)
@@ -109,20 +110,20 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
 
   @Test
   fun `skips a reminder with no event date time`() = runTest {
-    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns
-      listOf(reminder(eventDateTime = null))
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns
+      flowOf(listOf(reminder(eventDateTime = null)))
 
-    val events = useCase(this, day)
+    val events = useCase(day).first()
 
     assertEquals(emptyList<Any>(), events)
   }
 
   @Test
   fun `maps a Call action into a MakeCall event action`() = runTest {
-    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns
-      listOf(reminder(action = ReminderAction.Call("+123")))
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns
+      flowOf(listOf(reminder(action = ReminderAction.Call("+123"))))
 
-    val event = useCase(this, day).single()
+    val event = useCase(day).first().single()
 
     val action = event.action?.value as ResolvedEventAction.MakeCall
     assertEquals("+123", action.phoneNumber)
@@ -130,10 +131,10 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
 
   @Test
   fun `has no event action for a reminder with no action`() = runTest {
-    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns
-      listOf(reminder(action = ReminderAction.None))
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns
+      flowOf(listOf(reminder(action = ReminderAction.None)))
 
-    val event = useCase(this, day).single()
+    val event = useCase(day).first().single()
 
     assertNull(event.action)
   }
@@ -142,10 +143,10 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
   fun `formats the shopping list as the secondary text for a Shopping action`() = runTest {
     every { shopItemsFormatter.formatV2(any()) } returns "formatted list"
     val items = listOf(ShopItemV2(summary = "Milk", createdAt = day))
-    coEvery { reminderV2Repository.getActiveInRange(any(), any(), any()) } returns
-      listOf(reminder(action = ReminderAction.Shopping, shoppingItems = items))
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns
+      flowOf(listOf(reminder(action = ReminderAction.Shopping, shoppingItems = items)))
 
-    val event = useCase(this, day).single()
+    val event = useCase(day).first().single()
 
     assertEquals("formatted list", event.description)
   }

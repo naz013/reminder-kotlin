@@ -1130,4 +1130,6 @@
     <string name="public_holidays_country">الدولة</string>
     <string name="public_holidays_locked_description">إظهار أيام العطل الرسمية لبلدك في التقويم - متوفر مع الإصدار المدفوع</string>
     <string name="search_no_countries_found">لم يتم العثور على دول</string>
+    <string name="select_reminder_or_birthday_to_see_details">اختر تذكيرًا أو عيد ميلاد لعرض التفاصيل</string>
+    <string name="acc_close">إغلاق</string>
 </resources>

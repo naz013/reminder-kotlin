@@ -8,6 +8,8 @@ import com.github.naz013.repository.dao.BirthdaysDao
 import com.github.naz013.repository.entity.BirthdayEntity
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class BirthdayRepositoryImpl(
   private val birthdaysDao: BirthdaysDao,
@@ -57,6 +59,9 @@ internal class BirthdayRepositoryImpl(
     Logger.d(TAG, "Getting all birthdays by day and month: $dayMonth")
     return birthdaysDao.getAll(dayMonth).map { it.toDomain() }
   }
+
+  override fun observeAll(dayMonth: String): Flow<List<Birthday>> =
+    birthdaysDao.observeAll(dayMonth).map { list -> list.map { it.toDomain() } }
 
   override suspend fun delete(id: String) {
     Logger.d(TAG, "Deleting birthday by id: $id")

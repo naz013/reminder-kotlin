@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.github.naz013.repository.entity.ReminderV2Entity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface ReminderV2Dao {
@@ -35,6 +36,21 @@ internal interface ReminderV2Dao {
     fromMillis: Long,
     toMillis: Long
   ): List<ReminderV2Entity>
+
+  @Query(
+    """SELECT * FROM ReminderV2
+        WHERE isRemoved=:removed
+        AND isActive=:active
+        AND sched_eventDateTime>=:fromMillis
+        AND sched_eventDateTime<:toMillis
+        ORDER BY isActive DESC, sched_eventDateTime ASC"""
+  )
+  fun observeActiveInRange(
+    removed: Boolean,
+    active: Boolean,
+    fromMillis: Long,
+    toMillis: Long
+  ): Flow<List<ReminderV2Entity>>
 
   @Query("SELECT * FROM ReminderV2 WHERE groupId=:groupId")
   fun getByGroupId(groupId: String): List<ReminderV2Entity>

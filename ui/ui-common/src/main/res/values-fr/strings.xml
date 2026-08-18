@@ -1132,4 +1132,6 @@
     <string name="public_holidays_country">Pays</string>
     <string name="public_holidays_locked_description">Affichez les jours fériés de votre pays dans le calendrier - disponible avec Pro</string>
     <string name="search_no_countries_found">Aucun pays trouvé</string>
+    <string name="select_reminder_or_birthday_to_see_details">Sélectionnez un rappel ou un anniversaire pour voir les détails</string>
+    <string name="acc_close">Fermer</string>
 </resources>

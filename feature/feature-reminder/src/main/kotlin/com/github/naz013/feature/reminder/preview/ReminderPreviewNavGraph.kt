@@ -1,10 +1,13 @@
 package com.github.naz013.feature.reminder.preview
 
 import android.content.Intent
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -19,8 +22,10 @@ import java.io.File
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.reminderPreviewEntries(
   backStack: MutableList<NavKey>,
+  isRenderedAsDetailPane: (NavKey) -> Boolean,
   navigateBeyondBackStack: (List<NavKey>) -> Unit,
   adsContent: @Composable () -> Unit,
   onShareFile: (title: String?, file: File) -> Unit,
@@ -28,10 +33,16 @@ fun EntryProviderScope<NavKey>.reminderPreviewEntries(
   onOpenNote: (noteId: String) -> Unit,
   onOpenGoogleTask: (taskId: String) -> Unit,
 ) {
-  entry<ReminderPreviewNavKey.Preview> { key ->
+  entry<ReminderPreviewNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+    // Fixed at first composition of this entry, not re-read on every recomposition: once the
+    // entry is popped (key.id no longer on the backstack), isRenderedAsDetailPane(key) would
+    // otherwise flip to false while the pop's exit transition is still animating out, flashing
+    // the back arrow before the screen finishes closing.
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     PreviewEntry(
       key,
       backStack,
+      renderAsDetailPane,
       navigateBeyondBackStack,
       adsContent,
       onShareFile,
@@ -47,6 +58,7 @@ fun EntryProviderScope<NavKey>.reminderPreviewEntries(
 private fun PreviewEntry(
   key: ReminderPreviewNavKey.Preview,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
   navigateBeyondBackStack: (List<NavKey>) -> Unit,
   adsContent: @Composable () -> Unit,
   onShareFile: (title: String?, file: File) -> Unit,
@@ -106,6 +118,7 @@ private fun PreviewEntry(
   val state by viewModel.state.collectAsState(PreviewReminderState())
   PreviewReminderScreen(
     state = state,
+    renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onToggleClick = viewModel::onToggleClick,
     onEditClick = { navigateBeyondBackStack(listOf(BuildReminderNavKey.Main(id = key.id))) },

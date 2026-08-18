@@ -8,8 +8,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.rememberWideNavigationRailState
@@ -70,6 +72,8 @@ import com.github.naz013.feature.settings.location.locationEntries
 import com.github.naz013.feature.settings.other.OtherNavKey
 import com.github.naz013.feature.settings.other.otherEntries
 import com.github.naz013.ui.common.compose.foundation.intent.rememberSendIntentResolver
+import com.github.naz013.ui.common.compose.foundation.isDesktopScreen
+import com.github.naz013.ui.common.compose.foundation.isTabletScreen
 import com.github.naz013.feature.settings.security.securityEntries
 import com.github.naz013.feature.settings.settingsEntries
 import com.github.naz013.feature.workflow.WorkflowNavKey
@@ -95,8 +99,9 @@ import org.koin.compose.viewmodel.koinViewModel
  *
  * [listDetailSceneStrategy] is registered here so any feature's `XyzNavGraph.kt` can opt an
  * entry pair into a two-pane list-detail layout on Medium+ width just by tagging its `entry<>()`
- * calls with `ListDetailSceneStrategy.listPane()`/`.detailPane()` - no other wiring needed. It is
- * a no-op today: no entry anywhere in the graph carries that metadata yet.
+ * calls with `ListDetailSceneStrategy.listPane()`/`.detailPane()` - no other wiring needed. Home's
+ * `HomeNavKey.Main` and the reminder/birthday preview screens are the first adopters - see
+ * `docs/home-two-pane-design.md`.
  *
  * [PersistentNavRailSceneDecoratorStrategy] is registered the same way for the nav rail: it wraps
  * every scene (not just specific tagged entries) in a persistent navigation rail on Medium+
@@ -129,6 +134,22 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
       onNavigate = { key -> backStack.navigateToRailDestination(key) },
     )
 
+  // Derived here, not in the feature modules - only this module sees every concrete NavKey type.
+  val selectedEventId =
+    backStack.lastOrNull()?.let { key ->
+      when (key) {
+        is ReminderPreviewNavKey.Preview -> key.id
+        is BirthdaysNavKey.Preview -> key.id
+        else -> null
+      }
+    }
+  val isMediumOrWiderWidth = isTabletScreen() || isDesktopScreen()
+  val isRenderedAsDetailPane: (NavKey) -> Boolean = { key ->
+    isMediumOrWiderWidth &&
+      backStack.lastOrNull() == key &&
+      backStack.getOrNull(backStack.lastIndex - 1) == HomeNavKey.Main
+  }
+
   DisposableEffect(backStack) {
     appNavBridge.attachOuterBackStack(backStack)
     onDispose { appNavBridge.detachOuterBackStack(backStack) }
@@ -136,7 +157,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
 
   NavDisplay(
     backStack = backStack,
-    modifier = Modifier.fillMaxSize(),
+    // The two-pane scaffold's gap between panes has no background of its own - without this it
+    // shows the raw window canvas (black) instead of the theme's background.
+    modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
     onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
     sceneStrategies = listOf(listDetailSceneStrategy),
     sceneDecoratorStrategies = listOf(persistentNavRailStrategy),
@@ -176,8 +199,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
       entryProvider {
         homeEntries(
           backStack = backStack,
-          onOpenReminderPreview = { id -> backStack.add(ReminderPreviewNavKey.Preview(id)) },
-          onOpenBirthdayPreview = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
+          selectedEventId = selectedEventId,
+          onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
+          onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
           onOpenSettings = { backStack.add(SettingsNavKey.Hub) },
           onOpenCreateReminder = { backStack.add(BuildReminderNavKey.Main()) },
           onOpenCreateBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
@@ -222,6 +246,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         birthdaysEntries(
           backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) },
           onCallClick = { number -> phoneCaller.call(number) },
           onSmsClick = { number -> smsSender.send(number, null) },
@@ -270,6 +295,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         reminderPreviewEntries(
           backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           navigateBeyondBackStack = { keys -> appNavBridge.navigate(*keys.toTypedArray()) },
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.ReminderPreview) },
           onShareFile = { title, file -> fileIntentSender.send(title, file) },
@@ -402,6 +428,22 @@ private fun MutableList<NavKey>.navigateToRailDestination(key: NavKey) {
   } else {
     add(key)
   }
+}
+
+/**
+ * Navigation for Home's two-pane detail pane: if the current top entry is itself a reminder/
+ * birthday preview, replace it instead of stacking another one on top. Only ever matters in
+ * two-pane mode - on Compact width the list isn't visible while a preview is showing, so this
+ * can't be reached with an existing preview already on top. Without it, picking a second list
+ * item pushes a second `detailPane()`-tagged entry, which [ListDetailSceneStrategy] doesn't
+ * support (it expects at most one entry per pane role).
+ */
+private fun MutableList<NavKey>.navigateToDetailPane(key: NavKey) {
+  val top = lastOrNull()
+  if (top is ReminderPreviewNavKey.Preview || top is BirthdaysNavKey.Preview) {
+    removeLastOrNull()
+  }
+  add(key)
 }
 
 private fun navScreenSpring() =

@@ -74,6 +74,9 @@ private const val DETAIL_ROW_MAX_STAGGER_DELAY_MS = 180L
 fun PreviewBirthdayScreen(
   modifier: Modifier = Modifier,
   state: PreviewBirthdayState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onEditClick: () -> Unit,
   onDeleteClick: () -> Unit,
@@ -90,8 +93,8 @@ fun PreviewBirthdayScreen(
         title = { Text(stringResource(R.string.details)) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             onClick = onBackClick,
           )
         },

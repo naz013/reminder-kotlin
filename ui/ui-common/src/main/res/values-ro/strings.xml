@@ -1132,4 +1132,6 @@
     <string name="public_holidays_country">Țară</string>
     <string name="public_holidays_locked_description">Afișează sărbătorile legale din țara ta în calendar - disponibil cu Pro</string>
     <string name="search_no_countries_found">Nu s-a găsit nicio țară</string>
+    <string name="select_reminder_or_birthday_to_see_details">Selectați un memento sau o zi de naștere pentru a vedea detaliile</string>
+    <string name="acc_close">Închide</string>
 </resources>

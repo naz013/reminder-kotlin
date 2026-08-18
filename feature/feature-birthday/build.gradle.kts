@@ -37,6 +37,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
   implementation(libs.kotlinx.serialization.core)
   implementation(libs.threetenbp)
+  implementation(libs.compose.material3.adaptive.navigation3)
 
   implementation(platform(libs.compose.bom))
   implementation(libs.compose.material3)

@@ -1132,4 +1132,6 @@
     <string name="public_holidays_country">Země</string>
     <string name="public_holidays_locked_description">Zobrazit státní svátky pro vaši zemi v kalendáři - dostupné s Pro</string>
     <string name="search_no_countries_found">Nebyly nalezeny žádné země</string>
+    <string name="select_reminder_or_birthday_to_see_details">Vyberte připomenutí nebo narozeniny a zobrazte podrobnosti</string>
+    <string name="acc_close">Zavřít</string>
 </resources>

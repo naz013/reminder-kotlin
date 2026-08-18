@@ -14,6 +14,15 @@ data class HomeScreenState(
   val bannerState: BannerState? = null,
 )
 
+fun HomeScreenState.withSelectedEvent(selectedEventId: String?): HomeScreenState {
+  val ready = listState as? ListState.Ready ?: return this
+  return copy(
+    listState = ListState.Ready(
+      ready.sections.map { it.copy(event = it.event.copy(isSelected = it.event.id == selectedEventId)) },
+    ),
+  )
+}
+
 data class HeaderNavigationItem(
   val titleRes: Int,
   val iconRes: Int,

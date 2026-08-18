@@ -71,6 +71,9 @@ import com.github.naz013.ui.tag.TagChipState
 internal fun PreviewReminderScreen(
   modifier: Modifier = Modifier,
   state: PreviewReminderState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onToggleClick: () -> Unit,
   onEditClick: () -> Unit,
@@ -95,8 +98,8 @@ internal fun PreviewReminderScreen(
         title = { Text(stringResource(R.string.details)) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             onClick = onBackClick,
           )
         },

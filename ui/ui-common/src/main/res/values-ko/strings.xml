@@ -1132,4 +1132,6 @@
     <string name="public_holidays_country">국가</string>
     <string name="public_holidays_locked_description">캘린더에 내 국가의 공휴일 표시 - Pro에서 사용 가능</string>
     <string name="search_no_countries_found">국가를 찾을 수 없습니다</string>
+    <string name="select_reminder_or_birthday_to_see_details">세부정보를 보려면 알림 또는 생일을 선택하세요</string>
+    <string name="acc_close">닫기</string>
 </resources>

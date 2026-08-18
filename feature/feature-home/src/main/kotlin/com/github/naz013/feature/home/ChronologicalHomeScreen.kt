@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -513,13 +514,18 @@ private fun EventCard(
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
-  val onContainerColor = MaterialTheme.colorScheme.onBackground
+  val onContainerColor =
+    if (event.isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onBackground
   Card(
     modifier =
       modifier
         .fillMaxWidth()
         .clip(MaterialTheme.shapes.medium)
         .clickable(onClick = { onEventClick(event) }),
+    colors = CardDefaults.cardColors(
+      containerColor = if (event.isSelected) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
+    ),
+    border = if (event.isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
     elevation = CardDefaults.elevatedCardElevation(
       defaultElevation = 0.dp,
       pressedElevation = 2.dp,

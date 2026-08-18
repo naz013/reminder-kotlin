@@ -2,6 +2,7 @@ package com.github.naz013.repository
 
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
+import kotlinx.coroutines.flow.Flow
 
 interface BirthdayRepository {
   suspend fun save(birthday: Birthday)
@@ -14,6 +15,7 @@ interface BirthdayRepository {
 
   suspend fun getAll(): List<Birthday>
   suspend fun getAll(dayMonth: String): List<Birthday>
+  fun observeAll(dayMonth: String): Flow<List<Birthday>>
 
   suspend fun delete(id: String)
   suspend fun deleteAll()
