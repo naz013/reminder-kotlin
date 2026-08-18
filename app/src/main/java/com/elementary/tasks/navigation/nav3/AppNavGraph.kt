@@ -209,7 +209,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
             backStack.add(GoogleTasksNavKey.List)
             backStack.add(GoogleTasksNavKey.TaskEdit())
           },
-          onOpenCalendar = { backStack.add(CalendarNavKey.Month) },
+          onOpenCalendar = { backStack.add(CalendarNavKey.Home) },
           onOpenAgenda = { backStack.add(AgendaNavKey.List) },
           onOpenNotes = { backStack.add(NotesNavKey.List) },
           onOpenGoogleTasks = { backStack.add(GoogleTasksNavKey.List) },
@@ -273,11 +273,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
               ),
             )
           },
-          onOpenReminderEdit = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
           onOpenReminderPreview = { id -> backStack.add(ReminderPreviewNavKey.Preview(id)) },
           onOpenNewBirthday = { epochDay -> backStack.add(BirthdaysNavKey.Edit(prefillDateEpochDay = epochDay)) },
           onOpenBirthdayPreview = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
-          onOpenBirthdayEdit = { id -> backStack.add(BirthdaysNavKey.Edit(id)) },
           onOpenSettings = { title -> backStack.add(SettingsNavKey.Calendar(title)) },
         )
         agendaEntries(
@@ -364,7 +362,7 @@ private fun appRailDestinations(isWorkflowEnabled: Boolean): List<AppDestination
     )
     add(
       AppDestination(
-        key = CalendarNavKey.Month,
+        key = CalendarNavKey.Home,
         icon = painterResource(R.drawable.ic_fluent_calendar),
         labelRes = R.string.calendar,
       ),

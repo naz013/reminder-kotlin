@@ -120,4 +120,6 @@ object PrefsConstants {
 
   const val PUBLIC_HOLIDAYS_ENABLED = "public_holidays_enabled"
   const val PUBLIC_HOLIDAYS_COUNTRY = "public_holidays_country"
+
+  const val CALENDAR_VIEW_MODE = "calendar_view_mode"
 }

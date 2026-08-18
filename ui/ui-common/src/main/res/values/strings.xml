@@ -1136,4 +1136,9 @@
     <string name="select_reminder_or_birthday_to_see_details">Select a reminder or birthday to see its details</string>
     <string name="acc_close">Close</string>
     <string name="turn_on">Turn on</string>
+    <string name="calendar_view_month">Month</string>
+    <string name="calendar_view_day">Day</string>
+    <string name="calendar_view_3_days">3 days</string>
+    <string name="calendar_view_7_days">7 days</string>
+    <string name="calendar_switch_view_mode">Switch calendar view</string>
 </resources>

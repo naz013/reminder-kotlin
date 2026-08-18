@@ -373,6 +373,10 @@ class Prefs(
     get() = getInt(PrefsConstants.START_DAY, 1)
     set(value) = putInt(PrefsConstants.START_DAY, value)
 
+  var calendarViewMode: String
+    get() = getString(PrefsConstants.CALENDAR_VIEW_MODE, def = "")
+    set(value) = putString(PrefsConstants.CALENDAR_VIEW_MODE, value)
+
   var isBirthdayReminderEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_REMINDER, def = true)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_REMINDER, value)

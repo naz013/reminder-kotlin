@@ -32,6 +32,11 @@ object AppIcons {
     val DocumentTopRight: Painter @Composable get() = painterResource(R.drawable.ic_fluent_document_top_right)
     val Delete: Painter @Composable get() = painterResource(R.drawable.ic_fluent_delete)
     val ColorBackground: Painter @Composable get() = painterResource(R.drawable.ic_fluent_color_background)
+    val CalendarDay: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar_day)
+    val CalendarAgenda: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar_agenda)
+    val Calendar3Day: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar_3_day)
+    val CalendarWorkWeek: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar_work_week)
+    val CalendarMonth: Painter @Composable get() = painterResource(R.drawable.ic_fluent_calendar_month)
   }
 
   object Builder {

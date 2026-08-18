@@ -40,6 +40,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.feature.calendar.CalendarModeToggleButton
+import com.github.naz013.feature.calendar.CalendarViewMode
 import com.github.naz013.feature.calendar.monthview.monthgrid.MonthGridCell
 import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.ui.common.compose.AppIcons
@@ -57,6 +59,8 @@ private const val MAX_DOTS = 4
 @Composable
 fun CalendarScreen(
   state: CalendarScreenState,
+  currentMode: CalendarViewMode,
+  onModeSelected: (CalendarViewMode) -> Unit,
   initialPagerPosition: Int,
   pagerJumpRequest: Int?,
   onPagerJumpConsumed: () -> Unit,
@@ -99,6 +103,7 @@ fun CalendarScreen(
             )
           },
           actions = {
+            CalendarModeToggleButton(currentMode = currentMode, onModeSelected = onModeSelected)
             OverflowMenuButton(onSettingsClick = onSettingsClick)
           },
           colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
@@ -348,6 +353,8 @@ private fun CalendarScreenPreview() {
           title = "July 2026",
           weekdayLabels = listOf("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"),
         ),
+      currentMode = CalendarViewMode.MONTH,
+      onModeSelected = {},
       initialPagerPosition = 0,
       pagerJumpRequest = null,
       onPagerJumpConsumed = {},
