@@ -1135,6 +1135,70 @@ class ReminderRecurrenceE2ETest : KoinTest {
     assertEquals("", created.notification.quietHoursTo)
   }
 
+  /** A8: Weekly recurrence + a repeat limit stops firing after N occurrences
+   *  (`RecurrenceRuleCalculator.fromWeekdays`: `RecurrenceRule.Weekly(weekdays, repeatLimit)`).
+   *  Unlike Monthly/Yearly, Weekly has no separate "repeat every N weeks" builder item in this
+   *  data model - just the single weekday cycle plus an optional limit - so this is the same
+   *  single-weekday setup as [savesAWeeklyReminderOnASingleWeekdayWithTheCorrectRecurrenceRule]
+   *  with [RepeatLimitBuilderItem] added on top; `DAYS_OF_WEEK` alone already satisfies its
+   *  `requiresAny(DAY_OF_YEAR, DAY_OF_MONTH, DAYS_OF_WEEK, REPEAT_TIME)` constraint. */
+  @Test
+  fun savesAWeeklyReminderWithARepeatLimitAndTheCorrectRecurrenceRule() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.builder_days_of_week))
+    clickText(r(R.string.mon))
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.repeat_limit))
+    setRepeatLimit(5f)
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    // sun, mon, tue, wed, thu, fri, sat - Monday sets index 1.
+    assertEquals(RecurrenceRule.Weekly(weekdays = listOf(0, 1, 0, 0, 0, 0, 0), repeatLimit = 5), created.recurrence)
+  }
+
+  /** Sets `ValueAndTypePicker`'s `NumberStepperField` value the same way [setRepeatTimeSeconds]
+   *  does for `RepeatTimeValueEditor` (same composable, same single-editable-field precondition).
+   *  `decomposeDuration(null)` (`DurationValueEditors.kt`) defaults a fresh item's unit wheel to
+   *  SECOND (index 0), left untouched here, so the persisted duration is exactly [seconds] *
+   *  1000ms - same convention as [setRepeatTimeSeconds]. */
+  private fun setBeforeTimeSeconds(seconds: Int) {
+    composeRule
+      .onNode(hasSetTextAction(), useUnmergedTree = true)
+      .performTextReplacement(seconds.toString())
+    composeRule.waitForIdle()
+  }
+
+  /** B14: "Remind before" duration persists onto the reminder's own `NotificationSettingsOverride`
+   *  (`BeforeTimeBuilderItem`'s custom `putInto`: `notification.remindBefore`, nullable there like
+   *  the rest of that override shape - see [addingATimerExclusionWindowPersistsTheExcludedHours]'s
+   *  kdoc for the same distinction from the fully-resolved `NotificationSettings`). */
+  @Test
+  fun addingARemindBeforeDurationPersistsIt() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addDateAndTime()
+
+    addBuilderItem(r(R.string.before_time))
+    setBeforeTimeSeconds(45)
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(45_000L, created.notification.remindBefore)
+  }
+
   companion object {
     /** Runs before the very first [BottomNavActivity] is created for this class (JUnit applies
      *  `@Rule`s - including the compose rule's activity launch - only around `@Before`/`@Test`, not
