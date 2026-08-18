@@ -1,0 +1,49 @@
+appId: com.cray.software.justreminderpro
+tags:
+  - notifications
+---
+# D7: POST_NOTIFICATIONS permission denied (Android 13+) -> app doesn't crash, the reminder isn't
+# saved (BuildReminderViewModel.saveReminder's PermissionValidator.Result.Failure branch emits
+# AskPermissions and returns *without* calling saveAndStartReminder - confirmed by reading that
+# method, not live), and no notification is ever posted for it as a result.
+#
+# Unlike every other flow in this directory, this one deliberately does NOT pass
+# `permissions: { notifications: allow }` to launchApp, so POST_NOTIFICATIONS starts unrequested
+# (same as any real fresh install) and the real system permission dialog appears the first time
+# the app actually asks for it - mid-Save, not at launch (see BuildReminderNavGraph.kt's
+# AskPermissions handler).
+#
+# Requires API 33+ - confirmed live on a real API 30 device that this flow doesn't apply below
+# that: POST_NOTIFICATIONS doesn't exist as a runtime permission pre-33, so Save succeeds
+# immediately with no dialog at all, and `tapOn: "Don't allow"` fails with "Element not found"
+# since the app has already moved on. This matches CI's actual API 34 target, so it's exercised
+# there; it just can't be validated on an older local device.
+#
+# Confirmed live (API 34 still needed to verify the "Don't allow" step itself, but the setup up to
+# it is confirmed): the system dialog's exact "Don't allow" button text is Android's own string,
+# not this app's, and its wording/position can vary by Android version or OEM skin.
+- launchApp:
+    clearState: true
+- tapOn:
+    text: "Accept"
+    optional: true
+- tapOn:
+    text: "Dismiss"
+    optional: true
+- runFlow:
+    file: flows/create_countdown_reminder.yaml
+    env:
+      PRIORITY_LABEL: "Normal"
+      SUMMARY: "D7 permission denied"
+- tapOn: "Don't allow"
+# Save didn't go through - still on the builder screen (its own "Save" action is still visible)
+# rather than back on Home, and the app is still responsive, not crashed.
+- assertVisible: "Save"
+- swipe:
+    start: "50%, 2%"
+    end: "50%, 75%"
+- extendedWaitUntil:
+    notVisible: "D7 permission denied"
+    timeout: 5000
+- pressKey: Back
+- pressKey: Back

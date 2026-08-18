@@ -27,11 +27,14 @@ tags:
     file: flows/create_countdown_reminder.yaml
     env:
       PRIORITY_LABEL: "Highest"
+      SUMMARY: "D3 high priority still fires"
 - swipe:
     start: "50%, 2%"
     end: "50%, 75%"
+# Asserts on this reminder's own Summary text (the notification's actual title), not the app-name
+# text every reminder's notification shows regardless of which one fired.
 - extendedWaitUntil:
-    visible: "Reminder PRO"
+    visible: "D3 high priority still fires"
     timeout: 90000
 # Close the shade we just opened, so a following flow in the same batch doesn't inherit it open
 # (CI always starts from a fresh emulator boot, so this only matters for local back-to-back

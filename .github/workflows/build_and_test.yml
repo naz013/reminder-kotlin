@@ -160,6 +160,13 @@ jobs:
     # first batch - see docs/e2e-testing.md #6) - triggered by the `schedule` entry above.
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
+    # Job-level permissions replace the workflow-level default entirely for this job, so every
+    # permission it needs (checks:write for the JUnit report, issues:write for the
+    # open-on-failure/close-on-recovery steps below) has to be listed here explicitly.
+    permissions:
+      contents: read
+      checks: write
+      issues: write
     steps:
 
     - name: Clone repo
@@ -224,3 +231,112 @@ jobs:
         name: maestro-failure-34
         path: ~/.maestro/tests/
         retention-days: 14
+
+    # The two steps below keep a single persistent issue (labeled e2e-nightly-failure) as the
+    # nightly e2e status: opened/reopened with a new comment each time this job fails, closed with
+    # a comment the first time it goes green again. This surfaces "did last night's merge break
+    # e2e" without anyone having to go trawl the Actions run history for the first red run.
+    - name: Open or update nightly e2e failure issue
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const label = 'e2e-nightly-failure';
+          const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+          try {
+            await github.rest.issues.createLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: label,
+              color: 'd73a4a',
+              description: 'Nightly e2e (test_e2e) run failed on master',
+            });
+          } catch (error) {
+            if (error.status !== 422) throw error; // 422 = label already exists
+          }
+
+          const lastGoodRuns = await github.rest.actions.listWorkflowRuns({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'build_and_test.yml',
+            event: 'schedule',
+            status: 'success',
+            per_page: 1,
+          });
+          const lastGoodSha = lastGoodRuns.data.workflow_runs[0]?.head_sha;
+          const compareLine = lastGoodSha
+            ? `Commits since the last green nightly run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/compare/${lastGoodSha}...${context.sha}`
+            : '(No previous successful nightly run found to compare against.)';
+
+          const body = [
+            `Nightly e2e run failed: ${runUrl}`,
+            `Commit: ${context.sha}`,
+            compareLine,
+          ].join('\n\n');
+
+          const existing = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: label,
+            state: 'all',
+            per_page: 1,
+          });
+
+          if (existing.data.length > 0) {
+            const issue = existing.data[0];
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body,
+            });
+            if (issue.state === 'closed') {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'open',
+              });
+            }
+          } else {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Nightly e2e tests are failing',
+              labels: [label],
+              body,
+            });
+          }
+
+    - name: Close nightly e2e failure issue if recovered
+      if: success()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const label = 'e2e-nightly-failure';
+          const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+          const open = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: label,
+            state: 'open',
+            per_page: 1,
+          });
+
+          if (open.data.length > 0) {
+            const issue = open.data[0];
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `Nightly e2e run passed again: ${runUrl}`,
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              state: 'closed',
+            });
+          }
