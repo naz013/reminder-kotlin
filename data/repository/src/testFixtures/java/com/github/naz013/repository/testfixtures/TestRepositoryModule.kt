@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.github.naz013.repository.AppDb
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.impl.GroupV2RepositoryImpl
+import com.github.naz013.repository.impl.NoteRepositoryImpl
 import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -31,5 +33,8 @@ fun testRepositoryModule(context: Context): Module = module {
   }
   factory<GroupV2Repository> {
     GroupV2RepositoryImpl(get<AppDb>().groupV2Dao(), get())
+  }
+  factory<NoteRepository> {
+    NoteRepositoryImpl(get<AppDb>().notesDao(), get())
   }
 }

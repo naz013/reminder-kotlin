@@ -13,11 +13,16 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.elementary.tasks.navigation.BottomNavActivity
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.reminder.build.valuedialog.editor.shopItemCheckTestTag
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.testfixtures.testRepositoryModule
 import com.github.naz013.ui.common.R
@@ -77,8 +82,15 @@ class ReminderRecurrenceE2ETest : KoinTest {
       TestRule { base, _ -> base }
     }
 
+  // PhoneCallBuilderItem declares constraints { permission(Permissions.CALL_PHONE) }
+  // (BuilderItem.kt), checked live as soon as the item is added (UiBuilderItemsAdapter), not just
+  // at Save - pre-granting avoids a system permission dialog this test can't drive.
+  @get:Rule
+  val callPhonePermissionRule: TestRule = GrantPermissionRule.grant("android.permission.CALL_PHONE")
+
   private val reminderV2Repository: ReminderV2Repository by inject()
   private val groupV2Repository: GroupV2Repository by inject()
+  private val noteRepository: NoteRepository by inject()
   private val dateTimeManager: DateTimeManager by inject()
 
   /** Resets before every test so tests that don't touch it (all but the day-of-month/day-of-year
@@ -913,6 +925,175 @@ class ReminderRecurrenceE2ETest : KoinTest {
       RecurrenceRule.Countdown(after = 60_000L, repeatInterval = 0, repeatLimit = -1),
       created.recurrence,
     )
+  }
+
+  /** Sets the value of a sheet's single plain `OutlinedTextField` (used by every editor in
+   *  B1-B4 below: `PhoneInputValueEditor`, `SimpleTextValueEditor`, `TextInputValueEditor`) -
+   *  each of those sheets has exactly one editable field, same precondition [setRepeatTimeSeconds]
+   *  already relies on for its own sheet. */
+  private fun setTextFieldValue(value: String) {
+    composeRule
+      .onNode(hasSetTextAction(), useUnmergedTree = true)
+      .performTextReplacement(value)
+    composeRule.waitForIdle()
+  }
+
+  /** Adds Date+Time, common precondition for B1-B4: every action `BuilderItem` (Call/Sms/Email/
+   *  Link) declares `requiresAny(COUNTDOWN_TIMER, DATE, DAYS_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR,
+   *  ARRIVING_COORDINATES, LEAVING_COORDINATES)` (`BuilderItem.kt`) - Date+Time is the simplest
+   *  combination already proven elsewhere in this file. */
+  private fun addDateAndTime() {
+    addBuilderItem(r(R.string.builder_date))
+    setDateToday()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+  }
+
+  /** B1: phone call action - number entry persists as `ReminderAction.Call`.
+   *  `PhoneCallBuilderItem` is the only action item with a `permission()` constraint
+   *  (`Permissions.CALL_PHONE`), checked live as soon as it's added (`UiBuilderItemsAdapter`), not
+   *  just at Save - [callPhonePermissionRule] pre-grants it so this doesn't block on a system
+   *  permission dialog this test can't drive. */
+  @Test
+  fun addingAPhoneCallActionPersistsTheNumber() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addDateAndTime()
+
+    addBuilderItem(r(R.string.make_call))
+    setTextFieldValue("+15551234567")
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(ReminderAction.Call("+15551234567"), created.action)
+  }
+
+  /** B2: SMS action - number entry persists as `ReminderAction.Sms` (subject always empty for
+   *  SMS - see `ReminderActionCalculator`). Unlike B1, `SmsBuilderItem` declares no `permission()`
+   *  constraint of its own (only actually sending the SMS needs one, not building/saving the
+   *  reminder), so no extra grant rule is needed here. */
+  @Test
+  fun addingAnSmsActionPersistsTheNumber() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addDateAndTime()
+
+    addBuilderItem(r(R.string.send_sms))
+    setTextFieldValue("+15559876543")
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(ReminderAction.Sms("+15559876543", ""), created.action)
+  }
+
+  /** B3: email action + subject field - both persist together as one `ReminderAction.Email`
+   *  (`ReminderActionCalculator` reads `EMAIL_SUBJECT`'s value only once `EMAIL` itself is
+   *  present and correct). `EmailModifier.isCorrect()` requires the value to match a `.*@.*..*`
+   *  regex - a real-shaped address avoids that failing silently and leaving `action = None`. */
+  @Test
+  fun addingAnEmailActionWithSubjectPersistsBoth() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addDateAndTime()
+
+    addBuilderItem(r(R.string.e_mail))
+    setTextFieldValue("someone@example.com")
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.subject))
+    setTextFieldValue("Don't forget")
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(ReminderAction.Email("someone@example.com", "Don't forget"), created.action)
+  }
+
+  /** B4: web link action - URL persists as `ReminderAction.Link`. `WebAddressModifier.isCorrect()`
+   *  requires a real `Patterns.WEB_URL` match, so a bare host-only string is used rather than a
+   *  placeholder that might not match. */
+  @Test
+  fun addingAWebLinkActionPersistsTheUrl() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addDateAndTime()
+
+    addBuilderItem(r(R.string.builder_web_address))
+    setTextFieldValue("https://example.com")
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(ReminderAction.Link("https://example.com"), created.action)
+  }
+
+  /** B9: priority selection persists as the matching `ReminderPriority`.
+   *
+   *  Confirmed live (real device, via bounds/text logging): a freshly-added `PriorityBuilderItem`
+   *  actually starts selected on "Lowest" (index 0), not index 2 ("Normal") as
+   *  `PriorityValueEditor`'s own `DEFAULT_PRIORITY_INDEX` constant would suggest - and with only
+   *  2 of the wheel's rows composed at that scroll position (Lowest, Low), not the full 3, "High"
+   *  is nowhere near reachable without scrolling. Picks "Low" (index 1) instead, which is already
+   *  composed and visible with no scrolling needed. `@array/priorities` and `ReminderPriority
+   *  .entries` share the same Lowest..Highest order (confirmed by reading both), so index 1 there
+   *  is `ReminderPriority.LOW`. */
+  @Test
+  fun selectingAPriorityPersistsIt() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addDateAndTime()
+
+    addBuilderItem(r(R.string.priority))
+    clickText(r(R.string.priority_low))
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(ReminderPriority.LOW, created.notification.priority)
+  }
+
+  /** B10: links an existing note to the reminder on create, persisting its id as `noteId`
+   *  (`NoteModifier.putInto`: `reminder.copy(noteId = storage.value?.id ?: "")`, where that id is
+   *  the note's own `key`). `NoteBuilderItem` requires Date+Time (`requiresAll`), which
+   *  [addDateAndTime] already provides. Seeds the note directly through `noteRepository` - same
+   *  reasoning as [assigningAGroupOnCreatePersistsItsGroupId]'s group seeding: there's no in-scope
+   *  UI path to *create* a note from the reminder builder, only to pick an existing one. Needed a
+   *  new `factory<NoteRepository>` entry in `testRepositoryModule` (mirroring its existing
+   *  `GroupV2Repository`/`ReminderV2Repository` entries) so this reliably reads/writes the same
+   *  in-memory DB instead of risking the on-device one. */
+  @Test
+  fun linkingAnExistingNotePersistsItsId() {
+    val note = Note(summary = "Pick up dry cleaning ${UUID.randomUUID()}", syncState = SyncState.WaitingForUpload)
+    runBlocking { noteRepository.save(note) }
+
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addDateAndTime()
+
+    addBuilderItem(r(R.string.note))
+    clickText(note.summary)
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(note.key, created.noteId)
   }
 
   companion object {
