@@ -48,6 +48,7 @@ class RecurrenceRuleCalculatorTest : BaseTest() {
     super.setUp()
     every { dateTimeManager.localToUtc(any()) } answers { firstArg() }
     every { dateTimeManager.getCurrentDateTime() } returns NOW
+    every { dateTimeManager.getCurrentDate() } returns NOW.toLocalDate()
     calculator = RecurrenceRuleCalculator(dateTimeManager, iCalDateTimeCalculator, recurrenceCalculator)
   }
 
@@ -134,7 +135,7 @@ class RecurrenceRuleCalculatorTest : BaseTest() {
       recurrenceCalculator.findNextYearDayDateTime(any(), any(), any(), any(), any())
     } returns NOW
 
-    val dayOfYear = LocalDate.of(LocalDate.now().year, 3, 10).dayOfYear
+    val dayOfYear = LocalDate.of(NOW.toLocalDate().year, 3, 10).dayOfYear
     val items = itemsOf(timeItem(NOW.toLocalTime()), dayOfYearItem(dayOfYear))
 
     val result = calculator(items)

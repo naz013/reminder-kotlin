@@ -10,14 +10,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.elementary.tasks.navigation.BottomNavActivity
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.testfixtures.testRepositoryModule
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.component.builderItemRemoveTestTag
 import java.util.Locale
+import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +31,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
 /**
@@ -66,6 +71,14 @@ class ReminderRecurrenceE2ETest : KoinTest {
     }
 
   private val reminderV2Repository: ReminderV2Repository by inject()
+  private val dateTimeManager: DateTimeManager by inject()
+
+  /** Resets before every test so tests that don't touch it (all but the day-of-month/day-of-year
+   *  edge cases below) see the real device date, same as before [FakeNowDateTimeProvider] existed. */
+  @Before
+  fun resetFakeClock() {
+    fakeNowDateTimeProvider.setDate(LocalDate.now())
+  }
 
   private fun r(resId: Int): String = composeRule.activity.getString(resId)
 
@@ -114,6 +127,14 @@ class ReminderRecurrenceE2ETest : KoinTest {
     composeRule.waitForIdle()
   }
 
+  /** Removes the already-added builder item row titled [title] (main builder screen, not the
+   *  item picker) via `BuilderListItemCard`'s remove button, located by its `testTag`
+   *  (`builderItemRemoveTestTag`) since the button itself carries no text/content-description. */
+  private fun removeBuilderItem(title: String) {
+    composeRule.onNodeWithTag(builderItemRemoveTestTag(title)).performClick()
+    composeRule.waitForIdle()
+  }
+
   /** Closes the current `ValueEditorSheet`. Its own close button has a null contentDescription
    *  (see `ValueEditorSheet.kt`), so back press - which `ModalBottomSheet` handles itself - is the
    *  only locator-free way to dismiss it; every editor commits live on each interaction (see
@@ -125,6 +146,17 @@ class ReminderRecurrenceE2ETest : KoinTest {
 
   private fun clickText(text: String) {
     composeRule.onNodeWithText(text, useUnmergedTree = true).performClick()
+    composeRule.waitForIdle()
+  }
+
+  /** Scrolls the current sheet's lazy list/grid (`DayOfMonthValueEditor`'s `WheelPicker` or
+   *  `DayOfYearValueEditor`'s `SelectableChipGrid`, both backed by a Lazy* layout) so that
+   *  [index] is composed and clickable - needed for any target beyond what's composed by default,
+   *  unlike e.g. day 1 or day 10 which [addBuilderItem]'s callers rely on already being visible. */
+  private fun scrollLazyListToIndex(index: Int) {
+    composeRule
+      .onNode(hasScrollToIndexAction(), useUnmergedTree = true)
+      .performScrollToIndex(index)
     composeRule.waitForIdle()
   }
 
@@ -194,6 +226,17 @@ class ReminderRecurrenceE2ETest : KoinTest {
     composeRule.waitForIdle()
   }
 
+  /** Sets `RepeatIntervalValueEditor`'s `NumberStepperField` value the same way
+   *  [setRepeatTimeSeconds] does for `RepeatTimeValueEditor` - it's the only editable text field
+   *  in this sheet. Unlike [setRepeatTimeSeconds], this value is a plain unit-less repeat count
+   *  (e.g. "every 3 months"/"every 2 years"), not a millisecond duration. */
+  private fun setRepeatIntervalValue(value: Int) {
+    composeRule
+      .onNode(hasSetTextAction(), useUnmergedTree = true)
+      .performTextReplacement(value.toString())
+    composeRule.waitForIdle()
+  }
+
   /** Drives `RepeatLimitValueEditor`'s Material 3 `Slider` via its `SetProgress` semantics action
    *  rather than a drag gesture, matching the standard way Compose UI tests set slider values. */
   private fun setRepeatLimit(value: Float) {
@@ -205,6 +248,30 @@ class ReminderRecurrenceE2ETest : KoinTest {
 
   private fun tapSave() {
     composeRule.onNodeWithText(r(R.string.save)).performClick()
+  }
+
+  /** Home -> reminder details -> builder in edit mode, the only path there is (see
+   *  [navigateToNewReminderBuilder]'s kdoc for the equivalent "no direct seam" situation for
+   *  create). [summary] must uniquely identify the target row - the home list only ever shows
+   *  today's active reminders (`GetActiveEventsForTheDayUseCase`), and its row text is exactly the
+   *  reminder's `Summary` builder item value, falling back to a shared non-unique placeholder when
+   *  absent - so every test using this helper adds a `Summary` item with a fresh [UUID] to make its
+   *  own row unambiguous, since the database isn't reset between tests. */
+  private fun navigateToEditReminderBuilder(summary: String) {
+    composeRule.waitUntil(timeoutMillis = 10_000) {
+      composeRule.onAllNodesWithText(summary).fetchSemanticsNodes().isNotEmpty()
+    }
+    composeRule.onNodeWithText(summary).performClick()
+    composeRule.waitForIdle()
+
+    val moreOptionsLabel = r(R.string.more_options)
+    composeRule.waitUntil(timeoutMillis = 10_000) {
+      composeRule.onAllNodesWithContentDescription(moreOptionsLabel).fetchSemanticsNodes().isNotEmpty()
+    }
+    composeRule.onNodeWithContentDescription(moreOptionsLabel).performClick()
+    composeRule.waitForIdle()
+    composeRule.onNodeWithText(r(R.string.edit)).performClick()
+    composeRule.waitForIdle()
   }
 
   @Test
@@ -315,6 +382,28 @@ class ReminderRecurrenceE2ETest : KoinTest {
   }
 
   @Test
+  fun savesAWeeklyReminderOnMultipleWeekdaysWithTheCorrectRecurrenceRule() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.builder_days_of_week))
+    clickText(r(R.string.mon))
+    clickText(r(R.string.wed))
+    clickText(r(R.string.fri))
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    // sun, mon, tue, wed, thu, fri, sat - Mon/Wed/Fri set indices 1, 3, 5.
+    assertEquals(RecurrenceRule.Weekly(weekdays = listOf(0, 1, 0, 1, 0, 1, 0)), created.recurrence)
+  }
+
+  @Test
   fun savesAMonthlyReminderOnASingleDayOfMonthWithTheCorrectRecurrenceRule() {
     val idsBefore = captureExistingReminderIds()
     navigateToNewReminderBuilder()
@@ -333,6 +422,72 @@ class ReminderRecurrenceE2ETest : KoinTest {
 
     val created = awaitNewReminder(idsBefore)
     assertEquals(RecurrenceRule.Monthly(dayOfMonth = 1), created.recurrence)
+  }
+
+  @Test
+  fun savesAMonthlyReminderWithARepeatIntervalAndLimitWithTheCorrectRecurrenceRule() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.day_of_month))
+    clickText("1")
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.builder_repeat_interval))
+    setRepeatIntervalValue(3)
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.repeat_limit))
+    setRepeatLimit(5f)
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(
+      RecurrenceRule.Monthly(dayOfMonth = 1, repeatInterval = 3, repeatLimit = 5),
+      created.recurrence,
+    )
+  }
+
+  /** Edge case: `DayOfMonthValueEditor`'s wheel only offers days 1-28 plus a "Last day" sentinel
+   *  (stored as `dayOfMonth = 0`, see that editor's kdoc) - there is no way to pick a literal 29-31
+   *  through the real UI, so it can never land on a day that doesn't exist in some months. "Last
+   *  day" is the one UI-reachable case where the *resolved* day genuinely varies by target month
+   *  (28 in a non-leap February, 31 in January, etc.), so this pins `now` via
+   *  [fakeNowDateTimeProvider] to a date whose very next month is a non-leap February, and asserts
+   *  the persisted `eventDateTime` actually lands on the 28th - not that it silently overflowed
+   *  into March or crashed. `getNextMonthDayDateTime`'s `dayOfMonth <= 0 -> lastDayOfTargetMonth`
+   *  branch (`RecurrenceCalculatorImpl.kt`) is what's under test here. */
+  @Test
+  fun savesAMonthlyReminderOnTheLastDayResolvingToTheTargetMonthsActualLastDay() {
+    fakeNowDateTimeProvider.setDate(LocalDate.of(2027, 1, 15)) // 2027 is not a leap year.
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.day_of_month))
+    // "Last day" is the wheel's final entry (index 28: days 1-28 at indices 0-27), well past
+    // what's composed by default - has to be scrolled into view first.
+    scrollLazyListToIndex(28)
+    clickText(r(R.string.last_day))
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(RecurrenceRule.Monthly(dayOfMonth = 0), created.recurrence)
+    assertEquals(
+      LocalDateTime.of(2027, 2, 28, 10, 30),
+      dateTimeManager.utcToLocal(created.schedule.eventDateTime!!),
+    )
   }
 
   @Test
@@ -356,6 +511,120 @@ class ReminderRecurrenceE2ETest : KoinTest {
     assertEquals(RecurrenceRule.Yearly(dayOfMonth = 10, monthOfYear = 0), created.recurrence)
   }
 
+  @Test
+  fun savesAYearlyReminderWithARepeatIntervalAndLimitWithTheCorrectRecurrenceRule() {
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.builder_day_of_year))
+    clickText("10")
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.builder_repeat_interval))
+    setRepeatIntervalValue(2)
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.repeat_limit))
+    setRepeatLimit(3f)
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(
+      RecurrenceRule.Yearly(dayOfMonth = 10, monthOfYear = 0, repeatInterval = 2, repeatLimit = 3),
+      created.recurrence,
+    )
+  }
+
+  /** Edge case: day-of-year 60 is Feb 29 in a leap year (`fakeNowDateTimeProvider` pins `now` to
+   *  2024, a leap year) but the *next* occurrence a year later (2025) isn't a leap year, so
+   *  `getNextYearDayDateTime`'s `dayOfMonth > lastDayOfTargetMonth -> lastDayOfTargetMonth` branch
+   *  (`RecurrenceCalculatorImpl.kt`) must fall back to Feb 28 rather than overflowing into March or
+   *  crashing - this is the scenario `docs/e2e-testing.md`'s A14 row calls out. The *stored*
+   *  `RecurrenceRule.Yearly(dayOfMonth, monthOfYear)` is fixed at 29/February regardless (that's
+   *  the recurrence rule itself, re-evaluated every year) - it's only the computed `eventDateTime`
+   *  that needs the fallback, so that's what this test asserts on. */
+  @Test
+  fun savesAYearlyReminderOnFeb29FallingBackToFeb28InANonLeapYear() {
+    fakeNowDateTimeProvider.setDate(LocalDate.of(2024, 1, 15)) // 2024 is a leap year.
+    val idsBefore = captureExistingReminderIds()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.builder_day_of_year))
+    // Day 60 sits at grid index 59 (days 1-365 at indices 0-364) - scroll it into view first,
+    // unlike day 10 above which the grid's default viewport already covers.
+    scrollLazyListToIndex(59)
+    clickText("60")
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(RecurrenceRule.Yearly(dayOfMonth = 29, monthOfYear = 1), created.recurrence)
+    assertEquals(
+      LocalDateTime.of(2025, 2, 28, 10, 30),
+      dateTimeManager.utcToLocal(created.schedule.eventDateTime!!),
+    )
+  }
+
+  /** Edits an existing reminder and confirms the persisted `RecurrenceRule` actually changes,
+   *  under the same `uuId` (not a new row): removes the Date item (via `BuilderListItemCard`'s
+   *  `testTag`, see `builderItemRemoveTestTag`) and adds DaysOfWeek instead, switching Once ->
+   *  Weekly. Date and DaysOfWeek block each other (`BuilderItem.kt`'s `constraints {}`), so
+   *  removing Date first is required here, not just a nicety - Time is left in place from the
+   *  original save since `fromWeekdays` needs it too. */
+  @Test
+  fun editingAnExistingReminderChangesItsRecurrenceRule() {
+    val idsBefore = captureExistingReminderIds()
+    val uniqueSummary = UUID.randomUUID().toString()
+    navigateToNewReminderBuilder()
+
+    addBuilderItem(r(R.string.builder_summary))
+    composeRule.onNode(hasSetTextAction(), useUnmergedTree = true).performTextReplacement(uniqueSummary)
+    composeRule.waitForIdle()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.builder_date))
+    setDateToday()
+    closeValueEditor()
+
+    addBuilderItem(r(R.string.time))
+    setTime()
+    closeValueEditor()
+
+    tapSave()
+
+    val created = awaitNewReminder(idsBefore)
+    assertEquals(RecurrenceRule.Once, created.recurrence)
+
+    navigateToEditReminderBuilder(uniqueSummary)
+
+    removeBuilderItem(r(R.string.builder_date))
+
+    addBuilderItem(r(R.string.builder_days_of_week))
+    clickText(r(R.string.mon))
+    closeValueEditor()
+
+    tapSave()
+
+    composeRule.waitUntil(timeoutMillis = 10_000) {
+      runBlocking { reminderV2Repository.getById(created.uuId)?.recurrence != RecurrenceRule.Once }
+    }
+    val updated = runBlocking { reminderV2Repository.getById(created.uuId) }
+    // sun, mon, tue, wed, thu, fri, sat - Monday sets index 1, same convention as the create-flow
+    // weekly tests above.
+    assertEquals(RecurrenceRule.Weekly(weekdays = listOf(0, 1, 0, 0, 0, 0, 0)), updated?.recurrence)
+  }
+
   companion object {
     /** Runs before the very first [BottomNavActivity] is created for this class (JUnit applies
      *  `@Rule`s - including the compose rule's activity launch - only around `@Before`/`@Test`, not
@@ -363,11 +632,17 @@ class ReminderRecurrenceE2ETest : KoinTest {
      *  `startKoin {}` bindings could be read by anything the app creates on launch (e.g.
      *  `BottomNavInitViewModel`'s `GroupV2Repository` usage). `loadKoinModules`'s single-`Module`
      *  overload defaults to allowing overrides, so no explicit override flag is needed. */
+    /** Shared across the whole class (see [resetFakeClock]) so date-relative recurrence edge
+     *  cases (day-of-month/day-of-year rollover) can pin "today" instead of depending on the
+     *  real device date - see [FakeNowDateTimeProvider]'s kdoc. */
+    private val fakeNowDateTimeProvider = FakeNowDateTimeProvider()
+
     @JvmStatic
     @BeforeClass
     fun setUpClass() {
       val context = InstrumentationRegistry.getInstrumentation().targetContext
       loadKoinModules(testRepositoryModule(context))
+      loadKoinModules(testDateTimeModule(fakeNowDateTimeProvider))
     }
   }
 }

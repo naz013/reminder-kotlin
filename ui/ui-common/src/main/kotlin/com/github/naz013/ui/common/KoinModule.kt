@@ -1,6 +1,7 @@
 package com.github.naz013.ui.common
 
 import com.github.naz013.datecalc.NowDateTimeProvider
+import com.github.naz013.datecalc.NowDateTimeProviderImpl
 import com.github.naz013.ui.common.compose.foundation.share.FileIntentSender
 import com.github.naz013.ui.common.compose.foundation.share.FileIntentSenderImpl
 import com.github.naz013.ui.common.compose.foundation.telephony.ApplicationLauncher
@@ -29,7 +30,7 @@ val uiCommonModule = module {
   singleOf(::ThemeModeHolder)
   singleOf(::Language)
   singleOf(::ModelDateTimeFormatter)
-  singleOf(::NowDateTimeProvider)
+  singleOf<NowDateTimeProvider>(::NowDateTimeProviderImpl)
 
   factoryOf(::ColorProvider)
   factoryOf(::UnitsConverter)

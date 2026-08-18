@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,13 @@ import com.github.naz013.ui.common.R as UiCommonR
  *  small status dot drawn over the leading icon. Mirrors the legacy
  *  `builder_badge_state_empty`/`_ok`/`_error` drawables. */
 enum class BuilderItemStatus { EMPTY, DONE, ERROR }
+
+/** Semantics test tag for a [BuilderListItemCard]'s remove button, parameterized by [title] since
+ *  several rows (one per active builder item) can be on screen at once and the button itself only
+ *  carries an icon (`contentDescription = null`, see that `IconButton`) with no other text to
+ *  locate it by. Exposed so instrumented tests can target one specific row's remove button via
+ *  `onNodeWithTag(builderItemRemoveTestTag(title))` instead of guessing at the semantics tree. */
+fun builderItemRemoveTestTag(title: String): String = "builder_item_remove_$title"
 
 /**
  * A single row in the reminder builder list: leading icon with a status dot, title, a value
@@ -114,7 +122,12 @@ fun BuilderListItemCard(
         }
       }
 
-      IconButton(onClick = onRemoveClick, modifier = Modifier.padding(top = 4.dp, end = 8.dp)) {
+      IconButton(
+        onClick = onRemoveClick,
+        modifier = Modifier
+          .padding(top = 4.dp, end = 8.dp)
+          .testTag(builderItemRemoveTestTag(title)),
+      ) {
         Icon(
           painter = removeIcon,
           contentDescription = null,

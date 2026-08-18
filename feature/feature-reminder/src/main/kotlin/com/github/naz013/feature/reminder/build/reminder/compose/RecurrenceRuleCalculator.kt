@@ -156,7 +156,7 @@ internal class RecurrenceRuleCalculator(
     val repeatInterval = (itemsMap[BiType.REPEAT_INTERVAL] as? RepeatIntervalBuilderItem)?.modifier?.getValue() ?: 1L
     val repeatLimit = readRepeatLimit(itemsMap)
 
-    val localDateTime = LocalDateTime.of(LocalDate.now(), time)
+    val localDateTime = LocalDateTime.of(dateTimeManager.getCurrentDate(), time)
     val nextLocal =
       recurrenceCalculator.findNextMonthDayDateTime(
         eventDateTime = localDateTime,
@@ -180,12 +180,12 @@ internal class RecurrenceRuleCalculator(
   private fun fromDayOfYear(itemsMap: Map<BiType, BuilderItem<*>>): ComposedRecurrence? {
     val time = (itemsMap[BiType.TIME] as? TimeBuilderItem)?.modifier?.getValue() ?: return null
     val dayOfYear = (itemsMap[BiType.DAY_OF_YEAR] as? DayOfYearBuilderItem)?.modifier?.getValue() ?: return null
-    val derivedDate = runCatching { LocalDate.now().withDayOfYear(dayOfYear) }.getOrNull() ?: return null
+    val derivedDate = runCatching { dateTimeManager.getCurrentDate().withDayOfYear(dayOfYear) }.getOrNull() ?: return null
 
     val repeatInterval = (itemsMap[BiType.REPEAT_INTERVAL] as? RepeatIntervalBuilderItem)?.modifier?.getValue() ?: 1L
     val repeatLimit = readRepeatLimit(itemsMap)
 
-    val localDateTime = LocalDateTime.of(LocalDate.now(), time)
+    val localDateTime = LocalDateTime.of(dateTimeManager.getCurrentDate(), time)
     val nextLocal =
       recurrenceCalculator.findNextYearDayDateTime(
         eventDateTime = localDateTime,
