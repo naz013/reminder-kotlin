@@ -1143,4 +1143,7 @@
     <string name="calendar_view_3_days">3 Tage</string>
     <string name="calendar_view_7_days">7 Tage</string>
     <string name="calendar_switch_view_mode">Kalenderansicht wechseln</string>
+    <string name="todo_completed_count">Erledigt (%1$d)</string>
+    <string name="todo_all_done">Super, alles erledigt</string>
+    <string name="todo_drag_to_reorder">Zum Umordnen ziehen</string>
 </resources>

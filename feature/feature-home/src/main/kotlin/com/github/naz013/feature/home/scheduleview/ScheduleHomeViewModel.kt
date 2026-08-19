@@ -185,12 +185,11 @@ class ScheduleHomeViewModel(
       it.copy(
         greeting = getGreetingTextUseCase(),
         headerNavigationItems = emptyList(),
-        addMenuItems =
-          if (googleTasksAuthManager.isAuthorized()) {
-            EventType.entries
-          } else {
-            listOf(EventType.Reminder, EventType.Birthday, EventType.Note)
-          },
+        addMenuItems = if (googleTasksAuthManager.isAuthorized()) {
+          EventType.entries
+        } else {
+          listOf(EventType.Reminder, EventType.Birthday, EventType.Note, EventType.Todo)
+        },
         bannerState = getBannerState(),
       )
     }

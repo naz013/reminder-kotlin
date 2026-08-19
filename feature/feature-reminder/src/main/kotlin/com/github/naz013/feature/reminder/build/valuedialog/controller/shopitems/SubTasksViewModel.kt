@@ -6,6 +6,16 @@ import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.feature.common.livedata.toLiveData
 import com.github.naz013.feature.common.livedata.toSingleEvent
 
+/** A [ShopItem] paired with its index in the full (unfiltered) item list - carrying that original
+ *  index through [SubTasksViewModel.groupedItems]'s active/completed split is what lets callers
+ *  keep addressing rows with the existing index-based methods ([onCheckPressed], [onTextChanged],
+ *  etc.) after the list has been split into two visual groups. */
+data class GroupedShopItems(
+  val active: List<IndexedValue<ShopItem>>,
+  val completed: List<IndexedValue<ShopItem>>,
+  val completedExpanded: Boolean,
+)
+
 class SubTasksViewModel(
   private val dateTimeManager: DateTimeManager,
 ) {
@@ -15,7 +25,11 @@ class SubTasksViewModel(
   private val _saveItems = MutableLiveData<List<ShopItem>>()
   val saveItems = _saveItems.toSingleEvent()
 
+  private val _groupedItems = MutableLiveData<GroupedShopItems>()
+  val groupedItems = _groupedItems.toLiveData()
+
   private var internalItems: List<ShopItem> = emptyList()
+  private var completedExpanded: Boolean = false
 
   fun getNonEmptyItems(): List<ShopItem> {
     val items = internalItems
@@ -134,13 +148,45 @@ class SubTasksViewModel(
     if (position >= items.size) {
       return
     }
-    items[position].isChecked = !items[position].isChecked
-    postUpdate(items)
+    val updated = items.toMutableList()
+    updated[position] = updated[position].copy(isChecked = !updated[position].isChecked)
+    postUpdate(updated)
+  }
+
+  fun onCompletedToggle() {
+    completedExpanded = !completedExpanded
+    _groupedItems.postValue(toGroupedItems(internalItems))
+  }
+
+  /** Reorders an active (unchecked) item within the full list - [fromIndex]/[toIndex] are indices
+   *  into the full list, same convention as [onCheckPressed] and friends, not indices into
+   *  [GroupedShopItems.active]. `position` isn't persisted (see [ShopItem]), so reassigning it here
+   *  is only to keep it consistent with the other mutators - actual save order comes from the list
+   *  itself. */
+  fun onReorder(
+    fromIndex: Int,
+    toIndex: Int,
+  ) {
+    val items = internalItems
+    if (fromIndex == toIndex || fromIndex !in items.indices || toIndex !in items.indices) {
+      return
+    }
+    val updated = items.toMutableList()
+    val moved = updated.removeAt(fromIndex)
+    updated.add(toIndex, moved)
+    updated.forEachIndexed { index, shopItem -> shopItem.position = index }
+    postUpdate(updated)
+  }
+
+  private fun toGroupedItems(items: List<ShopItem>): GroupedShopItems {
+    val (completed, active) = items.withIndex().partition { it.value.isChecked }
+    return GroupedShopItems(active = active, completed = completed, completedExpanded = completedExpanded)
   }
 
   private fun postUpdate(items: List<ShopItem>) {
     this.internalItems = items
     _showItems.postValue(items)
     _saveItems.postValue(items)
+    _groupedItems.postValue(toGroupedItems(items))
   }
 }

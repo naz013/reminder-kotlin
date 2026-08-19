@@ -14,4 +14,5 @@ internal data class TodoEditState(
   val canSave: Boolean = false,
   val isEditing: Boolean = false,
   val isRemoved: Boolean = false,
+  val hapticFeedbackEnabled: Boolean = true,
 )

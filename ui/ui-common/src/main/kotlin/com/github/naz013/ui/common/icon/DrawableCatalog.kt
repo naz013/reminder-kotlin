@@ -182,5 +182,6 @@ object DrawableCatalog {
     val Timeline = R.drawable.ic_fluent_timeline
     val Warning = R.drawable.ic_fluent_warning
     val Watch = R.drawable.ic_fluent_watch
+    val ReOrderDots = R.drawable.ic_fluent_re_order_dots
   }
 }

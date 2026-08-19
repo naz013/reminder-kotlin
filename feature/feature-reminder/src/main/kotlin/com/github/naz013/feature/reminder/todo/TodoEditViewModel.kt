@@ -12,6 +12,7 @@ import com.github.naz013.feature.reminder.build.SummaryBuilderItem
 import com.github.naz013.feature.reminder.build.bi.BiFactory
 import com.github.naz013.feature.reminder.build.reminder.BiToReminderAdapter
 import com.github.naz013.feature.reminder.build.reminder.ReminderToBiDecomposer
+import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
@@ -63,6 +64,7 @@ internal class TodoEditViewModel(
   private val resumeReminderUseCase: ResumeReminderUseCase,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
+  private val reminderPreferences: ReminderPreferences,
 ) : ViewModel() {
 
   /** Stable for the whole editing session, like [com.elementary.tasks.reminder.build.BuildReminderViewModel]'s
@@ -91,6 +93,7 @@ internal class TodoEditViewModel(
   private val cleanupScope = CoroutineScope(SupervisorJob() + dispatcherProvider.default())
 
   init {
+    _state.update { it.copy(hapticFeedbackEnabled = reminderPreferences.hapticsEnabled) }
     viewModelScope.launch(dispatcherProvider.default()) {
       val loadedExisting = navKey.id.isNotEmpty() && loadExistingReminder(navKey.id)
       if (!loadedExisting) {

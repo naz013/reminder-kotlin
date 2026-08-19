@@ -247,4 +247,66 @@ class SubTasksViewModelTest : BaseTest() {
 
     assertSame(before, viewModel.showItems.value)
   }
+
+  @Test
+  fun `groupedItems splits active and completed items, preserving each item's original list index`() {
+    viewModel.initWithData(listOf(shopItem("A"), shopItem("B"), shopItem("C")))
+
+    viewModel.onCheckPressed(1)
+
+    val grouped = viewModel.groupedItems.value!!
+    assertEquals(listOf(0, 2), grouped.active.map { it.index })
+    assertEquals(listOf("A", "C"), grouped.active.map { it.value.summary })
+    assertEquals(listOf(1), grouped.completed.map { it.index })
+    assertEquals(listOf("B"), grouped.completed.map { it.value.summary })
+  }
+
+  @Test
+  fun `groupedItems keeps the completed section collapsed by default`() {
+    viewModel.initWithData(listOf(shopItem("A")))
+
+    assertEquals(false, viewModel.groupedItems.value!!.completedExpanded)
+  }
+
+  @Test
+  fun `onCompletedToggle expands then collapses the completed section`() {
+    viewModel.initWithData(listOf(shopItem("A")))
+
+    viewModel.onCompletedToggle()
+    assertEquals(true, viewModel.groupedItems.value!!.completedExpanded)
+
+    viewModel.onCompletedToggle()
+    assertEquals(false, viewModel.groupedItems.value!!.completedExpanded)
+  }
+
+  @Test
+  fun `onReorder moves an item and reassigns position for the rest`() {
+    viewModel.initWithData(listOf(shopItem("A"), shopItem("B"), shopItem("C")))
+
+    viewModel.onReorder(0, 2)
+
+    val items = viewModel.showItems.value!!
+    assertEquals(listOf("B", "C", "A"), items.map { it.summary })
+    assertEquals(listOf(0, 1, 2), items.map { it.position })
+  }
+
+  @Test
+  fun `onReorder does nothing when either index is out of bounds`() {
+    viewModel.initWithData(listOf(shopItem("A"), shopItem("B")))
+    val before = viewModel.showItems.value
+
+    viewModel.onReorder(0, 5)
+
+    assertSame(before, viewModel.showItems.value)
+  }
+
+  @Test
+  fun `onReorder does nothing when the indices are equal`() {
+    viewModel.initWithData(listOf(shopItem("A"), shopItem("B")))
+    val before = viewModel.showItems.value
+
+    viewModel.onReorder(1, 1)
+
+    assertSame(before, viewModel.showItems.value)
+  }
 }

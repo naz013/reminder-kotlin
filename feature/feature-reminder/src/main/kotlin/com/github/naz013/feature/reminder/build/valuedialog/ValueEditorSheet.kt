@@ -290,7 +290,7 @@ private fun ValueEditorContent(
     is SmsBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     is AttachmentsBuilderItem -> AttachmentsValueEditor(builderItem, attachmentFileAdapter, onPickFiles, onValueChange)
     is NoteBuilderItem -> NoteValueEditor(builderItem, onValueChange)
-    is SubTasksBuilderItem -> SubTasksValueEditor(builderItem, dateTimeManager, onValueChange)
+    is SubTasksBuilderItem -> SubTasksValueEditor(builderItem, dateTimeManager, onValueChange, hapticFeedbackEnabled)
     is TimerExclusionBuilderItem ->
       CountdownExclusionValueEditor(builderItem, dateTimeManager, is24HourFormat, onValueChange)
     else -> {}

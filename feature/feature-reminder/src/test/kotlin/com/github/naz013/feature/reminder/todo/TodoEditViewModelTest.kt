@@ -14,6 +14,7 @@ import com.github.naz013.feature.reminder.build.bi.BiFactory
 import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.feature.reminder.build.reminder.BiToReminderAdapter
 import com.github.naz013.feature.reminder.build.reminder.ReminderToBiDecomposer
+import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
@@ -61,6 +62,7 @@ class TodoEditViewModelTest : BaseTest() {
   private val resumeReminderUseCase = mockk<ResumeReminderUseCase>(relaxed = true)
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>(relaxed = true)
+  private val reminderPreferences = mockk<ReminderPreferences>()
 
   @Before
   override fun setUp() {
@@ -72,6 +74,7 @@ class TodoEditViewModelTest : BaseTest() {
     // No existing reminder by default - matches create-mode for every test that doesn't
     // explicitly stub a hit, including ones that pass a non-empty id only as a stable label.
     coEvery { reminderV2Repository.getById(any()) } returns null
+    every { reminderPreferences.hapticsEnabled } returns true
   }
 
   private fun subTasksItem() =
@@ -125,6 +128,7 @@ class TodoEditViewModelTest : BaseTest() {
       resumeReminderUseCase = resumeReminderUseCase,
       deleteReminderUseCase = deleteReminderUseCase,
       moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
+      reminderPreferences = reminderPreferences,
     )
 
   @Test
@@ -135,6 +139,15 @@ class TodoEditViewModelTest : BaseTest() {
     assertEquals(listOf(uiGroupFixture()), viewModel.state.value.availableGroups)
     assertEquals(null, viewModel.state.value.selectedGroup)
     assertEquals(false, viewModel.state.value.isEditing)
+  }
+
+  @Test
+  fun `state exposes hapticFeedbackEnabled from ReminderPreferences`() {
+    every { reminderPreferences.hapticsEnabled } returns false
+
+    val viewModel = createViewModel()
+
+    assertEquals(false, viewModel.state.value.hapticFeedbackEnabled)
   }
 
   @Test

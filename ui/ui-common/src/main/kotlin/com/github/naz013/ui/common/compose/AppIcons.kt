@@ -125,6 +125,7 @@ object AppIcons {
     val Timeline: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Timeline)
     val Warning: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Warning)
     val Watch: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Watch)
+    val ReOrderDots: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.ReOrderDots)
   }
 
   object Builder {
