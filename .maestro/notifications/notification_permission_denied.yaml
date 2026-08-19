@@ -7,11 +7,16 @@ tags:
 # AskPermissions and returns *without* calling saveAndStartReminder - confirmed by reading that
 # method, not live), and no notification is ever posted for it as a result.
 #
-# Unlike every other flow in this directory, this one deliberately does NOT pass
-# `permissions: { notifications: allow }` to launchApp, so POST_NOTIFICATIONS starts unrequested
-# (same as any real fresh install) and the real system permission dialog appears the first time
-# the app actually asks for it - mid-Save, not at launch (see BuildReminderNavGraph.kt's
-# AskPermissions handler).
+# Unlike every other flow in this directory, this one deliberately passes
+# `permissions: { notifications: deny }` (not `allow`, and not omitted) to launchApp, so
+# POST_NOTIFICATIONS starts ungranted and the real system permission dialog appears the first
+# time the app actually asks for it - mid-Save, not at launch (see BuildReminderNavGraph.kt's
+# AskPermissions handler). Confirmed live this matters: simply omitting the `permissions` key
+# does NOT leave it unset the way an older version of this comment assumed - this Maestro CLI
+# (2.8.0) auto-grants POST_NOTIFICATIONS on `launchApp` regardless, silently defeating this
+# flow's entire premise (`adb shell dumpsys package <appId>` showed `granted=true` after a
+# `clearState: true` launch with no `permissions` key at all, on a device the permission had
+# never been explicitly granted on before). `deny` is what actually keeps it ungranted.
 #
 # Requires API 33+ - confirmed live on a real API 30 device that this flow doesn't apply below
 # that: POST_NOTIFICATIONS doesn't exist as a runtime permission pre-33, so Save succeeds
@@ -22,8 +27,21 @@ tags:
 # Confirmed live (API 34 still needed to verify the "Don't allow" step itself, but the setup up to
 # it is confirmed): the system dialog's exact "Don't allow" button text is Android's own string,
 # not this app's, and its wording/position can vary by Android version or OEM skin.
+#
+# Confirmed live on a larger/newer AVD profile (Pixel 10 Pro XL, API 37): the first launch after
+# `clearState: true` can render a blank screen well past every `tapOn ... optional: true` step's
+# own default retry window below, failing hard on the next non-optional tap several steps later
+# instead of on the actual missing element - the app does load, just not within that window on a
+# slower cold start. The explicit wait below is a floor under the optional taps that follow, not a
+# behavior change - every flow in this directory that clears state already assumes the Privacy
+# Policy banner unconditionally appears (see quiet_hours_disabled_fires.yaml's own comment on this).
 - launchApp:
     clearState: true
+    permissions:
+      notifications: deny
+- extendedWaitUntil:
+    visible: "Accept"
+    timeout: 60000
 - tapOn:
     text: "Accept"
     optional: true
@@ -35,7 +53,13 @@ tags:
     env:
       PRIORITY_LABEL: "Normal"
       SUMMARY: "D7 permission denied"
-- tapOn: "Don't allow"
+- tapOn: "Don.t allow"
+# `.` in place of the apostrophe, not a typo - confirmed live (this same dialog, screenshotted at
+# the point of failure) that the dialog genuinely appears with both "Allow"/"Don't allow" buttons,
+# but a literal `'` (U+0027) in this flow's own text didn't match the system dialog's rendered
+# apostrophe glyph (likely U+2019, a typographic one - Android's own string resource, not
+# controlled by this app). A permissive regex wildcard for that one character is more robust than
+# hardcoding either specific Unicode apostrophe.
 # Save didn't go through - still on the builder screen (its own "Save" action is still visible)
 # rather than back on Home, and the app is still responsive, not crashed.
 - assertVisible: "Save"

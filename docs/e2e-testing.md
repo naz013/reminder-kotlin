@@ -93,6 +93,86 @@ The rest of this section's proposed layout (`smoke/`, `recurrence/`, `settings/`
 a proposal — nothing under those categories has been written yet (recurrence coverage so far is
 all Tier B/Compose instead, per §A's Status column).
 
+### 1c. Locating elements: test tags over coordinates
+
+**When writing a new test (Tier A/B or Maestro) against an element with no locatable text or
+`contentDescription`, add a `Modifier.testTag(...)` to it instead of reaching for a
+fixed-coordinate tap.** This was learned the hard way: `create_countdown_reminder.yaml`'s
+`ValueEditorSheet` close button (a chevron-down icon, `contentDescription = null` since its
+meaning is visually obvious) had no tag for a long time, so the flow closed it with
+`tapOn: { point: "90%, 16%" }` — confirmed live to work fine on the real API 30 device this suite
+was originally verified against, but to land on a different element entirely on a larger/taller
+AVD profile (Pixel 10 Pro XL, API 37), silently knocking the flow back to Home with no error until
+several steps later. A percentage-based point is relative to *screen* dimensions, not to any
+specific element, so it isn't portable across device sizes/aspect ratios the way a tag-based
+selector is.
+
+Ordering to reach for when picking a locator, most to least preferred:
+1. Visible text / `contentDescription` — already the norm throughout this suite, and worth
+   checking for a component's own *built-in* one before adding anything: Material3's
+   `ModalBottomSheet` scrim, for instance, already carries `content-desc="Close sheet"` with no
+   app code involved at all (confirmed live via `adb shell uiautomator dump`) — a viable fallback
+   locator for dismissing any sheet, even one whose real close button has no tag yet.
+2. `Modifier.testTag(...)`, when neither of the above exists on the element and adding one is
+   in-scope — a plain `const val ..TestTag = "..."` next to the composable that owns it (see
+   `shopItemCheckTestTag`/`shopItemRemoveTestTag` in `SubTasksValueEditor.kt`,
+   `builderItemRemoveTestTag` in `BuilderListItemCard.kt`, and `valueEditorSheetCloseTestTag`/
+   `builderSelectorSheetCloseTestTag` in `ValueEditorSheet.kt`/`BuilderSelectorSheet.kt`) —
+   `internal`/public per the same widen-only-when-referenced-cross-module rule `CLAUDE.md` already
+   states for any other symbol, since these test files live in `app`'s `androidTest`, outside the
+   composable's own module. **Confirmed reachable from both Compose UI tests and Maestro** — see
+   below for what that took.
+3. A fixed on-screen `point:` — last resort only, and call out explicitly in a comment that it's
+   unverified across device profiles if you can't test more than one. Confirmed live to be a real
+   risk, not a hypothetical one: `create_countdown_reminder.yaml`'s `ValueEditorSheet` close button
+   used to be closed with `tapOn: { point: "90%, 16%" }`, which worked fine on the real API 30
+   device this suite was originally verified against but landed on a different element entirely on
+   a larger/taller AVD profile (Pixel 10 Pro XL, API 37), silently knocking the flow back to Home
+   with no error until several steps later.
+
+**Compose UI tests** (Tier A/B) read `Modifier.testTag()` directly through the semantics tree
+(`composeRule.onNodeWithTag(...)`) — no extra wiring needed, this already worked throughout the
+suite, and is unaffected by anything below.
+
+**Maestro drives the compiled app through Android's accessibility tree instead**, and Compose only
+exposes `testTag` there when told to. Getting this working took two real, non-obvious fixes, both
+found by direct investigation rather than guessing, and both worth knowing before touching this
+code again:
+
+1. **This Compose UI version has no `LocalTestTagsAsResourceId` CompositionLocal at all** — that
+   symbol was assumed to exist (it's how some other Compose codebases do this) but a compile
+   against it silently never actually succeeded; a `| tail` pipe on the verifying Gradle command
+   was masking the real failing exit code, so several "confirmed compiles" during this work were
+   false positives. Directly inspecting the resolved `androidx.compose.ui:ui-android` artifact's
+   own class list (no such CompositionLocal; the actual API is
+   `androidx.compose.ui.semantics.SemanticsPropertiesAndroid`/`SemanticsProperties_androidKt`)
+   showed the real, older mechanism: `Modifier.semantics { testTagsAsResourceId = true }`, a
+   semantics property that merges down to descendants from whatever real layout node it's attached
+   to — not a value that flows implicitly through composition the way a CompositionLocal does.
+2. **Attaching it via a `Box` wrapper broke every bottom sheet's layout app-wide.**
+   `AppModalBottomSheet`'s `content` parameter is typed `ColumnScope.() -> Unit` because Material3's
+   `ModalBottomSheet` arranges it in an internal `Column` — wrapping the call to `content()` in a
+   `Box` instead flattens all of its emitted sibling composables into Box's children, which stack
+   at the same position instead of flowing top-to-bottom. This shipped a real, confirmed-live
+   regression (BuilderSelectorSheet's search field rendering directly on top of its own tab row,
+   persistent well past any plausible animation window, not a timing artifact) before being caught
+   by actually looking at a screenshot rather than trusting "the app installed and the button
+   still has the right resource-id" as proof the screen was fine. Fixed by using `Column` instead
+   of `Box` — its content lambda already provides the matching `ColumnScope`, so `content()`
+   resolves directly with no receiver workaround needed either.
+
+With both fixed: `ComponentActivity.composeView()`/`Fragment.composeView()`
+(`ActivityComposeExtensions.kt`/`FragmentComposeExtensions.kt`, the two shared entry points every
+screen's `setContent`/`ComposeView` goes through) set `testTagsAsResourceId` app-wide via a `Box`
+wrapper around their own single `AppTheme { content() }` child (safe there — only one child, so no
+stacking issue), debug builds only via `BuildInfo.isDebug`. `AppModalBottomSheet` (`BottomSheet.kt`)
+re-sets it via `Column` inside its own Popup content, since a property set at the Activity root
+doesn't merge into a separate Popup window. Confirmed working two independent ways: a live
+`adb shell uiautomator dump` showing `resource-id="value_editor_sheet_close"` on the real node, and
+a fully passing Maestro run (`notification_permission_denied.yaml`) using
+`tapOn: { id: "value_editor_sheet_close" }` three times via its `create_countdown_reminder.yaml`
+subflow.
+
 ---
 
 ## 2. Gradle wiring needed
@@ -411,7 +491,7 @@ Notes on the non-obvious Status values above:
 | B2 | SMS action — number entry + validation | Tier A | P1 | Done (Tier B) |
 | B3 | Email action + subject field | Tier A | P1 | Done (Tier B) |
 | B4 | Web link action — URL validation | Tier A | P1 | Done (Tier B) |
-| B5 | Open-application action (SDK-gated, `maxSdk = S`) — confirm hidden above Android 12 | Tier A | P1 | Skipped — needs an API 31+ device, see note below |
+| B5 | Open-application action (SDK-gated, `maxSdk = S`) — confirm hidden above Android 12 | Tier A | P1 | Done — see note below |
 | B6 | Sub-tasks/shopping list — add/remove/check off nested items | Tier B, Maestro | P0 | Done — add, check, and remove, see note below |
 | B7 | Group assignment on create, group-based filtering on list/home | Tier B, Maestro | P0 | Done — assignment only, see note below |
 | B8 | Tag assignment (add/remove), filter reminder list by tag | Tier B | P1 | Done — assignment only, see note below |
@@ -432,10 +512,11 @@ Notes on the non-obvious Status values above:
   source set (see §2's status note), so every test so far lives in the one Tier-B flow-level file
   and drives the full app instead of mounting an isolated composable. Functionally equivalent
   coverage, just a heavier/slower test than originally planned.
-- **B5** wasn't implemented: its actual point is confirming the item is *hidden above* Android 12
-  (`maxSdk = S` on `ApplicationBuilderItem`), but the real device used for this suite so far is
-  API 30 — below the gate — so it can only ever prove the item is present, not that the gating
-  itself works. Needs an API 31+ device.
+- **B5** now runs on both sides of the gate: an API 30 device (item present) and an API 37
+  emulator (item absent), asserting the opposite outcome depending on `Build.VERSION.SDK_INT`
+  relative to `ApplicationBuilderItem`'s `maxSdk = S`. Doesn't select the item, just checks whether
+  it's findable in the item picker's search results — see
+  `applicationBuilderItemIsHiddenAboveAndroid12` in `ReminderRecurrenceE2ETest.kt`.
 - **B6** now covers add, check-off, and remove. The remove case needed a real (not semantics-faked)
   focus change first — `ShopItemRow`'s remove button only composes once its row is both focused
   *and* non-empty — done by tapping directly on the target row's own text, the same gesture a user
@@ -512,7 +593,7 @@ dead field or a bug before doing anything else with it.
 | D4 | Quiet hours `doNotDisturbIgnore = 5` ("ignore all") → suppressed regardless of priority | Maestro | P0 | Done |
 | D5 | Quiet hours enabled but due time outside the window → fires normally | Maestro | P1 | |
 | D6 | `repeatNotification` enabled → re-alerts at interval until dismissed/opened | Maestro | P1 | |
-| D7 | `POST_NOTIFICATIONS` permission denied (Android 13+) → app doesn't crash; in-app prompt shown; no system notification posted | Maestro | P0 | Done — written, not verifiable on the API 30 device used so far, see note below |
+| D7 | `POST_NOTIFICATIONS` permission denied (Android 13+) → app doesn't crash; in-app prompt shown; no system notification posted | Maestro | P0 | Done — verified end-to-end on an API 37 emulator, see note below |
 | D8 | Permission granted after initial denial (via deep-linked system Settings) → subsequent reminders fire | Maestro | P1 | |
 | D9 | Tapping a fired notification opens the correct reminder preview/edit screen (deep link) | Maestro | P0 | Done — corrected target screen, see note below |
 | D10 | Dismissing (swipe-away) vs. tapping a notification action updates reminder state accordingly | Maestro | P1 | |
@@ -526,10 +607,24 @@ Notes on the non-obvious Status values above:
   reminder's notification fired). They now seed each reminder with a unique Summary and assert on
   that instead — a real device run confirmed the original assertion was too weak to actually prove
   which notification fired.
-- **D7** (`notification_permission_denied.yaml`) is written and structurally sound, but this
-  suite's real device is API 30, where `POST_NOTIFICATIONS` isn't a runtime permission at all —
-  there's no dialog for it to deny, so the flow's actual "Don't allow" step has never run for real.
-  It'll get genuine coverage the next time this runs against CI's API 34 target.
+- **D7** (`notification_permission_denied.yaml`) is now verified end-to-end on an API 37 emulator
+  (real device is still API 30, below the gate, same limitation as before), with a fully clean run
+  logged (every step `COMPLETED`, nothing skipped but the one intentional `runFlow: when:` branch).
+  Several real issues surfaced and got fixed along the way, not specific to this flow alone:
+  - `launchApp` with no `permissions` key does **not** leave `POST_NOTIFICATIONS` ungranted on
+    this Maestro CLI (2.8.0) — it auto-grants it regardless, silently defeating this flow's whole
+    premise. Fixed with an explicit `permissions: { notifications: deny }`, confirmed live via
+    `adb shell dumpsys package <appId>` before and after.
+  - `tapOn: "Don't allow"` never matched the real system dialog (confirmed showing correctly via
+    screenshot) — almost certainly a straight-vs-curly-apostrophe mismatch against Android's own
+    string resource. Fixed with `tapOn: "Don.t allow"` (regex wildcard for that one character).
+  - The shared `create_countdown_reminder.yaml` subflow this flow (and D1/D3/D4/D9) all depend on
+    needed its own fixes — see that file's notes: `hideKeyboard` doesn't work on this AVD's Gboard
+    IME; the item picker's search field needs an explicit settle wait after each open (reproducible
+    3 times in a row without it, not a one-off flake); and its `ValueEditorSheet`-closing step moved
+    off a fixed-coordinate tap (not portable across screen sizes, confirmed live) onto
+    `tapOn: { id: "value_editor_sheet_close" }` — see §1c above for the two real fixes that took to
+    get a `testTag` reachable from Maestro at all.
 - **D9** (`tap_notification_opens_reminder.yaml`) corrects an assumption this row's own description
   made: reading `ReminderNotificationHandler.contentPendingIntent` shows tapping a notification
   actually opens `ReminderActionActivity` (the Complete/Snooze action picker), not a preview/edit

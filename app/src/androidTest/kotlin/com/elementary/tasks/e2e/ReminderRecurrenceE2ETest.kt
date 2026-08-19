@@ -1112,6 +1112,43 @@ class ReminderRecurrenceE2ETest : KoinTest {
     assertEquals(ReminderAction.Link("https://example.com"), created.action)
   }
 
+  /** B5: `ApplicationBuilderItem` declares `maxSdk = Build.VERSION_CODES.S` (31) - `BiFilter`
+   *  excludes it from the item picker's list entirely once `Module.CURRENT_SDK` exceeds that, so
+   *  "Application" shouldn't be findable via search above API 31, and should still be findable at
+   *  or below it. Branches on the running device's own API level rather than hardcoding one
+   *  outcome, since this suite runs across more than one API level and both sides of the gate are
+   *  worth proving on whichever device actually exercises them - confirmed live on both an API 30
+   *  device (present) and an API 37 emulator (absent), previously only the former had ever been
+   *  checked. Doesn't select the item either way - just opens the picker, searches, and inspects
+   *  the result list - so no Date/Time precondition or cleanup beyond dismissing the sheet is
+   *  needed. */
+  @Test
+  fun applicationBuilderItemIsHiddenAboveAndroid12() {
+    navigateToNewReminderBuilder()
+
+    val addLabel = r(R.string.acc_add)
+    composeRule.onAllNodesWithContentDescription(addLabel).onFirst().performClick()
+    composeRule.waitForIdle()
+    composeRule
+      .onNode(hasImeAction(ImeAction.Search), useUnmergedTree = true)
+      .performTextInput(r(R.string.application))
+    composeRule.waitForIdle()
+
+    val resultRowVisible =
+      composeRule
+        .onAllNodes(hasText(r(R.string.application)) and !hasSetTextAction(), useUnmergedTree = true)
+        .fetchSemanticsNodes()
+        .isNotEmpty()
+
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
+      assertFalse(resultRowVisible)
+    } else {
+      assertTrue(resultRowVisible)
+    }
+
+    closeValueEditor()
+  }
+
   /** B9: priority selection persists as the matching `ReminderPriority`.
    *
    *  Confirmed live (real device, via bounds/text logging): a freshly-added `PriorityBuilderItem`

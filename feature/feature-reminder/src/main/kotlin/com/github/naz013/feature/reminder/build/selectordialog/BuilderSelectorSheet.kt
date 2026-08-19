@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,11 @@ import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSh
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 
 private val LIST_MAX_HEIGHT = 420.dp
+
+/** Semantics test tag for [BuilderSelectorSheet]'s own close button - same reasoning as
+ *  `ValueEditorSheet.kt`'s `valueEditorSheetCloseTestTag`: the chevron-down icon has no text/
+ *  `contentDescription` to locate it by otherwise. */
+const val builderSelectorSheetCloseTestTag = "builder_selector_sheet_close"
 
 /**
  * The "add builder item" picker: a modal bottom sheet with a search field, an optional tab row
@@ -78,7 +84,10 @@ internal fun BuilderSelectorSheet(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.weight(1f),
       )
-      IconButton(onClick = onDismissRequest) {
+      IconButton(
+        onClick = onDismissRequest,
+        modifier = Modifier.testTag(builderSelectorSheetCloseTestTag),
+      ) {
         Icon(
           painter = painterResource(R.drawable.ic_builder_chevron_down),
           contentDescription = null,
