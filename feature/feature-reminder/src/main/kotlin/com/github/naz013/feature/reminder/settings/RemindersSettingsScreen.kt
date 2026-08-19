@@ -165,7 +165,6 @@ fun RemindersSettingsScreen(
         onClick = onLedColorClick,
       )
     }
-    
 
     SettingsSectionHeader(stringResource(R.string.status_bar))
 
