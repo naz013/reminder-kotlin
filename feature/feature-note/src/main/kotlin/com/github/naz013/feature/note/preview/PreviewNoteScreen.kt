@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -75,7 +73,7 @@ internal fun PreviewNoteScreen(
         }
         IconButton(onClick = actions.onStatusClick) {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_heart),
+            painter = AppIcons.Fluent.Heart,
             contentDescription = stringResource(R.string.show_in_status_bar),
             tint = state.content,
           )
@@ -83,7 +81,7 @@ internal fun PreviewNoteScreen(
         var overflowExpanded by remember { mutableStateOf(false) }
         IconButton(onClick = { overflowExpanded = true }) {
           Icon(
-            imageVector = Icons.Default.MoreVert,
+            painter = AppIcons.Fluent.MoreVertical,
             contentDescription = null,
             tint = state.content,
           )

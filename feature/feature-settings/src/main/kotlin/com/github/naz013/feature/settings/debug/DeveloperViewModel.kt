@@ -79,6 +79,7 @@ class DeveloperViewModel(
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val holidayRepository: HolidayRepository,
+  private val populateCalendarDemoDataUseCase: PopulateCalendarDemoDataUseCase,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
@@ -158,6 +159,23 @@ class DeveloperViewModel(
       navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("Insights demo data has been inserted")))
     }
   }
+
+  fun onPopulateCalendarNormalDataClick() {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val result = populateCalendarDemoDataUseCase(PopulateCalendarDemoDataUseCase.Scale.NORMAL)
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage(result.toMessage())))
+    }
+  }
+
+  fun onPopulateCalendarMassiveDataClick() {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val result = populateCalendarDemoDataUseCase(PopulateCalendarDemoDataUseCase.Scale.MASSIVE)
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage(result.toMessage())))
+    }
+  }
+
+  private fun PopulateCalendarDemoDataUseCase.Result.toMessage(): String =
+    "Populated calendar: $reminderCount reminders, $birthdayCount birthdays, $occurrenceCount occurrences"
 
   fun onDialogOptionSelected(index: Int) {
     state.update { current ->

@@ -250,7 +250,7 @@ class BottomNavActivity : BaseAuthActivity() {
         }
 
         is DayViewScreen ->
-          return listOf(CalendarNavKey.Month, CalendarNavKey.Day(deepLinkDestination.dateMillis))
+          return listOf(CalendarNavKey.DayAt(deepLinkDestination.dateMillis))
 
         is SettingsScreen -> return listOf(SettingsNavKey.Hub)
 

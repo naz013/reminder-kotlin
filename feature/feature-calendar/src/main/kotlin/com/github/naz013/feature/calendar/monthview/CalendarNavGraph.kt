@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -12,49 +13,100 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.naz013.ui.common.R
-import com.github.naz013.feature.calendar.dayview.WeekViewScreen
-import com.github.naz013.feature.calendar.dayview.WeekViewViewModel
-import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
+import com.github.naz013.feature.calendar.CalendarHostViewModel
+import com.github.naz013.feature.calendar.CalendarViewMode
+import com.github.naz013.feature.calendar.timeline.TimelineScreen
+import com.github.naz013.feature.calendar.timeline.TimelineViewModel
 import com.github.naz013.ui.common.livedata.ObserveEvent
-import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 fun EntryProviderScope<NavKey>.calendarEntries(
   backStack: MutableList<NavKey>,
   onOpenNewReminder: (dateMillis: Long) -> Unit,
-  onOpenReminderEdit: (id: String) -> Unit,
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenNewBirthday: (epochDay: Long) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
-  onOpenBirthdayEdit: (id: String) -> Unit,
   onOpenSettings: (screenTitle: String) -> Unit,
 ) {
-  entry<CalendarNavKey.Month> { MonthEntry(backStack, onOpenNewReminder, onOpenNewBirthday, onOpenSettings) }
-  entry<CalendarNavKey.Day> { key ->
-    DayEntry(
-      key = key,
+  entry<CalendarNavKey.Home> {
+    CalendarHostEntry(
+      initialDateMillis = System.currentTimeMillis(),
+      forcedMode = null,
       backStack = backStack,
       onOpenNewReminder = onOpenNewReminder,
-      onOpenReminderEdit = onOpenReminderEdit,
       onOpenReminderPreview = onOpenReminderPreview,
       onOpenNewBirthday = onOpenNewBirthday,
       onOpenBirthdayPreview = onOpenBirthdayPreview,
-      onOpenBirthdayEdit = onOpenBirthdayEdit,
+      onOpenSettings = onOpenSettings,
+    )
+  }
+  entry<CalendarNavKey.DayAt> { key ->
+    CalendarHostEntry(
+      initialDateMillis = key.dateMillis,
+      forcedMode = CalendarViewMode.DAY,
+      backStack = backStack,
+      onOpenNewReminder = onOpenNewReminder,
+      onOpenReminderPreview = onOpenReminderPreview,
+      onOpenNewBirthday = onOpenNewBirthday,
+      onOpenBirthdayPreview = onOpenBirthdayPreview,
+      onOpenSettings = onOpenSettings,
     )
   }
 }
 
 @Composable
-private fun MonthEntry(
+private fun CalendarHostEntry(
+  initialDateMillis: Long,
+  forcedMode: CalendarViewMode?,
+  backStack: MutableList<NavKey>,
+  onOpenNewReminder: (dateMillis: Long) -> Unit,
+  onOpenReminderPreview: (id: String) -> Unit,
+  onOpenNewBirthday: (epochDay: Long) -> Unit,
+  onOpenBirthdayPreview: (id: String) -> Unit,
+  onOpenSettings: (screenTitle: String) -> Unit,
+) {
+  val hostViewModel = koinViewModel<CalendarHostViewModel> { parametersOf(initialDateMillis, forcedMode) }
+  val mode by hostViewModel.mode.collectAsState()
+
+  when (mode) {
+    CalendarViewMode.MONTH ->
+      MonthMode(
+        host = hostViewModel,
+        backStack = backStack,
+        onOpenNewReminder = onOpenNewReminder,
+        onOpenNewBirthday = onOpenNewBirthday,
+        onOpenSettings = onOpenSettings,
+      )
+
+    CalendarViewMode.DAY, CalendarViewMode.THREE_DAY, CalendarViewMode.SEVEN_DAY ->
+      // Keyed by mode: Day/3-day/7-day share this same call site, but each has its own pager
+      // position semantics (different daySpan/window math), so switching between them must
+      // discard the previous mode's remembered pager/scroll state rather than reuse it.
+      key(mode) {
+        TimelineMode(
+          mode = mode,
+          host = hostViewModel,
+          backStack = backStack,
+          onOpenNewReminder = onOpenNewReminder,
+          onOpenReminderPreview = onOpenReminderPreview,
+          onOpenNewBirthday = onOpenNewBirthday,
+          onOpenBirthdayPreview = onOpenBirthdayPreview,
+        )
+      }
+  }
+}
+
+@Composable
+private fun MonthMode(
+  host: CalendarHostViewModel,
   backStack: MutableList<NavKey>,
   onOpenNewReminder: (dateMillis: Long) -> Unit,
   onOpenNewBirthday: (epochDay: Long) -> Unit,
   onOpenSettings: (screenTitle: String) -> Unit,
 ) {
   val viewModel = koinViewModel<CalendarViewModel>()
+  val anchorDate by host.anchorDate.collectAsState()
 
   var pagerJumpRequest by remember { mutableStateOf<Int?>(null) }
 
@@ -77,21 +129,10 @@ private fun MonthEntry(
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is CalendarViewModel.NavigationEvent.OpenDayView -> {
-        backStack.add(CalendarNavKey.Day(event.dateMillis))
-      }
-
-      is CalendarViewModel.NavigationEvent.OpenNewReminder -> {
-        onOpenNewReminder(event.dateMillis)
-      }
-
-      is CalendarViewModel.NavigationEvent.OpenNewBirthday -> {
-        onOpenNewBirthday(event.date.toEpochDay())
-      }
-
-      is CalendarViewModel.NavigationEvent.OpenSettings -> {
-        onOpenSettings(event.screenTitle)
-      }
+      is CalendarViewModel.NavigationEvent.OpenDayView -> host.openDay(event.dateMillis)
+      is CalendarViewModel.NavigationEvent.OpenNewReminder -> onOpenNewReminder(event.dateMillis)
+      is CalendarViewModel.NavigationEvent.OpenNewBirthday -> onOpenNewBirthday(event.date.toEpochDay())
+      is CalendarViewModel.NavigationEvent.OpenSettings -> onOpenSettings(event.screenTitle)
     }
   }
 
@@ -99,13 +140,16 @@ private fun MonthEntry(
   val refreshSignal by viewModel.refreshSignal.collectAsState()
   CalendarScreen(
     state = state,
-    initialPagerPosition = viewModel.lastPosition,
+    currentMode = CalendarViewMode.MONTH,
+    onModeSelected = host::onModeSelected,
+    initialPagerPosition = viewModel.positionForDate(anchorDate),
     pagerJumpRequest = pagerJumpRequest,
     onPagerJumpConsumed = { pagerJumpRequest = null },
     monthForPosition = viewModel::monthForPosition,
     onPageSettled = { position ->
       viewModel.updateLastPosition(position)
       viewModel.onPageSettled(position)
+      host.onAnchorDateChanged(viewModel.monthForPosition(position))
     },
     buildGrid = viewModel::buildGrid,
     refreshSignal = refreshSignal,
@@ -120,102 +164,55 @@ private fun MonthEntry(
 }
 
 @Composable
-private fun DayEntry(
-  key: CalendarNavKey.Day,
+private fun TimelineMode(
+  mode: CalendarViewMode,
+  host: CalendarHostViewModel,
   backStack: MutableList<NavKey>,
   onOpenNewReminder: (dateMillis: Long) -> Unit,
-  onOpenReminderEdit: (id: String) -> Unit,
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenNewBirthday: (epochDay: Long) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
-  onOpenBirthdayEdit: (id: String) -> Unit,
 ) {
-  val viewModel = koinViewModel<WeekViewViewModel> { parametersOf(key.dateMillis) }
-
-  val dialogDispatcher = rememberDialogDispatcher()
-  val permissionRequester = rememberPermissionRequesterRationale()
-
-  var pagerJumpRequest by remember { mutableStateOf<Int?>(null) }
+  val daySpan = mode.daySpan
+  // Keyed by span so Day/3-day/7-day each get their own retained view-model instance.
+  val viewModel =
+    koinViewModel<TimelineViewModel>(key = "timeline-$daySpan") { parametersOf(host.anchorMillis(), daySpan) }
+  val anchorDate by host.anchorDate.collectAsState()
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is WeekViewViewModel.NavigationEvent.MoveToDate -> {
-        pagerJumpRequest = viewModel.positionForDate(event.date)
-      }
-
-      is WeekViewViewModel.NavigationEvent.OpenReminderPreview -> {
-        onOpenReminderPreview(event.id)
-      }
-
-      is WeekViewViewModel.NavigationEvent.OpenReminderEdit -> {
-        onOpenReminderEdit(event.id)
-      }
-
-      is WeekViewViewModel.NavigationEvent.OpenBirthdayPreview -> {
-        onOpenBirthdayPreview(event.id)
-      }
-
-      is WeekViewViewModel.NavigationEvent.OpenBirthdayEdit -> {
-        onOpenBirthdayEdit(event.id)
-      }
-
-      is WeekViewViewModel.NavigationEvent.OpenNewReminder -> {
-        onOpenNewReminder(event.dateMillis)
-      }
-
-      is WeekViewViewModel.NavigationEvent.OpenNewBirthday -> {
-        onOpenNewBirthday(event.date.toEpochDay())
-      }
-
-      is WeekViewViewModel.NavigationEvent.ConfirmArchiveReminder -> {
-        dialogDispatcher.showDialog(
-          titleRes = R.string.move_to_archive,
-          textRes = R.string.are_you_sure,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.no,
-          onPositive = { viewModel.moveReminderToArchive(event.id) },
-        )
-      }
-
-      is WeekViewViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
-        dialogDispatcher.showDialog(
-          titleRes = R.string.delete,
-          textRes = R.string.are_you_sure,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.no,
-          onPositive = { viewModel.deleteBirthday(event.id) },
-        )
-      }
-
-      is WeekViewViewModel.NavigationEvent.RequestGpsPermission -> {
-        permissionRequester.request(
-          listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
-          onGranted = { viewModel.toggleReminder(event.id) },
-        )
-      }
+      is TimelineViewModel.NavigationEvent.OpenReminderPreview -> onOpenReminderPreview(event.id)
+      is TimelineViewModel.NavigationEvent.OpenBirthdayPreview -> onOpenBirthdayPreview(event.id)
+      is TimelineViewModel.NavigationEvent.OpenNewReminder -> onOpenNewReminder(event.dateMillis)
+      is TimelineViewModel.NavigationEvent.OpenNewBirthday -> onOpenNewBirthday(event.date.toEpochDay())
     }
   }
 
   val state by viewModel.state.collectAsState()
   val refreshSignal by viewModel.refreshSignal.collectAsState()
-  WeekViewScreen(
+  TimelineScreen(
     state = state,
-    initialPagerPosition = viewModel.lastPosition,
-    pagerJumpRequest = pagerJumpRequest,
-    onPagerJumpConsumed = { pagerJumpRequest = null },
-    dateForPosition = viewModel::dateForPosition,
+    currentMode = mode,
+    onModeSelected = host::onModeSelected,
+    initialPagerPosition = viewModel.positionForDate(anchorDate),
+    pagerJumpRequest = null,
+    onPagerJumpConsumed = {},
+    windowStartForPosition = viewModel::windowStartForPosition,
+    daysForWindow = viewModel::daysForWindow,
     onPageSettled = { position ->
       viewModel.updateLastPosition(position)
-      viewModel.onDateSelected(viewModel.dateForPosition(position))
+      viewModel.onPageSettled(position)
+      host.onAnchorDateChanged(viewModel.middayForPosition(position))
     },
-    onDayClick = { day -> viewModel.selectDate(day.localDate) },
     refreshSignal = refreshSignal,
-    loadDayEvents = viewModel::loadDayEvents,
-    loadDayHoliday = viewModel::loadDayHoliday,
+    loadWindowEvents = viewModel::loadWindowEvents,
+    loadWindowHolidays = viewModel::loadWindowHolidays,
     onItemClick = viewModel::onItemClick,
-    onAgendaMenuAction = viewModel::onAgendaMenuAction,
-    onAddReminderClick = { viewModel.onAddReminderClick(state.selectedDate) },
-    onAddBirthdayClick = { viewModel.onAddBirthdayClick(state.selectedDate) },
+    onDayHeaderClick = { date -> host.openDay(date) },
+    onAddReminderClick = { viewModel.onAddReminderClick(anchorDate) },
+    onAddBirthdayClick = { viewModel.onAddBirthdayClick(anchorDate) },
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    initialScrollOffset = viewModel.scrollOffset,
+    onScrollOffsetChanged = viewModel::onScrollOffsetChanged,
   )
 }

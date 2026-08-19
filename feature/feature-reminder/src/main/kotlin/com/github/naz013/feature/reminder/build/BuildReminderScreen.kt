@@ -19,8 +19,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -57,12 +55,11 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.github.naz013.ui.common.R
-import com.github.naz013.feature.reminder.note.UiNoteList
 import com.github.naz013.feature.reminder.build.logic.builderstate.ReminderPrediction
 import com.github.naz013.feature.reminder.build.quickstart.QuickStartOption
+import com.github.naz013.feature.reminder.note.UiNoteList
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
-import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
@@ -133,14 +130,14 @@ internal fun BuildReminderScreen(
           if (canRemove) {
             IconButton(onClick = onDeleteClick) {
               Icon(
-                painter = painterResource(R.drawable.ic_fluent_delete),
+                painter = AppIcons.Fluent.Delete,
                 contentDescription = stringResource(R.string.delete),
               )
             }
           }
           var overflowExpanded by remember { mutableStateOf(false) }
           IconButton(onClick = { overflowExpanded = true }) {
-            Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+            Icon(painter = AppIcons.Fluent.MoreVertical, contentDescription = null)
           }
           AppDropdownMenu(
             expanded = overflowExpanded,

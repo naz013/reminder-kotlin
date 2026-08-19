@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+import org.threeten.bp.temporal.ChronoUnit
 
 class CalendarViewModel(
   private val dispatcherProvider: DispatcherProvider,
@@ -63,6 +64,11 @@ class CalendarViewModel(
   }
 
   fun monthForPosition(position: Int): LocalDate = initDate.plusMonths((position - CENTER_POSITION).toLong())
+
+  fun positionForDate(date: LocalDate): Int {
+    val monthsBetween = ChronoUnit.MONTHS.between(initDate.withDayOfMonth(1), date.withDayOfMonth(1))
+    return CENTER_POSITION + monthsBetween.toInt()
+  }
 
   fun updateLastPosition(position: Int) {
     lastPosition = position

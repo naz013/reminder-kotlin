@@ -359,6 +359,8 @@ private fun DeveloperEntry(
       onClearAllTablesDismiss = viewModel::onClearAllTablesDismiss,
       onInsertDemoDataClick = viewModel::onInsertDemoDataClick,
       onInsertInsightsDemoDataClick = viewModel::onInsertInsightsDemoDataClick,
+      onPopulateCalendarNormalDataClick = viewModel::onPopulateCalendarNormalDataClick,
+      onPopulateCalendarMassiveDataClick = viewModel::onPopulateCalendarMassiveDataClick,
       onDialogOptionSelected = viewModel::onDialogOptionSelected,
       onDialogConfirm = viewModel::onDialogConfirm,
       onDialogDismiss = viewModel::onDialogDismiss,
