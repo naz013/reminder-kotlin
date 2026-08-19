@@ -144,15 +144,11 @@ private fun HomeBanner(
   onPositiveClick: () -> Unit,
 ) {
   ElevatedCard(
-    modifier =
-      modifier
-        .padding(16.dp)
-        .fillMaxWidth(),
+    modifier = modifier
+      .padding(16.dp)
+      .fillMaxWidth(),
     elevation = CardDefaults.elevatedCardElevation(defaultElevation = 12.dp),
-    colors =
-      CardDefaults.elevatedCardColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-      ),
+    colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
   ) {
     Column(
       modifier = Modifier.padding(16.dp),
