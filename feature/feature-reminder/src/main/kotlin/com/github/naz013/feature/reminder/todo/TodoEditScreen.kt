@@ -108,6 +108,7 @@ internal fun TodoEditScreen(
           builderItem = subTasksItem,
           dateTimeManager = dateTimeManager,
           onValueChange = { updated -> onSubTasksChanged(updated as SubTasksBuilderItem) },
+          hapticFeedbackEnabled = state.hapticFeedbackEnabled,
         )
       }
 

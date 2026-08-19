@@ -1144,4 +1144,7 @@
     <string name="allow_swipe_to_dismiss">Allow swipe to dismiss</string>
     <string name="allow_swipe_to_dismiss_enabled">Swiping the notification away completes the reminder</string>
     <string name="allow_swipe_to_dismiss_disabled">Notification must be dismissed with the OK button</string>
+    <string name="todo_completed_count">Completed (%1$d)</string>
+    <string name="todo_all_done">Nice, all done</string>
+    <string name="todo_drag_to_reorder">Drag to reorder</string>
 </resources>

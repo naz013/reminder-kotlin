@@ -504,6 +504,7 @@ Notes on the non-obvious Status values above:
 | B15 | Repeat time / interval / limit fields validated together (constraint rules from `BuilderItem` `constraints {}` blocks) | Tier A | P0 | Done (Tier B) — one constraint, see note below |
 | B16 | Constraint enforcement: selecting a blocked combination (e.g. Timer + Date) is prevented/clears the conflicting item | Tier A | P0 | Done (Tier B) |
 | B17 | Description field (`DescriptionBuilderItem`) persists free-text body, independent of Summary | Tier A | P2 | Done — bundled into B8's test, see note below |
+| B18 | Todo editor screen (`TodoEditScreen`) — add/check/uncheck items, Completed section collapse/expand, remove via X button, save persists checked state | Tier B | P1 | Done — see note below |
 
 Notes on the non-obvious Status values above:
 
@@ -523,6 +524,16 @@ Notes on the non-obvious Status values above:
   would use, which reliably refocuses it via the real Compose focus system. `shopItemCheckTestTag`/
   `shopItemRemoveTestTag` (`SubTasksValueEditor.kt`) had already been scaffolded ahead of this by
   whoever wrote the add/check-off test; `shopItemRemoveTestTag` had no caller anywhere until now.
+- **B18** is the first instrumented coverage of `TodoEditScreen` itself, in the new
+  `TodoEditorE2ETest.kt` — B6 above only ever exercised `SubTasksValueEditor` through the general
+  builder's `ValueEditorSheet`, never through the Todo screen, which embeds the same editor
+  directly (no bottom sheet, and its own title field sits above it in the same tree, which shifts
+  node indices by one — see that file's `addTwoTodoItems` kdoc). Covers checking items into the
+  collapsed "Completed (n)" section, unchecking them back to active, the X-button remove path
+  (unchanged from B6), and a save-time persistence round trip. Drag-to-reorder's actual behavior is
+  unit-tested at the ViewModel level (`SubTasksViewModelTest`'s `onReorder` tests) instead — this
+  file only smoke-checks the drag handle icon is present, since scripting an exact-position drag
+  gesture in a Compose UI test is flaky.
 - **B7** covers "assignment on create" only, not "group-based filtering on list/home" — that half
   needs its own Home/list-screen investigation, folded into the new §G below rather than done here.
 - **B9** covers persisted selection only, not "reflected in list sort/badge" — same reasoning as
