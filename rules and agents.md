@@ -21,6 +21,13 @@ below are unqualified for readability; prepend the group to get the real Gradle 
 ## Coding Standards
 - **Language**: Kotlin.
 - **UI**: Jetpack Compose + Material 3.
+- **Icons**: never inline `R.drawable.ic_fluent_*` (or any other drawable) in feature/screen code. Look it
+  up via `ui-common`'s `DrawableCatalog` (`com.github.naz013.ui.common.icon.DrawableCatalog` - plain
+  `@DrawableRes Int` constants, e.g. `DrawableCatalog.Fluent.Pin`) or `AppIcons`
+  (`com.github.naz013.ui.common.compose.AppIcons` - the same catalog as `@Composable` `Painter` getters,
+  e.g. `AppIcons.Fluent.Pin`). Use `AppIcons.*` where a `Painter`/`ImageVector` is expected; use
+  `DrawableCatalog.*` where a raw `Int` is expected (e.g. `PopupMenuItem.iconRes`). Missing icon? Add the
+  drawable XML plus a `DrawableCatalog` (and `AppIcons`, if needed) entry, then reference the constant.
 - **Dependency Injection**: Koin. Use `KoinModule.kt` in each module.
 - **State**: MVVM with `StateFlow` / `LiveData`.
 - **Log**: Use `logging-api` (`Logger` interface) to avoid concrete coupling.
@@ -45,6 +52,15 @@ below are unqualified for readability; prepend the group to get the real Gradle 
     uncaught into a `List.map { it.toDomain() }` - wrap the parse in `runCatching` with a safe
     fallback (see `ReminderV2Mapper.toRecurrenceRule`), so one bad row can't take down an entire
     list load.
+  - Adding a field to a domain model that has a `*Json` counterpart (`ReminderV2Json`, `NoteV3Json`,
+    `GroupV2Json`, `TagJson`, ...) is NOT covered by updating the Room entity/mapper alone - that only
+    fixes local storage. You also need the new field on the `*Json` class (with a safe default, so old
+    backup files without it still deserialize) and both directions of the mapping in `data:files`'s
+    `DataConverterImpl.kt` (`toDomain()`/`toJson()`). This wire format is what cloud sync (Google
+    Drive/Dropbox) and the PRO local encrypted backup actually read/write - `data:sync` itself is
+    field-agnostic (type-dispatches on `is ReminderV2`/etc. and passes whole objects through), so
+    skipping this step means the field silently never survives a backup/restore round-trip even
+    though everything works locally.
 
 ## Feature Modules: `feature-*` / `ui-*` / `logic-*`
 Newer features (Google Tasks, Tags, Insights) are extracted out of `app` into a per-feature module

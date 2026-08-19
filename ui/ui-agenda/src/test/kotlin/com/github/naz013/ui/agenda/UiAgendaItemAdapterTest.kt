@@ -47,6 +47,7 @@ class UiAgendaItemAdapterTest {
     every { textProvider.getText(R.string.disabled) } returns "Turned off"
     every { textProvider.getText(R.string.location) } returns "Location"
     every { textProvider.getText(R.string.shopping_lists) } returns "Shopping lists"
+    every { textProvider.getText(R.string.pinned) } returns "Pinned"
 
     adapter = UiAgendaItemAdapter(uiReminderListAdapter, uiBirthdayListAdapter, dateTimeManager, textProvider)
   }
@@ -55,12 +56,14 @@ class UiAgendaItemAdapterTest {
     uuId: String,
     isLocation: Boolean = false,
     isShopping: Boolean = false,
+    isPinned: Boolean = false,
   ) = ReminderV2(
     uuId = uuId,
     schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
     sync = SyncMetadata(syncState = SyncState.Synced),
     location = if (isLocation) LocationSettings() else null,
     action = if (isShopping) ReminderAction.Shopping else ReminderAction.None,
+    isPinned = isPinned,
   )
 
   @Test
@@ -192,12 +195,55 @@ class UiAgendaItemAdapterTest {
     assertEquals("location", result[1].id)
   }
 
+  @Test
+  fun `puts a pinned reminder in its own header above the regular chronological list`() {
+    val pinnedReminder = reminderV2("pinned-reminder", isPinned = true)
+    val regularReminder = reminderV2("regular-reminder")
+    every { uiReminderListAdapter.createV2(pinnedReminder, null) } returns
+      uiReminderList(id = "pinned", dueDateTime = today.atTime(20, 0), isActive = true, isPinned = true)
+    every { uiReminderListAdapter.createV2(regularReminder, null) } returns
+      uiReminderList(id = "regular", dueDateTime = today.atTime(9, 0))
+
+    val result = adapter.convertV2(listOf(pinnedReminder, regularReminder), emptyMap(), emptyList())
+
+    assertEquals(
+      listOf("Pinned", "pinned", "Today", "regular"),
+      result.map { item -> if (item is UiAgendaHeader) item.text else item.id },
+    )
+  }
+
+  @Test
+  fun `keeps a pinned but disabled reminder in the Pinned section instead of the Disabled bucket`() {
+    val pinnedDisabledReminder = reminderV2("pinned-disabled-reminder", isPinned = true)
+    every { uiReminderListAdapter.createV2(pinnedDisabledReminder, null) } returns
+      uiReminderList(id = "pinned-disabled", dueDateTime = null, isActive = false, isPinned = true)
+
+    val result = adapter.convertV2(listOf(pinnedDisabledReminder), emptyMap(), emptyList())
+
+    assertEquals(
+      listOf("Pinned", "pinned-disabled"),
+      result.map { item -> if (item is UiAgendaHeader) item.text else item.id },
+    )
+  }
+
+  @Test
+  fun `does not add a Pinned header when no reminder is pinned`() {
+    val regularReminder = reminderV2("regular-reminder")
+    every { uiReminderListAdapter.createV2(regularReminder, null) } returns
+      uiReminderList(id = "regular", dueDateTime = today.atTime(9, 0))
+
+    val result = adapter.convertV2(listOf(regularReminder), emptyMap(), emptyList())
+
+    assertEquals(listOf("Today", "regular"), result.map { item -> if (item is UiAgendaHeader) item.text else item.id })
+  }
+
   private fun textElement(text: String) = UiTextElement(text = text, textFormat = UiTextFormat(fontSize = 14f))
 
   private fun uiReminderList(
     id: String,
     dueDateTime: LocalDateTime?,
     isActive: Boolean = true,
+    isPinned: Boolean = false,
   ): UiReminderList =
     UiReminderList(
       id = id,
@@ -208,7 +254,7 @@ class UiAgendaItemAdapterTest {
       tertiaryText = null,
       tags = emptyList(),
       actions = UiReminderListActions(canToggle = true, canOpen = true, canEdit = true, canDelete = true, canSkip = false),
-      state = UiReminderListState(isActive = isActive, isRemoved = false, isGps = false),
+      state = UiReminderListState(isActive = isActive, isRemoved = false, isGps = false, isPinned = isPinned),
     )
 
   private fun uiBirthdayList(

@@ -71,6 +71,7 @@ internal class UiReminderListAdapterImpl(
           isActive = data.isActive,
           isRemoved = data.isRemoved,
           isGps = data.location != null,
+          isPinned = data.isPinned,
         ),
     )
   }

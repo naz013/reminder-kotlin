@@ -14,6 +14,7 @@ import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.github.naz013.feature.reminder.preview.data.UiCalendarEventList
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
+import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -77,6 +78,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>(relaxed = true)
   private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
+  private val togglePinnedReminderUseCase = mockk<TogglePinnedReminderUseCase>(relaxed = true)
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
   private val tableChangeListenerFactory = mockk<TableChangeListenerFactory>(relaxed = true)
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
@@ -112,6 +114,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     recurrence: RecurrenceRule = RecurrenceRule.Once,
     isRemoved: Boolean = false,
     isActive: Boolean = true,
+    isPinned: Boolean = false,
   ): ReminderV2 =
     ReminderV2(
       uuId = id,
@@ -120,6 +123,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
       isActive = isActive,
       isRemoved = isRemoved,
+      isPinned = isPinned,
     )
 
   private fun createViewModel(id: String = "42"): PreviewReminderViewModel =
@@ -146,6 +150,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
       activateReminderUseCase = activateReminderUseCase,
       toggleReminderStateUseCase = toggleReminderStateUseCase,
+      togglePinnedReminderUseCase = togglePinnedReminderUseCase,
       saveReminderUseCase = saveReminderUseCase,
       tableChangeListenerFactory = tableChangeListenerFactory,
       tagAssignmentRepository = tagAssignmentRepository,
@@ -295,6 +300,38 @@ class PreviewReminderViewModelTest : BaseTest() {
       val event = viewModel.event.value?.peekContent()
       assertTrue(event is PreviewReminderViewModel.ViewModelEvent.ShowError)
       assertEquals("Error", (event as? PreviewReminderViewModel.ViewModelEvent.ShowError)?.message)
+    }
+
+  @Test
+  fun `state exposes isPinned from the reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(isPinned = true)
+      val viewModel = createViewModel()
+
+      assertTrue(viewModel.state.first().isPinned)
+    }
+
+  @Test
+  fun `onPinToggleClick toggles pinned state and reloads`() =
+    runTest {
+      val reminder = reminderV2(isPinned = false)
+      coEvery { reminderV2Repository.getById("42") } returns reminder
+      val viewModel = createViewModel()
+
+      viewModel.onPinToggleClick()
+
+      coVerify(exactly = 1) { togglePinnedReminderUseCase(reminder) }
+    }
+
+  @Test
+  fun `onPinToggleClick does nothing when the reminder is not found`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns null
+      val viewModel = createViewModel()
+
+      viewModel.onPinToggleClick()
+
+      coVerify(exactly = 0) { togglePinnedReminderUseCase(any()) }
     }
 
   @Test

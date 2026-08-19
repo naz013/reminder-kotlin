@@ -1146,4 +1146,8 @@
     <string name="todo_completed_count">Ukończone (%1$d)</string>
     <string name="todo_all_done">Świetnie, wszystko gotowe</string>
     <string name="todo_drag_to_reorder">Przeciągnij, aby zmienić kolejność</string>
+
+    <string name="pin">Przypnij</string>
+    <string name="unpin">Odepnij</string>
+    <string name="pinned">Przypięte</string>
 </resources>

@@ -69,5 +69,7 @@ private fun AgendaMenuAction.iconResOrNull(): Int? =
     AgendaMenuAction.OPEN -> R.drawable.ic_fluent_open
     AgendaMenuAction.EDIT -> R.drawable.ic_fluent_edit
     AgendaMenuAction.DELETE -> R.drawable.ic_fluent_delete
-    AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF -> null
+    AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF,
+    AgendaMenuAction.PIN, AgendaMenuAction.UNPIN,
+    -> null
   }

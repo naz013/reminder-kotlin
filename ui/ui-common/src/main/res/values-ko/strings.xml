@@ -1146,4 +1146,8 @@
     <string name="todo_completed_count">완료 (%1$d)</string>
     <string name="todo_all_done">좋아요, 모두 완료했어요</string>
     <string name="todo_drag_to_reorder">드래그하여 순서 변경</string>
+
+    <string name="pin">고정</string>
+    <string name="unpin">고정 해제</string>
+    <string name="pinned">고정됨</string>
 </resources>

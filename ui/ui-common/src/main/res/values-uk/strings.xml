@@ -1147,4 +1147,8 @@
     <string name="todo_completed_count">Виконано (%1$d)</string>
     <string name="todo_all_done">Чудово, усе готово</string>
     <string name="todo_drag_to_reorder">Перетягніть, щоб змінити порядок</string>
+
+    <string name="pin">Закріпити</string>
+    <string name="unpin">Відкріпити</string>
+    <string name="pinned">Закріплено</string>
 </resources>

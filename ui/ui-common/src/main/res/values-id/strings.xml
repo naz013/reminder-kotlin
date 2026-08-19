@@ -1144,4 +1144,8 @@
     <string name="todo_completed_count">Selesai (%1$d)</string>
     <string name="todo_all_done">Bagus, semua selesai</string>
     <string name="todo_drag_to_reorder">Seret untuk mengatur ulang</string>
+
+    <string name="pin">Sematkan</string>
+    <string name="unpin">Lepas sematan</string>
+    <string name="pinned">Disematkan</string>
 </resources>

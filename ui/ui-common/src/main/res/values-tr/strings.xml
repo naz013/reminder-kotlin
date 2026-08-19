@@ -1147,4 +1147,8 @@
     <string name="todo_completed_count">Tamamlandı (%1$d)</string>
     <string name="todo_all_done">Harika, hepsi tamam</string>
     <string name="todo_drag_to_reorder">Yeniden sıralamak için sürükleyin</string>
+
+    <string name="pin">Sabitle</string>
+    <string name="unpin">Sabitlemeyi kaldır</string>
+    <string name="pinned">Sabitlendi</string>
 </resources>

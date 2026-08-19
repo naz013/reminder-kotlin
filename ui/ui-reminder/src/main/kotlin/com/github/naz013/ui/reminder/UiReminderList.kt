@@ -23,6 +23,7 @@ data class UiReminderListState(
   val isActive: Boolean = false,
   val isRemoved: Boolean = false,
   val isGps: Boolean = false,
+  val isPinned: Boolean = false,
 )
 
 data class UiReminderListActions(

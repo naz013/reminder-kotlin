@@ -1144,4 +1144,8 @@
     <string name="todo_completed_count">Đã hoàn thành (%1$d)</string>
     <string name="todo_all_done">Tuyệt, xong hết rồi</string>
     <string name="todo_drag_to_reorder">Kéo để sắp xếp lại</string>
+
+    <string name="pin">Ghim</string>
+    <string name="unpin">Bỏ ghim</string>
+    <string name="pinned">Đã ghim</string>
 </resources>

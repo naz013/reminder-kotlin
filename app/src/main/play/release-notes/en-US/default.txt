@@ -1,4 +1,6 @@
 - Refreshed the application look
+- Added option to Pin reminder in the list (will be shown on top)
 - Added multiselect actions to Notes
 - Added 1/3/7 day timeline mode to Calendar
+- Improved TODO reminder editing
 - Bug fixes and improvements

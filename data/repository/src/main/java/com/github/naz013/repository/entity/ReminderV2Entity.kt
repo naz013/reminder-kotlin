@@ -69,6 +69,7 @@ internal data class ReminderV2Entity(
   val uniqueId: Int = 0,
   val isActive: Boolean = true,
   val isRemoved: Boolean = false,
+  val isPinned: Boolean = false,
   val eventCount: Long = 0,
   val snoozeCount: Long = 0,
   val lastShownAt: Long? = null,

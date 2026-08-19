@@ -9,6 +9,7 @@ import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.github.naz013.logic.reminder.filter.ReminderV2QueryFilterInstance
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
+import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
@@ -61,6 +62,7 @@ class AgendaViewModel(
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val skipReminderUseCase: SkipReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
+  private val togglePinnedReminderUseCase: TogglePinnedReminderUseCase,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
 ) : ViewModel() {
@@ -294,6 +296,7 @@ class AgendaViewModel(
       AgendaMenuAction.ARCHIVE -> navigationEvent.value = Event(NavigationEvent.ConfirmArchiveReminder(item.id))
       AgendaMenuAction.SKIP -> skipReminder(item.id)
       AgendaMenuAction.TURN_OFF -> onToggleReminder(item)
+      AgendaMenuAction.PIN, AgendaMenuAction.UNPIN -> togglePinned(item.id)
       AgendaMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteReminder(item.id))
     }
   }
@@ -306,7 +309,17 @@ class AgendaViewModel(
       AgendaMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
       AgendaMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayEdit(item.id))
       AgendaMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteBirthday(item.id))
-      AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF -> Unit
+      AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF,
+      AgendaMenuAction.PIN, AgendaMenuAction.UNPIN,
+      -> Unit
+    }
+  }
+
+  fun togglePinned(id: String) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val item = reminderV2Repository.getById(id) ?: return@launch
+      togglePinnedReminderUseCase(item)
+      refresh()
     }
   }
 

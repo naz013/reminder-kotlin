@@ -203,6 +203,7 @@ private fun ReminderV2Json.toDomain(): ReminderV2 = ReminderV2(
   uniqueId = uniqueId,
   isActive = isActive,
   isRemoved = isRemoved,
+  isPinned = isPinned,
   eventCount = eventCount,
   sync = SyncMetadata(version = version)
 )
@@ -343,6 +344,7 @@ private fun ReminderV2.toJson(): ReminderV2Json {
     uniqueId = uniqueId,
     isActive = isActive,
     isRemoved = isRemoved,
+    isPinned = isPinned,
     eventCount = eventCount,
     version = sync.version
   )

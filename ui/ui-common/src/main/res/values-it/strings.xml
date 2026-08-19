@@ -1146,4 +1146,8 @@
     <string name="todo_completed_count">Completati (%1$d)</string>
     <string name="todo_all_done">Ottimo, tutto fatto</string>
     <string name="todo_drag_to_reorder">Trascina per riordinare</string>
+
+    <string name="pin">Fissa</string>
+    <string name="unpin">Rimuovi fissaggio</string>
+    <string name="pinned">Fissato</string>
 </resources>

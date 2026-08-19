@@ -1144,4 +1144,8 @@
     <string name="todo_completed_count">Voltooid (%1$d)</string>
     <string name="todo_all_done">Mooi, alles is klaar</string>
     <string name="todo_drag_to_reorder">Sleep om te herschikken</string>
+
+    <string name="pin">Vastzetten</string>
+    <string name="unpin">Losmaken</string>
+    <string name="pinned">Vastgezet</string>
 </resources>
