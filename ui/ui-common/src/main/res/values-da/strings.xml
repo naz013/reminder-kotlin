@@ -1133,4 +1133,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Vælg en påmindelse eller fødselsdag for at se detaljer</string>
     <string name="acc_close">Luk</string>
     <string name="turn_on">Tænd</string>
+    <string name="allow_swipe_to_dismiss">Tillad swipe for at afvise</string>
+    <string name="allow_swipe_to_dismiss_enabled">At swipe notifikationen væk fuldfører påmindelsen</string>
+    <string name="allow_swipe_to_dismiss_disabled">Notifikationen skal lukkes med OK-knappen</string>
 </resources>

@@ -111,6 +111,7 @@ object PrefsConstants {
   const val DEFAULT_NOTIFICATION_CATEGORY = "default_notification_category"
   const val DEFAULT_BYPASS_DO_NOT_DISTURB = "default_bypass_do_not_disturb"
   const val DEFAULT_WAKE_SCREEN = "default_wake_screen"
+  const val DEFAULT_SWIPE_TO_DISMISS = "default_swipe_to_dismiss"
   const val DEFAULT_LOCK_SCREEN_VISIBILITY = "default_lock_screen_visibility"
 
   const val REMINDER_V2_BACKFILL_DONE = "reminder_v2_backfill_done"

@@ -1136,4 +1136,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Изберете напомняне или рожден ден, за да видите подробности</string>
     <string name="acc_close">Затвори</string>
     <string name="turn_on">Включване</string>
+    <string name="allow_swipe_to_dismiss">Разрешаване на превъртане за отхвърляне</string>
+    <string name="allow_swipe_to_dismiss_enabled">Прекарването на известието настрани завършва напомнянето</string>
+    <string name="allow_swipe_to_dismiss_disabled">Известието трябва да бъде затворено с бутона OK</string>
 </resources>

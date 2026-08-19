@@ -116,6 +116,10 @@ class ReminderPreferencesImpl(
     get() = prefs.isDefaultWakeScreenEnabled
     set(value) { prefs.isDefaultWakeScreenEnabled = value }
 
+  override var isDefaultSwipeToDismissEnabled: Boolean
+    get() = prefs.isDefaultSwipeToDismissEnabled
+    set(value) { prefs.isDefaultSwipeToDismissEnabled = value }
+
   override var defaultLockScreenVisibility: String
     get() = prefs.defaultLockScreenVisibility
     set(value) { prefs.defaultLockScreenVisibility = value }

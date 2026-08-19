@@ -1133,4 +1133,7 @@
     <string name="select_reminder_or_birthday_to_see_details">เลือกการแจ้งเตือนหรือวันเกิดเพื่อดูรายละเอียด</string>
     <string name="acc_close">ปิด</string>
     <string name="turn_on">เปิด</string>
+    <string name="allow_swipe_to_dismiss">อนุญาตให้ปัดเพื่อปิด</string>
+    <string name="allow_swipe_to_dismiss_enabled">การปัดการแจ้งเตือนออกจะทำให้การแจ้งเตือนเสร็จสมบูรณ์</string>
+    <string name="allow_swipe_to_dismiss_disabled">ต้องปิดการแจ้งเตือนด้วยปุ่มตกลง</string>
 </resources>

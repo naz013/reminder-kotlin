@@ -122,6 +122,7 @@ fun RemindersCrossFeatureEntry(
       onDefaultVibrateToggle = viewModel::onDefaultVibrateToggle,
       onDefaultBypassDoNotDisturbToggle = viewModel::onDefaultBypassDoNotDisturbToggle,
       onDefaultWakeScreenToggle = viewModel::onDefaultWakeScreenToggle,
+      onDefaultSwipeToDismissToggle = viewModel::onDefaultSwipeToDismissToggle,
       onDefaultCategoryClick = viewModel::onDefaultCategoryClick,
       onDefaultLockScreenVisibilityClick = viewModel::onDefaultLockScreenVisibilityClick,
       onDefaultVibrationPatternClick = viewModel::onDefaultVibrationPatternClick,

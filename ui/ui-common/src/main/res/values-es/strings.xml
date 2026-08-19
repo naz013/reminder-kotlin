@@ -1135,4 +1135,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Selecciona un recordatorio o cumpleaños para ver los detalles</string>
     <string name="acc_close">Cerrar</string>
     <string name="turn_on">Encender</string>
+    <string name="allow_swipe_to_dismiss">Permitir deslizar para descartar</string>
+    <string name="allow_swipe_to_dismiss_enabled">Deslizar la notificación completa el recordatorio</string>
+    <string name="allow_swipe_to_dismiss_disabled">La notificación debe cerrarse con el botón Aceptar</string>
 </resources>

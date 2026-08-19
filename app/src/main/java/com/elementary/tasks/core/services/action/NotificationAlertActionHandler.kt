@@ -36,7 +36,7 @@ abstract class NotificationAlertActionHandler<T>(
 
     val builder = NotificationCompat.Builder(contextProvider.context, channelId(data))
     builder.setAutoCancel(false)
-    builder.setOngoing(true)
+    builder.setOngoing(isOngoing(data))
     builder.setContentTitle(contentTitle(data))
     contentText(data)?.also { builder.setContentText(it) }
     vibrationPattern(data)?.also { builder.setVibrate(it) }
@@ -46,11 +46,13 @@ abstract class NotificationAlertActionHandler<T>(
     builder.setContentIntent(contentPendingIntent(data))
     style.decorate(builder, contextProvider)
 
+    val dismissPendingIntent = actionPendingIntent(data, dismissActionKey())
     builder.addAction(
       R.drawable.ic_fluent_checkmark,
       textProvider.getText(R.string.ok),
-      actionPendingIntent(data, dismissActionKey()),
+      dismissPendingIntent,
     )
+    builder.setDeleteIntent(dismissPendingIntent)
     extraActions(data).forEach { action ->
       builder.addAction(action.icon, action.label, actionPendingIntent(data, action.actionKey))
     }
@@ -97,6 +99,11 @@ abstract class NotificationAlertActionHandler<T>(
    *  [Notifier.reminderChannelId]) when a field needs to vary per notification on Android 8+,
    *  where a channel's importance/vibration/DND-bypass are locked at creation. */
   protected open fun channelId(data: T): String = Notifier.CHANNEL_REMINDER
+
+  /** Whether this notification blocks swipe-dismissal. Defaults to true (current behavior for
+   *  every domain); override to let a domain's own settings opt out and allow swipe, which - via
+   *  the shared [setDeleteIntent] wiring above - completes the item exactly like tapping OK. */
+  protected open fun isOngoing(data: T): Boolean = true
 
   protected abstract fun receiverClass(): Class<out BroadcastReceiver>
 

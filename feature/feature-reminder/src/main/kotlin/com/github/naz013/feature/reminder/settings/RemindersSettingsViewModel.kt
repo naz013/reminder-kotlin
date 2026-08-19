@@ -243,6 +243,11 @@ class RemindersSettingsViewModel(
     refreshState()
   }
 
+  fun onDefaultSwipeToDismissToggle() {
+    reminderPreferences.isDefaultSwipeToDismissEnabled = !reminderPreferences.isDefaultSwipeToDismissEnabled
+    refreshState()
+  }
+
   fun onDefaultCategoryClick() {
     showChoiceDialog(
       kind = ChoiceDialogKind.CATEGORY,
@@ -355,6 +360,7 @@ class RemindersSettingsViewModel(
       isDefaultVibrateChecked = reminderPreferences.isDefaultVibrateEnabled,
       isDefaultBypassDoNotDisturbChecked = reminderPreferences.isDefaultBypassDoNotDisturbEnabled,
       isDefaultWakeScreenChecked = reminderPreferences.isDefaultWakeScreenEnabled,
+      isDefaultSwipeToDismissChecked = reminderPreferences.isDefaultSwipeToDismissEnabled,
       defaultCategoryName = categoryOptions()[
         categoryValues().indexOf(reminderPreferences.defaultNotificationCategory).coerceAtLeast(0)
       ],

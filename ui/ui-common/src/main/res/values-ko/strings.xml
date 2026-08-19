@@ -1135,4 +1135,7 @@
     <string name="select_reminder_or_birthday_to_see_details">세부정보를 보려면 알림 또는 생일을 선택하세요</string>
     <string name="acc_close">닫기</string>
     <string name="turn_on">켜기</string>
+    <string name="allow_swipe_to_dismiss">스와이프하여 닫기 허용</string>
+    <string name="allow_swipe_to_dismiss_enabled">알림을 스와이프하여 닫으면 미리 알림이 완료됩니다</string>
+    <string name="allow_swipe_to_dismiss_disabled">알림은 확인 버튼으로 닫아야 합니다</string>
 </resources>

@@ -1137,4 +1137,7 @@
     <string name="select_reminder_or_birthday_to_see_details">विवरण देखने के लिए एक रिमाइंडर या जन्मदिन चुनें</string>
     <string name="acc_close">बंद करें</string>
     <string name="turn_on">चालू करें</string>
+    <string name="allow_swipe_to_dismiss">स्वाइप करके हटाने की अनुमति दें</string>
+    <string name="allow_swipe_to_dismiss_enabled">सूचना को स्वाइप करके हटाने से रिमाइंडर पूरा हो जाता है</string>
+    <string name="allow_swipe_to_dismiss_disabled">सूचना को OK बटन से बंद करना आवश्यक है</string>
 </resources>
