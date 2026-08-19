@@ -93,6 +93,86 @@ The rest of this section's proposed layout (`smoke/`, `recurrence/`, `settings/`
 a proposal — nothing under those categories has been written yet (recurrence coverage so far is
 all Tier B/Compose instead, per §A's Status column).
 
+### 1c. Locating elements: test tags over coordinates
+
+**When writing a new test (Tier A/B or Maestro) against an element with no locatable text or
+`contentDescription`, add a `Modifier.testTag(...)` to it instead of reaching for a
+fixed-coordinate tap.** This was learned the hard way: `create_countdown_reminder.yaml`'s
+`ValueEditorSheet` close button (a chevron-down icon, `contentDescription = null` since its
+meaning is visually obvious) had no tag for a long time, so the flow closed it with
+`tapOn: { point: "90%, 16%" }` — confirmed live to work fine on the real API 30 device this suite
+was originally verified against, but to land on a different element entirely on a larger/taller
+AVD profile (Pixel 10 Pro XL, API 37), silently knocking the flow back to Home with no error until
+several steps later. A percentage-based point is relative to *screen* dimensions, not to any
+specific element, so it isn't portable across device sizes/aspect ratios the way a tag-based
+selector is.
+
+Ordering to reach for when picking a locator, most to least preferred:
+1. Visible text / `contentDescription` — already the norm throughout this suite, and worth
+   checking for a component's own *built-in* one before adding anything: Material3's
+   `ModalBottomSheet` scrim, for instance, already carries `content-desc="Close sheet"` with no
+   app code involved at all (confirmed live via `adb shell uiautomator dump`) — a viable fallback
+   locator for dismissing any sheet, even one whose real close button has no tag yet.
+2. `Modifier.testTag(...)`, when neither of the above exists on the element and adding one is
+   in-scope — a plain `const val ..TestTag = "..."` next to the composable that owns it (see
+   `shopItemCheckTestTag`/`shopItemRemoveTestTag` in `SubTasksValueEditor.kt`,
+   `builderItemRemoveTestTag` in `BuilderListItemCard.kt`, and `valueEditorSheetCloseTestTag`/
+   `builderSelectorSheetCloseTestTag` in `ValueEditorSheet.kt`/`BuilderSelectorSheet.kt`) —
+   `internal`/public per the same widen-only-when-referenced-cross-module rule `CLAUDE.md` already
+   states for any other symbol, since these test files live in `app`'s `androidTest`, outside the
+   composable's own module. **Confirmed reachable from both Compose UI tests and Maestro** — see
+   below for what that took.
+3. A fixed on-screen `point:` — last resort only, and call out explicitly in a comment that it's
+   unverified across device profiles if you can't test more than one. Confirmed live to be a real
+   risk, not a hypothetical one: `create_countdown_reminder.yaml`'s `ValueEditorSheet` close button
+   used to be closed with `tapOn: { point: "90%, 16%" }`, which worked fine on the real API 30
+   device this suite was originally verified against but landed on a different element entirely on
+   a larger/taller AVD profile (Pixel 10 Pro XL, API 37), silently knocking the flow back to Home
+   with no error until several steps later.
+
+**Compose UI tests** (Tier A/B) read `Modifier.testTag()` directly through the semantics tree
+(`composeRule.onNodeWithTag(...)`) — no extra wiring needed, this already worked throughout the
+suite, and is unaffected by anything below.
+
+**Maestro drives the compiled app through Android's accessibility tree instead**, and Compose only
+exposes `testTag` there when told to. Getting this working took two real, non-obvious fixes, both
+found by direct investigation rather than guessing, and both worth knowing before touching this
+code again:
+
+1. **This Compose UI version has no `LocalTestTagsAsResourceId` CompositionLocal at all** — that
+   symbol was assumed to exist (it's how some other Compose codebases do this) but a compile
+   against it silently never actually succeeded; a `| tail` pipe on the verifying Gradle command
+   was masking the real failing exit code, so several "confirmed compiles" during this work were
+   false positives. Directly inspecting the resolved `androidx.compose.ui:ui-android` artifact's
+   own class list (no such CompositionLocal; the actual API is
+   `androidx.compose.ui.semantics.SemanticsPropertiesAndroid`/`SemanticsProperties_androidKt`)
+   showed the real, older mechanism: `Modifier.semantics { testTagsAsResourceId = true }`, a
+   semantics property that merges down to descendants from whatever real layout node it's attached
+   to — not a value that flows implicitly through composition the way a CompositionLocal does.
+2. **Attaching it via a `Box` wrapper broke every bottom sheet's layout app-wide.**
+   `AppModalBottomSheet`'s `content` parameter is typed `ColumnScope.() -> Unit` because Material3's
+   `ModalBottomSheet` arranges it in an internal `Column` — wrapping the call to `content()` in a
+   `Box` instead flattens all of its emitted sibling composables into Box's children, which stack
+   at the same position instead of flowing top-to-bottom. This shipped a real, confirmed-live
+   regression (BuilderSelectorSheet's search field rendering directly on top of its own tab row,
+   persistent well past any plausible animation window, not a timing artifact) before being caught
+   by actually looking at a screenshot rather than trusting "the app installed and the button
+   still has the right resource-id" as proof the screen was fine. Fixed by using `Column` instead
+   of `Box` — its content lambda already provides the matching `ColumnScope`, so `content()`
+   resolves directly with no receiver workaround needed either.
+
+With both fixed: `ComponentActivity.composeView()`/`Fragment.composeView()`
+(`ActivityComposeExtensions.kt`/`FragmentComposeExtensions.kt`, the two shared entry points every
+screen's `setContent`/`ComposeView` goes through) set `testTagsAsResourceId` app-wide via a `Box`
+wrapper around their own single `AppTheme { content() }` child (safe there — only one child, so no
+stacking issue), debug builds only via `BuildInfo.isDebug`. `AppModalBottomSheet` (`BottomSheet.kt`)
+re-sets it via `Column` inside its own Popup content, since a property set at the Activity root
+doesn't merge into a separate Popup window. Confirmed working two independent ways: a live
+`adb shell uiautomator dump` showing `resource-id="value_editor_sheet_close"` on the real node, and
+a fully passing Maestro run (`notification_permission_denied.yaml`) using
+`tapOn: { id: "value_editor_sheet_close" }` three times via its `create_countdown_reminder.yaml`
+subflow.
+
 ---
 
 ## 2. Gradle wiring needed
@@ -374,7 +454,7 @@ that calculator, not guessed from the UI.
 | A22 | Custom RRULE — `FREQ=YEARLY;BYMONTH=…;BYMONTHDAY=…` | ICal Freq + ByMonth + ByMonthDay | `ICalendar(rrule)` | Tier B | P1 | Deferred |
 | A23 | Custom RRULE with `UNTIL` date | ICal Freq + UntilDate/Time | `ICalendar(rrule)` — recurrence stops after `UNTIL` | Tier B | P1 | Deferred |
 | A24 | Save a custom RRULE as a "recur preset," reuse it on a second reminder | ICal builder → save preset → new reminder → apply preset | n/a (preset feature) | Maestro | P1 | Deferred — depends on A18-A23's RRULE work |
-| A25 | Shopping-list reminder with no date/time | Sub-tasks only, no Date/Time/Timer | `Once` via `emptySchedule()` (no `eventDateTime`) | Tier B | P1 | |
+| A25 | Shopping-list reminder with no date/time | Sub-tasks only, no Date/Time/Timer | `Once` via `emptySchedule()` (no `eventDateTime`) | Tier B | P1 | Done |
 | A26 | Edit existing reminder: change recurrence type (e.g. Once → Weekly) | any → any | recalculated `RecurrenceRule` replaces the old one | Tier B | P0 | Done |
 | A27 | Complete one occurrence of a repeating reminder, confirm next occurrence schedules | Weekly/Monthly/Daily | next `eventDateTime` advances correctly; `repeatLimit`/`until` boundary stops repetition when exhausted | Tier B | P0 | Skipped — no safe UI path, see note below |
 | A28 | Snooze a fired reminder (`delayMinutes`), confirm it re-fires after the window | any + DelayMinutes override | re-scheduled at `now + delayMinutes` | Tier B, Maestro | P1 | |
@@ -411,18 +491,19 @@ Notes on the non-obvious Status values above:
 | B2 | SMS action — number entry + validation | Tier A | P1 | Done (Tier B) |
 | B3 | Email action + subject field | Tier A | P1 | Done (Tier B) |
 | B4 | Web link action — URL validation | Tier A | P1 | Done (Tier B) |
-| B5 | Open-application action (SDK-gated, `maxSdk = S`) — confirm hidden above Android 12 | Tier A | P1 | Skipped — needs an API 31+ device, see note below |
-| B6 | Sub-tasks/shopping list — add/remove/check off nested items | Tier B, Maestro | P0 | Done — add + check only, see note below |
+| B5 | Open-application action (SDK-gated, `maxSdk = S`) — confirm hidden above Android 12 | Tier A | P1 | Done — see note below |
+| B6 | Sub-tasks/shopping list — add/remove/check off nested items | Tier B, Maestro | P0 | Done — add, check, and remove, see note below |
 | B7 | Group assignment on create, group-based filtering on list/home | Tier B, Maestro | P0 | Done — assignment only, see note below |
-| B8 | Tag assignment (add/remove), filter reminder list by tag | Tier B | P1 | |
+| B8 | Tag assignment (add/remove), filter reminder list by tag | Tier B | P1 | Done — assignment only, see note below |
 | B9 | Priority selection reflected in list sort/badge | Tier B | P1 | Done — selection only, see note below |
 | B10 | Note attachment link (create/edit reminder ↔ existing note) | Tier B | P1 | Done |
 | B11 | File attachment add/remove | Tier A | P1 | Skipped — real system file picker, see note below |
 | B12 | Google Task list linkage — **requires a signed-in Google test account; tag `manual`/skip in CI, cover with a fake-auth Tier B test of the UI wiring instead** | Tier B (fake auth) | P1 | |
-| B13 | Google Calendar event creation + duration field | Tier B (fake calendar API) | P1 | |
+| B13 | Google Calendar event creation + duration field (`GoogleCalendarBuilderItem` + `GoogleCalendarDurationBuilderItem`'s `CalendarDuration{allDay, millis}`) | Tier B (fake calendar API) | P1 | |
 | B14 | "Remind before" (before-time) field | Tier A | P1 | Done (Tier B) |
 | B15 | Repeat time / interval / limit fields validated together (constraint rules from `BuilderItem` `constraints {}` blocks) | Tier A | P0 | Done (Tier B) — one constraint, see note below |
 | B16 | Constraint enforcement: selecting a blocked combination (e.g. Timer + Date) is prevented/clears the conflicting item | Tier A | P0 | Done (Tier B) |
+| B17 | Description field (`DescriptionBuilderItem`) persists free-text body, independent of Summary | Tier A | P2 | Done — bundled into B8's test, see note below |
 
 Notes on the non-obvious Status values above:
 
@@ -431,15 +512,17 @@ Notes on the non-obvious Status values above:
   source set (see §2's status note), so every test so far lives in the one Tier-B flow-level file
   and drives the full app instead of mounting an isolated composable. Functionally equivalent
   coverage, just a heavier/slower test than originally planned.
-- **B5** wasn't implemented: its actual point is confirming the item is *hidden above* Android 12
-  (`maxSdk = S` on `ApplicationBuilderItem`), but the real device used for this suite so far is
-  API 30 — below the gate — so it can only ever prove the item is present, not that the gating
-  itself works. Needs an API 31+ device.
-- **B6** covers add (two items) and check-off, not remove: `ShopItemRow`'s remove button only
-  composes once its row is both focused *and* non-empty, and this suite has no proven way yet to
-  assert real Android focus state from a semantics-only interaction. Needed new `testTag`s on that
-  row's checkbox/remove buttons either way (`shopItemCheckTestTag`/`shopItemRemoveTestTag`,
-  `SubTasksValueEditor.kt`) since neither had any prior locator at all.
+- **B5** now runs on both sides of the gate: an API 30 device (item present) and an API 37
+  emulator (item absent), asserting the opposite outcome depending on `Build.VERSION.SDK_INT`
+  relative to `ApplicationBuilderItem`'s `maxSdk = S`. Doesn't select the item, just checks whether
+  it's findable in the item picker's search results — see
+  `applicationBuilderItemIsHiddenAboveAndroid12` in `ReminderRecurrenceE2ETest.kt`.
+- **B6** now covers add, check-off, and remove. The remove case needed a real (not semantics-faked)
+  focus change first — `ShopItemRow`'s remove button only composes once its row is both focused
+  *and* non-empty — done by tapping directly on the target row's own text, the same gesture a user
+  would use, which reliably refocuses it via the real Compose focus system. `shopItemCheckTestTag`/
+  `shopItemRemoveTestTag` (`SubTasksValueEditor.kt`) had already been scaffolded ahead of this by
+  whoever wrote the add/check-off test; `shopItemRemoveTestTag` had no caller anywhere until now.
 - **B7** covers "assignment on create" only, not "group-based filtering on list/home" — that half
   needs its own Home/list-screen investigation, folded into the new §G below rather than done here.
 - **B9** covers persisted selection only, not "reflected in list sort/badge" — same reasoning as
@@ -450,6 +533,21 @@ Notes on the non-obvious Status values above:
 - **B15** covers one constraint (`RepeatLimitBuilderItem`'s `requiresAny`), not the full "repeat
   time/interval/limit validated together" scope implied by the row — a reasonable next slice if
   this area gets revisited.
+- **B8 covers "assignment on create" only**, not "filter reminder list by tag" — same split already
+  applied to B7/B9, that half is a list/Home-screen rendering concern, see §G. Tags also have no
+  corresponding `BuilderItem` — unlike every other row in this section, they aren't added via the
+  item picker at all. `BuildReminderScreen.kt`'s `TagsRow` is a fixed row rendered inside the same
+  `LazyColumn` as the picked builder items (backed by `TagChipPicker`/`onManageTagsClick`), wired
+  directly in `BuildReminderViewModel`/`BuildReminderState` — so it only composes once at least one
+  builder item has been added (the empty-builder state renders `BuilderEmptyState` instead, with no
+  `LazyColumn` at all). Needed new `factory<TagRepository>`/`factory<TagAssignmentRepository>`
+  entries in `testRepositoryModule` (plus a no-op `TagSyncTrigger` fake — its one real
+  implementation lives in `app` and schedules cloud-sync work irrelevant here), same reasoning as
+  B10's new `NoteRepository` entry.
+- **B17** ended up bundled into B8's test rather than a dedicated one, per this note's own original
+  suggestion — `SummaryBuilderItem`/`DescriptionBuilderItem` were exercised constantly already as
+  test scaffolding (every existing test sets a unique Summary so its row can be found later), but
+  neither one's own persistence had ever been the subject of an assertion until now.
 
 ### C. Notification customization (Settings → Group → Reminder hierarchy)
 
@@ -475,6 +573,16 @@ One row per field from `NotificationSettingsOverride`
 Whole section deferred by project decision, together with §A's custom-RRULE rows (A18–A24) — not
 started, waiting to be picked up as one batch.
 
+**Note for whoever picks this batch up**: on the *builder* side (Reminder-level override), C1's
+`vibrate` and C3's `repeatNotification` aren't two separate builder items — both are written by the
+single PRO-only `OtherParamsBuilderItem` (`BiGroup.EXTRA`), whose `OtherParamsModifier.putInto` only
+copies `vibrate`/`repeatNotification` onto `reminder.notification` when its `useGlobal` flag is
+`false` (`useGlobal = true` is the "Inherit" state C1/C12 refer to). That same item's `OtherParams`
+value also carries a `notifyByVoice` field that's captured in the UI but **never read by
+`putInto`** — it doesn't persist anywhere. Don't write a C-series assertion expecting a voice-
+notification override to round-trip; confirm with whoever owns this screen whether that's a known
+dead field or a bug before doing anything else with it.
+
 ### D. Notification delivery under different app settings
 
 | # | Test | Tool | Pri | Status |
@@ -485,7 +593,7 @@ started, waiting to be picked up as one batch.
 | D4 | Quiet hours `doNotDisturbIgnore = 5` ("ignore all") → suppressed regardless of priority | Maestro | P0 | Done |
 | D5 | Quiet hours enabled but due time outside the window → fires normally | Maestro | P1 | |
 | D6 | `repeatNotification` enabled → re-alerts at interval until dismissed/opened | Maestro | P1 | |
-| D7 | `POST_NOTIFICATIONS` permission denied (Android 13+) → app doesn't crash; in-app prompt shown; no system notification posted | Maestro | P0 | Done — written, not verifiable on the API 30 device used so far, see note below |
+| D7 | `POST_NOTIFICATIONS` permission denied (Android 13+) → app doesn't crash; in-app prompt shown; no system notification posted | Maestro | P0 | Done — verified end-to-end on an API 37 emulator, see note below |
 | D8 | Permission granted after initial denial (via deep-linked system Settings) → subsequent reminders fire | Maestro | P1 | |
 | D9 | Tapping a fired notification opens the correct reminder preview/edit screen (deep link) | Maestro | P0 | Done — corrected target screen, see note below |
 | D10 | Dismissing (swipe-away) vs. tapping a notification action updates reminder state accordingly | Maestro | P1 | |
@@ -499,10 +607,24 @@ Notes on the non-obvious Status values above:
   reminder's notification fired). They now seed each reminder with a unique Summary and assert on
   that instead — a real device run confirmed the original assertion was too weak to actually prove
   which notification fired.
-- **D7** (`notification_permission_denied.yaml`) is written and structurally sound, but this
-  suite's real device is API 30, where `POST_NOTIFICATIONS` isn't a runtime permission at all —
-  there's no dialog for it to deny, so the flow's actual "Don't allow" step has never run for real.
-  It'll get genuine coverage the next time this runs against CI's API 34 target.
+- **D7** (`notification_permission_denied.yaml`) is now verified end-to-end on an API 37 emulator
+  (real device is still API 30, below the gate, same limitation as before), with a fully clean run
+  logged (every step `COMPLETED`, nothing skipped but the one intentional `runFlow: when:` branch).
+  Several real issues surfaced and got fixed along the way, not specific to this flow alone:
+  - `launchApp` with no `permissions` key does **not** leave `POST_NOTIFICATIONS` ungranted on
+    this Maestro CLI (2.8.0) — it auto-grants it regardless, silently defeating this flow's whole
+    premise. Fixed with an explicit `permissions: { notifications: deny }`, confirmed live via
+    `adb shell dumpsys package <appId>` before and after.
+  - `tapOn: "Don't allow"` never matched the real system dialog (confirmed showing correctly via
+    screenshot) — almost certainly a straight-vs-curly-apostrophe mismatch against Android's own
+    string resource. Fixed with `tapOn: "Don.t allow"` (regex wildcard for that one character).
+  - The shared `create_countdown_reminder.yaml` subflow this flow (and D1/D3/D4/D9) all depend on
+    needed its own fixes — see that file's notes: `hideKeyboard` doesn't work on this AVD's Gboard
+    IME; the item picker's search field needs an explicit settle wait after each open (reproducible
+    3 times in a row without it, not a one-off flake); and its `ValueEditorSheet`-closing step moved
+    off a fixed-coordinate tap (not portable across screen sizes, confirmed live) onto
+    `tapOn: { id: "value_editor_sheet_close" }` — see §1c above for the two real fixes that took to
+    get a `testTag` reachable from Maestro at all.
 - **D9** (`tap_notification_opens_reminder.yaml`) corrects an assumption this row's own description
   made: reading `ReminderNotificationHandler.contentPendingIntent` shows tapping a notification
   actually opens `ReminderActionActivity` (the Complete/Snooze action picker), not a preview/edit
@@ -571,13 +693,43 @@ screen-specific.
 | G6 | Agenda screen: its embedded search filters the list by reminder text (see the F4 correction above — this *is* what "global search" means today) | Tier B | P1 |
 | G7 | Group details screen: a member reminder's row renders the same summary/date/tag chips as Agenda (same underlying `UiReminderList` adapter) but with **no status chip and no row menu** — click-only navigation to open it | Tier B | P1 |
 | G8 | Archive screen: a removed reminder's row renders summary/date/tags with **only Edit and Delete** in its menu, no status chip, and — confirmed by reading `RemindersArchiveViewModel`/`ArchiveReminderRow` — **no restore/un-archive action exists anywhere on the row at all**; the only way back to active is via Edit. Worth a test asserting that absence explicitly, since it's easy to accidentally "fix" as a bug later without realizing it's the current intended behavior | Tier B | P1 |
-| G9 | Preview screen: Enabled/Disabled status text + toggle switch reflects and changes the reminder's active state | Tier B | P0 |
+| G9 | Preview screen: Enabled/Disabled status text + toggle button reflects and changes the reminder's active state; button is disabled (non-interactive) once the reminder is removed | Tier B | P0 |
 | G10 | Preview screen: Details section (summary, description, due date, remind-before, repeat text, remaining time, group title, priority title, tags, ID) renders correctly for a fully-populated reminder | Tier B | P1 |
-| G11 | Preview screen: action-target section renders contact name + raw phone number for Call/SMS, contact name + email + subject for Email, and the URL for Link — correctly hidden for Shopping/None | Tier B | P1 |
+| G11 | Preview screen: action-target section renders contact name + raw phone number for Call/SMS, contact name + email + subject for Email, resolved app name for App, and the URL for Link — correctly hidden for Shopping/None | Tier B | P1 |
 | G12 | Preview screen: attachments (image thumbnail vs. file-type icon), sub-tasks (checked count, strikethrough), map/place address, note-link card, Google Task card, and calendar-event cards each render when the reminder has that data | Tier B | P1 |
 | G13 | Preview screen: overflow menu (Edit/Share/Copy/Delete) — Copy only appears when `state.canCopy`, and the delete confirmation dialog's text switches between "Delete" and "Move to the archive" depending on `state.canDelete` | Tier B | P1 |
 | G14 | Action screen (`ReminderActionActivity`, opened from a fired notification or in-app): header renders contact photo/icon + name + phone number for Call/SMS, email + subject for Email, resolved app name (not raw target) for App, and URL text for Link — summary-only for Shopping/None | Tier B | P1 |
 | G15 | Action screen: main + secondary action buttons render correctly — a single full-width button when only one action is available, a split button with an overflow menu when there are several | Tier B | P1 |
+
+**Notes on G9–G13 (Preview screen), added after re-reading the screen post-redesign** (`PreviewReminderScreen.kt`,
+`PreviewReminderState.kt`, `PreviewReminderViewModel.kt` — reflects `d0e7845c6`/PR #496, "Remove switch
+from the reminder details screen"):
+- **G9's row previously said "toggle switch"** — corrected above. The status control is now a dot +
+  text + `FilledTonalButton` ("Turn on"/"Turn off"), not a `Switch`. The button's `enabled` is
+  `status.canToggle`, which is `!removed` (`UiReminderStatus.kt`) — so a test for the removed-reminder
+  case must reach Preview via the **Archive screen** row tap (`RemindersArchiveScreen.kt`), not Home,
+  since Home never lists removed reminders (§G3).
+- **`UiReminderStatus.title` is computed but never read by `StatusRow`** — the composable derives its
+  text purely from `status.active` (`"Enabled"`/`"Disabled"`), even though `title` is separately
+  `"Deleted"` for a removed reminder. A removed reminder therefore still reads "Disabled" on this
+  screen, not "Deleted". Don't write a G9 assertion expecting `"Deleted"` text — that's not what
+  renders today. Flagging this as a possible (unconfirmed) inconsistency rather than a bug to fix as
+  part of test-writing.
+- **G11 originally omitted the App target** (`UiReminderType.Kind.APP`, open-application action) —
+  `targetInfoItems()` in `PreviewReminderScreen.kt` branches on it exactly like Call/SMS/Email/Link
+  (resolved app name via `UiAppTarget.name`, falling back to the raw target string), so it belongs in
+  this row's scope too. Note per §B5: the *builder* item that creates an App target is hidden above
+  API 31 (`maxSdk = S`) — on this suite's real device (API 30) it's still creatable through the UI, so
+  no repository-seeding workaround is needed for this one specifically, unlike most of G12 below.
+- **G12's data sources mostly have no in-scope UI path to create them** (attachments = system file
+  picker, Google Task/Calendar = OAuth-gated — same exclusions already applied to B11/B12/B13; places
+  = location builder items, §A15–A17, still blank/not started; sub-tasks and note-linking *are*
+  UI-buildable per B6/B10). The practical path for G12 tests is to seed the missing pieces directly
+  through their repositories (`reminderV2Repository`/`noteRepository`/`googleTaskRepository`/
+  `googleTaskListRepository`/`calendarEventRepository`, mirroring how B10 already seeds a `Note`
+  directly) and use real UI only to navigate to and assert on Preview — consistent with this section's
+  stated intent ("what a reminder actually *looks like* once it exists"), not re-proving the
+  create-flow itself.
 
 **Open question — resolve before writing a test for it, don't guess**: does `ReminderActionScreen`
 need to suppress Snooze for location reminders the way the *fired system notification* already
@@ -610,15 +762,18 @@ similar cases:
    explicitly called out as needing coverage and are where `RecurrenceRuleCalculator` and the
    Settings/Group/Reminder override resolution have the most surface area for regressions.
    **Partially done**: §A's edge cases and most of its P0/P1 rows are covered (see the Status
-   column in §5) other than location (A15–A17), custom RRULE (A18–A24, explicitly deferred by
-   project decision), and a handful of others (A25, A27 skipped, A28, A29). **§C (notification
-   hierarchy) hasn't been started at all** — still deferred by the same decision as the RRULE
-   rows, waiting to be picked up together in one batch per §4's wiring caveat.
+   column in §5), including A25 now, other than location (A15–A17), custom RRULE (A18–A24,
+   explicitly deferred by project decision), and a handful of others (A27 skipped, A28, A29).
+   **§C (notification hierarchy) hasn't been started at all** — still deferred by the same
+   decision as the RRULE rows, waiting to be picked up together in one batch per §4's wiring
+   caveat.
 3. §B/§E/§F can land incrementally as each screen stabilizes, especially given `feature-reminder`
    and the settings feature module are both still under active extraction into their own Gradle
    modules on this branch — a screen's exact package/module home may move before these tests are
-   written. **Most of §B is now done** (see its Status column) — B8 (tags), B12/B13 (Google
-   linkage), and the file/app-picker rows (B5, B11) remain. **§E and §F haven't been started.**
+   written. **Most of §B is now done** (see its Status column), including B6's remove case, B8
+   (tags), and B17 (description) — B12/B13 (Google linkage) and the file/app-picker rows (B5, B11)
+   remain, all already flagged as needing external accounts/devices this CI setup doesn't have.
+   **§E and §F haven't been started.**
 4. **New, not in the original plan**: §G below (reminder appearance across Home, list, Preview,
    and the notification Action screen) — added once enough of §A/§B/§D existed to reveal this as
    a real gap: none of the tests so far assert on what a reminder actually *looks like* once

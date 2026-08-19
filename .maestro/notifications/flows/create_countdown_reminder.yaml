@@ -59,15 +59,41 @@ appId: com.cray.software.justreminderpro
 # for the same sheet in the Compose instrumented test - it's a real Maestro/UiAutomator-vs-Espresso
 # behavioral difference, not a locator mistake (verified via screenshot: identical sheet state
 # before and after the key press). `ValueEditorSheet`'s own close icon has `contentDescription =
-# null` in source (see its kdoc - closing "any way" was the assumption, back press included), so
-# it can't be targeted by text either - tapping its fixed on-screen position (top-right of every
-# editor sheet, same position regardless of which item is open) is the reliable alternative.
+# null` in source, so it's closed by `id: value_editor_sheet_close` (`valueEditorSheetCloseTestTag`
+# in `ValueEditorSheet.kt`) instead.
+#
+# A fixed-coordinate `tapOn: { point: "90%, 16%" }` was used here previously and confirmed live to
+# be NOT portable: it worked on the real API 30 device this suite was originally verified against,
+# but on a larger/taller AVD profile (Pixel 10 Pro XL, API 37) the same percentage-based point
+# landed on a different element and silently knocked the flow back to Home.
+#
+# Getting `id:` selectors to actually work took two real fixes, both now confirmed live via
+# `adb shell uiautomator dump` (not just "compiles"):
+# 1. This Compose UI version has no `LocalTestTagsAsResourceId` CompositionLocal at all (checked
+#    directly against the resolved `androidx.compose.ui:ui-android` artifact's own class list) -
+#    `testTagsAsResourceId` here is the older semantics-property API,
+#    `Modifier.semantics { testTagsAsResourceId = true }`, which needs a real Modifier-bearing
+#    node to merge down from, not a CompositionLocalProvider.
+# 2. Material3's `ModalBottomSheet` composes its content into a separate Popup window, which a
+#    semantics property set at the Activity/Fragment root doesn't merge into - `AppModalBottomSheet`
+#    (`BottomSheet.kt`) re-sets it locally inside the Popup's own content for this reason.
+# See docs/e2e-testing.md §1c for the full story, including the wrong path taken first.
+#
+# Confirmed live, reproducible across 3 back-to-back runs on this AVD: `tapOn: "Search
+# parameters…"` right after opening the item picker for the first time this session can fail with
+# "Element not found" even though the sheet is genuinely open - a screenshot at the failure moment
+# showed the sheet's own tab row ("Parameters"/"Presets"/"iCalendar presets") overlapping the item
+# list beneath it, i.e. caught mid-expand-animation, not fully settled. Each of the 3 picker opens
+# below now waits for the search field to actually be visible first rather than assuming the
+# sheet's expand animation has finished by the time the previous step returns.
 - tapOn: "Add"
 - tapOn: "Reminder"
 - tapOn: "Add"
+- extendedWaitUntil:
+    visible: "Search parameters…"
+    timeout: 10000
 - tapOn: "Search parameters…"
 - inputText: "Countdown"
-- hideKeyboard
 - tapOn: "Set countdown time"
 - tapOn: "^1$"
 - swipe:
@@ -76,11 +102,13 @@ appId: com.cray.software.justreminderpro
 - tapOn: "^0$"
 - tapOn: "^5$"
 - tapOn:
-    point: "90%, 16%"
+    id: "value_editor_sheet_close"
 - tapOn: "Add"
+- extendedWaitUntil:
+    visible: "Search parameters…"
+    timeout: 10000
 - tapOn: "Search parameters…"
 - inputText: "Priority"
-- hideKeyboard
 - tapOn: "Set priority for the notification"
 - runFlow:
     when:
@@ -89,21 +117,22 @@ appId: com.cray.software.justreminderpro
       - tapOn: "^High$"
 - tapOn: "^${PRIORITY_LABEL}$"
 - tapOn:
-    point: "90%, 16%"
+    id: "value_editor_sheet_close"
 # Confirmed live (real device, API 30): `below: "What you want to remind you"` correctly focuses
 # the empty Summary field (which has no placeholder/label of its own to tap by text - see
 # TextInputValueEditor.kt) by targeting whatever's directly below that item's description text,
 # which ValueEditorSheet renders as a subtitle right above the field's editor content for every
 # item type.
 - tapOn: "Add"
+- extendedWaitUntil:
+    visible: "Search parameters…"
+    timeout: 10000
 - tapOn: "Search parameters…"
 - inputText: "Summary"
-- hideKeyboard
 - tapOn: "What you want to remind you"
 - tapOn:
     below: "What you want to remind you"
 - inputText: "${SUMMARY}"
-- hideKeyboard
 - tapOn:
-    point: "90%, 16%"
+    id: "value_editor_sheet_close"
 - tapOn: "Save"

@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -109,6 +110,20 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 
+/** Semantics test tag for [ValueEditorSheet]'s own close button (the chevron-down icon) - it has
+ *  no text/`contentDescription` of its own to locate it by (`contentDescription = null` in
+ *  source, since the icon's meaning is already obvious visually). Exposed so instrumented tests
+ *  can close the sheet by tag (`composeRule.onNodeWithTag(valueEditorSheetCloseTestTag)`), and so
+ *  Maestro flows can too via `tapOn: { id: "value_editor_sheet_close" }` - confirmed live via
+ *  `adb shell uiautomator dump` showing `resource-id="value_editor_sheet_close"` on this node,
+ *  and via a full passing Maestro run (`notification_permission_denied.yaml`, whose
+ *  `create_countdown_reminder.yaml` subflow uses this tag to close the sheet 3 times). See
+ *  docs/e2e-testing.md §1c for what it took to get here - this Compose UI version has no
+ *  `LocalTestTagsAsResourceId` CompositionLocal, so `AppModalBottomSheet`
+ *  (`BottomSheet.kt`) re-applies the older `Modifier.semantics { testTagsAsResourceId = true }`
+ *  property inside its own Popup content for this to reach in here at all. */
+const val valueEditorSheetCloseTestTag = "value_editor_sheet_close"
+
 /**
  * The reminder builder's "edit value" bottom sheet: title + close button, optional description,
  * and a type-specific editor body. This is the Compose replacement for `ValueDialog` +
@@ -161,7 +176,10 @@ internal fun ValueEditorSheet(
           )
         }
       }
-      IconButton(onClick = onDismissRequest) {
+      IconButton(
+        onClick = onDismissRequest,
+        modifier = Modifier.testTag(valueEditorSheetCloseTestTag),
+      ) {
         Icon(
           painter = painterResource(R.drawable.ic_builder_chevron_down),
           contentDescription = null,

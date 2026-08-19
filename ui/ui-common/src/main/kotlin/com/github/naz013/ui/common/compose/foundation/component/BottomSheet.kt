@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -97,8 +99,33 @@ fun AppModalBottomSheet(
     tonalElevation = tonalElevation,
     scrimColor = scrimColor,
     dragHandle = dragHandle,
-    content = content
-  )
+  ) {
+    // Material3's ModalBottomSheet renders its content in its own Popup window, so the
+    // `testTagsAsResourceId` semantics property set at the Activity/Fragment root
+    // (ActivityComposeExtensions.kt's composeView()) doesn't merge down into it - semantics
+    // properties only propagate through the composition subtree they're set on, and a Popup is a
+    // new subtree. Re-set here, at the one shared entry point every builder sheet in the app goes
+    // through, so `tapOn: { id: "<tag>" }` from Maestro can reach anything inside a sheet.
+    // Unconditionally `true` (not gated by BuildInfo.isDebug the way the root-level one is) since
+    // this is a leaf `ui-common` composable with its own @Preview functions that must keep
+    // working without Koin - see docs/e2e-testing.md §1c for why this flag is considered safe to
+    // leave on.
+    //
+    // Column, not Box: `content` is typed `ColumnScope.() -> Unit` because every real caller
+    // (BuilderSelectorSheet, ValueEditorSheet) emits several sibling composables expecting to be
+    // arranged vertically by ModalBottomSheet's own internal Column, the same way any direct
+    // `ColumnScope` content would be. A `Box` wrapper here was tried first and shipped a real
+    // layout regression - Box stacks/overlaps all of `content()`'s emitted children at the same
+    // position instead of flowing them top-to-bottom, confirmed live (this exact overlap, e.g.
+    // BuilderSelectorSheet's search field rendering directly on top of its tab row) via
+    // screenshots taken well after any animation could still be in flight, so it wasn't a timing
+    // issue - it was a genuinely broken frame, persistent, on every sheet in the app. Column's own
+    // content lambda already provides the matching `ColumnScope`, so `content()` resolves
+    // directly here with no explicit-receiver workaround needed either.
+    Column(modifier = Modifier.semantics { testTagsAsResourceId = true }) {
+      content()
+    }
+  }
 }
 
 /**
