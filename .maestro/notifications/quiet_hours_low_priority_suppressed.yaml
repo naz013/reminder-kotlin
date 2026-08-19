@@ -13,6 +13,11 @@ tags:
 # clearState means this is a genuinely fresh install, which shows a Privacy Policy consent
 # dialog and (separately) a cloud-backup-restore prompt before the home screen - confirmed live,
 # neither is in docs/e2e-testing.md. `optional: true` so this is a no-op if they don't appear.
+# The wait below is a floor under this tap for a slow cold start - see
+# quiet_hours_disabled_fires.yaml's identical preamble for the full rationale.
+- extendedWaitUntil:
+    visible: "Accept"
+    timeout: 60000
 - tapOn:
     text: "Accept"
     optional: true

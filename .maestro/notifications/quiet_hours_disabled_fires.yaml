@@ -12,6 +12,16 @@ tags:
 # clearState means this is a genuinely fresh install, which shows a Privacy Policy consent
 # dialog and (separately) a cloud-backup-restore prompt before the home screen - confirmed live,
 # neither is in docs/e2e-testing.md. `optional: true` so this is a no-op if they don't appear.
+#
+# Confirmed live on a larger/newer AVD profile (Pixel 10 Pro XL, API 37): the first launch after
+# `clearState: true` can render a blank screen well past this tap's own default retry window,
+# failing hard on a later non-optional step instead of on the actual missing element - the app
+# does load, just not within that window on a slower cold start. This wait is a floor under the
+# optional taps that follow, not a behavior change - the Privacy Policy banner is asserted above
+# to unconditionally appear.
+- extendedWaitUntil:
+    visible: "Accept"
+    timeout: 60000
 - tapOn:
     text: "Accept"
     optional: true
