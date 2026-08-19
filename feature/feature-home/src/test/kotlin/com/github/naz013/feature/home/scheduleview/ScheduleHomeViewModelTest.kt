@@ -100,6 +100,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
           ScheduleHomeViewModel.EventType.Reminder,
           ScheduleHomeViewModel.EventType.Birthday,
           ScheduleHomeViewModel.EventType.Note,
+          ScheduleHomeViewModel.EventType.Todo,
         ),
         state.addMenuItems,
       )
