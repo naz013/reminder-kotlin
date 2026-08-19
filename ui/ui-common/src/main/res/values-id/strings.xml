@@ -1136,4 +1136,9 @@
     <string name="allow_swipe_to_dismiss">Izinkan geser untuk menutup</string>
     <string name="allow_swipe_to_dismiss_enabled">Menggeser notifikasi akan menyelesaikan pengingat</string>
     <string name="allow_swipe_to_dismiss_disabled">Notifikasi harus ditutup dengan tombol OK</string>
+    <string name="calendar_view_month">Bulan</string>
+    <string name="calendar_view_day">Hari</string>
+    <string name="calendar_view_3_days">3 hari</string>
+    <string name="calendar_view_7_days">7 hari</string>
+    <string name="calendar_switch_view_mode">Beralih tampilan kalender</string>
 </resources>

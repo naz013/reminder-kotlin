@@ -1136,4 +1136,9 @@
     <string name="allow_swipe_to_dismiss">Tillat sveiping for å avvise</string>
     <string name="allow_swipe_to_dismiss_enabled">Å sveipe bort varselet fullfører påminnelsen</string>
     <string name="allow_swipe_to_dismiss_disabled">Varselet må lukkes med OK-knappen</string>
+    <string name="calendar_view_month">Måned</string>
+    <string name="calendar_view_day">Dag</string>
+    <string name="calendar_view_3_days">3 dager</string>
+    <string name="calendar_view_7_days">7 dager</string>
+    <string name="calendar_switch_view_mode">Bytt kalendervisning</string>
 </resources>

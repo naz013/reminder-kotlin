@@ -1136,4 +1136,9 @@
     <string name="allow_swipe_to_dismiss">Tillad swipe for at afvise</string>
     <string name="allow_swipe_to_dismiss_enabled">At swipe notifikationen væk fuldfører påmindelsen</string>
     <string name="allow_swipe_to_dismiss_disabled">Notifikationen skal lukkes med OK-knappen</string>
+    <string name="calendar_view_month">Måned</string>
+    <string name="calendar_view_day">Dag</string>
+    <string name="calendar_view_3_days">3 dage</string>
+    <string name="calendar_view_7_days">7 dage</string>
+    <string name="calendar_switch_view_mode">Skift kalendervisning</string>
 </resources>

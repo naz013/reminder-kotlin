@@ -1139,4 +1139,9 @@
     <string name="allow_swipe_to_dismiss">Дозволити змахування для закриття</string>
     <string name="allow_swipe_to_dismiss_enabled">Змахування сповіщення завершує нагадування</string>
     <string name="allow_swipe_to_dismiss_disabled">Сповіщення потрібно закрити кнопкою ОК</string>
+    <string name="calendar_view_month">Місяць</string>
+    <string name="calendar_view_day">День</string>
+    <string name="calendar_view_3_days">3 дні</string>
+    <string name="calendar_view_7_days">7 днів</string>
+    <string name="calendar_switch_view_mode">Перемкнути вигляд календаря</string>
 </resources>

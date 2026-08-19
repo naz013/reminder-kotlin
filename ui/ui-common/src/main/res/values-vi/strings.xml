@@ -1136,4 +1136,9 @@
     <string name="allow_swipe_to_dismiss">Cho phép vuốt để bỏ qua</string>
     <string name="allow_swipe_to_dismiss_enabled">Vuốt để tắt thông báo sẽ hoàn thành lời nhắc</string>
     <string name="allow_swipe_to_dismiss_disabled">Thông báo phải được đóng bằng nút OK</string>
+    <string name="calendar_view_month">Tháng</string>
+    <string name="calendar_view_day">Ngày</string>
+    <string name="calendar_view_3_days">3 ngày</string>
+    <string name="calendar_view_7_days">7 ngày</string>
+    <string name="calendar_switch_view_mode">Chuyển đổi chế độ xem lịch</string>
 </resources>

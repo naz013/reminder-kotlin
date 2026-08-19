@@ -1136,4 +1136,9 @@
     <string name="allow_swipe_to_dismiss">السماح بالتمرير للإغلاق</string>
     <string name="allow_swipe_to_dismiss_enabled">يؤدي تمرير الإشعار بعيدًا إلى إكمال التذكير</string>
     <string name="allow_swipe_to_dismiss_disabled">يجب إغلاق الإشعار بزر موافق</string>
+    <string name="calendar_view_month">شهر</string>
+    <string name="calendar_view_day">يوم</string>
+    <string name="calendar_view_3_days">3 أيام</string>
+    <string name="calendar_view_7_days">7 أيام</string>
+    <string name="calendar_switch_view_mode">تبديل عرض التقويم</string>
 </resources>

@@ -1138,4 +1138,9 @@
     <string name="allow_swipe_to_dismiss">Consenti lo scorrimento per rimuovere</string>
     <string name="allow_swipe_to_dismiss_enabled">Scorrere la notifica per rimuoverla completa il promemoria</string>
     <string name="allow_swipe_to_dismiss_disabled">La notifica deve essere chiusa con il pulsante OK</string>
+    <string name="calendar_view_month">Mese</string>
+    <string name="calendar_view_day">Giorno</string>
+    <string name="calendar_view_3_days">3 giorni</string>
+    <string name="calendar_view_7_days">7 giorni</string>
+    <string name="calendar_switch_view_mode">Cambia visualizzazione calendario</string>
 </resources>

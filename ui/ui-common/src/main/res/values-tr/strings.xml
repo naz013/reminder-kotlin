@@ -1139,4 +1139,9 @@
     <string name="allow_swipe_to_dismiss">Kapatmak için kaydırmaya izin ver</string>
     <string name="allow_swipe_to_dismiss_enabled">Bildirimi kaydırarak kapatmak hatırlatıcıyı tamamlar</string>
     <string name="allow_swipe_to_dismiss_disabled">Bildirim, Tamam düğmesiyle kapatılmalıdır</string>
+    <string name="calendar_view_month">Ay</string>
+    <string name="calendar_view_day">Gün</string>
+    <string name="calendar_view_3_days">3 gün</string>
+    <string name="calendar_view_7_days">7 gün</string>
+    <string name="calendar_switch_view_mode">Takvim görünümünü değiştir</string>
 </resources>

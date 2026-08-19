@@ -1136,4 +1136,9 @@
     <string name="allow_swipe_to_dismiss">Tillåt svep för att avvisa</string>
     <string name="allow_swipe_to_dismiss_enabled">Att svepa bort aviseringen slutför påminnelsen</string>
     <string name="allow_swipe_to_dismiss_disabled">Aviseringen måste stängas med OK-knappen</string>
+    <string name="calendar_view_month">Månad</string>
+    <string name="calendar_view_day">Dag</string>
+    <string name="calendar_view_3_days">3 dagar</string>
+    <string name="calendar_view_7_days">7 dagar</string>
+    <string name="calendar_switch_view_mode">Växla kalendervy</string>
 </resources>
