@@ -1138,4 +1138,9 @@
     <string name="allow_swipe_to_dismiss">스와이프하여 닫기 허용</string>
     <string name="allow_swipe_to_dismiss_enabled">알림을 스와이프하여 닫으면 미리 알림이 완료됩니다</string>
     <string name="allow_swipe_to_dismiss_disabled">알림은 확인 버튼으로 닫아야 합니다</string>
+    <string name="calendar_view_month">월</string>
+    <string name="calendar_view_day">일</string>
+    <string name="calendar_view_3_days">3일</string>
+    <string name="calendar_view_7_days">7일</string>
+    <string name="calendar_switch_view_mode">캘린더 보기 전환</string>
 </resources>

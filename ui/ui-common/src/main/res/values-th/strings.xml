@@ -1136,4 +1136,9 @@
     <string name="allow_swipe_to_dismiss">อนุญาตให้ปัดเพื่อปิด</string>
     <string name="allow_swipe_to_dismiss_enabled">การปัดการแจ้งเตือนออกจะทำให้การแจ้งเตือนเสร็จสมบูรณ์</string>
     <string name="allow_swipe_to_dismiss_disabled">ต้องปิดการแจ้งเตือนด้วยปุ่มตกลง</string>
+    <string name="calendar_view_month">เดือน</string>
+    <string name="calendar_view_day">วัน</string>
+    <string name="calendar_view_3_days">3 วัน</string>
+    <string name="calendar_view_7_days">7 วัน</string>
+    <string name="calendar_switch_view_mode">สลับมุมมองปฏิทิน</string>
 </resources>

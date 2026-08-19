@@ -1138,4 +1138,9 @@
     <string name="allow_swipe_to_dismiss">Permitir deslizar para descartar</string>
     <string name="allow_swipe_to_dismiss_enabled">Deslizar la notificación completa el recordatorio</string>
     <string name="allow_swipe_to_dismiss_disabled">La notificación debe cerrarse con el botón Aceptar</string>
+    <string name="calendar_view_month">Mes</string>
+    <string name="calendar_view_day">Día</string>
+    <string name="calendar_view_3_days">3 días</string>
+    <string name="calendar_view_7_days">7 días</string>
+    <string name="calendar_switch_view_mode">Cambiar vista del calendario</string>
 </resources>

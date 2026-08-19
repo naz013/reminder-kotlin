@@ -1140,4 +1140,9 @@
     <string name="allow_swipe_to_dismiss">स्वाइप करके हटाने की अनुमति दें</string>
     <string name="allow_swipe_to_dismiss_enabled">सूचना को स्वाइप करके हटाने से रिमाइंडर पूरा हो जाता है</string>
     <string name="allow_swipe_to_dismiss_disabled">सूचना को OK बटन से बंद करना आवश्यक है</string>
+    <string name="calendar_view_month">महीना</string>
+    <string name="calendar_view_day">दिन</string>
+    <string name="calendar_view_3_days">3 दिन</string>
+    <string name="calendar_view_7_days">7 दिन</string>
+    <string name="calendar_switch_view_mode">कैलेंडर दृश्य बदलें</string>
 </resources>

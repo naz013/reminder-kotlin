@@ -1138,4 +1138,9 @@
     <string name="allow_swipe_to_dismiss">スワイプして閉じることを許可</string>
     <string name="allow_swipe_to_dismiss_enabled">通知をスワイプして閉じるとリマインダーが完了します</string>
     <string name="allow_swipe_to_dismiss_disabled">通知はOKボタンで閉じる必要があります</string>
+    <string name="calendar_view_month">月</string>
+    <string name="calendar_view_day">日</string>
+    <string name="calendar_view_3_days">3日間</string>
+    <string name="calendar_view_7_days">7日間</string>
+    <string name="calendar_switch_view_mode">カレンダー表示を切り替え</string>
 </resources>

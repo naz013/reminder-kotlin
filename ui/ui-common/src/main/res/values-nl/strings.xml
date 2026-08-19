@@ -1136,4 +1136,9 @@
     <string name="allow_swipe_to_dismiss">Vegen om te sluiten toestaan</string>
     <string name="allow_swipe_to_dismiss_enabled">De melding wegvegen voltooit de herinnering</string>
     <string name="allow_swipe_to_dismiss_disabled">De melding moet worden gesloten met de OK-knop</string>
+    <string name="calendar_view_month">Maand</string>
+    <string name="calendar_view_day">Dag</string>
+    <string name="calendar_view_3_days">3 dagen</string>
+    <string name="calendar_view_7_days">7 dagen</string>
+    <string name="calendar_switch_view_mode">Kalenderweergave wisselen</string>
 </resources>

@@ -1139,4 +1139,9 @@
     <string name="allow_swipe_to_dismiss">允许滑动关闭</string>
     <string name="allow_swipe_to_dismiss_enabled">滑动关闭通知即完成提醒</string>
     <string name="allow_swipe_to_dismiss_disabled">必须使用确定按钮关闭通知</string>
+    <string name="calendar_view_month">月</string>
+    <string name="calendar_view_day">日</string>
+    <string name="calendar_view_3_days">3天</string>
+    <string name="calendar_view_7_days">7天</string>
+    <string name="calendar_switch_view_mode">切换日历视图</string>
 </resources>

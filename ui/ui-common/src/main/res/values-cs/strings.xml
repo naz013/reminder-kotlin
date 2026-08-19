@@ -1138,4 +1138,9 @@
     <string name="allow_swipe_to_dismiss">Povolit odstranění přejetím</string>
     <string name="allow_swipe_to_dismiss_enabled">Přejetím oznámení se připomenutí dokončí</string>
     <string name="allow_swipe_to_dismiss_disabled">Oznámení musí být zavřeno tlačítkem OK</string>
+    <string name="calendar_view_month">Měsíc</string>
+    <string name="calendar_view_day">Den</string>
+    <string name="calendar_view_3_days">3 dny</string>
+    <string name="calendar_view_7_days">7 dní</string>
+    <string name="calendar_switch_view_mode">Přepnout zobrazení kalendáře</string>
 </resources>

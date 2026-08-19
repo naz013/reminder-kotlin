@@ -1139,4 +1139,9 @@
     <string name="allow_swipe_to_dismiss">Разрешаване на превъртане за отхвърляне</string>
     <string name="allow_swipe_to_dismiss_enabled">Прекарването на известието настрани завършва напомнянето</string>
     <string name="allow_swipe_to_dismiss_disabled">Известието трябва да бъде затворено с бутона OK</string>
+    <string name="calendar_view_month">Месец</string>
+    <string name="calendar_view_day">Ден</string>
+    <string name="calendar_view_3_days">3 дни</string>
+    <string name="calendar_view_7_days">7 дни</string>
+    <string name="calendar_switch_view_mode">Превключване на изгледа на календара</string>
 </resources>
