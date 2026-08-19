@@ -200,10 +200,9 @@ private fun HomeEntry(
     content = {
       ChronologicalHomeScreen(
         state = state,
-        modifier =
-          Modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
+        modifier = Modifier
+          .fillMaxSize()
+          .statusBarsPadding(),
         onSettingsClick = { viewModel.onSettingsClicked() },
         onHeaderNavigationItemClick = { viewModel.onHeaderNavigationItemClicked(it) },
         onEventClick = { viewModel.onEventClicked(it) },
