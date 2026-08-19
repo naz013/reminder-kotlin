@@ -3,12 +3,8 @@
     <string name="whats_new_version_and_date" translatable="false">%s\n%s</string>
     <string name="whats_new_text" translatable="false">
         ⭐ Refresh the application look;\n
-        ✅ Add new notification override logics: Default -> Group -> Reminder;\n
-        ✅ Add title field to the Note builder;\n
-        ✅ Add tags to Reminders, Birthdays, Notes and Google Tasks;\n
-        ✅ Add Insights (for PRO only);\n
-        ✅ Add Local file backup (for PRO only);\n
-        ✅ Add Public holidays to Calendar (for PRO only);\n
+        ✅ Added multiselect actions to Notes;\n
+        ✅ Add 1/3/7 day timeline mode to Calendar;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">
