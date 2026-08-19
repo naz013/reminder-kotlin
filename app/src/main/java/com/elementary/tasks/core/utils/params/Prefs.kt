@@ -362,7 +362,7 @@ class Prefs(
     set(value) = putBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, value)
 
   var isDefaultSwipeToDismissEnabled: Boolean
-    get() = getBoolean(PrefsConstants.DEFAULT_SWIPE_TO_DISMISS, def = false)
+    get() = getBoolean(PrefsConstants.DEFAULT_SWIPE_TO_DISMISS, def = true)
     set(value) = putBoolean(PrefsConstants.DEFAULT_SWIPE_TO_DISMISS, value)
 
   var defaultLockScreenVisibility: String

@@ -166,6 +166,15 @@ fun RemindersSettingsScreen(
       )
     }
 
+    SettingsSwitchItem(
+      title = stringResource(R.string.allow_swipe_to_dismiss),
+      checked = state.isDefaultSwipeToDismissChecked,
+      onCheckedChange = { onDefaultSwipeToDismissToggle() },
+      subtitleOn = stringResource(R.string.allow_swipe_to_dismiss_enabled),
+      subtitleOff = stringResource(R.string.allow_swipe_to_dismiss_disabled),
+      dividerBottom = true,
+    )
+
     SettingsSectionHeader(stringResource(R.string.status_bar))
 
     SettingsSwitchItem(
@@ -289,14 +298,6 @@ fun RemindersSettingsScreen(
       onCheckedChange = { onDefaultWakeScreenToggle() },
       subtitleOn = stringResource(R.string.wake_screen_enabled),
       subtitleOff = stringResource(R.string.wake_screen_disabled),
-      dividerBottom = true,
-    )
-    SettingsSwitchItem(
-      title = stringResource(R.string.allow_swipe_to_dismiss),
-      checked = state.isDefaultSwipeToDismissChecked,
-      onCheckedChange = { onDefaultSwipeToDismissToggle() },
-      subtitleOn = stringResource(R.string.allow_swipe_to_dismiss_enabled),
-      subtitleOff = stringResource(R.string.allow_swipe_to_dismiss_disabled),
       dividerBottom = true,
     )
     SettingsItem(
