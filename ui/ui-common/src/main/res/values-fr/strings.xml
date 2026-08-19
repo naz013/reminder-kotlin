@@ -1135,4 +1135,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Sélectionnez un rappel ou un anniversaire pour voir les détails</string>
     <string name="acc_close">Fermer</string>
     <string name="turn_on">Allumer</string>
+    <string name="allow_swipe_to_dismiss">Autoriser le balayage pour ignorer</string>
+    <string name="allow_swipe_to_dismiss_enabled">Balayer la notification termine le rappel</string>
+    <string name="allow_swipe_to_dismiss_disabled">La notification doit être fermée avec le bouton OK</string>
 </resources>

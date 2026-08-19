@@ -49,6 +49,7 @@ fun RemindersSettingsScreen(
   onDefaultVibrateToggle: () -> Unit,
   onDefaultBypassDoNotDisturbToggle: () -> Unit,
   onDefaultWakeScreenToggle: () -> Unit,
+  onDefaultSwipeToDismissToggle: () -> Unit,
   onDefaultCategoryClick: () -> Unit,
   onDefaultLockScreenVisibilityClick: () -> Unit,
   onDefaultVibrationPatternClick: () -> Unit,
@@ -164,6 +165,7 @@ fun RemindersSettingsScreen(
         onClick = onLedColorClick,
       )
     }
+    
 
     SettingsSectionHeader(stringResource(R.string.status_bar))
 
@@ -288,6 +290,14 @@ fun RemindersSettingsScreen(
       onCheckedChange = { onDefaultWakeScreenToggle() },
       subtitleOn = stringResource(R.string.wake_screen_enabled),
       subtitleOff = stringResource(R.string.wake_screen_disabled),
+      dividerBottom = true,
+    )
+    SettingsSwitchItem(
+      title = stringResource(R.string.allow_swipe_to_dismiss),
+      checked = state.isDefaultSwipeToDismissChecked,
+      onCheckedChange = { onDefaultSwipeToDismissToggle() },
+      subtitleOn = stringResource(R.string.allow_swipe_to_dismiss_enabled),
+      subtitleOff = stringResource(R.string.allow_swipe_to_dismiss_disabled),
       dividerBottom = true,
     )
     SettingsItem(

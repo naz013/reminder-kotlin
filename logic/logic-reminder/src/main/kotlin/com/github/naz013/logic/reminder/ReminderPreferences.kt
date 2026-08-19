@@ -30,6 +30,7 @@ interface ReminderPreferences {
   var defaultNotificationCategory: String
   var isDefaultBypassDoNotDisturbEnabled: Boolean
   var isDefaultWakeScreenEnabled: Boolean
+  var isDefaultSwipeToDismissEnabled: Boolean
   var defaultLockScreenVisibility: String
   var initPresets: Boolean
   var initDefaultPresets: Boolean

@@ -1135,4 +1135,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Wählen Sie eine Erinnerung oder einen Geburtstag aus, um Details anzuzeigen</string>
     <string name="acc_close">Schließen</string>
     <string name="turn_on">Einschalten</string>
+    <string name="allow_swipe_to_dismiss">Wischen zum Schließen zulassen</string>
+    <string name="allow_swipe_to_dismiss_enabled">Das Wegwischen der Benachrichtigung schließt die Erinnerung ab</string>
+    <string name="allow_swipe_to_dismiss_disabled">Die Benachrichtigung muss mit der OK-Schaltfläche geschlossen werden</string>
 </resources>

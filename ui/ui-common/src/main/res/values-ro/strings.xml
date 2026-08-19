@@ -1135,4 +1135,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Selectați un memento sau o zi de naștere pentru a vedea detaliile</string>
     <string name="acc_close">Închide</string>
     <string name="turn_on">Pornire</string>
+    <string name="allow_swipe_to_dismiss">Permite glisarea pentru a închide</string>
+    <string name="allow_swipe_to_dismiss_enabled">Glisarea notificării finalizează memento-ul</string>
+    <string name="allow_swipe_to_dismiss_disabled">Notificarea trebuie închisă cu butonul OK</string>
 </resources>

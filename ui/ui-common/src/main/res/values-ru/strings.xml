@@ -1134,4 +1134,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Выберите напоминание или день рождения, чтобы увидеть подробности</string>
     <string name="acc_close">Закрыть</string>
     <string name="turn_on">Включить</string>
+    <string name="allow_swipe_to_dismiss">Разрешить смахивание для закрытия</string>
+    <string name="allow_swipe_to_dismiss_enabled">Смахивание уведомления завершает напоминание</string>
+    <string name="allow_swipe_to_dismiss_disabled">Уведомление нужно закрыть кнопкой ОК</string>
 </resources>

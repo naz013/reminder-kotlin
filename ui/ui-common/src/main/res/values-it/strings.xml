@@ -1135,4 +1135,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Seleziona un promemoria o un compleanno per vedere i dettagli</string>
     <string name="acc_close">Chiudi</string>
     <string name="turn_on">Accendi</string>
+    <string name="allow_swipe_to_dismiss">Consenti lo scorrimento per rimuovere</string>
+    <string name="allow_swipe_to_dismiss_enabled">Scorrere la notifica per rimuoverla completa il promemoria</string>
+    <string name="allow_swipe_to_dismiss_disabled">La notifica deve essere chiusa con il pulsante OK</string>
 </resources>

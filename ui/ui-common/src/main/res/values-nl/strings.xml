@@ -1133,4 +1133,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Selecteer een herinnering of verjaardag om de details te bekijken</string>
     <string name="acc_close">Sluiten</string>
     <string name="turn_on">Inschakelen</string>
+    <string name="allow_swipe_to_dismiss">Vegen om te sluiten toestaan</string>
+    <string name="allow_swipe_to_dismiss_enabled">De melding wegvegen voltooit de herinnering</string>
+    <string name="allow_swipe_to_dismiss_disabled">De melding moet worden gesloten met de OK-knop</string>
 </resources>

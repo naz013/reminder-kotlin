@@ -1135,4 +1135,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Selecione um lembrete ou aniversário para ver os detalhes</string>
     <string name="acc_close">Fechar</string>
     <string name="turn_on">Ligar</string>
+    <string name="allow_swipe_to_dismiss">Permitir deslizar para dispensar</string>
+    <string name="allow_swipe_to_dismiss_enabled">Deslizar a notificação conclui o lembrete</string>
+    <string name="allow_swipe_to_dismiss_disabled">A notificação deve ser fechada com o botão OK</string>
 </resources>

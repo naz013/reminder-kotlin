@@ -1133,4 +1133,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Välj en påminnelse eller födelsedag för att se detaljer</string>
     <string name="acc_close">Stäng</string>
     <string name="turn_on">Slå på</string>
+    <string name="allow_swipe_to_dismiss">Tillåt svep för att avvisa</string>
+    <string name="allow_swipe_to_dismiss_enabled">Att svepa bort aviseringen slutför påminnelsen</string>
+    <string name="allow_swipe_to_dismiss_disabled">Aviseringen måste stängas med OK-knappen</string>
 </resources>

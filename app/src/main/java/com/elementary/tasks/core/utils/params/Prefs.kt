@@ -361,6 +361,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, def = false)
     set(value) = putBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, value)
 
+  var isDefaultSwipeToDismissEnabled: Boolean
+    get() = getBoolean(PrefsConstants.DEFAULT_SWIPE_TO_DISMISS, def = false)
+    set(value) = putBoolean(PrefsConstants.DEFAULT_SWIPE_TO_DISMISS, value)
+
   var defaultLockScreenVisibility: String
     get() = getString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, def = "PRIVATE")
     set(value) = putString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, value)

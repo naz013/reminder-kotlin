@@ -1141,4 +1141,7 @@
     <string name="calendar_view_3_days">3 days</string>
     <string name="calendar_view_7_days">7 days</string>
     <string name="calendar_switch_view_mode">Switch calendar view</string>
+    <string name="allow_swipe_to_dismiss">Allow swipe to dismiss</string>
+    <string name="allow_swipe_to_dismiss_enabled">Swiping the notification away completes the reminder</string>
+    <string name="allow_swipe_to_dismiss_disabled">Notification must be dismissed with the OK button</string>
 </resources>

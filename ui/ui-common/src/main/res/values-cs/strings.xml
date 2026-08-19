@@ -1135,4 +1135,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Vyberte připomenutí nebo narozeniny a zobrazte podrobnosti</string>
     <string name="acc_close">Zavřít</string>
     <string name="turn_on">Zapnout</string>
+    <string name="allow_swipe_to_dismiss">Povolit odstranění přejetím</string>
+    <string name="allow_swipe_to_dismiss_enabled">Přejetím oznámení se připomenutí dokončí</string>
+    <string name="allow_swipe_to_dismiss_disabled">Oznámení musí být zavřeno tlačítkem OK</string>
 </resources>

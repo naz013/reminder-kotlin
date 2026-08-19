@@ -1133,4 +1133,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Chọn lời nhắc hoặc sinh nhật để xem chi tiết</string>
     <string name="acc_close">Đóng</string>
     <string name="turn_on">Bật</string>
+    <string name="allow_swipe_to_dismiss">Cho phép vuốt để bỏ qua</string>
+    <string name="allow_swipe_to_dismiss_enabled">Vuốt để tắt thông báo sẽ hoàn thành lời nhắc</string>
+    <string name="allow_swipe_to_dismiss_disabled">Thông báo phải được đóng bằng nút OK</string>
 </resources>

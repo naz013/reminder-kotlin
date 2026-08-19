@@ -1136,4 +1136,7 @@
     <string name="select_reminder_or_birthday_to_see_details">选择提醒事项或生日以查看详细信息</string>
     <string name="acc_close">关闭</string>
     <string name="turn_on">开启</string>
+    <string name="allow_swipe_to_dismiss">允许滑动关闭</string>
+    <string name="allow_swipe_to_dismiss_enabled">滑动关闭通知即完成提醒</string>
+    <string name="allow_swipe_to_dismiss_disabled">必须使用确定按钮关闭通知</string>
 </resources>

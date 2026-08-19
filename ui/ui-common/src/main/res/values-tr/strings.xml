@@ -1136,4 +1136,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Ayrıntıları görmek için bir hatırlatıcı veya doğum günü seçin</string>
     <string name="acc_close">Kapat</string>
     <string name="turn_on">Aç</string>
+    <string name="allow_swipe_to_dismiss">Kapatmak için kaydırmaya izin ver</string>
+    <string name="allow_swipe_to_dismiss_enabled">Bildirimi kaydırarak kapatmak hatırlatıcıyı tamamlar</string>
+    <string name="allow_swipe_to_dismiss_disabled">Bildirim, Tamam düğmesiyle kapatılmalıdır</string>
 </resources>

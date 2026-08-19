@@ -24,7 +24,7 @@ class ReminderNotificationHandler(
   contextProvider: ContextProvider,
   textProvider: TextProvider,
   private val notifier: Notifier,
-  prefs: Prefs,
+  private val prefs: Prefs,
   wearNotification: WearNotification,
   style: NotificationStyle,
 ) : NotificationAlertActionHandler<ReminderV2>(
@@ -42,6 +42,8 @@ class ReminderNotificationHandler(
   override fun receiverClass(): Class<out BroadcastReceiver> = ReminderActionReceiver::class.java
 
   override fun dismissActionKey(): String = ReminderActionReceiver.ACTION_HIDE
+
+  public override fun isOngoing(data: ReminderV2): Boolean = !prefs.isDefaultSwipeToDismissEnabled
 
   override fun extraActions(data: ReminderV2): List<NotificationAction> =
     if (data.places.isEmpty()) {

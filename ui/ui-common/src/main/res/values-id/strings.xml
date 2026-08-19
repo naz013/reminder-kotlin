@@ -1133,4 +1133,7 @@
     <string name="select_reminder_or_birthday_to_see_details">Pilih pengingat atau ulang tahun untuk melihat detailnya</string>
     <string name="acc_close">Tutup</string>
     <string name="turn_on">Nyalakan</string>
+    <string name="allow_swipe_to_dismiss">Izinkan geser untuk menutup</string>
+    <string name="allow_swipe_to_dismiss_enabled">Menggeser notifikasi akan menyelesaikan pengingat</string>
+    <string name="allow_swipe_to_dismiss_disabled">Notifikasi harus ditutup dengan tombol OK</string>
 </resources>
