@@ -23,9 +23,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,13 +54,17 @@ import com.github.naz013.ui.agenda.UiAgendaReminder
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.domain.PublicHoliday
+import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 private val HOUR_HEIGHT = 56.dp
 private val AXIS_WIDTH = 52.dp
 private val EVENT_BLOCK_MIN_HEIGHT = 26.dp
+private val NOW_LINE_DOT_RADIUS = 4.dp
+private val NOW_LINE_STROKE_WIDTH = 2.dp
 private const val INITIAL_SCROLL_LEAD_HOURS = 2f
+private const val NOW_LINE_REFRESH_INTERVAL_MS = 30_000L
 
 /**
  * Vertical hour-timeline pager shared by the 3-day and 7-day calendar modes. Each page shows one
@@ -179,41 +183,41 @@ private fun TimelinePage(
     TimelineHolidayRow(days = days, holidaysByDay = holidaysByDay, modifier = Modifier.fillMaxWidth())
     HorizontalDivider()
 
-    when (val events = eventsByDay) {
-      null -> {
-        Box(modifier = Modifier.weight(1f).fillMaxSize(), contentAlignment = Alignment.Center) {
-          CircularProgressIndicator()
-        }
-      }
+    // The grid itself (hour axis, gridlines, the "now" line) doesn't depend on events - render it
+    // immediately rather than hiding it behind a full-screen spinner, since a heavily-populated
+    // window (thousands of occurrences) can take a moment to query. Only the event blocks
+    // themselves wait for eventsByDay, appearing once loaded; a thin bar above the grid is the
+    // only sign anything is still in flight.
+    if (eventsByDay == null) {
+      LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    }
 
-      else -> {
-        if (isInitialPage && !hasScrolledToNow.value) {
-          val density = LocalDensity.current
-          LaunchedEffect(Unit) {
-            val now = LocalTime.now()
-            val hourHeightPx = with(density) { HOUR_HEIGHT.toPx() }
-            val target =
-              (((now.hour + now.minute / 60f) - INITIAL_SCROLL_LEAD_HOURS) * hourHeightPx).toInt().coerceAtLeast(0)
-            scrollState.scrollTo(target)
-            hasScrolledToNow.value = true
-          }
-        }
-        Row(
-          modifier =
-            Modifier
-              .weight(1f)
-              .fillMaxWidth()
-              .verticalScroll(scrollState),
-        ) {
-          HourAxis(hourLabels = hourLabels, modifier = Modifier.width(AXIS_WIDTH))
-          days.forEach { day ->
-            TimelineDayColumn(
-              items = events[day.date].orEmpty(),
-              onItemClick = onItemClick,
-              modifier = Modifier.weight(1f),
-            )
-          }
-        }
+    if (isInitialPage && !hasScrolledToNow.value) {
+      val density = LocalDensity.current
+      LaunchedEffect(Unit) {
+        val now = LocalTime.now()
+        val hourHeightPx = with(density) { HOUR_HEIGHT.toPx() }
+        val target =
+          (((now.hour + now.minute / 60f) - INITIAL_SCROLL_LEAD_HOURS) * hourHeightPx).toInt().coerceAtLeast(0)
+        scrollState.scrollTo(target)
+        hasScrolledToNow.value = true
+      }
+    }
+    Row(
+      modifier =
+        Modifier
+          .weight(1f)
+          .fillMaxWidth()
+          .verticalScroll(scrollState),
+    ) {
+      HourAxis(hourLabels = hourLabels, modifier = Modifier.width(AXIS_WIDTH))
+      days.forEach { day ->
+        TimelineDayColumn(
+          items = eventsByDay?.get(day.date).orEmpty(),
+          isToday = day.isToday,
+          onItemClick = onItemClick,
+          modifier = Modifier.weight(1f),
+        )
       }
     }
   }
@@ -357,12 +361,25 @@ private fun HourAxis(
 @Composable
 private fun TimelineDayColumn(
   items: List<UiAgendaItem>,
+  isToday: Boolean,
   onItemClick: (UiAgendaItem) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val positioned = remember(items) { layoutDayEvents(items, MINUTES_IN_HOUR) }
   val density = LocalDensity.current
   val gridColor = MaterialTheme.colorScheme.outlineVariant
+  val nowColor = MaterialTheme.colorScheme.primary
+
+  // Only today's column ever ticks - there's at most one such column mounted per window.
+  var now by remember { mutableStateOf(LocalTime.now()) }
+  if (isToday) {
+    LaunchedEffect(Unit) {
+      while (true) {
+        now = LocalTime.now()
+        delay(NOW_LINE_REFRESH_INTERVAL_MS)
+      }
+    }
+  }
 
   BoxWithConstraints(
     modifier =
@@ -377,6 +394,20 @@ private fun TimelineDayColumn(
               start = Offset(0f, y),
               end = Offset(size.width, y),
               strokeWidth = 1f,
+            )
+          }
+          if (isToday) {
+            val nowY = hourHeightPx * (now.hour + now.minute / 60f + now.second / 3600f)
+            drawLine(
+              color = nowColor,
+              start = Offset(0f, nowY),
+              end = Offset(size.width, nowY),
+              strokeWidth = with(density) { NOW_LINE_STROKE_WIDTH.toPx() },
+            )
+            drawCircle(
+              color = nowColor,
+              radius = with(density) { NOW_LINE_DOT_RADIUS.toPx() },
+              center = Offset(0f, nowY),
             )
           }
         },
