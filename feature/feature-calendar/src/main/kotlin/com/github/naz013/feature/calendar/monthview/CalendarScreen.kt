@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -178,29 +178,26 @@ private fun MonthPage(
     holidaysByDay = loadMonthHolidays(monthDate)
   }
 
-  when (val events = eventsByDay) {
-    null -> {
-      Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
-      }
+  // The grid of day cells doesn't depend on eventsByDay (buildGrid is synchronous) - render it
+  // immediately rather than hiding it behind a full-screen spinner while the dot colors load,
+  // since a heavily-populated month can take a moment to query. Only the dots wait; a thin bar
+  // above the grid is the only sign anything is still in flight.
+  Column(modifier = modifier) {
+    if (eventsByDay == null) {
+      LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
-
-    else -> {
-      Column(modifier = modifier) {
-        grid.chunked(WEEK_LENGTH).forEach { week ->
-          Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
-            week.forEach { cell ->
-              MonthDayCell(
-                cell = cell,
-                dotColors = events[cell.date].orEmpty(),
-                holiday = holidaysByDay[cell.date],
-                onClick = onDayClick,
-                onAddReminderClick = onAddReminderClick,
-                onAddBirthdayClick = onAddBirthdayClick,
-                modifier = Modifier.weight(1f).fillMaxSize(),
-              )
-            }
-          }
+    grid.chunked(WEEK_LENGTH).forEach { week ->
+      Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
+        week.forEach { cell ->
+          MonthDayCell(
+            cell = cell,
+            dotColors = eventsByDay?.get(cell.date).orEmpty(),
+            holiday = holidaysByDay[cell.date],
+            onClick = onDayClick,
+            onAddReminderClick = onAddReminderClick,
+            onAddBirthdayClick = onAddBirthdayClick,
+            modifier = Modifier.weight(1f).fillMaxSize(),
+          )
         }
       }
     }
