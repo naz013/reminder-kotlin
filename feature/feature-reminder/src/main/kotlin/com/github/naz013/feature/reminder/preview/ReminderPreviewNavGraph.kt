@@ -124,6 +124,7 @@ private fun PreviewEntry(
     onEditClick = { navigateBeyondBackStack(listOf(BuildReminderNavKey.Main(id = key.id))) },
     onShareClick = viewModel::shareReminder,
     onCopyClick = viewModel::onCopyClicked,
+    onPinClick = viewModel::onPinToggleClick,
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,

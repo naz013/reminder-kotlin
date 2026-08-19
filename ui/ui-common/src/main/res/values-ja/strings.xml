@@ -1146,4 +1146,8 @@
     <string name="todo_completed_count">完了 (%1$d)</string>
     <string name="todo_all_done">やった、すべて完了</string>
     <string name="todo_drag_to_reorder">ドラッグして並べ替え</string>
+
+    <string name="pin">ピン留め</string>
+    <string name="unpin">ピン留め解除</string>
+    <string name="pinned">ピン留め済み</string>
 </resources>

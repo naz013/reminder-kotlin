@@ -125,9 +125,30 @@ collects all of them into `startKoin {}`. Never call `GlobalContext.get()` outsi
 - New `<string>`/`<plurals>` resources are appended at the end of `strings.xml` (before `</resources>`),
   not inserted next to whatever existing entry looks topically related — keeps diffs additive-only and
   merge conflicts rare. Translate into every `values-*/strings.xml` the app ships, appended the same way.
+- Icons are never referenced as a bare `R.drawable.ic_fluent_*` (or any other drawable) from feature/screen
+  code. `ui-common`'s `com.github.naz013.ui.common.icon.DrawableCatalog` (plain `@DrawableRes Int`
+  constants, grouped by family — `DrawableCatalog.Fluent.X`, `DrawableCatalog.Builder.X`) and
+  `com.github.naz013.ui.common.compose.AppIcons` (the same catalog wrapped as `@Composable` `Painter`
+  getters — `AppIcons.Fluent.X`) are the only two places a drawable resource ID is allowed to be looked up
+  from. Use `AppIcons.*` wherever a `Painter`/`ImageVector` is expected (`Icon(...)`, `MenuIconButton(icon =
+  ...)`); use `DrawableCatalog.*` wherever a raw `@DrawableRes Int` is expected (e.g. `PopupMenuItem.iconRes`).
+  If the icon you need isn't cataloged yet, add it to `DrawableCatalog` (and `AppIcons` if a `Painter` form
+  is also needed) alongside the new drawable XML, then reference the catalog constant — don't inline
+  `R.drawable.*` as a shortcut.
 - Logging only through the `Logger` interface (`logging-api`) — never `println`/`android.util.Log`.
 - Room Entity <-> domain-model mapping is mandatory at the `repository` boundary; domain models must stay
   free of Room/Gson annotations.
+- Adding/removing a field on a domain model that has cloud/local backup support (`ReminderV2`, `Note`,
+  `GroupV2`, `Tag`, etc. — check for a matching `*Json` class in `data:files-api`'s
+  `com.github.naz013.files.model` package) means updating **three** places, not just the Room entity/mapper:
+  the `*Json` DTO in `data:files-api` (new field needs a safe default so old backup files without it still
+  deserialize), and both mapping directions (`toDomain()`/`toJson()`) in `data:files`'s
+  `DataConverterImpl.kt`. This wire format is what Google Drive/Dropbox sync and the PRO local encrypted
+  backup actually serialize — `data:sync` itself has no field-level knowledge of any domain type (it only
+  type-dispatches on `is ReminderV2`/etc. and passes whole objects through), so the `*Json`/`DataConverterImpl`
+  pair is the only place a schema change needs to be threaded through for backup/restore to round-trip it.
+  A field added only to the Room entity+domain model survives local use but silently drops out of every
+  backup and cloud-synced copy.
 - Tests: JUnit 4 + MockK (not Mockito, despite it still being on the `app` test classpath), AAA structure,
   plain-English test names ("returns empty list when reminder is expired"). Unit tests in `src/test/`,
   instrumented tests in `src/androidTest/`.

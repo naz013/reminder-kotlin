@@ -29,10 +29,26 @@ class UiAgendaItemAdapter(
     groupsById: Map<String, GroupV2>,
     birthdays: List<Birthday>,
   ): List<UiAgendaItem> {
-    val reminderItems = reminders.map { toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }) }
+    val (pinnedReminders, unpinnedReminders) = reminders.partition { it.isPinned }
+
+    val reminderItems = unpinnedReminders.map { toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }) }
     val birthdayItems = birthdays.map { toUiAgendaBirthday(it) }
     val merged = (reminderItems + birthdayItems).sortedBy { it.dateTime }
-    return insertHeaders(merged)
+    val body = insertHeaders(merged)
+
+    if (pinnedReminders.isEmpty()) return body
+
+    val pinnedItems =
+      pinnedReminders
+        .map { toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }) }
+        .sortedBy { it.dateTime }
+    val pinnedHeader =
+      UiAgendaHeader(
+        id = "header_pinned",
+        dateTime = pinnedItems.first().dateTime,
+        text = textProvider.getText(R.string.pinned),
+      )
+    return listOf(pinnedHeader) + pinnedItems + body
   }
 
   private fun toUiAgendaReminderV2(

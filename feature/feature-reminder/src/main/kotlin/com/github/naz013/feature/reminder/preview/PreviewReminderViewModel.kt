@@ -15,6 +15,7 @@ import com.github.naz013.files.BackupTool
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.github.naz013.feature.reminder.preview.data.UiCalendarEventList
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
+import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -80,6 +81,7 @@ internal class PreviewReminderViewModel(
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
+  private val togglePinnedReminderUseCase: TogglePinnedReminderUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val tableChangeListenerFactory: TableChangeListenerFactory,
   private val tagAssignmentRepository: TagAssignmentRepository,
@@ -172,6 +174,19 @@ internal class PreviewReminderViewModel(
       }
       if (!result.success) {
         event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.reminder_is_outdated)))
+      }
+      load()
+    }
+  }
+
+  fun onPinToggleClick() {
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val reminder = withContext(dispatcherProvider.io()) {
+        reminderV2Repository.getById(id)
+      } ?: return@launch
+      Logger.i(TAG, "Toggling pinned state, id: ${reminder.uuId}")
+      withContext(dispatcherProvider.io()) {
+        togglePinnedReminderUseCase(reminder)
       }
       load()
     }
@@ -363,6 +378,7 @@ internal class PreviewReminderViewModel(
             placesHeader = placesHeaderV2(reminder.recurrence, places.size),
             canCopy = canCopyV2(reminder.recurrence),
             canDelete = reminder.isRemoved,
+            isPinned = reminder.isPinned,
           )
         }
       }

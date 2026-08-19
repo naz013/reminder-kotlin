@@ -2,9 +2,11 @@
 <resources>
     <string name="whats_new_version_and_date" translatable="false">%s\n%s</string>
     <string name="whats_new_text" translatable="false">
-        ⭐ Refresh the application look;\n
+        ⭐ Refreshed the application look;\n
+        ✅ Added option to Pin reminder in the list (will be shown on top);\n
         ✅ Added multiselect actions to Notes;\n
-        ✅ Add 1/3/7 day timeline mode to Calendar;\n
+        ✅ Added 1/3/7 day timeline mode to Calendar;\n
+        ⭐ Improved TODO reminder editing;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">

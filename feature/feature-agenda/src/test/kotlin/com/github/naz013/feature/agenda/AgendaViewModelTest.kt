@@ -9,6 +9,7 @@ import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
+import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.provideBirthdayDateCalculator
@@ -60,6 +61,7 @@ class AgendaViewModelTest {
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>()
   private val skipReminderUseCase = mockk<SkipReminderUseCase>()
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
+  private val togglePinnedReminderUseCase = mockk<TogglePinnedReminderUseCase>(relaxed = true)
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
   private val birthdaySmartListPredicate = BirthdaySmartListPredicate(provideBirthdayDateCalculator())
@@ -99,6 +101,7 @@ class AgendaViewModelTest {
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
         skipReminderUseCase = skipReminderUseCase,
         toggleReminderStateUseCase = toggleReminderStateUseCase,
+        togglePinnedReminderUseCase = togglePinnedReminderUseCase,
         deleteReminderUseCase = deleteReminderUseCase,
         deleteBirthdayUseCase = deleteBirthdayUseCase,
       )
@@ -409,6 +412,27 @@ class AgendaViewModelTest {
       val result = viewModel.loadMerged("", setOf(AgendaCategory.BIRTHDAYS), SmartListFilter.OVERDUE)
 
       assertEquals(emptyList<String>(), result.items.map { it.id })
+    }
+
+  @Test
+  fun `togglePinned toggles the pinned state of the fetched reminder and refreshes`() =
+    runTest {
+      val reminder = reminderV2(id = "r1")
+      coEvery { reminderV2Repository.getById("r1") } returns reminder
+
+      viewModel.togglePinned("r1")
+
+      coVerify(exactly = 1) { togglePinnedReminderUseCase(reminder) }
+    }
+
+  @Test
+  fun `togglePinned does nothing when the reminder no longer exists`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("missing") } returns null
+
+      viewModel.togglePinned("missing")
+
+      coVerify(exactly = 0) { togglePinnedReminderUseCase(any()) }
     }
 
   private fun reminderV2(

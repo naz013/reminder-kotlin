@@ -1144,4 +1144,8 @@
     <string name="todo_completed_count">Fuldført (%1$d)</string>
     <string name="todo_all_done">Flot, alt er klaret</string>
     <string name="todo_drag_to_reorder">Træk for at omarrangere</string>
+
+    <string name="pin">Fastgør</string>
+    <string name="unpin">Frigør</string>
+    <string name="pinned">Fastgjort</string>
 </resources>

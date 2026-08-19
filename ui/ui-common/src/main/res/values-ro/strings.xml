@@ -1146,4 +1146,8 @@
     <string name="todo_completed_count">Finalizate (%1$d)</string>
     <string name="todo_all_done">Bravo, totul este gata</string>
     <string name="todo_drag_to_reorder">Trage pentru a reordona</string>
+
+    <string name="pin">Fixează</string>
+    <string name="unpin">Anulează fixarea</string>
+    <string name="pinned">Fixat</string>
 </resources>

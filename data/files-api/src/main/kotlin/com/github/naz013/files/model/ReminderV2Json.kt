@@ -55,6 +55,8 @@ data class ReminderV2Json(
   val isActive: Boolean = true,
   @SerializedName("isRemoved")
   val isRemoved: Boolean = false,
+  @SerializedName("isPinned")
+  val isPinned: Boolean = false,
   @SerializedName("eventCount")
   val eventCount: Long = 0,
   @SerializedName("versionId")

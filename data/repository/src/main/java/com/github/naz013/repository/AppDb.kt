@@ -70,6 +70,7 @@ import com.github.naz013.repository.migrations.MIGRATION_28_29
 import com.github.naz013.repository.migrations.MIGRATION_29_30
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_30_31
+import com.github.naz013.repository.migrations.MIGRATION_31_32
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
 import com.github.naz013.repository.migrations.MIGRATION_5_6
@@ -103,7 +104,7 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     TagAssignmentEntity::class,
     HolidayEntity::class
   ],
-  version = 31,
+  version = 32,
   exportSchema = false
 )
 @Suppress("TooManyFunctions") // one DAO accessor per entity - inherent to this class, not a smell
@@ -169,7 +170,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_27_28,
             MIGRATION_28_29,
             MIGRATION_29_30,
-            MIGRATION_30_31
+            MIGRATION_30_31,
+            MIGRATION_31_32
           )
           .allowMainThreadQueries()
           .build()

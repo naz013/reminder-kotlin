@@ -1148,4 +1148,8 @@
     <string name="todo_completed_count">पूर्ण (%1$d)</string>
     <string name="todo_all_done">बढ़िया, सब पूरा हो गया</string>
     <string name="todo_drag_to_reorder">क्रम बदलने के लिए खींचें</string>
+
+    <string name="pin">पिन करें</string>
+    <string name="unpin">अनपिन करें</string>
+    <string name="pinned">पिन किया गया</string>
 </resources>

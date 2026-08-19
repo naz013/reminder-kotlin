@@ -1144,4 +1144,8 @@
     <string name="todo_completed_count">เสร็จสิ้น (%1$d)</string>
     <string name="todo_all_done">เยี่ยม เสร็จหมดแล้ว</string>
     <string name="todo_drag_to_reorder">ลากเพื่อจัดลำดับใหม่</string>
+
+    <string name="pin">ปักหมุด</string>
+    <string name="unpin">เลิกปักหมุด</string>
+    <string name="pinned">ปักหมุดแล้ว</string>
 </resources>

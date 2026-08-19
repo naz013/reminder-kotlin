@@ -49,24 +49,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.github.naz013.ui.common.R
-import com.github.naz013.ui.googletask.GoogleTaskItemState
+import com.github.naz013.feature.reminder.Icons
+import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.AttachmentFile
+import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.AttachmentType
 import com.github.naz013.feature.reminder.note.UiNoteList
+import com.github.naz013.feature.reminder.preview.data.UiCalendarEventList
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
+import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.reminder.UiAppTarget
 import com.github.naz013.ui.reminder.UiCallTarget
 import com.github.naz013.ui.reminder.UiEmailTarget
 import com.github.naz013.ui.reminder.UiReminderStatus
 import com.github.naz013.ui.reminder.UiReminderType
 import com.github.naz013.ui.reminder.UiSmsTarget
-import com.github.naz013.feature.reminder.Icons
-import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.AttachmentFile
-import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.AttachmentType
-import com.github.naz013.feature.reminder.preview.data.UiCalendarEventList
-import com.github.naz013.ui.common.compose.AppIcons
-import com.github.naz013.ui.common.compose.AppTheme
-import com.github.naz013.ui.common.compose.foundation.MenuIconButton
-import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
-import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.tag.TagChipRow
 import com.github.naz013.ui.tag.TagChipState
 
@@ -83,6 +84,7 @@ internal fun PreviewReminderScreen(
   onEditClick: () -> Unit,
   onShareClick: () -> Unit,
   onCopyClick: () -> Unit,
+  onPinClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDeleteDismiss: () -> Unit,
@@ -110,9 +112,14 @@ internal fun PreviewReminderScreen(
         actions = {
           OverflowMenu(
             canCopy = state.canCopy,
+            // canDelete is only true once the reminder is already in the trash - pinning a
+            // trashed reminder makes no sense since it no longer shows on the Agenda list.
+            canPin = !state.canDelete,
+            isPinned = state.isPinned,
             onEditClick = onEditClick,
             onShareClick = onShareClick,
             onCopyClick = onCopyClick,
+            onPinClick = onPinClick,
             onDeleteClick = onDeleteClick,
           )
         },
@@ -198,9 +205,12 @@ internal fun PreviewReminderScreen(
 @Composable
 private fun OverflowMenu(
   canCopy: Boolean,
+  canPin: Boolean,
+  isPinned: Boolean,
   onEditClick: () -> Unit,
   onShareClick: () -> Unit,
   onCopyClick: () -> Unit,
+  onPinClick: () -> Unit,
   onDeleteClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
@@ -216,6 +226,15 @@ private fun OverflowMenu(
       )
       if (canCopy) {
         add(PopupMenuItem(id = OverflowAction.COPY.ordinal, title = stringResource(R.string.copy), iconRes = R.drawable.ic_fluent_copy))
+      }
+      if (canPin) {
+        add(
+          PopupMenuItem(
+            id = OverflowAction.PIN.ordinal,
+            title = stringResource(if (isPinned) R.string.unpin else R.string.pin),
+            iconRes = if (isPinned) DrawableCatalog.Fluent.PinOff else DrawableCatalog.Fluent.Pin,
+          ),
+        )
       }
       add(PopupMenuItem(id = OverflowAction.DELETE.ordinal, title = stringResource(R.string.delete), iconRes = R.drawable.ic_fluent_delete))
     }
@@ -234,6 +253,7 @@ private fun OverflowMenu(
           OverflowAction.EDIT -> onEditClick()
           OverflowAction.SHARE -> onShareClick()
           OverflowAction.COPY -> onCopyClick()
+          OverflowAction.PIN -> onPinClick()
           OverflowAction.DELETE -> onDeleteClick()
         }
       },
@@ -245,6 +265,7 @@ private enum class OverflowAction {
   EDIT,
   SHARE,
   COPY,
+  PIN,
   DELETE,
 }
 
@@ -534,7 +555,7 @@ private fun SubTasksSection(
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Text(
-        text = stringResource(R.string.builder_sub_tasks),
+        text = stringResource(R.string.todo_items),
         style = MaterialTheme.typography.titleMedium,
       )
       Text(
@@ -767,6 +788,7 @@ private fun PreviewReminderScreenPreview() {
       onEditClick = {},
       onShareClick = {},
       onCopyClick = {},
+      onPinClick = {},
       onDeleteClick = {},
       onDeleteConfirmed = {},
       onDeleteDismiss = {},

@@ -1147,4 +1147,8 @@
     <string name="todo_completed_count">已完成 (%1$d)</string>
     <string name="todo_all_done">太棒了，全部完成</string>
     <string name="todo_drag_to_reorder">拖动以重新排序</string>
+
+    <string name="pin">置顶</string>
+    <string name="unpin">取消置顶</string>
+    <string name="pinned">已置顶</string>
 </resources>

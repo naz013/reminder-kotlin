@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.AgendaListItem
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 
 /**
  * Thin domain wrapper around [AgendaListItem] for reminder/shopping items: an "Enabled" status
@@ -25,13 +26,20 @@ fun ReminderAgendaRow(
     secondaryText = item.secondaryText?.text,
     tertiaryText = item.tertiaryText?.text,
     tags = item.tags.map { it.text },
-    statusChips = if (item.state.isActive) listOf(stringResource(R.string.enabled4)) else emptyList(),
+    statusChips = statusChips(item),
     onClick = onClick,
     menuItems = reminderMenuItems(item),
     onMenuItemClick = { id -> onMenuAction(AgendaMenuAction.entries[id]) },
     modifier = modifier,
   )
 }
+
+@Composable
+private fun statusChips(item: UiAgendaReminder): List<String> =
+  buildList {
+    if (item.state.isPinned) add(stringResource(R.string.pinned))
+    if (item.state.isActive) add(stringResource(R.string.enabled4))
+  }
 
 @Composable
 private fun reminderMenuItems(item: UiAgendaReminder): List<PopupMenuItem> {
@@ -48,6 +56,13 @@ private fun reminderMenuItems(item: UiAgendaReminder): List<PopupMenuItem> {
         }
         add(AgendaMenuAction.OPEN to R.string.open)
         add(AgendaMenuAction.EDIT to R.string.edit)
+        add(
+          if (item.state.isPinned) {
+            AgendaMenuAction.UNPIN to R.string.unpin
+          } else {
+            AgendaMenuAction.PIN to R.string.pin
+          },
+        )
         add(AgendaMenuAction.ARCHIVE to R.string.move_to_archive)
         if (item.actions.canSkip) {
           add(AgendaMenuAction.SKIP to R.string.skip_event)
@@ -67,4 +82,6 @@ private fun AgendaMenuAction.iconResOrNull(): Int? =
     AgendaMenuAction.DELETE -> R.drawable.ic_fluent_delete
     AgendaMenuAction.SKIP -> R.drawable.ic_fluent_approvals_app
     AgendaMenuAction.TURN_OFF -> R.drawable.ic_fluent_alert_off
+    AgendaMenuAction.PIN -> DrawableCatalog.Fluent.Pin
+    AgendaMenuAction.UNPIN -> DrawableCatalog.Fluent.PinOff
   }

@@ -1144,4 +1144,8 @@
     <string name="todo_completed_count">Slutförda (%1$d)</string>
     <string name="todo_all_done">Toppen, allt är klart</string>
     <string name="todo_drag_to_reorder">Dra för att ändra ordning</string>
+
+    <string name="pin">Fäst</string>
+    <string name="unpin">Lossa</string>
+    <string name="pinned">Fäst</string>
 </resources>

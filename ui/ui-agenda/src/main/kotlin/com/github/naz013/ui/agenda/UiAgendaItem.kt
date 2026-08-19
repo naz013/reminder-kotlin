@@ -19,6 +19,8 @@ enum class AgendaMenuAction {
   ARCHIVE,
   SKIP,
   TURN_OFF,
+  PIN,
+  UNPIN,
 }
 
 /** A single row (or header) in the merged, chronologically-sorted agenda list. */

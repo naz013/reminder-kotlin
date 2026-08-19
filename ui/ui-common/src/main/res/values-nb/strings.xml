@@ -1144,4 +1144,8 @@
     <string name="todo_completed_count">Fullført (%1$d)</string>
     <string name="todo_all_done">Fint, alt er ferdig</string>
     <string name="todo_drag_to_reorder">Dra for å endre rekkefølge</string>
+
+    <string name="pin">Fest</string>
+    <string name="unpin">Løsne</string>
+    <string name="pinned">Festet</string>
 </resources>

@@ -26,6 +26,7 @@ data class ReminderV2(
   val uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
   val isActive: Boolean = true,
   val isRemoved: Boolean = false,
+  val isPinned: Boolean = false,
   val eventCount: Long = 0,
   /** Number of times this reminder has been snoozed; powers `WorkflowTrigger.ReminderSnoozedNTimes`. */
   val snoozeCount: Long = 0,

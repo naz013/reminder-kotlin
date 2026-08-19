@@ -183,5 +183,7 @@ object DrawableCatalog {
     val Warning = R.drawable.ic_fluent_warning
     val Watch = R.drawable.ic_fluent_watch
     val ReOrderDots = R.drawable.ic_fluent_re_order_dots
+    val Pin = R.drawable.ic_fluent_pin
+    val PinOff = R.drawable.ic_fluent_pin_off
   }
 }

@@ -126,6 +126,8 @@ object AppIcons {
     val Warning: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Warning)
     val Watch: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Watch)
     val ReOrderDots: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.ReOrderDots)
+    val Pin: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Pin)
+    val PinOff: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.PinOff)
   }
 
   object Builder {

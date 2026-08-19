@@ -34,6 +34,7 @@ internal data class PreviewReminderState(
   val calendarEvents: List<UiCalendarEventList> = emptyList(),
   val canCopy: Boolean = false,
   val canDelete: Boolean = false,
+  val isPinned: Boolean = false,
   val showDeleteConfirm: Boolean = false,
   val tags: List<TagChipState> = emptyList(),
 )
