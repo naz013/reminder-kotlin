@@ -46,11 +46,13 @@ abstract class NotificationAlertActionHandler<T>(
     builder.setContentIntent(contentPendingIntent(data))
     style.decorate(builder, contextProvider)
 
+    val dismissPendingIntent = actionPendingIntent(data, dismissActionKey())
     builder.addAction(
       R.drawable.ic_fluent_checkmark,
       textProvider.getText(R.string.ok),
-      actionPendingIntent(data, dismissActionKey()),
+      dismissPendingIntent,
     )
+    builder.setDeleteIntent(dismissPendingIntent)
     extraActions(data).forEach { action ->
       builder.addAction(action.icon, action.label, actionPendingIntent(data, action.actionKey))
     }
