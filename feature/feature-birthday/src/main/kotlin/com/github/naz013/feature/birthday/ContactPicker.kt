@@ -14,7 +14,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.feature.common.readString
 
 @Composable
-fun rememberContactPicker(onContactPicked: (ContactData) -> Unit): () -> Unit {
+internal fun rememberContactPicker(onContactPicked: (ContactData) -> Unit): () -> Unit {
   val context = LocalContext.current
   val launcher =
     rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

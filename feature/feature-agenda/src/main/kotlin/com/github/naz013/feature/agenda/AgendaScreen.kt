@@ -70,7 +70,7 @@ private val HEADER_ELEVATION = 3.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AgendaScreen(
+internal fun AgendaScreen(
   state: AgendaScreenState,
   onBackClick: () -> Unit,
   onSearchQueryChange: (String) -> Unit,

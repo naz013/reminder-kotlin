@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PreviewBirthdayViewModel(
+internal class PreviewBirthdayViewModel(
   private val id: String,
   private val birthdayRepository: BirthdayRepository,
   private val dispatcherProvider: DispatcherProvider,

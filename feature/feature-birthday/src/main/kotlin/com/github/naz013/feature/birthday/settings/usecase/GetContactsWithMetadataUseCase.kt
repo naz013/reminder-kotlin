@@ -6,7 +6,7 @@ import android.provider.ContactsContract
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 
-class GetContactsWithMetadataUseCase(
+internal class GetContactsWithMetadataUseCase(
   private val context: Context,
 ) {
   /**

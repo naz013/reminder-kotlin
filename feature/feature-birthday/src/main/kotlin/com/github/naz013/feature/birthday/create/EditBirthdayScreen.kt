@@ -52,7 +52,7 @@ import com.github.naz013.ui.tag.TagChipState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditBirthdayScreen(
+internal fun EditBirthdayScreen(
   modifier: Modifier = Modifier,
   state: EditBirthdayState,
   onBackClick: () -> Unit,

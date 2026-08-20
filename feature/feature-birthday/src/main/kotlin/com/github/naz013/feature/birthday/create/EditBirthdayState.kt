@@ -5,7 +5,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.tag.TagChipState
 import org.threeten.bp.LocalDate
 
-data class EditBirthdayState(
+internal data class EditBirthdayState(
   val id: String = "",
   val titleRes: Int = R.string.add_birthday,
   val name: String = "",
@@ -26,7 +26,7 @@ data class EditBirthdayState(
   val selectedTagIds: Set<String> = emptySet(),
 )
 
-sealed interface EditBirthdayDialog {
+internal sealed interface EditBirthdayDialog {
   data object CopyConflict : EditBirthdayDialog
 
   data object DeleteConfirm : EditBirthdayDialog

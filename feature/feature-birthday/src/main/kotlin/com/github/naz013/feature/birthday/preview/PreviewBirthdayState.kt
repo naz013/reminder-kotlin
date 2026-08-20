@@ -3,7 +3,7 @@ package com.github.naz013.feature.birthday.preview
 import com.github.naz013.ui.birthday.UiBirthdayPreview
 import com.github.naz013.ui.tag.TagChipState
 
-data class PreviewBirthdayState(
+internal data class PreviewBirthdayState(
   val birthday: UiBirthdayPreview? = null,
   val isLoading: Boolean = false,
   val showDeleteConfirm: Boolean = false,

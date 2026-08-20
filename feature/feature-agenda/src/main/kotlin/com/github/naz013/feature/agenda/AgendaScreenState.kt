@@ -6,7 +6,7 @@ import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import com.github.naz013.ui.agenda.AgendaCategory
 import com.github.naz013.ui.agenda.UiAgendaItem
 
-data class AgendaScreenState(
+internal data class AgendaScreenState(
   val listState: ListState = ListState.Loading,
   val hasAnyItems: Boolean = true,
   val searchQuery: String = "",
@@ -18,7 +18,7 @@ data class AgendaScreenState(
   val availableGroups: List<GroupV2> = emptyList(),
 )
 
-sealed interface ListState {
+internal sealed interface ListState {
   data object Loading : ListState
 
   data class Ready(

@@ -1,20 +1,20 @@
 package com.github.naz013.feature.birthday.settings.work
 
 import android.content.Context
-import com.github.naz013.logic.birthday.SaveBirthdayUseCase
-import com.github.naz013.feature.birthday.settings.usecase.GetContactsWithMetadataUseCase
 import com.github.naz013.common.Permissions
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.birthday.settings.usecase.GetContactsWithMetadataUseCase
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.birthday.SaveBirthdayUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.workapi.BackgroundTask
 import com.github.naz013.workapi.TaskData
 import com.github.naz013.workapi.TaskProgressReporter
 import com.github.naz013.workapi.TaskResult
 
-class CheckBirthdaysTask(
+class CheckBirthdaysTask internal constructor(
   private val context: Context,
   private val birthdayRepository: BirthdayRepository,
   private val dateTimeManager: DateTimeManager,

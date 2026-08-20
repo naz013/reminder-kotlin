@@ -16,7 +16,7 @@ import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
  * Generates the complete screen state including header, actions, and contact information
  * for displaying a birthday notification.
  */
-class CreateBirthdayActionScreenStateUseCase(
+internal class CreateBirthdayActionScreenStateUseCase(
   private val getBirthdayActionsUseCase: GetBirthdayActionsUseCase,
   private val textProvider: TextProvider,
   private val contactsReader: ContactsReader,

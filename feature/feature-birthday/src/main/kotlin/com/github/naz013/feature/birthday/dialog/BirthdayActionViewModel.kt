@@ -24,7 +24,7 @@ import org.threeten.bp.LocalDate
  *
  * Manages the state and handles user actions for birthday notifications.
  */
-class BirthdayActionViewModel(
+internal class BirthdayActionViewModel(
   private val id: String,
   private val birthdayRepository: BirthdayRepository,
   private val dispatcherProvider: DispatcherProvider,

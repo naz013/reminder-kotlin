@@ -71,7 +71,7 @@ private const val DETAIL_ROW_MAX_STAGGER_DELAY_MS = 180L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreviewBirthdayScreen(
+internal fun PreviewBirthdayScreen(
   modifier: Modifier = Modifier,
   state: PreviewBirthdayState,
   // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the

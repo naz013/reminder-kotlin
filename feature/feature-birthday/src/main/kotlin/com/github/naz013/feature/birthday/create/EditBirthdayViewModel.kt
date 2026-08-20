@@ -44,7 +44,7 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import java.util.UUID
 
-class EditBirthdayViewModel(
+internal class EditBirthdayViewModel(
   private val key: BirthdaysNavKey.Edit,
   private val birthdayRepository: BirthdayRepository,
   private val dispatcherProvider: DispatcherProvider,

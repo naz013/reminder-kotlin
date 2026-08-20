@@ -49,7 +49,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-class AgendaViewModel(
+internal class AgendaViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,

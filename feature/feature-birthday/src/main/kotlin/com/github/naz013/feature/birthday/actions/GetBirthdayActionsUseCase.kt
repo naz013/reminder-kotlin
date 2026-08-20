@@ -8,7 +8,7 @@ import com.github.naz013.logging.Logger
  *
  * Returns a list of actions that can be performed based on the birthday's properties.
  */
-class GetBirthdayActionsUseCase {
+internal class GetBirthdayActionsUseCase {
   /**
    * Gets the available actions for a birthday.
    *
