@@ -19,7 +19,7 @@ import org.threeten.bp.LocalDateTime
  * day each one falls on so the timeline can render one column per day. Items within a day stay
  * sorted by time.
  */
-class GetRangeEventItemsUseCase(
+internal class GetRangeEventItemsUseCase(
   private val getOccurrencesByDateRangeUseCase: GetOccurrencesByDateRangeUseCase,
   private val getHistoryByDateRangeUseCase: GetHistoryByDateRangeUseCase,
   private val birthdayRepository: BirthdayRepository,

@@ -74,7 +74,7 @@ private const val NOW_LINE_REFRESH_INTERVAL_MS = 30_000L
  * windows. Overlapping events within a day are split into side-by-side lanes by [layoutDayEvents].
  */
 @Composable
-fun TimelinePager(
+internal fun TimelinePager(
   initialPagerPosition: Int,
   pagerJumpRequest: Int?,
   onPagerJumpConsumed: () -> Unit,

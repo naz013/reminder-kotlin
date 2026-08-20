@@ -57,7 +57,7 @@ private const val MAX_DOTS = 4
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(
+internal fun CalendarScreen(
   state: CalendarScreenState,
   currentMode: CalendarViewMode,
   onModeSelected: (CalendarViewMode) -> Unit,

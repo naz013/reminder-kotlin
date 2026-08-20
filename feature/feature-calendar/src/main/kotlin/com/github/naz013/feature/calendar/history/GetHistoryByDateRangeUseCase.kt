@@ -6,7 +6,7 @@ import com.github.naz013.repository.EventHistoryRepository
 import org.threeten.bp.LocalDate
 
 /** Fetches history records across a date range for the 1/3/7-day timeline views. */
-class GetHistoryByDateRangeUseCase(
+internal class GetHistoryByDateRangeUseCase(
   private val historyRepository: EventHistoryRepository,
 ) {
   suspend operator fun invoke(

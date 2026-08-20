@@ -5,7 +5,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.repository.EventOccurrenceRepository
 import org.threeten.bp.LocalDate
 
-class GetOccurrencesByDateRangeUseCase(
+internal class GetOccurrencesByDateRangeUseCase(
   private val eventOccurrenceRepository: EventOccurrenceRepository,
 ) {
   suspend operator fun invoke(

@@ -36,7 +36,7 @@ import org.threeten.bp.temporal.ChronoUnit
  *
  * Shares the infinite-pager center-position math ([CENTER_POSITION]) already used by the month view.
  */
-class TimelineViewModel(
+internal class TimelineViewModel(
   startDateMillis: Long,
   private val daySpan: Int,
   private val dispatcherProvider: DispatcherProvider,

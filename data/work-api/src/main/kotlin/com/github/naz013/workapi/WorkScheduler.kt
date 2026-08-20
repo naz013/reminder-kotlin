@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface WorkScheduler {
   /** Enqueues [request] to run once, returning its tag. */
+  @IgnorableReturnValue
   fun enqueue(request: WorkRequest): String
 
   /** Enqueues [request] as unique work named [uniqueName], applying [policy] if work with that name already exists. */

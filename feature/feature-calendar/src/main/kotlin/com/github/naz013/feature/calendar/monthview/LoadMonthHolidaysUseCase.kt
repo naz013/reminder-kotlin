@@ -10,7 +10,7 @@ import org.threeten.bp.LocalDate
  * [LoadMonthEventsUseCase]'s shape so `CalendarScreen` can join it in at render time the same way
  * it already does for reminder/birthday dots.
  */
-class LoadMonthHolidaysUseCase(
+internal class LoadMonthHolidaysUseCase(
   private val holidayRepository: HolidayRepository,
   private val holidaySettingsGate: HolidaySettingsGate,
 ) {

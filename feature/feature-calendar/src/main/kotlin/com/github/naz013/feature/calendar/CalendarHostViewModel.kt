@@ -21,7 +21,7 @@ import org.threeten.bp.LocalTime
  * @param forcedMode when non-null, overrides the persisted mode for this entry (used by the
  *   "open this day" deep link to force [CalendarViewMode.DAY]).
  */
-class CalendarHostViewModel(
+internal class CalendarHostViewModel(
   initialDateMillis: Long,
   forcedMode: CalendarViewMode?,
   private val dateTimeManager: DateTimeManager,

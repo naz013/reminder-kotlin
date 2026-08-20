@@ -3,7 +3,7 @@ package com.github.naz013.feature.calendar.timeline
 import com.github.naz013.ui.agenda.UiAgendaItem
 
 /** One event placed on the day's hour axis, with the lane it occupies among overlapping events. */
-data class PositionedTimelineEvent(
+internal data class PositionedTimelineEvent(
   val item: UiAgendaItem,
   /** Minutes from midnight of the event's start, clamped to `0..MINUTES_IN_DAY`. */
   val startMinutes: Int,
@@ -23,7 +23,7 @@ data class PositionedTimelineEvent(
  * the cluster is told the cluster's total lane count so the UI can split the column width evenly.
  * Pure and deterministic - unit-tested directly.
  */
-fun layoutDayEvents(
+internal fun layoutDayEvents(
   items: List<UiAgendaItem>,
   blockMinutes: Int,
 ): List<PositionedTimelineEvent> {
@@ -74,6 +74,6 @@ fun layoutDayEvents(
   return result
 }
 
-const val MINUTES_IN_HOUR = 60
-const val HOURS_IN_DAY = 24
-const val MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR
+internal const val MINUTES_IN_HOUR = 60
+internal const val HOURS_IN_DAY = 24
+internal const val MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR

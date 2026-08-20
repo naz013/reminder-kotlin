@@ -8,7 +8,7 @@ import org.threeten.bp.LocalDate
  * Builds the 42-cell (6 weeks x 7 days) grid for a month, back/forward-filling with the
  * adjacent months so every week row is complete, respecting [CalendarPreferences.startDay].
  */
-class MonthGridFactory(
+internal class MonthGridFactory(
   private val calendarPreferences: CalendarPreferences,
 ) {
   fun buildGrid(monthDate: LocalDate): List<MonthGridCell> {

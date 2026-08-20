@@ -30,7 +30,7 @@ import org.threeten.bp.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimelineScreen(
+internal fun TimelineScreen(
   state: TimelineScreenState,
   currentMode: CalendarViewMode,
   onModeSelected: (CalendarViewMode) -> Unit,

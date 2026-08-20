@@ -10,7 +10,7 @@ import org.threeten.bp.LocalDate
  * keyed by date - the multi-day sibling of
  * [com.github.naz013.feature.calendar.monthview.LoadMonthHolidaysUseCase].
  */
-class GetRangeHolidaysUseCase(
+internal class GetRangeHolidaysUseCase(
   private val holidayRepository: HolidayRepository,
   private val holidaySettingsGate: HolidaySettingsGate,
 ) {

@@ -26,7 +26,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.temporal.ChronoUnit
 
-class CalendarViewModel(
+internal class CalendarViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val dateTimeManager: DateTimeManager,
   private val calendarPreferences: CalendarPreferences,

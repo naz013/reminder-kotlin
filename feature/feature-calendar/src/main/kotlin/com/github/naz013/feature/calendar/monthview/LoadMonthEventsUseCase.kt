@@ -14,7 +14,7 @@ import org.threeten.bp.LocalDate
  * birthday/reminder occurrence on that day. Ports [OccurrenceType.CalendarEvent] being an
  * unhandled no-op from the legacy implementation (device/Google Calendar events aren't shown).
  */
-class LoadMonthEventsUseCase(
+internal class LoadMonthEventsUseCase(
   private val getOccurrencesByDateRangeUseCase: GetOccurrencesByDateRangeUseCase,
   private val birthdayRepository: BirthdayRepository,
   private val reminderV2Repository: ReminderV2Repository,

@@ -17,7 +17,7 @@ import org.threeten.bp.LocalDateTime
  * `ui-agenda` presentation model. Shared by the single-day and multi-day (timeline) event use
  * cases so a recurring reminder/birthday renders identically wherever it appears.
  */
-class CalendarAgendaItemFactory(
+internal class CalendarAgendaItemFactory(
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val dateTimeManager: DateTimeManager,
