@@ -30,7 +30,7 @@ private const val MENU_ITEM_DELETE = 1
  * "Save as template" (only for rules not already backed by one) and "Delete". Shared by the
  * Gallery screen's global-rules section and the per-group rules screen. */
 @Composable
-fun WorkflowRuleRow(
+internal fun WorkflowRuleRow(
   rule: UiWorkflowRule,
   onEnabledChange: (Boolean) -> Unit,
   onDeleteClick: () -> Unit,

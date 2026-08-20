@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class NoteSettingsViewModel(
+internal class NoteSettingsViewModel(
   private val prefs: NoteSettingsPreferences,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {

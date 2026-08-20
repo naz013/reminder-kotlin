@@ -12,7 +12,7 @@ import com.github.naz013.workapi.TaskResult
  * Erases all cloud data, reporting progress under [KEY_IS_IN_PROGRESS] so UI can reflect
  * the running state via [com.github.naz013.workapi.WorkScheduler.observeUniqueWork].
  */
-class ObservableEraseDataTask(
+internal class ObservableEraseDataTask(
   private val googleDriveApi: GoogleDriveApi,
   private val dropboxApi: DropboxApi,
 ) : BackgroundTask {

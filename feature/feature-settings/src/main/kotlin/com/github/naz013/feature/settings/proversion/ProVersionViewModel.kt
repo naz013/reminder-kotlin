@@ -7,7 +7,7 @@ import com.github.naz013.analytics.ProScreenViewedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.ui.common.R
 
-class ProVersionViewModel(
+internal class ProVersionViewModel(
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel() {

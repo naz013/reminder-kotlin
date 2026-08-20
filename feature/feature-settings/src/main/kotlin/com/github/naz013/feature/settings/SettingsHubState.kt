@@ -1,6 +1,6 @@
 package com.github.naz013.feature.settings
 
-data class SettingsHubState(
+internal data class SettingsHubState(
   val saleMessage: String? = null,
   val updateMessage: String? = null,
   val internalMessage: String? = null,

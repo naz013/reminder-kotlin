@@ -31,7 +31,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
-fun TroubleshootingScreen(
+internal fun TroubleshootingScreen(
   state: TroubleshootingScreenState,
   onSendLogsClick: () -> Unit,
   onDisableOptimizationClick: () -> Unit,

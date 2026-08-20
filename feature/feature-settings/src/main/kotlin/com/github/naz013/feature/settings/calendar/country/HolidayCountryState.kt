@@ -1,12 +1,12 @@
 package com.github.naz013.feature.settings.calendar.country
 
-data class HolidayCountryState(
+internal data class HolidayCountryState(
   val listState: CountryListState = CountryListState.Loading,
   val searchQuery: String = "",
   val selectedCode: String = "",
 )
 
-sealed interface CountryListState {
+internal sealed interface CountryListState {
   data object Loading : CountryListState
 
   data class Ready(
@@ -16,7 +16,7 @@ sealed interface CountryListState {
   data object Empty : CountryListState
 }
 
-data class UiCountry(
+internal data class UiCountry(
   val code: String,
   val name: String,
   val flagEmoji: String,

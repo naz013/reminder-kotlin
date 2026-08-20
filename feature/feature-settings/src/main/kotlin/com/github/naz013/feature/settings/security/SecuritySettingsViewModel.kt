@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 
-class SecuritySettingsViewModel(
+internal class SecuritySettingsViewModel(
   private val prefs: SecuritySettingsPreferences,
   analyticsEventSender: AnalyticsEventSender,
   private val systemInfo: SystemInfo,

@@ -61,7 +61,7 @@ private fun needsParams(trigger: WorkflowTrigger): Boolean = when (trigger) {
  * [scopeType] (e.g. group-completion only offered for a group-scoped rule). */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkflowTriggerPickerSheet(
+internal fun WorkflowTriggerPickerSheet(
   scopeType: WorkflowScopeType,
   onDismiss: () -> Unit,
   onConfirm: (WorkflowTrigger) -> Unit,
@@ -170,7 +170,7 @@ private val CONDITION_OPTIONS = listOf(
  * (via [initial]) to edit an existing one. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkflowConditionPickerSheet(
+internal fun WorkflowConditionPickerSheet(
   groups: List<UiWorkflowGroupOption>,
   initial: WorkflowCondition?,
   onDismiss: () -> Unit,
@@ -304,7 +304,7 @@ private fun needsParams(action: WorkflowAction): Boolean =
  * catalog of what's safe to expose, so it stays settable only via curated seeded templates. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkflowActionPickerSheet(
+internal fun WorkflowActionPickerSheet(
   reminders: List<UiWorkflowReminderOption>,
   onDismiss: () -> Unit,
   onConfirm: (WorkflowAction) -> Unit,

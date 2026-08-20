@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 
-class WhatsNewViewModel(
+internal class WhatsNewViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val textProvider: TextProvider,

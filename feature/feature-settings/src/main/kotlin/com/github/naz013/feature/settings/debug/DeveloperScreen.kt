@@ -25,7 +25,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DeveloperScreen(
+internal fun DeveloperScreen(
   state: DeveloperState,
   modifier: Modifier = Modifier,
   onResetBannersClick: () -> Unit,

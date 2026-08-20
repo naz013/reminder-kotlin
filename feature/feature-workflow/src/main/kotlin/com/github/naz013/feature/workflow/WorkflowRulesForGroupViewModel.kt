@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
  * as [WorkflowGalleryViewModel] but scoped to one [groupId] — lists the rules already attached to
  * this group and offers the template gallery filtered to group-supporting templates, plus the
  * [com.github.naz013.feature.workflow.builder.WorkflowRuleBuilderScreen] to create a custom rule. */
-class WorkflowRulesForGroupViewModel(
+internal class WorkflowRulesForGroupViewModel(
   private val groupId: String,
   private val dispatcherProvider: DispatcherProvider,
   private val getWorkflowRulesForGroupUseCase: GetWorkflowRulesForGroupUseCase,

@@ -15,7 +15,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 
 @Composable
-fun SecuritySettingsScreen(
+internal fun SecuritySettingsScreen(
   state: SecuritySettingsState,
   onPinRowClick: () -> Unit,
   onChangePinClick: () -> Unit,

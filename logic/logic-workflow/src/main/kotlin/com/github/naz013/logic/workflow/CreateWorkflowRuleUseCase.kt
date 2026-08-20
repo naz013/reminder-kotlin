@@ -13,6 +13,7 @@ class CreateWorkflowRuleUseCase(
   private val workflowRuleRepository: WorkflowRuleRepository
 ) {
 
+  @IgnorableReturnValue
   suspend operator fun invoke(
     title: String,
     scope: WorkflowScope,

@@ -36,7 +36,7 @@ import com.github.naz013.ui.common.compose.foundation.component.AnimatedGradient
 import com.github.naz013.ui.common.compose.withAlpha
 
 @Composable
-fun ProVersionScreen(
+internal fun ProVersionScreen(
   advantages: List<String>,
   onBackClick: () -> Unit,
   onBuyClick: () -> Unit,

@@ -9,7 +9,7 @@ import com.github.naz013.workapi.TaskData
 import com.github.naz013.workapi.TaskProgressReporter
 import com.github.naz013.workapi.TaskResult
 
-class ScanGoogleCalendarEventsTask(
+internal class ScanGoogleCalendarEventsTask(
   private val context: Context,
   private val scanGoogleCalendarForNewEventsUseCase: ScanGoogleCalendarForNewEventsUseCase,
 ) : BackgroundTask {

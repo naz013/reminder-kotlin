@@ -8,7 +8,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.files.DataType
 
-class SavePlaceUseCase(
+internal class SavePlaceUseCase(
   private val placeRepository: PlaceRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {

@@ -1,6 +1,6 @@
 package com.github.naz013.feature.settings.export.services
 
-data class CloudServicesState(
+internal data class CloudServicesState(
   val isLoading: Boolean = false,
   val isDropboxVisible: Boolean = false,
   val isDropboxLoggedIn: Boolean = false,

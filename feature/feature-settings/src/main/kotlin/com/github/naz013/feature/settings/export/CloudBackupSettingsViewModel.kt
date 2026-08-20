@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CloudBackupSettingsViewModel(
+internal class CloudBackupSettingsViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val cloudApiProvider: CloudApiProvider,
   private val jobScheduler: JobSchedulerApi,

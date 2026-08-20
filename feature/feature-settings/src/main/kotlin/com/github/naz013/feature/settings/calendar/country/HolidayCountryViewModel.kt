@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class HolidayCountryViewModel(
+internal class HolidayCountryViewModel(
   private val dispatcherProvider: DispatcherProvider,
   prefs: CalendarSettingsPreferences,
 ) : ViewModel() {

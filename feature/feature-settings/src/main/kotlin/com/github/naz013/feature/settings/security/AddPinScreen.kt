@@ -19,7 +19,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.PinInput
 
 @Composable
-fun AddPinScreen(
+internal fun AddPinScreen(
   stage: AddPinStage,
   pin: String,
   onDigitClick: (Int) -> Unit,

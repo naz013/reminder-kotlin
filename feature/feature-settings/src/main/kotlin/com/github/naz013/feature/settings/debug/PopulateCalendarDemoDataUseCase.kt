@@ -30,7 +30,7 @@ import kotlin.random.Random
  * (which each resolve one item at a time via a WorkManager job) - enqueueing thousands of
  * individual jobs for [Scale.MASSIVE] would be impractically slow for a debug button.
  */
-class PopulateCalendarDemoDataUseCase(
+internal class PopulateCalendarDemoDataUseCase(
   private val reminderV2Repository: ReminderV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val eventOccurrenceRepository: EventOccurrenceRepository,

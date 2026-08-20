@@ -27,7 +27,7 @@ private const val TAG = "GoogleDriveLogin"
  * old Fragment-hosted Drive login's approach, which has no Fragment to eagerly register an
  * `ActivityResultLauncher` in `onCreate()` against.
  */
-class GoogleDriveLoginState internal constructor(
+internal class GoogleDriveLoginState internal constructor(
   private val launcher: ActivityResultLauncher<Intent>,
   private val signInClient: () -> GoogleSignInClient,
   private val googleDriveApi: GoogleDriveApi,
@@ -48,7 +48,7 @@ class GoogleDriveLoginState internal constructor(
 }
 
 @Composable
-fun rememberGoogleDriveLogin(
+internal fun rememberGoogleDriveLogin(
   onResult: (Boolean) -> Unit,
   onFail: () -> Unit = {},
 ): GoogleDriveLoginState {

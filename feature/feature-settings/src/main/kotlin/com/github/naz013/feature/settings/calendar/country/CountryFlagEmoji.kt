@@ -8,7 +8,7 @@ private const val REGIONAL_INDICATOR_OFFSET = 0x1F1E6 - 'A'.code
  * flag on devices/fonts with emoji flag-sequence support, or as two boxed letters otherwise (very
  * old Android versions) - a well-known, acceptable trade-off for this approach.
  */
-fun countryCodeToFlagEmoji(code: String): String {
+internal fun countryCodeToFlagEmoji(code: String): String {
   val upper = code.uppercase()
   if (upper.length != 2 || upper.any { it !in 'A'..'Z' }) return code
 

@@ -40,7 +40,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HolidayCountryScreen(
+internal fun HolidayCountryScreen(
   onBackClick: () -> Unit,
   onCountrySelected: (String) -> Unit,
   modifier: Modifier = Modifier,

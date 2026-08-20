@@ -19,7 +19,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.PinInput
 
 @Composable
-fun ChangePinScreen(
+internal fun ChangePinScreen(
   stage: ChangePinStage,
   pin: String,
   onDigitClick: (Int) -> Unit,

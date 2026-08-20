@@ -15,6 +15,7 @@ class ApplyWorkflowTemplateUseCase(
 
   /** Returns null if [scope]'s type isn't in [template]'s supportedScopeTypes — a future UI
    * shouldn't offer that combination in the first place, but this stays defensive. */
+  @IgnorableReturnValue
   suspend operator fun invoke(template: WorkflowTemplate, scope: WorkflowScope): WorkflowRule? {
     if (scope.type() !in template.supportedScopeTypes) return null
 

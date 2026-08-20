@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ObjectExportScreen(
+internal fun ObjectExportScreen(
   state: ObjectExportState,
   onObjectTypeSelected: (ObjectExportType) -> Unit,
   onItemClick: (ObjectExportItem) -> Unit,

@@ -13,6 +13,7 @@ class SaveWorkflowRuleAsTemplateUseCase(
   private val workflowRuleRepository: WorkflowRuleRepository
 ) {
 
+  @IgnorableReturnValue
   suspend operator fun invoke(rule: WorkflowRule, title: String = rule.title): WorkflowTemplate {
     val template = WorkflowTemplate(
       title = title,

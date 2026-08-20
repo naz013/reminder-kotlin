@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
  * fix the rule's [WorkflowScope] for the whole session - the entry point (Gallery = global, a
  * group's rules screen = that group) decides scope, the builder only fills in trigger/conditions/
  * action. */
-class WorkflowRuleBuilderViewModel(
+internal class WorkflowRuleBuilderViewModel(
   private val scopeType: WorkflowScopeType,
   private val scopeId: String?,
   private val editingRuleId: String?,

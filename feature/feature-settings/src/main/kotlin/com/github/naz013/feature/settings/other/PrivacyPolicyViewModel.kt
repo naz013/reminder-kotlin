@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 
-class PrivacyPolicyViewModel(
+internal class PrivacyPolicyViewModel(
   private val legalDocumentRepository: LegalDocumentRepository,
 ) : ViewModel() {
   val url: String

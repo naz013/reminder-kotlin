@@ -27,6 +27,8 @@ class ActivateReminderUseCase(
   private val workScheduler: WorkScheduler,
   private val systemInfo: SystemInfo,
 ) {
+
+  @IgnorableReturnValue
   suspend operator fun invoke(
     reminder: ReminderV2,
     startAnyway: Boolean = false,

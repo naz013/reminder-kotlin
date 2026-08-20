@@ -25,7 +25,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 
 @Composable
-fun CalendarSettingsScreen(
+internal fun CalendarSettingsScreen(
   state: CalendarSettingsState,
   onFirstDayClick: () -> Unit,
   onFirstDayOptionSelected: (Int) -> Unit,

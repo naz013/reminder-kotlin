@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.github.naz013.ui.common.R
 
-interface OptimizationSettingsLauncher {
+internal interface OptimizationSettingsLauncher {
   fun launch()
 }
 
@@ -85,7 +85,7 @@ private class OptimizationSettingsLauncherImpl(
 }
 
 @Composable
-fun rememberOptimizationSettingsLauncher(): OptimizationSettingsLauncher {
+internal fun rememberOptimizationSettingsLauncher(): OptimizationSettingsLauncher {
   val context = LocalContext.current
   return OptimizationSettingsLauncherImpl(context)
 }

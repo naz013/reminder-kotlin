@@ -6,7 +6,7 @@ import com.github.naz013.ui.common.R
 import com.google.android.gms.maps.model.LatLng
 import java.util.UUID
 
-data class EditPlaceState(
+internal data class EditPlaceState(
   val screenTitle: Int = R.string.new_place,
   val id: String = UUID.randomUUID().toString(),
   val name: String = "",
@@ -25,7 +25,7 @@ data class EditPlaceState(
   fun hasLatLng(): Boolean = lat != 0.0 && lng != 0.0
 }
 
-data class EditMarker(
+internal data class EditMarker(
   override val latLng: LatLng,
   override val style: Int,
   override val radius: Int,

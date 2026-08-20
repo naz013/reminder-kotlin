@@ -28,7 +28,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 
 @Composable
-fun GeneralSettingsScreen(
+internal fun GeneralSettingsScreen(
   modifier: Modifier = Modifier,
   state: GeneralSettingsState,
   onLanguageClick: () -> Unit,

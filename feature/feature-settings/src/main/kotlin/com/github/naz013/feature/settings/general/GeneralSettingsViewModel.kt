@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class GeneralSettingsViewModel(
+internal class GeneralSettingsViewModel(
   private val prefs: GeneralSettingsPreferences,
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,

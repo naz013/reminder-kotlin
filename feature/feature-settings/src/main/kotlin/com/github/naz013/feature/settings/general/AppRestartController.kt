@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 
-interface AppRestartController {
+internal interface AppRestartController {
   fun recreate()
   fun restartApp()
 }
@@ -34,7 +34,7 @@ private class AppRestartControllerImpl(
 }
 
 @Composable
-fun rememberAppRestartController(restartActivityClass: Class<out Activity>): AppRestartController {
+internal fun rememberAppRestartController(restartActivityClass: Class<out Activity>): AppRestartController {
   val activity = LocalActivity.current as Activity
   return AppRestartControllerImpl(activity, restartActivityClass)
 }

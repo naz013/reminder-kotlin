@@ -1,6 +1,6 @@
 package com.github.naz013.feature.settings.export
 
-data class CloudBackupSettingsState(
+internal data class CloudBackupSettingsState(
   val autoBackupStateName: String = "",
   val networkTypeName: String = "",
   val hasAnyCloudApi: Boolean = false,
@@ -8,7 +8,7 @@ data class CloudBackupSettingsState(
   val dialog: CloudBackupDialog? = null,
 )
 
-sealed class CloudBackupDialog {
+internal sealed class CloudBackupDialog {
   data class AutoBackupInterval(
     val options: List<String>,
     val selectedIndex: Int,

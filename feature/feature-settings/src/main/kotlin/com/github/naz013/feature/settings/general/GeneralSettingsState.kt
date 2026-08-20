@@ -1,6 +1,6 @@
 package com.github.naz013.feature.settings.general
 
-data class GeneralSettingsState(
+internal data class GeneralSettingsState(
   val languageName: String = "",
   val themeName: String = "",
   val timeFormatName: String = "",
@@ -10,7 +10,7 @@ data class GeneralSettingsState(
   val hapticFeedbackEnabled: Boolean = false,
 )
 
-sealed class GeneralSettingsDialog {
+internal sealed class GeneralSettingsDialog {
   abstract val title: String
   abstract val options: List<String>
   abstract val selectedIndex: Int
@@ -34,7 +34,7 @@ sealed class GeneralSettingsDialog {
   ) : GeneralSettingsDialog()
 }
 
-sealed interface GeneralSettingsEvent {
+internal sealed interface GeneralSettingsEvent {
   data object RecreateActivity : GeneralSettingsEvent
 
   data object RestartApp : GeneralSettingsEvent

@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
  * gallery grouped by category, and lets a user apply a template globally, create a fresh rule
  * via the [com.github.naz013.feature.workflow.builder.WorkflowRuleBuilderScreen], toggle/delete an
  * existing rule, or save one back as a reusable template. */
-class WorkflowGalleryViewModel(
+internal class WorkflowGalleryViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val getGlobalWorkflowRulesUseCase: GetGlobalWorkflowRulesUseCase,
   private val getWorkflowTemplatesUseCase: GetWorkflowTemplatesUseCase,

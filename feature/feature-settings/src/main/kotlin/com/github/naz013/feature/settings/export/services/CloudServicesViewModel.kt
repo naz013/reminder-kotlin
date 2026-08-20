@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CloudServicesViewModel(
+internal class CloudServicesViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val syncAllGoogleTaskListsUseCase: SyncAllGoogleTaskListsUseCase,

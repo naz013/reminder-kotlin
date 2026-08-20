@@ -11,7 +11,7 @@ import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.platform.SystemInfo
 
-class DropboxLogin(
+internal class DropboxLogin(
   private val context: Context,
   private val dropboxApi: DropboxApi,
   private val dropboxAuthManager: DropboxAuthManager,

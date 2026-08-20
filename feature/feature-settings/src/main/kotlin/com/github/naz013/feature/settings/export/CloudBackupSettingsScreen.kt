@@ -24,7 +24,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
-fun CloudBackupSettingsScreen(
+internal fun CloudBackupSettingsScreen(
   state: CloudBackupSettingsState,
   onCloudServicesClick: () -> Unit,
   onAutoBackupIntervalClick: () -> Unit,

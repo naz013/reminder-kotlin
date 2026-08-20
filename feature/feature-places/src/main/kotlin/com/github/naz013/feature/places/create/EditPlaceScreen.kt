@@ -31,7 +31,7 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditPlaceScreen(
+internal fun EditPlaceScreen(
   modifier: Modifier = Modifier,
   state: EditPlaceState,
   onBackClick: () -> Unit,

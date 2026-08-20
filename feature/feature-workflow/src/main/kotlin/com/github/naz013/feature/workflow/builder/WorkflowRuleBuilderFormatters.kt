@@ -11,7 +11,7 @@ import com.github.naz013.feature.workflow.R
 /** Display name for a trigger/condition/action's *type*, used both for its picker-list option
  * and as the row title once configured - independent of any params it carries. */
 @Composable
-fun workflowTriggerLabel(trigger: WorkflowTrigger): String = when (trigger) {
+internal fun workflowTriggerLabel(trigger: WorkflowTrigger): String = when (trigger) {
   is WorkflowTrigger.ReminderCompleted -> stringResource(R.string.workflow_trigger_reminder_completed)
   is WorkflowTrigger.ReminderSnoozedNTimes -> stringResource(R.string.workflow_trigger_reminder_snoozed_n_times)
   is WorkflowTrigger.GroupAllCompleted -> stringResource(R.string.workflow_trigger_group_all_completed)
@@ -23,7 +23,7 @@ fun workflowTriggerLabel(trigger: WorkflowTrigger): String = when (trigger) {
 
 /** The configured value line for a trigger, or null for parameterless ones. */
 @Composable
-fun workflowTriggerValue(trigger: WorkflowTrigger): String? = when (trigger) {
+internal fun workflowTriggerValue(trigger: WorkflowTrigger): String? = when (trigger) {
   is WorkflowTrigger.ReminderSnoozedNTimes -> "${trigger.count}"
   is WorkflowTrigger.ReminderAgeExceeded -> "${trigger.days} ${stringResource(R.string.days)}"
   is WorkflowTrigger.ReminderUnacknowledgedFor -> "${trigger.minutes} ${stringResource(
@@ -33,14 +33,14 @@ fun workflowTriggerValue(trigger: WorkflowTrigger): String? = when (trigger) {
 }
 
 @Composable
-fun workflowConditionLabel(condition: WorkflowCondition): String = when (condition) {
+internal fun workflowConditionLabel(condition: WorkflowCondition): String = when (condition) {
   is WorkflowCondition.PriorityAtLeast -> stringResource(R.string.workflow_condition_priority_at_least)
   is WorkflowCondition.WithinTimeWindow -> stringResource(R.string.workflow_condition_within_time_window)
   is WorkflowCondition.GroupIs -> stringResource(R.string.workflow_condition_group_is)
 }
 
 @Composable
-fun workflowPriorityLabel(priority: ReminderPriority): String = when (priority) {
+internal fun workflowPriorityLabel(priority: ReminderPriority): String = when (priority) {
   ReminderPriority.LOWEST -> stringResource(R.string.priority_lowest)
   ReminderPriority.LOW -> stringResource(R.string.priority_low)
   ReminderPriority.NORMAL -> stringResource(R.string.priority_normal)
@@ -49,7 +49,7 @@ fun workflowPriorityLabel(priority: ReminderPriority): String = when (priority) 
 }
 
 @Composable
-fun workflowConditionValue(
+internal fun workflowConditionValue(
   condition: WorkflowCondition,
   groups: List<UiWorkflowGroupOption>
 ): String = when (condition) {
@@ -65,7 +65,7 @@ fun workflowConditionValue(
 }
 
 @Composable
-fun workflowActionLabel(action: WorkflowAction): String = when (action) {
+internal fun workflowActionLabel(action: WorkflowAction): String = when (action) {
   is WorkflowAction.ArchiveReminder -> stringResource(R.string.workflow_action_archive_reminder)
   is WorkflowAction.CompleteReminder -> stringResource(R.string.workflow_action_complete_reminder)
   is WorkflowAction.ApplyNotificationOverride -> stringResource(R.string.workflow_action_apply_notification_override)
@@ -73,7 +73,10 @@ fun workflowActionLabel(action: WorkflowAction): String = when (action) {
   is WorkflowAction.RunBackgroundTask -> action.taskKey
 }
 
-fun workflowActionValue(action: WorkflowAction, reminders: List<UiWorkflowReminderOption>): String? = when (action) {
+internal fun workflowActionValue(
+  action: WorkflowAction,
+  reminders: List<UiWorkflowReminderOption>
+): String? = when (action) {
   is WorkflowAction.ActivateReminder -> reminders.firstOrNull { it.id == action.reminderId }?.title ?: action.reminderId
   else -> null
 }

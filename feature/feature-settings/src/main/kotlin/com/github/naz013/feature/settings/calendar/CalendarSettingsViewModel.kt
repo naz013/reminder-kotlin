@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
-class CalendarSettingsViewModel(
+internal class CalendarSettingsViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val googleCalendarApi: GoogleCalendarApi,
   private val prefs: CalendarSettingsPreferences,

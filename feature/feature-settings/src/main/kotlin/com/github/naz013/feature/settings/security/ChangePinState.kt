@@ -1,13 +1,13 @@
 package com.github.naz013.feature.settings.security
 
-data class ChangePinState(
+internal data class ChangePinState(
   val stage: ChangePinStage = ChangePinStage.OLD,
   val pin: String = "",
 )
 
-enum class ChangePinStage { OLD, INPUT, REPEAT }
+internal enum class ChangePinStage { OLD, INPUT, REPEAT }
 
-sealed class ChangePinEvent {
+internal sealed class ChangePinEvent {
   data object ShowPinMismatch : ChangePinEvent()
 
   data object PinSaved : ChangePinEvent()

@@ -1,16 +1,16 @@
 package com.github.naz013.feature.settings.debug
 
-data class ObjectExportState(
+internal data class ObjectExportState(
   val objectType: ObjectExportType = ObjectExportType.ReminderV2,
   val items: List<ObjectExportItem> = emptyList(),
 )
 
-data class ObjectExportItem(
+internal data class ObjectExportItem(
   val id: String,
   val title: String,
 )
 
-enum class ObjectExportType {
+internal enum class ObjectExportType {
   ReminderV2,
   ReminderV1,
   Birthday,
@@ -21,7 +21,7 @@ enum class ObjectExportType {
   GroupV1,
 }
 
-sealed class ObjectExportEvent {
+internal sealed class ObjectExportEvent {
   data class RequestSaveLocation(
     val fileName: String,
     val itemId: String,

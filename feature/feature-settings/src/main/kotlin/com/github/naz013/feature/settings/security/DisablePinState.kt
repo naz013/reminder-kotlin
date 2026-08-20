@@ -1,10 +1,10 @@
 package com.github.naz013.feature.settings.security
 
-data class DisablePinState(
+internal data class DisablePinState(
   val pin: String = "",
 )
 
-sealed class DisablePinEvent {
+internal sealed class DisablePinEvent {
   data object ShowPinMismatch : DisablePinEvent()
 
   data object PinCleared : DisablePinEvent()

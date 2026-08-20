@@ -6,7 +6,7 @@ import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun rememberDropboxLogin(): DropboxLogin {
+internal fun rememberDropboxLogin(): DropboxLogin {
   val context = LocalContext.current
   return koinInject<DropboxLogin> { parametersOf(context) }
 }

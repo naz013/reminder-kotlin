@@ -33,7 +33,7 @@ private val BannerHorizontalPadding = 16.dp
 private val BannerVerticalPadding = 8.dp
 
 @Composable
-fun SettingsHubScreen(
+internal fun SettingsHubScreen(
   modifier: Modifier = Modifier,
   state: SettingsHubState,
   onBuyProClick: () -> Unit,

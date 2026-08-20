@@ -19,7 +19,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 /** A single template gallery entry: title/description plus an "Apply" button, disabled (with an
  * explanatory label) when the template doesn't support the current entry point's scope type. */
 @Composable
-fun WorkflowTemplateCard(
+internal fun WorkflowTemplateCard(
   template: UiWorkflowTemplate,
   applyButtonLabel: String,
   onApplyClick: () -> Unit,

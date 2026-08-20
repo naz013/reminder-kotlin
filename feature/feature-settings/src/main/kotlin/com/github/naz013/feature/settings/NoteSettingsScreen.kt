@@ -22,7 +22,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 
 @Composable
-fun NoteSettingsScreen(
+internal fun NoteSettingsScreen(
   state: NoteSettingsState,
   onColorRememberToggle: () -> Unit,
   onFontSizeRememberToggle: () -> Unit,

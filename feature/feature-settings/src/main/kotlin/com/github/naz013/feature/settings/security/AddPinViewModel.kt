@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class AddPinViewModel(
+internal class AddPinViewModel(
   private val prefs: SecuritySettingsPreferences,
 ) : ViewModel() {
   val state: StateFlow<AddPinState> field = MutableStateFlow(AddPinState())

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 
-class SettingsHubViewModel(
+internal class SettingsHubViewModel(
   private val remoteMessages: SettingsHubRemoteMessages,
   private val securityPreferences: SecuritySettingsPreferences,
   private val doNotDisturbChecker: SettingsHubDoNotDisturbChecker,

@@ -9,9 +9,9 @@ import org.koin.compose.koinInject
  * `ViewModelStoreOwner`, so it can't call back into `CalendarSettingsViewModel` directly.
  * Mirrors `ApplicationPickerResultHolder`'s approach to the same constraint.
  */
-class HolidayCountryPickerResultHolder {
+internal class HolidayCountryPickerResultHolder {
   var pendingCountryCode: String? = null
 }
 
 @Composable
-fun rememberHolidayCountryPickerResultHolder(): HolidayCountryPickerResultHolder = koinInject()
+internal fun rememberHolidayCountryPickerResultHolder(): HolidayCountryPickerResultHolder = koinInject()

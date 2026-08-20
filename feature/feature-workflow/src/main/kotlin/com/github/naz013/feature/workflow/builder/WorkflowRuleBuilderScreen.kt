@@ -37,7 +37,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionH
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkflowRuleBuilderScreen(
+internal fun WorkflowRuleBuilderScreen(
   state: WorkflowRuleBuilderState,
   onBackClick: () -> Unit,
   onTriggerRowClick: () -> Unit,

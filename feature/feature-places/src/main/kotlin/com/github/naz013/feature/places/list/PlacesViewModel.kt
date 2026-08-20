@@ -33,7 +33,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-class PlacesViewModel(
+internal class PlacesViewModel(
   private val backupTool: BackupTool,
   private val dispatcherProvider: DispatcherProvider,
   private val placeRepository: PlaceRepository,

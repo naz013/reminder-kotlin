@@ -1,16 +1,16 @@
 package com.github.naz013.feature.settings.other
 
-data class OtherSettingsState(
+internal data class OtherSettingsState(
   val aboutDialog: AboutDialogState? = null,
   val permissionItems: List<PermissionItem> = emptyList(),
   val isGeminiFunctionsVisible: Boolean = false,
   val isGeminiFunctionsLocked: Boolean = false,
 )
 
-data class AboutDialogState(
+internal data class AboutDialogState(
   val appName: String,
   val version: String,
   val translators: String,
 )
 
-data class PermissionItem(val title: String, val permission: String)
+internal data class PermissionItem(val title: String, val permission: String)

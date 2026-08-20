@@ -11,7 +11,7 @@ import com.github.naz013.workapi.TaskResult
  * Performs an observable sync, reporting progress under [KEY_IS_IN_PROGRESS] so UI can
  * reflect the running state via [com.github.naz013.workapi.WorkScheduler.observeUniqueWork].
  */
-class ObservableSyncTask(
+internal class ObservableSyncTask(
   private val syncApi: SyncApi,
 ) : BackgroundTask {
   override suspend fun run(

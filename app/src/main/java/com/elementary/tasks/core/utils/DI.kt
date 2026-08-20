@@ -1,14 +1,12 @@
 package com.elementary.tasks.core.utils
 
-import android.content.Context
-import com.elementary.tasks.core.calendar.AppCalendarPreferences
-import com.elementary.tasks.core.home.AppHomePreferences
-import com.elementary.tasks.core.holidays.HolidaySettingsGateImpl
 import com.elementary.tasks.core.birthdays.AppBirthdayNotifier
 import com.elementary.tasks.core.birthdays.AppBirthdayPreferences
+import com.elementary.tasks.core.calendar.AppCalendarPreferences
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
-import com.github.naz013.feature.settings.export.DropboxLogin
 import com.elementary.tasks.core.data.repository.ReminderSettingsRepositoryImpl
+import com.elementary.tasks.core.holidays.HolidaySettingsGateImpl
+import com.elementary.tasks.core.home.AppHomePreferences
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.notes.AppNoteFontProvider
 import com.elementary.tasks.core.notes.AppNoteNotifier
@@ -87,9 +85,6 @@ val utilModule = module {
 
   factory { DoNotDisturbManager(get(), get()) }
 
-  factory { (context: Context) ->
-    DropboxLogin(context, get(), get(), get(), get(), get())
-  }
   factory { (listener: LocationTracker.Listener) ->
     LocationTracker(listener, get(), get(), get())
   }

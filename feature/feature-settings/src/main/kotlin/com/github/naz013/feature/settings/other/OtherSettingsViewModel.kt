@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 
-class OtherSettingsViewModel(
+internal class OtherSettingsViewModel(
   private val packageManagerWrapper: PackageManagerWrapper,
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,

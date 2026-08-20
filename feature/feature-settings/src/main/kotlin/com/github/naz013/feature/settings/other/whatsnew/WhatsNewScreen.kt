@@ -34,7 +34,7 @@ import com.github.naz013.ui.common.compose.foundation.component.AnimatedGradient
 import com.github.naz013.ui.common.compose.withAlpha
 
 @Composable
-fun WhatsNewScreen(
+internal fun WhatsNewScreen(
   versionAndDate: String,
   whatsNewText: String,
   onBackClick: () -> Unit,

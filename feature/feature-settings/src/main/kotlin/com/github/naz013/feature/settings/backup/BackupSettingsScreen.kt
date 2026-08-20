@@ -17,7 +17,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionH
  * local encrypted import) under one Settings entry instead of three separate top-level rows.
  */
 @Composable
-fun BackupSettingsScreen(
+internal fun BackupSettingsScreen(
   isLocalBackupLocked: Boolean,
   onCloudBackupClick: () -> Unit,
   onExportBackupClick: () -> Unit,

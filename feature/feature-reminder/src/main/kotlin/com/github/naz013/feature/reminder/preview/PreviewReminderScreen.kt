@@ -49,7 +49,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.github.naz013.feature.reminder.Icons
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.AttachmentFile
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.AttachmentType
 import com.github.naz013.feature.reminder.note.UiNoteList
@@ -393,16 +392,15 @@ private data class DetailItem(
 
 private fun detailRows(state: PreviewReminderState): List<@Composable () -> Unit> =
   buildList {
-    state.dueDateTime?.let { text -> add { DetailRow(icon = Icons.DUE, text = text) } }
-    state.before?.let { text -> add { DetailRow(icon = Icons.DUE, text = text) } }
-    add { DetailRow(icon = Icons.REPEAT, text = state.repeat) }
-    state.remaining?.let { text -> add { DetailRow(icon = Icons.DUE, text = text) } }
-    state.groupTitle?.let { text -> add { DetailRow(icon = Icons.GROUP, text = text) } }
-    add { DetailRow(icon = Icons.PRIORITY, text = state.priorityTitle) }
+    state.dueDateTime?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
+    state.before?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
+    add { DetailRow(icon = DrawableCatalog.Fluent.ArrowRepeatAll, text = state.repeat) }
+    state.remaining?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
+    state.groupTitle?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.Group, text = text) } }
+    add { DetailRow(icon = DrawableCatalog.Fluent.Star, text = state.priorityTitle) }
     if (state.tags.isNotEmpty()) {
       add { TagsDetailRow(tags = state.tags) }
     }
-    add { DetailRow(icon = Icons.ID, text = state.id) }
   }
 
 @Composable
@@ -415,7 +413,7 @@ private fun TagsDetailRow(tags: List<TagChipState>) {
         .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
   ) {
     Icon(
-      painter = painterResource(Icons.TAG),
+      painter = AppIcons.Builder.Group,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onSurfaceVariant,
       modifier = Modifier.size(24.dp),
@@ -429,32 +427,32 @@ private fun targetInfoItems(state: PreviewReminderState): List<DetailItem> {
   return buildList {
     when {
       type.isCall() -> {
-        (state.target as? UiCallTarget)?.name?.let { add(DetailItem(Icons.PERSON, it)) }
-        add(DetailItem(Icons.MAKE_CALL, state.rawTarget))
+        (state.target as? UiCallTarget)?.name?.let { add(DetailItem(DrawableCatalog.Fluent.Person, it)) }
+        add(DetailItem(DrawableCatalog.Builder.AddCall, state.rawTarget))
       }
 
       type.isSms() -> {
-        (state.target as? UiSmsTarget)?.name?.let { add(DetailItem(Icons.PERSON, it)) }
-        add(DetailItem(Icons.SEND_SMS, state.rawTarget))
+        (state.target as? UiSmsTarget)?.name?.let { add(DetailItem(DrawableCatalog.Fluent.Person, it)) }
+        add(DetailItem(DrawableCatalog.Builder.SendMessage, state.rawTarget))
       }
 
       type.isApp() -> {
         val name = (state.target as? UiAppTarget)?.name
-        add(DetailItem(Icons.OPEN_APP, name ?: state.rawTarget))
+        add(DetailItem(DrawableCatalog.Builder.AddApp, name ?: state.rawTarget))
       }
 
       type.isLink() -> {
-        add(DetailItem(Icons.OPEN_LINK, state.rawTarget, TextDecoration.Underline))
+        add(DetailItem(DrawableCatalog.Builder.WebAddress, state.rawTarget, TextDecoration.Underline))
       }
 
       type.isEmail() -> {
         val emailTarget = state.target as? UiEmailTarget
-        emailTarget?.name?.let { add(DetailItem(Icons.PERSON, it)) }
-        add(DetailItem(Icons.SEND_EMAIL, state.rawTarget, TextDecoration.Underline))
+        emailTarget?.name?.let { add(DetailItem(DrawableCatalog.Fluent.Person, it)) }
+        add(DetailItem(DrawableCatalog.Builder.EmailAddress, state.rawTarget, TextDecoration.Underline))
         emailTarget
           ?.subject
           ?.takeIf { it.isNotEmpty() }
-          ?.let { add(DetailItem(Icons.EMAIL_SUBJECT, it, TextDecoration.Underline)) }
+          ?.let { add(DetailItem(DrawableCatalog.Builder.EmailSubject, it, TextDecoration.Underline)) }
       }
     }
   }

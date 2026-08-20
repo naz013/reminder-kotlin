@@ -5,19 +5,19 @@ import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
 
-data class UiWorkflowGroupOption(
+internal data class UiWorkflowGroupOption(
   val id: String,
   val title: String
 )
 
-data class UiWorkflowReminderOption(
+internal data class UiWorkflowReminderOption(
   val id: String,
   val title: String
 )
 
 /** Builder state for a single rule: exactly one trigger slot, zero-or-more condition slots, and
  * exactly one action slot - not the reminder builder's open bag of 0-or-more-of-many-types. */
-data class WorkflowRuleBuilderState(
+internal data class WorkflowRuleBuilderState(
   val isLoading: Boolean = true,
   val scopeType: WorkflowScopeType = WorkflowScopeType.GLOBAL,
   val editingRuleId: String? = null,

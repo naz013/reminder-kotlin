@@ -3,12 +3,12 @@ package com.github.naz013.feature.places.list
 import androidx.compose.ui.graphics.Color
 import com.google.android.gms.maps.model.LatLng
 
-data class PlacesScreenState(
+internal data class PlacesScreenState(
   val listState: ListState = ListState.Loading,
   val searchQuery: String = "",
 )
 
-sealed interface ListState {
+internal sealed interface ListState {
   data object Loading : ListState
 
   data class Ready(
@@ -18,7 +18,7 @@ sealed interface ListState {
   data object Empty : ListState
 }
 
-data class PlaceState(
+internal data class PlaceState(
   val id: String,
   val markerColor: Color,
   val name: String,
@@ -26,7 +26,7 @@ data class PlaceState(
   val formattedDate: String?,
 )
 
-enum class PlaceMenuAction {
+internal enum class PlaceMenuAction {
   EDIT,
   SHARE,
   DELETE,

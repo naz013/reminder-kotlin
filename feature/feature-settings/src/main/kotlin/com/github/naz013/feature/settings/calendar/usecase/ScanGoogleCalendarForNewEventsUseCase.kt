@@ -22,7 +22,7 @@ import org.dmfs.rfc5545.recur.RecurrenceRule
 import java.util.Calendar
 import com.github.naz013.domain.reminder.v2.RecurrenceRule as ReminderRecurrenceRule
 
-class ScanGoogleCalendarForNewEventsUseCase(
+internal class ScanGoogleCalendarForNewEventsUseCase(
   private val prefs: CalendarSettingsPreferences,
   private val googleCalendarApi: GoogleCalendarApi,
   private val dateTimeManager: DateTimeManager,

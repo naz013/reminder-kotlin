@@ -2,7 +2,7 @@ package com.github.naz013.feature.settings.calendar
 
 import androidx.compose.ui.graphics.Color
 
-data class CalendarSettingsState(
+internal data class CalendarSettingsState(
   val firstDayName: String = "",
   val todayColor: Color = Color.Unspecified,
   val reminderColor: Color = Color.Unspecified,
@@ -16,7 +16,7 @@ data class CalendarSettingsState(
   val dialog: CalendarSettingsDialog? = null,
 )
 
-sealed class CalendarSettingsDialog {
+internal sealed class CalendarSettingsDialog {
   data class FirstDay(
     val options: List<String>,
     val selectedIndex: Int,
@@ -36,9 +36,9 @@ sealed class CalendarSettingsDialog {
   ) : CalendarSettingsDialog()
 }
 
-enum class ColorPickerTarget { TODAY, REMINDER, BIRTHDAY }
+internal enum class ColorPickerTarget { TODAY, REMINDER, BIRTHDAY }
 
-data class GoogleCalendar(
+internal data class GoogleCalendar(
   val id: Long,
   val name: String?,
 )

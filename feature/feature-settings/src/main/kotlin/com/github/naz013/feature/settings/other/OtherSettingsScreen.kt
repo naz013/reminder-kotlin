@@ -17,7 +17,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
-fun OtherSettingsScreen(
+internal fun OtherSettingsScreen(
   state: OtherSettingsState,
   onPrivacyPolicyClick: () -> Unit,
   onTermsClick: () -> Unit,

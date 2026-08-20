@@ -1,6 +1,6 @@
 package com.github.naz013.feature.settings.security
 
-data class SecuritySettingsState(
+internal data class SecuritySettingsState(
   val isPinChecked: Boolean = false,
   val isFingerprintChecked: Boolean = false,
   val isShuffleChecked: Boolean = false,
@@ -9,7 +9,7 @@ data class SecuritySettingsState(
   val hasTelephony: Boolean = false,
 )
 
-sealed class SecuritySettingsEvent {
+internal sealed class SecuritySettingsEvent {
   data object OpenAddPin : SecuritySettingsEvent()
 
   data object OpenDisablePin : SecuritySettingsEvent()

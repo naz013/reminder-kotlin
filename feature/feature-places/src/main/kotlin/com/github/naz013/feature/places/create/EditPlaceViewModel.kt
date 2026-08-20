@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class EditPlaceViewModel(
+internal class EditPlaceViewModel(
   private val key: PlacesNavKey.Edit,
   private val dispatcherProvider: DispatcherProvider,
   private val placeRepository: PlaceRepository,

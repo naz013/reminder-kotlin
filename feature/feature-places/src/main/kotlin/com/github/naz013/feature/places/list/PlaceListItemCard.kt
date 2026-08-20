@@ -27,7 +27,7 @@ import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 @Composable
-fun PlaceListItemCard(
+internal fun PlaceListItemCard(
   place: PlaceState,
   onClick: () -> Unit,
   onMenuAction: (PlaceMenuAction) -> Unit,

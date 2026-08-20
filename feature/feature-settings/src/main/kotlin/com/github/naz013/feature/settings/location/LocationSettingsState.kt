@@ -2,7 +2,7 @@ package com.github.naz013.feature.settings.location
 
 import androidx.compose.ui.graphics.Color
 
-data class LocationSettingsState(
+internal data class LocationSettingsState(
   val isNotificationChecked: Boolean = false,
   val radiusText: String = "",
   val mapTypeName: String = "",
@@ -15,7 +15,7 @@ data class LocationSettingsState(
   val hasLocation: Boolean = false,
 )
 
-sealed class LocationSettingsDialog {
+internal sealed class LocationSettingsDialog {
   data class MapType(
     val options: List<String>,
     val selectedIndex: Int,
@@ -32,7 +32,7 @@ sealed class LocationSettingsDialog {
   ) : LocationSettingsDialog()
 }
 
-sealed class LocationSettingsEvent {
+internal sealed class LocationSettingsEvent {
   data object OpenMapStyle : LocationSettingsEvent()
 
   data object OpenPlaces : LocationSettingsEvent()

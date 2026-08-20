@@ -1,13 +1,13 @@
 package com.github.naz013.feature.settings.security
 
-data class AddPinState(
+internal data class AddPinState(
   val stage: AddPinStage = AddPinStage.INPUT,
   val pin: String = "",
 )
 
-enum class AddPinStage { INPUT, REPEAT }
+internal enum class AddPinStage { INPUT, REPEAT }
 
-sealed class AddPinEvent {
+internal sealed class AddPinEvent {
   data object ShowPinMismatch : AddPinEvent()
 
   data object PinSaved : AddPinEvent()

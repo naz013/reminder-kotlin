@@ -27,7 +27,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionH
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkflowRulesForGroupScreen(
+internal fun WorkflowRulesForGroupScreen(
   state: WorkflowRulesForGroupState,
   onBackClick: () -> Unit,
   onRuleEnabledChange: (String, Boolean) -> Unit,

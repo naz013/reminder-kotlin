@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ObjectExportViewModel(
+internal class ObjectExportViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val contextProvider: ContextProvider,
   private val reminderV2Repository: ReminderV2Repository,

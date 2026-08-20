@@ -1,6 +1,6 @@
 package com.github.naz013.feature.settings
 
-data class NoteSettingsState(
+internal data class NoteSettingsState(
   val isColorRememberChecked: Boolean = false,
   val isFontSizeRememberChecked: Boolean = false,
   val isFontStyleRememberChecked: Boolean = false,
@@ -9,6 +9,6 @@ data class NoteSettingsState(
   val hapticFeedbackEnabled: Boolean = true,
 )
 
-data class OpacityDialogState(
+internal data class OpacityDialogState(
   val previewValue: Int,
 )

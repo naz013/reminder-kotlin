@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class TroubleshootingViewModel(
+internal class TroubleshootingViewModel(
   private val dispatcherProvider: DispatcherProvider,
   systemServiceProvider: SystemServiceProvider,
   private val packageManagerWrapper: PackageManagerWrapper,

@@ -23,7 +23,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
-fun MapStyleScreen(
+internal fun MapStyleScreen(
   state: MapStyleState,
   onOptionSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,

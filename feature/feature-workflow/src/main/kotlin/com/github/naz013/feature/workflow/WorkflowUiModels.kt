@@ -5,14 +5,14 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 
-data class UiWorkflowRule(
+internal data class UiWorkflowRule(
   val id: String,
   val title: String,
   val isEnabled: Boolean,
   val canSaveAsTemplate: Boolean,
 )
 
-data class UiWorkflowTemplate(
+internal data class UiWorkflowTemplate(
   val id: String,
   val title: String,
   val description: String?,
@@ -20,14 +20,14 @@ data class UiWorkflowTemplate(
   val canApply: Boolean,
 )
 
-fun WorkflowRule.toUi(): UiWorkflowRule = UiWorkflowRule(
+internal fun WorkflowRule.toUi(): UiWorkflowRule = UiWorkflowRule(
   id = uuId,
   title = title,
   isEnabled = isEnabled,
   canSaveAsTemplate = templateId == null,
 )
 
-fun WorkflowTemplate.toUi(scopeType: WorkflowScopeType): UiWorkflowTemplate = UiWorkflowTemplate(
+internal fun WorkflowTemplate.toUi(scopeType: WorkflowScopeType): UiWorkflowTemplate = UiWorkflowTemplate(
   id = id,
   title = title,
   description = description,

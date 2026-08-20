@@ -26,7 +26,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchIt
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
-fun LocationSettingsScreen(
+internal fun LocationSettingsScreen(
   state: LocationSettingsState,
   onNotificationToggle: () -> Unit,
   onRadiusClick: () -> Unit,

@@ -1,5 +1,6 @@
 package com.github.naz013.feature.settings
 
+import android.content.Context
 import com.github.naz013.feature.settings.calendar.CalendarSettingsViewModel
 import com.github.naz013.feature.settings.calendar.country.HolidayCountryPickerResultHolder
 import com.github.naz013.feature.settings.calendar.country.HolidayCountryViewModel
@@ -9,6 +10,7 @@ import com.github.naz013.feature.settings.debug.DeveloperViewModel
 import com.github.naz013.feature.settings.debug.ObjectExportViewModel
 import com.github.naz013.feature.settings.debug.PopulateCalendarDemoDataUseCase
 import com.github.naz013.feature.settings.export.CloudBackupSettingsViewModel
+import com.github.naz013.feature.settings.export.DropboxLogin
 import com.github.naz013.feature.settings.export.services.CloudServicesViewModel
 import com.github.naz013.feature.settings.export.work.BackupSettingsTask
 import com.github.naz013.feature.settings.export.work.ObservableBackupTask
@@ -117,4 +119,8 @@ val featureSettingsModule = module {
     )
   }
   viewModelOf(::ObjectExportViewModel)
+
+  factory { (context: Context) ->
+    DropboxLogin(context, get(), get(), get(), get(), get())
+  }
 }
