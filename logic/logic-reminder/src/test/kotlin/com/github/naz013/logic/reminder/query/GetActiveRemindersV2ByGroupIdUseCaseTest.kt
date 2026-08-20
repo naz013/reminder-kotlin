@@ -57,6 +57,7 @@ private class FakeGroupReminderV2Repository(
   override suspend fun getById(id: String): ReminderV2? = null
   override suspend fun getAll(): List<ReminderV2> = emptyList()
   override suspend fun getAll(active: Boolean, removed: Boolean): List<ReminderV2> = emptyList()
+  override suspend fun count(active: Boolean, removed: Boolean): Int = 0
   override suspend fun getByRemovedStatus(removed: Boolean): List<ReminderV2> = emptyList()
   override suspend fun getActiveInRange(
     removed: Boolean,

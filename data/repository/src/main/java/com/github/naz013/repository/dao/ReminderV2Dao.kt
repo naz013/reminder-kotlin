@@ -19,6 +19,9 @@ internal interface ReminderV2Dao {
   @Query("SELECT * FROM ReminderV2 WHERE isRemoved=:removed AND isActive=:active")
   fun getAll(active: Boolean, removed: Boolean): List<ReminderV2Entity>
 
+  @Query("SELECT COUNT(*) FROM ReminderV2 WHERE isRemoved=:removed AND isActive=:active")
+  fun count(active: Boolean, removed: Boolean): Int
+
   @Query("SELECT * FROM ReminderV2 WHERE isRemoved=:removed")
   fun getByRemovedStatus(removed: Boolean): List<ReminderV2Entity>
 

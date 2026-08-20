@@ -60,7 +60,7 @@ class GetNavigationItemsUseCase(
           iconRes = R.drawable.ic_fluent_calendar_agenda,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenAgenda,
-          subtitle = "${reminderV2Repository.getAll(active = true, removed = false).size}",
+          subtitle = "${reminderV2Repository.count(active = true, removed = false)}",
         )
       }.await()
 

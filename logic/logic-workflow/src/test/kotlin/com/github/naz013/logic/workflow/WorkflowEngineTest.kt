@@ -608,6 +608,8 @@ private class FakeReminderV2Repository(
   override suspend fun getAll(): List<ReminderV2> = reminders.values.toList()
   override suspend fun getAll(active: Boolean, removed: Boolean): List<ReminderV2> =
     reminders.values.filter { it.isActive == active && it.isRemoved == removed }
+
+  override suspend fun count(active: Boolean, removed: Boolean): Int = getAll(active, removed).size
   override suspend fun getByRemovedStatus(removed: Boolean): List<ReminderV2> =
     reminders.values.filter { it.isRemoved == removed }
   override suspend fun getActiveInRange(
