@@ -1153,4 +1153,7 @@
 
     <string name="buy_me_a_coffee">커피 한 잔 사주기</string>
     <string name="buy_me_a_coffee_subtitle">앱 개발을 응원해 주세요</string>
+
+    <string name="merge">병합</string>
+    <string name="notes_merge_selected_confirm">%1$d개의 메모를 하나로 병합하시겠습니까? 원본 메모는 삭제됩니다.</string>
 </resources>

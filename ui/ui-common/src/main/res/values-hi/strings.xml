@@ -1155,4 +1155,7 @@
 
     <string name="buy_me_a_coffee">मुझे एक कॉफ़ी पिलाएं</string>
     <string name="buy_me_a_coffee_subtitle">ऐप के विकास में सहयोग करें</string>
+
+    <string name="merge">मर्ज करें</string>
+    <string name="notes_merge_selected_confirm">%1$d नोट्स को एक में मर्ज करें? मूल नोट्स हटा दिए जाएंगे।</string>
 </resources>

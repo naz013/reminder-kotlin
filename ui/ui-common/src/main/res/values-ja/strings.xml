@@ -1153,4 +1153,7 @@
 
     <string name="buy_me_a_coffee">コーヒーをおごる</string>
     <string name="buy_me_a_coffee_subtitle">アプリの開発をサポートする</string>
+
+    <string name="merge">結合</string>
+    <string name="notes_merge_selected_confirm">%1$d件のメモを1つに結合しますか?元のメモは削除されます。</string>
 </resources>

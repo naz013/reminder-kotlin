@@ -1154,4 +1154,7 @@
 
     <string name="buy_me_a_coffee">Купи ми кафе</string>
     <string name="buy_me_a_coffee_subtitle">Подкрепете разработката на приложението</string>
+
+    <string name="merge">Обединяване</string>
+    <string name="notes_merge_selected_confirm">Обединяване на %1$d бележки в една? Оригиналните бележки ще бъдат изтрити.</string>
 </resources>

@@ -76,6 +76,7 @@ internal fun NotesScreen(
   onSelectionCancel: () -> Unit,
   onDeleteSelectedClick: () -> Unit,
   onArchiveSelectedClick: () -> Unit,
+  onMergeSelectedClick: () -> Unit,
   onChangeColorClick: () -> Unit,
 ) {
   val isSelectionMode = state.selectedCount > 0
@@ -92,6 +93,7 @@ internal fun NotesScreen(
           onCancelClick = onSelectionCancel,
           onDeleteClick = onDeleteSelectedClick,
           onArchiveClick = onArchiveSelectedClick,
+          onMergeClick = onMergeSelectedClick,
           onChangeColorClick = onChangeColorClick,
         )
       } else {
@@ -411,7 +413,7 @@ private fun NotesTopBar(
   )
 }
 
-private enum class NotesSelectionAction { CHANGE_COLOR, ARCHIVE, DELETE }
+private enum class NotesSelectionAction { CHANGE_COLOR, MERGE, ARCHIVE, DELETE }
 
 @Composable
 private fun NotesSelectionTopBar(
@@ -420,15 +422,17 @@ private fun NotesSelectionTopBar(
   onCancelClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onArchiveClick: () -> Unit,
+  onMergeClick: () -> Unit,
   onChangeColorClick: () -> Unit,
 ) {
   SelectionTopBar(
     title = pluralStringResource(R.plurals.notes_selected_count, selectedCount, selectedCount),
     onCancelClick = onCancelClick,
-    actions = notesSelectionMenuItems(isArchived),
+    actions = notesSelectionMenuItems(isArchived, selectedCount),
     onActionClick = { id ->
       when (NotesSelectionAction.entries[id]) {
         NotesSelectionAction.CHANGE_COLOR -> onChangeColorClick()
+        NotesSelectionAction.MERGE -> onMergeClick()
         NotesSelectionAction.ARCHIVE -> onArchiveClick()
         NotesSelectionAction.DELETE -> onDeleteClick()
       }
@@ -437,7 +441,7 @@ private fun NotesSelectionTopBar(
 }
 
 @Composable
-private fun notesSelectionMenuItems(isArchived: Boolean): List<PopupMenuItem> =
+private fun notesSelectionMenuItems(isArchived: Boolean, selectedCount: Int): List<PopupMenuItem> =
   buildList {
     if (!isArchived) {
       add(
@@ -445,6 +449,15 @@ private fun notesSelectionMenuItems(isArchived: Boolean): List<PopupMenuItem> =
           id = NotesSelectionAction.CHANGE_COLOR.ordinal,
           title = stringResource(R.string.change_color),
           iconRes = R.drawable.ic_fluent_color_background,
+        )
+      )
+    }
+    if (selectedCount >= 2) {
+      add(
+        PopupMenuItem(
+          id = NotesSelectionAction.MERGE.ordinal,
+          title = stringResource(R.string.merge),
+          iconRes = DrawableCatalog.Fluent.Merge,
         )
       )
     }
@@ -567,6 +580,7 @@ private fun NotesScreenEmptyPreview() {
       onSelectionCancel = {},
       onDeleteSelectedClick = {},
       onArchiveSelectedClick = {},
+      onMergeSelectedClick = {},
       onChangeColorClick = {},
     )
   }

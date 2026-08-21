@@ -1151,4 +1151,7 @@
 
     <string name="buy_me_a_coffee">เลี้ยงกาแฟฉันสักแก้ว</string>
     <string name="buy_me_a_coffee_subtitle">สนับสนุนการพัฒนาแอป</string>
+
+    <string name="merge">รวม</string>
+    <string name="notes_merge_selected_confirm">รวม %1$d โน้ตเป็นโน้ตเดียว? โน้ตต้นฉบับจะถูกลบ</string>
 </resources>

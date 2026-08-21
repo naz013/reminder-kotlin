@@ -1153,4 +1153,7 @@
 
     <string name="buy_me_a_coffee">Postaw mi kawę</string>
     <string name="buy_me_a_coffee_subtitle">Wesprzyj rozwój aplikacji</string>
+
+    <string name="merge">Scal</string>
+    <string name="notes_merge_selected_confirm">Scalić %1$d notatek w jedną? Oryginalne notatki zostaną usunięte.</string>
 </resources>

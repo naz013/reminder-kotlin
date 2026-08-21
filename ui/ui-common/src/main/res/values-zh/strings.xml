@@ -1154,4 +1154,7 @@
 
     <string name="buy_me_a_coffee">请我喝杯咖啡</string>
     <string name="buy_me_a_coffee_subtitle">支持应用的开发</string>
+
+    <string name="merge">合并</string>
+    <string name="notes_merge_selected_confirm">将 %1$d 篇笔记合并为一篇？原始笔记将被删除。</string>
 </resources>
