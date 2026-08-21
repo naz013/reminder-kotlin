@@ -15,6 +15,11 @@ import com.elementary.tasks.module.featuresettings.SettingsHubDoNotDisturbChecke
 import com.elementary.tasks.module.featuresettings.SettingsHubRemoteMessagesImpl
 import com.elementary.tasks.module.featuresettings.TroubleshootingCacheUtilImpl
 import com.elementary.tasks.module.locationapi.LocationTrackingApiImpl
+import com.elementary.tasks.module.logicnotificationaction.AppReminderAlertHandlerFactory
+import com.elementary.tasks.module.logicnotificationaction.DoNotDisturbPreferencesImpl
+import com.elementary.tasks.module.logicnotificationaction.NotificationGatewayImpl
+import com.elementary.tasks.module.logicnotificationaction.PhoneCallStateProviderImpl
+import com.elementary.tasks.module.logicnotificationaction.WearPreferencesImpl
 import com.elementary.tasks.module.logicreminder.AppReminderNotifier
 import com.elementary.tasks.module.logicreminder.ReminderPreferencesImpl
 import com.elementary.tasks.module.logicschedule.SchedulePreferencesImpl
@@ -23,11 +28,11 @@ import com.elementary.tasks.module.platform.DateTimePreferencesImpl
 import com.elementary.tasks.module.platform.InstallReferrerReader
 import com.elementary.tasks.module.sync.SyncDataConverterImpl
 import com.elementary.tasks.module.uicommon.AppPreferencesImpl
-import com.elementary.tasks.module.uimap.MapPreferencesImpl
 import com.elementary.tasks.module.uicommon.AuthPreferencesImpl
 import com.elementary.tasks.module.uicommon.FontApiImpl
 import com.elementary.tasks.module.uicommon.LocalePreferencesImpl
 import com.elementary.tasks.module.uicommon.ThemePreferencesImpl
+import com.elementary.tasks.module.uimap.MapPreferencesImpl
 import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
 import com.github.naz013.appwidgets.AppWidgetPreferences
@@ -46,16 +51,21 @@ import com.github.naz013.feature.settings.location.LocationSettingsPreferences
 import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
 import com.github.naz013.feature.settings.troubleshooting.TroubleshootingCacheUtil
 import com.github.naz013.location.LocationTrackingApi
+import com.github.naz013.logic.notificationaction.DoNotDisturbPreferences
+import com.github.naz013.logic.notificationaction.NotificationGateway
+import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
+import com.github.naz013.logic.notificationaction.WearPreferences
+import com.github.naz013.logic.notificationaction.reminder.ReminderAlertHandlerFactory
 import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.schedule.SchedulePreferences
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.ui.common.font.FontApi
-import com.github.naz013.ui.map.MapPreferences
 import com.github.naz013.ui.common.locale.LocalePreferences
 import com.github.naz013.ui.common.login.AuthPreferences
 import com.github.naz013.ui.common.preferences.AppPreferences
 import com.github.naz013.ui.common.theme.ThemePreferences
+import com.github.naz013.ui.map.MapPreferences
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -104,6 +114,24 @@ val libModule = module {
   // logic reminder
   factory { ReminderPreferencesImpl(get()) as ReminderPreferences }
   factory { AppReminderNotifier(get(), get(), get(), get()) as ReminderNotifier }
+
+  // logic notification action
+  factory { NotificationGatewayImpl(get()) as NotificationGateway }
+  factory { DoNotDisturbPreferencesImpl(get()) as DoNotDisturbPreferences }
+  factory { WearPreferencesImpl(get()) as WearPreferences }
+  factory { PhoneCallStateProviderImpl(get()) as PhoneCallStateProvider }
+  factory {
+    AppReminderAlertHandlerFactory(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    ) as ReminderAlertHandlerFactory
+  }
 
   // location api
   factory { LocationTrackingApiImpl(get()) as LocationTrackingApi }

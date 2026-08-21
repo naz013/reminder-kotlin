@@ -1,0 +1,18 @@
+package com.github.naz013.logic.notificationaction
+
+import com.github.naz013.logic.notificationaction.reminder.ReminderActionProcessor
+import com.github.naz013.logic.notificationaction.reminder.ReminderCompleteSnoozeFactory
+import com.github.naz013.logic.notificationaction.reminder.ReminderRepeatProcessor
+import org.koin.core.module.dsl.factoryOf
+import org.koin.dsl.module
+
+val logicNotificationActionModule = module {
+  factoryOf(::DoNotDisturbManager)
+  factoryOf(::WearNotification)
+
+  factoryOf(::ReminderCompleteSnoozeFactory)
+  factory {
+    ReminderActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+  }
+  factoryOf(::ReminderRepeatProcessor)
+}

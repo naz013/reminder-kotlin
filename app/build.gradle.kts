@@ -254,6 +254,7 @@ dependencies {
   implementation(project(":logic:logic-birthday"))
   implementation(project(":logic:logic-googletask"))
   implementation(project(":logic:logic-group"))
+  implementation(project(":logic:logic-notification-action"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-schedule"))
   implementation(project(":logic:logic-tag"))

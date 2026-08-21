@@ -1,6 +1,4 @@
-package com.elementary.tasks.core.services.action
-
-import com.elementary.tasks.core.utils.Notifier
+package com.github.naz013.logic.notificationaction
 
 /**
  * Decorates any [ActionHandler] so that, once the wrapped handler completes, the notification
@@ -9,14 +7,14 @@ import com.elementary.tasks.core.utils.Notifier
  */
 class CancelNotificationDecorator<T>(
   private val delegate: ActionHandler<T>,
-  private val notifier: Notifier,
+  private val notificationGateway: NotificationGateway,
   private val uniqueId: (T) -> Int,
 ) : ActionHandler<T> {
   override suspend fun handle(data: T) {
     delegate.handle(data)
-    notifier.cancel(uniqueId(data))
+    notificationGateway.cancel(uniqueId(data))
     // Also clear the wear companion notification (posted under the negated id, see
     // NotificationAlertActionHandler) - a no-op if it was never shown.
-    notifier.cancel(-uniqueId(data))
+    notificationGateway.cancel(-uniqueId(data))
   }
 }

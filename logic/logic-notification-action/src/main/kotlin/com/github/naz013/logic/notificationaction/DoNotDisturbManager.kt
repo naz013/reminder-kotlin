@@ -1,28 +1,28 @@
-package com.elementary.tasks.core.utils.datetime
+package com.github.naz013.logic.notificationaction
 
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.logging.Logger
 
 class DoNotDisturbManager(
-  private val prefs: Prefs,
+  private val preferences: DoNotDisturbPreferences,
   private val dateTimeManager: DateTimeManager,
 ) {
   fun applyDoNotDisturb(
     priority: Int,
     millis: Long = System.currentTimeMillis(),
   ): Boolean {
-    if (prefs.isDoNotDisturbEnabled) {
-      val range = dateTimeManager.doNotDisturbRange(prefs.doNotDisturbFrom, prefs.doNotDisturbTo)
+    if (preferences.isDoNotDisturbEnabled) {
+      val range = dateTimeManager.doNotDisturbRange(preferences.doNotDisturbFrom, preferences.doNotDisturbTo)
       return if (millis in range) {
-        if (prefs.doNotDisturbIgnore == 5) {
+        if (preferences.doNotDisturbIgnore == 5) {
           Logger.i(TAG, "Do not disturb active: ignoring all.")
           true
         } else {
-          (priority < prefs.doNotDisturbIgnore).also {
+          (priority < preferences.doNotDisturbIgnore).also {
             Logger.i(
               TAG,
-              "Do not disturb active: priority check. Task priority: $priority, ignore level: ${prefs.doNotDisturbIgnore}, should ignore: $it",
+              "Do not disturb active: priority check. Task priority: $priority, ignore level: " +
+                "${preferences.doNotDisturbIgnore}, should ignore: $it",
             )
           }
         }

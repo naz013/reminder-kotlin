@@ -4,34 +4,38 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import com.elementary.tasks.R
 import com.elementary.tasks.core.services.ReminderActionReceiver
-import com.elementary.tasks.core.services.action.NotificationAction
-import com.elementary.tasks.core.services.action.NotificationAlertActionHandler
-import com.elementary.tasks.core.services.action.NotificationStyle
-import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.notificationaction.NotificationAction
+import com.github.naz013.logic.notificationaction.NotificationAlertActionHandler
+import com.github.naz013.logic.notificationaction.NotificationGateway
+import com.github.naz013.logic.notificationaction.NotificationStyle
+import com.github.naz013.logic.notificationaction.WearNotification
+import com.github.naz013.logic.notificationaction.WearPreferences
+import com.github.naz013.logic.reminder.ReminderPreferences
+import com.github.naz013.notification.NotificationApi
 
 class ReminderNotificationHandler(
   private val reminderDataProvider: ReminderDataProvider,
   private val notificationSettings: NotificationSettings,
   contextProvider: ContextProvider,
   textProvider: TextProvider,
-  private val notifier: Notifier,
-  private val prefs: Prefs,
+  notificationGateway: NotificationGateway,
+  wearPreferences: WearPreferences,
+  private val notificationApi: NotificationApi,
+  private val reminderPreferences: ReminderPreferences,
   wearNotification: WearNotification,
   style: NotificationStyle,
 ) : NotificationAlertActionHandler<ReminderV2>(
     contextProvider = contextProvider,
     textProvider = textProvider,
-    notifier = notifier,
-    prefs = prefs,
+    notificationGateway = notificationGateway,
+    wearPreferences = wearPreferences,
     wearNotification = wearNotification,
     style = style,
   ) {
@@ -43,7 +47,7 @@ class ReminderNotificationHandler(
 
   override fun dismissActionKey(): String = ReminderActionReceiver.ACTION_HIDE
 
-  public override fun isOngoing(data: ReminderV2): Boolean = !prefs.isDefaultSwipeToDismissEnabled
+  public override fun isOngoing(data: ReminderV2): Boolean = !reminderPreferences.isDefaultSwipeToDismissEnabled
 
   override fun extraActions(data: ReminderV2): List<NotificationAction> =
     if (data.places.isEmpty()) {
@@ -70,7 +74,7 @@ class ReminderNotificationHandler(
 
   // Widened to public (base declarations are protected) so these - the resolved-settings ->
   // Android-API mapping this fix is about - are directly unit-testable.
-  public override fun channelId(data: ReminderV2): String = notifier.reminderChannelId(notificationSettings)
+  public override fun channelId(data: ReminderV2): String = notificationApi.reminderChannelId(notificationSettings)
 
   public override fun defaultPriority(data: ReminderV2): Int =
     reminderDataProvider.priority(notificationSettings.priority.ordinal)

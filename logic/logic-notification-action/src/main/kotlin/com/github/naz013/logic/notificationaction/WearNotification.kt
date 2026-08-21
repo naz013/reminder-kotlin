@@ -1,15 +1,14 @@
-package com.elementary.tasks.core.services.action
+package com.github.naz013.logic.notificationaction
 
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.icon.DrawableCatalog
+import com.github.naz013.ui.common.R as UiCommonR
 
 class WearNotification(
   private val contextProvider: ContextProvider,
-  private val notifier: Notifier,
+  private val notificationGateway: NotificationGateway,
 ) {
   fun show(
     id: Int,
@@ -18,18 +17,17 @@ class WearNotification(
     groupName: String,
   ) {
     Logger.d(TAG, "showWearNotification: $secondaryText")
-    val wearableNotificationBuilder =
-      NotificationCompat.Builder(contextProvider.context, Notifier.CHANNEL_REMINDER)
-    wearableNotificationBuilder.setSmallIcon(R.drawable.ic_fluent_alert)
+    val wearableNotificationBuilder = notificationGateway.builder(NotificationGateway.CHANNEL_REMINDER)
+    wearableNotificationBuilder.setSmallIcon(DrawableCatalog.Fluent.Alert)
     wearableNotificationBuilder.setContentTitle(summary)
     wearableNotificationBuilder.setContentText(secondaryText)
     wearableNotificationBuilder.color =
-      ContextCompat.getColor(contextProvider.themedContext, R.color.secondaryBlue)
+      ContextCompat.getColor(contextProvider.themedContext, UiCommonR.color.secondaryBlue)
     wearableNotificationBuilder.setOngoing(false)
     wearableNotificationBuilder.setOnlyAlertOnce(true)
     wearableNotificationBuilder.setGroup(groupName)
     wearableNotificationBuilder.setGroupSummary(false)
-    notifier.notify(id, wearableNotificationBuilder.build())
+    notificationGateway.notify(id, wearableNotificationBuilder.build())
   }
 
   companion object {

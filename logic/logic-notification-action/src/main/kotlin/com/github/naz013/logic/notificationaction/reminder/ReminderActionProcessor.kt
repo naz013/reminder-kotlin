@@ -1,17 +1,16 @@
-package com.elementary.tasks.core.services.action.reminder
+package com.github.naz013.logic.notificationaction.reminder
 
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
-import com.github.naz013.common.ContextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
-import com.github.naz013.logic.workflow.WorkflowTriggerRunner
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.notificationaction.DoNotDisturbManager
+import com.github.naz013.logic.notificationaction.DoNotDisturbPreferences
+import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
 import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
+import com.github.naz013.logic.workflow.WorkflowTriggerRunner
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.scheduler.JobSchedulerApi
 import kotlinx.coroutines.CoroutineScope
@@ -21,13 +20,14 @@ import org.threeten.bp.LocalDateTime
 
 class ReminderActionProcessor(
   private val dispatcherProvider: DispatcherProvider,
-  private val reminderHandlerFactory: ReminderHandlerFactory,
+  private val alertHandlerFactory: ReminderAlertHandlerFactory,
+  private val completeSnoozeFactory: ReminderCompleteSnoozeFactory,
   private val reminderV2Repository: ReminderV2Repository,
-  private val prefs: Prefs,
+  private val doNotDisturbPreferences: DoNotDisturbPreferences,
   private val doNotDisturbManager: DoNotDisturbManager,
   private val dateTimeManager: DateTimeManager,
   private val jobScheduler: JobSchedulerApi,
-  private val contextProvider: ContextProvider,
+  private val phoneCallStateProvider: PhoneCallStateProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val workflowTriggerRunner: WorkflowTriggerRunner,
   private val resolveReminderV2NotificationSettingsUseCase: ResolveReminderV2NotificationSettingsUseCase,
@@ -39,7 +39,7 @@ class ReminderActionProcessor(
     scope.launch {
       val reminder = reminderV2Repository.getById(id) ?: return@launch
       withContext(dispatcherProvider.main()) {
-        reminderHandlerFactory.createSnooze().handle(reminder)
+        completeSnoozeFactory.createSnooze().handle(reminder)
       }
     }
   }
@@ -50,7 +50,7 @@ class ReminderActionProcessor(
       val reminder = reminderV2Repository.getById(id) ?: return@launch
       jobScheduler.cancelReminder(reminder.uniqueId)
       withContext(dispatcherProvider.main()) {
-        reminderHandlerFactory.createComplete().handle(reminder)
+        completeSnoozeFactory.createComplete().handle(reminder)
       }
       workflowTriggerRunner.onReminderCompleted(id)
     }
@@ -63,11 +63,11 @@ class ReminderActionProcessor(
       val notificationSettings = resolveReminderV2NotificationSettingsUseCase(reminder)
       val priority = notificationSettings.priority.ordinal
       if (!notificationSettings.bypassDoNotDisturb && doNotDisturbManager.applyDoNotDisturb(priority)) {
-        if (prefs.doNotDisturbAction == 0) {
+        if (doNotDisturbPreferences.doNotDisturbAction == 0) {
           val delayTime =
             dateTimeManager.millisToEndDnd(
-              prefs.doNotDisturbFrom,
-              prefs.doNotDisturbTo,
+              doNotDisturbPreferences.doNotDisturbFrom,
+              doNotDisturbPreferences.doNotDisturbTo,
               LocalDateTime.now().minusMinutes(1),
             )
           if (delayTime > 0) {
@@ -78,9 +78,9 @@ class ReminderActionProcessor(
           Logger.w(TAG, "Skipping reminder id=${reminder.uuId} due to DND settings")
         }
       } else {
-        val canShowWindow = !SuperUtil.isPhoneCallActive(contextProvider.context)
+        val canShowWindow = !phoneCallStateProvider.isPhoneCallActive()
         analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
-        val handler = reminderHandlerFactory.createAction(canShowWindow, notificationSettings)
+        val handler = alertHandlerFactory.create(canShowWindow, notificationSettings)
         Logger.d(TAG, "Processing reminder id=${reminder.uuId} with handler $handler")
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)

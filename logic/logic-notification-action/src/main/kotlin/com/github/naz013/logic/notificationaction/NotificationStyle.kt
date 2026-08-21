@@ -1,7 +1,6 @@
-package com.elementary.tasks.core.services.action
+package com.github.naz013.logic.notificationaction
 
 import androidx.core.app.NotificationCompat
-import com.elementary.tasks.R
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.ui.common.theme.ThemeProvider
 
@@ -42,7 +41,7 @@ object LoudNotificationStyle : NotificationStyle {
 object SilentNotificationStyle : NotificationStyle {
   override val name = "Silent"
 
-  override fun resolveIcon(domainIcon: Int): Int = R.drawable.ic_fluent_alert
+  override fun resolveIcon(domainIcon: Int): Int = domainIcon
 
   override fun resolvePriority(domainPriority: Int): Int = NotificationCompat.PRIORITY_LOW
 

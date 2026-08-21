@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.core.services.BaseBroadcast
-import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
-import com.elementary.tasks.core.services.action.reminder.ReminderRepeatProcessor
 import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.notificationaction.reminder.ReminderActionProcessor
+import com.github.naz013.logic.notificationaction.reminder.ReminderRepeatProcessor
 import org.koin.core.component.inject
 import org.threeten.bp.LocalDateTime
 

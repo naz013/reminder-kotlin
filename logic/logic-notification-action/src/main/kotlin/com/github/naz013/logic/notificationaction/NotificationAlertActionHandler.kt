@@ -1,17 +1,15 @@
-package com.elementary.tasks.core.services.action
+package com.github.naz013.logic.notificationaction
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Intent
-import androidx.core.app.NotificationCompat
-import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.icon.DrawableCatalog
+import com.github.naz013.ui.common.R as UiCommonR
 
 /**
  * Template Method base for the "show an ongoing alert notification" handlers (birthdays,
@@ -25,8 +23,8 @@ import com.github.naz013.logging.Logger
 abstract class NotificationAlertActionHandler<T>(
   protected val contextProvider: ContextProvider,
   protected val textProvider: TextProvider,
-  private val notifier: Notifier,
-  private val prefs: Prefs,
+  private val notificationGateway: NotificationGateway,
+  private val wearPreferences: WearPreferences,
   private val wearNotification: WearNotification,
   private val style: NotificationStyle,
 ) : ActionHandler<T> {
@@ -34,7 +32,7 @@ abstract class NotificationAlertActionHandler<T>(
   override suspend fun handle(data: T) {
     Logger.d(logTag, "handle: style=${style.name}, data=$data")
 
-    val builder = NotificationCompat.Builder(contextProvider.context, channelId(data))
+    val builder = notificationGateway.builder(channelId(data))
     builder.setAutoCancel(false)
     builder.setOngoing(isOngoing(data))
     builder.setContentTitle(contentTitle(data))
@@ -48,8 +46,8 @@ abstract class NotificationAlertActionHandler<T>(
 
     val dismissPendingIntent = actionPendingIntent(data, dismissActionKey())
     builder.addAction(
-      R.drawable.ic_fluent_checkmark,
-      textProvider.getText(R.string.ok),
+      DrawableCatalog.Fluent.Checkmark,
+      textProvider.getText(UiCommonR.string.ok),
       dismissPendingIntent,
     )
     builder.setDeleteIntent(dismissPendingIntent)
@@ -57,14 +55,14 @@ abstract class NotificationAlertActionHandler<T>(
       builder.addAction(action.icon, action.label, actionPendingIntent(data, action.actionKey))
     }
 
-    val isWear = prefs.isWearEnabled
+    val isWear = wearPreferences.isWearEnabled
     if (isWear) {
       builder.setOnlyAlertOnce(true)
       builder.setGroup(groupKey)
       builder.setGroupSummary(true)
     }
 
-    notifier.notify(uniqueId(data), builder.build())
+    notificationGateway.notify(uniqueId(data), builder.build())
     if (isWear) {
       // Distinct id so this companion post doesn't overwrite (same-id notify replaces) the
       // richer notification above and wipe out its actions/content intent.
@@ -95,10 +93,10 @@ abstract class NotificationAlertActionHandler<T>(
   protected abstract val logTag: String
 
   /** Which channel this notification posts to. Defaults to the single static reminder channel;
-   *  override to select/create a channel derived from resolved per-notification settings (see
-   *  [Notifier.reminderChannelId]) when a field needs to vary per notification on Android 8+,
-   *  where a channel's importance/vibration/DND-bypass are locked at creation. */
-  protected open fun channelId(data: T): String = Notifier.CHANNEL_REMINDER
+   *  override to select/create a channel derived from resolved per-notification settings when a
+   *  field needs to vary per notification on Android 8+, where a channel's importance/vibration/
+   *  DND-bypass are locked at creation. */
+  protected open fun channelId(data: T): String = NotificationGateway.CHANNEL_REMINDER
 
   /** Whether this notification blocks swipe-dismissal. Defaults to true (current behavior for
    *  every domain); override to let a domain's own settings opt out and allow swipe, which - via

@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.services.action.reminder
+package com.github.naz013.logic.notificationaction.reminder
 
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger

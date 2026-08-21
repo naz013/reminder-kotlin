@@ -1,9 +1,9 @@
 package com.elementary.tasks.module.featuresettings
 
-import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.PrefsConstants
 import com.github.naz013.feature.settings.SettingsHubDoNotDisturbChecker
+import com.github.naz013.logic.notificationaction.DoNotDisturbManager
 
 class SettingsHubDoNotDisturbCheckerImpl(
   private val prefs: Prefs,
