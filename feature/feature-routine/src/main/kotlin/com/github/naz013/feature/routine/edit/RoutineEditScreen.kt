@@ -112,7 +112,7 @@ internal fun RoutineEditScreen(
         value = state.title,
         onValueChange = onTitleChange,
         label = { Text(stringResource(R.string.title)) },
-        isError = !state.canSave,
+        isError = state.title.isBlank(),
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
       )
@@ -132,6 +132,14 @@ internal fun RoutineEditScreen(
       )
 
       SectionHeader(stringResource(R.string.routine_steps))
+
+      if (state.steps.isEmpty()) {
+        Text(
+          text = stringResource(R.string.routine_steps_required),
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.error,
+        )
+      }
 
       state.steps.forEachIndexed { index, step ->
         RoutineStepRow(

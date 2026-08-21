@@ -27,7 +27,6 @@ import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -54,10 +53,6 @@ internal class RoutineEditViewModel(
 
   private val _state = MutableStateFlow(RoutineEditState(id = id, canDelete = id != null))
   val state = _state.stateInWhileSubscribed(RoutineEditState())
-    .onStart {
-      load()
-      observeTags()
-    }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   init {
@@ -67,6 +62,8 @@ internal class RoutineEditViewModel(
         sliderColors = themeProvider.colorsForSliderThemed(),
       )
     }
+    load()
+    observeTags()
   }
 
   private fun load() {
@@ -77,6 +74,7 @@ internal class RoutineEditViewModel(
         return@launch
       }
       originalRoutine = routine
+      val steps = routine.sortedSteps.map(RoutineStep::toUiState)
       withContext(dispatcherProvider.main()) {
         _state.update {
           it.copy(
@@ -84,10 +82,10 @@ internal class RoutineEditViewModel(
             description = routine.description.orEmpty(),
             colorPosition = routine.color,
             isPinned = routine.isPinned,
-            steps = routine.sortedSteps.map(RoutineStep::toUiState),
+            steps = steps,
             repeatsDaily = routine.recurrence != null,
             canDelete = true,
-            canSave = routine.title.isNotBlank(),
+            canSave = canSave(routine.title, steps),
           )
         }
       }
@@ -108,7 +106,7 @@ internal class RoutineEditViewModel(
   }
 
   fun onTitleChange(title: String) {
-    _state.update { it.copy(title = title, canSave = title.isNotBlank()) }
+    _state.update { it.copy(title = title, canSave = canSave(title, it.steps)) }
   }
 
   fun onDescriptionChange(description: String) {
@@ -134,7 +132,10 @@ internal class RoutineEditViewModel(
       durationSeconds = 0,
       scheduledTime = null,
     )
-    _state.update { it.copy(steps = it.steps + newStep) }
+    _state.update {
+      val steps = it.steps + newStep
+      it.copy(steps = steps, canSave = canSave(it.title, steps))
+    }
   }
 
   fun onStepTitleChange(stepId: String, title: String) {
@@ -151,7 +152,10 @@ internal class RoutineEditViewModel(
   }
 
   fun onRemoveStepClick(stepId: String) {
-    _state.update { it.copy(steps = it.steps.filterNot { step -> step.id == stepId }) }
+    _state.update {
+      val steps = it.steps.filterNot { step -> step.id == stepId }
+      it.copy(steps = steps, canSave = canSave(it.title, steps))
+    }
   }
 
   fun onMoveStepUp(stepId: String) {
@@ -193,15 +197,15 @@ internal class RoutineEditViewModel(
   }
 
   fun onSaveClick() {
-    val title = _state.value.title.trim()
-    if (title.isBlank()) {
+    val stateValue = _state.value
+    val title = stateValue.title.trim()
+    if (!canSave(title, stateValue.steps)) {
       _state.update { it.copy(canSave = false) }
       return
     }
     viewModelScope.launch(dispatcherProvider.io()) {
       val now = nowDateTimeProvider.nowDateTime()
       val base = originalRoutine ?: Routine(id = stableRoutineId, createdAt = now, updatedAt = now)
-      val stateValue = _state.value
       val steps = stateValue.steps.mapIndexed { index, step ->
         RoutineStep(
           id = step.id,
@@ -211,13 +215,25 @@ internal class RoutineEditViewModel(
           order = index,
         )
       }
+      val recurrence = if (stateValue.repeatsDaily) RecurrenceRule.Daily() else null
+      // "The recurrence period starts after you save" - a fresh cycle only opens the moment
+      // recurrence goes from off to on (new routine, or turning it on during an edit); resaving
+      // an already-recurring routine must not reset lastResetAt and silently drop the user's
+      // in-progress cycle, and turning recurrence off drops the anchor since on-demand routines
+      // are never auto-reset (see RoutineRecurrenceResetUseCase).
+      val lastResetAt = when {
+        recurrence == null -> null
+        base.recurrence == null -> now
+        else -> base.lastResetAt
+      }
       val routine = base.copy(
         title = title,
         description = stateValue.description.trim().ifBlank { null },
         color = stateValue.colorPosition,
         isPinned = stateValue.isPinned,
         steps = steps,
-        recurrence = if (stateValue.repeatsDaily) RecurrenceRule.Daily() else null,
+        recurrence = recurrence,
+        lastResetAt = lastResetAt,
       )
       saveRoutineUseCase(routine)
       Logger.i(TAG, "Saved routine, id: ${routine.id}")
@@ -226,6 +242,9 @@ internal class RoutineEditViewModel(
       }
     }
   }
+
+  private fun canSave(title: String, steps: List<RoutineStepUiState>): Boolean =
+    title.isNotBlank() && steps.isNotEmpty()
 
   fun onDeleteClick() {
     val routineId = id ?: return

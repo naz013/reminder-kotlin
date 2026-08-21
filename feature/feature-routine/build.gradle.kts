@@ -40,6 +40,7 @@ dependencies {
   implementation(libs.compose.ui.tooling.preview)
   debugImplementation(libs.compose.ui.tooling)
 
+  testImplementation(project(":core:testing"))
   testImplementation(libs.junit)
   testImplementation(libs.mockk)
   testImplementation(libs.kotlinx.coroutines.test)

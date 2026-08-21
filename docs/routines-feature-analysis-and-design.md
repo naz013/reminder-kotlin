@@ -11,7 +11,7 @@ Key specifications:
 1. **Strict UI Component & Design System Adherence**: Reuses established Material 3 Expressive tokens, `ui:ui-common` top bars, search bars, dialogs, `ui:ui-tag` pickers/filter rows, and `ui:ui-common`'s `ColorSlider`/`ThemeProvider.colorsForSliderThemed()` (the same solid-color-picker pair `feature-group`'s `EditGroupScreen` already uses for `GroupV2.color` — see §4.5 for why this replaced the originally-planned `NoteColorEngine.allColors()`).
 2. **First-Class Domain Model**: Modeled as a dedicated `Routine` entity in `core:domain`, completely decoupled from `ReminderV2`.
 3. **Step-Level Scheduled Times & Durations**: `RoutineStep` owns `scheduledTime: String?` (e.g., `"07:30"`) and `durationSeconds: Int` (e.g. `300` for 5 min). Steps are automatically sorted chronologically by `scheduledTime`.
-4. **Auto-Resetting Cycles**: When scheduled as a recurring routine, all steps are automatically reset (`isCompleted = false`) within the new recurrence period.
+4. **Auto-Resetting Cycles**: A recurring routine's cycle starts the moment it's saved with recurrence turned on (`Routine.lastResetAt` anchors it) - steps can be checked/unchecked freely all cycle long. At the next calendar-day rollover, whatever was completed is written to `RoutineExecutionRecord` history (even if nothing was completed) and every step is reset to `isCompleted = false`, regardless of the recurrence rule's actual cadence (a Mon/Wed/Fri routine still resets every day it's next opened, not just on its scheduled days - see `RoutineRecurrenceResetUseCase`). On-demand routines (`recurrence == null`) are never auto-reset: completing every step just leaves the routine showing as fully checked, and only a manual "Reset Steps" action (`ResetRoutineStepsUseCase`) clears it - see §4.4 for both use cases.
 5. **Granular Execution Tracking**: `RoutineExecutionRecord` stores `completedStepIds: List<String>` (the specific UUIDs of completed steps) instead of a plain count, allowing precise step drop-off analytics.
 6. **Solid Color Theming**: Routines support custom color selection via `ui-common`'s `ColorSlider` (the same solid, no-opacity picker `GroupV2.color` already uses), rendered as solid colored cards.
 7. **Tags Integration (`TaggedItemType.ROUTINE`)**: Full support for cross-cutting tags with `TagChipPicker` in the editor and instant tag filtering in the list screen.
@@ -247,23 +247,18 @@ enum class TaggedItemType {
 
 ---
 
-### 4.4 Business Logic Layer (`logic:logic-routine`)
+### 4.4 Business Logic Layer (`logic:logic-routine`) — IMPLEMENTED (deviates from the original plan below in a few places, noted inline)
 
 1. **`RoutineRecurrenceResetUseCase`**:
-   - Determines if the current date/time falls into a new recurrence cycle (e.g., today > `lastResetAt.toLocalDate()`). If so, unchecks all `steps` (`isCompleted = false`) and updates `lastResetAt`.
-2. **`RoutineDurationCalculator`**:
-   - `calculateTotalDuration(steps: List<RoutineStep>): Int`
-   - `formatDuration(seconds: Int): String` (e.g. `"25m"`, `"1h 10m"`, `"45s"`)
-3. **`SaveRoutineUseCase`**:
-   - Validates routine steps, title, color, and pin state.
-   - Manages tag associations via `TagAssignmentRepository`.
-   - If `recurrence != null`, sets up/updates linked `ReminderV2` trigger via `RoutineScheduleBridge` so notifications fire accurately.
-4. **`DeleteRoutineUseCase`**:
-   - Deletes routine, associated tag assignments, linked reminder trigger, and execution logs.
-5. **`ToggleRoutinePinUseCase`**:
-   - Toggles `isPinned` and notifies observers.
-6. **`RecordRoutineExecutionUseCase`**:
-   - Saves `RoutineExecutionRecord` with `completedStepIds` upon focus runner completion.
+   - No-ops for on-demand routines (`recurrence == null`) - they're never auto-reset.
+   - Otherwise: if `lastResetAt`'s date is before today (or `null`), writes the cycle's result to history via `RecordRoutineExecutionUseCase` (`completedStepIds` as of *before* the reset, `totalTimeSpentSeconds = 0` since this is a lazy day-boundary check, not a focus-runner session), **then** unchecks all `steps` and bumps `lastResetAt` to now.
+   - Runs lazily on next list/preview screen load, not on a background schedule - see the kdoc on the class for the resulting limitation (skipped days between app opens don't each get their own history entry).
+   - `Routine.lastResetAt` is also "when did the current cycle start" - callers of `SaveRoutineUseCase` (i.e. `RoutineEditViewModel`) are responsible for setting it to the save time the moment recurrence goes from off to on, so the very first cycle starts at save time instead of being immediately eligible for a same-day reset. Resaving an already-recurring routine (e.g. editing its description) must leave `lastResetAt` untouched, and turning recurrence off clears it (on-demand routines don't need an anchor).
+2. **`RoutineDurationCalculator`**: `calculateTotalDuration`/`calculateRemainingDuration(steps): Int`, `formatDuration(seconds): String` (e.g. `"25m"`, `"1h 10m"`, `"45s"`).
+3. **`SaveRoutineUseCase`**: bumps `sync.version`/`syncState` and `updatedAt`, saves, schedules a cloud upload. **Does not** validate steps/title or manage tags itself (unlike the original plan) - matches the rest of this codebase's convention (`SaveReminderUseCase` doesn't validate or touch tags either): validation (title non-blank, **at least one step is mandatory**) and the `lastResetAt` anchoring logic live in `RoutineEditViewModel`, and tag assignment is a separate immediate `ToggleTagAssignmentUseCase` call per toggle, not bundled into save. `RoutineScheduleBridge` (linked `ReminderV2` trigger) doesn't exist yet - deferred, see the open questions.
+4. **`DeleteRoutineUseCase`**: deletes the routine, its execution history, and tag assignments; schedules a cloud delete. Doesn't yet clear a linked `ReminderV2` trigger (same `RoutineScheduleBridge` dependency).
+5. **`ToggleRoutinePinUseCase`** / **`ResetRoutineStepsUseCase`**: both delegate to `SaveRoutineUseCase` after toggling `isPinned` / clearing every step's `isCompleted`. `ResetRoutineStepsUseCase` is the **only** reset path for on-demand routines (manual, user-triggered from the preview screen's overflow menu) and does **not** write execution history - only the automatic recurring-cycle reset does.
+6. **`RecordRoutineExecutionUseCase`**: saves a `RoutineExecutionRecord`. Two callers: `RoutineRecurrenceResetUseCase` (automatic, `totalTimeSpentSeconds = 0`) and, once built, the focus-runner execution screen (real elapsed time).
 
 ---
 

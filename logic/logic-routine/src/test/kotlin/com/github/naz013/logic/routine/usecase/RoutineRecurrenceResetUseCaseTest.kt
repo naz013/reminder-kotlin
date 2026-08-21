@@ -19,6 +19,7 @@ import org.threeten.bp.LocalDateTime
 class RoutineRecurrenceResetUseCaseTest {
   private val nowDateTimeProvider = mockk<NowDateTimeProvider>()
   private val saveRoutineUseCase = mockk<SaveRoutineUseCase>()
+  private val recordRoutineExecutionUseCase = mockk<RecordRoutineExecutionUseCase>(relaxed = true)
 
   private lateinit var useCase: RoutineRecurrenceResetUseCase
 
@@ -30,7 +31,7 @@ class RoutineRecurrenceResetUseCaseTest {
     every { nowDateTimeProvider.nowDate() } returns today
     every { nowDateTimeProvider.nowDateTime() } returns now
     coEvery { saveRoutineUseCase(any()) } answers { firstArg() }
-    useCase = RoutineRecurrenceResetUseCase(nowDateTimeProvider, saveRoutineUseCase)
+    useCase = RoutineRecurrenceResetUseCase(nowDateTimeProvider, saveRoutineUseCase, recordRoutineExecutionUseCase)
   }
 
   @Test
@@ -48,6 +49,7 @@ class RoutineRecurrenceResetUseCaseTest {
 
     assertEquals(routine, result)
     coVerify(exactly = 0) { saveRoutineUseCase(any()) }
+    coVerify(exactly = 0) { recordRoutineExecutionUseCase(any(), any(), any(), any()) }
   }
 
   @Test
@@ -56,7 +58,10 @@ class RoutineRecurrenceResetUseCaseTest {
       id = "id-2",
       title = "Morning routine",
       recurrence = RecurrenceRule.Daily(),
-      steps = listOf(RoutineStep(id = "s1", isCompleted = true)),
+      steps = listOf(
+        RoutineStep(id = "s1", isCompleted = true),
+        RoutineStep(id = "s2", isCompleted = false)
+      ),
       lastResetAt = LocalDateTime.of(2026, 7, 21, 9, 0),
       createdAt = now,
       updatedAt = now
@@ -67,6 +72,38 @@ class RoutineRecurrenceResetUseCaseTest {
     assertTrue(result.steps.none { it.isCompleted })
     assertEquals(now, result.lastResetAt)
     coVerify(exactly = 1) { saveRoutineUseCase(match { it.steps.all { s -> !s.isCompleted } }) }
+    coVerify(exactly = 1) {
+      recordRoutineExecutionUseCase(
+        routineId = "id-2",
+        completedStepIds = listOf("s1"),
+        totalTimeSpentSeconds = 0,
+        totalStepsCount = 2
+      )
+    }
+  }
+
+  @Test
+  fun `invoke records a zero-completed cycle when nothing was checked`() = runTest {
+    val routine = Routine(
+      id = "id-5",
+      title = "Skipped yesterday",
+      recurrence = RecurrenceRule.Daily(),
+      steps = listOf(RoutineStep(id = "s1", isCompleted = false)),
+      lastResetAt = LocalDateTime.of(2026, 7, 21, 9, 0),
+      createdAt = now,
+      updatedAt = now
+    )
+
+    useCase(routine)
+
+    coVerify(exactly = 1) {
+      recordRoutineExecutionUseCase(
+        routineId = "id-5",
+        completedStepIds = emptyList(),
+        totalTimeSpentSeconds = 0,
+        totalStepsCount = 1
+      )
+    }
   }
 
   @Test
@@ -85,6 +122,7 @@ class RoutineRecurrenceResetUseCaseTest {
 
     assertTrue(result.steps.none { it.isCompleted })
     coVerify(exactly = 1) { saveRoutineUseCase(any()) }
+    coVerify(exactly = 1) { recordRoutineExecutionUseCase(any(), any(), any(), any()) }
   }
 
   @Test
@@ -103,5 +141,6 @@ class RoutineRecurrenceResetUseCaseTest {
 
     assertEquals(routine, result)
     coVerify(exactly = 0) { saveRoutineUseCase(any()) }
+    coVerify(exactly = 0) { recordRoutineExecutionUseCase(any(), any(), any(), any()) }
   }
 }
