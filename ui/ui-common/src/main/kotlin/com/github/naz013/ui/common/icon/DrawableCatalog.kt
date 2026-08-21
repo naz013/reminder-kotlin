@@ -146,6 +146,7 @@ object DrawableCatalog {
     val LockShield = R.drawable.ic_fluent_lock_shield
     val Map = R.drawable.ic_fluent_map
     val MathFormula = R.drawable.ic_fluent_math_formula
+    val Merge = R.drawable.ic_fluent_merge
     val MoreHor = R.drawable.ic_fluent_more_hor
     val MoreVertical = R.drawable.ic_fluent_more_vertical
     val MoviesAndTv = R.drawable.ic_fluent_movies_and_tv

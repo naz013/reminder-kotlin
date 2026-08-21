@@ -1153,4 +1153,7 @@
 
     <string name="buy_me_a_coffee">Pague-me um café</string>
     <string name="buy_me_a_coffee_subtitle">Apoie o desenvolvimento do aplicativo</string>
+
+    <string name="merge">Mesclar</string>
+    <string name="notes_merge_selected_confirm">Mesclar %1$d notas em uma só? As notas originais serão excluídas.</string>
 </resources>

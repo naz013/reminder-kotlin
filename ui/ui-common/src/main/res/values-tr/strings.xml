@@ -1154,4 +1154,7 @@
 
     <string name="buy_me_a_coffee">Bana bir kahve ısmarla</string>
     <string name="buy_me_a_coffee_subtitle">Uygulamanın geliştirilmesine destek ol</string>
+
+    <string name="merge">Birleştir</string>
+    <string name="notes_merge_selected_confirm">%1$d not tek bir notta birleştirilsin mi? Orijinal notlar silinecek.</string>
 </resources>

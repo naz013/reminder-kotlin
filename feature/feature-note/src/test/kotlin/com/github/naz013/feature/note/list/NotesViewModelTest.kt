@@ -17,6 +17,7 @@ import com.github.naz013.feature.note.preview.ImagesSingleton
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.MergeNotesUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.repository.NoteRepository
@@ -57,6 +58,7 @@ class NotesViewModelTest : BaseTest() {
   private val noteNotifier = mockk<NoteNotifier>(relaxed = true)
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val deleteNoteUseCase = mockk<DeleteNoteUseCase>(relaxed = true)
+  private val mergeNotesUseCase = mockk<MergeNotesUseCase>(relaxed = true)
   private val changeNoteArchiveStateUseCase = mockk<ChangeNoteArchiveStateUseCase>(relaxed = true)
   private val togglePinnedNoteUseCase = mockk<TogglePinnedNoteUseCase>(relaxed = true)
   private val saveNoteUseCase = mockk<SaveNoteUseCase>(relaxed = true)
@@ -131,6 +133,7 @@ class NotesViewModelTest : BaseTest() {
       noteNotifier = noteNotifier,
       appWidgetUpdater = appWidgetUpdater,
       deleteNoteUseCase = deleteNoteUseCase,
+      mergeNotesUseCase = mergeNotesUseCase,
       changeNoteArchiveStateUseCase = changeNoteArchiveStateUseCase,
       togglePinnedNoteUseCase = togglePinnedNoteUseCase,
       saveNoteUseCase = saveNoteUseCase,
@@ -689,6 +692,66 @@ class NotesViewModelTest : BaseTest() {
 
       coVerify(exactly = 1) { deleteNoteUseCase("1") }
       verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `onMergeSelectedClick posts ConfirmMergeSelected with ids in tap order`() =
+    runTest {
+      every { textProvider.getText(R.string.notes_merge_selected_confirm, 2) } returns "Merge 2 notes?"
+      val (viewModel, _) = readyViewModel(listOf("1", "2"))
+      // Long-press the 2nd note first, then tap the 1st - tap order is the reverse of list order.
+      viewModel.onNoteLongClick("2")
+      viewModel.onNoteClick("1")
+
+      viewModel.onMergeSelectedClick()
+
+      assertEquals(
+        NotesViewModel.NavigationEvent.ConfirmMergeSelected(listOf("2", "1"), "Merge 2 notes?"),
+        viewModel.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onMergeSelectedClick does nothing when fewer than two notes are selected`() =
+    runTest {
+      val (viewModel, _) = readyViewModel(listOf("1", "2"))
+      viewModel.onNoteLongClick("1")
+
+      viewModel.onMergeSelectedClick()
+
+      assertEquals(null, viewModel.navigationEvent.value)
+    }
+
+  @Test
+  fun `onMergeSelectedClick drops a deselected note from tap order`() =
+    runTest {
+      every { textProvider.getText(R.string.notes_merge_selected_confirm, 2) } returns "Merge 2 notes?"
+      val (viewModel, _) = readyViewModel(listOf("1", "2", "3"))
+      viewModel.onNoteLongClick("2")
+      viewModel.onNoteClick("1")
+      viewModel.onNoteClick("3")
+      viewModel.onNoteClick("3") // deselect - should drop out of tap order entirely
+
+      viewModel.onMergeSelectedClick()
+
+      assertEquals(
+        NotesViewModel.NavigationEvent.ConfirmMergeSelected(listOf("2", "1"), "Merge 2 notes?"),
+        viewModel.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `mergeSelectedNotes merges, clears selection, refreshes and updates the widget`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("1", "2"), isArchived = false)
+      viewModel.onNoteLongClick("1")
+      viewModel.onNoteClick("2")
+
+      viewModel.mergeSelectedNotes(listOf("1", "2"))
+
+      coVerify(exactly = 1) { mergeNotesUseCase(listOf("1", "2")) }
+      assertEquals(0, state().selectedCount)
+      verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
     }
 
   @Test

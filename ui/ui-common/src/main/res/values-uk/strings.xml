@@ -1154,4 +1154,7 @@
 
     <string name="buy_me_a_coffee">Пригостити кавою</string>
     <string name="buy_me_a_coffee_subtitle">Підтримайте розвиток застосунку</string>
+
+    <string name="merge">Об\'єднати</string>
+    <string name="notes_merge_selected_confirm">Об\'єднати %1$d нотаток в одну? Оригінальні нотатки буде видалено.</string>
 </resources>

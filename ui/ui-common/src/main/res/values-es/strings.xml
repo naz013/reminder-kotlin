@@ -1153,4 +1153,7 @@
 
     <string name="buy_me_a_coffee">Invítame a un café</string>
     <string name="buy_me_a_coffee_subtitle">Apoya el desarrollo de la aplicación</string>
+
+    <string name="merge">Combinar</string>
+    <string name="notes_merge_selected_confirm">¿Combinar %1$d notas en una sola? Las notas originales se eliminarán.</string>
 </resources>

@@ -49,6 +49,20 @@ internal class NoteImageRepository(
     return files
   }
 
+  fun copyImagesToFolder(
+    images: List<ImageFile>,
+    folderName: String,
+  ): List<ImageFile> {
+    val dstFolder = getImageFolder(folderName)
+    return images.map { image ->
+      val srcFile = File(image.filePath)
+      if (!srcFile.exists()) return@map image
+      val dstFile = File(dstFolder, image.fileName)
+      runCatching { srcFile.copyTo(dstFile, overwrite = true) }
+      image.copy(filePath = dstFile.toString())
+    }
+  }
+
   fun saveTemporaryImage(
     fileName: String,
     inputStream: InputStream,

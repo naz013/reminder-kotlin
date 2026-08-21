@@ -1151,4 +1151,7 @@
 
     <string name="buy_me_a_coffee">Trakteer me op een kopje koffie</string>
     <string name="buy_me_a_coffee_subtitle">Steun de ontwikkeling van de app</string>
+
+    <string name="merge">Samenvoegen</string>
+    <string name="notes_merge_selected_confirm">%1$d notities samenvoegen tot één? De oorspronkelijke notities worden verwijderd.</string>
 </resources>

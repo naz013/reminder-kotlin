@@ -1177,6 +1177,9 @@
     <string name="buy_me_a_coffee">Buy me a coffee</string>
     <string name="buy_me_a_coffee_subtitle">Support the app\'s development</string>
 
+    <string name="merge">Merge</string>
+    <string name="notes_merge_selected_confirm">Merge %1$d notes into one? The original notes will be deleted.</string>
+
     <string name="routine_steps_required">Add at least one step</string>
     <string name="repeat_none">Never</string>
     <string name="repeat_weekly">Repeats weekly</string>

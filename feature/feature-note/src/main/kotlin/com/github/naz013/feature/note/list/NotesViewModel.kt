@@ -22,6 +22,7 @@ import com.github.naz013.feature.note.preview.ImagesSingleton
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.MergeNotesUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.repository.NoteRepository
@@ -64,6 +65,7 @@ internal class NotesViewModel(
   private val noteNotifier: NoteNotifier,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val deleteNoteUseCase: DeleteNoteUseCase,
+  private val mergeNotesUseCase: MergeNotesUseCase,
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
   private val togglePinnedNoteUseCase: TogglePinnedNoteUseCase,
   private val saveNoteUseCase: SaveNoteUseCase,
@@ -183,9 +185,15 @@ internal class NotesViewModel(
     )
   }
 
+  // Tap order for selected notes - used only by merge, which needs to know which note was
+  // selected *first* to decide the merged note's title/appearance. Kept out of NotesScreenState
+  // on purpose since no other bulk action needs it (see docs/multiselect.md).
+  private var selectionOrder: List<String> = emptyList()
+
   fun onNoteClick(id: String) {
     if (_notesScreenState.value.selectedCount > 0) {
       updateSelection { it.toggleSelection(id) }
+      selectionOrder = if (id in selectionOrder) selectionOrder - id else selectionOrder + id
     } else {
       navigationEvent.emit(NavigationEvent.OpenNotePreview(id))
     }
@@ -193,10 +201,12 @@ internal class NotesViewModel(
 
   fun onNoteLongClick(id: String) {
     updateSelection { it.select(id) }
+    if (id !in selectionOrder) selectionOrder = selectionOrder + id
   }
 
   fun onSelectionCancel() {
     updateSelection { it.clearSelection() }
+    selectionOrder = emptyList()
   }
 
   private fun updateSelection(transform: (List<UiNoteListItem>) -> List<UiNoteListItem>) {
@@ -210,6 +220,11 @@ internal class NotesViewModel(
 
   private fun selectedIds(): Set<String> =
     (_notesScreenState.value.listState as? ListState.Ready)?.notes.orEmpty().selectedIds()
+
+  private fun selectedIdsInOrder(): List<String> {
+    val selected = selectedIds()
+    return selectionOrder.filter { it in selected }
+  }
 
   fun onDeleteSelectedClick() {
     val ids = selectedIds()
@@ -269,6 +284,32 @@ internal class NotesViewModel(
         note.updatedAt = DateTimeManager.gmtDateTime
         saveNoteUseCase(noteWithImages)
       }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
+      refresh()
+
+      withContext(dispatcherProvider.main()) {
+        appWidgetUpdater.updateNotesWidget()
+      }
+    }
+  }
+
+  fun onMergeSelectedClick() {
+    val ids = selectedIdsInOrder()
+    if (ids.size < 2) return
+    navigationEvent.emit(
+      NavigationEvent.ConfirmMergeSelected(
+        ids = ids,
+        title = textProvider.getText(R.string.notes_merge_selected_confirm, ids.size),
+      )
+    )
+  }
+
+  fun mergeSelectedNotes(ids: List<String>) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      mergeNotesUseCase(ids)
 
       withContext(dispatcherProvider.main()) {
         onSelectionCancel()
@@ -447,6 +488,11 @@ internal class NotesViewModel(
 
     data class ConfirmDeleteSelected(
       val ids: Set<String>,
+      val title: String,
+    ) : NavigationEvent
+
+    data class ConfirmMergeSelected(
+      val ids: List<String>,
       val title: String,
     ) : NavigationEvent
 

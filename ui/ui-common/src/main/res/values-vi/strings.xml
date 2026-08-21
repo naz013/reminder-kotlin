@@ -1151,4 +1151,7 @@
 
     <string name="buy_me_a_coffee">Mời tôi một ly cà phê</string>
     <string name="buy_me_a_coffee_subtitle">Ủng hộ sự phát triển của ứng dụng</string>
+
+    <string name="merge">Hợp nhất</string>
+    <string name="notes_merge_selected_confirm">Hợp nhất %1$d ghi chú thành một? Các ghi chú gốc sẽ bị xóa.</string>
 </resources>

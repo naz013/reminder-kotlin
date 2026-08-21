@@ -1151,4 +1151,7 @@
 
     <string name="buy_me_a_coffee">Spander en kaffe på meg</string>
     <string name="buy_me_a_coffee_subtitle">Støtt utviklingen av appen</string>
+
+    <string name="merge">Slå sammen</string>
+    <string name="notes_merge_selected_confirm">Slå sammen %1$d notater til én? De opprinnelige notatene blir slettet.</string>
 </resources>

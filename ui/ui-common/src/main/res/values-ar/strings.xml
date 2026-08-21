@@ -1151,4 +1151,7 @@
 
     <string name="buy_me_a_coffee">اشترِ لي قهوة</string>
     <string name="buy_me_a_coffee_subtitle">ادعم تطوير التطبيق</string>
+
+    <string name="merge">دمج</string>
+    <string name="notes_merge_selected_confirm">دمج %1$d ملاحظات في ملاحظة واحدة؟ سيتم حذف الملاحظات الأصلية.</string>
 </resources>

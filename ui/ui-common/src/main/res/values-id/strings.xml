@@ -1151,4 +1151,7 @@
 
     <string name="buy_me_a_coffee">Traktir saya kopi</string>
     <string name="buy_me_a_coffee_subtitle">Dukung pengembangan aplikasi</string>
+
+    <string name="merge">Gabungkan</string>
+    <string name="notes_merge_selected_confirm">Gabungkan %1$d catatan menjadi satu? Catatan asli akan dihapus.</string>
 </resources>

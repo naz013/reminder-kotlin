@@ -14,6 +14,7 @@ import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttached
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.MergeNotesUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import org.koin.core.module.dsl.factoryOf
@@ -23,6 +24,7 @@ import org.koin.dsl.module
 
 val featureNoteModule = module {
   factoryOf(::DeleteNoteUseCase)
+  factoryOf(::MergeNotesUseCase)
   factoryOf(::SaveNoteUseCase)
   factoryOf(::ChangeNoteArchiveStateUseCase)
   factoryOf(::TogglePinnedNoteUseCase)
@@ -82,6 +84,7 @@ val featureNoteModule = module {
   viewModel { (isArchived: Boolean) ->
     NotesViewModel(
       isArchived = isArchived,
+      get(),
       get(),
       get(),
       get(),

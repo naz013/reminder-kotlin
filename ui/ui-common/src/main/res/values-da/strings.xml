@@ -1151,4 +1151,7 @@
 
     <string name="buy_me_a_coffee">Køb mig en kaffe</string>
     <string name="buy_me_a_coffee_subtitle">Støt udviklingen af appen</string>
+
+    <string name="merge">Flet</string>
+    <string name="notes_merge_selected_confirm">Flet %1$d noter til én? De oprindelige noter bliver slettet.</string>
 </resources>
