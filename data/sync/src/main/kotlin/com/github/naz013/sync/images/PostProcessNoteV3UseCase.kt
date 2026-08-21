@@ -45,6 +45,7 @@ internal class PostProcessNoteV3UseCase(
       updatedAt = noteV3Json.updatedAt,
       fontSize = noteV3Json.fontSize,
       archived = noteV3Json.archived,
+      isPinned = noteV3Json.isPinned,
       syncState = SyncState.Synced,
     )
   }

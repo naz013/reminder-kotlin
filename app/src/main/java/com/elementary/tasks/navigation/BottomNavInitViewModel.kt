@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed interface BottomNavInitState {
   data object Loading : BottomNavInitState
@@ -68,7 +69,10 @@ class BottomNavInitViewModel(
       if (prefs.isSbNotificationEnabled) {
         notifier.sendShowReminderPermanent()
       }
-      _state.value = BottomNavInitState.Ready(requiresLogin = prefs.hasPinCode)
+      val requiresLogin = prefs.hasPinCode
+      withContext(dispatcherProvider.main()) {
+        _state.value = BottomNavInitState.Ready(requiresLogin = requiresLogin)
+      }
     }
   }
 

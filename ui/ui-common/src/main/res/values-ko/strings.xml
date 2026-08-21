@@ -1150,4 +1150,7 @@
     <string name="pin">고정</string>
     <string name="unpin">고정 해제</string>
     <string name="pinned">고정됨</string>
+
+    <string name="buy_me_a_coffee">커피 한 잔 사주기</string>
+    <string name="buy_me_a_coffee_subtitle">앱 개발을 응원해 주세요</string>
 </resources>

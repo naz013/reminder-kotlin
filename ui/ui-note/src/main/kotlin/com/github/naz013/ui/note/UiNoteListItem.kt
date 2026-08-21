@@ -14,6 +14,7 @@ data class UiNoteListItem(
   val titleFontStyle: Int,
   val titleFontSize: Float,
   val images: List<UiNoteImage>,
+  val isPinned: Boolean = false,
   override val isSelected: Boolean = false,
 ) : Selectable<UiNoteListItem> {
   override fun withSelected(selected: Boolean) = copy(isSelected = selected)

@@ -49,6 +49,7 @@ import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.note.NoteCard
 import com.github.naz013.ui.note.UiNoteListItem
 import com.github.naz013.ui.tag.TagFilterRow
@@ -223,6 +224,7 @@ private fun NotesList(
             ) {
               NoteOverflowMenu(
                 isArchived = isArchived,
+                isPinned = note.isPinned,
                 textColor = note.textColor,
                 onMenuAction = { action -> onNoteMenuAction(note, action) },
               )
@@ -260,6 +262,7 @@ private fun NotesList(
             ) {
               NoteOverflowMenu(
                 isArchived = isArchived,
+                isPinned = note.isPinned,
                 textColor = note.textColor,
                 onMenuAction = { action -> onNoteMenuAction(note, action) },
               )
@@ -274,6 +277,7 @@ private fun NotesList(
 @Composable
 private fun BoxScope.NoteOverflowMenu(
   isArchived: Boolean,
+  isPinned: Boolean,
   textColor: androidx.compose.ui.graphics.Color,
   onMenuAction: (NoteMenuAction) -> Unit,
 ) {
@@ -287,13 +291,14 @@ private fun BoxScope.NoteOverflowMenu(
   AppDropdownMenu(
     expanded = menuExpanded,
     onDismissRequest = { menuExpanded = false },
-    items = noteMenuItems(isArchived),
+    items = noteMenuItems(isArchived, isPinned),
     onItemClick = { id -> onMenuAction(NoteMenuAction.entries[id]) },
   )
 }
 
 @Composable
-private fun noteMenuItems(isArchived: Boolean): List<PopupMenuItem> {
+private fun noteMenuItems(isArchived: Boolean, isPinned: Boolean): List<PopupMenuItem> {
+  val pinAction = if (isPinned) NoteMenuAction.UNPIN to R.string.unpin else NoteMenuAction.PIN to R.string.pin
   val actions =
     if (isArchived) {
       listOf(
@@ -308,6 +313,7 @@ private fun noteMenuItems(isArchived: Boolean): List<PopupMenuItem> {
         NoteMenuAction.SHARE to R.string.share,
         NoteMenuAction.SHOW_IN_STATUS_BAR to R.string.show_note_in_notifications,
         NoteMenuAction.EDIT to R.string.edit,
+        pinAction,
         NoteMenuAction.ARCHIVE to R.string.notes_move_to_archive,
         NoteMenuAction.DELETE to R.string.delete,
       )
@@ -324,6 +330,8 @@ private fun NoteMenuAction.iconRes(): Int =
     NoteMenuAction.SHARE -> R.drawable.ic_fluent_share
     NoteMenuAction.SHOW_IN_STATUS_BAR -> R.drawable.ic_fluent_alert
     NoteMenuAction.ARCHIVE, NoteMenuAction.UNARCHIVE -> R.drawable.ic_fluent_archive
+    NoteMenuAction.PIN -> DrawableCatalog.Fluent.Pin
+    NoteMenuAction.UNPIN -> DrawableCatalog.Fluent.PinOff
     NoteMenuAction.DELETE -> R.drawable.ic_fluent_delete
   }
 

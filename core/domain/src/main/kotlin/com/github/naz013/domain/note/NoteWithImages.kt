@@ -51,4 +51,8 @@ data class NoteWithImages(
   fun getFontSize(): Int {
     return note?.fontSize ?: FontParams.DEFAULT_FONT_SIZE
   }
+
+  fun isPinned(): Boolean {
+    return note?.isPinned ?: false
+  }
 }

@@ -1150,4 +1150,7 @@
     <string name="pin">Fijar</string>
     <string name="unpin">Dejar de fijar</string>
     <string name="pinned">Fijado</string>
+
+    <string name="buy_me_a_coffee">Invítame a un café</string>
+    <string name="buy_me_a_coffee_subtitle">Apoya el desarrollo de la aplicación</string>
 </resources>

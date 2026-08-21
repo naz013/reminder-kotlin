@@ -35,6 +35,8 @@ data class Note(
   var fontSize: Int = -1,
   @SerializedName("archived")
   var archived: Boolean = false,
+  @SerializedName("isPinned")
+  var isPinned: Boolean = false,
   @SerializedName("versionId")
   var version: Long = 0L,
   @Transient

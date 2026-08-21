@@ -1092,6 +1092,7 @@
     <string name="backup_import_action">Restore</string>
     <string name="backup_export_success">Backup saved successfully.</string>
     <string name="backup_export_failed">Could not save the backup. Please try again.</string>
+
     <string name="backup_import_success">Restored %1$d items successfully.</string>
     <string name="backup_import_failed">Could not restore the backup. Please try again.</string>
     <string name="backup_wrong_passphrase">Incorrect passphrase, or the file is corrupted.</string>
@@ -1172,4 +1173,7 @@
     <string name="sort_by_date">By creation date</string>
     <string name="sort_by_name">By name</string>
     <string name="routine_on_demand">On-demand</string>
+
+    <string name="buy_me_a_coffee">Buy me a coffee</string>
+    <string name="buy_me_a_coffee_subtitle">Support the app\'s development</string>
 </resources>

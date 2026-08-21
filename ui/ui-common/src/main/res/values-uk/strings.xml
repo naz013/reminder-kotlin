@@ -1151,4 +1151,7 @@
     <string name="pin">Закріпити</string>
     <string name="unpin">Відкріпити</string>
     <string name="pinned">Закріплено</string>
+
+    <string name="buy_me_a_coffee">Пригостити кавою</string>
+    <string name="buy_me_a_coffee_subtitle">Підтримайте розвиток застосунку</string>
 </resources>

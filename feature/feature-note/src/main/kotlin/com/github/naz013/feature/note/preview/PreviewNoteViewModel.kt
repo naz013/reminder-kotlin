@@ -21,6 +21,7 @@ import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttached
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.NoteRepository
@@ -49,6 +50,7 @@ internal class PreviewNoteViewModel(
   private val reminderToUiNoteAttachedReminder: ReminderToUiNoteAttachedReminder,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
+  private val togglePinnedNoteUseCase: TogglePinnedNoteUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val imagesSingleton: ImagesSingleton,
@@ -89,6 +91,7 @@ internal class PreviewNoteViewModel(
               textSize = uiNotePreview.textSize,
               images = uiNotePreview.images,
               isArchived = uiNotePreview.isArchived,
+              isPinned = uiNotePreview.isPinned,
               background = noteColors.background,
               content = noteColors.content,
             )
@@ -154,6 +157,13 @@ internal class PreviewNoteViewModel(
       withContext(dispatcherProvider.main()) {
         event.emit(ViewModelEvent.Message(message))
       }
+    }
+  }
+
+  fun onPinClick() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      togglePinnedNoteUseCase(key)
+      loadInternal()
     }
   }
 

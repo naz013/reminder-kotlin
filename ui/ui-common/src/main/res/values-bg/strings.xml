@@ -1151,4 +1151,7 @@
     <string name="pin">Закачи</string>
     <string name="unpin">Откачи</string>
     <string name="pinned">Закачено</string>
+
+    <string name="buy_me_a_coffee">Купи ми кафе</string>
+    <string name="buy_me_a_coffee_subtitle">Подкрепете разработката на приложението</string>
 </resources>

@@ -21,6 +21,7 @@ import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
@@ -59,6 +60,7 @@ class PreviewNoteViewModelTest : BaseTest() {
   private val reminderToUiNoteAttachedReminder = mockk<ReminderToUiNoteAttachedReminder>()
   private val deleteNoteUseCase = mockk<DeleteNoteUseCase>(relaxed = true)
   private val changeNoteArchiveStateUseCase = mockk<ChangeNoteArchiveStateUseCase>(relaxed = true)
+  private val togglePinnedNoteUseCase = mockk<TogglePinnedNoteUseCase>(relaxed = true)
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
   private val createSharedNoteFileUseCase = mockk<CreateSharedNoteFileUseCase>()
   private val imagesSingleton = mockk<ImagesSingleton>(relaxed = true)
@@ -94,6 +96,7 @@ class PreviewNoteViewModelTest : BaseTest() {
     text: String = "Summary",
     images: List<UiNoteImage> = emptyList(),
     isArchived: Boolean = false,
+    isPinned: Boolean = false,
   ) = UiNotePreview(
     id = id,
     text = text,
@@ -105,6 +108,7 @@ class PreviewNoteViewModelTest : BaseTest() {
     titleTypeface = null,
     titleTextSize = 20f,
     isArchived = isArchived,
+    isPinned = isPinned,
   )
 
   private fun reminder(
@@ -132,6 +136,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       reminderToUiNoteAttachedReminder = reminderToUiNoteAttachedReminder,
       deleteNoteUseCase = deleteNoteUseCase,
       changeNoteArchiveStateUseCase = changeNoteArchiveStateUseCase,
+      togglePinnedNoteUseCase = togglePinnedNoteUseCase,
       saveReminderUseCase = saveReminderUseCase,
       createSharedNoteFileUseCase = createSharedNoteFileUseCase,
       imagesSingleton = imagesSingleton,

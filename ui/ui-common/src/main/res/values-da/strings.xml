@@ -1148,4 +1148,7 @@
     <string name="pin">Fastgør</string>
     <string name="unpin">Frigør</string>
     <string name="pinned">Fastgjort</string>
+
+    <string name="buy_me_a_coffee">Køb mig en kaffe</string>
+    <string name="buy_me_a_coffee_subtitle">Støt udviklingen af appen</string>
 </resources>

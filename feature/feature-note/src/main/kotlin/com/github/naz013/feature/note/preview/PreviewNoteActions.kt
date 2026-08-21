@@ -11,6 +11,7 @@ internal data class PreviewNoteActions(
   val onStatusClick: () -> Unit = {},
   val onShareClick: () -> Unit = {},
   val onArchiveClick: () -> Unit = {},
+  val onPinClick: () -> Unit = {},
   val onDeleteClick: () -> Unit = {},
   val onImageOpen: (Int) -> Unit = {},
   val onReminderEditClick: (String) -> Unit = {},

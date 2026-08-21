@@ -17,7 +17,8 @@ interface NoteRepository {
   /**
    * Filters by archive state and (optional) lowercase search text, and sorts in SQL (sortOrder
    * is one of "date_az", "date_za", "text_az", "text_za" — anything else behaves like
-   * "date_za"), all as a single query.
+   * "date_za"), all as a single query. Pinned notes are always sorted first, ahead of the
+   * requested sortOrder.
    */
   suspend fun getNotes(isArchived: Boolean, query: String, sortOrder: String): List<NoteWithImages>
   suspend fun getImagesIds(): List<Int>

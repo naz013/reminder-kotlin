@@ -1148,4 +1148,7 @@
     <string name="pin">Sematkan</string>
     <string name="unpin">Lepas sematan</string>
     <string name="pinned">Disematkan</string>
+
+    <string name="buy_me_a_coffee">Traktir saya kopi</string>
+    <string name="buy_me_a_coffee_subtitle">Dukung pengembangan aplikasi</string>
 </resources>

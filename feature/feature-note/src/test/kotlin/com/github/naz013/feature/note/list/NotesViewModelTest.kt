@@ -18,6 +18,7 @@ import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteUseCase
+import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
@@ -57,6 +58,7 @@ class NotesViewModelTest : BaseTest() {
   private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val deleteNoteUseCase = mockk<DeleteNoteUseCase>(relaxed = true)
   private val changeNoteArchiveStateUseCase = mockk<ChangeNoteArchiveStateUseCase>(relaxed = true)
+  private val togglePinnedNoteUseCase = mockk<TogglePinnedNoteUseCase>(relaxed = true)
   private val saveNoteUseCase = mockk<SaveNoteUseCase>(relaxed = true)
   private val createSharedNoteFileUseCase = mockk<CreateSharedNoteFileUseCase>()
   private val imagesSingleton = mockk<ImagesSingleton>(relaxed = true)
@@ -130,6 +132,7 @@ class NotesViewModelTest : BaseTest() {
       appWidgetUpdater = appWidgetUpdater,
       deleteNoteUseCase = deleteNoteUseCase,
       changeNoteArchiveStateUseCase = changeNoteArchiveStateUseCase,
+      togglePinnedNoteUseCase = togglePinnedNoteUseCase,
       saveNoteUseCase = saveNoteUseCase,
       createSharedNoteFileUseCase = createSharedNoteFileUseCase,
       imagesSingleton = imagesSingleton,
