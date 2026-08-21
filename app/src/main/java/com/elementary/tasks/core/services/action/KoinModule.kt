@@ -1,44 +1,10 @@
 package com.elementary.tasks.core.services.action
 
-import com.elementary.tasks.core.services.action.birthday.BirthdayActionProcessor
 import com.elementary.tasks.core.services.action.birthday.BirthdayDataProvider
-import com.elementary.tasks.core.services.action.birthday.BirthdayHandlerFactory
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
 import org.koin.dsl.module
 
 val actionModule = module {
   factory { ReminderDataProvider(get(), get()) }
   factory { BirthdayDataProvider(get(), get()) }
-
-  factory {
-    BirthdayHandlerFactory(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-    )
-  }
-
-  factory {
-    BirthdayActionProcessor(
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get(),
-      get()
-    )
-  }
 }

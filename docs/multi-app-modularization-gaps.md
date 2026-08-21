@@ -14,7 +14,7 @@ DI wiring, not business logic. Four real gaps remain, ranked by blast radius.
 
 | # | Gap | Where it lives today | Priority | Effort |
 |---|---|---|---|---|
-| 1 | Alarm/notification-action pipeline never extracted | Reminder-side: done, see below. Birthday-side: `app/.../core/services/action/birthday/**` | High — blocks reuse entirely | Large |
+| 1 | Alarm/notification-action pipeline never extracted | Done — `logic:logic-notification-action` | ~~High — blocks reuse entirely~~ | ~~Large~~ |
 | 2 | Preferences storage is a monolithic app-only engine | `app/.../core/utils/params/Prefs.kt` + `app/.../module/*Impl.kt` (~20 classes) | Medium — duplicated, not blocked | Medium |
 | 3 | Notification-building mechanics entangled with branding | `app/.../core/utils/Notifier.kt` | Medium | Small |
 | 4 | Cloud provider credentials are app-specific | `app/.../core/cloud/*Impl.kt` | Not a gap — a checklist | N/A |
@@ -62,42 +62,38 @@ immediately start drifting from the original.
 Everything else in this document assumes a seam interface already exists somewhere and just needs an
 implementation. This gap has no seam to implement — it needs one designed.
 
-### Status: reminder-side done
+### Status: done
 
-The reminder-side half shipped as [`logic:logic-notification-action`](../logic/logic-notification-action)
+Both halves shipped as [`logic:logic-notification-action`](../logic/logic-notification-action)
 (`id("reminder.android.library")` — not pure-JVM like `logic-reminder`/`logic-workflow`, since it
 builds `NotificationCompat.Builder`/`PendingIntent` directly, same rationale as `ui-map`'s exception
-in architecture.md). It owns `ReminderActionProcessor`, `ReminderRepeatProcessor`,
-`ReminderCompleteSnoozeFactory`, `DoNotDisturbManager`, and the shared (reminder- and
-birthday-agnostic) mechanics: `ActionHandler`, `NotificationAlertActionHandler`,
-`CancelNotificationDecorator`, `WearNotification`, `NotificationStyle`. Four new seam interfaces
-carry it: `NotificationGateway` (build/notify/cancel, wraps `Notifier`), `DoNotDisturbPreferences`,
-`WearPreferences`, `PhoneCallStateProvider` (replaces `SuperUtil.isPhoneCallActive`) — plus
-`ReminderAlertHandlerFactory`, implemented only in `app` (as `AppReminderAlertHandlerFactory`)
-because the concrete alert handler still has to target `app`-only classes
-(`ReminderActionReceiver`, `ReminderActionActivity`). `AlarmReceiver`/`ReminderActionReceiver`/
-`BootReceiver`/`GeolocationService` stay in `app` as thin manifest-bound adapters, unchanged in
-shape, now delegating to the new module. `JobScheduler.kt` (the `JobSchedulerApi` implementation)
-correctly stayed in `app` too — it's already just an implementation of an existing `-api` seam.
+in architecture.md). It owns `ReminderActionProcessor`/`ReminderRepeatProcessor`/
+`ReminderCompleteSnoozeFactory` (reminder), `BirthdayActionProcessor`/`BirthdayCancelActionFactory`
+(birthday), `DoNotDisturbManager`, and the shared mechanics both domains use: `ActionHandler`,
+`NotificationAlertActionHandler`, `CancelNotificationDecorator`, `WearNotification`,
+`NotificationStyle`. Four seam interfaces carry the shared/reminder half: `NotificationGateway`
+(build/notify/cancel, wraps `Notifier`), `DoNotDisturbPreferences`, `WearPreferences`,
+`PhoneCallStateProvider` (replaces `SuperUtil.isPhoneCallActive`) — plus `ReminderAlertHandlerFactory`
+and `BirthdayAlertHandlerFactory`, each implemented only in `app` (`AppReminderAlertHandlerFactory`/
+`AppBirthdayAlertHandlerFactory`) because the concrete alert handlers still have to target `app`-only
+classes (`ReminderActionReceiver`/`ReminderActionActivity`, `BirthdayActionReceiver`/
+`BirthdayActionActivity`). The birthday half needed **zero new preference seams** — `BirthdayPreferences`
+(`logic-birthday`) already exposed every field `BirthdayActionProcessor`/`BirthdayNotificationHandler`
+needed (`daysToBirthday`, `birthdayPriority`, etc.), so it slotted straight in.
+`AlarmReceiver`/`ReminderActionReceiver`/`BirthdayActionReceiver`/`BootReceiver`/`GeolocationService`
+stay in `app` as thin manifest-bound adapters, unchanged in shape, now delegating to the new module.
+`JobScheduler.kt` (the `JobSchedulerApi` implementation) correctly stayed in `app` too — it's already
+just an implementation of an existing `-api` seam.
 
-Two design points that came up only once real files were read (worth knowing before touching this
-again):
-- **`ReminderDataProvider` stays in `app`**, not in the new module. Its LED-color resolution calls
-  `com.github.naz013.feature.reminder.util.LED`, which lives in `feature-reminder` — a module
-  *above* `logic-*` in the dependency graph. Moving `ReminderDataProvider` down would have meant
-  `logic-notification-action` depending on a `feature-*` module, inverting the layering this whole
-  effort exists to fix. Since its only consumer, `ReminderNotificationHandler`, also has to stay in
-  `app` (see next point), leaving it in place was the correct call, not a shortcut.
-- **`ReminderNotificationHandler` stays in `app`** — it's the thing that actually references
-  `ReminderActionReceiver`/`ReminderActionActivity`. It now extends the new module's
-  `NotificationAlertActionHandler` base class instead of a local one.
-
-**Not yet done:** the birthday-side half (`action/birthday/**`) still uses `Prefs`/`SuperUtil`
-directly rather than the new seams, deliberately deferred to keep this change's blast radius to one
-domain. It can now reuse every shared mechanic the reminder-side migration moved (the base handler,
-`WearNotification`, `NotificationGateway`, etc.) — only `BirthdayActionProcessor`'s own DND/priority
-reads and `BirthdayHandlerFactory`/`BirthdayNotificationHandler`'s birthday-specific fields would
-need the same `Prefs` → narrow-interface treatment `ReminderActionProcessor` already got.
+Design points that came up only once real files were read (worth knowing before touching this
+again): **`ReminderDataProvider`/`BirthdayDataProvider` stay in `app`**, not in the new module. Both
+resolve LED colors via `com.github.naz013.feature.reminder.util.LED`, which lives in `feature-reminder`
+— a module *above* `logic-*` in the dependency graph. Moving either down would have meant
+`logic-notification-action` depending on a `feature-*` module, inverting the layering this whole
+effort exists to fix. Since their only consumers, `ReminderNotificationHandler`/
+`BirthdayNotificationHandler`, also have to stay in `app` (they reference the app-only
+receiver/activity classes directly), leaving the data providers in place was the correct call, not a
+shortcut.
 
 ---
 
@@ -197,8 +193,8 @@ instead of growing with every new feature extraction.
 
 ## Recommended sequencing
 
-1. ~~**Gap 1** (alarm/action pipeline)~~ — reminder-side done (`logic:logic-notification-action`).
-   Birthday-side extraction is the natural next slice, reusing the shared mechanics already moved.
+1. ~~**Gap 1** (alarm/action pipeline)~~ — done, both reminder- and birthday-side
+   (`logic:logic-notification-action`).
 2. **Gap 2** (preferences engine + shared defaults for theme/locale/auth/font) — removes most of the
    ~20-class rewrite cost for a second app.
 3. **Stand up a second `app`-like Gradle module** depending on the same `feature-*`/`logic-*`/`data-*`

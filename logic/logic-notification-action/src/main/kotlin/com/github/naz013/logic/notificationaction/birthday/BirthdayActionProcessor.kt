@@ -1,7 +1,5 @@
-package com.elementary.tasks.core.services.action.birthday
+package com.github.naz013.logic.notificationaction.birthday
 
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
@@ -11,7 +9,9 @@ import com.github.naz013.datecalc.BirthdayDateCalculator
 import com.github.naz013.datecalc.DateValidator
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.birthday.BirthdayPreferences
 import com.github.naz013.logic.notificationaction.DoNotDisturbManager
+import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.ui.common.compose.foundation.telephony.PhoneCaller
@@ -23,13 +23,15 @@ import org.threeten.bp.LocalDate
 
 class BirthdayActionProcessor(
   private val dispatcherProvider: DispatcherProvider,
-  private val birthdayHandlerFactory: BirthdayHandlerFactory,
+  private val alertHandlerFactory: BirthdayAlertHandlerFactory,
+  private val cancelActionFactory: BirthdayCancelActionFactory,
   private val birthdayRepository: BirthdayRepository,
-  private val prefs: Prefs,
+  private val birthdayPreferences: BirthdayPreferences,
   private val doNotDisturbManager: DoNotDisturbManager,
   private val jobScheduler: JobSchedulerApi,
   private val analyticsEventSender: AnalyticsEventSender,
   private val contextProvider: ContextProvider,
+  private val phoneCallStateProvider: PhoneCallStateProvider,
   private val dateValidator: DateValidator,
   private val birthdayDateCalculator: BirthdayDateCalculator,
   private val smsSender: SmsSender,
@@ -41,7 +43,7 @@ class BirthdayActionProcessor(
     Logger.d(TAG, "sendSms: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
-      birthdayHandlerFactory.createCancel().handle(birthday)
+      cancelActionFactory.createCancel().handle(birthday)
       withContext(dispatcherProvider.main()) {
         smsSender.send(birthday.number, null)
       }
@@ -52,7 +54,7 @@ class BirthdayActionProcessor(
     Logger.d(TAG, "makeCall: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
-      birthdayHandlerFactory.createCancel().handle(birthday)
+      cancelActionFactory.createCancel().handle(birthday)
       withContext(dispatcherProvider.main()) {
         if (Permissions.checkPermission(contextProvider.context, Permissions.CALL_PHONE)) {
           phoneCaller.call(birthday.number)
@@ -65,7 +67,7 @@ class BirthdayActionProcessor(
     Logger.d(TAG, "cancel: $id")
     scope.launch {
       val birthday = birthdayRepository.getById(id) ?: return@launch
-      birthdayHandlerFactory.createCancel().handle(birthday)
+      cancelActionFactory.createCancel().handle(birthday)
     }
   }
 
@@ -74,14 +76,14 @@ class BirthdayActionProcessor(
     jobScheduler.cancelDailyBirthday()
     jobScheduler.scheduleDailyBirthday()
     scope.launch {
-      val daysBefore = prefs.daysToBirthday
-      val applyDnd = doNotDisturbManager.applyDoNotDisturb(prefs.birthdayPriority)
+      val daysBefore = birthdayPreferences.daysToBirthday
+      val applyDnd = doNotDisturbManager.applyDoNotDisturb(birthdayPreferences.birthdayPriority)
 
       val date = LocalDate.now()
       val mYear = date.year
 
       val handler =
-        birthdayHandlerFactory.createAction(!SuperUtil.isPhoneCallActive(contextProvider.context))
+        alertHandlerFactory.create(!phoneCallStateProvider.isPhoneCallActive())
 
       val birthdays =
         birthdayRepository

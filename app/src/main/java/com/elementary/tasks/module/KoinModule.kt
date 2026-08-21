@@ -15,6 +15,7 @@ import com.elementary.tasks.module.featuresettings.SettingsHubDoNotDisturbChecke
 import com.elementary.tasks.module.featuresettings.SettingsHubRemoteMessagesImpl
 import com.elementary.tasks.module.featuresettings.TroubleshootingCacheUtilImpl
 import com.elementary.tasks.module.locationapi.LocationTrackingApiImpl
+import com.elementary.tasks.module.logicnotificationaction.AppBirthdayAlertHandlerFactory
 import com.elementary.tasks.module.logicnotificationaction.AppReminderAlertHandlerFactory
 import com.elementary.tasks.module.logicnotificationaction.DoNotDisturbPreferencesImpl
 import com.elementary.tasks.module.logicnotificationaction.NotificationGatewayImpl
@@ -55,6 +56,7 @@ import com.github.naz013.logic.notificationaction.DoNotDisturbPreferences
 import com.github.naz013.logic.notificationaction.NotificationGateway
 import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
 import com.github.naz013.logic.notificationaction.WearPreferences
+import com.github.naz013.logic.notificationaction.birthday.BirthdayAlertHandlerFactory
 import com.github.naz013.logic.notificationaction.reminder.ReminderAlertHandlerFactory
 import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.logic.reminder.ReminderPreferences
@@ -131,6 +133,18 @@ val libModule = module {
       get(),
       get(),
     ) as ReminderAlertHandlerFactory
+  }
+  factory {
+    AppBirthdayAlertHandlerFactory(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    ) as BirthdayAlertHandlerFactory
   }
 
   // location api

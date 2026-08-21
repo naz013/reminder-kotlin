@@ -7,11 +7,11 @@ import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.action.birthday.BirthdayDataProvider
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.Birthday
+import com.github.naz013.logic.birthday.BirthdayPreferences
 import com.github.naz013.logic.notificationaction.NotificationAction
 import com.github.naz013.logic.notificationaction.NotificationAlertActionHandler
 import com.github.naz013.logic.notificationaction.NotificationGateway
@@ -26,7 +26,7 @@ class BirthdayNotificationHandler(
   textProvider: TextProvider,
   notificationGateway: NotificationGateway,
   wearPreferences: WearPreferences,
-  private val prefs: Prefs,
+  private val birthdayPreferences: BirthdayPreferences,
   wearNotification: WearNotification,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
   style: NotificationStyle,
@@ -75,7 +75,8 @@ class BirthdayNotificationHandler(
 
   override fun domainIcon(data: Birthday): Int = R.drawable.ic_fluent_food_cake
 
-  override fun defaultPriority(data: Birthday): Int = birthdayDataProvider.priority(prefs.birthdayPriority)
+  override fun defaultPriority(data: Birthday): Int =
+    birthdayDataProvider.priority(birthdayPreferences.birthdayPriority)
 
   override fun vibrationPattern(data: Birthday): LongArray? = birthdayDataProvider.getVibrationPattern()
 

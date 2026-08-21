@@ -16,6 +16,7 @@ dependencies {
   implementation(project(":data:repository-api"))
   implementation(project(":data:scheduler-api"))
   implementation(project(":ui:ui-common"))
+  implementation(project(":logic:logic-birthday"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-workflow"))
 
