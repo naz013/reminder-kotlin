@@ -1156,4 +1156,8 @@
 
     <string name="merge">Sloučit</string>
     <string name="notes_merge_selected_confirm">Sloučit %1$d poznámek do jedné? Původní poznámky budou smazány.</string>
+
+    <string name="in_app_notification_banner">Banner oznámení v aplikaci</string>
+    <string name="in_app_notification_banner_enabled">Zobrazit banner v aplikaci při spuštění oznámení o připomínce nebo narozeninách</string>
+    <string name="in_app_notification_banner_disabled">Zobrazit pouze systémové oznámení</string>
 </resources>

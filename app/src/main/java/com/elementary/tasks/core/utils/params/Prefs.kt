@@ -369,6 +369,10 @@ class Prefs(
     get() = getString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, def = "PRIVATE")
     set(value) = putString(PrefsConstants.DEFAULT_LOCK_SCREEN_VISIBILITY, value)
 
+  var isInAppAlertBannerEnabled: Boolean
+    get() = getBoolean(PrefsConstants.IN_APP_ALERT_BANNER, def = true)
+    set(value) = putBoolean(PrefsConstants.IN_APP_ALERT_BANNER, value)
+
   var calendarEventDuration: Int
     get() = getInt(PrefsConstants.EVENT_DURATION, 30)
     set(value) = putInt(PrefsConstants.EVENT_DURATION, value)

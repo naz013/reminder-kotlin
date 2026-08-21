@@ -114,7 +114,7 @@ class BirthdayActionProcessor(
           analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY))
           withContext(dispatcherProvider.main()) {
             handler.handle(birthday)
-            if (foregroundStateTracker.isForeground.value) {
+            if (foregroundStateTracker.isForeground.value && prefs.isInAppAlertBannerEnabled) {
               inAppAlertBus.show(buildInAppAlert(birthday))
             }
           }

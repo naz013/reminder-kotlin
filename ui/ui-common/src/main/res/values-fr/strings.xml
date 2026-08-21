@@ -1156,4 +1156,8 @@
 
     <string name="merge">Fusionner</string>
     <string name="notes_merge_selected_confirm">Fusionner %1$d notes en une seule ? Les notes d\'origine seront supprimées.</string>
+
+    <string name="in_app_notification_banner">Bannière de notification dans l\'application</string>
+    <string name="in_app_notification_banner_enabled">Afficher une bannière dans l\'application lorsqu\'une notification de rappel ou d\'anniversaire se déclenche</string>
+    <string name="in_app_notification_banner_disabled">Afficher uniquement la notification système</string>
 </resources>

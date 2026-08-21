@@ -1154,4 +1154,8 @@
 
     <string name="merge">Hợp nhất</string>
     <string name="notes_merge_selected_confirm">Hợp nhất %1$d ghi chú thành một? Các ghi chú gốc sẽ bị xóa.</string>
+
+    <string name="in_app_notification_banner">Biểu ngữ thông báo trong ứng dụng</string>
+    <string name="in_app_notification_banner_enabled">Hiển thị biểu ngữ trong ứng dụng khi có thông báo lời nhắc hoặc sinh nhật</string>
+    <string name="in_app_notification_banner_disabled">Chỉ hiển thị thông báo hệ thống</string>
 </resources>

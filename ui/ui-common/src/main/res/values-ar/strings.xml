@@ -1154,4 +1154,8 @@
 
     <string name="merge">دمج</string>
     <string name="notes_merge_selected_confirm">دمج %1$d ملاحظات في ملاحظة واحدة؟ سيتم حذف الملاحظات الأصلية.</string>
+
+    <string name="in_app_notification_banner">شريط إشعار داخل التطبيق</string>
+    <string name="in_app_notification_banner_enabled">إظهار شريط داخل التطبيق عند إطلاق إشعار تذكير أو عيد ميلاد</string>
+    <string name="in_app_notification_banner_disabled">إظهار إشعار النظام فقط</string>
 </resources>

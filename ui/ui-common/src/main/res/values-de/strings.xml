@@ -1156,4 +1156,8 @@
 
     <string name="merge">Zusammenführen</string>
     <string name="notes_merge_selected_confirm">%1$d Notizen zu einer zusammenführen? Die ursprünglichen Notizen werden gelöscht.</string>
+
+    <string name="in_app_notification_banner">In-App-Benachrichtigungsbanner</string>
+    <string name="in_app_notification_banner_enabled">Banner in der App anzeigen, wenn eine Erinnerungs- oder Geburtstagsbenachrichtigung ausgelöst wird</string>
+    <string name="in_app_notification_banner_disabled">Nur die Systembenachrichtigung anzeigen</string>
 </resources>

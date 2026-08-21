@@ -1156,4 +1156,8 @@
 
     <string name="merge">Mesclar</string>
     <string name="notes_merge_selected_confirm">Mesclar %1$d notas em uma só? As notas originais serão excluídas.</string>
+
+    <string name="in_app_notification_banner">Banner de notificação no aplicativo</string>
+    <string name="in_app_notification_banner_enabled">Mostrar um banner no aplicativo quando uma notificação de lembrete ou aniversário for disparada</string>
+    <string name="in_app_notification_banner_disabled">Mostrar apenas a notificação do sistema</string>
 </resources>

@@ -1154,4 +1154,8 @@
 
     <string name="merge">Slå sammen</string>
     <string name="notes_merge_selected_confirm">Slå sammen %1$d notater til én? De opprinnelige notatene blir slettet.</string>
+
+    <string name="in_app_notification_banner">Varslingsbanner i appen</string>
+    <string name="in_app_notification_banner_enabled">Vis et banner i appen når et påminnelses- eller bursdagsvarsel utløses</string>
+    <string name="in_app_notification_banner_disabled">Vis bare systemvarselet</string>
 </resources>

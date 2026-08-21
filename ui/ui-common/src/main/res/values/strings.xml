@@ -1158,4 +1158,8 @@
 
     <string name="merge">Merge</string>
     <string name="notes_merge_selected_confirm">Merge %1$d notes into one? The original notes will be deleted.</string>
+
+    <string name="in_app_notification_banner">In-app notification banner</string>
+    <string name="in_app_notification_banner_enabled">Show a banner in the app when a reminder or birthday notification fires</string>
+    <string name="in_app_notification_banner_disabled">Only show the system notification</string>
 </resources>

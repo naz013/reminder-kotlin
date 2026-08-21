@@ -1154,4 +1154,8 @@
 
     <string name="merge">Samenvoegen</string>
     <string name="notes_merge_selected_confirm">%1$d notities samenvoegen tot één? De oorspronkelijke notities worden verwijderd.</string>
+
+    <string name="in_app_notification_banner">In-app-meldingsbanner</string>
+    <string name="in_app_notification_banner_enabled">Toon een banner in de app wanneer een herinnering- of verjaardagsmelding afgaat</string>
+    <string name="in_app_notification_banner_disabled">Toon alleen de systeemmelding</string>
 </resources>

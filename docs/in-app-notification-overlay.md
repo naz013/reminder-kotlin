@@ -5,6 +5,12 @@ that mirrors a reminder/birthday system notification the moment it fires — so 
 the app can acknowledge/snooze/call without pulling down the notification shade. Implemented as
 described below; see `InAppAlertBus`/`InAppAlertViewModel`/`InAppAlertBanner` for the current code.
 
+Gated by a single preference, `Prefs.isInAppAlertBannerEnabled` (default on), surfaced as one toggle
+on the Reminders settings screen ("In-app notification banner") even though it governs both reminder
+and birthday banners — both `ReminderActionProcessor.process()` and `BirthdayActionProcessor.process()`
+check it alongside the existing foreground check before calling `InAppAlertBus.show(...)`. There is no
+separate toggle on Birthday settings; this is the one control for the whole feature.
+
 ## Feasibility verdict
 
 **Feasible, moderate effort, no new Gradle module needed.** The system-notification pipeline already

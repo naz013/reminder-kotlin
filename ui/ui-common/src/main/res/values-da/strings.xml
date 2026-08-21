@@ -1154,4 +1154,8 @@
 
     <string name="merge">Flet</string>
     <string name="notes_merge_selected_confirm">Flet %1$d noter til én? De oprindelige noter bliver slettet.</string>
+
+    <string name="in_app_notification_banner">Notifikationsbanner i appen</string>
+    <string name="in_app_notification_banner_enabled">Vis et banner i appen, når en påmindelse eller fødselsdagsnotifikation udløses</string>
+    <string name="in_app_notification_banner_disabled">Vis kun systemnotifikationen</string>
 </resources>

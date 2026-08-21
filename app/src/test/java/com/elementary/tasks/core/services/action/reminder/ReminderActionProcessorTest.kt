@@ -79,6 +79,7 @@ class ReminderActionProcessorTest : BaseTest() {
     every { contextProvider.context } returns context
 
     every { foregroundStateTracker.isForeground } returns MutableStateFlow(false)
+    every { prefs.isInAppAlertBannerEnabled } returns true
 
     processor = ReminderActionProcessor(
       dispatcherProvider = mockDispatcherProvider(),
@@ -159,6 +160,20 @@ class ReminderActionProcessorTest : BaseTest() {
       processor.process("1")
 
       verify(exactly = 1) { inAppAlertBus.show(any()) }
+    }
+
+  @Test
+  fun `process does not emit an in-app alert when the in-app banner setting is disabled`() =
+    runTest {
+      val settings = notificationSettings()
+      coEvery { resolveReminderV2NotificationSettingsUseCase(reminder) } returns settings
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+      every { foregroundStateTracker.isForeground } returns MutableStateFlow(true)
+      every { prefs.isInAppAlertBannerEnabled } returns false
+
+      processor.process("1")
+
+      verify(exactly = 0) { inAppAlertBus.show(any()) }
     }
 
   @Test

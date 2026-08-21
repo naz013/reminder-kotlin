@@ -1156,4 +1156,8 @@
 
     <string name="merge">Îmbină</string>
     <string name="notes_merge_selected_confirm">Îmbină %1$d notițe într-una singură? Notițele originale vor fi șterse.</string>
+
+    <string name="in_app_notification_banner">Banner de notificare în aplicație</string>
+    <string name="in_app_notification_banner_enabled">Afișează un banner în aplicație când se declanșează o notificare de memento sau zi de naștere</string>
+    <string name="in_app_notification_banner_disabled">Afișează doar notificarea de sistem</string>
 </resources>

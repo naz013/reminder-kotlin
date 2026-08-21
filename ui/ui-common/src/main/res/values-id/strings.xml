@@ -1154,4 +1154,8 @@
 
     <string name="merge">Gabungkan</string>
     <string name="notes_merge_selected_confirm">Gabungkan %1$d catatan menjadi satu? Catatan asli akan dihapus.</string>
+
+    <string name="in_app_notification_banner">Banner notifikasi dalam aplikasi</string>
+    <string name="in_app_notification_banner_enabled">Tampilkan banner di aplikasi saat notifikasi pengingat atau ulang tahun muncul</string>
+    <string name="in_app_notification_banner_disabled">Hanya tampilkan notifikasi sistem</string>
 </resources>

@@ -1154,4 +1154,8 @@
 
     <string name="merge">Slå ihop</string>
     <string name="notes_merge_selected_confirm">Slå ihop %1$d anteckningar till en? De ursprungliga anteckningarna raderas.</string>
+
+    <string name="in_app_notification_banner">Aviseringsbanner i appen</string>
+    <string name="in_app_notification_banner_enabled">Visa en banner i appen när en påminnelse- eller födelsedagsavisering utlöses</string>
+    <string name="in_app_notification_banner_disabled">Visa endast systemaviseringen</string>
 </resources>

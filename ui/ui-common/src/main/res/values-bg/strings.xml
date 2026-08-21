@@ -1157,4 +1157,8 @@
 
     <string name="merge">Обединяване</string>
     <string name="notes_merge_selected_confirm">Обединяване на %1$d бележки в една? Оригиналните бележки ще бъдат изтрити.</string>
+
+    <string name="in_app_notification_banner">Банер за известия в приложението</string>
+    <string name="in_app_notification_banner_enabled">Показвай банер в приложението, когато сработи известие за напомняне или рожден ден</string>
+    <string name="in_app_notification_banner_disabled">Показвай само системното известие</string>
 </resources>

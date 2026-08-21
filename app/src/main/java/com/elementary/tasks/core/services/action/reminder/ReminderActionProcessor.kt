@@ -95,7 +95,7 @@ class ReminderActionProcessor(
         Logger.d(TAG, "Processing reminder id=${reminder.uuId} with handler $handler")
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)
-          if (foregroundStateTracker.isForeground.value) {
+          if (foregroundStateTracker.isForeground.value && prefs.isInAppAlertBannerEnabled) {
             inAppAlertBus.show(buildInAppAlert(reminder))
           }
         }

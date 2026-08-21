@@ -1156,4 +1156,8 @@
 
     <string name="merge">Combinar</string>
     <string name="notes_merge_selected_confirm">¿Combinar %1$d notas en una sola? Las notas originales se eliminarán.</string>
+
+    <string name="in_app_notification_banner">Banner de notificación en la aplicación</string>
+    <string name="in_app_notification_banner_enabled">Mostrar un banner en la aplicación cuando se active una notificación de recordatorio o cumpleaños</string>
+    <string name="in_app_notification_banner_disabled">Mostrar solo la notificación del sistema</string>
 </resources>

@@ -1155,4 +1155,8 @@
 
     <string name="merge">Объединить</string>
     <string name="notes_merge_selected_confirm">Объединить %1$d заметок в одну? Исходные заметки будут удалены.</string>
+
+    <string name="in_app_notification_banner">Баннер уведомлений в приложении</string>
+    <string name="in_app_notification_banner_enabled">Показывать баннер в приложении при срабатывании уведомления о напоминании или дне рождения</string>
+    <string name="in_app_notification_banner_disabled">Показывать только системное уведомление</string>
 </resources>

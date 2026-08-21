@@ -1156,4 +1156,8 @@
 
     <string name="merge">Scal</string>
     <string name="notes_merge_selected_confirm">Scalić %1$d notatek w jedną? Oryginalne notatki zostaną usunięte.</string>
+
+    <string name="in_app_notification_banner">Baner powiadomień w aplikacji</string>
+    <string name="in_app_notification_banner_enabled">Pokaż baner w aplikacji, gdy pojawi się powiadomienie o przypomnieniu lub urodzinach</string>
+    <string name="in_app_notification_banner_disabled">Pokazuj tylko powiadomienie systemowe</string>
 </resources>

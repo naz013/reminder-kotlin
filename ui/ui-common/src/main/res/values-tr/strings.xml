@@ -1157,4 +1157,8 @@
 
     <string name="merge">Birleştir</string>
     <string name="notes_merge_selected_confirm">%1$d not tek bir notta birleştirilsin mi? Orijinal notlar silinecek.</string>
+
+    <string name="in_app_notification_banner">Uygulama içi bildirim afişi</string>
+    <string name="in_app_notification_banner_enabled">Bir hatırlatıcı veya doğum günü bildirimi tetiklendiğinde uygulama içinde bir afiş göster</string>
+    <string name="in_app_notification_banner_disabled">Yalnızca sistem bildirimini göster</string>
 </resources>

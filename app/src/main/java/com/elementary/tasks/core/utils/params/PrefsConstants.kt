@@ -113,6 +113,7 @@ object PrefsConstants {
   const val DEFAULT_WAKE_SCREEN = "default_wake_screen"
   const val DEFAULT_SWIPE_TO_DISMISS = "default_swipe_to_dismiss"
   const val DEFAULT_LOCK_SCREEN_VISIBILITY = "default_lock_screen_visibility"
+  const val IN_APP_ALERT_BANNER = "in_app_alert_banner"
 
   const val REMINDER_V2_BACKFILL_DONE = "reminder_v2_backfill_done"
   const val GROUP_V2_BACKFILL_DONE = "group_v2_backfill_done"

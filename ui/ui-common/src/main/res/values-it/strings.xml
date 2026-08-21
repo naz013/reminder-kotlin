@@ -1156,4 +1156,8 @@
 
     <string name="merge">Unisci</string>
     <string name="notes_merge_selected_confirm">Unire %1$d note in una sola? Le note originali verranno eliminate.</string>
+
+    <string name="in_app_notification_banner">Banner di notifica nell\'app</string>
+    <string name="in_app_notification_banner_enabled">Mostra un banner nell\'app quando viene attivata una notifica di promemoria o compleanno</string>
+    <string name="in_app_notification_banner_disabled">Mostra solo la notifica di sistema</string>
 </resources>

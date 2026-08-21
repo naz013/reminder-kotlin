@@ -248,6 +248,11 @@ class RemindersSettingsViewModel(
     refreshState()
   }
 
+  fun onInAppAlertBannerToggle() {
+    reminderPreferences.isInAppAlertBannerEnabled = !reminderPreferences.isInAppAlertBannerEnabled
+    refreshState()
+  }
+
   fun onDefaultCategoryClick() {
     showChoiceDialog(
       kind = ChoiceDialogKind.CATEGORY,
@@ -361,6 +366,7 @@ class RemindersSettingsViewModel(
       isDefaultBypassDoNotDisturbChecked = reminderPreferences.isDefaultBypassDoNotDisturbEnabled,
       isDefaultWakeScreenChecked = reminderPreferences.isDefaultWakeScreenEnabled,
       isDefaultSwipeToDismissChecked = reminderPreferences.isDefaultSwipeToDismissEnabled,
+      isInAppAlertBannerChecked = reminderPreferences.isInAppAlertBannerEnabled,
       defaultCategoryName = categoryOptions()[
         categoryValues().indexOf(reminderPreferences.defaultNotificationCategory).coerceAtLeast(0)
       ],

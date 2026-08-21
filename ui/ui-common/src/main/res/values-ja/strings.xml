@@ -1156,4 +1156,8 @@
 
     <string name="merge">結合</string>
     <string name="notes_merge_selected_confirm">%1$d件のメモを1つに結合しますか?元のメモは削除されます。</string>
+
+    <string name="in_app_notification_banner">アプリ内通知バナー</string>
+    <string name="in_app_notification_banner_enabled">リマインダーや誕生日の通知が届いたときにアプリ内にバナーを表示する</string>
+    <string name="in_app_notification_banner_disabled">システム通知のみを表示する</string>
 </resources>

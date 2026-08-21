@@ -1158,4 +1158,8 @@
 
     <string name="merge">मर्ज करें</string>
     <string name="notes_merge_selected_confirm">%1$d नोट्स को एक में मर्ज करें? मूल नोट्स हटा दिए जाएंगे।</string>
+
+    <string name="in_app_notification_banner">ऐप में सूचना बैनर</string>
+    <string name="in_app_notification_banner_enabled">रिमाइंडर या जन्मदिन की सूचना आने पर ऐप में एक बैनर दिखाएं</string>
+    <string name="in_app_notification_banner_disabled">केवल सिस्टम सूचना दिखाएं</string>
 </resources>
