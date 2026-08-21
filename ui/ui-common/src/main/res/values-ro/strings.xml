@@ -1153,4 +1153,7 @@
 
     <string name="buy_me_a_coffee">Oferă-mi o cafea</string>
     <string name="buy_me_a_coffee_subtitle">Susține dezvoltarea aplicației</string>
+
+    <string name="merge">Îmbină</string>
+    <string name="notes_merge_selected_confirm">Îmbină %1$d notițe într-una singură? Notițele originale vor fi șterse.</string>
 </resources>

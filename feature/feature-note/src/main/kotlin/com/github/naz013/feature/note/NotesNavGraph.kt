@@ -132,6 +132,15 @@ private fun handleNotesNavigationEvent(
       )
     }
 
+    is NotesViewModel.NavigationEvent.ConfirmMergeSelected -> {
+      handlers.dialogDispatcher.showDialog(
+        title = event.title,
+        positiveButtonRes = R.string.yes,
+        negativeButtonRes = R.string.cancel,
+        onPositive = { handlers.viewModel.mergeSelectedNotes(event.ids) }
+      )
+    }
+
     is NotesViewModel.NavigationEvent.Error -> {
       handlers.toastDispatcher.showToast(message = event.message)
     }
@@ -184,6 +193,7 @@ private fun NotesListEntry(
     onSelectionCancel = viewModel::onSelectionCancel,
     onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
     onArchiveSelectedClick = viewModel::onArchiveSelectedClick,
+    onMergeSelectedClick = viewModel::onMergeSelectedClick,
     onChangeColorClick = {
       colorPickerDialogDispatcher.showDialog(
         titleRes = R.string.acc_select_color,
@@ -237,6 +247,7 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
     onSelectionCancel = viewModel::onSelectionCancel,
     onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
     onArchiveSelectedClick = viewModel::onArchiveSelectedClick,
+    onMergeSelectedClick = viewModel::onMergeSelectedClick,
     onChangeColorClick = {
       colorPickerDialogDispatcher.showDialog(
         titleRes = R.string.acc_select_color,

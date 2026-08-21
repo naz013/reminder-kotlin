@@ -1151,4 +1151,7 @@
 
     <string name="buy_me_a_coffee">Bjud mig på kaffe</string>
     <string name="buy_me_a_coffee_subtitle">Stöd appens utveckling</string>
+
+    <string name="merge">Slå ihop</string>
+    <string name="notes_merge_selected_confirm">Slå ihop %1$d anteckningar till en? De ursprungliga anteckningarna raderas.</string>
 </resources>

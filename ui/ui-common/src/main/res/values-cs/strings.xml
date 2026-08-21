@@ -1153,4 +1153,7 @@
 
     <string name="buy_me_a_coffee">Kup mi kávu</string>
     <string name="buy_me_a_coffee_subtitle">Podpořte vývoj aplikace</string>
+
+    <string name="merge">Sloučit</string>
+    <string name="notes_merge_selected_confirm">Sloučit %1$d poznámek do jedné? Původní poznámky budou smazány.</string>
 </resources>

@@ -1153,4 +1153,7 @@
 
     <string name="buy_me_a_coffee">Spendier mir einen Kaffee</string>
     <string name="buy_me_a_coffee_subtitle">Unterstütze die Entwicklung der App</string>
+
+    <string name="merge">Zusammenführen</string>
+    <string name="notes_merge_selected_confirm">%1$d Notizen zu einer zusammenführen? Die ursprünglichen Notizen werden gelöscht.</string>
 </resources>
