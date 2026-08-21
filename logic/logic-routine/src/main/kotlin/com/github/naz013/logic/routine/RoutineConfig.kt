@@ -1,6 +1,5 @@
 package com.github.naz013.logic.routine
 
-object RoutineConfig {
+interface RoutineConfig {
   val isEnabled: Boolean
-    get() = false
 }

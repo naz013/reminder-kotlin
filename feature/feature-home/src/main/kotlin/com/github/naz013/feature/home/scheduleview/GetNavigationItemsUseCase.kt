@@ -1,11 +1,11 @@
 package com.github.naz013.feature.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.logic.routine.RoutineConfig
 import com.github.naz013.logic.workflow.WorkflowConfig
-import com.github.naz013.datecalc.DateTimeManager
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
@@ -28,6 +28,7 @@ class GetNavigationItemsUseCase(
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val routineRepository: RoutineRepository,
   private val dateTimeManager: DateTimeManager,
+  private val routineConfig: RoutineConfig,
 ) {
   suspend operator fun invoke(
     scope: CoroutineScope,
@@ -38,7 +39,7 @@ class GetNavigationItemsUseCase(
     add(getNoteItem(scope = scope))
     add(getGoogleTasksItem(scope = scope))
     add(getGroupItem(scope = scope))
-    if (RoutineConfig.isEnabled) {
+    if (routineConfig.isEnabled) {
       add(getRoutineItem(scope = scope))
     }
     if (WorkflowConfig.isEnabled) {

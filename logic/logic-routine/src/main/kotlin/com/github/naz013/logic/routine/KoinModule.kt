@@ -18,4 +18,6 @@ val logicRoutineModule = module {
   factoryOf(::ResetRoutineStepsUseCase)
   factoryOf(::RoutineRecurrenceResetUseCase)
   factoryOf(::RecordRoutineExecutionUseCase)
+
+  factory { RoutineConfigImpl(get()) as RoutineConfig }
 }
