@@ -176,7 +176,6 @@ internal class OtherSettingsViewModel(
   companion object {
     private const val TAG = "OtherSettingsViewModel"
 
-    // TODO: replace with the real Buy Me a Coffee handle before enabling FeatureFlag.BUY_ME_A_COFFEE
-    private const val SUPPORT_URL = "https://buymeacoffee.com/TODO_SET_HANDLE"
+    private const val SUPPORT_URL = "https://buymeacoffee.com/nsystudio"
   }
 }
