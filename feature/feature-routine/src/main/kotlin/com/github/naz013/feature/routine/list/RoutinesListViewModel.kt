@@ -21,6 +21,7 @@ import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.routine.UiRoutineListItem
+import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -70,9 +71,16 @@ internal class RoutinesListViewModel(
         sortOrder,
       ) { routines, query, tagId, order -> RoutinesQuery(routines, query, tagId, order) }
         .flatMapLatest { flow { emit(loadRoutines(it.routines, it.query, it.tagId, it.order)) } }
-        .collect { items ->
+        .collect { result ->
           _state.update {
-            it.copy(listState = if (items.isEmpty()) RoutinesListDisplayState.Empty else RoutinesListDisplayState.Ready(items))
+            it.copy(
+              listState = if (result.items.isEmpty()) {
+                RoutinesListDisplayState.Empty
+              } else {
+                RoutinesListDisplayState.Ready(result.items)
+              },
+              tagsByRoutineId = result.tagsByRoutineId,
+            )
           }
         }
     }
@@ -85,12 +93,17 @@ internal class RoutinesListViewModel(
     val order: RoutineSortOrder,
   )
 
+  private data class RoutinesLoadResult(
+    val items: List<UiRoutineListItem>,
+    val tagsByRoutineId: Map<String, List<TagChipState>>,
+  )
+
   private suspend fun loadRoutines(
     allRoutines: List<Routine>,
     query: String,
     tagId: String?,
     order: RoutineSortOrder,
-  ): List<UiRoutineListItem> = withContext(dispatcherProvider.io()) {
+  ): RoutinesLoadResult = withContext(dispatcherProvider.io()) {
     val resetRoutines = allRoutines.map { routineRecurrenceResetUseCase(it) }
 
     val tagFiltered = if (tagId == null) {
@@ -118,7 +131,14 @@ internal class RoutinesListViewModel(
       )
     )
 
-    sorted.map { toUiRoutineListItem(it) }
+    // One getTagsForItem call per visible routine - TagAssignmentRepository has no batch lookup
+    // and routine lists are realistically small, so N+1 here is an acceptable trade for simplicity.
+    val tagsByRoutineId = sorted.associate { routine ->
+      routine.id to tagAssignmentRepository.getTagsForItem(routine.id, TaggedItemType.ROUTINE)
+        .map { tagChipStateAdapter(it) }
+    }
+
+    RoutinesLoadResult(sorted.map { toUiRoutineListItem(it) }, tagsByRoutineId)
   }
 
   private fun toUiRoutineListItem(routine: Routine): UiRoutineListItem {

@@ -1,6 +1,7 @@
 package com.github.naz013.feature.routine.preview
 
 import androidx.compose.ui.graphics.Color
+import com.github.naz013.ui.tag.TagChipState
 
 internal data class RoutinePreviewStepUiState(
   val id: String,
@@ -23,6 +24,7 @@ internal sealed interface RoutinePreviewState {
     val durationLabel: String,
     val stepCountLabel: String,
     val recurrenceLabel: String,
+    val tags: List<TagChipState>,
     val steps: List<RoutinePreviewStepUiState>,
   ) : RoutinePreviewState
 }

@@ -14,6 +14,7 @@ internal data class RoutinesListState(
   val allTags: List<TagChipState> = emptyList(),
   val selectedTagId: String? = null,
   val sortOrder: RoutineSortOrder = RoutineSortOrder.CREATION_DATE,
+  val tagsByRoutineId: Map<String, List<TagChipState>> = emptyMap(),
 )
 
 internal sealed interface RoutinesListDisplayState {

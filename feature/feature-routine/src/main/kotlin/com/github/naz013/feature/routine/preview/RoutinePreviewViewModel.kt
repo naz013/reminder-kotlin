@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -20,8 +22,11 @@ import com.github.naz013.logic.routine.usecase.RoutineRecurrenceResetUseCase
 import com.github.naz013.logic.routine.usecase.SaveRoutineUseCase
 import com.github.naz013.logic.routine.usecase.ToggleRoutinePinUseCase
 import com.github.naz013.repository.RoutineRepository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -39,11 +44,15 @@ internal class RoutinePreviewViewModel(
   private val routineDurationCalculator: RoutineDurationCalculator,
   private val themeProvider: ThemeProvider,
   private val textProvider: TextProvider,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<RoutinePreviewState>(RoutinePreviewState.Loading)
   val state = _state.stateInWhileSubscribed(RoutinePreviewState.Loading)
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
+
+  private var tags: List<TagChipState> = emptyList()
 
   init {
     load()
@@ -55,6 +64,7 @@ internal class RoutinePreviewViewModel(
         Logger.w(TAG, "Routine not found, id: $id")
         return@launch
       }
+      tags = tagAssignmentRepository.getTagsForItem(id, TaggedItemType.ROUTINE).map { tagChipStateAdapter(it) }
       withContext(dispatcherProvider.main()) {
         _state.update { routine.toReadyState() }
       }
@@ -73,7 +83,8 @@ internal class RoutinePreviewViewModel(
       isPinned = isPinned,
       durationLabel = routineDurationCalculator.formatDuration(totalDurationSeconds),
       stepCountLabel = textProvider.getString(R.string.routine_step_count, steps.size),
-      recurrenceLabel = textProvider.getString(if (recurrence != null) R.string.repeat_daily else R.string.routine_on_demand),
+      recurrenceLabel = recurrenceLabel(),
+      tags = tags,
       steps = sortedSteps.map {
         RoutinePreviewStepUiState(
           id = it.id,
@@ -84,6 +95,17 @@ internal class RoutinePreviewViewModel(
         )
       },
     )
+  }
+
+  private fun Routine.recurrenceLabel(): String = when (val rule = recurrence) {
+    null -> textProvider.getString(R.string.routine_on_demand)
+    is RecurrenceRule.Daily -> textProvider.getString(R.string.repeat_daily)
+    is RecurrenceRule.Weekly -> textProvider.getString(
+      R.string.repeat_weekly_days,
+      rule.weekdays.sorted().joinToString(", ") { textProvider.getString(WEEKDAY_LABEL_RES[it]) },
+    )
+    is RecurrenceRule.Monthly -> textProvider.getString(R.string.repeat_monthly_day, rule.dayOfMonth)
+    else -> textProvider.getString(R.string.repeat_daily)
   }
 
   fun onStepCheckToggle(stepId: String) {
@@ -138,5 +160,10 @@ internal class RoutinePreviewViewModel(
     private const val TAG = "RoutinePreviewViewModel"
     private const val CONTRAST_LUMINANCE_THRESHOLD = 0.5f
     private val DEFAULT_COLOR = Color(0xFF86E3CE)
+
+    /** 0=Sunday..6=Saturday, matching the app-wide weekday convention. */
+    private val WEEKDAY_LABEL_RES = listOf(
+      R.string.sun, R.string.mon, R.string.tue, R.string.wed, R.string.thu, R.string.fri, R.string.sat,
+    )
   }
 }

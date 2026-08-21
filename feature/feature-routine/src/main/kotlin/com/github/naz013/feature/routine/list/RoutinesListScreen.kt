@@ -34,6 +34,7 @@ import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.routine.RoutineCard
+import com.github.naz013.ui.tag.TagChipRow
 import com.github.naz013.ui.tag.TagFilterRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,12 +106,13 @@ internal fun RoutinesListScreen(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
           ) {
             items(listState.routines, key = { it.id }) { routine ->
+              val tags = state.tagsByRoutineId[routine.id].orEmpty()
               RoutineCard(
                 routine = routine,
                 startButtonLabel = stringResource(R.string.start_routine),
                 onClick = { onRoutineClick(routine.id) },
                 onStartClick = { onStartClick(routine.id) },
-                tagsContent = null,
+                tagsContent = if (tags.isEmpty()) null else ({ TagChipRow(tags = tags) }),
                 modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
               )
             }

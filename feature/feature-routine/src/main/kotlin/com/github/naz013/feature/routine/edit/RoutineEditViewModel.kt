@@ -83,9 +83,9 @@ internal class RoutineEditViewModel(
             colorPosition = routine.color,
             isPinned = routine.isPinned,
             steps = steps,
-            repeatsDaily = routine.recurrence != null,
+            recurrenceOption = routine.recurrence.toRecurrenceOption(),
             canDelete = true,
-            canSave = canSave(routine.title, steps),
+            canSave = canSave(routine.title, steps, routine.recurrence.toRecurrenceOption()),
           )
         }
       }
@@ -106,7 +106,7 @@ internal class RoutineEditViewModel(
   }
 
   fun onTitleChange(title: String) {
-    _state.update { it.copy(title = title, canSave = canSave(title, it.steps)) }
+    _state.update { it.copy(title = title, canSave = canSave(title, it.steps, it.recurrenceOption)) }
   }
 
   fun onDescriptionChange(description: String) {
@@ -121,8 +121,8 @@ internal class RoutineEditViewModel(
     _state.update { it.copy(isPinned = !it.isPinned) }
   }
 
-  fun onRepeatsDailyChange(repeatsDaily: Boolean) {
-    _state.update { it.copy(repeatsDaily = repeatsDaily) }
+  fun onRecurrenceOptionChange(option: RoutineRecurrenceOption) {
+    _state.update { it.copy(recurrenceOption = option, canSave = canSave(it.title, it.steps, option)) }
   }
 
   fun onAddStepClick() {
@@ -134,7 +134,7 @@ internal class RoutineEditViewModel(
     )
     _state.update {
       val steps = it.steps + newStep
-      it.copy(steps = steps, canSave = canSave(it.title, steps))
+      it.copy(steps = steps, canSave = canSave(it.title, steps, it.recurrenceOption))
     }
   }
 
@@ -154,7 +154,7 @@ internal class RoutineEditViewModel(
   fun onRemoveStepClick(stepId: String) {
     _state.update {
       val steps = it.steps.filterNot { step -> step.id == stepId }
-      it.copy(steps = steps, canSave = canSave(it.title, steps))
+      it.copy(steps = steps, canSave = canSave(it.title, steps, it.recurrenceOption))
     }
   }
 
@@ -199,7 +199,7 @@ internal class RoutineEditViewModel(
   fun onSaveClick() {
     val stateValue = _state.value
     val title = stateValue.title.trim()
-    if (!canSave(title, stateValue.steps)) {
+    if (!canSave(title, stateValue.steps, stateValue.recurrenceOption)) {
       _state.update { it.copy(canSave = false) }
       return
     }
@@ -215,7 +215,7 @@ internal class RoutineEditViewModel(
           order = index,
         )
       }
-      val recurrence = if (stateValue.repeatsDaily) RecurrenceRule.Daily() else null
+      val recurrence = stateValue.recurrenceOption.toRecurrenceRule()
       // "The recurrence period starts after you save" - a fresh cycle only opens the moment
       // recurrence goes from off to on (new routine, or turning it on during an edit); resaving
       // an already-recurring routine must not reset lastResetAt and silently drop the user's
@@ -243,8 +243,14 @@ internal class RoutineEditViewModel(
     }
   }
 
-  private fun canSave(title: String, steps: List<RoutineStepUiState>): Boolean =
-    title.isNotBlank() && steps.isNotEmpty()
+  private fun canSave(
+    title: String,
+    steps: List<RoutineStepUiState>,
+    recurrenceOption: RoutineRecurrenceOption,
+  ): Boolean {
+    val recurrenceIsValid = recurrenceOption !is RoutineRecurrenceOption.Weekly || recurrenceOption.weekdays.isNotEmpty()
+    return title.isNotBlank() && steps.isNotEmpty() && recurrenceIsValid
+  }
 
   fun onDeleteClick() {
     val routineId = id ?: return
@@ -273,3 +279,21 @@ private fun RoutineStep.toUiState(): RoutineStepUiState = RoutineStepUiState(
   durationSeconds = durationSeconds,
   scheduledTime = scheduledTime,
 )
+
+/** Routines only ever save None/Daily/Weekly/Monthly (see [RoutineRecurrenceOption.toRecurrenceRule]),
+ * so any other [RecurrenceRule] variant found on load falls back to [RoutineRecurrenceOption.None] -
+ * defensive, not expected to be hit in practice. */
+private fun RecurrenceRule?.toRecurrenceOption(): RoutineRecurrenceOption = when (this) {
+  null -> RoutineRecurrenceOption.None
+  is RecurrenceRule.Daily -> RoutineRecurrenceOption.Daily
+  is RecurrenceRule.Weekly -> RoutineRecurrenceOption.Weekly(weekdays.toSet())
+  is RecurrenceRule.Monthly -> RoutineRecurrenceOption.Monthly(dayOfMonth)
+  else -> RoutineRecurrenceOption.None
+}
+
+private fun RoutineRecurrenceOption.toRecurrenceRule(): RecurrenceRule? = when (this) {
+  RoutineRecurrenceOption.None -> null
+  RoutineRecurrenceOption.Daily -> RecurrenceRule.Daily()
+  is RoutineRecurrenceOption.Weekly -> RecurrenceRule.Weekly(weekdays = weekdays.sorted())
+  is RoutineRecurrenceOption.Monthly -> RecurrenceRule.Monthly(dayOfMonth = dayOfMonth)
+}

@@ -20,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -42,6 +41,19 @@ import com.github.naz013.ui.tag.TagChipState
 import org.threeten.bp.LocalTime
 
 private val DURATION_PRESETS_SECONDS = listOf(0, 300, 600, 900, 1800)
+private const val MIN_DAY_OF_MONTH = 1
+private const val MAX_DAY_OF_MONTH = 28
+
+/** 0=Sunday..6=Saturday, matching the app-wide weekday convention (see [com.github.naz013.domain.reminder.v2.RecurrenceRule.RelativeMonthly]'s kdoc). */
+private val WEEKDAY_LABELS = listOf(
+  0 to R.string.sun,
+  1 to R.string.mon,
+  2 to R.string.tue,
+  3 to R.string.wed,
+  4 to R.string.thu,
+  5 to R.string.fri,
+  6 to R.string.sat,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +64,7 @@ internal fun RoutineEditScreen(
   onDescriptionChange: (String) -> Unit,
   onColorSelected: (Int) -> Unit,
   onPinToggleClick: () -> Unit,
-  onRepeatsDailyChange: (Boolean) -> Unit,
+  onRecurrenceOptionChange: (RoutineRecurrenceOption) -> Unit,
   onAddStepClick: () -> Unit,
   onStepTitleChange: (stepId: String, title: String) -> Unit,
   onStepDurationSelected: (stepId: String, durationSeconds: Int) -> Unit,
@@ -161,13 +173,11 @@ internal fun RoutineEditScreen(
       }
 
       SectionHeader(stringResource(R.string.repeat))
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
+      RecurrenceOptionPicker(
+        option = state.recurrenceOption,
+        onOptionChange = onRecurrenceOptionChange,
         modifier = Modifier.fillMaxWidth(),
-      ) {
-        Text(text = stringResource(R.string.repeat_daily), modifier = Modifier.weight(1f))
-        Switch(checked = state.repeatsDaily, onCheckedChange = onRepeatsDailyChange)
-      }
+      )
 
       SectionHeader(stringResource(R.string.tags))
       TagChipPicker(
@@ -177,6 +187,119 @@ internal fun RoutineEditScreen(
         onManageTagsClick = onManageTagsClick,
         modifier = Modifier.fillMaxWidth(),
       )
+    }
+  }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun RecurrenceOptionPicker(
+  option: RoutineRecurrenceOption,
+  onOptionChange: (RoutineRecurrenceOption) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Column(modifier = modifier) {
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+      FilterChip(
+        selected = option is RoutineRecurrenceOption.None,
+        onClick = { onOptionChange(RoutineRecurrenceOption.None) },
+        label = { Text(stringResource(R.string.repeat_none)) },
+      )
+      FilterChip(
+        selected = option is RoutineRecurrenceOption.Daily,
+        onClick = { onOptionChange(RoutineRecurrenceOption.Daily) },
+        label = { Text(stringResource(R.string.repeat_daily)) },
+      )
+      FilterChip(
+        selected = option is RoutineRecurrenceOption.Weekly,
+        onClick = { onOptionChange(RoutineRecurrenceOption.Weekly()) },
+        label = { Text(stringResource(R.string.repeat_weekly)) },
+      )
+      FilterChip(
+        selected = option is RoutineRecurrenceOption.Monthly,
+        onClick = { onOptionChange(RoutineRecurrenceOption.Monthly()) },
+        label = { Text(stringResource(R.string.repeat_monthly)) },
+      )
+    }
+    when (option) {
+      is RoutineRecurrenceOption.Weekly -> {
+        WeekdaySelector(
+          selectedWeekdays = option.weekdays,
+          onToggle = { day ->
+            val updated = if (day in option.weekdays) option.weekdays - day else option.weekdays + day
+            onOptionChange(option.copy(weekdays = updated))
+          },
+          modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        )
+        if (option.weekdays.isEmpty()) {
+          Text(
+            text = stringResource(R.string.repeat_weekdays_required),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(top = 4.dp),
+          )
+        }
+      }
+
+      is RoutineRecurrenceOption.Monthly -> {
+        DayOfMonthStepper(
+          dayOfMonth = option.dayOfMonth,
+          onDayChange = { onOptionChange(option.copy(dayOfMonth = it)) },
+          modifier = Modifier.padding(top = 8.dp),
+        )
+      }
+
+      else -> Unit
+    }
+  }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun WeekdaySelector(
+  selectedWeekdays: Set<Int>,
+  onToggle: (Int) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  FlowRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    WEEKDAY_LABELS.forEach { (day, labelRes) ->
+      FilterChip(
+        selected = day in selectedWeekdays,
+        onClick = { onToggle(day) },
+        label = { Text(stringResource(labelRes)) },
+      )
+    }
+  }
+}
+
+@Composable
+private fun DayOfMonthStepper(
+  dayOfMonth: Int,
+  onDayChange: (Int) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
+    Text(text = stringResource(R.string.day_of_month), modifier = Modifier.weight(1f))
+    IconButton(
+      onClick = { onDayChange((dayOfMonth - 1).coerceAtLeast(MIN_DAY_OF_MONTH)) },
+      enabled = dayOfMonth > MIN_DAY_OF_MONTH,
+    ) {
+      Icon(
+        AppIcons.Builder.ChevronDown,
+        contentDescription = stringResource(R.string.decrease_day_of_month),
+        modifier = Modifier.graphicsLayer { rotationZ = 180f },
+      )
+    }
+    Text(
+      text = dayOfMonth.toString(),
+      style = MaterialTheme.typography.titleMedium,
+      modifier = Modifier.padding(horizontal = 8.dp),
+    )
+    IconButton(
+      onClick = { onDayChange((dayOfMonth + 1).coerceAtMost(MAX_DAY_OF_MONTH)) },
+      enabled = dayOfMonth < MAX_DAY_OF_MONTH,
+    ) {
+      Icon(AppIcons.Builder.ChevronDown, contentDescription = stringResource(R.string.increase_day_of_month))
     }
   }
 }

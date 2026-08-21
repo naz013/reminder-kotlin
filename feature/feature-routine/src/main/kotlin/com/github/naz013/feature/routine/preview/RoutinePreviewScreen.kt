@@ -36,6 +36,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.tag.TagChipRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,6 +127,9 @@ private fun RoutineBanner(state: RoutinePreviewState.Ready) {
         Text(text = state.durationLabel, color = state.contentColor, style = MaterialTheme.typography.labelLarge)
         Text(text = state.stepCountLabel, color = state.contentColor, style = MaterialTheme.typography.labelLarge)
         Text(text = state.recurrenceLabel, color = state.contentColor, style = MaterialTheme.typography.labelLarge)
+      }
+      if (state.tags.isNotEmpty()) {
+        TagChipRow(tags = state.tags, modifier = Modifier.padding(top = 12.dp))
       }
     }
   }

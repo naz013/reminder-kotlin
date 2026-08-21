@@ -134,7 +134,7 @@ class RoutineEditViewModelTest : BaseTest() {
 
     viewModel.onTitleChange("Morning routine")
     viewModel.onAddStepClick()
-    viewModel.onRepeatsDailyChange(true)
+    viewModel.onRecurrenceOptionChange(RoutineRecurrenceOption.Daily)
     viewModel.onSaveClick()
 
     coVerify(exactly = 1) {
@@ -191,8 +191,8 @@ class RoutineEditViewModelTest : BaseTest() {
     coEvery { routineRepository.getById("id-2") } returns existing
 
     val viewModel = createViewModel(id = "id-2")
-    assertTrue(viewModel.state.first().repeatsDaily)
-    viewModel.onRepeatsDailyChange(false)
+    assertEquals(RoutineRecurrenceOption.Daily, viewModel.state.first().recurrenceOption)
+    viewModel.onRecurrenceOptionChange(RoutineRecurrenceOption.None)
     viewModel.onSaveClick()
 
     coVerify(exactly = 1) { saveRoutineUseCase(match { it.recurrence == null && it.lastResetAt == null }) }
@@ -212,10 +212,70 @@ class RoutineEditViewModelTest : BaseTest() {
     coEvery { routineRepository.getById("id-3") } returns existing
 
     val viewModel = createViewModel(id = "id-3")
-    viewModel.onRepeatsDailyChange(true)
+    viewModel.onRecurrenceOptionChange(RoutineRecurrenceOption.Daily)
     viewModel.onSaveClick()
 
     coVerify(exactly = 1) { saveRoutineUseCase(match { it.recurrence != null && it.lastResetAt == now }) }
+  }
+
+  @Test
+  fun `weekly recurrence with no weekdays selected cannot be saved`() = runTest {
+    val viewModel = createViewModel()
+
+    viewModel.onTitleChange("Morning routine")
+    viewModel.onAddStepClick()
+    viewModel.onRecurrenceOptionChange(RoutineRecurrenceOption.Weekly())
+
+    assertFalse(viewModel.state.first().canSave)
+    viewModel.onSaveClick()
+    coVerify(exactly = 0) { saveRoutineUseCase(any()) }
+  }
+
+  @Test
+  fun `weekly recurrence saves the selected weekdays`() = runTest {
+    val viewModel = createViewModel()
+
+    viewModel.onTitleChange("Morning routine")
+    viewModel.onAddStepClick()
+    viewModel.onRecurrenceOptionChange(RoutineRecurrenceOption.Weekly(weekdays = setOf(1, 3, 5)))
+    assertTrue(viewModel.state.first().canSave)
+    viewModel.onSaveClick()
+
+    coVerify(exactly = 1) {
+      saveRoutineUseCase(match { it.recurrence == RecurrenceRule.Weekly(weekdays = listOf(1, 3, 5)) })
+    }
+  }
+
+  @Test
+  fun `monthly recurrence saves the selected day of month`() = runTest {
+    val viewModel = createViewModel()
+
+    viewModel.onTitleChange("Morning routine")
+    viewModel.onAddStepClick()
+    viewModel.onRecurrenceOptionChange(RoutineRecurrenceOption.Monthly(dayOfMonth = 15))
+    viewModel.onSaveClick()
+
+    coVerify(exactly = 1) {
+      saveRoutineUseCase(match { it.recurrence == RecurrenceRule.Monthly(dayOfMonth = 15) })
+    }
+  }
+
+  @Test
+  fun `load maps a persisted weekly recurrence back into the weekly option`() = runTest {
+    val existing = Routine(
+      id = "id-5",
+      title = "Gym",
+      steps = listOf(RoutineStep(id = "s1", title = "Warm up")),
+      recurrence = RecurrenceRule.Weekly(weekdays = listOf(2, 4)),
+      lastResetAt = now,
+      createdAt = now,
+      updatedAt = now,
+    )
+    coEvery { routineRepository.getById("id-5") } returns existing
+
+    val viewModel = createViewModel(id = "id-5")
+
+    assertEquals(RoutineRecurrenceOption.Weekly(weekdays = setOf(2, 4)), viewModel.state.first().recurrenceOption)
   }
 
   @Test

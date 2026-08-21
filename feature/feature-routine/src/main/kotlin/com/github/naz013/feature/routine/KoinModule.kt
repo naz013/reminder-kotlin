@@ -15,6 +15,6 @@ val routineModule = module {
   }
 
   viewModel { (id: String) ->
-    RoutinePreviewViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+    RoutinePreviewViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
   }
 }

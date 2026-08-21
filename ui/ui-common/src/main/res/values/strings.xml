@@ -1178,4 +1178,12 @@
     <string name="buy_me_a_coffee_subtitle">Support the app\'s development</string>
 
     <string name="routine_steps_required">Add at least one step</string>
+    <string name="repeat_none">Never</string>
+    <string name="repeat_weekly">Repeats weekly</string>
+    <string name="repeat_monthly">Repeats monthly</string>
+    <string name="repeat_weekly_days">Weekly: %1$s</string>
+    <string name="repeat_monthly_day">Monthly on day %1$d</string>
+    <string name="repeat_weekdays_required">Select at least one day</string>
+    <string name="decrease_day_of_month">Decrease day of month</string>
+    <string name="increase_day_of_month">Increase day of month</string>
 </resources>
