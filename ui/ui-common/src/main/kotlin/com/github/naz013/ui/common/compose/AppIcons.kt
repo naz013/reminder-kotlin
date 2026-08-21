@@ -7,6 +7,9 @@ import com.github.naz013.ui.common.icon.DrawableCatalog
 
 object AppIcons {
 
+  val RocketWhatsNew: Painter @Composable get() = painterResource(DrawableCatalog.RocketWhatsNew)
+  val Moon: Painter @Composable get() = painterResource(DrawableCatalog.Moon)
+
   object Fluent {
     val Add: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Add)
     val Alert: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Alert)
@@ -128,6 +131,8 @@ object AppIcons {
     val ReOrderDots: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.ReOrderDots)
     val Pin: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Pin)
     val PinOff: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.PinOff)
+    val DrinkCoffee: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.DrinkCoffee)
+    val Extension: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Extension)
   }
 
   object Builder {
