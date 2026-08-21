@@ -1150,4 +1150,7 @@
     <string name="pin">Anheften</string>
     <string name="unpin">Lösen</string>
     <string name="pinned">Angeheftet</string>
+
+    <string name="buy_me_a_coffee">Spendier mir einen Kaffee</string>
+    <string name="buy_me_a_coffee_subtitle">Unterstütze die Entwicklung der App</string>
 </resources>

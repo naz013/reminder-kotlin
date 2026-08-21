@@ -13,4 +13,5 @@ enum class FeatureFlag(
   GEOCODING("feature_geocoding"),
   LOGS_IN_REVIEWS("feature_logs_in_reviews", false),
   PUBLIC_HOLIDAYS("feature_public_holidays", false),
+  BUY_ME_A_COFFEE("feature_buy_me_a_coffee", false),
 }

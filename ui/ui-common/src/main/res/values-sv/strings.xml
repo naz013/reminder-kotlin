@@ -1148,4 +1148,7 @@
     <string name="pin">Fäst</string>
     <string name="unpin">Lossa</string>
     <string name="pinned">Fäst</string>
+
+    <string name="buy_me_a_coffee">Bjud mig på kaffe</string>
+    <string name="buy_me_a_coffee_subtitle">Stöd appens utveckling</string>
 </resources>

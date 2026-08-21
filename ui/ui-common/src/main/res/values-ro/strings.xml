@@ -1150,4 +1150,7 @@
     <string name="pin">Fixează</string>
     <string name="unpin">Anulează fixarea</string>
     <string name="pinned">Fixat</string>
+
+    <string name="buy_me_a_coffee">Oferă-mi o cafea</string>
+    <string name="buy_me_a_coffee_subtitle">Susține dezvoltarea aplicației</string>
 </resources>

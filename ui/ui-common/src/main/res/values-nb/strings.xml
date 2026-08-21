@@ -1148,4 +1148,7 @@
     <string name="pin">Fest</string>
     <string name="unpin">Løsne</string>
     <string name="pinned">Festet</string>
+
+    <string name="buy_me_a_coffee">Spander en kaffe på meg</string>
+    <string name="buy_me_a_coffee_subtitle">Støtt utviklingen av appen</string>
 </resources>

@@ -5,6 +5,7 @@ internal data class OtherSettingsState(
   val permissionItems: List<PermissionItem> = emptyList(),
   val isGeminiFunctionsVisible: Boolean = false,
   val isGeminiFunctionsLocked: Boolean = false,
+  val isBuyMeACoffeeVisible: Boolean = false,
 )
 
 internal data class AboutDialogState(

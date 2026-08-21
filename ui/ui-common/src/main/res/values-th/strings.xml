@@ -1148,4 +1148,7 @@
     <string name="pin">ปักหมุด</string>
     <string name="unpin">เลิกปักหมุด</string>
     <string name="pinned">ปักหมุดแล้ว</string>
+
+    <string name="buy_me_a_coffee">เลี้ยงกาแฟฉันสักแก้ว</string>
+    <string name="buy_me_a_coffee_subtitle">สนับสนุนการพัฒนาแอป</string>
 </resources>
