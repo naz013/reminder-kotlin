@@ -15,7 +15,7 @@ DI wiring, not business logic. Four real gaps remain, ranked by blast radius.
 | # | Gap | Where it lives today | Priority | Effort |
 |---|---|---|---|---|
 | 1 | Alarm/notification-action pipeline never extracted | Done — `logic:logic-notification-action` | ~~High — blocks reuse entirely~~ | ~~Large~~ |
-| 2 | Preferences storage is a monolithic app-only engine | `app/.../core/utils/params/Prefs.kt` + `app/.../module/*Impl.kt` (~20 classes) | Medium — duplicated, not blocked | Medium |
+| 2 | Preferences storage is a monolithic app-only engine | Engine: done, `core:preferences`. Shared default impls: not started | ~~Medium~~ | ~~Medium~~ |
 | 3 | Notification-building mechanics entangled with branding | `app/.../core/utils/Notifier.kt` | Medium | Small |
 | 4 | Cloud provider credentials are app-specific | `app/.../core/cloud/*Impl.kt` | Not a gap — a checklist | N/A |
 
@@ -115,22 +115,30 @@ app must write an equivalent from scratch and re-author all ~20 impl classes —
 that work is boilerplate delegation to typed key-value storage, and several of these preferences
 (theme, locale, auth, font) likely don't need to differ between two apps from the same team at all.
 
-### Implementation plan
+### Status: engine extraction done
 
-1. **Extract a generic typed-preferences engine into a new `core:preferences` module** — a small
-   `TypedPrefs` wrapper (string/bool/int/enum delegates over `SharedPreferences` or
-   `androidx.datastore`) with no knowledge of reminder-specific keys. `Prefs.kt`'s actual key
-   constants (`PrefsConstants.kt`) and defaults stay app-specific; the delegate mechanism moves out.
-2. **Identify which `*PreferencesImpl` classes are actually brand-specific vs. shareable.**
-   `ThemePreferencesImpl`, `LocalePreferencesImpl`, `AuthPreferencesImpl`, `FontApiImpl` (all in
-   `app/.../module/uicommon/`) look like they'd be identical for a second app built by the same team —
-   candidates to become default implementations shipped from `ui-common` itself (or a new small
-   module) rather than re-authored per app. Preferences that encode actual product behavior
-   (`ReminderPreferencesImpl`, `GoogleTasksPreferencesImpl`) stay app-authored since a second app may
-   want different defaults/toggles.
-3. **Don't move `RemotePrefs.kt`** — it's tied to Firebase Remote Config message plumbing
-   (`InternalMessageV1`, `SaleMessageV2`, `UpdateMessageV2`), which is inherently app/campaign-specific
-   and correctly stays in `app`.
+Once `SharedPrefs.kt` was actually read, the fix was smaller than planned: it was already a clean
+generic typed-storage engine (`getBoolean`/`putBoolean`/`getInt`/`putInt`/`getString`/`putString`/
+`getLong`/`putLong`/`getLongArray`/`putStringArray`/`putObject`, all over one `SharedPreferences`
+instance) — `Prefs` just extended it locally and added the ~100 reminder-specific properties on top.
+The only thing making it app-only was living in `app`'s package and `SharedPrefs`'s constructor
+reaching into `PrefsConstants.PREFS_NAME` directly. So this shipped as a near-verbatim move: the
+class moved unchanged into a new [`core:preferences`](../core/preferences) module (`SharedPrefs`,
+same public API), with the constructor decoupled to take the prefs file name as a plain `String`
+parameter instead of reading `PrefsConstants` — so the engine has zero knowledge of any app's key
+list. `app`'s `Prefs` now extends `SharedPrefs(context, PrefsConstants.PREFS_NAME)` from the new
+module; `PrefsConstants.kt` and all ~100 property definitions stay in `app` unchanged, since those
+key names *are* the app-specific part. `RemotePrefs.kt` was confirmed to not even extend
+`SharedPrefs` (it composes `Prefs` and talks to Firebase Remote Config directly) — correctly stays in
+`app` untouched.
+
+**Not done — a separate, more opinionated follow-up:** identifying which `*PreferencesImpl` classes
+(`ThemePreferencesImpl`, `LocalePreferencesImpl`, `AuthPreferencesImpl`, `FontApiImpl` — all in
+`app/.../module/uicommon/`, all under 30 lines) could become shared default implementations shipped
+from `ui-common` instead of re-authored per app. This wasn't attempted here because it's a product
+judgment call (does a second app actually want identical theme/locale/auth/font behavior?), not a
+mechanical extraction — the four candidate files are small enough that whoever builds the second app
+can decide this in an afternoon once they exist to compare against.
 
 ---
 
@@ -195,8 +203,8 @@ instead of growing with every new feature extraction.
 
 1. ~~**Gap 1** (alarm/action pipeline)~~ — done, both reminder- and birthday-side
    (`logic:logic-notification-action`).
-2. **Gap 2** (preferences engine + shared defaults for theme/locale/auth/font) — removes most of the
-   ~20-class rewrite cost for a second app.
+2. ~~**Gap 2** (preferences engine)~~ — done (`core:preferences`). Shared default impls for
+   theme/locale/auth/font remain a judgment call for whoever builds the second app.
 3. **Stand up a second `app`-like Gradle module** depending on the same `feature-*`/`logic-*`/`data-*`
    set, supplying its own `BuildInfo`, cloud credentials, and resources. This is the real validation
    step — it will surface any seam gaps this document missed.

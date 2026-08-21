@@ -1,15 +1,22 @@
-package com.elementary.tasks.core.utils.params
+package com.github.naz013.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 
+/**
+ * Generic typed key-value storage over one [SharedPreferences] file, extracted out of `app` so a
+ * second app can reuse the storage mechanics without depending on `app`'s specific key/property
+ * list. `prefsName` is the caller's own `SharedPreferences` file name - this class has no
+ * knowledge of which app or which keys are being stored.
+ */
 abstract class SharedPrefs(
   protected val context: Context,
+  prefsName: String,
 ) {
   private var prefs: SharedPreferences =
     context.getSharedPreferences(
-      PrefsConstants.PREFS_NAME,
+      prefsName,
       Context.MODE_PRIVATE,
     )
 

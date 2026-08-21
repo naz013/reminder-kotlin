@@ -35,6 +35,7 @@ include(":core:analytics")
 include(":core:date-calculations")
 include(":core:platform-common")
 include(":core:platform-api")
+include(":core:preferences")
 include(":core:testing")
 
 // data - persistence, cloud, sync, and thin platform-contract api modules

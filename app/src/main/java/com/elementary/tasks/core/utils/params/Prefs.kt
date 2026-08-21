@@ -3,18 +3,19 @@ package com.elementary.tasks.core.utils.params
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
-import com.github.naz013.feature.reminder.util.LED
 import com.elementary.tasks.core.utils.SuperUtil
-import com.github.naz013.ui.map.MapConfig
 import com.github.naz013.domain.font.FontParams
+import com.github.naz013.feature.reminder.util.LED
 import com.github.naz013.logic.schedule.WorkerNetworkType
+import com.github.naz013.preferences.SharedPrefs
+import com.github.naz013.ui.map.MapConfig
 import java.util.Locale
 
 typealias PrefsObserver = (String) -> Unit
 
 class Prefs(
   context: Context,
-) : SharedPrefs(context) {
+) : SharedPrefs(context, PrefsConstants.PREFS_NAME) {
   private val observersMap = mutableMapOf<String, List<PrefsObserver>>()
 
   fun addObserver(

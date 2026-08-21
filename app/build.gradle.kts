@@ -212,6 +212,7 @@ dependencies {
   implementation(project(":core:date-calculations"))
   implementation(project(":core:logging"))
   implementation(project(":core:analytics"))
+  implementation(project(":core:preferences"))
   implementation(project(":data:repository"))
   implementation(project(":data:cloud"))
   implementation(project(":data:work"))
