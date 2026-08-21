@@ -7,6 +7,7 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagRepository
 
 internal class DataTypeRepositoryCallerFactory(
@@ -16,7 +17,8 @@ internal class DataTypeRepositoryCallerFactory(
   private val recurPresetRepository: RecurPresetRepository,
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
-  private val tagRepository: TagRepository
+  private val tagRepository: TagRepository,
+  private val routineRepository: RoutineRepository
 ) {
 
   fun getCaller(dataType: DataType): DataTypeRepositoryCaller<*> {
@@ -33,10 +35,7 @@ internal class DataTypeRepositoryCallerFactory(
       DataType.SharedNote -> NoopRepositoryCaller()
       DataType.Tags -> TagRepositoryCaller(tagRepository)
       DataType.TagAssignments -> NoopRepositoryCaller()
-      // TODO: replace with a real RoutineRepositoryCaller once Routine cloud sync (RoutineJson
-      //  DTO + DataConverterImpl wiring) lands - logic-routine's use cases already schedule
-      //  Upload/Delete work for this DataType so the sync worker doesn't crash on an unhandled case.
-      DataType.Routines -> NoopRepositoryCaller()
+      DataType.Routines -> RoutineRepositoryCaller(routineRepository)
     }
   }
 }

@@ -11,6 +11,8 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.RoutineExecutionRepository
+import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import java.io.InputStream
@@ -26,6 +28,8 @@ internal class LocalBackupApiImpl(
   private val recurPresetRepository: RecurPresetRepository,
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
+  private val routineRepository: RoutineRepository,
+  private val routineExecutionRepository: RoutineExecutionRepository,
   private val archiveWriter: BackupArchiveWriter,
   private val archiveReader: BackupArchiveReader
 ) : LocalBackupApi {
@@ -39,7 +43,9 @@ internal class LocalBackupApiImpl(
         places = placeRepository.getAll(),
         presets = recurPresetRepository.getAll(),
         tags = tagRepository.getAll(),
-        tagAssignments = tagAssignmentRepository.getAll()
+        tagAssignments = tagAssignmentRepository.getAll(),
+        routines = routineRepository.getAll(),
+        routineExecutions = routineExecutionRepository.getAll()
       )
 
       val salt = PassphraseKeyDerivation.generateSalt()
@@ -74,6 +80,8 @@ internal class LocalBackupApiImpl(
       // A restore is "make local state match this snapshot exactly," same reasoning as the
       // cloud-download apply path - replace, not a per-row merge.
       tagAssignmentRepository.replaceAll(envelope.tagAssignments)
+      envelope.routines.forEach { routineRepository.save(it) }
+      envelope.routineExecutions.forEach { routineExecutionRepository.save(it) }
 
       Logger.i(TAG, "Imported local backup: ${envelope.summary()}")
       ImportSummary(
@@ -83,7 +91,9 @@ internal class LocalBackupApiImpl(
         placesImported = envelope.places.size,
         presetsImported = envelope.presets.size,
         tagsImported = envelope.tags.size,
-        tagAssignmentsImported = envelope.tagAssignments.size
+        tagAssignmentsImported = envelope.tagAssignments.size,
+        routinesImported = envelope.routines.size,
+        routineExecutionsImported = envelope.routineExecutions.size
       )
     }
     Arrays.fill(passphrase, '0')
@@ -99,7 +109,8 @@ internal class LocalBackupApiImpl(
   private fun BackupEnvelope.summary(): String =
     "reminders=${reminders.size}, groups=${groups.size}, birthdays=${birthdays.size}, " +
       "places=${places.size}, presets=${presets.size}, tags=${tags.size}, " +
-      "tagAssignments=${tagAssignments.size}"
+      "tagAssignments=${tagAssignments.size}, routines=${routines.size}, " +
+      "routineExecutions=${routineExecutions.size}"
 
   private fun Throwable.isWrongPassphrase(): Boolean {
     var current: Throwable? = this
