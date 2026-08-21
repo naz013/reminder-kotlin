@@ -1148,4 +1148,7 @@
     <string name="pin">Ghim</string>
     <string name="unpin">Bỏ ghim</string>
     <string name="pinned">Đã ghim</string>
+
+    <string name="buy_me_a_coffee">Mời tôi một ly cà phê</string>
+    <string name="buy_me_a_coffee_subtitle">Ủng hộ sự phát triển của ứng dụng</string>
 </resources>

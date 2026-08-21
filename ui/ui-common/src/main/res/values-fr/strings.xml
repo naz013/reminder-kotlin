@@ -1150,4 +1150,7 @@
     <string name="pin">Épingler</string>
     <string name="unpin">Désépingler</string>
     <string name="pinned">Épinglé</string>
+
+    <string name="buy_me_a_coffee">Offrez-moi un café</string>
+    <string name="buy_me_a_coffee_subtitle">Soutenez le développement de l\'application</string>
 </resources>

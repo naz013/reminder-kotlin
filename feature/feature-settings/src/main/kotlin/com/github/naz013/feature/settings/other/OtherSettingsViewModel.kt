@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.ContextProvider
@@ -75,6 +76,11 @@ internal class OtherSettingsViewModel(
     analyticsEventSender.send(FeatureGateTappedEvent(Feature.GEMINI_FUNCTIONS))
   }
 
+  fun onBuyMeACoffeeClicked() {
+    analyticsEventSender.send(FeatureUsedEvent(Feature.BUY_ME_A_COFFEE))
+    event.emit(ViewModelEvent.OpenUrl(SUPPORT_URL))
+  }
+
   fun onShowPermissionDialogClicked() {
     _state.update {
       it.copy(
@@ -119,6 +125,7 @@ internal class OtherSettingsViewModel(
         permissionItems = loadPermissionItems(),
         isGeminiFunctionsVisible = systemInfo.is16,
         isGeminiFunctionsLocked = !buildInfo.isPro,
+        isBuyMeACoffeeVisible = featureFlags.isEnabled(FeatureFlag.BUY_ME_A_COFFEE),
       )
     }
   }
@@ -163,9 +170,13 @@ internal class OtherSettingsViewModel(
       val intent: Intent,
       val title: String
     ) : ViewModelEvent
+    data class OpenUrl(val url: String) : ViewModelEvent
   }
 
   companion object {
     private const val TAG = "OtherSettingsViewModel"
+
+    // TODO: replace with the real Ko-fi handle before enabling FeatureFlag.BUY_ME_A_COFFEE
+    private const val SUPPORT_URL = "https://ko-fi.com/TODO_SET_KOFI_HANDLE"
   }
 }

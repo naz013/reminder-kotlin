@@ -32,6 +32,7 @@ internal fun OtherSettingsScreen(
   onAboutClick: () -> Unit,
   onAboutDialogDismiss: () -> Unit,
   onGeminiFunctionsClick: () -> Unit,
+  onBuyMeACoffeeClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
@@ -90,6 +91,15 @@ internal fun OtherSettingsScreen(
         locked = state.isGeminiFunctionsLocked,
         dividerBottom = true,
         onClick = onGeminiFunctionsClick,
+      )
+    }
+    if (state.isBuyMeACoffeeVisible) {
+      SettingsItem(
+        title = stringResource(R.string.buy_me_a_coffee),
+        subtitle = stringResource(R.string.buy_me_a_coffee_subtitle),
+        icon = painterResource(R.drawable.ic_fluent_heart),
+        dividerBottom = true,
+        onClick = onBuyMeACoffeeClick,
       )
     }
     SettingsItem(

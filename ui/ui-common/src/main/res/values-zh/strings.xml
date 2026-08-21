@@ -1151,4 +1151,7 @@
     <string name="pin">置顶</string>
     <string name="unpin">取消置顶</string>
     <string name="pinned">已置顶</string>
+
+    <string name="buy_me_a_coffee">请我喝杯咖啡</string>
+    <string name="buy_me_a_coffee_subtitle">支持应用的开发</string>
 </resources>

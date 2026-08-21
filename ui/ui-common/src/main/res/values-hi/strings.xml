@@ -1152,4 +1152,7 @@
     <string name="pin">पिन करें</string>
     <string name="unpin">अनपिन करें</string>
     <string name="pinned">पिन किया गया</string>
+
+    <string name="buy_me_a_coffee">मुझे एक कॉफ़ी पिलाएं</string>
+    <string name="buy_me_a_coffee_subtitle">ऐप के विकास में सहयोग करें</string>
 </resources>

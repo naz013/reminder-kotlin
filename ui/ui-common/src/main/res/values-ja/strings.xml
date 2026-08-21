@@ -1150,4 +1150,7 @@
     <string name="pin">ピン留め</string>
     <string name="unpin">ピン留め解除</string>
     <string name="pinned">ピン留め済み</string>
+
+    <string name="buy_me_a_coffee">コーヒーをおごる</string>
+    <string name="buy_me_a_coffee_subtitle">アプリの開発をサポートする</string>
 </resources>

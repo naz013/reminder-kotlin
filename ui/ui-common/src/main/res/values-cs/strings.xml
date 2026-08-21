@@ -1150,4 +1150,7 @@
     <string name="pin">Připnout</string>
     <string name="unpin">Odepnout</string>
     <string name="pinned">Připnuto</string>
+
+    <string name="buy_me_a_coffee">Kup mi kávu</string>
+    <string name="buy_me_a_coffee_subtitle">Podpořte vývoj aplikace</string>
 </resources>

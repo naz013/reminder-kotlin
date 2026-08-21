@@ -1149,4 +1149,7 @@
     <string name="pin">Закрепить</string>
     <string name="unpin">Открепить</string>
     <string name="pinned">Закреплено</string>
+
+    <string name="buy_me_a_coffee">Угостить кофе</string>
+    <string name="buy_me_a_coffee_subtitle">Поддержите развитие приложения</string>
 </resources>

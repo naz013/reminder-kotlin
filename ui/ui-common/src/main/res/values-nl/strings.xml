@@ -1148,4 +1148,7 @@
     <string name="pin">Vastzetten</string>
     <string name="unpin">Losmaken</string>
     <string name="pinned">Vastgezet</string>
+
+    <string name="buy_me_a_coffee">Trakteer me op een kopje koffie</string>
+    <string name="buy_me_a_coffee_subtitle">Steun de ontwikkeling van de app</string>
 </resources>

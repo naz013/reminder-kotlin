@@ -4,6 +4,7 @@ import android.content.Intent
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
+import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
@@ -148,6 +149,25 @@ class OtherSettingsViewModelTest : BaseTest() {
     viewModel.onGeminiFunctionsLockedClick()
 
     verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.GEMINI_FUNCTIONS)) }
+  }
+
+  @Test
+  fun `isBuyMeACoffeeVisible follows the feature flag`() =
+    runTest {
+      every { featureFlags.isEnabled(FeatureFlag.BUY_ME_A_COFFEE) } returns true
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.isBuyMeACoffeeVisible)
+    }
+
+  @Test
+  fun `onBuyMeACoffeeClicked sends a feature used analytics event and opens the support url`() {
+    viewModel.onBuyMeACoffeeClicked()
+
+    verify { analyticsEventSender.send(FeatureUsedEvent(Feature.BUY_ME_A_COFFEE)) }
+    val event = viewModel.event.value?.peekContent() as OtherSettingsViewModel.ViewModelEvent.OpenUrl
+    assertTrue(event.url.isNotBlank())
   }
 
   @Test

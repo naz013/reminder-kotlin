@@ -20,6 +20,7 @@ import com.github.naz013.feature.settings.other.whatsnew.WhatsNewState
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewViewModel
 import com.github.naz013.feature.settings.proversion.rememberGooglePlayMarketLauncher
 import com.github.naz013.ui.common.compose.foundation.intent.rememberSendIntentResolver
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberUrlLauncher
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
@@ -56,6 +57,7 @@ private fun OtherEntry(
   val listDialogDispatcher = rememberListDialogDispatcher()
   val permissionRequester = rememberPermissionRequesterRationale()
   val sendIntentResolver = rememberSendIntentResolver()
+  val urlLauncher = rememberUrlLauncher()
 
   val state by viewModel.state.collectAsState(OtherSettingsState())
 
@@ -90,6 +92,10 @@ private fun OtherEntry(
       is OtherSettingsViewModel.ViewModelEvent.ShareApp -> {
         sendIntentResolver.resolve(event.intent, event.title)
       }
+
+      is OtherSettingsViewModel.ViewModelEvent.OpenUrl -> {
+        urlLauncher.launch(event.url)
+      }
     }
   }
 
@@ -114,6 +120,7 @@ private fun OtherEntry(
           backStack.add(OtherNavKey.GeminiFunctions)
         }
       },
+      onBuyMeACoffeeClick = { viewModel.onBuyMeACoffeeClicked() },
       onPermissionsClick = { backStack.add(OtherNavKey.Permissions) },
       onAllowPermissionClick = { viewModel.onShowPermissionDialogClicked() },
       onOssClick = { backStack.add(OtherNavKey.Oss) },

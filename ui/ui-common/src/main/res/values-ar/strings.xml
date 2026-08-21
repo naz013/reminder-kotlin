@@ -1148,4 +1148,7 @@
     <string name="pin">تثبيت</string>
     <string name="unpin">إلغاء التثبيت</string>
     <string name="pinned">مثبَّت</string>
+
+    <string name="buy_me_a_coffee">اشترِ لي قهوة</string>
+    <string name="buy_me_a_coffee_subtitle">ادعم تطوير التطبيق</string>
 </resources>
