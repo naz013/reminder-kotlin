@@ -8,12 +8,12 @@ This document presents the complete research analysis, architectural design, and
 A **Routine** is a structured, sequenced habit/workflow composed of ordered, time-boxed steps (e.g., *Morning Routine*, *Workout Circuit*, *Evening Shutdown*, *Daily Planning*) that can be executed either **on-demand** or on a **recurring schedule** (daily, weekly, custom interval).
 
 Key specifications:
-1. **Strict UI Component & Design System Adherence**: Reuses established Material 3 Expressive tokens, `ui:ui-common` top bars, search bars, dialogs, `ui:ui-tag` pickers/filter rows, and `ui:ui-note` color engine (`NoteColorEngine.allColors()`).
+1. **Strict UI Component & Design System Adherence**: Reuses established Material 3 Expressive tokens, `ui:ui-common` top bars, search bars, dialogs, `ui:ui-tag` pickers/filter rows, and `ui:ui-common`'s `ColorSlider`/`ThemeProvider.colorsForSliderThemed()` (the same solid-color-picker pair `feature-group`'s `EditGroupScreen` already uses for `GroupV2.color` — see §4.5 for why this replaced the originally-planned `NoteColorEngine.allColors()`).
 2. **First-Class Domain Model**: Modeled as a dedicated `Routine` entity in `core:domain`, completely decoupled from `ReminderV2`.
 3. **Step-Level Scheduled Times & Durations**: `RoutineStep` owns `scheduledTime: String?` (e.g., `"07:30"`) and `durationSeconds: Int` (e.g. `300` for 5 min). Steps are automatically sorted chronologically by `scheduledTime`.
 4. **Auto-Resetting Cycles**: When scheduled as a recurring routine, all steps are automatically reset (`isCompleted = false`) within the new recurrence period.
 5. **Granular Execution Tracking**: `RoutineExecutionRecord` stores `completedStepIds: List<String>` (the specific UUIDs of completed steps) instead of a plain count, allowing precise step drop-off analytics.
-6. **Solid Color Theming (Note Palette)**: Routines support custom color selection reusing the Note palette (`NoteColorEngine.allColors()`), rendered as solid colored cards without opacity.
+6. **Solid Color Theming**: Routines support custom color selection via `ui-common`'s `ColorSlider` (the same solid, no-opacity picker `GroupV2.color` already uses), rendered as solid colored cards.
 7. **Tags Integration (`TaggedItemType.ROUTINE`)**: Full support for cross-cutting tags with `TagChipPicker` in the editor and instant tag filtering in the list screen.
 8. **Pinning Support**: Pinned routines appear at the top of the list, mirroring the Reminder and Note pin behavior.
 9. **Home Screen Navigation Tile**: A new "Routines" header tile in `ChronologicalHomeScreen` navigating directly to the library.
@@ -130,7 +130,7 @@ Following the project's multi-module architecture guidelines (`docs/architecture
 package com.github.naz013.domain.routine
 
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
-import com.github.naz013.domain.sync.SyncMetadata
+import com.github.naz013.domain.reminder.v2.SyncMetadata
 import org.threeten.bp.LocalDateTime
 import java.util.UUID
 
@@ -144,7 +144,7 @@ data class Routine(
   val steps: List<RoutineStep> = emptyList(),
   val autoAdvance: Boolean = true,
   val soundAlertsEnabled: Boolean = true,
-  val recurrence: RecurrenceRule? = null, // e.g., Daily, Weekdays, or null (on-demand)
+  val recurrence: RecurrenceRule? = null, // existing RecurrenceRule variants: Daily, Weekly (weekday selection), etc., or null (on-demand)
   val reminderId: String? = null,         // Linked ReminderV2 for scheduled notifications
   val lastResetAt: LocalDateTime? = null, // Recurrence reset marker
   val createdAt: LocalDateTime,
@@ -216,8 +216,9 @@ enum class TaggedItemType {
    - `RoutineRepository`: `getAll()`, `getById(id)`, `save(routine)`, `delete(id)`, `setPinned(id, isPinned)`, `observeAll(): Flow<List<Routine>>`.
    - `RoutineExecutionRepository`: `save(record)`, `getByRoutineId(id)`, `getByDateRange(from, to)`, `getAll()`.
 2. **Room Database Entities & DAOs**:
-   - `RoutineEntity`: Primary key `id`, `isPinned`, `color`, embedded schedule columns, Gson `@TypeConverters` for `List<RoutineStep>` and `RecurrenceRule`.
+   - `RoutineEntity`: Primary key `id`, `isPinned`, `color`, embedded schedule columns, Gson `@TypeConverters` for `List<RoutineStep>`. `RecurrenceRule` is **not** stored via a bare `@TypeConverters` Gson converter — it is a sealed class, and `RecurrenceRule.kt`'s own doc comment warns that R8 can strip/rename unprotected fields during Gson round-tripping (this already caused a production crash for `ReminderV2`). Instead, follow the precedent in `ReminderV2Mapper.kt`: split into a `recurrenceType` discriminator column plus a `recurrencePayload` JSON blob column, with an explicit `RoutineMapper.toColumns()`/`toRecurrenceRule()` pair and a documented fallback (e.g. to `null`/on-demand) on unparseable payloads.
    - `RoutineExecutionEntity`: Primary key `id`, index on `routineId` and `executedAt`, `@TypeConverters(ListStringTypeConverter::class)` for `completedStepIds`.
+   - `RoutineMapper.kt`: dedicated entity↔domain mapper (mirrors `ReminderV2Mapper.kt`/`GroupV2Mapper.kt`/`TagMapper.kt`), required because `Routine` carries polymorphic (`RecurrenceRule`) and list (`List<RoutineStep>`) fields that need explicit column mapping, not just a generated Room converter.
 3. **Database Migration (`Migration32To33`)**:
    - Adds tables `Routine` and `RoutineExecution` to `AppDb`.
    - Updates `AppDb.version` from `32` to `33`.
@@ -256,7 +257,7 @@ enum class TaggedItemType {
 3. **`SaveRoutineUseCase`**:
    - Validates routine steps, title, color, and pin state.
    - Manages tag associations via `TagAssignmentRepository`.
-   - If `recurrence != null`, sets up/updates linked `ReminderV2` trigger via `ReminderScheduleBridge` so notifications fire accurately.
+   - If `recurrence != null`, sets up/updates linked `ReminderV2` trigger via `RoutineScheduleBridge` so notifications fire accurately.
 4. **`DeleteRoutineUseCase`**:
    - Deletes routine, associated tag assignments, linked reminder trigger, and execution logs.
 5. **`ToggleRoutinePinUseCase`**:
@@ -268,10 +269,10 @@ enum class TaggedItemType {
 
 ### 4.5 UI & Presentation Layer (`ui:ui-routine` & `feature:feature-routine`)
 
-#### 1. Reusable Building Blocks (`ui:ui-routine`)
-- **`RoutineCard`**: Material 3 card using solid color from Note palette (`NoteColorEngine.allColors()`). Shows title, description, step count, total duration badge (`[⏱ 25 min]`), tag chips, step time schedule pill (e.g., `07:30 - 08:45`), pin icon, and direct "Start" CTA.
-- **`CircularStepTimer`**: Animated Material 3 circular countdown indicator with play/pause pulse animations, elapsed time display, and remaining progress track.
-- **`RoutineColorPicker`**: Row of solid color circles reusing `NoteColorEngine.allColors()`, without opacity slider.
+#### 1. Reusable Building Blocks (`ui:ui-routine`) — IMPLEMENTED
+- **`RoutineCard`**: Material 3 card rendered with a caller-supplied solid `backgroundColor`/`contentColor` pair (via `UiRoutineListItem`) — shows title, description, step-count/duration/schedule badges, an optional caller-supplied `tagsContent` slot, pin icon, and a "Start" CTA. Takes no `Routine`/`RoutineStep`/tag domain types directly and depends only on `ui-common` (`docs/architecture.md`'s `ui-*` dependency rule forbids a sibling `ui-*` → `ui-*` edge), so `feature-routine` renders `ui-tag`'s `TagChipRow` through the slot instead of `ui-routine` depending on `ui-tag`.
+- **`CircularStepTimer`**: M3 determinate `CircularProgressIndicator` (remaining-fraction ring, drains as the step's time elapses) with the remaining time centered inside it.
+- **`RoutineColorPicker`**: **Superseded the `NoteColorEngine.allColors()` plan.** `NoteColorEngine` is a Koin-injected class (needs `ThemeProvider`+`NotePreferences`) whose "remember last color" state is Note-specific, and depending on it would have created the first-ever `ui-*` → `ui-*` dependency edge in the codebase (`ui-routine` → `ui-note`) — none currently exists (`docs/architecture.md`'s `ui-<feature>` allowed-dependency list is `domain`/`logging-api`/`ui-common`/`platform-*` only). `feature-group`'s `EditGroupScreen` already solves the identical problem for `GroupV2.color` (also solid, no opacity) by wrapping `ui-common`'s existing `ColorSlider` — `RoutineColorPicker` is that same "surfaceContainer card + label + `ColorSlider`" shell, extracted into `ui-routine` and fed whatever `List<Color>` the caller supplies (e.g. `ThemeProvider.colorsForSliderThemed()`), with no new module dependency.
 
 #### 2. Feature Screens & Navigation (`feature:feature-routine`)
 - **`RoutinesListScreen`**:
@@ -290,7 +291,7 @@ enum class TaggedItemType {
     - Duration selector pills: `None`, `5m`, `10m`, `15m`, `Custom`.
     - Scheduled time picker button (`⏱ 07:30` / `No time`) per step.
     - Drag handles for reordering untimed steps.
-  - Recurrence Section (Recurrence rule selector: Daily, Weekdays, Monthly, etc.).
+  - Recurrence Section (Recurrence rule selector over existing `RecurrenceRule` variants: Daily, Weekly (with weekday selection), Monthly, etc.).
   - Tags Section: `TagChipPicker` with `onTagToggle` and `onManageTagsClick`.
   - Auto-advance & sound chimes toggle switches.
 - **`RoutinePreviewScreen`**:
@@ -328,6 +329,15 @@ enum class TaggedItemType {
    - Analyzes `completedStepIds` across runs to determine which steps are most consistently completed vs frequently skipped.
 3. **`InsightsScreen`**:
    - Surfaces **Routine Habit Streaks**, **Focus Time Trends**, and **Step Completion Consistency** cards on the PRO Insights dashboard.
+
+---
+
+## 4.8 Open Questions & Follow-ups
+
+1. ~~**`NoteColorEngine` reuse**~~ — RESOLVED: see §4.5. `RoutineColorPicker` uses `ui-common`'s `ColorSlider` (the same building block `GroupV2.color` already uses), fed by a caller-supplied `List<Color>` (e.g. `ThemeProvider.colorsForSliderThemed()`). No `NoteColorEngine` dependency, no new `ui-*` → `ui-*` edge, and no accidental sharing of Note's "remembered last color" preference state.
+2. **Free vs. PRO gating of base Routines**: Insights integration is explicitly PRO-gated, but whether `feature-routine` itself (create/edit/run) is free, PRO-only, or free-with-limits is undecided and should be settled before implementation of the editor/list screens.
+3. **Notifications for step scheduled times**: should each timed step schedule its own notification, or only the routine's first step / linked `ReminderV2` trigger?
+4. **Duration/color-contrast resolution**: `RoutineCard`'s `UiRoutineListItem` takes pre-formatted `durationLabel`/`stepCountLabel`/`scheduleRangeLabel` strings and a pre-resolved `contentColor` — `ui-routine` can't depend on `logic-routine` (for `RoutineDurationCalculator`) or compute color contrast itself without its own palette engine, so `feature-routine`'s ViewModel/mapper (Component 6) owns both, using `RoutineDurationCalculator` and (for contrast) Compose's built-in `Color.luminance()`.
 
 ---
 
@@ -370,7 +380,7 @@ Following `docs/e2e-testing.md`, the following 22 test cases will be implemented
 | **E16** | `focusRunner_skipStep_advancesWithoutCompletion` | Tap "Skip Step"; verify runner moves to next step without marking the skipped step as completed. | Tier B | P1 |
 | **E17** | `focusRunner_plusOneMinute_extendsTimer` | Tap "+1 Min" button during active timer; verify countdown timer extends by 60 seconds. | Tier B | P1 |
 | **E18** | `focusRunner_completion_recordsCompletedStepIds` | Complete routine with 1 step skipped; verify celebration dialog appears and `RoutineExecutionRecord` contains only the 2 completed step UUIDs. | Tier B | P0 |
-| **E19** | `routineRecurrence_newCycle_autoResetsSteps` | Complete a daily routine today; advance simulated clock (`FakeDateTimeManager`) to tomorrow; verify all steps are fresh and unchecked while execution logs remain intact. | Tier B | P0 |
+| **E19** | `routineRecurrence_newCycle_autoResetsSteps` | Complete a daily routine today; advance simulated clock (`FakeNowDateTimeProvider`) to tomorrow; verify all steps are fresh and unchecked while execution logs remain intact. | Tier B | P0 |
 | **E20** | `insights_routineStreaks_updatesConsecutiveDays` | Complete routines across multiple days; open PRO Insights; verify `UiStreak` shows incremented current streak and longest streak. | Tier B | P0 |
 | **E21** | `insights_stepDropoff_analyzesCompletionRatio` | Run routines with recurring skipped steps; verify `RoutineStepDropoffCalculator` reports accurate consistency ratios. | Tier B | P1 |
 | **E22** | `cloudSyncAndLocalBackup_routineRoundTrip` | Export routines to encrypted backup archive and cloud sync DTOs; wipe local database; restore; verify all routines, steps, and execution records restore intact. | Tier B | P0 |

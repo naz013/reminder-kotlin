@@ -16,5 +16,6 @@ enum class DataType(
   NotesV2(".no2", isLegacy = true),
   SharedNote(".etnote"),
   Tags(".tg1"),
-  TagAssignments(".tga1")
+  TagAssignments(".tga1"),
+  Routines(".rt1")
 }

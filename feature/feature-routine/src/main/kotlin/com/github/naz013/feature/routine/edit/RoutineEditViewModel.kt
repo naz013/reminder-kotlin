@@ -1,0 +1,256 @@
+package com.github.naz013.feature.routine.edit
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.github.naz013.datecalc.NowDateTimeProvider
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.routine.Routine
+import com.github.naz013.domain.routine.RoutineStep
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.logging.Logger
+import com.github.naz013.logic.routine.usecase.DeleteRoutineUseCase
+import com.github.naz013.logic.routine.usecase.SaveRoutineUseCase
+import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
+import com.github.naz013.repository.RoutineRepository
+import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.common.preferences.AppPreferences
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.tag.TagChipState
+import com.github.naz013.ui.tag.TagChipStateAdapter
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalTime
+import java.util.UUID
+
+internal class RoutineEditViewModel(
+  private val id: String?,
+  private val dispatcherProvider: DispatcherProvider,
+  private val routineRepository: RoutineRepository,
+  private val tagRepository: TagRepository,
+  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val tagChipStateAdapter: TagChipStateAdapter,
+  private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
+  private val saveRoutineUseCase: SaveRoutineUseCase,
+  private val deleteRoutineUseCase: DeleteRoutineUseCase,
+  private val nowDateTimeProvider: NowDateTimeProvider,
+  private val themeProvider: ThemeProvider,
+  private val appPreferences: AppPreferences,
+) : ViewModel() {
+
+  private val stableRoutineId = id ?: UUID.randomUUID().toString()
+  private var originalRoutine: Routine? = null
+
+  private val _state = MutableStateFlow(RoutineEditState(id = id, canDelete = id != null))
+  val state = _state.stateInWhileSubscribed(RoutineEditState())
+    .onStart {
+      load()
+      observeTags()
+    }
+  val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
+
+  init {
+    _state.update {
+      it.copy(
+        hapticFeedbackEnabled = appPreferences.hapticsEnabled,
+        sliderColors = themeProvider.colorsForSliderThemed(),
+      )
+    }
+  }
+
+  private fun load() {
+    val routineId = id ?: return
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val routine = routineRepository.getById(routineId) ?: run {
+        Logger.w(TAG, "Routine not found, id: $routineId")
+        return@launch
+      }
+      originalRoutine = routine
+      withContext(dispatcherProvider.main()) {
+        _state.update {
+          it.copy(
+            title = routine.title,
+            description = routine.description.orEmpty(),
+            colorPosition = routine.color,
+            isPinned = routine.isPinned,
+            steps = routine.sortedSteps.map(RoutineStep::toUiState),
+            repeatsDaily = routine.recurrence != null,
+            canDelete = true,
+            canSave = routine.title.isNotBlank(),
+          )
+        }
+      }
+    }
+  }
+
+  private fun observeTags() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagRepository.observeAll()
+        .map { tags -> tags.map { tagChipStateAdapter(it) } }
+        .collect { tags -> _state.update { it.copy(allTags = tags) } }
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
+      tagAssignmentRepository.observeTagsForItem(stableRoutineId, TaggedItemType.ROUTINE).collect { tags ->
+        _state.update { it.copy(selectedTagIds = tags.map(Tag::id).toSet()) }
+      }
+    }
+  }
+
+  fun onTitleChange(title: String) {
+    _state.update { it.copy(title = title, canSave = title.isNotBlank()) }
+  }
+
+  fun onDescriptionChange(description: String) {
+    _state.update { it.copy(description = description) }
+  }
+
+  fun onColorSelected(position: Int) {
+    _state.update { it.copy(colorPosition = position) }
+  }
+
+  fun onPinToggleClick() {
+    _state.update { it.copy(isPinned = !it.isPinned) }
+  }
+
+  fun onRepeatsDailyChange(repeatsDaily: Boolean) {
+    _state.update { it.copy(repeatsDaily = repeatsDaily) }
+  }
+
+  fun onAddStepClick() {
+    val newStep = RoutineStepUiState(
+      id = UUID.randomUUID().toString(),
+      title = "",
+      durationSeconds = 0,
+      scheduledTime = null,
+    )
+    _state.update { it.copy(steps = it.steps + newStep) }
+  }
+
+  fun onStepTitleChange(stepId: String, title: String) {
+    updateStep(stepId) { it.copy(title = title) }
+  }
+
+  fun onStepDurationSelected(stepId: String, durationSeconds: Int) {
+    updateStep(stepId) { it.copy(durationSeconds = durationSeconds) }
+  }
+
+  fun onStepTimeSelected(stepId: String, time: LocalTime?) {
+    val formatted = time?.let { "%02d:%02d".format(it.hour, it.minute) }
+    updateStep(stepId) { it.copy(scheduledTime = formatted) }
+  }
+
+  fun onRemoveStepClick(stepId: String) {
+    _state.update { it.copy(steps = it.steps.filterNot { step -> step.id == stepId }) }
+  }
+
+  fun onMoveStepUp(stepId: String) {
+    moveStep(stepId, offset = -1)
+  }
+
+  fun onMoveStepDown(stepId: String) {
+    moveStep(stepId, offset = 1)
+  }
+
+  private fun moveStep(stepId: String, offset: Int) {
+    _state.update { state ->
+      val steps = state.steps.toMutableList()
+      val fromIndex = steps.indexOfFirst { it.id == stepId }
+      if (fromIndex == -1) return@update state
+      val toIndex = (fromIndex + offset).coerceIn(0, steps.size - 1)
+      if (toIndex == fromIndex) return@update state
+      val step = steps.removeAt(fromIndex)
+      steps.add(toIndex, step)
+      state.copy(steps = steps)
+    }
+  }
+
+  private fun updateStep(stepId: String, transform: (RoutineStepUiState) -> RoutineStepUiState) {
+    _state.update { state ->
+      state.copy(steps = state.steps.map { if (it.id == stepId) transform(it) else it })
+    }
+  }
+
+  fun onTagToggle(tag: TagChipState) {
+    val isSelected = tag.id in _state.value.selectedTagIds
+    viewModelScope.launch(dispatcherProvider.io()) {
+      toggleTagAssignmentUseCase(stableRoutineId, TaggedItemType.ROUTINE, tag.id, isSelected)
+    }
+  }
+
+  fun onManageTagsClick() {
+    navigationEvent.emit(NavigationEvent.OpenManageTags)
+  }
+
+  fun onSaveClick() {
+    val title = _state.value.title.trim()
+    if (title.isBlank()) {
+      _state.update { it.copy(canSave = false) }
+      return
+    }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val now = nowDateTimeProvider.nowDateTime()
+      val base = originalRoutine ?: Routine(id = stableRoutineId, createdAt = now, updatedAt = now)
+      val stateValue = _state.value
+      val steps = stateValue.steps.mapIndexed { index, step ->
+        RoutineStep(
+          id = step.id,
+          title = step.title.trim(),
+          durationSeconds = step.durationSeconds,
+          scheduledTime = step.scheduledTime,
+          order = index,
+        )
+      }
+      val routine = base.copy(
+        title = title,
+        description = stateValue.description.trim().ifBlank { null },
+        color = stateValue.colorPosition,
+        isPinned = stateValue.isPinned,
+        steps = steps,
+        recurrence = if (stateValue.repeatsDaily) RecurrenceRule.Daily() else null,
+      )
+      saveRoutineUseCase(routine)
+      Logger.i(TAG, "Saved routine, id: ${routine.id}")
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.emit(NavigationEvent.Back)
+      }
+    }
+  }
+
+  fun onDeleteClick() {
+    val routineId = id ?: return
+    viewModelScope.launch(dispatcherProvider.io()) {
+      deleteRoutineUseCase(routineId)
+      Logger.i(TAG, "Deleted routine, id: $routineId")
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.emit(NavigationEvent.Back)
+      }
+    }
+  }
+
+  sealed interface NavigationEvent {
+    data object Back : NavigationEvent
+    data object OpenManageTags : NavigationEvent
+  }
+
+  companion object {
+    private const val TAG = "RoutineEditViewModel"
+  }
+}
+
+private fun RoutineStep.toUiState(): RoutineStepUiState = RoutineStepUiState(
+  id = id,
+  title = title,
+  durationSeconds = durationSeconds,
+  scheduledTime = scheduledTime,
+)

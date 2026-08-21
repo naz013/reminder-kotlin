@@ -1151,4 +1151,25 @@
     <string name="pin">Pin</string>
     <string name="unpin">Unpin</string>
     <string name="pinned">Pinned</string>
+
+    <string name="routines">Routines</string>
+    <string name="new_routine">New routine</string>
+    <string name="no_routines">No routines yet</string>
+    <string name="routine_description_hint">Description (optional)</string>
+    <string name="routine_steps">Steps</string>
+    <string name="add_step">Add step</string>
+    <string name="step_title_hint">Step title</string>
+    <string name="duration_none">None</string>
+    <string name="repeat_daily">Repeats daily</string>
+    <string name="start_routine">Start Routine</string>
+    <string name="reset_steps">Reset steps</string>
+    <string name="reset_steps_confirmation">Reset all steps to unchecked?</string>
+    <string name="routine_step_count">%1$d steps</string>
+    <string name="delete_routine_confirmation">Delete this routine permanently?</string>
+    <string name="move_step_up">Move step up</string>
+    <string name="move_step_down">Move step down</string>
+    <string name="sort">Sort</string>
+    <string name="sort_by_date">By creation date</string>
+    <string name="sort_by_name">By name</string>
+    <string name="routine_on_demand">On-demand</string>
 </resources>

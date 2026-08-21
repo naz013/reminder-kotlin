@@ -10,7 +10,7 @@ Introduce a dedicated **Routines** feature into *Reminder - TODO & Task Manager*
 > - Reuses existing building blocks from `ui:ui-common`, `ui:ui-note`, and `ui:ui-tag`:
 >   - Navigation & TopBars: `TopAppBar`, `MenuIconButton`, `MenuTextButton`, `TopAppbarColor`, `SelectionTopBar`.
 >   - Icons: `AppIcons` (Fluent icons and Material symbols).
->   - Color Engine: Reuses `NoteColorEngine.allColors()` for solid colored cards without opacity.
+>   - Color Picker: `ui-common`'s `ColorSlider` (fed by e.g. `ThemeProvider.colorsForSliderThemed()`) for solid colored cards without opacity — the same pair `feature-group`'s `EditGroupScreen` already uses for `GroupV2.color`. **Not** `NoteColorEngine.allColors()` as originally planned — see Component 5 below for why.
 >   - Filter Chips & Pickers: `TagChipPicker`, `TagFilterRow`, `FilterChip`.
 >   - Dialogs & BottomSheets: `AppModalBottomSheet`, `AppDropdownMenu`, `PopupMenuItem`.
 >   - Inputs: `SearchBar`, `OutlinedTextField`, `BasicTextField`.
@@ -19,7 +19,7 @@ Introduce a dedicated **Routines** feature into *Reminder - TODO & Task Manager*
 > **Step-Level Scheduled Times & Automatic Sorting**:
 > - `RoutineStep` owns `scheduledTime: String?` (e.g. `"07:30"` in `HH:mm` format) and `durationSeconds: Int`.
 > - Steps are automatically sorted chronologically by `scheduledTime` (via `RoutineStepComparator`), falling back to `order` for untimed steps.
-> - `Routine` does NOT hold a top-level `scheduledTime`; it holds the `recurrence: RecurrenceRule?` (Daily, Weekdays, Monthly, etc.).
+> - `Routine` does NOT hold a top-level `scheduledTime`; it holds the `recurrence: RecurrenceRule?` (existing `RecurrenceRule` variants: `Daily`, `Weekly` (with weekday selection), `Monthly`, etc., or `null` for on-demand).
 
 > [!IMPORTANT]
 > **Granular Execution Tracking (`completedStepIds`)**:
@@ -39,6 +39,9 @@ Introduce a dedicated **Routines** feature into *Reminder - TODO & Task Manager*
 > [!NOTE]
 > 1. **Mixed Steps Ordering**: When a routine contains both timed steps (`scheduledTime = "07:30"`) and untimed steps (`scheduledTime = null`), should timed steps appear first in chronological order followed by untimed steps, or should untimed steps respect their manual `order` positions? (Recommended: Chronological for timed steps, then untimed steps by `order`).
 > 2. **Notifications for Step Scheduled Times**: When a step has a `scheduledTime` (e.g. 07:30), should the app schedule individual reminder notifications for each timed step, or a reminder for the first step in the routine?
+> 3. ~~**`NoteColorEngine` reuse**~~ — RESOLVED: `ui:ui-routine` (implemented) uses `ui-common`'s `ColorSlider` instead, matching `feature-group`'s `EditGroupScreen`/`GroupV2.color` precedent exactly. No `NoteColorEngine` dependency, no new `ui-*` → `ui-*` edge, no shared "remembered last color" state with Notes. "Last picked color" persistence (if wanted) is now `feature-routine`'s call, via its own preference key if any — not `ui-routine`'s concern.
+> 4. **Free vs. PRO gating of base Routines**: The docs are explicit that Insights integration is PRO-gated, but never state whether creating/editing/running routines itself (`feature-routine`) is free, PRO-only, or free-with-limits. `docs/e2e-testing.md`'s flavor-gating test category implies this needs to be a deliberate decision, not an oversight, before `RoutinesE2ETest.kt` is written.
+> 5. **Duration/schedule/contrast formatting**: `RoutineCard`'s `UiRoutineListItem` takes pre-formatted `durationLabel`/`stepCountLabel`/`scheduleRangeLabel` strings and a pre-resolved `contentColor` (`ui-routine` can't depend on `logic-routine` or compute palette contrast itself) — `feature-routine`'s ViewModel/mapper (Component 6) must own this formatting, using `RoutineDurationCalculator` and Compose's `Color.luminance()`.
 
 ---
 
@@ -102,7 +105,7 @@ Define domain models and enums with zero Android framework dependencies.
   - `steps: List<RoutineStep> = emptyList()`
   - `autoAdvance: Boolean = true`
   - `soundAlertsEnabled: Boolean = true`
-  - `recurrence: RecurrenceRule?` (Daily, Weekdays, Monthly, or null for on-demand)
+  - `recurrence: RecurrenceRule?` (existing `RecurrenceRule` variants: `Daily`, `Weekly` (with weekday selection), `Monthly`, etc., or `null` for on-demand)
   - `reminderId: String?` (linked `ReminderV2` for notification trigger)
   - `lastResetAt: LocalDateTime?` (timestamp of the last recurrence reset)
   - `createdAt: LocalDateTime`
@@ -180,10 +183,13 @@ Define repository interfaces, Room entities, DAOs, converters, and database migr
 - Add `Table.Routine` and `Table.RoutineExecution` for reactive change notifications via `TableChangeNotifier`.
 
 #### [NEW] [RoutineEntity.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/data/repository/src/main/java/com/github/naz013/repository/entity/RoutineEntity.kt)
-- Room entity for `Routine` with `@PrimaryKey val id: String`, `isPinned: Boolean`, `color: Int`, Gson `@TypeConverters` for `List<RoutineStep>` and `RecurrenceRule`.
+- Room entity for `Routine` with `@PrimaryKey val id: String`, `isPinned: Boolean`, `color: Int`, Gson `@TypeConverters` for `List<RoutineStep>`. `RecurrenceRule` is stored as two plain columns (`recurrenceType` discriminator + `recurrencePayload` JSON blob), following the `ReminderV2Mapper.kt` precedent, rather than a bare `@TypeConverters` Gson converter on the sealed class — see `RecurrenceRule.kt`'s doc comment on R8/Gson field-stripping risk.
 
 #### [NEW] [RoutineExecutionEntity.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/data/repository/src/main/java/com/github/naz013/repository/entity/RoutineExecutionEntity.kt)
 - Room entity for `RoutineExecutionRecord` with `@TypeConverters(ListStringTypeConverter::class)` for `completedStepIds`.
+
+#### [NEW] [RoutineMapper.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/data/repository/src/main/java/com/github/naz013/repository/entity/RoutineMapper.kt)
+- Dedicated entity↔domain mapper (mirrors `ReminderV2Mapper.kt`/`GroupV2Mapper.kt`/`TagMapper.kt`): `toColumns()`/`toRecurrenceRule()` for the `RecurrenceRule` type+payload split, plus `toDomain()`/`toEntity()` for the rest of `Routine`.
 
 #### [NEW] [RoutineDao.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/data/repository/src/main/java/com/github/naz013/repository/dao/RoutineDao.kt) & [RoutineExecutionDao.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/data/repository/src/main/java/com/github/naz013/repository/dao/RoutineExecutionDao.kt)
 - Room DAOs with Flow and suspend query operations.
@@ -236,20 +242,23 @@ Create `:logic:logic-routine` module for reusable routine use cases.
 
 ---
 
-### Component 5: Reusable UI Components (`ui:ui-routine`)
+### Component 5: Reusable UI Components (`ui:ui-routine`) — IMPLEMENTED
 
-Create `:ui:ui-routine` Compose building blocks adhering to Material 3 Expressive guidelines.
+Created `:ui:ui-routine` (`reminder.android.library.compose`), depending only on `core:domain`, `core:logging-api`, and `ui:ui-common` — no sibling `ui-*` dependency, matching `docs/architecture.md`'s `ui-<feature>` allowed-dependency list.
 
-#### [NEW] [RoutineCard.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/ui/ui-routine/src/main/kotlin/com/github/naz013/ui/routine/RoutineCard.kt)
-- Reuses `NoteColorEngine.allColors()` for solid colored surfaces (mirroring `NoteCard`).
-- Includes semantics test tags: `testTag = "routine_card_${routine.id}"`, `testTag = "routine_start_button_${routine.id}"`.
-- Shows title, description, step count, total duration badge (`[⏱ 25 min]`), tag chips, step schedule pill (`07:30 - 08:45`), pin icon, and a "Start" CTA.
+#### [DONE] [UiRoutineListItem.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/ui/ui-routine/src/main/kotlin/com/github/naz013/ui/routine/UiRoutineListItem.kt)
+- Display model carrying only plain values `RoutineCard` needs: `backgroundColor`/`contentColor` (`Color`, pre-resolved by the caller), `stepCountLabel`/`durationLabel`/`scheduleRangeLabel` (pre-formatted `String`s — `ui-routine` can't depend on `logic-routine`'s `RoutineDurationCalculator`, so `feature-routine`'s ViewModel formats them). No `Routine`/`RoutineStep` domain type dependency.
 
-#### [NEW] [CircularStepTimer.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/ui/ui-routine/src/main/kotlin/com/github/naz013/ui/routine/CircularStepTimer.kt)
-- Animated circular progress indicator with countdown time display, pulse animations, and pause states.
+#### [DONE] [RoutineCard.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/ui/ui-routine/src/main/kotlin/com/github/naz013/ui/routine/RoutineCard.kt)
+- Solid-colored `Card` (`containerColor = routine.backgroundColor`) mirroring `NoteCard`'s "one shared card everywhere" role. Semantics test tags as planned: `testTag("routine_card_${routine.id}")`, `testTag("routine_start_button_${routine.id}")`.
+- Shows title, description, step-count/duration (`AppIcons.Builder.Timer`)/schedule-range badges, pin icon (`AppIcons.Fluent.Pin`), and a "Start" `Button` (colors inverted against `backgroundColor` for contrast).
+- Tag chips: takes an optional `tagsContent: @Composable (() -> Unit)?` slot instead of rendering `ui-tag`'s `TagChipRow`/`TagChipState` directly — `ui-routine` can't depend on `ui-tag` (no precedent for `ui-*` → `ui-*` deps exists anywhere in the codebase), so `feature-routine` fills the slot with `TagChipRow(...)`.
 
-#### [NEW] [RoutineColorPicker.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/ui/ui-routine/src/main/kotlin/com/github/naz013/ui/routine/RoutineColorPicker.kt)
-- Horizontal row of solid color circles reusing `NoteColorEngine.allColors()`, without opacity slider.
+#### [DONE] [CircularStepTimer.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/ui/ui-routine/src/main/kotlin/com/github/naz013/ui/routine/CircularStepTimer.kt)
+- M3 determinate `CircularProgressIndicator(progress = { ... })` ring (remaining-time fraction, so it visually drains rather than fills) with the remaining-time label centered inside via a `Box`. Simpler than the original "pulse animations" spec — play/pause visual state is a `RoutineExecutionScreen` (Component 6) concern, not this primitive's.
+
+#### [DONE] [RoutineColorPicker.kt](file:///c:/Users/nsuho/Code/reminder-kotlin/ui/ui-routine/src/main/kotlin/com/github/naz013/ui/routine/RoutineColorPicker.kt)
+- **Changed from the original spec** ("row of solid color circles reusing `NoteColorEngine.allColors()`") to a `Card` + label + `ui-common`'s `ColorSlider`, matching `feature-group`'s `EditGroupScreen` exactly (`GroupV2.color` is the same "solid, no opacity" case). Takes `colors: List<Color>` as a plain parameter — the caller (`feature-routine`) supplies the palette, e.g. `ThemeProvider.colorsForSliderThemed()` from `ui-common`. Default `title` reuses `ui-common`'s existing `R.string.color` (already shared with Group's identical section header).
 
 ---
 
@@ -282,7 +291,7 @@ Create `:feature:feature-routine` module with 4 primary destinations adhering st
     - Duration selector pills: `None`, `5m`, `10m`, `15m`, `Custom`.
     - Scheduled time picker button (`⏱ 07:30` / `No time`) per step.
     - Drag handles (`AppIcons.Fluent.ReOrderDots`) for reordering untimed steps.
-  - Recurrence Section (Recurrence rule selector: Daily, Weekdays, Monthly, etc.).
+  - Recurrence Section (Recurrence rule selector over existing `RecurrenceRule` variants: Daily, Weekly (with weekday selection), Monthly, etc.).
   - Tags Section: `TagChipPicker` with `onTagToggle` and `onManageTagsClick`.
   - Auto-advance & sound chimes toggle switches.
 
@@ -400,7 +409,7 @@ Following the testing patterns in [`docs/e2e-testing.md`](file:///c:/Users/nsuho
 | **E16** | `focusRunner_skipStep_advancesWithoutCompletion` | Tap "Skip Step"; verify runner moves to next step without marking the skipped step as completed. | Tier B | P1 |
 | **E17** | `focusRunner_plusOneMinute_extendsTimer` | Tap "+1 Min" button during active timer; verify countdown timer extends by 60 seconds. | Tier B | P1 |
 | **E18** | `focusRunner_completion_recordsCompletedStepIds` | Complete routine with 1 step skipped; verify celebration dialog appears and `RoutineExecutionRecord` contains only the 2 completed step UUIDs. | Tier B | P0 |
-| **E19** | `routineRecurrence_newCycle_autoResetsSteps` | Complete a daily routine today; advance simulated clock (`FakeDateTimeManager`) to tomorrow; verify all steps are fresh and unchecked while execution logs remain intact. | Tier B | P0 |
+| **E19** | `routineRecurrence_newCycle_autoResetsSteps` | Complete a daily routine today; advance simulated clock (`FakeNowDateTimeProvider`) to tomorrow; verify all steps are fresh and unchecked while execution logs remain intact. | Tier B | P0 |
 | **E20** | `insights_routineStreaks_updatesConsecutiveDays` | Complete routines across multiple days; open PRO Insights; verify `UiStreak` shows incremented current streak and longest streak. | Tier B | P0 |
 | **E21** | `insights_stepDropoff_analyzesCompletionRatio` | Run routines with recurring skipped steps; verify `RoutineStepDropoffCalculator` reports accurate consistency ratios. | Tier B | P1 |
 | **E22** | `cloudSyncAndLocalBackup_routineRoundTrip` | Export routines to encrypted backup archive and cloud sync DTOs; wipe local database; restore; verify all routines, steps, and execution records restore intact. | Tier B | P0 |

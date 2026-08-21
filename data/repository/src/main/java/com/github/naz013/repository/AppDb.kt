@@ -20,6 +20,8 @@ import com.github.naz013.repository.dao.ReminderDao
 import com.github.naz013.repository.dao.ReminderGroupDao
 import com.github.naz013.repository.dao.ReminderV2Dao
 import com.github.naz013.repository.dao.RemoteFileMetadataDao
+import com.github.naz013.repository.dao.RoutineDao
+import com.github.naz013.repository.dao.RoutineExecutionDao
 import com.github.naz013.repository.dao.TagAssignmentDao
 import com.github.naz013.repository.dao.TagDao
 import com.github.naz013.repository.dao.UsedTimeDao
@@ -42,6 +44,8 @@ import com.github.naz013.repository.entity.ReminderEntity
 import com.github.naz013.repository.entity.ReminderGroupEntity
 import com.github.naz013.repository.entity.ReminderV2Entity
 import com.github.naz013.repository.entity.RemoteFileMetadataEntity
+import com.github.naz013.repository.entity.RoutineEntity
+import com.github.naz013.repository.entity.RoutineExecutionEntity
 import com.github.naz013.repository.entity.TagAssignmentEntity
 import com.github.naz013.repository.entity.TagEntity
 import com.github.naz013.repository.entity.UsedTimeEntity
@@ -71,6 +75,7 @@ import com.github.naz013.repository.migrations.MIGRATION_29_30
 import com.github.naz013.repository.migrations.MIGRATION_2_3
 import com.github.naz013.repository.migrations.MIGRATION_30_31
 import com.github.naz013.repository.migrations.MIGRATION_31_32
+import com.github.naz013.repository.migrations.MIGRATION_32_33
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
 import com.github.naz013.repository.migrations.MIGRATION_5_6
@@ -102,9 +107,11 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     WorkflowTemplateEntity::class,
     TagEntity::class,
     TagAssignmentEntity::class,
-    HolidayEntity::class
+    HolidayEntity::class,
+    RoutineEntity::class,
+    RoutineExecutionEntity::class
   ],
-  version = 32,
+  version = 33,
   exportSchema = false
 )
 @Suppress("TooManyFunctions") // one DAO accessor per entity - inherent to this class, not a smell
@@ -131,6 +138,8 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun tagDao(): TagDao
   abstract fun tagAssignmentDao(): TagAssignmentDao
   abstract fun holidayDao(): HolidayDao
+  abstract fun routineDao(): RoutineDao
+  abstract fun routineExecutionDao(): RoutineExecutionDao
 
   companion object {
 
@@ -171,7 +180,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_28_29,
             MIGRATION_29_30,
             MIGRATION_30_31,
-            MIGRATION_31_32
+            MIGRATION_31_32,
+            MIGRATION_32_33
           )
           .allowMainThreadQueries()
           .build()

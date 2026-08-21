@@ -33,6 +33,10 @@ internal class DataTypeRepositoryCallerFactory(
       DataType.SharedNote -> NoopRepositoryCaller()
       DataType.Tags -> TagRepositoryCaller(tagRepository)
       DataType.TagAssignments -> NoopRepositoryCaller()
+      // TODO: replace with a real RoutineRepositoryCaller once Routine cloud sync (RoutineJson
+      //  DTO + DataConverterImpl wiring) lands - logic-routine's use cases already schedule
+      //  Upload/Delete work for this DataType so the sync worker doesn't crash on an unhandled case.
+      DataType.Routines -> NoopRepositoryCaller()
     }
   }
 }

@@ -36,6 +36,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
   onOpenNotes: () -> Unit,
   onOpenGoogleTasks: () -> Unit,
   onOpenGroups: () -> Unit,
+  onOpenRoutines: () -> Unit,
   onOpenWorkflowGallery: () -> Unit,
   onOpenPrivacyPolicy: () -> Unit,
   onOpenCloudDrives: () -> Unit,
@@ -67,6 +68,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
       onOpenNotes = onOpenNotes,
       onOpenGoogleTasks = onOpenGoogleTasks,
       onOpenGroups = onOpenGroups,
+      onOpenRoutines = onOpenRoutines,
       onOpenWorkflowGallery = onOpenWorkflowGallery,
       onOpenPrivacyPolicy = onOpenPrivacyPolicy,
       onOpenCloudDrives = onOpenCloudDrives,
@@ -92,6 +94,7 @@ private fun HomeEntry(
   onOpenNotes: () -> Unit,
   onOpenGoogleTasks: () -> Unit,
   onOpenGroups: () -> Unit,
+  onOpenRoutines: () -> Unit,
   onOpenWorkflowGallery: () -> Unit,
   onOpenPrivacyPolicy: () -> Unit,
   onOpenCloudDrives: () -> Unit,
@@ -150,6 +153,10 @@ private fun HomeEntry(
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenGroups -> {
         onOpenGroups()
+      }
+
+      is ScheduleHomeViewModel.ViewModelEvent.OpenRoutines -> {
+        onOpenRoutines()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery -> {

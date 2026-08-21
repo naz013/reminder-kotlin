@@ -23,4 +23,6 @@ enum class Table(val tableName: String) {
   Tag("Tag"),
   TagAssignment("TagAssignment"),
   Holiday("Holiday"),
+  Routine("Routine"),
+  RoutineExecution("RoutineExecution"),
 }

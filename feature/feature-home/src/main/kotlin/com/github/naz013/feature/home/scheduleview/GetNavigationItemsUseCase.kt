@@ -2,6 +2,7 @@ package com.github.naz013.feature.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.feature.home.HeaderNavigationItem
+import com.github.naz013.logic.routine.RoutineConfig
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -9,8 +10,10 @@ import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import org.threeten.bp.LocalDate
@@ -23,6 +26,7 @@ class GetNavigationItemsUseCase(
   private val noteRepository: NoteRepository,
   private val googleTaskRepository: GoogleTaskRepository,
   private val workflowRuleRepository: WorkflowRuleRepository,
+  private val routineRepository: RoutineRepository,
   private val dateTimeManager: DateTimeManager,
 ) {
   suspend operator fun invoke(
@@ -34,6 +38,9 @@ class GetNavigationItemsUseCase(
     add(getNoteItem(scope = scope))
     add(getGoogleTasksItem(scope = scope))
     add(getGroupItem(scope = scope))
+    if (RoutineConfig.isEnabled) {
+      add(getRoutineItem(scope = scope))
+    }
     if (WorkflowConfig.isEnabled) {
       add(getWorkflowItem(scope = scope))
     }
@@ -109,6 +116,18 @@ class GetNavigationItemsUseCase(
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
           subtitle = "${groupV2Repository.countAll()}",
+        )
+      }.await()
+
+  private suspend fun getRoutineItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.routines,
+          iconRes = DrawableCatalog.Builder.Timer,
+          color = Color.Green,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenRoutines,
+          subtitle = "${routineRepository.getAll().size}",
         )
       }.await()
 }
