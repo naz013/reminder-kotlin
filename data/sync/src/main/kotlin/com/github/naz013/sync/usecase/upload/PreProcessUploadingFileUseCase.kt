@@ -59,6 +59,7 @@ internal class PreProcessUploadingFileUseCase(
       titleFontStyle = note.titleFontStyle,
       color = note.color,
       archived = note.archived,
+      isPinned = note.isPinned,
       date = note.date,
       fontSize = note.fontSize,
       palette = note.palette,

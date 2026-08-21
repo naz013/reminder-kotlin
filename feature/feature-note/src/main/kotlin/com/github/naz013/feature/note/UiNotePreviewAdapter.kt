@@ -40,6 +40,7 @@ internal class UiNotePreviewAdapter(
       ),
       titleTextSize = titleTextSize.toFloat(),
       isArchived = noteWithImages.note?.archived ?: false,
+      isPinned = noteWithImages.isPinned(),
     )
   }
 }

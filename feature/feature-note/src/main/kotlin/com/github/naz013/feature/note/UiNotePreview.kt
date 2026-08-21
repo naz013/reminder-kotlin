@@ -14,4 +14,5 @@ internal data class UiNotePreview(
   val titleTypeface: Typeface?,
   val titleTextSize: Float,
   val isArchived: Boolean,
+  val isPinned: Boolean,
 )

@@ -18,6 +18,7 @@ internal data class PreviewNoteState(
   val tags: List<TagChipState> = emptyList(),
   val reminders: List<UiNoteAttachedReminder> = emptyList(),
   val isArchived: Boolean = false,
+  val isPinned: Boolean = false,
   val isLoading: Boolean = false,
   val background: Color = Color.Transparent,
   val content: Color = Color.Unspecified,
