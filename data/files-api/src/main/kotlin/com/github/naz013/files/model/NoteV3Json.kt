@@ -31,6 +31,8 @@ data class NoteV3Json(
   val fontSize: Int = -1,
   @SerializedName("archived")
   val archived: Boolean = false,
+  @SerializedName("isPinned")
+  val isPinned: Boolean = false,
   @SerializedName("versionId")
   var version: Long = 0L,
 )

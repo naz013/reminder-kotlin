@@ -32,11 +32,13 @@ import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagChipRow
 
 private const val OVERFLOW_ITEM_SHARE = 0
 private const val OVERFLOW_ITEM_ARCHIVE = 1
-private const val OVERFLOW_ITEM_DELETE = 2
+private const val OVERFLOW_ITEM_PIN = 2
+private const val OVERFLOW_ITEM_DELETE = 3
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,6 +111,11 @@ internal fun PreviewNoteScreen(
               iconRes = R.drawable.ic_fluent_archive,
             ),
             PopupMenuItem(
+              id = OVERFLOW_ITEM_PIN,
+              title = stringResource(if (state.isPinned) R.string.unpin else R.string.pin),
+              iconRes = if (state.isPinned) DrawableCatalog.Fluent.PinOff else DrawableCatalog.Fluent.Pin,
+            ),
+            PopupMenuItem(
               id = OVERFLOW_ITEM_DELETE,
               title = stringResource(R.string.delete),
               iconRes = R.drawable.ic_fluent_delete,
@@ -118,6 +125,7 @@ internal fun PreviewNoteScreen(
             when (id) {
               OVERFLOW_ITEM_SHARE -> actions.onShareClick()
               OVERFLOW_ITEM_ARCHIVE -> actions.onArchiveClick()
+              OVERFLOW_ITEM_PIN -> actions.onPinClick()
               OVERFLOW_ITEM_DELETE -> actions.onDeleteClick()
             }
           },

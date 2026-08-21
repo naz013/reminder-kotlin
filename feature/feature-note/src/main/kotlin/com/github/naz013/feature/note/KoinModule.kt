@@ -15,6 +15,7 @@ import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteUseCase
+import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -24,6 +25,7 @@ val featureNoteModule = module {
   factoryOf(::DeleteNoteUseCase)
   factoryOf(::SaveNoteUseCase)
   factoryOf(::ChangeNoteArchiveStateUseCase)
+  factoryOf(::TogglePinnedNoteUseCase)
 
   factoryOf(::CreateSharedNoteFileUseCase)
 
@@ -98,11 +100,13 @@ val featureNoteModule = module {
       get(),
       get(),
       get(),
+      get(),
     )
   }
   viewModel { (id: String) ->
     PreviewNoteViewModel(
       id,
+      get(),
       get(),
       get(),
       get(),

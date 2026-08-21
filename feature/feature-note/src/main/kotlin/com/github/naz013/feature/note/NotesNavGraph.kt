@@ -314,6 +314,7 @@ private fun NotePreviewEntry(
       },
       onShareClick = viewModel::onShareClick,
       onArchiveClick = viewModel::onArchiveClick,
+      onPinClick = viewModel::onPinClick,
       onDeleteClick = viewModel::onDeleteClick,
       onImageOpen = viewModel::onImageOpen,
       onReminderEditClick = viewModel::onReminderEditClick,

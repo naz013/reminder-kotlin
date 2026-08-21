@@ -31,5 +31,7 @@ enum class NoteMenuAction {
   SHOW_IN_STATUS_BAR,
   ARCHIVE,
   UNARCHIVE,
+  PIN,
+  UNPIN,
   DELETE,
 }

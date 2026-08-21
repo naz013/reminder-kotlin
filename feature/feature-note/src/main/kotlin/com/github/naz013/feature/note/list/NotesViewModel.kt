@@ -23,6 +23,7 @@ import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteUseCase
+import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
@@ -64,6 +65,7 @@ internal class NotesViewModel(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val changeNoteArchiveStateUseCase: ChangeNoteArchiveStateUseCase,
+  private val togglePinnedNoteUseCase: TogglePinnedNoteUseCase,
   private val saveNoteUseCase: SaveNoteUseCase,
   private val createSharedNoteFileUseCase: CreateSharedNoteFileUseCase,
   private val imagesSingleton: ImagesSingleton,
@@ -305,7 +307,15 @@ internal class NotesViewModel(
 
       NoteMenuAction.ARCHIVE -> moveToArchive(note.id)
       NoteMenuAction.UNARCHIVE -> unarchive(note.id)
+      NoteMenuAction.PIN, NoteMenuAction.UNPIN -> togglePinned(note.id)
       NoteMenuAction.DELETE -> navigationEvent.emit(NavigationEvent.ConfirmDelete(note.id))
+    }
+  }
+
+  private fun togglePinned(id: String) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      togglePinnedNoteUseCase(id)
+      refresh()
     }
   }
 

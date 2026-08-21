@@ -24,6 +24,7 @@ internal interface NotesDao {
         WHERE archived = :isArchived
         AND (:query = '' OR LOWER(summary) LIKE '%' || :query || '%')
         ORDER BY
+          isPinned DESC,
           CASE WHEN :sortOrder = 'date_az' THEN date END ASC,
           CASE WHEN :sortOrder = 'text_az' THEN summary END ASC,
           CASE WHEN :sortOrder = 'text_za' THEN summary END DESC,

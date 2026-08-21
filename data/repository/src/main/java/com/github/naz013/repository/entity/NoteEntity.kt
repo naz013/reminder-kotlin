@@ -39,6 +39,8 @@ internal data class NoteEntity(
   val fontSize: Int = -1,
   @SerializedName("archived")
   val archived: Boolean = false,
+  @SerializedName("isPinned")
+  val isPinned: Boolean = false,
   @SerializedName("version")
   val version: Long = 0L,
   @SerializedName("syncState")
@@ -60,6 +62,7 @@ internal data class NoteEntity(
     opacity = note.opacity,
     fontSize = note.fontSize,
     archived = note.archived,
+    isPinned = note.isPinned,
     version = note.version,
     syncState = note.syncState.name
   )
@@ -80,6 +83,7 @@ internal data class NoteEntity(
       opacity = opacity,
       fontSize = fontSize,
       archived = archived,
+      isPinned = isPinned,
       version = version,
       syncState = SyncState.valueOf(syncState)
     )
