@@ -7,8 +7,11 @@ import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
@@ -43,6 +46,7 @@ import com.github.naz013.navigation.ViewNoteScreen
 import com.github.naz013.navigation.ViewReminderScreen
 import com.github.naz013.ui.common.compose.BaseAuthActivity
 import com.github.naz013.ui.common.compose.composeView
+import com.github.naz013.ui.common.compose.foundation.InAppAlertBanner
 import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.workapi.NetworkRequirement
 import com.github.naz013.workapi.WorkRequest
@@ -54,6 +58,7 @@ class BottomNavActivity : BaseAuthActivity() {
   private val workScheduler by inject<WorkScheduler>()
   private val contextSwitcher by inject<ContextSwitcher>()
   private val initViewModel by viewModel<BottomNavInitViewModel>()
+  private val inAppAlertViewModel by viewModel<InAppAlertViewModel>()
 
   private val adsProvider = AdsProvider()
 
@@ -85,7 +90,14 @@ class BottomNavActivity : BaseAuthActivity() {
           LaunchedEffect(Unit) {
             enableShortcuts()
           }
-          AppNavGraph(initialKeys = resolveInitialNavKeys())
+          Box {
+            AppNavGraph(initialKeys = resolveInitialNavKeys())
+            val alertState by inAppAlertViewModel.state.collectAsStateWithLifecycle()
+            InAppAlertBanner(
+              modifier = Modifier.align(Alignment.TopCenter),
+              state = alertState,
+            )
+          }
         } else {
           BottomNavSplashScreen()
         }
