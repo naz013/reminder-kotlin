@@ -27,8 +27,6 @@ data class Routine(
   val soundAlertsEnabled: Boolean = true,
   @SerializedName("recurrence")
   val recurrence: RecurrenceRule? = null,
-  @SerializedName("reminderId")
-  val reminderId: String? = null,
   @SerializedName("lastResetAt")
   val lastResetAt: LocalDateTime? = null,
   @SerializedName("createdAt")

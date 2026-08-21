@@ -44,7 +44,6 @@ class RoutineMapperTest {
         RoutineStep(id = "step-2", title = "Journal", scheduledTime = "07:15", durationSeconds = 600)
       ),
       recurrence = RecurrenceRule.Daily(repeatInterval = 1L),
-      reminderId = "reminder-1",
       lastResetAt = LocalDateTime.of(2026, 7, 21, 0, 0),
       createdAt = LocalDateTime.of(2026, 7, 20, 8, 0),
       updatedAt = LocalDateTime.of(2026, 7, 21, 8, 0),

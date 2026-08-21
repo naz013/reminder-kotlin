@@ -27,8 +27,6 @@ data class RoutineJson(
   val recurrenceType: String = "NONE",
   @SerializedName("recurrencePayload")
   val recurrencePayload: String = "",
-  @SerializedName("reminderId")
-  val reminderId: String? = null,
   @SerializedName("lastResetAt")
   val lastResetAt: String? = null,
   @SerializedName("createdAt")

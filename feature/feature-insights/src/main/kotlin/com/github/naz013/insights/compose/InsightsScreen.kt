@@ -92,6 +92,18 @@ internal fun InsightsScreen(
           items(listState.streaks, key = { it.eventId }) { streak ->
             StreakCard(streak = streak)
           }
+          if (state.routineInsights.isNotEmpty()) {
+            item {
+              Text(
+                text = stringResource(R.string.routine_insights_section),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(top = 8.dp),
+              )
+            }
+            items(state.routineInsights, key = { it.routineId }) { insight ->
+              RoutineInsightCard(insight = insight)
+            }
+          }
         }
       }
     }
@@ -168,6 +180,47 @@ private fun StreakCard(
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
       )
+    }
+  }
+}
+
+@Composable
+private fun RoutineInsightCard(
+  insight: UiRoutineInsight,
+  modifier: Modifier = Modifier
+) {
+  Card(
+    modifier = modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Text(insight.title, style = MaterialTheme.typography.titleMedium)
+      Text(
+        text = stringResource(R.string.streak_current, insight.currentStreakDays),
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(top = 4.dp)
+      )
+      Text(
+        text = stringResource(R.string.streak_longest, insight.longestStreakDays),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+      )
+      Text(
+        text = stringResource(R.string.routine_focus_time_total, insight.totalFocusTimeLabel),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+      )
+      if (insight.mostSkippedStepTitle != null && insight.mostSkippedCompletionPercent != null) {
+        Text(
+          text = stringResource(
+            R.string.routine_insight_most_skipped,
+            insight.mostSkippedStepTitle,
+            insight.mostSkippedCompletionPercent
+          ),
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        )
+      }
     }
   }
 }

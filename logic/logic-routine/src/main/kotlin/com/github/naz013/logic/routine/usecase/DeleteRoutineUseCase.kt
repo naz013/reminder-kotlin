@@ -15,8 +15,6 @@ class DeleteRoutineUseCase(
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
 ) {
-  // Doesn't yet clear a linked ReminderV2 trigger (Routine.reminderId) - deferred until
-  // RoutineScheduleBridge exists to own that scheduling relationship.
   suspend operator fun invoke(id: String) {
     routineRepository.delete(id)
     routineExecutionRepository.deleteByRoutineId(id)

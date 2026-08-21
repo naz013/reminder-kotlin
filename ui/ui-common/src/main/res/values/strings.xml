@@ -1105,7 +1105,7 @@
     <string name="streak_current">Current streak: %1$d days</string>
     <string name="streak_longest">Longest streak: %1$d days</string>
     <string name="streak_fired_count">Fired %1$d times in the last 90 days</string>
-    <string name="no_insights_yet">No reminder activity in the last 90 days yet</string>
+    <string name="no_insights_yet">No activity in the last 90 days yet</string>
 
     <string name="upcoming_events">Upcoming</string>
 
@@ -1196,4 +1196,7 @@
     <string name="routine_finished_title">Routine finished</string>
     <string name="routine_execution_total_time">Total time: %1$s</string>
     <string name="routine_execution_steps_completed">%1$d of %2$d steps completed</string>
+    <string name="routine_insights_section">Routine streaks</string>
+    <string name="routine_focus_time_total">Total focus time: %1$s (last 90 days)</string>
+    <string name="routine_insight_most_skipped">Most skipped step: %1$s (%2$d%% completion)</string>
 </resources>

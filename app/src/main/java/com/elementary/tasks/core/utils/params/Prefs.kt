@@ -503,4 +503,8 @@ class Prefs(
   var workflowUnacknowledgedRulesScheduled: Boolean
     get() = getBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, false)
     set(value) = putBoolean(PrefsConstants.WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED, value)
+
+  var routineRecurrenceResetScheduled: Boolean
+    get() = getBoolean(PrefsConstants.ROUTINE_RECURRENCE_RESET_SCHEDULED, false)
+    set(value) = putBoolean(PrefsConstants.ROUTINE_RECURRENCE_RESET_SCHEDULED, value)
 }

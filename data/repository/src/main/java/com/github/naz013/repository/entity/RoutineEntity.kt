@@ -33,7 +33,6 @@ internal data class RoutineEntity(
   val recurrenceType: String,
   val recurrencePayload: String,
 
-  val reminderId: String? = null,
   val lastResetAt: Long? = null,
 
   val createdAt: Long,
