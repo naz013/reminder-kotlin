@@ -32,23 +32,10 @@ Modules are nested under group folders (`core/`, `data/`, `ui/`, `logic/`, `feat
 `:repository-api`. See `docs/architecture.md` ("Module Groups") for the full group → module mapping.
 
 ```bash
-# Build a flavor (debug)
-./gradlew assembleFreeDebug
-./gradlew assembleProDebug
-
-# Run Kotlin-only module unit tests (core:domain, data:sync, data:cloud-api, etc.)
-./gradlew test
-
-# Run Android module unit tests for a specific flavor
-./gradlew testProDebugUnitTest
-./gradlew testFreeDebugUnitTest
-
-# Run every test in one module
-./gradlew :logic:logic-reminder:test
-./gradlew :app:testProDebugUnitTest
-
-# Run a single test class
-./gradlew :app:testProDebugUnitTest --tests "com.elementary.tasks.SomeClassTest"
+./gradlew assembleProDebug                       # build a flavor (debug)
+./gradlew test                                   # pure-Kotlin modules (core:domain, data:sync, etc.)
+./gradlew testProDebugUnitTest                   # Android modules, pro flavor (add a :module: prefix to scope it)
+./gradlew :app:testProDebugUnitTest --tests "com.elementary.tasks.SomeClassTest"   # single test class
 ```
 
 CI (`.github/workflows/build_and_test.yml`) runs `testProDebugUnitTest` for Android modules and `test` for
