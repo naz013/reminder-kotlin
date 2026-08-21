@@ -7,77 +7,64 @@ not a hardcoded constant - see `logic/logic-routine/src/main/kotlin/com/github/n
 See `docs/routines-feature-analysis-and-design.md` and `docs/routines-implementation-plan.md` for the
 original design and the corrections made against it during implementation.
 
-Since the previous version of this doc, the recurring-routine reset/history behavior was clarified and
+Since the original version of this doc, the recurring-routine reset/history behavior was clarified and
 implemented in full: at least one step is now mandatory to save a routine; a recurring routine's cycle
 anchors to `lastResetAt` set at save time (not immediately eligible for a same-day reset); and
 `RoutineRecurrenceResetUseCase` now writes a `RoutineExecutionRecord` (whatever was completed, even zero)
-before wiping steps at the next day-boundary check. See §4.4 of the design doc for the exact rules. §1.2
-below is unaffected in shape, just note that `RecordRoutineExecutionUseCase` already has one caller
-(the auto-reset path, `totalTimeSpentSeconds = 0`) before the execution screen becomes its second.
+before wiping steps at the next day-boundary check. See §4.4 of the design doc for the exact rules.
 
-**Cloud sync and local backup (previously §2) are now DONE** - see §5 below for what shipped instead of a
-plan. This doc covers what's still **left**. Items are ordered by what unblocks the most value next, not by
-the original design doc's component numbering.
-
----
-
-## 1. Focus runner execution screen (highest priority - the feature's core loop)
-
-Right now `RoutinePreviewScreen` has a step checklist but no "Start Routine" CTA, because there's nowhere for
-it to go. This is the biggest functional gap - without it, Routines is a fancy to-do list, not a guided
-habit runner.
-
-### 1.1 Domain/nav plumbing
-- Add `RoutineNavKey.Execute(id: String)` to
-  `feature/feature-routine/src/main/kotlin/com/github/naz013/feature/routine/RoutineNavKey.kt`.
-- Register the entry in `RoutineNavGraph.kt`'s `routineEntries(...)`.
-- Wire `RoutinePreviewScreen`'s (currently absent) "Start Routine" button and
-  `RoutinesListScreen`'s existing `onStartClick` (currently routes to Preview as a stand-in - see
-  `RoutinesListViewModel.onStartClick`) to `RoutineNavKey.Execute(id)` instead.
-
-### 1.2 `RoutineExecutionViewModel`
-New file: `feature/feature-routine/.../execution/RoutineExecutionViewModel.kt`. Needs:
-- Load the routine (`RoutineRepository.getById`), sorted steps (`Routine.sortedSteps`).
-- A ticking countdown: `viewModelScope.launch { while (isActive) { delay(1000); tick() } }` gated by a
-  `isPaused` flag, decrementing `remainingSeconds` for the active step.
-- State machine: `currentStepIndex`, `remainingSeconds`, `isPaused`, `completedStepIds: MutableSet<String>`.
-- Actions: play/pause, skip step (advance without adding to `completedStepIds`), complete step (add to
-  `completedStepIds`, advance), +1 minute (`remainingSeconds += 60`), previous step.
-- Auto-advance when `remainingSeconds` hits 0 **and** `Routine.autoAdvance` is true (already a domain field,
-  currently unused by any use case - this is its first consumer).
-- On finishing the last step (or user exits early): call `RecordRoutineExecutionUseCase` from
-  `logic:logic-routine` (already implemented - `routineId`, `completedStepIds.toList()`,
-  `totalTimeSpentSeconds` accumulated across the session, `totalStepsCount = steps.size`).
-- Untimed steps (`durationSeconds == 0`): no countdown: show a "Complete Step" button as the only way to
-  advance, no auto-advance.
-
-### 1.3 `RoutineExecutionScreen`
-Composable using `ui:ui-routine`'s `CircularStepTimer` (already built - takes `progress: Float` as
-*remaining* fraction and a `timeLabel: String`). Layout per the original design doc's §4.5 spec: step
-title, "Step N of M" counter, scheduled-time indicator, the timer ring, and Play/Pause, +1 Min, Skip,
-Previous, Complete Step controls. Finish with a simple completion summary (total time, steps
-completed/skipped) rather than the original doc's "celebration dialog" animation - that's pure polish and
-shouldn't block the runner from working end-to-end.
-
-### 1.4 Sound + haptics
-`Routine.soundAlertsEnabled` is also an unused domain field. On step transition, if enabled: haptic tick
-(`LocalHapticFeedback.current.performHapticFeedback(...)`, same pattern as `ColorSlider`/`SubTasksValueEditor`)
-and optionally a short tone. Check how reminder alarms play their tone
-(`ui:ui-notification-settings` or `core:platform-*`) before adding a new sound-playing mechanism - there may
-already be a lightweight "play a short system sound" helper to reuse instead of pulling in `MediaPlayer`
-directly.
-
-### 1.5 Backgrounding behavior
-The design doc flags "verify backgrounding and resuming the app during an active focus timer keeps timer
-state intact" as a manual test. A `ViewModel`-scoped `while(isActive)` ticker survives configuration change
-but **not** process death, and drifts if the process is merely backgrounded for a while (a `delay(1000)`
-loop is not wall-clock-accurate). If this matters for v1, compute `remainingSeconds` from a stored
-`stepStartedAtMillis` + `System.currentTimeMillis()` on each tick/resume instead of decrementing a counter -
-cheap to get right now, expensive to retrofit later.
+**The focus runner, full recurrence support, tag chips, and cloud sync/local backup are now all DONE** -
+sections §1-§3 and §5 below describe what shipped and where it deviated from the original plan, rather than
+being forward-looking plans anymore. This doc covers what's still **left**: PRO Insights (§4), and the
+smaller gaps/localization/tests/open-decisions sections that follow.
 
 ---
 
-## 2. Full recurrence support
+## 1. Focus runner execution screen (DONE)
+
+`RoutineNavKey.Execute(id)` + `RoutineExecutionScreen`/`RoutineExecutionViewModel` in
+`feature/feature-routine/.../execution/`, reachable from both `RoutinesListScreen`'s start button and a new
+"Start Routine" FAB on `RoutinePreviewScreen`. What shipped, and where it deviates from the original plan
+below:
+
+- **Countdown survives backgrounding by construction**, not as a follow-up: instead of a `delay(1000)` loop
+  decrementing a counter (§1.5's flagged drift risk), the ticker recomputes `remainingSeconds` each tick from
+  an absolute wall-clock deadline (`stepDeadlineAtMillis`), so the displayed time is correct even after the
+  process is backgrounded for a while. Pause freezes the remaining millis instead of stopping a counter;
+  resume re-anchors the deadline to `now + frozenRemaining`.
+- **Auto-advance marks the step completed.** When `Routine.autoAdvance` is true and a timed step's countdown
+  hits zero, the runner advances and treats that step as completed (not skipped) - the allotted time ran out
+  and the runner moved on, matching typical Pomodoro/habit-timer UX. This wasn't specified in the original
+  plan and was a judgment call.
+- **Two distinct exit paths**, to avoid double-recording: completing/skipping the last step transitions to an
+  in-screen `Finished` summary state (total time, steps completed) and records the session there; pressing
+  back mid-run instead records silently (whatever was completed so far) and navigates away immediately,
+  without showing the summary - leaving via back is "I'm done for now," not "I finished."
+- **Sound + haptics**: `Routine.soundAlertsEnabled` triggers a short `android.media.ToneGenerator` beep
+  (`TONE_PROP_BEEP`) on every step transition - no bundled audio asset, no existing "play a short system
+  sound" helper was found anywhere in the codebase to reuse, so this is a new, minimal, self-contained
+  mechanism local to `RoutineExecutionViewModel`. Haptics reuse the existing `stepTransitionEvent` ->
+  `LocalHapticFeedback` pattern, gated by the same `AppPreferences.hapticsEnabled` flag `RoutineEditViewModel`
+  already uses.
+- **Icons**: no Play/Pause/Skip/Previous drawable assets existed anywhere in the app. Rather than hand-add
+  new vector XML to `DrawableCatalog`, this uses `androidx.compose.material:material-icons-extended`
+  (`Icons.Filled.PlayArrow`/`Pause`/`SkipNext`/`SkipPrevious`/`Check`) directly - already a dependency of
+  `feature-routine` and already used the same way (bypassing `DrawableCatalog`/`AppIcons`) in
+  `feature-workflow`/`feature-note`/several `ui-common` foundation components, so this follows an existing,
+  accepted precedent rather than introducing a new one.
+- Untimed steps (`durationSeconds == 0`) show only Previous + Complete Step, per the original plan's "no
+  countdown, Complete Step is the only way to advance" - Play/Pause/+1 Min/Skip are hidden entirely rather
+  than shown-disabled.
+- **Not done**: no ViewModel test suite for `RoutineExecutionViewModel` (see §8 - the ticker's interaction
+  with `mockDispatcherProvider()`'s `Dispatchers.Unconfined` needs either a scheduler-aware test dispatcher
+  or restructuring the ticker as an injectable strategy before it can be tested without leaking a real-delay
+  background loop per test; deferred rather than done carelessly). No celebration-dialog animation on finish
+  (plain summary screen only, as the original plan already anticipated deferring). Not exercised on a device/
+  emulator - compile + unit test + detekt verified only.
+
+---
+
+## 2. Full recurrence support (DONE)
 
 `RoutineEditScreen.kt:163-169` has exactly one control - a `Switch` bound to
 `RoutineEditState.repeatsDaily` - and `RoutineEditViewModel.kt:218` collapses it to just two possible
@@ -86,64 +73,33 @@ outcomes: `RecurrenceRule.Daily()` or `null`. The domain model and every downstr
 Room layer) already handle the full `RecurrenceRule` sealed class - `Weekly(weekdays: List<Int>)`,
 `Monthly(dayOfMonth: Int)`, etc. - so this is purely a UI gap, not a data-model one.
 
-1. **Don't reuse `feature-reminder`'s builder.** `BuildReminderScreen`'s recurrence machinery
-   (`build/reminder/decompose/*Decomposer.kt`, `RecurrenceRuleCalculator.kt`,
-   `ReminderPredictionCalculator.kt`) is built around reminder-specific concerns - iCal decomposition,
-   next-fire-time prediction, location-based triggers - that Routines doesn't need. Pulling it in would drag
-   `feature-routine` into a dependency it shouldn't have and inherit UI built for a different mental model
-   (a single upcoming "next fire" vs. a routine's own weekly cycle). A small dedicated picker in
-   `feature-routine` is the right scope.
-2. **New state shape.** Replace `RoutineEditState.repeatsDaily: Boolean` with something that can represent
-   `Once` (the current `false`/no-recurrence case - keep this as the default, matching the "repeat is
-   opt-in" behavior users already have), `Daily`, `Weekly(weekdays)`, and `Monthly(dayOfMonth)`. A sealed
-   `RoutineRecurrenceOption` UI-state enum (mirroring how `RoutineEditState`'s other fields already separate
-   UI state from domain types) keeps `RoutineEditScreen` from importing `RecurrenceRule` directly.
-3. **New composable**: a segmented control or dropdown for the four options, plus a conditional row that
-   only appears for `Weekly` (7-day toggle chips - check `ui-common` for an existing day-of-week selector
-   before building one; `feature-reminder`'s decomposers imply one exists somewhere for the reminder builder,
-   worth a quick search first even though the builder itself shouldn't be reused) or `Monthly` (a day-of-month
-   number picker).
-4. **`RoutineEditViewModel`**: replace the `if (stateValue.repeatsDaily) RecurrenceRule.Daily() else null`
-   line with a mapping from the new UI-state enum to the corresponding `RecurrenceRule` variant. The
-   mandatory-steps and `lastResetAt`-anchoring logic around it is unaffected.
-5. **Reset semantics don't change.** `RoutineRecurrenceResetUseCase` already resets "at midnight regardless
-   of recurrence" per the flow the user specified earlier in this feature's design - Weekly/Monthly routines
-   just mean the reset check evaluates a different `RecurrenceRule` variant to decide *whether* today is a
-   reset boundary, not a new code path. Confirm `RoutineRecurrenceResetUseCase`'s existing variant handling
-   (it should already switch on `RecurrenceRule` broadly, not just `Daily`) before assuming this needs
-   changes at all.
+`RoutineEditScreen`'s repeat control is now a 4-way picker - Never/Daily/Weekly/Monthly - instead of a single
+"repeats daily" switch, with a 7-day chip row for Weekly and a day-of-month stepper (capped 1-28, sidestepping
+end-of-month ambiguity) for Monthly. Key decisions made while building it:
+
+- **Didn't reuse `feature-reminder`'s builder** - its decompose/prediction machinery is built for a different
+  mental model (a single upcoming "next fire," iCal, location triggers) that Routines doesn't need; a small
+  dedicated `RoutineRecurrenceOption` sealed UI-state class plus a purpose-built picker composable was the
+  right scope instead, exactly as originally planned.
+- **No existing day-of-week selector was reused** - none was found outside `feature-reminder`'s
+  reminder-specific builder-item machinery, so `RoutineEditScreen` got its own small `WeekdaySelector`
+  composable (`ui-common`'s existing `mon`/`tue`/.../`sun` abbreviated strings, reused as-is).
+- **`RoutineRecurrenceResetUseCase` needed no changes** - confirmed it already branches only on
+  `recurrence == null` vs. non-null, not on the specific `RecurrenceRule` variant, so Weekly/Monthly routines
+  reset on the same "midnight regardless of recurrence" schedule Daily routines already had.
+- Weekly requires at least one day selected before saving (mirrors the mandatory-steps validation pattern).
+- `RoutinePreviewScreen`'s recurrence label was also updated to describe each variant properly (weekday list /
+  day-of-month) instead of collapsing every non-null recurrence to "Repeats daily."
 
 ---
 
-## 3. Tag chips
+## 3. Tag chips (DONE)
 
-`RoutineCard`'s `tagsContent` slot (`ui/ui-routine/.../RoutineCard.kt:58`) exists and is already rendered in
-the card layout (`RoutineCard.kt:112-114`) but every call site passes `null`/omits it - no routine anywhere
-shows its tags.
-
-1. **Per-routine tag lookup is the only real design question here.** `TagAssignmentRepository`
-   (`data/repository-api/.../TagAssignmentRepository.kt`) only exposes single-item lookups
-   (`getTagsForItem(itemId, itemType)`, `observeTagsForItem(...)`) - there's no batch
-   `getTagsForItems(itemIds, itemType)`. Checked how Notes (the other list screen with a `TagChipStateAdapter`
-   dependency) handles this: it doesn't - `NotesViewModel`'s `TagAssignmentRepository` usage is only for the
-   filter row's tag list and `getItemIdsForTag` (filtering by *one selected* tag), not per-card chip
-   rendering. **There's no existing precedent in this codebase for per-list-item tag chips at list scale.**
-   Two honest options:
-   - Call `getTagsForItem` once per visible routine (N+1, but routine lists are realistically small - tens,
-     not thousands - so likely fine in practice; simplest to ship).
-   - Add a batch method to `TagAssignmentRepository`/its Room DAO (`WHERE item_id IN (:ids)`) if N+1 turns
-     out to matter, either for this or as a reusable improvement Notes could also adopt later.
-   Default to the first option unless there's a reason to believe routine lists will be large - don't build
-   the batch query preemptively.
-2. **`RoutinesListViewModel`**: already has `tagAssignmentRepository` and `tagChipStateAdapter` wired
-   (`RoutinesListViewModel.kt:43-44`, currently only feeding `allTags` for the filter row at line 62-63).
-   Add a per-routine `List<TagChipState>` alongside each `UiRoutineListItem`, refreshed whenever the routine
-   list reloads.
-3. **`RoutinePreviewViewModel`**: single-item screen, so this is just one `getTagsForItem` call - no N+1
-   concern there.
-4. **Wire the UI**: `RoutinesListScreen`'s card rendering and `RoutinePreviewScreen`'s banner both pass
-   `tagsContent = { TagChipRow(tags = ...) }` (from `ui-tag`) into their respective `RoutineCard`/preview
-   layout calls.
+`RoutineCard`'s `tagsContent` slot and `RoutinePreviewScreen`'s banner now render each routine's tags via
+`ui-tag`'s `TagChipRow`. As anticipated, there was no existing batch tag-lookup precedent anywhere in the
+codebase (Notes' `TagAssignmentRepository` usage is filter-only, not per-card) - shipped with one
+`getTagsForItem` call per visible routine (N+1) rather than adding a speculative batch API. Revisit only if a
+real-world routine list turns out to be large enough for this to matter in practice.
 
 ---
 
@@ -155,8 +111,8 @@ shows its tags.
   `getAll()`, `getByRoutineId()`, `getByDateRange()`).
 - Surface "Routine Streaks" / "Focus Time Trends" / "Step Completion Consistency" cards in
   `InsightsScreen.kt`/`InsightsViewModel.kt`.
-- This depends on nothing from §1 - it can be built in parallel once real execution records exist (which
-  requires §1 to actually be reachable, even behind the flag, to generate test data). `RoutineExecutionRecord`
+- §1 (execution screen) is done, so real `RoutineExecutionRecord`s can now actually be generated - this is
+  the only remaining item that blocks on it, and is unblocked now. `RoutineExecutionRecord`
   is **not** cloud-synced (see §5) - insights should be computed per-device from local execution history,
   same as everything else `feature-insights` already aggregates; don't assume cross-device data here.
 
@@ -236,11 +192,18 @@ languages without review. Search for these keys to find what needs translating:
   calls for; `RoutineEditScreen`'s step rows don't yet have per-step test tags (add them alongside whichever
   E-case needs to target a specific step, following `SubTasksValueEditor.kt`'s
   `shopItemCheckTestTag(itemId)`-style helper functions rather than inline tag strings).
-- **ViewModel tests**: none of `RoutinesListViewModelTest`/`RoutineEditViewModelTest`/
-  `RoutinePreviewViewModelTest` exist yet (only `logic-routine`'s use-case-level tests do). Worth adding
-  before the execution screen lands, since that ViewModel's countdown/pause/auto-advance state machine is
-  the highest-risk piece to get right and will be much easier to test with the surrounding ViewModels
-  already covered as a pattern reference.
+- **ViewModel tests**: `RoutineEditViewModelTest` exists (mandatory-steps/recurrence-anchoring/full-recurrence
+  coverage). `RoutinesListViewModelTest`, `RoutinePreviewViewModelTest`, and `RoutineExecutionViewModelTest`
+  still don't. The last one is the highest-risk gap: `RoutineExecutionViewModel`'s ticker is launched with
+  `viewModelScope.launch(dispatcherProvider.main())` and calls real `delay(1000)`; under
+  `mockDispatcherProvider()` that resolves to plain `Dispatchers.Unconfined` (not a `TestDispatcher`), which
+  does *not* auto-advance virtual time the way `runTest {}`'s own scheduler does - so the ticker coroutine
+  just sits on a real 1-second delay for the lifetime of the test JVM, un-cancelled, since nothing calls
+  `onCleared()` on a bare-constructed ViewModel in a test. It happens not to corrupt assertions (each test
+  gets a fresh instance, and the delay never resolves inside a single `runTest` window), but it is a real
+  leaked-coroutine smell worth fixing before adding tests here: either give `BaseTest` a shared
+  `TestDispatcher`/scheduler that `dispatcherProvider.main()` can return, or make the ticker's dispatcher
+  injectable/mockable directly, before writing `RoutineExecutionViewModelTest`.
 - **Migration test**: `Migration32To33Test` was scoped out because no Room migration test exists anywhere
   in this repo yet (not a Routines-specific gap - flagged in case a project-wide migration-testing pass ever
   happens, at which point Routines' migration should be included).
@@ -257,20 +220,21 @@ These block cleanly finishing the items above rather than being implementation w
 2. **Step-level notifications.** Should a step's `scheduledTime` fire its own notification, or only the
    routine's linked `ReminderV2` (once §6's `reminderId` wiring exists)? Blocks designing
    `RoutineScheduleBridge`.
-3. **When to flip `RoutineConfig.isEnabled` to `true`.** Realistically after §1 (execution screen) at
-   minimum - shipping a Routines tile that can create/preview but never *run* a routine would be a strange
-   half-feature to expose, even behind a flag meant mainly for internal QA builds.
+3. **When to flip `RoutineConfig.isEnabled` to `true`.** §1 (execution screen), §2 (full recurrence), §3 (tag
+   chips), and §5 (cloud sync) are now all done - the functional core of the feature is complete. The
+   remaining blockers to flipping the flag for real users are product/QA calls, not implementation gaps: at
+   minimum a device/emulator walkthrough (nothing in this feature has been manually run yet - only compiled,
+   unit-tested, and detekt-checked) and a decision on #1 (free vs. PRO gating).
 
 ---
 
 ## Suggested sequencing
 
-1. §1 (execution screen) - makes the feature actually usable end-to-end, generates real execution data for
-   §4 (Insights) to consume, and is the one piece a QA pass can't route around.
-2. §3 (tag chips) - cheap, self-contained, improves the two screens already shipped.
-3. §2 (full recurrence support) - unblocks flipping `RoutineConfig.isEnabled` on for real users; cloud sync
-   (§5) is already done, so this and §1 are what's left before the flag can seriously go live.
-4. §4 (Insights) - depends on §1 for meaningful data, otherwise independent.
-5. §7 (localization) - can happen any time, ideally batched once the string set stabilizes (still adding
-   strings for §1's execution screen and §2's recurrence picker) rather than repeated per-PR.
-6. §8 (tests) - ideally alongside each item above, not batched at the end.
+1. ~~§1 (execution screen)~~, ~~§2 (full recurrence)~~, ~~§3 (tag chips)~~, ~~§5 (cloud sync/backup)~~ - all
+   done. A manual device/emulator pass over all four (never yet exercised outside compile+unit-test+detekt)
+   is the natural next step before considering the flag live.
+2. §4 (Insights) - unblocked now that §1 generates real execution data; otherwise independent.
+3. §7 (localization) - can happen any time, ideally batched once the string set stabilizes rather than
+   repeated per-PR (strings have been added across all four completed items above).
+4. §8 (tests) - ideally alongside each item above, not batched at the end; `RoutineExecutionViewModel`'s
+   ticker in particular needs a testing approach decided (see §8) before it can be covered.

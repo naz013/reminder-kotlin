@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -183,7 +182,7 @@ internal class RoutinesListViewModel(
   }
 
   fun onStartClick(id: String) {
-    navigationEvent.emit(NavigationEvent.OpenPreview(id))
+    navigationEvent.emit(NavigationEvent.OpenExecute(id))
   }
 
   sealed interface NavigationEvent {
@@ -192,6 +191,10 @@ internal class RoutinesListViewModel(
     ) : NavigationEvent
 
     data class OpenPreview(
+      val id: String
+    ) : NavigationEvent
+
+    data class OpenExecute(
       val id: String
     ) : NavigationEvent
   }

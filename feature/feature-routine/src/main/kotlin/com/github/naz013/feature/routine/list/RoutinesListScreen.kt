@@ -33,6 +33,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.routine.RoutineCard
 import com.github.naz013.ui.tag.TagChipRow
 import com.github.naz013.ui.tag.TagFilterRow
@@ -142,10 +143,12 @@ private fun SortMenu(
         PopupMenuItem(
           id = RoutineSortOrder.CREATION_DATE.ordinal,
           title = stringResource(R.string.sort_by_date),
+          iconRes = if (sortOrder == RoutineSortOrder.CREATION_DATE) DrawableCatalog.Fluent.Checkmark else null,
         ),
         PopupMenuItem(
           id = RoutineSortOrder.NAME.ordinal,
           title = stringResource(R.string.sort_by_name),
+          iconRes = if (sortOrder == RoutineSortOrder.NAME) DrawableCatalog.Fluent.Checkmark else null,
         ),
       ),
       onItemClick = { id -> onSortOrderSelected(RoutineSortOrder.entries[id]) },

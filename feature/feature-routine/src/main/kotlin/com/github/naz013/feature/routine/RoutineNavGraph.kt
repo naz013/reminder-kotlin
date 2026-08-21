@@ -3,11 +3,16 @@ package com.github.naz013.feature.routine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.feature.routine.edit.RoutineEditScreen
 import com.github.naz013.feature.routine.edit.RoutineEditState
 import com.github.naz013.feature.routine.edit.RoutineEditViewModel
+import com.github.naz013.feature.routine.execution.RoutineExecutionScreen
+import com.github.naz013.feature.routine.execution.RoutineExecutionState
+import com.github.naz013.feature.routine.execution.RoutineExecutionViewModel
 import com.github.naz013.feature.routine.list.RoutinesListScreen
 import com.github.naz013.feature.routine.list.RoutinesListState
 import com.github.naz013.feature.routine.list.RoutinesListViewModel
@@ -25,6 +30,7 @@ fun EntryProviderScope<NavKey>.routineEntries(
   entry<RoutineNavKey.List> { RoutinesListEntry(backStack) }
   entry<RoutineNavKey.Edit> { key -> RoutineEditEntry(key, backStack, onManageTagsClick) }
   entry<RoutineNavKey.Preview> { key -> RoutinePreviewEntry(key, backStack) }
+  entry<RoutineNavKey.Execute> { key -> RoutineExecutionEntry(key, backStack) }
 }
 
 @Composable
@@ -35,6 +41,7 @@ private fun RoutinesListEntry(backStack: MutableList<NavKey>) {
     when (event) {
       is RoutinesListViewModel.NavigationEvent.OpenEdit -> backStack.add(RoutineNavKey.Edit(event.id))
       is RoutinesListViewModel.NavigationEvent.OpenPreview -> backStack.add(RoutineNavKey.Preview(event.id))
+      is RoutinesListViewModel.NavigationEvent.OpenExecute -> backStack.add(RoutineNavKey.Execute(event.id))
     }
   }
 
@@ -99,6 +106,7 @@ private fun RoutinePreviewEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is RoutinePreviewViewModel.NavigationEvent.OpenEdit -> backStack.add(RoutineNavKey.Edit(event.id))
+      is RoutinePreviewViewModel.NavigationEvent.OpenExecute -> backStack.add(RoutineNavKey.Execute(event.id))
       RoutinePreviewViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
     }
   }
@@ -112,5 +120,36 @@ private fun RoutinePreviewEntry(
     onResetStepsClick = viewModel::onResetStepsClick,
     onDeleteClick = viewModel::onDeleteClick,
     onStepCheckToggle = viewModel::onStepCheckToggle,
+    onStartClick = viewModel::onStartClick,
+  )
+}
+
+@Composable
+private fun RoutineExecutionEntry(
+  key: RoutineNavKey.Execute,
+  backStack: MutableList<NavKey>,
+) {
+  val viewModel = koinViewModel<RoutineExecutionViewModel> { parametersOf(key.id) }
+
+  viewModel.navigationEvent.ObserveEvent { event ->
+    when (event) {
+      RoutineExecutionViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
+    }
+  }
+
+  val hapticFeedback = LocalHapticFeedback.current
+  viewModel.stepTransitionEvent.ObserveEvent {
+    hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentTick)
+  }
+
+  val state by viewModel.state.collectAsState(RoutineExecutionState.Loading)
+  RoutineExecutionScreen(
+    state = state,
+    onBackClick = viewModel::onBackClick,
+    onPlayPauseClick = viewModel::onPlayPauseClick,
+    onAddMinuteClick = viewModel::onAddMinuteClick,
+    onSkipClick = viewModel::onSkipClick,
+    onPreviousStepClick = viewModel::onPreviousStepClick,
+    onCompleteStepClick = viewModel::onCompleteStepClick,
   )
 }

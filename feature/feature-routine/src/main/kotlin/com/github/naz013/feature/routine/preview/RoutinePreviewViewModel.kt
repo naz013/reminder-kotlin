@@ -138,6 +138,10 @@ internal class RoutinePreviewViewModel(
     navigationEvent.emit(NavigationEvent.OpenEdit(id))
   }
 
+  fun onStartClick() {
+    navigationEvent.emit(NavigationEvent.OpenExecute(id))
+  }
+
   fun onDeleteClick() {
     viewModelScope.launch(dispatcherProvider.io()) {
       deleteRoutineUseCase(id)
@@ -153,6 +157,10 @@ internal class RoutinePreviewViewModel(
       val id: String
     ) : NavigationEvent
 
+    data class OpenExecute(
+      val id: String
+    ) : NavigationEvent
+
     data object Back : NavigationEvent
   }
 
@@ -163,7 +171,13 @@ internal class RoutinePreviewViewModel(
 
     /** 0=Sunday..6=Saturday, matching the app-wide weekday convention. */
     private val WEEKDAY_LABEL_RES = listOf(
-      R.string.sun, R.string.mon, R.string.tue, R.string.wed, R.string.thu, R.string.fri, R.string.sat,
+      R.string.sun,
+      R.string.mon,
+      R.string.tue,
+      R.string.wed,
+      R.string.thu,
+      R.string.fri,
+      R.string.sat,
     )
   }
 }

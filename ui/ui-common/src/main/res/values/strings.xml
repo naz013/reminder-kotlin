@@ -1186,4 +1186,14 @@
     <string name="repeat_weekdays_required">Select at least one day</string>
     <string name="decrease_day_of_month">Decrease day of month</string>
     <string name="increase_day_of_month">Increase day of month</string>
+    <string name="step_of_count">Step %1$d of %2$d</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="skip_step">Skip</string>
+    <string name="complete_step">Complete step</string>
+    <string name="previous_step">Previous step</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Routine finished</string>
+    <string name="routine_execution_total_time">Total time: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d of %2$d steps completed</string>
 </resources>

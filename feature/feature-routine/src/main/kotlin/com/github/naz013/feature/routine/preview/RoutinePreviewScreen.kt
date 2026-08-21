@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,10 +52,20 @@ internal fun RoutinePreviewScreen(
   onResetStepsClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onStepCheckToggle: (stepId: String) -> Unit,
+  onStartClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
+    floatingActionButton = {
+      if (state is RoutinePreviewState.Ready) {
+        ExtendedFloatingActionButton(
+          onClick = onStartClick,
+          icon = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
+          text = { Text(stringResource(R.string.start_routine)) },
+        )
+      }
+    },
     topBar = {
       TopAppBar(
         title = { },
@@ -162,9 +176,17 @@ private fun RoutineStepChecklistRow(
       )
       Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         step.scheduledTime?.let {
-          Text(text = it, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+          Text(
+            text = it,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+          )
         }
-        Text(text = step.durationLabel, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(
+          text = step.durationLabel,
+          style = MaterialTheme.typography.labelMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
       }
     }
   }

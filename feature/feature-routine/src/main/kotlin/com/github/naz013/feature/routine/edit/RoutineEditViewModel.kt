@@ -248,7 +248,8 @@ internal class RoutineEditViewModel(
     steps: List<RoutineStepUiState>,
     recurrenceOption: RoutineRecurrenceOption,
   ): Boolean {
-    val recurrenceIsValid = recurrenceOption !is RoutineRecurrenceOption.Weekly || recurrenceOption.weekdays.isNotEmpty()
+    val recurrenceIsValid = recurrenceOption !is RoutineRecurrenceOption.Weekly ||
+      recurrenceOption.weekdays.isNotEmpty()
     return title.isNotBlank() && steps.isNotEmpty() && recurrenceIsValid
   }
 

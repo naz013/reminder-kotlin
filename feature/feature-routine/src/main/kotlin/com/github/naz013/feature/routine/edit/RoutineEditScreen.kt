@@ -44,7 +44,8 @@ private val DURATION_PRESETS_SECONDS = listOf(0, 300, 600, 900, 1800)
 private const val MIN_DAY_OF_MONTH = 1
 private const val MAX_DAY_OF_MONTH = 28
 
-/** 0=Sunday..6=Saturday, matching the app-wide weekday convention (see [com.github.naz013.domain.reminder.v2.RecurrenceRule.RelativeMonthly]'s kdoc). */
+/** 0=Sunday..6=Saturday, matching the app-wide weekday convention (see
+ * [com.github.naz013.domain.reminder.v2.RecurrenceRule.RelativeMonthly]'s kdoc). */
 private val WEEKDAY_LABELS = listOf(
   0 to R.string.sun,
   1 to R.string.mon,

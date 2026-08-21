@@ -16,4 +16,9 @@ sealed interface RoutineNavKey : NavKey {
   data class Preview(
     val id: String
   ) : RoutineNavKey
+
+  @Serializable
+  data class Execute(
+    val id: String
+  ) : RoutineNavKey
 }
