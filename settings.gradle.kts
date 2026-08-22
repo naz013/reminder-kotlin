@@ -69,6 +69,7 @@ include(":ui:ui-map")
 include(":ui:ui-note")
 include(":ui:ui-notification-settings")
 include(":ui:ui-reminder")
+include(":ui:ui-routine")
 include(":ui:ui-tag")
 
 // logic - cross-feature business logic
@@ -78,6 +79,7 @@ include(":logic:logic-group")
 include(":logic:logic-note")
 include(":logic:logic-notification-action")
 include(":logic:logic-reminder")
+include(":logic:logic-routine")
 include(":logic:logic-schedule")
 include(":logic:logic-tag")
 include(":logic:logic-workflow")
@@ -96,6 +98,7 @@ include(":feature:feature-insights")
 include(":feature:feature-workflow")
 include(":feature:feature-settings")
 include(":feature:feature-places")
+include(":feature:feature-routine")
 
 // extensions - cross-feature, flavor/runtime-gated additions app pulls in as a unit
 include(":extensions:appwidgets")

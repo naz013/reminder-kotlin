@@ -1103,7 +1103,7 @@
     <string name="streak_current">Nuværende streak: %1$d dage</string>
     <string name="streak_longest">Længste streak: %1$d dage</string>
     <string name="streak_fired_count">Udløst %1$d gange i de sidste 90 dage</string>
-    <string name="no_insights_yet">Ingen påmindelsesaktivitet i de sidste 90 dage endnu</string>
+    <string name="no_insights_yet">Ingen aktivitet i de sidste 90 dage endnu</string>
 
     <string name="upcoming_events">Kommende</string>
 
@@ -1154,4 +1154,51 @@
 
     <string name="merge">Flet</string>
     <string name="notes_merge_selected_confirm">Flet %1$d noter til én? De oprindelige noter bliver slettet.</string>
+
+    <string name="routines">Rutiner</string>
+    <string name="new_routine">Ny rutine</string>
+    <string name="no_routines">Ingen rutiner endnu</string>
+    <string name="routine_description_hint">Beskrivelse (valgfri)</string>
+    <string name="routine_steps">Trin</string>
+    <string name="add_step">Tilføj trin</string>
+    <string name="step_title_hint">Trinnets titel</string>
+    <string name="duration_none">Ingen</string>
+    <string name="repeat_daily">Gentages dagligt</string>
+    <string name="start_routine">Start rutine</string>
+    <string name="reset_steps">Nulstil trin</string>
+    <string name="reset_steps_confirmation">Nulstil alle trin til ikke markeret?</string>
+    <string name="routine_step_count">%1$d trin</string>
+    <string name="delete_routine_confirmation">Slet denne rutine permanent?</string>
+    <string name="move_step_up">Flyt trin op</string>
+    <string name="move_step_down">Flyt trin ned</string>
+    <string name="sort">Sortér</string>
+    <string name="sort_by_date">Efter oprettelsesdato</string>
+    <string name="sort_by_name">Efter navn</string>
+    <string name="routine_on_demand">Efter behov</string>
+    <string name="routine_steps_required">Tilføj mindst ét trin</string>
+    <string name="repeat_none">Aldrig</string>
+    <string name="repeat_weekly">Gentages ugentligt</string>
+    <string name="repeat_monthly">Gentages månedligt</string>
+    <string name="repeat_weekly_days">Ugentligt: %1$s</string>
+    <string name="repeat_monthly_day">Månedligt den %1$d.</string>
+    <string name="repeat_weekdays_required">Vælg mindst én dag</string>
+    <string name="step_of_count">Trin %1$d af %2$d</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Genoptag</string>
+    <string name="skip_step">Spring over</string>
+    <string name="complete_step">Fuldfør trin</string>
+    <string name="previous_step">Forrige trin</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Rutine fuldført</string>
+    <string name="routine_execution_total_time">Samlet tid: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d af %2$d trin fuldført</string>
+    <string name="routine_insights_section">Rutinestreaks</string>
+    <string name="routine_focus_time_total">Samlet fokustid: %1$s (seneste 90 dage)</string>
+    <string name="routine_insight_most_skipped">Oftest oversprunget trin: %1$s (%2$d%% fuldført)</string>
+    <string name="routine_icon">Rutineikon</string>
+    <string name="no_icon">Intet ikon</string>
+
+    <string name="in_app_notification_banner">Notifikationsbanner i appen</string>
+    <string name="in_app_notification_banner_enabled">Vis et banner i appen, når en påmindelse eller fødselsdagsnotifikation udløses</string>
+    <string name="in_app_notification_banner_disabled">Vis kun systemnotifikationen</string>
 </resources>

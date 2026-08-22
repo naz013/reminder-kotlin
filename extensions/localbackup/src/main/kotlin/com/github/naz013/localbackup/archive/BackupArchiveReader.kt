@@ -7,6 +7,8 @@ import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.routine.Routine
+import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.files.DataConverter
 import java.io.ByteArrayInputStream
 import java.io.DataInputStream
@@ -29,6 +31,8 @@ internal class BackupArchiveReader(
     val presets = mutableListOf<RecurPreset>()
     val tags = mutableListOf<Tag>()
     val tagAssignments = mutableListOf<TagAssignment>()
+    val routines = mutableListOf<Routine>()
+    val routineExecutions = mutableListOf<RoutineExecutionRecord>()
 
     val count = dataInput.readInt()
     repeat(count) {
@@ -43,11 +47,13 @@ internal class BackupArchiveReader(
         is RecurPreset -> presets += item
         is Tag -> tags += item
         is TagAssignment -> tagAssignments += item
+        is Routine -> routines += item
+        is RoutineExecutionRecord -> routineExecutions += item
         else -> Unit
       }
     }
 
-    return BackupEnvelope(reminders, groups, birthdays, places, presets, tags, tagAssignments)
+    return BackupEnvelope(reminders, groups, birthdays, places, presets, tags, tagAssignments, routines, routineExecutions)
   }
 }
 

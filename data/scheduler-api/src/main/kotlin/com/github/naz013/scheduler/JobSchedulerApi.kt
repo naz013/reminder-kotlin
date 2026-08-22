@@ -13,6 +13,8 @@ interface JobSchedulerApi {
 
   fun scheduleWorkflowUnacknowledgedCheck()
 
+  fun scheduleRoutineRecurrenceResetCheck()
+
   fun scheduleBirthdayPermanent()
 
   fun cancelBirthdayPermanent()

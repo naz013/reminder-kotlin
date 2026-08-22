@@ -10,6 +10,7 @@ android {
 dependencies {
   implementation(project(":core:domain"))
   implementation(project(":data:repository-api"))
+  implementation(project(":logic:logic-routine"))
   implementation(project(":core:logging-api"))
   implementation(project(":core:feature-common"))
   implementation(project(":core:platform-common"))

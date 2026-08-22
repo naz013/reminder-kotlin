@@ -18,6 +18,7 @@ import com.elementary.tasks.module.locationapi.LocationTrackingApiImpl
 import com.elementary.tasks.module.logicnotificationaction.AppBirthdayAlertHandlerFactory
 import com.elementary.tasks.module.logicnotificationaction.AppReminderAlertHandlerFactory
 import com.elementary.tasks.module.logicnotificationaction.DoNotDisturbPreferencesImpl
+import com.elementary.tasks.module.logicnotificationaction.InAppAlertPreferencesImpl
 import com.elementary.tasks.module.logicnotificationaction.NotificationGatewayImpl
 import com.elementary.tasks.module.logicnotificationaction.PhoneCallStateProviderImpl
 import com.elementary.tasks.module.logicnotificationaction.WearPreferencesImpl
@@ -53,6 +54,7 @@ import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
 import com.github.naz013.feature.settings.troubleshooting.TroubleshootingCacheUtil
 import com.github.naz013.location.LocationTrackingApi
 import com.github.naz013.logic.notificationaction.DoNotDisturbPreferences
+import com.github.naz013.logic.notificationaction.InAppAlertPreferences
 import com.github.naz013.logic.notificationaction.NotificationGateway
 import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
 import com.github.naz013.logic.notificationaction.WearPreferences
@@ -120,6 +122,7 @@ val libModule = module {
   // logic notification action
   factory { NotificationGatewayImpl(get()) as NotificationGateway }
   factory { DoNotDisturbPreferencesImpl(get()) as DoNotDisturbPreferences }
+  factory { InAppAlertPreferencesImpl(get()) as InAppAlertPreferences }
   factory { WearPreferencesImpl(get()) as WearPreferences }
   factory { PhoneCallStateProviderImpl(get()) as PhoneCallStateProvider }
   factory {

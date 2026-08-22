@@ -1105,7 +1105,7 @@
     <string name="streak_current">Secvență curentă: %1$d zile</string>
     <string name="streak_longest">Secvență mai lungă: %1$d zile</string>
     <string name="streak_fired_count">Declanșat %1$d ori în ultimele 90 de zile</string>
-    <string name="no_insights_yet">Nicio activitate de memento în ultimele 90 de zile</string>
+    <string name="no_insights_yet">Încă nicio activitate în ultimele 90 de zile</string>
 
     <string name="upcoming_events">Viitor</string>
 
@@ -1156,4 +1156,51 @@
 
     <string name="merge">Îmbină</string>
     <string name="notes_merge_selected_confirm">Îmbină %1$d notițe într-una singură? Notițele originale vor fi șterse.</string>
+
+    <string name="routines">Rutine</string>
+    <string name="new_routine">Rutină nouă</string>
+    <string name="no_routines">Nicio rutină încă</string>
+    <string name="routine_description_hint">Descriere (opțional)</string>
+    <string name="routine_steps">Pași</string>
+    <string name="add_step">Adaugă pas</string>
+    <string name="step_title_hint">Titlul pasului</string>
+    <string name="duration_none">Fără</string>
+    <string name="repeat_daily">Se repetă zilnic</string>
+    <string name="start_routine">Pornește rutina</string>
+    <string name="reset_steps">Resetează pașii</string>
+    <string name="reset_steps_confirmation">Resetezi toți pașii la nebifat?</string>
+    <string name="routine_step_count">%1$d pași</string>
+    <string name="delete_routine_confirmation">Ștergi definitiv această rutină?</string>
+    <string name="move_step_up">Mută pasul în sus</string>
+    <string name="move_step_down">Mută pasul în jos</string>
+    <string name="sort">Sortare</string>
+    <string name="sort_by_date">După data creării</string>
+    <string name="sort_by_name">După nume</string>
+    <string name="routine_on_demand">La cerere</string>
+    <string name="routine_steps_required">Adaugă cel puțin un pas</string>
+    <string name="repeat_none">Niciodată</string>
+    <string name="repeat_weekly">Se repetă săptămânal</string>
+    <string name="repeat_monthly">Se repetă lunar</string>
+    <string name="repeat_weekly_days">Săptămânal: %1$s</string>
+    <string name="repeat_monthly_day">Lunar în ziua %1$d</string>
+    <string name="repeat_weekdays_required">Selectează cel puțin o zi</string>
+    <string name="step_of_count">Pasul %1$d din %2$d</string>
+    <string name="pause">Pauză</string>
+    <string name="resume">Reia</string>
+    <string name="skip_step">Omite</string>
+    <string name="complete_step">Finalizează pasul</string>
+    <string name="previous_step">Pasul anterior</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Rutină finalizată</string>
+    <string name="routine_execution_total_time">Timp total: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d din %2$d pași finalizați</string>
+    <string name="routine_insights_section">Secvențe de rutine</string>
+    <string name="routine_focus_time_total">Timp total de concentrare: %1$s (ultimele 90 de zile)</string>
+    <string name="routine_insight_most_skipped">Cel mai omis pas: %1$s (%2$d%% finalizare)</string>
+    <string name="routine_icon">Pictograma rutinei</string>
+    <string name="no_icon">Fără pictogramă</string>
+
+    <string name="in_app_notification_banner">Banner de notificare în aplicație</string>
+    <string name="in_app_notification_banner_enabled">Afișează un banner în aplicație când se declanșează o notificare de memento sau zi de naștere</string>
+    <string name="in_app_notification_banner_disabled">Afișează doar notificarea de sistem</string>
 </resources>

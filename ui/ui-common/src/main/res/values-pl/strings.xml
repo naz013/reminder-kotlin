@@ -1105,7 +1105,7 @@
     <string name="streak_current">Obecna sekwencja: %1$d dni</string>
     <string name="streak_longest">Najdłuższa sekwencja: %1$d dni</string>
     <string name="streak_fired_count">Uruchomiono %1$d razy w ciągu ostatnich 90 dni</string>
-    <string name="no_insights_yet">Brak aktywności przypomnień w ciągu ostatnich 90 dni</string>
+    <string name="no_insights_yet">Brak aktywności w ciągu ostatnich 90 dni</string>
 
     <string name="upcoming_events">Przychodzące</string>
 
@@ -1156,4 +1156,51 @@
 
     <string name="merge">Scal</string>
     <string name="notes_merge_selected_confirm">Scalić %1$d notatek w jedną? Oryginalne notatki zostaną usunięte.</string>
+
+    <string name="routines">Rutyny</string>
+    <string name="new_routine">Nowa rutyna</string>
+    <string name="no_routines">Brak rutyn</string>
+    <string name="routine_description_hint">Opis (opcjonalnie)</string>
+    <string name="routine_steps">Kroki</string>
+    <string name="add_step">Dodaj krok</string>
+    <string name="step_title_hint">Tytuł kroku</string>
+    <string name="duration_none">Brak</string>
+    <string name="repeat_daily">Powtarza się codziennie</string>
+    <string name="start_routine">Rozpocznij rutynę</string>
+    <string name="reset_steps">Zresetuj kroki</string>
+    <string name="reset_steps_confirmation">Zresetować wszystkie kroki do niezaznaczonych?</string>
+    <string name="routine_step_count">%1$d kroków</string>
+    <string name="delete_routine_confirmation">Usunąć tę rutynę na stałe?</string>
+    <string name="move_step_up">Przesuń krok w górę</string>
+    <string name="move_step_down">Przesuń krok w dół</string>
+    <string name="sort">Sortuj</string>
+    <string name="sort_by_date">Według daty utworzenia</string>
+    <string name="sort_by_name">Według nazwy</string>
+    <string name="routine_on_demand">Na żądanie</string>
+    <string name="routine_steps_required">Dodaj co najmniej jeden krok</string>
+    <string name="repeat_none">Nigdy</string>
+    <string name="repeat_weekly">Powtarza się co tydzień</string>
+    <string name="repeat_monthly">Powtarza się co miesiąc</string>
+    <string name="repeat_weekly_days">Co tydzień: %1$s</string>
+    <string name="repeat_monthly_day">Co miesiąc, dnia %1$d</string>
+    <string name="repeat_weekdays_required">Wybierz co najmniej jeden dzień</string>
+    <string name="step_of_count">Krok %1$d z %2$d</string>
+    <string name="pause">Wstrzymaj</string>
+    <string name="resume">Wznów</string>
+    <string name="skip_step">Pomiń</string>
+    <string name="complete_step">Ukończ krok</string>
+    <string name="previous_step">Poprzedni krok</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Rutyna ukończona</string>
+    <string name="routine_execution_total_time">Łączny czas: %1$s</string>
+    <string name="routine_execution_steps_completed">Ukończono %1$d z %2$d kroków</string>
+    <string name="routine_insights_section">Serie rutyn</string>
+    <string name="routine_focus_time_total">Łączny czas skupienia: %1$s (ostatnie 90 dni)</string>
+    <string name="routine_insight_most_skipped">Najczęściej pomijany krok: %1$s (ukończenie %2$d%%)</string>
+    <string name="routine_icon">Ikona rutyny</string>
+    <string name="no_icon">Brak ikony</string>
+
+    <string name="in_app_notification_banner">Baner powiadomień w aplikacji</string>
+    <string name="in_app_notification_banner_enabled">Pokaż baner w aplikacji, gdy pojawi się powiadomienie o przypomnieniu lub urodzinach</string>
+    <string name="in_app_notification_banner_disabled">Pokazuj tylko powiadomienie systemowe</string>
 </resources>

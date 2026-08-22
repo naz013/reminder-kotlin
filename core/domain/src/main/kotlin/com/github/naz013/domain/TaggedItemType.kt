@@ -4,5 +4,6 @@ enum class TaggedItemType {
   REMINDER,
   NOTE,
   BIRTHDAY,
-  GOOGLE_TASK
+  GOOGLE_TASK,
+  ROUTINE
 }

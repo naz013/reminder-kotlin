@@ -4,10 +4,9 @@ compileSdk = "37"
 targetSdk = "37"
 kotlinTargetJvm = "17"
 
-# Analysis & coverage
+# Analysis
 detekt = "1.23.8"
 detekt-compose = "0.6.4"
-kover = "0.9.9"
 
 # Plugins
 agp = "9.3.1"
@@ -260,7 +259,6 @@ logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
-kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
 
 # Detekt plugins (added as detektPlugins dependency per module)
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
@@ -279,4 +277,3 @@ play-publisher = { id = "com.github.triplet.play", version.ref = "play-publisher
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }

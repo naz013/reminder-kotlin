@@ -9,18 +9,43 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val logicNotificationActionModule = module {
+  single { InAppAlertBus() }
+  single { ForegroundStateTracker() }
+
   factoryOf(::DoNotDisturbManager)
   factoryOf(::WearNotification)
 
   factoryOf(::ReminderCompleteSnoozeFactory)
   factory {
-    ReminderActionProcessor(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+    ReminderActionProcessor(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
+    )
   }
   factoryOf(::ReminderRepeatProcessor)
 
   factoryOf(::BirthdayCancelActionFactory)
   factory {
     BirthdayActionProcessor(
+      get(),
+      get(),
+      get(),
+      get(),
+      get(),
       get(),
       get(),
       get(),

@@ -11,7 +11,9 @@ import org.koin.dsl.module
 val localBackupModule = module {
   factoryOf(::BackupArchiveWriter)
   factoryOf(::BackupArchiveReader)
-  factory { LocalBackupApiImpl(get(), get(), get(), get(), get(), get(), get(), get(), get()) as LocalBackupApi }
+  factory {
+    LocalBackupApiImpl(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) as LocalBackupApi
+  }
 
   viewModel { (uriString: String, mode: LocalBackupMode) ->
     LocalBackupViewModel(uriString, mode, get(), get(), get())

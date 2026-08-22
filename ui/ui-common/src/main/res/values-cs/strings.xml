@@ -1105,7 +1105,7 @@
     <string name="streak_current">Aktuální série: %1$d dní</string>
     <string name="streak_longest">Nejdelší série: %1$d dní</string>
     <string name="streak_fired_count">Spuštěno %1$d krát za posledních 90 dní</string>
-    <string name="no_insights_yet">Zatím bez aktivit připomínek za posledních 90 dní</string>
+    <string name="no_insights_yet">Zatím žádná aktivita za posledních 90 dní</string>
 
     <string name="upcoming_events">Nadcházející</string>
 
@@ -1156,4 +1156,51 @@
 
     <string name="merge">Sloučit</string>
     <string name="notes_merge_selected_confirm">Sloučit %1$d poznámek do jedné? Původní poznámky budou smazány.</string>
+
+    <string name="routines">Rutiny</string>
+    <string name="new_routine">Nová rutina</string>
+    <string name="no_routines">Zatím žádné rutiny</string>
+    <string name="routine_description_hint">Popis (nepovinné)</string>
+    <string name="routine_steps">Kroky</string>
+    <string name="add_step">Přidat krok</string>
+    <string name="step_title_hint">Název kroku</string>
+    <string name="duration_none">Žádné</string>
+    <string name="repeat_daily">Opakuje se denně</string>
+    <string name="start_routine">Spustit rutinu</string>
+    <string name="reset_steps">Resetovat kroky</string>
+    <string name="reset_steps_confirmation">Obnovit všechny kroky jako nesplněné?</string>
+    <string name="routine_step_count">%1$d kroků</string>
+    <string name="delete_routine_confirmation">Trvale odstranit tuto rutinu?</string>
+    <string name="move_step_up">Posunout krok nahoru</string>
+    <string name="move_step_down">Posunout krok dolů</string>
+    <string name="sort">Řazení</string>
+    <string name="sort_by_date">Podle data vytvoření</string>
+    <string name="sort_by_name">Podle názvu</string>
+    <string name="routine_on_demand">Na vyžádání</string>
+    <string name="routine_steps_required">Přidejte alespoň jeden krok</string>
+    <string name="repeat_none">Nikdy</string>
+    <string name="repeat_weekly">Opakuje se týdně</string>
+    <string name="repeat_monthly">Opakuje se měsíčně</string>
+    <string name="repeat_weekly_days">Týdně: %1$s</string>
+    <string name="repeat_monthly_day">Měsíčně %1$d. den</string>
+    <string name="repeat_weekdays_required">Vyberte alespoň jeden den</string>
+    <string name="step_of_count">Krok %1$d z %2$d</string>
+    <string name="pause">Pozastavit</string>
+    <string name="resume">Pokračovat</string>
+    <string name="skip_step">Přeskočit</string>
+    <string name="complete_step">Dokončit krok</string>
+    <string name="previous_step">Předchozí krok</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Rutina dokončena</string>
+    <string name="routine_execution_total_time">Celkový čas: %1$s</string>
+    <string name="routine_execution_steps_completed">Dokončeno %1$d z %2$d kroků</string>
+    <string name="routine_insights_section">Série rutin</string>
+    <string name="routine_focus_time_total">Celkový čas soustředění: %1$s (za posledních 90 dní)</string>
+    <string name="routine_insight_most_skipped">Nejčastěji přeskočený krok: %1$s (%2$d%% dokončení)</string>
+    <string name="routine_icon">Ikona rutiny</string>
+    <string name="no_icon">Bez ikony</string>
+
+    <string name="in_app_notification_banner">Banner oznámení v aplikaci</string>
+    <string name="in_app_notification_banner_enabled">Zobrazit banner v aplikaci při spuštění oznámení o připomínce nebo narozeninách</string>
+    <string name="in_app_notification_banner_disabled">Zobrazit pouze systémové oznámení</string>
 </resources>

@@ -1103,7 +1103,7 @@
     <string name="streak_current">Huidige streak: %1$d dagen</string>
     <string name="streak_longest">Langste streak: %1$d dagen</string>
     <string name="streak_fired_count">%1$d keer afgegaan in de afgelopen 90 dagen</string>
-    <string name="no_insights_yet">Nog geen herinneringsactiviteit in de afgelopen 90 dagen</string>
+    <string name="no_insights_yet">Nog geen activiteit in de afgelopen 90 dagen</string>
 
     <string name="upcoming_events">Aankomend</string>
 
@@ -1154,4 +1154,51 @@
 
     <string name="merge">Samenvoegen</string>
     <string name="notes_merge_selected_confirm">%1$d notities samenvoegen tot één? De oorspronkelijke notities worden verwijderd.</string>
+
+    <string name="routines">Routines</string>
+    <string name="new_routine">Nieuwe routine</string>
+    <string name="no_routines">Nog geen routines</string>
+    <string name="routine_description_hint">Beschrijving (optioneel)</string>
+    <string name="routine_steps">Stappen</string>
+    <string name="add_step">Stap toevoegen</string>
+    <string name="step_title_hint">Staptitel</string>
+    <string name="duration_none">Geen</string>
+    <string name="repeat_daily">Herhaalt dagelijks</string>
+    <string name="start_routine">Routine starten</string>
+    <string name="reset_steps">Stappen resetten</string>
+    <string name="reset_steps_confirmation">Alle stappen terugzetten naar niet voltooid?</string>
+    <string name="routine_step_count">%1$d stappen</string>
+    <string name="delete_routine_confirmation">Deze routine permanent verwijderen?</string>
+    <string name="move_step_up">Stap omhoog verplaatsen</string>
+    <string name="move_step_down">Stap omlaag verplaatsen</string>
+    <string name="sort">Sorteren</string>
+    <string name="sort_by_date">Op aanmaakdatum</string>
+    <string name="sort_by_name">Op naam</string>
+    <string name="routine_on_demand">Op aanvraag</string>
+    <string name="routine_steps_required">Voeg ten minste één stap toe</string>
+    <string name="repeat_none">Nooit</string>
+    <string name="repeat_weekly">Herhaalt wekelijks</string>
+    <string name="repeat_monthly">Herhaalt maandelijks</string>
+    <string name="repeat_weekly_days">Wekelijks: %1$s</string>
+    <string name="repeat_monthly_day">Maandelijks op dag %1$d</string>
+    <string name="repeat_weekdays_required">Selecteer ten minste één dag</string>
+    <string name="step_of_count">Stap %1$d van %2$d</string>
+    <string name="pause">Pauzeren</string>
+    <string name="resume">Hervatten</string>
+    <string name="skip_step">Overslaan</string>
+    <string name="complete_step">Stap voltooien</string>
+    <string name="previous_step">Vorige stap</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Routine voltooid</string>
+    <string name="routine_execution_total_time">Totale tijd: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d van %2$d stappen voltooid</string>
+    <string name="routine_insights_section">Routinereeksen</string>
+    <string name="routine_focus_time_total">Totale focustijd: %1$s (laatste 90 dagen)</string>
+    <string name="routine_insight_most_skipped">Meest overgeslagen stap: %1$s (%2$d%% voltooid)</string>
+    <string name="routine_icon">Routinepictogram</string>
+    <string name="no_icon">Geen pictogram</string>
+
+    <string name="in_app_notification_banner">In-app-meldingsbanner</string>
+    <string name="in_app_notification_banner_enabled">Toon een banner in de app wanneer een herinnering- of verjaardagsmelding afgaat</string>
+    <string name="in_app_notification_banner_disabled">Toon alleen de systeemmelding</string>
 </resources>

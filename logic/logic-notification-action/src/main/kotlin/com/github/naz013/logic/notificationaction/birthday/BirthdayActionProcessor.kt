@@ -5,17 +5,28 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.Permissions
+import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.BirthdayDateCalculator
 import com.github.naz013.datecalc.DateValidator
+import com.github.naz013.domain.Birthday
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.birthday.BirthdayPreferences
 import com.github.naz013.logic.notificationaction.DoNotDisturbManager
+import com.github.naz013.logic.notificationaction.ForegroundStateTracker
+import com.github.naz013.logic.notificationaction.InAppAlert
+import com.github.naz013.logic.notificationaction.InAppAlertAction
+import com.github.naz013.logic.notificationaction.InAppAlertBus
+import com.github.naz013.logic.notificationaction.InAppAlertDomain
+import com.github.naz013.logic.notificationaction.InAppAlertPreferences
 import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.scheduler.JobSchedulerApi
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.telephony.PhoneCaller
 import com.github.naz013.ui.common.compose.foundation.telephony.SmsSender
+import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,6 +47,11 @@ class BirthdayActionProcessor(
   private val birthdayDateCalculator: BirthdayDateCalculator,
   private val smsSender: SmsSender,
   private val phoneCaller: PhoneCaller,
+  private val inAppAlertBus: InAppAlertBus,
+  private val foregroundStateTracker: ForegroundStateTracker,
+  private val inAppAlertPreferences: InAppAlertPreferences,
+  private val textProvider: TextProvider,
+  private val modelDateTimeFormatter: ModelDateTimeFormatter,
 ) {
   private val scope = CoroutineScope(dispatcherProvider.default())
 
@@ -103,10 +119,50 @@ class BirthdayActionProcessor(
           analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY))
           withContext(dispatcherProvider.main()) {
             handler.handle(birthday)
+            if (foregroundStateTracker.isForeground.value && inAppAlertPreferences.isInAppAlertBannerEnabled) {
+              inAppAlertBus.show(buildInAppAlert(birthday))
+            }
           }
         }
       }
     }
+  }
+
+  /** Mirrors [com.elementary.tasks.core.services.action.birthday.process.BirthdayNotificationHandler]'s
+   *  content/actions so the banner reads the same as the system notification it accompanies. Since
+   *  this runs inside a loop over every birthday due today, [InAppAlertBus]'s latest-wins semantics
+   *  mean only the last one processed ends up shown - no extra dedup needed here. */
+  private fun buildInAppAlert(birthday: Birthday): InAppAlert {
+    val actions =
+      mutableListOf(
+        InAppAlertAction(
+          iconRes = DrawableCatalog.Fluent.Checkmark,
+          label = textProvider.getText(R.string.ok),
+          onClick = { cancel(birthday.uuId) },
+        ),
+      )
+    if (birthday.number.isNotEmpty()) {
+      actions +=
+        InAppAlertAction(
+          iconRes = DrawableCatalog.Fluent.Phone,
+          label = textProvider.getText(R.string.make_call),
+          onClick = { makeCall(birthday.uuId) },
+        )
+      actions +=
+        InAppAlertAction(
+          iconRes = DrawableCatalog.Fluent.Chat,
+          label = textProvider.getText(R.string.send_sms),
+          onClick = { sendSms(birthday.uuId) },
+        )
+    }
+    return InAppAlert(
+      alertId = birthday.uuId,
+      domain = InAppAlertDomain.BIRTHDAY,
+      title = birthday.name,
+      text = if (!birthday.ignoreYear) modelDateTimeFormatter.getAgeFormatted(birthday.date) else null,
+      iconRes = DrawableCatalog.Fluent.FoodCake,
+      actions = actions,
+    )
   }
 
   companion object {

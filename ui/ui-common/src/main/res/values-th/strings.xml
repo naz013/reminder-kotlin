@@ -1103,7 +1103,7 @@
     <string name="streak_current">สตรีคปัจจุบัน: %1$d วัน</string>
     <string name="streak_longest">สตรีคยาวนานที่สุด: %1$d วัน</string>
     <string name="streak_fired_count">ทำงาน %1$d ครั้งในช่วง 90 วันที่ผ่านมา</string>
-    <string name="no_insights_yet">ยังไม่มีกิจกรรมการเตือนความจำในช่วง 90 วันที่ผ่านมา</string>
+    <string name="no_insights_yet">ยังไม่มีกิจกรรมในช่วง 90 วันที่ผ่านมา</string>
 
     <string name="upcoming_events">กำลังจะมาถึง</string>
 
@@ -1154,4 +1154,51 @@
 
     <string name="merge">รวม</string>
     <string name="notes_merge_selected_confirm">รวม %1$d โน้ตเป็นโน้ตเดียว? โน้ตต้นฉบับจะถูกลบ</string>
+
+    <string name="routines">กิจวัตร</string>
+    <string name="new_routine">กิจวัตรใหม่</string>
+    <string name="no_routines">ยังไม่มีกิจวัตร</string>
+    <string name="routine_description_hint">คำอธิบาย (ไม่บังคับ)</string>
+    <string name="routine_steps">ขั้นตอน</string>
+    <string name="add_step">เพิ่มขั้นตอน</string>
+    <string name="step_title_hint">ชื่อขั้นตอน</string>
+    <string name="duration_none">ไม่มี</string>
+    <string name="repeat_daily">ทำซ้ำทุกวัน</string>
+    <string name="start_routine">เริ่มกิจวัตร</string>
+    <string name="reset_steps">รีเซ็ตขั้นตอน</string>
+    <string name="reset_steps_confirmation">รีเซ็ตขั้นตอนทั้งหมดให้ยังไม่ได้ทำเครื่องหมายใช่หรือไม่</string>
+    <string name="routine_step_count">%1$d ขั้นตอน</string>
+    <string name="delete_routine_confirmation">ลบกิจวัตรนี้อย่างถาวรใช่หรือไม่</string>
+    <string name="move_step_up">ย้ายขั้นตอนขึ้น</string>
+    <string name="move_step_down">ย้ายขั้นตอนลง</string>
+    <string name="sort">เรียงลำดับ</string>
+    <string name="sort_by_date">ตามวันที่สร้าง</string>
+    <string name="sort_by_name">ตามชื่อ</string>
+    <string name="routine_on_demand">ตามต้องการ</string>
+    <string name="routine_steps_required">เพิ่มอย่างน้อยหนึ่งขั้นตอน</string>
+    <string name="repeat_none">ไม่เคย</string>
+    <string name="repeat_weekly">ทำซ้ำทุกสัปดาห์</string>
+    <string name="repeat_monthly">ทำซ้ำทุกเดือน</string>
+    <string name="repeat_weekly_days">รายสัปดาห์: %1$s</string>
+    <string name="repeat_monthly_day">รายเดือนในวันที่ %1$d</string>
+    <string name="repeat_weekdays_required">เลือกอย่างน้อยหนึ่งวัน</string>
+    <string name="step_of_count">ขั้นตอนที่ %1$d จาก %2$d</string>
+    <string name="pause">หยุดชั่วคราว</string>
+    <string name="resume">ดำเนินการต่อ</string>
+    <string name="skip_step">ข้าม</string>
+    <string name="complete_step">ทำขั้นตอนให้เสร็จ</string>
+    <string name="previous_step">ขั้นตอนก่อนหน้า</string>
+    <string name="add_one_minute">+1 นาที</string>
+    <string name="routine_finished_title">กิจวัตรเสร็จสิ้น</string>
+    <string name="routine_execution_total_time">เวลาทั้งหมด: %1$s</string>
+    <string name="routine_execution_steps_completed">เสร็จแล้ว %1$d จาก %2$d ขั้นตอน</string>
+    <string name="routine_insights_section">สถิติต่อเนื่องของกิจวัตร</string>
+    <string name="routine_focus_time_total">เวลาโฟกัสทั้งหมด: %1$s (90 วันที่ผ่านมา)</string>
+    <string name="routine_insight_most_skipped">ขั้นตอนที่ถูกข้ามบ่อยที่สุด: %1$s (สำเร็จ %2$d%%)</string>
+    <string name="routine_icon">ไอคอนกิจวัตร</string>
+    <string name="no_icon">ไม่มีไอคอน</string>
+
+    <string name="in_app_notification_banner">แบนเนอร์การแจ้งเตือนในแอป</string>
+    <string name="in_app_notification_banner_enabled">แสดงแบนเนอร์ในแอปเมื่อการแจ้งเตือนการเตือนความจำหรือวันเกิดทำงาน</string>
+    <string name="in_app_notification_banner_disabled">แสดงเฉพาะการแจ้งเตือนของระบบเท่านั้น</string>
 </resources>

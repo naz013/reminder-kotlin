@@ -7,6 +7,8 @@ import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.routine.Routine
+import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.files.DataConverter
 import com.github.naz013.localbackup.archive.BackupArchiveReader
@@ -16,6 +18,8 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.RoutineExecutionRepository
+import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import io.mockk.coEvery
@@ -41,6 +45,8 @@ private class FakeDataConverter : DataConverter {
       is Birthday -> "B|${any.uuId}|${any.name}"
       is Tag -> "T|${any.id}|${any.name}"
       is TagAssignment -> "A|${any.tagId}|${any.itemId}::${any.itemType}"
+      is Routine -> "O|${any.id}|${any.title}"
+      is RoutineExecutionRecord -> "E|${any.id}|${any.routineId}"
       else -> error("FakeDataConverter does not support ${any::class.java}")
     }
     outputStream.use { it.write(encoded.toByteArray()) }
@@ -63,6 +69,8 @@ private class FakeDataConverter : DataConverter {
         val (itemId, itemType) = label.split("::", limit = 2)
         TagAssignment(tagId = id, itemId = itemId, itemType = TaggedItemType.valueOf(itemType))
       }
+      "O" -> Routine(id = id, title = label, createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now())
+      "E" -> RoutineExecutionRecord(id = id, routineId = label, executedAt = LocalDateTime.now(), totalTimeSpentSeconds = 0, totalStepsCount = 0)
       else -> error("FakeDataConverter does not support tag $tag")
     }
   }
@@ -77,6 +85,8 @@ class LocalBackupApiImplTest {
   private val recurPresetRepository = mockk<RecurPresetRepository>(relaxed = true)
   private val tagRepository = mockk<TagRepository>(relaxed = true)
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
+  private val routineRepository = mockk<RoutineRepository>(relaxed = true)
+  private val routineExecutionRepository = mockk<RoutineExecutionRepository>(relaxed = true)
   private val dataConverter = FakeDataConverter()
 
   private lateinit var api: LocalBackupApiImpl
@@ -91,6 +101,8 @@ class LocalBackupApiImplTest {
       recurPresetRepository = recurPresetRepository,
       tagRepository = tagRepository,
       tagAssignmentRepository = tagAssignmentRepository,
+      routineRepository = routineRepository,
+      routineExecutionRepository = routineExecutionRepository,
       archiveWriter = BackupArchiveWriter(dataConverter),
       archiveReader = BackupArchiveReader(dataConverter)
     )
@@ -117,6 +129,8 @@ class LocalBackupApiImplTest {
     coVerify { recurPresetRepository.getAll() }
     coVerify { tagRepository.getAll() }
     coVerify { tagAssignmentRepository.getAll() }
+    coVerify { routineRepository.getAll() }
+    coVerify { routineExecutionRepository.getAll() }
     assertTrue(output.toByteArray().isNotEmpty())
   }
 
@@ -167,6 +181,27 @@ class LocalBackupApiImplTest {
     assertEquals(1, summary.tagAssignmentsImported)
     coVerify { tagRepository.save(match { it.id == "t1" }) }
     coVerify { tagAssignmentRepository.replaceAll(match { it.size == 1 && it[0].tagId == "t1" }) }
+  }
+
+  @Test
+  fun `round trips routines and routine executions through import`() = runTest {
+    coEvery { routineRepository.getAll() } returns listOf(
+      Routine(id = "o1", title = "Morning routine", createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now())
+    )
+    coEvery { routineExecutionRepository.getAll() } returns listOf(
+      RoutineExecutionRecord(id = "e1", routineId = "o1", executedAt = LocalDateTime.now(), totalTimeSpentSeconds = 60, totalStepsCount = 2)
+    )
+    val output = ByteArrayOutputStream()
+    api.export(output, "correct horse".toCharArray())
+
+    val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
+
+    assertTrue(result.isSuccess)
+    val summary = result.getOrThrow()
+    assertEquals(1, summary.routinesImported)
+    assertEquals(1, summary.routineExecutionsImported)
+    coVerify { routineRepository.save(match { it.id == "o1" }) }
+    coVerify { routineExecutionRepository.save(match { it.id == "e1" }) }
   }
 
   @Test

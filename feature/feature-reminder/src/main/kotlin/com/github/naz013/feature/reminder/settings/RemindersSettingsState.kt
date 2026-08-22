@@ -28,6 +28,7 @@ data class RemindersSettingsState(
   val isDefaultBypassDoNotDisturbChecked: Boolean = false,
   val isDefaultWakeScreenChecked: Boolean = false,
   val isDefaultSwipeToDismissChecked: Boolean = false,
+  val isInAppAlertBannerChecked: Boolean = false,
   val defaultCategoryName: String = "",
   val defaultLockScreenVisibilityName: String = "",
   val defaultVibrationPatternName: String = "",

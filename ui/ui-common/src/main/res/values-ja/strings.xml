@@ -1105,7 +1105,7 @@
     <string name="streak_current">現在のストリーク: %1$d日</string>
     <string name="streak_longest">最長ストリーク: %1$d日</string>
     <string name="streak_fired_count">過去90日間に%1$d回発火</string>
-    <string name="no_insights_yet">過去90日間のリマインダーアクティビティはまだありません</string>
+    <string name="no_insights_yet">過去90日間の活動はまだありません</string>
 
     <string name="upcoming_events">今後のイベント</string>
 
@@ -1156,4 +1156,51 @@
 
     <string name="merge">結合</string>
     <string name="notes_merge_selected_confirm">%1$d件のメモを1つに結合しますか?元のメモは削除されます。</string>
+
+    <string name="routines">ルーティン</string>
+    <string name="new_routine">新しいルーティン</string>
+    <string name="no_routines">ルーティンはまだありません</string>
+    <string name="routine_description_hint">説明（任意）</string>
+    <string name="routine_steps">ステップ</string>
+    <string name="add_step">ステップを追加</string>
+    <string name="step_title_hint">ステップのタイトル</string>
+    <string name="duration_none">なし</string>
+    <string name="repeat_daily">毎日繰り返す</string>
+    <string name="start_routine">ルーティンを開始</string>
+    <string name="reset_steps">ステップをリセット</string>
+    <string name="reset_steps_confirmation">すべてのステップを未完了に戻しますか?</string>
+    <string name="routine_step_count">%1$d ステップ</string>
+    <string name="delete_routine_confirmation">このルーティンを完全に削除しますか?</string>
+    <string name="move_step_up">ステップを上に移動</string>
+    <string name="move_step_down">ステップを下に移動</string>
+    <string name="sort">並べ替え</string>
+    <string name="sort_by_date">作成日順</string>
+    <string name="sort_by_name">名前順</string>
+    <string name="routine_on_demand">オンデマンド</string>
+    <string name="routine_steps_required">少なくとも1つのステップを追加してください</string>
+    <string name="repeat_none">なし</string>
+    <string name="repeat_weekly">毎週繰り返す</string>
+    <string name="repeat_monthly">毎月繰り返す</string>
+    <string name="repeat_weekly_days">毎週: %1$s</string>
+    <string name="repeat_monthly_day">毎月%1$d日</string>
+    <string name="repeat_weekdays_required">少なくとも1日を選択してください</string>
+    <string name="step_of_count">ステップ %1$d/%2$d</string>
+    <string name="pause">一時停止</string>
+    <string name="resume">再開</string>
+    <string name="skip_step">スキップ</string>
+    <string name="complete_step">ステップを完了</string>
+    <string name="previous_step">前のステップ</string>
+    <string name="add_one_minute">+1分</string>
+    <string name="routine_finished_title">ルーティン完了</string>
+    <string name="routine_execution_total_time">合計時間: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d/%2$d ステップ完了</string>
+    <string name="routine_insights_section">ルーティンの継続記録</string>
+    <string name="routine_focus_time_total">合計集中時間: %1$s（過去90日間）</string>
+    <string name="routine_insight_most_skipped">最もスキップされたステップ: %1$s（完了率%2$d%%）</string>
+    <string name="routine_icon">ルーティンのアイコン</string>
+    <string name="no_icon">アイコンなし</string>
+
+    <string name="in_app_notification_banner">アプリ内通知バナー</string>
+    <string name="in_app_notification_banner_enabled">リマインダーや誕生日の通知が届いたときにアプリ内にバナーを表示する</string>
+    <string name="in_app_notification_banner_disabled">システム通知のみを表示する</string>
 </resources>

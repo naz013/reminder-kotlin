@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.elementary.tasks.navigation.BottomNavInitViewModel
+import com.elementary.tasks.navigation.InAppAlertViewModel
 import com.github.naz013.cloudapi.CloudKeysStorage
 import com.github.naz013.feature.calendar.CalendarPreferences
 import com.github.naz013.feature.home.HomePreferences
@@ -43,6 +44,7 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
   viewModelOf(::BottomNavInitViewModel)
+  viewModelOf(::InAppAlertViewModel)
 }
 
 val storageModule = module {

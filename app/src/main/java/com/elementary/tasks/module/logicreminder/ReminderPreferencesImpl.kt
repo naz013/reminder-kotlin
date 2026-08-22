@@ -120,6 +120,10 @@ class ReminderPreferencesImpl(
     get() = prefs.isDefaultSwipeToDismissEnabled
     set(value) { prefs.isDefaultSwipeToDismissEnabled = value }
 
+  override var isInAppAlertBannerEnabled: Boolean
+    get() = prefs.isInAppAlertBannerEnabled
+    set(value) { prefs.isInAppAlertBannerEnabled = value }
+
   override var defaultLockScreenVisibility: String
     get() = prefs.defaultLockScreenVisibility
     set(value) { prefs.defaultLockScreenVisibility = value }
