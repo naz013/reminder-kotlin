@@ -11,6 +11,8 @@ import com.github.naz013.repository.entity.ImageFileEntity
 import com.github.naz013.repository.entity.NoteEntity
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class NoteRepositoryImpl(
   private val dao: NotesDao,
@@ -42,6 +44,8 @@ internal class NoteRepositoryImpl(
     return dao.getById(id)?.toDomain()
   }
 
+  override fun observeById(id: String): Flow<NoteWithImages?> = dao.observeById(id).map { it?.toDomain() }
+
   override suspend fun getAll(isArchived: Boolean): List<NoteWithImages> {
     Logger.d(TAG, "Get all notes, archived: $isArchived")
     return dao.getAllNotes(isArchived = isArchived).map { addImagesToNote(it) }
@@ -59,6 +63,11 @@ internal class NoteRepositoryImpl(
   override suspend fun getNotes(isArchived: Boolean, query: String, sortOrder: String): List<NoteWithImages> {
     Logger.d(TAG, "Get notes, archived: $isArchived, query: $query, sortOrder: $sortOrder")
     return dao.getNotes(isArchived = isArchived, query = query, sortOrder = sortOrder).map { it.toDomain() }
+  }
+
+  override fun observeNotes(isArchived: Boolean, query: String, sortOrder: String): Flow<List<NoteWithImages>> {
+    return dao.observeNotes(isArchived = isArchived, query = query, sortOrder = sortOrder)
+      .map { list -> list.map { it.toDomain() } }
   }
 
   override suspend fun getImagesIds(): List<Int> {

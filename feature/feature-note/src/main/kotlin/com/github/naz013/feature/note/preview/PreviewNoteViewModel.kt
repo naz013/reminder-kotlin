@@ -31,7 +31,7 @@ import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.NoteNotifier
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,45 +61,53 @@ internal class PreviewNoteViewModel(
 
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
   val state = _state.stateInWhileSubscribed(PreviewNoteState(id = key))
-    .onStart { loadInternal() }
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTE_PREVIEW))
-  }
-
-  private fun loadInternal() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = noteRepository.getById(key)
-      if (noteWithImages != null) {
-        val uiNotePreview = uiNotePreviewAdapter.convert(noteWithImages)
-        val noteColors = noteColorEngine.colorsForLegacy(
-          code = noteWithImages.getColor(),
-          palette = noteWithImages.getPalette(),
-          opacity = noteWithImages.getOpacity(),
-        )
-        withContext(dispatcherProvider.main()) {
-          _state.update {
-            it.copy(
-              id = uiNotePreview.id,
-              title = uiNotePreview.title,
-              text = uiNotePreview.text,
-              titleTypeface = uiNotePreview.titleTypeface,
-              typeface = uiNotePreview.typeface,
-              titleTextSize = uiNotePreview.titleTextSize,
-              textSize = uiNotePreview.textSize,
-              images = uiNotePreview.images,
-              isArchived = uiNotePreview.isArchived,
-              isPinned = uiNotePreview.isPinned,
-              background = noteColors.background,
-              content = noteColors.content,
-            )
+      combine(
+        noteRepository.observeById(key),
+        tagAssignmentRepository.observeTagsForItem(key, TaggedItemType.NOTE),
+      ) { noteWithImages, tags -> noteWithImages to tags }
+        .collect { (noteWithImages, tags) ->
+          val tagChips = tags.map { tagChipStateAdapter(it) }
+          if (noteWithImages == null) {
+            withContext(dispatcherProvider.main()) {
+              _state.update { it.copy(tags = tagChips) }
+            }
+            return@collect
+          }
+          val uiNotePreview = uiNotePreviewAdapter.convert(noteWithImages)
+          val noteColors = noteColorEngine.colorsForLegacy(
+            code = noteWithImages.getColor(),
+            palette = noteWithImages.getPalette(),
+            opacity = noteWithImages.getOpacity(),
+          )
+          withContext(dispatcherProvider.main()) {
+            _state.update {
+              it.copy(
+                id = uiNotePreview.id,
+                title = uiNotePreview.title,
+                text = uiNotePreview.text,
+                titleTypeface = uiNotePreview.titleTypeface,
+                typeface = uiNotePreview.typeface,
+                titleTextSize = uiNotePreview.titleTextSize,
+                textSize = uiNotePreview.textSize,
+                images = uiNotePreview.images,
+                isArchived = uiNotePreview.isArchived,
+                isPinned = uiNotePreview.isPinned,
+                background = noteColors.background,
+                content = noteColors.content,
+                tags = tagChips,
+              )
+            }
           }
         }
-      }
+    }
+    viewModelScope.launch(dispatcherProvider.default()) {
       loadReminders()
-      loadTags()
     }
   }
 
@@ -110,16 +118,6 @@ internal class PreviewNoteViewModel(
       }
     withContext(dispatcherProvider.main()) {
       _state.update { it.copy(reminders = reminders) }
-    }
-  }
-
-  private suspend fun loadTags() {
-    val tags =
-      tagAssignmentRepository.getTagsForItem(key, TaggedItemType.NOTE).map {
-        tagChipStateAdapter(it)
-      }
-    withContext(dispatcherProvider.main()) {
-      _state.update { it.copy(tags = tags) }
     }
   }
 
@@ -152,8 +150,6 @@ internal class PreviewNoteViewModel(
         textProvider.getText(R.string.note_moved_to_archive)
       }
 
-      loadInternal()
-
       withContext(dispatcherProvider.main()) {
         event.emit(ViewModelEvent.Message(message))
       }
@@ -163,7 +159,6 @@ internal class PreviewNoteViewModel(
   fun onPinClick() {
     viewModelScope.launch(dispatcherProvider.default()) {
       togglePinnedNoteUseCase(key)
-      loadInternal()
     }
   }
 

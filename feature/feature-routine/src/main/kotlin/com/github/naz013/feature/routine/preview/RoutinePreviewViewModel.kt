@@ -29,6 +29,7 @@ import com.github.naz013.ui.routine.RoutineIconSet
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,26 +53,26 @@ internal class RoutinePreviewViewModel(
   val state = _state.stateInWhileSubscribed(RoutinePreviewState.Loading)
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
-  private var tags: List<TagChipState> = emptyList()
-
   init {
-    load()
-  }
-
-  private fun load() {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val routine = routineRepository.getById(id)?.let { routineRecurrenceResetUseCase(it) } ?: run {
-        Logger.w(TAG, "Routine not found, id: $id")
-        return@launch
-      }
-      tags = tagAssignmentRepository.getTagsForItem(id, TaggedItemType.ROUTINE).map { tagChipStateAdapter(it) }
-      withContext(dispatcherProvider.main()) {
-        _state.update { routine.toReadyState() }
-      }
+      combine(
+        routineRepository.observeById(id),
+        tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.ROUTINE),
+      ) { routine, tags -> routine?.let { routineRecurrenceResetUseCase(it) } to tags }
+        .collect { (routine, tags) ->
+          if (routine == null) {
+            Logger.w(TAG, "Routine not found, id: $id")
+            return@collect
+          }
+          val tagChips = tags.map { tagChipStateAdapter(it) }
+          withContext(dispatcherProvider.main()) {
+            _state.update { routine.toReadyState(tagChips) }
+          }
+        }
     }
   }
 
-  private fun Routine.toReadyState(): RoutinePreviewState.Ready {
+  private fun Routine.toReadyState(tags: List<TagChipState>): RoutinePreviewState.Ready {
     val backgroundColor = RoutineColors.ALL.getOrElse(color) { DEFAULT_COLOR }
     val contentColor = if (backgroundColor.luminance() > CONTRAST_LUMINANCE_THRESHOLD) Color.Black else Color.White
     return RoutinePreviewState.Ready(
@@ -116,22 +117,19 @@ internal class RoutinePreviewViewModel(
         steps = routine.steps.map { if (it.id == stepId) it.copy(isCompleted = !it.isCompleted) else it }
       )
       saveRoutineUseCase(updated)
-      withContext(dispatcherProvider.main()) { _state.update { updated.toReadyState() } }
     }
   }
 
   fun onPinToggleClick() {
     viewModelScope.launch(dispatcherProvider.io()) {
       val routine = routineRepository.getById(id) ?: return@launch
-      val updated = toggleRoutinePinUseCase(routine)
-      withContext(dispatcherProvider.main()) { _state.update { updated.toReadyState() } }
+      toggleRoutinePinUseCase(routine)
     }
   }
 
   fun onResetStepsClick() {
     viewModelScope.launch(dispatcherProvider.io()) {
-      val updated = resetRoutineStepsUseCase(id) ?: return@launch
-      withContext(dispatcherProvider.main()) { _state.update { updated.toReadyState() } }
+      resetRoutineStepsUseCase(id)
     }
   }
 

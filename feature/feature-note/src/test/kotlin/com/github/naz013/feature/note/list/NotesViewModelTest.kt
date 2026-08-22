@@ -39,6 +39,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -75,10 +76,10 @@ class NotesViewModelTest : BaseTest() {
     super.setUp()
     every { notePreferences.isNotesGridEnabled } returns false
     every { notePreferences.noteOrder } returns NoteSortProcessor.DATE_ZA
-    // NotesViewModel's init block eagerly queries the repository as soon as the view model is
-    // constructed (independent of state collection), and every fresh state collection re-triggers
-    // it via onStart{refresh()} - a default stub avoids an unstubbed-call failure everywhere.
-    coEvery { noteRepository.getNotes(any(), any(), any()) } returns emptyList()
+    // NotesViewModel's init block eagerly observes the repository's notes flow as soon as the
+    // view model is constructed, independent of state collection - a default stub avoids an
+    // unstubbed-call failure everywhere.
+    every { noteRepository.observeNotes(any(), any(), any()) } returns flowOf(emptyList())
     // init{} also eagerly collects the available tags, independent of state collection.
     every { tagRepository.observeAll() } returns flowOf(emptyList())
   }
@@ -157,7 +158,7 @@ class NotesViewModelTest : BaseTest() {
   fun `loads notes into ready state on first collection`() =
     runTest {
       val n = note()
-      coEvery { noteRepository.getNotes(false, "", NoteSortProcessor.DATE_ZA) } returns listOf(n)
+      every { noteRepository.observeNotes(false, "", NoteSortProcessor.DATE_ZA) } returns flowOf(listOf(n))
       every { uiNoteListItemAdapter.convert(n) } returns uiItem()
       val viewModel = createViewModel()
 
@@ -173,7 +174,7 @@ class NotesViewModelTest : BaseTest() {
   @Test
   fun `loads empty state when there are no notes`() =
     runTest {
-      coEvery { noteRepository.getNotes(false, "", NoteSortProcessor.DATE_ZA) } returns emptyList()
+      every { noteRepository.observeNotes(false, "", NoteSortProcessor.DATE_ZA) } returns flowOf(emptyList())
       val viewModel = createViewModel()
 
       val state = viewModel.notesScreenState.first()
@@ -184,25 +185,35 @@ class NotesViewModelTest : BaseTest() {
   @Test
   fun `queries the archived flag when created for the archive screen`() =
     runTest {
-      coEvery { noteRepository.getNotes(true, "", NoteSortProcessor.DATE_ZA) } returns emptyList()
+      every { noteRepository.observeNotes(true, "", NoteSortProcessor.DATE_ZA) } returns flowOf(emptyList())
       val viewModel = createViewModel(isArchived = true)
 
       val state = viewModel.notesScreenState.first()
 
       assertEquals(true, state.isArchived)
-      coVerify(atLeast = 1) { noteRepository.getNotes(true, "", NoteSortProcessor.DATE_ZA) }
+      verify(atLeast = 1) { noteRepository.observeNotes(true, "", NoteSortProcessor.DATE_ZA) }
     }
 
   @Test
-  fun `reloads notes on each fresh state collection`() =
+  fun `list updates automatically when the repository flow emits a new value`() =
     runTest {
+      val n = note()
+      every { uiNoteListItemAdapter.convert(n) } returns uiItem()
+      val notesFlow = MutableStateFlow<List<NoteWithImages>>(emptyList())
+      every { noteRepository.observeNotes(false, "", NoteSortProcessor.DATE_ZA) } returns notesFlow
       val viewModel = createViewModel()
+      var latest = NotesScreenState()
+      backgroundScope.launch(Dispatchers.Unconfined) {
+        viewModel.notesScreenState.collect { latest = it }
+      }
+      assertEquals(ListState.Empty, latest.listState)
 
-      viewModel.notesScreenState.first()
-      viewModel.notesScreenState.first()
+      // Simulates an edit made elsewhere (e.g. the edit screen) writing to the DB - no explicit
+      // refresh call from the view model is needed for this to show up.
+      notesFlow.value = listOf(n)
 
-      // Once from the init block's eager collection, plus once per state collection above.
-      coVerify(atLeast = 3) { noteRepository.getNotes(any(), any(), any()) }
+      val ready = latest.listState as ListState.Ready
+      assertEquals(1, ready.notes.size)
     }
 
   @Test
@@ -210,7 +221,7 @@ class NotesViewModelTest : BaseTest() {
     runTest {
       val n1 = note(id = "1")
       val n2 = note(id = "2")
-      coEvery { noteRepository.getNotes(false, "", NoteSortProcessor.DATE_ZA) } returns listOf(n1, n2)
+      every { noteRepository.observeNotes(false, "", NoteSortProcessor.DATE_ZA) } returns flowOf(listOf(n1, n2))
       every { uiNoteListItemAdapter.convert(n1) } returns uiItem(id = "1")
       every { uiNoteListItemAdapter.convert(n2) } returns uiItem(id = "2")
       coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.NOTE) } returns listOf("1")
@@ -227,7 +238,7 @@ class NotesViewModelTest : BaseTest() {
     runTest {
       val n1 = note(id = "1")
       val n2 = note(id = "2")
-      coEvery { noteRepository.getNotes(false, "", NoteSortProcessor.DATE_ZA) } returns listOf(n1, n2)
+      every { noteRepository.observeNotes(false, "", NoteSortProcessor.DATE_ZA) } returns flowOf(listOf(n1, n2))
       every { uiNoteListItemAdapter.convert(n1) } returns uiItem(id = "1")
       every { uiNoteListItemAdapter.convert(n2) } returns uiItem(id = "2")
       coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.NOTE) } returns listOf("1")
@@ -561,18 +572,16 @@ class NotesViewModelTest : BaseTest() {
     }
 
   /**
-   * `notesScreenState` refreshes from the repository on every fresh collection (see
-   * `onStart { refresh() }` in the view model), so repeatedly calling `.first()` would wipe
-   * in-memory selection changes on each read. Subscribing once here - eagerly, since the whole
-   * suite runs on [Dispatchers.Unconfined] - keeps a live view of state without re-triggering
-   * that refresh.
+   * `notesScreenState` is driven by the repository's notes flow, so it updates in place rather
+   * than re-querying on each `.first()` call. Subscribing once here - eagerly, since the whole
+   * suite runs on [Dispatchers.Unconfined] - keeps a live view of state.
    */
   private fun TestScope.readyViewModel(
     ids: List<String>,
     isArchived: Boolean = false,
   ): Pair<NotesViewModel, () -> NotesScreenState> {
     val notes = ids.map { note(id = it) }
-    coEvery { noteRepository.getNotes(isArchived, "", NoteSortProcessor.DATE_ZA) } returns notes
+    every { noteRepository.observeNotes(isArchived, "", NoteSortProcessor.DATE_ZA) } returns flowOf(notes)
     notes.forEachIndexed { index, n -> every { uiNoteListItemAdapter.convert(n) } returns uiItem(id = ids[index]) }
     val viewModel = createViewModel(isArchived = isArchived)
     var latest = NotesScreenState()

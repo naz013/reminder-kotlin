@@ -38,7 +38,11 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -71,13 +75,14 @@ class PreviewNoteViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    // PreviewNoteViewModel.state runs loadInternal() (which also runs loadReminders() and
-    // loadTags()) in onStart on every collection - default stubs avoid unstubbed-call failures
-    // for tests that don't care about note/reminder/tag details but still collect state at least
-    // once.
+    // PreviewNoteViewModel's init block eagerly observes the note and its tags via Flow, and
+    // separately loads attached reminders once - default stubs avoid unstubbed-call failures for
+    // tests that don't care about note/reminder/tag details but still collect state at least once.
     coEvery { noteRepository.getById(key) } returns null
+    every { noteRepository.observeById(key) } returns flowOf(null)
     coEvery { reminderV2Repository.getByNoteId(key) } returns emptyList()
     coEvery { tagAssignmentRepository.getTagsForItem(key, TaggedItemType.NOTE) } returns emptyList()
+    every { tagAssignmentRepository.observeTagsForItem(key, TaggedItemType.NOTE) } returns flowOf(emptyList())
   }
 
   private fun note(
@@ -156,7 +161,7 @@ class PreviewNoteViewModelTest : BaseTest() {
   fun `loads note details into state on first collection`() =
     runTest {
       val n = note(summary = "Buy milk", archived = false)
-      coEvery { noteRepository.getById(key) } returns n
+      every { noteRepository.observeById(key) } returns flowOf(n)
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview(text = "Buy milk")
       every {
         noteColorEngine.colorsForLegacy(any(), any(), any())
@@ -173,10 +178,34 @@ class PreviewNoteViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `state updates automatically when the note flow emits a new value`() =
+    runTest {
+      val noteFlow = MutableStateFlow<NoteWithImages?>(null)
+      every { noteRepository.observeById(key) } returns noteFlow
+      val n = note(summary = "Buy milk")
+      every { uiNotePreviewAdapter.convert(n) } returns uiPreview(text = "Buy milk")
+      every {
+        noteColorEngine.colorsForLegacy(any(), any(), any())
+      } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
+      val viewModel = createViewModel()
+      var latest = PreviewNoteState(id = key)
+      backgroundScope.launch(Dispatchers.Unconfined) {
+        viewModel.state.collect { latest = it }
+      }
+      assertEquals("", latest.text)
+
+      // Simulates an edit made elsewhere (e.g. the edit screen) writing to the DB - no explicit
+      // reload call from the view model is needed for this to show up.
+      noteFlow.value = n
+
+      assertEquals("Buy milk", latest.text)
+    }
+
+  @Test
   fun `loads reminders attached to the note`() =
     runTest {
       val n = note()
-      coEvery { noteRepository.getById(key) } returns n
+      every { noteRepository.observeById(key) } returns flowOf(n)
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview()
       every {
         noteColorEngine.colorsForLegacy(any(), any(), any())
@@ -197,13 +226,13 @@ class PreviewNoteViewModelTest : BaseTest() {
   fun `loads tags attached to the note`() =
     runTest {
       val n = note()
-      coEvery { noteRepository.getById(key) } returns n
+      every { noteRepository.observeById(key) } returns flowOf(n)
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview()
       every {
         noteColorEngine.colorsForLegacy(any(), any(), any())
       } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
       val tag = Tag(id = "t1", name = "Work", color = 0xFF0000)
-      coEvery { tagAssignmentRepository.getTagsForItem(key, TaggedItemType.NOTE) } returns listOf(tag)
+      every { tagAssignmentRepository.observeTagsForItem(key, TaggedItemType.NOTE) } returns flowOf(listOf(tag))
       every { tagChipStateAdapter(tag) } returns TagChipState(id = "t1", name = "Work", color = Color.Red)
       val viewModel = createViewModel()
 
@@ -217,7 +246,7 @@ class PreviewNoteViewModelTest : BaseTest() {
   @Test
   fun `still loads reminders when the note itself is not found`() =
     runTest {
-      coEvery { noteRepository.getById(key) } returns null
+      every { noteRepository.observeById(key) } returns flowOf(null)
       val r = reminder(id = "r1")
       coEvery { reminderV2Repository.getByNoteId(key) } returns listOf(r)
       every { reminderToUiNoteAttachedReminder(r) } returns
@@ -414,7 +443,7 @@ class PreviewNoteViewModelTest : BaseTest() {
   fun `onImageOpen sets the current images in the singleton and posts OpenImagePreview`() =
     runTest {
       val n = note()
-      coEvery { noteRepository.getById(key) } returns n
+      every { noteRepository.observeById(key) } returns flowOf(n)
       val images = listOf(UiNoteImage(id = 1, fileName = "a.jpg"))
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview(images = images)
       every {

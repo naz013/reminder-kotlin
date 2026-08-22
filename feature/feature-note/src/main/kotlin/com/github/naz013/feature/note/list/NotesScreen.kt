@@ -190,7 +190,7 @@ private fun NotesList(
   onImageClick: (UiNoteListItem, Int) -> Unit,
 ) {
   val fabBottomPadding = if (hasFab) 88.dp else 0.dp
-  if (isGrid) {
+  if (!isGrid) {
     LazyColumn(
       modifier = modifier,
       contentPadding = PaddingValues(
@@ -308,7 +308,7 @@ private fun noteMenuItems(isArchived: Boolean, isPinned: Boolean): List<PopupMen
       NoteMenuAction.DELETE to R.string.delete,
     )
   }
-  return actions.map { (action, titleRes) ->
+  return actions.map { [action, titleRes] ->
     PopupMenuItem(id = action.ordinal, title = stringResource(titleRes), iconRes = action.iconRes())
   }
 }
@@ -484,20 +484,24 @@ private fun SortMenuButton(
     AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
-      items = items.mapIndexed { index, (_, title) -> PopupMenuItem(id = index, title = title) },
+      items = items.mapIndexed { index, [sortOrder, title] ->
+        PopupMenuItem(id = index, title = title, iconRes = sortOrderIconRes(sortOrder))
+      },
       onItemClick = { index -> onSortOrderSelected(items[index].first) },
     )
   }
 }
 
-@Composable
-private fun sortOrderIcon(sortOrder: String): Painter =
+private fun sortOrderIconRes(sortOrder: String): Int =
   when (sortOrder) {
-    NoteSortProcessor.DATE_AZ -> AppIcons.Fluent.ArrowUp
-    NoteSortProcessor.TEXT_AZ -> AppIcons.Fluent.TextSortAscending
-    NoteSortProcessor.TEXT_ZA -> AppIcons.Fluent.TextSortDescending
-    else -> AppIcons.Fluent.ArrowDown
+    NoteSortProcessor.DATE_AZ -> DrawableCatalog.Fluent.ArrowUp
+    NoteSortProcessor.TEXT_AZ -> DrawableCatalog.Fluent.TextSortAscending
+    NoteSortProcessor.TEXT_ZA -> DrawableCatalog.Fluent.TextSortDescending
+    else -> DrawableCatalog.Fluent.ArrowDown
   }
+
+@Composable
+private fun sortOrderIcon(sortOrder: String): Painter = painterResource(sortOrderIconRes(sortOrder))
 
 private data class OverflowAction(
   val id: Int,
@@ -517,10 +521,10 @@ private fun OverflowMenuButton(
   val actions = buildList {
     add(
       OverflowAction(
-        0,
-        stringResource(if (isGrid) R.string.grid_view else R.string.list_view),
-        if (isGrid) R.drawable.ic_fluent_grid else R.drawable.ic_fluent_list,
-        onGridToggleClick
+        id = 0,
+        title = stringResource(if (!isGrid) R.string.grid_view else R.string.list_view),
+        iconRes = if (!isGrid) R.drawable.ic_fluent_grid else R.drawable.ic_fluent_list,
+        onClick = onGridToggleClick
       )
     )
     if (onArchiveClick != null) {
