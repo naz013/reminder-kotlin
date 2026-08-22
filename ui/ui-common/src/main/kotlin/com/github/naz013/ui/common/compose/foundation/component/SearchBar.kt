@@ -79,7 +79,7 @@ fun SearchBar(
           IconButton(onClick = { onQueryChange("") }) {
             Icon(
               painter = AppIcons.Fluent.Dismiss,
-              contentDescription = null,
+              contentDescription = stringResource(R.string.cd_clear_search),
               tint = MaterialTheme.colorScheme.onSurfaceVariant,
               modifier = Modifier.fillMaxSize()
                 .padding(10.dp)

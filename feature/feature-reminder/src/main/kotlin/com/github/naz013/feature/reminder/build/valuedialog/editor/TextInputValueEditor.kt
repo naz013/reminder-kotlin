@@ -31,6 +31,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.compose.LottieAnimation
@@ -145,15 +147,16 @@ internal fun TextInputValueEditor(
       )
       if (supportsSpeech) {
         Spacer(modifier = Modifier.width(8.dp))
-        TooltipIconButton(
-          contentDescription = if (speechState == SpeechUiState.IDLE) {
-            stringResource(R.string.cd_start_voice_input)
-          } else {
-            stringResource(R.string.cd_stop_voice_input)
-          },
-        ) {
+        val micButtonDescription = if (speechState == SpeechUiState.IDLE) {
+          stringResource(R.string.cd_start_voice_input)
+        } else {
+          stringResource(R.string.cd_stop_voice_input)
+        }
+        TooltipIconButton(contentDescription = micButtonDescription) {
           IconButton(
-            modifier = Modifier.size(MIC_BUTTON_SIZE),
+            modifier = Modifier
+              .size(MIC_BUTTON_SIZE)
+              .semantics { contentDescription = micButtonDescription },
             onClick = {
               when {
                 speechEngine.isStarted() -> speechEngine.stopListening()

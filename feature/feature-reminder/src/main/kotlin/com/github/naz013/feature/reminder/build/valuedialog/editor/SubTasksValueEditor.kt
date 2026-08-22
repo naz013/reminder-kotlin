@@ -57,6 +57,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.github.naz013.datecalc.DateTimeManager
@@ -243,13 +245,12 @@ private fun ShopItemRow(
     } else {
       Box(modifier = Modifier.size(20.dp))
     }
-    TooltipIconButton(
-      contentDescription = if (item.isChecked) {
-        stringResource(R.string.cd_mark_as_not_done)
-      } else {
-        stringResource(R.string.cd_mark_as_done)
-      },
-    ) {
+    val checkToggleDescription = if (item.isChecked) {
+      stringResource(R.string.cd_mark_as_not_done)
+    } else {
+      stringResource(R.string.cd_mark_as_done)
+    }
+    TooltipIconButton(contentDescription = checkToggleDescription) {
       IconButton(
         onClick = {
           if (hapticFeedbackEnabled) {
@@ -259,6 +260,7 @@ private fun ShopItemRow(
         },
         modifier = Modifier
           .size(40.dp)
+          .semantics { contentDescription = checkToggleDescription }
           .testTag(shopItemCheckTestTag(item.uuId)),
       ) {
         AnimatedVisibility(
@@ -344,7 +346,7 @@ private fun ShopItemRow(
               .fillMaxSize()
               .padding(12.dp),
             painter = AppIcons.Fluent.Dismiss,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_remove),
             tint = MaterialTheme.colorScheme.onSurface,
           )
         }
