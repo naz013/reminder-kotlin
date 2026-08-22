@@ -1203,4 +1203,13 @@
     <string name="in_app_notification_banner">In-App-Benachrichtigungsbanner</string>
     <string name="in_app_notification_banner_enabled">Banner in der App anzeigen, wenn eine Erinnerungs- oder Geburtstagsbenachrichtigung ausgelöst wird</string>
     <string name="in_app_notification_banner_disabled">Nur die Systembenachrichtigung anzeigen</string>
+    <string name="cd_collapse">Einklappen</string>
+    <string name="cd_remove">Entfernen</string>
+    <string name="cd_decrease">Verringern</string>
+    <string name="cd_increase">Erhöhen</string>
+    <string name="cd_clear_search">Suche löschen</string>
+    <string name="cd_start_voice_input">Spracheingabe starten</string>
+    <string name="cd_stop_voice_input">Spracheingabe stoppen</string>
+    <string name="cd_mark_as_done">Als erledigt markieren</string>
+    <string name="cd_mark_as_not_done">Als nicht erledigt markieren</string>
 </resources>

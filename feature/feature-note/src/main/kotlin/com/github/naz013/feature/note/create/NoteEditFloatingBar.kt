@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 
 private const val FLOATING_BAR_ANIMATION_DURATION_MS = 300
@@ -146,12 +147,14 @@ private fun NoteEditBarIconSlot(
     modifier = Modifier.size(BAR_ITEM_SIZE),
     contentAlignment = Alignment.Center,
   ) {
-    IconButton(
-      onClick = item.onClick,
-      interactionSource = interactionSource,
-      modifier = Modifier.fillMaxWidth().height(BAR_ITEM_SIZE),
-    ) {
-      item.icon()
+    TooltipIconButton(contentDescription = item.contentDescription) {
+      IconButton(
+        onClick = item.onClick,
+        interactionSource = interactionSource,
+        modifier = Modifier.fillMaxWidth().height(BAR_ITEM_SIZE),
+      ) {
+        item.icon()
+      }
     }
     if (item.showBadge) {
       Box(

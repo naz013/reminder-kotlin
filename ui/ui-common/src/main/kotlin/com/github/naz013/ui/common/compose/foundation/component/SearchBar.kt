@@ -22,11 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 
 /**
  * A rounded, single-line search input following Material 3 styling.
@@ -72,14 +75,16 @@ fun SearchBar(
         exit = scaleOut(animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)) +
           fadeOut()
       ) {
-        IconButton(onClick = { onQueryChange("") }) {
-          Icon(
-            painter = AppIcons.Fluent.Dismiss,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.fillMaxSize()
-              .padding(10.dp)
-          )
+        TooltipIconButton(contentDescription = stringResource(R.string.cd_clear_search)) {
+          IconButton(onClick = { onQueryChange("") }) {
+            Icon(
+              painter = AppIcons.Fluent.Dismiss,
+              contentDescription = stringResource(R.string.cd_clear_search),
+              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.fillMaxSize()
+                .padding(10.dp)
+            )
+          }
         }
       }
     },

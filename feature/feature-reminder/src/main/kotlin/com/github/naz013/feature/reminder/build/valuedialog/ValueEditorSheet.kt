@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,9 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.feature.reminder.build.ApplicationBuilderItem
 import com.github.naz013.feature.reminder.build.AttachmentsBuilderItem
 import com.github.naz013.feature.reminder.build.BeforeTimeBuilderItem
@@ -168,24 +168,18 @@ internal fun ValueEditorSheet(
         modifier = Modifier.weight(1f),
       )
       if (onHelpClick != null) {
-        IconButton(onClick = onHelpClick) {
-          Icon(
-            painter = painterResource(R.drawable.ic_builder_ical_help),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurface,
-          )
-        }
-      }
-      IconButton(
-        onClick = onDismissRequest,
-        modifier = Modifier.testTag(valueEditorSheetCloseTestTag),
-      ) {
-        Icon(
-          painter = painterResource(R.drawable.ic_builder_chevron_down),
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurface,
+        MenuIconButton(
+          icon = painterResource(R.drawable.ic_builder_ical_help),
+          contentDescription = stringResource(R.string.help),
+          onClick = onHelpClick,
         )
       }
+      MenuIconButton(
+        modifier = Modifier.testTag(valueEditorSheetCloseTestTag),
+        icon = painterResource(R.drawable.ic_builder_chevron_down),
+        contentDescription = stringResource(R.string.cd_collapse),
+        onClick = onDismissRequest,
+      )
     }
 
     val description = builderItem.description

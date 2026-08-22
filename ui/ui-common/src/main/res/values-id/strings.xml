@@ -1205,4 +1205,13 @@
     <string name="header_items">Item header</string>
     <string name="header_items_subtitle">Pilih item mana yang muncul di layar Beranda dan urutannya</string>
     <string name="header_item_always_shown">Selalu ditampilkan</string>
+    <string name="cd_collapse">Ciutkan</string>
+    <string name="cd_remove">Hapus</string>
+    <string name="cd_decrease">Kurangi</string>
+    <string name="cd_increase">Tambah</string>
+    <string name="cd_clear_search">Hapus pencarian</string>
+    <string name="cd_start_voice_input">Mulai masukan suara</string>
+    <string name="cd_stop_voice_input">Hentikan masukan suara</string>
+    <string name="cd_mark_as_done">Tandai selesai</string>
+    <string name="cd_mark_as_not_done">Tandai belum selesai</string>
 </resources>

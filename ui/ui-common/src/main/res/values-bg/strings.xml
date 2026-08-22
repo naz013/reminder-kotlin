@@ -1208,4 +1208,13 @@
     <string name="header_items">Елементи на заглавието</string>
     <string name="header_items_subtitle">Изберете кои елементи да се показват на началния екран и в какъв ред</string>
     <string name="header_item_always_shown">Винаги видимо</string>
+    <string name="cd_collapse">Свиване</string>
+    <string name="cd_remove">Премахване</string>
+    <string name="cd_decrease">Намаляване</string>
+    <string name="cd_increase">Увеличаване</string>
+    <string name="cd_clear_search">Изчистване на търсенето</string>
+    <string name="cd_start_voice_input">Стартиране на гласово въвеждане</string>
+    <string name="cd_stop_voice_input">Спиране на гласово въвеждане</string>
+    <string name="cd_mark_as_done">Маркиране като изпълнено</string>
+    <string name="cd_mark_as_not_done">Маркиране като неизпълнено</string>
 </resources>

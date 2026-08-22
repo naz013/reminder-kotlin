@@ -41,6 +41,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.WheelPicker
@@ -377,18 +378,24 @@ private fun RoutineStepRow(
           singleLine = true,
           modifier = Modifier.weight(1f),
         )
-        IconButton(onClick = onMoveUpClick, enabled = !isFirst) {
-          Icon(
-            AppIcons.Builder.ChevronDown,
-            contentDescription = stringResource(R.string.move_step_up),
-            modifier = Modifier.graphicsLayer { rotationZ = 180f },
-          )
+        TooltipIconButton(contentDescription = stringResource(R.string.move_step_up)) {
+          IconButton(onClick = onMoveUpClick, enabled = !isFirst) {
+            Icon(
+              AppIcons.Builder.ChevronDown,
+              contentDescription = stringResource(R.string.move_step_up),
+              modifier = Modifier.graphicsLayer { rotationZ = 180f },
+            )
+          }
         }
-        IconButton(onClick = onMoveDownClick, enabled = !isLast) {
-          Icon(AppIcons.Builder.ChevronDown, contentDescription = stringResource(R.string.move_step_down))
+        TooltipIconButton(contentDescription = stringResource(R.string.move_step_down)) {
+          IconButton(onClick = onMoveDownClick, enabled = !isLast) {
+            Icon(AppIcons.Builder.ChevronDown, contentDescription = stringResource(R.string.move_step_down))
+          }
         }
-        IconButton(onClick = onRemoveClick) {
-          Icon(AppIcons.Fluent.Dismiss, contentDescription = stringResource(R.string.delete))
+        TooltipIconButton(contentDescription = stringResource(R.string.delete)) {
+          IconButton(onClick = onRemoveClick) {
+            Icon(AppIcons.Fluent.Dismiss, contentDescription = stringResource(R.string.delete))
+          }
         }
       }
       FlowRow(

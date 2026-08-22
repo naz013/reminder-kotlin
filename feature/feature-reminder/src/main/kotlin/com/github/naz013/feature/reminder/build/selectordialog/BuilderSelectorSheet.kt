@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
@@ -34,6 +33,7 @@ import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.feature.reminder.build.UiSelectorItem
 import com.github.naz013.feature.reminder.build.UiSelectorItemState
 import com.github.naz013.feature.reminder.build.preset.PresetListItem
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 
@@ -84,16 +84,12 @@ internal fun BuilderSelectorSheet(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.weight(1f),
       )
-      IconButton(
-        onClick = onDismissRequest,
+      MenuIconButton(
         modifier = Modifier.testTag(builderSelectorSheetCloseTestTag),
-      ) {
-        Icon(
-          painter = painterResource(R.drawable.ic_builder_chevron_down),
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurface,
-        )
-      }
+        icon = painterResource(R.drawable.ic_builder_chevron_down),
+        contentDescription = stringResource(R.string.cd_collapse),
+        onClick = onDismissRequest,
+      )
     }
 
     SearchBar(

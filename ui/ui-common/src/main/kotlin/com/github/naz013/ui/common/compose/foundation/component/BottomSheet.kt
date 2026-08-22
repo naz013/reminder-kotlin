@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import kotlinx.coroutines.launch
 
 /**
@@ -171,15 +172,17 @@ fun BottomSheetHeader(
     }
 
     if (showCloseButton) {
-      IconButton(
-        onClick = onCloseClick,
-        modifier = Modifier.align(Alignment.CenterEnd)
+      TooltipIconButton(
+        contentDescription = "Close",
+        modifier = Modifier.align(Alignment.CenterEnd),
       ) {
-        Icon(
-          imageVector = Icons.Default.Close,
-          contentDescription = "Close",
-          tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        IconButton(onClick = onCloseClick) {
+          Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "Close",
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+          )
+        }
       }
     }
   }

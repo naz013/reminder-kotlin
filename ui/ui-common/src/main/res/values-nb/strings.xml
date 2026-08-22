@@ -1205,4 +1205,13 @@
     <string name="header_items">Topptekstelementer</string>
     <string name="header_items_subtitle">Velg hvilke elementer som vises på hjem-skjermen og i hvilken rekkefølge</string>
     <string name="header_item_always_shown">Vises alltid</string>
+    <string name="cd_collapse">Skjul</string>
+    <string name="cd_remove">Fjern</string>
+    <string name="cd_decrease">Reduser</string>
+    <string name="cd_increase">Øk</string>
+    <string name="cd_clear_search">Tøm søk</string>
+    <string name="cd_start_voice_input">Start taleinntasting</string>
+    <string name="cd_stop_voice_input">Stopp taleinntasting</string>
+    <string name="cd_mark_as_done">Merk som fullført</string>
+    <string name="cd_mark_as_not_done">Merk som ikke fullført</string>
 </resources>

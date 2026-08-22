@@ -23,6 +23,7 @@ import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,8 +54,10 @@ internal fun WorkflowRulesForGroupScreen(
       )
     },
     floatingActionButton = {
-      FloatingActionButton(onClick = onCreateRuleClick) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.workflow_create_custom_rule))
+      TooltipIconButton(contentDescription = stringResource(R.string.workflow_create_custom_rule)) {
+        FloatingActionButton(onClick = onCreateRuleClick) {
+          Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.workflow_create_custom_rule))
+        }
       }
     },
   ) { padding ->

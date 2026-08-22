@@ -1207,4 +1207,13 @@
     <string name="header_items">Elementi dell\'intestazione</string>
     <string name="header_items_subtitle">Scegli quali elementi vengono visualizzati nella schermata Home e in quale ordine</string>
     <string name="header_item_always_shown">Sempre visibile</string>
+    <string name="cd_collapse">Comprimi</string>
+    <string name="cd_remove">Rimuovi</string>
+    <string name="cd_decrease">Diminuisci</string>
+    <string name="cd_increase">Aumenta</string>
+    <string name="cd_clear_search">Cancella ricerca</string>
+    <string name="cd_start_voice_input">Avvia inserimento vocale</string>
+    <string name="cd_stop_voice_input">Interrompi inserimento vocale</string>
+    <string name="cd_mark_as_done">Contrassegna come completato</string>
+    <string name="cd_mark_as_not_done">Contrassegna come non completato</string>
 </resources>

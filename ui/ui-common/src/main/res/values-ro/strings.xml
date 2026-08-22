@@ -1207,4 +1207,13 @@
     <string name="header_items">Elemente antet</string>
     <string name="header_items_subtitle">Alege ce elemente apar pe ecranul Acasă și în ce ordine</string>
     <string name="header_item_always_shown">Afișat mereu</string>
+    <string name="cd_collapse">Restrânge</string>
+    <string name="cd_remove">Elimină</string>
+    <string name="cd_decrease">Micșorează</string>
+    <string name="cd_increase">Mărește</string>
+    <string name="cd_clear_search">Șterge căutarea</string>
+    <string name="cd_start_voice_input">Începe introducerea vocală</string>
+    <string name="cd_stop_voice_input">Oprește introducerea vocală</string>
+    <string name="cd_mark_as_done">Marchează ca finalizat</string>
+    <string name="cd_mark_as_not_done">Marchează ca nefinalizat</string>
 </resources>

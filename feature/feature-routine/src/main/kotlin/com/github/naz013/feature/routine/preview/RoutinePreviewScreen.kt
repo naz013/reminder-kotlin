@@ -38,11 +38,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
@@ -178,28 +181,40 @@ private fun RoutineStepChecklistRow(
     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    IconButton(onClick = onCheckToggle, modifier = Modifier.size(40.dp)) {
-      AnimatedVisibility(
-        visible = step.isCompleted,
-        enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-        exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+    val checkToggleDescription = if (step.isCompleted) {
+      stringResource(R.string.cd_mark_as_not_done)
+    } else {
+      stringResource(R.string.cd_mark_as_done)
+    }
+    TooltipIconButton(contentDescription = checkToggleDescription) {
+      IconButton(
+        onClick = onCheckToggle,
+        modifier = Modifier
+          .size(40.dp)
+          .semantics { contentDescription = checkToggleDescription },
       ) {
-        Icon(
-          painter = AppIcons.Fluent.CheckboxChecked,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.primary,
-        )
-      }
-      AnimatedVisibility(
-        visible = !step.isCompleted,
-        enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-        exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
-      ) {
-        Icon(
-          painter = AppIcons.Fluent.CheckboxUnchecked,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        AnimatedVisibility(
+          visible = step.isCompleted,
+          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
+          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+        ) {
+          Icon(
+            painter = AppIcons.Fluent.CheckboxChecked,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+          )
+        }
+        AnimatedVisibility(
+          visible = !step.isCompleted,
+          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
+          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+        ) {
+          Icon(
+            painter = AppIcons.Fluent.CheckboxUnchecked,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+          )
+        }
       }
     }
     Column(modifier = Modifier.weight(1f)) {

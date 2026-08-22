@@ -26,7 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -595,20 +594,22 @@ private fun SubTaskRow(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp),
   ) {
-    IconButton(onClick = { onCheck(subTask.id) }) {
-      Icon(
-        painter =
-          painterResource(
-            if (subTask.isChecked) {
-              R.drawable.ic_fluent_checkbox_checked
-            } else {
-              R.drawable.ic_fluent_checkbox_unchecked
-            },
-          ),
-        contentDescription = null,
-        tint = if (subTask.isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-      )
-    }
+    MenuIconButton(
+      icon = painterResource(
+        if (subTask.isChecked) {
+          R.drawable.ic_fluent_checkbox_checked
+        } else {
+          R.drawable.ic_fluent_checkbox_unchecked
+        },
+      ),
+      contentDescription = if (subTask.isChecked) {
+        stringResource(R.string.cd_mark_as_not_done)
+      } else {
+        stringResource(R.string.cd_mark_as_done)
+      },
+      iconColor = if (subTask.isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+      onClick = { onCheck(subTask.id) },
+    )
     Text(
       text = subTask.text,
       style = MaterialTheme.typography.bodyLarge,
@@ -616,13 +617,12 @@ private fun SubTaskRow(
       textDecoration = if (subTask.isChecked) TextDecoration.LineThrough else TextDecoration.None,
       modifier = Modifier.weight(1f),
     )
-    IconButton(onClick = { onRemove(subTask.id) }) {
-      Icon(
-        painter = painterResource(R.drawable.ic_fluent_delete),
-        contentDescription = stringResource(R.string.delete),
-        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-      )
-    }
+    MenuIconButton(
+      icon = painterResource(R.drawable.ic_fluent_delete),
+      contentDescription = stringResource(R.string.delete),
+      iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+      onClick = { onRemove(subTask.id) },
+    )
   }
 }
 

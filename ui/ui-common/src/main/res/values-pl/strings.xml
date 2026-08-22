@@ -1207,4 +1207,13 @@
     <string name="header_items">Elementy nagłówka</string>
     <string name="header_items_subtitle">Wybierz, które elementy pojawiają się na ekranie głównym i w jakiej kolejności</string>
     <string name="header_item_always_shown">Zawsze widoczne</string>
+    <string name="cd_collapse">Zwiń</string>
+    <string name="cd_remove">Usuń</string>
+    <string name="cd_decrease">Zmniejsz</string>
+    <string name="cd_increase">Zwiększ</string>
+    <string name="cd_clear_search">Wyczyść wyszukiwanie</string>
+    <string name="cd_start_voice_input">Rozpocznij wprowadzanie głosowe</string>
+    <string name="cd_stop_voice_input">Zatrzymaj wprowadzanie głosowe</string>
+    <string name="cd_mark_as_done">Oznacz jako wykonane</string>
+    <string name="cd_mark_as_not_done">Oznacz jako niewykonane</string>
 </resources>

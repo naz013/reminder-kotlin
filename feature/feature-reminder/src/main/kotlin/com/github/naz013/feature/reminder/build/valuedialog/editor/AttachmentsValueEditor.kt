@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -40,6 +39,7 @@ import com.github.naz013.feature.reminder.build.valuedialog.controller.attachmen
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
 private val GRID_MAX_HEIGHT = 320.dp
 
@@ -135,12 +135,11 @@ private fun AttachmentCell(attachmentFile: AttachmentFile, onRemove: () -> Unit)
         )
       }
     }
-    IconButton(onClick = onRemove, modifier = Modifier.align(Alignment.TopEnd).size(24.dp)) {
-      Icon(
-        painter = AppIcons.Fluent.Dismiss,
-        contentDescription = null,
-        tint = MaterialTheme.colorScheme.onSurface,
-      )
-    }
+    MenuIconButton(
+      modifier = Modifier.align(Alignment.TopEnd).size(24.dp),
+      icon = AppIcons.Fluent.Dismiss,
+      contentDescription = stringResource(R.string.cd_remove),
+      onClick = onRemove,
+    )
   }
 }

@@ -10,8 +10,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -24,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.note.UiNoteImage
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -53,13 +52,12 @@ internal fun ImagePreviewScreen(
         }
       },
       navigationIcon = {
-        IconButton(onClick = onBackClick) {
-          Icon(
-            painter = AppIcons.Builder.ArrowLeft,
-            contentDescription = stringResource(R.string.cd_back),
-            tint = state.content,
-          )
-        }
+        MenuIconButton(
+          icon = AppIcons.Builder.ArrowLeft,
+          iconColor = state.content,
+          contentDescription = stringResource(R.string.cd_back),
+          onClick = onBackClick,
+        )
       },
       colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
       modifier = Modifier.statusBarsPadding(),

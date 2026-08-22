@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 
 private val DigitButtonSize = 64.dp
 private val DotSize = 20.dp
@@ -89,12 +90,17 @@ fun PinInput(
         fingerprintButton?.invoke()
       }
       PinDigitButton(digit = digitOrder[9], onClick = onDigitClick)
-      IconButton(onClick = onDeleteClick, modifier = Modifier.size(DigitButtonSize)) {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_dismiss),
-          contentDescription = stringResource(R.string.delete),
-          tint = MaterialTheme.colorScheme.onSurface,
-        )
+      TooltipIconButton(
+        contentDescription = stringResource(R.string.delete),
+        modifier = Modifier.size(DigitButtonSize),
+      ) {
+        IconButton(onClick = onDeleteClick) {
+          Icon(
+            painter = painterResource(R.drawable.ic_fluent_dismiss),
+            contentDescription = stringResource(R.string.delete),
+            tint = MaterialTheme.colorScheme.onSurface,
+          )
+        }
       }
     }
   }

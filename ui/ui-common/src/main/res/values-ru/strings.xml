@@ -1206,4 +1206,13 @@
     <string name="header_items">Элементы заголовка</string>
     <string name="header_items_subtitle">Выберите, какие элементы отображаются на главном экране и в каком порядке</string>
     <string name="header_item_always_shown">Всегда отображается</string>
+    <string name="cd_collapse">Свернуть</string>
+    <string name="cd_remove">Удалить</string>
+    <string name="cd_decrease">Уменьшить</string>
+    <string name="cd_increase">Увеличить</string>
+    <string name="cd_clear_search">Очистить поиск</string>
+    <string name="cd_start_voice_input">Начать голосовой ввод</string>
+    <string name="cd_stop_voice_input">Остановить голосовой ввод</string>
+    <string name="cd_mark_as_done">Отметить как выполнено</string>
+    <string name="cd_mark_as_not_done">Отметить как невыполненное</string>
 </resources>

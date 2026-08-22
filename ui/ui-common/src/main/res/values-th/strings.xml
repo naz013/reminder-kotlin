@@ -1205,4 +1205,13 @@
     <string name="header_items">รายการส่วนหัว</string>
     <string name="header_items_subtitle">เลือกรายการที่จะแสดงบนหน้าจอหลักและลำดับการแสดงผล</string>
     <string name="header_item_always_shown">แสดงตลอดเวลา</string>
+    <string name="cd_collapse">ยุบ</string>
+    <string name="cd_remove">ลบ</string>
+    <string name="cd_decrease">ลด</string>
+    <string name="cd_increase">เพิ่ม</string>
+    <string name="cd_clear_search">ล้างการค้นหา</string>
+    <string name="cd_start_voice_input">เริ่มการป้อนข้อมูลด้วยเสียง</string>
+    <string name="cd_stop_voice_input">หยุดการป้อนข้อมูลด้วยเสียง</string>
+    <string name="cd_mark_as_done">ทำเครื่องหมายว่าเสร็จสิ้น</string>
+    <string name="cd_mark_as_not_done">ทำเครื่องหมายว่ายังไม่เสร็จสิ้น</string>
 </resources>

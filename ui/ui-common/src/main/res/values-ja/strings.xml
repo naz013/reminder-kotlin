@@ -1207,4 +1207,13 @@
     <string name="header_items">ヘッダー項目</string>
     <string name="header_items_subtitle">ホーム画面に表示する項目と順序を選択します</string>
     <string name="header_item_always_shown">常に表示</string>
+    <string name="cd_collapse">折りたたむ</string>
+    <string name="cd_remove">削除</string>
+    <string name="cd_decrease">減らす</string>
+    <string name="cd_increase">増やす</string>
+    <string name="cd_clear_search">検索をクリア</string>
+    <string name="cd_start_voice_input">音声入力を開始</string>
+    <string name="cd_stop_voice_input">音声入力を停止</string>
+    <string name="cd_mark_as_done">完了にする</string>
+    <string name="cd_mark_as_not_done">未完了にする</string>
 </resources>

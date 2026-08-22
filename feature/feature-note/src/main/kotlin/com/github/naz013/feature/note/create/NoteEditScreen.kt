@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -56,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.dragAndDropHighlight
 import com.github.naz013.ui.note.NoteFontProvider
@@ -92,13 +92,12 @@ internal fun NoteEditScreen(
     Column(modifier = Modifier.fillMaxSize()) {
       TopAppBar(
         navigationIcon = {
-          IconButton(onClick = actions.onBackClick) {
-            Icon(
-              painter = AppIcons.Builder.ArrowLeft,
-              contentDescription = null,
-              tint = contentColor,
-            )
-          }
+          MenuIconButton(
+            icon = AppIcons.Builder.ArrowLeft,
+            contentDescription = stringResource(R.string.cd_back),
+            iconColor = contentColor,
+            onClick = actions.onBackClick,
+          )
         },
         title = {},
         actions = {
@@ -107,21 +106,19 @@ internal fun NoteEditScreen(
             color = contentColor,
             onClick = actions.onSaveClick,
           )
-          IconButton(onClick = actions.onShareClick) {
-            Icon(
-              painter = painterResource(R.drawable.ic_fluent_share_android),
-              contentDescription = stringResource(R.string.share),
-              tint = contentColor,
-            )
-          }
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_fluent_share_android),
+            iconColor = contentColor,
+            contentDescription = stringResource(R.string.share),
+            onClick = actions.onShareClick,
+          )
           if (state.canDelete) {
-            IconButton(onClick = actions.onDeleteClick) {
-              Icon(
-                painter = painterResource(R.drawable.ic_fluent_delete),
-                contentDescription = stringResource(R.string.delete),
-                tint = contentColor,
-              )
-            }
+            MenuIconButton(
+              icon = painterResource(R.drawable.ic_fluent_delete),
+              iconColor = contentColor,
+              contentDescription = stringResource(R.string.delete),
+              onClick = actions.onDeleteClick,
+            )
           }
         },
         colors =

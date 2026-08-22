@@ -1205,4 +1205,13 @@
     <string name="header_items">Sidehovedelementer</string>
     <string name="header_items_subtitle">Vælg hvilke elementer der vises på startskærmen, og i hvilken rækkefølge</string>
     <string name="header_item_always_shown">Vises altid</string>
+    <string name="cd_collapse">Skjul</string>
+    <string name="cd_remove">Fjern</string>
+    <string name="cd_decrease">Formindsk</string>
+    <string name="cd_increase">Forøg</string>
+    <string name="cd_clear_search">Ryd søgning</string>
+    <string name="cd_start_voice_input">Start stemmeinput</string>
+    <string name="cd_stop_voice_input">Stop stemmeinput</string>
+    <string name="cd_mark_as_done">Markér som udført</string>
+    <string name="cd_mark_as_not_done">Markér som ikke udført</string>
 </resources>

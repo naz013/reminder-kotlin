@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
@@ -57,37 +57,33 @@ internal fun PreviewNoteScreen(
     TopAppBar(
       title = { },
       navigationIcon = {
-        IconButton(onClick = actions.onBackClick) {
-          Icon(
-            painter = AppIcons.Builder.ArrowLeft,
-            contentDescription = stringResource(R.string.cd_back),
-            tint = state.content,
-          )
-        }
+        MenuIconButton(
+          icon = AppIcons.Builder.ArrowLeft,
+          iconColor = state.content,
+          contentDescription = stringResource(R.string.cd_back),
+          onClick = actions.onBackClick,
+        )
       },
       actions = {
-        IconButton(onClick = actions.onEditClick) {
-          Icon(
-            painter = painterResource(R.drawable.ic_fluent_edit),
-            contentDescription = stringResource(R.string.edit),
-            tint = state.content,
-          )
-        }
-        IconButton(onClick = actions.onStatusClick) {
-          Icon(
-            painter = AppIcons.Fluent.Heart,
-            contentDescription = stringResource(R.string.show_in_status_bar),
-            tint = state.content,
-          )
-        }
+        MenuIconButton(
+          icon = painterResource(R.drawable.ic_fluent_edit),
+          iconColor = state.content,
+          contentDescription = stringResource(R.string.edit),
+          onClick = actions.onEditClick,
+        )
+        MenuIconButton(
+          icon = AppIcons.Fluent.Heart,
+          iconColor = state.content,
+          contentDescription = stringResource(R.string.show_in_status_bar),
+          onClick = actions.onStatusClick,
+        )
         var overflowExpanded by remember { mutableStateOf(false) }
-        IconButton(onClick = { overflowExpanded = true }) {
-          Icon(
-            painter = AppIcons.Fluent.MoreVertical,
-            contentDescription = null,
-            tint = state.content,
-          )
-        }
+        MenuIconButton(
+          icon = AppIcons.Fluent.MoreVertical,
+          iconColor = state.content,
+          contentDescription = stringResource(R.string.more_options),
+          onClick = { overflowExpanded = true },
+        )
         AppDropdownMenu(
           expanded = overflowExpanded,
           onDismissRequest = { overflowExpanded = false },

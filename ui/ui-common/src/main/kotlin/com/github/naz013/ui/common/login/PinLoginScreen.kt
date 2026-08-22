@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.PinInput
 
 @Composable
@@ -58,12 +59,14 @@ internal fun PinLoginScreen(
         shuffleDigits = shuffleDigits,
         fingerprintButton = if (showFingerprintButton) {
           {
-            IconButton(onClick = onFingerprintClick) {
-              Icon(
-                painter = painterResource(R.drawable.ic_fluent_fingerprint),
-                contentDescription = stringResource(R.string.enter_your_pin),
-                tint = MaterialTheme.colorScheme.onBackground,
-              )
+            TooltipIconButton(contentDescription = stringResource(R.string.enter_your_pin)) {
+              IconButton(onClick = onFingerprintClick) {
+                Icon(
+                  painter = painterResource(R.drawable.ic_fluent_fingerprint),
+                  contentDescription = stringResource(R.string.enter_your_pin),
+                  tint = MaterialTheme.colorScheme.onBackground,
+                )
+              }
             }
           }
         } else {
@@ -73,18 +76,20 @@ internal fun PinLoginScreen(
       Spacer(modifier = Modifier.weight(1.4f))
     }
 
-    IconButton(
-      onClick = onCloseClick,
+    TooltipIconButton(
+      contentDescription = stringResource(R.string.cd_back),
       modifier = Modifier
         .align(Alignment.TopStart)
         .statusBarsPadding()
         .padding(8.dp),
     ) {
-      Icon(
-        painter = painterResource(R.drawable.ic_fluent_dismiss),
-        contentDescription = stringResource(R.string.cd_back),
-        tint = MaterialTheme.colorScheme.onBackground,
-      )
+      IconButton(onClick = onCloseClick) {
+        Icon(
+          painter = painterResource(R.drawable.ic_fluent_dismiss),
+          contentDescription = stringResource(R.string.cd_back),
+          tint = MaterialTheme.colorScheme.onBackground,
+        )
+      }
     }
   }
 }

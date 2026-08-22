@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.nsy.reviewsadmin.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -44,12 +45,11 @@ fun LogViewerScreen(
       TopAppBar(
         title = { Text("Log Viewer") },
         navigationIcon = {
-          IconButton(onClick = onNavigateBack) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = stringResource(R.string.back)
-            )
-          }
+          MenuIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.back),
+            onClick = onNavigateBack
+          )
         },
         colors = TopAppBarDefaults.topAppBarColors(
           containerColor = MaterialTheme.colorScheme.primaryContainer,
