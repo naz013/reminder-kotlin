@@ -5,13 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -34,7 +31,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
-import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
+import com.github.naz013.ui.common.compose.foundation.component.ColorPickerCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,33 +121,14 @@ internal fun EditGoogleTaskListScreen(
         )
       }
 
-      Card(
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-      ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-          Text(
-            text = stringResource(R.string.color),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
-          )
-          ColorSlider(
-            colors = state.sliderColors,
-            selectedIndex = state.colorIndex,
-            onColorSelected = onColorSelected,
-            enabled = !state.isLoading,
-            modifier =
-              Modifier
-                .fillMaxWidth()
-                .height(36.dp)
-                .padding(top = 8.dp),
-            hapticFeedbackEnabled = state.hapticFeedbackEnabled,
-          )
-        }
-      }
+      ColorPickerCard(
+        colors = state.sliderColors,
+        selectedIndex = state.colorIndex,
+        onColorSelected = onColorSelected,
+        enabled = !state.isLoading,
+        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
+        modifier = Modifier.padding(top = 16.dp),
+      )
 
       adsContent()
     }

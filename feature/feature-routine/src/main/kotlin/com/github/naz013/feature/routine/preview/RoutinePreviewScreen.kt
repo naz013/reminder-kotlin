@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -72,7 +70,7 @@ internal fun RoutinePreviewScreen(
       if (state is RoutinePreviewState.Ready) {
         ExtendedFloatingActionButton(
           onClick = onStartClick,
-          icon = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
+          icon = { Icon(AppIcons.Fluent.Play, contentDescription = null) },
           text = { Text(stringResource(R.string.start_routine)) },
         )
       }
@@ -256,8 +254,16 @@ private fun OverflowMenu(
           title = stringResource(if (isPinned) R.string.unpin else R.string.pin),
           iconRes = if (isPinned) DrawableCatalog.Fluent.PinOff else DrawableCatalog.Fluent.Pin,
         ),
-        PopupMenuItem(id = OverflowAction.RESET_STEPS.ordinal, title = stringResource(R.string.reset_steps)),
-        PopupMenuItem(id = OverflowAction.DELETE.ordinal, title = stringResource(R.string.delete)),
+        PopupMenuItem(
+          id = OverflowAction.RESET_STEPS.ordinal,
+          title = stringResource(R.string.reset_steps),
+          iconRes = DrawableCatalog.Fluent.ArrowCounterclockwise,
+        ),
+        PopupMenuItem(
+          id = OverflowAction.DELETE.ordinal,
+          title = stringResource(R.string.delete),
+          iconRes = DrawableCatalog.Fluent.Delete,
+        ),
       ),
       onItemClick = { id ->
         expanded = false

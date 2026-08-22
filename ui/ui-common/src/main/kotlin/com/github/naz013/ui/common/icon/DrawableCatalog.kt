@@ -188,5 +188,15 @@ object DrawableCatalog {
     val PinOff = R.drawable.ic_fluent_pin_off
     val DrinkCoffee = R.drawable.ic_fluent_drink_coffee
     val Extension = R.drawable.ic_fluent_extension
+    val ArrowCounterclockwise = R.drawable.ic_fluent_arrow_counterclockwise
+    val CheckmarkCircle = R.drawable.ic_fluent_checkmark_circle
+    val Play = R.drawable.ic_fluent_play
+    val Pause = R.drawable.ic_fluent_pause
+    val Next = R.drawable.ic_fluent_next
+    val Previous = R.drawable.ic_fluent_previous
+    val ArrowUp = R.drawable.ic_fluent_arrow_up
+    val ArrowDown = R.drawable.ic_fluent_arrow_down
+    val TextSortDescending = R.drawable.ic_fluent_text_sort_descending
+    val TextSortAscending = R.drawable.ic_fluent_text_sort_ascending
   }
 }

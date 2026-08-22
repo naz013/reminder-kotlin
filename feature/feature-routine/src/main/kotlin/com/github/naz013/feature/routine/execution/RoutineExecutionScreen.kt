@@ -12,12 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -183,18 +177,18 @@ private fun RunningContent(
         verticalAlignment = Alignment.CenterVertically,
       ) {
         MenuIconButton(
-          icon = Icons.Filled.SkipPrevious,
+          icon = AppIcons.Fluent.Previous,
           contentDescription = stringResource(R.string.previous_step),
           enabled = !state.isFirstStep,
           onClick = onPreviousStepClick,
         )
         MenuIconButton(
-          icon = if (state.isPaused) Icons.Filled.PlayArrow else Icons.Filled.Pause,
+          icon = if (state.isPaused) AppIcons.Fluent.Play else AppIcons.Fluent.Pause,
           contentDescription = stringResource(if (state.isPaused) R.string.resume else R.string.pause),
           onClick = onPlayPauseClick,
         )
         MenuIconButton(
-          icon = Icons.Filled.SkipNext,
+          icon = AppIcons.Fluent.Next,
           contentDescription = stringResource(R.string.skip_step),
           onClick = onSkipClick,
         )
@@ -204,7 +198,7 @@ private fun RunningContent(
       }
     } else if (!state.isFirstStep) {
       MenuIconButton(
-        icon = Icons.Filled.SkipPrevious,
+        icon = AppIcons.Fluent.Previous,
         contentDescription = stringResource(R.string.previous_step),
         onClick = onPreviousStepClick,
       )
@@ -224,7 +218,7 @@ private fun FinishedContent(
     verticalArrangement = Arrangement.Center,
   ) {
     Icon(
-      Icons.Filled.CheckCircle,
+      painter = AppIcons.Fluent.CheckmarkCircle,
       contentDescription = null,
       modifier = Modifier.size(64.dp),
       tint = MaterialTheme.colorScheme.primary,

@@ -133,6 +133,16 @@ object AppIcons {
     val PinOff: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.PinOff)
     val DrinkCoffee: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.DrinkCoffee)
     val Extension: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Extension)
+    val ArrowCounterclockwise: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.ArrowCounterclockwise)
+    val CheckmarkCircle: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.CheckmarkCircle)
+    val Play: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Play)
+    val Pause: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Pause)
+    val Next: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Next)
+    val Previous: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Previous)
+    val ArrowUp: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.ArrowUp)
+    val ArrowDown: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.ArrowDown)
+    val TextSortDescending: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.TextSortDescending)
+    val TextSortAscending: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.TextSortAscending)
   }
 
   object Builder {
