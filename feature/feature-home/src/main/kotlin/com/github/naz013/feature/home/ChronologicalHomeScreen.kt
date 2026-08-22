@@ -31,8 +31,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -481,18 +479,20 @@ private fun EventCard(
             )
           }
         }
-        event.action?.let {
-          IconButton(
-            onClick = { onEventActionClick(event.action) },
+        event.action?.let { action ->
+          MenuIconButton(
             modifier = Modifier.size(36.dp),
-            colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent),
-          ) {
-            Icon(
-              painter = painterResource(it.icon),
-              contentDescription = null,
-              tint = onContainerColor,
-            )
-          }
+            icon = painterResource(action.icon),
+            iconColor = onContainerColor,
+            contentDescription = when (action.value) {
+              is ResolvedEventAction.MakeCall -> stringResource(R.string.make_call)
+              is ResolvedEventAction.SendSms -> stringResource(R.string.send_sms)
+              is ResolvedEventAction.SendEmail -> stringResource(R.string.action_send_email)
+              is ResolvedEventAction.OpenApp -> stringResource(R.string.action_open)
+              is ResolvedEventAction.OpenLink -> stringResource(R.string.open_link)
+            },
+            onClick = { onEventActionClick(event.action) },
+          )
         }
       }
 

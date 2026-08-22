@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AnimatedGradientBackground
 import com.github.naz013.ui.common.compose.withAlpha
 
@@ -54,19 +55,21 @@ internal fun CloudServicesScreen(
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Spacer(modifier = Modifier.width(16.dp))
-        IconButton(
-          onClick = onBackClick,
-          modifier =
-            Modifier
-              .size(40.dp)
-              .clip(CircleShape)
-              .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
-        ) {
-          Icon(
-            painter = AppIcons.Builder.ArrowLeft,
-            contentDescription = stringResource(R.string.cd_back),
-            tint = MaterialTheme.colorScheme.onSurface,
-          )
+        TooltipIconButton(contentDescription = stringResource(R.string.cd_back)) {
+          IconButton(
+            onClick = onBackClick,
+            modifier =
+              Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
+          ) {
+            Icon(
+              painter = AppIcons.Builder.ArrowLeft,
+              contentDescription = stringResource(R.string.cd_back),
+              tint = MaterialTheme.colorScheme.onSurface,
+            )
+          }
         }
       }
       Column(
