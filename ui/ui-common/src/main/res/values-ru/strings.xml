@@ -1202,4 +1202,8 @@
     <string name="in_app_notification_banner">Баннер уведомлений в приложении</string>
     <string name="in_app_notification_banner_enabled">Показывать баннер в приложении при срабатывании уведомления о напоминании или дне рождения</string>
     <string name="in_app_notification_banner_disabled">Показывать только системное уведомление</string>
+
+    <string name="header_items">Элементы заголовка</string>
+    <string name="header_items_subtitle">Выберите, какие элементы отображаются на главном экране и в каком порядке</string>
+    <string name="header_item_always_shown">Всегда отображается</string>
 </resources>

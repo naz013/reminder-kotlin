@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -87,9 +86,14 @@ import com.github.naz013.feature.routine.RoutineNavKey
 import com.github.naz013.feature.routine.routineEntries
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.tags.tagsEntries
+import com.github.naz013.domain.home.HeaderNavigationSection
+import com.github.naz013.feature.home.HomePreferences
+import com.github.naz013.logic.routine.RoutineConfig
+import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.navigation.AppDestination
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
 
 /**
  * Root of the app's single Nav3 graph, hosted directly by
@@ -122,15 +126,28 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val fileIntentSender = rememberFileIntentSender()
   val intentResolver = rememberSendIntentResolver()
   val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
-  val viewModel = koinViewModel<AppNavGraphViewModel>()
-  val state by viewModel.state.collectAsStateWithLifecycle()
   // Remembered here, above NavDisplay, rather than inside AppNavigationScaffold itself - NavDisplay
   // disposes and recreates each scene's composition on navigation, so a rail state remembered
   // inside the decorated content would silently reset to collapsed on every navigation.
   val navRailState = rememberWideNavigationRailState()
+  // Read directly here (not cached in a ViewModel-owned StateFlow set once at init) so that popping
+  // the header-items settings screen off this same backStack - which recomposes this function -
+  // immediately reflects the user's latest order/visibility choice, with no app restart needed.
+  val homePreferences = koinInject<HomePreferences>()
+  val routineConfig = koinInject<RoutineConfig>()
+  val visibleHeaderSections =
+    HeaderNavigationSection.pinned +
+      homePreferences.headerNavigationOrder.filter { section ->
+        section !in homePreferences.disabledHeaderNavigationSections &&
+          when (section) {
+            HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
+            HeaderNavigationSection.WORKFLOW -> WorkflowConfig.isEnabled
+            else -> true
+          }
+      }
   val persistentNavRailStrategy =
     PersistentNavRailSceneDecoratorStrategy(
-      destinations = appRailDestinations(isWorkflowEnabled = state.isWorkflowEnabled),
+      destinations = appRailDestinations(visibleSections = visibleHeaderSections),
       backStack = backStack,
       railState = navRailState,
       onNavigate = { key -> backStack.navigateToRailDestination(key) },
@@ -205,6 +222,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
           onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
           onOpenSettings = { backStack.add(SettingsNavKey.Hub) },
+          onOpenHeaderItemsSettings = { backStack.add(SettingsNavKey.HeaderItems) },
           onOpenCreateReminder = { backStack.add(BuildReminderNavKey.Main()) },
           onOpenCreateBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
           onOpenCreateGoogleTask = {
@@ -355,11 +373,12 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
  * navigation grid (`GetNavigationItemsUseCase`) plus an explicit Home item, which - as the
  * graph's start destination - is always selected by default.
  *
- * [isWorkflowEnabled] comes from [AppNavGraphViewModel] rather than this Composable reading
- * `WorkflowConfig` (or any other config source) itself.
+ * [visibleSections] is the same user-ordered, flag-filtered [HeaderNavigationSection] list Home's
+ * header grid renders (see `GetNavigationItemsUseCase`) - computed by the caller so this Composable
+ * doesn't need to read preferences/config itself.
  */
 @Composable
-private fun appRailDestinations(isWorkflowEnabled: Boolean): List<AppDestination<NavKey>> =
+private fun appRailDestinations(visibleSections: List<HeaderNavigationSection>): List<AppDestination<NavKey>> =
   buildList {
     add(
       AppDestination(
@@ -368,50 +387,7 @@ private fun appRailDestinations(isWorkflowEnabled: Boolean): List<AppDestination
         labelRes = R.string.home,
       ),
     )
-    add(
-      AppDestination(
-        key = CalendarNavKey.Home,
-        icon = painterResource(R.drawable.ic_fluent_calendar),
-        labelRes = R.string.calendar,
-      ),
-    )
-    add(
-      AppDestination(
-        key = AgendaNavKey.List,
-        icon = painterResource(R.drawable.ic_fluent_timeline),
-        labelRes = R.string.agenda,
-      ),
-    )
-    add(
-      AppDestination(
-        key = NotesNavKey.List,
-        icon = painterResource(R.drawable.ic_fluent_note),
-        labelRes = R.string.notes,
-      ),
-    )
-    add(
-      AppDestination(
-        key = GoogleTasksNavKey.List,
-        icon = painterResource(R.drawable.ic_builder_google_task_list),
-        labelRes = R.string.google_tasks,
-      ),
-    )
-    add(
-      AppDestination(
-        key = GroupsNavKey.List,
-        icon = painterResource(R.drawable.ic_fluent_group),
-        labelRes = R.string.groups,
-      ),
-    )
-    if (isWorkflowEnabled) {
-      add(
-        AppDestination(
-          key = WorkflowNavKey.Gallery,
-          icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
-          labelRes = R.string.workflow_automations,
-        ),
-      )
-    }
+    visibleSections.forEach { section -> add(headerSectionRailDestination(section)) }
     add(
       AppDestination(
         key = SettingsNavKey.Hub,
@@ -419,6 +395,53 @@ private fun appRailDestinations(isWorkflowEnabled: Boolean): List<AppDestination
         labelRes = R.string.action_settings,
       ),
     )
+  }
+
+@Composable
+private fun headerSectionRailDestination(section: HeaderNavigationSection): AppDestination<NavKey> =
+  when (section) {
+    HeaderNavigationSection.CALENDAR ->
+      AppDestination(
+        key = CalendarNavKey.Home,
+        icon = AppIcons.Fluent.Calendar,
+        labelRes = R.string.calendar,
+      )
+    HeaderNavigationSection.AGENDA ->
+      AppDestination(
+        key = AgendaNavKey.List,
+        icon = AppIcons.Fluent.Timeline,
+        labelRes = R.string.agenda,
+      )
+    HeaderNavigationSection.NOTES ->
+      AppDestination(
+        key = NotesNavKey.List,
+        icon = AppIcons.Fluent.Note,
+        labelRes = R.string.notes,
+      )
+    HeaderNavigationSection.GOOGLE_TASKS ->
+      AppDestination(
+        key = GoogleTasksNavKey.List,
+        icon = AppIcons.Builder.GoogleTaskList,
+        labelRes = R.string.google_tasks,
+      )
+    HeaderNavigationSection.GROUPS ->
+      AppDestination(
+        key = GroupsNavKey.List,
+        icon = AppIcons.Fluent.Group,
+        labelRes = R.string.groups,
+      )
+    HeaderNavigationSection.ROUTINES ->
+      AppDestination(
+        key = RoutineNavKey.List,
+        icon = AppIcons.Builder.Timer,
+        labelRes = R.string.routines,
+      )
+    HeaderNavigationSection.WORKFLOW ->
+      AppDestination(
+        key = WorkflowNavKey.Gallery,
+        icon = AppIcons.Fluent.ArrowRepeatAll,
+        labelRes = R.string.workflow_automations,
+      )
   }
 
 /**

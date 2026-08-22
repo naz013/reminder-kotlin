@@ -1205,4 +1205,8 @@
     <string name="in_app_notification_banner">ऐप में सूचना बैनर</string>
     <string name="in_app_notification_banner_enabled">रिमाइंडर या जन्मदिन की सूचना आने पर ऐप में एक बैनर दिखाएं</string>
     <string name="in_app_notification_banner_disabled">केवल सिस्टम सूचना दिखाएं</string>
+
+    <string name="header_items">हेडर आइटम</string>
+    <string name="header_items_subtitle">चुनें कि होम स्क्रीन पर कौन से आइटम और किस क्रम में दिखाई दें</string>
+    <string name="header_item_always_shown">हमेशा दिखाया जाता है</string>
 </resources>

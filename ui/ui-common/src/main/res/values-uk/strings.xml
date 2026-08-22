@@ -1204,4 +1204,8 @@
     <string name="in_app_notification_banner">Банер сповіщень у застосунку</string>
     <string name="in_app_notification_banner_enabled">Показувати банер у застосунку, коли спрацьовує сповіщення про нагадування або день народження</string>
     <string name="in_app_notification_banner_disabled">Показувати лише системне сповіщення</string>
+
+    <string name="header_items">Елементи заголовка</string>
+    <string name="header_items_subtitle">Виберіть, які елементи відображаються на головному екрані та в якому порядку</string>
+    <string name="header_item_always_shown">Завжди відображається</string>
 </resources>

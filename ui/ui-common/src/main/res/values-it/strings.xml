@@ -1203,4 +1203,8 @@
     <string name="in_app_notification_banner">Banner di notifica nell\'app</string>
     <string name="in_app_notification_banner_enabled">Mostra un banner nell\'app quando viene attivata una notifica di promemoria o compleanno</string>
     <string name="in_app_notification_banner_disabled">Mostra solo la notifica di sistema</string>
+
+    <string name="header_items">Elementi dell\'intestazione</string>
+    <string name="header_items_subtitle">Scegli quali elementi vengono visualizzati nella schermata Home e in quale ordine</string>
+    <string name="header_item_always_shown">Sempre visibile</string>
 </resources>

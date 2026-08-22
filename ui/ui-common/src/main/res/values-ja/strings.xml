@@ -1203,4 +1203,8 @@
     <string name="in_app_notification_banner">アプリ内通知バナー</string>
     <string name="in_app_notification_banner_enabled">リマインダーや誕生日の通知が届いたときにアプリ内にバナーを表示する</string>
     <string name="in_app_notification_banner_disabled">システム通知のみを表示する</string>
+
+    <string name="header_items">ヘッダー項目</string>
+    <string name="header_items_subtitle">ホーム画面に表示する項目と順序を選択します</string>
+    <string name="header_item_always_shown">常に表示</string>
 </resources>

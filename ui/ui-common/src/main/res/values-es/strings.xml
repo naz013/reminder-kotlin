@@ -1203,4 +1203,8 @@
     <string name="in_app_notification_banner">Banner de notificación en la aplicación</string>
     <string name="in_app_notification_banner_enabled">Mostrar un banner en la aplicación cuando se active una notificación de recordatorio o cumpleaños</string>
     <string name="in_app_notification_banner_disabled">Mostrar solo la notificación del sistema</string>
+
+    <string name="header_items">Elementos de cabecera</string>
+    <string name="header_items_subtitle">Elige qué elementos aparecen en la pantalla de inicio y en qué orden</string>
+    <string name="header_item_always_shown">Siempre visible</string>
 </resources>

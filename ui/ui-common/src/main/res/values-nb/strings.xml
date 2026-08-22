@@ -1201,4 +1201,8 @@
     <string name="in_app_notification_banner">Varslingsbanner i appen</string>
     <string name="in_app_notification_banner_enabled">Vis et banner i appen når et påminnelses- eller bursdagsvarsel utløses</string>
     <string name="in_app_notification_banner_disabled">Vis bare systemvarselet</string>
+
+    <string name="header_items">Topptekstelementer</string>
+    <string name="header_items_subtitle">Velg hvilke elementer som vises på hjem-skjermen og i hvilken rekkefølge</string>
+    <string name="header_item_always_shown">Vises alltid</string>
 </resources>

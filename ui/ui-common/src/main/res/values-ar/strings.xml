@@ -1201,4 +1201,8 @@
     <string name="in_app_notification_banner">شريط إشعار داخل التطبيق</string>
     <string name="in_app_notification_banner_enabled">إظهار شريط داخل التطبيق عند إطلاق إشعار تذكير أو عيد ميلاد</string>
     <string name="in_app_notification_banner_disabled">إظهار إشعار النظام فقط</string>
+
+    <string name="header_items">عناصر الرأس</string>
+    <string name="header_items_subtitle">اختر العناصر التي تظهر في الشاشة الرئيسية وترتيبها</string>
+    <string name="header_item_always_shown">معروض دائمًا</string>
 </resources>

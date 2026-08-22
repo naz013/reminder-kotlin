@@ -34,6 +34,7 @@ internal fun GeneralSettingsScreen(
   onLanguageClick: () -> Unit,
   onThemeClick: () -> Unit,
   onTimeFormatClick: () -> Unit,
+  onHeaderItemsClick: () -> Unit,
   onMetricToggle: (Boolean) -> Unit,
   onAnalyticsToggle: (Boolean) -> Unit,
   onDialogOptionSelected: (Int) -> Unit,
@@ -67,6 +68,13 @@ internal fun GeneralSettingsScreen(
       icon = painterResource(R.drawable.ic_builder_time),
       dividerBottom = true,
       onClick = onTimeFormatClick,
+    )
+    SettingsItem(
+      title = stringResource(R.string.header_items),
+      subtitle = stringResource(R.string.header_items_subtitle),
+      icon = painterResource(R.drawable.ic_fluent_grid),
+      dividerBottom = true,
+      onClick = onHeaderItemsClick,
     )
     SettingsSwitchItem(
       title = stringResource(R.string.metric_units),

@@ -1201,4 +1201,8 @@
     <string name="in_app_notification_banner">Aviseringsbanner i appen</string>
     <string name="in_app_notification_banner_enabled">Visa en banner i appen när en påminnelse- eller födelsedagsavisering utlöses</string>
     <string name="in_app_notification_banner_disabled">Visa endast systemaviseringen</string>
+
+    <string name="header_items">Sidhuvudobjekt</string>
+    <string name="header_items_subtitle">Välj vilka objekt som visas på hemskärmen och i vilken ordning</string>
+    <string name="header_item_always_shown">Visas alltid</string>
 </resources>

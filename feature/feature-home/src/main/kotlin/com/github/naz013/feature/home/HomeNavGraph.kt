@@ -28,6 +28,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
   onOpenSettings: () -> Unit,
+  onOpenHeaderItemsSettings: () -> Unit,
   onOpenCreateReminder: () -> Unit,
   onOpenCreateBirthday: () -> Unit,
   onOpenCreateGoogleTask: () -> Unit,
@@ -60,6 +61,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
       onOpenReminderPreview = onOpenReminderPreview,
       onOpenBirthdayPreview = onOpenBirthdayPreview,
       onOpenSettings = onOpenSettings,
+      onOpenHeaderItemsSettings = onOpenHeaderItemsSettings,
       onOpenCreateReminder = onOpenCreateReminder,
       onOpenCreateBirthday = onOpenCreateBirthday,
       onOpenCreateGoogleTask = onOpenCreateGoogleTask,
@@ -86,6 +88,7 @@ private fun HomeEntry(
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
   onOpenSettings: () -> Unit,
+  onOpenHeaderItemsSettings: () -> Unit,
   onOpenCreateReminder: () -> Unit,
   onOpenCreateBirthday: () -> Unit,
   onOpenCreateGoogleTask: () -> Unit,
@@ -121,6 +124,10 @@ private fun HomeEntry(
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenSettings -> {
         onOpenSettings()
+      }
+
+      is ScheduleHomeViewModel.ViewModelEvent.OpenHeaderItemsSettings -> {
+        onOpenHeaderItemsSettings()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenCreateReminder -> {
@@ -212,6 +219,7 @@ private fun HomeEntry(
           .statusBarsPadding(),
         onSettingsClick = { viewModel.onSettingsClicked() },
         onHeaderNavigationItemClick = { viewModel.onHeaderNavigationItemClicked(it) },
+        onHeaderNavigationItemLongClick = { viewModel.onHeaderNavigationItemLongClicked() },
         onEventClick = { viewModel.onEventClicked(it) },
         onEventActionClick = { viewModel.onEventActionClicked(it) },
         onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },

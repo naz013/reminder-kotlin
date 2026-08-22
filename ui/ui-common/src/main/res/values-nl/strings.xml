@@ -1201,4 +1201,8 @@
     <string name="in_app_notification_banner">In-app-meldingsbanner</string>
     <string name="in_app_notification_banner_enabled">Toon een banner in de app wanneer een herinnering- of verjaardagsmelding afgaat</string>
     <string name="in_app_notification_banner_disabled">Toon alleen de systeemmelding</string>
+
+    <string name="header_items">Kopregel-items</string>
+    <string name="header_items_subtitle">Kies welke items op het startscherm worden weergegeven en in welke volgorde</string>
+    <string name="header_item_always_shown">Altijd zichtbaar</string>
 </resources>

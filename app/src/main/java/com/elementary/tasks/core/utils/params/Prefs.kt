@@ -5,6 +5,7 @@ import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.core.utils.SuperUtil
 import com.github.naz013.domain.font.FontParams
+import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.feature.reminder.util.LED
 import com.github.naz013.logic.schedule.WorkerNetworkType
 import com.github.naz013.preferences.SharedPrefs
@@ -341,6 +342,29 @@ class Prefs(
         .split(",")
         .mapNotNull { it.trim().toLongOrNull() }
     set(value) = putString(PrefsConstants.DEFAULT_VIBRATION_PATTERN, value.joinToString(","))
+
+  // Stored as an ordered comma-joined string, not getStringArray/putStringArray, which round-trip
+  // through SharedPreferences.putStringSet and silently lose ordering - which matters here since
+  // this is a user-chosen display order. Missing/unknown names are dropped and any configurable
+  // section absent from the stored value is appended in canonical order, so a future new section
+  // (or one dropped from a stale value) resolves gracefully instead of disappearing.
+  var headerNavigationOrder: List<HeaderNavigationSection>
+    get() {
+      val stored =
+        getString(PrefsConstants.HEADER_NAVIGATION_ORDER, "")
+          .split(",")
+          .mapNotNull { name -> HeaderNavigationSection.configurable.find { it.name == name.trim() } }
+      return stored + HeaderNavigationSection.configurable.filterNot { it in stored }
+    }
+    set(value) = putString(PrefsConstants.HEADER_NAVIGATION_ORDER, value.joinToString(",") { it.name })
+
+  var disabledHeaderNavigationSections: Set<HeaderNavigationSection>
+    get() =
+      getString(PrefsConstants.DISABLED_HEADER_NAVIGATION_SECTIONS, "")
+        .split(",")
+        .mapNotNull { name -> HeaderNavigationSection.configurable.find { it.name == name.trim() } }
+        .toSet()
+    set(value) = putString(PrefsConstants.DISABLED_HEADER_NAVIGATION_SECTIONS, value.joinToString(",") { it.name })
 
   var defaultVolume: Int
     get() = getInt(PrefsConstants.DEFAULT_VOLUME, def = -1)
