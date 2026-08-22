@@ -11,6 +11,8 @@ interface RoutineRepository {
 
   suspend fun getById(id: String): Routine?
 
+  fun observeById(id: String): Flow<Routine?>
+
   suspend fun save(routine: Routine)
 
   suspend fun delete(id: String)

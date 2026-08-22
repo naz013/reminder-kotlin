@@ -45,9 +45,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -91,14 +89,13 @@ internal class NotesViewModel(
       isGrid = notePreferences.isNotesGridEnabled,
       sortOrder = notePreferences.noteOrder,
     )
-  ).onStart { refresh() }
+  )
 
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQuery = MutableStateFlow("")
   private val sortOrder = MutableStateFlow(notePreferences.noteOrder)
   private val selectedTagId = MutableStateFlow<String?>(null)
-  private val refreshSignal = MutableStateFlow(0)
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
@@ -113,27 +110,20 @@ internal class NotesViewModel(
       combine(
         searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
         sortOrder,
-        selectedTagId,
-        refreshSignal,
-      ) { query, order, tagId, _ -> Triple(query, order, tagId) }
-        .flatMapLatest { (query, order, tagId) ->
-          flow {
-            val notes = noteRepository.getNotes(
-              isArchived = isArchived,
-              query = query.lowercase(),
-              sortOrder = order
-            )
-            val filtered = if (tagId == null) {
-              notes
-            } else {
-              val ids = withContext(dispatcherProvider.io()) {
-                tagAssignmentRepository.getItemIdsForTag(tagId, TaggedItemType.NOTE)
-              }.toSet()
-              notes.filter { it.note?.key in ids }
-            }
-            emit(filtered)
+      ) { query, order -> query to order }
+        .flatMapLatest { (query, order) ->
+          noteRepository.observeNotes(isArchived = isArchived, query = query.lowercase(), sortOrder = order)
+        }
+        .combine(selectedTagId) { notes, tagId -> notes to tagId }
+        .map { (notes, tagId) ->
+          if (tagId == null) {
+            notes
+          } else {
+            val ids = tagAssignmentRepository.getItemIdsForTag(tagId, TaggedItemType.NOTE).toSet()
+            notes.filter { it.note?.key in ids }
           }
-        }.collect { applyList(it) }
+        }
+        .collect { applyList(it) }
     }
   }
 
@@ -141,10 +131,6 @@ internal class NotesViewModel(
     val newSelectedTagId = if (tagId != null && tagId == selectedTagId.value) null else tagId
     _notesScreenState.update { it.copy(selectedTagId = newSelectedTagId) }
     selectedTagId.value = newSelectedTagId
-  }
-
-  private fun refresh() {
-    refreshSignal.update { it + 1 }
   }
 
   private fun applyList(list: List<NoteWithImages>) {
@@ -245,7 +231,6 @@ internal class NotesViewModel(
       withContext(dispatcherProvider.main()) {
         onSelectionCancel()
       }
-      refresh()
 
       if (!isArchived) {
         withContext(dispatcherProvider.main()) {
@@ -264,7 +249,6 @@ internal class NotesViewModel(
       withContext(dispatcherProvider.main()) {
         onSelectionCancel()
       }
-      refresh()
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
@@ -288,7 +272,6 @@ internal class NotesViewModel(
       withContext(dispatcherProvider.main()) {
         onSelectionCancel()
       }
-      refresh()
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
@@ -314,7 +297,6 @@ internal class NotesViewModel(
       withContext(dispatcherProvider.main()) {
         onSelectionCancel()
       }
-      refresh()
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
@@ -356,15 +338,12 @@ internal class NotesViewModel(
   private fun togglePinned(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       togglePinnedNoteUseCase(id)
-      refresh()
     }
   }
 
   private fun moveToArchive(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       changeNoteArchiveStateUseCase(id, true)
-
-      refresh()
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
@@ -375,7 +354,6 @@ internal class NotesViewModel(
   private fun unarchive(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       changeNoteArchiveStateUseCase(id, false)
-      refresh()
     }
   }
 
@@ -411,8 +389,6 @@ internal class NotesViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteNoteUseCase(id)
 
-      refresh()
-
       if (!isArchived) {
         withContext(dispatcherProvider.main()) {
           appWidgetUpdater.updateNotesWidget()
@@ -431,8 +407,6 @@ internal class NotesViewModel(
       note.color = color
       note.updatedAt = DateTimeManager.gmtDateTime
       saveNoteUseCase(noteWithImages)
-
-      refresh()
 
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()

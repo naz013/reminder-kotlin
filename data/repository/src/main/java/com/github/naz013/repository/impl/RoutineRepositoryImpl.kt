@@ -31,6 +31,8 @@ internal class RoutineRepositoryImpl(
     return dao.getById(id)?.toDomain()
   }
 
+  override fun observeById(id: String): Flow<Routine?> = dao.observeById(id).map { it?.toDomain() }
+
   override suspend fun save(routine: Routine) {
     Logger.d(TAG, "Save routine: ${routine.id}")
     dao.insert(routine.toEntity())

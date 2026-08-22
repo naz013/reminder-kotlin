@@ -19,6 +19,9 @@ internal interface RoutineDao {
   @Query("SELECT * FROM Routine WHERE id=:id")
   fun getById(id: String): RoutineEntity?
 
+  @Query("SELECT * FROM Routine WHERE id=:id")
+  fun observeById(id: String): Flow<RoutineEntity?>
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insert(routine: RoutineEntity)
 

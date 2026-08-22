@@ -4,6 +4,7 @@ import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
   suspend fun save(note: Note)
@@ -11,6 +12,7 @@ interface NoteRepository {
   suspend fun saveAll(imageFiles: List<ImageFile>)
 
   suspend fun getById(id: String): NoteWithImages?
+  fun observeById(id: String): Flow<NoteWithImages?>
   suspend fun getAll(isArchived: Boolean = false): List<NoteWithImages>
   suspend fun searchByText(query: String, isArchived: Boolean = false): List<NoteWithImages>
 
@@ -21,6 +23,7 @@ interface NoteRepository {
    * requested sortOrder.
    */
   suspend fun getNotes(isArchived: Boolean, query: String, sortOrder: String): List<NoteWithImages>
+  fun observeNotes(isArchived: Boolean, query: String, sortOrder: String): Flow<List<NoteWithImages>>
   suspend fun getImagesIds(): List<Int>
   suspend fun getImageById(id: Int): ImageFile?
   suspend fun search(query: String): List<Note>
