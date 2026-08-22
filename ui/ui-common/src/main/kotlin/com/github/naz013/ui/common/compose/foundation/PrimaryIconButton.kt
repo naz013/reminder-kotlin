@@ -27,24 +27,25 @@ fun PrimaryIconButton(
   enabled: Boolean = true,
   onClick: () -> Unit,
 ) {
-  IconButton(
-    modifier = modifier,
-    onClick = onClick,
-    enabled = enabled,
-    colors = IconButtonDefaults.outlinedIconButtonColors(
-      containerColor = color,
-      contentColor = iconColor,
-      disabledContainerColor = disabledColor,
-      disabledContentColor = disabledIconColor
-    ),
-    shape = IconButtonDefaults.outlinedShape,
-    content = {
-      Icon(
-        imageVector = icon,
-        contentDescription = contentDescription
-      )
-    }
-  )
+  TooltipIconButton(modifier = modifier, contentDescription = contentDescription) {
+    IconButton(
+      onClick = onClick,
+      enabled = enabled,
+      colors = IconButtonDefaults.outlinedIconButtonColors(
+        containerColor = color,
+        contentColor = iconColor,
+        disabledContainerColor = disabledColor,
+        disabledContentColor = disabledIconColor
+      ),
+      shape = IconButtonDefaults.outlinedShape,
+      content = {
+        Icon(
+          imageVector = icon,
+          contentDescription = contentDescription
+        )
+      }
+    )
+  }
 }
 
 @Composable
@@ -59,24 +60,25 @@ fun PrimaryIconButton(
   enabled: Boolean = true,
   onClick: () -> Unit,
 ) {
-  IconButton(
-    modifier = modifier,
-    onClick = onClick,
-    enabled = enabled,
-    colors = IconButtonDefaults.outlinedIconButtonColors(
-      containerColor = color,
-      contentColor = iconColor,
-      disabledContainerColor = disabledColor,
-      disabledContentColor = disabledIconColor
-    ),
-    shape = IconButtonDefaults.outlinedShape,
-    content = {
-      Icon(
-        painter = icon,
-        contentDescription = contentDescription
-      )
-    }
-  )
+  TooltipIconButton(modifier = modifier, contentDescription = contentDescription) {
+    IconButton(
+      onClick = onClick,
+      enabled = enabled,
+      colors = IconButtonDefaults.outlinedIconButtonColors(
+        containerColor = color,
+        contentColor = iconColor,
+        disabledContainerColor = disabledColor,
+        disabledContentColor = disabledIconColor
+      ),
+      shape = IconButtonDefaults.outlinedShape,
+      content = {
+        Icon(
+          painter = icon,
+          contentDescription = contentDescription
+        )
+      }
+    )
+  }
 }
 
 // Preview functions
