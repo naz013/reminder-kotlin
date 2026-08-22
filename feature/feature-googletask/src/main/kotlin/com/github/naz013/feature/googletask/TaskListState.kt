@@ -7,7 +7,6 @@ import com.github.naz013.ui.tag.TagChipState
 internal data class TaskListState(
   val listId: String = "",
   val title: String = "",
-  val isLoading: Boolean = false,
   val isSyncing: Boolean = false,
   val isDefaultList: Boolean = false,
   val tasks: List<GoogleTaskItemState> = emptyList(),

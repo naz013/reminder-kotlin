@@ -28,7 +28,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +43,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.AppPullToRefreshBox
 import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.tag.TagFilterRow
 import com.google.android.gms.common.SignInButton
@@ -110,7 +110,7 @@ internal fun GoogleTasksScreen(
       return@Scaffold
     }
 
-    PullToRefreshBox(
+    AppPullToRefreshBox(
       isRefreshing = state.isLoading,
       onRefresh = onRefresh,
       modifier =
@@ -118,48 +118,47 @@ internal fun GoogleTasksScreen(
           .fillMaxSize()
           .padding(padding),
     ) {
-      Column(modifier = Modifier.fillMaxSize()) {
+      // A single LazyColumn is used even for the empty state (rather than swapping in a plain
+      // Column) so there is always a scrollable descendant to dispatch nested-scroll drag events
+      // to the pull-to-refresh gesture — a non-scrollable child never triggers it.
+      LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 88.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+      ) {
         if (state.taskLists.isNotEmpty()) {
-          LazyRow(
-            contentPadding = PaddingValues(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-          ) {
-            items(state.taskLists, key = { it.id }) { entry ->
-              TaskListTile(entry = entry, onClick = { onTaskListClick(entry.id) })
+          item {
+            LazyRow(
+              contentPadding = PaddingValues(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 16.dp),
+              horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+              items(state.taskLists, key = { it.id }) { entry ->
+                TaskListTile(entry = entry, onClick = { onTaskListClick(entry.id) })
+              }
             }
           }
         }
 
-        TagFilterRow(
-          allTags = state.allTags,
-          selectedTagId = state.selectedTagId,
-          onTagSelected = onTagSelected,
-          modifier = Modifier.padding(bottom = 8.dp),
-        )
+        item {
+          TagFilterRow(
+            allTags = state.allTags,
+            selectedTagId = state.selectedTagId,
+            onTagSelected = onTagSelected,
+          )
+        }
 
         if (state.tasks.isEmpty()) {
-          GoogleTasksEmptyState(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
-          )
+          item {
+            GoogleTasksEmptyState(modifier = Modifier.fillParentMaxSize())
+          }
         } else {
-          LazyColumn(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 88.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-          ) {
-            items(state.tasks, key = { it.id }) { task ->
-              GoogleTaskRow(
-                task = task,
-                onClick = { onTaskClick(task.id) },
-                onToggle = { onTaskToggle(task.id) },
-              )
-            }
+          items(state.tasks, key = { it.id }) { task ->
+            GoogleTaskRow(
+              task = task,
+              onClick = { onTaskClick(task.id) },
+              onToggle = { onTaskToggle(task.id) },
+              modifier = Modifier.padding(horizontal = 16.dp),
+            )
           }
         }
       }
