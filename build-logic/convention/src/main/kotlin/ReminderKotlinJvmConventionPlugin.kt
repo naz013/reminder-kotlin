@@ -13,7 +13,6 @@ class ReminderKotlinJvmConventionPlugin : Plugin<Project> {
       pluginManager.apply("java-library")
       pluginManager.apply("org.jetbrains.kotlin.jvm")
       pluginManager.apply("reminder.detekt")
-      pluginManager.apply("reminder.kover")
 
       extensions.configure<JavaPluginExtension> {
         sourceCompatibility = JavaVersion.VERSION_17

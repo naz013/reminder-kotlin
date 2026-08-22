@@ -12,7 +12,6 @@ plugins {
   alias(libs.plugins.ksp) apply false
   alias(libs.plugins.compose.compiler) apply false
   alias(libs.plugins.detekt) apply false
-  alias(libs.plugins.kover)
 }
 
 // GitHub Code Scanning rejects multiple SARIF runs uploaded under the same category, so all
@@ -40,19 +39,4 @@ subprojects {
       }
     }
   }
-}
-
-// Aggregate coverage from JVM-only modules (Android modules are excluded to avoid
-// variant-selection complexity; per-module koverXmlReport tasks work for those).
-dependencies {
-  kover(project(":core:domain"))
-  kover(project(":core:date-calculations"))
-  kover(project(":core:logging-api"))
-  kover(project(":core:navigation-api"))
-  kover(project(":data:repository-api"))
-  kover(project(":data:cloud-api"))
-  kover(project(":data:work-api"))
-  kover(project(":data:legal-api"))
-  kover(project(":data:files-api"))
-  kover(project(":data:sync"))
 }
