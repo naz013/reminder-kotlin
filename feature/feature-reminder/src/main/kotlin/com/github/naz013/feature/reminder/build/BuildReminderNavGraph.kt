@@ -85,7 +85,7 @@ private fun MainEntry(
   Logger.i("BuildReminderNavGraph", "Opening the reminder edit screen for id: ${Logger.data(viewModel.id)}")
 
   val dialogDispatcher = rememberDialogDispatcher()
-  val reviewsFormLauncher = rememberReviewsFormLauncher()
+  val reviewsFormLauncher = rememberReviewsFormLauncher(onDismiss = { viewModel.onReviewDialogDismissed() })
   val playReviewLauncher = rememberPlayReviewLauncher()
   val toastDispatcher = rememberToastDispatcher()
 

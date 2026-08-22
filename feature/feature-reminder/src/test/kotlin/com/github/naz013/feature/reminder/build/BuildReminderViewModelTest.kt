@@ -550,6 +550,34 @@ class BuildReminderViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `saveReminder does not close the screen when the review dialog is shown`() =
+    runTest {
+      every { reminderPreferences.reviewDialogShown } returns false
+      every { reminderPreferences.remindersCreatedCount } returns 3
+      val viewModel = createViewModel()
+
+      viewModel.saveReminder(newId = false)
+
+      assertEquals(
+        BuildReminderViewModel.ViewModelEvent.ShowReviewDialog::class,
+        viewModel.event.value?.peekContent()?.let { it::class },
+      )
+    }
+
+  @Test
+  fun `onReviewDialogDismissed closes the screen after the review dialog was shown`() =
+    runTest {
+      every { reminderPreferences.reviewDialogShown } returns false
+      every { reminderPreferences.remindersCreatedCount } returns 3
+      val viewModel = createViewModel()
+      viewModel.saveReminder(newId = false)
+
+      viewModel.onReviewDialogDismissed()
+
+      assertEquals(BuildReminderViewModel.ViewModelEvent.MoveBack, viewModel.event.value?.peekContent())
+    }
+
+  @Test
   fun `onPermissionsGranted retries saving with the previously requested newId flag`() =
     runTest {
       every { permissionValidator(any()) } returns PermissionValidator.Result.Failure(listOf("perm.X"))
