@@ -50,6 +50,7 @@ fun RemindersSettingsScreen(
   onDefaultBypassDoNotDisturbToggle: () -> Unit,
   onDefaultWakeScreenToggle: () -> Unit,
   onDefaultSwipeToDismissToggle: () -> Unit,
+  onInAppAlertBannerToggle: () -> Unit,
   onDefaultCategoryClick: () -> Unit,
   onDefaultLockScreenVisibilityClick: () -> Unit,
   onDefaultVibrationPatternClick: () -> Unit,
@@ -172,6 +173,14 @@ fun RemindersSettingsScreen(
       onCheckedChange = { onDefaultSwipeToDismissToggle() },
       subtitleOn = stringResource(R.string.allow_swipe_to_dismiss_enabled),
       subtitleOff = stringResource(R.string.allow_swipe_to_dismiss_disabled),
+      dividerBottom = true,
+    )
+    SettingsSwitchItem(
+      title = stringResource(R.string.in_app_notification_banner),
+      checked = state.isInAppAlertBannerChecked,
+      onCheckedChange = { onInAppAlertBannerToggle() },
+      subtitleOn = stringResource(R.string.in_app_notification_banner_enabled),
+      subtitleOff = stringResource(R.string.in_app_notification_banner_disabled),
       dividerBottom = true,
     )
 

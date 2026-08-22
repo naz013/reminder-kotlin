@@ -1198,4 +1198,8 @@
     <string name="routine_insight_most_skipped">Чаще всего пропускаемый шаг: %1$s (%2$d%% выполнения)</string>
     <string name="routine_icon">Значок рутины</string>
     <string name="no_icon">Без значка</string>
+
+    <string name="in_app_notification_banner">Баннер уведомлений в приложении</string>
+    <string name="in_app_notification_banner_enabled">Показывать баннер в приложении при срабатывании уведомления о напоминании или дне рождения</string>
+    <string name="in_app_notification_banner_disabled">Показывать только системное уведомление</string>
 </resources>

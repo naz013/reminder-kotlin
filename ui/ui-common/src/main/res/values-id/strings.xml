@@ -1197,4 +1197,8 @@
     <string name="routine_insight_most_skipped">Langkah paling sering dilewati: %1$s (%2$d%% selesai)</string>
     <string name="routine_icon">Ikon rutinitas</string>
     <string name="no_icon">Tidak ada ikon</string>
+
+    <string name="in_app_notification_banner">Banner notifikasi dalam aplikasi</string>
+    <string name="in_app_notification_banner_enabled">Tampilkan banner di aplikasi saat notifikasi pengingat atau ulang tahun muncul</string>
+    <string name="in_app_notification_banner_disabled">Hanya tampilkan notifikasi sistem</string>
 </resources>

@@ -1199,4 +1199,8 @@
     <string name="routine_insight_most_skipped">Etapa mais pulada: %1$s (%2$d%% de conclusão)</string>
     <string name="routine_icon">Ícone da rotina</string>
     <string name="no_icon">Nenhum ícone</string>
+
+    <string name="in_app_notification_banner">Banner de notificação no aplicativo</string>
+    <string name="in_app_notification_banner_enabled">Mostrar um banner no aplicativo quando uma notificação de lembrete ou aniversário for disparada</string>
+    <string name="in_app_notification_banner_disabled">Mostrar apenas a notificação do sistema</string>
 </resources>

@@ -1199,4 +1199,8 @@
     <string name="routine_insight_most_skipped">Paso más omitido: %1$s (%2$d%% de finalización)</string>
     <string name="routine_icon">Icono de la rutina</string>
     <string name="no_icon">Sin icono</string>
+
+    <string name="in_app_notification_banner">Banner de notificación en la aplicación</string>
+    <string name="in_app_notification_banner_enabled">Mostrar un banner en la aplicación cuando se active una notificación de recordatorio o cumpleaños</string>
+    <string name="in_app_notification_banner_disabled">Mostrar solo la notificación del sistema</string>
 </resources>

@@ -1201,4 +1201,8 @@
     <string name="routine_insight_most_skipped">सबसे अधिक छोड़ा गया चरण: %1$s (%2$d%% पूर्णता)</string>
     <string name="routine_icon">रूटीन आइकन</string>
     <string name="no_icon">कोई आइकन नहीं</string>
+
+    <string name="in_app_notification_banner">ऐप में सूचना बैनर</string>
+    <string name="in_app_notification_banner_enabled">रिमाइंडर या जन्मदिन की सूचना आने पर ऐप में एक बैनर दिखाएं</string>
+    <string name="in_app_notification_banner_disabled">केवल सिस्टम सूचना दिखाएं</string>
 </resources>

@@ -1200,4 +1200,8 @@
     <string name="routine_insight_most_skipped">En çok atlanan adım: %1$s (%2$d%% tamamlanma)</string>
     <string name="routine_icon">Rutin simgesi</string>
     <string name="no_icon">Simge yok</string>
+
+    <string name="in_app_notification_banner">Uygulama içi bildirim afişi</string>
+    <string name="in_app_notification_banner_enabled">Bir hatırlatıcı veya doğum günü bildirimi tetiklendiğinde uygulama içinde bir afiş göster</string>
+    <string name="in_app_notification_banner_disabled">Yalnızca sistem bildirimini göster</string>
 </resources>

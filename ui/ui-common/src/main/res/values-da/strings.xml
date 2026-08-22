@@ -1197,4 +1197,8 @@
     <string name="routine_insight_most_skipped">Oftest oversprunget trin: %1$s (%2$d%% fuldført)</string>
     <string name="routine_icon">Rutineikon</string>
     <string name="no_icon">Intet ikon</string>
+
+    <string name="in_app_notification_banner">Notifikationsbanner i appen</string>
+    <string name="in_app_notification_banner_enabled">Vis et banner i appen, når en påmindelse eller fødselsdagsnotifikation udløses</string>
+    <string name="in_app_notification_banner_disabled">Vis kun systemnotifikationen</string>
 </resources>

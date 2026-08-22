@@ -1200,4 +1200,8 @@
     <string name="routine_insight_most_skipped">Най-често пропускана стъпка: %1$s (%2$d%% завършеност)</string>
     <string name="routine_icon">Икона на рутината</string>
     <string name="no_icon">Без икона</string>
+
+    <string name="in_app_notification_banner">Банер за известия в приложението</string>
+    <string name="in_app_notification_banner_enabled">Показвай банер в приложението, когато сработи известие за напомняне или рожден ден</string>
+    <string name="in_app_notification_banner_disabled">Показвай само системното известие</string>
 </resources>

@@ -1202,4 +1202,8 @@
     <string name="routine_insight_most_skipped">Most skipped step: %1$s (%2$d%% completion)</string>
     <string name="routine_icon">Routine icon</string>
     <string name="no_icon">No icon</string>
+
+    <string name="in_app_notification_banner">In-app notification banner</string>
+    <string name="in_app_notification_banner_enabled">Show a banner in the app when a reminder or birthday notification fires</string>
+    <string name="in_app_notification_banner_disabled">Only show the system notification</string>
 </resources>

@@ -1197,4 +1197,8 @@
     <string name="routine_insight_most_skipped">Bước bị bỏ qua nhiều nhất: %1$s (hoàn thành %2$d%%)</string>
     <string name="routine_icon">Biểu tượng thói quen</string>
     <string name="no_icon">Không có biểu tượng</string>
+
+    <string name="in_app_notification_banner">Biểu ngữ thông báo trong ứng dụng</string>
+    <string name="in_app_notification_banner_enabled">Hiển thị biểu ngữ trong ứng dụng khi có thông báo lời nhắc hoặc sinh nhật</string>
+    <string name="in_app_notification_banner_disabled">Chỉ hiển thị thông báo hệ thống</string>
 </resources>

@@ -1197,4 +1197,8 @@
     <string name="routine_insight_most_skipped">Meest overgeslagen stap: %1$s (%2$d%% voltooid)</string>
     <string name="routine_icon">Routinepictogram</string>
     <string name="no_icon">Geen pictogram</string>
+
+    <string name="in_app_notification_banner">In-app-meldingsbanner</string>
+    <string name="in_app_notification_banner_enabled">Toon een banner in de app wanneer een herinnering- of verjaardagsmelding afgaat</string>
+    <string name="in_app_notification_banner_disabled">Toon alleen de systeemmelding</string>
 </resources>

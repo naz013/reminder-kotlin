@@ -1199,4 +1199,8 @@
     <string name="routine_insight_most_skipped">Étape la plus souvent passée: %1$s (%2$d%% de réussite)</string>
     <string name="routine_icon">Icône de la routine</string>
     <string name="no_icon">Aucune icône</string>
+
+    <string name="in_app_notification_banner">Bannière de notification dans l\'application</string>
+    <string name="in_app_notification_banner_enabled">Afficher une bannière dans l\'application lorsqu\'une notification de rappel ou d\'anniversaire se déclenche</string>
+    <string name="in_app_notification_banner_disabled">Afficher uniquement la notification système</string>
 </resources>

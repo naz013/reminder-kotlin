@@ -233,6 +233,6 @@ class ReminderApp :
     get<RemotePrefs>().preLoad()
     CoroutineScope(get<DispatcherProvider>().io()).launch { get<LegalDocumentRepository>().refresh() }
 
-    registerActivityLifecycleCallbacks(ActivityObserver(get()))
+    registerActivityLifecycleCallbacks(ActivityObserver(get(), get()))
   }
 }

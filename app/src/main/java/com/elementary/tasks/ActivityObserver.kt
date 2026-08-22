@@ -7,6 +7,7 @@ import com.elementary.tasks.core.os.ContextSwitcher
 
 class ActivityObserver(
   private val contextSwitcher: ContextSwitcher,
+  private val foregroundStateTracker: ForegroundStateTracker,
 ) : ActivityLifecycleCallbacks {
   override fun onActivityCreated(
     activity: Activity,
@@ -19,9 +20,11 @@ class ActivityObserver(
   }
 
   override fun onActivityResumed(activity: Activity) {
+    foregroundStateTracker.onResumed()
   }
 
   override fun onActivityPaused(activity: Activity) {
+    foregroundStateTracker.onPaused()
   }
 
   override fun onActivityStopped(activity: Activity) {

@@ -1200,4 +1200,8 @@
     <string name="routine_insight_most_skipped">Найчастіше пропущений крок: %1$s (%2$d%% виконання)</string>
     <string name="routine_icon">Значок рутини</string>
     <string name="no_icon">Без значка</string>
+
+    <string name="in_app_notification_banner">Банер сповіщень у застосунку</string>
+    <string name="in_app_notification_banner_enabled">Показувати банер у застосунку, коли спрацьовує сповіщення про нагадування або день народження</string>
+    <string name="in_app_notification_banner_disabled">Показувати лише системне сповіщення</string>
 </resources>

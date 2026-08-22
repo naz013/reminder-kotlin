@@ -1199,4 +1199,8 @@
     <string name="routine_insight_most_skipped">Nejčastěji přeskočený krok: %1$s (%2$d%% dokončení)</string>
     <string name="routine_icon">Ikona rutiny</string>
     <string name="no_icon">Bez ikony</string>
+
+    <string name="in_app_notification_banner">Banner oznámení v aplikaci</string>
+    <string name="in_app_notification_banner_enabled">Zobrazit banner v aplikaci při spuštění oznámení o připomínce nebo narozeninách</string>
+    <string name="in_app_notification_banner_disabled">Zobrazit pouze systémové oznámení</string>
 </resources>

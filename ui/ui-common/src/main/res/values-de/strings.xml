@@ -1199,4 +1199,8 @@
     <string name="routine_insight_most_skipped">Am häufigsten übersprungener Schritt: %1$s (%2$d%% abgeschlossen)</string>
     <string name="routine_icon">Routinensymbol</string>
     <string name="no_icon">Kein Symbol</string>
+
+    <string name="in_app_notification_banner">In-App-Benachrichtigungsbanner</string>
+    <string name="in_app_notification_banner_enabled">Banner in der App anzeigen, wenn eine Erinnerungs- oder Geburtstagsbenachrichtigung ausgelöst wird</string>
+    <string name="in_app_notification_banner_disabled">Nur die Systembenachrichtigung anzeigen</string>
 </resources>

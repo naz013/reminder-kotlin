@@ -1197,4 +1197,8 @@
     <string name="routine_insight_most_skipped">ขั้นตอนที่ถูกข้ามบ่อยที่สุด: %1$s (สำเร็จ %2$d%%)</string>
     <string name="routine_icon">ไอคอนกิจวัตร</string>
     <string name="no_icon">ไม่มีไอคอน</string>
+
+    <string name="in_app_notification_banner">แบนเนอร์การแจ้งเตือนในแอป</string>
+    <string name="in_app_notification_banner_enabled">แสดงแบนเนอร์ในแอปเมื่อการแจ้งเตือนการเตือนความจำหรือวันเกิดทำงาน</string>
+    <string name="in_app_notification_banner_disabled">แสดงเฉพาะการแจ้งเตือนของระบบเท่านั้น</string>
 </resources>

@@ -1199,4 +1199,8 @@
     <string name="routine_insight_most_skipped">Cel mai omis pas: %1$s (%2$d%% finalizare)</string>
     <string name="routine_icon">Pictograma rutinei</string>
     <string name="no_icon">Fără pictogramă</string>
+
+    <string name="in_app_notification_banner">Banner de notificare în aplicație</string>
+    <string name="in_app_notification_banner_enabled">Afișează un banner în aplicație când se declanșează o notificare de memento sau zi de naștere</string>
+    <string name="in_app_notification_banner_disabled">Afișează doar notificarea de sistem</string>
 </resources>

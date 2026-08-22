@@ -1199,4 +1199,8 @@
     <string name="routine_insight_most_skipped">Passaggio più saltato: %1$s (%2$d%% di completamento)</string>
     <string name="routine_icon">Icona routine</string>
     <string name="no_icon">Nessuna icona</string>
+
+    <string name="in_app_notification_banner">Banner di notifica nell\'app</string>
+    <string name="in_app_notification_banner_enabled">Mostra un banner nell\'app quando viene attivata una notifica di promemoria o compleanno</string>
+    <string name="in_app_notification_banner_disabled">Mostra solo la notifica di sistema</string>
 </resources>

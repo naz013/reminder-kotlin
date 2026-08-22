@@ -1197,4 +1197,8 @@
     <string name="routine_insight_most_skipped">الخطوة الأكثر تخطيًا: %1$s (%2$d%% إكمال)</string>
     <string name="routine_icon">أيقونة الروتين</string>
     <string name="no_icon">بلا أيقونة</string>
+
+    <string name="in_app_notification_banner">شريط إشعار داخل التطبيق</string>
+    <string name="in_app_notification_banner_enabled">إظهار شريط داخل التطبيق عند إطلاق إشعار تذكير أو عيد ميلاد</string>
+    <string name="in_app_notification_banner_disabled">إظهار إشعار النظام فقط</string>
 </resources>

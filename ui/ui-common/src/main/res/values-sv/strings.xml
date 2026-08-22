@@ -1197,4 +1197,8 @@
     <string name="routine_insight_most_skipped">Mest överhoppade steg: %1$s (%2$d%% slutfört)</string>
     <string name="routine_icon">Rutinikon</string>
     <string name="no_icon">Ingen ikon</string>
+
+    <string name="in_app_notification_banner">Aviseringsbanner i appen</string>
+    <string name="in_app_notification_banner_enabled">Visa en banner i appen när en påminnelse- eller födelsedagsavisering utlöses</string>
+    <string name="in_app_notification_banner_disabled">Visa endast systemaviseringen</string>
 </resources>
