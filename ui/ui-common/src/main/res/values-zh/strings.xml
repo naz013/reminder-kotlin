@@ -1106,7 +1106,7 @@
     <string name="streak_current">当前连胜: %1$d天</string>
     <string name="streak_longest">最长连胜: %1$d天</string>
     <string name="streak_fired_count">在过去的90天内触发了%1$d次</string>
-    <string name="no_insights_yet">过去90天内尚无提醒活动</string>
+    <string name="no_insights_yet">过去90天内尚无活动</string>
 
     <string name="upcoming_events">即将推出</string>
 
@@ -1157,6 +1157,49 @@
 
     <string name="merge">合并</string>
     <string name="notes_merge_selected_confirm">将 %1$d 篇笔记合并为一篇？原始笔记将被删除。</string>
+
+    <string name="routines">常规</string>
+    <string name="new_routine">新建常规</string>
+    <string name="no_routines">暂无常规</string>
+    <string name="routine_description_hint">描述（可选）</string>
+    <string name="routine_steps">步骤</string>
+    <string name="add_step">添加步骤</string>
+    <string name="step_title_hint">步骤标题</string>
+    <string name="duration_none">无</string>
+    <string name="repeat_daily">每天重复</string>
+    <string name="start_routine">开始常规</string>
+    <string name="reset_steps">重置步骤</string>
+    <string name="reset_steps_confirmation">将所有步骤重置为未完成？</string>
+    <string name="routine_step_count">%1$d 个步骤</string>
+    <string name="delete_routine_confirmation">永久删除此常规？</string>
+    <string name="move_step_up">上移步骤</string>
+    <string name="move_step_down">下移步骤</string>
+    <string name="sort">排序</string>
+    <string name="sort_by_date">按创建日期</string>
+    <string name="sort_by_name">按名称</string>
+    <string name="routine_on_demand">按需</string>
+    <string name="routine_steps_required">请至少添加一个步骤</string>
+    <string name="repeat_none">从不</string>
+    <string name="repeat_weekly">每周重复</string>
+    <string name="repeat_monthly">每月重复</string>
+    <string name="repeat_weekly_days">每周：%1$s</string>
+    <string name="repeat_monthly_day">每月第 %1$d 天</string>
+    <string name="repeat_weekdays_required">请至少选择一天</string>
+    <string name="step_of_count">第 %1$d 步，共 %2$d 步</string>
+    <string name="pause">暂停</string>
+    <string name="resume">继续</string>
+    <string name="skip_step">跳过</string>
+    <string name="complete_step">完成步骤</string>
+    <string name="previous_step">上一步</string>
+    <string name="add_one_minute">+1 分钟</string>
+    <string name="routine_finished_title">常规已完成</string>
+    <string name="routine_execution_total_time">总时长：%1$s</string>
+    <string name="routine_execution_steps_completed">已完成 %1$d/%2$d 个步骤</string>
+    <string name="routine_insights_section">常规连续记录</string>
+    <string name="routine_focus_time_total">总专注时长：%1$s（最近 90 天）</string>
+    <string name="routine_insight_most_skipped">最常跳过的步骤：%1$s（完成率 %2$d%%）</string>
+    <string name="routine_icon">常规图标</string>
+    <string name="no_icon">无图标</string>
 
     <string name="in_app_notification_banner">应用内通知横幅</string>
     <string name="in_app_notification_banner_enabled">提醒或生日通知触发时在应用内显示横幅</string>

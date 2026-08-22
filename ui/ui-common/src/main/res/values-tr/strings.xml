@@ -1106,7 +1106,7 @@
     <string name="streak_current">Mevcut seri: %1$d gün</string>
     <string name="streak_longest">En uzun seri: %1$d gün</string>
     <string name="streak_fired_count">Son 90 günde %1$d kez tetiklendi</string>
-    <string name="no_insights_yet">Son 90 günde hatırlatıcı aktivitesi yok</string>
+    <string name="no_insights_yet">Son 90 günde henüz etkinlik yok</string>
 
     <string name="upcoming_events">Yaklaşan</string>
 
@@ -1157,6 +1157,49 @@
 
     <string name="merge">Birleştir</string>
     <string name="notes_merge_selected_confirm">%1$d not tek bir notta birleştirilsin mi? Orijinal notlar silinecek.</string>
+
+    <string name="routines">Rutinler</string>
+    <string name="new_routine">Yeni rutin</string>
+    <string name="no_routines">Henüz rutin yok</string>
+    <string name="routine_description_hint">Açıklama (isteğe bağlı)</string>
+    <string name="routine_steps">Adımlar</string>
+    <string name="add_step">Adım ekle</string>
+    <string name="step_title_hint">Adım başlığı</string>
+    <string name="duration_none">Yok</string>
+    <string name="repeat_daily">Her gün tekrarlanır</string>
+    <string name="start_routine">Rutini başlat</string>
+    <string name="reset_steps">Adımları sıfırla</string>
+    <string name="reset_steps_confirmation">Tüm adımlar işaretsiz duruma sıfırlansın mı?</string>
+    <string name="routine_step_count">%1$d adım</string>
+    <string name="delete_routine_confirmation">Bu rutin kalıcı olarak silinsin mi?</string>
+    <string name="move_step_up">Adımı yukarı taşı</string>
+    <string name="move_step_down">Adımı aşağı taşı</string>
+    <string name="sort">Sırala</string>
+    <string name="sort_by_date">Oluşturulma tarihine göre</string>
+    <string name="sort_by_name">Ada göre</string>
+    <string name="routine_on_demand">İsteğe bağlı</string>
+    <string name="routine_steps_required">En az bir adım ekleyin</string>
+    <string name="repeat_none">Asla</string>
+    <string name="repeat_weekly">Her hafta tekrarlanır</string>
+    <string name="repeat_monthly">Her ay tekrarlanır</string>
+    <string name="repeat_weekly_days">Haftalık: %1$s</string>
+    <string name="repeat_monthly_day">Her ayın %1$d. günü</string>
+    <string name="repeat_weekdays_required">En az bir gün seçin</string>
+    <string name="step_of_count">Adım %1$d / %2$d</string>
+    <string name="pause">Duraklat</string>
+    <string name="resume">Devam et</string>
+    <string name="skip_step">Atla</string>
+    <string name="complete_step">Adımı tamamla</string>
+    <string name="previous_step">Önceki adım</string>
+    <string name="add_one_minute">+1 dk</string>
+    <string name="routine_finished_title">Rutin tamamlandı</string>
+    <string name="routine_execution_total_time">Toplam süre: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d / %2$d adım tamamlandı</string>
+    <string name="routine_insights_section">Rutin serileri</string>
+    <string name="routine_focus_time_total">Toplam odaklanma süresi: %1$s (son 90 gün)</string>
+    <string name="routine_insight_most_skipped">En çok atlanan adım: %1$s (%2$d%% tamamlanma)</string>
+    <string name="routine_icon">Rutin simgesi</string>
+    <string name="no_icon">Simge yok</string>
 
     <string name="in_app_notification_banner">Uygulama içi bildirim afişi</string>
     <string name="in_app_notification_banner_enabled">Bir hatırlatıcı veya doğum günü bildirimi tetiklendiğinde uygulama içinde bir afiş göster</string>

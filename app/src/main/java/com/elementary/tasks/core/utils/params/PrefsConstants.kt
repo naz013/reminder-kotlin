@@ -119,6 +119,7 @@ object PrefsConstants {
   const val GROUP_V2_BACKFILL_DONE = "group_v2_backfill_done"
   const val WORKFLOW_RULES_SCHEDULED = "workflow_rules_scheduled"
   const val WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED = "workflow_unacknowledged_rules_scheduled"
+  const val ROUTINE_RECURRENCE_RESET_SCHEDULED = "routine_recurrence_reset_scheduled"
 
   const val PUBLIC_HOLIDAYS_ENABLED = "public_holidays_enabled"
   const val PUBLIC_HOLIDAYS_COUNTRY = "public_holidays_country"

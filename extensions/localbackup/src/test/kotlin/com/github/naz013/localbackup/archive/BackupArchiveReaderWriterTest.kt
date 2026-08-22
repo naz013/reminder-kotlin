@@ -8,6 +8,8 @@ import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.routine.Routine
+import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.files.DataConverter
 import kotlinx.coroutines.test.runTest
@@ -38,6 +40,8 @@ private class FakeDataConverter : DataConverter {
       is Birthday -> "B|${any.uuId}|${any.name}"
       is Tag -> "T|${any.id}|${any.name}"
       is TagAssignment -> "A|${any.tagId}|${any.itemId}::${any.itemType}"
+      is Routine -> "O|${any.id}|${any.title}"
+      is RoutineExecutionRecord -> "E|${any.id}|${any.routineId}"
       else -> error("FakeDataConverter does not support ${any::class.java}")
     }
     outputStream.use { it.write(encoded.toByteArray()) }
@@ -60,6 +64,8 @@ private class FakeDataConverter : DataConverter {
         val (itemId, itemType) = label.split("::", limit = 2)
         TagAssignment(tagId = id, itemId = itemId, itemType = TaggedItemType.valueOf(itemType))
       }
+      "O" -> Routine(id = id, title = label, createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now())
+      "E" -> RoutineExecutionRecord(id = id, routineId = label, executedAt = LocalDateTime.now(), totalTimeSpentSeconds = 0, totalStepsCount = 0)
       else -> error("FakeDataConverter does not support tag $tag")
     }
   }
@@ -91,6 +97,21 @@ class BackupArchiveReaderWriterTest {
 
   private fun tagAssignment(tagId: String, itemId: String) =
     TagAssignment(tagId = tagId, itemId = itemId, itemType = TaggedItemType.NOTE)
+
+  private fun routine(id: String) = Routine(
+    id = id,
+    title = "Routine $id",
+    createdAt = LocalDateTime.of(2026, 1, 1, 9, 0),
+    updatedAt = LocalDateTime.of(2026, 1, 1, 9, 0)
+  )
+
+  private fun routineExecution(id: String, routineId: String) = RoutineExecutionRecord(
+    id = id,
+    routineId = routineId,
+    executedAt = LocalDateTime.of(2026, 1, 1, 9, 0),
+    totalTimeSpentSeconds = 300,
+    totalStepsCount = 3
+  )
 
   @Test
   fun `round trips an empty envelope`() = runTest {
@@ -142,6 +163,24 @@ class BackupArchiveReaderWriterTest {
       setOf("t1" to "note-1", "t2" to "note-1"),
       result.tagAssignments.map { it.tagId to it.itemId }.toSet()
     )
+    assertTrue(result.reminders.isEmpty())
+  }
+
+  @Test
+  fun `round trips routines and routine executions and buckets them by type`() = runTest {
+    val envelope = BackupEnvelope(
+      routines = listOf(routine("o1"), routine("o2")),
+      routineExecutions = listOf(routineExecution("e1", "o1")),
+    )
+    val output = ByteArrayOutputStream()
+
+    writer.write(output, envelope)
+    val result = reader.read(ByteArrayInputStream(output.toByteArray()))
+
+    assertEquals(2, result.routines.size)
+    assertEquals(setOf("o1", "o2"), result.routines.map { it.id }.toSet())
+    assertEquals(1, result.routineExecutions.size)
+    assertEquals("o1", result.routineExecutions.single().routineId)
     assertTrue(result.reminders.isEmpty())
   }
 

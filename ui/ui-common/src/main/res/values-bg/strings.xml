@@ -1106,7 +1106,7 @@
     <string name="streak_current">Текущ ред: %1$d дни</string>
     <string name="streak_longest">Най-дълъг ред: %1$d дни</string>
     <string name="streak_fired_count">Задействано %1$d пъти през последните 90 дни</string>
-    <string name="no_insights_yet">Нямате активност на напомняния през последните 90 дни</string>
+    <string name="no_insights_yet">Все още няма активност през последните 90 дни</string>
 
     <string name="upcoming_events">Предстоящи</string>
 
@@ -1157,6 +1157,49 @@
 
     <string name="merge">Обединяване</string>
     <string name="notes_merge_selected_confirm">Обединяване на %1$d бележки в една? Оригиналните бележки ще бъдат изтрити.</string>
+
+    <string name="routines">Рутини</string>
+    <string name="new_routine">Нова рутина</string>
+    <string name="no_routines">Все още няма рутини</string>
+    <string name="routine_description_hint">Описание (незадължително)</string>
+    <string name="routine_steps">Стъпки</string>
+    <string name="add_step">Добавяне на стъпка</string>
+    <string name="step_title_hint">Заглавие на стъпката</string>
+    <string name="duration_none">Няма</string>
+    <string name="repeat_daily">Повтаря се ежедневно</string>
+    <string name="start_routine">Стартиране на рутината</string>
+    <string name="reset_steps">Нулиране на стъпките</string>
+    <string name="reset_steps_confirmation">Да се нулират ли всички стъпки като неотметнати?</string>
+    <string name="routine_step_count">%1$d стъпки</string>
+    <string name="delete_routine_confirmation">Да се изтрие ли тази рутина завинаги?</string>
+    <string name="move_step_up">Преместване на стъпката нагоре</string>
+    <string name="move_step_down">Преместване на стъпката надолу</string>
+    <string name="sort">Подреждане</string>
+    <string name="sort_by_date">По дата на създаване</string>
+    <string name="sort_by_name">По име</string>
+    <string name="routine_on_demand">При поискване</string>
+    <string name="routine_steps_required">Добавете поне една стъпка</string>
+    <string name="repeat_none">Никога</string>
+    <string name="repeat_weekly">Повтаря се седмично</string>
+    <string name="repeat_monthly">Повтаря се месечно</string>
+    <string name="repeat_weekly_days">Седмично: %1$s</string>
+    <string name="repeat_monthly_day">Месечно на ден %1$d</string>
+    <string name="repeat_weekdays_required">Изберете поне един ден</string>
+    <string name="step_of_count">Стъпка %1$d от %2$d</string>
+    <string name="pause">Пауза</string>
+    <string name="resume">Продължаване</string>
+    <string name="skip_step">Пропускане</string>
+    <string name="complete_step">Завършване на стъпката</string>
+    <string name="previous_step">Предишна стъпка</string>
+    <string name="add_one_minute">+1 мин</string>
+    <string name="routine_finished_title">Рутината приключи</string>
+    <string name="routine_execution_total_time">Общо време: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d от %2$d стъпки завършени</string>
+    <string name="routine_insights_section">Серии от рутини</string>
+    <string name="routine_focus_time_total">Общо време на фокус: %1$s (последните 90 дни)</string>
+    <string name="routine_insight_most_skipped">Най-често пропускана стъпка: %1$s (%2$d%% завършеност)</string>
+    <string name="routine_icon">Икона на рутината</string>
+    <string name="no_icon">Без икона</string>
 
     <string name="in_app_notification_banner">Банер за известия в приложението</string>
     <string name="in_app_notification_banner_enabled">Показвай банер в приложението, когато сработи известие за напомняне или рожден ден</string>

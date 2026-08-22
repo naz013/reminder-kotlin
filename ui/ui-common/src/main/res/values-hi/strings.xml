@@ -1107,7 +1107,7 @@
     <string name="streak_current">वर्तमान स्ट्रीक: %1$d दिन</string>
     <string name="streak_longest">सबसे लंबी स्ट्रीक: %1$d दिन</string>
     <string name="streak_fired_count">पिछले 90 दिनों में %1$d बार सक्रिय</string>
-    <string name="no_insights_yet">पिछले 90 दिनों में कोई अनुस्मारक गतिविधि नहीं</string>
+    <string name="no_insights_yet">पिछले 90 दिनों में अभी तक कोई गतिविधि नहीं</string>
 
     <string name="upcoming_events">आने वाली</string>
 
@@ -1158,6 +1158,49 @@
 
     <string name="merge">मर्ज करें</string>
     <string name="notes_merge_selected_confirm">%1$d नोट्स को एक में मर्ज करें? मूल नोट्स हटा दिए जाएंगे।</string>
+
+    <string name="routines">रूटीन</string>
+    <string name="new_routine">नया रूटीन</string>
+    <string name="no_routines">अभी तक कोई रूटीन नहीं</string>
+    <string name="routine_description_hint">विवरण (वैकल्पिक)</string>
+    <string name="routine_steps">चरण</string>
+    <string name="add_step">चरण जोड़ें</string>
+    <string name="step_title_hint">चरण का शीर्षक</string>
+    <string name="duration_none">कोई नहीं</string>
+    <string name="repeat_daily">प्रतिदिन दोहराया जाता है</string>
+    <string name="start_routine">रूटीन शुरू करें</string>
+    <string name="reset_steps">चरण रीसेट करें</string>
+    <string name="reset_steps_confirmation">सभी चरणों को अचयनित पर रीसेट करें?</string>
+    <string name="routine_step_count">%1$d चरण</string>
+    <string name="delete_routine_confirmation">इस रूटीन को स्थायी रूप से हटाएं?</string>
+    <string name="move_step_up">चरण को ऊपर ले जाएं</string>
+    <string name="move_step_down">चरण को नीचे ले जाएं</string>
+    <string name="sort">क्रमबद्ध करें</string>
+    <string name="sort_by_date">निर्माण तिथि के अनुसार</string>
+    <string name="sort_by_name">नाम के अनुसार</string>
+    <string name="routine_on_demand">मांग पर</string>
+    <string name="routine_steps_required">कम से कम एक चरण जोड़ें</string>
+    <string name="repeat_none">कभी नहीं</string>
+    <string name="repeat_weekly">साप्ताहिक रूप से दोहराया जाता है</string>
+    <string name="repeat_monthly">मासिक रूप से दोहराया जाता है</string>
+    <string name="repeat_weekly_days">साप्ताहिक: %1$s</string>
+    <string name="repeat_monthly_day">मासिक रूप से %1$d तारीख को</string>
+    <string name="repeat_weekdays_required">कम से कम एक दिन चुनें</string>
+    <string name="step_of_count">चरण %1$d का %2$d</string>
+    <string name="pause">रोकें</string>
+    <string name="resume">फिर से शुरू करें</string>
+    <string name="skip_step">छोड़ें</string>
+    <string name="complete_step">चरण पूरा करें</string>
+    <string name="previous_step">पिछला चरण</string>
+    <string name="add_one_minute">+1 मिनट</string>
+    <string name="routine_finished_title">रूटीन पूरा हुआ</string>
+    <string name="routine_execution_total_time">कुल समय: %1$s</string>
+    <string name="routine_execution_steps_completed">%2$d में से %1$d चरण पूरे हुए</string>
+    <string name="routine_insights_section">रूटीन स्ट्रीक्स</string>
+    <string name="routine_focus_time_total">कुल फोकस समय: %1$s (पिछले 90 दिन)</string>
+    <string name="routine_insight_most_skipped">सबसे अधिक छोड़ा गया चरण: %1$s (%2$d%% पूर्णता)</string>
+    <string name="routine_icon">रूटीन आइकन</string>
+    <string name="no_icon">कोई आइकन नहीं</string>
 
     <string name="in_app_notification_banner">ऐप में सूचना बैनर</string>
     <string name="in_app_notification_banner_enabled">रिमाइंडर या जन्मदिन की सूचना आने पर ऐप में एक बैनर दिखाएं</string>

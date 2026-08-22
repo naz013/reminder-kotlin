@@ -83,6 +83,8 @@ import com.github.naz013.group.groupsEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.localbackup.localBackupEntries
+import com.github.naz013.feature.routine.RoutineNavKey
+import com.github.naz013.feature.routine.routineEntries
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.tags.tagsEntries
 import com.github.naz013.ui.common.R
@@ -214,6 +216,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenNotes = { backStack.add(NotesNavKey.List) },
           onOpenGoogleTasks = { backStack.add(GoogleTasksNavKey.List) },
           onOpenGroups = { backStack.add(GroupsNavKey.List) },
+          onOpenRoutines = { backStack.add(RoutineNavKey.List) },
           onOpenWorkflowGallery = { backStack.add(WorkflowNavKey.Gallery) },
           onOpenPrivacyPolicy = { backStack.add(OtherNavKey.PrivacyPolicy) },
           onOpenCloudDrives = { backStack.add(ExportNavKey.CloudServices) },
@@ -239,6 +242,10 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onNewReminderClick = { backStack.add(BuildReminderNavKey.Main(groupUuId = it)) },
           onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
           onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
+        )
+        routineEntries(
+          backStack = backStack,
+          onManageTagsClick = { backStack.add(TagsNavKey.Manage) },
         )
         placesEntries(
           backStack = backStack,

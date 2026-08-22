@@ -16,7 +16,9 @@ data class ImportSummary(
   val placesImported: Int,
   val presetsImported: Int,
   val tagsImported: Int,
-  val tagAssignmentsImported: Int
+  val tagAssignmentsImported: Int,
+  val routinesImported: Int = 0,
+  val routineExecutionsImported: Int = 0
 )
 
 /** Distinguishes "wrong passphrase or corrupted file" from other IO failures during import. */

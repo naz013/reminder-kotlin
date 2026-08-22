@@ -1105,7 +1105,7 @@
     <string name="streak_current">Aktuelle Serie: %1$d Tage</string>
     <string name="streak_longest">Längste Serie: %1$d Tage</string>
     <string name="streak_fired_count">%1$d mal in den letzten 90 Tagen ausgelöst</string>
-    <string name="no_insights_yet">Noch keine Erinnerungsaktivität in den letzten 90 Tagen</string>
+    <string name="no_insights_yet">Noch keine Aktivität in den letzten 90 Tagen</string>
 
     <string name="upcoming_events">Kommende</string>
 
@@ -1156,6 +1156,49 @@
 
     <string name="merge">Zusammenführen</string>
     <string name="notes_merge_selected_confirm">%1$d Notizen zu einer zusammenführen? Die ursprünglichen Notizen werden gelöscht.</string>
+
+    <string name="routines">Routinen</string>
+    <string name="new_routine">Neue Routine</string>
+    <string name="no_routines">Noch keine Routinen</string>
+    <string name="routine_description_hint">Beschreibung (optional)</string>
+    <string name="routine_steps">Schritte</string>
+    <string name="add_step">Schritt hinzufügen</string>
+    <string name="step_title_hint">Schritttitel</string>
+    <string name="duration_none">Keine</string>
+    <string name="repeat_daily">Wiederholt sich täglich</string>
+    <string name="start_routine">Routine starten</string>
+    <string name="reset_steps">Schritte zurücksetzen</string>
+    <string name="reset_steps_confirmation">Alle Schritte auf nicht erledigt zurücksetzen?</string>
+    <string name="routine_step_count">%1$d Schritte</string>
+    <string name="delete_routine_confirmation">Diese Routine dauerhaft löschen?</string>
+    <string name="move_step_up">Schritt nach oben verschieben</string>
+    <string name="move_step_down">Schritt nach unten verschieben</string>
+    <string name="sort">Sortieren</string>
+    <string name="sort_by_date">Nach Erstellungsdatum</string>
+    <string name="sort_by_name">Nach Name</string>
+    <string name="routine_on_demand">Bei Bedarf</string>
+    <string name="routine_steps_required">Füge mindestens einen Schritt hinzu</string>
+    <string name="repeat_none">Nie</string>
+    <string name="repeat_weekly">Wiederholt sich wöchentlich</string>
+    <string name="repeat_monthly">Wiederholt sich monatlich</string>
+    <string name="repeat_weekly_days">Wöchentlich: %1$s</string>
+    <string name="repeat_monthly_day">Monatlich am %1$d. Tag</string>
+    <string name="repeat_weekdays_required">Wähle mindestens einen Tag aus</string>
+    <string name="step_of_count">Schritt %1$d von %2$d</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Fortsetzen</string>
+    <string name="skip_step">Überspringen</string>
+    <string name="complete_step">Schritt abschließen</string>
+    <string name="previous_step">Vorheriger Schritt</string>
+    <string name="add_one_minute">+1 Min.</string>
+    <string name="routine_finished_title">Routine abgeschlossen</string>
+    <string name="routine_execution_total_time">Gesamtzeit: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d von %2$d Schritten abgeschlossen</string>
+    <string name="routine_insights_section">Routinen-Serien</string>
+    <string name="routine_focus_time_total">Gesamte Fokuszeit: %1$s (letzte 90 Tage)</string>
+    <string name="routine_insight_most_skipped">Am häufigsten übersprungener Schritt: %1$s (%2$d%% abgeschlossen)</string>
+    <string name="routine_icon">Routinensymbol</string>
+    <string name="no_icon">Kein Symbol</string>
 
     <string name="in_app_notification_banner">In-App-Benachrichtigungsbanner</string>
     <string name="in_app_notification_banner_enabled">Banner in der App anzeigen, wenn eine Erinnerungs- oder Geburtstagsbenachrichtigung ausgelöst wird</string>

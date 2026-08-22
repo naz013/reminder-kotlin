@@ -23,6 +23,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.googletask.work.SaveNewTaskTask
 import com.github.naz013.feature.googletask.work.UpdateTaskTask
+import com.github.naz013.feature.routine.RoutineRecurrenceResetTask
 import com.github.naz013.logging.Logger
 import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.workapi.PeriodicWorkRequest
@@ -81,6 +82,18 @@ class JobScheduler(
       ),
     )
     Logger.i(TAG, "Scheduled workflow unacknowledged-reminder rules check.")
+  }
+
+  override fun scheduleRoutineRecurrenceResetCheck() {
+    workScheduler.enqueuePeriodic(
+      PeriodicWorkRequest(
+        taskKey = RoutineRecurrenceResetTask.TASK_KEY,
+        tag = EVENT_ROUTINE_RECURRENCE_RESET_CHECK,
+        repeatIntervalMillis = TimeUnit.HOURS.toMillis(24),
+        flexIntervalMillis = TimeUnit.HOURS.toMillis(1),
+      ),
+    )
+    Logger.i(TAG, "Scheduled routine recurrence reset check.")
   }
 
   override fun scheduleBirthdayPermanent() {
@@ -338,6 +351,7 @@ class JobScheduler(
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
     private const val EVENT_WORKFLOW_RULES_CHECK = "event_workflow_rules_check"
     private const val EVENT_WORKFLOW_UNACKNOWLEDGED_RULES_CHECK = "event_workflow_unacknowledged_rules_check"
+    private const val EVENT_ROUTINE_RECURRENCE_RESET_CHECK = "event_routine_recurrence_reset_check"
     private const val TAG = "JobScheduler"
 
     private const val INTERVAL_MINUTE = 60 * 1000L

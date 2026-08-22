@@ -1103,7 +1103,7 @@
     <string name="streak_current">Aktuell streak: %1$d dagar</string>
     <string name="streak_longest">Längsta streak: %1$d dagar</string>
     <string name="streak_fired_count">Utlöstes %1$d gånger under de senaste 90 dagarna</string>
-    <string name="no_insights_yet">Ingen påminnelseaktivitet de senaste 90 dagarna ännu</string>
+    <string name="no_insights_yet">Ingen aktivitet de senaste 90 dagarna ännu</string>
 
     <string name="upcoming_events">Kommande</string>
 
@@ -1154,6 +1154,49 @@
 
     <string name="merge">Slå ihop</string>
     <string name="notes_merge_selected_confirm">Slå ihop %1$d anteckningar till en? De ursprungliga anteckningarna raderas.</string>
+
+    <string name="routines">Rutiner</string>
+    <string name="new_routine">Ny rutin</string>
+    <string name="no_routines">Inga rutiner än</string>
+    <string name="routine_description_hint">Beskrivning (valfritt)</string>
+    <string name="routine_steps">Steg</string>
+    <string name="add_step">Lägg till steg</string>
+    <string name="step_title_hint">Stegtitel</string>
+    <string name="duration_none">Ingen</string>
+    <string name="repeat_daily">Upprepas dagligen</string>
+    <string name="start_routine">Starta rutin</string>
+    <string name="reset_steps">Återställ steg</string>
+    <string name="reset_steps_confirmation">Återställa alla steg till ej markerade?</string>
+    <string name="routine_step_count">%1$d steg</string>
+    <string name="delete_routine_confirmation">Ta bort den här rutinen permanent?</string>
+    <string name="move_step_up">Flytta steg upp</string>
+    <string name="move_step_down">Flytta steg ner</string>
+    <string name="sort">Sortera</string>
+    <string name="sort_by_date">Efter skapelsedatum</string>
+    <string name="sort_by_name">Efter namn</string>
+    <string name="routine_on_demand">På begäran</string>
+    <string name="routine_steps_required">Lägg till minst ett steg</string>
+    <string name="repeat_none">Aldrig</string>
+    <string name="repeat_weekly">Upprepas varje vecka</string>
+    <string name="repeat_monthly">Upprepas varje månad</string>
+    <string name="repeat_weekly_days">Varje vecka: %1$s</string>
+    <string name="repeat_monthly_day">Varje månad på dag %1$d</string>
+    <string name="repeat_weekdays_required">Välj minst en dag</string>
+    <string name="step_of_count">Steg %1$d av %2$d</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Återuppta</string>
+    <string name="skip_step">Hoppa över</string>
+    <string name="complete_step">Slutför steg</string>
+    <string name="previous_step">Föregående steg</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Rutin avslutad</string>
+    <string name="routine_execution_total_time">Total tid: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d av %2$d steg slutförda</string>
+    <string name="routine_insights_section">Rutinsviter</string>
+    <string name="routine_focus_time_total">Total fokustid: %1$s (senaste 90 dagarna)</string>
+    <string name="routine_insight_most_skipped">Mest överhoppade steg: %1$s (%2$d%% slutfört)</string>
+    <string name="routine_icon">Rutinikon</string>
+    <string name="no_icon">Ingen ikon</string>
 
     <string name="in_app_notification_banner">Aviseringsbanner i appen</string>
     <string name="in_app_notification_banner_enabled">Visa en banner i appen när en påminnelse- eller födelsedagsavisering utlöses</string>

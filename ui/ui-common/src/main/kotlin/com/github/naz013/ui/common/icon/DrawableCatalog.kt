@@ -186,5 +186,7 @@ object DrawableCatalog {
     val ReOrderDots = R.drawable.ic_fluent_re_order_dots
     val Pin = R.drawable.ic_fluent_pin
     val PinOff = R.drawable.ic_fluent_pin_off
+    val DrinkCoffee = R.drawable.ic_fluent_drink_coffee
+    val Extension = R.drawable.ic_fluent_extension
   }
 }

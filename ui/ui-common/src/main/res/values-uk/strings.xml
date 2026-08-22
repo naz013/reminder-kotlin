@@ -1106,7 +1106,7 @@
     <string name="streak_current">Поточна серія: %1$d днів</string>
     <string name="streak_longest">Найдовша серія: %1$d днів</string>
     <string name="streak_fired_count">Запущено %1$d разів за останні 90 днів</string>
-    <string name="no_insights_yet">Без активності нагадувань за останні 90 днів</string>
+    <string name="no_insights_yet">Без активності за останні 90 днів</string>
 
     <string name="upcoming_events">Майбутні</string>
 
@@ -1157,6 +1157,49 @@
 
     <string name="merge">Об\'єднати</string>
     <string name="notes_merge_selected_confirm">Об\'єднати %1$d нотаток в одну? Оригінальні нотатки буде видалено.</string>
+
+    <string name="routines">Рутини</string>
+    <string name="new_routine">Нова рутина</string>
+    <string name="no_routines">Поки немає рутин</string>
+    <string name="routine_description_hint">Опис (необов\'язково)</string>
+    <string name="routine_steps">Кроки</string>
+    <string name="add_step">Додати крок</string>
+    <string name="step_title_hint">Назва кроку</string>
+    <string name="duration_none">Немає</string>
+    <string name="repeat_daily">Повторюється щодня</string>
+    <string name="start_routine">Почати рутину</string>
+    <string name="reset_steps">Скинути кроки</string>
+    <string name="reset_steps_confirmation">Скинути позначки з усіх кроків?</string>
+    <string name="routine_step_count">%1$d кроків</string>
+    <string name="delete_routine_confirmation">Видалити цю рутину назавжди?</string>
+    <string name="move_step_up">Перемістити крок вгору</string>
+    <string name="move_step_down">Перемістити крок вниз</string>
+    <string name="sort">Сортування</string>
+    <string name="sort_by_date">За датою створення</string>
+    <string name="sort_by_name">За назвою</string>
+    <string name="routine_on_demand">За запитом</string>
+    <string name="routine_steps_required">Додайте принаймні один крок</string>
+    <string name="repeat_none">Ніколи</string>
+    <string name="repeat_weekly">Повторюється щотижня</string>
+    <string name="repeat_monthly">Повторюється щомісяця</string>
+    <string name="repeat_weekly_days">Щотижня: %1$s</string>
+    <string name="repeat_monthly_day">Щомісяця %1$d числа</string>
+    <string name="repeat_weekdays_required">Виберіть принаймні один день</string>
+    <string name="step_of_count">Крок %1$d з %2$d</string>
+    <string name="pause">Пауза</string>
+    <string name="resume">Продовжити</string>
+    <string name="skip_step">Пропустити</string>
+    <string name="complete_step">Завершити крок</string>
+    <string name="previous_step">Попередній крок</string>
+    <string name="add_one_minute">+1 хв</string>
+    <string name="routine_finished_title">Рутину завершено</string>
+    <string name="routine_execution_total_time">Загальний час: %1$s</string>
+    <string name="routine_execution_steps_completed">Завершено %1$d із %2$d кроків</string>
+    <string name="routine_insights_section">Серії рутин</string>
+    <string name="routine_focus_time_total">Загальний час фокусування: %1$s (останні 90 днів)</string>
+    <string name="routine_insight_most_skipped">Найчастіше пропущений крок: %1$s (%2$d%% виконання)</string>
+    <string name="routine_icon">Значок рутини</string>
+    <string name="no_icon">Без значка</string>
 
     <string name="in_app_notification_banner">Банер сповіщень у застосунку</string>
     <string name="in_app_notification_banner_enabled">Показувати банер у застосунку, коли спрацьовує сповіщення про нагадування або день народження</string>

@@ -11,9 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
@@ -36,58 +36,57 @@ internal fun OtherSettingsScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     SettingsItem(
       title = stringResource(R.string.privacy_policy),
-      icon = painterResource(R.drawable.ic_fluent_tab_tracking_prevention),
+      icon = AppIcons.Fluent.TabTrackingPrevention,
       dividerBottom = true,
       onClick = onPrivacyPolicyClick,
     )
     SettingsItem(
       title = stringResource(R.string.terms_and_conditions),
-      icon = painterResource(R.drawable.ic_fluent_document_one_page),
+      icon = AppIcons.Fluent.DocumentOnePage,
       dividerBottom = true,
       onClick = onTermsClick,
     )
     SettingsItem(
       title = stringResource(R.string.troubleshooting),
-      icon = painterResource(R.drawable.ic_fluent_send_logging),
+      icon = AppIcons.Fluent.SendLogging,
       dividerBottom = true,
       onClick = onTroubleshootingClick,
     )
     SettingsItem(
       title = stringResource(R.string.feedback),
-      icon = painterResource(R.drawable.ic_fluent_person_feedback),
+      icon = AppIcons.Fluent.PersonFeedback,
       dividerBottom = true,
       onClick = onFeedbackClick,
     )
     SettingsItem(
       title = stringResource(R.string.rate),
-      icon = painterResource(R.drawable.ic_fluent_star),
+      icon = AppIcons.Fluent.Star,
       dividerBottom = true,
       onClick = onRateClick,
     )
     SettingsItem(
       title = stringResource(R.string.tell_friends),
-      icon = painterResource(R.drawable.ic_fluent_share),
+      icon = AppIcons.Fluent.Share,
       dividerBottom = true,
       onClick = onTellFriendsClick,
     )
     SettingsItem(
       title = stringResource(R.string.whats_new),
-      icon = painterResource(R.drawable.ic_rocket_whats_new),
+      icon = AppIcons.RocketWhatsNew,
       dividerBottom = true,
       onClick = onWhatsNewClick,
     )
     if (state.isGeminiFunctionsVisible) {
       SettingsItem(
         title = stringResource(R.string.gemini_functions),
-        icon = painterResource(R.drawable.ic_fluent_apps),
+        icon = AppIcons.Fluent.Extension,
         locked = state.isGeminiFunctionsLocked,
         dividerBottom = true,
         onClick = onGeminiFunctionsClick,
@@ -97,7 +96,7 @@ internal fun OtherSettingsScreen(
       SettingsItem(
         title = stringResource(R.string.buy_me_a_coffee),
         subtitle = stringResource(R.string.buy_me_a_coffee_subtitle),
-        icon = painterResource(R.drawable.ic_fluent_heart),
+        icon = AppIcons.Fluent.DrinkCoffee,
         dividerBottom = true,
         onClick = onBuyMeACoffeeClick,
       )
@@ -114,13 +113,13 @@ internal fun OtherSettingsScreen(
     )
     SettingsItem(
       title = stringResource(R.string.open_source_licenses),
-      icon = painterResource(R.drawable.ic_fluent_code),
+      icon = AppIcons.Fluent.Code,
       dividerBottom = true,
       onClick = onOssClick,
     )
     SettingsItem(
       title = stringResource(R.string.about),
-      icon = painterResource(R.drawable.ic_fluent_info),
+      icon = AppIcons.Fluent.Info,
       dividerBottom = true,
       onClick = onAboutClick,
     )

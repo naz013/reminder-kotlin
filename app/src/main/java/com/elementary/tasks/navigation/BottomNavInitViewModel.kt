@@ -37,7 +37,7 @@ class BottomNavInitViewModel(
   private val activateAllActiveRemindersUseCase: ActivateAllActiveRemindersUseCase,
   private val dispatcherProvider: DispatcherProvider,
   private val notifier: Notifier,
-  featureFlags: FeatureFlags,
+  private val featureFlags: FeatureFlags,
   private val packageManagerWrapper: PackageManagerWrapper,
   private val groupsUtil: GroupsUtil,
   private val noteImageMigration: NoteImageMigration,
@@ -99,6 +99,10 @@ class BottomNavInitViewModel(
       if (!prefs.workflowUnacknowledgedRulesScheduled) {
         jobScheduler.scheduleWorkflowUnacknowledgedCheck()
         prefs.workflowUnacknowledgedRulesScheduled = true
+      }
+      if (!prefs.routineRecurrenceResetScheduled && featureFlags.isEnabled(FeatureFlag.ROUTINE_ENABLED)) {
+        jobScheduler.scheduleRoutineRecurrenceResetCheck()
+        prefs.routineRecurrenceResetScheduled = true
       }
     }
   }

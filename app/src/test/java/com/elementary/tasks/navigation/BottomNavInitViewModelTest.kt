@@ -59,6 +59,7 @@ class BottomNavInitViewModelTest : BaseTest() {
   override fun setUp() {
     super.setUp()
     every { featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS) } returns true
+    every { featureFlags.isEnabled(FeatureFlag.ROUTINE_ENABLED) } returns false
     every { googleTasksAuthManager.isAuthorized() } returns true
     every { packageManagerWrapper.getVersionName() } returns "1.0.0"
 
@@ -150,6 +151,36 @@ class BottomNavInitViewModelTest : BaseTest() {
 
     verify(exactly = 0) { notifier.sendShowReminderPermanent() }
     assertEquals(BottomNavInitState.Ready(requiresLogin = false), vm.state.value)
+  }
+
+  @Test
+  fun `schedules the routine recurrence reset check when the feature flag is enabled`() {
+    every { featureFlags.isEnabled(FeatureFlag.ROUTINE_ENABLED) } returns true
+    every { prefs.routineRecurrenceResetScheduled } returns false
+
+    createViewModel()
+
+    verify(exactly = 1) { jobScheduler.scheduleRoutineRecurrenceResetCheck() }
+    verify(exactly = 1) { prefs.routineRecurrenceResetScheduled = true }
+  }
+
+  @Test
+  fun `does not schedule the routine recurrence reset check when the feature flag is disabled`() {
+    every { featureFlags.isEnabled(FeatureFlag.ROUTINE_ENABLED) } returns false
+
+    createViewModel()
+
+    verify(exactly = 0) { jobScheduler.scheduleRoutineRecurrenceResetCheck() }
+  }
+
+  @Test
+  fun `does not reschedule the routine recurrence reset check once already scheduled`() {
+    every { featureFlags.isEnabled(FeatureFlag.ROUTINE_ENABLED) } returns true
+    every { prefs.routineRecurrenceResetScheduled } returns true
+
+    createViewModel()
+
+    verify(exactly = 0) { jobScheduler.scheduleRoutineRecurrenceResetCheck() }
   }
 
   @Test

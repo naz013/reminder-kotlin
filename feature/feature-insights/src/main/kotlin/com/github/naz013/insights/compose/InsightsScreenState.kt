@@ -6,7 +6,8 @@ import org.threeten.bp.LocalDate
 internal data class InsightsScreenState(
   val listState: InsightsListState = InsightsListState.Loading,
   val weeklyTrend: List<WeeklyTrendUi> = emptyList(),
-  val busiestDay: DayOfWeek? = null
+  val busiestDay: DayOfWeek? = null,
+  val routineInsights: List<UiRoutineInsight> = emptyList()
 )
 
 internal sealed interface InsightsListState {
@@ -31,4 +32,14 @@ internal data class UiStreak(
 internal data class WeeklyTrendUi(
   val weekStart: LocalDate,
   val count: Int
+)
+
+internal data class UiRoutineInsight(
+  val routineId: String,
+  val title: String,
+  val currentStreakDays: Int,
+  val longestStreakDays: Int,
+  val totalFocusTimeLabel: String,
+  val mostSkippedStepTitle: String?,
+  val mostSkippedCompletionPercent: Int?
 )

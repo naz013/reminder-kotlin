@@ -24,7 +24,7 @@ interface ReviewsFormLauncher {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun rememberReviewsFormLauncher(): ReviewsFormLauncher {
+fun rememberReviewsFormLauncher(onDismiss: () -> Unit = {}): ReviewsFormLauncher {
   val data = remember { mutableStateOf<Data?>(null) }
 
   // Resolving ReviewDialogViewModel touches Firebase (via the reviews Koin module's
@@ -34,7 +34,13 @@ fun rememberReviewsFormLauncher(): ReviewsFormLauncher {
   // never opened the feedback form. Deferring resolution to only while the sheet is shown keeps
   // that failure scoped to the rare case of actually submitting feedback offline.
   data.value?.let { request ->
-    ReviewFormSheet(request = request, onDismissRequest = { data.value = null })
+    ReviewFormSheet(
+      request = request,
+      onDismissRequest = {
+        data.value = null
+        onDismiss()
+      },
+    )
   }
 
   return object : ReviewsFormLauncher {

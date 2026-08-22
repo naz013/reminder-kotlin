@@ -50,7 +50,9 @@ import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.logic.birthday.logicBirthdayModule
 import com.github.naz013.logic.googletask.logicGoogleTaskModule
+import com.github.naz013.feature.routine.routineModule
 import com.github.naz013.logic.reminder.logicReminderModule
+import com.github.naz013.logic.routine.logicRoutineModule
 import com.github.naz013.logic.schedule.logicScheduleModule
 import com.github.naz013.logic.tag.logicTagModule
 import com.github.naz013.logic.workflow.logicWorkflowModule
@@ -185,6 +187,8 @@ class ReminderApp :
           uiGoogleTaskModule,
           logicScheduleModule,
           logicReminderModule,
+          logicRoutineModule,
+          routineModule,
           featureReminderModule,
           uiTagModule,
           logicTagModule,

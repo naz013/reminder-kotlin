@@ -1105,7 +1105,7 @@
     <string name="streak_current">현재 연속: %1$d일</string>
     <string name="streak_longest">가장 긴 연속: %1$d일</string>
     <string name="streak_fired_count">지난 90일 동안 %1$d번 실행됨</string>
-    <string name="no_insights_yet">지난 90일 동안의 미리 알림 활동이 아직 없습니다</string>
+    <string name="no_insights_yet">지난 90일 동안의 활동이 아직 없습니다</string>
 
     <string name="upcoming_events">예정된 이벤트</string>
 
@@ -1156,6 +1156,49 @@
 
     <string name="merge">병합</string>
     <string name="notes_merge_selected_confirm">%1$d개의 메모를 하나로 병합하시겠습니까? 원본 메모는 삭제됩니다.</string>
+
+    <string name="routines">루틴</string>
+    <string name="new_routine">새 루틴</string>
+    <string name="no_routines">아직 루틴이 없습니다</string>
+    <string name="routine_description_hint">설명(선택 사항)</string>
+    <string name="routine_steps">단계</string>
+    <string name="add_step">단계 추가</string>
+    <string name="step_title_hint">단계 제목</string>
+    <string name="duration_none">없음</string>
+    <string name="repeat_daily">매일 반복</string>
+    <string name="start_routine">루틴 시작</string>
+    <string name="reset_steps">단계 초기화</string>
+    <string name="reset_steps_confirmation">모든 단계를 미완료로 재설정하시겠습니까?</string>
+    <string name="routine_step_count">%1$d단계</string>
+    <string name="delete_routine_confirmation">이 루틴을 영구 삭제하시겠습니까?</string>
+    <string name="move_step_up">단계 위로 이동</string>
+    <string name="move_step_down">단계 아래로 이동</string>
+    <string name="sort">정렬</string>
+    <string name="sort_by_date">생성일순</string>
+    <string name="sort_by_name">이름순</string>
+    <string name="routine_on_demand">필요할 때</string>
+    <string name="routine_steps_required">최소 한 단계를 추가하세요</string>
+    <string name="repeat_none">반복 안 함</string>
+    <string name="repeat_weekly">매주 반복</string>
+    <string name="repeat_monthly">매월 반복</string>
+    <string name="repeat_weekly_days">매주: %1$s</string>
+    <string name="repeat_monthly_day">매월 %1$d일</string>
+    <string name="repeat_weekdays_required">최소 하루를 선택하세요</string>
+    <string name="step_of_count">%2$d단계 중 %1$d단계</string>
+    <string name="pause">일시정지</string>
+    <string name="resume">재개</string>
+    <string name="skip_step">건너뛰기</string>
+    <string name="complete_step">단계 완료</string>
+    <string name="previous_step">이전 단계</string>
+    <string name="add_one_minute">+1분</string>
+    <string name="routine_finished_title">루틴 완료</string>
+    <string name="routine_execution_total_time">총 시간: %1$s</string>
+    <string name="routine_execution_steps_completed">%2$d단계 중 %1$d단계 완료</string>
+    <string name="routine_insights_section">루틴 연속 기록</string>
+    <string name="routine_focus_time_total">총 집중 시간: %1$s(최근 90일)</string>
+    <string name="routine_insight_most_skipped">가장 많이 건너뛴 단계: %1$s(완료율 %2$d%%)</string>
+    <string name="routine_icon">루틴 아이콘</string>
+    <string name="no_icon">아이콘 없음</string>
 
     <string name="in_app_notification_banner">앱 내 알림 배너</string>
     <string name="in_app_notification_banner_enabled">알림이나 생일 알림이 울릴 때 앱 내에 배너를 표시합니다</string>

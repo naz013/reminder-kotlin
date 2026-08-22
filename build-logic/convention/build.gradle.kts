@@ -8,7 +8,6 @@ dependencies {
   compileOnly(libs.android.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
   compileOnly(libs.detekt.gradlePlugin)
-  compileOnly(libs.kover.gradlePlugin)
 }
 
 kotlin {
@@ -40,10 +39,6 @@ gradlePlugin {
     register("detekt") {
       id = "reminder.detekt"
       implementationClass = "com.github.naz013.buildlogic.ReminderDetektConventionPlugin"
-    }
-    register("kover") {
-      id = "reminder.kover"
-      implementationClass = "com.github.naz013.buildlogic.ReminderKoverConventionPlugin"
     }
   }
 }
