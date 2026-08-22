@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.compose.LottieAnimation
@@ -42,6 +43,7 @@ import com.github.naz013.common.speech.SpeechEngine
 import com.github.naz013.common.speech.SpeechEngineCallback
 import com.github.naz013.common.speech.SpeechError
 import com.github.naz013.common.speech.SpeechText
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.GradientHighlightTextField
 import com.github.naz013.ui.common.compose.foundation.component.TextHighlight
 
@@ -143,46 +145,54 @@ internal fun TextInputValueEditor(
       )
       if (supportsSpeech) {
         Spacer(modifier = Modifier.width(8.dp))
-        IconButton(
-          modifier = Modifier.size(MIC_BUTTON_SIZE),
-          onClick = {
-            when {
-              speechEngine.isStarted() -> speechEngine.stopListening()
-
-              ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                PackageManager.PERMISSION_GRANTED
-              -> speechEngine.startListening(callback)
-
-              else -> permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-            }
+        TooltipIconButton(
+          contentDescription = if (speechState == SpeechUiState.IDLE) {
+            stringResource(R.string.cd_start_voice_input)
+          } else {
+            stringResource(R.string.cd_stop_voice_input)
           },
         ) {
-          when (speechState) {
-            SpeechUiState.SPEAKING -> {
-              val composition by rememberLottieComposition(
-                LottieCompositionSpec.RawRes(R.raw.mic_speaking_waves),
-              )
-              LottieAnimation(
-                composition = composition,
-                iterations = LottieConstants.IterateForever,
-                modifier = Modifier.size(MIC_BUTTON_SIZE),
-              )
-            }
+          IconButton(
+            modifier = Modifier.size(MIC_BUTTON_SIZE),
+            onClick = {
+              when {
+                speechEngine.isStarted() -> speechEngine.stopListening()
 
-            SpeechUiState.STARTED, SpeechUiState.STOPPED -> {
-              Icon(
-                painter = painterResource(R.drawable.ic_fluent_recording_stop),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-              )
-            }
+                ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
+                  PackageManager.PERMISSION_GRANTED
+                -> speechEngine.startListening(callback)
 
-            SpeechUiState.IDLE -> {
-              Icon(
-                painter = painterResource(R.drawable.ic_builder_mic_on),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
-              )
+                else -> permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+              }
+            },
+          ) {
+            when (speechState) {
+              SpeechUiState.SPEAKING -> {
+                val composition by rememberLottieComposition(
+                  LottieCompositionSpec.RawRes(R.raw.mic_speaking_waves),
+                )
+                LottieAnimation(
+                  composition = composition,
+                  iterations = LottieConstants.IterateForever,
+                  modifier = Modifier.size(MIC_BUTTON_SIZE),
+                )
+              }
+
+              SpeechUiState.STARTED, SpeechUiState.STOPPED -> {
+                Icon(
+                  painter = painterResource(R.drawable.ic_fluent_recording_stop),
+                  contentDescription = null,
+                  tint = MaterialTheme.colorScheme.error,
+                )
+              }
+
+              SpeechUiState.IDLE -> {
+                Icon(
+                  painter = painterResource(R.drawable.ic_builder_mic_on),
+                  contentDescription = null,
+                  tint = MaterialTheme.colorScheme.onSurface,
+                )
+              }
             }
           }
         }

@@ -66,6 +66,7 @@ import com.github.naz013.feature.reminder.build.valuedialog.controller.shopitems
 import com.github.naz013.feature.reminder.build.valuedialog.controller.shopitems.SubTasksViewModel
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.livedata.ObserveNonNull
 
 private val LIST_MAX_HEIGHT = 400.dp
@@ -242,38 +243,46 @@ private fun ShopItemRow(
     } else {
       Box(modifier = Modifier.size(20.dp))
     }
-    IconButton(
-      onClick = {
-        if (hapticFeedbackEnabled) {
-          hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
-        }
-        onCheckClick()
+    TooltipIconButton(
+      contentDescription = if (item.isChecked) {
+        stringResource(R.string.cd_mark_as_not_done)
+      } else {
+        stringResource(R.string.cd_mark_as_done)
       },
-      modifier = Modifier
-        .size(40.dp)
-        .testTag(shopItemCheckTestTag(item.uuId)),
     ) {
-      AnimatedVisibility(
-        visible = item.isChecked,
-        enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-        exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+      IconButton(
+        onClick = {
+          if (hapticFeedbackEnabled) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
+          }
+          onCheckClick()
+        },
+        modifier = Modifier
+          .size(40.dp)
+          .testTag(shopItemCheckTestTag(item.uuId)),
       ) {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_checkbox_checked),
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurface,
-        )
-      }
-      AnimatedVisibility(
-        visible = !item.isChecked,
-        enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-        exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
-      ) {
-        Icon(
-          painter = painterResource(R.drawable.ic_fluent_checkbox_unchecked),
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurface,
-        )
+        AnimatedVisibility(
+          visible = item.isChecked,
+          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
+          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+        ) {
+          Icon(
+            painter = painterResource(R.drawable.ic_fluent_checkbox_checked),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface,
+          )
+        }
+        AnimatedVisibility(
+          visible = !item.isChecked,
+          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
+          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+        ) {
+          Icon(
+            painter = painterResource(R.drawable.ic_fluent_checkbox_unchecked),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface,
+          )
+        }
       }
     }
     Box(modifier = Modifier.weight(1f)) {
@@ -323,20 +332,22 @@ private fun ShopItemRow(
       )
     }
     if (isFocused && text.isNotEmpty()) {
-      IconButton(
-        onClick = onRemoveClick,
-        modifier = Modifier
-          .size(40.dp)
-          .testTag(shopItemRemoveTestTag(item.uuId)),
-      ) {
-        Icon(
+      TooltipIconButton(contentDescription = stringResource(R.string.cd_remove)) {
+        IconButton(
+          onClick = onRemoveClick,
           modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp),
-          painter = AppIcons.Fluent.Dismiss,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurface,
-        )
+            .size(40.dp)
+            .testTag(shopItemRemoveTestTag(item.uuId)),
+        ) {
+          Icon(
+            modifier = Modifier
+              .fillMaxSize()
+              .padding(12.dp),
+            painter = AppIcons.Fluent.Dismiss,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface,
+          )
+        }
       }
     }
   }

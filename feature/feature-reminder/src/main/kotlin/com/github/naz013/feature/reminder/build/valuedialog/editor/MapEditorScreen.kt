@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,12 +30,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Place
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import kotlinx.coroutines.launch
 
 private const val SHEET_HEIGHT_FRACTION = 0.94f
@@ -137,13 +137,11 @@ internal fun MapEditorScreen(
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f),
           )
-          IconButton(onClick = ::dismiss) {
-            Icon(
-              painter = painterResource(R.drawable.ic_builder_chevron_down),
-              contentDescription = null,
-              tint = MaterialTheme.colorScheme.onSurface,
-            )
-          }
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_builder_chevron_down),
+            contentDescription = stringResource(R.string.cd_collapse),
+            onClick = ::dismiss,
+          )
         }
       }
 

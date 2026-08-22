@@ -5,8 +5,6 @@ import android.webkit.WebView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,6 +21,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
 /**
  * "How to Create a Reminder" help guide: a comprehensive HTML-based guide covering the reminder
@@ -42,12 +41,11 @@ internal fun ReminderHelpScreen(onBackClick: () -> Unit) {
           Text(text = stringResource(R.string.how_to_create_a_reminder))
         },
         navigationIcon = {
-          IconButton(onClick = onBackClick) {
-            Icon(
-              painter = AppIcons.Builder.ArrowLeft,
-              contentDescription = stringResource(R.string.cd_back),
-            )
-          }
+          MenuIconButton(
+            icon = AppIcons.Builder.ArrowLeft,
+            contentDescription = stringResource(R.string.cd_back),
+            onClick = onBackClick,
+          )
         },
         colors = TopAppbarColor,
         scrollBehavior =

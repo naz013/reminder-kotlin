@@ -32,6 +32,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.PhoneNumberVisualTransformation
 
 /**
@@ -111,19 +112,23 @@ internal fun PhoneInputValueEditor(
       visualTransformation = PhoneNumberVisualTransformation,
     )
     Spacer(modifier = Modifier.width(8.dp))
-    IconButton(
-      onClick = {
-        onPickContact { phone ->
-          text = phone
-          builderItem.modifier.update(phone)
-          onValueChange(builderItem)
-        }
-      },
+    TooltipIconButton(
+      contentDescription = stringResource(R.string.acc_select_number_from_contacts),
     ) {
-      Icon(
-        painter = painterResource(R.drawable.ic_fluent_contacts),
-        contentDescription = stringResource(R.string.acc_select_number_from_contacts),
-      )
+      IconButton(
+        onClick = {
+          onPickContact { phone ->
+            text = phone
+            builderItem.modifier.update(phone)
+            onValueChange(builderItem)
+          }
+        },
+      ) {
+        Icon(
+          painter = painterResource(R.drawable.ic_fluent_contacts),
+          contentDescription = stringResource(R.string.acc_select_number_from_contacts),
+        )
+      }
     }
   }
 }

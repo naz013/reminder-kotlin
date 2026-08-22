@@ -24,7 +24,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -62,7 +61,9 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.BuilderItemStatus
 import com.github.naz013.ui.common.compose.foundation.component.BuilderListItemCard
@@ -117,9 +118,11 @@ internal fun BuildReminderScreen(
       TopAppBar(
         title = {},
         navigationIcon = {
-          IconButton(onClick = onBackClick) {
-            Icon(painter = AppIcons.Builder.ArrowLeft, contentDescription = null)
-          }
+          MenuIconButton(
+            icon = AppIcons.Builder.ArrowLeft,
+            contentDescription = stringResource(R.string.cd_back),
+            onClick = onBackClick,
+          )
         },
         actions = {
           MenuTextButton(
@@ -128,17 +131,18 @@ internal fun BuildReminderScreen(
             onClick = onSaveClick,
           )
           if (canRemove) {
-            IconButton(onClick = onDeleteClick) {
-              Icon(
-                painter = AppIcons.Fluent.Delete,
-                contentDescription = stringResource(R.string.delete),
-              )
-            }
+            MenuIconButton(
+              icon = AppIcons.Fluent.Delete,
+              contentDescription = stringResource(R.string.delete),
+              onClick = onDeleteClick,
+            )
           }
           var overflowExpanded by remember { mutableStateOf(false) }
-          IconButton(onClick = { overflowExpanded = true }) {
-            Icon(painter = AppIcons.Fluent.MoreVertical, contentDescription = null)
-          }
+          MenuIconButton(
+            icon = AppIcons.Fluent.MoreVertical,
+            contentDescription = stringResource(R.string.more_options),
+            onClick = { overflowExpanded = true },
+          )
           AppDropdownMenu(
             expanded = overflowExpanded,
             onDismissRequest = { overflowExpanded = false },
@@ -163,11 +167,13 @@ internal fun BuildReminderScreen(
       )
     },
     floatingActionButton = {
-      FloatingActionButton(onClick = onAddClick) {
-        Icon(
-          painter = painterResource(R.drawable.ic_builder_add_circle),
-          contentDescription = stringResource(R.string.acc_add),
-        )
+      TooltipIconButton(contentDescription = stringResource(R.string.acc_add)) {
+        FloatingActionButton(onClick = onAddClick) {
+          Icon(
+            painter = painterResource(R.drawable.ic_builder_add_circle),
+            contentDescription = stringResource(R.string.acc_add),
+          )
+        }
       }
     },
   ) { padding ->
