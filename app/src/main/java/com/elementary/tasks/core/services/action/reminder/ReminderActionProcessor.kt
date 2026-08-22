@@ -5,6 +5,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.services.action.inapp.InAppAlert
 import com.elementary.tasks.core.services.action.inapp.InAppAlertAction
 import com.elementary.tasks.core.services.action.inapp.InAppAlertBus
+import com.elementary.tasks.core.services.action.inapp.InAppAlertDomain
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
@@ -125,8 +126,9 @@ class ReminderActionProcessor(
     }
     return InAppAlert(
       alertId = reminder.uuId,
+      domain = InAppAlertDomain.REMINDER,
       title = reminder.summary,
-      text = textProvider.getAppName(),
+      text = null,
       iconRes = DrawableCatalog.Fluent.Alert,
       actions = actions,
     )

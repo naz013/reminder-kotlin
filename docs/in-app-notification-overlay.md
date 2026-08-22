@@ -28,9 +28,13 @@ When a reminder or birthday alarm fires **and the app process is already in the 
 Activity of this app resumed), show a Material 3 banner docked just under the top app bar, in addition
 to (not instead of) the system notification:
 
-- Same content as the system notification: icon, title, text.
+- Same icon and title as the system notification. The system notification's secondary text line
+  (reminder: the app name; birthday: formatted age) only makes sense in the notification shade —
+  reminders show no secondary text in the banner; birthdays keep the age line since that's actually
+  informative in-app too.
 - Same actions: "OK" (reminders + birthdays), "Snooze" (reminders without places), "Call"/"SMS"
-  (birthdays with a phone number).
+  (birthdays with a phone number) — plus a banner-only "Details" action (see §5) that opens the
+  reminder/birthday's own preview screen, which the system notification has no equivalent for.
 - Tapping an action performs the exact same effect as tapping it in the notification shade,
   including cancelling the already-posted system notification (no orphaned notification left behind).
 - Respects quiet hours / Do Not Disturb exactly like the system notification — for free, if wired at
@@ -149,11 +153,16 @@ them today. Because `complete`/`cancel` are wrapped by the existing `CancelNotif
 tapping "OK" in the banner also cancels the already-posted system notification — no special-casing
 needed, no orphaned notification.
 
-Tapping the banner body itself (not an action button) is an open design choice: mirror the system
-notification's tap target (launch `ReminderActionActivity`/`BirthdayActionActivity`) for consistency,
-or — since the app is already open — navigate within the existing `NavDisplay` to the reminder/birthday
-preview screen via `NavigatorImpl` for a smoother in-app feel. Recommend the latter; flag for
-product sign-off since it's a UX behavior difference from the notification shade.
+A "Details" action opens the reminder/birthday's own preview screen in the app's existing `NavDisplay`
+rather than launching `ReminderActionActivity`/`BirthdayActionActivity` (the notification's tap
+target) — since the app is already open when the banner shows, navigating in-graph is the smoother
+choice. This goes through `AppNavBridge` (`app/.../navigation/nav3/AppNavBridge.kt`, a Koin singleton
+already used for "reach a destination without holding the backstack directly", attached to
+`AppNavGraph`'s live backstack via a `DisposableEffect`), not the widget-oriented
+`Navigator`/`NavigationDispatcher` path — that one resolves to an `Intent` targeting `BottomNavActivity`,
+which is a no-op when it's already resumed (no `onNewIntent` override re-reads the intent into the
+backstack), and since this banner only ever shows in the foreground, it's already resumed every time.
+Built in `InAppAlertViewModel`, not the processors, since navigation access lives at the UI layer.
 
 ### 6. Queueing — latest-wins, not a FIFO queue
 

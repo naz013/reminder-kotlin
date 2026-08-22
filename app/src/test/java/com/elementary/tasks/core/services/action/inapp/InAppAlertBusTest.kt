@@ -7,7 +7,15 @@ import org.junit.Test
 class InAppAlertBusTest {
   private val bus = InAppAlertBus()
 
-  private fun alert(id: String) = InAppAlert(alertId = id, title = "title-$id", text = null, iconRes = 0, actions = emptyList())
+  private fun alert(id: String) =
+    InAppAlert(
+      alertId = id,
+      domain = InAppAlertDomain.REMINDER,
+      title = "title-$id",
+      text = null,
+      iconRes = 0,
+      actions = emptyList(),
+    )
 
   @Test
   fun `show publishes the alert as current`() {

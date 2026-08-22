@@ -5,6 +5,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.services.action.inapp.InAppAlert
 import com.elementary.tasks.core.services.action.inapp.InAppAlertAction
 import com.elementary.tasks.core.services.action.inapp.InAppAlertBus
+import com.elementary.tasks.core.services.action.inapp.InAppAlertDomain
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.params.Prefs
@@ -152,6 +153,7 @@ class BirthdayActionProcessor(
     }
     return InAppAlert(
       alertId = birthday.uuId,
+      domain = InAppAlertDomain.BIRTHDAY,
       title = birthday.name,
       text = if (!birthday.ignoreYear) modelDateTimeFormatter.getAgeFormatted(birthday.date) else null,
       iconRes = DrawableCatalog.Fluent.FoodCake,
