@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.home
 
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.feature.home.HomePreferences
 
 /**
@@ -18,4 +19,10 @@ class AppHomePreferences(
     set(value) { prefs.lastVersionCode = value }
   override val birthdayColor: Int
     get() = prefs.birthdayColor
+  override var headerNavigationOrder: List<HeaderNavigationSection>
+    get() = prefs.headerNavigationOrder
+    set(value) { prefs.headerNavigationOrder = value }
+  override var disabledHeaderNavigationSections: Set<HeaderNavigationSection>
+    get() = prefs.disabledHeaderNavigationSections
+    set(value) { prefs.disabledHeaderNavigationSections = value }
 }

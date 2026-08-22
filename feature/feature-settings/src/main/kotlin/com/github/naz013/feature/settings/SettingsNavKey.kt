@@ -11,6 +11,9 @@ sealed interface SettingsNavKey : NavKey {
   data object General : SettingsNavKey
 
   @Serializable
+  data object HeaderItems : SettingsNavKey
+
+  @Serializable
   data object Backup : SettingsNavKey
 
   @Serializable

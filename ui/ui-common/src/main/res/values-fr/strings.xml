@@ -1203,4 +1203,8 @@
     <string name="in_app_notification_banner">Bannière de notification dans l\'application</string>
     <string name="in_app_notification_banner_enabled">Afficher une bannière dans l\'application lorsqu\'une notification de rappel ou d\'anniversaire se déclenche</string>
     <string name="in_app_notification_banner_disabled">Afficher uniquement la notification système</string>
+
+    <string name="header_items">Éléments d\'en-tête</string>
+    <string name="header_items_subtitle">Choisissez les éléments affichés sur l\'écran d\'accueil et leur ordre</string>
+    <string name="header_item_always_shown">Toujours affiché</string>
 </resources>

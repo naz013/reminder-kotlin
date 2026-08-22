@@ -17,6 +17,7 @@ import com.github.naz013.feature.settings.export.work.ObservableBackupTask
 import com.github.naz013.feature.settings.export.work.ObservableEraseDataTask
 import com.github.naz013.feature.settings.export.work.ObservableSyncTask
 import com.github.naz013.feature.settings.general.GeneralSettingsViewModel
+import com.github.naz013.feature.settings.headeritems.HeaderItemsSettingsViewModel
 import com.github.naz013.feature.settings.location.LocationSettingsViewModel
 import com.github.naz013.feature.settings.location.MapStyleViewModel
 import com.github.naz013.feature.settings.other.OtherSettingsViewModel
@@ -38,6 +39,7 @@ import org.koin.dsl.module
 
 val featureSettingsModule = module {
   viewModelOf(::GeneralSettingsViewModel)
+  viewModelOf(::HeaderItemsSettingsViewModel)
   viewModelOf(::ProVersionViewModel)
   viewModelOf(::TroubleshootingViewModel)
   viewModelOf(::OtherSettingsViewModel)

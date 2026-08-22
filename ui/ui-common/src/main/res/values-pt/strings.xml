@@ -1203,4 +1203,8 @@
     <string name="in_app_notification_banner">Banner de notificação no aplicativo</string>
     <string name="in_app_notification_banner_enabled">Mostrar um banner no aplicativo quando uma notificação de lembrete ou aniversário for disparada</string>
     <string name="in_app_notification_banner_disabled">Mostrar apenas a notificação do sistema</string>
+
+    <string name="header_items">Itens do cabeçalho</string>
+    <string name="header_items_subtitle">Escolha quais itens aparecem na tela inicial e em que ordem</string>
+    <string name="header_item_always_shown">Sempre exibido</string>
 </resources>

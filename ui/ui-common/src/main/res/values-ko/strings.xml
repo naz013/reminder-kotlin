@@ -1203,4 +1203,8 @@
     <string name="in_app_notification_banner">앱 내 알림 배너</string>
     <string name="in_app_notification_banner_enabled">알림이나 생일 알림이 울릴 때 앱 내에 배너를 표시합니다</string>
     <string name="in_app_notification_banner_disabled">시스템 알림만 표시합니다</string>
+
+    <string name="header_items">헤더 항목</string>
+    <string name="header_items_subtitle">홈 화면에 표시할 항목과 순서를 선택하세요</string>
+    <string name="header_item_always_shown">항상 표시됨</string>
 </resources>

@@ -1201,4 +1201,8 @@
     <string name="in_app_notification_banner">แบนเนอร์การแจ้งเตือนในแอป</string>
     <string name="in_app_notification_banner_enabled">แสดงแบนเนอร์ในแอปเมื่อการแจ้งเตือนการเตือนความจำหรือวันเกิดทำงาน</string>
     <string name="in_app_notification_banner_disabled">แสดงเฉพาะการแจ้งเตือนของระบบเท่านั้น</string>
+
+    <string name="header_items">รายการส่วนหัว</string>
+    <string name="header_items_subtitle">เลือกรายการที่จะแสดงบนหน้าจอหลักและลำดับการแสดงผล</string>
+    <string name="header_item_always_shown">แสดงตลอดเวลา</string>
 </resources>

@@ -1201,4 +1201,8 @@
     <string name="in_app_notification_banner">Biểu ngữ thông báo trong ứng dụng</string>
     <string name="in_app_notification_banner_enabled">Hiển thị biểu ngữ trong ứng dụng khi có thông báo lời nhắc hoặc sinh nhật</string>
     <string name="in_app_notification_banner_disabled">Chỉ hiển thị thông báo hệ thống</string>
+
+    <string name="header_items">Mục tiêu đề</string>
+    <string name="header_items_subtitle">Chọn các mục xuất hiện trên màn hình Trang chủ và thứ tự của chúng</string>
+    <string name="header_item_always_shown">Luôn hiển thị</string>
 </resources>

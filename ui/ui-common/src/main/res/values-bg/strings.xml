@@ -1204,4 +1204,8 @@
     <string name="in_app_notification_banner">Банер за известия в приложението</string>
     <string name="in_app_notification_banner_enabled">Показвай банер в приложението, когато сработи известие за напомняне или рожден ден</string>
     <string name="in_app_notification_banner_disabled">Показвай само системното известие</string>
+
+    <string name="header_items">Елементи на заглавието</string>
+    <string name="header_items_subtitle">Изберете кои елементи да се показват на началния екран и в какъв ред</string>
+    <string name="header_item_always_shown">Винаги видимо</string>
 </resources>

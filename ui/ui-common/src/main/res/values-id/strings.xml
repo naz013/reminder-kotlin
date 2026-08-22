@@ -1201,4 +1201,8 @@
     <string name="in_app_notification_banner">Banner notifikasi dalam aplikasi</string>
     <string name="in_app_notification_banner_enabled">Tampilkan banner di aplikasi saat notifikasi pengingat atau ulang tahun muncul</string>
     <string name="in_app_notification_banner_disabled">Hanya tampilkan notifikasi sistem</string>
+
+    <string name="header_items">Item header</string>
+    <string name="header_items_subtitle">Pilih item mana yang muncul di layar Beranda dan urutannya</string>
+    <string name="header_item_always_shown">Selalu ditampilkan</string>
 </resources>

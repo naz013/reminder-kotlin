@@ -1203,4 +1203,8 @@
     <string name="in_app_notification_banner">Baner powiadomień w aplikacji</string>
     <string name="in_app_notification_banner_enabled">Pokaż baner w aplikacji, gdy pojawi się powiadomienie o przypomnieniu lub urodzinach</string>
     <string name="in_app_notification_banner_disabled">Pokazuj tylko powiadomienie systemowe</string>
+
+    <string name="header_items">Elementy nagłówka</string>
+    <string name="header_items_subtitle">Wybierz, które elementy pojawiają się na ekranie głównym i w jakiej kolejności</string>
+    <string name="header_item_always_shown">Zawsze widoczne</string>
 </resources>

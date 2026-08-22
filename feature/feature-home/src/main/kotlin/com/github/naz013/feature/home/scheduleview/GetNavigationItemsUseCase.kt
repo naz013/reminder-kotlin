@@ -2,8 +2,10 @@ package com.github.naz013.feature.home.scheduleview
 
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.home.HeaderNavigationItem
+import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.logic.routine.RoutineConfig
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.repository.GoogleTaskRepository
@@ -29,22 +31,36 @@ class GetNavigationItemsUseCase(
   private val routineRepository: RoutineRepository,
   private val dateTimeManager: DateTimeManager,
   private val routineConfig: RoutineConfig,
+  private val homePreferences: HomePreferences,
 ) {
   suspend operator fun invoke(
     scope: CoroutineScope,
     day: LocalDateTime,
-  ): List<HeaderNavigationItem> = buildList {
-    add(getCalendarItem(scope = scope))
-    add(getAgendaItem(scope = scope))
-    add(getNoteItem(scope = scope))
-    add(getGoogleTasksItem(scope = scope))
-    add(getGroupItem(scope = scope))
-    if (routineConfig.isEnabled) {
-      add(getRoutineItem(scope = scope))
-    }
-    if (WorkflowConfig.isEnabled) {
-      add(getWorkflowItem(scope = scope))
-    }
+  ): List<HeaderNavigationItem> {
+    val disabled = homePreferences.disabledHeaderNavigationSections
+    val sections =
+      HeaderNavigationSection.pinned +
+        homePreferences.headerNavigationOrder.filter { it !in disabled && isAvailable(it) }
+    return sections.map { section -> buildItem(section, scope) }
+  }
+
+  private fun isAvailable(section: HeaderNavigationSection): Boolean = when (section) {
+    HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
+    HeaderNavigationSection.WORKFLOW -> WorkflowConfig.isEnabled
+    else -> true
+  }
+
+  private suspend fun buildItem(
+    section: HeaderNavigationSection,
+    scope: CoroutineScope,
+  ): HeaderNavigationItem = when (section) {
+    HeaderNavigationSection.CALENDAR -> getCalendarItem(scope = scope)
+    HeaderNavigationSection.AGENDA -> getAgendaItem(scope = scope)
+    HeaderNavigationSection.NOTES -> getNoteItem(scope = scope)
+    HeaderNavigationSection.GOOGLE_TASKS -> getGoogleTasksItem(scope = scope)
+    HeaderNavigationSection.GROUPS -> getGroupItem(scope = scope)
+    HeaderNavigationSection.ROUTINES -> getRoutineItem(scope = scope)
+    HeaderNavigationSection.WORKFLOW -> getWorkflowItem(scope = scope)
   }
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {

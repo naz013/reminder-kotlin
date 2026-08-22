@@ -1204,4 +1204,8 @@
     <string name="in_app_notification_banner">应用内通知横幅</string>
     <string name="in_app_notification_banner_enabled">提醒或生日通知触发时在应用内显示横幅</string>
     <string name="in_app_notification_banner_disabled">仅显示系统通知</string>
+
+    <string name="header_items">标题项目</string>
+    <string name="header_items_subtitle">选择主屏幕上显示哪些项目及其顺序</string>
+    <string name="header_item_always_shown">始终显示</string>
 </resources>

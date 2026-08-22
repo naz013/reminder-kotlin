@@ -41,6 +41,8 @@ import com.github.naz013.feature.settings.general.GeneralSettingsEvent
 import com.github.naz013.feature.settings.general.GeneralSettingsScreen
 import com.github.naz013.feature.settings.general.GeneralSettingsViewModel
 import com.github.naz013.feature.settings.general.rememberAppRestartController
+import com.github.naz013.feature.settings.headeritems.HeaderItemsSettingsScreen
+import com.github.naz013.feature.settings.headeritems.HeaderItemsSettingsViewModel
 import com.github.naz013.feature.settings.location.LocationNavKey
 import com.github.naz013.feature.settings.other.OtherNavKey
 import com.github.naz013.feature.settings.proversion.ProVersionScreen
@@ -77,6 +79,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
 ) {
   entry<SettingsNavKey.Hub> { HubEntry(backStack) }
   entry<SettingsNavKey.General> { GeneralEntry(backStack, restartActivityClass) }
+  entry<SettingsNavKey.HeaderItems> { HeaderItemsEntry(backStack) }
   entry<SettingsNavKey.Backup> { BackupEntry(backStack, onOpenLocalBackupExport, onOpenLocalBackupImport) }
   entry<SettingsNavKey.Reminders> { key -> remindersEntry(key, backStack) }
   entry<SettingsNavKey.Calendar> { key -> CalendarEntry(key, backStack) }
@@ -198,11 +201,30 @@ private fun GeneralEntry(
       onLanguageClick = viewModel::onLanguageClick,
       onThemeClick = viewModel::onThemeClick,
       onTimeFormatClick = viewModel::onTimeFormatClick,
+      onHeaderItemsClick = { backStack.add(SettingsNavKey.HeaderItems) },
       onMetricToggle = { viewModel.onMetricToggle() },
       onAnalyticsToggle = { viewModel.onAnalyticsToggle() },
       onDialogOptionSelected = viewModel::onDialogOptionSelected,
       onDialogDismiss = viewModel::onDialogDismiss,
       onHapticToggle = { viewModel.onHapticToggle() }
+    )
+  }
+}
+
+@Composable
+private fun HeaderItemsEntry(backStack: MutableList<NavKey>) {
+  val viewModel = koinViewModel<HeaderItemsSettingsViewModel>()
+  val state by viewModel.state.collectAsState()
+
+  SettingsScaffold(
+    title = stringResource(R.string.header_items),
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+  ) { padding ->
+    HeaderItemsSettingsScreen(
+      modifier = Modifier.padding(padding),
+      state = state,
+      onToggle = viewModel::onToggle,
+      onReorder = viewModel::onReorder,
     )
   }
 }

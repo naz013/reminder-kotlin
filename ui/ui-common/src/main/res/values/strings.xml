@@ -1206,4 +1206,8 @@
     <string name="in_app_notification_banner">In-app notification banner</string>
     <string name="in_app_notification_banner_enabled">Show a banner in the app when a reminder or birthday notification fires</string>
     <string name="in_app_notification_banner_disabled">Only show the system notification</string>
+
+    <string name="header_items">Header items</string>
+    <string name="header_items_subtitle">Choose which items appear on the Home screen and in what order</string>
+    <string name="header_item_always_shown">Always shown</string>
 </resources>

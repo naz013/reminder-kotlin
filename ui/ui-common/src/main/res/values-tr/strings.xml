@@ -1204,4 +1204,8 @@
     <string name="in_app_notification_banner">Uygulama içi bildirim afişi</string>
     <string name="in_app_notification_banner_enabled">Bir hatırlatıcı veya doğum günü bildirimi tetiklendiğinde uygulama içinde bir afiş göster</string>
     <string name="in_app_notification_banner_disabled">Yalnızca sistem bildirimini göster</string>
+
+    <string name="header_items">Üst bilgi öğeleri</string>
+    <string name="header_items_subtitle">Ana ekranda hangi öğelerin ve hangi sırayla görüneceğini seçin</string>
+    <string name="header_item_always_shown">Her zaman gösterilir</string>
 </resources>

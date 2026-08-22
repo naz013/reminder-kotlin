@@ -8,6 +8,7 @@ import com.elementary.tasks.module.featuresettings.CalendarSettingsPreferencesIm
 import com.elementary.tasks.module.featuresettings.CloudBackupSettingsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.DeveloperSettingsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.GeneralSettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.HeaderItemsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.LocationSettingsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.NoteSettingsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.SecuritySettingsPreferencesImpl
@@ -49,6 +50,7 @@ import com.github.naz013.feature.settings.calendar.CalendarSettingsPreferences
 import com.github.naz013.feature.settings.debug.DeveloperSettingsPreferences
 import com.github.naz013.feature.settings.export.CloudBackupSettingsPreferences
 import com.github.naz013.feature.settings.general.GeneralSettingsPreferences
+import com.github.naz013.feature.settings.headeritems.HeaderItemsPreferences
 import com.github.naz013.feature.settings.location.LocationSettingsPreferences
 import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
 import com.github.naz013.feature.settings.troubleshooting.TroubleshootingCacheUtil
@@ -102,6 +104,7 @@ val libModule = module {
 
   // feature settings
   factory { GeneralSettingsPreferencesImpl(get()) as GeneralSettingsPreferences }
+  factory { HeaderItemsPreferencesImpl(get()) as HeaderItemsPreferences }
   factory { TroubleshootingCacheUtilImpl(get()) as TroubleshootingCacheUtil }
   factory { SecuritySettingsPreferencesImpl(get()) as SecuritySettingsPreferences }
   factory { LocationSettingsPreferencesImpl(get()) as LocationSettingsPreferences }

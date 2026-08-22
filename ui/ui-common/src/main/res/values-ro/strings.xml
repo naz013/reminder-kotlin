@@ -1203,4 +1203,8 @@
     <string name="in_app_notification_banner">Banner de notificare în aplicație</string>
     <string name="in_app_notification_banner_enabled">Afișează un banner în aplicație când se declanșează o notificare de memento sau zi de naștere</string>
     <string name="in_app_notification_banner_disabled">Afișează doar notificarea de sistem</string>
+
+    <string name="header_items">Elemente antet</string>
+    <string name="header_items_subtitle">Alege ce elemente apar pe ecranul Acasă și în ce ordine</string>
+    <string name="header_item_always_shown">Afișat mereu</string>
 </resources>
