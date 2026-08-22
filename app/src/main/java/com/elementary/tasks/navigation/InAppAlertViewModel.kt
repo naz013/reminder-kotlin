@@ -34,7 +34,9 @@ class InAppAlertViewModel(
       title = title,
       text = text,
       iconRes = iconRes,
-      actions = listOf(detailsAction()) + actions.map { action ->
+      // actions.first() is always the "OK" action (complete/cancel) - both ReminderActionProcessor
+      // and BirthdayActionProcessor put it first when building InAppAlert.
+      actions = listOf(detailsAction(actions.firstOrNull()?.onClick)) + actions.map { action ->
         InAppAlertBannerAction(
           iconRes = action.iconRes,
           label = action.label,
@@ -46,17 +48,20 @@ class InAppAlertViewModel(
       },
     )
 
-  /** Opens the reminder/birthday's own preview screen in the app's nav graph - the processors that
-   *  build [InAppAlert] have no navigation access, so this is built here instead of baked in there
-   *  like the other actions. Goes through [AppNavBridge] (a Koin singleton) rather than the widget-
-   *  oriented [com.github.naz013.navigation.Navigator]/[NavigationDispatcher] path, since that one
-   *  resolves to an Intent targeting [BottomNavActivity] and is a no-op while it's already resumed -
-   *  which, since this banner only ever shows in the foreground, is always the case here. */
-  private fun InAppAlert.detailsAction(): InAppAlertBannerAction =
+  /** Does whatever the "OK" action does (dismisses the reminder/birthday, same as [okOnClick]),
+   *  then also opens the reminder/birthday's own preview screen in the app's nav graph - the
+   *  processors that build [InAppAlert] have no navigation access, so this is built here instead of
+   *  baked in there like the other actions. Goes through [AppNavBridge] (a Koin singleton) rather
+   *  than the widget-oriented [com.github.naz013.navigation.Navigator]/[NavigationDispatcher] path,
+   *  since that one resolves to an Intent targeting [BottomNavActivity] and is a no-op while it's
+   *  already resumed - which, since this banner only ever shows in the foreground, is always the
+   *  case here. */
+  private fun InAppAlert.detailsAction(okOnClick: (() -> Unit)?): InAppAlertBannerAction =
     InAppAlertBannerAction(
       iconRes = DrawableCatalog.Fluent.Open,
       label = textProvider.getText(R.string.details),
       onClick = {
+        okOnClick?.invoke()
         when (domain) {
           InAppAlertDomain.REMINDER -> appNavBridge.navigate(ReminderPreviewNavKey.Preview(alertId))
           InAppAlertDomain.BIRTHDAY -> appNavBridge.navigate(BirthdaysNavKey.Preview(alertId))
