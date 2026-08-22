@@ -65,9 +65,11 @@ internal fun HeaderItemsSettingsScreen(
         row = row,
         onToggle = { enabled -> onToggle(row.section, enabled) },
         rowModifier =
-          Modifier.graphicsLayer {
-            translationY = if (draggedSectionKey == sectionKey) dragOffset else 0f
-          },
+          Modifier
+            .animateItem()
+            .graphicsLayer {
+              translationY = if (draggedSectionKey == sectionKey) dragOffset else 0f
+            },
         dragHandleModifier =
           Modifier.pointerInput(sectionKey) {
             detectDragGesturesAfterLongPress(

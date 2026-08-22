@@ -222,6 +222,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
           onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
           onOpenSettings = { backStack.add(SettingsNavKey.Hub) },
+          onOpenHeaderItemsSettings = { backStack.add(SettingsNavKey.HeaderItems) },
           onOpenCreateReminder = { backStack.add(BuildReminderNavKey.Main()) },
           onOpenCreateBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
           onOpenCreateGoogleTask = {

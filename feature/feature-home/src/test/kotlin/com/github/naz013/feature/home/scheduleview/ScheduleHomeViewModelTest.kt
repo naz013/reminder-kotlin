@@ -362,4 +362,14 @@ class ScheduleHomeViewModelTest : BaseTest() {
 
     assertEquals(ScheduleHomeViewModel.ViewModelEvent.OpenCalendar, viewModel.event.value?.peekContent())
   }
+
+  @Test
+  fun `onHeaderNavigationItemLongClicked posts OpenHeaderItemsSettings`() {
+    viewModel.onHeaderNavigationItemLongClicked()
+
+    assertEquals(
+      ScheduleHomeViewModel.ViewModelEvent.OpenHeaderItemsSettings,
+      viewModel.event.value?.peekContent(),
+    )
+  }
 }

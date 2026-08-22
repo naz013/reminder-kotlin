@@ -180,6 +180,11 @@ class ScheduleHomeViewModel(
     event.emit(item.navigationEvent)
   }
 
+  fun onHeaderNavigationItemLongClicked() {
+    Logger.i(TAG, "On header navigation item long clicked")
+    event.emit(ViewModelEvent.OpenHeaderItemsSettings)
+  }
+
   private fun loadData() {
     _state.update {
       it.copy(
@@ -241,6 +246,8 @@ class ScheduleHomeViewModel(
     ) : ViewModelEvent
 
     data object OpenSettings : ViewModelEvent
+
+    data object OpenHeaderItemsSettings : ViewModelEvent
 
     data class ShowEventTypeSelection(
       val types: List<EventType>,

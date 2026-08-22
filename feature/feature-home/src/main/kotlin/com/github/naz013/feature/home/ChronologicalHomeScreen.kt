@@ -8,8 +8,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -81,6 +83,7 @@ fun ChronologicalHomeScreen(
   onAddMenuItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
   onSettingsClick: () -> Unit,
   onHeaderNavigationItemClick: (HeaderNavigationItem) -> Unit,
+  onHeaderNavigationItemLongClick: () -> Unit,
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
@@ -129,6 +132,7 @@ fun ChronologicalHomeScreen(
             modifier = Modifier.padding(top = 4.dp),
             items = state.headerNavigationItems,
             onItemClick = onHeaderNavigationItemClick,
+            onItemLongClick = onHeaderNavigationItemLongClick,
           )
         }
       }
@@ -252,6 +256,7 @@ private fun HeaderNavigationGrid(
   modifier: Modifier = Modifier,
   items: List<HeaderNavigationItem>,
   onItemClick: (HeaderNavigationItem) -> Unit,
+  onItemLongClick: () -> Unit,
 ) {
   val columns = dynamicParameter(
     mobilePortrait = { 2 },
@@ -278,6 +283,7 @@ private fun HeaderNavigationGrid(
             item = item,
             index = rowIndex * columns + columnIndex,
             onClick = { onItemClick(item) },
+            onLongClick = onItemLongClick,
           )
         }
         repeat(columns - rowItems.size) {
@@ -288,12 +294,14 @@ private fun HeaderNavigationGrid(
   }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HeaderNavigationTile(
   modifier: Modifier = Modifier,
   item: HeaderNavigationItem,
   index: Int,
   onClick: () -> Unit,
+  onLongClick: () -> Unit,
 ) {
   var hasAnimated by rememberSaveable { mutableStateOf(false) }
   val visibleState = remember { MutableTransitionState(hasAnimated) }
@@ -311,7 +319,9 @@ private fun HeaderNavigationTile(
       scaleIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS), initialScale = 0.85f),
   ) {
     Surface(
-      onClick = onClick,
+      modifier = Modifier
+        .clip(RoundedCornerShape(12.dp))
+        .combinedClickable(onClick = onClick, onLongClick = onLongClick),
       shape = RoundedCornerShape(12.dp),
       color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
@@ -734,5 +744,6 @@ private fun HeaderNavigationGridPreview() {
       ),
     ),
     onItemClick = {},
+    onItemLongClick = {},
   )
 }
