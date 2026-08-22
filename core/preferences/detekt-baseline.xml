@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MemberNameEqualsClassName:SharedPrefs.kt$SharedPrefs$fun sharedPrefs(): SharedPreferences</ID>
+    <ID>SwallowedException:SharedPrefs.kt$SharedPrefs$e1: ClassCastException</ID>
+    <ID>SwallowedException:SharedPrefs.kt$SharedPrefs$e: ClassCastException</ID>
+    <ID>SwallowedException:SharedPrefs.kt$SharedPrefs$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SharedPrefs.kt$SharedPrefs$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

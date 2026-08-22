@@ -15,7 +15,6 @@ import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.event.BirthdayEventTask
 import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
-import com.elementary.tasks.core.utils.datetime.DoNotDisturbManager
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
@@ -84,8 +83,6 @@ val utilModule = module {
   factory { HolidaySettingsGateImpl(get(), get()) as HolidaySettingsGate }
   factory { AppCalendarPreferences(get()) as CalendarPreferences }
   factory { AppHomePreferences(get()) as HomePreferences }
-
-  factory { DoNotDisturbManager(get(), get()) }
 
   factory { (listener: LocationTracker.Listener) ->
     LocationTracker(listener, get(), get(), get())

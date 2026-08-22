@@ -9,12 +9,12 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.location.LocationTracker
-import com.elementary.tasks.core.services.action.reminder.ReminderActionProcessor
 import com.elementary.tasks.core.services.usecase.CheckLocationReminderUseCase
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.notificationaction.reminder.ReminderActionProcessor
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 

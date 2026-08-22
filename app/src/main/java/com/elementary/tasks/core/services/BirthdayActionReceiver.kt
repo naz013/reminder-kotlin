@@ -3,9 +3,9 @@ package com.elementary.tasks.core.services
 import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.Actions
-import com.elementary.tasks.core.services.action.birthday.BirthdayActionProcessor
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.notificationaction.birthday.BirthdayActionProcessor
 import org.koin.core.component.inject
 
 class BirthdayActionReceiver : BaseBroadcast() {

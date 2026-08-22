@@ -3,13 +3,13 @@ package com.elementary.tasks.navigation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elementary.tasks.R
-import com.elementary.tasks.core.services.action.inapp.InAppAlert
-import com.elementary.tasks.core.services.action.inapp.InAppAlertBus
-import com.elementary.tasks.core.services.action.inapp.InAppAlertDomain
 import com.elementary.tasks.navigation.nav3.AppNavBridge
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
+import com.github.naz013.logic.notificationaction.InAppAlert
+import com.github.naz013.logic.notificationaction.InAppAlertBus
+import com.github.naz013.logic.notificationaction.InAppAlertDomain
 import com.github.naz013.ui.common.compose.foundation.InAppAlertBannerAction
 import com.github.naz013.ui.common.compose.foundation.InAppAlertBannerState
 import com.github.naz013.ui.common.icon.DrawableCatalog

@@ -1,11 +1,7 @@
 package com.elementary.tasks.core.services.action.reminder.process
 
 import com.elementary.tasks.BaseTest
-import com.elementary.tasks.core.services.action.LoudNotificationStyle
-import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.LockScreenVisibility
@@ -14,6 +10,12 @@ import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.notificationaction.LoudNotificationStyle
+import com.github.naz013.logic.notificationaction.NotificationGateway
+import com.github.naz013.logic.notificationaction.WearNotification
+import com.github.naz013.logic.notificationaction.WearPreferences
+import com.github.naz013.logic.reminder.ReminderPreferences
+import com.github.naz013.notification.NotificationApi
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -25,8 +27,10 @@ class ReminderNotificationHandlerTest : BaseTest() {
   private val reminderDataProvider = mockk<ReminderDataProvider>()
   private val contextProvider = mockk<ContextProvider>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
-  private val notifier = mockk<Notifier>()
-  private val prefs = mockk<Prefs>(relaxed = true)
+  private val notificationGateway = mockk<NotificationGateway>()
+  private val wearPreferences = mockk<WearPreferences>(relaxed = true)
+  private val notificationApi = mockk<NotificationApi>()
+  private val reminderPreferences = mockk<ReminderPreferences>(relaxed = true)
   private val wearNotification = mockk<WearNotification>()
 
   private fun settings(
@@ -49,8 +53,10 @@ class ReminderNotificationHandlerTest : BaseTest() {
       notificationSettings = notificationSettings,
       contextProvider = contextProvider,
       textProvider = textProvider,
-      notifier = notifier,
-      prefs = prefs,
+      notificationGateway = notificationGateway,
+      wearPreferences = wearPreferences,
+      notificationApi = notificationApi,
+      reminderPreferences = reminderPreferences,
       wearNotification = wearNotification,
       style = LoudNotificationStyle,
     )
@@ -60,7 +66,7 @@ class ReminderNotificationHandlerTest : BaseTest() {
   @Test
   fun `channelId resolves a channel derived from the notification settings`() {
     val settings = settings()
-    every { notifier.reminderChannelId(settings) } returns "reminder.channel.events.abc123"
+    every { notificationApi.reminderChannelId(settings) } returns "reminder.channel.events.abc123"
 
     val id = handler(settings).channelId(reminder)
 

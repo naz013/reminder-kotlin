@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.services.event
 
-import com.elementary.tasks.core.services.action.birthday.BirthdayActionProcessor
+import com.github.naz013.logic.notificationaction.birthday.BirthdayActionProcessor
 import com.github.naz013.workapi.BackgroundTask
 import com.github.naz013.workapi.TaskData
 import com.github.naz013.workapi.TaskProgressReporter

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
 import com.elementary.tasks.core.os.ContextSwitcher
+import com.github.naz013.logic.notificationaction.ForegroundStateTracker
 
 class ActivityObserver(
   private val contextSwitcher: ContextSwitcher,

@@ -5,34 +5,36 @@ import android.content.BroadcastReceiver
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.core.services.BirthdayActionReceiver
-import com.elementary.tasks.core.services.action.NotificationAction
-import com.elementary.tasks.core.services.action.NotificationAlertActionHandler
-import com.elementary.tasks.core.services.action.NotificationStyle
-import com.elementary.tasks.core.services.action.WearNotification
 import com.elementary.tasks.core.services.action.birthday.BirthdayDataProvider
 import com.elementary.tasks.core.utils.BuildParams
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.Birthday
+import com.github.naz013.logic.birthday.BirthdayPreferences
+import com.github.naz013.logic.notificationaction.NotificationAction
+import com.github.naz013.logic.notificationaction.NotificationAlertActionHandler
+import com.github.naz013.logic.notificationaction.NotificationGateway
+import com.github.naz013.logic.notificationaction.NotificationStyle
+import com.github.naz013.logic.notificationaction.WearNotification
+import com.github.naz013.logic.notificationaction.WearPreferences
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 
 class BirthdayNotificationHandler(
   private val birthdayDataProvider: BirthdayDataProvider,
   contextProvider: ContextProvider,
   textProvider: TextProvider,
-  notifier: Notifier,
-  private val prefs: Prefs,
+  notificationGateway: NotificationGateway,
+  wearPreferences: WearPreferences,
+  private val birthdayPreferences: BirthdayPreferences,
   wearNotification: WearNotification,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
   style: NotificationStyle,
 ) : NotificationAlertActionHandler<Birthday>(
     contextProvider = contextProvider,
     textProvider = textProvider,
-    notifier = notifier,
-    prefs = prefs,
+    notificationGateway = notificationGateway,
+    wearPreferences = wearPreferences,
     wearNotification = wearNotification,
     style = style,
   ) {
@@ -73,7 +75,8 @@ class BirthdayNotificationHandler(
 
   override fun domainIcon(data: Birthday): Int = R.drawable.ic_fluent_food_cake
 
-  override fun defaultPriority(data: Birthday): Int = birthdayDataProvider.priority(prefs.birthdayPriority)
+  override fun defaultPriority(data: Birthday): Int =
+    birthdayDataProvider.priority(birthdayPreferences.birthdayPriority)
 
   override fun vibrationPattern(data: Birthday): LongArray? = birthdayDataProvider.getVibrationPattern()
 
