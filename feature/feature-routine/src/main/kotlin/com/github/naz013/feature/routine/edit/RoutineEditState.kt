@@ -27,6 +27,7 @@ internal data class RoutineEditState(
   val colorPosition: Int = 0,
   val sliderColors: List<Color> = emptyList(),
   val isPinned: Boolean = false,
+  val iconIndex: Int? = null,
   val steps: List<RoutineStepUiState> = emptyList(),
   val recurrenceOption: RoutineRecurrenceOption = RoutineRecurrenceOption.None,
   val allTags: List<TagChipState> = emptyList(),

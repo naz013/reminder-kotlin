@@ -13,7 +13,6 @@ import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.preferences.AppPreferences
-import com.github.naz013.ui.common.theme.ThemeProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -42,7 +41,6 @@ class RoutineEditViewModelTest : BaseTest() {
   private val saveRoutineUseCase = mockk<SaveRoutineUseCase>()
   private val deleteRoutineUseCase = mockk<DeleteRoutineUseCase>(relaxed = true)
   private val nowDateTimeProvider = mockk<NowDateTimeProvider>()
-  private val themeProvider = mockk<ThemeProvider>(relaxed = true)
   private val appPreferences = mockk<AppPreferences>()
 
   private val now = LocalDateTime.of(2026, 7, 22, 9, 0)
@@ -70,7 +68,6 @@ class RoutineEditViewModelTest : BaseTest() {
       saveRoutineUseCase = saveRoutineUseCase,
       deleteRoutineUseCase = deleteRoutineUseCase,
       nowDateTimeProvider = nowDateTimeProvider,
-      themeProvider = themeProvider,
       appPreferences = appPreferences,
     )
 

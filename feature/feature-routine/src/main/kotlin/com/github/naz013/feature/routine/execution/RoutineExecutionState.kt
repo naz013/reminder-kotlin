@@ -1,14 +1,10 @@
 package com.github.naz013.feature.routine.execution
 
-import androidx.compose.ui.graphics.Color
-
 internal sealed interface RoutineExecutionState {
   data object Loading : RoutineExecutionState
 
   data class Running(
     val routineTitle: String,
-    val backgroundColor: Color,
-    val contentColor: Color,
     val stepIndex: Int,
     val stepCount: Int,
     val stepTitle: String,

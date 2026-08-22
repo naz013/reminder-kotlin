@@ -2,8 +2,6 @@ package com.github.naz013.feature.routine.execution
 
 import android.media.AudioManager
 import android.media.ToneGenerator
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +17,6 @@ import com.github.naz013.logic.routine.RoutineDurationCalculator
 import com.github.naz013.logic.routine.usecase.RecordRoutineExecutionUseCase
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.ui.common.preferences.AppPreferences
-import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -41,7 +38,6 @@ internal class RoutineExecutionViewModel(
   private val routineRepository: RoutineRepository,
   private val recordRoutineExecutionUseCase: RecordRoutineExecutionUseCase,
   private val routineDurationCalculator: RoutineDurationCalculator,
-  private val themeProvider: ThemeProvider,
   private val appPreferences: AppPreferences,
 ) : ViewModel() {
 
@@ -116,14 +112,10 @@ internal class RoutineExecutionViewModel(
   private fun publishRunningState() {
     val loadedRoutine = routine ?: return
     val step = steps.getOrNull(stepIndex) ?: return
-    val backgroundColor = themeProvider.colorsForSliderThemed().getOrElse(loadedRoutine.color) { DEFAULT_COLOR }
-    val contentColor = if (backgroundColor.luminance() > CONTRAST_LUMINANCE_THRESHOLD) Color.Black else Color.White
     val remainingSeconds = (currentRemainingMillis() / 1000L).toInt()
     _state.update {
       RoutineExecutionState.Running(
         routineTitle = loadedRoutine.title,
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
         stepIndex = stepIndex,
         stepCount = steps.size,
         stepTitle = step.title,
@@ -275,8 +267,6 @@ internal class RoutineExecutionViewModel(
     private const val TAG = "RoutineExecutionViewModel"
     private const val TICK_MS = 1000L
     private const val ADD_MINUTE_MILLIS = 60_000L
-    private const val CONTRAST_LUMINANCE_THRESHOLD = 0.5f
-    private val DEFAULT_COLOR = Color(0xFF86E3CE)
     private const val TONE_VOLUME = 80
     private const val TONE_DURATION_MS = 150
   }

@@ -11,12 +11,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
+
+/** [ColorSlider] renders on a bare `Canvas` with a raw `pointerInput` gesture (no `clickable`
+ * modifier, so it has no semantics `OnClick` action at all) and no text/content-description of its
+ * own - an instrumented test can't `performClick()` it, but can locate it by this tag and drive a
+ * `performTouchInput { click(...) }` at a position computed from the node's own reported width. */
+const val routineColorSliderTestTag = "routine_color_slider"
 
 /**
  * Labeled, card-wrapped [ColorSlider] for picking a routine's solid card color - the same
@@ -53,7 +60,7 @@ fun RoutineColorPicker(
         onColorSelected = onColorSelected,
         enabled = enabled,
         hapticFeedbackEnabled = hapticFeedbackEnabled,
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(top = 8.dp),
+        modifier = Modifier.fillMaxWidth().height(40.dp).padding(top = 8.dp).testTag(routineColorSliderTestTag),
       )
     }
   }

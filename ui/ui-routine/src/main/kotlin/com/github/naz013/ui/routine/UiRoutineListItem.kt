@@ -10,10 +10,13 @@ import androidx.compose.ui.graphics.Color
  *
  * @param contentColor Text/icon color for [backgroundColor] - the caller picks it (e.g. via
  * [androidx.compose.ui.graphics.Color.luminance]) since `ui-routine` doesn't own a palette engine.
+ * @param iconRes The routine's selected icon, already resolved from `RoutineIconSet.ALL` by index
+ * (`Routine.icon`) - null when no icon is selected.
  * @param stepCountLabel Pre-formatted, already-pluralized label, e.g. "5 steps".
  * @param durationLabel Pre-formatted total duration, e.g. "25m" (see `RoutineDurationCalculator`).
  * @param scheduleRangeLabel Pre-formatted first-to-last scheduled-step time range, e.g.
- * "07:30 - 08:45", or null when no step in the routine has a [com.github.naz013.domain.routine.RoutineStep.scheduledTime].
+ * "07:30 - 08:45", or null when no step in the routine has a
+ * [com.github.naz013.domain.routine.RoutineStep.scheduledTime].
  */
 data class UiRoutineListItem(
   val id: String,
@@ -22,6 +25,7 @@ data class UiRoutineListItem(
   val backgroundColor: Color,
   val contentColor: Color,
   val isPinned: Boolean,
+  val iconRes: Int?,
   val stepCountLabel: String,
   val durationLabel: String,
   val scheduleRangeLabel: String?,

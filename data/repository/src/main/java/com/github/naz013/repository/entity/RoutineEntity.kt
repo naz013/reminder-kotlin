@@ -25,7 +25,7 @@ internal data class RoutineEntity(
   val description: String? = null,
   val color: Int = 0,
   val isPinned: Boolean = false,
-  val icon: String? = null,
+  val icon: Int? = null,
   val steps: List<RoutineStep> = emptyList(),
   val autoAdvance: Boolean = true,
   val soundAlertsEnabled: Boolean = true,

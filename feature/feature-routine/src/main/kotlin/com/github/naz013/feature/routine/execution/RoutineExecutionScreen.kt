@@ -1,6 +1,5 @@
 package com.github.naz013.feature.routine.execution
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,18 +11,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -31,12 +32,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.routine.CircularStepTimer
+
+private val COMPLETE_BUTTON_HEIGHT = 56.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +69,25 @@ internal fun RoutineExecutionScreen(
         colors = TopAppbarColor,
       )
     },
+    bottomBar = {
+      if (state is RoutineExecutionState.Running) {
+        Surface(shadowElevation = 4.dp) {
+          Button(
+            onClick = onCompleteStepClick,
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp)
+              .height(COMPLETE_BUTTON_HEIGHT),
+          ) {
+            Text(
+              text = stringResource(R.string.complete_step),
+              style = MaterialTheme.typography.titleMedium,
+              fontWeight = FontWeight.Bold,
+            )
+          }
+        }
+      }
+    },
   ) { padding ->
     when (state) {
       is RoutineExecutionState.Loading -> {
@@ -80,7 +103,6 @@ internal fun RoutineExecutionScreen(
           onAddMinuteClick = onAddMinuteClick,
           onSkipClick = onSkipClick,
           onPreviousStepClick = onPreviousStepClick,
-          onCompleteStepClick = onCompleteStepClick,
           modifier = Modifier.fillMaxSize().padding(padding),
         )
       }
@@ -103,41 +125,46 @@ private fun RunningContent(
   onAddMinuteClick: () -> Unit,
   onSkipClick: () -> Unit,
   onPreviousStepClick: () -> Unit,
-  onCompleteStepClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier.background(state.backgroundColor).padding(24.dp),
+    modifier = modifier.padding(24.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
-    Spacer(modifier = Modifier.height(24.dp))
-    Text(
-      text = stringResource(R.string.step_of_count, state.stepIndex + 1, state.stepCount),
-      style = MaterialTheme.typography.labelLarge,
-      color = state.contentColor.copy(alpha = 0.8f),
-    )
-    Text(
-      text = state.stepTitle,
-      style = MaterialTheme.typography.headlineSmall,
-      color = state.contentColor,
-      modifier = Modifier.padding(top = 4.dp),
-    )
-    state.scheduledTimeLabel?.let {
-      Text(
-        text = it,
-        style = MaterialTheme.typography.bodyMedium,
-        color = state.contentColor.copy(alpha = 0.8f),
-        modifier = Modifier.padding(top = 4.dp),
-      )
-    }
-    Spacer(modifier = Modifier.height(32.dp))
-    if (state.isTimed) {
-      CircularStepTimer(
-        progress = state.progress,
-        timeLabel = state.timeLabel,
-        color = state.contentColor,
-        trackColor = state.contentColor.copy(alpha = 0.2f),
-      )
+    Card(
+      modifier = Modifier.fillMaxWidth(),
+      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    ) {
+      Column(
+        modifier = Modifier.fillMaxWidth().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+      ) {
+        Text(
+          text = stringResource(R.string.step_of_count, state.stepIndex + 1, state.stepCount),
+          style = MaterialTheme.typography.labelLarge,
+          fontWeight = FontWeight.Bold,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+          text = state.stepTitle,
+          style = MaterialTheme.typography.headlineSmall,
+          fontWeight = FontWeight.Bold,
+          color = MaterialTheme.colorScheme.onSurface,
+          modifier = Modifier.padding(top = 4.dp),
+        )
+        state.scheduledTimeLabel?.let {
+          Text(
+            text = it,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp),
+          )
+        }
+        if (state.isTimed) {
+          Spacer(modifier = Modifier.height(24.dp))
+          CircularStepTimer(progress = state.progress, timeLabel = state.timeLabel)
+        }
+      }
     }
     Spacer(modifier = Modifier.height(32.dp))
 
@@ -149,39 +176,29 @@ private fun RunningContent(
         MenuIconButton(
           icon = Icons.Filled.SkipPrevious,
           contentDescription = stringResource(R.string.previous_step),
-          iconColor = state.contentColor,
           enabled = !state.isFirstStep,
           onClick = onPreviousStepClick,
         )
         MenuIconButton(
           icon = if (state.isPaused) Icons.Filled.PlayArrow else Icons.Filled.Pause,
           contentDescription = stringResource(if (state.isPaused) R.string.resume else R.string.pause),
-          iconColor = state.contentColor,
           onClick = onPlayPauseClick,
         )
         MenuIconButton(
           icon = Icons.Filled.SkipNext,
           contentDescription = stringResource(R.string.skip_step),
-          iconColor = state.contentColor,
           onClick = onSkipClick,
         )
       }
       TextButton(onClick = onAddMinuteClick, modifier = Modifier.padding(top = 8.dp)) {
-        Text(stringResource(R.string.add_one_minute), color = state.contentColor)
+        Text(stringResource(R.string.add_one_minute))
       }
     } else if (!state.isFirstStep) {
       MenuIconButton(
         icon = Icons.Filled.SkipPrevious,
         contentDescription = stringResource(R.string.previous_step),
-        iconColor = state.contentColor,
         onClick = onPreviousStepClick,
       )
-    }
-
-    Spacer(modifier = Modifier.height(24.dp))
-    Button(onClick = onCompleteStepClick, modifier = Modifier.fillMaxWidth()) {
-      Icon(Icons.Filled.Check, contentDescription = null)
-      Text(stringResource(R.string.complete_step), modifier = Modifier.padding(start = 8.dp))
     }
   }
 }
@@ -206,6 +223,7 @@ private fun FinishedContent(
     Text(
       text = stringResource(R.string.routine_finished_title),
       style = MaterialTheme.typography.headlineSmall,
+      fontWeight = FontWeight.Bold,
       modifier = Modifier.padding(top = 16.dp),
     )
     Text(

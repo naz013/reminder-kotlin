@@ -24,7 +24,8 @@ import com.github.naz013.logic.routine.usecase.ToggleRoutinePinUseCase
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.common.R
-import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.routine.RoutineColors
+import com.github.naz013.ui.routine.RoutineIconSet
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +43,6 @@ internal class RoutinePreviewViewModel(
   private val deleteRoutineUseCase: DeleteRoutineUseCase,
   private val routineRecurrenceResetUseCase: RoutineRecurrenceResetUseCase,
   private val routineDurationCalculator: RoutineDurationCalculator,
-  private val themeProvider: ThemeProvider,
   private val textProvider: TextProvider,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val tagChipStateAdapter: TagChipStateAdapter,
@@ -72,7 +72,7 @@ internal class RoutinePreviewViewModel(
   }
 
   private fun Routine.toReadyState(): RoutinePreviewState.Ready {
-    val backgroundColor = themeProvider.colorsForSliderThemed().getOrElse(color) { DEFAULT_COLOR }
+    val backgroundColor = RoutineColors.ALL.getOrElse(color) { DEFAULT_COLOR }
     val contentColor = if (backgroundColor.luminance() > CONTRAST_LUMINANCE_THRESHOLD) Color.Black else Color.White
     return RoutinePreviewState.Ready(
       id = id,
@@ -81,6 +81,7 @@ internal class RoutinePreviewViewModel(
       backgroundColor = backgroundColor,
       contentColor = contentColor,
       isPinned = isPinned,
+      iconRes = icon?.let { RoutineIconSet.ALL.getOrNull(it) },
       durationLabel = routineDurationCalculator.formatDuration(totalDurationSeconds),
       stepCountLabel = textProvider.getString(R.string.routine_step_count, steps.size),
       recurrenceLabel = recurrenceLabel(),

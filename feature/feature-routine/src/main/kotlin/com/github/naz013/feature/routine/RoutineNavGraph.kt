@@ -80,7 +80,7 @@ private fun RoutineEditEntry(
     onTitleChange = viewModel::onTitleChange,
     onDescriptionChange = viewModel::onDescriptionChange,
     onColorSelected = viewModel::onColorSelected,
-    onPinToggleClick = viewModel::onPinToggleClick,
+    onIconSelected = viewModel::onIconSelected,
     onRecurrenceOptionChange = viewModel::onRecurrenceOptionChange,
     onAddStepClick = viewModel::onAddStepClick,
     onStepTitleChange = viewModel::onStepTitleChange,

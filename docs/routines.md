@@ -76,33 +76,81 @@ visible just from reading the code.
 ## 3. E2E test plan (reference for §6's test-coverage gap)
 
 A 22-case Tier B Compose suite was scoped for `app/src/androidTest/kotlin/com/elementary/tasks/e2e/RoutinesE2ETest.kt`
-(+ `.maestro/routines/` for a few black-box flows), following `docs/e2e-testing.md`. None are written yet
-(§6). Kept here as the reference for whoever picks that up:
+(+ `.maestro/routines/` for a few black-box flows), following `docs/e2e-testing.md`. **All 22 are now written and
+passing**, verified on the real device (`docs/e2e-testing.md`'s established practice) - see §6.3 for the status
+of each case and the handful of judgment calls/scope corrections made along the way. No `.maestro/routines/`
+flows were added - everything below turned out coverable at the Tier B/Compose level, the same way this repo's
+other E2E work generally favors Tier B over Maestro (`docs/e2e-testing.md` §1a) unless something specifically
+needs system UI.
 
-| # | Test Case | Scope & Expected Behavior | Tool | Pri |
-|---|---|---|---|---|
-| E1 | `createRoutine_withTitleStepsAndColor` | Create a routine with a title, color, and 3 steps with duration pills; save; verify the colored card renders in the list. | Tier B | P0 |
-| E2 | `routineEditor_stepScheduledTimes_autoSorts` | Add steps with mixed times; save; verify preview/execution sort them chronologically. | Tier B | P0 |
-| E3 | `routineEditor_reorderUntimedSteps` | Reorder untimed steps via the up/down controls; verify `order` persists. | Tier B | P1 |
-| E4 | `routineEditor_tagAssignment` | Toggle tags in the editor; verify chips render on the card and `TagAssignment` rows exist. | Tier B | P0 |
-| E5 | `routineEditor_pinToggling` | Pin from the editor; verify the pin badge and top-of-list sort order. | Tier B | P0 |
-| E6 | `routineEditor_deleteRoutine_cleansUpData` | Delete an existing routine; verify it disappears and the repository is clean. | Tier B | P0 |
-| E7 | `homeTile_navigatesToRoutinesList` | Tap the home "Routines" tile; verify the list opens with a matching subtitle count. | Tier B, Maestro | P0 |
-| E8 | `routinesList_searchQuery_filtersCards` | Type a search query; verify non-matching cards are filtered live. | Tier B | P0 |
-| E9 | `routinesList_tagFilterRow_filtersByTag` | Tap a tag filter chip; verify the list filters to that tag. | Tier B | P0 |
-| E10 | `routinesList_sortOrder_toggleDateAndName` | Toggle sort order; verify pinned items stay pinned at top. | Tier B | P1 |
-| E11 | `routinePreview_displaysColoredBannerAndSteps` | Open a routine; verify the colored banner, tags, duration badge, and sorted step checklist. | Tier B | P0 |
-| E12 | `routinePreview_stepCheckbox_togglesState` | Toggle a step checkbox in preview; verify it persists. | Tier B | P0 |
-| E13 | `routinePreview_resetSteps_unchecksAll` | Use the "Reset Steps" overflow action; verify all steps uncheck. | Tier B | P1 |
-| E14 | `focusRunner_countdownTimer_ticksAndPauses` | Start a routine; verify the countdown ticks and pause/resume work. | Tier B, Maestro | P0 |
-| E15 | `focusRunner_stepCompletionAndAutoAdvance` | Let a step's timer expire or tap Complete; verify haptic/tone and auto-advance. | Tier B | P0 |
-| E16 | `focusRunner_skipStep_advancesWithoutCompletion` | Tap Skip; verify the step isn't marked completed. | Tier B | P1 |
-| E17 | `focusRunner_plusOneMinute_extendsTimer` | Tap +1 Min; verify the countdown extends by 60s. | Tier B | P1 |
-| E18 | `focusRunner_completion_recordsCompletedStepIds` | Finish with one step skipped; verify the summary and `RoutineExecutionRecord.completedStepIds`. | Tier B | P0 |
-| E19 | `routineRecurrence_newCycle_autoResetsSteps` | Complete a daily routine; advance a fake clock to tomorrow; verify steps reset and history is written. | Tier B | P0 |
-| E20 | `insights_routineStreaks_updatesConsecutiveDays` | Complete routines across days; verify Insights streak numbers. | Tier B | P0 |
-| E21 | `insights_stepDropoff_analyzesCompletionRatio` | Run routines with recurring skipped steps; verify drop-off ratios. | Tier B | P1 |
-| E22 | `cloudSyncAndLocalBackup_routineRoundTrip` | Export/restore via encrypted backup + cloud sync DTOs; verify routines/steps/execution records round-trip. | Tier B | P0 |
+| # | Test Case | Scope & Expected Behavior | Tool | Pri | Status |
+|---|---|---|---|---|---|
+| E1 | `createRoutine_withTitleStepsAndColor` | Create a routine with a title, color, and 3 steps with duration pills; save; verify the colored card renders in the list. | Tier B | P0 | Done |
+| E2 | `routineEditor_stepScheduledTimes_autoSorts` | Add steps with mixed times; save; verify preview/execution sort them chronologically. | Tier B | P0 | Done |
+| E3 | `routineEditor_reorderUntimedSteps` | Reorder untimed steps via the up/down controls; verify `order` persists. | Tier B | P1 | Done |
+| E4 | `routineEditor_tagAssignment` | Toggle tags in the editor; verify chips render on the card and `TagAssignment` rows exist. | Tier B | P0 | Done |
+| E5 | `routineEditor_pinToggling` | Pin from the editor; verify the pin badge and top-of-list sort order. | Tier B | P0 | Done - corrected, see note below |
+| E6 | `routineEditor_deleteRoutine_cleansUpData` | Delete an existing routine; verify it disappears and the repository is clean. | Tier B | P0 | Done |
+| E7 | `homeTile_navigatesToRoutinesList` | Tap the home "Routines" tile; verify the list opens with a matching subtitle count. | Tier B, Maestro | P0 | Done - scope note below |
+| E8 | `routinesList_searchQuery_filtersCards` | Type a search query; verify non-matching cards are filtered live. | Tier B | P0 | Done |
+| E9 | `routinesList_tagFilterRow_filtersByTag` | Tap a tag filter chip; verify the list filters to that tag. | Tier B | P0 | Done |
+| E10 | `routinesList_sortOrder_toggleDateAndName` | Toggle sort order; verify pinned items stay pinned at top. | Tier B | P1 | Done - redefined, see note below |
+| E11 | `routinePreview_displaysColoredBannerAndSteps` | Open a routine; verify the colored banner, tags, duration badge, and sorted step checklist. | Tier B | P0 | Done |
+| E12 | `routinePreview_stepCheckbox_togglesState` | Toggle a step checkbox in preview; verify it persists. | Tier B | P0 | Done |
+| E13 | `routinePreview_resetSteps_unchecksAll` | Use the "Reset Steps" overflow action; verify all steps uncheck. | Tier B | P1 | Done |
+| E14 | `focusRunner_countdownTimer_ticksAndPauses` | Start a routine; verify the countdown ticks and pause/resume work. | Tier B, Maestro | P0 | Done - real-time waits, see note below |
+| E15 | `focusRunner_stepCompletionAndAutoAdvance` | Let a step's timer expire or tap Complete; verify haptic/tone and auto-advance. | Tier B | P0 | Done - auto-advance only, see note below |
+| E16 | `focusRunner_skipStep_advancesWithoutCompletion` | Tap Skip; verify the step isn't marked completed. | Tier B | P1 | Done |
+| E17 | `focusRunner_plusOneMinute_extendsTimer` | Tap +1 Min; verify the countdown extends by 60s. | Tier B | P1 | Done |
+| E18 | `focusRunner_completion_recordsCompletedStepIds` | Finish with one step skipped; verify the summary and `RoutineExecutionRecord.completedStepIds`. | Tier B | P0 | Done |
+| E19 | `routineRecurrence_newCycle_autoResetsSteps` | Complete a daily routine; advance a fake clock to tomorrow; verify steps reset and history is written. | Tier B | P0 | Done |
+| E20 | `insights_routineStreaks_updatesConsecutiveDays` | Complete routines across days; verify Insights streak numbers. | Tier B | P0 | Done |
+| E21 | `insights_stepDropoff_analyzesCompletionRatio` | Run routines with recurring skipped steps; verify drop-off ratios. | Tier B | P1 | Done |
+| E22 | `cloudSyncAndLocalBackup_routineRoundTrip` | Export/restore via encrypted backup + cloud sync DTOs; verify routines/steps/execution records round-trip. | Tier B | P0 | Done - `DataConverter` round-trip, see note below |
+
+Notes on the non-obvious Status values above:
+
+- **E5** couldn't be implemented as literally described: `RoutineEditScreen.kt` has no pin control anywhere
+  (`RoutineEditState.isPinned` exists but nothing in the composable reads or toggles it) - the only reachable
+  pin control is the Preview screen's overflow menu (`RoutinePreviewViewModel.onPinToggleClick`). The
+  implemented test uses that real path instead, the same kind of "corrected against the actual screen" note
+  `docs/e2e-testing.md` already carries for its own A11/D9/G9 rows.
+- **E7** doesn't compare the *rendered* card count against `routineRepository.getAll().size` the way the row's
+  literal "matching subtitle count" wording suggests - `RoutinesListScreen` is a real `LazyColumn`, and this
+  suite's shared in-memory database (one `@BeforeClass`-loaded DB for the whole 22-test class, per the
+  established `ReminderRecurrenceE2ETest`/`TodoEditorE2ETest` pattern) accumulates one row per routine every
+  earlier test in the class run creates, so by the time this test runs there can be more total routines than a
+  `LazyColumn` keeps composed at once - comparing rendered-node count to total DB count was the actual source
+  of this test's flakiness, not a navigation failure. Asserting that the just-created routine's own card is
+  reachable (scrolled to) on the list this tile opened is what's actually specific to *this* test.
+- **E10** is scoped down to "pinned stays pinned at top regardless of sort," seeded via a repository-inserted
+  pinned routine (deterministic; the editor's own pin flow is already covered by E5) whose title/date both sort
+  *last* under either raw mode - so it only lands at the top because pinning overrides sort order, not by
+  coincidence. An earlier version instead searched for two specific *unpinned* routines by name across the
+  whole list, which went flaky once enough other tests in the class run had accumulated enough rows that a
+  plain `performScrollTo()` (which only searches whatever the `LazyColumn` already has composed) couldn't find
+  both at once.
+- **E14/E15** lean on real (short, 3-8s) step durations and generous `waitUntil` timeouts instead of any
+  virtual-time control, per this task's own guidance and `docs/routines.md` §6.3's flag on
+  `RoutineExecutionViewModel`'s ticker: this is a real Android instrumented test running the production
+  `DispatcherProvider`, so `dispatcherProvider.main()` resolves to the real `Dispatchers.Main` and `delay(1000)`
+  really does complete after one real second - not the JVM-unit-test-with-`Dispatchers.Unconfined` hang risk
+  §6.3 originally flagged, which only applies to a future `RoutineExecutionViewModelTest`. E15 covers
+  auto-advance-on-expiry specifically (not the "tap Complete" half of its own row's description, which E18
+  already exercises via the bottom bar's Complete button).
+- **E22** exercises `DataConverter` (`data:files`) directly, in-process - the exact conversion both cloud sync
+  (`RoutineRepositoryCaller`, `data:sync`) and the PRO local encrypted backup depend on - rather than driving a
+  real Google Drive/Dropbox OAuth flow or the system file picker a full local-backup-file round trip would
+  need (same exclusion this suite's `ReminderRecurrenceE2ETest` already applies to Google Task/Calendar
+  linkage). `DataConverter` uses `android.util.Base64`, so this only runs on a real Android runtime - the exact
+  reason §4.5 above flags no equivalent test existing at the `data:files` JVM unit-test level. The full
+  encrypted-backup-file round trip already has its own dedicated coverage
+  (`BackupArchiveReaderWriterTest`/`LocalBackupApiImplTest`, §4.5); this test's scope is specifically the
+  `Routine`/`RoutineJson`/`RoutineExecutionRecord`/`RoutineExecutionJson` conversion functions both of those
+  higher-level paths share.
+- No case was skipped or deferred - all 22 got a real, passing implementation, though several (E5, E7, E10,
+  E15, E22 above) needed their literal scope corrected against what the shipped screens actually do once read
+  directly, rather than what the original planning table guessed.
 
 ---
 
@@ -224,6 +272,36 @@ after being on, an already-scheduled periodic work request would keep firing har
 few routines) until the next app data clear. Not worth adding a runtime check for a flag that's only ever
 expected to go from off to on.
 
+### 4.7 Icon picker
+`Routine.icon` (previously dead - see the now-removed §6.1 note) is now a nullable `Int` index into
+`RoutineIconSet.ALL` (`ui-routine`) - 32 icons hand-picked from `DrawableCatalog.Fluent`, in a fixed order
+that's only ever appended to (existing saved routines depend on index stability). Default is `null` (no icon)
+for new routines.
+
+- **Index, not a drawable resource id**, mirroring `Routine.color`'s existing convention - keeps the domain
+  model free of any UI/resource dependency; only `RoutineIconSet`'s fixed order gives the index meaning.
+- **`RoutineIconPicker`** (`ui-routine`): a circular "bubble" trigger next to the title field showing the
+  selected icon (or a generic add-icon placeholder) that opens a `DropdownMenu`-hosted grid of all 32 icons
+  plus a "None" tile to clear the selection - reuses `DropdownMenu` for anchored positioning rather than
+  hand-rolling `Popup` offset math.
+- **Fixed: crash on open.** The grid was originally a `LazyVerticalGrid`, which crashed every time
+  (`IllegalStateException: Asking for intrinsic measurements of SubcomposeLayout layouts is not supported`),
+  confirmed via an on-device crash log. Material3's `DropdownMenu` measures its content `Column` with
+  `IntrinsicSize.Max` to shrink-wrap to the widest item, and any `SubcomposeLayout`-backed lazy layout
+  (`LazyColumn`/`LazyRow`/`LazyVerticalGrid`) can't answer an intrinsic-width query - a known Compose
+  Material3 pitfall. Fixed by replacing it with a plain non-lazy `Column` of `Row`s (33 options total, so
+  laziness bought nothing) wrapped in `Modifier.heightIn(max = 220.dp).verticalScroll(...)`.
+- **Shown in three places**: the edit screen (same row as the title field, per the request), the preview
+  banner, and `RoutineCard` (list screen) - all resolved from the stored index to a drawable id once, in the
+  respective ViewModel (`RoutinesListViewModel`/`RoutinePreviewViewModel`), matching how `color`/duration
+  labels are already pre-resolved before reaching `ui-routine`.
+- **Room migration**: `Migration35To36` changes the `Routine.icon` column from TEXT (a leftover from the
+  original, never-implemented string-based plan) to INTEGER, recreating the table like `Migration34To35` -
+  no data worth carrying over since the column was always unpopulated.
+- **Title capped at 100 characters**, enforced in `RoutineEditScreen`'s `onValueChange` (a client-side
+  `MAX_TITLE_LENGTH` filter, not a domain-level constraint - consistent with how validation elsewhere in this
+  screen lives in the UI/ViewModel layer, not `core:domain`).
+
 ---
 
 ## 5. PRO Insights integration (DONE)
@@ -265,9 +343,6 @@ computed from `RoutineExecutionRecord` history over the same 90-day lookback win
   a working `detectDragGesturesAfterLongPress`-based implementation that could be adapted for
   `RoutineStepUiState` rows in `RoutineEditScreen.kt` if the buttons prove clunky in practice - not worth
   doing preemptively.
-- **`Routine.icon`** is an unused `String?` domain field with no UI to set or display it - either wire it up
-  (an icon picker in the editor, shown on `RoutineCard`) or drop it from the domain model; leaving it dead is
-  the one state to avoid (`Routine.reminderId` was in exactly this state and was dropped for it - see §2).
 
 ### 6.2 Localization
 New strings were added **only** to `ui/ui-common/src/main/res/values/strings.xml` (English) - the other 26
@@ -288,10 +363,25 @@ keys to find what needs translating: `routines`, `new_routine`, `no_routines`, `
 reminder-specific wording and need a refresh, not just a first translation.
 
 ### 6.3 Test coverage
-- **E2E suite**: §3's 22-case table, none written yet. `RoutineCard` already carries the
-  `routine_card_${id}`/`routine_start_button_${id}` test tags the plan calls for; `RoutineEditScreen`'s step
-  rows don't yet have per-step test tags (add alongside whichever E-case needs to target a specific step,
-  following `SubTasksValueEditor.kt`'s `shopItemCheckTestTag(itemId)`-style helper pattern).
+- **E2E suite**: **done** - all 22 of §3's cases are written and passing
+  (`app/src/androidTest/kotlin/com/elementary/tasks/e2e/RoutinesE2ETest.kt`), verified on a real device (Pixel
+  2 XL, API 30) via `adb shell am instrument`, not just compiled - see §3's own Status column/notes for what
+  each case actually covers and the handful that needed their scope corrected against the shipped screens.
+  `RoutineCard` already carried the `routine_card_${id}`/`routine_start_button_${id}` test tags the plan
+  called for; `RoutineEditScreen`'s step rows gained their own `routineStepCardTestTag(stepId)` (mirroring
+  `SubTasksValueEditor.kt`'s `shopItemCheckTestTag(itemId)` pattern - a stable prefix, since a step's id isn't
+  known to the test until after it's added) so individual rows' title/duration/time fields can be targeted
+  unambiguously, and `RoutineColorPicker`'s `ColorSlider` gained a `routineColorSliderTestTag` (that
+  composable is a bare `Canvas` with a raw `pointerInput` gesture and no semantics `OnClick` action at all, so
+  a test can't `performClick()` it even with a tag - the test drives it via `performTouchInput` at a position
+  computed from the tagged node's own reported width instead). `testRepositoryModule`
+  (`data:repository`'s `testFixtures`) gained `RoutineRepository`/`RoutineExecutionRepository` entries against
+  the in-memory `AppDb`, the same pattern its existing `GroupV2Repository`/`NoteRepository`/etc. entries
+  already follow. The feature-flag gate (`RoutineConfig.isEnabled`, off by default) needed its own new pattern
+  - no prior E2E test had to deal with a flagged screen - solved with a `FeatureFlags` Koin test override
+  (`RoutinesE2ETest.TestFeatureFlags`, loaded in `@BeforeClass` the same way `testRepositoryModule` is) that
+  forces `ROUTINE_ENABLED` on without touching the real production default in `FeatureFlag.kt`.
+  `.maestro/routines/` wasn't needed - every case turned out coverable at Tier B.
 - **ViewModel tests**: `RoutineEditViewModelTest` exists (mandatory-steps/recurrence-anchoring/full-recurrence
   coverage). `RoutinesListViewModelTest`, `RoutinePreviewViewModelTest`, and `RoutineExecutionViewModelTest`
   still don't. The last is the highest-risk gap: `RoutineExecutionViewModel`'s ticker launches with

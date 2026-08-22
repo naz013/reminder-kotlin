@@ -1,6 +1,7 @@
 package com.github.naz013.feature.routine.edit
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -24,9 +26,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
@@ -34,8 +41,13 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.compose.foundation.component.WheelPicker
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.routine.RoutineColorPicker
+import com.github.naz013.ui.routine.RoutineIconPicker
 import com.github.naz013.ui.tag.TagChipPicker
 import com.github.naz013.ui.tag.TagChipState
 import org.threeten.bp.LocalTime
@@ -43,6 +55,20 @@ import org.threeten.bp.LocalTime
 private val DURATION_PRESETS_SECONDS = listOf(0, 300, 600, 900, 1800)
 private const val MIN_DAY_OF_MONTH = 1
 private const val MAX_DAY_OF_MONTH = 28
+private const val MAX_TITLE_LENGTH = 100
+private val DAY_OF_MONTH_LABELS = (MIN_DAY_OF_MONTH..MAX_DAY_OF_MONTH).map { it.toString() }
+
+/** [step.id][RoutineStepUiState.id] is only ever known once a step has already been added (it's a
+ * random UUID minted by the ViewModel, see `RoutineEditViewModel.onAddStepClick`), so - like
+ * `shopItemCheckTestTag`/`shopItemRemoveTestTag` in `SubTasksValueEditor.kt` - an instrumented test
+ * can't know this tag ahead of time either. It locates a freshly-added row via this prefix (rows
+ * stay fully composed in a plain `Column.verticalScroll`, never a lazy layout, so every row's tag
+ * is always present in the semantics tree regardless of scroll position) ordered top-to-bottom to
+ * match [RoutineEditState.steps]'s order, then scopes every further interaction with that row - its
+ * title field, duration/time chips, move/remove buttons - via `hasAnyAncestor(hasTestTag(...))`
+ * rather than continuing to rely on position, since duration/time chip labels repeat identically
+ * across untouched rows (e.g. every fresh row shows the same "Duration: none"/"No time" text). */
+fun routineStepCardTestTag(stepId: String): String = "routine_step_card_$stepId"
 
 /** 0=Sunday..6=Saturday, matching the app-wide weekday convention (see
  * [com.github.naz013.domain.reminder.v2.RecurrenceRule.RelativeMonthly]'s kdoc). */
@@ -64,7 +90,7 @@ internal fun RoutineEditScreen(
   onTitleChange: (String) -> Unit,
   onDescriptionChange: (String) -> Unit,
   onColorSelected: (Int) -> Unit,
-  onPinToggleClick: () -> Unit,
+  onIconSelected: (Int?) -> Unit,
   onRecurrenceOptionChange: (RoutineRecurrenceOption) -> Unit,
   onAddStepClick: () -> Unit,
   onStepTitleChange: (stepId: String, title: String) -> Unit,
@@ -92,17 +118,8 @@ internal fun RoutineEditScreen(
           )
         },
         actions = {
-          MenuIconButton(
-            icon = if (state.isPinned) AppIcons.Fluent.Pin else AppIcons.Fluent.PinOff,
-            contentDescription = stringResource(if (state.isPinned) R.string.unpin else R.string.pin),
-            onClick = onPinToggleClick,
-          )
           if (state.canDelete) {
-            MenuIconButton(
-              icon = AppIcons.Fluent.Delete,
-              contentDescription = stringResource(R.string.delete),
-              onClick = onDeleteClick,
-            )
+            EditOverflowMenu(onDeleteClick = onDeleteClick)
           }
           MenuTextButton(
             text = stringResource(R.string.save),
@@ -121,14 +138,21 @@ internal fun RoutineEditScreen(
         .verticalScroll(rememberScrollState())
         .padding(16.dp),
     ) {
-      OutlinedTextField(
-        value = state.title,
-        onValueChange = onTitleChange,
-        label = { Text(stringResource(R.string.title)) },
-        isError = state.title.isBlank(),
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
-      )
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        OutlinedTextField(
+          value = state.title,
+          onValueChange = { if (it.length <= MAX_TITLE_LENGTH) onTitleChange(it) },
+          label = { Text(stringResource(R.string.title)) },
+          isError = state.title.isBlank(),
+          singleLine = true,
+          modifier = Modifier.weight(1f),
+        )
+        RoutineIconPicker(
+          selectedIndex = state.iconIndex,
+          onIconSelected = onIconSelected,
+          modifier = Modifier.padding(start = 12.dp),
+        )
+      }
       OutlinedTextField(
         value = state.description,
         onValueChange = onDescriptionChange,
@@ -192,6 +216,29 @@ internal fun RoutineEditScreen(
   }
 }
 
+@Composable
+private fun EditOverflowMenu(onDeleteClick: () -> Unit) {
+  var expanded by remember { mutableStateOf(false) }
+  Box {
+    MenuIconButton(
+      icon = AppIcons.Fluent.MoreVertical,
+      contentDescription = stringResource(R.string.more_options),
+      onClick = { expanded = true },
+    )
+    AppDropdownMenu(
+      expanded = expanded,
+      onDismissRequest = { expanded = false },
+      items = listOf(
+        PopupMenuItem(id = 0, title = stringResource(R.string.delete), iconRes = DrawableCatalog.Fluent.Delete),
+      ),
+      onItemClick = {
+        expanded = false
+        onDeleteClick()
+      },
+    )
+  }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RecurrenceOptionPicker(
@@ -243,7 +290,7 @@ private fun RecurrenceOptionPicker(
       }
 
       is RoutineRecurrenceOption.Monthly -> {
-        DayOfMonthStepper(
+        DayOfMonthPicker(
           dayOfMonth = option.dayOfMonth,
           onDayChange = { onOptionChange(option.copy(dayOfMonth = it)) },
           modifier = Modifier.padding(top = 8.dp),
@@ -274,34 +321,19 @@ private fun WeekdaySelector(
 }
 
 @Composable
-private fun DayOfMonthStepper(
+private fun DayOfMonthPicker(
   dayOfMonth: Int,
   onDayChange: (Int) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
     Text(text = stringResource(R.string.day_of_month), modifier = Modifier.weight(1f))
-    IconButton(
-      onClick = { onDayChange((dayOfMonth - 1).coerceAtLeast(MIN_DAY_OF_MONTH)) },
-      enabled = dayOfMonth > MIN_DAY_OF_MONTH,
-    ) {
-      Icon(
-        AppIcons.Builder.ChevronDown,
-        contentDescription = stringResource(R.string.decrease_day_of_month),
-        modifier = Modifier.graphicsLayer { rotationZ = 180f },
-      )
-    }
-    Text(
-      text = dayOfMonth.toString(),
-      style = MaterialTheme.typography.titleMedium,
-      modifier = Modifier.padding(horizontal = 8.dp),
+    WheelPicker(
+      items = DAY_OF_MONTH_LABELS,
+      selectedIndex = (dayOfMonth - MIN_DAY_OF_MONTH).coerceIn(DAY_OF_MONTH_LABELS.indices),
+      onSelectedIndexChange = { onDayChange(it + MIN_DAY_OF_MONTH) },
+      modifier = Modifier.width(96.dp),
     )
-    IconButton(
-      onClick = { onDayChange((dayOfMonth + 1).coerceAtMost(MAX_DAY_OF_MONTH)) },
-      enabled = dayOfMonth < MAX_DAY_OF_MONTH,
-    ) {
-      Icon(AppIcons.Builder.ChevronDown, contentDescription = stringResource(R.string.increase_day_of_month))
-    }
   }
 }
 
@@ -333,7 +365,7 @@ private fun RoutineStepRow(
   val timeLabel = step.scheduledTime ?: stringResource(R.string.no_time)
 
   Card(
-    modifier = modifier,
+    modifier = modifier.testTag(routineStepCardTestTag(step.id)),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     Column(modifier = Modifier.padding(12.dp)) {

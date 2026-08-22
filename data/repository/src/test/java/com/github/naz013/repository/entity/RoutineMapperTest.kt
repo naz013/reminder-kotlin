@@ -39,6 +39,7 @@ class RoutineMapperTest {
       title = "Morning routine",
       color = 5,
       isPinned = true,
+      icon = 7,
       steps = listOf(
         RoutineStep(id = "step-1", title = "Meditate", scheduledTime = "07:00", durationSeconds = 300),
         RoutineStep(id = "step-2", title = "Journal", scheduledTime = "07:15", durationSeconds = 600)

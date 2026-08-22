@@ -1103,7 +1103,7 @@
     <string name="streak_current">السلسلة الحالية: %1$d يوم</string>
     <string name="streak_longest">أطول سلسلة: %1$d يوم</string>
     <string name="streak_fired_count">تم التفعيل %1$d مرة في آخر 90 يومًا</string>
-    <string name="no_insights_yet">لا يوجد نشاط تذكيرات في آخر 90 يومًا بعد</string>
+    <string name="no_insights_yet">لا يوجد نشاط في آخر 90 يومًا بعد</string>
 
     <string name="upcoming_events">القادمة</string>
 
@@ -1154,4 +1154,47 @@
 
     <string name="merge">دمج</string>
     <string name="notes_merge_selected_confirm">دمج %1$d ملاحظات في ملاحظة واحدة؟ سيتم حذف الملاحظات الأصلية.</string>
+
+    <string name="routines">الروتينات</string>
+    <string name="new_routine">روتين جديد</string>
+    <string name="no_routines">لا توجد روتينات بعد</string>
+    <string name="routine_description_hint">الوصف (اختياري)</string>
+    <string name="routine_steps">الخطوات</string>
+    <string name="add_step">إضافة خطوة</string>
+    <string name="step_title_hint">عنوان الخطوة</string>
+    <string name="duration_none">بلا</string>
+    <string name="repeat_daily">يتكرر يوميًا</string>
+    <string name="start_routine">بدء الروتين</string>
+    <string name="reset_steps">إعادة تعيين الخطوات</string>
+    <string name="reset_steps_confirmation">إعادة تعيين جميع الخطوات إلى غير محددة؟</string>
+    <string name="routine_step_count">%1$d خطوات</string>
+    <string name="delete_routine_confirmation">هل تريد حذف هذا الروتين نهائيًا؟</string>
+    <string name="move_step_up">نقل الخطوة لأعلى</string>
+    <string name="move_step_down">نقل الخطوة لأسفل</string>
+    <string name="sort">ترتيب</string>
+    <string name="sort_by_date">حسب تاريخ الإنشاء</string>
+    <string name="sort_by_name">حسب الاسم</string>
+    <string name="routine_on_demand">عند الطلب</string>
+    <string name="routine_steps_required">أضف خطوة واحدة على الأقل</string>
+    <string name="repeat_none">أبدًا</string>
+    <string name="repeat_weekly">يتكرر أسبوعيًا</string>
+    <string name="repeat_monthly">يتكرر شهريًا</string>
+    <string name="repeat_weekly_days">أسبوعيًا: %1$s</string>
+    <string name="repeat_monthly_day">شهريًا في اليوم %1$d</string>
+    <string name="repeat_weekdays_required">اختر يومًا واحدًا على الأقل</string>
+    <string name="step_of_count">الخطوة %1$d من %2$d</string>
+    <string name="pause">إيقاف مؤقت</string>
+    <string name="resume">استئناف</string>
+    <string name="skip_step">تخطي</string>
+    <string name="complete_step">إكمال الخطوة</string>
+    <string name="previous_step">الخطوة السابقة</string>
+    <string name="add_one_minute">+1 دقيقة</string>
+    <string name="routine_finished_title">انتهى الروتين</string>
+    <string name="routine_execution_total_time">الوقت الإجمالي: %1$s</string>
+    <string name="routine_execution_steps_completed">اكتمال %1$d من %2$d خطوات</string>
+    <string name="routine_insights_section">سلاسل الروتين</string>
+    <string name="routine_focus_time_total">إجمالي وقت التركيز: %1$s (آخر 90 يومًا)</string>
+    <string name="routine_insight_most_skipped">الخطوة الأكثر تخطيًا: %1$s (%2$d%% إكمال)</string>
+    <string name="routine_icon">أيقونة الروتين</string>
+    <string name="no_icon">بلا أيقونة</string>
 </resources>

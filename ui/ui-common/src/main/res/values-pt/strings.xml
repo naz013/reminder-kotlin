@@ -1105,7 +1105,7 @@
     <string name="streak_current">Sequência atual: %1$d dias</string>
     <string name="streak_longest">Sequência mais longa: %1$d dias</string>
     <string name="streak_fired_count">Acionado %1$d vezes nos últimos 90 dias</string>
-    <string name="no_insights_yet">Sem atividade de lembrete nos últimos 90 dias ainda</string>
+    <string name="no_insights_yet">Ainda não há atividade nos últimos 90 dias</string>
 
     <string name="upcoming_events">Próximos</string>
 
@@ -1156,4 +1156,47 @@
 
     <string name="merge">Mesclar</string>
     <string name="notes_merge_selected_confirm">Mesclar %1$d notas em uma só? As notas originais serão excluídas.</string>
+
+    <string name="routines">Rotinas</string>
+    <string name="new_routine">Nova rotina</string>
+    <string name="no_routines">Ainda não há rotinas</string>
+    <string name="routine_description_hint">Descrição (opcional)</string>
+    <string name="routine_steps">Etapas</string>
+    <string name="add_step">Adicionar etapa</string>
+    <string name="step_title_hint">Título da etapa</string>
+    <string name="duration_none">Nenhuma</string>
+    <string name="repeat_daily">Repete diariamente</string>
+    <string name="start_routine">Iniciar rotina</string>
+    <string name="reset_steps">Redefinir etapas</string>
+    <string name="reset_steps_confirmation">Redefinir todas as etapas para não concluídas?</string>
+    <string name="routine_step_count">%1$d etapas</string>
+    <string name="delete_routine_confirmation">Excluir esta rotina permanentemente?</string>
+    <string name="move_step_up">Mover etapa para cima</string>
+    <string name="move_step_down">Mover etapa para baixo</string>
+    <string name="sort">Ordenar</string>
+    <string name="sort_by_date">Por data de criação</string>
+    <string name="sort_by_name">Por nome</string>
+    <string name="routine_on_demand">Sob demanda</string>
+    <string name="routine_steps_required">Adicione pelo menos uma etapa</string>
+    <string name="repeat_none">Nunca</string>
+    <string name="repeat_weekly">Repete semanalmente</string>
+    <string name="repeat_monthly">Repete mensalmente</string>
+    <string name="repeat_weekly_days">Semanalmente: %1$s</string>
+    <string name="repeat_monthly_day">Mensalmente no dia %1$d</string>
+    <string name="repeat_weekdays_required">Selecione pelo menos um dia</string>
+    <string name="step_of_count">Etapa %1$d de %2$d</string>
+    <string name="pause">Pausar</string>
+    <string name="resume">Retomar</string>
+    <string name="skip_step">Pular</string>
+    <string name="complete_step">Concluir etapa</string>
+    <string name="previous_step">Etapa anterior</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Rotina concluída</string>
+    <string name="routine_execution_total_time">Tempo total: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d de %2$d etapas concluídas</string>
+    <string name="routine_insights_section">Sequências de rotinas</string>
+    <string name="routine_focus_time_total">Tempo total de foco: %1$s (últimos 90 dias)</string>
+    <string name="routine_insight_most_skipped">Etapa mais pulada: %1$s (%2$d%% de conclusão)</string>
+    <string name="routine_icon">Ícone da rotina</string>
+    <string name="no_icon">Nenhum ícone</string>
 </resources>

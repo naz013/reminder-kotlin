@@ -16,7 +16,7 @@ data class RoutineJson(
   @SerializedName("isPinned")
   val isPinned: Boolean = false,
   @SerializedName("icon")
-  val icon: String? = null,
+  val icon: Int? = null,
   @SerializedName("steps")
   val steps: List<RoutineStepJson> = emptyList(),
   @SerializedName("autoAdvance")

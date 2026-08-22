@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -64,16 +63,15 @@ internal fun RoutinesListScreen(
           )
         },
         actions = {
+          MenuIconButton(
+            icon = AppIcons.Fluent.Add,
+            contentDescription = stringResource(R.string.new_routine),
+            onClick = onAddClick,
+            iconColor = MaterialTheme.colorScheme.primary,
+          )
           SortMenu(sortOrder = state.sortOrder, onSortOrderSelected = onSortOrderSelected)
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
-      )
-    },
-    floatingActionButton = {
-      ExtendedFloatingActionButton(
-        onClick = onAddClick,
-        icon = { Icon(AppIcons.Fluent.Add, contentDescription = null) },
-        text = { Text(stringResource(R.string.new_routine)) },
       )
     },
   ) { padding ->

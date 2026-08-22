@@ -17,8 +17,11 @@ data class Routine(
   val color: Int = 0,
   @SerializedName("isPinned")
   val isPinned: Boolean = false,
+  /** Index into `RoutineIconSet.ALL` (`ui-routine`) - null means no icon selected. An opaque
+   * index rather than a drawable resource id so this model stays free of any UI/resource
+   * dependency; only the fixed order of that list gives the index meaning. */
   @SerializedName("icon")
-  val icon: String? = null,
+  val icon: Int? = null,
   @SerializedName("steps")
   val steps: List<RoutineStep> = emptyList(),
   @SerializedName("autoAdvance")

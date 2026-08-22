@@ -22,7 +22,7 @@ import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.preferences.AppPreferences
-import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.routine.RoutineColors
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +44,6 @@ internal class RoutineEditViewModel(
   private val saveRoutineUseCase: SaveRoutineUseCase,
   private val deleteRoutineUseCase: DeleteRoutineUseCase,
   private val nowDateTimeProvider: NowDateTimeProvider,
-  private val themeProvider: ThemeProvider,
   private val appPreferences: AppPreferences,
 ) : ViewModel() {
 
@@ -59,7 +58,7 @@ internal class RoutineEditViewModel(
     _state.update {
       it.copy(
         hapticFeedbackEnabled = appPreferences.hapticsEnabled,
-        sliderColors = themeProvider.colorsForSliderThemed(),
+        sliderColors = RoutineColors.ALL,
       )
     }
     load()
@@ -82,6 +81,7 @@ internal class RoutineEditViewModel(
             description = routine.description.orEmpty(),
             colorPosition = routine.color,
             isPinned = routine.isPinned,
+            iconIndex = routine.icon,
             steps = steps,
             recurrenceOption = routine.recurrence.toRecurrenceOption(),
             canDelete = true,
@@ -117,8 +117,8 @@ internal class RoutineEditViewModel(
     _state.update { it.copy(colorPosition = position) }
   }
 
-  fun onPinToggleClick() {
-    _state.update { it.copy(isPinned = !it.isPinned) }
+  fun onIconSelected(index: Int?) {
+    _state.update { it.copy(iconIndex = index) }
   }
 
   fun onRecurrenceOptionChange(option: RoutineRecurrenceOption) {
@@ -231,6 +231,7 @@ internal class RoutineEditViewModel(
         description = stateValue.description.trim().ifBlank { null },
         color = stateValue.colorPosition,
         isPinned = stateValue.isPinned,
+        icon = stateValue.iconIndex,
         steps = steps,
         recurrence = recurrence,
         lastResetAt = lastResetAt,

@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,6 +69,14 @@ fun RoutineCard(
   ) {
     Column(modifier = Modifier.padding(CONTENT_PADDING)) {
       Row(verticalAlignment = Alignment.Top) {
+        routine.iconRes?.let {
+          Icon(
+            painter = painterResource(it),
+            contentDescription = null,
+            tint = routine.contentColor,
+            modifier = Modifier.size(18.dp).padding(end = 6.dp),
+          )
+        }
         Text(
           text = routine.title,
           color = routine.contentColor,
@@ -175,6 +184,7 @@ private fun RoutineCardPreview() {
         backgroundColor = Color(0xFF86E3CE),
         contentColor = Color.Black,
         isPinned = true,
+        iconRes = null,
         stepCountLabel = "5 steps",
         durationLabel = "25m",
         scheduleRangeLabel = "07:00 - 07:45",

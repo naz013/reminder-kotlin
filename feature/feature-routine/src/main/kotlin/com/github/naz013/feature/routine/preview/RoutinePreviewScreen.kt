@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagChipRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,12 +85,12 @@ internal fun RoutinePreviewScreen(
               contentDescription = stringResource(R.string.edit),
               onClick = onEditClick,
             )
-            MenuIconButton(
-              icon = if (state.isPinned) AppIcons.Fluent.Pin else AppIcons.Fluent.PinOff,
-              contentDescription = stringResource(if (state.isPinned) R.string.unpin else R.string.pin),
-              onClick = onPinToggleClick,
+            OverflowMenu(
+              isPinned = state.isPinned,
+              onPinToggleClick = onPinToggleClick,
+              onResetStepsClick = onResetStepsClick,
+              onDeleteClick = onDeleteClick,
             )
-            OverflowMenu(onResetStepsClick = onResetStepsClick, onDeleteClick = onDeleteClick)
           }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -121,11 +123,21 @@ private fun RoutineBanner(state: RoutinePreviewState.Ready) {
     colors = CardDefaults.cardColors(containerColor = state.backgroundColor),
   ) {
     Column(modifier = Modifier.padding(16.dp)) {
-      Text(
-        text = state.title,
-        style = MaterialTheme.typography.headlineSmall,
-        color = state.contentColor,
-      )
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        state.iconRes?.let {
+          Icon(
+            painter = painterResource(it),
+            contentDescription = null,
+            tint = state.contentColor,
+            modifier = Modifier.padding(end = 8.dp),
+          )
+        }
+        Text(
+          text = state.title,
+          style = MaterialTheme.typography.headlineSmall,
+          color = state.contentColor,
+        )
+      }
       if (!state.description.isNullOrEmpty()) {
         Text(
           text = state.description,
@@ -194,6 +206,8 @@ private fun RoutineStepChecklistRow(
 
 @Composable
 private fun OverflowMenu(
+  isPinned: Boolean,
+  onPinToggleClick: () -> Unit,
   onResetStepsClick: () -> Unit,
   onDeleteClick: () -> Unit,
 ) {
@@ -208,11 +222,18 @@ private fun OverflowMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
       items = listOf(
+        PopupMenuItem(
+          id = OverflowAction.TOGGLE_PIN.ordinal,
+          title = stringResource(if (isPinned) R.string.unpin else R.string.pin),
+          iconRes = if (isPinned) DrawableCatalog.Fluent.PinOff else DrawableCatalog.Fluent.Pin,
+        ),
         PopupMenuItem(id = OverflowAction.RESET_STEPS.ordinal, title = stringResource(R.string.reset_steps)),
         PopupMenuItem(id = OverflowAction.DELETE.ordinal, title = stringResource(R.string.delete)),
       ),
       onItemClick = { id ->
+        expanded = false
         when (OverflowAction.entries[id]) {
+          OverflowAction.TOGGLE_PIN -> onPinToggleClick()
           OverflowAction.RESET_STEPS -> onResetStepsClick()
           OverflowAction.DELETE -> onDeleteClick()
         }
@@ -222,6 +243,7 @@ private fun OverflowMenu(
 }
 
 private enum class OverflowAction {
+  TOGGLE_PIN,
   RESET_STEPS,
   DELETE,
 }

@@ -19,7 +19,8 @@ import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.R
-import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.routine.RoutineColors
+import com.github.naz013.ui.routine.RoutineIconSet
 import com.github.naz013.ui.routine.UiRoutineListItem
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
@@ -44,7 +45,6 @@ internal class RoutinesListViewModel(
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val routineDurationCalculator: RoutineDurationCalculator,
   private val routineRecurrenceResetUseCase: RoutineRecurrenceResetUseCase,
-  private val themeProvider: ThemeProvider,
   private val textProvider: TextProvider,
 ) : ViewModel() {
 
@@ -141,7 +141,7 @@ internal class RoutinesListViewModel(
   }
 
   private fun toUiRoutineListItem(routine: Routine): UiRoutineListItem {
-    val backgroundColor = themeProvider.colorsForSliderThemed().getOrElse(routine.color) { DEFAULT_COLOR }
+    val backgroundColor = RoutineColors.ALL.getOrElse(routine.color) { DEFAULT_COLOR }
     val contentColor = if (backgroundColor.luminance() > CONTRAST_LUMINANCE_THRESHOLD) Color.Black else Color.White
     val timedSteps = routine.sortedSteps.mapNotNull { it.scheduledTime }
     return UiRoutineListItem(
@@ -151,6 +151,7 @@ internal class RoutinesListViewModel(
       backgroundColor = backgroundColor,
       contentColor = contentColor,
       isPinned = routine.isPinned,
+      iconRes = routine.icon?.let { RoutineIconSet.ALL.getOrNull(it) },
       stepCountLabel = textProvider.getString(R.string.routine_step_count, routine.steps.size),
       durationLabel = routineDurationCalculator.formatDuration(routine.totalDurationSeconds),
       scheduleRangeLabel = if (timedSteps.isEmpty()) null else "${timedSteps.first()} - ${timedSteps.last()}",

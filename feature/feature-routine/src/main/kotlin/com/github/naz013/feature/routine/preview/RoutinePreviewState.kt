@@ -21,6 +21,7 @@ internal sealed interface RoutinePreviewState {
     val backgroundColor: Color,
     val contentColor: Color,
     val isPinned: Boolean,
+    val iconRes: Int?,
     val durationLabel: String,
     val stepCountLabel: String,
     val recurrenceLabel: String,

@@ -18,14 +18,14 @@ val routineModule = module {
   viewModelOf(::RoutinesListViewModel)
 
   viewModel { (id: String?) ->
-    RoutineEditViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+    RoutineEditViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
   }
 
   viewModel { (id: String) ->
-    RoutinePreviewViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+    RoutinePreviewViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
   }
 
   viewModel { (id: String) ->
-    RoutineExecutionViewModel(id, get(), get(), get(), get(), get(), get())
+    RoutineExecutionViewModel(id, get(), get(), get(), get(), get())
   }
 }
