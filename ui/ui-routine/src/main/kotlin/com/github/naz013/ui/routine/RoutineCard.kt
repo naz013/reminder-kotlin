@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.icon.DrawableCatalog
 
 private const val TITLE_MAX_LINES = 1
 private const val DESCRIPTION_MAX_LINES = 2
@@ -74,7 +75,7 @@ fun RoutineCard(
             painter = painterResource(it),
             contentDescription = null,
             tint = routine.contentColor,
-            modifier = Modifier.size(18.dp).padding(end = 6.dp),
+            modifier = Modifier.size(18.dp).padding(top = 4.dp, end = 6.dp),
           )
         }
         Text(
@@ -184,7 +185,7 @@ private fun RoutineCardPreview() {
         backgroundColor = Color(0xFF86E3CE),
         contentColor = Color.Black,
         isPinned = true,
-        iconRes = null,
+        iconRes = DrawableCatalog.Fluent.Lightbulb,
         stepCountLabel = "5 steps",
         durationLabel = "25m",
         scheduleRangeLabel = "07:00 - 07:45",
