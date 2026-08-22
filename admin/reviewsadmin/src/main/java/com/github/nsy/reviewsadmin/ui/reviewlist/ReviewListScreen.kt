@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.reviews.Review
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.nsy.reviewsadmin.R
 import org.koin.androidx.compose.koinViewModel
 import org.threeten.bp.format.DateTimeFormatter
@@ -58,20 +59,18 @@ fun ReviewListScreen(
       TopAppBar(
         title = { Text("${appSource.name} Reviews") },
         navigationIcon = {
-          IconButton(onClick = onNavigateBack) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = stringResource(R.string.back)
-            )
-          }
+          MenuIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.back),
+            onClick = onNavigateBack
+          )
         },
         actions = {
-          IconButton(onClick = { viewModel.loadReviews(appSource) }) {
-            Icon(
-              imageVector = Icons.Default.Refresh,
-              contentDescription = stringResource(R.string.refresh)
-            )
-          }
+          MenuIconButton(
+            icon = Icons.Default.Refresh,
+            contentDescription = stringResource(R.string.refresh),
+            onClick = { viewModel.loadReviews(appSource) }
+          )
         },
         colors = TopAppBarDefaults.topAppBarColors(
           containerColor = MaterialTheme.colorScheme.primaryContainer,

@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.naz013.reviews.AppSource
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.nsy.reviewsadmin.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -39,18 +40,16 @@ fun DashboardScreen(
       TopAppBar(
         title = { Text(stringResource(R.string.dashboard_title)) },
         actions = {
-          IconButton(onClick = { viewModel.loadData() }) {
-            Icon(
-              imageVector = Icons.Default.Refresh,
-              contentDescription = stringResource(R.string.refresh)
-            )
-          }
-          IconButton(onClick = onSignOut) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-              contentDescription = stringResource(R.string.sign_out)
-            )
-          }
+          MenuIconButton(
+            icon = Icons.Default.Refresh,
+            contentDescription = stringResource(R.string.refresh),
+            onClick = { viewModel.loadData() }
+          )
+          MenuIconButton(
+            icon = Icons.AutoMirrored.Filled.ExitToApp,
+            contentDescription = stringResource(R.string.sign_out),
+            onClick = onSignOut
+          )
         },
         colors = TopAppBarDefaults.topAppBarColors(
           containerColor = MaterialTheme.colorScheme.primaryContainer,

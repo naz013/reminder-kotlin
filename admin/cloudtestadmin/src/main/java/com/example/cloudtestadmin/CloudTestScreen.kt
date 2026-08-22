@@ -40,7 +40,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -65,6 +64,7 @@ import com.github.naz013.cloudapi.Source
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
@@ -345,9 +345,11 @@ fun AuthenticationScreen(
           TopAppBar(
             title = { Text("Google Drive Login") },
             navigationIcon = {
-              IconButton(onClick = onBackPressed) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-              }
+              MenuIconButton(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onBackPressed
+              )
             }
           )
         }
@@ -409,9 +411,11 @@ fun AuthenticationScreen(
           TopAppBar(
             title = { Text("Dropbox Login") },
             navigationIcon = {
-              IconButton(onClick = onBackPressed) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-              }
+              MenuIconButton(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onBackPressed
+              )
             }
           )
         }
@@ -462,14 +466,18 @@ fun FolderListScreen(
       TopAppBar(
         title = { Text("Folders") },
         navigationIcon = {
-          IconButton(onClick = onBackPressed) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-          }
+          MenuIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Back",
+            onClick = onBackPressed
+          )
         },
         actions = {
-          IconButton(onClick = { showMenu = true }) {
-            Icon(Icons.Default.MoreVert, contentDescription = "More options")
-          }
+          MenuIconButton(
+            icon = Icons.Default.MoreVert,
+            contentDescription = "More options",
+            onClick = { showMenu = true }
+          )
           DropdownMenu(
             expanded = showMenu,
             onDismissRequest = { showMenu = false }
@@ -611,15 +619,19 @@ fun FileListScreen(
       TopAppBar(
         title = { Text("${dataType.name} Files") },
         navigationIcon = {
-          IconButton(onClick = onBackPressed) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-          }
+          MenuIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Back",
+            onClick = onBackPressed
+          )
         },
         actions = {
           if (files.isNotEmpty()) {
-            IconButton(onClick = { showDeleteAllDialog = true }) {
-              Icon(Icons.Default.DeleteForever, contentDescription = "Delete all files")
-            }
+            MenuIconButton(
+              icon = Icons.Default.DeleteForever,
+              contentDescription = "Delete all files",
+              onClick = { showDeleteAllDialog = true }
+            )
           }
         }
       )
@@ -741,15 +753,12 @@ fun FileItem(
           )
         }
       }
-      IconButton(
+      MenuIconButton(
+        icon = Icons.Default.Delete,
+        contentDescription = "Delete file",
+        iconColor = MaterialTheme.colorScheme.error,
         onClick = { showDeleteDialog = true }
-      ) {
-        Icon(
-          imageVector = Icons.Default.Delete,
-          contentDescription = "Delete file",
-          tint = MaterialTheme.colorScheme.error
-        )
-      }
+      )
     }
   }
 
@@ -802,9 +811,11 @@ fun FilePreviewScreen(
       TopAppBar(
         title = { Text("Preview: ${cloudFile.name}") },
         navigationIcon = {
-          IconButton(onClick = onBackPressed) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-          }
+          MenuIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Back",
+            onClick = onBackPressed
+          )
         }
       )
     }

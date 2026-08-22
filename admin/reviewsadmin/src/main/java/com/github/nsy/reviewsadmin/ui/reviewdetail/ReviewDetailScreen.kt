@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.naz013.reviews.Review
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.nsy.reviewsadmin.R
 import org.koin.androidx.compose.koinViewModel
 import org.threeten.bp.format.DateTimeFormatter
@@ -58,20 +59,18 @@ fun ReviewDetailScreen(
       TopAppBar(
         title = { Text("Review Details") },
         navigationIcon = {
-          IconButton(onClick = onNavigateBack) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = stringResource(R.string.back)
-            )
-          }
+          MenuIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.back),
+            onClick = onNavigateBack
+          )
         },
         actions = {
-          IconButton(onClick = { viewModel.refreshReview(review.id) }) {
-            Icon(
-              imageVector = Icons.Default.Refresh,
-              contentDescription = stringResource(R.string.refresh)
-            )
-          }
+          MenuIconButton(
+            icon = Icons.Default.Refresh,
+            contentDescription = stringResource(R.string.refresh),
+            onClick = { viewModel.refreshReview(review.id) }
+          )
         },
         colors = TopAppBarDefaults.topAppBarColors(
           containerColor = MaterialTheme.colorScheme.primaryContainer,
