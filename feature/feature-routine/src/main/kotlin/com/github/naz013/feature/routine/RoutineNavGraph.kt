@@ -25,12 +25,13 @@ import org.koin.core.parameter.parametersOf
 
 fun EntryProviderScope<NavKey>.routineEntries(
   backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit = {},
   onManageTagsClick: () -> Unit = {},
 ) {
   entry<RoutineNavKey.List> { RoutinesListEntry(backStack) }
   entry<RoutineNavKey.Edit> { key -> RoutineEditEntry(key, backStack, onManageTagsClick) }
-  entry<RoutineNavKey.Preview> { key -> RoutinePreviewEntry(key, backStack) }
-  entry<RoutineNavKey.Execute> { key -> RoutineExecutionEntry(key, backStack) }
+  entry<RoutineNavKey.Preview> { key -> RoutinePreviewEntry(key, backStack, adsContent) }
+  entry<RoutineNavKey.Execute> { key -> RoutineExecutionEntry(key, backStack, adsContent) }
 }
 
 @Composable
@@ -100,6 +101,7 @@ private fun RoutineEditEntry(
 private fun RoutinePreviewEntry(
   key: RoutineNavKey.Preview,
   backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<RoutinePreviewViewModel> { parametersOf(key.id) }
 
@@ -121,6 +123,7 @@ private fun RoutinePreviewEntry(
     onDeleteClick = viewModel::onDeleteClick,
     onStepCheckToggle = viewModel::onStepCheckToggle,
     onStartClick = viewModel::onStartClick,
+    adsContent = adsContent,
   )
 }
 
@@ -128,6 +131,7 @@ private fun RoutinePreviewEntry(
 private fun RoutineExecutionEntry(
   key: RoutineNavKey.Execute,
   backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<RoutineExecutionViewModel> { parametersOf(key.id) }
 
@@ -151,5 +155,6 @@ private fun RoutineExecutionEntry(
     onSkipClick = viewModel::onSkipClick,
     onPreviousStepClick = viewModel::onPreviousStepClick,
     onCompleteStepClick = viewModel::onCompleteStepClick,
+    adsContent = adsContent,
   )
 }

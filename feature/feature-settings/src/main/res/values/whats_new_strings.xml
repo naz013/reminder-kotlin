@@ -3,7 +3,8 @@
     <string name="whats_new_version_and_date" translatable="false">%s\n%s</string>
     <string name="whats_new_text" translatable="false">
         ⭐ Refreshed the application look;\n
-        ✅ Added option to Pin reminder in the list (will be shown on top);\n
+        ✅ Added option to Pin reminder and note in the list (will be shown on top);\n
+        ✅ Added Routines;\n
         ✅ Added multiselect actions to Notes;\n
         ✅ Added 1/3/7 day timeline mode to Calendar;\n
         ⭐ Improved TODO reminder editing;\n

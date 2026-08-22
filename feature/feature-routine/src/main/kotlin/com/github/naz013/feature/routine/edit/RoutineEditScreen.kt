@@ -118,14 +118,14 @@ internal fun RoutineEditScreen(
           )
         },
         actions = {
-          if (state.canDelete) {
-            EditOverflowMenu(onDeleteClick = onDeleteClick)
-          }
           MenuTextButton(
             text = stringResource(R.string.save),
             enabled = state.canSave,
             onClick = onSaveClick,
           )
+          if (state.canDelete) {
+            EditOverflowMenu(onDeleteClick = onDeleteClick)
+          }
         },
         colors = TopAppbarColor,
       )

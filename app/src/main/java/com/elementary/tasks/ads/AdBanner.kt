@@ -11,7 +11,17 @@ import com.github.naz013.common.system.BuildInfo
 import org.koin.compose.koinInject
 
 enum class AdBanner {
-  ReminderPreview, NotePreview, GoogleTask, GoogleTaskList, Group, Tag, Birthday, Place, PinLogin, ActionScreen
+  ReminderPreview,
+  NotePreview,
+  GoogleTask,
+  GoogleTaskList,
+  Group,
+  Tag,
+  Birthday,
+  Place,
+  PinLogin,
+  ActionScreen,
+  Routine
 }
 
 @Composable

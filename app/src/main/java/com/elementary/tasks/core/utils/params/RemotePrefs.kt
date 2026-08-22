@@ -13,6 +13,9 @@ import com.github.naz013.ui.common.locale.Language
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.gson.Gson
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.coroutines.resume
 
 class RemotePrefs(
   private val prefs: Prefs,
@@ -43,6 +46,29 @@ class RemotePrefs(
 
   fun preLoad() {
     fetchConfig()
+  }
+
+  /**
+   * Suspends until this session's remote-config fetch has activated (or [timeoutMillis] elapses,
+   * e.g. offline) and [prefs] holds the resolved feature flag values - callers that gate their
+   * first render on this (rather than firing-and-forgetting via [preLoad]) avoid a flicker where a
+   * flag reads its local `defaultValue` on the very first frame and only flips to the remote value
+   * once [preLoad]'s background fetch lands.
+   */
+  suspend fun awaitFeatureFlags(timeoutMillis: Long = FEATURE_FLAGS_FETCH_TIMEOUT_MS) {
+    val fetchTask = config?.fetchAndActivate()
+    if (fetchTask != null) {
+      withTimeoutOrNull(timeoutMillis) {
+        suspendCancellableCoroutine<Unit> { continuation ->
+          fetchTask.addOnCompleteListener {
+            if (continuation.isActive) {
+              continuation.resume(Unit)
+            }
+          }
+        }
+      }
+    }
+    readFeatureFlags()
   }
 
   private fun fetchConfig() {
@@ -282,6 +308,8 @@ class RemotePrefs(
 
   companion object {
     private const val TAG = "RemotePrefs"
+
+    private const val FEATURE_FLAGS_FETCH_TIMEOUT_MS = 3000L
 
     private const val UPDATE_MESSAGE = "update_message_v2"
     private const val PRO_SALE_MESSAGE = "pro_sale_message_v2"

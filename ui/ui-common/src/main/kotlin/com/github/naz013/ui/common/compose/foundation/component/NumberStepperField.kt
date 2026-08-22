@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 
 private val STEP_BUTTON_SIZE = 40.dp
@@ -63,7 +61,7 @@ fun NumberStepperField(
       enabled = enabled && value > minValue,
       modifier = Modifier.size(STEP_BUTTON_SIZE),
     ) {
-      Icon(imageVector = Icons.Filled.Remove, contentDescription = null)
+      Icon(painter = AppIcons.Fluent.Remove, contentDescription = null)
     }
 
     OutlinedTextField(
@@ -91,7 +89,7 @@ fun NumberStepperField(
       enabled = enabled && value < maxValue,
       modifier = Modifier.size(STEP_BUTTON_SIZE),
     ) {
-      Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+      Icon(painter = AppIcons.Fluent.Add, contentDescription = null)
     }
   }
 }
