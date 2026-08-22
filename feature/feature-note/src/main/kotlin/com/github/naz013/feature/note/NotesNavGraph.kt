@@ -162,16 +162,15 @@ private fun NotesListEntry(
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val noteColorEngine = koinInject<NoteColorEngine>()
 
-  val handlers =
-    NotesNavHandlers(
-      viewModel = viewModel,
-      backStack = backStack,
-      dialogDispatcher = dialogDispatcher,
-      toastDispatcher = toastDispatcher,
-      noteIntentSender = noteIntentSender,
-      permissionRequester = permissionRequester,
-      onOpenNoteSettings = onOpenNoteSettings,
-    )
+  val handlers = NotesNavHandlers(
+    viewModel = viewModel,
+    backStack = backStack,
+    dialogDispatcher = dialogDispatcher,
+    toastDispatcher = toastDispatcher,
+    noteIntentSender = noteIntentSender,
+    permissionRequester = permissionRequester,
+    onOpenNoteSettings = onOpenNoteSettings,
+  )
   viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, handlers) }
 
   val state by viewModel.notesScreenState.collectAsState(NotesScreenState())
@@ -216,16 +215,15 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val noteColorEngine = koinInject<NoteColorEngine>()
 
-  val handlers =
-    NotesNavHandlers(
-      viewModel = viewModel,
-      backStack = backStack,
-      dialogDispatcher = dialogDispatcher,
-      toastDispatcher = toastDispatcher,
-      noteIntentSender = noteIntentSender,
-      permissionRequester = permissionRequester,
-      onOpenNoteSettings = {},
-    )
+  val handlers = NotesNavHandlers(
+    viewModel = viewModel,
+    backStack = backStack,
+    dialogDispatcher = dialogDispatcher,
+    toastDispatcher = toastDispatcher,
+    noteIntentSender = noteIntentSender,
+    permissionRequester = permissionRequester,
+    onOpenNoteSettings = {},
+  )
   viewModel.navigationEvent.ObserveEvent { handleNotesNavigationEvent(it, handlers) }
 
   val state by viewModel.notesScreenState.collectAsState(NotesScreenState())
@@ -316,8 +314,7 @@ private fun NotePreviewEntry(
   val state by viewModel.state.collectAsState(PreviewNoteState())
   PreviewNoteScreen(
     state = state,
-    actions =
-    PreviewNoteActions(
+    actions = PreviewNoteActions(
       onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
       onEditClick = viewModel::onEditClick,
       onStatusClick = {
@@ -348,57 +345,54 @@ private fun NoteEditEntry(
   val toastDispatcher = rememberToastDispatcher()
   val noteIntentSender = rememberNoteIntentSender(applicationId)
   val context = LocalContext.current
-  val galleryPicker =
-    rememberGalleryPicker(chooserTitle = stringResource(R.string.gallery)) { uris ->
-      viewModel.addMultiple(uris)
-    }
-  val cameraPicker =
-    rememberCameraPicker(applicationId = applicationId) { uri ->
-      viewModel.addMultiple(listOf(uri))
-    }
+  val galleryPicker = rememberGalleryPicker(chooserTitle = stringResource(R.string.gallery)) { uris ->
+    viewModel.addMultiple(uris)
+  }
+  val cameraPicker = rememberCameraPicker(applicationId = applicationId) { uri ->
+    viewModel.addMultiple(listOf(uri))
+  }
   val permissionRequester = rememberPermissionRequesterRationale()
   val dateTimePicker = rememberDateTimePicker()
   val urlImagePickerState = rememberUrlImagePickerState()
   UrlImagePickerDialogs(urlImagePickerState, onUrlConfirmed = viewModel::downloadImageFromUrl)
 
   val speechEngine = remember(viewModel) { SpeechEngine(context) }
-  val speechCallback =
-    remember(viewModel) {
-      object : SpeechEngineCallback() {
-        override fun onStarted() {
-          super.onStarted()
-          viewModel.onSpeechStarted()
-        }
+  val speechCallback = remember(viewModel) {
+    object : SpeechEngineCallback() {
+      override fun onStarted() {
+        super.onStarted()
+        viewModel.onSpeechStarted()
+      }
 
-        override fun onStopped() {
-          super.onStopped()
-          viewModel.onSpeechStopped()
-        }
+      override fun onStopped() {
+        super.onStopped()
+        viewModel.onSpeechStopped()
+      }
 
-        override fun onSpeechStarted() {
-          super.onSpeechStarted()
-          viewModel.onSpeechSpeaking()
-        }
+      override fun onSpeechStarted() {
+        super.onSpeechStarted()
+        viewModel.onSpeechSpeaking()
+      }
 
-        override fun onSpeechEnded() {
-          super.onSpeechEnded()
-          viewModel.onSpeechStopped()
-        }
+      override fun onSpeechEnded() {
+        super.onSpeechEnded()
+        viewModel.onSpeechStopped()
+      }
 
-        override fun onSpeechError(error: SpeechError) {
-          super.onSpeechError(error)
-          viewModel.onSpeechError()
-        }
+      override fun onSpeechError(error: SpeechError) {
+        super.onSpeechError(error)
+        viewModel.onSpeechError()
+      }
 
-        override fun onSpeechResult(speechText: SpeechText) {
-          super.onSpeechResult(speechText)
-          viewModel.onSpeechResult(
-            text = speechText.text,
-            boldRange = speechText.newText?.let { it.startIndex..it.endIndex },
-          )
-        }
+      override fun onSpeechResult(speechText: SpeechText) {
+        super.onSpeechResult(speechText)
+        viewModel.onSpeechResult(
+          text = speechText.text,
+          boldRange = speechText.newText?.let { it.startIndex..it.endIndex },
+        )
       }
     }
+  }
   DisposableEffect(speechEngine) {
     onDispose { speechEngine.stopListening() }
   }
@@ -446,8 +440,7 @@ private fun NoteEditEntry(
     supportsSpeech = remember { speechEngine.supportsRecognition() },
     onTextFieldValueChange = viewModel::onTextFieldValueChange,
     onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
-    actions =
-    NoteEditActions(
+    actions = NoteEditActions(
       onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
       onSaveClick = viewModel::onSaveClicked,
       onShareClick = viewModel::onShareClick,

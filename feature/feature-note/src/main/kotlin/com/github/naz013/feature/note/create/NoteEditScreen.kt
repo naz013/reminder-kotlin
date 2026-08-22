@@ -1,6 +1,7 @@
 package com.github.naz013.feature.note.create
 
 import android.content.ClipDescription
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -72,14 +74,19 @@ internal fun NoteEditScreen(
   modifier: Modifier = Modifier,
 ) {
   val focusManager = LocalFocusManager.current
-  val backgroundColor = state.noteColors.background
-  val contentColor = state.noteColors.content
+  val targetBackground = state.noteColors.background
+  val targetContent = state.noteColors.content
+  val backgroundColor = if (targetBackground.isSpecified) {
+    animateColorAsState(targetBackground, label = "noteBackgroundColor").value
+  } else targetBackground
+  val contentColor = if (targetContent.isSpecified) {
+    animateColorAsState(targetContent, label = "noteContentColor").value
+  } else targetContent
   val sliderColors = state.sliderColors
   val dropHighlightColor = MaterialTheme.colorScheme.primary
 
   BoxWithConstraints(
-    modifier =
-    modifier
+    modifier = modifier
       .fillMaxSize()
       .background(backgroundColor)
       .dragAndDropHighlight(
@@ -121,8 +128,7 @@ internal fun NoteEditScreen(
             )
           }
         },
-        colors =
-        TopAppBarDefaults.topAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
           containerColor = Color.Transparent,
           navigationIconContentColor = contentColor,
           actionIconContentColor = contentColor,
@@ -131,44 +137,39 @@ internal fun NoteEditScreen(
       )
 
       Column(
-        modifier =
-        Modifier
+        modifier = Modifier
           .weight(1f)
           .verticalScroll(rememberScrollState())
           .pointerInput(Unit) {
             detectTapGestures(onTap = { focusManager.clearFocus() })
-          }.padding(horizontal = 16.dp),
+          }
+          .padding(horizontal = 16.dp),
       ) {
         val context = LocalContext.current
         val noteFontProvider = koinInject<NoteFontProvider>()
-        val titleFontFamily =
-          remember(state.titleFontStyle) {
-            noteFontProvider.getTypeface(context, state.titleFontStyle)?.let { FontFamily(it) }
-              ?: FontFamily.Default
-          }
-        val fontFamily =
-          remember(state.fontStyle) {
-            noteFontProvider.getTypeface(context, state.fontStyle)?.let { FontFamily(it) }
-              ?: FontFamily.Default
-          }
+        val titleFontFamily = remember(state.titleFontStyle) {
+          noteFontProvider.getTypeface(context, state.titleFontStyle)?.let { FontFamily(it) }
+            ?: FontFamily.Default
+        }
+        val fontFamily = remember(state.fontStyle) {
+          noteFontProvider.getTypeface(context, state.fontStyle)?.let { FontFamily(it) }
+            ?: FontFamily.Default
+        }
         TextField(
           value = state.titleFieldValue,
           onValueChange = onTitleFieldValueChange,
-          modifier =
-          Modifier
+          modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp)
             .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.TITLE) },
-          textStyle =
-          MaterialTheme.typography.bodyLarge.copy(
+          textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = contentColor,
             fontSize = state.titleFontSize.sp,
             fontFamily = titleFontFamily,
             lineHeight = TextUnit.Unspecified,
           ),
           placeholder = { Text(stringResource(R.string.title)) },
-          colors =
-          TextFieldDefaults.colors(
+          colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent,
@@ -184,12 +185,10 @@ internal fun NoteEditScreen(
         TextField(
           value = state.textFieldValue,
           onValueChange = onTextFieldValueChange,
-          modifier =
-          Modifier
+          modifier = Modifier
             .fillMaxWidth()
             .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.BODY) },
-          textStyle =
-          MaterialTheme.typography.bodyLarge.copy(
+          textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = contentColor,
             fontSize = state.fontSize.sp,
             fontFamily = fontFamily,
@@ -197,8 +196,7 @@ internal fun NoteEditScreen(
           ),
           placeholder = { Text(stringResource(R.string.note)) },
           visualTransformation = boldRangeVisualTransformation(state.boldRange),
-          colors =
-          TextFieldDefaults.colors(
+          colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent,
@@ -216,8 +214,7 @@ internal fun NoteEditScreen(
           images = state.images,
           onImageClick = actions.onImageOpen,
           onRemoveClick = actions.onImageRemove,
-          modifier =
-          Modifier
+          modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp),
         )
@@ -230,8 +227,7 @@ internal fun NoteEditScreen(
     val barContainerColor = MaterialTheme.colorScheme.primaryContainer
     val barContentColor = MaterialTheme.colorScheme.onPrimaryContainer
     NoteEditFloatingBar(
-      items =
-      noteEditBarItems(
+      items = noteEditBarItems(
         state = state,
         supportsSpeech = supportsSpeech,
         contentColor = barContentColor,
@@ -242,8 +238,7 @@ internal fun NoteEditScreen(
       ),
       containerColor = barContainerColor,
       contentColor = barContentColor,
-      modifier =
-      Modifier
+      modifier = Modifier
         .align(Alignment.BottomCenter)
         .navigationBarsPadding()
         .imePadding()
@@ -307,8 +302,7 @@ private fun noteEditBarItems(
         icon = {
           val swatch = sliderColors.getOrNull(state.colorIndex) ?: contentColor
           Box(
-            modifier =
-            Modifier
+            modifier = Modifier
               .size(24.dp)
               .clip(CircleShape)
               .background(swatch.copy(alpha = state.opacity / 100f))
@@ -422,12 +416,11 @@ private fun boldRangeVisualTransformation(range: IntRange?): VisualTransformatio
     if (range == null || range.isOutOfBoundsFor(text)) {
       TransformedText(text, OffsetMapping.Identity)
     } else {
-      val annotated =
-        AnnotatedString
-          .Builder(text)
-          .apply {
-            addStyle(SpanStyle(fontWeight = FontWeight.Bold), range.first, range.last + 1)
-          }.toAnnotatedString()
+      val annotated = AnnotatedString
+        .Builder(text)
+        .apply {
+          addStyle(SpanStyle(fontWeight = FontWeight.Bold), range.first, range.last + 1)
+        }.toAnnotatedString()
       TransformedText(annotated, OffsetMapping.Identity)
     }
   }
