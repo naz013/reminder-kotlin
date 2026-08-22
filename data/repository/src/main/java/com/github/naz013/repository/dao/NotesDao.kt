@@ -27,8 +27,8 @@ internal interface NotesDao {
         ORDER BY
           isPinned DESC,
           CASE WHEN :sortOrder = 'date_az' THEN date END ASC,
-          CASE WHEN :sortOrder = 'text_az' THEN summary END ASC,
-          CASE WHEN :sortOrder = 'text_za' THEN summary END DESC,
+          CASE WHEN :sortOrder = 'text_az' THEN (CASE WHEN title != '' THEN title ELSE summary END) END ASC,
+          CASE WHEN :sortOrder = 'text_za' THEN (CASE WHEN title != '' THEN title ELSE summary END) END DESC,
           CASE WHEN :sortOrder NOT IN ('date_az', 'text_az', 'text_za') THEN date END DESC
     """
   )
@@ -44,8 +44,8 @@ internal interface NotesDao {
         ORDER BY
           isPinned DESC,
           CASE WHEN :sortOrder = 'date_az' THEN date END ASC,
-          CASE WHEN :sortOrder = 'text_az' THEN summary END ASC,
-          CASE WHEN :sortOrder = 'text_za' THEN summary END DESC,
+          CASE WHEN :sortOrder = 'text_az' THEN (CASE WHEN title != '' THEN title ELSE summary END) END ASC,
+          CASE WHEN :sortOrder = 'text_za' THEN (CASE WHEN title != '' THEN title ELSE summary END) END DESC,
           CASE WHEN :sortOrder NOT IN ('date_az', 'text_az', 'text_za') THEN date END DESC
     """
   )
