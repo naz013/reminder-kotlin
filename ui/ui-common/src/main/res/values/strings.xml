@@ -1210,4 +1210,14 @@
     <string name="header_items">Header items</string>
     <string name="header_items_subtitle">Choose which items appear on the Home screen and in what order</string>
     <string name="header_item_always_shown">Always shown</string>
+
+    <string name="cd_collapse">Collapse</string>
+    <string name="cd_remove">Remove</string>
+    <string name="cd_decrease">Decrease</string>
+    <string name="cd_increase">Increase</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_start_voice_input">Start voice input</string>
+    <string name="cd_stop_voice_input">Stop voice input</string>
+    <string name="cd_mark_as_done">Mark as done</string>
+    <string name="cd_mark_as_not_done">Mark as not done</string>
 </resources>

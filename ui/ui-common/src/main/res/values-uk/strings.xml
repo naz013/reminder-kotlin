@@ -1208,4 +1208,13 @@
     <string name="header_items">Елементи заголовка</string>
     <string name="header_items_subtitle">Виберіть, які елементи відображаються на головному екрані та в якому порядку</string>
     <string name="header_item_always_shown">Завжди відображається</string>
+    <string name="cd_collapse">Згорнути</string>
+    <string name="cd_remove">Видалити</string>
+    <string name="cd_decrease">Зменшити</string>
+    <string name="cd_increase">Збільшити</string>
+    <string name="cd_clear_search">Очистити пошук</string>
+    <string name="cd_start_voice_input">Почати голосове введення</string>
+    <string name="cd_stop_voice_input">Зупинити голосове введення</string>
+    <string name="cd_mark_as_done">Позначити як виконане</string>
+    <string name="cd_mark_as_not_done">Позначити як невиконане</string>
 </resources>

@@ -1205,4 +1205,13 @@
     <string name="header_items">Kopregel-items</string>
     <string name="header_items_subtitle">Kies welke items op het startscherm worden weergegeven en in welke volgorde</string>
     <string name="header_item_always_shown">Altijd zichtbaar</string>
+    <string name="cd_collapse">Samenvouwen</string>
+    <string name="cd_remove">Verwijderen</string>
+    <string name="cd_decrease">Verlagen</string>
+    <string name="cd_increase">Verhogen</string>
+    <string name="cd_clear_search">Zoekopdracht wissen</string>
+    <string name="cd_start_voice_input">Spraakinvoer starten</string>
+    <string name="cd_stop_voice_input">Spraakinvoer stoppen</string>
+    <string name="cd_mark_as_done">Markeren als voltooid</string>
+    <string name="cd_mark_as_not_done">Markeren als niet voltooid</string>
 </resources>

@@ -1209,4 +1209,13 @@
     <string name="header_items">हेडर आइटम</string>
     <string name="header_items_subtitle">चुनें कि होम स्क्रीन पर कौन से आइटम और किस क्रम में दिखाई दें</string>
     <string name="header_item_always_shown">हमेशा दिखाया जाता है</string>
+    <string name="cd_collapse">संक्षिप्त करें</string>
+    <string name="cd_remove">हटाएं</string>
+    <string name="cd_decrease">घटाएं</string>
+    <string name="cd_increase">बढ़ाएं</string>
+    <string name="cd_clear_search">खोज साफ़ करें</string>
+    <string name="cd_start_voice_input">आवाज़ इनपुट शुरू करें</string>
+    <string name="cd_stop_voice_input">आवाज़ इनपुट रोकें</string>
+    <string name="cd_mark_as_done">पूर्ण के रूप में चिह्नित करें</string>
+    <string name="cd_mark_as_not_done">अपूर्ण के रूप में चिह्नित करें</string>
 </resources>

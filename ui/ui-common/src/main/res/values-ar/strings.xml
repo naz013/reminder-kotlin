@@ -1205,4 +1205,13 @@
     <string name="header_items">عناصر الرأس</string>
     <string name="header_items_subtitle">اختر العناصر التي تظهر في الشاشة الرئيسية وترتيبها</string>
     <string name="header_item_always_shown">معروض دائمًا</string>
+    <string name="cd_collapse">طي</string>
+    <string name="cd_remove">إزالة</string>
+    <string name="cd_decrease">تقليل</string>
+    <string name="cd_increase">زيادة</string>
+    <string name="cd_clear_search">مسح البحث</string>
+    <string name="cd_start_voice_input">بدء الإدخال الصوتي</string>
+    <string name="cd_stop_voice_input">إيقاف الإدخال الصوتي</string>
+    <string name="cd_mark_as_done">تحديد كمكتمل</string>
+    <string name="cd_mark_as_not_done">تحديد كغير مكتمل</string>
 </resources>

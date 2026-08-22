@@ -1205,4 +1205,13 @@
     <string name="header_items">Sidhuvudobjekt</string>
     <string name="header_items_subtitle">Välj vilka objekt som visas på hemskärmen och i vilken ordning</string>
     <string name="header_item_always_shown">Visas alltid</string>
+    <string name="cd_collapse">Fäll ihop</string>
+    <string name="cd_remove">Ta bort</string>
+    <string name="cd_decrease">Minska</string>
+    <string name="cd_increase">Öka</string>
+    <string name="cd_clear_search">Rensa sökning</string>
+    <string name="cd_start_voice_input">Starta röstinmatning</string>
+    <string name="cd_stop_voice_input">Stoppa röstinmatning</string>
+    <string name="cd_mark_as_done">Markera som klar</string>
+    <string name="cd_mark_as_not_done">Markera som ej klar</string>
 </resources>

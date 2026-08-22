@@ -1207,4 +1207,13 @@
     <string name="header_items">Éléments d\'en-tête</string>
     <string name="header_items_subtitle">Choisissez les éléments affichés sur l\'écran d\'accueil et leur ordre</string>
     <string name="header_item_always_shown">Toujours affiché</string>
+    <string name="cd_collapse">Réduire</string>
+    <string name="cd_remove">Supprimer</string>
+    <string name="cd_decrease">Diminuer</string>
+    <string name="cd_increase">Augmenter</string>
+    <string name="cd_clear_search">Effacer la recherche</string>
+    <string name="cd_start_voice_input">Démarrer la saisie vocale</string>
+    <string name="cd_stop_voice_input">Arrêter la saisie vocale</string>
+    <string name="cd_mark_as_done">Marquer comme terminé</string>
+    <string name="cd_mark_as_not_done">Marquer comme non terminé</string>
 </resources>

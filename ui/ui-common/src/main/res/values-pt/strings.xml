@@ -1207,4 +1207,13 @@
     <string name="header_items">Itens do cabeçalho</string>
     <string name="header_items_subtitle">Escolha quais itens aparecem na tela inicial e em que ordem</string>
     <string name="header_item_always_shown">Sempre exibido</string>
+    <string name="cd_collapse">Recolher</string>
+    <string name="cd_remove">Remover</string>
+    <string name="cd_decrease">Diminuir</string>
+    <string name="cd_increase">Aumentar</string>
+    <string name="cd_clear_search">Limpar pesquisa</string>
+    <string name="cd_start_voice_input">Iniciar entrada de voz</string>
+    <string name="cd_stop_voice_input">Parar entrada de voz</string>
+    <string name="cd_mark_as_done">Marcar como concluído</string>
+    <string name="cd_mark_as_not_done">Marcar como não concluído</string>
 </resources>

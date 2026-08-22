@@ -1207,4 +1207,13 @@
     <string name="header_items">헤더 항목</string>
     <string name="header_items_subtitle">홈 화면에 표시할 항목과 순서를 선택하세요</string>
     <string name="header_item_always_shown">항상 표시됨</string>
+    <string name="cd_collapse">접기</string>
+    <string name="cd_remove">제거</string>
+    <string name="cd_decrease">감소</string>
+    <string name="cd_increase">증가</string>
+    <string name="cd_clear_search">검색 지우기</string>
+    <string name="cd_start_voice_input">음성 입력 시작</string>
+    <string name="cd_stop_voice_input">음성 입력 중지</string>
+    <string name="cd_mark_as_done">완료로 표시</string>
+    <string name="cd_mark_as_not_done">미완료로 표시</string>
 </resources>
