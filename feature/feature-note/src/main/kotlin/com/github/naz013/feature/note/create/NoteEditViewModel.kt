@@ -125,16 +125,28 @@ internal class NoteEditViewModel(
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
   init {
-    val colorCode = noteColorEngine.getColorCode(
-      noteColorEngine.getLastPalette(),
-      noteColorEngine.getLastColorCode(),
-    )
-    val opacity = noteColorEngine.getLasterOpacity()
+    // Existing notes get their color from onNoteLoaded() once load() finishes; seeding the
+    // last-used-color default here too would make it flash before the real color appears.
+    val isNewNote = id == null && !fromIntentData
+    val colorCode = if (isNewNote) {
+      noteColorEngine.getColorCode(
+        noteColorEngine.getLastPalette(),
+        noteColorEngine.getLastColorCode(),
+      )
+    } else {
+      null
+    }
+    val opacity = if (isNewNote) noteColorEngine.getLasterOpacity() else null
 
     _state.update {
       it.copy(
-        colorIndex = colorCode,
-        opacity = opacity,
+        colorIndex = colorCode ?: it.colorIndex,
+        opacity = opacity ?: it.opacity,
+        noteColors = if (colorCode != null && opacity != null) {
+          noteColorEngine.colorsFor(colorCode, opacity)
+        } else {
+          it.noteColors
+        },
         fontSize =
         if (notePreferences.isNoteFontSizeRememberingEnabled) {
           notePreferences.lastNoteFontSize
@@ -161,7 +173,6 @@ internal class NoteEditViewModel(
         },
         hasCamera = systemInfo.hasCamera,
         sliderColors = noteColorEngine.allColors(),
-        noteColors = noteColorEngine.colorsFor(colorCode, opacity),
         hapticFeedbackEnabled = notePreferences.hapticsEnabled,
       )
     }
