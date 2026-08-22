@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -14,12 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
 private val STEP_BUTTON_SIZE = 40.dp
 private val TEXT_FIELD_WIDTH = 64.dp
@@ -53,16 +54,16 @@ fun NumberStepperField(
     horizontalArrangement = Arrangement.Center,
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    IconButton(
+    MenuIconButton(
+      modifier = Modifier.size(STEP_BUTTON_SIZE),
+      icon = AppIcons.Fluent.Remove,
+      contentDescription = stringResource(R.string.cd_decrease),
+      enabled = enabled && value > minValue,
       onClick = {
         if (hapticFeedbackEnabled) hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         onValueChange((value - step).coerceIn(minValue, maxValue))
       },
-      enabled = enabled && value > minValue,
-      modifier = Modifier.size(STEP_BUTTON_SIZE),
-    ) {
-      Icon(painter = AppIcons.Fluent.Remove, contentDescription = null)
-    }
+    )
 
     OutlinedTextField(
       value = value.toString(),
@@ -81,16 +82,16 @@ fun NumberStepperField(
       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
     )
 
-    IconButton(
+    MenuIconButton(
+      modifier = Modifier.size(STEP_BUTTON_SIZE),
+      icon = AppIcons.Fluent.Add,
+      contentDescription = stringResource(R.string.cd_increase),
+      enabled = enabled && value < maxValue,
       onClick = {
         if (hapticFeedbackEnabled) hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         onValueChange((value + step).coerceIn(minValue, maxValue))
       },
-      enabled = enabled && value < maxValue,
-      modifier = Modifier.size(STEP_BUTTON_SIZE),
-    ) {
-      Icon(painter = AppIcons.Fluent.Add, contentDescription = null)
-    }
+    )
   }
 }
 

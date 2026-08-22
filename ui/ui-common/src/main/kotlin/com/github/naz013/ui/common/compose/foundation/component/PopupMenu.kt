@@ -49,6 +49,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 
 private val PopupMenuCornerRadius = 16.dp
 private val PopupMenuIconSize = 20.dp
@@ -708,11 +709,13 @@ private fun AnchoredPopupMenuPreview() {
           // Handle item click
         }
       ) {
-        IconButton(onClick = { }) {
-          Icon(
-            imageVector = Icons.Default.MoreVert,
-            contentDescription = "More options"
-          )
+        TooltipIconButton(contentDescription = "More options") {
+          IconButton(onClick = { }) {
+            Icon(
+              imageVector = Icons.Default.MoreVert,
+              contentDescription = "More options"
+            )
+          }
         }
       }
     }
@@ -796,11 +799,13 @@ private fun AnchoredPopupMenuEndAlignmentPreview() {
           horizontalAlignment = PopupMenuAlignment.End,
           verticalAlignment = PopupMenuVerticalAlignment.Auto
         ) {
-          IconButton(onClick = { }) {
-            Icon(
-              imageVector = Icons.Default.MoreVert,
-              contentDescription = "Menu"
-            )
+          TooltipIconButton(contentDescription = "Menu") {
+            IconButton(onClick = { }) {
+              Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "Menu"
+              )
+            }
           }
         }
       }
@@ -837,11 +842,13 @@ private fun AnchoredPopupMenuAboveAlignmentPreview() {
           horizontalAlignment = PopupMenuAlignment.Start,
           verticalAlignment = PopupMenuVerticalAlignment.Above
         ) {
-          IconButton(onClick = { }) {
-            Icon(
-              imageVector = Icons.Default.MoreVert,
-              contentDescription = "Actions"
-            )
+          TooltipIconButton(contentDescription = "Actions") {
+            IconButton(onClick = { }) {
+              Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "Actions"
+              )
+            }
           }
         }
       }
