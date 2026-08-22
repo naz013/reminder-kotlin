@@ -321,14 +321,20 @@ internal class BuildReminderViewModel(
             }
 
           isSaving = true
-          saveAndStartReminder(finalV2, isEdit = isEdited)
+          val reviewDialogShown = saveAndStartReminder(finalV2, isEdit = isEdited)
 
           if (_state.value.saveAsPresetChecked && _state.value.presetName.isNotEmpty()) {
             savePreset(builderItems)
           }
 
-          withContext(dispatcherProvider.main()) {
-            event.emit(ViewModelEvent.MoveBack)
+          // Skip the close if the feedback-form review dialog was just requested - it's Compose
+          // state owned by this screen's nav entry, so popping the back stack here would tear it
+          // down before it can ever appear. onReviewDialogDismissed() closes the screen instead,
+          // once the user is done with the dialog.
+          if (!reviewDialogShown) {
+            withContext(dispatcherProvider.main()) {
+              event.emit(ViewModelEvent.MoveBack)
+            }
           }
         }
 
@@ -988,10 +994,13 @@ internal class BuildReminderViewModel(
     analyticsEventSender.send(PresetUsed(PresetAction.CREATE))
   }
 
+  /** @return true if the feedback-form review dialog ([ViewModelEvent.ShowReviewDialog]) was just
+   * requested - the caller must not close the screen in that case, since the dialog is Compose
+   * state owned by this screen's own nav entry. */
   private suspend fun saveAndStartReminder(
     reminder: ReminderV2,
     isEdit: Boolean = true,
-  ) {
+  ): Boolean {
     Logger.i(
       TAG,
       "Start reminder saving, id = ${reminder.uuId} and group id = ${reminder.groupId}",
@@ -1010,6 +1019,7 @@ internal class BuildReminderViewModel(
     // Track reminder creation, show the feedback-form review dialog after 4 reminders, then -
     // staggered after that, never in the same session - nudge the real Play Store review flow
     // after 10, since the feedback form never touches the actual Play Store rating.
+    var reviewDialogShown = false
     if (!isEdit) {
       val currentCount = reminderPreferences.remindersCreatedCount
       val newCount = currentCount + 1
@@ -1022,6 +1032,7 @@ internal class BuildReminderViewModel(
           askReview(R.string.share_your_experience)
         }
         reminderPreferences.reviewDialogShown = true
+        reviewDialogShown = true
       } else if (reminderPreferences.reviewDialogShown && !reminderPreferences.playReviewFlowShown && newCount >= 10) {
         Logger.i(TAG, "Launching Play Store review flow after 10 reminders created")
         withContext(dispatcherProvider.main()) {
@@ -1030,6 +1041,14 @@ internal class BuildReminderViewModel(
         reminderPreferences.playReviewFlowShown = true
       }
     }
+    return reviewDialogShown
+  }
+
+  /** Called once the feedback-form review dialog shown from [saveReminder] has been dismissed, to
+   * finally close the screen the way [ViewModelEvent.MoveBack] normally would have right after
+   * saving. */
+  fun onReviewDialogDismissed() {
+    event.emit(ViewModelEvent.MoveBack)
   }
 
   /** Mirrors [UiReminderType.getEventType]'s priority order, reading straight off [ReminderV2]'s
