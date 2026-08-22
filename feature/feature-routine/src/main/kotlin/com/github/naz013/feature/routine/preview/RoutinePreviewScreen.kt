@@ -1,5 +1,11 @@
 package com.github.naz013.feature.routine.preview
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,18 +14,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -44,6 +50,8 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagChipRow
 
+private const val CHECK_ANIMATION_MS = 150
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RoutinePreviewScreen(
@@ -55,6 +63,7 @@ internal fun RoutinePreviewScreen(
   onDeleteClick: () -> Unit,
   onStepCheckToggle: (stepId: String) -> Unit,
   onStartClick: () -> Unit,
+  adsContent: @Composable () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -107,6 +116,7 @@ internal fun RoutinePreviewScreen(
       is RoutinePreviewState.Ready -> {
         LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
           item { RoutineBanner(state) }
+          item { adsContent() }
           items(state.steps, key = { it.id }) { step ->
             RoutineStepChecklistRow(step = step, onCheckToggle = { onStepCheckToggle(step.id) })
           }
@@ -170,11 +180,30 @@ private fun RoutineStepChecklistRow(
     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    Checkbox(
-      checked = step.isCompleted,
-      onCheckedChange = { onCheckToggle() },
-      colors = CheckboxDefaults.colors(),
-    )
+    IconButton(onClick = onCheckToggle, modifier = Modifier.size(40.dp)) {
+      AnimatedVisibility(
+        visible = step.isCompleted,
+        enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
+        exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+      ) {
+        Icon(
+          painter = AppIcons.Fluent.CheckboxChecked,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.primary,
+        )
+      }
+      AnimatedVisibility(
+        visible = !step.isCompleted,
+        enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
+        exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+      ) {
+        Icon(
+          painter = AppIcons.Fluent.CheckboxUnchecked,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+      }
+    }
     Column(modifier = Modifier.weight(1f)) {
       Text(
         text = step.title,

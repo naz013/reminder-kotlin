@@ -94,6 +94,7 @@ class AdsProvider {
         AdBanner.Place -> "ca-app-pub-5133908997831400/1110689651"
         AdBanner.PinLogin -> "ca-app-pub-5133908997831400/3859996131"
         AdBanner.ActionScreen -> "ca-app-pub-5133908997831400/8797607986"
+        AdBanner.Routine -> "ca-app-pub-5133908997831400/8541500221"
       }
     }
 

@@ -8,6 +8,7 @@ import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.feature.reminder.build.preset.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.github.naz013.ui.group.GroupsUtil
 import com.github.naz013.feature.workflow.WorkflowRulesUtil
 import com.github.naz013.appwidgets.AppWidgetPreviewUpdater
@@ -34,6 +35,7 @@ sealed interface BottomNavInitState {
 class BottomNavInitViewModel(
   googleTasksAuthManager: GoogleTasksAuthManager,
   private val prefs: Prefs,
+  private val remotePrefs: RemotePrefs,
   private val activateAllActiveRemindersUseCase: ActivateAllActiveRemindersUseCase,
   private val dispatcherProvider: DispatcherProvider,
   private val notifier: Notifier,
@@ -58,6 +60,7 @@ class BottomNavInitViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
+      remotePrefs.awaitFeatureFlags()
       presetInitProcessor.run()
       checkIfAppUpdated()
       checkDb()

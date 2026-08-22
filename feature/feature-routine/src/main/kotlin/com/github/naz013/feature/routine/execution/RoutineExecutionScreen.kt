@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Pause
@@ -52,6 +54,7 @@ internal fun RoutineExecutionScreen(
   onSkipClick: () -> Unit,
   onPreviousStepClick: () -> Unit,
   onCompleteStepClick: () -> Unit,
+  adsContent: @Composable () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -103,6 +106,7 @@ internal fun RoutineExecutionScreen(
           onAddMinuteClick = onAddMinuteClick,
           onSkipClick = onSkipClick,
           onPreviousStepClick = onPreviousStepClick,
+          adsContent = adsContent,
           modifier = Modifier.fillMaxSize().padding(padding),
         )
       }
@@ -125,10 +129,11 @@ private fun RunningContent(
   onAddMinuteClick: () -> Unit,
   onSkipClick: () -> Unit,
   onPreviousStepClick: () -> Unit,
+  adsContent: @Composable () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier.padding(24.dp),
+    modifier = modifier.verticalScroll(rememberScrollState()).padding(24.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Card(
@@ -166,7 +171,11 @@ private fun RunningContent(
         }
       }
     }
-    Spacer(modifier = Modifier.height(32.dp))
+    Spacer(modifier = Modifier.height(16.dp))
+
+    adsContent()
+
+    Spacer(modifier = Modifier.height(16.dp))
 
     if (state.isTimed) {
       Row(

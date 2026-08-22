@@ -245,6 +245,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         routineEntries(
           backStack = backStack,
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Routine) },
           onManageTagsClick = { backStack.add(TagsNavKey.Manage) },
         )
         placesEntries(

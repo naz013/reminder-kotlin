@@ -9,6 +9,7 @@ import com.github.naz013.featureflags.FeatureFlags
 import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.feature.reminder.build.preset.PresetInitProcessor
 import com.elementary.tasks.core.utils.params.Prefs
+import com.elementary.tasks.core.utils.params.RemotePrefs
 import com.github.naz013.ui.group.GroupsUtil
 import com.elementary.tasks.mockDispatcherProvider
 import com.github.naz013.feature.workflow.WorkflowRulesUtil
@@ -34,6 +35,7 @@ import org.junit.Test
 class BottomNavInitViewModelTest : BaseTest() {
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>()
   private val prefs = mockk<Prefs>(relaxed = true)
+  private val remotePrefs = mockk<RemotePrefs>(relaxed = true)
   private val activateAllActiveRemindersUseCase = mockk<ActivateAllActiveRemindersUseCase>(relaxed = true)
   private val notifier = mockk<Notifier>(relaxed = true)
   private val featureFlags = mockk<FeatureFlags>()
@@ -81,6 +83,7 @@ class BottomNavInitViewModelTest : BaseTest() {
     BottomNavInitViewModel(
       googleTasksAuthManager = googleTasksAuthManager,
       prefs = prefs,
+      remotePrefs = remotePrefs,
       activateAllActiveRemindersUseCase = activateAllActiveRemindersUseCase,
       dispatcherProvider = mockDispatcherProvider(),
       notifier = notifier,
