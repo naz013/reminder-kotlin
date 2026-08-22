@@ -33,6 +33,19 @@ internal class CalendarHostViewModel(
     MutableStateFlow(dateTimeManager.fromMillis(initialDateMillis).toLocalDate())
 
   /**
+   * Bumped on every explicit jump into a timeline mode (Day/3-day/7-day) - i.e. every call to
+   * [openDay] or [onModeSelected] landing on one of those modes. Folded into the timeline
+   * ViewModel's Koin key (see `TimelineMode` in `CalendarNavGraph`) so an explicit jump always
+   * gets a fresh `TimelineViewModel` - and with it, a scroll position reset to "now" - instead of
+   * silently reusing whatever scroll offset a previous, unrelated visit left behind. A plain
+   * resume (e.g. returning from a reminder/birthday preview) doesn't call either method, so the
+   * token - and the cached ViewModel it's keyed on - stays put, which is what lets that specific
+   * case keep restoring the scroll position it had before leaving.
+   */
+  var timelineJumpToken: Int = 0
+    private set
+
+  /**
    * Switching into a day-based mode (Day/3-day/7-day) from the app-bar toggle always jumps to
    * today, regardless of what was previously being viewed; switching into Month preserves the
    * existing anchor so the month you were browsing elsewhere stays in view.
@@ -42,6 +55,7 @@ internal class CalendarHostViewModel(
     calendarPreferences.lastViewMode = newMode
     if (newMode != CalendarViewMode.MONTH) {
       anchorDate.update { LocalDate.now() }
+      timelineJumpToken++
     }
     mode.update { newMode }
   }
@@ -50,6 +64,7 @@ internal class CalendarHostViewModel(
   fun openDay(date: LocalDate) {
     calendarPreferences.lastViewMode = CalendarViewMode.DAY
     anchorDate.update { date }
+    timelineJumpToken++
     mode.update { CalendarViewMode.DAY }
   }
 

@@ -174,9 +174,17 @@ private fun TimelineMode(
   onOpenBirthdayPreview: (id: String) -> Unit,
 ) {
   val daySpan = mode.daySpan
-  // Keyed by span so Day/3-day/7-day each get their own retained view-model instance.
+  // Keyed by span (so Day/3-day/7-day each get their own retained view-model instance) and by
+  // host.timelineJumpToken (so an explicit jump - tapping a day in the month grid, or picking a
+  // timeline mode from the toggle - always gets a fresh instance instead of silently reusing a
+  // previous visit's scroll position; see the token's kdoc on CalendarHostViewModel). Reading the
+  // token here is safe without collectAsState: it only needs to be current at the moment this
+  // composable is (re)entered, which `key(mode)` at the call site already guarantees happens
+  // exactly when a jump lands on this mode.
   val viewModel =
-    koinViewModel<TimelineViewModel>(key = "timeline-$daySpan") { parametersOf(host.anchorMillis(), daySpan) }
+    koinViewModel<TimelineViewModel>(key = "timeline-$daySpan-${host.timelineJumpToken}") {
+      parametersOf(host.anchorMillis(), daySpan)
+    }
   val anchorDate by host.anchorDate.collectAsState()
 
   viewModel.navigationEvent.ObserveEvent { event ->
