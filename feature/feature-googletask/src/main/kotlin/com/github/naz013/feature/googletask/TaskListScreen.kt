@@ -1,7 +1,6 @@
 package com.github.naz013.feature.googletask
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +33,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.AppPullToRefreshBox
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.tag.TagFilterRow
@@ -106,44 +105,41 @@ internal fun TaskListScreen(
       )
     },
   ) { padding ->
-    PullToRefreshBox(
-      isRefreshing = state.isLoading,
+    AppPullToRefreshBox(
+      isRefreshing = state.isSyncing,
       onRefresh = onRefresh,
       modifier =
         Modifier
           .fillMaxSize()
           .padding(padding),
     ) {
-      Column(modifier = Modifier.fillMaxSize()) {
-        TagFilterRow(
-          allTags = state.allTags,
-          selectedTagId = state.selectedTagId,
-          onTagSelected = onTagSelected,
-          modifier = Modifier.padding(top = 8.dp),
-        )
-        if (state.tasks.isEmpty()) {
-          GoogleTasksEmptyState(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+      // A single LazyColumn is used even for the empty state (rather than swapping in a plain
+      // Column) so there is always a scrollable descendant to dispatch nested-scroll drag events
+      // to the pull-to-refresh gesture — a non-scrollable child never triggers it.
+      LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(top = 8.dp, bottom = 88.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+      ) {
+        item {
+          TagFilterRow(
+            allTags = state.allTags,
+            selectedTagId = state.selectedTagId,
+            onTagSelected = onTagSelected,
           )
+        }
+        if (state.tasks.isEmpty()) {
+          item {
+            GoogleTasksEmptyState(modifier = Modifier.fillParentMaxSize())
+          }
         } else {
-          LazyColumn(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-          ) {
-            items(state.tasks, key = { it.id }) { task ->
-              GoogleTaskRow(
-                task = task,
-                onClick = { onTaskClick(task.id) },
-                onToggle = { onTaskToggle(task.id) },
-              )
-            }
+          items(state.tasks, key = { it.id }) { task ->
+            GoogleTaskRow(
+              task = task,
+              onClick = { onTaskClick(task.id) },
+              onToggle = { onTaskToggle(task.id) },
+              modifier = Modifier.padding(horizontal = 16.dp),
+            )
           }
         }
       }
