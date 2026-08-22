@@ -205,6 +205,15 @@ class EditGroupViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `onNameChanged truncates title to 100 characters`() {
+    val latest = observeState()
+
+    viewModel.onNameChanged("a".repeat(150))
+
+    assertEquals(100, latest().title.length)
+  }
+
+  @Test
   fun `onColorSelected updates color position`() {
     val latest = observeState()
 

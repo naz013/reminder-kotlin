@@ -58,7 +58,7 @@ internal class TagEditViewModel(
   }
 
   fun onNameChanged(name: String) {
-    _state.update { it.copy(name = name, nameError = false) }
+    _state.update { it.copy(name = name.take(MAX_NAME_LENGTH), nameError = false) }
   }
 
   fun onColorSelected(position: Int) {
@@ -103,5 +103,6 @@ internal class TagEditViewModel(
 
   companion object {
     private const val TAG = "TagEditViewModel"
+    private const val MAX_NAME_LENGTH = 100
   }
 }

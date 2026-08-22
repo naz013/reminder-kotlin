@@ -80,7 +80,7 @@ internal class EditGroupViewModel(
   }
 
   fun onNameChanged(text: String) {
-    _state.update { it.copy(title = text, titleError = false) }
+    _state.update { it.copy(title = text.take(MAX_TITLE_LENGTH), titleError = false) }
   }
 
   fun onColorSelected(position: Int) {
@@ -463,5 +463,6 @@ internal class EditGroupViewModel(
 
   companion object {
     private const val TAG = "EditGroupViewModel"
+    private const val MAX_TITLE_LENGTH = 100
   }
 }
