@@ -236,6 +236,7 @@ dependencies {
   implementation(project(":feature:feature-workflow"))
   implementation(project(":feature:feature-settings"))
   implementation(project(":feature:feature-places"))
+  implementation(project(":feature:feature-routine"))
   implementation(project(":extensions:localbackup"))
 
   implementation(project(":core:platform-common"))
@@ -249,12 +250,14 @@ dependencies {
   implementation(project(":ui:ui-note"))
   implementation(project(":ui:ui-notification-settings"))
   implementation(project(":ui:ui-reminder"))
+  implementation(project(":ui:ui-routine"))
   implementation(project(":ui:ui-tag"))
 
   implementation(project(":logic:logic-birthday"))
   implementation(project(":logic:logic-googletask"))
   implementation(project(":logic:logic-group"))
   implementation(project(":logic:logic-reminder"))
+  implementation(project(":logic:logic-routine"))
   implementation(project(":logic:logic-schedule"))
   implementation(project(":logic:logic-tag"))
   implementation(project(":logic:logic-workflow"))

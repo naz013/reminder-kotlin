@@ -1103,7 +1103,7 @@
     <string name="streak_current">Streak saat ini: %1$d hari</string>
     <string name="streak_longest">Streak terpanjang: %1$d hari</string>
     <string name="streak_fired_count">Aktif %1$d kali dalam 90 hari terakhir</string>
-    <string name="no_insights_yet">Belum ada aktivitas pengingat dalam 90 hari terakhir</string>
+    <string name="no_insights_yet">Belum ada aktivitas dalam 90 hari terakhir</string>
 
     <string name="upcoming_events">Mendatang</string>
 
@@ -1154,4 +1154,47 @@
 
     <string name="merge">Gabungkan</string>
     <string name="notes_merge_selected_confirm">Gabungkan %1$d catatan menjadi satu? Catatan asli akan dihapus.</string>
+
+    <string name="routines">Rutinitas</string>
+    <string name="new_routine">Rutinitas baru</string>
+    <string name="no_routines">Belum ada rutinitas</string>
+    <string name="routine_description_hint">Deskripsi (opsional)</string>
+    <string name="routine_steps">Langkah-langkah</string>
+    <string name="add_step">Tambah langkah</string>
+    <string name="step_title_hint">Judul langkah</string>
+    <string name="duration_none">Tidak ada</string>
+    <string name="repeat_daily">Berulang setiap hari</string>
+    <string name="start_routine">Mulai Rutinitas</string>
+    <string name="reset_steps">Atur ulang langkah</string>
+    <string name="reset_steps_confirmation">Atur ulang semua langkah menjadi belum dicentang?</string>
+    <string name="routine_step_count">%1$d langkah</string>
+    <string name="delete_routine_confirmation">Hapus rutinitas ini secara permanen?</string>
+    <string name="move_step_up">Pindahkan langkah ke atas</string>
+    <string name="move_step_down">Pindahkan langkah ke bawah</string>
+    <string name="sort">Urutkan</string>
+    <string name="sort_by_date">Berdasarkan tanggal pembuatan</string>
+    <string name="sort_by_name">Berdasarkan nama</string>
+    <string name="routine_on_demand">Sesuai permintaan</string>
+    <string name="routine_steps_required">Tambahkan setidaknya satu langkah</string>
+    <string name="repeat_none">Tidak pernah</string>
+    <string name="repeat_weekly">Berulang setiap minggu</string>
+    <string name="repeat_monthly">Berulang setiap bulan</string>
+    <string name="repeat_weekly_days">Mingguan: %1$s</string>
+    <string name="repeat_monthly_day">Bulanan pada tanggal %1$d</string>
+    <string name="repeat_weekdays_required">Pilih setidaknya satu hari</string>
+    <string name="step_of_count">Langkah %1$d dari %2$d</string>
+    <string name="pause">Jeda</string>
+    <string name="resume">Lanjutkan</string>
+    <string name="skip_step">Lewati</string>
+    <string name="complete_step">Selesaikan langkah</string>
+    <string name="previous_step">Langkah sebelumnya</string>
+    <string name="add_one_minute">+1 mnt</string>
+    <string name="routine_finished_title">Rutinitas selesai</string>
+    <string name="routine_execution_total_time">Total waktu: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d dari %2$d langkah selesai</string>
+    <string name="routine_insights_section">Rentetan rutinitas</string>
+    <string name="routine_focus_time_total">Total waktu fokus: %1$s (90 hari terakhir)</string>
+    <string name="routine_insight_most_skipped">Langkah paling sering dilewati: %1$s (%2$d%% selesai)</string>
+    <string name="routine_icon">Ikon rutinitas</string>
+    <string name="no_icon">Tidak ada ikon</string>
 </resources>

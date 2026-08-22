@@ -20,6 +20,7 @@ dependencies {
   implementation(project(":data:legal-api"))
   implementation(project(":data:cloud-api"))
   implementation(project(":logic:logic-workflow"))
+  implementation(project(":logic:logic-routine"))
   implementation(project(":ui:ui-common"))
   implementation(project(":ui:ui-reminder"))
   implementation(project(":ui:ui-notification-settings"))

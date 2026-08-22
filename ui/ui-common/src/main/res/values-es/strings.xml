@@ -1105,7 +1105,7 @@
     <string name="streak_current">Racha actual: %1$d días</string>
     <string name="streak_longest">Racha más larga: %1$d días</string>
     <string name="streak_fired_count">Se activó %1$d veces en los últimos 90 días</string>
-    <string name="no_insights_yet">Sin actividad de recordatorios en los últimos 90 días aún</string>
+    <string name="no_insights_yet">Aún sin actividad en los últimos 90 días</string>
 
     <string name="upcoming_events">Próximos</string>
 
@@ -1156,4 +1156,47 @@
 
     <string name="merge">Combinar</string>
     <string name="notes_merge_selected_confirm">¿Combinar %1$d notas en una sola? Las notas originales se eliminarán.</string>
+
+    <string name="routines">Rutinas</string>
+    <string name="new_routine">Nueva rutina</string>
+    <string name="no_routines">Aún no hay rutinas</string>
+    <string name="routine_description_hint">Descripción (opcional)</string>
+    <string name="routine_steps">Pasos</string>
+    <string name="add_step">Añadir paso</string>
+    <string name="step_title_hint">Título del paso</string>
+    <string name="duration_none">Ninguna</string>
+    <string name="repeat_daily">Se repite diariamente</string>
+    <string name="start_routine">Iniciar rutina</string>
+    <string name="reset_steps">Restablecer pasos</string>
+    <string name="reset_steps_confirmation">¿Restablecer todos los pasos a no marcados?</string>
+    <string name="routine_step_count">%1$d pasos</string>
+    <string name="delete_routine_confirmation">¿Eliminar esta rutina permanentemente?</string>
+    <string name="move_step_up">Mover paso arriba</string>
+    <string name="move_step_down">Mover paso abajo</string>
+    <string name="sort">Ordenar</string>
+    <string name="sort_by_date">Por fecha de creación</string>
+    <string name="sort_by_name">Por nombre</string>
+    <string name="routine_on_demand">Bajo demanda</string>
+    <string name="routine_steps_required">Añade al menos un paso</string>
+    <string name="repeat_none">Nunca</string>
+    <string name="repeat_weekly">Se repite semanalmente</string>
+    <string name="repeat_monthly">Se repite mensualmente</string>
+    <string name="repeat_weekly_days">Semanal: %1$s</string>
+    <string name="repeat_monthly_day">Mensual el día %1$d</string>
+    <string name="repeat_weekdays_required">Selecciona al menos un día</string>
+    <string name="step_of_count">Paso %1$d de %2$d</string>
+    <string name="pause">Pausar</string>
+    <string name="resume">Reanudar</string>
+    <string name="skip_step">Omitir</string>
+    <string name="complete_step">Completar paso</string>
+    <string name="previous_step">Paso anterior</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Rutina finalizada</string>
+    <string name="routine_execution_total_time">Tiempo total: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d de %2$d pasos completados</string>
+    <string name="routine_insights_section">Rachas de rutinas</string>
+    <string name="routine_focus_time_total">Tiempo total de enfoque: %1$s (últimos 90 días)</string>
+    <string name="routine_insight_most_skipped">Paso más omitido: %1$s (%2$d%% de finalización)</string>
+    <string name="routine_icon">Icono de la rutina</string>
+    <string name="no_icon">Sin icono</string>
 </resources>

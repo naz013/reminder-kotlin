@@ -1103,7 +1103,7 @@
     <string name="streak_current">Chuỗi hiện tại: %1$d ngày</string>
     <string name="streak_longest">Chuỗi dài nhất: %1$d ngày</string>
     <string name="streak_fired_count">Đã kích hoạt %1$d lần trong 90 ngày qua</string>
-    <string name="no_insights_yet">Chưa có hoạt động lời nhắc nào trong 90 ngày qua</string>
+    <string name="no_insights_yet">Chưa có hoạt động nào trong 90 ngày qua</string>
 
     <string name="upcoming_events">Sắp tới</string>
 
@@ -1154,4 +1154,47 @@
 
     <string name="merge">Hợp nhất</string>
     <string name="notes_merge_selected_confirm">Hợp nhất %1$d ghi chú thành một? Các ghi chú gốc sẽ bị xóa.</string>
+
+    <string name="routines">Thói quen</string>
+    <string name="new_routine">Thói quen mới</string>
+    <string name="no_routines">Chưa có thói quen nào</string>
+    <string name="routine_description_hint">Mô tả (không bắt buộc)</string>
+    <string name="routine_steps">Các bước</string>
+    <string name="add_step">Thêm bước</string>
+    <string name="step_title_hint">Tiêu đề bước</string>
+    <string name="duration_none">Không có</string>
+    <string name="repeat_daily">Lặp lại hàng ngày</string>
+    <string name="start_routine">Bắt đầu thói quen</string>
+    <string name="reset_steps">Đặt lại các bước</string>
+    <string name="reset_steps_confirmation">Đặt lại tất cả các bước về chưa hoàn thành?</string>
+    <string name="routine_step_count">%1$d bước</string>
+    <string name="delete_routine_confirmation">Xóa vĩnh viễn thói quen này?</string>
+    <string name="move_step_up">Di chuyển bước lên</string>
+    <string name="move_step_down">Di chuyển bước xuống</string>
+    <string name="sort">Sắp xếp</string>
+    <string name="sort_by_date">Theo ngày tạo</string>
+    <string name="sort_by_name">Theo tên</string>
+    <string name="routine_on_demand">Theo yêu cầu</string>
+    <string name="routine_steps_required">Thêm ít nhất một bước</string>
+    <string name="repeat_none">Không bao giờ</string>
+    <string name="repeat_weekly">Lặp lại hàng tuần</string>
+    <string name="repeat_monthly">Lặp lại hàng tháng</string>
+    <string name="repeat_weekly_days">Hàng tuần: %1$s</string>
+    <string name="repeat_monthly_day">Hàng tháng vào ngày %1$d</string>
+    <string name="repeat_weekdays_required">Chọn ít nhất một ngày</string>
+    <string name="step_of_count">Bước %1$d trên %2$d</string>
+    <string name="pause">Tạm dừng</string>
+    <string name="resume">Tiếp tục</string>
+    <string name="skip_step">Bỏ qua</string>
+    <string name="complete_step">Hoàn thành bước</string>
+    <string name="previous_step">Bước trước</string>
+    <string name="add_one_minute">+1 phút</string>
+    <string name="routine_finished_title">Đã hoàn thành thói quen</string>
+    <string name="routine_execution_total_time">Tổng thời gian: %1$s</string>
+    <string name="routine_execution_steps_completed">Đã hoàn thành %1$d trên %2$d bước</string>
+    <string name="routine_insights_section">Chuỗi thói quen</string>
+    <string name="routine_focus_time_total">Tổng thời gian tập trung: %1$s (90 ngày qua)</string>
+    <string name="routine_insight_most_skipped">Bước bị bỏ qua nhiều nhất: %1$s (hoàn thành %2$d%%)</string>
+    <string name="routine_icon">Biểu tượng thói quen</string>
+    <string name="no_icon">Không có biểu tượng</string>
 </resources>

@@ -12,7 +12,6 @@ class ReminderAndroidApplicationConventionPlugin : Plugin<Project> {
     with(target) {
       pluginManager.apply("com.android.application")
       pluginManager.apply("reminder.detekt")
-      pluginManager.apply("reminder.kover")
 
       extensions.configure<ApplicationExtension> {
         compileSdk = catalog.intVersion("compileSdk")

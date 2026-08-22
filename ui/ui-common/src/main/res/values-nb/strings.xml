@@ -1103,7 +1103,7 @@
     <string name="streak_current">Nåværende streak: %1$d dager</string>
     <string name="streak_longest">Lengste streak: %1$d dager</string>
     <string name="streak_fired_count">Utløst %1$d ganger de siste 90 dagene</string>
-    <string name="no_insights_yet">Ingen påminnelsesaktivitet de siste 90 dagene ennå</string>
+    <string name="no_insights_yet">Ingen aktivitet de siste 90 dagene ennå</string>
 
     <string name="upcoming_events">Kommende</string>
 
@@ -1154,4 +1154,47 @@
 
     <string name="merge">Slå sammen</string>
     <string name="notes_merge_selected_confirm">Slå sammen %1$d notater til én? De opprinnelige notatene blir slettet.</string>
+
+    <string name="routines">Rutiner</string>
+    <string name="new_routine">Ny rutine</string>
+    <string name="no_routines">Ingen rutiner ennå</string>
+    <string name="routine_description_hint">Beskrivelse (valgfritt)</string>
+    <string name="routine_steps">Trinn</string>
+    <string name="add_step">Legg til trinn</string>
+    <string name="step_title_hint">Trinntittel</string>
+    <string name="duration_none">Ingen</string>
+    <string name="repeat_daily">Gjentas daglig</string>
+    <string name="start_routine">Start rutine</string>
+    <string name="reset_steps">Tilbakestill trinn</string>
+    <string name="reset_steps_confirmation">Tilbakestille alle trinn til ikke fullført?</string>
+    <string name="routine_step_count">%1$d trinn</string>
+    <string name="delete_routine_confirmation">Slette denne rutinen permanent?</string>
+    <string name="move_step_up">Flytt trinn opp</string>
+    <string name="move_step_down">Flytt trinn ned</string>
+    <string name="sort">Sorter</string>
+    <string name="sort_by_date">Etter opprettelsesdato</string>
+    <string name="sort_by_name">Etter navn</string>
+    <string name="routine_on_demand">På forespørsel</string>
+    <string name="routine_steps_required">Legg til minst ett trinn</string>
+    <string name="repeat_none">Aldri</string>
+    <string name="repeat_weekly">Gjentas ukentlig</string>
+    <string name="repeat_monthly">Gjentas månedlig</string>
+    <string name="repeat_weekly_days">Ukentlig: %1$s</string>
+    <string name="repeat_monthly_day">Månedlig på dag %1$d</string>
+    <string name="repeat_weekdays_required">Velg minst én dag</string>
+    <string name="step_of_count">Trinn %1$d av %2$d</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Gjenoppta</string>
+    <string name="skip_step">Hopp over</string>
+    <string name="complete_step">Fullfør trinn</string>
+    <string name="previous_step">Forrige trinn</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Rutine fullført</string>
+    <string name="routine_execution_total_time">Total tid: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d av %2$d trinn fullført</string>
+    <string name="routine_insights_section">Rutinerekker</string>
+    <string name="routine_focus_time_total">Total fokustid: %1$s (siste 90 dager)</string>
+    <string name="routine_insight_most_skipped">Trinn oftest hoppet over: %1$s (%2$d%% fullført)</string>
+    <string name="routine_icon">Rutineikon</string>
+    <string name="no_icon">Ikke noe ikon</string>
 </resources>

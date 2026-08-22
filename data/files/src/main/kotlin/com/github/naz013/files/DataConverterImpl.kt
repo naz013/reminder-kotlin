@@ -28,12 +28,18 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.reminder.v2.TaskExportSettings
+import com.github.naz013.domain.routine.Routine
+import com.github.naz013.domain.routine.RoutineExecutionRecord
+import com.github.naz013.domain.routine.RoutineStep
 import com.github.naz013.files.model.CalendarExportSettingsJson
 import com.github.naz013.files.model.GroupV2Json
 import com.github.naz013.files.model.LocationSettingsJson
 import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.files.model.NotificationSettingsOverrideJson
 import com.github.naz013.files.model.ReminderV2Json
+import com.github.naz013.files.model.RoutineExecutionJson
+import com.github.naz013.files.model.RoutineJson
+import com.github.naz013.files.model.RoutineStepJson
 import com.github.naz013.files.model.SharedNote
 import com.github.naz013.files.model.ShopItemV2Json
 import com.github.naz013.files.model.TagJson
@@ -76,6 +82,8 @@ internal class DataConverterImpl : DataConverter {
         is OldNote -> object : TypeToken<OldNote>() {}.type
         is TagJson -> object : TypeToken<TagJson>() {}.type
         is TagAssignment -> object : TypeToken<TagAssignment>() {}.type
+        is RoutineJson -> object : TypeToken<RoutineJson>() {}.type
+        is RoutineExecutionJson -> object : TypeToken<RoutineExecutionJson>() {}.type
         else -> null
       } ?: run {
         throw IllegalArgumentException("Unsupported type: ${any::class.java}")
@@ -123,6 +131,8 @@ private fun Any.toJson(): Any {
     is ReminderV2 -> this.toJson()
     is GroupV2 -> this.toJson()
     is Tag -> this.toJson()
+    is Routine -> this.toJson()
+    is RoutineExecutionRecord -> this.toJson()
     else -> this
   }
 }
@@ -136,6 +146,8 @@ private fun Any.toJson(): Any {
  */
 private fun detectClass(json: JsonObject): Class<*> = when {
   json.has("recurrenceType") && json.has("actionType") -> ReminderV2Json::class.java
+  json.has("steps") && json.has("recurrenceType") -> RoutineJson::class.java
+  json.has("completedStepIds") -> RoutineExecutionJson::class.java
   json.has("notification") && json.has("createdAt") -> GroupV2Json::class.java
   json.has("tagId") && json.has("itemId") && json.has("itemType") -> TagAssignment::class.java
   json.has("id") && json.has("name") && json.has("color") -> TagJson::class.java
@@ -155,6 +167,8 @@ private fun Any.toDomain(): Any {
     is GroupV2Json -> this.toDomain()
     is ReminderV2Json -> this.toDomain()
     is TagJson -> this.toDomain()
+    is RoutineJson -> this.toDomain()
+    is RoutineExecutionJson -> this.toDomain()
     is ReminderGroup -> this.toGroupV2()
     is Reminder -> this.toReminderV2()
     else -> this
@@ -177,6 +191,42 @@ private fun TagJson.toDomain(): Tag = Tag(
   color = color,
   version = version,
   syncState = SyncState.Synced
+)
+
+private fun RoutineJson.toDomain(): Routine = Routine(
+  id = id,
+  title = title,
+  description = description,
+  color = color,
+  isPinned = isPinned,
+  icon = icon,
+  steps = steps.map { it.toDomain() },
+  autoAdvance = autoAdvance,
+  soundAlertsEnabled = soundAlertsEnabled,
+  recurrence = toRoutineRecurrenceRule(recurrenceType, recurrencePayload),
+  lastResetAt = lastResetAt?.let { LocalDateTime.parse(it, jsonDateTimeFormatter) },
+  createdAt = LocalDateTime.parse(createdAt, jsonDateTimeFormatter),
+  updatedAt = LocalDateTime.parse(updatedAt, jsonDateTimeFormatter),
+  sync = SyncMetadata(version = version)
+)
+
+private fun RoutineStepJson.toDomain(): RoutineStep = RoutineStep(
+  id = id,
+  title = title,
+  description = description,
+  durationSeconds = durationSeconds,
+  scheduledTime = scheduledTime,
+  isCompleted = isCompleted,
+  order = order
+)
+
+private fun RoutineExecutionJson.toDomain(): RoutineExecutionRecord = RoutineExecutionRecord(
+  id = id,
+  routineId = routineId,
+  executedAt = LocalDateTime.parse(executedAt, jsonDateTimeFormatter),
+  totalTimeSpentSeconds = totalTimeSpentSeconds,
+  completedStepIds = completedStepIds,
+  totalStepsCount = totalStepsCount
 )
 
 private fun ReminderV2Json.toDomain(): ReminderV2 = ReminderV2(
@@ -281,6 +331,49 @@ private fun toRecurrenceRule(type: String, payload: String): RecurrenceRule = ru
   RecurrenceRule.Once
 }
 
+/** Same [RecurrenceRule] type+payload wire shape as [toRecurrenceRule], but nullable - a `Routine`
+ * can be on-demand ([Routine.recurrence] == null, wire type `"NONE"`), unlike [ReminderV2] which
+ * always has a rule. Mirrors `RoutineMapper.toRecurrenceRule` in the `repository` module (the
+ * Room-layer equivalent of this same split), including its fallback to `null` instead of throwing
+ * on a payload it can't parse. */
+private fun toRoutineRecurrenceRule(type: String, payload: String): RecurrenceRule? = runCatching {
+  when (type) {
+    "NONE" -> null
+    "ONCE" -> RecurrenceRule.Once
+    "COUNTDOWN" -> recurrenceGson.fromJson(payload, RecurrenceRule.Countdown::class.java)
+    "DAILY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Daily::class.java)
+    "WEEKLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Weekly::class.java).also {
+      requireNotNull(it.weekdays) { "weekdays is null" }
+    }
+    "MONTHLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Monthly::class.java)
+    "RELATIVE_MONTHLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.RelativeMonthly::class.java)
+    "YEARLY" -> recurrenceGson.fromJson(payload, RecurrenceRule.Yearly::class.java)
+    "LOCATION_ENTER" -> RecurrenceRule.LocationEnter
+    "LOCATION_EXIT" -> RecurrenceRule.LocationExit
+    "ICALENDAR" -> recurrenceGson.fromJson(payload, RecurrenceRule.ICalendar::class.java).also {
+      requireNotNull(it.rrule) { "rrule is null" }
+    }
+    else -> null
+  }
+}.getOrElse { e ->
+  Logger.e(FILES_TAG, "Failed to parse routine recurrence rule, type=$type, payload=$payload", e)
+  null
+}
+
+private fun RecurrenceRule?.toRoutineColumns(): Pair<String, String> = when (this) {
+  null -> "NONE" to ""
+  is RecurrenceRule.Once -> "ONCE" to ""
+  is RecurrenceRule.Countdown -> "COUNTDOWN" to recurrenceGson.toJson(this)
+  is RecurrenceRule.Daily -> "DAILY" to recurrenceGson.toJson(this)
+  is RecurrenceRule.Weekly -> "WEEKLY" to recurrenceGson.toJson(this)
+  is RecurrenceRule.Monthly -> "MONTHLY" to recurrenceGson.toJson(this)
+  is RecurrenceRule.RelativeMonthly -> "RELATIVE_MONTHLY" to recurrenceGson.toJson(this)
+  is RecurrenceRule.Yearly -> "YEARLY" to recurrenceGson.toJson(this)
+  is RecurrenceRule.LocationEnter -> "LOCATION_ENTER" to ""
+  is RecurrenceRule.LocationExit -> "LOCATION_EXIT" to ""
+  is RecurrenceRule.ICalendar -> "ICALENDAR" to recurrenceGson.toJson(this)
+}
+
 private fun toReminderAction(type: String, target: String, subject: String): ReminderAction =
   when (type) {
     "NONE" -> ReminderAction.None
@@ -314,6 +407,46 @@ private fun Tag.toJson(): TagJson = TagJson(
   name = name,
   color = color,
   version = version
+)
+
+private fun Routine.toJson(): RoutineJson {
+  val (recurrenceType, recurrencePayload) = recurrence.toRoutineColumns()
+  return RoutineJson(
+    id = id,
+    title = title,
+    description = description,
+    color = color,
+    isPinned = isPinned,
+    icon = icon,
+    steps = steps.map { it.toJson() },
+    autoAdvance = autoAdvance,
+    soundAlertsEnabled = soundAlertsEnabled,
+    recurrenceType = recurrenceType,
+    recurrencePayload = recurrencePayload,
+    lastResetAt = lastResetAt?.format(jsonDateTimeFormatter),
+    createdAt = createdAt.format(jsonDateTimeFormatter),
+    updatedAt = updatedAt.format(jsonDateTimeFormatter),
+    version = sync.version
+  )
+}
+
+private fun RoutineStep.toJson(): RoutineStepJson = RoutineStepJson(
+  id = id,
+  title = title,
+  description = description,
+  durationSeconds = durationSeconds,
+  scheduledTime = scheduledTime,
+  isCompleted = isCompleted,
+  order = order
+)
+
+private fun RoutineExecutionRecord.toJson(): RoutineExecutionJson = RoutineExecutionJson(
+  id = id,
+  routineId = routineId,
+  executedAt = executedAt.format(jsonDateTimeFormatter),
+  totalTimeSpentSeconds = totalTimeSpentSeconds,
+  completedStepIds = completedStepIds,
+  totalStepsCount = totalStepsCount
 )
 
 private fun ReminderV2.toJson(): ReminderV2Json {

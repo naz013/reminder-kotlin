@@ -116,6 +116,8 @@ val featureSettingsModule = module {
       activateReminderUseCase = get(),
       holidayRepository = get(),
       populateCalendarDemoDataUseCase = get(),
+      routineRepository = get(),
+      routineExecutionRepository = get(),
     )
   }
   viewModelOf(::ObjectExportViewModel)

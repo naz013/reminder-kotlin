@@ -1105,7 +1105,7 @@
     <string name="streak_current">Sequenza attuale: %1$d giorni</string>
     <string name="streak_longest">Sequenza più lunga: %1$d giorni</string>
     <string name="streak_fired_count">Attivato %1$d volte negli ultimi 90 giorni</string>
-    <string name="no_insights_yet">Nessuna attività di promemoria negli ultimi 90 giorni ancora</string>
+    <string name="no_insights_yet">Nessuna attività negli ultimi 90 giorni</string>
 
     <string name="upcoming_events">Prossimi</string>
 
@@ -1156,4 +1156,47 @@
 
     <string name="merge">Unisci</string>
     <string name="notes_merge_selected_confirm">Unire %1$d note in una sola? Le note originali verranno eliminate.</string>
+
+    <string name="routines">Routine</string>
+    <string name="new_routine">Nuova routine</string>
+    <string name="no_routines">Nessuna routine ancora</string>
+    <string name="routine_description_hint">Descrizione (opzionale)</string>
+    <string name="routine_steps">Passaggi</string>
+    <string name="add_step">Aggiungi passaggio</string>
+    <string name="step_title_hint">Titolo del passaggio</string>
+    <string name="duration_none">Nessuna</string>
+    <string name="repeat_daily">Si ripete ogni giorno</string>
+    <string name="start_routine">Avvia routine</string>
+    <string name="reset_steps">Reimposta passaggi</string>
+    <string name="reset_steps_confirmation">Reimpostare tutti i passaggi come non selezionati?</string>
+    <string name="routine_step_count">%1$d passaggi</string>
+    <string name="delete_routine_confirmation">Eliminare questa routine definitivamente?</string>
+    <string name="move_step_up">Sposta passaggio in alto</string>
+    <string name="move_step_down">Sposta passaggio in basso</string>
+    <string name="sort">Ordina</string>
+    <string name="sort_by_date">Per data di creazione</string>
+    <string name="sort_by_name">Per nome</string>
+    <string name="routine_on_demand">Su richiesta</string>
+    <string name="routine_steps_required">Aggiungi almeno un passaggio</string>
+    <string name="repeat_none">Mai</string>
+    <string name="repeat_weekly">Si ripete ogni settimana</string>
+    <string name="repeat_monthly">Si ripete ogni mese</string>
+    <string name="repeat_weekly_days">Settimanale: %1$s</string>
+    <string name="repeat_monthly_day">Mensile il giorno %1$d</string>
+    <string name="repeat_weekdays_required">Seleziona almeno un giorno</string>
+    <string name="step_of_count">Passaggio %1$d di %2$d</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Riprendi</string>
+    <string name="skip_step">Salta</string>
+    <string name="complete_step">Completa passaggio</string>
+    <string name="previous_step">Passaggio precedente</string>
+    <string name="add_one_minute">+1 min</string>
+    <string name="routine_finished_title">Routine completata</string>
+    <string name="routine_execution_total_time">Tempo totale: %1$s</string>
+    <string name="routine_execution_steps_completed">%1$d di %2$d passaggi completati</string>
+    <string name="routine_insights_section">Serie di routine</string>
+    <string name="routine_focus_time_total">Tempo di concentrazione totale: %1$s (ultimi 90 giorni)</string>
+    <string name="routine_insight_most_skipped">Passaggio più saltato: %1$s (%2$d%% di completamento)</string>
+    <string name="routine_icon">Icona routine</string>
+    <string name="no_icon">Nessuna icona</string>
 </resources>

@@ -5,6 +5,7 @@ plugins {
 dependencies {
   implementation(project(":core:logging-api"))
   implementation(project(":core:domain"))
+  implementation(project(":core:feature-flags-api"))
   implementation(project(":data:repository-api"))
   implementation(project(":data:work-api"))
   implementation(project(":logic:logic-reminder"))

@@ -35,6 +35,8 @@ import com.github.naz013.repository.RecentQueryRepository
 import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RemoteFileMetadataRepository
+import com.github.naz013.repository.RoutineExecutionRepository
+import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.UsedTimeRepository
@@ -80,6 +82,8 @@ internal class DeveloperViewModel(
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val holidayRepository: HolidayRepository,
   private val populateCalendarDemoDataUseCase: PopulateCalendarDemoDataUseCase,
+  private val routineRepository: RoutineRepository,
+  private val routineExecutionRepository: RoutineExecutionRepository,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
@@ -311,6 +315,8 @@ internal class DeveloperViewModel(
       Table.Tag -> tagRepository.deleteAll()
       Table.TagAssignment -> tagAssignmentRepository.deleteAll()
       Table.Holiday -> holidayRepository.deleteAll()
+      Table.Routine -> routineRepository.deleteAll()
+      Table.RoutineExecution -> routineExecutionRepository.deleteAll()
     }
   }
 

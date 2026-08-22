@@ -16,7 +16,7 @@ internal class BackupArchiveWriter(
   suspend fun write(output: OutputStream, envelope: BackupEnvelope) {
     val items: List<Any> =
       envelope.reminders + envelope.groups + envelope.birthdays + envelope.places + envelope.presets +
-        envelope.tags + envelope.tagAssignments
+        envelope.tags + envelope.tagAssignments + envelope.routines + envelope.routineExecutions
     val dataOutput = DataOutputStream(output)
     dataOutput.writeInt(FORMAT_VERSION)
     dataOutput.writeInt(items.size)

@@ -366,7 +366,6 @@ The project uses **Gradle with Kotlin DSL** (`build.gradle.kts`).
 
 - A shared `libs.versions.toml` version catalog centralises all dependency versions.
 - **Detekt** (`reminder.detekt` convention plugin) is applied to all modules for static analysis and formatting (wraps ktlint rules via `detekt-formatting`; config in `config/detekt/detekt.yml`).
-- **Kover** (`reminder.kover` convention plugin) is applied to all modules for coverage; the root project aggregates JVM-module coverage into `build/reports/kover/xml/report.xml`.
 - Firebase is integrated via the `google-services` and `crashlytics-gradle` plugins.
 - Jetpack Compose compiler metrics/reports are generated automatically by the `compose.compiler` plugin.
 - CI runs on GitHub Actions (`.github/workflows/build_and_test.yml`) and a release pipeline (`.github/workflows/build_and_publish_release.yml`).

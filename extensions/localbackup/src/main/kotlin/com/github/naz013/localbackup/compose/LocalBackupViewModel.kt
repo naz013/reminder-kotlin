@@ -81,7 +81,7 @@ internal class LocalBackupViewModel(
             R.string.backup_import_success,
             summary.remindersImported + summary.groupsImported + summary.birthdaysImported +
               summary.placesImported + summary.presetsImported + summary.tagsImported +
-              summary.tagAssignmentsImported
+              summary.tagAssignmentsImported + summary.routinesImported + summary.routineExecutionsImported
           )
         )
       },

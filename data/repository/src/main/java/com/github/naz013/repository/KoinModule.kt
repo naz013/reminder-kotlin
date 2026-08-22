@@ -16,6 +16,8 @@ import com.github.naz013.repository.impl.ReminderGroupRepositoryImpl
 import com.github.naz013.repository.impl.ReminderRepositoryImpl
 import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
 import com.github.naz013.repository.impl.RemoteFileMetadataRepositoryImpl
+import com.github.naz013.repository.impl.RoutineExecutionRepositoryImpl
+import com.github.naz013.repository.impl.RoutineRepositoryImpl
 import com.github.naz013.repository.impl.TagAssignmentRepositoryImpl
 import com.github.naz013.repository.impl.TagRepositoryImpl
 import com.github.naz013.repository.impl.UsedTimeRepositoryImpl
@@ -84,4 +86,11 @@ val repositoryModule = module {
   factory { WorkflowRuleRepositoryImpl(get<AppDb>().workflowRuleDao(), get()) as WorkflowRuleRepository }
   factory { WorkflowTemplateRepositoryImpl(get<AppDb>().workflowTemplateDao(), get()) as WorkflowTemplateRepository }
   factory { HolidayRepositoryImpl(get<AppDb>().holidayDao(), get()) as HolidayRepository }
+  factory { RoutineRepositoryImpl(get<AppDb>().routineDao(), get()) as RoutineRepository }
+  factory {
+    RoutineExecutionRepositoryImpl(
+      get<AppDb>().routineExecutionDao(),
+      get()
+    ) as RoutineExecutionRepository
+  }
 }
