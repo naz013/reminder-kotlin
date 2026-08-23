@@ -18,6 +18,8 @@ import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
+import com.github.naz013.common.Permissions
 import java.io.File
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -32,6 +34,10 @@ fun EntryProviderScope<NavKey>.reminderPreviewEntries(
   onOpenIntent: (intent: Intent, title: String) -> Unit,
   onOpenNote: (noteId: String) -> Unit,
   onOpenGoogleTask: (taskId: String) -> Unit,
+  onCallClick: (String) -> Unit,
+  onSmsClick: (target: String, message: String) -> Unit,
+  onAppClick: (String) -> Unit,
+  onUrlClick: (String) -> Unit,
 ) {
   entry<ReminderPreviewNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
     // Fixed at first composition of this entry, not re-read on every recomposition: once the
@@ -49,6 +55,10 @@ fun EntryProviderScope<NavKey>.reminderPreviewEntries(
       onOpenIntent,
       onOpenNote,
       onOpenGoogleTask,
+      onCallClick,
+      onSmsClick,
+      onAppClick,
+      onUrlClick,
     )
   }
   entry<ReminderPreviewNavKey.FullscreenMap> { key -> FullscreenMapEntry(key, backStack) }
@@ -65,11 +75,16 @@ private fun PreviewEntry(
   onOpenIntent: (intent: Intent, title: String) -> Unit,
   onOpenNote: (noteId: String) -> Unit,
   onOpenGoogleTask: (taskId: String) -> Unit,
+  onCallClick: (String) -> Unit,
+  onSmsClick: (target: String, message: String) -> Unit,
+  onAppClick: (String) -> Unit,
+  onUrlClick: (String) -> Unit,
 ) {
   val viewModel = koinViewModel<PreviewReminderViewModel> { parametersOf(key.id) }
 
   val listDialogDispatcher = rememberListDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
+  val permissionRequester = rememberPermissionRequesterRationale()
 
   // ReminderActionActivity (the full-screen alarm popup) is a separate Activity launched on
   // top of this screen, so the composable is never disposed and the state flow's
@@ -112,6 +127,22 @@ private fun PreviewEntry(
           onItemClick = { which -> viewModel.copyReminder(event.times[which]) },
         )
       }
+
+      is PreviewReminderViewModel.ViewModelEvent.MakeCall -> {
+        permissionRequester.request(Permissions.CALL_PHONE, onGranted = { onCallClick(event.target) })
+      }
+
+      is PreviewReminderViewModel.ViewModelEvent.SendSms -> {
+        onSmsClick(event.target, event.message)
+      }
+
+      is PreviewReminderViewModel.ViewModelEvent.OpenApp -> {
+        onAppClick(event.target)
+      }
+
+      is PreviewReminderViewModel.ViewModelEvent.OpenLink -> {
+        onUrlClick(event.target)
+      }
     }
   }
 
@@ -141,6 +172,7 @@ private fun PreviewEntry(
     },
     onCalendarOpenClick = { viewModel.onOpenCalendarClicked(it.id) },
     onCalendarRemoveClick = { viewModel.deleteEvent(it) },
+    onTargetActionClick = viewModel::onTargetActionClick,
     mapContent = {
       EmbeddedMap(state.places) { backStack.add(ReminderPreviewNavKey.FullscreenMap(key.id)) }
     },

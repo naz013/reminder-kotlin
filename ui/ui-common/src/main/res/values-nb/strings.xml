@@ -1218,4 +1218,10 @@
     <string name="sync_to_cloud">Synkroniser til sky</string>
     <string name="offline_only_reminder">Behold kun offline</string>
     <string name="offline_only_reminder_description">Denne påminnelsen blir ikke sikkerhetskopiert eller synkronisert til noen skylagring</string>
+    <string name="repeat_progress">%1$d av %2$d ganger</string>
+    <string name="repeat_times_left">%1$d igjen</string>
+    <string name="repeat_limit_reached">Grense for gjentakelser nådd</string>
+    <string name="repeats_until">Gjentas til %1$s</string>
+    <string name="reminder_triggered_times">Utløst %1$d ganger</string>
+    <string name="reminder_snoozed_times">Utsatt %1$d ganger</string>
 </resources>

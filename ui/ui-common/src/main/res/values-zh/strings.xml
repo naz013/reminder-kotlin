@@ -1221,4 +1221,10 @@
     <string name="sync_to_cloud">同步到云端</string>
     <string name="offline_only_reminder">仅保留在本地</string>
     <string name="offline_only_reminder_description">此提醒不会备份或同步到任何云存储</string>
+    <string name="repeat_progress">%2$d次中的%1$d次</string>
+    <string name="repeat_times_left">剩余%1$d次</string>
+    <string name="repeat_limit_reached">已达到重复限制</string>
+    <string name="repeats_until">重复至%1$s</string>
+    <string name="reminder_triggered_times">已触发%1$d次</string>
+    <string name="reminder_snoozed_times">已推迟%1$d次</string>
 </resources>

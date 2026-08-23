@@ -1219,4 +1219,10 @@
     <string name="sync_to_cloud">Синхронизировать с облаком</string>
     <string name="offline_only_reminder">Хранить только локально</string>
     <string name="offline_only_reminder_description">Это напоминание не будет резервироваться или синхронизироваться с облачным хранилищем</string>
+    <string name="repeat_progress">%1$d из %2$d раз</string>
+    <string name="repeat_times_left">осталось %1$d</string>
+    <string name="repeat_limit_reached">Достигнут лимит повторов</string>
+    <string name="repeats_until">Повторяется до %1$s</string>
+    <string name="reminder_triggered_times">Сработало %1$d раз</string>
+    <string name="reminder_snoozed_times">Отложено %1$d раз</string>
 </resources>

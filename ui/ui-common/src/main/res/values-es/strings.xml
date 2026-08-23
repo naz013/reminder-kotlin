@@ -1220,4 +1220,10 @@
     <string name="sync_to_cloud">Sincronizar con la nube</string>
     <string name="offline_only_reminder">Mantener solo sin conexión</string>
     <string name="offline_only_reminder_description">Este recordatorio no se respaldará ni sincronizará con ningún almacenamiento en la nube</string>
+    <string name="repeat_progress">%1$d de %2$d veces</string>
+    <string name="repeat_times_left">quedan %1$d</string>
+    <string name="repeat_limit_reached">Límite de repeticiones alcanzado</string>
+    <string name="repeats_until">Se repite hasta %1$s</string>
+    <string name="reminder_triggered_times">Activado %1$d veces</string>
+    <string name="reminder_snoozed_times">Pospuesto %1$d veces</string>
 </resources>

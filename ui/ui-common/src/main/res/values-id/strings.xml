@@ -1218,4 +1218,10 @@
     <string name="sync_to_cloud">Sinkronkan ke cloud</string>
     <string name="offline_only_reminder">Simpan hanya offline</string>
     <string name="offline_only_reminder_description">Pengingat ini tidak akan dicadangkan atau disinkronkan ke penyimpanan cloud mana pun</string>
+    <string name="repeat_progress">%1$d dari %2$d kali</string>
+    <string name="repeat_times_left">%1$d tersisa</string>
+    <string name="repeat_limit_reached">Batas pengulangan tercapai</string>
+    <string name="repeats_until">Berulang hingga %1$s</string>
+    <string name="reminder_triggered_times">Terpicu %1$d kali</string>
+    <string name="reminder_snoozed_times">Ditunda %1$d kali</string>
 </resources>

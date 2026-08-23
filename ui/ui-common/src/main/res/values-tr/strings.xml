@@ -1221,4 +1221,10 @@
     <string name="sync_to_cloud">Buluta senkronize et</string>
     <string name="offline_only_reminder">Yalnızca çevrimdışı tut</string>
     <string name="offline_only_reminder_description">Bu hatırlatıcı herhangi bir bulut depolama alanına yedeklenmeyecek veya senkronize edilmeyecek</string>
+    <string name="repeat_progress">%2$d tekrardan %1$d</string>
+    <string name="repeat_times_left">%1$d kaldı</string>
+    <string name="repeat_limit_reached">Tekrar sınırına ulaşıldı</string>
+    <string name="repeats_until">%1$s tarihine kadar tekrarlanır</string>
+    <string name="reminder_triggered_times">%1$d kez tetiklendi</string>
+    <string name="reminder_snoozed_times">%1$d kez ertelendi</string>
 </resources>

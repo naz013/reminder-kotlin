@@ -1220,4 +1220,10 @@
     <string name="sync_to_cloud">Sincronizează cu cloud-ul</string>
     <string name="offline_only_reminder">Păstrează doar offline</string>
     <string name="offline_only_reminder_description">Acest memento nu va fi copiat de rezervă sau sincronizat cu niciun spațiu de stocare în cloud</string>
+    <string name="repeat_progress">%1$d din %2$d ori</string>
+    <string name="repeat_times_left">%1$d rămase</string>
+    <string name="repeat_limit_reached">Limita de repetări a fost atinsă</string>
+    <string name="repeats_until">Se repetă până la %1$s</string>
+    <string name="reminder_triggered_times">Declanșat de %1$d ori</string>
+    <string name="reminder_snoozed_times">Amânat de %1$d ori</string>
 </resources>

@@ -1220,4 +1220,10 @@
     <string name="sync_to_cloud">Sincronizza sul cloud</string>
     <string name="offline_only_reminder">Mantieni solo offline</string>
     <string name="offline_only_reminder_description">Questo promemoria non verrà eseguito il backup né sincronizzato con alcun archivio cloud</string>
+    <string name="repeat_progress">%1$d di %2$d volte</string>
+    <string name="repeat_times_left">%1$d rimanenti</string>
+    <string name="repeat_limit_reached">Limite di ripetizioni raggiunto</string>
+    <string name="repeats_until">Si ripete fino al %1$s</string>
+    <string name="reminder_triggered_times">Attivato %1$d volte</string>
+    <string name="reminder_snoozed_times">Posticipato %1$d volte</string>
 </resources>

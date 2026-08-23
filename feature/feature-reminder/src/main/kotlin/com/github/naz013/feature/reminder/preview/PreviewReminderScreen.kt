@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -93,6 +94,7 @@ internal fun PreviewReminderScreen(
   onGoogleTaskClick: () -> Unit,
   onCalendarOpenClick: (UiCalendarEventList) -> Unit,
   onCalendarRemoveClick: (UiCalendarEventList) -> Unit,
+  onTargetActionClick: () -> Unit,
   mapContent: @Composable () -> Unit,
   adsContent: @Composable () -> Unit,
 ) {
@@ -152,7 +154,7 @@ internal fun PreviewReminderScreen(
       item { DetailsCard(rows = detailRows(state)) }
 
       if (state.targetType != null) {
-        item { TargetInfoSection(state = state) }
+        item { TargetInfoSection(state = state, onClick = onTargetActionClick) }
       }
 
       if (state.attachments.isNotEmpty()) {
@@ -389,7 +391,9 @@ private fun DetailRow(
   text: String,
   modifier: Modifier = Modifier,
   textDecoration: TextDecoration = TextDecoration.None,
+  isWarning: Boolean = false,
 ) {
+  val tint = if (isWarning) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = modifier
@@ -399,13 +403,14 @@ private fun DetailRow(
     Icon(
       painter = painterResource(icon),
       contentDescription = null,
-      tint = MaterialTheme.colorScheme.onSurfaceVariant,
+      tint = tint,
       modifier = Modifier.size(24.dp),
     )
     Text(
       text = text,
       style = MaterialTheme.typography.bodyLarge,
       textDecoration = textDecoration,
+      color = if (isWarning) MaterialTheme.colorScheme.error else Color.Unspecified,
       modifier = Modifier
         .weight(1f)
         .padding(start = 16.dp),
@@ -424,9 +429,24 @@ private fun detailRows(state: PreviewReminderState): List<@Composable () -> Unit
     state.dueDateTime?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
     state.before?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
     add { DetailRow(icon = DrawableCatalog.Fluent.ArrowRepeatAll, text = state.repeat) }
+    state.repeatLimitText?.let { text ->
+      add {
+        DetailRow(
+          icon = DrawableCatalog.Builder.RepeatLimit,
+          text = text,
+          isWarning = state.isRepeatLimitReached,
+        )
+      }
+    }
+    state.repeatUntilText?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
     state.remaining?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
+    state.triggeredCountText?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.History, text = text) } }
+    state.snoozedCountText?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.Snooze, text = text) } }
     state.groupTitle?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.Group, text = text) } }
     add { DetailRow(icon = DrawableCatalog.Fluent.Star, text = state.priorityTitle) }
+    if (state.isOfflineOnly) {
+      add { DetailRow(icon = DrawableCatalog.Fluent.Cloud, text = stringResource(R.string.offline_only_reminder_description)) }
+    }
     if (state.tags.isNotEmpty()) {
       add { TagsDetailRow(tags = state.tags) }
     }
@@ -487,12 +507,13 @@ private fun targetInfoItems(state: PreviewReminderState): List<DetailItem> {
 }
 
 @Composable
-private fun DetailsCard(rows: List<@Composable () -> Unit>) {
+private fun DetailsCard(rows: List<@Composable () -> Unit>, onClick: (() -> Unit)? = null) {
   if (rows.isEmpty()) return
   Card(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(horizontal = 16.dp, vertical = 8.dp),
+      .padding(horizontal = 16.dp, vertical = 8.dp)
+      .let { if (onClick != null) it.clickable(onClick = onClick) else it },
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     rows.forEachIndexed { index, row ->
@@ -508,14 +529,15 @@ private fun DetailsCard(rows: List<@Composable () -> Unit>) {
 }
 
 @Composable
-private fun TargetInfoSection(state: PreviewReminderState) {
+private fun TargetInfoSection(state: PreviewReminderState, onClick: () -> Unit) {
   val type = state.targetType ?: return
   SectionHeader(text = targetHeaderText(type))
   val rows: List<@Composable () -> Unit> =
     targetInfoItems(state).map { item ->
       { DetailRow(icon = item.icon, text = item.text, textDecoration = item.textDecoration) }
     }
-  DetailsCard(rows = rows)
+  val isActionable = type.isCall() || type.isSms() || type.isApp() || type.isLink()
+  DetailsCard(rows = rows, onClick = if (isActionable) onClick else null)
 }
 
 @Composable
@@ -805,6 +827,7 @@ private fun PreviewReminderScreenPreview() {
         description = "2% milk, one gallon",
         dueDateTime = "Today, 18:00",
         repeat = "Once",
+        repeatLimitText = "3 of 10 times · 7 left",
         priorityTitle = "Normal",
         subTasks = listOf(
           UiPreviewSubTask(id = "1", text = "Milk", isChecked = true),
@@ -828,6 +851,7 @@ private fun PreviewReminderScreenPreview() {
       onGoogleTaskClick = {},
       onCalendarOpenClick = {},
       onCalendarRemoveClick = {},
+      onTargetActionClick = {},
       mapContent = {},
       adsContent = {},
     )

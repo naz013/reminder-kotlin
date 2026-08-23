@@ -1220,4 +1220,10 @@
     <string name="sync_to_cloud">클라우드에 동기화</string>
     <string name="offline_only_reminder">오프라인으로만 유지</string>
     <string name="offline_only_reminder_description">이 알림은 클라우드 저장소에 백업되거나 동기화되지 않습니다</string>
+    <string name="repeat_progress">%2$d회 중 %1$d회</string>
+    <string name="repeat_times_left">%1$d회 남음</string>
+    <string name="repeat_limit_reached">반복 제한에 도달했습니다</string>
+    <string name="repeats_until">%1$s까지 반복</string>
+    <string name="reminder_triggered_times">%1$d회 실행됨</string>
+    <string name="reminder_snoozed_times">%1$d회 다시 알림</string>
 </resources>

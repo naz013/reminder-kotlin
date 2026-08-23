@@ -1216,4 +1216,10 @@
     <string name="sync_to_cloud">Mit Cloud synchronisieren</string>
     <string name="offline_only_reminder">Nur offline behalten</string>
     <string name="offline_only_reminder_description">Diese Erinnerung wird nicht gesichert oder mit einem Cloud-Speicher synchronisiert</string>
+    <string name="repeat_progress">%1$d von %2$d Malen</string>
+    <string name="repeat_times_left">%1$d übrig</string>
+    <string name="repeat_limit_reached">Wiederholungsgrenze erreicht</string>
+    <string name="repeats_until">Wiederholt sich bis %1$s</string>
+    <string name="reminder_triggered_times">%1$d Mal ausgelöst</string>
+    <string name="reminder_snoozed_times">%1$d Mal geschlummert</string>
 </resources>

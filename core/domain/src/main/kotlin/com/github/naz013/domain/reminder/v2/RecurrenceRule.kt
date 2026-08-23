@@ -108,3 +108,20 @@ fun RecurrenceRule.repeatLimitOrDefault(): Int = when (this) {
   is RecurrenceRule.ICalendar,
   -> -1
 }
+
+/** The recurrence end date for whichever variant carries one, or null for variants that repeat
+ * indefinitely or have no calendar-unit semantics ([Once]/[Countdown]/[LocationEnter]/
+ * [LocationExit]/[ICalendar] - the latter encodes UNTIL inside its rrule string instead). */
+fun RecurrenceRule.untilOrNull(): LocalDateTime? = when (this) {
+  is RecurrenceRule.Daily -> until
+  is RecurrenceRule.Weekly -> until
+  is RecurrenceRule.Monthly -> until
+  is RecurrenceRule.RelativeMonthly -> until
+  is RecurrenceRule.Yearly -> until
+  RecurrenceRule.Once,
+  is RecurrenceRule.Countdown,
+  RecurrenceRule.LocationEnter,
+  RecurrenceRule.LocationExit,
+  is RecurrenceRule.ICalendar,
+  -> null
+}

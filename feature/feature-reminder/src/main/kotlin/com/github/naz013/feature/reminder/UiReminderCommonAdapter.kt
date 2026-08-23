@@ -18,6 +18,8 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.repeatLimitOrDefault
+import com.github.naz013.domain.reminder.v2.untilOrNull
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
@@ -143,6 +145,49 @@ internal class UiReminderCommonAdapter(
   private fun getRemainingV2(localEventDateTime: LocalDateTime?): String =
     modelDateTimeFormatter.getRemaining(localEventDateTime, dateTimeManager.getCurrentDateTime())
 
+  /** Null when the reminder isn't limited ([ReminderV2.isLimited]); otherwise how many of the
+   * allowed executions have been used, and whether the limit has already been hit. */
+  fun getRepeatLimitInfoV2(reminder: ReminderV2): UiRepeatLimitInfo? {
+    if (!reminder.isLimited()) return null
+    val limit = reminder.recurrence.repeatLimitOrDefault()
+    val used = reminder.eventCount.toInt().coerceIn(0, limit)
+    return if (reminder.isLimitExceed()) {
+      UiRepeatLimitInfo(
+        text = textProvider.getText(R.string.repeat_limit_reached) +
+          " · " +
+          textProvider.getText(R.string.repeat_progress, used, limit),
+        isLimitReached = true,
+      )
+    } else {
+      UiRepeatLimitInfo(
+        text = textProvider.getText(R.string.repeat_progress, used, limit) +
+          " · " +
+          textProvider.getText(R.string.repeat_times_left, limit - used),
+        isLimitReached = false,
+      )
+    }
+  }
+
+  /** Null unless the recurrence has an explicit end date ([RecurrenceRule.untilOrNull]). */
+  fun getRepeatUntilV2(recurrence: RecurrenceRule): String? {
+    val until = recurrence.untilOrNull() ?: return null
+    val localDate = dateTimeManager.utcToLocal(until).toLocalDate()
+    return textProvider.getText(R.string.repeats_until, dateTimeManager.getDate(localDate))
+  }
+
+  /** Null for limited reminders - their trigger count is already folded into [getRepeatLimitInfoV2] -
+   * or when the reminder has never fired. */
+  fun getTriggeredCountTextV2(reminder: ReminderV2): String? {
+    if (reminder.isLimited() || reminder.eventCount <= 0) return null
+    return textProvider.getText(R.string.reminder_triggered_times, reminder.eventCount)
+  }
+
+  /** Null unless the reminder has been snoozed at least once. */
+  fun getSnoozedCountTextV2(reminder: ReminderV2): String? {
+    if (reminder.snoozeCount <= 0) return null
+    return textProvider.getText(R.string.reminder_snoozed_times, reminder.snoozeCount)
+  }
+
   fun getReminderStatus(
     isActive: Boolean,
     isRemoved: Boolean,
@@ -229,3 +274,8 @@ internal class UiReminderCommonAdapter(
     private const val DAY_CHECKED = 1
   }
 }
+
+internal data class UiRepeatLimitInfo(
+  val text: String,
+  val isLimitReached: Boolean,
+)

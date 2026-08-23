@@ -1221,4 +1221,10 @@
     <string name="sync_to_cloud">Синхронизиране с облака</string>
     <string name="offline_only_reminder">Само офлайн</string>
     <string name="offline_only_reminder_description">Това напомняне няма да бъде архивирано или синхронизирано с облачно хранилище</string>
+    <string name="repeat_progress">%1$d от %2$d пъти</string>
+    <string name="repeat_times_left">остават %1$d</string>
+    <string name="repeat_limit_reached">Лимитът на повторения е достигнат</string>
+    <string name="repeats_until">Повтаря се до %1$s</string>
+    <string name="reminder_triggered_times">Задействано %1$d пъти</string>
+    <string name="reminder_snoozed_times">Отложено %1$d пъти</string>
 </resources>

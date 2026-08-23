@@ -19,6 +19,11 @@ internal data class PreviewReminderState(
   val dueDateTime: String? = null,
   val before: String? = null,
   val repeat: String = "",
+  val repeatLimitText: String? = null,
+  val isRepeatLimitReached: Boolean = false,
+  val repeatUntilText: String? = null,
+  val triggeredCountText: String? = null,
+  val snoozedCountText: String? = null,
   val remaining: String? = null,
   val groupTitle: String? = null,
   val priorityTitle: String = "",
@@ -38,6 +43,7 @@ internal data class PreviewReminderState(
   val showSyncToCloud: Boolean = false,
   val showDeleteConfirm: Boolean = false,
   val tags: List<TagChipState> = emptyList(),
+  val isOfflineOnly: Boolean = false,
 )
 
 internal data class UiPreviewSubTask(

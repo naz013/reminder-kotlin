@@ -4,6 +4,7 @@ import android.net.Uri
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.feature.reminder.UiReminderCommonAdapter
 import com.github.naz013.feature.reminder.UiReminderPlaceAdapter
+import com.github.naz013.feature.reminder.UiRepeatLimitInfo
 import com.github.naz013.ui.group.UiGroupListAdapter
 import com.github.naz013.feature.reminder.note.UiNoteListAdapter
 import com.github.naz013.ui.reminder.UiReminderDueData
@@ -22,6 +23,7 @@ import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
@@ -109,6 +111,10 @@ class PreviewReminderViewModelTest : BaseTest() {
       )
     every { uiReminderCommonAdapter.getTargetV2(any()) } returns null
     every { uiReminderCommonAdapter.getPriorityTitle(any()) } returns "Normal"
+    every { uiReminderCommonAdapter.getRepeatLimitInfoV2(any()) } returns null
+    every { uiReminderCommonAdapter.getRepeatUntilV2(any()) } returns null
+    every { uiReminderCommonAdapter.getTriggeredCountTextV2(any()) } returns null
+    every { uiReminderCommonAdapter.getSnoozedCountTextV2(any()) } returns null
     every { dateTimeManager.fromGmtToLocal(any<String>()) } returns null
     every { dateTimeManager.getGmtFromDateTime(any<LocalDateTime>()) } returns ""
     coEvery { reminderV2Repository.getById(any()) } returns reminderV2()
@@ -124,6 +130,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     isActive: Boolean = true,
     isPinned: Boolean = false,
     offlineOnly: Boolean = false,
+    action: ReminderAction = ReminderAction.None,
   ): ReminderV2 =
     ReminderV2(
       uuId = id,
@@ -134,6 +141,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       isRemoved = isRemoved,
       isPinned = isPinned,
       offlineOnly = offlineOnly,
+      action = action,
     )
 
   private fun createViewModel(id: String = "42"): PreviewReminderViewModel =
@@ -322,6 +330,58 @@ class PreviewReminderViewModelTest : BaseTest() {
       val viewModel = createViewModel()
 
       assertTrue(viewModel.state.first().isPinned)
+    }
+
+  @Test
+  fun `state exposes repeat limit info from the adapter`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      every { uiReminderCommonAdapter.getRepeatLimitInfoV2(any()) } returns
+        UiRepeatLimitInfo(text = "3 of 10 times · 7 left", isLimitReached = false)
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertEquals("3 of 10 times · 7 left", state.repeatLimitText)
+      assertFalse(state.isRepeatLimitReached)
+    }
+
+  @Test
+  fun `state flags the repeat limit as reached when the adapter reports it`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      every { uiReminderCommonAdapter.getRepeatLimitInfoV2(any()) } returns
+        UiRepeatLimitInfo(text = "Repeat limit reached · 10 of 10 times", isLimitReached = true)
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.isRepeatLimitReached)
+    }
+
+  @Test
+  fun `state exposes the repeat-until, triggered-count, and snoozed-count text from the adapter`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      every { uiReminderCommonAdapter.getRepeatUntilV2(any()) } returns "Repeats until 31 Dec 2026"
+      every { uiReminderCommonAdapter.getTriggeredCountTextV2(any()) } returns "Triggered 5 times"
+      every { uiReminderCommonAdapter.getSnoozedCountTextV2(any()) } returns "Snoozed 2 times"
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertEquals("Repeats until 31 Dec 2026", state.repeatUntilText)
+      assertEquals("Triggered 5 times", state.triggeredCountText)
+      assertEquals("Snoozed 2 times", state.snoozedCountText)
+    }
+
+  @Test
+  fun `state exposes isOfflineOnly from the reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(offlineOnly = true)
+      val viewModel = createViewModel()
+
+      assertTrue(viewModel.state.first().isOfflineOnly)
     }
 
   @Test
@@ -594,6 +654,73 @@ class PreviewReminderViewModelTest : BaseTest() {
       val viewModel = createViewModel()
 
       viewModel.onOpenCalendarClicked(0L)
+
+      assertEquals(null, viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `onTargetActionClick posts MakeCall for a call reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(action = ReminderAction.Call("+123"))
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.MakeCall("+123"), event)
+    }
+
+  @Test
+  fun `onTargetActionClick posts SendSms with the target and message for a sms reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns
+        reminderV2(action = ReminderAction.Sms(target = "+123", subject = "On my way"))
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.SendSms("+123", "On my way"), event)
+    }
+
+  @Test
+  fun `onTargetActionClick posts OpenApp for an app reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns
+        reminderV2(action = ReminderAction.App("com.example.app"))
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.OpenApp("com.example.app"), event)
+    }
+
+  @Test
+  fun `onTargetActionClick posts OpenLink for a link reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns
+        reminderV2(action = ReminderAction.Link("https://example.com"))
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.OpenLink("https://example.com"), event)
+    }
+
+  @Test
+  fun `onTargetActionClick does nothing for a reminder without an actionable target`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(action = ReminderAction.Shopping)
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
 
       assertEquals(null, viewModel.event.value?.peekContent())
     }

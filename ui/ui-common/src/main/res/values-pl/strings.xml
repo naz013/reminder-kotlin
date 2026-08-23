@@ -1220,4 +1220,10 @@
     <string name="sync_to_cloud">Synchronizuj z chmurą</string>
     <string name="offline_only_reminder">Zachowaj tylko offline</string>
     <string name="offline_only_reminder_description">To przypomnienie nie będzie kopiowane ani synchronizowane z żadną chmurą</string>
+    <string name="repeat_progress">%1$d z %2$d razy</string>
+    <string name="repeat_times_left">pozostało %1$d</string>
+    <string name="repeat_limit_reached">Limit powtórzeń osiągnięty</string>
+    <string name="repeats_until">Powtarza się do %1$s</string>
+    <string name="reminder_triggered_times">Uruchomiono %1$d razy</string>
+    <string name="reminder_snoozed_times">Odłożono %1$d razy</string>
 </resources>

@@ -1220,4 +1220,10 @@
     <string name="sync_to_cloud">クラウドに同期</string>
     <string name="offline_only_reminder">オフラインのみ保持</string>
     <string name="offline_only_reminder_description">このリマインダーはクラウドストレージにバックアップや同期されません</string>
+    <string name="repeat_progress">%2$d回中%1$d回</string>
+    <string name="repeat_times_left">残り%1$d回</string>
+    <string name="repeat_limit_reached">繰り返し制限に達しました</string>
+    <string name="repeats_until">%1$sまで繰り返す</string>
+    <string name="reminder_triggered_times">%1$d回実行済み</string>
+    <string name="reminder_snoozed_times">%1$d回スヌーズ</string>
 </resources>
