@@ -1220,4 +1220,10 @@
     <string name="sync_to_cloud">Synchronizovat do cloudu</string>
     <string name="offline_only_reminder">Ponechat pouze offline</string>
     <string name="offline_only_reminder_description">Tato připomínka nebude zálohována ani synchronizována s žádným cloudovým úložištěm</string>
+    <string name="repeat_progress">%1$d z %2$d opakování</string>
+    <string name="repeat_times_left">zbývá %1$d</string>
+    <string name="repeat_limit_reached">Limit opakování dosažen</string>
+    <string name="repeats_until">Opakuje se do %1$s</string>
+    <string name="reminder_triggered_times">Spuštěno %1$dx</string>
+    <string name="reminder_snoozed_times">Odloženo %1$dx</string>
 </resources>

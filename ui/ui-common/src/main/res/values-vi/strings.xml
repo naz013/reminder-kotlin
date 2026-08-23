@@ -1218,4 +1218,10 @@
     <string name="sync_to_cloud">Đồng bộ hóa lên đám mây</string>
     <string name="offline_only_reminder">Chỉ giữ ngoại tuyến</string>
     <string name="offline_only_reminder_description">Lời nhắc này sẽ không được sao lưu hoặc đồng bộ hóa với bất kỳ bộ nhớ đám mây nào</string>
+    <string name="repeat_progress">%1$d trên %2$d lần</string>
+    <string name="repeat_times_left">còn %1$d</string>
+    <string name="repeat_limit_reached">Đã đạt giới hạn lặp lại</string>
+    <string name="repeats_until">Lặp lại đến %1$s</string>
+    <string name="reminder_triggered_times">Đã kích hoạt %1$d lần</string>
+    <string name="reminder_snoozed_times">Đã báo lại %1$d lần</string>
 </resources>

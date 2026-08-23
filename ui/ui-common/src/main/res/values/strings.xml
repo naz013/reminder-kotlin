@@ -1224,4 +1224,10 @@
     <string name="sync_to_cloud">Sync to cloud</string>
     <string name="offline_only_reminder">Keep offline only</string>
     <string name="offline_only_reminder_description">This reminder won\'t be backed up or synced to any cloud storage</string>
+    <string name="repeat_progress">%1$d of %2$d times</string>
+    <string name="repeat_times_left">%1$d left</string>
+    <string name="repeat_limit_reached">Repeat limit reached</string>
+    <string name="repeats_until">Repeats until %1$s</string>
+    <string name="reminder_triggered_times">Triggered %1$d times</string>
+    <string name="reminder_snoozed_times">Snoozed %1$d times</string>
 </resources>

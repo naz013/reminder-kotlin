@@ -1218,4 +1218,10 @@
     <string name="sync_to_cloud">Synchroniseren met cloud</string>
     <string name="offline_only_reminder">Alleen offline houden</string>
     <string name="offline_only_reminder_description">Deze herinnering wordt niet geback-upt of gesynchroniseerd met cloudopslag</string>
+    <string name="repeat_progress">%1$d van %2$d keer</string>
+    <string name="repeat_times_left">%1$d over</string>
+    <string name="repeat_limit_reached">Limiet voor herhalingen bereikt</string>
+    <string name="repeats_until">Herhaalt tot %1$s</string>
+    <string name="reminder_triggered_times">%1$d keer geactiveerd</string>
+    <string name="reminder_snoozed_times">%1$d keer gesluimerd</string>
 </resources>

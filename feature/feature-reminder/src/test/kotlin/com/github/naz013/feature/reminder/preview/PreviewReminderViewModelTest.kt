@@ -4,6 +4,7 @@ import android.net.Uri
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.feature.reminder.UiReminderCommonAdapter
 import com.github.naz013.feature.reminder.UiReminderPlaceAdapter
+import com.github.naz013.feature.reminder.UiRepeatLimitInfo
 import com.github.naz013.ui.group.UiGroupListAdapter
 import com.github.naz013.feature.reminder.note.UiNoteListAdapter
 import com.github.naz013.ui.reminder.UiReminderDueData
@@ -109,6 +110,10 @@ class PreviewReminderViewModelTest : BaseTest() {
       )
     every { uiReminderCommonAdapter.getTargetV2(any()) } returns null
     every { uiReminderCommonAdapter.getPriorityTitle(any()) } returns "Normal"
+    every { uiReminderCommonAdapter.getRepeatLimitInfoV2(any()) } returns null
+    every { uiReminderCommonAdapter.getRepeatUntilV2(any()) } returns null
+    every { uiReminderCommonAdapter.getTriggeredCountTextV2(any()) } returns null
+    every { uiReminderCommonAdapter.getSnoozedCountTextV2(any()) } returns null
     every { dateTimeManager.fromGmtToLocal(any<String>()) } returns null
     every { dateTimeManager.getGmtFromDateTime(any<LocalDateTime>()) } returns ""
     coEvery { reminderV2Repository.getById(any()) } returns reminderV2()
@@ -322,6 +327,58 @@ class PreviewReminderViewModelTest : BaseTest() {
       val viewModel = createViewModel()
 
       assertTrue(viewModel.state.first().isPinned)
+    }
+
+  @Test
+  fun `state exposes repeat limit info from the adapter`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      every { uiReminderCommonAdapter.getRepeatLimitInfoV2(any()) } returns
+        UiRepeatLimitInfo(text = "3 of 10 times · 7 left", isLimitReached = false)
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertEquals("3 of 10 times · 7 left", state.repeatLimitText)
+      assertFalse(state.isRepeatLimitReached)
+    }
+
+  @Test
+  fun `state flags the repeat limit as reached when the adapter reports it`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      every { uiReminderCommonAdapter.getRepeatLimitInfoV2(any()) } returns
+        UiRepeatLimitInfo(text = "Repeat limit reached · 10 of 10 times", isLimitReached = true)
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.isRepeatLimitReached)
+    }
+
+  @Test
+  fun `state exposes the repeat-until, triggered-count, and snoozed-count text from the adapter`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      every { uiReminderCommonAdapter.getRepeatUntilV2(any()) } returns "Repeats until 31 Dec 2026"
+      every { uiReminderCommonAdapter.getTriggeredCountTextV2(any()) } returns "Triggered 5 times"
+      every { uiReminderCommonAdapter.getSnoozedCountTextV2(any()) } returns "Snoozed 2 times"
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertEquals("Repeats until 31 Dec 2026", state.repeatUntilText)
+      assertEquals("Triggered 5 times", state.triggeredCountText)
+      assertEquals("Snoozed 2 times", state.snoozedCountText)
+    }
+
+  @Test
+  fun `state exposes isOfflineOnly from the reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(offlineOnly = true)
+      val viewModel = createViewModel()
+
+      assertTrue(viewModel.state.first().isOfflineOnly)
     }
 
   @Test

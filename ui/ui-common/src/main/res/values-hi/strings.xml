@@ -1222,4 +1222,10 @@
     <string name="sync_to_cloud">क्लाउड से सिंक करें</string>
     <string name="offline_only_reminder">केवल ऑफ़लाइन रखें</string>
     <string name="offline_only_reminder_description">यह रिमाइंडर किसी भी क्लाउड स्टोरेज पर बैकअप या सिंक नहीं किया जाएगा</string>
+    <string name="repeat_progress">%2$d में से %1$d बार</string>
+    <string name="repeat_times_left">%1$d शेष</string>
+    <string name="repeat_limit_reached">दोहराने की सीमा पूरी हो गई</string>
+    <string name="repeats_until">%1$s तक दोहराया जाएगा</string>
+    <string name="reminder_triggered_times">%1$d बार चला</string>
+    <string name="reminder_snoozed_times">%1$d बार स्नूज़ किया गया</string>
 </resources>

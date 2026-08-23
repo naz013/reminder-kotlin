@@ -358,6 +358,10 @@ internal class PreviewReminderViewModel(
       val status = uiReminderCommonAdapter.getReminderStatus(reminder.isActive, reminder.isRemoved)
       val due = uiReminderCommonAdapter.getDueV2(reminder)
       val target = uiReminderCommonAdapter.getTargetV2(reminder)
+      val repeatLimitInfo = uiReminderCommonAdapter.getRepeatLimitInfoV2(reminder)
+      val repeatUntilText = uiReminderCommonAdapter.getRepeatUntilV2(reminder.recurrence)
+      val triggeredCountText = uiReminderCommonAdapter.getTriggeredCountTextV2(reminder)
+      val snoozedCountText = uiReminderCommonAdapter.getSnoozedCountTextV2(reminder)
       val group = reminderGroup?.let { uiGroupListAdapter.convert(it) }
       val places = reminder.places.map { uiReminderPlaceAdapter.create(it) }
       val attachments = reminder.attachmentFiles.map { uriToAttachmentFileAdapter(it.toUri()) }
@@ -382,6 +386,11 @@ internal class PreviewReminderViewModel(
             dueDateTime = due.formattedDateTime,
             before = due.before,
             repeat = due.repeat,
+            repeatLimitText = repeatLimitInfo?.text,
+            isRepeatLimitReached = repeatLimitInfo?.isLimitReached ?: false,
+            repeatUntilText = repeatUntilText,
+            triggeredCountText = triggeredCountText,
+            snoozedCountText = snoozedCountText,
             remaining = due.remaining,
             groupTitle = group?.title,
             priorityTitle =
@@ -400,6 +409,7 @@ internal class PreviewReminderViewModel(
             isPinned = reminder.isPinned,
             showSyncToCloud = reminder.offlineOnly &&
               (googleDriveAuthManager.isAuthorized() || dropboxAuthManager.isAuthorized()),
+            isOfflineOnly = reminder.offlineOnly,
           )
         }
       }

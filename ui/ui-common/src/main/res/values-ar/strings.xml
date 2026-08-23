@@ -1218,4 +1218,10 @@
     <string name="sync_to_cloud">مزامنة مع السحابة</string>
     <string name="offline_only_reminder">الاحتفاظ بها دون اتصال فقط</string>
     <string name="offline_only_reminder_description">لن يتم نسخ هذا التذكير احتياطيًا أو مزامنته مع أي تخزين سحابي</string>
+    <string name="repeat_progress">%1$d من %2$d مرات</string>
+    <string name="repeat_times_left">متبقٍ %1$d</string>
+    <string name="repeat_limit_reached">تم الوصول إلى حد التكرار</string>
+    <string name="repeats_until">يتكرر حتى %1$s</string>
+    <string name="reminder_triggered_times">تم التنبيه %1$d مرة</string>
+    <string name="reminder_snoozed_times">تم الغفو %1$d مرة</string>
 </resources>

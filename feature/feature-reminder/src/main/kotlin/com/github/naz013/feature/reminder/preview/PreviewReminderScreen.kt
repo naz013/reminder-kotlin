@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -389,7 +390,9 @@ private fun DetailRow(
   text: String,
   modifier: Modifier = Modifier,
   textDecoration: TextDecoration = TextDecoration.None,
+  isWarning: Boolean = false,
 ) {
+  val tint = if (isWarning) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = modifier
@@ -399,13 +402,14 @@ private fun DetailRow(
     Icon(
       painter = painterResource(icon),
       contentDescription = null,
-      tint = MaterialTheme.colorScheme.onSurfaceVariant,
+      tint = tint,
       modifier = Modifier.size(24.dp),
     )
     Text(
       text = text,
       style = MaterialTheme.typography.bodyLarge,
       textDecoration = textDecoration,
+      color = if (isWarning) MaterialTheme.colorScheme.error else Color.Unspecified,
       modifier = Modifier
         .weight(1f)
         .padding(start = 16.dp),
@@ -424,9 +428,24 @@ private fun detailRows(state: PreviewReminderState): List<@Composable () -> Unit
     state.dueDateTime?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
     state.before?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
     add { DetailRow(icon = DrawableCatalog.Fluent.ArrowRepeatAll, text = state.repeat) }
+    state.repeatLimitText?.let { text ->
+      add {
+        DetailRow(
+          icon = DrawableCatalog.Builder.RepeatLimit,
+          text = text,
+          isWarning = state.isRepeatLimitReached,
+        )
+      }
+    }
+    state.repeatUntilText?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
     state.remaining?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
+    state.triggeredCountText?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.History, text = text) } }
+    state.snoozedCountText?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.Snooze, text = text) } }
     state.groupTitle?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.Group, text = text) } }
     add { DetailRow(icon = DrawableCatalog.Fluent.Star, text = state.priorityTitle) }
+    if (state.isOfflineOnly) {
+      add { DetailRow(icon = DrawableCatalog.Fluent.Cloud, text = stringResource(R.string.offline_only_reminder_description)) }
+    }
     if (state.tags.isNotEmpty()) {
       add { TagsDetailRow(tags = state.tags) }
     }
@@ -805,6 +824,7 @@ private fun PreviewReminderScreenPreview() {
         description = "2% milk, one gallon",
         dueDateTime = "Today, 18:00",
         repeat = "Once",
+        repeatLimitText = "3 of 10 times · 7 left",
         priorityTitle = "Normal",
         subTasks = listOf(
           UiPreviewSubTask(id = "1", text = "Milk", isChecked = true),

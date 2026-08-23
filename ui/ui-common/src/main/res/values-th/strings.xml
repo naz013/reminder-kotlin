@@ -1218,4 +1218,10 @@
     <string name="sync_to_cloud">ซิงค์กับคลาวด์</string>
     <string name="offline_only_reminder">เก็บแบบออฟไลน์เท่านั้น</string>
     <string name="offline_only_reminder_description">การเตือนนี้จะไม่ถูกสำรองข้อมูลหรือซิงค์กับที่เก็บข้อมูลบนคลาวด์ใดๆ</string>
+    <string name="repeat_progress">%1$d จาก %2$d ครั้ง</string>
+    <string name="repeat_times_left">เหลือ %1$d</string>
+    <string name="repeat_limit_reached">ถึงขีดจำกัดการทำซ้ำแล้ว</string>
+    <string name="repeats_until">ทำซ้ำจนถึง %1$s</string>
+    <string name="reminder_triggered_times">ทำงานแล้ว %1$d ครั้ง</string>
+    <string name="reminder_snoozed_times">เลื่อนแจ้งเตือนแล้ว %1$d ครั้ง</string>
 </resources>
