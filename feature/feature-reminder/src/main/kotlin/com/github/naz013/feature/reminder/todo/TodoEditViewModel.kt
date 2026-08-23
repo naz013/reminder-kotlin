@@ -3,6 +3,8 @@ package com.github.naz013.feature.reminder.todo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
+import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.group.UiGroupList
 import com.github.naz013.feature.reminder.build.BuilderItem
@@ -65,6 +67,8 @@ internal class TodoEditViewModel(
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
   private val reminderPreferences: ReminderPreferences,
+  private val googleDriveAuthManager: GoogleDriveAuthManager,
+  private val dropboxAuthManager: DropboxAuthManager,
 ) : ViewModel() {
 
   /** Stable for the whole editing session, like [com.elementary.tasks.reminder.build.BuildReminderViewModel]'s
@@ -105,7 +109,14 @@ internal class TodoEditViewModel(
         // default (see onSaveClick/onExtendClick), unlike the full builder's GroupBuilderItem,
         // which always falls back to the app-wide default group.
         val availableGroups = (biFactory.create(BiType.GROUP) as GroupBuilderItem).groups
-        _state.update { it.copy(subTasksItem = subTasksItem, availableGroups = availableGroups) }
+        val canSetOfflineOnly = googleDriveAuthManager.isAuthorized() || dropboxAuthManager.isAuthorized()
+        _state.update {
+          it.copy(
+            subTasksItem = subTasksItem,
+            availableGroups = availableGroups,
+            canSetOfflineOnly = canSetOfflineOnly,
+          )
+        }
       }
     }
     observeTags()
@@ -140,6 +151,7 @@ internal class TodoEditViewModel(
         selectedGroup = selectedGroup,
         isEditing = true,
         isRemoved = reminder.isRemoved,
+        canSetOfflineOnly = false,
       )
     }
     return true
@@ -171,6 +183,22 @@ internal class TodoEditViewModel(
     _state.update { it.copy(selectedGroup = group) }
   }
 
+  fun onOfflineOnlyChange(checked: Boolean) {
+    _state.update { it.copy(offlineOnlyChecked = checked) }
+  }
+
+  /** Re-checks cloud login state on every ON_RESUME (see [TodoEditNavGraph]) - this Composable
+   *  entry isn't necessarily recreated after a trip to the Cloud Services screen (e.g. reached via
+   *  Settings without popping this entry off the backstack), so a cloud login check made once at
+   *  construction time would otherwise go stale the moment the user logs out of Google Drive/
+   *  Dropbox elsewhere and comes back. No-op once editing an existing todo - offlineOnly can only
+   *  ever be set at creation time, same rule as everywhere else it's gated. */
+  fun refreshCloudLoginState() {
+    if (originalV2 != null) return
+    val canSetOfflineOnly = googleDriveAuthManager.isAuthorized() || dropboxAuthManager.isAuthorized()
+    _state.update { it.copy(canSetOfflineOnly = canSetOfflineOnly) }
+  }
+
   fun onTagToggle(tag: TagChipState) {
     val isSelected = tag.id in _state.value.selectedTagIds
     viewModelScope.launch(dispatcherProvider.io()) {
@@ -186,8 +214,15 @@ internal class TodoEditViewModel(
       isSaving = true
       when (val result = biToReminderAdapter(base, builderItems, isEdited = isEdited)) {
         is BiToReminderAdapter.BuildResult.Success -> {
-          Logger.i(TAG, "Todo saved, id = ${result.reminderV2.uuId}")
-          activateReminderUseCase(result.reminderV2, startAnyway = true)
+          // offlineOnly can only be set while creating a reminder for the first time - never on edit.
+          val finalV2 =
+            if (!isEdited && _state.value.offlineOnlyChecked) {
+              result.reminderV2.copy(offlineOnly = true)
+            } else {
+              result.reminderV2
+            }
+          Logger.i(TAG, "Todo saved, id = ${finalV2.uuId}")
+          activateReminderUseCase(finalV2, startAnyway = true)
           withContext(dispatcherProvider.main()) { event.emit(ViewModelEvent.MoveBack) }
         }
 
@@ -210,8 +245,15 @@ internal class TodoEditViewModel(
       isSaving = true
       when (val result = biToReminderAdapter(base, builderItems, isEdited = isEdited)) {
         is BiToReminderAdapter.BuildResult.Success -> {
-          Logger.i(TAG, "Todo extended into builder, id = ${result.reminderV2.uuId}")
-          todoSeedHolder.pendingSeed = result.reminderV2
+          // offlineOnly can only be set while creating a reminder for the first time - never on edit.
+          val finalV2 =
+            if (!isEdited && _state.value.offlineOnlyChecked) {
+              result.reminderV2.copy(offlineOnly = true)
+            } else {
+              result.reminderV2
+            }
+          Logger.i(TAG, "Todo extended into builder, id = ${finalV2.uuId}")
+          todoSeedHolder.pendingSeed = finalV2
           withContext(dispatcherProvider.main()) {
             event.emit(ViewModelEvent.OpenBuilder(stableReminderId, isEditing = _state.value.isEditing))
           }

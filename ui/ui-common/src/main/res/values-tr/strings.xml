@@ -1217,4 +1217,8 @@
     <string name="cd_stop_voice_input">Sesli girişi durdur</string>
     <string name="cd_mark_as_done">Tamamlandı olarak işaretle</string>
     <string name="cd_mark_as_not_done">Tamamlanmadı olarak işaretle</string>
+
+    <string name="sync_to_cloud">Buluta senkronize et</string>
+    <string name="offline_only_reminder">Yalnızca çevrimdışı tut</string>
+    <string name="offline_only_reminder_description">Bu hatırlatıcı herhangi bir bulut depolama alanına yedeklenmeyecek veya senkronize edilmeyecek</string>
 </resources>

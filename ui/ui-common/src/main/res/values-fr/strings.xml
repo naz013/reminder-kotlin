@@ -1216,4 +1216,8 @@
     <string name="cd_stop_voice_input">Arrêter la saisie vocale</string>
     <string name="cd_mark_as_done">Marquer comme terminé</string>
     <string name="cd_mark_as_not_done">Marquer comme non terminé</string>
+
+    <string name="sync_to_cloud">Synchroniser avec le cloud</string>
+    <string name="offline_only_reminder">Conserver hors ligne uniquement</string>
+    <string name="offline_only_reminder_description">Ce rappel ne sera ni sauvegardé ni synchronisé avec un stockage cloud</string>
 </resources>

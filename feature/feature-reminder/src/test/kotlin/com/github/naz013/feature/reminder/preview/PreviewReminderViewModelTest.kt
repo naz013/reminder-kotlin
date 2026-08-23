@@ -13,6 +13,9 @@ import com.github.naz013.testing.getOrAwaitValue
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.feature.reminder.build.valuedialog.controller.attachments.UriToAttachmentFileAdapter
 import com.github.naz013.feature.reminder.preview.data.UiCalendarEventList
+import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
+import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
+import com.github.naz013.logic.reminder.usecase.SyncReminderToCloudUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
@@ -83,10 +86,15 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val tableChangeListenerFactory = mockk<TableChangeListenerFactory>(relaxed = true)
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
+  private val syncReminderToCloudUseCase = mockk<SyncReminderToCloudUseCase>(relaxed = true)
+  private val googleDriveAuthManager = mockk<GoogleDriveAuthManager>()
+  private val dropboxAuthManager = mockk<DropboxAuthManager>()
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { googleDriveAuthManager.isAuthorized() } returns false
+    every { dropboxAuthManager.isAuthorized() } returns false
     every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
     every { uiReminderCommonAdapter.getReminderStatus(any(), any()) } returns
       UiReminderStatus(title = "", active = true, removed = false)
@@ -115,6 +123,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     isRemoved: Boolean = false,
     isActive: Boolean = true,
     isPinned: Boolean = false,
+    offlineOnly: Boolean = false,
   ): ReminderV2 =
     ReminderV2(
       uuId = id,
@@ -124,6 +133,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       isActive = isActive,
       isRemoved = isRemoved,
       isPinned = isPinned,
+      offlineOnly = offlineOnly,
     )
 
   private fun createViewModel(id: String = "42"): PreviewReminderViewModel =
@@ -155,6 +165,9 @@ class PreviewReminderViewModelTest : BaseTest() {
       tableChangeListenerFactory = tableChangeListenerFactory,
       tagAssignmentRepository = tagAssignmentRepository,
       tagChipStateAdapter = tagChipStateAdapter,
+      syncReminderToCloudUseCase = syncReminderToCloudUseCase,
+      googleDriveAuthManager = googleDriveAuthManager,
+      dropboxAuthManager = dropboxAuthManager,
     )
 
   @Test
@@ -332,6 +345,76 @@ class PreviewReminderViewModelTest : BaseTest() {
       viewModel.onPinToggleClick()
 
       coVerify(exactly = 0) { togglePinnedReminderUseCase(any()) }
+    }
+
+  @Test
+  fun `showSyncToCloud is false for a normal reminder even when a cloud provider is logged in`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(offlineOnly = false)
+      every { googleDriveAuthManager.isAuthorized() } returns true
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertFalse(state.showSyncToCloud)
+    }
+
+  @Test
+  fun `showSyncToCloud is false for an offline-only reminder when no cloud provider is logged in`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(offlineOnly = true)
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertFalse(state.showSyncToCloud)
+    }
+
+  @Test
+  fun `showSyncToCloud is true for an offline-only reminder when Google Drive is logged in`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(offlineOnly = true)
+      every { googleDriveAuthManager.isAuthorized() } returns true
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.showSyncToCloud)
+    }
+
+  @Test
+  fun `showSyncToCloud is true for an offline-only reminder when Dropbox is logged in`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(offlineOnly = true)
+      every { dropboxAuthManager.isAuthorized() } returns true
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.showSyncToCloud)
+    }
+
+  @Test
+  fun `onSyncToCloudClick syncs the reminder to cloud and reloads`() =
+    runTest {
+      val reminder = reminderV2(offlineOnly = true)
+      coEvery { reminderV2Repository.getById("42") } returns reminder
+      val viewModel = createViewModel()
+
+      viewModel.onSyncToCloudClick()
+
+      coVerify(exactly = 1) { syncReminderToCloudUseCase(reminder) }
+    }
+
+  @Test
+  fun `onSyncToCloudClick does nothing when the reminder is not found`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns null
+      val viewModel = createViewModel()
+
+      viewModel.onSyncToCloudClick()
+
+      coVerify(exactly = 0) { syncReminderToCloudUseCase(any()) }
     }
 
   @Test

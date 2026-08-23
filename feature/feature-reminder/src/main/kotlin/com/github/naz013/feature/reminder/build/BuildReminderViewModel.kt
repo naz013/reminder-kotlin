@@ -41,6 +41,8 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
+import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.system.BuildInfo
@@ -143,6 +145,8 @@ internal class BuildReminderViewModel(
   private val findGroupUseCase: FindGroupUseCase,
   private val todoSeedHolder: TodoSeedHolder,
   private val isSimpleTodoReminderUseCase: IsSimpleTodoReminderUseCase,
+  private val googleDriveAuthManager: GoogleDriveAuthManager,
+  private val dropboxAuthManager: DropboxAuthManager,
 ) : ViewModel() {
 
   val initialId = navKey.id
@@ -167,7 +171,15 @@ internal class BuildReminderViewModel(
       navKey.deepLinkText == null &&
       navKey.groupUuId == null
 
-  private val _state = MutableStateFlow(BuildReminderState(isLoadingForEdit = isEditingById))
+  private val isCloudLoggedIn: Boolean =
+    googleDriveAuthManager.isAuthorized() || dropboxAuthManager.isAuthorized()
+
+  private val _state = MutableStateFlow(
+    BuildReminderState(
+      isLoadingForEdit = isEditingById,
+      canSetOfflineOnly = !isEditingById && isCloudLoggedIn,
+    ),
+  )
   val state: StateFlow<BuildReminderState> = _state.asStateFlow()
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
@@ -271,6 +283,22 @@ internal class BuildReminderViewModel(
     _state.update { it.copy(saveAsPresetChecked = checked) }
   }
 
+  fun onOfflineOnlyChange(checked: Boolean) {
+    _state.update { it.copy(offlineOnlyChecked = checked) }
+  }
+
+  /** Re-checks cloud login state on every ON_RESUME (see [BuildReminderNavGraph]) - this
+   *  Composable entry isn't necessarily recreated after a trip to the Cloud Services screen (e.g.
+   *  reached via Settings without popping this entry off the backstack), so [isCloudLoggedIn],
+   *  read once at construction time, would otherwise go stale the moment the user logs out of
+   *  Google Drive/Dropbox elsewhere and comes back. No-op once editing an existing reminder -
+   *  offlineOnly can only ever be set at creation time, same rule as everywhere else it's gated. */
+  fun refreshCloudLoginState() {
+    if (originalV2 != null) return
+    val isCloudLoggedIn = googleDriveAuthManager.isAuthorized() || dropboxAuthManager.isAuthorized()
+    _state.update { it.copy(canSetOfflineOnly = isCloudLoggedIn) }
+  }
+
   fun onPresetNameChange(name: String) {
     _state.update { it.copy(presetName = name) }
   }
@@ -313,11 +341,18 @@ internal class BuildReminderViewModel(
         is BiToReminderAdapter.BuildResult.Success -> {
           Logger.i(TAG, "Reminder build success")
 
-          val finalV2 =
+          val withNewId =
             if (newId) {
               buildResult.reminderV2.copy(uuId = UUID.randomUUID().toString())
             } else {
               buildResult.reminderV2
+            }
+          // offlineOnly can only be set while creating a reminder for the first time - never on edit.
+          val finalV2 =
+            if (originalV2 == null && _state.value.offlineOnlyChecked) {
+              withNewId.copy(offlineOnly = true)
+            } else {
+              withNewId
             }
 
           isSaving = true
@@ -529,7 +564,7 @@ internal class BuildReminderViewModel(
     if (navKey.isEditingExtend) {
       isEdited = true
       originalV2 = seed
-      _state.update { it.copy(canRemove = true, isRemoved = seed.isRemoved) }
+      _state.update { it.copy(canRemove = true, isRemoved = seed.isRemoved, canSetOfflineOnly = false) }
       pauseReminder(seed)
     }
     val builderItems = reminderToBiDecomposer(seed)
@@ -716,6 +751,7 @@ internal class BuildReminderViewModel(
         canRemove = !isFromFile,
         isRemoved = reminderV2.isRemoved,
         isLoadingForEdit = false,
+        canSetOfflineOnly = false,
       )
     }
 

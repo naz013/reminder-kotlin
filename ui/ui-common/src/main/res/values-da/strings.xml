@@ -1214,4 +1214,8 @@
     <string name="cd_stop_voice_input">Stop stemmeinput</string>
     <string name="cd_mark_as_done">Markér som udført</string>
     <string name="cd_mark_as_not_done">Markér som ikke udført</string>
+
+    <string name="sync_to_cloud">Synkroniser til sky</string>
+    <string name="offline_only_reminder">Behold kun offline</string>
+    <string name="offline_only_reminder_description">Denne påmindelse bliver ikke sikkerhedskopieret eller synkroniseret til nogen cloud-lagring</string>
 </resources>

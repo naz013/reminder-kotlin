@@ -4,6 +4,8 @@ import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.domain.Reminder
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.RemoteFileMetadataRepository
@@ -23,6 +25,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
@@ -407,6 +410,31 @@ class UploadSingleUseCaseTest {
       coVerify(exactly = 0) { syncDataConverter.create(any()) }
       coVerify(exactly = 0) { remoteFileMetadataRepository.save(any()) }
       coVerify(exactly = 1) { mockRepositoryCaller.updateSyncState(placeId, SyncState.Synced) }
+    }
+  }
+
+  @Test
+  fun `invoke with offline-only reminder should skip upload entirely`() {
+    runBlocking {
+      // Arrange - Reminder is flagged offline-only, must never reach a cloud provider
+      val dataType = DataType.RemindersV2
+      val reminderId = "offline-only-reminder"
+      val reminder = ReminderV2(
+        uuId = reminderId,
+        schedule = ReminderSchedule(startDateTime = LocalDateTime.now()),
+        offlineOnly = true,
+      )
+
+      every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
+      coEvery { mockRepositoryCaller.getById(reminderId) } returns reminder
+
+      // Act
+      uploadSingleUseCase(dataType, reminderId)
+
+      // Assert - No state transition, no cloud file creation, no upload
+      coVerify(exactly = 0) { mockRepositoryCaller.updateSyncState(any(), any()) }
+      coVerify(exactly = 0) { createCloudFileUseCase(any(), any()) }
+      coVerify(exactly = 0) { getAllowedCloudApisUseCase.invoke() }
     }
   }
 

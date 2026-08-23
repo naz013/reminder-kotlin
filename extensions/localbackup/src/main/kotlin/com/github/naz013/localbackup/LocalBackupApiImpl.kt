@@ -37,7 +37,7 @@ internal class LocalBackupApiImpl(
   override suspend fun export(output: OutputStream, passphrase: CharArray): Result<Unit> {
     val result = runCatching {
       val envelope = BackupEnvelope(
-        reminders = reminderV2Repository.getAll(),
+        reminders = reminderV2Repository.getAll().filterNot { it.offlineOnly },
         groups = groupV2Repository.getAll(),
         birthdays = birthdayRepository.getAll(),
         places = placeRepository.getAll(),

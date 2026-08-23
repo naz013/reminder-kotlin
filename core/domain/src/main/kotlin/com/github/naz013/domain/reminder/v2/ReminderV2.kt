@@ -33,7 +33,10 @@ data class ReminderV2(
   /** When the notification for this reminder was last actually shown to the user; cleared on
    * complete/snooze. Powers `WorkflowTrigger.ReminderUnacknowledgedFor`. */
   val lastShownAt: LocalDateTime? = null,
-  val sync: SyncMetadata = SyncMetadata()
+  val sync: SyncMetadata = SyncMetadata(),
+  /** True only if set at creation time (BuildReminder/TodoEdit) - excludes this reminder from
+   * cloud sync and Local Backup until the user explicitly opts back in via "Sync to cloud". */
+  val offlineOnly: Boolean = false
 ) {
 
   fun isLimited(): Boolean = recurrence.repeatLimitOrDefault() > 0

@@ -1214,4 +1214,8 @@
     <string name="cd_stop_voice_input">หยุดการป้อนข้อมูลด้วยเสียง</string>
     <string name="cd_mark_as_done">ทำเครื่องหมายว่าเสร็จสิ้น</string>
     <string name="cd_mark_as_not_done">ทำเครื่องหมายว่ายังไม่เสร็จสิ้น</string>
+
+    <string name="sync_to_cloud">ซิงค์กับคลาวด์</string>
+    <string name="offline_only_reminder">เก็บแบบออฟไลน์เท่านั้น</string>
+    <string name="offline_only_reminder_description">การเตือนนี้จะไม่ถูกสำรองข้อมูลหรือซิงค์กับที่เก็บข้อมูลบนคลาวด์ใดๆ</string>
 </resources>

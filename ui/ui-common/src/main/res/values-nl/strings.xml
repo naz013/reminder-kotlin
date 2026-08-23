@@ -1214,4 +1214,8 @@
     <string name="cd_stop_voice_input">Spraakinvoer stoppen</string>
     <string name="cd_mark_as_done">Markeren als voltooid</string>
     <string name="cd_mark_as_not_done">Markeren als niet voltooid</string>
+
+    <string name="sync_to_cloud">Synchroniseren met cloud</string>
+    <string name="offline_only_reminder">Alleen offline houden</string>
+    <string name="offline_only_reminder_description">Deze herinnering wordt niet geback-upt of gesynchroniseerd met cloudopslag</string>
 </resources>

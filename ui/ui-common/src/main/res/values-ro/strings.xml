@@ -1216,4 +1216,8 @@
     <string name="cd_stop_voice_input">Oprește introducerea vocală</string>
     <string name="cd_mark_as_done">Marchează ca finalizat</string>
     <string name="cd_mark_as_not_done">Marchează ca nefinalizat</string>
+
+    <string name="sync_to_cloud">Sincronizează cu cloud-ul</string>
+    <string name="offline_only_reminder">Păstrează doar offline</string>
+    <string name="offline_only_reminder_description">Acest memento nu va fi copiat de rezervă sau sincronizat cu niciun spațiu de stocare în cloud</string>
 </resources>

@@ -125,6 +125,7 @@ private fun PreviewEntry(
     onShareClick = viewModel::shareReminder,
     onCopyClick = viewModel::onCopyClicked,
     onPinClick = viewModel::onPinToggleClick,
+    onSyncToCloudClick = viewModel::onSyncToCloudClick,
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,

@@ -135,6 +135,23 @@ class LocalBackupApiImplTest {
   }
 
   @Test
+  fun `export excludes reminders flagged offline-only`() = runTest {
+    coEvery { reminderV2Repository.getAll() } returns listOf(
+      reminder("r1"),
+      reminder("r2").copy(offlineOnly = true),
+    )
+    val output = ByteArrayOutputStream()
+    api.export(output, "correct horse".toCharArray())
+
+    val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
+
+    assertTrue(result.isSuccess)
+    assertEquals(1, result.getOrThrow().remindersImported)
+    coVerify { reminderV2Repository.save(match { it.uuId == "r1" }) }
+    coVerify(exactly = 0) { reminderV2Repository.save(match { it.uuId == "r2" }) }
+  }
+
+  @Test
   fun `export zeroes the passphrase array afterwards`() = runTest {
     val passphrase = "correct horse".toCharArray()
 

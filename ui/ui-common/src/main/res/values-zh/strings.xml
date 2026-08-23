@@ -1217,4 +1217,8 @@
     <string name="cd_stop_voice_input">停止语音输入</string>
     <string name="cd_mark_as_done">标记为已完成</string>
     <string name="cd_mark_as_not_done">标记为未完成</string>
+
+    <string name="sync_to_cloud">同步到云端</string>
+    <string name="offline_only_reminder">仅保留在本地</string>
+    <string name="offline_only_reminder_description">此提醒不会备份或同步到任何云存储</string>
 </resources>

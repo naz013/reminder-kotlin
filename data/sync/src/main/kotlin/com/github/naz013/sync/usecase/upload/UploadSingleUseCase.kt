@@ -1,5 +1,6 @@
 package com.github.naz013.sync.usecase.upload
 
+import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.RemoteFileMetadataRepository
@@ -25,6 +26,10 @@ internal class UploadSingleUseCase(
    * Updates sync state through the lifecycle: Uploading -> Synced (on success) or FailedToUpload (on error).
    * If the item is not found locally, sets state to FailedToUpload and throws an exception.
    *
+   * A [ReminderV2] with `offlineOnly = true` is silently skipped - this is the single choke point
+   * every upload path (scheduled-after-save, bulk, force-upload, single-item sync) funnels through,
+   * so this is where that flag has to be enforced.
+   *
    * @param dataType The type of data to upload
    * @param id The unique identifier of the item
    * @throws IllegalArgumentException if the id is blank or no data found for the id
@@ -36,6 +41,10 @@ internal class UploadSingleUseCase(
     val data = caller.getById(id) ?: run {
       caller.updateSyncState(id, SyncState.FailedToUpload)
       throw IllegalArgumentException("No data found for id: $id")
+    }
+    if (data is ReminderV2 && data.offlineOnly) {
+      Logger.i(TAG, "Skipping upload for offline-only reminder, id: $id")
+      return
     }
     try {
       caller.updateSyncState(id, SyncState.Uploading)

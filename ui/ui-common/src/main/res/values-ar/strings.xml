@@ -1214,4 +1214,8 @@
     <string name="cd_stop_voice_input">إيقاف الإدخال الصوتي</string>
     <string name="cd_mark_as_done">تحديد كمكتمل</string>
     <string name="cd_mark_as_not_done">تحديد كغير مكتمل</string>
+
+    <string name="sync_to_cloud">مزامنة مع السحابة</string>
+    <string name="offline_only_reminder">الاحتفاظ بها دون اتصال فقط</string>
+    <string name="offline_only_reminder_description">لن يتم نسخ هذا التذكير احتياطيًا أو مزامنته مع أي تخزين سحابي</string>
 </resources>

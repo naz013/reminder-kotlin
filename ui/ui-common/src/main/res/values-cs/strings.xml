@@ -1216,4 +1216,8 @@
     <string name="cd_stop_voice_input">Zastavit hlasový vstup</string>
     <string name="cd_mark_as_done">Označit jako dokončené</string>
     <string name="cd_mark_as_not_done">Označit jako nedokončené</string>
+
+    <string name="sync_to_cloud">Synchronizovat do cloudu</string>
+    <string name="offline_only_reminder">Ponechat pouze offline</string>
+    <string name="offline_only_reminder_description">Tato připomínka nebude zálohována ani synchronizována s žádným cloudovým úložištěm</string>
 </resources>
