@@ -122,6 +122,9 @@ val featureReminderModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
+      get(),
     )
   }
 
@@ -208,6 +211,8 @@ val featureReminderModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
     )
   }
 
@@ -242,6 +247,8 @@ val featureReminderModule = module {
   viewModel { (key: TodoEditNavKey.Main) ->
     TodoEditViewModel(
       key,
+      get(),
+      get(),
       get(),
       get(),
       get(),

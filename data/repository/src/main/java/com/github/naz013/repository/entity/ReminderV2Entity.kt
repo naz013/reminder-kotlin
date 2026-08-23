@@ -75,7 +75,9 @@ internal data class ReminderV2Entity(
   val lastShownAt: Long? = null,
 
   val version: Long = 0L,
-  val syncState: String
+  val syncState: String,
+
+  val offlineOnly: Boolean = false
 )
 
 data class ReminderScheduleColumns(

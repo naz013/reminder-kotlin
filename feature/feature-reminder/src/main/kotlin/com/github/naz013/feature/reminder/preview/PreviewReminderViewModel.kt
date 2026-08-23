@@ -30,11 +30,14 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
+import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
+import com.github.naz013.logic.reminder.usecase.SyncReminderToCloudUseCase
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -86,6 +89,9 @@ internal class PreviewReminderViewModel(
   private val tableChangeListenerFactory: TableChangeListenerFactory,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val tagChipStateAdapter: TagChipStateAdapter,
+  private val syncReminderToCloudUseCase: SyncReminderToCloudUseCase,
+  private val googleDriveAuthManager: GoogleDriveAuthManager,
+  private val dropboxAuthManager: DropboxAuthManager,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewReminderState())
@@ -174,6 +180,19 @@ internal class PreviewReminderViewModel(
       }
       if (!result.success) {
         event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.reminder_is_outdated)))
+      }
+      load()
+    }
+  }
+
+  fun onSyncToCloudClick() {
+    viewModelScope.launch(dispatcherProvider.main()) {
+      val reminder = withContext(dispatcherProvider.io()) {
+        reminderV2Repository.getById(id)
+      } ?: return@launch
+      Logger.i(TAG, "Syncing reminder to cloud, id: ${reminder.uuId}")
+      withContext(dispatcherProvider.io()) {
+        syncReminderToCloudUseCase(reminder)
       }
       load()
     }
@@ -379,6 +398,8 @@ internal class PreviewReminderViewModel(
             canCopy = canCopyV2(reminder.recurrence),
             canDelete = reminder.isRemoved,
             isPinned = reminder.isPinned,
+            showSyncToCloud = reminder.offlineOnly &&
+              (googleDriveAuthManager.isAuthorized() || dropboxAuthManager.isAuthorized()),
           )
         }
       }

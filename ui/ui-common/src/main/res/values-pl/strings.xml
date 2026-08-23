@@ -1216,4 +1216,8 @@
     <string name="cd_stop_voice_input">Zatrzymaj wprowadzanie głosowe</string>
     <string name="cd_mark_as_done">Oznacz jako wykonane</string>
     <string name="cd_mark_as_not_done">Oznacz jako niewykonane</string>
+
+    <string name="sync_to_cloud">Synchronizuj z chmurą</string>
+    <string name="offline_only_reminder">Zachowaj tylko offline</string>
+    <string name="offline_only_reminder_description">To przypomnienie nie będzie kopiowane ani synchronizowane z żadną chmurą</string>
 </resources>

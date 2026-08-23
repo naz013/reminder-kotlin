@@ -1216,4 +1216,8 @@
     <string name="cd_stop_voice_input">Interrompi inserimento vocale</string>
     <string name="cd_mark_as_done">Contrassegna come completato</string>
     <string name="cd_mark_as_not_done">Contrassegna come non completato</string>
+
+    <string name="sync_to_cloud">Sincronizza sul cloud</string>
+    <string name="offline_only_reminder">Mantieni solo offline</string>
+    <string name="offline_only_reminder_description">Questo promemoria non verrà eseguito il backup né sincronizzato con alcun archivio cloud</string>
 </resources>

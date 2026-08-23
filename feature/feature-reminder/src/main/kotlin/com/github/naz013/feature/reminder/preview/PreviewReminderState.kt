@@ -35,6 +35,7 @@ internal data class PreviewReminderState(
   val canCopy: Boolean = false,
   val canDelete: Boolean = false,
   val isPinned: Boolean = false,
+  val showSyncToCloud: Boolean = false,
   val showDeleteConfirm: Boolean = false,
   val tags: List<TagChipState> = emptyList(),
 )

@@ -1216,4 +1216,8 @@
     <string name="cd_stop_voice_input">음성 입력 중지</string>
     <string name="cd_mark_as_done">완료로 표시</string>
     <string name="cd_mark_as_not_done">미완료로 표시</string>
+
+    <string name="sync_to_cloud">클라우드에 동기화</string>
+    <string name="offline_only_reminder">오프라인으로만 유지</string>
+    <string name="offline_only_reminder_description">이 알림은 클라우드 저장소에 백업되거나 동기화되지 않습니다</string>
 </resources>

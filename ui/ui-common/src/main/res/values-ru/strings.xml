@@ -1215,4 +1215,8 @@
     <string name="cd_stop_voice_input">Остановить голосовой ввод</string>
     <string name="cd_mark_as_done">Отметить как выполнено</string>
     <string name="cd_mark_as_not_done">Отметить как невыполненное</string>
+
+    <string name="sync_to_cloud">Синхронизировать с облаком</string>
+    <string name="offline_only_reminder">Хранить только локально</string>
+    <string name="offline_only_reminder_description">Это напоминание не будет резервироваться или синхронизироваться с облачным хранилищем</string>
 </resources>

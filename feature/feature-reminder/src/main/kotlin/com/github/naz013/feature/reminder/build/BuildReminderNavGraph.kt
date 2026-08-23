@@ -2,6 +2,7 @@ package com.github.naz013.feature.reminder.build
 
 import android.os.Build
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -9,6 +10,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.common.datapicker.compose.rememberMultipleUriPicker
@@ -103,6 +107,21 @@ private fun MainEntry(
 
   val state by viewModel.state.collectAsState()
 
+  // This entry isn't necessarily recreated after a trip to the Cloud Services screen (reached
+  // via Settings without popping this entry off the backstack), so re-check cloud login state on
+  // every ON_RESUME - otherwise the offline-only switch stays stale after logging out elsewhere.
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(viewModel, lifecycleOwner) {
+    val observer =
+      LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+          viewModel.refreshCloudLoginState()
+        }
+      }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
+
   var showSelector by remember { mutableStateOf(false) }
 
   // SelectApplication is a separate Nav3 entry (its own ViewModelStoreOwner), so it can't hand
@@ -166,6 +185,8 @@ private fun MainEntry(
     canSaveAsPreset = state.canSaveAsPreset,
     saveAsPresetChecked = state.saveAsPresetChecked,
     presetName = state.presetName,
+    canSetOfflineOnly = state.canSetOfflineOnly,
+    offlineOnlyChecked = state.offlineOnlyChecked,
     quickStartOptions = QuickStartOption.entries,
     allTags = state.allTags,
     selectedTagIds = state.selectedTagIds,
@@ -180,6 +201,7 @@ private fun MainEntry(
     onReportIssueClick = viewModel::onReportAnIssueClicked,
     onSaveAsPresetChange = viewModel::onSaveAsPresetChange,
     onPresetNameChange = viewModel::onPresetNameChange,
+    onOfflineOnlyChange = viewModel::onOfflineOnlyChange,
     onItemClick = { position, item -> viewModel.onItemEditedClicked(position, item) },
     onItemRemove = { position, item -> viewModel.removeItem(position, item) },
     onAddClick = { showSelector = true },

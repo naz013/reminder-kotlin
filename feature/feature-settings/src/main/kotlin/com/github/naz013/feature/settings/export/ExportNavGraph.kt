@@ -35,6 +35,22 @@ private fun CloudBackupEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<CloudBackupSettingsViewModel>()
   val state by viewModel.state.collectAsState(CloudBackupSettingsState())
 
+  // This entry isn't necessarily recreated after a trip to the Cloud Services screen (reached
+  // via onCloudServicesClick below without popping this entry off the backstack), so re-check
+  // cloud login state on every ON_RESUME - otherwise hasAnyCloudApi stays stale after logging
+  // out/in there.
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(viewModel, lifecycleOwner) {
+    val observer =
+      LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+          viewModel.refreshCloudApiState()
+        }
+      }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
+
   SettingsScaffold(
     title = stringResource(R.string.cloud_backup),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },

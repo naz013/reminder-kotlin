@@ -1214,4 +1214,8 @@
     <string name="cd_stop_voice_input">Dừng nhập bằng giọng nói</string>
     <string name="cd_mark_as_done">Đánh dấu là đã hoàn thành</string>
     <string name="cd_mark_as_not_done">Đánh dấu là chưa hoàn thành</string>
+
+    <string name="sync_to_cloud">Đồng bộ hóa lên đám mây</string>
+    <string name="offline_only_reminder">Chỉ giữ ngoại tuyến</string>
+    <string name="offline_only_reminder_description">Lời nhắc này sẽ không được sao lưu hoặc đồng bộ hóa với bất kỳ bộ nhớ đám mây nào</string>
 </resources>

@@ -1216,4 +1216,8 @@
     <string name="cd_stop_voice_input">Detener entrada de voz</string>
     <string name="cd_mark_as_done">Marcar como hecho</string>
     <string name="cd_mark_as_not_done">Marcar como no hecho</string>
+
+    <string name="sync_to_cloud">Sincronizar con la nube</string>
+    <string name="offline_only_reminder">Mantener solo sin conexión</string>
+    <string name="offline_only_reminder_description">Este recordatorio no se respaldará ni sincronizará con ningún almacenamiento en la nube</string>
 </resources>

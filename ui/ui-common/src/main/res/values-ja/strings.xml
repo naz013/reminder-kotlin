@@ -1216,4 +1216,8 @@
     <string name="cd_stop_voice_input">音声入力を停止</string>
     <string name="cd_mark_as_done">完了にする</string>
     <string name="cd_mark_as_not_done">未完了にする</string>
+
+    <string name="sync_to_cloud">クラウドに同期</string>
+    <string name="offline_only_reminder">オフラインのみ保持</string>
+    <string name="offline_only_reminder_description">このリマインダーはクラウドストレージにバックアップや同期されません</string>
 </resources>

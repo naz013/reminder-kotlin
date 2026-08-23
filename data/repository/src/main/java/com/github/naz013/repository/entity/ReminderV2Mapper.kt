@@ -54,7 +54,8 @@ internal fun ReminderV2.toEntity(): ReminderV2Entity {
     snoozeCount = snoozeCount,
     lastShownAt = lastShownAt?.toEpochMillisUtc(),
     version = sync.version,
-    syncState = sync.syncState.name
+    syncState = sync.syncState.name,
+    offlineOnly = offlineOnly
   )
 }
 
@@ -83,7 +84,8 @@ internal fun ReminderV2Entity.toDomain(): ReminderV2 {
     eventCount = eventCount,
     snoozeCount = snoozeCount,
     lastShownAt = lastShownAt?.toLocalDateTimeUtc(),
-    sync = SyncMetadata(version = version, syncState = SyncState.valueOf(syncState))
+    sync = SyncMetadata(version = version, syncState = SyncState.valueOf(syncState)),
+    offlineOnly = offlineOnly
   )
 }
 

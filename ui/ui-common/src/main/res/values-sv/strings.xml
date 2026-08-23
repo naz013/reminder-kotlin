@@ -1214,4 +1214,8 @@
     <string name="cd_stop_voice_input">Stoppa röstinmatning</string>
     <string name="cd_mark_as_done">Markera som klar</string>
     <string name="cd_mark_as_not_done">Markera som ej klar</string>
+
+    <string name="sync_to_cloud">Synkronisera till molnet</string>
+    <string name="offline_only_reminder">Behåll endast offline</string>
+    <string name="offline_only_reminder_description">Denna påminnelse kommer inte att säkerhetskopieras eller synkroniseras till något molnlagringsutrymme</string>
 </resources>

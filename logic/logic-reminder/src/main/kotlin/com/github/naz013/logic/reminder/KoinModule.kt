@@ -22,6 +22,7 @@ import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCaseImpl
 import com.github.naz013.logic.reminder.usecase.StartLocationTrackingUseCase
 import com.github.naz013.logic.reminder.usecase.StopLocationTrackingUseCase
+import com.github.naz013.logic.reminder.usecase.SyncReminderToCloudUseCase
 import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.logic.reminder.usecase.UpdatePermanentReminderNotificationUseCase
@@ -65,6 +66,7 @@ val logicReminderModule = module {
   factoryOf(::SkipReminderUseCase)
   factoryOf(::ToggleReminderStateUseCase)
   factoryOf(::TogglePinnedReminderUseCase)
+  factoryOf(::SyncReminderToCloudUseCase)
   factory { EventDateTimeCalculatorV2(get(), get()) }
 
   factory { SnoozeReminderUseCaseImpl(get(), get(), get(), get(), get(), get()) as SnoozeReminderUseCase }

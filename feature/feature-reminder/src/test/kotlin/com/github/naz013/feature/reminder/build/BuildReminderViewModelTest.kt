@@ -37,6 +37,8 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.PresetAction
 import com.github.naz013.analytics.PresetUsed
 import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
+import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.datecalc.DateTimeManager
@@ -117,10 +119,14 @@ class BuildReminderViewModelTest : BaseTest() {
   private val findGroupUseCase = mockk<FindGroupUseCase>(relaxed = true)
   private val todoSeedHolder = TodoSeedHolder()
   private val isSimpleTodoReminderUseCase = mockk<IsSimpleTodoReminderUseCase>()
+  private val googleDriveAuthManager = mockk<GoogleDriveAuthManager>()
+  private val dropboxAuthManager = mockk<DropboxAuthManager>()
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { googleDriveAuthManager.isAuthorized() } returns true
+    every { dropboxAuthManager.isAuthorized() } returns false
     every { reminderPreferences.is24HourFormat } returns true
     every { tagRepository.observeAll() } returns flowOf(emptyList())
     every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
@@ -215,6 +221,8 @@ class BuildReminderViewModelTest : BaseTest() {
       findGroupUseCase = findGroupUseCase,
       todoSeedHolder = todoSeedHolder,
       isSimpleTodoReminderUseCase = isSimpleTodoReminderUseCase,
+      googleDriveAuthManager = googleDriveAuthManager,
+      dropboxAuthManager = dropboxAuthManager,
     )
 
   @Test
@@ -508,6 +516,91 @@ class BuildReminderViewModelTest : BaseTest() {
       viewModel.saveReminder(newId = false)
 
       coVerify(exactly = 0) { recurPresetRepository.save(any()) }
+    }
+
+  @Test
+  fun `a brand-new reminder allows setting offline-only`() {
+    val viewModel = createViewModel()
+
+    assertEquals(true, viewModel.state.value.canSetOfflineOnly)
+  }
+
+  @Test
+  fun `a brand-new reminder does not allow setting offline-only when no cloud storage is logged in`() {
+    every { googleDriveAuthManager.isAuthorized() } returns false
+    every { dropboxAuthManager.isAuthorized() } returns false
+
+    val viewModel = createViewModel()
+
+    assertEquals(false, viewModel.state.value.canSetOfflineOnly)
+  }
+
+  @Test
+  fun `editing an existing reminder never allows setting offline-only`() {
+    val reminder = reminderV2Fixture(uuId = "42")
+    coEvery { reminderV2Repository.getById("42") } returns reminder
+    coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
+
+    val viewModel = createViewModel(initialId = "42")
+
+    assertEquals(false, viewModel.state.value.canSetOfflineOnly)
+  }
+
+  @Test
+  fun `refreshCloudLoginState reflects a logout that happened while this screen stayed alive`() {
+    val viewModel = createViewModel()
+    assertEquals(true, viewModel.state.value.canSetOfflineOnly)
+
+    every { googleDriveAuthManager.isAuthorized() } returns false
+    every { dropboxAuthManager.isAuthorized() } returns false
+    viewModel.refreshCloudLoginState()
+
+    assertEquals(false, viewModel.state.value.canSetOfflineOnly)
+  }
+
+  @Test
+  fun `refreshCloudLoginState is a no-op while editing an existing reminder`() {
+    val reminder = reminderV2Fixture(uuId = "42")
+    coEvery { reminderV2Repository.getById("42") } returns reminder
+    coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
+    val viewModel = createViewModel(initialId = "42")
+
+    viewModel.refreshCloudLoginState()
+
+    assertEquals(false, viewModel.state.value.canSetOfflineOnly)
+  }
+
+  @Test
+  fun `saveReminder applies offlineOnly to a brand-new reminder when checked`() =
+    runTest {
+      val built = reminderV2Fixture(uuId = "new")
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(built)
+      val viewModel = createViewModel()
+      viewModel.onOfflineOnlyChange(true)
+
+      viewModel.saveReminder(newId = false)
+
+      coVerify(exactly = 1) { activateReminderUseCase(match { it.offlineOnly }, startAnyway = true) }
+    }
+
+  @Test
+  fun `saveReminder never applies offlineOnly when editing an existing reminder`() =
+    runTest {
+      val reminder = reminderV2Fixture(uuId = "42")
+      coEvery { reminderV2Repository.getById("42") } returns reminder
+      coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
+      val built = reminderV2Fixture(uuId = "42")
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(built)
+      val viewModel = createViewModel(initialId = "42")
+      // canSetOfflineOnly is false here, but even if offlineOnlyChecked were somehow true,
+      // the edit path must never apply it.
+      viewModel.onOfflineOnlyChange(true)
+
+      viewModel.saveReminder(newId = false)
+
+      coVerify(exactly = 1) { activateReminderUseCase(match { !it.offlineOnly }, startAnyway = true) }
     }
 
   @Test

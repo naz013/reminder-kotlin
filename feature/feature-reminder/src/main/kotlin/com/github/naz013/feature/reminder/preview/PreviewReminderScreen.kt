@@ -83,6 +83,7 @@ internal fun PreviewReminderScreen(
   onShareClick: () -> Unit,
   onCopyClick: () -> Unit,
   onPinClick: () -> Unit,
+  onSyncToCloudClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDeleteDismiss: () -> Unit,
@@ -114,10 +115,13 @@ internal fun PreviewReminderScreen(
             // trashed reminder makes no sense since it no longer shows on the Agenda list.
             canPin = !state.canDelete,
             isPinned = state.isPinned,
+            showSyncToCloud = state.showSyncToCloud,
+            canDelete = state.canDelete,
             onEditClick = onEditClick,
             onShareClick = onShareClick,
             onCopyClick = onCopyClick,
             onPinClick = onPinClick,
+            onSyncToCloudClick = onSyncToCloudClick,
             onDeleteClick = onDeleteClick,
           )
         },
@@ -127,7 +131,9 @@ internal fun PreviewReminderScreen(
   ) { padding ->
     if (state.isLoading) {
       Box(
-        modifier = Modifier.fillMaxSize().padding(padding),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding),
         contentAlignment = Alignment.Center,
       ) {
         CircularProgressIndicator()
@@ -135,7 +141,11 @@ internal fun PreviewReminderScreen(
       return@Scaffold
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
+    LazyColumn(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+    ) {
       item { HeaderCard(state = state, onToggleClick = onToggleClick) }
 
       item { SectionHeader(text = stringResource(R.string.details)) }
@@ -185,17 +195,9 @@ internal fun PreviewReminderScreen(
   if (state.showDeleteConfirm) {
     AlertDialog(
       onDismissRequest = onDeleteDismiss,
-      text = {
-        Text(
-          stringResource(if (state.canDelete) R.string.delete else R.string.move_to_the_archive),
-        )
-      },
-      confirmButton = {
-        TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) }
-      },
-      dismissButton = {
-        TextButton(onClick = onDeleteDismiss) { Text(stringResource(R.string.no)) }
-      },
+      text = { Text(stringResource(if (state.canDelete) R.string.delete else R.string.move_to_the_archive)) },
+      confirmButton = { TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) } },
+      dismissButton = { TextButton(onClick = onDeleteDismiss) { Text(stringResource(R.string.no)) } },
     )
   }
 }
@@ -205,37 +207,66 @@ private fun OverflowMenu(
   canCopy: Boolean,
   canPin: Boolean,
   isPinned: Boolean,
+  showSyncToCloud: Boolean,
+  canDelete: Boolean,
   onEditClick: () -> Unit,
   onShareClick: () -> Unit,
   onCopyClick: () -> Unit,
   onPinClick: () -> Unit,
+  onSyncToCloudClick: () -> Unit,
   onDeleteClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
-  val items =
-    buildList {
-      add(PopupMenuItem(id = OverflowAction.EDIT.ordinal, title = stringResource(R.string.edit), iconRes = R.drawable.ic_fluent_edit))
+  val items = buildList {
+    add(
+      PopupMenuItem(
+        id = OverflowAction.EDIT.ordinal,
+        title = stringResource(R.string.edit),
+        iconRes = R.drawable.ic_fluent_edit
+      )
+    )
+    add(
+      PopupMenuItem(
+        id = OverflowAction.SHARE.ordinal,
+        title = stringResource(R.string.share),
+        iconRes = R.drawable.ic_fluent_share_android,
+      ),
+    )
+    if (canCopy) {
       add(
         PopupMenuItem(
-          id = OverflowAction.SHARE.ordinal,
-          title = stringResource(R.string.share),
-          iconRes = R.drawable.ic_fluent_share_android,
+          id = OverflowAction.COPY.ordinal,
+          title = stringResource(R.string.copy),
+          iconRes = R.drawable.ic_fluent_copy
+        )
+      )
+    }
+    if (canPin) {
+      add(
+        PopupMenuItem(
+          id = OverflowAction.PIN.ordinal,
+          title = stringResource(if (isPinned) R.string.unpin else R.string.pin),
+          iconRes = if (isPinned) DrawableCatalog.Fluent.PinOff else DrawableCatalog.Fluent.Pin,
         ),
       )
-      if (canCopy) {
-        add(PopupMenuItem(id = OverflowAction.COPY.ordinal, title = stringResource(R.string.copy), iconRes = R.drawable.ic_fluent_copy))
-      }
-      if (canPin) {
-        add(
-          PopupMenuItem(
-            id = OverflowAction.PIN.ordinal,
-            title = stringResource(if (isPinned) R.string.unpin else R.string.pin),
-            iconRes = if (isPinned) DrawableCatalog.Fluent.PinOff else DrawableCatalog.Fluent.Pin,
-          ),
-        )
-      }
-      add(PopupMenuItem(id = OverflowAction.DELETE.ordinal, title = stringResource(R.string.delete), iconRes = R.drawable.ic_fluent_delete))
     }
+    if (showSyncToCloud) {
+      add(
+        PopupMenuItem(
+          id = OverflowAction.SYNC_TO_CLOUD.ordinal,
+          title = stringResource(R.string.sync_to_cloud),
+          iconRes = DrawableCatalog.Fluent.CloudBackup,
+        ),
+      )
+    }
+    add(
+      PopupMenuItem(
+        id = OverflowAction.DELETE.ordinal,
+        title = stringResource(if (canDelete) R.string.delete else R.string.move_to_the_archive),
+        iconRes = if (canDelete) R.drawable.ic_fluent_delete else R.drawable.ic_fluent_archive
+      )
+    )
+  }
   Box {
     MenuIconButton(
       icon = painterResource(R.drawable.ic_fluent_more_vertical),
@@ -252,6 +283,7 @@ private fun OverflowMenu(
           OverflowAction.SHARE -> onShareClick()
           OverflowAction.COPY -> onCopyClick()
           OverflowAction.PIN -> onPinClick()
+          OverflowAction.SYNC_TO_CLOUD -> onSyncToCloudClick()
           OverflowAction.DELETE -> onDeleteClick()
         }
       },
@@ -264,6 +296,7 @@ private enum class OverflowAction {
   SHARE,
   COPY,
   PIN,
+  SYNC_TO_CLOUD,
   DELETE,
 }
 
@@ -273,7 +306,9 @@ private fun HeaderCard(
   onToggleClick: () -> Unit,
 ) {
   Card(
-    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
   ) {
     Column(modifier = Modifier.padding(16.dp)) {
@@ -308,11 +343,10 @@ private fun StatusRow(
   ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
       Box(
-        modifier =
-          Modifier
-            .size(8.dp)
-            .clip(CircleShape)
-            .background(if (status.active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
+        modifier = Modifier
+          .size(8.dp)
+          .clip(CircleShape)
+          .background(if (status.active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
       )
       Text(
         text = if (status.active) stringResource(R.string.enabled4) else stringResource(R.string.disabled),
@@ -323,15 +357,14 @@ private fun StatusRow(
     FilledTonalButton(
       onClick = onToggleClick,
       enabled = status.canToggle,
-      colors =
-        if (status.active) {
-          ButtonDefaults.filledTonalButtonColors()
-        } else {
-          ButtonDefaults.filledTonalButtonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-          )
-        },
+      colors = if (status.active) {
+        ButtonDefaults.filledTonalButtonColors()
+      } else {
+        ButtonDefaults.filledTonalButtonColors(
+          containerColor = MaterialTheme.colorScheme.primaryContainer,
+          contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
+      },
     ) {
       Text(text = stringResource(if (status.active) R.string.turn_off else R.string.turn_on))
     }
@@ -344,10 +377,9 @@ private fun SectionHeader(text: String) {
   Text(
     text = text,
     style = MaterialTheme.typography.titleMedium,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp),
   )
 }
 
@@ -360,10 +392,9 @@ private fun DetailRow(
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
   ) {
     Icon(
       painter = painterResource(icon),
@@ -375,10 +406,9 @@ private fun DetailRow(
       text = text,
       style = MaterialTheme.typography.bodyLarge,
       textDecoration = textDecoration,
-      modifier =
-        Modifier
-          .weight(1f)
-          .padding(start = 16.dp),
+      modifier = Modifier
+        .weight(1f)
+        .padding(start = 16.dp),
     )
   }
 }
@@ -406,10 +436,9 @@ private fun detailRows(state: PreviewReminderState): List<@Composable () -> Unit
 private fun TagsDetailRow(tags: List<TagChipState>) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
   ) {
     Icon(
       painter = AppIcons.Builder.Group,
@@ -461,7 +490,9 @@ private fun targetInfoItems(state: PreviewReminderState): List<DetailItem> {
 private fun DetailsCard(rows: List<@Composable () -> Unit>) {
   if (rows.isEmpty()) return
   Card(
-    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     rows.forEachIndexed { index, row ->
@@ -502,20 +533,18 @@ private fun targetHeaderText(type: UiReminderType): String =
 private fun AttachmentRow(file: AttachmentFile) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 8.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp),
   ) {
     if (file.type == AttachmentType.IMAGE) {
       AsyncImage(
         model = file.uri,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier =
-          Modifier
-            .size(32.dp)
-            .clip(RoundedCornerShape(4.dp)),
+        modifier = Modifier
+          .size(32.dp)
+          .clip(RoundedCornerShape(4.dp)),
       )
     } else {
       Icon(
@@ -527,10 +556,9 @@ private fun AttachmentRow(file: AttachmentFile) {
     Text(
       text = file.name,
       style = MaterialTheme.typography.bodyLarge,
-      modifier =
-        Modifier
-          .weight(1f)
-          .padding(start = 16.dp),
+      modifier = Modifier
+        .weight(1f)
+        .padding(start = 16.dp),
     )
   }
 }
@@ -544,10 +572,9 @@ private fun SubTasksSection(
   val checkedCount = subTasks.count { it.isChecked }
   Column(modifier = Modifier.padding(top = 16.dp)) {
     Row(
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(start = 16.dp, end = 16.dp, bottom = 4.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, bottom = 4.dp),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -562,7 +589,9 @@ private fun SubTasksSection(
       )
     }
     Card(
-      modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp),
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
       subTasks.forEachIndexed { index, subTask ->
@@ -584,15 +613,16 @@ private fun SubTaskRow(
   onCheck: (String) -> Unit,
   onRemove: (String) -> Unit,
 ) {
-  val contentColor =
-    if (subTask.isChecked) {
-      MaterialTheme.colorScheme.onSurfaceVariant
-    } else {
-      MaterialTheme.colorScheme.onSurface
-    }
+  val contentColor = if (subTask.isChecked) {
+    MaterialTheme.colorScheme.onSurfaceVariant
+  } else {
+    MaterialTheme.colorScheme.onSurface
+  }
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 4.dp, end = 4.dp),
   ) {
     MenuIconButton(
       icon = painterResource(
@@ -635,15 +665,16 @@ private fun MapSection(
   Text(
     text = state.places.joinToString("\n") { it.address.ifEmpty { "%.5f,%.5f".format(it.latitude, it.longitude) } },
     style = MaterialTheme.typography.bodyMedium,
-    modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
   )
   Card(
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp)
-        .height(200.dp)
-        .clip(MaterialTheme.shapes.medium),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp)
+      .height(200.dp)
+      .clip(MaterialTheme.shapes.medium),
   ) {
     mapContent()
   }
@@ -656,11 +687,10 @@ private fun NoteRow(
 ) {
   SectionHeader(text = stringResource(R.string.note))
   Card(
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 8.dp)
-        .clickable(onClick = onClick),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp)
+      .clickable(onClick = onClick),
   ) {
     Column(modifier = Modifier.padding(12.dp)) {
       if (note.title.isNotEmpty()) {
@@ -692,11 +722,10 @@ private fun GoogleTaskRow(
 ) {
   SectionHeader(text = stringResource(R.string.google_task))
   Card(
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 8.dp)
-        .clickable(onClick = onClick),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp)
+      .clickable(onClick = onClick),
   ) {
     Column(modifier = Modifier.padding(12.dp)) {
       Text(text = task.text, style = MaterialTheme.typography.titleMedium)
@@ -721,7 +750,11 @@ private fun CalendarEventRow(
   onOpenClick: () -> Unit,
   onRemoveClick: () -> Unit,
 ) {
-  Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+  Card(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp)
+  ) {
     Column(modifier = Modifier.padding(12.dp)) {
       Text(text = event.title, style = MaterialTheme.typography.titleMedium)
       if (event.description.isNotEmpty()) {
@@ -746,11 +779,10 @@ private fun CalendarEventRow(
         Text(text = it, style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(top = 2.dp))
       }
       Row(
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(Alignment.End)
-            .padding(top = 8.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .wrapContentWidth(Alignment.End)
+          .padding(top = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
       ) {
         TextButton(onClick = onOpenClick) { Text(stringResource(R.string.open)) }
@@ -765,28 +797,28 @@ private fun CalendarEventRow(
 private fun PreviewReminderScreenPreview() {
   AppTheme {
     PreviewReminderScreen(
-      state =
-        PreviewReminderState(
-          id = "1",
-          isLoading = false,
-          status = UiReminderStatus(title = "Enabled", active = true, removed = false),
-          summary = "Buy milk",
-          description = "2% milk, one gallon",
-          dueDateTime = "Today, 18:00",
-          repeat = "Once",
-          priorityTitle = "Normal",
-          subTasks = listOf(
-            UiPreviewSubTask(id = "1", text = "Milk", isChecked = true),
-            UiPreviewSubTask(id = "2", text = "Eggs", isChecked = false),
-            UiPreviewSubTask(id = "3", text = "Bread", isChecked = false),
-          ),
+      state = PreviewReminderState(
+        id = "1",
+        isLoading = false,
+        status = UiReminderStatus(title = "Enabled", active = true, removed = false),
+        summary = "Buy milk",
+        description = "2% milk, one gallon",
+        dueDateTime = "Today, 18:00",
+        repeat = "Once",
+        priorityTitle = "Normal",
+        subTasks = listOf(
+          UiPreviewSubTask(id = "1", text = "Milk", isChecked = true),
+          UiPreviewSubTask(id = "2", text = "Eggs", isChecked = false),
+          UiPreviewSubTask(id = "3", text = "Bread", isChecked = false),
         ),
+      ),
       onBackClick = {},
       onToggleClick = {},
       onEditClick = {},
       onShareClick = {},
       onCopyClick = {},
       onPinClick = {},
+      onSyncToCloudClick = {},
       onDeleteClick = {},
       onDeleteConfirmed = {},
       onDeleteDismiss = {},

@@ -1218,4 +1218,8 @@
     <string name="cd_stop_voice_input">आवाज़ इनपुट रोकें</string>
     <string name="cd_mark_as_done">पूर्ण के रूप में चिह्नित करें</string>
     <string name="cd_mark_as_not_done">अपूर्ण के रूप में चिह्नित करें</string>
+
+    <string name="sync_to_cloud">क्लाउड से सिंक करें</string>
+    <string name="offline_only_reminder">केवल ऑफ़लाइन रखें</string>
+    <string name="offline_only_reminder_description">यह रिमाइंडर किसी भी क्लाउड स्टोरेज पर बैकअप या सिंक नहीं किया जाएगा</string>
 </resources>

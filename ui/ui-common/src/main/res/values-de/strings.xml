@@ -1212,4 +1212,8 @@
     <string name="cd_stop_voice_input">Spracheingabe stoppen</string>
     <string name="cd_mark_as_done">Als erledigt markieren</string>
     <string name="cd_mark_as_not_done">Als nicht erledigt markieren</string>
+
+    <string name="sync_to_cloud">Mit Cloud synchronisieren</string>
+    <string name="offline_only_reminder">Nur offline behalten</string>
+    <string name="offline_only_reminder_description">Diese Erinnerung wird nicht gesichert oder mit einem Cloud-Speicher synchronisiert</string>
 </resources>

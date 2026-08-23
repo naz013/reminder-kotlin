@@ -53,6 +53,23 @@ class ReminderV2MapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips an offline-only reminder`() {
+    val reminder = ReminderV2(
+      uuId = "id-offline-only",
+      summary = "Offline only reminder",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None,
+      offlineOnly = true
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+    assertEquals(true, roundTripped.offlineOnly)
+  }
+
+  @Test
   fun `toEntity then toDomain round trips a monthly recurrence with a call action`() {
     val reminder = ReminderV2(
       uuId = "id-2",

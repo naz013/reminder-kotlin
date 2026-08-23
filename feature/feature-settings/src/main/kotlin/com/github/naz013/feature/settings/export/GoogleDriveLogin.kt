@@ -43,7 +43,17 @@ internal class GoogleDriveLoginState internal constructor(
   fun logOut(onResult: (Boolean) -> Unit) {
     googleDriveApi.disconnect()
     googleDriveAuthManager.saveUserName("")
-    signInClient().signOut().addOnSuccessListener { onResult(false) }
+    // The account name is already cleared above regardless of what the Play Services call below
+    // does, so the UI must reflect "logged out" even if signOut() fails - e.g. no network, or the
+    // cached GoogleSignInClient session is already stale - otherwise the Log out button looks like
+    // it did nothing even though the app-level session was in fact cleared.
+    signInClient()
+      .signOut()
+      .addOnSuccessListener { onResult(false) }
+      .addOnFailureListener {
+        Logger.w(TAG, "Google Drive sign-out call failed, local session was cleared anyway: ${it.message}")
+        onResult(false)
+      }
   }
 }
 

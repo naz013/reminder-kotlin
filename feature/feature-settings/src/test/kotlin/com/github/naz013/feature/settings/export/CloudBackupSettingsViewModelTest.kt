@@ -20,6 +20,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -76,6 +78,25 @@ class CloudBackupSettingsViewModelTest : BaseTest() {
         )
 
       assertTrue(vm.state.first().hasAnyCloudApi)
+    }
+
+  @Test
+  fun `refreshCloudApiState reflects a login change that happened while this screen stayed alive`() =
+    runTest {
+      // A single, never-resubscribed collector - like Compose's collectAsState() on a screen that
+      // stays on the backstack across a trip to Cloud Services - so onStart{ loadCloudApis() }
+      // only fires once and the later update can only have come from refreshCloudApiState().
+      val emissions = mutableListOf<CloudBackupSettingsState>()
+      val job = launch { viewModel.state.collect { emissions.add(it) } }
+      runCurrent()
+      assertFalse(emissions.last().hasAnyCloudApi)
+
+      every { cloudApiProvider.getAllowedCloudApis() } returns listOf(mockk())
+      viewModel.refreshCloudApiState()
+      runCurrent()
+
+      assertTrue(emissions.last().hasAnyCloudApi)
+      job.cancel()
     }
 
   @Test

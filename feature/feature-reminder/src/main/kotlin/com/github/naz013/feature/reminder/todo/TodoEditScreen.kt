@@ -5,21 +5,27 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,6 +56,7 @@ internal fun TodoEditScreen(
   onSaveClick: () -> Unit,
   onExtendClick: () -> Unit,
   onDeleteClick: () -> Unit,
+  onOfflineOnlyChange: (Boolean) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -127,6 +134,14 @@ internal fun TodoEditScreen(
         modifier = Modifier.fillMaxWidth(),
       )
 
+      if (state.canSetOfflineOnly) {
+        OfflineOnlyRow(
+          checked = state.offlineOnlyChecked,
+          onCheckedChange = onOfflineOnlyChange,
+          modifier = Modifier.padding(top = 24.dp),
+        )
+      }
+
       FilledTonalButton(
         onClick = onExtendClick,
         enabled = state.canSave,
@@ -136,6 +151,39 @@ internal fun TodoEditScreen(
         Text(stringResource(R.string.more_options))
       }
     }
+  }
+}
+
+@Composable
+private fun OfflineOnlyRow(
+  checked: Boolean,
+  onCheckedChange: (Boolean) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Column(modifier = modifier.fillMaxWidth()) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Icon(
+        painter = AppIcons.Fluent.Cloud,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onBackground,
+      )
+      Spacer(modifier = Modifier.width(16.dp))
+      Text(
+        text = stringResource(R.string.offline_only_reminder),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier.weight(1f),
+      )
+      Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+    Text(
+      text = stringResource(R.string.offline_only_reminder_description),
+      style = MaterialTheme.typography.bodySmall,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
   }
 }
 

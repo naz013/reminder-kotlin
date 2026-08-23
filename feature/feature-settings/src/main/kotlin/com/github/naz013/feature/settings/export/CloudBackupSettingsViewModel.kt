@@ -105,6 +105,15 @@ internal class CloudBackupSettingsViewModel(
     dismissDialog()
   }
 
+  /** Re-checks cloud login state on every ON_RESUME (see [ExportNavGraph]) - this Composable
+   *  entry isn't necessarily recreated after a trip to the Cloud Services screen (reached from
+   *  this same screen without popping this entry off the backstack), so [hasAnyCloudApi], loaded
+   *  once via [loadCloudApis], would otherwise go stale the moment the user logs out there and
+   *  comes back. */
+  fun refreshCloudApiState() {
+    loadCloudApis()
+  }
+
   private fun runObservableWork(
     taskKey: String,
     progressKey: String,

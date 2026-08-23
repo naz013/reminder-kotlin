@@ -1217,4 +1217,8 @@
     <string name="cd_stop_voice_input">Зупинити голосове введення</string>
     <string name="cd_mark_as_done">Позначити як виконане</string>
     <string name="cd_mark_as_not_done">Позначити як невиконане</string>
+
+    <string name="sync_to_cloud">Синхронізувати з хмарою</string>
+    <string name="offline_only_reminder">Зберігати лише офлайн</string>
+    <string name="offline_only_reminder_description">Це нагадування не буде резервуватися чи синхронізуватися з жодним хмарним сховищем</string>
 </resources>

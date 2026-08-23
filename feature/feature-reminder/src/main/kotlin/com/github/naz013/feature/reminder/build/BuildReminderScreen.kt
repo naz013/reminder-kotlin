@@ -93,6 +93,8 @@ internal fun BuildReminderScreen(
   canSaveAsPreset: Boolean,
   saveAsPresetChecked: Boolean,
   presetName: String,
+  canSetOfflineOnly: Boolean,
+  offlineOnlyChecked: Boolean,
   quickStartOptions: List<QuickStartOption>,
   allTags: List<TagChipState>,
   selectedTagIds: Set<String>,
@@ -103,6 +105,7 @@ internal fun BuildReminderScreen(
   onReportIssueClick: () -> Unit,
   onSaveAsPresetChange: (Boolean) -> Unit,
   onPresetNameChange: (String) -> Unit,
+  onOfflineOnlyChange: (Boolean) -> Unit,
   onItemClick: (Int, BuilderItem<*>) -> Unit,
   onItemRemove: (Int, BuilderItem<*>) -> Unit,
   onAddClick: () -> Unit,
@@ -231,6 +234,15 @@ internal fun BuildReminderScreen(
               onCheckedChange = onSaveAsPresetChange,
               presetName = presetName,
               onPresetNameChange = onPresetNameChange,
+            )
+          }
+        }
+
+        if (canSetOfflineOnly) {
+          item(key = "offline_only") {
+            OfflineOnlyRow(
+              checked = offlineOnlyChecked,
+              onCheckedChange = onOfflineOnlyChange,
             )
           }
         }
@@ -457,6 +469,41 @@ private fun SaveAsPresetRow(
 }
 
 @Composable
+private fun OfflineOnlyRow(
+  checked: Boolean,
+  onCheckedChange: (Boolean) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Column(modifier = modifier.fillMaxWidth()) {
+    Row(
+      modifier = Modifier.fillMaxWidth().padding(8.dp),
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Icon(
+        painter = AppIcons.Fluent.Cloud,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier.padding(start = 8.dp),
+      )
+      Spacer(modifier = Modifier.width(16.dp))
+      Text(
+        text = stringResource(R.string.offline_only_reminder),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier.weight(1f),
+      )
+      Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+    Text(
+      text = stringResource(R.string.offline_only_reminder_description),
+      style = MaterialTheme.typography.bodySmall,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+      modifier = Modifier.fillMaxWidth().padding(start = 56.dp, end = 16.dp),
+    )
+  }
+}
+
+@Composable
 private fun BuilderEmptyState(
   quickStartOptions: List<QuickStartOption>,
   onQuickStartClick: (QuickStartOption) -> Unit,
@@ -532,6 +579,8 @@ private fun PreviewBuildReminderScreenEmpty() {
       canSaveAsPreset = false,
       saveAsPresetChecked = false,
       presetName = "",
+      canSetOfflineOnly = false,
+      offlineOnlyChecked = false,
       quickStartOptions = QuickStartOption.entries,
       allTags = emptyList(),
       selectedTagIds = emptySet(),
@@ -542,6 +591,7 @@ private fun PreviewBuildReminderScreenEmpty() {
       onReportIssueClick = {},
       onSaveAsPresetChange = {},
       onPresetNameChange = {},
+      onOfflineOnlyChange = {},
       onItemClick = { _, _ -> },
       onItemRemove = { _, _ -> },
       onAddClick = {},

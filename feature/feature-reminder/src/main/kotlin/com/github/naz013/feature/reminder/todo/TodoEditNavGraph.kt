@@ -1,8 +1,12 @@
 package com.github.naz013.feature.reminder.todo
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.ui.common.R
@@ -59,6 +63,21 @@ private fun TodoEditEntry(
 
   val state by viewModel.state.collectAsState()
 
+  // This entry isn't necessarily recreated after a trip to the Cloud Services screen (reached
+  // via Settings without popping this entry off the backstack), so re-check cloud login state on
+  // every ON_RESUME - otherwise the offline-only switch stays stale after logging out elsewhere.
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(viewModel, lifecycleOwner) {
+    val observer =
+      LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+          viewModel.refreshCloudLoginState()
+        }
+      }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
+
   TodoEditScreen(
     state = state,
     dateTimeManager = dateTimeManager,
@@ -71,6 +90,7 @@ private fun TodoEditEntry(
     onSaveClick = viewModel::onSaveClick,
     onExtendClick = viewModel::onExtendClick,
     onDeleteClick = { deleteReminder(dialogDispatcher, state, viewModel) },
+    onOfflineOnlyChange = viewModel::onOfflineOnlyChange,
   )
 }
 
