@@ -72,6 +72,14 @@ internal class AgendaViewModel(
     .onStart { refresh() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
+  /** Whether the initial auto-scroll-to-today has already run this ViewModel instance's
+   * lifetime. Kept here (not plain Compose `remember`) because navigating away to a reminder/
+   * birthday preview and back tears down and recreates the screen's composables while this
+   * ViewModel instance survives - only state held here comes back with you, so returning to the
+   * screen doesn't scroll it back to today a second time. */
+  var hasScrolledToToday: Boolean = false
+    private set
+
   private val searchQuery = MutableStateFlow("")
   private val selectedCategories = MutableStateFlow(AgendaCategory.entries.toSet())
   private val selectedSmartList = MutableStateFlow<SmartListFilter?>(null)
@@ -152,6 +160,7 @@ internal class AgendaViewModel(
         listState = if (result.items.isEmpty()) ListState.Empty else ListState.Ready(result.items),
         availableTags = result.availableTags,
         availableGroups = result.availableGroups,
+        todayScrollTargetId = uiAgendaItemAdapter.findTodayScrollTargetId(result.items),
       )
     }
   }
@@ -249,6 +258,10 @@ internal class AgendaViewModel(
     val updated = if (selectedGroupId.value == groupId) null else groupId
     selectedGroupId.value = updated
     _agendaScreenState.update { it.copy(selectedGroupId = updated) }
+  }
+
+  fun onScrolledToToday() {
+    hasScrolledToToday = true
   }
 
   fun onItemClick(item: UiAgendaItem) {

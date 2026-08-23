@@ -44,11 +44,35 @@ class UiAgendaItemAdapter(
         .sortedBy { it.dateTime }
     val pinnedHeader =
       UiAgendaHeader(
-        id = "header_pinned",
+        id = PINNED_HEADER_ID,
         dateTime = pinnedItems.first().dateTime,
         text = textProvider.getText(R.string.pinned),
       )
     return listOf(pinnedHeader) + pinnedItems + body
+  }
+
+  /**
+   * The [UiAgendaItem.id] the Agenda screen should scroll to on first open: the "Today" date
+   * header if the chronological section has one, otherwise the first item due today or later
+   * (e.g. the next date header, if the nearest reminder is tomorrow). The pinned bucket at the
+   * top of [items] is skipped even when a pinned reminder happens to be due today, since it
+   * isn't part of the chronological section "today" refers to.
+   */
+  fun findTodayScrollTargetId(items: List<UiAgendaItem>): String? {
+    val body =
+      if (items.firstOrNull()?.id == PINNED_HEADER_ID) {
+        items.drop(1).dropWhile { it !is UiAgendaHeader }
+      } else {
+        items
+      }
+    if (body.isEmpty()) return null
+
+    val todayText = textProvider.getText(R.string.today)
+    val todayHeader = body.firstOrNull { it is UiAgendaHeader && it.text == todayText }
+    if (todayHeader != null) return todayHeader.id
+
+    val today = LocalDate.now()
+    return body.firstOrNull { it.dateTime.toLocalDate() >= today }?.id
   }
 
   private fun toUiAgendaReminderV2(
@@ -165,5 +189,6 @@ class UiAgendaItemAdapter(
     val LOCATION_SENTINEL: LocalDateTime = LocalDateTime.of(9999, 12, 29, 0, 0)
     val SHOPPING_SENTINEL: LocalDateTime = LocalDateTime.of(9999, 12, 30, 0, 0)
     val DISABLED_SENTINEL: LocalDateTime = LocalDateTime.of(9999, 12, 31, 0, 0)
+    private const val PINNED_HEADER_ID = "header_pinned"
   }
 }

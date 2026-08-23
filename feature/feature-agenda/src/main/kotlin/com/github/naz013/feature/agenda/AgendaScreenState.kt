@@ -16,6 +16,7 @@ internal data class AgendaScreenState(
   val selectedGroupId: String? = null,
   val availableTags: List<Tag> = emptyList(),
   val availableGroups: List<GroupV2> = emptyList(),
+  val todayScrollTargetId: String? = null,
 )
 
 internal sealed interface ListState {
