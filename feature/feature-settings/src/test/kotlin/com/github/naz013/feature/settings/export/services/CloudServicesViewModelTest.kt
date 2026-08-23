@@ -2,6 +2,7 @@ package com.github.naz013.feature.settings.export.services
 
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.featureflags.FeatureFlags
@@ -37,6 +38,7 @@ class CloudServicesViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>(relaxed = true)
   private val systemInfo = mockk<SystemInfo>()
+  private val dropboxAuthManager = mockk<DropboxAuthManager>(relaxed = true)
 
   private lateinit var viewModel: CloudServicesViewModel
 
@@ -48,6 +50,7 @@ class CloudServicesViewModelTest : BaseTest() {
     every { googleDriveAuthManager.isAuthorized() } returns false
     every { googleTasksAuthManager.isAuthorized() } returns false
     every { systemInfo.googlePlayServicesAvailable } returns true
+    every { dropboxAuthManager.isAuthorized() } returns false
 
     viewModel =
       CloudServicesViewModel(
@@ -61,6 +64,7 @@ class CloudServicesViewModelTest : BaseTest() {
         analyticsEventSender = analyticsEventSender,
         googleTasksAuthManager = googleTasksAuthManager,
         systemInfo = systemInfo,
+        dropboxAuthManager = dropboxAuthManager,
       )
   }
 
@@ -79,6 +83,17 @@ class CloudServicesViewModelTest : BaseTest() {
       assertTrue(state.isGoogleTasksVisible)
       assertFalse(state.isGoogleDriveLoggedIn)
       assertFalse(state.isGoogleTasksLoggedIn)
+      assertFalse(state.isDropboxLoggedIn)
+    }
+
+  @Test
+  fun `builds initial state reflecting an already-authorized Dropbox account`() =
+    runTest {
+      every { dropboxAuthManager.isAuthorized() } returns true
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.isDropboxLoggedIn)
     }
 
   @Test
@@ -227,6 +242,11 @@ class CloudServicesViewModelTest : BaseTest() {
   @Test
   fun `onDropboxLoginStateChanged updates state and sends analytics when logged in`() =
     runTest {
+      // Same reasoning as the Google Drive/Google Tasks login cases above: keep the auth
+      // manager stub consistent with the login that just happened, since re-collecting `state`
+      // recomputes isDropboxLoggedIn from it.
+      every { dropboxAuthManager.isAuthorized() } returns true
+
       viewModel.onDropboxLoginStateChanged(true)
 
       assertTrue(viewModel.state.first().isDropboxLoggedIn)

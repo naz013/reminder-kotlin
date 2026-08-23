@@ -9,6 +9,7 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -41,6 +42,7 @@ internal class CloudServicesViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
   private val systemInfo: SystemInfo,
+  private val dropboxAuthManager: DropboxAuthManager,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(CloudServicesState())
@@ -169,6 +171,7 @@ internal class CloudServicesViewModel(
     _state.update {
       it.copy(
         isDropboxVisible = featureFlags.isEnabled(FeatureFlag.DROPBOX),
+        isDropboxLoggedIn = dropboxAuthManager.isAuthorized(),
         isGoogleDriveLoggedIn = googleDriveAuthManager.isAuthorized(),
         isGoogleTasksLoggedIn = googleTasksAuthManager.isAuthorized(),
         isGoogleDriveVisible = systemInfo.googlePlayServicesAvailable &&
