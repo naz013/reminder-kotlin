@@ -31,7 +31,7 @@ class BirthdaySmartListPredicate(
     date: LocalDate,
   ): Boolean =
     birthdayDateCalculator.isBirthdayOn(
-      birthMonth1Based = birthday.month,
+      birthMonth1Based = birthday.month + 1,
       birthDay = birthday.day,
       targetDate = date,
       daysBefore = 0,

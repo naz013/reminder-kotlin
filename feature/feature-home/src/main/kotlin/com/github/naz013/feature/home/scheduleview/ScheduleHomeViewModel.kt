@@ -267,6 +267,8 @@ class ScheduleHomeViewModel(
 
     data object OpenNotes : ViewModelEvent
 
+    data object OpenBirthdays : ViewModelEvent
+
     data object OpenGoogleTasks : ViewModelEvent
 
     data object OpenGroups : ViewModelEvent

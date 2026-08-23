@@ -236,6 +236,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenCalendar = { backStack.add(CalendarNavKey.Home) },
           onOpenAgenda = { backStack.add(AgendaNavKey.List) },
           onOpenNotes = { backStack.add(NotesNavKey.List) },
+          onOpenBirthdays = { backStack.add(BirthdaysNavKey.List) },
           onOpenGoogleTasks = { backStack.add(GoogleTasksNavKey.List) },
           onOpenGroups = { backStack.add(GroupsNavKey.List) },
           onOpenRoutines = { backStack.add(RoutineNavKey.List) },
@@ -425,6 +426,12 @@ private fun headerSectionRailDestination(section: HeaderNavigationSection): AppD
         key = NotesNavKey.List,
         icon = AppIcons.Fluent.Note,
         labelRes = R.string.notes,
+      )
+    HeaderNavigationSection.BIRTHDAYS ->
+      AppDestination(
+        key = BirthdaysNavKey.List,
+        icon = AppIcons.Fluent.FoodCake,
+        labelRes = R.string.birthdays,
       )
     HeaderNavigationSection.GOOGLE_TASKS ->
       AppDestination(

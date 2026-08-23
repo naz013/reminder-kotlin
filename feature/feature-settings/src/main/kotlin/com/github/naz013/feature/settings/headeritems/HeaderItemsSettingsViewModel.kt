@@ -68,6 +68,8 @@ internal class HeaderItemsSettingsViewModel(
       HeaderItemRow(section, R.string.agenda, DrawableCatalog.Fluent.Timeline, isEnabled)
     HeaderNavigationSection.NOTES ->
       HeaderItemRow(section, R.string.notes, DrawableCatalog.Fluent.Note, isEnabled)
+    HeaderNavigationSection.BIRTHDAYS ->
+      HeaderItemRow(section, R.string.birthdays, DrawableCatalog.Fluent.FoodCake, isEnabled)
     HeaderNavigationSection.GOOGLE_TASKS ->
       HeaderItemRow(section, R.string.google_tasks, DrawableCatalog.Builder.GoogleTaskList, isEnabled)
     HeaderNavigationSection.GROUPS ->

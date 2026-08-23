@@ -50,6 +50,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
     assertEquals(
       listOf(
         HeaderNavigationSection.NOTES,
+        HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
         HeaderNavigationSection.ROUTINES,
@@ -66,7 +67,12 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
     val state = viewModel.state.value
 
     assertEquals(
-      listOf(HeaderNavigationSection.NOTES, HeaderNavigationSection.GOOGLE_TASKS, HeaderNavigationSection.GROUPS),
+      listOf(
+        HeaderNavigationSection.NOTES,
+        HeaderNavigationSection.BIRTHDAYS,
+        HeaderNavigationSection.GOOGLE_TASKS,
+        HeaderNavigationSection.GROUPS,
+      ),
       state.configurableItems.map { it.section },
     )
   }
@@ -92,13 +98,14 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
 
   @Test
   fun `onReorder moves an item and persists the new order`() {
-    // Notes, Google Tasks, Groups, Routines -> move Routines (index 3) to the front
-    viewModel.onReorder(fromIndex = 3, toIndex = 0)
+    // Notes, Birthdays, Google Tasks, Groups, Routines -> move Routines (index 4) to the front
+    viewModel.onReorder(fromIndex = 4, toIndex = 0)
 
     assertEquals(
       listOf(
         HeaderNavigationSection.ROUTINES,
         HeaderNavigationSection.NOTES,
+        HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
       ),
@@ -110,6 +117,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
       listOf(
         HeaderNavigationSection.ROUTINES,
         HeaderNavigationSection.NOTES,
+        HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
         HeaderNavigationSection.WORKFLOW,

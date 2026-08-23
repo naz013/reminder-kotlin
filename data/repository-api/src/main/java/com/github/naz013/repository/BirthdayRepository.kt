@@ -15,6 +15,7 @@ interface BirthdayRepository {
 
   suspend fun getAll(): List<Birthday>
   suspend fun getAll(dayMonth: String): List<Birthday>
+  fun observeAll(): Flow<List<Birthday>>
   fun observeAll(dayMonth: String): Flow<List<Birthday>>
 
   suspend fun delete(id: String)

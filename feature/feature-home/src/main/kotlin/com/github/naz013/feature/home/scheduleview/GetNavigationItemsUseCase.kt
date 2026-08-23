@@ -8,6 +8,7 @@ import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.logic.routine.RoutineConfig
 import com.github.naz013.logic.workflow.WorkflowConfig
+import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
@@ -26,6 +27,7 @@ class GetNavigationItemsUseCase(
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
   private val noteRepository: NoteRepository,
+  private val birthdayRepository: BirthdayRepository,
   private val googleTaskRepository: GoogleTaskRepository,
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val routineRepository: RoutineRepository,
@@ -57,6 +59,7 @@ class GetNavigationItemsUseCase(
     HeaderNavigationSection.CALENDAR -> getCalendarItem(scope = scope)
     HeaderNavigationSection.AGENDA -> getAgendaItem(scope = scope)
     HeaderNavigationSection.NOTES -> getNoteItem(scope = scope)
+    HeaderNavigationSection.BIRTHDAYS -> getBirthdayItem(scope = scope)
     HeaderNavigationSection.GOOGLE_TASKS -> getGoogleTasksItem(scope = scope)
     HeaderNavigationSection.GROUPS -> getGroupItem(scope = scope)
     HeaderNavigationSection.ROUTINES -> getRoutineItem(scope = scope)
@@ -97,6 +100,18 @@ class GetNavigationItemsUseCase(
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
           subtitle = "${noteRepository.countAll(isArchived = false)}",
+        )
+      }.await()
+
+  private suspend fun getBirthdayItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.birthdays,
+          iconRes = R.drawable.ic_fluent_food_cake,
+          color = Color.Green,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenBirthdays,
+          subtitle = "${birthdayRepository.countAll()}",
         )
       }.await()
 

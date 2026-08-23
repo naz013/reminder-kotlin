@@ -14,10 +14,12 @@ class BirthdaySmartListPredicateTest {
   private val predicate = BirthdaySmartListPredicate(provideBirthdayDateCalculator())
   private val today = LocalDate.of(2026, 8, 2)
 
+  // Birthday.month is stored 0-based (Calendar.MONTH style, e.g. August == 7) everywhere it's
+  // written - see EditBirthdayViewModel/CheckBirthdaysTask - so tests build values the same way.
   private fun birthday(
     day: Int,
     month: Int,
-  ) = Birthday(day = day, month = month, syncState = SyncState.Synced)
+  ) = Birthday(day = day, month = month - 1, syncState = SyncState.Synced)
 
   @Test
   fun `today matches a birthday on the same month and day`() {
