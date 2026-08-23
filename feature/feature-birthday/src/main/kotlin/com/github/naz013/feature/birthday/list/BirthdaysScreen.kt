@@ -103,10 +103,9 @@ internal fun BirthdaysScreen(
               query = state.searchQuery,
               onQueryChange = onSearchQueryChange,
               placeholder = stringResource(R.string.search),
-              modifier =
-                Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             )
           }
         }
@@ -114,15 +113,16 @@ internal fun BirthdaysScreen(
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) {
       when (val listState = state.listState) {
         is ListState.Loading -> {
           Box(
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentAlignment = Alignment.Center,
           ) {
             CircularProgressIndicator()
@@ -130,13 +130,17 @@ internal fun BirthdaysScreen(
         }
 
         is ListState.Empty -> {
-          BirthdaysEmptyState(modifier = Modifier.fillMaxSize().weight(1f))
+          BirthdaysEmptyState(modifier = Modifier
+            .fillMaxSize()
+            .weight(1f))
         }
 
         is ListState.Ready -> {
           LazyColumn(
             state = lazyListState,
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
           ) {
@@ -191,10 +195,9 @@ private fun BirthdaysFilterBottomSheet(
     onDismissRequest = onDismissRequest,
   ) {
     Column(
-      modifier =
-        Modifier
-          .verticalScroll(rememberScrollState())
-          .padding(bottom = 16.dp),
+      modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .padding(bottom = 16.dp),
     ) {
       BottomSheetHeader(title = stringResource(R.string.filter))
 
