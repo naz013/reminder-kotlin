@@ -86,6 +86,7 @@ class AgendaViewModelTest {
       val birthdays = thirdArg<List<Birthday>>()
       reminders.map { fakeReminderItem(it.uuId) } + birthdays.map { fakeBirthdayItem(it.uuId) }
     }
+    every { uiAgendaItemAdapter.findTodayScrollTargetId(any()) } returns null
 
     viewModel =
       AgendaViewModel(
@@ -434,6 +435,15 @@ class AgendaViewModelTest {
 
       coVerify(exactly = 0) { togglePinnedReminderUseCase(any()) }
     }
+
+  @Test
+  fun `hasScrolledToToday starts false and flips to true after onScrolledToToday`() {
+    assertEquals(false, viewModel.hasScrolledToToday)
+
+    viewModel.onScrolledToToday()
+
+    assertEquals(true, viewModel.hasScrolledToToday)
+  }
 
   private fun reminderV2(
     id: String,

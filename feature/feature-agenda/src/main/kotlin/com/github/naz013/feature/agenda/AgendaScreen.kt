@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,6 +87,8 @@ internal fun AgendaScreen(
   onTagsClick: () -> Unit,
   onItemClick: (UiAgendaItem) -> Unit,
   onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
+  hasScrolledToToday: Boolean,
+  onScrolledToToday: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val lazyListState = rememberLazyListState()
@@ -95,6 +98,23 @@ internal fun AgendaScreen(
     label = "agendaHeaderElevation",
   )
   var showFilterSheet by remember { mutableStateOf(false) }
+  // Seeded from the ViewModel-persisted flag rather than always starting false, since navigating
+  // away to a reminder/birthday preview and back tears down and recreates this composable - a
+  // plain `remember { false }` here would forget that today was already scrolled to and jump
+  // back there again on return.
+  val scrolledToToday = remember { mutableStateOf(hasScrolledToToday) }
+  val readyListState = state.listState as? ListState.Ready
+  val todayScrollTargetId = state.todayScrollTargetId
+  if (!scrolledToToday.value && readyListState != null && todayScrollTargetId != null) {
+    LaunchedEffect(todayScrollTargetId) {
+      val index = readyListState.items.indexOfFirst { it.id == todayScrollTargetId }
+      if (index >= 0) {
+        lazyListState.scrollToItem(index)
+      }
+      scrolledToToday.value = true
+      onScrolledToToday()
+    }
+  }
   val hasActiveFilters =
     state.selectedCategories != AgendaCategory.entries.toSet() ||
       state.selectedSmartList != null ||
@@ -573,6 +593,8 @@ private fun AgendaScreenEmptyPreview() {
       onTagsClick = {},
       onItemClick = {},
       onAgendaMenuAction = { _, _ -> },
+      hasScrolledToToday = true,
+      onScrolledToToday = {},
     )
   }
 }

@@ -159,5 +159,7 @@ private fun AgendaEntry(
     onTagsClick = viewModel::onTagsClick,
     onItemClick = viewModel::onItemClick,
     onAgendaMenuAction = viewModel::onAgendaMenuAction,
+    hasScrolledToToday = viewModel.hasScrolledToToday,
+    onScrolledToToday = viewModel::onScrolledToToday,
   )
 }

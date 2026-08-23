@@ -237,6 +237,57 @@ class UiAgendaItemAdapterTest {
     assertEquals(listOf("Today", "regular"), result.map { item -> if (item is UiAgendaHeader) item.text else item.id })
   }
 
+  @Test
+  fun `findTodayScrollTargetId returns the Today header id when one exists`() {
+    val todayReminder = reminderV2("today-reminder")
+    val tomorrowReminder = reminderV2("tomorrow-reminder")
+    every { uiReminderListAdapter.createV2(todayReminder, null) } returns
+      uiReminderList(id = "today-item", dueDateTime = today.atTime(9, 0))
+    every { uiReminderListAdapter.createV2(tomorrowReminder, null) } returns
+      uiReminderList(id = "tomorrow-item", dueDateTime = tomorrow.atTime(9, 0))
+    val items = adapter.convertV2(listOf(todayReminder, tomorrowReminder), emptyMap(), emptyList())
+
+    val targetId = adapter.findTodayScrollTargetId(items)
+
+    assertEquals(items[0].id, targetId)
+  }
+
+  @Test
+  fun `findTodayScrollTargetId falls back to the first item due today or later when there is no Today section`() {
+    val tomorrowReminder = reminderV2("tomorrow-reminder")
+    every { uiReminderListAdapter.createV2(tomorrowReminder, null) } returns
+      uiReminderList(id = "tomorrow-item", dueDateTime = tomorrow.atTime(9, 0))
+    val items = adapter.convertV2(listOf(tomorrowReminder), emptyMap(), emptyList())
+
+    val targetId = adapter.findTodayScrollTargetId(items)
+
+    assertEquals("Tomorrow", (items[0] as UiAgendaHeader).text)
+    assertEquals(items[0].id, targetId)
+  }
+
+  @Test
+  fun `findTodayScrollTargetId skips the pinned bucket even when a pinned reminder is due today`() {
+    val pinnedReminder = reminderV2("pinned-reminder", isPinned = true)
+    val regularReminder = reminderV2("regular-reminder")
+    every { uiReminderListAdapter.createV2(pinnedReminder, null) } returns
+      uiReminderList(id = "pinned", dueDateTime = today.atTime(20, 0), isActive = true, isPinned = true)
+    every { uiReminderListAdapter.createV2(regularReminder, null) } returns
+      uiReminderList(id = "regular", dueDateTime = today.atTime(9, 0))
+    val items = adapter.convertV2(listOf(pinnedReminder, regularReminder), emptyMap(), emptyList())
+
+    val targetId = adapter.findTodayScrollTargetId(items)
+
+    val todayHeader = items.first { it is UiAgendaHeader && it.text == "Today" }
+    assertEquals(todayHeader.id, targetId)
+  }
+
+  @Test
+  fun `findTodayScrollTargetId returns null when there are no items`() {
+    val targetId = adapter.findTodayScrollTargetId(emptyList())
+
+    assertEquals(null, targetId)
+  }
+
   private fun textElement(text: String) = UiTextElement(text = text, textFormat = UiTextFormat(fontSize = 14f))
 
   private fun uiReminderList(
