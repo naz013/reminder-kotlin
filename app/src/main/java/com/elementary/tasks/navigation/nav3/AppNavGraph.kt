@@ -47,8 +47,10 @@ import com.elementary.tasks.settings.BirthdayCrossFeatureEntry
 import com.elementary.tasks.settings.ManagePresetsCrossFeatureEntry
 import com.elementary.tasks.settings.RemindersCrossFeatureEntry
 import com.github.naz013.ui.common.compose.foundation.share.rememberFileIntentSender
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberApplicationLauncher
 import com.github.naz013.ui.common.compose.foundation.telephony.rememberPhoneCaller
 import com.github.naz013.ui.common.compose.foundation.telephony.rememberSmsSender
+import com.github.naz013.ui.common.compose.foundation.telephony.rememberUrlLauncher
 import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.github.naz013.feature.birthday.birthdaysEntries
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
@@ -123,6 +125,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val eventActionDispatcher = rememberEventActionDispatcher()
   val phoneCaller = rememberPhoneCaller()
   val smsSender = rememberSmsSender()
+  val applicationLauncher = rememberApplicationLauncher()
+  val urlLauncher = rememberUrlLauncher()
   val fileIntentSender = rememberFileIntentSender()
   val intentResolver = rememberSendIntentResolver()
   val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>()
@@ -328,6 +332,10 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenGoogleTask = { taskId ->
             appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = taskId))
           },
+          onCallClick = { number -> phoneCaller.call(number) },
+          onSmsClick = { target, message -> smsSender.send(target, message) },
+          onAppClick = { target -> applicationLauncher.launch(target) },
+          onUrlClick = { target -> urlLauncher.launch(target) },
         )
         remindersArchiveEntries(
           backStack = backStack,

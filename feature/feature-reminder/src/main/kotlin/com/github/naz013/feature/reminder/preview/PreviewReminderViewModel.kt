@@ -100,6 +100,11 @@ internal class PreviewReminderViewModel(
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
+  // Cached from the last load() rather than kept in PreviewReminderState, which only carries
+  // already-formatted UI data - the click handler needs the raw action to resolve the call/sms/
+  // app/link intent, same as GetActiveEventsForTheDayUseCase does for the Home screen.
+  private var reminderAction: ReminderAction = ReminderAction.None
+
   // The reminder can also be completed/snoozed/toggled from the system notification's action
   // buttons, which run through a BroadcastReceiver rather than an Activity - so this screen
   // never gets an ON_RESUME to hook into. Listen for the underlying table write directly so the
@@ -149,6 +154,16 @@ internal class PreviewReminderViewModel(
           )
         )
       }
+    }
+  }
+
+  fun onTargetActionClick() {
+    when (val action = reminderAction) {
+      is ReminderAction.Call -> event.emit(ViewModelEvent.MakeCall(action.target))
+      is ReminderAction.Sms -> event.emit(ViewModelEvent.SendSms(action.target, action.subject))
+      is ReminderAction.App -> event.emit(ViewModelEvent.OpenApp(action.target))
+      is ReminderAction.Link -> event.emit(ViewModelEvent.OpenLink(action.target))
+      is ReminderAction.Email, ReminderAction.Shopping, ReminderAction.None -> Unit
     }
   }
 
@@ -355,6 +370,8 @@ internal class PreviewReminderViewModel(
         reminder.groupId?.let { groupV2Repository.getById(it) }
       }
 
+      reminderAction = reminder.action
+
       val status = uiReminderCommonAdapter.getReminderStatus(reminder.isActive, reminder.isRemoved)
       val due = uiReminderCommonAdapter.getDueV2(reminder)
       val target = uiReminderCommonAdapter.getTargetV2(reminder)
@@ -513,6 +530,23 @@ internal class PreviewReminderViewModel(
     data class ShowCopyTimeDialog(
       val times: List<LocalTime>,
       val titles: List<String>,
+    ) : ViewModelEvent
+
+    data class MakeCall(
+      val target: String,
+    ) : ViewModelEvent
+
+    data class SendSms(
+      val target: String,
+      val message: String,
+    ) : ViewModelEvent
+
+    data class OpenApp(
+      val target: String,
+    ) : ViewModelEvent
+
+    data class OpenLink(
+      val target: String,
     ) : ViewModelEvent
   }
 

@@ -23,6 +23,7 @@ import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
+import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
@@ -129,6 +130,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     isActive: Boolean = true,
     isPinned: Boolean = false,
     offlineOnly: Boolean = false,
+    action: ReminderAction = ReminderAction.None,
   ): ReminderV2 =
     ReminderV2(
       uuId = id,
@@ -139,6 +141,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       isRemoved = isRemoved,
       isPinned = isPinned,
       offlineOnly = offlineOnly,
+      action = action,
     )
 
   private fun createViewModel(id: String = "42"): PreviewReminderViewModel =
@@ -651,6 +654,73 @@ class PreviewReminderViewModelTest : BaseTest() {
       val viewModel = createViewModel()
 
       viewModel.onOpenCalendarClicked(0L)
+
+      assertEquals(null, viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `onTargetActionClick posts MakeCall for a call reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(action = ReminderAction.Call("+123"))
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.MakeCall("+123"), event)
+    }
+
+  @Test
+  fun `onTargetActionClick posts SendSms with the target and message for a sms reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns
+        reminderV2(action = ReminderAction.Sms(target = "+123", subject = "On my way"))
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.SendSms("+123", "On my way"), event)
+    }
+
+  @Test
+  fun `onTargetActionClick posts OpenApp for an app reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns
+        reminderV2(action = ReminderAction.App("com.example.app"))
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.OpenApp("com.example.app"), event)
+    }
+
+  @Test
+  fun `onTargetActionClick posts OpenLink for a link reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns
+        reminderV2(action = ReminderAction.Link("https://example.com"))
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
+
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.OpenLink("https://example.com"), event)
+    }
+
+  @Test
+  fun `onTargetActionClick does nothing for a reminder without an actionable target`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(action = ReminderAction.Shopping)
+      val viewModel = createViewModel()
+      viewModel.state.first()
+
+      viewModel.onTargetActionClick()
 
       assertEquals(null, viewModel.event.value?.peekContent())
     }

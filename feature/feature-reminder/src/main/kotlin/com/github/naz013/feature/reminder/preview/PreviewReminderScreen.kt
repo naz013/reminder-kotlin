@@ -94,6 +94,7 @@ internal fun PreviewReminderScreen(
   onGoogleTaskClick: () -> Unit,
   onCalendarOpenClick: (UiCalendarEventList) -> Unit,
   onCalendarRemoveClick: (UiCalendarEventList) -> Unit,
+  onTargetActionClick: () -> Unit,
   mapContent: @Composable () -> Unit,
   adsContent: @Composable () -> Unit,
 ) {
@@ -153,7 +154,7 @@ internal fun PreviewReminderScreen(
       item { DetailsCard(rows = detailRows(state)) }
 
       if (state.targetType != null) {
-        item { TargetInfoSection(state = state) }
+        item { TargetInfoSection(state = state, onClick = onTargetActionClick) }
       }
 
       if (state.attachments.isNotEmpty()) {
@@ -506,12 +507,13 @@ private fun targetInfoItems(state: PreviewReminderState): List<DetailItem> {
 }
 
 @Composable
-private fun DetailsCard(rows: List<@Composable () -> Unit>) {
+private fun DetailsCard(rows: List<@Composable () -> Unit>, onClick: (() -> Unit)? = null) {
   if (rows.isEmpty()) return
   Card(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(horizontal = 16.dp, vertical = 8.dp),
+      .padding(horizontal = 16.dp, vertical = 8.dp)
+      .let { if (onClick != null) it.clickable(onClick = onClick) else it },
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     rows.forEachIndexed { index, row ->
@@ -527,14 +529,15 @@ private fun DetailsCard(rows: List<@Composable () -> Unit>) {
 }
 
 @Composable
-private fun TargetInfoSection(state: PreviewReminderState) {
+private fun TargetInfoSection(state: PreviewReminderState, onClick: () -> Unit) {
   val type = state.targetType ?: return
   SectionHeader(text = targetHeaderText(type))
   val rows: List<@Composable () -> Unit> =
     targetInfoItems(state).map { item ->
       { DetailRow(icon = item.icon, text = item.text, textDecoration = item.textDecoration) }
     }
-  DetailsCard(rows = rows)
+  val isActionable = type.isCall() || type.isSms() || type.isApp() || type.isLink()
+  DetailsCard(rows = rows, onClick = if (isActionable) onClick else null)
 }
 
 @Composable
@@ -848,6 +851,7 @@ private fun PreviewReminderScreenPreview() {
       onGoogleTaskClick = {},
       onCalendarOpenClick = {},
       onCalendarRemoveClick = {},
+      onTargetActionClick = {},
       mapContent = {},
       adsContent = {},
     )
