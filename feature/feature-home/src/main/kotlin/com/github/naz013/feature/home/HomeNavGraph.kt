@@ -35,6 +35,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
   onOpenCalendar: () -> Unit,
   onOpenAgenda: () -> Unit,
   onOpenNotes: () -> Unit,
+  onOpenBirthdays: () -> Unit,
   onOpenGoogleTasks: () -> Unit,
   onOpenGroups: () -> Unit,
   onOpenRoutines: () -> Unit,
@@ -68,6 +69,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
       onOpenCalendar = onOpenCalendar,
       onOpenAgenda = onOpenAgenda,
       onOpenNotes = onOpenNotes,
+      onOpenBirthdays = onOpenBirthdays,
       onOpenGoogleTasks = onOpenGoogleTasks,
       onOpenGroups = onOpenGroups,
       onOpenRoutines = onOpenRoutines,
@@ -95,6 +97,7 @@ private fun HomeEntry(
   onOpenCalendar: () -> Unit,
   onOpenAgenda: () -> Unit,
   onOpenNotes: () -> Unit,
+  onOpenBirthdays: () -> Unit,
   onOpenGoogleTasks: () -> Unit,
   onOpenGroups: () -> Unit,
   onOpenRoutines: () -> Unit,
@@ -152,6 +155,10 @@ private fun HomeEntry(
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenNotes -> {
         onOpenNotes()
+      }
+
+      is ScheduleHomeViewModel.ViewModelEvent.OpenBirthdays -> {
+        onOpenBirthdays()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks -> {

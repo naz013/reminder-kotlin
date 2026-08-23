@@ -4,6 +4,7 @@ import com.github.naz013.feature.birthday.actions.GetBirthdayActionsUseCase
 import com.github.naz013.feature.birthday.create.EditBirthdayViewModel
 import com.github.naz013.feature.birthday.dialog.BirthdayActionViewModel
 import com.github.naz013.feature.birthday.dialog.CreateBirthdayActionScreenStateUseCase
+import com.github.naz013.feature.birthday.list.BirthdaysViewModel
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayViewModel
 import com.github.naz013.feature.birthday.settings.BirthdaySettingsViewModel
 import com.github.naz013.feature.birthday.settings.usecase.GetContactsWithMetadataUseCase
@@ -68,4 +69,5 @@ val featureBirthdayModule = module {
   }
 
   viewModelOf(::BirthdaySettingsViewModel)
+  viewModelOf(::BirthdaysViewModel)
 }

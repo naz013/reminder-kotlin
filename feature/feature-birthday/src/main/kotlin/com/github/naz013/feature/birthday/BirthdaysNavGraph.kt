@@ -13,6 +13,9 @@ import androidx.navigation3.runtime.NavKey
 import com.github.naz013.feature.birthday.create.EditBirthdayScreen
 import com.github.naz013.feature.birthday.create.EditBirthdayState
 import com.github.naz013.feature.birthday.create.EditBirthdayViewModel
+import com.github.naz013.feature.birthday.list.BirthdaysScreen
+import com.github.naz013.feature.birthday.list.BirthdaysScreenState
+import com.github.naz013.feature.birthday.list.BirthdaysViewModel
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayScreen
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayState
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayViewModel
@@ -32,6 +35,7 @@ fun EntryProviderScope<NavKey>.birthdaysEntries(
   onCallClick: (String) -> Unit,
   onSmsClick: (String) -> Unit,
 ) {
+  entry<BirthdaysNavKey.List> { ListEntry(backStack) }
   entry<BirthdaysNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
@@ -39,6 +43,35 @@ fun EntryProviderScope<NavKey>.birthdaysEntries(
     PreviewEntry(key, backStack, renderAsDetailPane, adsContent, onCallClick, onSmsClick)
   }
   entry<BirthdaysNavKey.Edit> { key -> EditEntry(key, backStack, adsContent) }
+}
+
+@Composable
+private fun ListEntry(
+  backStack: MutableList<NavKey>,
+) {
+  val viewModel = koinViewModel<BirthdaysViewModel>()
+
+  viewModel.navigationEvent.ObserveEvent { event ->
+    when (event) {
+      is BirthdaysViewModel.NavigationEvent.OpenPreview -> backStack.add(BirthdaysNavKey.Preview(event.id))
+      is BirthdaysViewModel.NavigationEvent.OpenEdit -> backStack.add(BirthdaysNavKey.Edit(event.id))
+      is BirthdaysViewModel.NavigationEvent.OpenNewBirthday -> backStack.add(BirthdaysNavKey.Edit())
+    }
+  }
+
+  val state by viewModel.state.collectAsState(BirthdaysScreenState())
+  BirthdaysScreen(
+    state = state,
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onSearchQueryChange = viewModel::onSearchQueryChange,
+    onSmartListSelected = viewModel::onSmartListSelected,
+    onTagFilterSelected = viewModel::onTagFilterSelected,
+    onAddClick = viewModel::onAddClick,
+    onItemClick = viewModel::onItemClick,
+    onMenuAction = viewModel::onMenuAction,
+    onDeleteConfirmed = viewModel::onDeleteConfirmed,
+    onDeleteDismiss = viewModel::onDeleteDismiss,
+  )
 }
 
 @Composable

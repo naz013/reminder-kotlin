@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 
 sealed interface BirthdaysNavKey : NavKey {
   @Serializable
+  data object List : BirthdaysNavKey
+
+  @Serializable
   data class Preview(
     val id: String,
   ) : BirthdaysNavKey

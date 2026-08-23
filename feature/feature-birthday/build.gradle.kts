@@ -22,8 +22,10 @@ dependencies {
   implementation(project(":extensions:appwidgets-api"))
   implementation(project(":ui:ui-common"))
   implementation(project(":ui:ui-birthday"))
+  implementation(project(":ui:ui-agenda"))
   implementation(project(":ui:ui-tag"))
   implementation(project(":logic:logic-birthday"))
+  implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-tag"))
   implementation(project(":feature:feature-tags"))
 

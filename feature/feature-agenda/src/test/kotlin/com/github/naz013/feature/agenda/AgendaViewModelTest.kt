@@ -461,12 +461,14 @@ class AgendaViewModelTest {
     location = if (isLocation) LocationSettings() else null,
   )
 
+  // Birthday.month is stored 0-based (Calendar.MONTH style, e.g. August == 7) everywhere it's
+  // written - see EditBirthdayViewModel/CheckBirthdaysTask - so this 1-based param is converted.
   private fun reminderBirthday(
     id: String,
     name: String = "",
     day: Int = 1,
     month: Int = 1,
-  ) = Birthday(uuId = id, name = name, day = day, month = month, syncState = SyncState.Synced)
+  ) = Birthday(uuId = id, name = name, day = day, month = month - 1, syncState = SyncState.Synced)
 
   private fun fakeReminderItem(id: String): UiAgendaReminder =
     UiAgendaReminder(

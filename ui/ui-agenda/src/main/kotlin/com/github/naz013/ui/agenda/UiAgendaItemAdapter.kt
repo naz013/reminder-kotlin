@@ -32,7 +32,7 @@ class UiAgendaItemAdapter(
     val (pinnedReminders, unpinnedReminders) = reminders.partition { it.isPinned }
 
     val reminderItems = unpinnedReminders.map { toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }) }
-    val birthdayItems = birthdays.map { toUiAgendaBirthday(it) }
+    val birthdayItems = birthdays.map { convertBirthday(it) }
     val merged = (reminderItems + birthdayItems).sortedBy { it.dateTime }
     val body = insertHeaders(merged)
 
@@ -98,7 +98,8 @@ class UiAgendaItemAdapter(
     )
   }
 
-  private fun toUiAgendaBirthday(birthday: Birthday): UiAgendaBirthday {
+  /** Public so other modules (e.g. a standalone birthdays list) can reuse this mapping directly. */
+  fun convertBirthday(birthday: Birthday): UiAgendaBirthday {
     val uiBirthdayList = uiBirthdayListAdapter.convert(birthday)
     return UiAgendaBirthday(
       id = uiBirthdayList.uuId,

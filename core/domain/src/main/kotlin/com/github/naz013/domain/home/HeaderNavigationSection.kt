@@ -6,6 +6,7 @@ enum class HeaderNavigationSection(
   CALENDAR(isAlwaysVisible = true),
   AGENDA(isAlwaysVisible = true),
   NOTES,
+  BIRTHDAYS,
   GOOGLE_TASKS,
   GROUPS,
   ROUTINES,

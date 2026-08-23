@@ -60,6 +60,9 @@ internal class BirthdayRepositoryImpl(
     return birthdaysDao.getAll(dayMonth).map { it.toDomain() }
   }
 
+  override fun observeAll(): Flow<List<Birthday>> =
+    birthdaysDao.observeAll().map { list -> list.map { it.toDomain() } }
+
   override fun observeAll(dayMonth: String): Flow<List<Birthday>> =
     birthdaysDao.observeAll(dayMonth).map { list -> list.map { it.toDomain() } }
 
