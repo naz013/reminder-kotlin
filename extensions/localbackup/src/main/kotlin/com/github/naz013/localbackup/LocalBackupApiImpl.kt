@@ -15,6 +15,8 @@ import com.github.naz013.repository.RoutineExecutionRepository
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.repository.WorkflowRuleRepository
+import com.github.naz013.repository.WorkflowTemplateRepository
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.Arrays
@@ -30,6 +32,8 @@ internal class LocalBackupApiImpl(
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val routineRepository: RoutineRepository,
   private val routineExecutionRepository: RoutineExecutionRepository,
+  private val workflowRuleRepository: WorkflowRuleRepository,
+  private val workflowTemplateRepository: WorkflowTemplateRepository,
   private val archiveWriter: BackupArchiveWriter,
   private val archiveReader: BackupArchiveReader
 ) : LocalBackupApi {
@@ -45,7 +49,9 @@ internal class LocalBackupApiImpl(
         tags = tagRepository.getAll(),
         tagAssignments = tagAssignmentRepository.getAll(),
         routines = routineRepository.getAll(),
-        routineExecutions = routineExecutionRepository.getAll()
+        routineExecutions = routineExecutionRepository.getAll(),
+        workflowRules = workflowRuleRepository.getAll(),
+        workflowTemplates = workflowTemplateRepository.getAll()
       )
 
       val salt = PassphraseKeyDerivation.generateSalt()
@@ -82,6 +88,8 @@ internal class LocalBackupApiImpl(
       tagAssignmentRepository.replaceAll(envelope.tagAssignments)
       envelope.routines.forEach { routineRepository.save(it) }
       envelope.routineExecutions.forEach { routineExecutionRepository.save(it) }
+      envelope.workflowRules.forEach { workflowRuleRepository.save(it) }
+      envelope.workflowTemplates.forEach { workflowTemplateRepository.save(it) }
 
       Logger.i(TAG, "Imported local backup: ${envelope.summary()}")
       ImportSummary(
@@ -93,7 +101,9 @@ internal class LocalBackupApiImpl(
         tagsImported = envelope.tags.size,
         tagAssignmentsImported = envelope.tagAssignments.size,
         routinesImported = envelope.routines.size,
-        routineExecutionsImported = envelope.routineExecutions.size
+        routineExecutionsImported = envelope.routineExecutions.size,
+        workflowRulesImported = envelope.workflowRules.size,
+        workflowTemplatesImported = envelope.workflowTemplates.size
       )
     }
     Arrays.fill(passphrase, '0')
@@ -110,7 +120,8 @@ internal class LocalBackupApiImpl(
     "reminders=${reminders.size}, groups=${groups.size}, birthdays=${birthdays.size}, " +
       "places=${places.size}, presets=${presets.size}, tags=${tags.size}, " +
       "tagAssignments=${tagAssignments.size}, routines=${routines.size}, " +
-      "routineExecutions=${routineExecutions.size}"
+      "routineExecutions=${routineExecutions.size}, workflowRules=${workflowRules.size}, " +
+      "workflowTemplates=${workflowTemplates.size}"
 
   private fun Throwable.isWrongPassphrase(): Boolean {
     var current: Throwable? = this

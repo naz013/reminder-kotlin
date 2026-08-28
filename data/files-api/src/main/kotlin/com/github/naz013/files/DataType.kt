@@ -17,5 +17,7 @@ enum class DataType(
   SharedNote(".etnote"),
   Tags(".tg1"),
   TagAssignments(".tga1"),
-  Routines(".rt1")
+  Routines(".rt1"),
+  WorkflowRules(".wr1"),
+  WorkflowTemplates(".wt1")
 }

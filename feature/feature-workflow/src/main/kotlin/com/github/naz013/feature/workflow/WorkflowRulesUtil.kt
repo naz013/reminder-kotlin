@@ -9,6 +9,7 @@ import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
+import com.github.naz013.logic.workflow.SaveWorkflowTemplateUseCase
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.repository.WorkflowTemplateRepository
 
@@ -23,7 +24,8 @@ import com.github.naz013.repository.WorkflowTemplateRepository
 class WorkflowRulesUtil(
   private val workflowTemplateRepository: WorkflowTemplateRepository,
   private val workflowRuleRepository: WorkflowRuleRepository,
-  private val applyWorkflowTemplateUseCase: ApplyWorkflowTemplateUseCase
+  private val applyWorkflowTemplateUseCase: ApplyWorkflowTemplateUseCase,
+  private val saveWorkflowTemplateUseCase: SaveWorkflowTemplateUseCase
 ) {
 
   suspend fun initDefaultIfEmpty() {
@@ -40,7 +42,7 @@ class WorkflowRulesUtil(
   }
 
   private suspend fun seedBuiltInTemplates() {
-    workflowTemplateRepository.save(
+    saveWorkflowTemplateUseCase(
       WorkflowTemplate(
         id = ARCHIVE_TEMPLATE_ID,
         title = "Archive completed reminders after $ARCHIVE_AFTER_DAYS days",
@@ -51,7 +53,7 @@ class WorkflowRulesUtil(
         action = WorkflowAction.ArchiveReminder
       )
     )
-    workflowTemplateRepository.save(
+    saveWorkflowTemplateUseCase(
       WorkflowTemplate(
         id = ESCALATE_TEMPLATE_ID,
         title = "Escalate after $ESCALATE_AFTER_SNOOZES repeated snoozes",
@@ -64,7 +66,7 @@ class WorkflowRulesUtil(
         )
       )
     )
-    workflowTemplateRepository.save(
+    saveWorkflowTemplateUseCase(
       WorkflowTemplate(
         id = GROUP_COMPLETE_TEMPLATE_ID,
         title = "Archive group once everything is completed",

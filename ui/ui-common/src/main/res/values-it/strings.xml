@@ -1226,4 +1226,6 @@
     <string name="repeats_until">Si ripete fino al %1$s</string>
     <string name="reminder_triggered_times">Attivato %1$d volte</string>
     <string name="reminder_snoozed_times">Posticipato %1$d volte</string>
+    <string name="workflow_rules_for_reminder">Regole per questo promemoria</string>
+    <string name="workflow_apply_to_reminder">Applica al promemoria</string>
 </resources>

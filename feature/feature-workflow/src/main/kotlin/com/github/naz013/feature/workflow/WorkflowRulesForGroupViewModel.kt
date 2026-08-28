@@ -6,9 +6,11 @@ import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
+import com.github.naz013.logic.workflow.DeleteWorkflowRuleUseCase
 import com.github.naz013.logic.workflow.GetWorkflowRulesForGroupUseCase
 import com.github.naz013.logic.workflow.GetWorkflowTemplatesUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleAsTemplateUseCase
+import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.logic.workflow.isExecutable
 import com.github.naz013.repository.WorkflowRuleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +30,8 @@ internal class WorkflowRulesForGroupViewModel(
   private val getWorkflowTemplatesUseCase: GetWorkflowTemplatesUseCase,
   private val applyWorkflowTemplateUseCase: ApplyWorkflowTemplateUseCase,
   private val saveWorkflowRuleAsTemplateUseCase: SaveWorkflowRuleAsTemplateUseCase,
+  private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase,
+  private val deleteWorkflowRuleUseCase: DeleteWorkflowRuleUseCase,
   private val workflowRuleRepository: WorkflowRuleRepository,
 ) : ViewModel() {
 
@@ -42,14 +46,14 @@ internal class WorkflowRulesForGroupViewModel(
   fun onRuleEnabledChange(ruleId: String, isEnabled: Boolean) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val rule = workflowRuleRepository.getById(ruleId) ?: return@launch
-      workflowRuleRepository.save(rule.copy(isEnabled = isEnabled))
+      saveWorkflowRuleUseCase(rule.copy(isEnabled = isEnabled))
       loadData()
     }
   }
 
   fun onDeleteRuleClick(ruleId: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
-      workflowRuleRepository.delete(ruleId)
+      deleteWorkflowRuleUseCase(ruleId)
       loadData()
     }
   }

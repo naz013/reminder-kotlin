@@ -1226,4 +1226,6 @@
     <string name="repeats_until">Se répète jusqu\'au %1$s</string>
     <string name="reminder_triggered_times">Déclenché %1$d fois</string>
     <string name="reminder_snoozed_times">Reporté %1$d fois</string>
+    <string name="workflow_rules_for_reminder">Règles pour ce rappel</string>
+    <string name="workflow_apply_to_reminder">Appliquer au rappel</string>
 </resources>

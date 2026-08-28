@@ -10,6 +10,7 @@ import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
+import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
@@ -30,6 +31,7 @@ import org.threeten.bp.LocalDateTime
 class WorkflowRuleBuilderViewModelTest : BaseTest() {
   private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
   private val createWorkflowRuleUseCase = mockk<CreateWorkflowRuleUseCase>(relaxed = true)
+  private val saveWorkflowRuleUseCase = mockk<SaveWorkflowRuleUseCase>(relaxed = true)
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val groupV2Repository = mockk<GroupV2Repository>()
 
@@ -52,6 +54,7 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
       mockDispatcherProvider(),
       workflowRuleRepository,
       createWorkflowRuleUseCase,
+      saveWorkflowRuleUseCase,
       reminderV2Repository,
       groupV2Repository,
     )
@@ -176,7 +179,7 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
     viewModel.onSaveClick()
 
     coVerify {
-      workflowRuleRepository.save(
+      saveWorkflowRuleUseCase(
         existing.copy(trigger = WorkflowTrigger.GroupAllCompleted, action = WorkflowAction.CompleteReminder)
       )
     }

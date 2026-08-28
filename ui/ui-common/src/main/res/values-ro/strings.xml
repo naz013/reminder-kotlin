@@ -1226,4 +1226,6 @@
     <string name="repeats_until">Se repetă până la %1$s</string>
     <string name="reminder_triggered_times">Declanșat de %1$d ori</string>
     <string name="reminder_snoozed_times">Amânat de %1$d ori</string>
+    <string name="workflow_rules_for_reminder">Reguli pentru acest memento</string>
+    <string name="workflow_apply_to_reminder">Aplicare la memento</string>
 </resources>

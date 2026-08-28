@@ -1224,4 +1224,6 @@
     <string name="repeats_until">Gjentas til %1$s</string>
     <string name="reminder_triggered_times">Utløst %1$d ganger</string>
     <string name="reminder_snoozed_times">Utsatt %1$d ganger</string>
+    <string name="workflow_rules_for_reminder">Regler for denne påminnelsen</string>
+    <string name="workflow_apply_to_reminder">Bruk på påminnelse</string>
 </resources>

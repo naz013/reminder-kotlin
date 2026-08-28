@@ -1227,4 +1227,6 @@
     <string name="repeats_until">Повтаря се до %1$s</string>
     <string name="reminder_triggered_times">Задействано %1$d пъти</string>
     <string name="reminder_snoozed_times">Отложено %1$d пъти</string>
+    <string name="workflow_rules_for_reminder">Правила за това напомняне</string>
+    <string name="workflow_apply_to_reminder">Прилагане към напомняне</string>
 </resources>

@@ -1226,4 +1226,6 @@
     <string name="repeats_until">%1$sまで繰り返す</string>
     <string name="reminder_triggered_times">%1$d回実行済み</string>
     <string name="reminder_snoozed_times">%1$d回スヌーズ</string>
+    <string name="workflow_rules_for_reminder">このリマインダーのルール</string>
+    <string name="workflow_apply_to_reminder">リマインダーに適用</string>
 </resources>

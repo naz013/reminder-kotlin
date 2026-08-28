@@ -1224,4 +1224,6 @@
     <string name="repeats_until">يتكرر حتى %1$s</string>
     <string name="reminder_triggered_times">تم التنبيه %1$d مرة</string>
     <string name="reminder_snoozed_times">تم الغفو %1$d مرة</string>
+    <string name="workflow_rules_for_reminder">قواعد هذا التذكير</string>
+    <string name="workflow_apply_to_reminder">تطبيق على التذكير</string>
 </resources>

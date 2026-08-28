@@ -1222,4 +1222,6 @@
     <string name="repeats_until">Wiederholt sich bis %1$s</string>
     <string name="reminder_triggered_times">%1$d Mal ausgelöst</string>
     <string name="reminder_snoozed_times">%1$d Mal geschlummert</string>
+    <string name="workflow_rules_for_reminder">Regeln für diese Erinnerung</string>
+    <string name="workflow_apply_to_reminder">Auf Erinnerung anwenden</string>
 </resources>

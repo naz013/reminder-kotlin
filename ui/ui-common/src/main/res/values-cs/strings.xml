@@ -1226,4 +1226,6 @@
     <string name="repeats_until">Opakuje se do %1$s</string>
     <string name="reminder_triggered_times">Spuštěno %1$dx</string>
     <string name="reminder_snoozed_times">Odloženo %1$dx</string>
+    <string name="workflow_rules_for_reminder">Pravidla pro tuto připomínku</string>
+    <string name="workflow_apply_to_reminder">Použít pro připomínku</string>
 </resources>

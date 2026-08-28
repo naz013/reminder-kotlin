@@ -1224,4 +1224,6 @@
     <string name="repeats_until">Berulang hingga %1$s</string>
     <string name="reminder_triggered_times">Terpicu %1$d kali</string>
     <string name="reminder_snoozed_times">Ditunda %1$d kali</string>
+    <string name="workflow_rules_for_reminder">Aturan untuk pengingat ini</string>
+    <string name="workflow_apply_to_reminder">Terapkan ke pengingat</string>
 </resources>

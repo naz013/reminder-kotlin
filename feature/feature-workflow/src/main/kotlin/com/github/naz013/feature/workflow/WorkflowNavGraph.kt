@@ -19,6 +19,7 @@ import org.koin.core.parameter.parametersOf
 fun EntryProviderScope<NavKey>.workflowEntries(backStack: MutableList<NavKey>) {
   entry<WorkflowNavKey.Gallery> { WorkflowGalleryEntry(backStack) }
   entry<WorkflowNavKey.RulesForGroup> { key -> WorkflowRulesForGroupEntry(key, backStack) }
+  entry<WorkflowNavKey.RulesForReminder> { key -> WorkflowRulesForReminderEntry(key, backStack) }
   entry<WorkflowNavKey.Builder> { key -> WorkflowBuilderEntry(key, backStack) }
 }
 
@@ -53,6 +54,26 @@ private fun WorkflowRulesForGroupEntry(
     onApplyTemplateClick = viewModel::onApplyTemplateClick,
     onCreateRuleClick = {
       backStack.add(WorkflowNavKey.Builder(scopeType = WorkflowScopeType.GROUP.name, scopeId = key.groupId))
+    },
+  )
+}
+
+@Composable
+private fun WorkflowRulesForReminderEntry(
+  key: WorkflowNavKey.RulesForReminder,
+  backStack: MutableList<NavKey>,
+) {
+  val viewModel = koinViewModel<WorkflowRulesForReminderViewModel> { parametersOf(key.reminderId) }
+  val state by viewModel.state.collectAsState()
+  WorkflowRulesForReminderScreen(
+    state = state,
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onRuleEnabledChange = viewModel::onRuleEnabledChange,
+    onDeleteRuleClick = viewModel::onDeleteRuleClick,
+    onSaveRuleAsTemplateClick = viewModel::onSaveRuleAsTemplateClick,
+    onApplyTemplateClick = viewModel::onApplyTemplateClick,
+    onCreateRuleClick = {
+      backStack.add(WorkflowNavKey.Builder(scopeType = WorkflowScopeType.REMINDER.name, scopeId = key.reminderId))
     },
   )
 }

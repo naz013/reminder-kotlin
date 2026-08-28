@@ -85,6 +85,7 @@ internal fun PreviewReminderScreen(
   onCopyClick: () -> Unit,
   onPinClick: () -> Unit,
   onSyncToCloudClick: () -> Unit,
+  onWorkflowRulesClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDeleteDismiss: () -> Unit,
@@ -118,12 +119,14 @@ internal fun PreviewReminderScreen(
             canPin = !state.canDelete,
             isPinned = state.isPinned,
             showSyncToCloud = state.showSyncToCloud,
+            showWorkflowRules = state.workflowRulesVisible,
             canDelete = state.canDelete,
             onEditClick = onEditClick,
             onShareClick = onShareClick,
             onCopyClick = onCopyClick,
             onPinClick = onPinClick,
             onSyncToCloudClick = onSyncToCloudClick,
+            onWorkflowRulesClick = onWorkflowRulesClick,
             onDeleteClick = onDeleteClick,
           )
         },
@@ -210,12 +213,14 @@ private fun OverflowMenu(
   canPin: Boolean,
   isPinned: Boolean,
   showSyncToCloud: Boolean,
+  showWorkflowRules: Boolean,
   canDelete: Boolean,
   onEditClick: () -> Unit,
   onShareClick: () -> Unit,
   onCopyClick: () -> Unit,
   onPinClick: () -> Unit,
   onSyncToCloudClick: () -> Unit,
+  onWorkflowRulesClick: () -> Unit,
   onDeleteClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
@@ -261,6 +266,15 @@ private fun OverflowMenu(
         ),
       )
     }
+    if (showWorkflowRules) {
+      add(
+        PopupMenuItem(
+          id = OverflowAction.WORKFLOW_RULES.ordinal,
+          title = stringResource(R.string.workflow_rules),
+          iconRes = DrawableCatalog.Fluent.ArrowRepeatAll,
+        ),
+      )
+    }
     add(
       PopupMenuItem(
         id = OverflowAction.DELETE.ordinal,
@@ -286,6 +300,7 @@ private fun OverflowMenu(
           OverflowAction.COPY -> onCopyClick()
           OverflowAction.PIN -> onPinClick()
           OverflowAction.SYNC_TO_CLOUD -> onSyncToCloudClick()
+          OverflowAction.WORKFLOW_RULES -> onWorkflowRulesClick()
           OverflowAction.DELETE -> onDeleteClick()
         }
       },
@@ -299,6 +314,7 @@ private enum class OverflowAction {
   COPY,
   PIN,
   SYNC_TO_CLOUD,
+  WORKFLOW_RULES,
   DELETE,
 }
 
@@ -842,6 +858,7 @@ private fun PreviewReminderScreenPreview() {
       onCopyClick = {},
       onPinClick = {},
       onSyncToCloudClick = {},
+      onWorkflowRulesClick = {},
       onDeleteClick = {},
       onDeleteConfirmed = {},
       onDeleteDismiss = {},

@@ -1224,4 +1224,6 @@
     <string name="repeats_until">Lặp lại đến %1$s</string>
     <string name="reminder_triggered_times">Đã kích hoạt %1$d lần</string>
     <string name="reminder_snoozed_times">Đã báo lại %1$d lần</string>
+    <string name="workflow_rules_for_reminder">Quy tắc cho lời nhắc này</string>
+    <string name="workflow_apply_to_reminder">Áp dụng cho lời nhắc</string>
 </resources>

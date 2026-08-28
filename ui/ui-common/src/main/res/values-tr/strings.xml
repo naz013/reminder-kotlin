@@ -1227,4 +1227,6 @@
     <string name="repeats_until">%1$s tarihine kadar tekrarlanır</string>
     <string name="reminder_triggered_times">%1$d kez tetiklendi</string>
     <string name="reminder_snoozed_times">%1$d kez ertelendi</string>
+    <string name="workflow_rules_for_reminder">Bu hatırlatıcı için kurallar</string>
+    <string name="workflow_apply_to_reminder">Hatırlatıcıya uygula</string>
 </resources>

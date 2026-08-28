@@ -1224,4 +1224,6 @@
     <string name="repeats_until">Herhaalt tot %1$s</string>
     <string name="reminder_triggered_times">%1$d keer geactiveerd</string>
     <string name="reminder_snoozed_times">%1$d keer gesluimerd</string>
+    <string name="workflow_rules_for_reminder">Regels voor deze herinnering</string>
+    <string name="workflow_apply_to_reminder">Toepassen op herinnering</string>
 </resources>

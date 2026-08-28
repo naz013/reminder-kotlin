@@ -1226,4 +1226,6 @@
     <string name="repeats_until">Repete até %1$s</string>
     <string name="reminder_triggered_times">Acionado %1$d vezes</string>
     <string name="reminder_snoozed_times">Adiado %1$d vezes</string>
+    <string name="workflow_rules_for_reminder">Regras para este lembrete</string>
+    <string name="workflow_apply_to_reminder">Aplicar ao lembrete</string>
 </resources>

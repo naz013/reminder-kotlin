@@ -18,9 +18,12 @@ val workflowModule = module {
 
   viewModelOf(::WorkflowGalleryViewModel)
   viewModel { (groupId: String) ->
-    WorkflowRulesForGroupViewModel(groupId, get(), get(), get(), get(), get(), get())
+    WorkflowRulesForGroupViewModel(groupId, get(), get(), get(), get(), get(), get(), get(), get())
+  }
+  viewModel { (reminderId: String) ->
+    WorkflowRulesForReminderViewModel(reminderId, get(), get(), get(), get(), get(), get(), get(), get())
   }
   viewModel { (scopeType: WorkflowScopeType, scopeId: String?, editingRuleId: String?) ->
-    WorkflowRuleBuilderViewModel(scopeType, scopeId, editingRuleId, get(), get(), get(), get(), get())
+    WorkflowRuleBuilderViewModel(scopeType, scopeId, editingRuleId, get(), get(), get(), get(), get(), get())
   }
 }

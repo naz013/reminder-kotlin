@@ -334,6 +334,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenGoogleTask = { taskId ->
             appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = taskId))
           },
+          onOpenWorkflowRules = { reminderId -> backStack.add(WorkflowNavKey.RulesForReminder(reminderId)) },
           onCallClick = { number -> phoneCaller.call(number) },
           onSmsClick = { target, message -> smsSender.send(target, message) },
           onAppClick = { target -> applicationLauncher.launch(target) },

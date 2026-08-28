@@ -9,6 +9,9 @@ val logicWorkflowModule = module {
   factoryOf(::WorkflowActionDispatcher)
   factoryOf(::WorkflowTriggerRunner)
   factory<ReminderWorkflowTrigger> { get<WorkflowTriggerRunner>() }
+  factoryOf(::SaveWorkflowRuleUseCase)
+  factoryOf(::DeleteWorkflowRuleUseCase)
+  factoryOf(::SaveWorkflowTemplateUseCase)
   factory { ApplyWorkflowTemplateUseCase(get(), get()) }
   factory { SaveWorkflowRuleAsTemplateUseCase(get(), get()) }
   factory { CreateWorkflowRuleUseCase(get()) }

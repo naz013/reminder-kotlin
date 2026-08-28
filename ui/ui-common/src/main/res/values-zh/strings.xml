@@ -1227,4 +1227,6 @@
     <string name="repeats_until">重复至%1$s</string>
     <string name="reminder_triggered_times">已触发%1$d次</string>
     <string name="reminder_snoozed_times">已推迟%1$d次</string>
+    <string name="workflow_rules_for_reminder">此提醒的规则</string>
+    <string name="workflow_apply_to_reminder">应用到提醒</string>
 </resources>

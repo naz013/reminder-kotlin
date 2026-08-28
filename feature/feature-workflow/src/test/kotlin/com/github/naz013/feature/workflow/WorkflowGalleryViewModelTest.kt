@@ -8,9 +8,11 @@ import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
+import com.github.naz013.logic.workflow.DeleteWorkflowRuleUseCase
 import com.github.naz013.logic.workflow.GetGlobalWorkflowRulesUseCase
 import com.github.naz013.logic.workflow.GetWorkflowTemplatesUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleAsTemplateUseCase
+import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
@@ -28,6 +30,8 @@ class WorkflowGalleryViewModelTest : BaseTest() {
   private val getWorkflowTemplatesUseCase = mockk<GetWorkflowTemplatesUseCase>()
   private val applyWorkflowTemplateUseCase = mockk<ApplyWorkflowTemplateUseCase>(relaxed = true)
   private val saveWorkflowRuleAsTemplateUseCase = mockk<SaveWorkflowRuleAsTemplateUseCase>(relaxed = true)
+  private val saveWorkflowRuleUseCase = mockk<SaveWorkflowRuleUseCase>(relaxed = true)
+  private val deleteWorkflowRuleUseCase = mockk<DeleteWorkflowRuleUseCase>(relaxed = true)
   private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
 
   @Before
@@ -44,6 +48,8 @@ class WorkflowGalleryViewModelTest : BaseTest() {
       getWorkflowTemplatesUseCase = getWorkflowTemplatesUseCase,
       applyWorkflowTemplateUseCase = applyWorkflowTemplateUseCase,
       saveWorkflowRuleAsTemplateUseCase = saveWorkflowRuleAsTemplateUseCase,
+      saveWorkflowRuleUseCase = saveWorkflowRuleUseCase,
+      deleteWorkflowRuleUseCase = deleteWorkflowRuleUseCase,
       workflowRuleRepository = workflowRuleRepository,
     )
 
@@ -91,7 +97,7 @@ class WorkflowGalleryViewModelTest : BaseTest() {
 
     viewModel.onRuleEnabledChange("rule-1", false)
 
-    coVerify { workflowRuleRepository.save(rule.copy(isEnabled = false)) }
+    coVerify { saveWorkflowRuleUseCase(rule.copy(isEnabled = false)) }
   }
 
   @Test
@@ -100,7 +106,7 @@ class WorkflowGalleryViewModelTest : BaseTest() {
 
     viewModel.onDeleteRuleClick("rule-1")
 
-    coVerify { workflowRuleRepository.delete("rule-1") }
+    coVerify { deleteWorkflowRuleUseCase("rule-1") }
   }
 
   @Test

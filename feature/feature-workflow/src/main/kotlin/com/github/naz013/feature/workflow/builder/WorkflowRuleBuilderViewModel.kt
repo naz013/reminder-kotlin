@@ -9,6 +9,7 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
+import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.WorkflowRuleRepository
@@ -30,6 +31,7 @@ internal class WorkflowRuleBuilderViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val createWorkflowRuleUseCase: CreateWorkflowRuleUseCase,
+  private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase,
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
 ) : ViewModel() {
@@ -131,7 +133,7 @@ internal class WorkflowRuleBuilderViewModel(
       val editingId = editingRuleId
       if (editingId != null) {
         workflowRuleRepository.getById(editingId)?.let { existing ->
-          workflowRuleRepository.save(
+          saveWorkflowRuleUseCase(
             existing.copy(trigger = trigger, conditions = current.conditions, action = action)
           )
         }

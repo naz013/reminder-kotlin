@@ -8,8 +8,10 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.repository.WorkflowTemplateRepository
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -25,14 +27,20 @@ class ApplyWorkflowTemplateUseCaseTest {
     trigger = WorkflowTrigger.ReminderAgeExceeded(days = 30),
     action = WorkflowAction.ArchiveReminder
   )
+  private val scheduleBackgroundWorkUseCase = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
+
+  private fun useCase(ruleRepository: WorkflowRuleRepository, templateRepository: WorkflowTemplateRepository) =
+    ApplyWorkflowTemplateUseCase(
+      SaveWorkflowTemplateUseCase(templateRepository, scheduleBackgroundWorkUseCase),
+      SaveWorkflowRuleUseCase(ruleRepository, scheduleBackgroundWorkUseCase)
+    )
 
   @Test
   fun `creates a rule with the template's trigger and action at the given scope`() = runTest {
     val ruleRepository = RecordingWorkflowRuleRepository()
     val templateRepository = RecordingWorkflowTemplateRepository(template)
-    val useCase = ApplyWorkflowTemplateUseCase(templateRepository, ruleRepository)
 
-    val rule = useCase(template, WorkflowScope.ForGroup("group-1"))
+    val rule = useCase(ruleRepository, templateRepository)(template, WorkflowScope.ForGroup("group-1"))
 
     assertEquals(template.trigger, rule?.trigger)
     assertEquals(template.action, rule?.action)
@@ -45,9 +53,8 @@ class ApplyWorkflowTemplateUseCaseTest {
   fun `increments the template's useCount`() = runTest {
     val ruleRepository = RecordingWorkflowRuleRepository()
     val templateRepository = RecordingWorkflowTemplateRepository(template)
-    val useCase = ApplyWorkflowTemplateUseCase(templateRepository, ruleRepository)
 
-    useCase(template, WorkflowScope.Global)
+    useCase(ruleRepository, templateRepository)(template, WorkflowScope.Global)
 
     assertEquals(1, templateRepository.saved.single().useCount)
   }
@@ -56,9 +63,8 @@ class ApplyWorkflowTemplateUseCaseTest {
   fun `returns null when the scope type is not supported by the template`() = runTest {
     val ruleRepository = RecordingWorkflowRuleRepository()
     val templateRepository = RecordingWorkflowTemplateRepository(template)
-    val useCase = ApplyWorkflowTemplateUseCase(templateRepository, ruleRepository)
 
-    val rule = useCase(template, WorkflowScope.ForReminder("reminder-1"))
+    val rule = useCase(ruleRepository, templateRepository)(template, WorkflowScope.ForReminder("reminder-1"))
 
     assertNull(rule)
     assertEquals(0, ruleRepository.saved.size)

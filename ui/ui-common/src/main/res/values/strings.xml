@@ -1230,4 +1230,6 @@
     <string name="repeats_until">Repeats until %1$s</string>
     <string name="reminder_triggered_times">Triggered %1$d times</string>
     <string name="reminder_snoozed_times">Snoozed %1$d times</string>
+    <string name="workflow_rules_for_reminder">Rules for this reminder</string>
+    <string name="workflow_apply_to_reminder">Apply to reminder</string>
 </resources>

@@ -1226,4 +1226,6 @@
     <string name="repeats_until">Powtarza się do %1$s</string>
     <string name="reminder_triggered_times">Uruchomiono %1$d razy</string>
     <string name="reminder_snoozed_times">Odłożono %1$d razy</string>
+    <string name="workflow_rules_for_reminder">Reguły dla tego przypomnienia</string>
+    <string name="workflow_apply_to_reminder">Zastosuj do przypomnienia</string>
 </resources>

@@ -11,6 +11,11 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.domain.workflow.WorkflowRule
+import com.github.naz013.domain.workflow.WorkflowScope
+import com.github.naz013.domain.workflow.WorkflowTemplate
+import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.files.DataConverter
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -42,6 +47,8 @@ private class FakeDataConverter : DataConverter {
       is TagAssignment -> "A|${any.tagId}|${any.itemId}::${any.itemType}"
       is Routine -> "O|${any.id}|${any.title}"
       is RoutineExecutionRecord -> "E|${any.id}|${any.routineId}"
+      is WorkflowRule -> "WR|${any.uuId}|${any.title}"
+      is WorkflowTemplate -> "WT|${any.id}|${any.title}"
       else -> error("FakeDataConverter does not support ${any::class.java}")
     }
     outputStream.use { it.write(encoded.toByteArray()) }
@@ -66,6 +73,20 @@ private class FakeDataConverter : DataConverter {
       }
       "O" -> Routine(id = id, title = label, createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now())
       "E" -> RoutineExecutionRecord(id = id, routineId = label, executedAt = LocalDateTime.now(), totalTimeSpentSeconds = 0, totalStepsCount = 0)
+      "WR" -> WorkflowRule(
+        uuId = id,
+        title = label,
+        trigger = WorkflowTrigger.ReminderCompleted,
+        action = WorkflowAction.ArchiveReminder,
+        syncState = SyncState.Synced
+      )
+      "WT" -> WorkflowTemplate(
+        id = id,
+        title = label,
+        trigger = WorkflowTrigger.ReminderCompleted,
+        action = WorkflowAction.ArchiveReminder,
+        syncState = SyncState.Synced
+      )
       else -> error("FakeDataConverter does not support tag $tag")
     }
   }
@@ -111,6 +132,23 @@ class BackupArchiveReaderWriterTest {
     executedAt = LocalDateTime.of(2026, 1, 1, 9, 0),
     totalTimeSpentSeconds = 300,
     totalStepsCount = 3
+  )
+
+  private fun workflowRule(id: String) = WorkflowRule(
+    uuId = id,
+    title = "Rule $id",
+    scope = WorkflowScope.Global,
+    trigger = WorkflowTrigger.ReminderAgeExceeded(days = 30),
+    action = WorkflowAction.ArchiveReminder,
+    syncState = SyncState.Synced
+  )
+
+  private fun workflowTemplate(id: String) = WorkflowTemplate(
+    id = id,
+    title = "Template $id",
+    trigger = WorkflowTrigger.ReminderAgeExceeded(days = 30),
+    action = WorkflowAction.ArchiveReminder,
+    syncState = SyncState.Synced
   )
 
   @Test
@@ -181,6 +219,24 @@ class BackupArchiveReaderWriterTest {
     assertEquals(setOf("o1", "o2"), result.routines.map { it.id }.toSet())
     assertEquals(1, result.routineExecutions.size)
     assertEquals("o1", result.routineExecutions.single().routineId)
+    assertTrue(result.reminders.isEmpty())
+  }
+
+  @Test
+  fun `round trips workflow rules and templates and buckets them by type`() = runTest {
+    val envelope = BackupEnvelope(
+      workflowRules = listOf(workflowRule("wr1"), workflowRule("wr2")),
+      workflowTemplates = listOf(workflowTemplate("wt1")),
+    )
+    val output = ByteArrayOutputStream()
+
+    writer.write(output, envelope)
+    val result = reader.read(ByteArrayInputStream(output.toByteArray()))
+
+    assertEquals(2, result.workflowRules.size)
+    assertEquals(setOf("wr1", "wr2"), result.workflowRules.map { it.uuId }.toSet())
+    assertEquals(1, result.workflowTemplates.size)
+    assertEquals("wt1", result.workflowTemplates.single().id)
     assertTrue(result.reminders.isEmpty())
   }
 

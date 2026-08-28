@@ -1224,4 +1224,6 @@
     <string name="repeats_until">ทำซ้ำจนถึง %1$s</string>
     <string name="reminder_triggered_times">ทำงานแล้ว %1$d ครั้ง</string>
     <string name="reminder_snoozed_times">เลื่อนแจ้งเตือนแล้ว %1$d ครั้ง</string>
+    <string name="workflow_rules_for_reminder">กฎสำหรับการเตือนความจำนี้</string>
+    <string name="workflow_apply_to_reminder">ใช้กับการเตือนความจำ</string>
 </resources>
