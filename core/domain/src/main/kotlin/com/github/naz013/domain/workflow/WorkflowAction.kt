@@ -44,4 +44,15 @@ sealed class WorkflowAction {
     @SerializedName("taskKey")
     val taskKey: String
   ) : WorkflowAction()
+
+  /** Outbound Tasker integration: broadcasts a local [android.content.Intent] with this [action]
+   * string (matched by a Tasker "Intent Received" profile) and [extras]. Local-only, one-way - no
+   * inbound Tasker-as-a-trigger support (that needs its own exported components and security
+   * review, see docs/workflow-engine-research.md). */
+  data class SendBroadcastIntent(
+    @SerializedName("action")
+    val action: String,
+    @SerializedName("extras")
+    val extras: Map<String, String> = emptyMap()
+  ) : WorkflowAction()
 }

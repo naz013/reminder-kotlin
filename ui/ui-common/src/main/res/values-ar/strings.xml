@@ -1238,4 +1238,6 @@
     <string name="workflow_condition_title_contains">يحتوي العنوان على</string>
     <string name="workflow_action_move_to_group">نقل إلى مجموعة أخرى</string>
     <string name="workflow_builder_title_contains_hint">كلمة مفتاحية</string>
+    <string name="workflow_action_send_broadcast_intent">إرسال بث Intent</string>
+    <string name="workflow_builder_broadcast_action_hint">إجراء الـ Intent</string>
 </resources>

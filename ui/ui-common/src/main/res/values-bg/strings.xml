@@ -1241,4 +1241,6 @@
     <string name="workflow_condition_title_contains">Заглавието съдържа</string>
     <string name="workflow_action_move_to_group">Преместване в друга група</string>
     <string name="workflow_builder_title_contains_hint">Ключова дума</string>
+    <string name="workflow_action_send_broadcast_intent">Изпращане на broadcast intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Действие на intent</string>
 </resources>

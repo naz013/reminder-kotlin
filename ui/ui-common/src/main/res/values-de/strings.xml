@@ -1236,4 +1236,6 @@
     <string name="workflow_condition_title_contains">Titel enthält</string>
     <string name="workflow_action_move_to_group">In eine andere Gruppe verschieben</string>
     <string name="workflow_builder_title_contains_hint">Schlüsselwort</string>
+    <string name="workflow_action_send_broadcast_intent">Broadcast-Intent senden</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent-Aktion</string>
 </resources>

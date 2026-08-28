@@ -46,7 +46,8 @@ class WorkflowEngine(
   private val reminderV2Repository: ReminderV2Repository,
   @Suppress("unused") private val groupV2Repository: GroupV2Repository,
   private val workScheduler: WorkScheduler,
-  private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase
+  private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase,
+  private val broadcastIntentSender: BroadcastIntentSender
 ) {
 
   /** Runs every enabled [WorkflowTrigger.ReminderAgeExceeded] rule in scope against every
@@ -251,6 +252,8 @@ class WorkflowEngine(
           reminderV2Repository.save(it.copy(notification = NotificationSettingsOverride()))
         }
 
+      is WorkflowAction.SendBroadcastIntent -> broadcastIntentSender.send(action.action, action.extras)
+
       is WorkflowAction.ArchiveReminder,
       is WorkflowAction.PurgeReminder,
       is WorkflowAction.CompleteReminder,
@@ -333,6 +336,11 @@ class WorkflowEngine(
 
       is WorkflowAction.MoveToGroup -> {
         reminderV2Repository.save(reminder.copy(groupId = action.groupId))
+        null
+      }
+
+      is WorkflowAction.SendBroadcastIntent -> {
+        broadcastIntentSender.send(action.action, action.extras)
         null
       }
 

@@ -1240,4 +1240,6 @@
     <string name="workflow_condition_title_contains">Il titolo contiene</string>
     <string name="workflow_action_move_to_group">Sposta in un altro gruppo</string>
     <string name="workflow_builder_title_contains_hint">Parola chiave</string>
+    <string name="workflow_action_send_broadcast_intent">Invia intent broadcast</string>
+    <string name="workflow_builder_broadcast_action_hint">Azione dell\'intent</string>
 </resources>

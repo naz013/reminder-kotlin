@@ -82,6 +82,24 @@ class DataConverterImplTest {
   }
 
   @Test
+  fun `round trips a send-broadcast-intent workflow rule with extras`() {
+    val rule = WorkflowRule(
+      uuId = "rule-9",
+      title = "Notify Tasker on completion",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.SendBroadcastIntent(
+        action = "com.example.TASKER_ACTION",
+        extras = mapOf("reminderTitle" to "Buy milk")
+      )
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
   fun `round trips an auto-grouping workflow rule`() {
     val rule = WorkflowRule(
       uuId = "rule-8",

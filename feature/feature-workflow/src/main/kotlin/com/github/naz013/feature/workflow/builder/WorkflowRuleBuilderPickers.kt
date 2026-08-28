@@ -379,12 +379,14 @@ private val ACTION_OPTIONS = listOf(
   WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride()),
   WorkflowAction.ActivateReminder(reminderId = ""),
   WorkflowAction.MoveToGroup(groupId = ""),
+  WorkflowAction.SendBroadcastIntent(action = ""),
 )
 
 private fun needsParams(action: WorkflowAction): Boolean =
   action is WorkflowAction.ApplyNotificationOverride ||
     action is WorkflowAction.ActivateReminder ||
-    action is WorkflowAction.MoveToGroup
+    action is WorkflowAction.MoveToGroup ||
+    action is WorkflowAction.SendBroadcastIntent
 
 /** Type picker + inline param sub-form for the "Then" slot. [WorkflowAction.RunBackgroundTask] is
  * deliberately excluded - its `taskKey` is an internal Koin DI qualifier with no user-facing
@@ -475,6 +477,26 @@ private fun ActionParamForm(
           items = groups.map { it.id to it.title },
           onSelect = { id -> onSave(WorkflowAction.MoveToGroup(id)) },
         )
+      }
+    }
+
+    is WorkflowAction.SendBroadcastIntent -> {
+      var actionText by remember { mutableStateOf(action.action) }
+      Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        OutlinedTextField(
+          value = actionText,
+          onValueChange = { actionText = it },
+          label = { Text(stringResource(R.string.workflow_builder_broadcast_action_hint)) },
+          singleLine = true,
+          modifier = Modifier.fillMaxWidth(),
+        )
+        Button(
+          onClick = { onSave(WorkflowAction.SendBroadcastIntent(actionText)) },
+          enabled = actionText.isNotBlank(),
+          modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        ) {
+          Text(stringResource(R.string.save))
+        }
       }
     }
 

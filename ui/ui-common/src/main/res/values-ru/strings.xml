@@ -1239,4 +1239,6 @@
     <string name="workflow_condition_title_contains">Заголовок содержит</string>
     <string name="workflow_action_move_to_group">Переместить в другую группу</string>
     <string name="workflow_builder_title_contains_hint">Ключевое слово</string>
+    <string name="workflow_action_send_broadcast_intent">Отправить широковещательный intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Действие intent</string>
 </resources>

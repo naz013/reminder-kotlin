@@ -1238,4 +1238,6 @@
     <string name="workflow_condition_title_contains">Tiêu đề chứa</string>
     <string name="workflow_action_move_to_group">Chuyển sang nhóm khác</string>
     <string name="workflow_builder_title_contains_hint">Từ khóa</string>
+    <string name="workflow_action_send_broadcast_intent">Gửi broadcast intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Hành động intent</string>
 </resources>

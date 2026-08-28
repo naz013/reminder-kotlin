@@ -1244,4 +1244,6 @@
     <string name="workflow_condition_title_contains">Title contains</string>
     <string name="workflow_action_move_to_group">Move to another group</string>
     <string name="workflow_builder_title_contains_hint">Keyword</string>
+    <string name="workflow_action_send_broadcast_intent">Send broadcast intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent action</string>
 </resources>

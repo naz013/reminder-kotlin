@@ -107,6 +107,25 @@ class WorkflowRuleMapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips a send-broadcast-intent rule with extras`() {
+    val rule = WorkflowRule(
+      uuId = "rule-10",
+      title = "Notify Tasker on completion",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.SendBroadcastIntent(
+        action = "com.example.TASKER_ACTION",
+        extras = mapOf("reminderTitle" to "Buy milk")
+      ),
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
   fun `toEntity then toDomain round trips an auto-grouping rule`() {
     val rule = WorkflowRule(
       uuId = "rule-9",

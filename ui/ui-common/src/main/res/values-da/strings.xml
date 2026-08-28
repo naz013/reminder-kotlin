@@ -1238,4 +1238,6 @@
     <string name="workflow_condition_title_contains">Titel indeholder</string>
     <string name="workflow_action_move_to_group">Flyt til en anden gruppe</string>
     <string name="workflow_builder_title_contains_hint">Nøgleord</string>
+    <string name="workflow_action_send_broadcast_intent">Send broadcast-intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent-handling</string>
 </resources>

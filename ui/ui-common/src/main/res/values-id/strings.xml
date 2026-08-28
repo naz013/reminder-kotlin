@@ -1238,4 +1238,6 @@
     <string name="workflow_condition_title_contains">Judul berisi</string>
     <string name="workflow_action_move_to_group">Pindahkan ke grup lain</string>
     <string name="workflow_builder_title_contains_hint">Kata kunci</string>
+    <string name="workflow_action_send_broadcast_intent">Kirim broadcast intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Aksi intent</string>
 </resources>

@@ -1241,4 +1241,6 @@
     <string name="workflow_condition_title_contains">标题包含</string>
     <string name="workflow_action_move_to_group">移动到其他群组</string>
     <string name="workflow_builder_title_contains_hint">关键词</string>
+    <string name="workflow_action_send_broadcast_intent">发送广播 Intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent 动作</string>
 </resources>

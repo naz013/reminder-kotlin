@@ -81,6 +81,7 @@ internal fun workflowActionLabel(action: WorkflowAction): String = when (action)
   is WorkflowAction.ClearNotificationOverride -> stringResource(R.string.workflow_action_clear_notification_override)
   is WorkflowAction.ActivateReminder -> stringResource(R.string.workflow_action_activate_reminder)
   is WorkflowAction.MoveToGroup -> stringResource(R.string.workflow_action_move_to_group)
+  is WorkflowAction.SendBroadcastIntent -> stringResource(R.string.workflow_action_send_broadcast_intent)
   is WorkflowAction.RunBackgroundTask -> action.taskKey
 }
 
@@ -91,5 +92,6 @@ internal fun workflowActionValue(
 ): String? = when (action) {
   is WorkflowAction.ActivateReminder -> reminders.firstOrNull { it.id == action.reminderId }?.title ?: action.reminderId
   is WorkflowAction.MoveToGroup -> groups.firstOrNull { it.id == action.groupId }?.title ?: action.groupId
+  is WorkflowAction.SendBroadcastIntent -> action.action
   else -> null
 }

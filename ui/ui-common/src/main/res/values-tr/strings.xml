@@ -1241,4 +1241,6 @@
     <string name="workflow_condition_title_contains">Başlık şunu içeriyor</string>
     <string name="workflow_action_move_to_group">Başka bir gruba taşı</string>
     <string name="workflow_builder_title_contains_hint">Anahtar kelime</string>
+    <string name="workflow_action_send_broadcast_intent">Broadcast intent gönder</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent eylemi</string>
 </resources>

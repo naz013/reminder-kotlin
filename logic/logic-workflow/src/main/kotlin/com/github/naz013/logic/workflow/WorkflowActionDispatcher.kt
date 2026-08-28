@@ -27,6 +27,7 @@ class WorkflowActionDispatcher(
       is WorkflowAction.ApplyNotificationOverride,
       is WorkflowAction.ClearNotificationOverride,
       is WorkflowAction.MoveToGroup,
+      is WorkflowAction.SendBroadcastIntent,
       is WorkflowAction.RunBackgroundTask -> Unit // the engine never returns these as pending
     }
   }

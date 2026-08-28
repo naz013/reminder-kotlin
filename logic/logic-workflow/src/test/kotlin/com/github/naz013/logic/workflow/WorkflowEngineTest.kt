@@ -59,13 +59,15 @@ class WorkflowEngineTest {
   private fun engine(
     ruleRepository: WorkflowRuleRepository,
     reminderRepository: ReminderV2Repository,
-    workScheduler: WorkScheduler = FakeWorkScheduler()
+    workScheduler: WorkScheduler = FakeWorkScheduler(),
+    broadcastIntentSender: FakeBroadcastIntentSender = FakeBroadcastIntentSender()
   ) = WorkflowEngine(
     ruleRepository,
     reminderRepository,
     NoOpGroupV2Repository(),
     workScheduler,
-    SaveWorkflowRuleUseCase(ruleRepository, NoOpScheduleBackgroundWorkUseCase())
+    SaveWorkflowRuleUseCase(ruleRepository, NoOpScheduleBackgroundWorkUseCase()),
+    broadcastIntentSender
   )
 
   @Test
@@ -286,6 +288,29 @@ class WorkflowEngineTest {
 
     assertEquals(1, workScheduler.enqueued.size)
     assertEquals("some_task", workScheduler.enqueued.single().taskKey)
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `sends a broadcast intent inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-broadcast",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.SendBroadcastIntent(action = "com.example.TASKER_ACTION", extras = mapOf("k" to "v")),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val broadcastIntentSender = FakeBroadcastIntentSender()
+
+    val result = engine(ruleRepository, reminderRepository, broadcastIntentSender = broadcastIntentSender)
+      .runReminderCompletedRules("r1")
+
+    assertEquals(1, broadcastIntentSender.sent.size)
+    assertEquals("com.example.TASKER_ACTION", broadcastIntentSender.sent.single().action)
+    assertEquals(mapOf("k" to "v"), broadcastIntentSender.sent.single().extras)
     assertTrue(result.isEmpty())
   }
 
@@ -640,6 +665,20 @@ class WorkflowEngineTest {
     assertEquals(1, workScheduler.enqueued.size)
     assertEquals("weekly_summary", workScheduler.enqueued.single().taskKey)
     assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `sends a broadcast intent once a scheduled rule fires`() = runTest {
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+      .copy(action = WorkflowAction.SendBroadcastIntent(action = "com.example.VACATION_START"))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val broadcastIntentSender = FakeBroadcastIntentSender()
+
+    engine(ruleRepository, reminderRepository, broadcastIntentSender = broadcastIntentSender).runScheduleRules(now)
+
+    assertEquals(1, broadcastIntentSender.sent.size)
+    assertEquals("com.example.VACATION_START", broadcastIntentSender.sent.single().action)
   }
 
   @Test
@@ -1062,4 +1101,14 @@ private class FakeWorkScheduler : WorkScheduler {
 
 private class NoOpScheduleBackgroundWorkUseCase : ScheduleBackgroundWorkUseCase {
   override fun invoke(workType: WorkType, dataType: DataType?, id: String?, ids: List<String>?): String? = null
+}
+
+private class FakeBroadcastIntentSender : BroadcastIntentSender {
+  data class SentBroadcast(val action: String, val extras: Map<String, String>)
+
+  val sent = mutableListOf<SentBroadcast>()
+
+  override fun send(action: String, extras: Map<String, String>) {
+    sent.add(SentBroadcast(action, extras))
+  }
 }

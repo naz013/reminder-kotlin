@@ -1242,4 +1242,6 @@
     <string name="workflow_condition_title_contains">शीर्षक में शामिल है</string>
     <string name="workflow_action_move_to_group">दूसरे समूह में ले जाएं</string>
     <string name="workflow_builder_title_contains_hint">कीवर्ड</string>
+    <string name="workflow_action_send_broadcast_intent">ब्रॉडकास्ट इंटेंट भेजें</string>
+    <string name="workflow_builder_broadcast_action_hint">इंटेंट एक्शन</string>
 </resources>

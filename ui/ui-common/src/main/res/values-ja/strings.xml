@@ -1240,4 +1240,6 @@
     <string name="workflow_condition_title_contains">タイトルに含まれる</string>
     <string name="workflow_action_move_to_group">別のグループに移動</string>
     <string name="workflow_builder_title_contains_hint">キーワード</string>
+    <string name="workflow_action_send_broadcast_intent">ブロードキャストインテントを送信</string>
+    <string name="workflow_builder_broadcast_action_hint">インテントアクション</string>
 </resources>

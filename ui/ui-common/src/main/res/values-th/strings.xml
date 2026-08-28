@@ -1238,4 +1238,6 @@
     <string name="workflow_condition_title_contains">ชื่อเรื่องมีคำว่า</string>
     <string name="workflow_action_move_to_group">ย้ายไปยังกลุ่มอื่น</string>
     <string name="workflow_builder_title_contains_hint">คำสำคัญ</string>
+    <string name="workflow_action_send_broadcast_intent">ส่ง Broadcast Intent</string>
+    <string name="workflow_builder_broadcast_action_hint">การกระทำของ Intent</string>
 </resources>

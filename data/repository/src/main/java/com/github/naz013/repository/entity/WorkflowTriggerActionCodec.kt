@@ -73,6 +73,7 @@ internal fun WorkflowAction.toColumns(): Pair<String, String> = when (this) {
   is WorkflowAction.ClearNotificationOverride -> "CLEAR_NOTIFICATION_OVERRIDE" to ""
   is WorkflowAction.ActivateReminder -> "ACTIVATE_REMINDER" to workflowGson.toJson(this)
   is WorkflowAction.MoveToGroup -> "MOVE_TO_GROUP" to workflowGson.toJson(this)
+  is WorkflowAction.SendBroadcastIntent -> "SEND_BROADCAST_INTENT" to workflowGson.toJson(this)
   is WorkflowAction.RunBackgroundTask -> "RUN_BACKGROUND_TASK" to workflowGson.toJson(this)
 }
 
@@ -87,6 +88,7 @@ internal fun toWorkflowAction(type: String, payload: String): WorkflowAction = r
     "CLEAR_NOTIFICATION_OVERRIDE" -> WorkflowAction.ClearNotificationOverride
     "ACTIVATE_REMINDER" -> workflowGson.fromJson(payload, WorkflowAction.ActivateReminder::class.java)
     "MOVE_TO_GROUP" -> workflowGson.fromJson(payload, WorkflowAction.MoveToGroup::class.java)
+    "SEND_BROADCAST_INTENT" -> workflowGson.fromJson(payload, WorkflowAction.SendBroadcastIntent::class.java)
     "RUN_BACKGROUND_TASK" -> workflowGson.fromJson(payload, WorkflowAction.RunBackgroundTask::class.java)
     else -> WorkflowAction.ArchiveReminder
   }

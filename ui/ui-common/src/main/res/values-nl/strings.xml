@@ -1238,4 +1238,6 @@
     <string name="workflow_condition_title_contains">Titel bevat</string>
     <string name="workflow_action_move_to_group">Verplaatsen naar een andere groep</string>
     <string name="workflow_builder_title_contains_hint">Trefwoord</string>
+    <string name="workflow_action_send_broadcast_intent">Broadcast-intent verzenden</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent-actie</string>
 </resources>

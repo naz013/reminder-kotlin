@@ -1240,4 +1240,6 @@
     <string name="workflow_condition_title_contains">Název obsahuje</string>
     <string name="workflow_action_move_to_group">Přesunout do jiné skupiny</string>
     <string name="workflow_builder_title_contains_hint">Klíčové slovo</string>
+    <string name="workflow_action_send_broadcast_intent">Odeslat broadcast intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Akce intentu</string>
 </resources>

@@ -222,6 +222,7 @@ internal class WorkflowRuleBuilderViewModel(
     is WorkflowAction.ClearNotificationOverride -> "clear its notification override"
     is WorkflowAction.ActivateReminder -> "activate another reminder"
     is WorkflowAction.MoveToGroup -> "move it to another group"
+    is WorkflowAction.SendBroadcastIntent -> "send a broadcast intent"
     is WorkflowAction.RunBackgroundTask -> "run a background task"
   }
 }
