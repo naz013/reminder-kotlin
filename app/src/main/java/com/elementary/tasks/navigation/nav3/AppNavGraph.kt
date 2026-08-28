@@ -139,13 +139,14 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   // immediately reflects the user's latest order/visibility choice, with no app restart needed.
   val homePreferences = koinInject<HomePreferences>()
   val routineConfig = koinInject<RoutineConfig>()
+  val workflowConfig = koinInject<WorkflowConfig>()
   val visibleHeaderSections =
     HeaderNavigationSection.pinned +
       homePreferences.headerNavigationOrder.filter { section ->
         section !in homePreferences.disabledHeaderNavigationSections &&
           when (section) {
             HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
-            HeaderNavigationSection.WORKFLOW -> WorkflowConfig.isEnabled
+            HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
             else -> true
           }
       }

@@ -12,6 +12,7 @@ import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.logic.group.SaveGroupUseCase
+import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderSettingsRepository
@@ -50,6 +51,7 @@ class EditGroupViewModelTest : BaseTest() {
   private val appPreferences = mockk<AppPreferences>(relaxed = true)
   private val notificationOverrideSubtitleFormatter = mockk<NotificationOverrideSubtitleFormatter>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>(relaxed = true)
+  private val workflowConfig = mockk<WorkflowConfig>(relaxed = true)
 
   private lateinit var viewModel: EditGroupViewModel
 
@@ -92,6 +94,7 @@ class EditGroupViewModelTest : BaseTest() {
     appPreferences = appPreferences,
     notificationOverrideSubtitleFormatter = notificationOverrideSubtitleFormatter,
     themeProvider = themeProvider,
+    workflowConfig = workflowConfig,
   )
 
   @Before

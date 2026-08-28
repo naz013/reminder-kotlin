@@ -33,6 +33,7 @@ class GetNavigationItemsUseCase(
   private val routineRepository: RoutineRepository,
   private val dateTimeManager: DateTimeManager,
   private val routineConfig: RoutineConfig,
+  private val workflowConfig: WorkflowConfig,
   private val homePreferences: HomePreferences,
 ) {
   suspend operator fun invoke(
@@ -48,7 +49,7 @@ class GetNavigationItemsUseCase(
 
   private fun isAvailable(section: HeaderNavigationSection): Boolean = when (section) {
     HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
-    HeaderNavigationSection.WORKFLOW -> WorkflowConfig.isEnabled
+    HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
     else -> true
   }
 

@@ -17,6 +17,7 @@ import com.github.naz013.feature.reminder.settings.RemindersSettingsDialog
 import com.github.naz013.feature.reminder.settings.RemindersSettingsEvent
 import com.github.naz013.feature.reminder.settings.RemindersSettingsViewModel
 import com.github.naz013.feature.reminder.settings.SeekDialogKind
+import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.platform.SystemInfo
 import io.mockk.every
 import io.mockk.mockk
@@ -35,6 +36,7 @@ class RemindersSettingsViewModelTest : BaseTest() {
   private val systemInfo = mockk<SystemInfo>()
   private val buildInfo = mockk<BuildInfo>()
   private val vibrationPlayer = mockk<VibrationPlayer>(relaxed = true)
+  private val workflowConfig = mockk<WorkflowConfig>(relaxed = true)
 
   private lateinit var viewModel: RemindersSettingsViewModel
 
@@ -74,6 +76,7 @@ class RemindersSettingsViewModelTest : BaseTest() {
         systemInfo = systemInfo,
         buildInfo = buildInfo,
         vibrationPlayer = vibrationPlayer,
+        workflowConfig = workflowConfig,
       )
   }
 
@@ -112,6 +115,7 @@ class RemindersSettingsViewModelTest : BaseTest() {
         systemInfo,
         buildInfo,
         vibrationPlayer,
+        workflowConfig,
       )
 
     assertEquals(false, vm.state.value.isLedVisible)
@@ -134,6 +138,7 @@ class RemindersSettingsViewModelTest : BaseTest() {
         systemInfo,
         buildInfo,
         vibrationPlayer,
+        workflowConfig,
       )
 
     assertEquals(true, vm.state.value.isInsightsLocked)

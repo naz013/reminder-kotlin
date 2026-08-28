@@ -94,14 +94,16 @@ class BottomNavInitViewModel(
         reminderV2BackfillUseCase()
         prefs.reminderV2BackfillDone = true
       }
-      workflowRulesUtil.initDefaultIfEmpty()
-      if (!prefs.workflowRulesScheduled) {
-        jobScheduler.scheduleWorkflowRulesCheck()
-        prefs.workflowRulesScheduled = true
-      }
-      if (!prefs.workflowUnacknowledgedRulesScheduled) {
-        jobScheduler.scheduleWorkflowUnacknowledgedCheck()
-        prefs.workflowUnacknowledgedRulesScheduled = true
+      if (featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED)) {
+        workflowRulesUtil.initDefaultIfEmpty()
+        if (!prefs.workflowRulesScheduled) {
+          jobScheduler.scheduleWorkflowRulesCheck()
+          prefs.workflowRulesScheduled = true
+        }
+        if (!prefs.workflowUnacknowledgedRulesScheduled) {
+          jobScheduler.scheduleWorkflowUnacknowledgedCheck()
+          prefs.workflowUnacknowledgedRulesScheduled = true
+        }
       }
       if (!prefs.routineRecurrenceResetScheduled && featureFlags.isEnabled(FeatureFlag.ROUTINE_ENABLED)) {
         jobScheduler.scheduleRoutineRecurrenceResetCheck()

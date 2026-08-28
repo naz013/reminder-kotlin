@@ -16,4 +16,5 @@ val logicWorkflowModule = module {
   factory { GetWorkflowRulesForGroupUseCase(get()) }
   factory { GetGlobalWorkflowRulesUseCase(get()) }
   factory { GetWorkflowTemplatesUseCase(get()) }
+  factory { WorkflowConfigImpl(get()) as WorkflowConfig }
 }

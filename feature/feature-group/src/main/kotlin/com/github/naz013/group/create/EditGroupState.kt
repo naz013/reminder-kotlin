@@ -2,7 +2,6 @@ package com.github.naz013.group.create
 
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
-import com.github.naz013.logic.workflow.WorkflowConfig
 
 internal data class EditGroupState(
   val id: String? = null,
@@ -18,7 +17,7 @@ internal data class EditGroupState(
   val isEdited: Boolean = false,
   val isFromFile: Boolean = false,
   val hasSameInDb: Boolean = false,
-  val workflowsVisible: Boolean = WorkflowConfig.isEnabled,
+  val workflowsVisible: Boolean = false,
   val notification: NotificationSettingsOverride = NotificationSettingsOverride(),
   val vibrateSubtitle: String = "",
   val repeatNotificationSubtitle: String = "",

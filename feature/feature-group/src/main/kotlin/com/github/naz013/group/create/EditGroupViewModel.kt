@@ -23,6 +23,7 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.logic.group.SaveGroupUseCase
+import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.navigation.intent.IntentDataReader
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderSettingsRepository
@@ -58,6 +59,7 @@ internal class EditGroupViewModel(
   private val appPreferences: AppPreferences,
   private val notificationOverrideSubtitleFormatter: NotificationOverrideSubtitleFormatter,
   private val themeProvider: ThemeProvider,
+  private val workflowConfig: WorkflowConfig,
 ) : ViewModel() {
 
   private val context get() = contextProvider.themedContext
@@ -75,6 +77,7 @@ internal class EditGroupViewModel(
       it.copy(
         hapticFeedbackEnabled = appPreferences.hapticsEnabled,
         sliderColors = themeProvider.colorsForSliderThemed(),
+        workflowsVisible = workflowConfig.isEnabled,
       )
     }
   }

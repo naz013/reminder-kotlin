@@ -1,6 +1,5 @@
 package com.github.naz013.logic.workflow
 
-object WorkflowConfig {
+interface WorkflowConfig {
   val isEnabled: Boolean
-    get() = false
 }

@@ -14,10 +14,11 @@ import com.github.naz013.repository.WorkflowTemplateRepository
 
 /**
  * Seeds the built-in workflow template gallery on first run, and applies the archive template
- * globally to create the one live rule [com.github.naz013.logic.workflow.WorkflowEngine]
- * actually runs today. There's no rule/template management UI yet (see
- * docs/workflow-engine-research.md) — the archive rule isn't user-configurable, and the other
- * seeded templates exist in the gallery for a future UI/engine phase to pick up.
+ * globally so there's always at least one active rule to see the first time a user opens the
+ * Workflow gallery. Only called once [com.github.naz013.logic.workflow.WorkflowConfig.isEnabled]
+ * is true (see `BottomNavInitViewModel.checkDb()`) — the rule and templates are fully
+ * user-manageable through the builder/gallery screens in this module, see
+ * docs/workflow-engine-research.md for the broader catalog this is a starting point for.
  */
 class WorkflowRulesUtil(
   private val workflowTemplateRepository: WorkflowTemplateRepository,

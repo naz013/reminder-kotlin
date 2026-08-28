@@ -62,6 +62,9 @@ class BottomNavInitViewModelTest : BaseTest() {
     super.setUp()
     every { featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS) } returns true
     every { featureFlags.isEnabled(FeatureFlag.ROUTINE_ENABLED) } returns false
+    every { featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED) } returns false
+    every { prefs.workflowRulesScheduled } returns false
+    every { prefs.workflowUnacknowledgedRulesScheduled } returns false
     every { googleTasksAuthManager.isAuthorized() } returns true
     every { packageManagerWrapper.getVersionName() } returns "1.0.0"
 
@@ -184,6 +187,26 @@ class BottomNavInitViewModelTest : BaseTest() {
     createViewModel()
 
     verify(exactly = 0) { jobScheduler.scheduleRoutineRecurrenceResetCheck() }
+  }
+
+  @Test
+  fun `seeds default workflow rules and schedules workflow checks when the feature flag is enabled`() {
+    every { featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED) } returns true
+
+    createViewModel()
+
+    coVerify(exactly = 1) { workflowRulesUtil.initDefaultIfEmpty() }
+    verify(exactly = 1) { jobScheduler.scheduleWorkflowRulesCheck() }
+    verify(exactly = 1) { jobScheduler.scheduleWorkflowUnacknowledgedCheck() }
+    verify(exactly = 1) { prefs.workflowRulesScheduled = true }
+    verify(exactly = 1) { prefs.workflowUnacknowledgedRulesScheduled = true }
+  }
+
+  @Test
+  fun `does not seed workflow rules or schedule workflow checks when the feature flag is disabled`() {
+    coVerify(exactly = 0) { workflowRulesUtil.initDefaultIfEmpty() }
+    verify(exactly = 0) { jobScheduler.scheduleWorkflowRulesCheck() }
+    verify(exactly = 0) { jobScheduler.scheduleWorkflowUnacknowledgedCheck() }
   }
 
   @Test
