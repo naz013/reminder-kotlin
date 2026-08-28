@@ -1240,4 +1240,10 @@
     <string name="workflow_builder_title_contains_hint">Nyckelord</string>
     <string name="workflow_action_send_broadcast_intent">Skicka broadcast-intent</string>
     <string name="workflow_builder_broadcast_action_hint">Intent-åtgärd</string>
+    <string name="workflow_already_applied">Redan tillämpad</string>
+    <string name="workflow_condition_has_tag">Har tagg</string>
+    <string name="workflow_action_apply_tag">Lägg till tagg</string>
+    <string name="workflow_action_remove_tag">Ta bort tagg</string>
+    <string name="workflow_builder_select_tag">Välj en tagg</string>
+    <string name="workflow_builder_no_tags">Inga taggar tillgängliga. Skapa en tagg först.</string>
 </resources>

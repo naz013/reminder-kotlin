@@ -37,5 +37,7 @@ private fun isActionImplemented(action: WorkflowAction): Boolean = when (action)
   is WorkflowAction.ActivateReminder,
   is WorkflowAction.MoveToGroup,
   is WorkflowAction.SendBroadcastIntent,
-  is WorkflowAction.RunBackgroundTask -> true
+  is WorkflowAction.RunBackgroundTask,
+  is WorkflowAction.ApplyTag,
+  is WorkflowAction.RemoveTag -> true
 }

@@ -173,10 +173,10 @@ private val dateTimePickerValueFormatter: DateTimeFormatter = DateTimeFormatter.
  * control of its own - callers commit the picked value however fits their own form. */
 @Composable
 internal fun DateTimePickerRow(
+  modifier: Modifier = Modifier,
   label: String,
   dateTime: LocalDateTime?,
   onDateTimePicked: (LocalDateTime) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val dateTimePicker = rememberDateTimePicker()
   Column(modifier = modifier) {
@@ -227,6 +227,7 @@ private val CONDITION_OPTIONS = listOf(
   WorkflowCondition.WithinTimeWindow(fromMinuteOfDay = 8 * 60, toMinuteOfDay = 22 * 60),
   WorkflowCondition.GroupIs(groupId = ""),
   WorkflowCondition.TitleContains(text = ""),
+  WorkflowCondition.HasTag(tagId = ""),
 )
 
 /** Type picker + inline param sub-form for one "If" slot - used both to add a new condition and
@@ -235,6 +236,7 @@ private val CONDITION_OPTIONS = listOf(
 @Composable
 internal fun WorkflowConditionPickerSheet(
   groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption>,
   initial: WorkflowCondition?,
   onDismiss: () -> Unit,
   onConfirm: (WorkflowCondition) -> Unit,
@@ -256,7 +258,7 @@ internal fun WorkflowConditionPickerSheet(
         modifier = Modifier.padding(bottom = 16.dp),
       )
     } else {
-      ConditionParamForm(condition = current, groups = groups, onSave = onConfirm)
+      ConditionParamForm(condition = current, groups = groups, tags = tags, onSave = onConfirm)
     }
   }
 }
@@ -265,6 +267,7 @@ internal fun WorkflowConditionPickerSheet(
 private fun ConditionParamForm(
   condition: WorkflowCondition,
   groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption>,
   onSave: (WorkflowCondition) -> Unit,
 ) {
   when (condition) {
@@ -355,6 +358,27 @@ private fun ConditionParamForm(
         }
       }
     }
+
+    is WorkflowCondition.HasTag -> {
+      if (tags.isEmpty()) {
+        Text(
+          text = stringResource(R.string.workflow_builder_no_tags),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+        )
+      } else {
+        Text(
+          text = stringResource(R.string.workflow_builder_select_tag),
+          style = MaterialTheme.typography.titleSmall,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        SelectableTextList(
+          items = tags.map { it.id to it.title },
+          onSelect = { id -> onSave(WorkflowCondition.HasTag(id)) },
+        )
+      }
+    }
   }
 }
 
@@ -380,13 +404,17 @@ private val ACTION_OPTIONS = listOf(
   WorkflowAction.ActivateReminder(reminderId = ""),
   WorkflowAction.MoveToGroup(groupId = ""),
   WorkflowAction.SendBroadcastIntent(action = ""),
+  WorkflowAction.ApplyTag(tagId = ""),
+  WorkflowAction.RemoveTag(tagId = ""),
 )
 
 private fun needsParams(action: WorkflowAction): Boolean =
   action is WorkflowAction.ApplyNotificationOverride ||
     action is WorkflowAction.ActivateReminder ||
     action is WorkflowAction.MoveToGroup ||
-    action is WorkflowAction.SendBroadcastIntent
+    action is WorkflowAction.SendBroadcastIntent ||
+    action is WorkflowAction.ApplyTag ||
+    action is WorkflowAction.RemoveTag
 
 /** Type picker + inline param sub-form for the "Then" slot. [WorkflowAction.RunBackgroundTask] is
  * deliberately excluded - its `taskKey` is an internal Koin DI qualifier with no user-facing
@@ -396,6 +424,7 @@ private fun needsParams(action: WorkflowAction): Boolean =
 internal fun WorkflowActionPickerSheet(
   reminders: List<UiWorkflowReminderOption>,
   groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption>,
   onDismiss: () -> Unit,
   onConfirm: (WorkflowAction) -> Unit,
 ) {
@@ -419,7 +448,7 @@ internal fun WorkflowActionPickerSheet(
         modifier = Modifier.padding(bottom = 16.dp),
       )
     } else {
-      ActionParamForm(action = current, reminders = reminders, groups = groups, onSave = onConfirm)
+      ActionParamForm(action = current, reminders = reminders, groups = groups, tags = tags, onSave = onConfirm)
     }
   }
 }
@@ -429,6 +458,7 @@ private fun ActionParamForm(
   action: WorkflowAction,
   reminders: List<UiWorkflowReminderOption>,
   groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption>,
   onSave: (WorkflowAction) -> Unit,
 ) {
   when (action) {
@@ -497,6 +527,29 @@ private fun ActionParamForm(
         ) {
           Text(stringResource(R.string.save))
         }
+      }
+    }
+
+    is WorkflowAction.ApplyTag, is WorkflowAction.RemoveTag -> {
+      if (tags.isEmpty()) {
+        Text(
+          text = stringResource(R.string.workflow_builder_no_tags),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+        )
+      } else {
+        Text(
+          text = stringResource(R.string.workflow_builder_select_tag),
+          style = MaterialTheme.typography.titleSmall,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        SelectableTextList(
+          items = tags.map { it.id to it.title },
+          onSelect = { id ->
+            onSave(if (action is WorkflowAction.ApplyTag) WorkflowAction.ApplyTag(id) else WorkflowAction.RemoveTag(id))
+          },
+        )
       }
     }
 

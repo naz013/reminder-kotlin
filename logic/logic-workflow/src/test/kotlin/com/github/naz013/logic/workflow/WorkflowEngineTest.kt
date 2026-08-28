@@ -1,5 +1,8 @@
 package com.github.naz013.logic.workflow
 
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TagAssignment
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
@@ -17,6 +20,7 @@ import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.workapi.ExistingWorkPolicy
 import com.github.naz013.workapi.PeriodicWorkRequest
@@ -60,14 +64,16 @@ class WorkflowEngineTest {
     ruleRepository: WorkflowRuleRepository,
     reminderRepository: ReminderV2Repository,
     workScheduler: WorkScheduler = FakeWorkScheduler(),
-    broadcastIntentSender: FakeBroadcastIntentSender = FakeBroadcastIntentSender()
+    broadcastIntentSender: FakeBroadcastIntentSender = FakeBroadcastIntentSender(),
+    tagAssignmentRepository: FakeTagAssignmentRepository = FakeTagAssignmentRepository()
   ) = WorkflowEngine(
     ruleRepository,
     reminderRepository,
     NoOpGroupV2Repository(),
     workScheduler,
     SaveWorkflowRuleUseCase(ruleRepository, NoOpScheduleBackgroundWorkUseCase()),
-    broadcastIntentSender
+    broadcastIntentSender,
+    tagAssignmentRepository
   )
 
   @Test
@@ -917,6 +923,92 @@ class WorkflowEngineTest {
   }
 
   @Test
+  fun `fires a rule when a HasTag condition matches`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val tagAssignmentRepository = FakeTagAssignmentRepository(
+      listOf(TagAssignment(tagId = "urgent", itemId = "r1", itemType = TaggedItemType.REMINDER))
+    )
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.HasTag("urgent")),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository, tagAssignmentRepository = tagAssignmentRepository)
+      .runReminderCompletedRules("r1")
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `does not fire a rule when a HasTag condition does not match`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.HasTag("urgent")),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `attaches a tag inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val tagAssignmentRepository = FakeTagAssignmentRepository()
+    val rule = WorkflowRule(
+      uuId = "rule-apply-tag",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.ApplyTag("urgent"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository, tagAssignmentRepository = tagAssignmentRepository)
+      .runReminderCompletedRules("r1")
+
+    assertEquals(listOf("urgent"), tagAssignmentRepository.getTagsForItem("r1", TaggedItemType.REMINDER).map { it.id })
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `detaches a tag inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val tagAssignmentRepository = FakeTagAssignmentRepository(
+      listOf(TagAssignment(tagId = "urgent", itemId = "r1", itemType = TaggedItemType.REMINDER))
+    )
+    val rule = WorkflowRule(
+      uuId = "rule-remove-tag",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.RemoveTag("urgent"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository, tagAssignmentRepository = tagAssignmentRepository)
+      .runReminderCompletedRules("r1")
+
+    assertTrue(tagAssignmentRepository.getTagsForItem("r1", TaggedItemType.REMINDER).isEmpty())
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
   fun `fires a rule when the current time is within a WithinTimeWindow condition`() = runTest {
     val reminder = completedReminder("r1", updatedAt = now)
     val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
@@ -1110,5 +1202,43 @@ private class FakeBroadcastIntentSender : BroadcastIntentSender {
 
   override fun send(action: String, extras: Map<String, String>) {
     sent.add(SentBroadcast(action, extras))
+  }
+}
+
+private class FakeTagAssignmentRepository(
+  initialAssignments: List<TagAssignment> = emptyList()
+) : TagAssignmentRepository {
+  private val assignments = initialAssignments.toMutableList()
+
+  override fun observeTagsForItem(itemId: String, itemType: TaggedItemType): Flow<List<Tag>> = emptyFlow()
+
+  override suspend fun getTagsForItem(itemId: String, itemType: TaggedItemType): List<Tag> =
+    assignments.filter { it.itemId == itemId && it.itemType == itemType }
+      .map { Tag(id = it.tagId, name = it.tagId, color = 0) }
+
+  override suspend fun getItemIdsForTag(tagId: String, itemType: TaggedItemType): List<String> =
+    assignments.filter { it.tagId == tagId && it.itemType == itemType }.map { it.itemId }
+
+  override suspend fun attach(itemId: String, itemType: TaggedItemType, tagId: String) {
+    assignments.add(TagAssignment(tagId = tagId, itemId = itemId, itemType = itemType))
+  }
+
+  override suspend fun detach(itemId: String, itemType: TaggedItemType, tagId: String) {
+    assignments.removeAll { it.tagId == tagId && it.itemId == itemId && it.itemType == itemType }
+  }
+
+  override suspend fun detachAll(itemId: String, itemType: TaggedItemType) {
+    assignments.removeAll { it.itemId == itemId && it.itemType == itemType }
+  }
+
+  override suspend fun detachAllForTag(tagId: String) {
+    assignments.removeAll { it.tagId == tagId }
+  }
+
+  override suspend fun deleteAll() = assignments.clear()
+  override suspend fun getAll(): List<TagAssignment> = assignments
+  override suspend fun replaceAll(assignments: List<TagAssignment>) {
+    this.assignments.clear()
+    this.assignments.addAll(assignments)
   }
 }

@@ -1240,4 +1240,10 @@
     <string name="workflow_builder_title_contains_hint">Từ khóa</string>
     <string name="workflow_action_send_broadcast_intent">Gửi broadcast intent</string>
     <string name="workflow_builder_broadcast_action_hint">Hành động intent</string>
+    <string name="workflow_already_applied">Đã áp dụng</string>
+    <string name="workflow_condition_has_tag">Có thẻ</string>
+    <string name="workflow_action_apply_tag">Thêm thẻ</string>
+    <string name="workflow_action_remove_tag">Xóa thẻ</string>
+    <string name="workflow_builder_select_tag">Chọn một thẻ</string>
+    <string name="workflow_builder_no_tags">Không có thẻ nào khả dụng. Hãy tạo thẻ trước.</string>
 </resources>

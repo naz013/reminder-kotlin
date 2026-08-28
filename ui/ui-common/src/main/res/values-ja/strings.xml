@@ -1242,4 +1242,10 @@
     <string name="workflow_builder_title_contains_hint">キーワード</string>
     <string name="workflow_action_send_broadcast_intent">ブロードキャストインテントを送信</string>
     <string name="workflow_builder_broadcast_action_hint">インテントアクション</string>
+    <string name="workflow_already_applied">適用済み</string>
+    <string name="workflow_condition_has_tag">タグがある</string>
+    <string name="workflow_action_apply_tag">タグを追加</string>
+    <string name="workflow_action_remove_tag">タグを削除</string>
+    <string name="workflow_builder_select_tag">タグを選択</string>
+    <string name="workflow_builder_no_tags">利用可能なタグがありません。先にタグを作成してください。</string>
 </resources>

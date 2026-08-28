@@ -1240,4 +1240,10 @@
     <string name="workflow_builder_title_contains_hint">Trefwoord</string>
     <string name="workflow_action_send_broadcast_intent">Broadcast-intent verzenden</string>
     <string name="workflow_builder_broadcast_action_hint">Intent-actie</string>
+    <string name="workflow_already_applied">Al toegepast</string>
+    <string name="workflow_condition_has_tag">Heeft tag</string>
+    <string name="workflow_action_apply_tag">Tag toevoegen</string>
+    <string name="workflow_action_remove_tag">Tag verwijderen</string>
+    <string name="workflow_builder_select_tag">Selecteer een tag</string>
+    <string name="workflow_builder_no_tags">Geen tags beschikbaar. Maak eerst een tag aan.</string>
 </resources>

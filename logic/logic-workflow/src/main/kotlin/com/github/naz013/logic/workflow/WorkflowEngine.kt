@@ -1,5 +1,6 @@
 package com.github.naz013.logic.workflow
 
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -11,6 +12,7 @@ import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
@@ -47,7 +49,8 @@ class WorkflowEngine(
   @Suppress("unused") private val groupV2Repository: GroupV2Repository,
   private val workScheduler: WorkScheduler,
   private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase,
-  private val broadcastIntentSender: BroadcastIntentSender
+  private val broadcastIntentSender: BroadcastIntentSender,
+  private val tagAssignmentRepository: TagAssignmentRepository
 ) {
 
   /** Runs every enabled [WorkflowTrigger.ReminderAgeExceeded] rule in scope against every
@@ -74,7 +77,6 @@ class WorkflowEngine(
       val trigger = rule.trigger as? WorkflowTrigger.ReminderAgeExceeded ?: continue
       val cutoff = nowUtc.minusDays(trigger.days.toLong())
       completedReminders
-        .asSequence()
         .filter { qualifies(it, rule, now) }
         .filter { referenceDateTime(it).isBefore(cutoff) }
         .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
@@ -192,7 +194,6 @@ class WorkflowEngine(
     for (rule in rules) {
       val trigger = rule.trigger as? WorkflowTrigger.ReminderUnacknowledgedFor ?: continue
       shownReminders
-        .asSequence()
         .filter { qualifies(it, rule, now) }
         .filter { reminder -> !reminder.lastShownAt!!.plusMinutes(trigger.minutes.toLong()).isAfter(nowUtc) }
         .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
@@ -258,7 +259,9 @@ class WorkflowEngine(
       is WorkflowAction.PurgeReminder,
       is WorkflowAction.CompleteReminder,
       is WorkflowAction.ActivateReminder,
-      is WorkflowAction.MoveToGroup -> Unit // not reminder-scoped, so not supported here yet
+      is WorkflowAction.MoveToGroup,
+      is WorkflowAction.ApplyTag,
+      is WorkflowAction.RemoveTag -> Unit // not reminder-scoped, so not supported here yet
     }
   }
 
@@ -285,10 +288,10 @@ class WorkflowEngine(
 
   /** Whether [reminder] is both in [WorkflowRule.scope] and passes every one of its
    * [WorkflowRule.conditions] (an AND-chain). */
-  private fun qualifies(reminder: ReminderV2, rule: WorkflowRule, now: LocalDateTime): Boolean =
+  private suspend fun qualifies(reminder: ReminderV2, rule: WorkflowRule, now: LocalDateTime): Boolean =
     isInScope(reminder, rule.scope) && matchesConditions(reminder, rule.conditions, now)
 
-  private fun matchesConditions(
+  private suspend fun matchesConditions(
     reminder: ReminderV2,
     conditions: List<WorkflowCondition>,
     now: LocalDateTime
@@ -309,6 +312,10 @@ class WorkflowEngine(
       is WorkflowCondition.GroupIs -> reminder.groupId == condition.groupId
 
       is WorkflowCondition.TitleContains -> reminder.summary.contains(condition.text, ignoreCase = true)
+
+      is WorkflowCondition.HasTag ->
+        tagAssignmentRepository.getTagsForItem(reminder.uuId, TaggedItemType.REMINDER)
+          .any { it.id == condition.tagId }
     }
   }
 
@@ -336,6 +343,16 @@ class WorkflowEngine(
 
       is WorkflowAction.MoveToGroup -> {
         reminderV2Repository.save(reminder.copy(groupId = action.groupId))
+        null
+      }
+
+      is WorkflowAction.ApplyTag -> {
+        tagAssignmentRepository.attach(reminder.uuId, TaggedItemType.REMINDER, action.tagId)
+        null
+      }
+
+      is WorkflowAction.RemoveTag -> {
+        tagAssignmentRepository.detach(reminder.uuId, TaggedItemType.REMINDER, action.tagId)
         null
       }
 

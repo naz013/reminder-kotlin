@@ -1,5 +1,6 @@
 package com.github.naz013.feature.workflow.builder
 
+import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -15,6 +16,7 @@ import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
@@ -37,12 +39,14 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
   private val saveWorkflowRuleUseCase = mockk<SaveWorkflowRuleUseCase>(relaxed = true)
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val groupV2Repository = mockk<GroupV2Repository>()
+  private val tagRepository = mockk<TagRepository>()
 
   @Before
   override fun setUp() {
     super.setUp()
     coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns emptyList()
     coEvery { groupV2Repository.getAll() } returns emptyList()
+    coEvery { tagRepository.getAll() } returns emptyList()
   }
 
   private fun createViewModel(
@@ -60,6 +64,7 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
       saveWorkflowRuleUseCase,
       reminderV2Repository,
       groupV2Repository,
+      tagRepository,
     )
 
   @Test
@@ -318,15 +323,17 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `loads available groups and active reminders for the pickers`() = runTest {
+  fun `loads available groups, active reminders, and tags for the pickers`() = runTest {
     coEvery { groupV2Repository.getAll() } returns listOf(GroupV2(uuId = "group-1", title = "Work"))
     coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns listOf(
       ReminderV2(uuId = "reminder-1", summary = "Buy milk", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
     )
+    coEvery { tagRepository.getAll() } returns listOf(Tag(id = "tag-1", name = "Urgent", color = 0))
 
     val state = createViewModel().state.value
 
     assertEquals(listOf(UiWorkflowGroupOption("group-1", "Work")), state.availableGroups)
     assertEquals(listOf(UiWorkflowReminderOption("reminder-1", "Buy milk")), state.availableReminders)
+    assertEquals(listOf(UiWorkflowTagOption("tag-1", "Urgent")), state.availableTags)
   }
 }

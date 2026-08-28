@@ -20,10 +20,10 @@ import com.github.naz013.ui.common.compose.AppTheme
  * explanatory label) when the template doesn't support the current entry point's scope type. */
 @Composable
 internal fun WorkflowTemplateCard(
+  modifier: Modifier = Modifier,
   template: UiWorkflowTemplate,
   applyButtonLabel: String,
   onApplyClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Card(
     modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
@@ -44,7 +44,13 @@ internal fun WorkflowTemplateCard(
         )
       }
       TextButton(onClick = onApplyClick, enabled = template.canApply) {
-        Text(if (template.canApply) applyButtonLabel else stringResource(R.string.workflow_open_group_to_apply))
+        Text(
+          when {
+            template.canApply -> applyButtonLabel
+            template.alreadyApplied -> stringResource(R.string.workflow_already_applied)
+            else -> stringResource(R.string.workflow_open_group_to_apply)
+          }
+        )
       }
     }
   }
@@ -74,6 +80,7 @@ private fun WorkflowTemplateCardPreview() {
           description = "Automatically archives a reminder once it's been completed for a while.",
           category = WorkflowTemplateCategory.REMINDER_LIFECYCLE,
           canApply = true,
+          alreadyApplied = false,
         ),
         applyButtonLabel = "Apply globally",
         onApplyClick = {},
@@ -85,6 +92,19 @@ private fun WorkflowTemplateCardPreview() {
           description = "Archives every reminder in a group once none of its reminders are still active.",
           category = WorkflowTemplateCategory.GROUP,
           canApply = false,
+          alreadyApplied = false,
+        ),
+        applyButtonLabel = "Apply globally",
+        onApplyClick = {},
+      )
+      WorkflowTemplateCard(
+        template = UiWorkflowTemplate(
+          id = "3",
+          title = "Escalate after 3 repeated snoozes",
+          description = "Bypasses Do Not Disturb and raises priority once a reminder is snoozed too often.",
+          category = WorkflowTemplateCategory.NOTIFICATION_ESCALATION,
+          canApply = false,
+          alreadyApplied = true,
         ),
         applyButtonLabel = "Apply globally",
         onApplyClick = {},

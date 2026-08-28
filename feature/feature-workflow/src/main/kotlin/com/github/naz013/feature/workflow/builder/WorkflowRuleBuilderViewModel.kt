@@ -13,6 +13,7 @@ import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +38,7 @@ internal class WorkflowRuleBuilderViewModel(
   private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase,
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
+  private val tagRepository: TagRepository,
 ) : ViewModel() {
 
   val state: StateFlow<WorkflowRuleBuilderState> field =
@@ -50,6 +52,7 @@ internal class WorkflowRuleBuilderViewModel(
     val groups = groupV2Repository.getAll().map { UiWorkflowGroupOption(id = it.uuId, title = it.title) }
     val reminders = reminderV2Repository.getAll(active = true, removed = false)
       .map { UiWorkflowReminderOption(id = it.uuId, title = it.summary) }
+    val tags = tagRepository.getAll().map { UiWorkflowTagOption(id = it.id, title = it.name) }
     val existingRule = editingRuleId?.let { workflowRuleRepository.getById(it) }
     withContext(dispatcherProvider.main()) {
       state.update {
@@ -57,6 +60,7 @@ internal class WorkflowRuleBuilderViewModel(
           isLoading = false,
           availableGroups = groups,
           availableReminders = reminders,
+          availableTags = tags,
           trigger = existingRule?.trigger,
           conditions = existingRule?.conditions ?: emptyList(),
           action = existingRule?.action,
@@ -224,5 +228,7 @@ internal class WorkflowRuleBuilderViewModel(
     is WorkflowAction.MoveToGroup -> "move it to another group"
     is WorkflowAction.SendBroadcastIntent -> "send a broadcast intent"
     is WorkflowAction.RunBackgroundTask -> "run a background task"
+    is WorkflowAction.ApplyTag -> "add a tag to it"
+    is WorkflowAction.RemoveTag -> "remove a tag from it"
   }
 }

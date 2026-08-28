@@ -1242,4 +1242,10 @@
     <string name="workflow_builder_title_contains_hint">Klíčové slovo</string>
     <string name="workflow_action_send_broadcast_intent">Odeslat broadcast intent</string>
     <string name="workflow_builder_broadcast_action_hint">Akce intentu</string>
+    <string name="workflow_already_applied">Již použito</string>
+    <string name="workflow_condition_has_tag">Má štítek</string>
+    <string name="workflow_action_apply_tag">Přidat štítek</string>
+    <string name="workflow_action_remove_tag">Odebrat štítek</string>
+    <string name="workflow_builder_select_tag">Vyberte štítek</string>
+    <string name="workflow_builder_no_tags">Nejsou k dispozici žádné štítky. Nejprve vytvořte štítek.</string>
 </resources>

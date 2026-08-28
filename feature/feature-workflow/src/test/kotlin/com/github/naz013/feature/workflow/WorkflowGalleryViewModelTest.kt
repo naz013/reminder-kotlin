@@ -84,6 +84,34 @@ class WorkflowGalleryViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `template already applied globally is offered as already-applied instead of re-appliable`() = runTest {
+    val rule = WorkflowRule(
+      uuId = "rule-1",
+      title = "Archive completed reminders after 30 days",
+      templateId = "built_in_template_archive_completed_reminders",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderAgeExceeded(30),
+      action = WorkflowAction.ArchiveReminder,
+    )
+    val template = WorkflowTemplate(
+      id = "built_in_template_archive_completed_reminders",
+      title = "Archive completed reminders after 30 days",
+      category = WorkflowTemplateCategory.REMINDER_LIFECYCLE,
+      supportedScopeTypes = listOf(WorkflowScopeType.GLOBAL),
+      trigger = WorkflowTrigger.ReminderAgeExceeded(30),
+      action = WorkflowAction.ArchiveReminder,
+    )
+    coEvery { getGlobalWorkflowRulesUseCase() } returns listOf(rule)
+    coEvery { getWorkflowTemplatesUseCase() } returns listOf(template)
+
+    val state = createViewModel().state.value
+
+    val uiTemplate = state.templatesByCategory.getValue(WorkflowTemplateCategory.REMINDER_LIFECYCLE).single()
+    assertFalse(uiTemplate.canApply)
+    assertEquals(true, uiTemplate.alreadyApplied)
+  }
+
+  @Test
   fun `onRuleEnabledChange toggles the rule and reloads`() = runTest {
     val rule = WorkflowRule(
       uuId = "rule-1",

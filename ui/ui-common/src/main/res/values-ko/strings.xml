@@ -1242,4 +1242,10 @@
     <string name="workflow_builder_title_contains_hint">키워드</string>
     <string name="workflow_action_send_broadcast_intent">브로드캐스트 인텐트 전송</string>
     <string name="workflow_builder_broadcast_action_hint">인텐트 액션</string>
+    <string name="workflow_already_applied">이미 적용됨</string>
+    <string name="workflow_condition_has_tag">태그 있음</string>
+    <string name="workflow_action_apply_tag">태그 추가</string>
+    <string name="workflow_action_remove_tag">태그 제거</string>
+    <string name="workflow_builder_select_tag">태그 선택</string>
+    <string name="workflow_builder_no_tags">사용 가능한 태그가 없습니다. 먼저 태그를 만드세요.</string>
 </resources>

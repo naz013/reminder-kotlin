@@ -1240,4 +1240,10 @@
     <string name="workflow_builder_title_contains_hint">كلمة مفتاحية</string>
     <string name="workflow_action_send_broadcast_intent">إرسال بث Intent</string>
     <string name="workflow_builder_broadcast_action_hint">إجراء الـ Intent</string>
+    <string name="workflow_already_applied">تم التطبيق بالفعل</string>
+    <string name="workflow_condition_has_tag">يحتوي على وسم</string>
+    <string name="workflow_action_apply_tag">إضافة وسم</string>
+    <string name="workflow_action_remove_tag">إزالة وسم</string>
+    <string name="workflow_builder_select_tag">اختر وسمًا</string>
+    <string name="workflow_builder_no_tags">لا توجد وسوم متاحة. أنشئ وسمًا أولاً.</string>
 </resources>

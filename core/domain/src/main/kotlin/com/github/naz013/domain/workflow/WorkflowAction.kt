@@ -45,6 +45,18 @@ sealed class WorkflowAction {
     val taskKey: String
   ) : WorkflowAction()
 
+  /** Attaches a tag to the reminder that matched the rule - the tag analogue of [MoveToGroup]. */
+  data class ApplyTag(
+    @SerializedName("tagId")
+    val tagId: String
+  ) : WorkflowAction()
+
+  /** Detaches a tag from the reminder that matched the rule - symmetric counterpart to [ApplyTag]. */
+  data class RemoveTag(
+    @SerializedName("tagId")
+    val tagId: String
+  ) : WorkflowAction()
+
   /** Outbound Tasker integration: broadcasts a local [android.content.Intent] with this [action]
    * string (matched by a Tasker "Intent Received" profile) and [extras]. Local-only, one-way - no
    * inbound Tasker-as-a-trigger support (that needs its own exported components and security

@@ -16,6 +16,11 @@ internal data class UiWorkflowReminderOption(
   val title: String
 )
 
+internal data class UiWorkflowTagOption(
+  val id: String,
+  val title: String
+)
+
 /** Builder state for a single rule: exactly one trigger slot, zero-or-more condition slots, and
  * exactly one action slot - not the reminder builder's open bag of 0-or-more-of-many-types. */
 internal data class WorkflowRuleBuilderState(
@@ -31,6 +36,7 @@ internal data class WorkflowRuleBuilderState(
   val isActionPickerVisible: Boolean = false,
   val availableGroups: List<UiWorkflowGroupOption> = emptyList(),
   val availableReminders: List<UiWorkflowReminderOption> = emptyList(),
+  val availableTags: List<UiWorkflowTagOption> = emptyList(),
   val revertOnEndDate: Boolean = false,
   val endDateTime: LocalDateTime? = null,
   val didSave: Boolean = false

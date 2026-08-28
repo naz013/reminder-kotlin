@@ -1243,4 +1243,10 @@
     <string name="workflow_builder_title_contains_hint">Ключова дума</string>
     <string name="workflow_action_send_broadcast_intent">Изпращане на broadcast intent</string>
     <string name="workflow_builder_broadcast_action_hint">Действие на intent</string>
+    <string name="workflow_already_applied">Вече приложено</string>
+    <string name="workflow_condition_has_tag">Има етикет</string>
+    <string name="workflow_action_apply_tag">Добавяне на етикет</string>
+    <string name="workflow_action_remove_tag">Премахване на етикет</string>
+    <string name="workflow_builder_select_tag">Изберете етикет</string>
+    <string name="workflow_builder_no_tags">Няма налични етикети. Първо създайте етикет.</string>
 </resources>

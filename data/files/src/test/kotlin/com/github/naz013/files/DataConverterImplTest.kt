@@ -116,6 +116,37 @@ class DataConverterImplTest {
   }
 
   @Test
+  fun `round trips a tag-based auto-tagging workflow rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-11",
+      title = "Tag urgent reminders",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.HasTag(tagId = "urgent")),
+      action = WorkflowAction.ApplyTag(tagId = "escalated")
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
+  fun `round trips a remove-tag workflow rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-12",
+      title = "Untag completed reminders",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.RemoveTag(tagId = "urgent")
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
   fun `round trips a clear-notification-override workflow rule`() {
     val rule = WorkflowRule(
       uuId = "rule-7",

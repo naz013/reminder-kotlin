@@ -27,6 +27,6 @@ val workflowModule = module {
     WorkflowRulesForReminderViewModel(reminderId, get(), get(), get(), get(), get(), get(), get(), get())
   }
   viewModel { (scopeType: WorkflowScopeType, scopeId: String?, editingRuleId: String?) ->
-    WorkflowRuleBuilderViewModel(scopeType, scopeId, editingRuleId, get(), get(), get(), get(), get(), get())
+    WorkflowRuleBuilderViewModel(scopeType, scopeId, editingRuleId, get(), get(), get(), get(), get(), get(), get())
   }
 }

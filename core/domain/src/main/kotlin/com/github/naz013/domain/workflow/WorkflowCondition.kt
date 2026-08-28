@@ -42,4 +42,11 @@ sealed class WorkflowCondition {
     @SerializedName("text")
     val text: String
   ) : WorkflowCondition()
+
+  /** Matches when the reminder currently has this tag attached (per
+   * [com.github.naz013.domain.TagAssignment]) - mirrors [GroupIs] but for tags. */
+  data class HasTag(
+    @SerializedName("tagId")
+    val tagId: String
+  ) : WorkflowCondition()
 }

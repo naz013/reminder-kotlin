@@ -1240,4 +1240,10 @@
     <string name="workflow_builder_title_contains_hint">Kata kunci</string>
     <string name="workflow_action_send_broadcast_intent">Kirim broadcast intent</string>
     <string name="workflow_builder_broadcast_action_hint">Aksi intent</string>
+    <string name="workflow_already_applied">Sudah diterapkan</string>
+    <string name="workflow_condition_has_tag">Memiliki tag</string>
+    <string name="workflow_action_apply_tag">Tambahkan tag</string>
+    <string name="workflow_action_remove_tag">Hapus tag</string>
+    <string name="workflow_builder_select_tag">Pilih tag</string>
+    <string name="workflow_builder_no_tags">Tidak ada tag yang tersedia. Buat tag terlebih dahulu.</string>
 </resources>

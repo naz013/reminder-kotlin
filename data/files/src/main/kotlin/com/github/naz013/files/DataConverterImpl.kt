@@ -354,6 +354,8 @@ private fun WorkflowAction.toColumns(): Pair<String, String> = when (this) {
   is WorkflowAction.MoveToGroup -> "MOVE_TO_GROUP" to workflowGson.toJson(this)
   is WorkflowAction.SendBroadcastIntent -> "SEND_BROADCAST_INTENT" to workflowGson.toJson(this)
   is WorkflowAction.RunBackgroundTask -> "RUN_BACKGROUND_TASK" to workflowGson.toJson(this)
+  is WorkflowAction.ApplyTag -> "APPLY_TAG" to workflowGson.toJson(this)
+  is WorkflowAction.RemoveTag -> "REMOVE_TAG" to workflowGson.toJson(this)
 }
 
 /** Falls back to [WorkflowAction.ArchiveReminder] (and logs) instead of throwing on a payload it
@@ -370,6 +372,8 @@ private fun toWorkflowAction(type: String, payload: String): WorkflowAction = ru
     "MOVE_TO_GROUP" -> workflowGson.fromJson(payload, WorkflowAction.MoveToGroup::class.java)
     "SEND_BROADCAST_INTENT" -> workflowGson.fromJson(payload, WorkflowAction.SendBroadcastIntent::class.java)
     "RUN_BACKGROUND_TASK" -> workflowGson.fromJson(payload, WorkflowAction.RunBackgroundTask::class.java)
+    "APPLY_TAG" -> workflowGson.fromJson(payload, WorkflowAction.ApplyTag::class.java)
+    "REMOVE_TAG" -> workflowGson.fromJson(payload, WorkflowAction.RemoveTag::class.java)
     else -> WorkflowAction.ArchiveReminder
   }
 }.getOrElse { e ->
@@ -384,6 +388,7 @@ private fun WorkflowCondition.toWorkflowConditionColumns(): WorkflowConditionCol
   is WorkflowCondition.WithinTimeWindow -> WorkflowConditionColumns("WITHIN_TIME_WINDOW", workflowGson.toJson(this))
   is WorkflowCondition.GroupIs -> WorkflowConditionColumns("GROUP_IS", workflowGson.toJson(this))
   is WorkflowCondition.TitleContains -> WorkflowConditionColumns("TITLE_CONTAINS", workflowGson.toJson(this))
+  is WorkflowCondition.HasTag -> WorkflowConditionColumns("HAS_TAG", workflowGson.toJson(this))
 }
 
 /** Drops (and logs) a condition it can't parse, rather than throwing - one bad condition must not
@@ -394,6 +399,7 @@ private fun toWorkflowCondition(columns: WorkflowConditionColumns): WorkflowCond
     "WITHIN_TIME_WINDOW" -> workflowGson.fromJson(columns.payload, WorkflowCondition.WithinTimeWindow::class.java)
     "GROUP_IS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.GroupIs::class.java)
     "TITLE_CONTAINS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.TitleContains::class.java)
+    "HAS_TAG" -> workflowGson.fromJson(columns.payload, WorkflowCondition.HasTag::class.java)
     else -> null
   }
 }.getOrElse { e ->

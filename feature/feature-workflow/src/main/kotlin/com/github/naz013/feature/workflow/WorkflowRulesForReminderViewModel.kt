@@ -76,10 +76,12 @@ internal class WorkflowRulesForReminderViewModel(
   }
 
   private suspend fun loadData() {
-    val rules = getWorkflowRulesForReminderUseCase(reminderId).map { it.toUi() }
+    val reminderRules = getWorkflowRulesForReminderUseCase(reminderId)
+    val appliedTemplateIds = reminderRules.mapNotNull { it.templateId }.toSet()
+    val rules = reminderRules.map { it.toUi() }
     val templates = getWorkflowTemplatesUseCase()
       .filter { it.isExecutable() }
-      .map { it.toUi(WorkflowScopeType.REMINDER) }
+      .map { it.toUi(WorkflowScopeType.REMINDER, appliedTemplateIds) }
       .groupBy { it.category }
     withContext(dispatcherProvider.main()) {
       state.update { it.copy(isLoading = false, rules = rules, templatesByCategory = templates) }

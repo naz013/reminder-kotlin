@@ -1243,4 +1243,10 @@
     <string name="workflow_builder_title_contains_hint">Anahtar kelime</string>
     <string name="workflow_action_send_broadcast_intent">Broadcast intent gönder</string>
     <string name="workflow_builder_broadcast_action_hint">Intent eylemi</string>
+    <string name="workflow_already_applied">Zaten uygulandı</string>
+    <string name="workflow_condition_has_tag">Etiketi var</string>
+    <string name="workflow_action_apply_tag">Etiket ekle</string>
+    <string name="workflow_action_remove_tag">Etiketi kaldır</string>
+    <string name="workflow_builder_select_tag">Bir etiket seçin</string>
+    <string name="workflow_builder_no_tags">Kullanılabilir etiket yok. Önce bir etiket oluşturun.</string>
 </resources>

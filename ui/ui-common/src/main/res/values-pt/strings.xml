@@ -1242,4 +1242,10 @@
     <string name="workflow_builder_title_contains_hint">Palavra-chave</string>
     <string name="workflow_action_send_broadcast_intent">Enviar intent de broadcast</string>
     <string name="workflow_builder_broadcast_action_hint">Ação do intent</string>
+    <string name="workflow_already_applied">Já aplicado</string>
+    <string name="workflow_condition_has_tag">Tem etiqueta</string>
+    <string name="workflow_action_apply_tag">Adicionar etiqueta</string>
+    <string name="workflow_action_remove_tag">Remover etiqueta</string>
+    <string name="workflow_builder_select_tag">Selecione uma etiqueta</string>
+    <string name="workflow_builder_no_tags">Nenhuma etiqueta disponível. Crie uma etiqueta primeiro.</string>
 </resources>

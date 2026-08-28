@@ -1240,4 +1240,10 @@
     <string name="workflow_builder_title_contains_hint">Nøgleord</string>
     <string name="workflow_action_send_broadcast_intent">Send broadcast-intent</string>
     <string name="workflow_builder_broadcast_action_hint">Intent-handling</string>
+    <string name="workflow_already_applied">Allerede anvendt</string>
+    <string name="workflow_condition_has_tag">Har mærke</string>
+    <string name="workflow_action_apply_tag">Tilføj mærke</string>
+    <string name="workflow_action_remove_tag">Fjern mærke</string>
+    <string name="workflow_builder_select_tag">Vælg et mærke</string>
+    <string name="workflow_builder_no_tags">Ingen mærker tilgængelige. Opret et mærke først.</string>
 </resources>

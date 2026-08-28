@@ -1242,4 +1242,10 @@
     <string name="workflow_builder_title_contains_hint">Cuvânt cheie</string>
     <string name="workflow_action_send_broadcast_intent">Trimite intent broadcast</string>
     <string name="workflow_builder_broadcast_action_hint">Acțiune intent</string>
+    <string name="workflow_already_applied">Deja aplicat</string>
+    <string name="workflow_condition_has_tag">Are etichetă</string>
+    <string name="workflow_action_apply_tag">Adaugă etichetă</string>
+    <string name="workflow_action_remove_tag">Elimină eticheta</string>
+    <string name="workflow_builder_select_tag">Selectează o etichetă</string>
+    <string name="workflow_builder_no_tags">Nu există etichete disponibile. Creează mai întâi o etichetă.</string>
 </resources>

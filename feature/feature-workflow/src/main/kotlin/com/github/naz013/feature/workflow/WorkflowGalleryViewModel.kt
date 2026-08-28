@@ -75,10 +75,12 @@ internal class WorkflowGalleryViewModel(
   }
 
   private suspend fun loadData() {
-    val rules = getGlobalWorkflowRulesUseCase().map { it.toUi() }
+    val globalRules = getGlobalWorkflowRulesUseCase()
+    val appliedTemplateIds = globalRules.mapNotNull { it.templateId }.toSet()
+    val rules = globalRules.map { it.toUi() }
     val templates = getWorkflowTemplatesUseCase()
       .filter { it.isExecutable() }
-      .map { it.toUi(WorkflowScopeType.GLOBAL) }
+      .map { it.toUi(WorkflowScopeType.GLOBAL, appliedTemplateIds) }
       .groupBy { it.category }
     withContext(dispatcherProvider.main()) {
       state.update { it.copy(isLoading = false, globalRules = rules, templatesByCategory = templates) }

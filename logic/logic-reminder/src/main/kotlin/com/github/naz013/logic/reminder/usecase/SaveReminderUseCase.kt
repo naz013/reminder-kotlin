@@ -11,7 +11,7 @@ class SaveReminderUseCase(
   private val reminderV2Repository: ReminderV2Repository,
   private val appWidgetUpdater: AppWidgetUpdater,
   private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
-  private val reminderWorkflowTrigger: ReminderWorkflowTrigger,
+  private val reminderWorkflowTrigger: Lazy<ReminderWorkflowTrigger>,
 ) {
   suspend operator fun invoke(reminder: ReminderV2) {
     val isNew = reminderV2Repository.getById(reminder.uuId) == null
@@ -19,7 +19,7 @@ class SaveReminderUseCase(
     appWidgetUpdater.updateScheduleWidget()
     scheduleReminderUploadUseCase(reminder.uuId)
     if (isNew) {
-      reminderWorkflowTrigger.onReminderCreated(reminder.uuId)
+      reminderWorkflowTrigger.value.onReminderCreated(reminder.uuId)
     }
     Logger.i(TAG, "Saved reminder with id = ${reminder.uuId}")
   }

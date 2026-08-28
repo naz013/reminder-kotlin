@@ -1242,4 +1242,10 @@
     <string name="workflow_builder_title_contains_hint">Słowo kluczowe</string>
     <string name="workflow_action_send_broadcast_intent">Wyślij broadcast intent</string>
     <string name="workflow_builder_broadcast_action_hint">Akcja intencji</string>
+    <string name="workflow_already_applied">Już zastosowano</string>
+    <string name="workflow_condition_has_tag">Ma tag</string>
+    <string name="workflow_action_apply_tag">Dodaj tag</string>
+    <string name="workflow_action_remove_tag">Usuń tag</string>
+    <string name="workflow_builder_select_tag">Wybierz tag</string>
+    <string name="workflow_builder_no_tags">Brak dostępnych tagów. Najpierw utwórz tag.</string>
 </resources>

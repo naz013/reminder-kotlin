@@ -6,7 +6,7 @@ import org.koin.dsl.module
 
 val logicWorkflowModule = module {
   factoryOf(::SaveWorkflowRuleUseCase)
-  factory { WorkflowEngine(get(), get(), get(), get(), get(), get()) }
+  factory { WorkflowEngine(get(), get(), get(), get(), get(), get(), get()) }
   factoryOf(::WorkflowActionDispatcher)
   factoryOf(::WorkflowTriggerRunner)
   factory<ReminderWorkflowTrigger> { get<WorkflowTriggerRunner>() }

@@ -1240,4 +1240,10 @@
     <string name="workflow_builder_title_contains_hint">Nøkkelord</string>
     <string name="workflow_action_send_broadcast_intent">Send broadcast-intent</string>
     <string name="workflow_builder_broadcast_action_hint">Intent-handling</string>
+    <string name="workflow_already_applied">Allerede brukt</string>
+    <string name="workflow_condition_has_tag">Har tag</string>
+    <string name="workflow_action_apply_tag">Legg til tag</string>
+    <string name="workflow_action_remove_tag">Fjern tag</string>
+    <string name="workflow_builder_select_tag">Velg en tag</string>
+    <string name="workflow_builder_no_tags">Ingen tagger tilgjengelig. Opprett en tag først.</string>
 </resources>

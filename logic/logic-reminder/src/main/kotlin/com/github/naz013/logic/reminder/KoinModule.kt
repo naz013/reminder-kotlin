@@ -41,7 +41,7 @@ val logicReminderModule = module {
   factoryOf(::ResolveReminderV2NotificationSettingsUseCase)
 
   factoryOf(::ActivateReminderUseCase)
-  factoryOf(::SaveReminderUseCase)
+  factory { SaveReminderUseCase(get(), get(), get(), lazy { get() }) }
   factoryOf(::CompleteRelatedGoogleTaskUseCase)
 
   factoryOf(::StopLocationTrackingUseCase)
@@ -69,5 +69,5 @@ val logicReminderModule = module {
   factoryOf(::SyncReminderToCloudUseCase)
   factory { EventDateTimeCalculatorV2(get(), get()) }
 
-  factory { SnoozeReminderUseCaseImpl(get(), get(), get(), get(), get(), get()) as SnoozeReminderUseCase }
+  factory { SnoozeReminderUseCaseImpl(get(), get(), get(), get(), get(), lazy { get() }) as SnoozeReminderUseCase }
 }

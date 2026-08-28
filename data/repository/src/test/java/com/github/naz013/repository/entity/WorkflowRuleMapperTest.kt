@@ -143,6 +143,39 @@ class WorkflowRuleMapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips a tag-based auto-tagging rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-11",
+      title = "Tag urgent reminders",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.HasTag(tagId = "urgent")),
+      action = WorkflowAction.ApplyTag(tagId = "escalated"),
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a remove-tag rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-12",
+      title = "Untag completed reminders",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.RemoveTag(tagId = "urgent"),
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
   fun `toEntity then toDomain round trips a clear-notification-override rule`() {
     val rule = WorkflowRule(
       uuId = "rule-8",

@@ -1241,4 +1241,10 @@
     <string name="workflow_builder_title_contains_hint">Ключевое слово</string>
     <string name="workflow_action_send_broadcast_intent">Отправить широковещательный intent</string>
     <string name="workflow_builder_broadcast_action_hint">Действие intent</string>
+    <string name="workflow_already_applied">Уже применено</string>
+    <string name="workflow_condition_has_tag">Есть тег</string>
+    <string name="workflow_action_apply_tag">Добавить тег</string>
+    <string name="workflow_action_remove_tag">Удалить тег</string>
+    <string name="workflow_builder_select_tag">Выберите тег</string>
+    <string name="workflow_builder_no_tags">Нет доступных тегов. Сначала создайте тег.</string>
 </resources>

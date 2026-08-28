@@ -25,7 +25,7 @@ class SnoozeReminderUseCaseImpl(
   private val completeReminderUseCase: CompleteReminderUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
   private val notificationApi: NotificationApi,
-  private val reminderWorkflowTrigger: ReminderWorkflowTrigger,
+  private val reminderWorkflowTrigger: Lazy<ReminderWorkflowTrigger>,
 ) : SnoozeReminderUseCase {
   override suspend operator fun invoke(
     reminder: ReminderV2,
@@ -50,7 +50,7 @@ class SnoozeReminderUseCaseImpl(
       )
     saveReminderUseCase(reminder)
     jobScheduler.scheduleReminderDelay(timeInMinutes, reminder.uuId, reminder.uniqueId)
-    reminderWorkflowTrigger.onReminderSnoozed(reminder.uuId)
+    reminderWorkflowTrigger.value.onReminderSnoozed(reminder.uuId)
     Logger.i(TAG, "Snoozed reminder id=${reminder.uuId} for $timeInMinutes minutes")
     return reminder
   }

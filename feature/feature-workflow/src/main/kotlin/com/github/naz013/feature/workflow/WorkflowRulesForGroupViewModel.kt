@@ -75,10 +75,12 @@ internal class WorkflowRulesForGroupViewModel(
   }
 
   private suspend fun loadData() {
-    val rules = getWorkflowRulesForGroupUseCase(groupId).map { it.toUi() }
+    val groupRules = getWorkflowRulesForGroupUseCase(groupId)
+    val appliedTemplateIds = groupRules.mapNotNull { it.templateId }.toSet()
+    val rules = groupRules.map { it.toUi() }
     val templates = getWorkflowTemplatesUseCase()
       .filter { it.isExecutable() }
-      .map { it.toUi(WorkflowScopeType.GROUP) }
+      .map { it.toUi(WorkflowScopeType.GROUP, appliedTemplateIds) }
       .groupBy { it.category }
     withContext(dispatcherProvider.main()) {
       state.update { it.copy(isLoading = false, rules = rules, templatesByCategory = templates) }

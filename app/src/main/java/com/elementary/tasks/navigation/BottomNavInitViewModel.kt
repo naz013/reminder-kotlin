@@ -51,8 +51,8 @@ class BottomNavInitViewModel(
   private val workflowRulesUtil: WorkflowRulesUtil,
   private val jobScheduler: JobSchedulerApi,
 ) : ViewModel() {
-  val isGoogleTasksEnabled =
-    featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS) &&
+
+  val isGoogleTasksEnabled = featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS) &&
       googleTasksAuthManager.isAuthorized()
 
   private val _state = MutableStateFlow<BottomNavInitState>(BottomNavInitState.Loading)

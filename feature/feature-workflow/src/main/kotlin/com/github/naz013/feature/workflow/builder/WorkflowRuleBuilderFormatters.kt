@@ -44,6 +44,7 @@ internal fun workflowConditionLabel(condition: WorkflowCondition): String = when
   is WorkflowCondition.WithinTimeWindow -> stringResource(R.string.workflow_condition_within_time_window)
   is WorkflowCondition.GroupIs -> stringResource(R.string.workflow_condition_group_is)
   is WorkflowCondition.TitleContains -> stringResource(R.string.workflow_condition_title_contains)
+  is WorkflowCondition.HasTag -> stringResource(R.string.workflow_condition_has_tag)
 }
 
 @Composable
@@ -58,7 +59,8 @@ internal fun workflowPriorityLabel(priority: ReminderPriority): String = when (p
 @Composable
 internal fun workflowConditionValue(
   condition: WorkflowCondition,
-  groups: List<UiWorkflowGroupOption>
+  groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption> = emptyList(),
 ): String = when (condition) {
   is WorkflowCondition.PriorityAtLeast -> workflowPriorityLabel(condition.priority)
   is WorkflowCondition.WithinTimeWindow ->
@@ -70,6 +72,7 @@ internal fun workflowConditionValue(
     )
   is WorkflowCondition.GroupIs -> groups.firstOrNull { it.id == condition.groupId }?.title ?: condition.groupId
   is WorkflowCondition.TitleContains -> condition.text
+  is WorkflowCondition.HasTag -> tags.firstOrNull { it.id == condition.tagId }?.title ?: condition.tagId
 }
 
 @Composable
@@ -83,15 +86,20 @@ internal fun workflowActionLabel(action: WorkflowAction): String = when (action)
   is WorkflowAction.MoveToGroup -> stringResource(R.string.workflow_action_move_to_group)
   is WorkflowAction.SendBroadcastIntent -> stringResource(R.string.workflow_action_send_broadcast_intent)
   is WorkflowAction.RunBackgroundTask -> action.taskKey
+  is WorkflowAction.ApplyTag -> stringResource(R.string.workflow_action_apply_tag)
+  is WorkflowAction.RemoveTag -> stringResource(R.string.workflow_action_remove_tag)
 }
 
 internal fun workflowActionValue(
   action: WorkflowAction,
   reminders: List<UiWorkflowReminderOption>,
-  groups: List<UiWorkflowGroupOption>
+  groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption> = emptyList(),
 ): String? = when (action) {
   is WorkflowAction.ActivateReminder -> reminders.firstOrNull { it.id == action.reminderId }?.title ?: action.reminderId
   is WorkflowAction.MoveToGroup -> groups.firstOrNull { it.id == action.groupId }?.title ?: action.groupId
   is WorkflowAction.SendBroadcastIntent -> action.action
+  is WorkflowAction.ApplyTag -> tags.firstOrNull { it.id == action.tagId }?.title ?: action.tagId
+  is WorkflowAction.RemoveTag -> tags.firstOrNull { it.id == action.tagId }?.title ?: action.tagId
   else -> null
 }

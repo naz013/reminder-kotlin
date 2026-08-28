@@ -5,6 +5,7 @@ import com.github.naz013.domain.workflow.WorkflowAction
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -14,12 +15,13 @@ class WorkflowTriggerRunnerTest {
 
   private val workflowEngine = mockk<WorkflowEngine>()
   private val workflowActionDispatcher = mockk<WorkflowActionDispatcher>(relaxed = true)
+  private val workflowConfig = mockk<WorkflowConfig> { every { isEnabled } returns true }
 
   private lateinit var runner: WorkflowTriggerRunner
 
   @Before
   fun setUp() {
-    runner = WorkflowTriggerRunner(workflowEngine, workflowActionDispatcher)
+    runner = WorkflowTriggerRunner(workflowEngine, workflowActionDispatcher, workflowConfig)
   }
 
   @Test
@@ -108,6 +110,30 @@ class WorkflowTriggerRunnerTest {
     runner.onLocationExited("reminder-1")
 
     coVerify(exactly = 1) { workflowActionDispatcher.dispatch(pending) }
+  }
+
+  @Test
+  fun `every method no-ops without touching the engine when the workflow feature flag is disabled`() = runTest {
+    every { workflowConfig.isEnabled } returns false
+
+    runner.runDailyPolling()
+    runner.runUnacknowledgedPolling()
+    runner.onReminderCompleted("reminder-1")
+    runner.onReminderSnoozed("reminder-1")
+    runner.onReminderCreated("reminder-1")
+    runner.onLocationEntered("reminder-1")
+    runner.onLocationExited("reminder-1")
+
+    coVerify(exactly = 0) { workflowEngine.runAgeBasedRules(any()) }
+    coVerify(exactly = 0) { workflowEngine.runGroupCompletionRules(any()) }
+    coVerify(exactly = 0) { workflowEngine.runScheduleRules(any()) }
+    coVerify(exactly = 0) { workflowEngine.runUnacknowledgedRules(any()) }
+    coVerify(exactly = 0) { workflowEngine.runReminderCompletedRules(any(), any()) }
+    coVerify(exactly = 0) { workflowEngine.runSnoozeCountRules(any(), any()) }
+    coVerify(exactly = 0) { workflowEngine.runReminderCreatedRules(any(), any()) }
+    coVerify(exactly = 0) { workflowEngine.runLocationEnteredRules(any(), any()) }
+    coVerify(exactly = 0) { workflowEngine.runLocationExitedRules(any(), any()) }
+    coVerify(exactly = 0) { workflowActionDispatcher.dispatch(any()) }
   }
 
   @Test

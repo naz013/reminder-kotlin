@@ -1240,4 +1240,10 @@
     <string name="workflow_builder_title_contains_hint">คำสำคัญ</string>
     <string name="workflow_action_send_broadcast_intent">ส่ง Broadcast Intent</string>
     <string name="workflow_builder_broadcast_action_hint">การกระทำของ Intent</string>
+    <string name="workflow_already_applied">นำไปใช้แล้ว</string>
+    <string name="workflow_condition_has_tag">มีแท็ก</string>
+    <string name="workflow_action_apply_tag">เพิ่มแท็ก</string>
+    <string name="workflow_action_remove_tag">ลบแท็ก</string>
+    <string name="workflow_builder_select_tag">เลือกแท็ก</string>
+    <string name="workflow_builder_no_tags">ไม่มีแท็กที่ใช้ได้ กรุณาสร้างแท็กก่อน</string>
 </resources>

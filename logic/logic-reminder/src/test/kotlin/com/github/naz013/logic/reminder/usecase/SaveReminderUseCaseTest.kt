@@ -28,7 +28,7 @@ class SaveReminderUseCaseTest {
       reminderV2Repository,
       appWidgetUpdater,
       scheduleReminderUploadUseCase,
-      reminderWorkflowTrigger,
+      lazy { reminderWorkflowTrigger },
     )
   }
 

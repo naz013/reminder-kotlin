@@ -1242,4 +1242,10 @@
     <string name="workflow_builder_title_contains_hint">Mot-clé</string>
     <string name="workflow_action_send_broadcast_intent">Envoyer un intent de diffusion</string>
     <string name="workflow_builder_broadcast_action_hint">Action de l\'intent</string>
+    <string name="workflow_already_applied">Déjà appliqué</string>
+    <string name="workflow_condition_has_tag">A une étiquette</string>
+    <string name="workflow_action_apply_tag">Ajouter une étiquette</string>
+    <string name="workflow_action_remove_tag">Retirer une étiquette</string>
+    <string name="workflow_builder_select_tag">Sélectionner une étiquette</string>
+    <string name="workflow_builder_no_tags">Aucune étiquette disponible. Créez d\'abord une étiquette.</string>
 </resources>
