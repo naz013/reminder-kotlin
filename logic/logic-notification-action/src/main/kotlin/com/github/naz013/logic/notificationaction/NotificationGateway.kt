@@ -23,5 +23,10 @@ interface NotificationGateway {
      * module can't depend on `app`'s `Notifier` to read the constant directly.
      */
     const val CHANNEL_REMINDER = "reminder.channel.events"
+
+    /**
+     * Must stay equal to `Notifier.CHANNEL_SYSTEM` in `app` - same reasoning as [CHANNEL_REMINDER].
+     */
+    const val CHANNEL_SYSTEM = "reminder.channel.system"
   }
 }

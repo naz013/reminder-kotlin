@@ -3,6 +3,7 @@ package com.github.naz013.repository.entity
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
@@ -103,6 +104,128 @@ class WorkflowRuleMapperTest {
 
     assertEquals(rule, roundTripped)
     assertEquals(emptyList<WorkflowCondition>(), roundTripped.conditions)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a send-broadcast-intent rule with extras`() {
+    val rule = WorkflowRule(
+      uuId = "rule-10",
+      title = "Notify Tasker on completion",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.SendBroadcastIntent(
+        action = "com.example.TASKER_ACTION",
+        extras = mapOf("reminderTitle" to "Buy milk")
+      ),
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips an auto-grouping rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-9",
+      title = "Move groceries reminders to Shopping",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup(groupId = "shopping-group"),
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a tag-based auto-tagging rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-11",
+      title = "Tag urgent reminders",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.HasTag(tagId = "urgent")),
+      action = WorkflowAction.ApplyTag(tagId = "escalated"),
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a remove-tag rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-12",
+      title = "Untag completed reminders",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.RemoveTag(tagId = "urgent"),
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a clear-notification-override rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-8",
+      title = "Revert vacation-mode notification override",
+      templateId = "pair-1",
+      scope = WorkflowScope.ForGroup("group-1"),
+      trigger = WorkflowTrigger.ScheduleReached(atDateTime = LocalDateTime.of(2026, 9, 1, 9, 0)),
+      action = WorkflowAction.ClearNotificationOverride,
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a purge-on-age rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-6",
+      title = "Delete archived reminders after 90 days",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderAgeExceeded(days = 90),
+      action = WorkflowAction.PurgeReminder,
+      createdAt = LocalDateTime.of(2026, 7, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a weekly schedule-reached rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-7",
+      title = "Weekly reminder completion summary",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ScheduleReached(
+        atDateTime = LocalDateTime.of(2026, 8, 3, 9, 0),
+        recurrence = ScheduleRecurrence.WEEKLY
+      ),
+      action = WorkflowAction.RunBackgroundTask(taskKey = "run_weekly_summary"),
+      lastRunAt = LocalDateTime.of(2026, 8, 10, 9, 0),
+      createdAt = LocalDateTime.of(2026, 7, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
   }
 
   @Test

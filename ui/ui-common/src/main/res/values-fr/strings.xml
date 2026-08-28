@@ -1226,4 +1226,26 @@
     <string name="repeats_until">Se répète jusqu\'au %1$s</string>
     <string name="reminder_triggered_times">Déclenché %1$d fois</string>
     <string name="reminder_snoozed_times">Reporté %1$d fois</string>
+    <string name="workflow_rules_for_reminder">Règles pour ce rappel</string>
+    <string name="workflow_apply_to_reminder">Appliquer au rappel</string>
+    <string name="workflow_action_purge_reminder">Supprimer définitivement le rappel</string>
+    <string name="workflow_weekly_summary_title">Résumé hebdomadaire</string>
+    <string name="workflow_weekly_summary_body">Vous avez terminé %1$d rappels cette semaine.</string>
+    <string name="workflow_trigger_schedule_reached">Heure planifiée atteinte</string>
+    <string name="workflow_action_clear_notification_override">Effacer la substitution de notification</string>
+    <string name="workflow_builder_starts_on">Commence le</string>
+    <string name="workflow_builder_ends_on">Se termine le</string>
+    <string name="workflow_builder_revert_on_end_date">Annuler à la date de fin</string>
+    <string name="workflow_trigger_reminder_created">Le rappel est créé</string>
+    <string name="workflow_condition_title_contains">Le titre contient</string>
+    <string name="workflow_action_move_to_group">Déplacer vers un autre groupe</string>
+    <string name="workflow_builder_title_contains_hint">Mot-clé</string>
+    <string name="workflow_action_send_broadcast_intent">Envoyer un intent de diffusion</string>
+    <string name="workflow_builder_broadcast_action_hint">Action de l\'intent</string>
+    <string name="workflow_already_applied">Déjà appliqué</string>
+    <string name="workflow_condition_has_tag">A une étiquette</string>
+    <string name="workflow_action_apply_tag">Ajouter une étiquette</string>
+    <string name="workflow_action_remove_tag">Retirer une étiquette</string>
+    <string name="workflow_builder_select_tag">Sélectionner une étiquette</string>
+    <string name="workflow_builder_no_tags">Aucune étiquette disponible. Créez d\'abord une étiquette.</string>
 </resources>

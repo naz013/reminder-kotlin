@@ -8,13 +8,23 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.repository.WorkflowTemplateRepository
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SaveWorkflowRuleAsTemplateUseCaseTest {
+
+  private val scheduleBackgroundWorkUseCase = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
+
+  private fun useCase(ruleRepository: WorkflowRuleRepository, templateRepository: WorkflowTemplateRepository) =
+    SaveWorkflowRuleAsTemplateUseCase(
+      SaveWorkflowTemplateUseCase(templateRepository, scheduleBackgroundWorkUseCase),
+      SaveWorkflowRuleUseCase(ruleRepository, scheduleBackgroundWorkUseCase)
+    )
 
   @Test
   fun `creates a user-defined template from the rule's trigger and action`() = runTest {
@@ -26,9 +36,8 @@ class SaveWorkflowRuleAsTemplateUseCaseTest {
     )
     val ruleRepository = SavingWorkflowRuleRepository()
     val templateRepository = SavingWorkflowTemplateRepository()
-    val useCase = SaveWorkflowRuleAsTemplateUseCase(templateRepository, ruleRepository)
 
-    val template = useCase(rule, title = "My custom rule")
+    val template = useCase(ruleRepository, templateRepository)(rule, title = "My custom rule")
 
     assertEquals("My custom rule", template.title)
     assertEquals(rule.trigger, template.trigger)
@@ -47,9 +56,8 @@ class SaveWorkflowRuleAsTemplateUseCaseTest {
     )
     val ruleRepository = SavingWorkflowRuleRepository()
     val templateRepository = SavingWorkflowTemplateRepository()
-    val useCase = SaveWorkflowRuleAsTemplateUseCase(templateRepository, ruleRepository)
 
-    val template = useCase(rule)
+    val template = useCase(ruleRepository, templateRepository)(rule)
 
     val savedRule = ruleRepository.saved.single()
     assertEquals(template.id, savedRule.templateId)

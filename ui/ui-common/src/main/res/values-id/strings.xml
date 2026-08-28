@@ -1224,4 +1224,26 @@
     <string name="repeats_until">Berulang hingga %1$s</string>
     <string name="reminder_triggered_times">Terpicu %1$d kali</string>
     <string name="reminder_snoozed_times">Ditunda %1$d kali</string>
+    <string name="workflow_rules_for_reminder">Aturan untuk pengingat ini</string>
+    <string name="workflow_apply_to_reminder">Terapkan ke pengingat</string>
+    <string name="workflow_action_purge_reminder">Hapus pengingat secara permanen</string>
+    <string name="workflow_weekly_summary_title">Ringkasan mingguan</string>
+    <string name="workflow_weekly_summary_body">Anda telah menyelesaikan %1$d pengingat minggu ini.</string>
+    <string name="workflow_trigger_schedule_reached">Waktu terjadwal tercapai</string>
+    <string name="workflow_action_clear_notification_override">Hapus penggantian notifikasi</string>
+    <string name="workflow_builder_starts_on">Mulai pada</string>
+    <string name="workflow_builder_ends_on">Berakhir pada</string>
+    <string name="workflow_builder_revert_on_end_date">Kembalikan pada tanggal berakhir</string>
+    <string name="workflow_trigger_reminder_created">Pengingat dibuat</string>
+    <string name="workflow_condition_title_contains">Judul berisi</string>
+    <string name="workflow_action_move_to_group">Pindahkan ke grup lain</string>
+    <string name="workflow_builder_title_contains_hint">Kata kunci</string>
+    <string name="workflow_action_send_broadcast_intent">Kirim broadcast intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Aksi intent</string>
+    <string name="workflow_already_applied">Sudah diterapkan</string>
+    <string name="workflow_condition_has_tag">Memiliki tag</string>
+    <string name="workflow_action_apply_tag">Tambahkan tag</string>
+    <string name="workflow_action_remove_tag">Hapus tag</string>
+    <string name="workflow_builder_select_tag">Pilih tag</string>
+    <string name="workflow_builder_no_tags">Tidak ada tag yang tersedia. Buat tag terlebih dahulu.</string>
 </resources>

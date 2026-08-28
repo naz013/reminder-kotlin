@@ -1226,4 +1226,26 @@
     <string name="repeats_until">%1$sまで繰り返す</string>
     <string name="reminder_triggered_times">%1$d回実行済み</string>
     <string name="reminder_snoozed_times">%1$d回スヌーズ</string>
+    <string name="workflow_rules_for_reminder">このリマインダーのルール</string>
+    <string name="workflow_apply_to_reminder">リマインダーに適用</string>
+    <string name="workflow_action_purge_reminder">リマインダーを完全に削除</string>
+    <string name="workflow_weekly_summary_title">週間サマリー</string>
+    <string name="workflow_weekly_summary_body">今週 %1$d 件のリマインダーを完了しました。</string>
+    <string name="workflow_trigger_schedule_reached">予定時刻に到達</string>
+    <string name="workflow_action_clear_notification_override">通知の上書きを解除</string>
+    <string name="workflow_builder_starts_on">開始日時</string>
+    <string name="workflow_builder_ends_on">終了日時</string>
+    <string name="workflow_builder_revert_on_end_date">終了日に元に戻す</string>
+    <string name="workflow_trigger_reminder_created">リマインダーが作成されました</string>
+    <string name="workflow_condition_title_contains">タイトルに含まれる</string>
+    <string name="workflow_action_move_to_group">別のグループに移動</string>
+    <string name="workflow_builder_title_contains_hint">キーワード</string>
+    <string name="workflow_action_send_broadcast_intent">ブロードキャストインテントを送信</string>
+    <string name="workflow_builder_broadcast_action_hint">インテントアクション</string>
+    <string name="workflow_already_applied">適用済み</string>
+    <string name="workflow_condition_has_tag">タグがある</string>
+    <string name="workflow_action_apply_tag">タグを追加</string>
+    <string name="workflow_action_remove_tag">タグを削除</string>
+    <string name="workflow_builder_select_tag">タグを選択</string>
+    <string name="workflow_builder_no_tags">利用可能なタグがありません。先にタグを作成してください。</string>
 </resources>

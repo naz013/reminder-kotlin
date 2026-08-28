@@ -1,6 +1,5 @@
 package com.github.naz013.feature.reminder.settings
 
-import com.github.naz013.logic.workflow.WorkflowConfig
 import org.threeten.bp.LocalTime
 
 data class RemindersSettingsState(
@@ -34,7 +33,7 @@ data class RemindersSettingsState(
   val defaultVibrationPatternName: String = "",
   val dialog: RemindersSettingsDialog? = null,
   val hasLocation: Boolean = false,
-  val workflowsVisible: Boolean = WorkflowConfig.isEnabled,
+  val workflowsVisible: Boolean = false,
   val isInsightsLocked: Boolean = false,
 )
 

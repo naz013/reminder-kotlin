@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 internal class HeaderItemsSettingsViewModel(
   private val preferences: HeaderItemsPreferences,
   private val routineConfig: RoutineConfig,
+  private val workflowConfig: WorkflowConfig,
 ) : ViewModel() {
   val state: StateFlow<HeaderItemsSettingsState> field = MutableStateFlow(buildState())
 
@@ -54,7 +55,7 @@ internal class HeaderItemsSettingsViewModel(
 
   private fun isAvailable(section: HeaderNavigationSection): Boolean = when (section) {
     HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
-    HeaderNavigationSection.WORKFLOW -> WorkflowConfig.isEnabled
+    HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
     else -> true
   }
 

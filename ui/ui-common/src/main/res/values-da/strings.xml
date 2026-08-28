@@ -1224,4 +1224,26 @@
     <string name="repeats_until">Gentages indtil %1$s</string>
     <string name="reminder_triggered_times">Udløst %1$d gange</string>
     <string name="reminder_snoozed_times">Udsat %1$d gange</string>
+    <string name="workflow_rules_for_reminder">Regler for denne påmindelse</string>
+    <string name="workflow_apply_to_reminder">Anvend på påmindelse</string>
+    <string name="workflow_action_purge_reminder">Slet påmindelsen permanent</string>
+    <string name="workflow_weekly_summary_title">Ugentligt resumé</string>
+    <string name="workflow_weekly_summary_body">Du har gennemført %1$d påmindelser denne uge.</string>
+    <string name="workflow_trigger_schedule_reached">Planlagt tidspunkt nået</string>
+    <string name="workflow_action_clear_notification_override">Ryd tilsidesættelse af notifikation</string>
+    <string name="workflow_builder_starts_on">Starter den</string>
+    <string name="workflow_builder_ends_on">Slutter den</string>
+    <string name="workflow_builder_revert_on_end_date">Fortryd ved slutdato</string>
+    <string name="workflow_trigger_reminder_created">Påmindelse er oprettet</string>
+    <string name="workflow_condition_title_contains">Titel indeholder</string>
+    <string name="workflow_action_move_to_group">Flyt til en anden gruppe</string>
+    <string name="workflow_builder_title_contains_hint">Nøgleord</string>
+    <string name="workflow_action_send_broadcast_intent">Send broadcast-intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent-handling</string>
+    <string name="workflow_already_applied">Allerede anvendt</string>
+    <string name="workflow_condition_has_tag">Har mærke</string>
+    <string name="workflow_action_apply_tag">Tilføj mærke</string>
+    <string name="workflow_action_remove_tag">Fjern mærke</string>
+    <string name="workflow_builder_select_tag">Vælg et mærke</string>
+    <string name="workflow_builder_no_tags">Ingen mærker tilgængelige. Opret et mærke først.</string>
 </resources>

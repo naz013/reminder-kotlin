@@ -1230,4 +1230,26 @@
     <string name="repeats_until">Repeats until %1$s</string>
     <string name="reminder_triggered_times">Triggered %1$d times</string>
     <string name="reminder_snoozed_times">Snoozed %1$d times</string>
+    <string name="workflow_rules_for_reminder">Rules for this reminder</string>
+    <string name="workflow_apply_to_reminder">Apply to reminder</string>
+    <string name="workflow_action_purge_reminder">Delete the reminder permanently</string>
+    <string name="workflow_weekly_summary_title">Weekly summary</string>
+    <string name="workflow_weekly_summary_body">You completed %1$d reminders this week.</string>
+    <string name="workflow_trigger_schedule_reached">Scheduled time reached</string>
+    <string name="workflow_action_clear_notification_override">Clear notification override</string>
+    <string name="workflow_builder_starts_on">Starts on</string>
+    <string name="workflow_builder_ends_on">Ends on</string>
+    <string name="workflow_builder_revert_on_end_date">Revert on end date</string>
+    <string name="workflow_trigger_reminder_created">Reminder is created</string>
+    <string name="workflow_condition_title_contains">Title contains</string>
+    <string name="workflow_action_move_to_group">Move to another group</string>
+    <string name="workflow_builder_title_contains_hint">Keyword</string>
+    <string name="workflow_action_send_broadcast_intent">Send broadcast intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent action</string>
+    <string name="workflow_already_applied">Already applied</string>
+    <string name="workflow_condition_has_tag">Has tag</string>
+    <string name="workflow_action_apply_tag">Add tag</string>
+    <string name="workflow_action_remove_tag">Remove tag</string>
+    <string name="workflow_builder_select_tag">Select a tag</string>
+    <string name="workflow_builder_no_tags">No tags available. Create a tag first.</string>
 </resources>

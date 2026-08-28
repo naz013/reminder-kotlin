@@ -31,6 +31,7 @@ import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
+import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -91,6 +92,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val syncReminderToCloudUseCase = mockk<SyncReminderToCloudUseCase>(relaxed = true)
   private val googleDriveAuthManager = mockk<GoogleDriveAuthManager>()
   private val dropboxAuthManager = mockk<DropboxAuthManager>()
+  private val workflowConfig = mockk<WorkflowConfig>(relaxed = true)
 
   @Before
   override fun setUp() {
@@ -176,6 +178,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       syncReminderToCloudUseCase = syncReminderToCloudUseCase,
       googleDriveAuthManager = googleDriveAuthManager,
       dropboxAuthManager = dropboxAuthManager,
+      workflowConfig = workflowConfig,
     )
 
   @Test
@@ -191,6 +194,18 @@ class PreviewReminderViewModelTest : BaseTest() {
       assertEquals("Once", state.repeat)
       assertEquals("Normal", state.priorityTitle)
       assertFalse(state.isLoading)
+    }
+
+  @Test
+  fun `workflowRulesVisible reflects WorkflowConfig`() =
+    runTest {
+      every { workflowConfig.isEnabled } returns true
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertEquals(true, state.workflowRulesVisible)
     }
 
   @Test

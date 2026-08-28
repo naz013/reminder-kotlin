@@ -1,18 +1,26 @@
 package com.github.naz013.logic.workflow
 
+import com.github.naz013.domain.Tag
+import com.github.naz013.domain.TagAssignment
+import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.files.DataType
+import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
+import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.workapi.ExistingWorkPolicy
 import com.github.naz013.workapi.PeriodicWorkRequest
@@ -55,8 +63,18 @@ class WorkflowEngineTest {
   private fun engine(
     ruleRepository: WorkflowRuleRepository,
     reminderRepository: ReminderV2Repository,
-    workScheduler: WorkScheduler = FakeWorkScheduler()
-  ) = WorkflowEngine(ruleRepository, reminderRepository, NoOpGroupV2Repository(), workScheduler)
+    workScheduler: WorkScheduler = FakeWorkScheduler(),
+    broadcastIntentSender: FakeBroadcastIntentSender = FakeBroadcastIntentSender(),
+    tagAssignmentRepository: FakeTagAssignmentRepository = FakeTagAssignmentRepository()
+  ) = WorkflowEngine(
+    ruleRepository,
+    reminderRepository,
+    NoOpGroupV2Repository(),
+    workScheduler,
+    SaveWorkflowRuleUseCase(ruleRepository, NoOpScheduleBackgroundWorkUseCase()),
+    broadcastIntentSender,
+    tagAssignmentRepository
+  )
 
   @Test
   fun `archives a completed reminder older than the cutoff`() = runTest {
@@ -119,6 +137,53 @@ class WorkflowEngineTest {
     scope = scope,
     createdAt = now
   )
+
+  private fun purgeRule(days: Int, scope: WorkflowScope = WorkflowScope.Global) = WorkflowRule(
+    uuId = "rule-purge-${scope::class.simpleName}-$days",
+    trigger = WorkflowTrigger.ReminderAgeExceeded(days = days),
+    action = WorkflowAction.PurgeReminder,
+    scope = scope,
+    createdAt = now
+  )
+
+  @Test
+  fun `permanently deletes an already-archived reminder older than the purge cutoff`() = runTest {
+    val old = completedReminder("old", updatedAt = now.minusDays(100)).copy(isRemoved = true)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(old.uuId to old))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(purgeRule(days = 90)))
+
+    val result = engine(ruleRepository, reminderRepository).runAgeBasedRules(now)
+
+    assertTrue(reminderRepository.deleted.contains("old"))
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `does not purge an already-archived reminder newer than the cutoff`() = runTest {
+    val recent = completedReminder("recent", updatedAt = now.minusDays(10)).copy(isRemoved = true)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(recent.uuId to recent))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(purgeRule(days = 90)))
+
+    engine(ruleRepository, reminderRepository).runAgeBasedRules(now)
+
+    assertFalse(reminderRepository.deleted.contains("recent"))
+  }
+
+  @Test
+  fun `archives a not-yet-removed reminder while purging an already-archived one under the same trigger type`() =
+    runTest {
+      val toArchive = completedReminder("to-archive", updatedAt = now.minusDays(40))
+      val toPurge = completedReminder("to-purge", updatedAt = now.minusDays(100)).copy(isRemoved = true)
+      val reminderRepository = FakeReminderV2Repository(
+        mutableMapOf(toArchive.uuId to toArchive, toPurge.uuId to toPurge)
+      )
+      val ruleRepository = FakeWorkflowRuleRepository(listOf(archiveRule(days = 30), purgeRule(days = 90)))
+
+      engine(ruleRepository, reminderRepository).runAgeBasedRules(now)
+
+      assertTrue(reminderRepository.saved.getValue("to-archive").isRemoved)
+      assertTrue(reminderRepository.deleted.contains("to-purge"))
+    }
 
   private fun groupCompletionRule(scope: WorkflowScope) = WorkflowRule(
     uuId = "rule-group-completion-${scope::class.simpleName}",
@@ -191,6 +256,27 @@ class WorkflowEngineTest {
   }
 
   @Test
+  fun `clears a reminder's notification override inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(
+      notification = NotificationSettingsOverride(priority = ReminderPriority.HIGH)
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-clear-notify",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.ClearNotificationOverride,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(NotificationSettingsOverride(), reminderRepository.saved.getValue("r1").notification)
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
   fun `enqueues a background task inline without returning a pending action`() = runTest {
     val reminder = completedReminder("r1", updatedAt = now)
     val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
@@ -209,6 +295,104 @@ class WorkflowEngineTest {
     assertEquals(1, workScheduler.enqueued.size)
     assertEquals("some_task", workScheduler.enqueued.single().taskKey)
     assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `sends a broadcast intent inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-broadcast",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.SendBroadcastIntent(action = "com.example.TASKER_ACTION", extras = mapOf("k" to "v")),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val broadcastIntentSender = FakeBroadcastIntentSender()
+
+    val result = engine(ruleRepository, reminderRepository, broadcastIntentSender = broadcastIntentSender)
+      .runReminderCompletedRules("r1")
+
+    assertEquals(1, broadcastIntentSender.sent.size)
+    assertEquals("com.example.TASKER_ACTION", broadcastIntentSender.sent.single().action)
+    assertEquals(mapOf("k" to "v"), broadcastIntentSender.sent.single().extras)
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `fires a reminder-created rule for the new reminder`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(isActive = true)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-created",
+      trigger = WorkflowTrigger.ReminderCreated,
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCreatedRules("r1")
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `moves a newly created reminder to a group when its title contains a keyword`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(isActive = true, summary = "Buy groceries")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-auto-group",
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup("shopping-group"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCreatedRules("r1")
+
+    assertEquals("shopping-group", reminderRepository.saved.getValue("r1").groupId)
+  }
+
+  @Test
+  fun `does not move a newly created reminder when its title does not contain the keyword`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(isActive = true, summary = "Call the dentist")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-auto-group",
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup("shopping-group"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCreatedRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `TitleContains matches case-insensitively`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(isActive = true, summary = "BUY GROCERIES")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-auto-group",
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup("shopping-group"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCreatedRules("r1")
+
+    assertEquals("shopping-group", reminderRepository.saved.getValue("r1").groupId)
   }
 
   @Test
@@ -461,6 +645,218 @@ class WorkflowEngineTest {
     assertEquals(0, reminderRepository.saved.size)
   }
 
+  private fun scheduleRule(
+    atDateTime: LocalDateTime,
+    recurrence: ScheduleRecurrence = ScheduleRecurrence.ONCE,
+    lastRunAt: LocalDateTime? = null,
+    taskKey: String = "weekly_summary"
+  ) = WorkflowRule(
+    uuId = "rule-schedule",
+    trigger = WorkflowTrigger.ScheduleReached(atDateTime = atDateTime, recurrence = recurrence),
+    action = WorkflowAction.RunBackgroundTask(taskKey),
+    scope = WorkflowScope.Global,
+    lastRunAt = lastRunAt,
+    createdAt = now
+  )
+
+  @Test
+  fun `enqueues a background task once a one-shot schedule is reached`() = runTest {
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val workScheduler = FakeWorkScheduler()
+
+    val result = engine(ruleRepository, reminderRepository, workScheduler).runScheduleRules(now)
+
+    assertEquals(1, workScheduler.enqueued.size)
+    assertEquals("weekly_summary", workScheduler.enqueued.single().taskKey)
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `sends a broadcast intent once a scheduled rule fires`() = runTest {
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+      .copy(action = WorkflowAction.SendBroadcastIntent(action = "com.example.VACATION_START"))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val broadcastIntentSender = FakeBroadcastIntentSender()
+
+    engine(ruleRepository, reminderRepository, broadcastIntentSender = broadcastIntentSender).runScheduleRules(now)
+
+    assertEquals(1, broadcastIntentSender.sent.size)
+    assertEquals("com.example.VACATION_START", broadcastIntentSender.sent.single().action)
+  }
+
+  @Test
+  fun `does not fire a one-shot schedule before its time is reached`() = runTest {
+    val rule = scheduleRule(atDateTime = now.plusMinutes(1))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val workScheduler = FakeWorkScheduler()
+
+    engine(ruleRepository, reminderRepository, workScheduler).runScheduleRules(now)
+
+    assertTrue(workScheduler.enqueued.isEmpty())
+  }
+
+  @Test
+  fun `does not re-fire a one-shot schedule that has already run`() = runTest {
+    val rule = scheduleRule(atDateTime = now.minusDays(1), lastRunAt = now.minusHours(1))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val workScheduler = FakeWorkScheduler()
+
+    engine(ruleRepository, reminderRepository, workScheduler).runScheduleRules(now)
+
+    assertTrue(workScheduler.enqueued.isEmpty())
+  }
+
+  @Test
+  fun `records lastRunAt through SaveWorkflowRuleUseCase after a schedule fires`() = runTest {
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
+    assertEquals(now, ruleRepository.saved.single().lastRunAt)
+  }
+
+  @Test
+  fun `re-fires a weekly schedule once 7 days have passed since it last ran`() = runTest {
+    val rule = scheduleRule(
+      atDateTime = now.minusDays(30),
+      recurrence = ScheduleRecurrence.WEEKLY,
+      lastRunAt = now.minusDays(7)
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val workScheduler = FakeWorkScheduler()
+
+    engine(ruleRepository, reminderRepository, workScheduler).runScheduleRules(now)
+
+    assertEquals(1, workScheduler.enqueued.size)
+  }
+
+  @Test
+  fun `does not re-fire a weekly schedule before 7 days have passed since it last ran`() = runTest {
+    val rule = scheduleRule(
+      atDateTime = now.minusDays(30),
+      recurrence = ScheduleRecurrence.WEEKLY,
+      lastRunAt = now.minusDays(3)
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val workScheduler = FakeWorkScheduler()
+
+    engine(ruleRepository, reminderRepository, workScheduler).runScheduleRules(now)
+
+    assertTrue(workScheduler.enqueued.isEmpty())
+  }
+
+  @Test
+  fun `ignores a disabled schedule rule`() = runTest {
+    val rule = WorkflowRuleFixture.disabled(scheduleRule(atDateTime = now.minusMinutes(1)))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val workScheduler = FakeWorkScheduler()
+
+    engine(ruleRepository, reminderRepository, workScheduler).runScheduleRules(now)
+
+    assertTrue(workScheduler.enqueued.isEmpty())
+  }
+
+  @Test
+  fun `does not fire a schedule rule paired with an action it doesn't support yet`() = runTest {
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1)).copy(action = WorkflowAction.ArchiveReminder)
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf())
+    val workScheduler = FakeWorkScheduler()
+
+    engine(ruleRepository, reminderRepository, workScheduler).runScheduleRules(now)
+
+    assertTrue(workScheduler.enqueued.isEmpty())
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  private fun activeReminder(id: String, groupId: String? = null) = ReminderV2(
+    uuId = id,
+    groupId = groupId,
+    schedule = ReminderSchedule(startDateTime = now),
+    isActive = true,
+    isRemoved = false
+  )
+
+  @Test
+  fun `applies a notification override to every active reminder globally when a schedule rule fires`() = runTest {
+    val override = NotificationSettingsOverride(bypassDoNotDisturb = true)
+    val reminder1 = activeReminder("r1")
+    val reminder2 = activeReminder("r2")
+    val completed = completedReminder("r3", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(
+      mutableMapOf(reminder1.uuId to reminder1, reminder2.uuId to reminder2, completed.uuId to completed)
+    )
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+      .copy(scope = WorkflowScope.Global, action = WorkflowAction.ApplyNotificationOverride(override))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
+    assertEquals(override, reminderRepository.saved.getValue("r1").notification)
+    assertEquals(override, reminderRepository.saved.getValue("r2").notification)
+    assertFalse(reminderRepository.saved.containsKey("r3"))
+  }
+
+  @Test
+  fun `clears the notification override for every active reminder in a group when a schedule rule fires`() = runTest {
+    val inGroup = activeReminder("r1", groupId = "group-1").copy(
+      notification = NotificationSettingsOverride(bypassDoNotDisturb = true)
+    )
+    val outOfGroup = activeReminder("r2", groupId = "group-2")
+    val reminderRepository = FakeReminderV2Repository(
+      mutableMapOf(inGroup.uuId to inGroup, outOfGroup.uuId to outOfGroup)
+    )
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+      .copy(scope = WorkflowScope.ForGroup("group-1"), action = WorkflowAction.ClearNotificationOverride)
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
+    assertEquals(NotificationSettingsOverride(), reminderRepository.saved.getValue("r1").notification)
+    assertFalse(reminderRepository.saved.containsKey("r2"))
+  }
+
+  @Test
+  fun `applies a notification override only to the one reminder for a reminder-scoped schedule rule`() = runTest {
+    val target = activeReminder("r1")
+    val other = activeReminder("r2")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(target.uuId to target, other.uuId to other))
+    val override = NotificationSettingsOverride(bypassDoNotDisturb = true)
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+      .copy(scope = WorkflowScope.ForReminder("r1"), action = WorkflowAction.ApplyNotificationOverride(override))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
+    assertEquals(override, reminderRepository.saved.getValue("r1").notification)
+    assertFalse(reminderRepository.saved.containsKey("r2"))
+  }
+
+  @Test
+  fun `does not touch a completed reminder when a schedule rule applies a notification override globally`() = runTest {
+    val completed = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(completed.uuId to completed))
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1)).copy(
+      scope = WorkflowScope.Global,
+      action = WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride(bypassDoNotDisturb = true))
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
   @Test
   fun `does not fire a rule when a PriorityAtLeast condition is not met`() = runTest {
     val lowPriorityReminder = ReminderV2(
@@ -524,6 +920,92 @@ class WorkflowEngineTest {
     engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
 
     assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `fires a rule when a HasTag condition matches`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val tagAssignmentRepository = FakeTagAssignmentRepository(
+      listOf(TagAssignment(tagId = "urgent", itemId = "r1", itemType = TaggedItemType.REMINDER))
+    )
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.HasTag("urgent")),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository, tagAssignmentRepository = tagAssignmentRepository)
+      .runReminderCompletedRules("r1")
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `does not fire a rule when a HasTag condition does not match`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-cond",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      conditions = listOf(WorkflowCondition.HasTag("urgent")),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `attaches a tag inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val tagAssignmentRepository = FakeTagAssignmentRepository()
+    val rule = WorkflowRule(
+      uuId = "rule-apply-tag",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.ApplyTag("urgent"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository, tagAssignmentRepository = tagAssignmentRepository)
+      .runReminderCompletedRules("r1")
+
+    assertEquals(listOf("urgent"), tagAssignmentRepository.getTagsForItem("r1", TaggedItemType.REMINDER).map { it.id })
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
+  fun `detaches a tag inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val tagAssignmentRepository = FakeTagAssignmentRepository(
+      listOf(TagAssignment(tagId = "urgent", itemId = "r1", itemType = TaggedItemType.REMINDER))
+    )
+    val rule = WorkflowRule(
+      uuId = "rule-remove-tag",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.RemoveTag("urgent"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository, tagAssignmentRepository = tagAssignmentRepository)
+      .runReminderCompletedRules("r1")
+
+    assertTrue(tagAssignmentRepository.getTagsForItem("r1", TaggedItemType.REMINDER).isEmpty())
+    assertTrue(result.isEmpty())
   }
 
   @Test
@@ -598,6 +1080,7 @@ private class FakeReminderV2Repository(
   private val reminders: MutableMap<String, ReminderV2>
 ) : ReminderV2Repository {
   val saved = mutableMapOf<String, ReminderV2>()
+  val deleted = mutableListOf<String>()
 
   override suspend fun save(reminder: ReminderV2) {
     reminders[reminder.uuId] = reminder
@@ -628,7 +1111,10 @@ private class FakeReminderV2Repository(
     reminders.values.count { it.groupId == groupId && it.isActive && !it.isRemoved }
   override suspend fun getByNoteId(noteId: String): List<ReminderV2> = emptyList()
   override suspend fun search(query: String): List<ReminderV2> = emptyList()
-  override suspend fun delete(id: String) { reminders.remove(id) }
+  override suspend fun delete(id: String) {
+    reminders.remove(id)
+    deleted.add(id)
+  }
   override suspend fun deleteAll(ids: List<String>) { ids.forEach { reminders.remove(it) } }
   override suspend fun deleteAll() { reminders.clear() }
   override suspend fun getIdsByState(syncStates: List<SyncState>): List<String> = emptyList()
@@ -656,7 +1142,9 @@ private class NoOpGroupV2Repository : GroupV2Repository {
 private class FakeWorkflowRuleRepository(
   private val rules: List<WorkflowRule>
 ) : WorkflowRuleRepository {
-  override suspend fun save(rule: WorkflowRule) = Unit
+  val saved = mutableListOf<WorkflowRule>()
+
+  override suspend fun save(rule: WorkflowRule) { saved.add(rule) }
   override suspend fun getAll(): List<WorkflowRule> = rules
   override suspend fun getEnabled(): List<WorkflowRule> = rules.filter { it.isEnabled }
   override suspend fun getById(id: String): WorkflowRule? = rules.firstOrNull { it.uuId == id }
@@ -664,6 +1152,7 @@ private class FakeWorkflowRuleRepository(
   override suspend fun getByTriggerType(triggerType: String): List<WorkflowRule> =
     rules.filter {
       when (triggerType) {
+        "REMINDER_CREATED" -> it.trigger is WorkflowTrigger.ReminderCreated
         "REMINDER_COMPLETED" -> it.trigger is WorkflowTrigger.ReminderCompleted
         "REMINDER_SNOOZED_N_TIMES" -> it.trigger is WorkflowTrigger.ReminderSnoozedNTimes
         "GROUP_ALL_COMPLETED" -> it.trigger is WorkflowTrigger.GroupAllCompleted
@@ -671,6 +1160,7 @@ private class FakeWorkflowRuleRepository(
         "LOCATION_EXITED" -> it.trigger is WorkflowTrigger.LocationExited
         "REMINDER_AGE_EXCEEDED" -> it.trigger is WorkflowTrigger.ReminderAgeExceeded
         "REMINDER_UNACKNOWLEDGED_FOR" -> it.trigger is WorkflowTrigger.ReminderUnacknowledgedFor
+        "SCHEDULE_REACHED" -> it.trigger is WorkflowTrigger.ScheduleReached
         else -> false
       }
     }
@@ -699,4 +1189,56 @@ private class FakeWorkScheduler : WorkScheduler {
   override fun cancelByTag(tag: String) = Unit
   override fun cancelUniqueWork(uniqueName: String) = Unit
   override fun observeUniqueWork(uniqueName: String) = emptyFlow<WorkState>()
+}
+
+private class NoOpScheduleBackgroundWorkUseCase : ScheduleBackgroundWorkUseCase {
+  override fun invoke(workType: WorkType, dataType: DataType?, id: String?, ids: List<String>?): String? = null
+}
+
+private class FakeBroadcastIntentSender : BroadcastIntentSender {
+  data class SentBroadcast(val action: String, val extras: Map<String, String>)
+
+  val sent = mutableListOf<SentBroadcast>()
+
+  override fun send(action: String, extras: Map<String, String>) {
+    sent.add(SentBroadcast(action, extras))
+  }
+}
+
+private class FakeTagAssignmentRepository(
+  initialAssignments: List<TagAssignment> = emptyList()
+) : TagAssignmentRepository {
+  private val assignments = initialAssignments.toMutableList()
+
+  override fun observeTagsForItem(itemId: String, itemType: TaggedItemType): Flow<List<Tag>> = emptyFlow()
+
+  override suspend fun getTagsForItem(itemId: String, itemType: TaggedItemType): List<Tag> =
+    assignments.filter { it.itemId == itemId && it.itemType == itemType }
+      .map { Tag(id = it.tagId, name = it.tagId, color = 0) }
+
+  override suspend fun getItemIdsForTag(tagId: String, itemType: TaggedItemType): List<String> =
+    assignments.filter { it.tagId == tagId && it.itemType == itemType }.map { it.itemId }
+
+  override suspend fun attach(itemId: String, itemType: TaggedItemType, tagId: String) {
+    assignments.add(TagAssignment(tagId = tagId, itemId = itemId, itemType = itemType))
+  }
+
+  override suspend fun detach(itemId: String, itemType: TaggedItemType, tagId: String) {
+    assignments.removeAll { it.tagId == tagId && it.itemId == itemId && it.itemType == itemType }
+  }
+
+  override suspend fun detachAll(itemId: String, itemType: TaggedItemType) {
+    assignments.removeAll { it.itemId == itemId && it.itemType == itemType }
+  }
+
+  override suspend fun detachAllForTag(tagId: String) {
+    assignments.removeAll { it.tagId == tagId }
+  }
+
+  override suspend fun deleteAll() = assignments.clear()
+  override suspend fun getAll(): List<TagAssignment> = assignments
+  override suspend fun replaceAll(assignments: List<TagAssignment>) {
+    this.assignments.clear()
+    this.assignments.addAll(assignments)
+  }
 }

@@ -10,6 +10,11 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.domain.workflow.WorkflowRule
+import com.github.naz013.domain.workflow.WorkflowScope
+import com.github.naz013.domain.workflow.WorkflowTemplate
+import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.files.DataConverter
 import com.github.naz013.localbackup.archive.BackupArchiveReader
 import com.github.naz013.localbackup.archive.BackupArchiveWriter
@@ -22,6 +27,8 @@ import com.github.naz013.repository.RoutineExecutionRepository
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.repository.WorkflowRuleRepository
+import com.github.naz013.repository.WorkflowTemplateRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -47,6 +54,8 @@ private class FakeDataConverter : DataConverter {
       is TagAssignment -> "A|${any.tagId}|${any.itemId}::${any.itemType}"
       is Routine -> "O|${any.id}|${any.title}"
       is RoutineExecutionRecord -> "E|${any.id}|${any.routineId}"
+      is WorkflowRule -> "WR|${any.uuId}|${any.title}"
+      is WorkflowTemplate -> "WT|${any.id}|${any.title}"
       else -> error("FakeDataConverter does not support ${any::class.java}")
     }
     outputStream.use { it.write(encoded.toByteArray()) }
@@ -71,6 +80,20 @@ private class FakeDataConverter : DataConverter {
       }
       "O" -> Routine(id = id, title = label, createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now())
       "E" -> RoutineExecutionRecord(id = id, routineId = label, executedAt = LocalDateTime.now(), totalTimeSpentSeconds = 0, totalStepsCount = 0)
+      "WR" -> WorkflowRule(
+        uuId = id,
+        title = label,
+        trigger = WorkflowTrigger.ReminderCompleted,
+        action = WorkflowAction.ArchiveReminder,
+        syncState = SyncState.Synced
+      )
+      "WT" -> WorkflowTemplate(
+        id = id,
+        title = label,
+        trigger = WorkflowTrigger.ReminderCompleted,
+        action = WorkflowAction.ArchiveReminder,
+        syncState = SyncState.Synced
+      )
       else -> error("FakeDataConverter does not support tag $tag")
     }
   }
@@ -87,6 +110,8 @@ class LocalBackupApiImplTest {
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
   private val routineRepository = mockk<RoutineRepository>(relaxed = true)
   private val routineExecutionRepository = mockk<RoutineExecutionRepository>(relaxed = true)
+  private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
+  private val workflowTemplateRepository = mockk<WorkflowTemplateRepository>(relaxed = true)
   private val dataConverter = FakeDataConverter()
 
   private lateinit var api: LocalBackupApiImpl
@@ -103,6 +128,8 @@ class LocalBackupApiImplTest {
       tagAssignmentRepository = tagAssignmentRepository,
       routineRepository = routineRepository,
       routineExecutionRepository = routineExecutionRepository,
+      workflowRuleRepository = workflowRuleRepository,
+      workflowTemplateRepository = workflowTemplateRepository,
       archiveWriter = BackupArchiveWriter(dataConverter),
       archiveReader = BackupArchiveReader(dataConverter)
     )
@@ -131,6 +158,8 @@ class LocalBackupApiImplTest {
     coVerify { tagAssignmentRepository.getAll() }
     coVerify { routineRepository.getAll() }
     coVerify { routineExecutionRepository.getAll() }
+    coVerify { workflowRuleRepository.getAll() }
+    coVerify { workflowTemplateRepository.getAll() }
     assertTrue(output.toByteArray().isNotEmpty())
   }
 
@@ -219,6 +248,38 @@ class LocalBackupApiImplTest {
     assertEquals(1, summary.routineExecutionsImported)
     coVerify { routineRepository.save(match { it.id == "o1" }) }
     coVerify { routineExecutionRepository.save(match { it.id == "e1" }) }
+  }
+
+  @Test
+  fun `round trips workflow rules and templates through import`() = runTest {
+    coEvery { workflowRuleRepository.getAll() } returns listOf(
+      WorkflowRule(
+        uuId = "wr1",
+        title = "Archive after 30 days",
+        scope = WorkflowScope.Global,
+        trigger = WorkflowTrigger.ReminderAgeExceeded(days = 30),
+        action = WorkflowAction.ArchiveReminder
+      )
+    )
+    coEvery { workflowTemplateRepository.getAll() } returns listOf(
+      WorkflowTemplate(
+        id = "wt1",
+        title = "Archive template",
+        trigger = WorkflowTrigger.ReminderAgeExceeded(days = 30),
+        action = WorkflowAction.ArchiveReminder
+      )
+    )
+    val output = ByteArrayOutputStream()
+    api.export(output, "correct horse".toCharArray())
+
+    val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
+
+    assertTrue(result.isSuccess)
+    val summary = result.getOrThrow()
+    assertEquals(1, summary.workflowRulesImported)
+    assertEquals(1, summary.workflowTemplatesImported)
+    coVerify { workflowRuleRepository.save(match { it.uuId == "wr1" }) }
+    coVerify { workflowTemplateRepository.save(match { it.id == "wt1" }) }
   }
 
   @Test

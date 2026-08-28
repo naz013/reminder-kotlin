@@ -1224,4 +1224,26 @@
     <string name="repeats_until">ทำซ้ำจนถึง %1$s</string>
     <string name="reminder_triggered_times">ทำงานแล้ว %1$d ครั้ง</string>
     <string name="reminder_snoozed_times">เลื่อนแจ้งเตือนแล้ว %1$d ครั้ง</string>
+    <string name="workflow_rules_for_reminder">กฎสำหรับการเตือนความจำนี้</string>
+    <string name="workflow_apply_to_reminder">ใช้กับการเตือนความจำ</string>
+    <string name="workflow_action_purge_reminder">ลบการเตือนความจำอย่างถาวร</string>
+    <string name="workflow_weekly_summary_title">สรุปรายสัปดาห์</string>
+    <string name="workflow_weekly_summary_body">คุณทำการเตือนความจำสำเร็จ %1$d รายการในสัปดาห์นี้</string>
+    <string name="workflow_trigger_schedule_reached">ถึงเวลาที่กำหนดไว้</string>
+    <string name="workflow_action_clear_notification_override">ล้างการแทนที่การแจ้งเตือน</string>
+    <string name="workflow_builder_starts_on">เริ่มวันที่</string>
+    <string name="workflow_builder_ends_on">สิ้นสุดวันที่</string>
+    <string name="workflow_builder_revert_on_end_date">คืนค่าเมื่อถึงวันสิ้นสุด</string>
+    <string name="workflow_trigger_reminder_created">สร้างการเตือนความจำ</string>
+    <string name="workflow_condition_title_contains">ชื่อเรื่องมีคำว่า</string>
+    <string name="workflow_action_move_to_group">ย้ายไปยังกลุ่มอื่น</string>
+    <string name="workflow_builder_title_contains_hint">คำสำคัญ</string>
+    <string name="workflow_action_send_broadcast_intent">ส่ง Broadcast Intent</string>
+    <string name="workflow_builder_broadcast_action_hint">การกระทำของ Intent</string>
+    <string name="workflow_already_applied">นำไปใช้แล้ว</string>
+    <string name="workflow_condition_has_tag">มีแท็ก</string>
+    <string name="workflow_action_apply_tag">เพิ่มแท็ก</string>
+    <string name="workflow_action_remove_tag">ลบแท็ก</string>
+    <string name="workflow_builder_select_tag">เลือกแท็ก</string>
+    <string name="workflow_builder_no_tags">ไม่มีแท็กที่ใช้ได้ กรุณาสร้างแท็กก่อน</string>
 </resources>

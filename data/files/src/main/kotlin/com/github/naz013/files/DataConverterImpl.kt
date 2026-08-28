@@ -31,6 +31,15 @@ import com.github.naz013.domain.reminder.v2.TaskExportSettings
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.domain.routine.RoutineStep
+import com.github.naz013.domain.workflow.ScheduleRecurrence
+import com.github.naz013.domain.workflow.WorkflowAction
+import com.github.naz013.domain.workflow.WorkflowCondition
+import com.github.naz013.domain.workflow.WorkflowRule
+import com.github.naz013.domain.workflow.WorkflowScope
+import com.github.naz013.domain.workflow.WorkflowScopeType
+import com.github.naz013.domain.workflow.WorkflowTemplate
+import com.github.naz013.domain.workflow.WorkflowTemplateCategory
+import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.files.model.CalendarExportSettingsJson
 import com.github.naz013.files.model.GroupV2Json
 import com.github.naz013.files.model.LocationSettingsJson
@@ -44,6 +53,8 @@ import com.github.naz013.files.model.SharedNote
 import com.github.naz013.files.model.ShopItemV2Json
 import com.github.naz013.files.model.TagJson
 import com.github.naz013.files.model.TaskExportSettingsJson
+import com.github.naz013.files.model.WorkflowRuleJson
+import com.github.naz013.files.model.WorkflowTemplateJson
 import com.github.naz013.logging.Logger
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -84,6 +95,8 @@ internal class DataConverterImpl : DataConverter {
         is TagAssignment -> object : TypeToken<TagAssignment>() {}.type
         is RoutineJson -> object : TypeToken<RoutineJson>() {}.type
         is RoutineExecutionJson -> object : TypeToken<RoutineExecutionJson>() {}.type
+        is WorkflowRuleJson -> object : TypeToken<WorkflowRuleJson>() {}.type
+        is WorkflowTemplateJson -> object : TypeToken<WorkflowTemplateJson>() {}.type
         else -> null
       } ?: run {
         throw IllegalArgumentException("Unsupported type: ${any::class.java}")
@@ -133,6 +146,8 @@ private fun Any.toJson(): Any {
     is Tag -> this.toJson()
     is Routine -> this.toJson()
     is RoutineExecutionRecord -> this.toJson()
+    is WorkflowRule -> this.toJson()
+    is WorkflowTemplate -> this.toJson()
     else -> this
   }
 }
@@ -148,6 +163,8 @@ private fun detectClass(json: JsonObject): Class<*> = when {
   json.has("recurrenceType") && json.has("actionType") -> ReminderV2Json::class.java
   json.has("steps") && json.has("recurrenceType") -> RoutineJson::class.java
   json.has("completedStepIds") -> RoutineExecutionJson::class.java
+  json.has("scopeType") && json.has("triggerType") -> WorkflowRuleJson::class.java
+  json.has("category") && json.has("triggerType") -> WorkflowTemplateJson::class.java
   json.has("notification") && json.has("createdAt") -> GroupV2Json::class.java
   json.has("tagId") && json.has("itemId") && json.has("itemType") -> TagAssignment::class.java
   json.has("id") && json.has("name") && json.has("color") -> TagJson::class.java
@@ -169,6 +186,8 @@ private fun Any.toDomain(): Any {
     is TagJson -> this.toDomain()
     is RoutineJson -> this.toDomain()
     is RoutineExecutionJson -> this.toDomain()
+    is WorkflowRuleJson -> this.toDomain()
+    is WorkflowTemplateJson -> this.toDomain()
     is ReminderGroup -> this.toGroupV2()
     is Reminder -> this.toReminderV2()
     else -> this
@@ -228,6 +247,176 @@ private fun RoutineExecutionJson.toDomain(): RoutineExecutionRecord = RoutineExe
   completedStepIds = completedStepIds,
   totalStepsCount = totalStepsCount
 )
+
+/** Internal, not private, so [DataConverterImplTest] can round-trip it directly without going
+ * through the Base64-wrapped `toInputStream`/`toData` pipeline - `android.util.Base64OutputStream`
+ * isn't available under plain JUnit and Robolectric's shadow doesn't cover its streaming API
+ * either (see the `@Ignore`d `SyncDataConverterImplSettingsTest` in `app` for the same wall). */
+internal fun WorkflowRuleJson.toDomain(): WorkflowRule = WorkflowRule(
+  uuId = uuId,
+  title = title,
+  templateId = templateId,
+  scope = toWorkflowScope(scopeType, scopeId),
+  trigger = toWorkflowTrigger(triggerType, triggerPayload),
+  conditions = conditionsPayload.toWorkflowConditions(),
+  action = toWorkflowAction(actionType, actionPayload),
+  isEnabled = isEnabled,
+  createdAt = LocalDateTime.parse(createdAt, jsonDateTimeFormatter),
+  lastRunAt = lastRunAt?.let { LocalDateTime.parse(it, jsonDateTimeFormatter) },
+  version = version,
+  syncState = SyncState.Synced
+)
+
+internal fun WorkflowTemplateJson.toDomain(): WorkflowTemplate = WorkflowTemplate(
+  id = id,
+  title = title,
+  description = description,
+  category = runCatching { WorkflowTemplateCategory.valueOf(category) }
+    .getOrDefault(WorkflowTemplateCategory.REMINDER_LIFECYCLE),
+  supportedScopeTypes = supportedScopeTypes.mapNotNull { runCatching { WorkflowScopeType.valueOf(it) }.getOrNull() },
+  trigger = toWorkflowTrigger(triggerType, triggerPayload),
+  action = toWorkflowAction(actionType, actionPayload),
+  isBuiltIn = isBuiltIn,
+  useCount = useCount,
+  createdAt = LocalDateTime.parse(createdAt, jsonDateTimeFormatter),
+  version = version,
+  syncState = SyncState.Synced
+)
+
+private fun WorkflowScope.toWorkflowScopeColumns(): Pair<String, String?> = when (this) {
+  is WorkflowScope.Global -> "GLOBAL" to null
+  is WorkflowScope.ForGroup -> "GROUP" to groupId
+  is WorkflowScope.ForReminder -> "REMINDER" to reminderId
+}
+
+private fun toWorkflowScope(scopeType: String, scopeId: String?): WorkflowScope = when (scopeType) {
+  "GROUP" -> scopeId?.let { WorkflowScope.ForGroup(it) } ?: WorkflowScope.Global
+  "REMINDER" -> scopeId?.let { WorkflowScope.ForReminder(it) } ?: WorkflowScope.Global
+  else -> WorkflowScope.Global
+}
+
+/** [WorkflowTrigger.ScheduleReached.atDateTime] is deliberately NOT passed through
+ * `workflowGson.toJson(this)` like every other payload field - plain `Gson()` has no registered
+ * adapter for ThreeTenBP's `LocalDateTime`, so reflecting into its internal fields would be
+ * unannotated and unsafe under R8 (see the class doc on [WorkflowTrigger]). Formatting it with
+ * [jsonDateTimeFormatter] first keeps the wire payload to types Gson already handles safely. */
+private data class ScheduleReachedColumns(val atDateTime: String, val recurrence: String)
+
+private fun WorkflowTrigger.toColumns(): Pair<String, String> = when (this) {
+  is WorkflowTrigger.ReminderCreated -> "REMINDER_CREATED" to ""
+  is WorkflowTrigger.ReminderCompleted -> "REMINDER_COMPLETED" to ""
+  is WorkflowTrigger.ReminderSnoozedNTimes -> "REMINDER_SNOOZED_N_TIMES" to workflowGson.toJson(this)
+  is WorkflowTrigger.GroupAllCompleted -> "GROUP_ALL_COMPLETED" to ""
+  is WorkflowTrigger.LocationEntered -> "LOCATION_ENTERED" to ""
+  is WorkflowTrigger.LocationExited -> "LOCATION_EXITED" to ""
+  is WorkflowTrigger.ReminderAgeExceeded -> "REMINDER_AGE_EXCEEDED" to workflowGson.toJson(this)
+  is WorkflowTrigger.ReminderUnacknowledgedFor -> "REMINDER_UNACKNOWLEDGED_FOR" to workflowGson.toJson(this)
+  is WorkflowTrigger.ScheduleReached -> "SCHEDULE_REACHED" to workflowGson.toJson(
+    ScheduleReachedColumns(atDateTime.format(jsonDateTimeFormatter), recurrence.name)
+  )
+}
+
+/** Falls back to [WorkflowTrigger.ReminderCompleted] (and logs) instead of throwing on a payload
+ * it can't parse. Mirrors `WorkflowTriggerActionCodec.toWorkflowTrigger` in the `repository`
+ * module (the Room-layer equivalent of this same wire shape) - kept as a separate copy rather
+ * than a shared function since that codec is `internal` to the `repository` module. */
+private fun toWorkflowTrigger(type: String, payload: String): WorkflowTrigger = runCatching {
+  when (type) {
+    "REMINDER_CREATED" -> WorkflowTrigger.ReminderCreated
+    "REMINDER_COMPLETED" -> WorkflowTrigger.ReminderCompleted
+    "REMINDER_SNOOZED_N_TIMES" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderSnoozedNTimes::class.java)
+    "GROUP_ALL_COMPLETED" -> WorkflowTrigger.GroupAllCompleted
+    "LOCATION_ENTERED" -> WorkflowTrigger.LocationEntered
+    "LOCATION_EXITED" -> WorkflowTrigger.LocationExited
+    "REMINDER_AGE_EXCEEDED" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderAgeExceeded::class.java)
+    "REMINDER_UNACKNOWLEDGED_FOR" ->
+      workflowGson.fromJson(payload, WorkflowTrigger.ReminderUnacknowledgedFor::class.java)
+    "SCHEDULE_REACHED" -> workflowGson.fromJson(payload, ScheduleReachedColumns::class.java).let {
+      WorkflowTrigger.ScheduleReached(
+        atDateTime = LocalDateTime.parse(it.atDateTime, jsonDateTimeFormatter),
+        recurrence = runCatching { ScheduleRecurrence.valueOf(it.recurrence) }.getOrDefault(ScheduleRecurrence.ONCE)
+      )
+    }
+    else -> WorkflowTrigger.ReminderCompleted
+  }
+}.getOrElse { e ->
+  Logger.e(FILES_TAG, "Failed to parse workflow trigger, type=$type, payload=$payload", e)
+  WorkflowTrigger.ReminderCompleted
+}
+
+private fun WorkflowAction.toColumns(): Pair<String, String> = when (this) {
+  is WorkflowAction.ArchiveReminder -> "ARCHIVE_REMINDER" to ""
+  is WorkflowAction.CompleteReminder -> "COMPLETE_REMINDER" to ""
+  is WorkflowAction.PurgeReminder -> "PURGE_REMINDER" to ""
+  is WorkflowAction.ApplyNotificationOverride -> "APPLY_NOTIFICATION_OVERRIDE" to workflowGson.toJson(this)
+  is WorkflowAction.ClearNotificationOverride -> "CLEAR_NOTIFICATION_OVERRIDE" to ""
+  is WorkflowAction.ActivateReminder -> "ACTIVATE_REMINDER" to workflowGson.toJson(this)
+  is WorkflowAction.MoveToGroup -> "MOVE_TO_GROUP" to workflowGson.toJson(this)
+  is WorkflowAction.SendBroadcastIntent -> "SEND_BROADCAST_INTENT" to workflowGson.toJson(this)
+  is WorkflowAction.RunBackgroundTask -> "RUN_BACKGROUND_TASK" to workflowGson.toJson(this)
+  is WorkflowAction.ApplyTag -> "APPLY_TAG" to workflowGson.toJson(this)
+  is WorkflowAction.RemoveTag -> "REMOVE_TAG" to workflowGson.toJson(this)
+}
+
+/** Falls back to [WorkflowAction.ArchiveReminder] (and logs) instead of throwing on a payload it
+ * can't parse - same reasoning and repository-module counterpart as [toWorkflowTrigger]. */
+private fun toWorkflowAction(type: String, payload: String): WorkflowAction = runCatching {
+  when (type) {
+    "ARCHIVE_REMINDER" -> WorkflowAction.ArchiveReminder
+    "COMPLETE_REMINDER" -> WorkflowAction.CompleteReminder
+    "PURGE_REMINDER" -> WorkflowAction.PurgeReminder
+    "APPLY_NOTIFICATION_OVERRIDE" ->
+      workflowGson.fromJson(payload, WorkflowAction.ApplyNotificationOverride::class.java)
+    "CLEAR_NOTIFICATION_OVERRIDE" -> WorkflowAction.ClearNotificationOverride
+    "ACTIVATE_REMINDER" -> workflowGson.fromJson(payload, WorkflowAction.ActivateReminder::class.java)
+    "MOVE_TO_GROUP" -> workflowGson.fromJson(payload, WorkflowAction.MoveToGroup::class.java)
+    "SEND_BROADCAST_INTENT" -> workflowGson.fromJson(payload, WorkflowAction.SendBroadcastIntent::class.java)
+    "RUN_BACKGROUND_TASK" -> workflowGson.fromJson(payload, WorkflowAction.RunBackgroundTask::class.java)
+    "APPLY_TAG" -> workflowGson.fromJson(payload, WorkflowAction.ApplyTag::class.java)
+    "REMOVE_TAG" -> workflowGson.fromJson(payload, WorkflowAction.RemoveTag::class.java)
+    else -> WorkflowAction.ArchiveReminder
+  }
+}.getOrElse { e ->
+  Logger.e(FILES_TAG, "Failed to parse workflow action, type=$type, payload=$payload", e)
+  WorkflowAction.ArchiveReminder
+}
+
+private data class WorkflowConditionColumns(val type: String, val payload: String)
+
+private fun WorkflowCondition.toWorkflowConditionColumns(): WorkflowConditionColumns = when (this) {
+  is WorkflowCondition.PriorityAtLeast -> WorkflowConditionColumns("PRIORITY_AT_LEAST", workflowGson.toJson(this))
+  is WorkflowCondition.WithinTimeWindow -> WorkflowConditionColumns("WITHIN_TIME_WINDOW", workflowGson.toJson(this))
+  is WorkflowCondition.GroupIs -> WorkflowConditionColumns("GROUP_IS", workflowGson.toJson(this))
+  is WorkflowCondition.TitleContains -> WorkflowConditionColumns("TITLE_CONTAINS", workflowGson.toJson(this))
+  is WorkflowCondition.HasTag -> WorkflowConditionColumns("HAS_TAG", workflowGson.toJson(this))
+}
+
+/** Drops (and logs) a condition it can't parse, rather than throwing - one bad condition must not
+ * take down the whole rule/conditions list; [toWorkflowConditions] already filters out nulls. */
+private fun toWorkflowCondition(columns: WorkflowConditionColumns): WorkflowCondition? = runCatching {
+  when (columns.type) {
+    "PRIORITY_AT_LEAST" -> workflowGson.fromJson(columns.payload, WorkflowCondition.PriorityAtLeast::class.java)
+    "WITHIN_TIME_WINDOW" -> workflowGson.fromJson(columns.payload, WorkflowCondition.WithinTimeWindow::class.java)
+    "GROUP_IS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.GroupIs::class.java)
+    "TITLE_CONTAINS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.TitleContains::class.java)
+    "HAS_TAG" -> workflowGson.fromJson(columns.payload, WorkflowCondition.HasTag::class.java)
+    else -> null
+  }
+}.getOrElse { e ->
+  Logger.e(FILES_TAG, "Failed to parse workflow condition, columns=$columns", e)
+  null
+}
+
+private val workflowConditionColumnsListType = object : TypeToken<List<WorkflowConditionColumns>>() {}.type
+
+private fun List<WorkflowCondition>.toConditionsPayload(): String =
+  workflowGson.toJson(map { it.toWorkflowConditionColumns() })
+
+private fun String.toWorkflowConditions(): List<WorkflowCondition> =
+  runCatching { workflowGson.fromJson<List<WorkflowConditionColumns>>(this, workflowConditionColumnsListType) }
+    .getOrNull()
+    .orEmpty()
+    .mapNotNull { toWorkflowCondition(it) }
 
 private fun ReminderV2Json.toDomain(): ReminderV2 = ReminderV2(
   uuId = uuId,
@@ -389,6 +578,7 @@ private fun toReminderAction(type: String, target: String, subject: String): Rem
 
 private val jsonDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 private val recurrenceGson = Gson()
+private val workflowGson = Gson()
 private const val FILES_TAG = "DataConverter"
 
 private fun GroupV2.toJson(): GroupV2Json {
@@ -540,6 +730,48 @@ private fun RecurrenceRule.toColumns(): Pair<String, String> = when (this) {
   is RecurrenceRule.LocationEnter -> "LOCATION_ENTER" to ""
   is RecurrenceRule.LocationExit -> "LOCATION_EXIT" to ""
   is RecurrenceRule.ICalendar -> "ICALENDAR" to recurrenceGson.toJson(this)
+}
+
+internal fun WorkflowRule.toJson(): WorkflowRuleJson {
+  val (scopeType, scopeId) = scope.toWorkflowScopeColumns()
+  val (triggerType, triggerPayload) = trigger.toColumns()
+  val (actionType, actionPayload) = action.toColumns()
+  return WorkflowRuleJson(
+    uuId = uuId,
+    title = title,
+    templateId = templateId,
+    scopeType = scopeType,
+    scopeId = scopeId,
+    triggerType = triggerType,
+    triggerPayload = triggerPayload,
+    conditionsPayload = conditions.toConditionsPayload(),
+    actionType = actionType,
+    actionPayload = actionPayload,
+    isEnabled = isEnabled,
+    createdAt = createdAt.format(jsonDateTimeFormatter),
+    lastRunAt = lastRunAt?.format(jsonDateTimeFormatter),
+    version = version
+  )
+}
+
+internal fun WorkflowTemplate.toJson(): WorkflowTemplateJson {
+  val (triggerType, triggerPayload) = trigger.toColumns()
+  val (actionType, actionPayload) = action.toColumns()
+  return WorkflowTemplateJson(
+    id = id,
+    title = title,
+    description = description,
+    category = category.name,
+    supportedScopeTypes = supportedScopeTypes.map { it.name },
+    triggerType = triggerType,
+    triggerPayload = triggerPayload,
+    actionType = actionType,
+    actionPayload = actionPayload,
+    isBuiltIn = isBuiltIn,
+    useCount = useCount,
+    createdAt = createdAt.format(jsonDateTimeFormatter),
+    version = version
+  )
 }
 
 private fun ReminderAction.toColumns(): Triple<String, String, String> = when (this) {

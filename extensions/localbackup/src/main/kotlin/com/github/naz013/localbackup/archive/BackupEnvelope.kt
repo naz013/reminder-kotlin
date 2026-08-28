@@ -9,6 +9,8 @@ import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineExecutionRecord
+import com.github.naz013.domain.workflow.WorkflowRule
+import com.github.naz013.domain.workflow.WorkflowTemplate
 
 /**
  * Notes are intentionally excluded from v1 - they bundle image attachments through a dedicated
@@ -24,9 +26,12 @@ data class BackupEnvelope(
   val tags: List<Tag> = emptyList(),
   val tagAssignments: List<TagAssignment> = emptyList(),
   val routines: List<Routine> = emptyList(),
-  val routineExecutions: List<RoutineExecutionRecord> = emptyList()
+  val routineExecutions: List<RoutineExecutionRecord> = emptyList(),
+  val workflowRules: List<WorkflowRule> = emptyList(),
+  val workflowTemplates: List<WorkflowTemplate> = emptyList()
 ) {
   fun isEmpty(): Boolean =
     reminders.isEmpty() && groups.isEmpty() && birthdays.isEmpty() && places.isEmpty() && presets.isEmpty() &&
-      tags.isEmpty() && tagAssignments.isEmpty() && routines.isEmpty() && routineExecutions.isEmpty()
+      tags.isEmpty() && tagAssignments.isEmpty() && routines.isEmpty() && routineExecutions.isEmpty() &&
+      workflowRules.isEmpty() && workflowTemplates.isEmpty()
 }

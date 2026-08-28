@@ -1226,4 +1226,26 @@
     <string name="repeats_until">Si ripete fino al %1$s</string>
     <string name="reminder_triggered_times">Attivato %1$d volte</string>
     <string name="reminder_snoozed_times">Posticipato %1$d volte</string>
+    <string name="workflow_rules_for_reminder">Regole per questo promemoria</string>
+    <string name="workflow_apply_to_reminder">Applica al promemoria</string>
+    <string name="workflow_action_purge_reminder">Elimina definitivamente il promemoria</string>
+    <string name="workflow_weekly_summary_title">Riepilogo settimanale</string>
+    <string name="workflow_weekly_summary_body">Hai completato %1$d promemoria questa settimana.</string>
+    <string name="workflow_trigger_schedule_reached">Orario pianificato raggiunto</string>
+    <string name="workflow_action_clear_notification_override">Cancella override notifica</string>
+    <string name="workflow_builder_starts_on">Inizia il</string>
+    <string name="workflow_builder_ends_on">Termina il</string>
+    <string name="workflow_builder_revert_on_end_date">Ripristina alla data di fine</string>
+    <string name="workflow_trigger_reminder_created">Il promemoria viene creato</string>
+    <string name="workflow_condition_title_contains">Il titolo contiene</string>
+    <string name="workflow_action_move_to_group">Sposta in un altro gruppo</string>
+    <string name="workflow_builder_title_contains_hint">Parola chiave</string>
+    <string name="workflow_action_send_broadcast_intent">Invia intent broadcast</string>
+    <string name="workflow_builder_broadcast_action_hint">Azione dell\'intent</string>
+    <string name="workflow_already_applied">Già applicato</string>
+    <string name="workflow_condition_has_tag">Ha tag</string>
+    <string name="workflow_action_apply_tag">Aggiungi tag</string>
+    <string name="workflow_action_remove_tag">Rimuovi tag</string>
+    <string name="workflow_builder_select_tag">Seleziona un tag</string>
+    <string name="workflow_builder_no_tags">Nessun tag disponibile. Crea prima un tag.</string>
 </resources>

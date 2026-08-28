@@ -1,7 +1,10 @@
 package com.github.naz013.logic.workflow
 
+import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
@@ -9,6 +12,7 @@ import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
@@ -43,21 +47,29 @@ class WorkflowEngine(
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val reminderV2Repository: ReminderV2Repository,
   @Suppress("unused") private val groupV2Repository: GroupV2Repository,
-  private val workScheduler: WorkScheduler
+  private val workScheduler: WorkScheduler,
+  private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase,
+  private val broadcastIntentSender: BroadcastIntentSender,
+  private val tagAssignmentRepository: TagAssignmentRepository
 ) {
 
-  /** Archives every completed reminder older than the threshold of any enabled
-   * [WorkflowTrigger.ReminderAgeExceeded] rule in scope for it. [now] defaults to the real
-   * current time (this device's local zone); tests inject a fixed value instead. Converted to
-   * UTC before comparing, since [referenceDateTime] reads `ReminderV2.schedule` fields, which are
-   * stored UTC-zoned - this module has no `DateTimeManager` dependency (pure Kotlin/JVM), so the
-   * zone conversion is done directly here rather than via that shared helper. */
+  /** Runs every enabled [WorkflowTrigger.ReminderAgeExceeded] rule in scope against every
+   * completed reminder older than its threshold, whether already archived or not - this trigger
+   * powers both [WorkflowAction.ArchiveReminder] (targets not-yet-archived reminders; re-applying
+   * it to an already-archived one is a harmless no-op) and [WorkflowAction.PurgeReminder] (targets
+   * already-archived reminders, e.g. a "delete 90+ days after archiving" rule chained after the
+   * 30-day archive rule). [now] defaults to the real current time (this device's local zone);
+   * tests inject a fixed value instead. Converted to UTC before comparing, since
+   * [referenceDateTime] reads `ReminderV2.schedule` fields, which are stored UTC-zoned - this
+   * module has no `DateTimeManager` dependency (pure Kotlin/JVM), so the zone conversion is done
+   * directly here rather than via that shared helper. */
   suspend fun runAgeBasedRules(now: LocalDateTime = LocalDateTime.now()): List<PendingWorkflowAction> {
     val rules = workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_REMINDER_AGE_EXCEEDED)
       .filter { it.isEnabled }
     if (rules.isEmpty()) return emptyList()
 
-    val completedReminders = reminderV2Repository.getAll(active = false, removed = false)
+    val completedReminders = reminderV2Repository.getAll(active = false, removed = false) +
+      reminderV2Repository.getAll(active = false, removed = true)
     val nowUtc = now.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()
 
     val pending = mutableListOf<PendingWorkflowAction>()
@@ -65,7 +77,6 @@ class WorkflowEngine(
       val trigger = rule.trigger as? WorkflowTrigger.ReminderAgeExceeded ?: continue
       val cutoff = nowUtc.minusDays(trigger.days.toLong())
       completedReminders
-        .asSequence()
         .filter { qualifies(it, rule, now) }
         .filter { referenceDateTime(it).isBefore(cutoff) }
         .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
@@ -98,6 +109,19 @@ class WorkflowEngine(
     reminderV2Repository.getByGroupId(groupId)
       .filter { !it.isActive && !it.isRemoved && matchesConditions(it, rule.conditions, now) }
       .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
+  }
+
+  /** Fires every enabled, in-scope [WorkflowTrigger.ReminderCreated] rule for [reminderId] - see
+   * `SaveReminderUseCase` for how "created" (as opposed to an edit of an existing reminder) is
+   * detected. Powers keyword-based auto-grouping. */
+  suspend fun runReminderCreatedRules(
+    reminderId: String,
+    now: LocalDateTime = LocalDateTime.now()
+  ): List<PendingWorkflowAction> {
+    val reminder = reminderV2Repository.getById(reminderId) ?: return emptyList()
+    val rules = workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_REMINDER_CREATED)
+      .filter { it.isEnabled && qualifies(reminder, it, now) }
+    return rules.mapNotNull { apply(it.action, reminder) }
   }
 
   /** Fires every enabled, in-scope [WorkflowTrigger.ReminderCompleted] rule for [reminderId]. */
@@ -170,12 +194,87 @@ class WorkflowEngine(
     for (rule in rules) {
       val trigger = rule.trigger as? WorkflowTrigger.ReminderUnacknowledgedFor ?: continue
       shownReminders
-        .asSequence()
         .filter { qualifies(it, rule, now) }
         .filter { reminder -> !reminder.lastShownAt!!.plusMinutes(trigger.minutes.toLong()).isAfter(nowUtc) }
         .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
     }
     return pending
+  }
+
+  /** Fires every enabled [WorkflowTrigger.ScheduleReached] rule whose wall-clock time has passed -
+   * [ScheduleRecurrence.ONCE] fires exactly once ([WorkflowRule.lastRunAt] guards against
+   * re-firing), [ScheduleRecurrence.WEEKLY] re-fires roughly every 7 days after that. Checked once
+   * a day by the same daily poll that runs [runAgeBasedRules]/[runGroupCompletionRules] (see
+   * `WorkflowTriggerRunner.runDailyPolling`), so it's not exact-to-the-minute - consistent with
+   * this engine's other day-granularity triggers. Unlike every other trigger, this one isn't fired
+   * for a specific reminder that matched something - [WorkflowAction.ApplyNotificationOverride]/
+   * [WorkflowAction.ClearNotificationOverride] apply to every currently-active reminder in
+   * [WorkflowRule.scope] (a one-time bulk write, e.g. powering vacation-mode start/end rules) and
+   * [WorkflowAction.RunBackgroundTask] just enqueues; every other action is a no-op (see
+   * [applyScheduledAction]). Always returns an empty list - kept as `List<PendingWorkflowAction>`
+   * only so [WorkflowTriggerRunner.runDailyPolling] can combine it with the other daily-poll
+   * results uniformly. */
+  suspend fun runScheduleRules(now: LocalDateTime = LocalDateTime.now()): List<PendingWorkflowAction> {
+    workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_SCHEDULE_REACHED)
+      .filter { it.isEnabled }
+      .forEach { rule -> fireScheduleRuleIfDue(rule, now) }
+    return emptyList()
+  }
+
+  private suspend fun fireScheduleRuleIfDue(rule: WorkflowRule, now: LocalDateTime) {
+    val trigger = rule.trigger as? WorkflowTrigger.ScheduleReached ?: return
+    if (!isScheduleDue(trigger, rule.lastRunAt, now)) return
+    applyScheduledAction(rule)
+    saveWorkflowRuleUseCase(rule.copy(lastRunAt = now))
+  }
+
+  private fun isScheduleDue(
+    trigger: WorkflowTrigger.ScheduleReached,
+    lastRunAt: LocalDateTime?,
+    now: LocalDateTime
+  ): Boolean {
+    if (now.isBefore(trigger.atDateTime)) return false
+    return when (trigger.recurrence) {
+      ScheduleRecurrence.ONCE -> lastRunAt == null
+      ScheduleRecurrence.WEEKLY -> lastRunAt == null || !lastRunAt.plusDays(DAYS_PER_WEEK).isAfter(now)
+    }
+  }
+
+  private suspend fun applyScheduledAction(rule: WorkflowRule) {
+    when (val action = rule.action) {
+      is WorkflowAction.RunBackgroundTask ->
+        workScheduler.enqueue(WorkRequest(taskKey = action.taskKey, tag = "workflow-${action.taskKey}"))
+
+      is WorkflowAction.ApplyNotificationOverride ->
+        remindersInScope(rule.scope).forEach { reminderV2Repository.save(it.copy(notification = action.override)) }
+
+      is WorkflowAction.ClearNotificationOverride ->
+        remindersInScope(rule.scope).forEach {
+          reminderV2Repository.save(it.copy(notification = NotificationSettingsOverride()))
+        }
+
+      is WorkflowAction.SendBroadcastIntent -> broadcastIntentSender.send(action.action, action.extras)
+
+      is WorkflowAction.ArchiveReminder,
+      is WorkflowAction.PurgeReminder,
+      is WorkflowAction.CompleteReminder,
+      is WorkflowAction.ActivateReminder,
+      is WorkflowAction.MoveToGroup,
+      is WorkflowAction.ApplyTag,
+      is WorkflowAction.RemoveTag -> Unit // not reminder-scoped, so not supported here yet
+    }
+  }
+
+  /** Every currently-active, not-removed reminder [scope] covers - the pool
+   * [WorkflowAction.ApplyNotificationOverride]/[WorkflowAction.ClearNotificationOverride] bulk-write
+   * when fired by a [WorkflowTrigger.ScheduleReached] rule. Only active reminders, since a
+   * completed/archived one won't fire a notification anyway. */
+  private suspend fun remindersInScope(scope: WorkflowScope): List<ReminderV2> = when (scope) {
+    is WorkflowScope.Global -> reminderV2Repository.getAll(active = true, removed = false)
+    is WorkflowScope.ForGroup ->
+      reminderV2Repository.getByGroupId(scope.groupId).filter { it.isActive && !it.isRemoved }
+    is WorkflowScope.ForReminder ->
+      listOfNotNull(reminderV2Repository.getById(scope.reminderId)?.takeIf { it.isActive && !it.isRemoved })
   }
 
   private fun referenceDateTime(reminder: ReminderV2): LocalDateTime =
@@ -189,10 +288,10 @@ class WorkflowEngine(
 
   /** Whether [reminder] is both in [WorkflowRule.scope] and passes every one of its
    * [WorkflowRule.conditions] (an AND-chain). */
-  private fun qualifies(reminder: ReminderV2, rule: WorkflowRule, now: LocalDateTime): Boolean =
+  private suspend fun qualifies(reminder: ReminderV2, rule: WorkflowRule, now: LocalDateTime): Boolean =
     isInScope(reminder, rule.scope) && matchesConditions(reminder, rule.conditions, now)
 
-  private fun matchesConditions(
+  private suspend fun matchesConditions(
     reminder: ReminderV2,
     conditions: List<WorkflowCondition>,
     now: LocalDateTime
@@ -211,6 +310,12 @@ class WorkflowEngine(
       }
 
       is WorkflowCondition.GroupIs -> reminder.groupId == condition.groupId
+
+      is WorkflowCondition.TitleContains -> reminder.summary.contains(condition.text, ignoreCase = true)
+
+      is WorkflowCondition.HasTag ->
+        tagAssignmentRepository.getTagsForItem(reminder.uuId, TaggedItemType.REMINDER)
+          .any { it.id == condition.tagId }
     }
   }
 
@@ -221,8 +326,38 @@ class WorkflowEngine(
         null
       }
 
+      is WorkflowAction.PurgeReminder -> {
+        reminderV2Repository.delete(reminder.uuId)
+        null
+      }
+
       is WorkflowAction.ApplyNotificationOverride -> {
         reminderV2Repository.save(reminder.copy(notification = action.override))
+        null
+      }
+
+      is WorkflowAction.ClearNotificationOverride -> {
+        reminderV2Repository.save(reminder.copy(notification = NotificationSettingsOverride()))
+        null
+      }
+
+      is WorkflowAction.MoveToGroup -> {
+        reminderV2Repository.save(reminder.copy(groupId = action.groupId))
+        null
+      }
+
+      is WorkflowAction.ApplyTag -> {
+        tagAssignmentRepository.attach(reminder.uuId, TaggedItemType.REMINDER, action.tagId)
+        null
+      }
+
+      is WorkflowAction.RemoveTag -> {
+        tagAssignmentRepository.detach(reminder.uuId, TaggedItemType.REMINDER, action.tagId)
+        null
+      }
+
+      is WorkflowAction.SendBroadcastIntent -> {
+        broadcastIntentSender.send(action.action, action.extras)
         null
       }
 
@@ -238,6 +373,7 @@ class WorkflowEngine(
     }
 
   companion object {
+    private const val TRIGGER_TYPE_REMINDER_CREATED = "REMINDER_CREATED"
     private const val TRIGGER_TYPE_REMINDER_COMPLETED = "REMINDER_COMPLETED"
     private const val TRIGGER_TYPE_REMINDER_SNOOZED_N_TIMES = "REMINDER_SNOOZED_N_TIMES"
     private const val TRIGGER_TYPE_GROUP_ALL_COMPLETED = "GROUP_ALL_COMPLETED"
@@ -245,5 +381,7 @@ class WorkflowEngine(
     private const val TRIGGER_TYPE_LOCATION_EXITED = "LOCATION_EXITED"
     private const val TRIGGER_TYPE_REMINDER_AGE_EXCEEDED = "REMINDER_AGE_EXCEEDED"
     private const val TRIGGER_TYPE_REMINDER_UNACKNOWLEDGED_FOR = "REMINDER_UNACKNOWLEDGED_FOR"
+    private const val TRIGGER_TYPE_SCHEDULE_REACHED = "SCHEDULE_REACHED"
+    private const val DAYS_PER_WEEK = 7L
   }
 }

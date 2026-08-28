@@ -17,19 +17,27 @@ import com.github.naz013.domain.workflow.WorkflowTrigger
 fun WorkflowTemplate.isExecutable(): Boolean = isTriggerImplemented(trigger) && isActionImplemented(action)
 
 private fun isTriggerImplemented(trigger: WorkflowTrigger): Boolean = when (trigger) {
+  is WorkflowTrigger.ReminderCreated,
   is WorkflowTrigger.ReminderCompleted,
   is WorkflowTrigger.ReminderSnoozedNTimes,
   is WorkflowTrigger.GroupAllCompleted,
   is WorkflowTrigger.LocationEntered,
   is WorkflowTrigger.LocationExited,
   is WorkflowTrigger.ReminderAgeExceeded,
-  is WorkflowTrigger.ReminderUnacknowledgedFor -> true
+  is WorkflowTrigger.ReminderUnacknowledgedFor,
+  is WorkflowTrigger.ScheduleReached -> true
 }
 
 private fun isActionImplemented(action: WorkflowAction): Boolean = when (action) {
   is WorkflowAction.ArchiveReminder,
   is WorkflowAction.CompleteReminder,
+  is WorkflowAction.PurgeReminder,
   is WorkflowAction.ApplyNotificationOverride,
+  is WorkflowAction.ClearNotificationOverride,
   is WorkflowAction.ActivateReminder,
-  is WorkflowAction.RunBackgroundTask -> true
+  is WorkflowAction.MoveToGroup,
+  is WorkflowAction.SendBroadcastIntent,
+  is WorkflowAction.RunBackgroundTask,
+  is WorkflowAction.ApplyTag,
+  is WorkflowAction.RemoveTag -> true
 }

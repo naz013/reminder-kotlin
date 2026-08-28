@@ -1226,4 +1226,26 @@
     <string name="repeats_until">Opakuje se do %1$s</string>
     <string name="reminder_triggered_times">Spuštěno %1$dx</string>
     <string name="reminder_snoozed_times">Odloženo %1$dx</string>
+    <string name="workflow_rules_for_reminder">Pravidla pro tuto připomínku</string>
+    <string name="workflow_apply_to_reminder">Použít pro připomínku</string>
+    <string name="workflow_action_purge_reminder">Trvale smazat připomínku</string>
+    <string name="workflow_weekly_summary_title">Týdenní souhrn</string>
+    <string name="workflow_weekly_summary_body">Tento týden jste dokončili %1$d připomínek.</string>
+    <string name="workflow_trigger_schedule_reached">Naplánovaný čas nastal</string>
+    <string name="workflow_action_clear_notification_override">Vymazat přepsání oznámení</string>
+    <string name="workflow_builder_starts_on">Začíná dne</string>
+    <string name="workflow_builder_ends_on">Končí dne</string>
+    <string name="workflow_builder_revert_on_end_date">Vrátit při datu ukončení</string>
+    <string name="workflow_trigger_reminder_created">Připomínka je vytvořena</string>
+    <string name="workflow_condition_title_contains">Název obsahuje</string>
+    <string name="workflow_action_move_to_group">Přesunout do jiné skupiny</string>
+    <string name="workflow_builder_title_contains_hint">Klíčové slovo</string>
+    <string name="workflow_action_send_broadcast_intent">Odeslat broadcast intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Akce intentu</string>
+    <string name="workflow_already_applied">Již použito</string>
+    <string name="workflow_condition_has_tag">Má štítek</string>
+    <string name="workflow_action_apply_tag">Přidat štítek</string>
+    <string name="workflow_action_remove_tag">Odebrat štítek</string>
+    <string name="workflow_builder_select_tag">Vyberte štítek</string>
+    <string name="workflow_builder_no_tags">Nejsou k dispozici žádné štítky. Nejprve vytvořte štítek.</string>
 </resources>

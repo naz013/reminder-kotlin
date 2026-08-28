@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +38,9 @@ import com.github.naz013.ui.common.compose.foundation.component.NumberStepperFie
 import com.github.naz013.ui.common.compose.foundation.component.SettingsCheckboxItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 private data class TriggerOption(val id: Int, val template: WorkflowTrigger, val scopeTypes: List<WorkflowScopeType>)
 
@@ -48,12 +52,19 @@ private val TRIGGER_OPTIONS = listOf(
   TriggerOption(5, WorkflowTrigger.LocationExited, listOf(WorkflowScopeType.REMINDER)),
   TriggerOption(6, WorkflowTrigger.ReminderAgeExceeded(days = 30), WorkflowScopeType.entries),
   TriggerOption(7, WorkflowTrigger.ReminderUnacknowledgedFor(minutes = 30), WorkflowScopeType.entries),
+  TriggerOption(
+    8,
+    WorkflowTrigger.ScheduleReached(atDateTime = LocalDateTime.now().plusDays(1)),
+    WorkflowScopeType.entries
+  ),
+  TriggerOption(9, WorkflowTrigger.ReminderCreated, WorkflowScopeType.entries),
 )
 
 private fun needsParams(trigger: WorkflowTrigger): Boolean = when (trigger) {
   is WorkflowTrigger.ReminderSnoozedNTimes,
   is WorkflowTrigger.ReminderAgeExceeded,
-  is WorkflowTrigger.ReminderUnacknowledgedFor -> true
+  is WorkflowTrigger.ReminderUnacknowledgedFor,
+  is WorkflowTrigger.ScheduleReached -> true
   else -> false
 }
 
@@ -130,7 +141,58 @@ private fun TriggerParamForm(trigger: WorkflowTrigger, onSave: (WorkflowTrigger)
       )
     }
 
+    is WorkflowTrigger.ScheduleReached -> {
+      var dateTime by remember { mutableStateOf<LocalDateTime?>(null) }
+      Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        DateTimePickerRow(
+          label = stringResource(R.string.workflow_builder_starts_on),
+          dateTime = dateTime,
+          onDateTimePicked = { dateTime = it },
+        )
+        Button(
+          onClick = {
+            dateTime?.let { onSave(WorkflowTrigger.ScheduleReached(atDateTime = it, recurrence = trigger.recurrence)) }
+          },
+          enabled = dateTime != null,
+          modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        ) {
+          Text(stringResource(R.string.save))
+        }
+      }
+    }
+
     else -> Unit
+  }
+}
+
+private val dateTimePickerValueFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy HH:mm")
+
+/** A tap-to-pick "date, then time" row - the [label] title plus the picked value (or a
+ * placeholder), used for [WorkflowTrigger.ScheduleReached]'s own start time and (from
+ * [WorkflowRuleBuilderScreen]) a vacation-mode rule's end time. Doesn't include a save/confirm
+ * control of its own - callers commit the picked value however fits their own form. */
+@Composable
+internal fun DateTimePickerRow(
+  modifier: Modifier = Modifier,
+  label: String,
+  dateTime: LocalDateTime?,
+  onDateTimePicked: (LocalDateTime) -> Unit,
+) {
+  val dateTimePicker = rememberDateTimePicker()
+  Column(modifier = modifier) {
+    Text(text = label, style = MaterialTheme.typography.titleSmall)
+    SettingsItem(
+      title = dateTime?.format(dateTimePickerValueFormatter) ?: stringResource(R.string.workflow_builder_not_set),
+      onClick = {
+        val initialDate = (dateTime ?: LocalDateTime.now()).toLocalDate()
+        val initialTime = (dateTime ?: LocalDateTime.now()).toLocalTime()
+        dateTimePicker.showDatePicker(date = initialDate, title = label) { date ->
+          dateTimePicker.showTimePicker(time = initialTime, title = label) { time ->
+            onDateTimePicked(LocalDateTime.of(date, time))
+          }
+        }
+      },
+    )
   }
 }
 
@@ -164,6 +226,8 @@ private val CONDITION_OPTIONS = listOf(
   WorkflowCondition.PriorityAtLeast(ReminderPriority.HIGH),
   WorkflowCondition.WithinTimeWindow(fromMinuteOfDay = 8 * 60, toMinuteOfDay = 22 * 60),
   WorkflowCondition.GroupIs(groupId = ""),
+  WorkflowCondition.TitleContains(text = ""),
+  WorkflowCondition.HasTag(tagId = ""),
 )
 
 /** Type picker + inline param sub-form for one "If" slot - used both to add a new condition and
@@ -172,6 +236,7 @@ private val CONDITION_OPTIONS = listOf(
 @Composable
 internal fun WorkflowConditionPickerSheet(
   groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption>,
   initial: WorkflowCondition?,
   onDismiss: () -> Unit,
   onConfirm: (WorkflowCondition) -> Unit,
@@ -193,7 +258,7 @@ internal fun WorkflowConditionPickerSheet(
         modifier = Modifier.padding(bottom = 16.dp),
       )
     } else {
-      ConditionParamForm(condition = current, groups = groups, onSave = onConfirm)
+      ConditionParamForm(condition = current, groups = groups, tags = tags, onSave = onConfirm)
     }
   }
 }
@@ -202,6 +267,7 @@ internal fun WorkflowConditionPickerSheet(
 private fun ConditionParamForm(
   condition: WorkflowCondition,
   groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption>,
   onSave: (WorkflowCondition) -> Unit,
 ) {
   when (condition) {
@@ -272,6 +338,47 @@ private fun ConditionParamForm(
         )
       }
     }
+
+    is WorkflowCondition.TitleContains -> {
+      var text by remember { mutableStateOf(condition.text) }
+      Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        OutlinedTextField(
+          value = text,
+          onValueChange = { text = it },
+          label = { Text(stringResource(R.string.workflow_builder_title_contains_hint)) },
+          singleLine = true,
+          modifier = Modifier.fillMaxWidth(),
+        )
+        Button(
+          onClick = { onSave(WorkflowCondition.TitleContains(text)) },
+          enabled = text.isNotBlank(),
+          modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        ) {
+          Text(stringResource(R.string.save))
+        }
+      }
+    }
+
+    is WorkflowCondition.HasTag -> {
+      if (tags.isEmpty()) {
+        Text(
+          text = stringResource(R.string.workflow_builder_no_tags),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+        )
+      } else {
+        Text(
+          text = stringResource(R.string.workflow_builder_select_tag),
+          style = MaterialTheme.typography.titleSmall,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        SelectableTextList(
+          items = tags.map { it.id to it.title },
+          onSelect = { id -> onSave(WorkflowCondition.HasTag(id)) },
+        )
+      }
+    }
   }
 }
 
@@ -292,12 +399,22 @@ private fun TimeOfDayFields(
 private val ACTION_OPTIONS = listOf(
   WorkflowAction.ArchiveReminder,
   WorkflowAction.CompleteReminder,
+  WorkflowAction.PurgeReminder,
   WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride()),
   WorkflowAction.ActivateReminder(reminderId = ""),
+  WorkflowAction.MoveToGroup(groupId = ""),
+  WorkflowAction.SendBroadcastIntent(action = ""),
+  WorkflowAction.ApplyTag(tagId = ""),
+  WorkflowAction.RemoveTag(tagId = ""),
 )
 
 private fun needsParams(action: WorkflowAction): Boolean =
-  action is WorkflowAction.ApplyNotificationOverride || action is WorkflowAction.ActivateReminder
+  action is WorkflowAction.ApplyNotificationOverride ||
+    action is WorkflowAction.ActivateReminder ||
+    action is WorkflowAction.MoveToGroup ||
+    action is WorkflowAction.SendBroadcastIntent ||
+    action is WorkflowAction.ApplyTag ||
+    action is WorkflowAction.RemoveTag
 
 /** Type picker + inline param sub-form for the "Then" slot. [WorkflowAction.RunBackgroundTask] is
  * deliberately excluded - its `taskKey` is an internal Koin DI qualifier with no user-facing
@@ -306,6 +423,8 @@ private fun needsParams(action: WorkflowAction): Boolean =
 @Composable
 internal fun WorkflowActionPickerSheet(
   reminders: List<UiWorkflowReminderOption>,
+  groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption>,
   onDismiss: () -> Unit,
   onConfirm: (WorkflowAction) -> Unit,
 ) {
@@ -329,7 +448,7 @@ internal fun WorkflowActionPickerSheet(
         modifier = Modifier.padding(bottom = 16.dp),
       )
     } else {
-      ActionParamForm(action = current, reminders = reminders, onSave = onConfirm)
+      ActionParamForm(action = current, reminders = reminders, groups = groups, tags = tags, onSave = onConfirm)
     }
   }
 }
@@ -338,6 +457,8 @@ internal fun WorkflowActionPickerSheet(
 private fun ActionParamForm(
   action: WorkflowAction,
   reminders: List<UiWorkflowReminderOption>,
+  groups: List<UiWorkflowGroupOption>,
+  tags: List<UiWorkflowTagOption>,
   onSave: (WorkflowAction) -> Unit,
 ) {
   when (action) {
@@ -364,6 +485,70 @@ private fun ActionParamForm(
         SelectableTextList(
           items = reminders.map { it.id to it.title },
           onSelect = { id -> onSave(WorkflowAction.ActivateReminder(id)) },
+        )
+      }
+    }
+
+    is WorkflowAction.MoveToGroup -> {
+      if (groups.isEmpty()) {
+        Text(
+          text = stringResource(R.string.workflow_builder_no_groups),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+        )
+      } else {
+        Text(
+          text = stringResource(R.string.workflow_builder_select_group),
+          style = MaterialTheme.typography.titleSmall,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        SelectableTextList(
+          items = groups.map { it.id to it.title },
+          onSelect = { id -> onSave(WorkflowAction.MoveToGroup(id)) },
+        )
+      }
+    }
+
+    is WorkflowAction.SendBroadcastIntent -> {
+      var actionText by remember { mutableStateOf(action.action) }
+      Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        OutlinedTextField(
+          value = actionText,
+          onValueChange = { actionText = it },
+          label = { Text(stringResource(R.string.workflow_builder_broadcast_action_hint)) },
+          singleLine = true,
+          modifier = Modifier.fillMaxWidth(),
+        )
+        Button(
+          onClick = { onSave(WorkflowAction.SendBroadcastIntent(actionText)) },
+          enabled = actionText.isNotBlank(),
+          modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        ) {
+          Text(stringResource(R.string.save))
+        }
+      }
+    }
+
+    is WorkflowAction.ApplyTag, is WorkflowAction.RemoveTag -> {
+      if (tags.isEmpty()) {
+        Text(
+          text = stringResource(R.string.workflow_builder_no_tags),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+        )
+      } else {
+        Text(
+          text = stringResource(R.string.workflow_builder_select_tag),
+          style = MaterialTheme.typography.titleSmall,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        SelectableTextList(
+          items = tags.map { it.id to it.title },
+          onSelect = { id ->
+            onSave(if (action is WorkflowAction.ApplyTag) WorkflowAction.ApplyTag(id) else WorkflowAction.RemoveTag(id))
+          },
         )
       }
     }

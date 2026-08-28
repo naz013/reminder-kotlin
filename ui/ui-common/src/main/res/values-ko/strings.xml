@@ -1226,4 +1226,26 @@
     <string name="repeats_until">%1$s까지 반복</string>
     <string name="reminder_triggered_times">%1$d회 실행됨</string>
     <string name="reminder_snoozed_times">%1$d회 다시 알림</string>
+    <string name="workflow_rules_for_reminder">이 리마인더의 규칙</string>
+    <string name="workflow_apply_to_reminder">리마인더에 적용</string>
+    <string name="workflow_action_purge_reminder">미리 알림 영구 삭제</string>
+    <string name="workflow_weekly_summary_title">주간 요약</string>
+    <string name="workflow_weekly_summary_body">이번 주에 %1$d개의 미리 알림을 완료했습니다.</string>
+    <string name="workflow_trigger_schedule_reached">예약된 시간 도달</string>
+    <string name="workflow_action_clear_notification_override">알림 재정의 지우기</string>
+    <string name="workflow_builder_starts_on">시작일</string>
+    <string name="workflow_builder_ends_on">종료일</string>
+    <string name="workflow_builder_revert_on_end_date">종료일에 되돌리기</string>
+    <string name="workflow_trigger_reminder_created">미리 알림이 생성됨</string>
+    <string name="workflow_condition_title_contains">제목에 포함</string>
+    <string name="workflow_action_move_to_group">다른 그룹으로 이동</string>
+    <string name="workflow_builder_title_contains_hint">키워드</string>
+    <string name="workflow_action_send_broadcast_intent">브로드캐스트 인텐트 전송</string>
+    <string name="workflow_builder_broadcast_action_hint">인텐트 액션</string>
+    <string name="workflow_already_applied">이미 적용됨</string>
+    <string name="workflow_condition_has_tag">태그 있음</string>
+    <string name="workflow_action_apply_tag">태그 추가</string>
+    <string name="workflow_action_remove_tag">태그 제거</string>
+    <string name="workflow_builder_select_tag">태그 선택</string>
+    <string name="workflow_builder_no_tags">사용 가능한 태그가 없습니다. 먼저 태그를 만드세요.</string>
 </resources>

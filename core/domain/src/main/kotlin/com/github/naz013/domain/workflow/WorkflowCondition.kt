@@ -34,4 +34,19 @@ sealed class WorkflowCondition {
     @SerializedName("groupId")
     val groupId: String
   ) : WorkflowCondition()
+
+  /** Case-insensitive substring match against the reminder's own title - pure local text
+   * matching, no external dependency. Powers keyword-based auto-grouping paired with
+   * [WorkflowTrigger.ReminderCreated] and [WorkflowAction.MoveToGroup]. */
+  data class TitleContains(
+    @SerializedName("text")
+    val text: String
+  ) : WorkflowCondition()
+
+  /** Matches when the reminder currently has this tag attached (per
+   * [com.github.naz013.domain.TagAssignment]) - mirrors [GroupIs] but for tags. */
+  data class HasTag(
+    @SerializedName("tagId")
+    val tagId: String
+  ) : WorkflowCondition()
 }

@@ -19,6 +19,7 @@ import org.koin.core.parameter.parametersOf
 fun EntryProviderScope<NavKey>.workflowEntries(backStack: MutableList<NavKey>) {
   entry<WorkflowNavKey.Gallery> { WorkflowGalleryEntry(backStack) }
   entry<WorkflowNavKey.RulesForGroup> { key -> WorkflowRulesForGroupEntry(key, backStack) }
+  entry<WorkflowNavKey.RulesForReminder> { key -> WorkflowRulesForReminderEntry(key, backStack) }
   entry<WorkflowNavKey.Builder> { key -> WorkflowBuilderEntry(key, backStack) }
 }
 
@@ -58,6 +59,26 @@ private fun WorkflowRulesForGroupEntry(
 }
 
 @Composable
+private fun WorkflowRulesForReminderEntry(
+  key: WorkflowNavKey.RulesForReminder,
+  backStack: MutableList<NavKey>,
+) {
+  val viewModel = koinViewModel<WorkflowRulesForReminderViewModel> { parametersOf(key.reminderId) }
+  val state by viewModel.state.collectAsState()
+  WorkflowRulesForReminderScreen(
+    state = state,
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onRuleEnabledChange = viewModel::onRuleEnabledChange,
+    onDeleteRuleClick = viewModel::onDeleteRuleClick,
+    onSaveRuleAsTemplateClick = viewModel::onSaveRuleAsTemplateClick,
+    onApplyTemplateClick = viewModel::onApplyTemplateClick,
+    onCreateRuleClick = {
+      backStack.add(WorkflowNavKey.Builder(scopeType = WorkflowScopeType.REMINDER.name, scopeId = key.reminderId))
+    },
+  )
+}
+
+@Composable
 private fun WorkflowBuilderEntry(
   key: WorkflowNavKey.Builder,
   backStack: MutableList<NavKey>,
@@ -79,6 +100,8 @@ private fun WorkflowBuilderEntry(
     onRemoveConditionClick = viewModel::onRemoveConditionClick,
     onActionRowClick = viewModel::onActionRowClick,
     onRemoveActionClick = viewModel::onRemoveActionClick,
+    onRevertOnEndDateChange = viewModel::onRevertOnEndDateChange,
+    onEndDateTimeSelected = viewModel::onEndDateTimeSelected,
     onSaveClick = viewModel::onSaveClick,
     onTriggerPickerDismiss = viewModel::onTriggerPickerDismiss,
     onTriggerSelected = viewModel::onTriggerSelected,

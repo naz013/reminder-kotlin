@@ -2,6 +2,7 @@ package com.github.naz013.feature.workflow.builder
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowScope
@@ -9,14 +10,18 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
+import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDateTime
+import java.util.UUID
 
 /** Builds and saves a single [com.github.naz013.domain.workflow.WorkflowRule], either from
  * scratch or (when [editingRuleId] is non-null) editing an existing one. [scopeType]/[scopeId]
@@ -30,8 +35,10 @@ internal class WorkflowRuleBuilderViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val createWorkflowRuleUseCase: CreateWorkflowRuleUseCase,
+  private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase,
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
+  private val tagRepository: TagRepository,
 ) : ViewModel() {
 
   val state: StateFlow<WorkflowRuleBuilderState> field =
@@ -45,6 +52,7 @@ internal class WorkflowRuleBuilderViewModel(
     val groups = groupV2Repository.getAll().map { UiWorkflowGroupOption(id = it.uuId, title = it.title) }
     val reminders = reminderV2Repository.getAll(active = true, removed = false)
       .map { UiWorkflowReminderOption(id = it.uuId, title = it.summary) }
+    val tags = tagRepository.getAll().map { UiWorkflowTagOption(id = it.id, title = it.name) }
     val existingRule = editingRuleId?.let { workflowRuleRepository.getById(it) }
     withContext(dispatcherProvider.main()) {
       state.update {
@@ -52,6 +60,7 @@ internal class WorkflowRuleBuilderViewModel(
           isLoading = false,
           availableGroups = groups,
           availableReminders = reminders,
+          availableTags = tags,
           trigger = existingRule?.trigger,
           conditions = existingRule?.conditions ?: emptyList(),
           action = existingRule?.action,
@@ -123,6 +132,14 @@ internal class WorkflowRuleBuilderViewModel(
     state.update { it.copy(action = null) }
   }
 
+  fun onRevertOnEndDateChange(enabled: Boolean) {
+    state.update { it.copy(revertOnEndDate = enabled, endDateTime = if (enabled) it.endDateTime else null) }
+  }
+
+  fun onEndDateTimeSelected(dateTime: LocalDateTime) {
+    state.update { it.copy(endDateTime = dateTime) }
+  }
+
   fun onSaveClick() {
     val current = state.value
     val trigger = current.trigger ?: return
@@ -131,22 +148,49 @@ internal class WorkflowRuleBuilderViewModel(
       val editingId = editingRuleId
       if (editingId != null) {
         workflowRuleRepository.getById(editingId)?.let { existing ->
-          workflowRuleRepository.save(
+          saveWorkflowRuleUseCase(
             existing.copy(trigger = trigger, conditions = current.conditions, action = action)
           )
         }
       } else {
-        createWorkflowRuleUseCase(
-          title = autoTitle(trigger, action),
-          scope = scope(),
-          trigger = trigger,
-          conditions = current.conditions,
-          action = action,
-        )
+        saveNewRule(current, trigger, action)
       }
       withContext(dispatcherProvider.main()) {
         state.update { it.copy(didSave = true) }
       }
+    }
+  }
+
+  /** Creates the rule as configured, and - if [WorkflowRuleBuilderState.showRevertOnEndDateOption]
+   * is checked - a second, paired rule that reverts the notification override at
+   * [WorkflowRuleBuilderState.endDateTime]. Both rules share a freshly-minted id in
+   * [com.github.naz013.domain.workflow.WorkflowRule.templateId] - repurposed here as a pairing id
+   * rather than a real gallery template id, which also means neither rule offers "save as
+   * template" afterwards (see `WorkflowRule.toUi`'s `canSaveAsTemplate`), which is desirable: only
+   * half of the pair would be captured. */
+  private suspend fun saveNewRule(current: WorkflowRuleBuilderState, trigger: WorkflowTrigger, action: WorkflowAction) {
+    val endDateTime = current.endDateTime
+    val pairId = if (current.showRevertOnEndDateOption && current.revertOnEndDate && endDateTime != null) {
+      UUID.randomUUID().toString()
+    } else {
+      null
+    }
+    createWorkflowRuleUseCase(
+      title = autoTitle(trigger, action),
+      scope = scope(),
+      trigger = trigger,
+      conditions = current.conditions,
+      action = action,
+      templateId = pairId,
+    )
+    if (pairId != null && endDateTime != null) {
+      createWorkflowRuleUseCase(
+        title = autoTitle(WorkflowTrigger.ScheduleReached(endDateTime), WorkflowAction.ClearNotificationOverride),
+        scope = scope(),
+        trigger = WorkflowTrigger.ScheduleReached(atDateTime = endDateTime, recurrence = ScheduleRecurrence.ONCE),
+        action = WorkflowAction.ClearNotificationOverride,
+        templateId = pairId,
+      )
     }
   }
 
@@ -159,23 +203,32 @@ internal class WorkflowRuleBuilderViewModel(
   /** Plain, non-localized sentence for [com.github.naz013.domain.workflow.WorkflowRule.title] -
    * matches the existing precedent set by the (now-retired) hardcoded creation dialogs, whose
    * auto-generated titles were never localized either. */
-  private fun autoTitle(trigger: WorkflowTrigger, action: WorkflowAction): String {
-    val triggerText = when (trigger) {
-      is WorkflowTrigger.ReminderCompleted -> "reminder completed"
-      is WorkflowTrigger.ReminderSnoozedNTimes -> "snoozed ${trigger.count} times"
-      is WorkflowTrigger.GroupAllCompleted -> "group fully completed"
-      is WorkflowTrigger.LocationEntered -> "location entered"
-      is WorkflowTrigger.LocationExited -> "location exited"
-      is WorkflowTrigger.ReminderAgeExceeded -> "completed for ${trigger.days} days"
-      is WorkflowTrigger.ReminderUnacknowledgedFor -> "unacknowledged for ${trigger.minutes} minutes"
-    }
-    val actionText = when (action) {
-      is WorkflowAction.ArchiveReminder -> "archive it"
-      is WorkflowAction.CompleteReminder -> "complete it"
-      is WorkflowAction.ApplyNotificationOverride -> "change its notification settings"
-      is WorkflowAction.ActivateReminder -> "activate another reminder"
-      is WorkflowAction.RunBackgroundTask -> "run a background task"
-    }
-    return "When $triggerText, $actionText"
+  private fun autoTitle(trigger: WorkflowTrigger, action: WorkflowAction): String =
+    "When ${autoTitleTriggerText(trigger)}, ${autoTitleActionText(action)}"
+
+  private fun autoTitleTriggerText(trigger: WorkflowTrigger): String = when (trigger) {
+    is WorkflowTrigger.ReminderCreated -> "a reminder is created"
+    is WorkflowTrigger.ReminderCompleted -> "reminder completed"
+    is WorkflowTrigger.ReminderSnoozedNTimes -> "snoozed ${trigger.count} times"
+    is WorkflowTrigger.GroupAllCompleted -> "group fully completed"
+    is WorkflowTrigger.LocationEntered -> "location entered"
+    is WorkflowTrigger.LocationExited -> "location exited"
+    is WorkflowTrigger.ReminderAgeExceeded -> "completed for ${trigger.days} days"
+    is WorkflowTrigger.ReminderUnacknowledgedFor -> "unacknowledged for ${trigger.minutes} minutes"
+    is WorkflowTrigger.ScheduleReached -> "a scheduled time is reached"
+  }
+
+  private fun autoTitleActionText(action: WorkflowAction): String = when (action) {
+    is WorkflowAction.ArchiveReminder -> "archive it"
+    is WorkflowAction.CompleteReminder -> "complete it"
+    is WorkflowAction.PurgeReminder -> "delete it permanently"
+    is WorkflowAction.ApplyNotificationOverride -> "change its notification settings"
+    is WorkflowAction.ClearNotificationOverride -> "clear its notification override"
+    is WorkflowAction.ActivateReminder -> "activate another reminder"
+    is WorkflowAction.MoveToGroup -> "move it to another group"
+    is WorkflowAction.SendBroadcastIntent -> "send a broadcast intent"
+    is WorkflowAction.RunBackgroundTask -> "run a background task"
+    is WorkflowAction.ApplyTag -> "add a tag to it"
+    is WorkflowAction.RemoveTag -> "remove a tag from it"
   }
 }

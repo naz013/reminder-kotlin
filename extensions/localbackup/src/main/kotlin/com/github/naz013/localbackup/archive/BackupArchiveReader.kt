@@ -9,6 +9,8 @@ import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineExecutionRecord
+import com.github.naz013.domain.workflow.WorkflowRule
+import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.files.DataConverter
 import java.io.ByteArrayInputStream
 import java.io.DataInputStream
@@ -33,6 +35,8 @@ internal class BackupArchiveReader(
     val tagAssignments = mutableListOf<TagAssignment>()
     val routines = mutableListOf<Routine>()
     val routineExecutions = mutableListOf<RoutineExecutionRecord>()
+    val workflowRules = mutableListOf<WorkflowRule>()
+    val workflowTemplates = mutableListOf<WorkflowTemplate>()
 
     val count = dataInput.readInt()
     repeat(count) {
@@ -49,11 +53,16 @@ internal class BackupArchiveReader(
         is TagAssignment -> tagAssignments += item
         is Routine -> routines += item
         is RoutineExecutionRecord -> routineExecutions += item
+        is WorkflowRule -> workflowRules += item
+        is WorkflowTemplate -> workflowTemplates += item
         else -> Unit
       }
     }
 
-    return BackupEnvelope(reminders, groups, birthdays, places, presets, tags, tagAssignments, routines, routineExecutions)
+    return BackupEnvelope(
+      reminders, groups, birthdays, places, presets, tags, tagAssignments, routines, routineExecutions,
+      workflowRules, workflowTemplates
+    )
   }
 }
 

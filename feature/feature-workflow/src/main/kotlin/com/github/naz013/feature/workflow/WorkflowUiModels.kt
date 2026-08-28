@@ -18,6 +18,7 @@ internal data class UiWorkflowTemplate(
   val description: String?,
   val category: WorkflowTemplateCategory,
   val canApply: Boolean,
+  val alreadyApplied: Boolean,
 )
 
 internal fun WorkflowRule.toUi(): UiWorkflowRule = UiWorkflowRule(
@@ -27,10 +28,21 @@ internal fun WorkflowRule.toUi(): UiWorkflowRule = UiWorkflowRule(
   canSaveAsTemplate = templateId == null,
 )
 
-internal fun WorkflowTemplate.toUi(scopeType: WorkflowScopeType): UiWorkflowTemplate = UiWorkflowTemplate(
-  id = id,
-  title = title,
-  description = description,
-  category = category,
-  canApply = scopeType in supportedScopeTypes,
-)
+/** [appliedTemplateIds] are the templateIds of rules already applied in the current scope - a
+ * template already active there is offered as already-applied rather than letting the user create
+ * a duplicate rule for it (see the "Save as template"-produced [WorkflowRule.templateId] link this
+ * relies on). */
+internal fun WorkflowTemplate.toUi(
+  scopeType: WorkflowScopeType,
+  appliedTemplateIds: Set<String>,
+): UiWorkflowTemplate {
+  val alreadyApplied = id in appliedTemplateIds
+  return UiWorkflowTemplate(
+    id = id,
+    title = title,
+    description = description,
+    category = category,
+    canApply = scopeType in supportedScopeTypes && !alreadyApplied,
+    alreadyApplied = alreadyApplied,
+  )
+}

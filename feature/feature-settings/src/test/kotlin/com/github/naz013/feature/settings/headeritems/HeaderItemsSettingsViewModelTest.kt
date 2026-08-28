@@ -2,6 +2,7 @@ package com.github.naz013.feature.settings.headeritems
 
 import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.logic.routine.RoutineConfig
+import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.testing.BaseTest
 import io.mockk.every
 import io.mockk.mockk
@@ -12,10 +13,12 @@ import org.junit.Test
 class HeaderItemsSettingsViewModelTest : BaseTest() {
   private val preferences = mockk<HeaderItemsPreferences>()
   private val routineConfig = mockk<RoutineConfig>()
+  private val workflowConfig = mockk<WorkflowConfig>()
 
   private var order: List<HeaderNavigationSection> = HeaderNavigationSection.configurable
   private var disabledSections: Set<HeaderNavigationSection> = emptySet()
   private var isRoutineEnabled = true
+  private var isWorkflowEnabled = false
 
   private lateinit var viewModel: HeaderItemsSettingsViewModel
 
@@ -28,8 +31,9 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
     every { preferences.disabledSections } answers { disabledSections }
     every { preferences.disabledSections = any() } answers { disabledSections = firstArg() }
     every { routineConfig.isEnabled } answers { isRoutineEnabled }
+    every { workflowConfig.isEnabled } answers { isWorkflowEnabled }
 
-    viewModel = HeaderItemsSettingsViewModel(preferences, routineConfig)
+    viewModel = HeaderItemsSettingsViewModel(preferences, routineConfig, workflowConfig)
   }
 
   @Test
@@ -62,7 +66,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
   @Test
   fun `configurable items exclude routines when its config is disabled`() {
     isRoutineEnabled = false
-    viewModel = HeaderItemsSettingsViewModel(preferences, routineConfig)
+    viewModel = HeaderItemsSettingsViewModel(preferences, routineConfig, workflowConfig)
 
     val state = viewModel.state.value
 
@@ -72,6 +76,26 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
+      ),
+      state.configurableItems.map { it.section },
+    )
+  }
+
+  @Test
+  fun `configurable items include workflow when its config is enabled`() {
+    isWorkflowEnabled = true
+    viewModel = HeaderItemsSettingsViewModel(preferences, routineConfig, workflowConfig)
+
+    val state = viewModel.state.value
+
+    assertEquals(
+      listOf(
+        HeaderNavigationSection.NOTES,
+        HeaderNavigationSection.BIRTHDAYS,
+        HeaderNavigationSection.GOOGLE_TASKS,
+        HeaderNavigationSection.GROUPS,
+        HeaderNavigationSection.ROUTINES,
+        HeaderNavigationSection.WORKFLOW,
       ),
       state.configurableItems.map { it.section },
     )
@@ -89,7 +113,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
   @Test
   fun `onToggle re-enabling a section removes it from the disabled set`() {
     disabledSections = setOf(HeaderNavigationSection.GOOGLE_TASKS)
-    viewModel = HeaderItemsSettingsViewModel(preferences, routineConfig)
+    viewModel = HeaderItemsSettingsViewModel(preferences, routineConfig, workflowConfig)
 
     viewModel.onToggle(HeaderNavigationSection.GOOGLE_TASKS, enabled = true)
 

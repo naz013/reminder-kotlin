@@ -1226,4 +1226,26 @@
     <string name="repeats_until">Repete até %1$s</string>
     <string name="reminder_triggered_times">Acionado %1$d vezes</string>
     <string name="reminder_snoozed_times">Adiado %1$d vezes</string>
+    <string name="workflow_rules_for_reminder">Regras para este lembrete</string>
+    <string name="workflow_apply_to_reminder">Aplicar ao lembrete</string>
+    <string name="workflow_action_purge_reminder">Excluir o lembrete permanentemente</string>
+    <string name="workflow_weekly_summary_title">Resumo semanal</string>
+    <string name="workflow_weekly_summary_body">Você concluiu %1$d lembretes esta semana.</string>
+    <string name="workflow_trigger_schedule_reached">Horário agendado atingido</string>
+    <string name="workflow_action_clear_notification_override">Limpar substituição de notificação</string>
+    <string name="workflow_builder_starts_on">Começa em</string>
+    <string name="workflow_builder_ends_on">Termina em</string>
+    <string name="workflow_builder_revert_on_end_date">Reverter na data de término</string>
+    <string name="workflow_trigger_reminder_created">O lembrete é criado</string>
+    <string name="workflow_condition_title_contains">O título contém</string>
+    <string name="workflow_action_move_to_group">Mover para outro grupo</string>
+    <string name="workflow_builder_title_contains_hint">Palavra-chave</string>
+    <string name="workflow_action_send_broadcast_intent">Enviar intent de broadcast</string>
+    <string name="workflow_builder_broadcast_action_hint">Ação do intent</string>
+    <string name="workflow_already_applied">Já aplicado</string>
+    <string name="workflow_condition_has_tag">Tem etiqueta</string>
+    <string name="workflow_action_apply_tag">Adicionar etiqueta</string>
+    <string name="workflow_action_remove_tag">Remover etiqueta</string>
+    <string name="workflow_builder_select_tag">Selecione uma etiqueta</string>
+    <string name="workflow_builder_no_tags">Nenhuma etiqueta disponível. Crie uma etiqueta primeiro.</string>
 </resources>

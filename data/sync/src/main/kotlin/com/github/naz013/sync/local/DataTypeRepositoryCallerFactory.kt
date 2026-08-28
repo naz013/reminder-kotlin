@@ -9,6 +9,8 @@ import com.github.naz013.repository.RecurPresetRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.repository.WorkflowRuleRepository
+import com.github.naz013.repository.WorkflowTemplateRepository
 
 internal class DataTypeRepositoryCallerFactory(
   private val noteRepository: NoteRepository,
@@ -18,7 +20,9 @@ internal class DataTypeRepositoryCallerFactory(
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
   private val tagRepository: TagRepository,
-  private val routineRepository: RoutineRepository
+  private val routineRepository: RoutineRepository,
+  private val workflowRuleRepository: WorkflowRuleRepository,
+  private val workflowTemplateRepository: WorkflowTemplateRepository
 ) {
 
   fun getCaller(dataType: DataType): DataTypeRepositoryCaller<*> {
@@ -36,6 +40,8 @@ internal class DataTypeRepositoryCallerFactory(
       DataType.Tags -> TagRepositoryCaller(tagRepository)
       DataType.TagAssignments -> NoopRepositoryCaller()
       DataType.Routines -> RoutineRepositoryCaller(routineRepository)
+      DataType.WorkflowRules -> WorkflowRuleRepositoryCaller(workflowRuleRepository)
+      DataType.WorkflowTemplates -> WorkflowTemplateRepositoryCaller(workflowTemplateRepository)
     }
   }
 }

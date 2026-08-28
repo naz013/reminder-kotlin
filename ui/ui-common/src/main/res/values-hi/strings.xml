@@ -1228,4 +1228,26 @@
     <string name="repeats_until">%1$s तक दोहराया जाएगा</string>
     <string name="reminder_triggered_times">%1$d बार चला</string>
     <string name="reminder_snoozed_times">%1$d बार स्नूज़ किया गया</string>
+    <string name="workflow_rules_for_reminder">इस रिमाइंडर के लिए नियम</string>
+    <string name="workflow_apply_to_reminder">रिमाइंडर में लागू करें</string>
+    <string name="workflow_action_purge_reminder">रिमाइंडर स्थायी रूप से हटाएं</string>
+    <string name="workflow_weekly_summary_title">साप्ताहिक सारांश</string>
+    <string name="workflow_weekly_summary_body">आपने इस सप्ताह %1$d रिमाइंडर पूरे किए।</string>
+    <string name="workflow_trigger_schedule_reached">निर्धारित समय आ गया</string>
+    <string name="workflow_action_clear_notification_override">सूचना ओवरराइड साफ़ करें</string>
+    <string name="workflow_builder_starts_on">प्रारंभ तिथि</string>
+    <string name="workflow_builder_ends_on">समाप्ति तिथि</string>
+    <string name="workflow_builder_revert_on_end_date">समाप्ति तिथि पर वापस लौटें</string>
+    <string name="workflow_trigger_reminder_created">रिमाइंडर बनाया गया है</string>
+    <string name="workflow_condition_title_contains">शीर्षक में शामिल है</string>
+    <string name="workflow_action_move_to_group">दूसरे समूह में ले जाएं</string>
+    <string name="workflow_builder_title_contains_hint">कीवर्ड</string>
+    <string name="workflow_action_send_broadcast_intent">ब्रॉडकास्ट इंटेंट भेजें</string>
+    <string name="workflow_builder_broadcast_action_hint">इंटेंट एक्शन</string>
+    <string name="workflow_already_applied">पहले से लागू</string>
+    <string name="workflow_condition_has_tag">टैग है</string>
+    <string name="workflow_action_apply_tag">टैग जोड़ें</string>
+    <string name="workflow_action_remove_tag">टैग हटाएं</string>
+    <string name="workflow_builder_select_tag">एक टैग चुनें</string>
+    <string name="workflow_builder_no_tags">कोई टैग उपलब्ध नहीं है। पहले एक टैग बनाएं।</string>
 </resources>

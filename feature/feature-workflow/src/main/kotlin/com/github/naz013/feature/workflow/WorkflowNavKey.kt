@@ -12,6 +12,11 @@ sealed interface WorkflowNavKey : NavKey {
     val groupId: String
   ) : WorkflowNavKey
 
+  @Serializable
+  data class RulesForReminder(
+    val reminderId: String
+  ) : WorkflowNavKey
+
   /** [scopeType] is a [com.github.naz013.domain.workflow.WorkflowScopeType] name - kept as a
    * primitive here since Nav3 keys need to stay simple/serializable, not a raw sealed
    * `WorkflowScope`. [scopeId] is the group/reminder id for non-global scopes.

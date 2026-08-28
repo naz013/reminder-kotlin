@@ -23,8 +23,14 @@ class WorkflowActionDispatcher(
         reminderV2Repository.getById(action.reminderId)?.let { activateReminderUseCase(it) }
 
       is WorkflowAction.ArchiveReminder,
+      is WorkflowAction.PurgeReminder,
       is WorkflowAction.ApplyNotificationOverride,
-      is WorkflowAction.RunBackgroundTask -> Unit // the engine never returns these as pending
+      is WorkflowAction.ClearNotificationOverride,
+      is WorkflowAction.MoveToGroup,
+      is WorkflowAction.SendBroadcastIntent,
+      is WorkflowAction.RunBackgroundTask,
+      is WorkflowAction.ApplyTag,
+      is WorkflowAction.RemoveTag -> Unit // the engine never returns these as pending
     }
   }
 }

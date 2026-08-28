@@ -38,6 +38,7 @@ import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SyncReminderToCloudUseCase
+import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -92,6 +93,7 @@ internal class PreviewReminderViewModel(
   private val syncReminderToCloudUseCase: SyncReminderToCloudUseCase,
   private val googleDriveAuthManager: GoogleDriveAuthManager,
   private val dropboxAuthManager: DropboxAuthManager,
+  private val workflowConfig: WorkflowConfig,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewReminderState())
@@ -427,6 +429,7 @@ internal class PreviewReminderViewModel(
             showSyncToCloud = reminder.offlineOnly &&
               (googleDriveAuthManager.isAuthorized() || dropboxAuthManager.isAuthorized()),
             isOfflineOnly = reminder.offlineOnly,
+            workflowRulesVisible = workflowConfig.isEnabled,
           )
         }
       }

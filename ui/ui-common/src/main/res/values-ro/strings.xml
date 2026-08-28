@@ -1226,4 +1226,26 @@
     <string name="repeats_until">Se repetă până la %1$s</string>
     <string name="reminder_triggered_times">Declanșat de %1$d ori</string>
     <string name="reminder_snoozed_times">Amânat de %1$d ori</string>
+    <string name="workflow_rules_for_reminder">Reguli pentru acest memento</string>
+    <string name="workflow_apply_to_reminder">Aplicare la memento</string>
+    <string name="workflow_action_purge_reminder">Ștergere permanentă a mementoului</string>
+    <string name="workflow_weekly_summary_title">Rezumat săptămânal</string>
+    <string name="workflow_weekly_summary_body">Ai finalizat %1$d mementouri săptămâna aceasta.</string>
+    <string name="workflow_trigger_schedule_reached">Ora programată a fost atinsă</string>
+    <string name="workflow_action_clear_notification_override">Ștergere suprascriere notificare</string>
+    <string name="workflow_builder_starts_on">Începe la</string>
+    <string name="workflow_builder_ends_on">Se termină la</string>
+    <string name="workflow_builder_revert_on_end_date">Revenire la data de sfârșit</string>
+    <string name="workflow_trigger_reminder_created">Mementoul este creat</string>
+    <string name="workflow_condition_title_contains">Titlul conține</string>
+    <string name="workflow_action_move_to_group">Mutare într-un alt grup</string>
+    <string name="workflow_builder_title_contains_hint">Cuvânt cheie</string>
+    <string name="workflow_action_send_broadcast_intent">Trimite intent broadcast</string>
+    <string name="workflow_builder_broadcast_action_hint">Acțiune intent</string>
+    <string name="workflow_already_applied">Deja aplicat</string>
+    <string name="workflow_condition_has_tag">Are etichetă</string>
+    <string name="workflow_action_apply_tag">Adaugă etichetă</string>
+    <string name="workflow_action_remove_tag">Elimină eticheta</string>
+    <string name="workflow_builder_select_tag">Selectează o etichetă</string>
+    <string name="workflow_builder_no_tags">Nu există etichete disponibile. Creează mai întâi o etichetă.</string>
 </resources>

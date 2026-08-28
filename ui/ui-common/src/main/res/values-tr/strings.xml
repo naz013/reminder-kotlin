@@ -1227,4 +1227,26 @@
     <string name="repeats_until">%1$s tarihine kadar tekrarlanır</string>
     <string name="reminder_triggered_times">%1$d kez tetiklendi</string>
     <string name="reminder_snoozed_times">%1$d kez ertelendi</string>
+    <string name="workflow_rules_for_reminder">Bu hatırlatıcı için kurallar</string>
+    <string name="workflow_apply_to_reminder">Hatırlatıcıya uygula</string>
+    <string name="workflow_action_purge_reminder">Hatırlatıcıyı kalıcı olarak sil</string>
+    <string name="workflow_weekly_summary_title">Haftalık özet</string>
+    <string name="workflow_weekly_summary_body">Bu hafta %1$d hatırlatıcıyı tamamladınız.</string>
+    <string name="workflow_trigger_schedule_reached">Planlanan zamana ulaşıldı</string>
+    <string name="workflow_action_clear_notification_override">Bildirim geçersiz kılmayı temizle</string>
+    <string name="workflow_builder_starts_on">Başlangıç tarihi</string>
+    <string name="workflow_builder_ends_on">Bitiş tarihi</string>
+    <string name="workflow_builder_revert_on_end_date">Bitiş tarihinde geri al</string>
+    <string name="workflow_trigger_reminder_created">Hatırlatıcı oluşturuldu</string>
+    <string name="workflow_condition_title_contains">Başlık şunu içeriyor</string>
+    <string name="workflow_action_move_to_group">Başka bir gruba taşı</string>
+    <string name="workflow_builder_title_contains_hint">Anahtar kelime</string>
+    <string name="workflow_action_send_broadcast_intent">Broadcast intent gönder</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent eylemi</string>
+    <string name="workflow_already_applied">Zaten uygulandı</string>
+    <string name="workflow_condition_has_tag">Etiketi var</string>
+    <string name="workflow_action_apply_tag">Etiket ekle</string>
+    <string name="workflow_action_remove_tag">Etiketi kaldır</string>
+    <string name="workflow_builder_select_tag">Bir etiket seçin</string>
+    <string name="workflow_builder_no_tags">Kullanılabilir etiket yok. Önce bir etiket oluşturun.</string>
 </resources>

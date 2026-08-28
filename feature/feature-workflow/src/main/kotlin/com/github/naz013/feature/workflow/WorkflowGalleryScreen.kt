@@ -1,11 +1,11 @@
 package com.github.naz013.feature.workflow
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +30,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionH
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WorkflowGalleryScreen(
+  modifier: Modifier = Modifier,
   state: WorkflowGalleryState,
   onBackClick: () -> Unit,
   onRuleEnabledChange: (String, Boolean) -> Unit,
@@ -36,7 +38,6 @@ internal fun WorkflowGalleryScreen(
   onSaveRuleAsTemplateClick: (String) -> Unit,
   onApplyTemplateClick: (String) -> Unit,
   onCreateRuleClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -50,55 +51,62 @@ internal fun WorkflowGalleryScreen(
             onClick = onBackClick,
           )
         },
+        actions = {
+          MenuIconButton(
+            icon = AppIcons.Fluent.Add,
+            contentDescription = stringResource(com.github.naz013.ui.common.R.string.workflow_create_custom_rule),
+            onClick = onCreateRuleClick,
+            iconColor = MaterialTheme.colorScheme.primary,
+          )
+        },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
       )
     },
-    floatingActionButton = {
-      TooltipIconButton(contentDescription = stringResource(R.string.workflow_create_custom_rule)) {
-        FloatingActionButton(onClick = onCreateRuleClick) {
-          Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.workflow_create_custom_rule))
-        }
-      }
-    },
   ) { padding ->
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-      item { SettingsSectionHeader(stringResource(R.string.workflow_active_global_rules)) }
-      if (state.globalRules.isEmpty()) {
-        item {
-          Text(
-            text = stringResource(R.string.workflow_no_rules_yet),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-          )
-        }
-      } else {
-        items(state.globalRules, key = { it.id }) { rule ->
-          WorkflowRuleRow(
-            rule = rule,
-            onEnabledChange = { onRuleEnabledChange(rule.id, it) },
-            onDeleteClick = { onDeleteRuleClick(rule.id) },
-            onSaveAsTemplateClick = { onSaveRuleAsTemplateClick(rule.id) },
-          )
-        }
+    if (state.isLoading) {
+      Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
       }
-
-      item { SettingsSectionHeader(stringResource(R.string.workflow_templates)) }
-      state.templatesByCategory.forEach { (category, templates) ->
-        item {
-          Text(
-            text = workflowCategoryTitle(category),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
-          )
+    } else {
+      LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
+        item { SettingsSectionHeader(stringResource(R.string.workflow_active_global_rules)) }
+        if (state.globalRules.isEmpty()) {
+          item {
+            Text(
+              text = stringResource(R.string.workflow_no_rules_yet),
+              style = MaterialTheme.typography.bodyMedium,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+          }
+        } else {
+          items(state.globalRules, key = { it.id }) { rule ->
+            WorkflowRuleRow(
+              rule = rule,
+              onEnabledChange = { onRuleEnabledChange(rule.id, it) },
+              onDeleteClick = { onDeleteRuleClick(rule.id) },
+              onSaveAsTemplateClick = { onSaveRuleAsTemplateClick(rule.id) },
+            )
+          }
         }
-        items(templates, key = { it.id }) { template ->
-          WorkflowTemplateCard(
-            template = template,
-            applyButtonLabel = stringResource(R.string.workflow_apply_globally),
-            onApplyClick = { onApplyTemplateClick(template.id) },
-          )
+
+        item { SettingsSectionHeader(stringResource(R.string.workflow_templates)) }
+        state.templatesByCategory.forEach { (category, templates) ->
+          item {
+            Text(
+              text = workflowCategoryTitle(category),
+              style = MaterialTheme.typography.labelLarge,
+              color = MaterialTheme.colorScheme.primary,
+              modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
+            )
+          }
+          items(templates, key = { it.id }) { template ->
+            WorkflowTemplateCard(
+              template = template,
+              applyButtonLabel = stringResource(R.string.workflow_apply_globally),
+              onApplyClick = { onApplyTemplateClick(template.id) },
+            )
+          }
         }
       }
     }
@@ -128,6 +136,7 @@ private fun WorkflowGalleryScreenPreview() {
               description = "Bypasses Do Not Disturb and raises priority once a reminder is snoozed too often.",
               category = WorkflowTemplateCategory.NOTIFICATION_ESCALATION,
               canApply = true,
+              alreadyApplied = false,
             ),
           ),
         ),

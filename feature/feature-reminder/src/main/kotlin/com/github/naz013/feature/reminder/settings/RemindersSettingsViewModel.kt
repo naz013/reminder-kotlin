@@ -19,6 +19,7 @@ import com.github.naz013.domain.reminder.v2.LockScreenVisibility
 import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
+import com.github.naz013.logic.workflow.WorkflowConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -32,6 +33,7 @@ class RemindersSettingsViewModel(
   private val systemInfo: SystemInfo,
   private val buildInfo: BuildInfo,
   private val vibrationPlayer: VibrationPlayer,
+  private val workflowConfig: WorkflowConfig,
 ) : ViewModel() {
 
   val state: StateFlow<RemindersSettingsState> field = MutableStateFlow(buildState())
@@ -375,6 +377,7 @@ class RemindersSettingsViewModel(
       ],
       defaultVibrationPatternName = vibrationPatternOptions()[selectedVibrationPatternIndex()],
       isInsightsLocked = !buildInfo.isPro,
+      workflowsVisible = workflowConfig.isEnabled,
     )
   }
 

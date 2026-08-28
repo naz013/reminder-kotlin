@@ -1224,4 +1224,26 @@
     <string name="repeats_until">Upprepas till %1$s</string>
     <string name="reminder_triggered_times">Utlöst %1$d gånger</string>
     <string name="reminder_snoozed_times">Snoozad %1$d gånger</string>
+    <string name="workflow_rules_for_reminder">Regler för denna påminnelse</string>
+    <string name="workflow_apply_to_reminder">Tillämpa på påminnelse</string>
+    <string name="workflow_action_purge_reminder">Ta bort påminnelsen permanent</string>
+    <string name="workflow_weekly_summary_title">Veckosammanfattning</string>
+    <string name="workflow_weekly_summary_body">Du har slutfört %1$d påminnelser den här veckan.</string>
+    <string name="workflow_trigger_schedule_reached">Schemalagd tid nådd</string>
+    <string name="workflow_action_clear_notification_override">Rensa aviseringsåsidosättning</string>
+    <string name="workflow_builder_starts_on">Börjar den</string>
+    <string name="workflow_builder_ends_on">Slutar den</string>
+    <string name="workflow_builder_revert_on_end_date">Återställ vid slutdatum</string>
+    <string name="workflow_trigger_reminder_created">Påminnelse skapas</string>
+    <string name="workflow_condition_title_contains">Titeln innehåller</string>
+    <string name="workflow_action_move_to_group">Flytta till en annan grupp</string>
+    <string name="workflow_builder_title_contains_hint">Nyckelord</string>
+    <string name="workflow_action_send_broadcast_intent">Skicka broadcast-intent</string>
+    <string name="workflow_builder_broadcast_action_hint">Intent-åtgärd</string>
+    <string name="workflow_already_applied">Redan tillämpad</string>
+    <string name="workflow_condition_has_tag">Har tagg</string>
+    <string name="workflow_action_apply_tag">Lägg till tagg</string>
+    <string name="workflow_action_remove_tag">Ta bort tagg</string>
+    <string name="workflow_builder_select_tag">Välj en tagg</string>
+    <string name="workflow_builder_no_tags">Inga taggar tillgängliga. Skapa en tagg först.</string>
 </resources>

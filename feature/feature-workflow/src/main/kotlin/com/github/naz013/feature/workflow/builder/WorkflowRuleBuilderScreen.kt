@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,11 +31,14 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.BuilderItemStatus
 import com.github.naz013.ui.common.compose.foundation.component.BuilderListItemCard
+import com.github.naz013.ui.common.compose.foundation.component.SettingsCheckboxItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
+import org.threeten.bp.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WorkflowRuleBuilderScreen(
+  modifier: Modifier = Modifier,
   state: WorkflowRuleBuilderState,
   onBackClick: () -> Unit,
   onTriggerRowClick: () -> Unit,
@@ -47,6 +48,8 @@ internal fun WorkflowRuleBuilderScreen(
   onRemoveConditionClick: (Int) -> Unit,
   onActionRowClick: () -> Unit,
   onRemoveActionClick: () -> Unit,
+  onRevertOnEndDateChange: (Boolean) -> Unit,
+  onEndDateTimeSelected: (LocalDateTime) -> Unit,
   onSaveClick: () -> Unit,
   onTriggerPickerDismiss: () -> Unit,
   onTriggerSelected: (WorkflowTrigger) -> Unit,
@@ -54,7 +57,6 @@ internal fun WorkflowRuleBuilderScreen(
   onConditionSelected: (WorkflowCondition) -> Unit,
   onActionPickerDismiss: () -> Unit,
   onActionSelected: (WorkflowAction) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -89,7 +91,7 @@ internal fun WorkflowRuleBuilderScreen(
             value = stringResource(R.string.workflow_builder_not_set),
             status = BuilderItemStatus.EMPTY,
             onClick = onTriggerRowClick,
-            onRemoveClick = {},
+            onRemoveClick = onTriggerRowClick,
             removeIcon = AppIcons.Fluent.Add,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
           )
@@ -112,7 +114,7 @@ internal fun WorkflowRuleBuilderScreen(
         BuilderListItemCard(
           icon = AppIcons.Fluent.Settings,
           title = workflowConditionLabel(condition),
-          value = workflowConditionValue(condition, state.availableGroups),
+          value = workflowConditionValue(condition, state.availableGroups, state.availableTags),
           status = BuilderItemStatus.DONE,
           onClick = { onEditConditionClick(index) },
           onRemoveClick = { onRemoveConditionClick(index) },
@@ -121,7 +123,7 @@ internal fun WorkflowRuleBuilderScreen(
       }
       item {
         TextButton(onClick = onAddConditionClick, modifier = Modifier.padding(start = 12.dp)) {
-          Icon(imageVector = Icons.Default.Add, contentDescription = null)
+          Icon(painter = AppIcons.Fluent.Add, contentDescription = null)
           Text(
             text = stringResource(R.string.workflow_builder_add_condition),
             modifier = Modifier.padding(start = 4.dp)
@@ -139,7 +141,7 @@ internal fun WorkflowRuleBuilderScreen(
             value = stringResource(R.string.workflow_builder_not_set),
             status = BuilderItemStatus.EMPTY,
             onClick = onActionRowClick,
-            onRemoveClick = {},
+            onRemoveClick = onActionRowClick,
             removeIcon = AppIcons.Fluent.Add,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
           )
@@ -147,12 +149,32 @@ internal fun WorkflowRuleBuilderScreen(
           BuilderListItemCard(
             icon = AppIcons.Fluent.Checkmark,
             title = workflowActionLabel(action),
-            value = workflowActionValue(action, state.availableReminders) ?: "",
+            value = workflowActionValue(action, state.availableReminders, state.availableGroups, state.availableTags) ?: "",
             status = BuilderItemStatus.DONE,
             onClick = onActionRowClick,
             onRemoveClick = onRemoveActionClick,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
           )
+        }
+      }
+
+      if (state.showRevertOnEndDateOption) {
+        item {
+          SettingsCheckboxItem(
+            title = stringResource(R.string.workflow_builder_revert_on_end_date),
+            checked = state.revertOnEndDate,
+            onCheckedChange = onRevertOnEndDateChange,
+          )
+        }
+        if (state.revertOnEndDate) {
+          item {
+            DateTimePickerRow(
+              label = stringResource(R.string.workflow_builder_ends_on),
+              dateTime = state.endDateTime,
+              onDateTimePicked = onEndDateTimeSelected,
+              modifier = Modifier.padding(horizontal = 16.dp),
+            )
+          }
         }
       }
 
@@ -177,6 +199,7 @@ internal fun WorkflowRuleBuilderScreen(
   if (state.isConditionPickerVisible) {
     WorkflowConditionPickerSheet(
       groups = state.availableGroups,
+      tags = state.availableTags,
       initial = state.editingConditionIndex?.let { state.conditions.getOrNull(it) },
       onDismiss = onConditionPickerDismiss,
       onConfirm = onConditionSelected,
@@ -186,6 +209,8 @@ internal fun WorkflowRuleBuilderScreen(
   if (state.isActionPickerVisible) {
     WorkflowActionPickerSheet(
       reminders = state.availableReminders,
+      groups = state.availableGroups,
+      tags = state.availableTags,
       onDismiss = onActionPickerDismiss,
       onConfirm = onActionSelected,
     )
@@ -206,6 +231,8 @@ private fun WorkflowRuleBuilderScreenPreview() {
       onRemoveConditionClick = {},
       onActionRowClick = {},
       onRemoveActionClick = {},
+      onRevertOnEndDateChange = {},
+      onEndDateTimeSelected = {},
       onSaveClick = {},
       onTriggerPickerDismiss = {},
       onTriggerSelected = {},
