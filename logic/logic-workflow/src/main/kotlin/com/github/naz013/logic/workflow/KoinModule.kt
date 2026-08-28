@@ -5,11 +5,11 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val logicWorkflowModule = module {
-  factory { WorkflowEngine(get(), get(), get(), get()) }
+  factoryOf(::SaveWorkflowRuleUseCase)
+  factory { WorkflowEngine(get(), get(), get(), get(), get()) }
   factoryOf(::WorkflowActionDispatcher)
   factoryOf(::WorkflowTriggerRunner)
   factory<ReminderWorkflowTrigger> { get<WorkflowTriggerRunner>() }
-  factoryOf(::SaveWorkflowRuleUseCase)
   factoryOf(::DeleteWorkflowRuleUseCase)
   factoryOf(::SaveWorkflowTemplateUseCase)
   factory { ApplyWorkflowTemplateUseCase(get(), get()) }

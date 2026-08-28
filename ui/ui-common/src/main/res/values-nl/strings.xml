@@ -1226,4 +1226,8 @@
     <string name="reminder_snoozed_times">%1$d keer gesluimerd</string>
     <string name="workflow_rules_for_reminder">Regels voor deze herinnering</string>
     <string name="workflow_apply_to_reminder">Toepassen op herinnering</string>
+    <string name="workflow_action_purge_reminder">Herinnering permanent verwijderen</string>
+    <string name="workflow_weekly_summary_title">Wekelijkse samenvatting</string>
+    <string name="workflow_weekly_summary_body">Je hebt deze week %1$d herinneringen voltooid.</string>
+    <string name="workflow_trigger_schedule_reached">Geplande tijd bereikt</string>
 </resources>

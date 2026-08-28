@@ -292,6 +292,7 @@ private fun TimeOfDayFields(
 private val ACTION_OPTIONS = listOf(
   WorkflowAction.ArchiveReminder,
   WorkflowAction.CompleteReminder,
+  WorkflowAction.PurgeReminder,
   WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride()),
   WorkflowAction.ActivateReminder(reminderId = ""),
 )

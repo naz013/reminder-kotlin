@@ -1226,4 +1226,8 @@
     <string name="reminder_snoozed_times">Utsatt %1$d ganger</string>
     <string name="workflow_rules_for_reminder">Regler for denne påminnelsen</string>
     <string name="workflow_apply_to_reminder">Bruk på påminnelse</string>
+    <string name="workflow_action_purge_reminder">Slett påminnelsen permanent</string>
+    <string name="workflow_weekly_summary_title">Ukentlig sammendrag</string>
+    <string name="workflow_weekly_summary_body">Du har fullført %1$d påminnelser denne uken.</string>
+    <string name="workflow_trigger_schedule_reached">Planlagt tidspunkt nådd</string>
 </resources>

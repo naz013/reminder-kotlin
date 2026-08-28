@@ -31,6 +31,7 @@ import com.github.naz013.domain.reminder.v2.TaskExportSettings
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.domain.routine.RoutineStep
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
@@ -294,6 +295,13 @@ private fun toWorkflowScope(scopeType: String, scopeId: String?): WorkflowScope 
   else -> WorkflowScope.Global
 }
 
+/** [WorkflowTrigger.ScheduleReached.atDateTime] is deliberately NOT passed through
+ * `workflowGson.toJson(this)` like every other payload field - plain `Gson()` has no registered
+ * adapter for ThreeTenBP's `LocalDateTime`, so reflecting into its internal fields would be
+ * unannotated and unsafe under R8 (see the class doc on [WorkflowTrigger]). Formatting it with
+ * [jsonDateTimeFormatter] first keeps the wire payload to types Gson already handles safely. */
+private data class ScheduleReachedColumns(val atDateTime: String, val recurrence: String)
+
 private fun WorkflowTrigger.toColumns(): Pair<String, String> = when (this) {
   is WorkflowTrigger.ReminderCompleted -> "REMINDER_COMPLETED" to ""
   is WorkflowTrigger.ReminderSnoozedNTimes -> "REMINDER_SNOOZED_N_TIMES" to workflowGson.toJson(this)
@@ -302,6 +310,9 @@ private fun WorkflowTrigger.toColumns(): Pair<String, String> = when (this) {
   is WorkflowTrigger.LocationExited -> "LOCATION_EXITED" to ""
   is WorkflowTrigger.ReminderAgeExceeded -> "REMINDER_AGE_EXCEEDED" to workflowGson.toJson(this)
   is WorkflowTrigger.ReminderUnacknowledgedFor -> "REMINDER_UNACKNOWLEDGED_FOR" to workflowGson.toJson(this)
+  is WorkflowTrigger.ScheduleReached -> "SCHEDULE_REACHED" to workflowGson.toJson(
+    ScheduleReachedColumns(atDateTime.format(jsonDateTimeFormatter), recurrence.name)
+  )
 }
 
 /** Falls back to [WorkflowTrigger.ReminderCompleted] (and logs) instead of throwing on a payload
@@ -318,6 +329,12 @@ private fun toWorkflowTrigger(type: String, payload: String): WorkflowTrigger = 
     "REMINDER_AGE_EXCEEDED" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderAgeExceeded::class.java)
     "REMINDER_UNACKNOWLEDGED_FOR" ->
       workflowGson.fromJson(payload, WorkflowTrigger.ReminderUnacknowledgedFor::class.java)
+    "SCHEDULE_REACHED" -> workflowGson.fromJson(payload, ScheduleReachedColumns::class.java).let {
+      WorkflowTrigger.ScheduleReached(
+        atDateTime = LocalDateTime.parse(it.atDateTime, jsonDateTimeFormatter),
+        recurrence = runCatching { ScheduleRecurrence.valueOf(it.recurrence) }.getOrDefault(ScheduleRecurrence.ONCE)
+      )
+    }
     else -> WorkflowTrigger.ReminderCompleted
   }
 }.getOrElse { e ->
@@ -328,6 +345,7 @@ private fun toWorkflowTrigger(type: String, payload: String): WorkflowTrigger = 
 private fun WorkflowAction.toColumns(): Pair<String, String> = when (this) {
   is WorkflowAction.ArchiveReminder -> "ARCHIVE_REMINDER" to ""
   is WorkflowAction.CompleteReminder -> "COMPLETE_REMINDER" to ""
+  is WorkflowAction.PurgeReminder -> "PURGE_REMINDER" to ""
   is WorkflowAction.ApplyNotificationOverride -> "APPLY_NOTIFICATION_OVERRIDE" to workflowGson.toJson(this)
   is WorkflowAction.ActivateReminder -> "ACTIVATE_REMINDER" to workflowGson.toJson(this)
   is WorkflowAction.RunBackgroundTask -> "RUN_BACKGROUND_TASK" to workflowGson.toJson(this)
@@ -339,6 +357,7 @@ private fun toWorkflowAction(type: String, payload: String): WorkflowAction = ru
   when (type) {
     "ARCHIVE_REMINDER" -> WorkflowAction.ArchiveReminder
     "COMPLETE_REMINDER" -> WorkflowAction.CompleteReminder
+    "PURGE_REMINDER" -> WorkflowAction.PurgeReminder
     "APPLY_NOTIFICATION_OVERRIDE" ->
       workflowGson.fromJson(payload, WorkflowAction.ApplyNotificationOverride::class.java)
     "ACTIVATE_REMINDER" -> workflowGson.fromJson(payload, WorkflowAction.ActivateReminder::class.java)

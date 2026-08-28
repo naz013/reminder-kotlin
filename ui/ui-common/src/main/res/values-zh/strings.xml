@@ -1229,4 +1229,8 @@
     <string name="reminder_snoozed_times">已推迟%1$d次</string>
     <string name="workflow_rules_for_reminder">此提醒的规则</string>
     <string name="workflow_apply_to_reminder">应用到提醒</string>
+    <string name="workflow_action_purge_reminder">永久删除提醒</string>
+    <string name="workflow_weekly_summary_title">每周摘要</string>
+    <string name="workflow_weekly_summary_body">本周您已完成 %1$d 条提醒。</string>
+    <string name="workflow_trigger_schedule_reached">已到预定时间</string>
 </resources>

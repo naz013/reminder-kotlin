@@ -1232,4 +1232,8 @@
     <string name="reminder_snoozed_times">Snoozed %1$d times</string>
     <string name="workflow_rules_for_reminder">Rules for this reminder</string>
     <string name="workflow_apply_to_reminder">Apply to reminder</string>
+    <string name="workflow_action_purge_reminder">Delete the reminder permanently</string>
+    <string name="workflow_weekly_summary_title">Weekly summary</string>
+    <string name="workflow_weekly_summary_body">You completed %1$d reminders this week.</string>
+    <string name="workflow_trigger_schedule_reached">Scheduled time reached</string>
 </resources>

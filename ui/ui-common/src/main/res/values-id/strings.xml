@@ -1226,4 +1226,8 @@
     <string name="reminder_snoozed_times">Ditunda %1$d kali</string>
     <string name="workflow_rules_for_reminder">Aturan untuk pengingat ini</string>
     <string name="workflow_apply_to_reminder">Terapkan ke pengingat</string>
+    <string name="workflow_action_purge_reminder">Hapus pengingat secara permanen</string>
+    <string name="workflow_weekly_summary_title">Ringkasan mingguan</string>
+    <string name="workflow_weekly_summary_body">Anda telah menyelesaikan %1$d pengingat minggu ini.</string>
+    <string name="workflow_trigger_schedule_reached">Waktu terjadwal tercapai</string>
 </resources>

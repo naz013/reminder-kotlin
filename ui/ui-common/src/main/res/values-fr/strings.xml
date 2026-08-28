@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">Reporté %1$d fois</string>
     <string name="workflow_rules_for_reminder">Règles pour ce rappel</string>
     <string name="workflow_apply_to_reminder">Appliquer au rappel</string>
+    <string name="workflow_action_purge_reminder">Supprimer définitivement le rappel</string>
+    <string name="workflow_weekly_summary_title">Résumé hebdomadaire</string>
+    <string name="workflow_weekly_summary_body">Vous avez terminé %1$d rappels cette semaine.</string>
+    <string name="workflow_trigger_schedule_reached">Heure planifiée atteinte</string>
 </resources>

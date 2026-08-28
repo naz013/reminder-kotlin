@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">Odloženo %1$dx</string>
     <string name="workflow_rules_for_reminder">Pravidla pro tuto připomínku</string>
     <string name="workflow_apply_to_reminder">Použít pro připomínku</string>
+    <string name="workflow_action_purge_reminder">Trvale smazat připomínku</string>
+    <string name="workflow_weekly_summary_title">Týdenní souhrn</string>
+    <string name="workflow_weekly_summary_body">Tento týden jste dokončili %1$d připomínek.</string>
+    <string name="workflow_trigger_schedule_reached">Naplánovaný čas nastal</string>
 </resources>

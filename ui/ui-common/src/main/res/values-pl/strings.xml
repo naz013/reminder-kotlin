@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">Odłożono %1$d razy</string>
     <string name="workflow_rules_for_reminder">Reguły dla tego przypomnienia</string>
     <string name="workflow_apply_to_reminder">Zastosuj do przypomnienia</string>
+    <string name="workflow_action_purge_reminder">Trwale usuń przypomnienie</string>
+    <string name="workflow_weekly_summary_title">Podsumowanie tygodniowe</string>
+    <string name="workflow_weekly_summary_body">W tym tygodniu ukończono %1$d przypomnień.</string>
+    <string name="workflow_trigger_schedule_reached">Zaplanowany czas nadszedł</string>
 </resources>

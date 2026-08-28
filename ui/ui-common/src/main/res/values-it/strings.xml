@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">Posticipato %1$d volte</string>
     <string name="workflow_rules_for_reminder">Regole per questo promemoria</string>
     <string name="workflow_apply_to_reminder">Applica al promemoria</string>
+    <string name="workflow_action_purge_reminder">Elimina definitivamente il promemoria</string>
+    <string name="workflow_weekly_summary_title">Riepilogo settimanale</string>
+    <string name="workflow_weekly_summary_body">Hai completato %1$d promemoria questa settimana.</string>
+    <string name="workflow_trigger_schedule_reached">Orario pianificato raggiunto</string>
 </resources>

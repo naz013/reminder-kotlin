@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">Adiado %1$d vezes</string>
     <string name="workflow_rules_for_reminder">Regras para este lembrete</string>
     <string name="workflow_apply_to_reminder">Aplicar ao lembrete</string>
+    <string name="workflow_action_purge_reminder">Excluir o lembrete permanentemente</string>
+    <string name="workflow_weekly_summary_title">Resumo semanal</string>
+    <string name="workflow_weekly_summary_body">Você concluiu %1$d lembretes esta semana.</string>
+    <string name="workflow_trigger_schedule_reached">Horário agendado atingido</string>
 </resources>

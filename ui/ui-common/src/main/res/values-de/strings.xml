@@ -1224,4 +1224,8 @@
     <string name="reminder_snoozed_times">%1$d Mal geschlummert</string>
     <string name="workflow_rules_for_reminder">Regeln für diese Erinnerung</string>
     <string name="workflow_apply_to_reminder">Auf Erinnerung anwenden</string>
+    <string name="workflow_action_purge_reminder">Erinnerung endgültig löschen</string>
+    <string name="workflow_weekly_summary_title">Wöchentliche Zusammenfassung</string>
+    <string name="workflow_weekly_summary_body">Du hast diese Woche %1$d Erinnerungen erledigt.</string>
+    <string name="workflow_trigger_schedule_reached">Geplanter Zeitpunkt erreicht</string>
 </resources>

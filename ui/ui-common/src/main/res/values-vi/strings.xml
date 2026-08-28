@@ -1226,4 +1226,8 @@
     <string name="reminder_snoozed_times">Đã báo lại %1$d lần</string>
     <string name="workflow_rules_for_reminder">Quy tắc cho lời nhắc này</string>
     <string name="workflow_apply_to_reminder">Áp dụng cho lời nhắc</string>
+    <string name="workflow_action_purge_reminder">Xóa vĩnh viễn lời nhắc</string>
+    <string name="workflow_weekly_summary_title">Tóm tắt hàng tuần</string>
+    <string name="workflow_weekly_summary_body">Bạn đã hoàn thành %1$d lời nhắc trong tuần này.</string>
+    <string name="workflow_trigger_schedule_reached">Đã đến thời gian đã lên lịch</string>
 </resources>

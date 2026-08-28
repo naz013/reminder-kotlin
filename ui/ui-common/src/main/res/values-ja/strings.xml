@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">%1$d回スヌーズ</string>
     <string name="workflow_rules_for_reminder">このリマインダーのルール</string>
     <string name="workflow_apply_to_reminder">リマインダーに適用</string>
+    <string name="workflow_action_purge_reminder">リマインダーを完全に削除</string>
+    <string name="workflow_weekly_summary_title">週間サマリー</string>
+    <string name="workflow_weekly_summary_body">今週 %1$d 件のリマインダーを完了しました。</string>
+    <string name="workflow_trigger_schedule_reached">予定時刻に到達</string>
 </resources>

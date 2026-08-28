@@ -19,6 +19,7 @@ internal fun workflowTriggerLabel(trigger: WorkflowTrigger): String = when (trig
   is WorkflowTrigger.LocationExited -> stringResource(R.string.workflow_trigger_location_exited)
   is WorkflowTrigger.ReminderAgeExceeded -> stringResource(R.string.workflow_trigger_reminder_age_exceeded)
   is WorkflowTrigger.ReminderUnacknowledgedFor -> stringResource(R.string.workflow_trigger_reminder_unacknowledged_for)
+  is WorkflowTrigger.ScheduleReached -> stringResource(R.string.workflow_trigger_schedule_reached)
 }
 
 /** The configured value line for a trigger, or null for parameterless ones. */
@@ -68,6 +69,7 @@ internal fun workflowConditionValue(
 internal fun workflowActionLabel(action: WorkflowAction): String = when (action) {
   is WorkflowAction.ArchiveReminder -> stringResource(R.string.workflow_action_archive_reminder)
   is WorkflowAction.CompleteReminder -> stringResource(R.string.workflow_action_complete_reminder)
+  is WorkflowAction.PurgeReminder -> stringResource(R.string.workflow_action_purge_reminder)
   is WorkflowAction.ApplyNotificationOverride -> stringResource(R.string.workflow_action_apply_notification_override)
   is WorkflowAction.ActivateReminder -> stringResource(R.string.workflow_action_activate_reminder)
   is WorkflowAction.RunBackgroundTask -> action.taskKey

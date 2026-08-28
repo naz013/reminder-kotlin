@@ -3,6 +3,7 @@ package com.github.naz013.files
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
@@ -73,6 +74,40 @@ class DataConverterImplTest {
         WorkflowCondition.GroupIs(groupId = "group-2")
       ),
       action = WorkflowAction.CompleteReminder
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
+  fun `round trips a purge-on-age workflow rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-5",
+      title = "Delete archived reminders after 90 days",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderAgeExceeded(days = 90),
+      action = WorkflowAction.PurgeReminder
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
+  fun `round trips a weekly schedule-reached workflow rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-6",
+      title = "Weekly reminder completion summary",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ScheduleReached(
+        atDateTime = LocalDateTime.of(2026, 8, 3, 9, 0),
+        recurrence = ScheduleRecurrence.WEEKLY
+      ),
+      action = WorkflowAction.RunBackgroundTask(taskKey = "run_weekly_summary"),
+      lastRunAt = LocalDateTime.of(2026, 8, 10, 9, 0)
     )
 
     val result = rule.toJson().toDomain()

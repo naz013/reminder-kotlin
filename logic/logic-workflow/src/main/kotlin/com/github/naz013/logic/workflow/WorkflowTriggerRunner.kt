@@ -13,7 +13,7 @@ class WorkflowTriggerRunner(
   private val workflowActionDispatcher: WorkflowActionDispatcher
 ) : ReminderWorkflowTrigger {
   suspend fun runDailyPolling() {
-    (workflowEngine.runAgeBasedRules() + workflowEngine.runGroupCompletionRules())
+    (workflowEngine.runAgeBasedRules() + workflowEngine.runGroupCompletionRules() + workflowEngine.runScheduleRules())
       .forEach { workflowActionDispatcher.dispatch(it) }
   }
 

@@ -12,6 +12,10 @@ sealed class WorkflowAction {
 
   data object CompleteReminder : WorkflowAction()
 
+  /** Hard delete, powering the auto-purge workflow - unlike [ArchiveReminder], this is not
+   * reversible from the UI once applied. */
+  data object PurgeReminder : WorkflowAction()
+
   data class ApplyNotificationOverride(
     @SerializedName("override")
     val override: NotificationSettingsOverride

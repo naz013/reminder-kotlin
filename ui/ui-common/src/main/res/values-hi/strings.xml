@@ -1230,4 +1230,8 @@
     <string name="reminder_snoozed_times">%1$d बार स्नूज़ किया गया</string>
     <string name="workflow_rules_for_reminder">इस रिमाइंडर के लिए नियम</string>
     <string name="workflow_apply_to_reminder">रिमाइंडर में लागू करें</string>
+    <string name="workflow_action_purge_reminder">रिमाइंडर स्थायी रूप से हटाएं</string>
+    <string name="workflow_weekly_summary_title">साप्ताहिक सारांश</string>
+    <string name="workflow_weekly_summary_body">आपने इस सप्ताह %1$d रिमाइंडर पूरे किए।</string>
+    <string name="workflow_trigger_schedule_reached">निर्धारित समय आ गया</string>
 </resources>

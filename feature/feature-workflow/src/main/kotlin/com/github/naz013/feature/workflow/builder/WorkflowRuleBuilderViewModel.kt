@@ -161,23 +161,26 @@ internal class WorkflowRuleBuilderViewModel(
   /** Plain, non-localized sentence for [com.github.naz013.domain.workflow.WorkflowRule.title] -
    * matches the existing precedent set by the (now-retired) hardcoded creation dialogs, whose
    * auto-generated titles were never localized either. */
-  private fun autoTitle(trigger: WorkflowTrigger, action: WorkflowAction): String {
-    val triggerText = when (trigger) {
-      is WorkflowTrigger.ReminderCompleted -> "reminder completed"
-      is WorkflowTrigger.ReminderSnoozedNTimes -> "snoozed ${trigger.count} times"
-      is WorkflowTrigger.GroupAllCompleted -> "group fully completed"
-      is WorkflowTrigger.LocationEntered -> "location entered"
-      is WorkflowTrigger.LocationExited -> "location exited"
-      is WorkflowTrigger.ReminderAgeExceeded -> "completed for ${trigger.days} days"
-      is WorkflowTrigger.ReminderUnacknowledgedFor -> "unacknowledged for ${trigger.minutes} minutes"
-    }
-    val actionText = when (action) {
-      is WorkflowAction.ArchiveReminder -> "archive it"
-      is WorkflowAction.CompleteReminder -> "complete it"
-      is WorkflowAction.ApplyNotificationOverride -> "change its notification settings"
-      is WorkflowAction.ActivateReminder -> "activate another reminder"
-      is WorkflowAction.RunBackgroundTask -> "run a background task"
-    }
-    return "When $triggerText, $actionText"
+  private fun autoTitle(trigger: WorkflowTrigger, action: WorkflowAction): String =
+    "When ${autoTitleTriggerText(trigger)}, ${autoTitleActionText(action)}"
+
+  private fun autoTitleTriggerText(trigger: WorkflowTrigger): String = when (trigger) {
+    is WorkflowTrigger.ReminderCompleted -> "reminder completed"
+    is WorkflowTrigger.ReminderSnoozedNTimes -> "snoozed ${trigger.count} times"
+    is WorkflowTrigger.GroupAllCompleted -> "group fully completed"
+    is WorkflowTrigger.LocationEntered -> "location entered"
+    is WorkflowTrigger.LocationExited -> "location exited"
+    is WorkflowTrigger.ReminderAgeExceeded -> "completed for ${trigger.days} days"
+    is WorkflowTrigger.ReminderUnacknowledgedFor -> "unacknowledged for ${trigger.minutes} minutes"
+    is WorkflowTrigger.ScheduleReached -> "a scheduled time is reached"
+  }
+
+  private fun autoTitleActionText(action: WorkflowAction): String = when (action) {
+    is WorkflowAction.ArchiveReminder -> "archive it"
+    is WorkflowAction.CompleteReminder -> "complete it"
+    is WorkflowAction.PurgeReminder -> "delete it permanently"
+    is WorkflowAction.ApplyNotificationOverride -> "change its notification settings"
+    is WorkflowAction.ActivateReminder -> "activate another reminder"
+    is WorkflowAction.RunBackgroundTask -> "run a background task"
   }
 }

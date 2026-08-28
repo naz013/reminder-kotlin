@@ -1229,4 +1229,8 @@
     <string name="reminder_snoozed_times">%1$d kez ertelendi</string>
     <string name="workflow_rules_for_reminder">Bu hatırlatıcı için kurallar</string>
     <string name="workflow_apply_to_reminder">Hatırlatıcıya uygula</string>
+    <string name="workflow_action_purge_reminder">Hatırlatıcıyı kalıcı olarak sil</string>
+    <string name="workflow_weekly_summary_title">Haftalık özet</string>
+    <string name="workflow_weekly_summary_body">Bu hafta %1$d hatırlatıcıyı tamamladınız.</string>
+    <string name="workflow_trigger_schedule_reached">Planlanan zamana ulaşıldı</string>
 </resources>

@@ -15,6 +15,7 @@ val workflowModule = module {
   factory<BackgroundTask>(named(RunWorkflowUnacknowledgedRulesTask.TASK_KEY)) {
     RunWorkflowUnacknowledgedRulesTask(get())
   }
+  factory<BackgroundTask>(named(WeeklySummaryTask.TASK_KEY)) { WeeklySummaryTask(get(), get(), get()) }
 
   viewModelOf(::WorkflowGalleryViewModel)
   viewModel { (groupId: String) ->

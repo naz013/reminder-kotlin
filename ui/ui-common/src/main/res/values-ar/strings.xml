@@ -1226,4 +1226,8 @@
     <string name="reminder_snoozed_times">تم الغفو %1$d مرة</string>
     <string name="workflow_rules_for_reminder">قواعد هذا التذكير</string>
     <string name="workflow_apply_to_reminder">تطبيق على التذكير</string>
+    <string name="workflow_action_purge_reminder">حذف التذكير نهائيًا</string>
+    <string name="workflow_weekly_summary_title">الملخص الأسبوعي</string>
+    <string name="workflow_weekly_summary_body">أكملت %1$d تذكيرات هذا الأسبوع.</string>
+    <string name="workflow_trigger_schedule_reached">الوقت المجدول قد حان</string>
 </resources>

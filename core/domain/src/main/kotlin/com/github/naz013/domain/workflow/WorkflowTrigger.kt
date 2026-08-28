@@ -1,6 +1,7 @@
 package com.github.naz013.domain.workflow
 
 import com.google.gson.annotations.SerializedName
+import org.threeten.bp.LocalDateTime
 
 /** Variants with a payload are Gson round-tripped directly (see `WorkflowTriggerActionCodec`), so
  * every field needs [SerializedName] - see [com.github.naz013.domain.reminder.v2.RecurrenceRule]
@@ -28,5 +29,15 @@ sealed class WorkflowTrigger {
   data class ReminderUnacknowledgedFor(
     @SerializedName("minutes")
     val minutes: Int
+  ) : WorkflowTrigger()
+
+  /** An absolute wall-clock trigger, not tied to any reminder's own state - see
+   * `WorkflowEngine.runScheduleRules` for how it's evaluated and why it currently only supports
+   * [WorkflowAction.RunBackgroundTask]. */
+  data class ScheduleReached(
+    @SerializedName("atDateTime")
+    val atDateTime: LocalDateTime,
+    @SerializedName("recurrence")
+    val recurrence: ScheduleRecurrence = ScheduleRecurrence.ONCE
   ) : WorkflowTrigger()
 }

@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">Amânat de %1$d ori</string>
     <string name="workflow_rules_for_reminder">Reguli pentru acest memento</string>
     <string name="workflow_apply_to_reminder">Aplicare la memento</string>
+    <string name="workflow_action_purge_reminder">Ștergere permanentă a mementoului</string>
+    <string name="workflow_weekly_summary_title">Rezumat săptămânal</string>
+    <string name="workflow_weekly_summary_body">Ai finalizat %1$d mementouri săptămâna aceasta.</string>
+    <string name="workflow_trigger_schedule_reached">Ora programată a fost atinsă</string>
 </resources>

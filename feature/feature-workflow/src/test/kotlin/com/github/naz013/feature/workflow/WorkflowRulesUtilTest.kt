@@ -1,7 +1,9 @@
 package com.github.naz013.feature.workflow
 
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowScope
+import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
@@ -39,13 +41,13 @@ class WorkflowRulesUtilTest {
   }
 
   @Test
-  fun `seeds exactly three built-in templates when the template table is empty`() = runTest {
+  fun `seeds exactly five built-in templates when the template table is empty`() = runTest {
     coEvery { workflowTemplateRepository.countAll() } returns 0
     coEvery { workflowRuleRepository.countAll() } returns 1
 
     util.initDefaultIfEmpty()
 
-    coVerify(exactly = 3) { saveWorkflowTemplateUseCase(any()) }
+    coVerify(exactly = 5) { saveWorkflowTemplateUseCase(any()) }
   }
 
   @Test
@@ -125,5 +127,43 @@ class WorkflowRulesUtilTest {
     val escalate = saved.first { it.trigger is WorkflowTrigger.ReminderSnoozedNTimes }
     assertEquals(3, (escalate.trigger as WorkflowTrigger.ReminderSnoozedNTimes).count)
     assertEquals(WorkflowAction.ApplyNotificationOverride::class, escalate.action::class)
+  }
+
+  @Test
+  fun `seeds the purge-old-reminders template with its trigger and action`() = runTest {
+    coEvery { workflowTemplateRepository.countAll() } returns 0
+    coEvery { workflowRuleRepository.countAll() } returns 1
+    val saved = mutableListOf<WorkflowTemplate>()
+    coEvery { saveWorkflowTemplateUseCase(any()) } answers {
+      saved.add(firstArg())
+      firstArg()
+    }
+
+    util.initDefaultIfEmpty()
+
+    val purge = saved.first { it.action is WorkflowAction.PurgeReminder }
+    assertEquals(90, (purge.trigger as WorkflowTrigger.ReminderAgeExceeded).days)
+  }
+
+  @Test
+  fun `seeds the weekly-summary template with a recurring schedule trigger`() = runTest {
+    coEvery { workflowTemplateRepository.countAll() } returns 0
+    coEvery { workflowRuleRepository.countAll() } returns 1
+    val saved = mutableListOf<WorkflowTemplate>()
+    coEvery { saveWorkflowTemplateUseCase(any()) } answers {
+      saved.add(firstArg())
+      firstArg()
+    }
+
+    util.initDefaultIfEmpty()
+
+    val weeklySummary = saved.first { it.trigger is WorkflowTrigger.ScheduleReached }
+    val trigger = weeklySummary.trigger as WorkflowTrigger.ScheduleReached
+    assertEquals(ScheduleRecurrence.WEEKLY, trigger.recurrence)
+    assertEquals(
+      WorkflowAction.RunBackgroundTask(WeeklySummaryTask.TASK_KEY),
+      weeklySummary.action
+    )
+    assertEquals(listOf(WorkflowScopeType.GLOBAL), weeklySummary.supportedScopeTypes)
   }
 }

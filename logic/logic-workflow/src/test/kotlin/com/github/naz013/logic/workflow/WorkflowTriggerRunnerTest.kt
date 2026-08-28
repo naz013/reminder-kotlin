@@ -28,6 +28,7 @@ class WorkflowTriggerRunnerTest {
     val groupCompletion = PendingWorkflowAction(WorkflowAction.CompleteReminder, "group-reminder")
     coEvery { workflowEngine.runAgeBasedRules(any()) } returns listOf(ageBased)
     coEvery { workflowEngine.runGroupCompletionRules(any()) } returns listOf(groupCompletion)
+    coEvery { workflowEngine.runScheduleRules(any()) } returns emptyList()
 
     runner.runDailyPolling()
 
@@ -39,6 +40,7 @@ class WorkflowTriggerRunnerTest {
   fun `runDailyPolling dispatches nothing when both rule sets are empty`() = runTest {
     coEvery { workflowEngine.runAgeBasedRules(any()) } returns emptyList()
     coEvery { workflowEngine.runGroupCompletionRules(any()) } returns emptyList()
+    coEvery { workflowEngine.runScheduleRules(any()) } returns emptyList()
 
     runner.runDailyPolling()
 

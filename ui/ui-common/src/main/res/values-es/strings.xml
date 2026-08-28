@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">Pospuesto %1$d veces</string>
     <string name="workflow_rules_for_reminder">Reglas para este recordatorio</string>
     <string name="workflow_apply_to_reminder">Aplicar al recordatorio</string>
+    <string name="workflow_action_purge_reminder">Eliminar el recordatorio permanentemente</string>
+    <string name="workflow_weekly_summary_title">Resumen semanal</string>
+    <string name="workflow_weekly_summary_body">Has completado %1$d recordatorios esta semana.</string>
+    <string name="workflow_trigger_schedule_reached">Hora programada alcanzada</string>
 </resources>

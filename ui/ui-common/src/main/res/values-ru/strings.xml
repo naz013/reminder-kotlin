@@ -1227,4 +1227,8 @@
     <string name="reminder_snoozed_times">Отложено %1$d раз</string>
     <string name="workflow_rules_for_reminder">Правила для этого напоминания</string>
     <string name="workflow_apply_to_reminder">Применить к напоминанию</string>
+    <string name="workflow_action_purge_reminder">Удалить напоминание навсегда</string>
+    <string name="workflow_weekly_summary_title">Еженедельная сводка</string>
+    <string name="workflow_weekly_summary_body">На этой неделе вы выполнили %1$d напоминаний.</string>
+    <string name="workflow_trigger_schedule_reached">Наступило запланированное время</string>
 </resources>

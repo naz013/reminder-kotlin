@@ -1228,4 +1228,8 @@
     <string name="reminder_snoozed_times">%1$d회 다시 알림</string>
     <string name="workflow_rules_for_reminder">이 리마인더의 규칙</string>
     <string name="workflow_apply_to_reminder">리마인더에 적용</string>
+    <string name="workflow_action_purge_reminder">미리 알림 영구 삭제</string>
+    <string name="workflow_weekly_summary_title">주간 요약</string>
+    <string name="workflow_weekly_summary_body">이번 주에 %1$d개의 미리 알림을 완료했습니다.</string>
+    <string name="workflow_trigger_schedule_reached">예약된 시간 도달</string>
 </resources>

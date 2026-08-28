@@ -1226,4 +1226,8 @@
     <string name="reminder_snoozed_times">เลื่อนแจ้งเตือนแล้ว %1$d ครั้ง</string>
     <string name="workflow_rules_for_reminder">กฎสำหรับการเตือนความจำนี้</string>
     <string name="workflow_apply_to_reminder">ใช้กับการเตือนความจำ</string>
+    <string name="workflow_action_purge_reminder">ลบการเตือนความจำอย่างถาวร</string>
+    <string name="workflow_weekly_summary_title">สรุปรายสัปดาห์</string>
+    <string name="workflow_weekly_summary_body">คุณทำการเตือนความจำสำเร็จ %1$d รายการในสัปดาห์นี้</string>
+    <string name="workflow_trigger_schedule_reached">ถึงเวลาที่กำหนดไว้</string>
 </resources>

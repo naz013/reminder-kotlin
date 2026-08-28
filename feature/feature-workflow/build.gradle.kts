@@ -24,6 +24,7 @@ dependencies {
   implementation(project(":ui:ui-common"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-workflow"))
+  implementation(project(":logic:logic-notification-action"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.android.ext)
@@ -34,6 +35,7 @@ dependencies {
   implementation(libs.androidx.navigation3.ui)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
   implementation(libs.kotlinx.serialization.core)
+  implementation(libs.threetenbp)
 
   implementation(platform(libs.compose.bom))
   implementation(libs.compose.material3)

@@ -2,6 +2,7 @@ package com.github.naz013.logic.workflow
 
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowRule
@@ -43,21 +44,27 @@ class WorkflowEngine(
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val reminderV2Repository: ReminderV2Repository,
   @Suppress("unused") private val groupV2Repository: GroupV2Repository,
-  private val workScheduler: WorkScheduler
+  private val workScheduler: WorkScheduler,
+  private val saveWorkflowRuleUseCase: SaveWorkflowRuleUseCase
 ) {
 
-  /** Archives every completed reminder older than the threshold of any enabled
-   * [WorkflowTrigger.ReminderAgeExceeded] rule in scope for it. [now] defaults to the real
-   * current time (this device's local zone); tests inject a fixed value instead. Converted to
-   * UTC before comparing, since [referenceDateTime] reads `ReminderV2.schedule` fields, which are
-   * stored UTC-zoned - this module has no `DateTimeManager` dependency (pure Kotlin/JVM), so the
-   * zone conversion is done directly here rather than via that shared helper. */
+  /** Runs every enabled [WorkflowTrigger.ReminderAgeExceeded] rule in scope against every
+   * completed reminder older than its threshold, whether already archived or not - this trigger
+   * powers both [WorkflowAction.ArchiveReminder] (targets not-yet-archived reminders; re-applying
+   * it to an already-archived one is a harmless no-op) and [WorkflowAction.PurgeReminder] (targets
+   * already-archived reminders, e.g. a "delete 90+ days after archiving" rule chained after the
+   * 30-day archive rule). [now] defaults to the real current time (this device's local zone);
+   * tests inject a fixed value instead. Converted to UTC before comparing, since
+   * [referenceDateTime] reads `ReminderV2.schedule` fields, which are stored UTC-zoned - this
+   * module has no `DateTimeManager` dependency (pure Kotlin/JVM), so the zone conversion is done
+   * directly here rather than via that shared helper. */
   suspend fun runAgeBasedRules(now: LocalDateTime = LocalDateTime.now()): List<PendingWorkflowAction> {
     val rules = workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_REMINDER_AGE_EXCEEDED)
       .filter { it.isEnabled }
     if (rules.isEmpty()) return emptyList()
 
-    val completedReminders = reminderV2Repository.getAll(active = false, removed = false)
+    val completedReminders = reminderV2Repository.getAll(active = false, removed = false) +
+      reminderV2Repository.getAll(active = false, removed = true)
     val nowUtc = now.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()
 
     val pending = mutableListOf<PendingWorkflowAction>()
@@ -178,6 +185,55 @@ class WorkflowEngine(
     return pending
   }
 
+  /** Fires every enabled [WorkflowTrigger.ScheduleReached] rule whose wall-clock time has passed -
+   * [ScheduleRecurrence.ONCE] fires exactly once ([WorkflowRule.lastRunAt] guards against
+   * re-firing), [ScheduleRecurrence.WEEKLY] re-fires roughly every 7 days after that. Checked once
+   * a day by the same daily poll that runs [runAgeBasedRules]/[runGroupCompletionRules] (see
+   * `WorkflowTriggerRunner.runDailyPolling`), so it's not exact-to-the-minute - consistent with
+   * this engine's other day-granularity triggers. Unlike every other trigger, this one isn't
+   * evaluated against any particular reminder, so only [WorkflowAction.RunBackgroundTask] is
+   * supported for now; any other action is a no-op (see [applyScheduledAction]). Always returns an
+   * empty list - kept as `List<PendingWorkflowAction>` only so [WorkflowTriggerRunner.runDailyPolling]
+   * can combine it with the other daily-poll results uniformly. */
+  suspend fun runScheduleRules(now: LocalDateTime = LocalDateTime.now()): List<PendingWorkflowAction> {
+    workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_SCHEDULE_REACHED)
+      .filter { it.isEnabled }
+      .forEach { rule -> fireScheduleRuleIfDue(rule, now) }
+    return emptyList()
+  }
+
+  private suspend fun fireScheduleRuleIfDue(rule: WorkflowRule, now: LocalDateTime) {
+    val trigger = rule.trigger as? WorkflowTrigger.ScheduleReached ?: return
+    if (!isScheduleDue(trigger, rule.lastRunAt, now)) return
+    applyScheduledAction(rule.action)
+    saveWorkflowRuleUseCase(rule.copy(lastRunAt = now))
+  }
+
+  private fun isScheduleDue(
+    trigger: WorkflowTrigger.ScheduleReached,
+    lastRunAt: LocalDateTime?,
+    now: LocalDateTime
+  ): Boolean {
+    if (now.isBefore(trigger.atDateTime)) return false
+    return when (trigger.recurrence) {
+      ScheduleRecurrence.ONCE -> lastRunAt == null
+      ScheduleRecurrence.WEEKLY -> lastRunAt == null || !lastRunAt.plusDays(DAYS_PER_WEEK).isAfter(now)
+    }
+  }
+
+  private fun applyScheduledAction(action: WorkflowAction) {
+    when (action) {
+      is WorkflowAction.RunBackgroundTask ->
+        workScheduler.enqueue(WorkRequest(taskKey = action.taskKey, tag = "workflow-${action.taskKey}"))
+
+      is WorkflowAction.ArchiveReminder,
+      is WorkflowAction.PurgeReminder,
+      is WorkflowAction.ApplyNotificationOverride,
+      is WorkflowAction.CompleteReminder,
+      is WorkflowAction.ActivateReminder -> Unit // not reminder-scoped, so not supported here yet
+    }
+  }
+
   private fun referenceDateTime(reminder: ReminderV2): LocalDateTime =
     reminder.schedule.updatedAt ?: reminder.schedule.startDateTime
 
@@ -221,6 +277,11 @@ class WorkflowEngine(
         null
       }
 
+      is WorkflowAction.PurgeReminder -> {
+        reminderV2Repository.delete(reminder.uuId)
+        null
+      }
+
       is WorkflowAction.ApplyNotificationOverride -> {
         reminderV2Repository.save(reminder.copy(notification = action.override))
         null
@@ -245,5 +306,7 @@ class WorkflowEngine(
     private const val TRIGGER_TYPE_LOCATION_EXITED = "LOCATION_EXITED"
     private const val TRIGGER_TYPE_REMINDER_AGE_EXCEEDED = "REMINDER_AGE_EXCEEDED"
     private const val TRIGGER_TYPE_REMINDER_UNACKNOWLEDGED_FOR = "REMINDER_UNACKNOWLEDGED_FOR"
+    private const val TRIGGER_TYPE_SCHEDULE_REACHED = "SCHEDULE_REACHED"
+    private const val DAYS_PER_WEEK = 7L
   }
 }
