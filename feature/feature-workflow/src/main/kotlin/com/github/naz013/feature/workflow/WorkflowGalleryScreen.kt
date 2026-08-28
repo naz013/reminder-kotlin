@@ -51,15 +51,16 @@ internal fun WorkflowGalleryScreen(
             onClick = onBackClick,
           )
         },
+        actions = {
+          MenuIconButton(
+            icon = AppIcons.Fluent.Add,
+            contentDescription = stringResource(com.github.naz013.ui.common.R.string.workflow_create_custom_rule),
+            onClick = onCreateRuleClick,
+            iconColor = MaterialTheme.colorScheme.primary,
+          )
+        },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
       )
-    },
-    floatingActionButton = {
-      TooltipIconButton(contentDescription = stringResource(R.string.workflow_create_custom_rule)) {
-        FloatingActionButton(onClick = onCreateRuleClick) {
-          Icon(painter = AppIcons.Fluent.Add, contentDescription = stringResource(R.string.workflow_create_custom_rule))
-        }
-      }
     },
   ) { padding ->
     if (state.isLoading) {
