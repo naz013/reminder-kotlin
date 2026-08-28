@@ -100,6 +100,8 @@ private fun WorkflowBuilderEntry(
     onRemoveConditionClick = viewModel::onRemoveConditionClick,
     onActionRowClick = viewModel::onActionRowClick,
     onRemoveActionClick = viewModel::onRemoveActionClick,
+    onRevertOnEndDateChange = viewModel::onRevertOnEndDateChange,
+    onEndDateTimeSelected = viewModel::onEndDateTimeSelected,
     onSaveClick = viewModel::onSaveClick,
     onTriggerPickerDismiss = viewModel::onTriggerPickerDismiss,
     onTriggerSelected = viewModel::onTriggerSelected,

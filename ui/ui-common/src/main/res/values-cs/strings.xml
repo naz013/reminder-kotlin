@@ -1232,4 +1232,8 @@
     <string name="workflow_weekly_summary_title">Týdenní souhrn</string>
     <string name="workflow_weekly_summary_body">Tento týden jste dokončili %1$d připomínek.</string>
     <string name="workflow_trigger_schedule_reached">Naplánovaný čas nastal</string>
+    <string name="workflow_action_clear_notification_override">Vymazat přepsání oznámení</string>
+    <string name="workflow_builder_starts_on">Začíná dne</string>
+    <string name="workflow_builder_ends_on">Končí dne</string>
+    <string name="workflow_builder_revert_on_end_date">Vrátit při datu ukončení</string>
 </resources>

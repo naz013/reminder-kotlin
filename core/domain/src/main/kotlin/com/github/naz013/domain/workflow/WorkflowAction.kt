@@ -21,6 +21,11 @@ sealed class WorkflowAction {
     val override: NotificationSettingsOverride
   ) : WorkflowAction()
 
+  /** Symmetric counterpart to [ApplyNotificationOverride] - resets to an all-default
+   * [NotificationSettingsOverride], letting scope fall back through the normal reminder→group→
+   * global override hierarchy. Powers the "revert on end date" half of vacation-mode rules. */
+  data object ClearNotificationOverride : WorkflowAction()
+
   /** Chained/dependent reminders: activates another reminder by id. */
   data class ActivateReminder(
     @SerializedName("reminderId")

@@ -2,6 +2,7 @@ package com.github.naz013.feature.workflow.builder
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.naz013.domain.workflow.ScheduleRecurrence
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowScope
@@ -18,6 +19,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDateTime
+import java.util.UUID
 
 /** Builds and saves a single [com.github.naz013.domain.workflow.WorkflowRule], either from
  * scratch or (when [editingRuleId] is non-null) editing an existing one. [scopeType]/[scopeId]
@@ -125,6 +128,14 @@ internal class WorkflowRuleBuilderViewModel(
     state.update { it.copy(action = null) }
   }
 
+  fun onRevertOnEndDateChange(enabled: Boolean) {
+    state.update { it.copy(revertOnEndDate = enabled, endDateTime = if (enabled) it.endDateTime else null) }
+  }
+
+  fun onEndDateTimeSelected(dateTime: LocalDateTime) {
+    state.update { it.copy(endDateTime = dateTime) }
+  }
+
   fun onSaveClick() {
     val current = state.value
     val trigger = current.trigger ?: return
@@ -138,17 +149,44 @@ internal class WorkflowRuleBuilderViewModel(
           )
         }
       } else {
-        createWorkflowRuleUseCase(
-          title = autoTitle(trigger, action),
-          scope = scope(),
-          trigger = trigger,
-          conditions = current.conditions,
-          action = action,
-        )
+        saveNewRule(current, trigger, action)
       }
       withContext(dispatcherProvider.main()) {
         state.update { it.copy(didSave = true) }
       }
+    }
+  }
+
+  /** Creates the rule as configured, and - if [WorkflowRuleBuilderState.showRevertOnEndDateOption]
+   * is checked - a second, paired rule that reverts the notification override at
+   * [WorkflowRuleBuilderState.endDateTime]. Both rules share a freshly-minted id in
+   * [com.github.naz013.domain.workflow.WorkflowRule.templateId] - repurposed here as a pairing id
+   * rather than a real gallery template id, which also means neither rule offers "save as
+   * template" afterwards (see `WorkflowRule.toUi`'s `canSaveAsTemplate`), which is desirable: only
+   * half of the pair would be captured. */
+  private suspend fun saveNewRule(current: WorkflowRuleBuilderState, trigger: WorkflowTrigger, action: WorkflowAction) {
+    val endDateTime = current.endDateTime
+    val pairId = if (current.showRevertOnEndDateOption && current.revertOnEndDate && endDateTime != null) {
+      UUID.randomUUID().toString()
+    } else {
+      null
+    }
+    createWorkflowRuleUseCase(
+      title = autoTitle(trigger, action),
+      scope = scope(),
+      trigger = trigger,
+      conditions = current.conditions,
+      action = action,
+      templateId = pairId,
+    )
+    if (pairId != null && endDateTime != null) {
+      createWorkflowRuleUseCase(
+        title = autoTitle(WorkflowTrigger.ScheduleReached(endDateTime), WorkflowAction.ClearNotificationOverride),
+        scope = scope(),
+        trigger = WorkflowTrigger.ScheduleReached(atDateTime = endDateTime, recurrence = ScheduleRecurrence.ONCE),
+        action = WorkflowAction.ClearNotificationOverride,
+        templateId = pairId,
+      )
     }
   }
 
@@ -180,6 +218,7 @@ internal class WorkflowRuleBuilderViewModel(
     is WorkflowAction.CompleteReminder -> "complete it"
     is WorkflowAction.PurgeReminder -> "delete it permanently"
     is WorkflowAction.ApplyNotificationOverride -> "change its notification settings"
+    is WorkflowAction.ClearNotificationOverride -> "clear its notification override"
     is WorkflowAction.ActivateReminder -> "activate another reminder"
     is WorkflowAction.RunBackgroundTask -> "run a background task"
   }

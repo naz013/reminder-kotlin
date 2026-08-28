@@ -18,9 +18,17 @@ class CreateWorkflowRuleUseCase(
     scope: WorkflowScope,
     trigger: WorkflowTrigger,
     conditions: List<WorkflowCondition> = emptyList(),
-    action: WorkflowAction
+    action: WorkflowAction,
+    templateId: String? = null
   ): WorkflowRule {
-    val rule = WorkflowRule(title = title, scope = scope, trigger = trigger, conditions = conditions, action = action)
+    val rule = WorkflowRule(
+      title = title,
+      templateId = templateId,
+      scope = scope,
+      trigger = trigger,
+      conditions = conditions,
+      action = action
+    )
     saveWorkflowRuleUseCase(rule)
     return rule
   }

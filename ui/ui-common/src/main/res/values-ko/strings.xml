@@ -1232,4 +1232,8 @@
     <string name="workflow_weekly_summary_title">주간 요약</string>
     <string name="workflow_weekly_summary_body">이번 주에 %1$d개의 미리 알림을 완료했습니다.</string>
     <string name="workflow_trigger_schedule_reached">예약된 시간 도달</string>
+    <string name="workflow_action_clear_notification_override">알림 재정의 지우기</string>
+    <string name="workflow_builder_starts_on">시작일</string>
+    <string name="workflow_builder_ends_on">종료일</string>
+    <string name="workflow_builder_revert_on_end_date">종료일에 되돌리기</string>
 </resources>

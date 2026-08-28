@@ -32,6 +32,7 @@ private fun isActionImplemented(action: WorkflowAction): Boolean = when (action)
   is WorkflowAction.CompleteReminder,
   is WorkflowAction.PurgeReminder,
   is WorkflowAction.ApplyNotificationOverride,
+  is WorkflowAction.ClearNotificationOverride,
   is WorkflowAction.ActivateReminder,
   is WorkflowAction.RunBackgroundTask -> true
 }

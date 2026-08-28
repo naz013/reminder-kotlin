@@ -37,6 +37,9 @@ import com.github.naz013.ui.common.compose.foundation.component.NumberStepperFie
 import com.github.naz013.ui.common.compose.foundation.component.SettingsCheckboxItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 private data class TriggerOption(val id: Int, val template: WorkflowTrigger, val scopeTypes: List<WorkflowScopeType>)
 
@@ -48,12 +51,18 @@ private val TRIGGER_OPTIONS = listOf(
   TriggerOption(5, WorkflowTrigger.LocationExited, listOf(WorkflowScopeType.REMINDER)),
   TriggerOption(6, WorkflowTrigger.ReminderAgeExceeded(days = 30), WorkflowScopeType.entries),
   TriggerOption(7, WorkflowTrigger.ReminderUnacknowledgedFor(minutes = 30), WorkflowScopeType.entries),
+  TriggerOption(
+    8,
+    WorkflowTrigger.ScheduleReached(atDateTime = LocalDateTime.now().plusDays(1)),
+    WorkflowScopeType.entries
+  ),
 )
 
 private fun needsParams(trigger: WorkflowTrigger): Boolean = when (trigger) {
   is WorkflowTrigger.ReminderSnoozedNTimes,
   is WorkflowTrigger.ReminderAgeExceeded,
-  is WorkflowTrigger.ReminderUnacknowledgedFor -> true
+  is WorkflowTrigger.ReminderUnacknowledgedFor,
+  is WorkflowTrigger.ScheduleReached -> true
   else -> false
 }
 
@@ -130,7 +139,58 @@ private fun TriggerParamForm(trigger: WorkflowTrigger, onSave: (WorkflowTrigger)
       )
     }
 
+    is WorkflowTrigger.ScheduleReached -> {
+      var dateTime by remember { mutableStateOf<LocalDateTime?>(null) }
+      Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        DateTimePickerRow(
+          label = stringResource(R.string.workflow_builder_starts_on),
+          dateTime = dateTime,
+          onDateTimePicked = { dateTime = it },
+        )
+        Button(
+          onClick = {
+            dateTime?.let { onSave(WorkflowTrigger.ScheduleReached(atDateTime = it, recurrence = trigger.recurrence)) }
+          },
+          enabled = dateTime != null,
+          modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        ) {
+          Text(stringResource(R.string.save))
+        }
+      }
+    }
+
     else -> Unit
+  }
+}
+
+private val dateTimePickerValueFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy HH:mm")
+
+/** A tap-to-pick "date, then time" row - the [label] title plus the picked value (or a
+ * placeholder), used for [WorkflowTrigger.ScheduleReached]'s own start time and (from
+ * [WorkflowRuleBuilderScreen]) a vacation-mode rule's end time. Doesn't include a save/confirm
+ * control of its own - callers commit the picked value however fits their own form. */
+@Composable
+internal fun DateTimePickerRow(
+  label: String,
+  dateTime: LocalDateTime?,
+  onDateTimePicked: (LocalDateTime) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val dateTimePicker = rememberDateTimePicker()
+  Column(modifier = modifier) {
+    Text(text = label, style = MaterialTheme.typography.titleSmall)
+    SettingsItem(
+      title = dateTime?.format(dateTimePickerValueFormatter) ?: stringResource(R.string.workflow_builder_not_set),
+      onClick = {
+        val initialDate = (dateTime ?: LocalDateTime.now()).toLocalDate()
+        val initialTime = (dateTime ?: LocalDateTime.now()).toLocalTime()
+        dateTimePicker.showDatePicker(date = initialDate, title = label) { date ->
+          dateTimePicker.showTimePicker(time = initialTime, title = label) { time ->
+            onDateTimePicked(LocalDateTime.of(date, time))
+          }
+        }
+      },
+    )
   }
 }
 

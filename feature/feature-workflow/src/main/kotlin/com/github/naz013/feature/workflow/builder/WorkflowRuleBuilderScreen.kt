@@ -33,7 +33,9 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.BuilderItemStatus
 import com.github.naz013.ui.common.compose.foundation.component.BuilderListItemCard
+import com.github.naz013.ui.common.compose.foundation.component.SettingsCheckboxItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
+import org.threeten.bp.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +49,8 @@ internal fun WorkflowRuleBuilderScreen(
   onRemoveConditionClick: (Int) -> Unit,
   onActionRowClick: () -> Unit,
   onRemoveActionClick: () -> Unit,
+  onRevertOnEndDateChange: (Boolean) -> Unit,
+  onEndDateTimeSelected: (LocalDateTime) -> Unit,
   onSaveClick: () -> Unit,
   onTriggerPickerDismiss: () -> Unit,
   onTriggerSelected: (WorkflowTrigger) -> Unit,
@@ -156,6 +160,26 @@ internal fun WorkflowRuleBuilderScreen(
         }
       }
 
+      if (state.showRevertOnEndDateOption) {
+        item {
+          SettingsCheckboxItem(
+            title = stringResource(R.string.workflow_builder_revert_on_end_date),
+            checked = state.revertOnEndDate,
+            onCheckedChange = onRevertOnEndDateChange,
+          )
+        }
+        if (state.revertOnEndDate) {
+          item {
+            DateTimePickerRow(
+              label = stringResource(R.string.workflow_builder_ends_on),
+              dateTime = state.endDateTime,
+              onDateTimePicked = onEndDateTimeSelected,
+              modifier = Modifier.padding(horizontal = 16.dp),
+            )
+          }
+        }
+      }
+
       item {
         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.End) {
           Button(onClick = onSaveClick, enabled = state.canSave) {
@@ -206,6 +230,8 @@ private fun WorkflowRuleBuilderScreenPreview() {
       onRemoveConditionClick = {},
       onActionRowClick = {},
       onRemoveActionClick = {},
+      onRevertOnEndDateChange = {},
+      onEndDateTimeSelected = {},
       onSaveClick = {},
       onTriggerPickerDismiss = {},
       onTriggerSelected = {},

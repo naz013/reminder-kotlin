@@ -1,5 +1,6 @@
 package com.github.naz013.logic.workflow
 
+import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.workflow.ScheduleRecurrence
@@ -190,11 +191,14 @@ class WorkflowEngine(
    * re-firing), [ScheduleRecurrence.WEEKLY] re-fires roughly every 7 days after that. Checked once
    * a day by the same daily poll that runs [runAgeBasedRules]/[runGroupCompletionRules] (see
    * `WorkflowTriggerRunner.runDailyPolling`), so it's not exact-to-the-minute - consistent with
-   * this engine's other day-granularity triggers. Unlike every other trigger, this one isn't
-   * evaluated against any particular reminder, so only [WorkflowAction.RunBackgroundTask] is
-   * supported for now; any other action is a no-op (see [applyScheduledAction]). Always returns an
-   * empty list - kept as `List<PendingWorkflowAction>` only so [WorkflowTriggerRunner.runDailyPolling]
-   * can combine it with the other daily-poll results uniformly. */
+   * this engine's other day-granularity triggers. Unlike every other trigger, this one isn't fired
+   * for a specific reminder that matched something - [WorkflowAction.ApplyNotificationOverride]/
+   * [WorkflowAction.ClearNotificationOverride] apply to every currently-active reminder in
+   * [WorkflowRule.scope] (a one-time bulk write, e.g. powering vacation-mode start/end rules) and
+   * [WorkflowAction.RunBackgroundTask] just enqueues; every other action is a no-op (see
+   * [applyScheduledAction]). Always returns an empty list - kept as `List<PendingWorkflowAction>`
+   * only so [WorkflowTriggerRunner.runDailyPolling] can combine it with the other daily-poll
+   * results uniformly. */
   suspend fun runScheduleRules(now: LocalDateTime = LocalDateTime.now()): List<PendingWorkflowAction> {
     workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_SCHEDULE_REACHED)
       .filter { it.isEnabled }
@@ -205,7 +209,7 @@ class WorkflowEngine(
   private suspend fun fireScheduleRuleIfDue(rule: WorkflowRule, now: LocalDateTime) {
     val trigger = rule.trigger as? WorkflowTrigger.ScheduleReached ?: return
     if (!isScheduleDue(trigger, rule.lastRunAt, now)) return
-    applyScheduledAction(rule.action)
+    applyScheduledAction(rule)
     saveWorkflowRuleUseCase(rule.copy(lastRunAt = now))
   }
 
@@ -221,17 +225,36 @@ class WorkflowEngine(
     }
   }
 
-  private fun applyScheduledAction(action: WorkflowAction) {
-    when (action) {
+  private suspend fun applyScheduledAction(rule: WorkflowRule) {
+    when (val action = rule.action) {
       is WorkflowAction.RunBackgroundTask ->
         workScheduler.enqueue(WorkRequest(taskKey = action.taskKey, tag = "workflow-${action.taskKey}"))
 
+      is WorkflowAction.ApplyNotificationOverride ->
+        remindersInScope(rule.scope).forEach { reminderV2Repository.save(it.copy(notification = action.override)) }
+
+      is WorkflowAction.ClearNotificationOverride ->
+        remindersInScope(rule.scope).forEach {
+          reminderV2Repository.save(it.copy(notification = NotificationSettingsOverride()))
+        }
+
       is WorkflowAction.ArchiveReminder,
       is WorkflowAction.PurgeReminder,
-      is WorkflowAction.ApplyNotificationOverride,
       is WorkflowAction.CompleteReminder,
       is WorkflowAction.ActivateReminder -> Unit // not reminder-scoped, so not supported here yet
     }
+  }
+
+  /** Every currently-active, not-removed reminder [scope] covers - the pool
+   * [WorkflowAction.ApplyNotificationOverride]/[WorkflowAction.ClearNotificationOverride] bulk-write
+   * when fired by a [WorkflowTrigger.ScheduleReached] rule. Only active reminders, since a
+   * completed/archived one won't fire a notification anyway. */
+  private suspend fun remindersInScope(scope: WorkflowScope): List<ReminderV2> = when (scope) {
+    is WorkflowScope.Global -> reminderV2Repository.getAll(active = true, removed = false)
+    is WorkflowScope.ForGroup ->
+      reminderV2Repository.getByGroupId(scope.groupId).filter { it.isActive && !it.isRemoved }
+    is WorkflowScope.ForReminder ->
+      listOfNotNull(reminderV2Repository.getById(scope.reminderId)?.takeIf { it.isActive && !it.isRemoved })
   }
 
   private fun referenceDateTime(reminder: ReminderV2): LocalDateTime =
@@ -284,6 +307,11 @@ class WorkflowEngine(
 
       is WorkflowAction.ApplyNotificationOverride -> {
         reminderV2Repository.save(reminder.copy(notification = action.override))
+        null
+      }
+
+      is WorkflowAction.ClearNotificationOverride -> {
+        reminderV2Repository.save(reminder.copy(notification = NotificationSettingsOverride()))
         null
       }
 

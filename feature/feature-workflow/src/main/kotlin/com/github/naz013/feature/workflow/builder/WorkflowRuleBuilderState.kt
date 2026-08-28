@@ -4,6 +4,7 @@ import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowCondition
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import org.threeten.bp.LocalDateTime
 
 internal data class UiWorkflowGroupOption(
   val id: String,
@@ -30,7 +31,19 @@ internal data class WorkflowRuleBuilderState(
   val isActionPickerVisible: Boolean = false,
   val availableGroups: List<UiWorkflowGroupOption> = emptyList(),
   val availableReminders: List<UiWorkflowReminderOption> = emptyList(),
+  val revertOnEndDate: Boolean = false,
+  val endDateTime: LocalDateTime? = null,
   val didSave: Boolean = false
 ) {
-  val canSave: Boolean get() = trigger != null && action != null
+  /** A "revert on end date" option is only offered when creating (not editing) a rule that
+   * schedules a notification override - the classic vacation-mode shape. Saving with it checked
+   * creates a second, paired rule that reverts the override at [endDateTime] - see
+   * `WorkflowRuleBuilderViewModel.saveNewRule`. */
+  val showRevertOnEndDateOption: Boolean
+    get() = editingRuleId == null &&
+      trigger is WorkflowTrigger.ScheduleReached &&
+      action is WorkflowAction.ApplyNotificationOverride
+
+  val canSave: Boolean
+    get() = trigger != null && action != null && (!showRevertOnEndDateOption || !revertOnEndDate || endDateTime != null)
 }

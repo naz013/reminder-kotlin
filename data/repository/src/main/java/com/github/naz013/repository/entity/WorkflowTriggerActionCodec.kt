@@ -68,6 +68,7 @@ internal fun WorkflowAction.toColumns(): Pair<String, String> = when (this) {
   is WorkflowAction.CompleteReminder -> "COMPLETE_REMINDER" to ""
   is WorkflowAction.PurgeReminder -> "PURGE_REMINDER" to ""
   is WorkflowAction.ApplyNotificationOverride -> "APPLY_NOTIFICATION_OVERRIDE" to workflowGson.toJson(this)
+  is WorkflowAction.ClearNotificationOverride -> "CLEAR_NOTIFICATION_OVERRIDE" to ""
   is WorkflowAction.ActivateReminder -> "ACTIVATE_REMINDER" to workflowGson.toJson(this)
   is WorkflowAction.RunBackgroundTask -> "RUN_BACKGROUND_TASK" to workflowGson.toJson(this)
 }
@@ -80,6 +81,7 @@ internal fun toWorkflowAction(type: String, payload: String): WorkflowAction = r
     "COMPLETE_REMINDER" -> WorkflowAction.CompleteReminder
     "PURGE_REMINDER" -> WorkflowAction.PurgeReminder
     "APPLY_NOTIFICATION_OVERRIDE" -> workflowGson.fromJson(payload, WorkflowAction.ApplyNotificationOverride::class.java)
+    "CLEAR_NOTIFICATION_OVERRIDE" -> WorkflowAction.ClearNotificationOverride
     "ACTIVATE_REMINDER" -> workflowGson.fromJson(payload, WorkflowAction.ActivateReminder::class.java)
     "RUN_BACKGROUND_TASK" -> workflowGson.fromJson(payload, WorkflowAction.RunBackgroundTask::class.java)
     else -> WorkflowAction.ArchiveReminder

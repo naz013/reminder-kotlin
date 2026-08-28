@@ -1233,4 +1233,8 @@
     <string name="workflow_weekly_summary_title">每周摘要</string>
     <string name="workflow_weekly_summary_body">本周您已完成 %1$d 条提醒。</string>
     <string name="workflow_trigger_schedule_reached">已到预定时间</string>
+    <string name="workflow_action_clear_notification_override">清除通知覆盖</string>
+    <string name="workflow_builder_starts_on">开始于</string>
+    <string name="workflow_builder_ends_on">结束于</string>
+    <string name="workflow_builder_revert_on_end_date">在结束日期恢复</string>
 </resources>

@@ -248,6 +248,27 @@ class WorkflowEngineTest {
   }
 
   @Test
+  fun `clears a reminder's notification override inline without returning a pending action`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(
+      notification = NotificationSettingsOverride(priority = ReminderPriority.HIGH)
+    )
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-clear-notify",
+      trigger = WorkflowTrigger.ReminderCompleted,
+      action = WorkflowAction.ClearNotificationOverride,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    val result = engine(ruleRepository, reminderRepository).runReminderCompletedRules("r1")
+
+    assertEquals(NotificationSettingsOverride(), reminderRepository.saved.getValue("r1").notification)
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
   fun `enqueues a background task inline without returning a pending action`() = runTest {
     val reminder = completedReminder("r1", updatedAt = now)
     val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
@@ -635,6 +656,84 @@ class WorkflowEngineTest {
     engine(ruleRepository, reminderRepository, workScheduler).runScheduleRules(now)
 
     assertTrue(workScheduler.enqueued.isEmpty())
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  private fun activeReminder(id: String, groupId: String? = null) = ReminderV2(
+    uuId = id,
+    groupId = groupId,
+    schedule = ReminderSchedule(startDateTime = now),
+    isActive = true,
+    isRemoved = false
+  )
+
+  @Test
+  fun `applies a notification override to every active reminder globally when a schedule rule fires`() = runTest {
+    val override = NotificationSettingsOverride(bypassDoNotDisturb = true)
+    val reminder1 = activeReminder("r1")
+    val reminder2 = activeReminder("r2")
+    val completed = completedReminder("r3", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(
+      mutableMapOf(reminder1.uuId to reminder1, reminder2.uuId to reminder2, completed.uuId to completed)
+    )
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+      .copy(scope = WorkflowScope.Global, action = WorkflowAction.ApplyNotificationOverride(override))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
+    assertEquals(override, reminderRepository.saved.getValue("r1").notification)
+    assertEquals(override, reminderRepository.saved.getValue("r2").notification)
+    assertFalse(reminderRepository.saved.containsKey("r3"))
+  }
+
+  @Test
+  fun `clears the notification override for every active reminder in a group when a schedule rule fires`() = runTest {
+    val inGroup = activeReminder("r1", groupId = "group-1").copy(
+      notification = NotificationSettingsOverride(bypassDoNotDisturb = true)
+    )
+    val outOfGroup = activeReminder("r2", groupId = "group-2")
+    val reminderRepository = FakeReminderV2Repository(
+      mutableMapOf(inGroup.uuId to inGroup, outOfGroup.uuId to outOfGroup)
+    )
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+      .copy(scope = WorkflowScope.ForGroup("group-1"), action = WorkflowAction.ClearNotificationOverride)
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
+    assertEquals(NotificationSettingsOverride(), reminderRepository.saved.getValue("r1").notification)
+    assertFalse(reminderRepository.saved.containsKey("r2"))
+  }
+
+  @Test
+  fun `applies a notification override only to the one reminder for a reminder-scoped schedule rule`() = runTest {
+    val target = activeReminder("r1")
+    val other = activeReminder("r2")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(target.uuId to target, other.uuId to other))
+    val override = NotificationSettingsOverride(bypassDoNotDisturb = true)
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1))
+      .copy(scope = WorkflowScope.ForReminder("r1"), action = WorkflowAction.ApplyNotificationOverride(override))
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
+    assertEquals(override, reminderRepository.saved.getValue("r1").notification)
+    assertFalse(reminderRepository.saved.containsKey("r2"))
+  }
+
+  @Test
+  fun `does not touch a completed reminder when a schedule rule applies a notification override globally`() = runTest {
+    val completed = completedReminder("r1", updatedAt = now)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(completed.uuId to completed))
+    val rule = scheduleRule(atDateTime = now.minusMinutes(1)).copy(
+      scope = WorkflowScope.Global,
+      action = WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride(bypassDoNotDisturb = true))
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runScheduleRules(now)
+
     assertEquals(0, reminderRepository.saved.size)
   }
 

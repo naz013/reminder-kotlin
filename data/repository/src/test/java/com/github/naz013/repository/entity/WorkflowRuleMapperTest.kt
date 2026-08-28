@@ -107,6 +107,23 @@ class WorkflowRuleMapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips a clear-notification-override rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-8",
+      title = "Revert vacation-mode notification override",
+      templateId = "pair-1",
+      scope = WorkflowScope.ForGroup("group-1"),
+      trigger = WorkflowTrigger.ScheduleReached(atDateTime = LocalDateTime.of(2026, 9, 1, 9, 0)),
+      action = WorkflowAction.ClearNotificationOverride,
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
   fun `toEntity then toDomain round trips a purge-on-age rule`() {
     val rule = WorkflowRule(
       uuId = "rule-6",

@@ -82,6 +82,22 @@ class DataConverterImplTest {
   }
 
   @Test
+  fun `round trips a clear-notification-override workflow rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-7",
+      title = "Revert vacation-mode notification override",
+      templateId = "pair-1",
+      scope = WorkflowScope.ForGroup("group-1"),
+      trigger = WorkflowTrigger.ScheduleReached(atDateTime = LocalDateTime.of(2026, 9, 1, 9, 0)),
+      action = WorkflowAction.ClearNotificationOverride
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
   fun `round trips a purge-on-age workflow rule`() {
     val rule = WorkflowRule(
       uuId = "rule-5",
