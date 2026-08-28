@@ -290,6 +290,81 @@ class WorkflowEngineTest {
   }
 
   @Test
+  fun `fires a reminder-created rule for the new reminder`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(isActive = true)
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-created",
+      trigger = WorkflowTrigger.ReminderCreated,
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCreatedRules("r1")
+
+    assertTrue(reminderRepository.saved.getValue("r1").isRemoved)
+  }
+
+  @Test
+  fun `moves a newly created reminder to a group when its title contains a keyword`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(isActive = true, summary = "Buy groceries")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-auto-group",
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup("shopping-group"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCreatedRules("r1")
+
+    assertEquals("shopping-group", reminderRepository.saved.getValue("r1").groupId)
+  }
+
+  @Test
+  fun `does not move a newly created reminder when its title does not contain the keyword`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(isActive = true, summary = "Call the dentist")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-auto-group",
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup("shopping-group"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCreatedRules("r1")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `TitleContains matches case-insensitively`() = runTest {
+    val reminder = completedReminder("r1", updatedAt = now).copy(isActive = true, summary = "BUY GROCERIES")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-auto-group",
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup("shopping-group"),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runReminderCreatedRules("r1")
+
+    assertEquals("shopping-group", reminderRepository.saved.getValue("r1").groupId)
+  }
+
+  @Test
   fun `returns a pending action for CompleteReminder`() = runTest {
     val reminder = completedReminder("r1", updatedAt = now)
     val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
@@ -946,6 +1021,7 @@ private class FakeWorkflowRuleRepository(
   override suspend fun getByTriggerType(triggerType: String): List<WorkflowRule> =
     rules.filter {
       when (triggerType) {
+        "REMINDER_CREATED" -> it.trigger is WorkflowTrigger.ReminderCreated
         "REMINDER_COMPLETED" -> it.trigger is WorkflowTrigger.ReminderCompleted
         "REMINDER_SNOOZED_N_TIMES" -> it.trigger is WorkflowTrigger.ReminderSnoozedNTimes
         "GROUP_ALL_COMPLETED" -> it.trigger is WorkflowTrigger.GroupAllCompleted

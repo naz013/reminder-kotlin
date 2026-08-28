@@ -1237,4 +1237,8 @@
     <string name="workflow_builder_starts_on">开始于</string>
     <string name="workflow_builder_ends_on">结束于</string>
     <string name="workflow_builder_revert_on_end_date">在结束日期恢复</string>
+    <string name="workflow_trigger_reminder_created">提醒已创建</string>
+    <string name="workflow_condition_title_contains">标题包含</string>
+    <string name="workflow_action_move_to_group">移动到其他群组</string>
+    <string name="workflow_builder_title_contains_hint">关键词</string>
 </resources>

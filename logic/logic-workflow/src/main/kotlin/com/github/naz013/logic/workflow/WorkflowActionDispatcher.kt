@@ -26,6 +26,7 @@ class WorkflowActionDispatcher(
       is WorkflowAction.PurgeReminder,
       is WorkflowAction.ApplyNotificationOverride,
       is WorkflowAction.ClearNotificationOverride,
+      is WorkflowAction.MoveToGroup,
       is WorkflowAction.RunBackgroundTask -> Unit // the engine never returns these as pending
     }
   }

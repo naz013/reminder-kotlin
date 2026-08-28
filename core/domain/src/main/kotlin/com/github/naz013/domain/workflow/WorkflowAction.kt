@@ -32,6 +32,13 @@ sealed class WorkflowAction {
     val reminderId: String
   ) : WorkflowAction()
 
+  /** Reassigns the reminder's group. Powers keyword-based auto-grouping paired with
+   * [WorkflowTrigger.ReminderCreated] and [WorkflowCondition.TitleContains]. */
+  data class MoveToGroup(
+    @SerializedName("groupId")
+    val groupId: String
+  ) : WorkflowAction()
+
   /** Escape hatch mirroring ResolvedEventAction's open-endedness: runs an existing BackgroundTask. */
   data class RunBackgroundTask(
     @SerializedName("taskKey")

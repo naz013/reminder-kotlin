@@ -1237,4 +1237,8 @@
     <string name="workflow_builder_starts_on">Починається</string>
     <string name="workflow_builder_ends_on">Закінчується</string>
     <string name="workflow_builder_revert_on_end_date">Скасувати в дату завершення</string>
+    <string name="workflow_trigger_reminder_created">Нагадування створено</string>
+    <string name="workflow_condition_title_contains">Заголовок містить</string>
+    <string name="workflow_action_move_to_group">Перемістити до іншої групи</string>
+    <string name="workflow_builder_title_contains_hint">Ключове слово</string>
 </resources>

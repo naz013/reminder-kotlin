@@ -1234,4 +1234,8 @@
     <string name="workflow_builder_starts_on">Starter den</string>
     <string name="workflow_builder_ends_on">Slutter den</string>
     <string name="workflow_builder_revert_on_end_date">Fortryd ved slutdato</string>
+    <string name="workflow_trigger_reminder_created">Påmindelse er oprettet</string>
+    <string name="workflow_condition_title_contains">Titel indeholder</string>
+    <string name="workflow_action_move_to_group">Flyt til en anden gruppe</string>
+    <string name="workflow_builder_title_contains_hint">Nøgleord</string>
 </resources>

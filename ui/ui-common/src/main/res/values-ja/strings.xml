@@ -1236,4 +1236,8 @@
     <string name="workflow_builder_starts_on">開始日時</string>
     <string name="workflow_builder_ends_on">終了日時</string>
     <string name="workflow_builder_revert_on_end_date">終了日に元に戻す</string>
+    <string name="workflow_trigger_reminder_created">リマインダーが作成されました</string>
+    <string name="workflow_condition_title_contains">タイトルに含まれる</string>
+    <string name="workflow_action_move_to_group">別のグループに移動</string>
+    <string name="workflow_builder_title_contains_hint">キーワード</string>
 </resources>

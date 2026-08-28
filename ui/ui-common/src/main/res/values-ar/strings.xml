@@ -1234,4 +1234,8 @@
     <string name="workflow_builder_starts_on">يبدأ في</string>
     <string name="workflow_builder_ends_on">ينتهي في</string>
     <string name="workflow_builder_revert_on_end_date">التراجع في تاريخ الانتهاء</string>
+    <string name="workflow_trigger_reminder_created">التذكير تم إنشاؤه</string>
+    <string name="workflow_condition_title_contains">يحتوي العنوان على</string>
+    <string name="workflow_action_move_to_group">نقل إلى مجموعة أخرى</string>
+    <string name="workflow_builder_title_contains_hint">كلمة مفتاحية</string>
 </resources>

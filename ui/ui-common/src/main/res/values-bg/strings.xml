@@ -1237,4 +1237,8 @@
     <string name="workflow_builder_starts_on">Започва на</string>
     <string name="workflow_builder_ends_on">Приключва на</string>
     <string name="workflow_builder_revert_on_end_date">Връщане при крайна дата</string>
+    <string name="workflow_trigger_reminder_created">Напомнянето е създадено</string>
+    <string name="workflow_condition_title_contains">Заглавието съдържа</string>
+    <string name="workflow_action_move_to_group">Преместване в друга група</string>
+    <string name="workflow_builder_title_contains_hint">Ключова дума</string>
 </resources>

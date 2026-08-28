@@ -151,7 +151,7 @@ internal fun WorkflowRuleBuilderScreen(
           BuilderListItemCard(
             icon = AppIcons.Fluent.Checkmark,
             title = workflowActionLabel(action),
-            value = workflowActionValue(action, state.availableReminders) ?: "",
+            value = workflowActionValue(action, state.availableReminders, state.availableGroups) ?: "",
             status = BuilderItemStatus.DONE,
             onClick = onActionRowClick,
             onRemoveClick = onRemoveActionClick,
@@ -210,6 +210,7 @@ internal fun WorkflowRuleBuilderScreen(
   if (state.isActionPickerVisible) {
     WorkflowActionPickerSheet(
       reminders = state.availableReminders,
+      groups = state.availableGroups,
       onDismiss = onActionPickerDismiss,
       onConfirm = onActionSelected,
     )

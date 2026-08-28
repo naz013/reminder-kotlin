@@ -1236,4 +1236,8 @@
     <string name="workflow_builder_starts_on">Începe la</string>
     <string name="workflow_builder_ends_on">Se termină la</string>
     <string name="workflow_builder_revert_on_end_date">Revenire la data de sfârșit</string>
+    <string name="workflow_trigger_reminder_created">Mementoul este creat</string>
+    <string name="workflow_condition_title_contains">Titlul conține</string>
+    <string name="workflow_action_move_to_group">Mutare într-un alt grup</string>
+    <string name="workflow_builder_title_contains_hint">Cuvânt cheie</string>
 </resources>

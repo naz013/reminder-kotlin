@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,6 +57,7 @@ private val TRIGGER_OPTIONS = listOf(
     WorkflowTrigger.ScheduleReached(atDateTime = LocalDateTime.now().plusDays(1)),
     WorkflowScopeType.entries
   ),
+  TriggerOption(9, WorkflowTrigger.ReminderCreated, WorkflowScopeType.entries),
 )
 
 private fun needsParams(trigger: WorkflowTrigger): Boolean = when (trigger) {
@@ -224,6 +226,7 @@ private val CONDITION_OPTIONS = listOf(
   WorkflowCondition.PriorityAtLeast(ReminderPriority.HIGH),
   WorkflowCondition.WithinTimeWindow(fromMinuteOfDay = 8 * 60, toMinuteOfDay = 22 * 60),
   WorkflowCondition.GroupIs(groupId = ""),
+  WorkflowCondition.TitleContains(text = ""),
 )
 
 /** Type picker + inline param sub-form for one "If" slot - used both to add a new condition and
@@ -332,6 +335,26 @@ private fun ConditionParamForm(
         )
       }
     }
+
+    is WorkflowCondition.TitleContains -> {
+      var text by remember { mutableStateOf(condition.text) }
+      Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        OutlinedTextField(
+          value = text,
+          onValueChange = { text = it },
+          label = { Text(stringResource(R.string.workflow_builder_title_contains_hint)) },
+          singleLine = true,
+          modifier = Modifier.fillMaxWidth(),
+        )
+        Button(
+          onClick = { onSave(WorkflowCondition.TitleContains(text)) },
+          enabled = text.isNotBlank(),
+          modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        ) {
+          Text(stringResource(R.string.save))
+        }
+      }
+    }
   }
 }
 
@@ -355,10 +378,13 @@ private val ACTION_OPTIONS = listOf(
   WorkflowAction.PurgeReminder,
   WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride()),
   WorkflowAction.ActivateReminder(reminderId = ""),
+  WorkflowAction.MoveToGroup(groupId = ""),
 )
 
 private fun needsParams(action: WorkflowAction): Boolean =
-  action is WorkflowAction.ApplyNotificationOverride || action is WorkflowAction.ActivateReminder
+  action is WorkflowAction.ApplyNotificationOverride ||
+    action is WorkflowAction.ActivateReminder ||
+    action is WorkflowAction.MoveToGroup
 
 /** Type picker + inline param sub-form for the "Then" slot. [WorkflowAction.RunBackgroundTask] is
  * deliberately excluded - its `taskKey` is an internal Koin DI qualifier with no user-facing
@@ -367,6 +393,7 @@ private fun needsParams(action: WorkflowAction): Boolean =
 @Composable
 internal fun WorkflowActionPickerSheet(
   reminders: List<UiWorkflowReminderOption>,
+  groups: List<UiWorkflowGroupOption>,
   onDismiss: () -> Unit,
   onConfirm: (WorkflowAction) -> Unit,
 ) {
@@ -390,7 +417,7 @@ internal fun WorkflowActionPickerSheet(
         modifier = Modifier.padding(bottom = 16.dp),
       )
     } else {
-      ActionParamForm(action = current, reminders = reminders, onSave = onConfirm)
+      ActionParamForm(action = current, reminders = reminders, groups = groups, onSave = onConfirm)
     }
   }
 }
@@ -399,6 +426,7 @@ internal fun WorkflowActionPickerSheet(
 private fun ActionParamForm(
   action: WorkflowAction,
   reminders: List<UiWorkflowReminderOption>,
+  groups: List<UiWorkflowGroupOption>,
   onSave: (WorkflowAction) -> Unit,
 ) {
   when (action) {
@@ -425,6 +453,27 @@ private fun ActionParamForm(
         SelectableTextList(
           items = reminders.map { it.id to it.title },
           onSelect = { id -> onSave(WorkflowAction.ActivateReminder(id)) },
+        )
+      }
+    }
+
+    is WorkflowAction.MoveToGroup -> {
+      if (groups.isEmpty()) {
+        Text(
+          text = stringResource(R.string.workflow_builder_no_groups),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+        )
+      } else {
+        Text(
+          text = stringResource(R.string.workflow_builder_select_group),
+          style = MaterialTheme.typography.titleSmall,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        SelectableTextList(
+          items = groups.map { it.id to it.title },
+          onSelect = { id -> onSave(WorkflowAction.MoveToGroup(id)) },
         )
       }
     }

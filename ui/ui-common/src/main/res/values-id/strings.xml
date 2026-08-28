@@ -1234,4 +1234,8 @@
     <string name="workflow_builder_starts_on">Mulai pada</string>
     <string name="workflow_builder_ends_on">Berakhir pada</string>
     <string name="workflow_builder_revert_on_end_date">Kembalikan pada tanggal berakhir</string>
+    <string name="workflow_trigger_reminder_created">Pengingat dibuat</string>
+    <string name="workflow_condition_title_contains">Judul berisi</string>
+    <string name="workflow_action_move_to_group">Pindahkan ke grup lain</string>
+    <string name="workflow_builder_title_contains_hint">Kata kunci</string>
 </resources>

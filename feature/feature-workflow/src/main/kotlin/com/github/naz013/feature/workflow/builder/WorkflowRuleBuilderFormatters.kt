@@ -13,6 +13,7 @@ import org.threeten.bp.format.DateTimeFormatter
  * and as the row title once configured - independent of any params it carries. */
 @Composable
 internal fun workflowTriggerLabel(trigger: WorkflowTrigger): String = when (trigger) {
+  is WorkflowTrigger.ReminderCreated -> stringResource(R.string.workflow_trigger_reminder_created)
   is WorkflowTrigger.ReminderCompleted -> stringResource(R.string.workflow_trigger_reminder_completed)
   is WorkflowTrigger.ReminderSnoozedNTimes -> stringResource(R.string.workflow_trigger_reminder_snoozed_n_times)
   is WorkflowTrigger.GroupAllCompleted -> stringResource(R.string.workflow_trigger_group_all_completed)
@@ -42,6 +43,7 @@ internal fun workflowConditionLabel(condition: WorkflowCondition): String = when
   is WorkflowCondition.PriorityAtLeast -> stringResource(R.string.workflow_condition_priority_at_least)
   is WorkflowCondition.WithinTimeWindow -> stringResource(R.string.workflow_condition_within_time_window)
   is WorkflowCondition.GroupIs -> stringResource(R.string.workflow_condition_group_is)
+  is WorkflowCondition.TitleContains -> stringResource(R.string.workflow_condition_title_contains)
 }
 
 @Composable
@@ -67,6 +69,7 @@ internal fun workflowConditionValue(
       condition.toMinuteOfDay % 60,
     )
   is WorkflowCondition.GroupIs -> groups.firstOrNull { it.id == condition.groupId }?.title ?: condition.groupId
+  is WorkflowCondition.TitleContains -> condition.text
 }
 
 @Composable
@@ -77,13 +80,16 @@ internal fun workflowActionLabel(action: WorkflowAction): String = when (action)
   is WorkflowAction.ApplyNotificationOverride -> stringResource(R.string.workflow_action_apply_notification_override)
   is WorkflowAction.ClearNotificationOverride -> stringResource(R.string.workflow_action_clear_notification_override)
   is WorkflowAction.ActivateReminder -> stringResource(R.string.workflow_action_activate_reminder)
+  is WorkflowAction.MoveToGroup -> stringResource(R.string.workflow_action_move_to_group)
   is WorkflowAction.RunBackgroundTask -> action.taskKey
 }
 
 internal fun workflowActionValue(
   action: WorkflowAction,
-  reminders: List<UiWorkflowReminderOption>
+  reminders: List<UiWorkflowReminderOption>,
+  groups: List<UiWorkflowGroupOption>
 ): String? = when (action) {
   is WorkflowAction.ActivateReminder -> reminders.firstOrNull { it.id == action.reminderId }?.title ?: action.reminderId
+  is WorkflowAction.MoveToGroup -> groups.firstOrNull { it.id == action.groupId }?.title ?: action.groupId
   else -> null
 }

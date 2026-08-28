@@ -82,6 +82,22 @@ class DataConverterImplTest {
   }
 
   @Test
+  fun `round trips an auto-grouping workflow rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-8",
+      title = "Move groceries reminders to Shopping",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup(groupId = "shopping-group")
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
   fun `round trips a clear-notification-override workflow rule`() {
     val rule = WorkflowRule(
       uuId = "rule-7",

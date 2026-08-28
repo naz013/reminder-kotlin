@@ -1236,4 +1236,8 @@
     <string name="workflow_builder_starts_on">Começa em</string>
     <string name="workflow_builder_ends_on">Termina em</string>
     <string name="workflow_builder_revert_on_end_date">Reverter na data de término</string>
+    <string name="workflow_trigger_reminder_created">O lembrete é criado</string>
+    <string name="workflow_condition_title_contains">O título contém</string>
+    <string name="workflow_action_move_to_group">Mover para outro grupo</string>
+    <string name="workflow_builder_title_contains_hint">Palavra-chave</string>
 </resources>

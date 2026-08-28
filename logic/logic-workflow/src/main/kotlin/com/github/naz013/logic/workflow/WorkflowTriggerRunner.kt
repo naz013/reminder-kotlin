@@ -29,6 +29,10 @@ class WorkflowTriggerRunner(
     workflowEngine.runSnoozeCountRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
+  override suspend fun onReminderCreated(reminderId: String) {
+    workflowEngine.runReminderCreatedRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
+  }
+
   suspend fun onLocationEntered(reminderId: String) {
     workflowEngine.runLocationEnteredRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
   }

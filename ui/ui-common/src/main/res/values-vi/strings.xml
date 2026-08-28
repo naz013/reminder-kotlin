@@ -1234,4 +1234,8 @@
     <string name="workflow_builder_starts_on">Bắt đầu vào</string>
     <string name="workflow_builder_ends_on">Kết thúc vào</string>
     <string name="workflow_builder_revert_on_end_date">Hoàn tác vào ngày kết thúc</string>
+    <string name="workflow_trigger_reminder_created">Lời nhắc được tạo</string>
+    <string name="workflow_condition_title_contains">Tiêu đề chứa</string>
+    <string name="workflow_action_move_to_group">Chuyển sang nhóm khác</string>
+    <string name="workflow_builder_title_contains_hint">Từ khóa</string>
 </resources>

@@ -1236,4 +1236,8 @@
     <string name="workflow_builder_starts_on">Inizia il</string>
     <string name="workflow_builder_ends_on">Termina il</string>
     <string name="workflow_builder_revert_on_end_date">Ripristina alla data di fine</string>
+    <string name="workflow_trigger_reminder_created">Il promemoria viene creato</string>
+    <string name="workflow_condition_title_contains">Il titolo contiene</string>
+    <string name="workflow_action_move_to_group">Sposta in un altro gruppo</string>
+    <string name="workflow_builder_title_contains_hint">Parola chiave</string>
 </resources>

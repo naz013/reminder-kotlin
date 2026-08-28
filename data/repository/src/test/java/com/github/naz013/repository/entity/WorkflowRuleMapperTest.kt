@@ -107,6 +107,23 @@ class WorkflowRuleMapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips an auto-grouping rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-9",
+      title = "Move groceries reminders to Shopping",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.ReminderCreated,
+      conditions = listOf(WorkflowCondition.TitleContains("grocer")),
+      action = WorkflowAction.MoveToGroup(groupId = "shopping-group"),
+      createdAt = LocalDateTime.of(2026, 8, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
   fun `toEntity then toDomain round trips a clear-notification-override rule`() {
     val rule = WorkflowRule(
       uuId = "rule-8",

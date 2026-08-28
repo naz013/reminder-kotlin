@@ -303,6 +303,7 @@ private fun toWorkflowScope(scopeType: String, scopeId: String?): WorkflowScope 
 private data class ScheduleReachedColumns(val atDateTime: String, val recurrence: String)
 
 private fun WorkflowTrigger.toColumns(): Pair<String, String> = when (this) {
+  is WorkflowTrigger.ReminderCreated -> "REMINDER_CREATED" to ""
   is WorkflowTrigger.ReminderCompleted -> "REMINDER_COMPLETED" to ""
   is WorkflowTrigger.ReminderSnoozedNTimes -> "REMINDER_SNOOZED_N_TIMES" to workflowGson.toJson(this)
   is WorkflowTrigger.GroupAllCompleted -> "GROUP_ALL_COMPLETED" to ""
@@ -321,6 +322,7 @@ private fun WorkflowTrigger.toColumns(): Pair<String, String> = when (this) {
  * than a shared function since that codec is `internal` to the `repository` module. */
 private fun toWorkflowTrigger(type: String, payload: String): WorkflowTrigger = runCatching {
   when (type) {
+    "REMINDER_CREATED" -> WorkflowTrigger.ReminderCreated
     "REMINDER_COMPLETED" -> WorkflowTrigger.ReminderCompleted
     "REMINDER_SNOOZED_N_TIMES" -> workflowGson.fromJson(payload, WorkflowTrigger.ReminderSnoozedNTimes::class.java)
     "GROUP_ALL_COMPLETED" -> WorkflowTrigger.GroupAllCompleted
@@ -349,6 +351,7 @@ private fun WorkflowAction.toColumns(): Pair<String, String> = when (this) {
   is WorkflowAction.ApplyNotificationOverride -> "APPLY_NOTIFICATION_OVERRIDE" to workflowGson.toJson(this)
   is WorkflowAction.ClearNotificationOverride -> "CLEAR_NOTIFICATION_OVERRIDE" to ""
   is WorkflowAction.ActivateReminder -> "ACTIVATE_REMINDER" to workflowGson.toJson(this)
+  is WorkflowAction.MoveToGroup -> "MOVE_TO_GROUP" to workflowGson.toJson(this)
   is WorkflowAction.RunBackgroundTask -> "RUN_BACKGROUND_TASK" to workflowGson.toJson(this)
 }
 
@@ -363,6 +366,7 @@ private fun toWorkflowAction(type: String, payload: String): WorkflowAction = ru
       workflowGson.fromJson(payload, WorkflowAction.ApplyNotificationOverride::class.java)
     "CLEAR_NOTIFICATION_OVERRIDE" -> WorkflowAction.ClearNotificationOverride
     "ACTIVATE_REMINDER" -> workflowGson.fromJson(payload, WorkflowAction.ActivateReminder::class.java)
+    "MOVE_TO_GROUP" -> workflowGson.fromJson(payload, WorkflowAction.MoveToGroup::class.java)
     "RUN_BACKGROUND_TASK" -> workflowGson.fromJson(payload, WorkflowAction.RunBackgroundTask::class.java)
     else -> WorkflowAction.ArchiveReminder
   }
@@ -377,6 +381,7 @@ private fun WorkflowCondition.toWorkflowConditionColumns(): WorkflowConditionCol
   is WorkflowCondition.PriorityAtLeast -> WorkflowConditionColumns("PRIORITY_AT_LEAST", workflowGson.toJson(this))
   is WorkflowCondition.WithinTimeWindow -> WorkflowConditionColumns("WITHIN_TIME_WINDOW", workflowGson.toJson(this))
   is WorkflowCondition.GroupIs -> WorkflowConditionColumns("GROUP_IS", workflowGson.toJson(this))
+  is WorkflowCondition.TitleContains -> WorkflowConditionColumns("TITLE_CONTAINS", workflowGson.toJson(this))
 }
 
 /** Drops (and logs) a condition it can't parse, rather than throwing - one bad condition must not
@@ -386,6 +391,7 @@ private fun toWorkflowCondition(columns: WorkflowConditionColumns): WorkflowCond
     "PRIORITY_AT_LEAST" -> workflowGson.fromJson(columns.payload, WorkflowCondition.PriorityAtLeast::class.java)
     "WITHIN_TIME_WINDOW" -> workflowGson.fromJson(columns.payload, WorkflowCondition.WithinTimeWindow::class.java)
     "GROUP_IS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.GroupIs::class.java)
+    "TITLE_CONTAINS" -> workflowGson.fromJson(columns.payload, WorkflowCondition.TitleContains::class.java)
     else -> null
   }
 }.getOrElse { e ->

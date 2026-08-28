@@ -1236,4 +1236,8 @@
     <string name="workflow_builder_starts_on">Začíná dne</string>
     <string name="workflow_builder_ends_on">Končí dne</string>
     <string name="workflow_builder_revert_on_end_date">Vrátit při datu ukončení</string>
+    <string name="workflow_trigger_reminder_created">Připomínka je vytvořena</string>
+    <string name="workflow_condition_title_contains">Název obsahuje</string>
+    <string name="workflow_action_move_to_group">Přesunout do jiné skupiny</string>
+    <string name="workflow_builder_title_contains_hint">Klíčové slovo</string>
 </resources>

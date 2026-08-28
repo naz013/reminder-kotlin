@@ -8,4 +8,6 @@ package com.github.naz013.logic.reminder
  */
 interface ReminderWorkflowTrigger {
   suspend fun onReminderSnoozed(reminderId: String)
+
+  suspend fun onReminderCreated(reminderId: String)
 }

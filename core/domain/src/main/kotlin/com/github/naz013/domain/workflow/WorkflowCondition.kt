@@ -34,4 +34,12 @@ sealed class WorkflowCondition {
     @SerializedName("groupId")
     val groupId: String
   ) : WorkflowCondition()
+
+  /** Case-insensitive substring match against the reminder's own title - pure local text
+   * matching, no external dependency. Powers keyword-based auto-grouping paired with
+   * [WorkflowTrigger.ReminderCreated] and [WorkflowAction.MoveToGroup]. */
+  data class TitleContains(
+    @SerializedName("text")
+    val text: String
+  ) : WorkflowCondition()
 }

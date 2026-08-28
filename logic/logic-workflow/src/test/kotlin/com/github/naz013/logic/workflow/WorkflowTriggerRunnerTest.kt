@@ -68,6 +68,16 @@ class WorkflowTriggerRunnerTest {
   }
 
   @Test
+  fun `onReminderCreated dispatches every pending action for that reminder`() = runTest {
+    val pending = PendingWorkflowAction(WorkflowAction.ArchiveReminder, "reminder-1")
+    coEvery { workflowEngine.runReminderCreatedRules("reminder-1", any()) } returns listOf(pending)
+
+    runner.onReminderCreated("reminder-1")
+
+    coVerify(exactly = 1) { workflowActionDispatcher.dispatch(pending) }
+  }
+
+  @Test
   fun `onReminderSnoozed dispatches every pending action for that reminder`() = runTest {
     val pending = PendingWorkflowAction(
       WorkflowAction.ApplyNotificationOverride(override = NotificationSettingsOverride()),

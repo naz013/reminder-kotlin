@@ -108,6 +108,19 @@ class WorkflowEngine(
       .forEach { reminder -> apply(rule.action, reminder)?.let { pending.add(it) } }
   }
 
+  /** Fires every enabled, in-scope [WorkflowTrigger.ReminderCreated] rule for [reminderId] - see
+   * `SaveReminderUseCase` for how "created" (as opposed to an edit of an existing reminder) is
+   * detected. Powers keyword-based auto-grouping. */
+  suspend fun runReminderCreatedRules(
+    reminderId: String,
+    now: LocalDateTime = LocalDateTime.now()
+  ): List<PendingWorkflowAction> {
+    val reminder = reminderV2Repository.getById(reminderId) ?: return emptyList()
+    val rules = workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_REMINDER_CREATED)
+      .filter { it.isEnabled && qualifies(reminder, it, now) }
+    return rules.mapNotNull { apply(it.action, reminder) }
+  }
+
   /** Fires every enabled, in-scope [WorkflowTrigger.ReminderCompleted] rule for [reminderId]. */
   suspend fun runReminderCompletedRules(
     reminderId: String,
@@ -241,7 +254,8 @@ class WorkflowEngine(
       is WorkflowAction.ArchiveReminder,
       is WorkflowAction.PurgeReminder,
       is WorkflowAction.CompleteReminder,
-      is WorkflowAction.ActivateReminder -> Unit // not reminder-scoped, so not supported here yet
+      is WorkflowAction.ActivateReminder,
+      is WorkflowAction.MoveToGroup -> Unit // not reminder-scoped, so not supported here yet
     }
   }
 
@@ -290,6 +304,8 @@ class WorkflowEngine(
       }
 
       is WorkflowCondition.GroupIs -> reminder.groupId == condition.groupId
+
+      is WorkflowCondition.TitleContains -> reminder.summary.contains(condition.text, ignoreCase = true)
     }
   }
 
@@ -315,6 +331,11 @@ class WorkflowEngine(
         null
       }
 
+      is WorkflowAction.MoveToGroup -> {
+        reminderV2Repository.save(reminder.copy(groupId = action.groupId))
+        null
+      }
+
       is WorkflowAction.RunBackgroundTask -> {
         workScheduler.enqueue(
           WorkRequest(taskKey = action.taskKey, tag = "workflow-${action.taskKey}-${reminder.uuId}")
@@ -327,6 +348,7 @@ class WorkflowEngine(
     }
 
   companion object {
+    private const val TRIGGER_TYPE_REMINDER_CREATED = "REMINDER_CREATED"
     private const val TRIGGER_TYPE_REMINDER_COMPLETED = "REMINDER_COMPLETED"
     private const val TRIGGER_TYPE_REMINDER_SNOOZED_N_TIMES = "REMINDER_SNOOZED_N_TIMES"
     private const val TRIGGER_TYPE_GROUP_ALL_COMPLETED = "GROUP_ALL_COMPLETED"

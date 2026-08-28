@@ -1234,4 +1234,8 @@
     <string name="workflow_builder_starts_on">Begint op</string>
     <string name="workflow_builder_ends_on">Eindigt op</string>
     <string name="workflow_builder_revert_on_end_date">Terugzetten op einddatum</string>
+    <string name="workflow_trigger_reminder_created">Herinnering is aangemaakt</string>
+    <string name="workflow_condition_title_contains">Titel bevat</string>
+    <string name="workflow_action_move_to_group">Verplaatsen naar een andere groep</string>
+    <string name="workflow_builder_title_contains_hint">Trefwoord</string>
 </resources>

@@ -1236,4 +1236,8 @@
     <string name="workflow_builder_starts_on">시작일</string>
     <string name="workflow_builder_ends_on">종료일</string>
     <string name="workflow_builder_revert_on_end_date">종료일에 되돌리기</string>
+    <string name="workflow_trigger_reminder_created">미리 알림이 생성됨</string>
+    <string name="workflow_condition_title_contains">제목에 포함</string>
+    <string name="workflow_action_move_to_group">다른 그룹으로 이동</string>
+    <string name="workflow_builder_title_contains_hint">키워드</string>
 </resources>

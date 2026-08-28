@@ -1237,4 +1237,8 @@
     <string name="workflow_builder_starts_on">Başlangıç tarihi</string>
     <string name="workflow_builder_ends_on">Bitiş tarihi</string>
     <string name="workflow_builder_revert_on_end_date">Bitiş tarihinde geri al</string>
+    <string name="workflow_trigger_reminder_created">Hatırlatıcı oluşturuldu</string>
+    <string name="workflow_condition_title_contains">Başlık şunu içeriyor</string>
+    <string name="workflow_action_move_to_group">Başka bir gruba taşı</string>
+    <string name="workflow_builder_title_contains_hint">Anahtar kelime</string>
 </resources>

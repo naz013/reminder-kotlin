@@ -203,6 +203,7 @@ internal class WorkflowRuleBuilderViewModel(
     "When ${autoTitleTriggerText(trigger)}, ${autoTitleActionText(action)}"
 
   private fun autoTitleTriggerText(trigger: WorkflowTrigger): String = when (trigger) {
+    is WorkflowTrigger.ReminderCreated -> "a reminder is created"
     is WorkflowTrigger.ReminderCompleted -> "reminder completed"
     is WorkflowTrigger.ReminderSnoozedNTimes -> "snoozed ${trigger.count} times"
     is WorkflowTrigger.GroupAllCompleted -> "group fully completed"
@@ -220,6 +221,7 @@ internal class WorkflowRuleBuilderViewModel(
     is WorkflowAction.ApplyNotificationOverride -> "change its notification settings"
     is WorkflowAction.ClearNotificationOverride -> "clear its notification override"
     is WorkflowAction.ActivateReminder -> "activate another reminder"
+    is WorkflowAction.MoveToGroup -> "move it to another group"
     is WorkflowAction.RunBackgroundTask -> "run a background task"
   }
 }

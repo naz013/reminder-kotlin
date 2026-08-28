@@ -1240,4 +1240,8 @@
     <string name="workflow_builder_starts_on">Starts on</string>
     <string name="workflow_builder_ends_on">Ends on</string>
     <string name="workflow_builder_revert_on_end_date">Revert on end date</string>
+    <string name="workflow_trigger_reminder_created">Reminder is created</string>
+    <string name="workflow_condition_title_contains">Title contains</string>
+    <string name="workflow_action_move_to_group">Move to another group</string>
+    <string name="workflow_builder_title_contains_hint">Keyword</string>
 </resources>

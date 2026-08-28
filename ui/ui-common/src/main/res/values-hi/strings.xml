@@ -1238,4 +1238,8 @@
     <string name="workflow_builder_starts_on">प्रारंभ तिथि</string>
     <string name="workflow_builder_ends_on">समाप्ति तिथि</string>
     <string name="workflow_builder_revert_on_end_date">समाप्ति तिथि पर वापस लौटें</string>
+    <string name="workflow_trigger_reminder_created">रिमाइंडर बनाया गया है</string>
+    <string name="workflow_condition_title_contains">शीर्षक में शामिल है</string>
+    <string name="workflow_action_move_to_group">दूसरे समूह में ले जाएं</string>
+    <string name="workflow_builder_title_contains_hint">कीवर्ड</string>
 </resources>

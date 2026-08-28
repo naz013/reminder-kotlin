@@ -7,6 +7,11 @@ import org.threeten.bp.LocalDateTime
  * every field needs [SerializedName] - see [com.github.naz013.domain.reminder.v2.RecurrenceRule]
  * for why an unannotated field is a production-crash risk under R8. */
 sealed class WorkflowTrigger {
+  /** Fires the first time a reminder is ever saved - see `SaveReminderUseCase` for how "first
+   * time" is detected. Powers keyword-based auto-grouping paired with [WorkflowCondition.TitleContains]
+   * and [WorkflowAction.MoveToGroup]. */
+  data object ReminderCreated : WorkflowTrigger()
+
   data object ReminderCompleted : WorkflowTrigger()
 
   data class ReminderSnoozedNTimes(
