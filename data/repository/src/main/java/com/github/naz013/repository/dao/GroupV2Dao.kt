@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.github.naz013.repository.entity.GroupV2Entity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface GroupV2Dao {
@@ -17,6 +18,9 @@ internal interface GroupV2Dao {
 
   @Query("SELECT * FROM GroupV2 ORDER BY isDefault DESC")
   fun all(): List<GroupV2Entity>
+
+  @Query("SELECT * FROM GroupV2 ORDER BY isDefault DESC")
+  fun observeAll(): Flow<List<GroupV2Entity>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insert(group: GroupV2Entity)

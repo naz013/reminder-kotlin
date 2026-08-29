@@ -123,6 +123,10 @@ collects all of them into `startKoin {}`. Never call `GlobalContext.get()` outsi
   is also needed) alongside the new drawable XML, then reference the catalog constant — don't inline
   `R.drawable.*` as a shortcut.
 - Logging only through the `Logger` interface (`logging-api`) — never `println`/`android.util.Log`.
+- No massive inline comments. Code should read clearly on its own — good naming and small functions over
+  narration. A comment is only worth adding when it captures a non-obvious *why* (a hidden constraint, a
+  workaround for a specific bug, a subtle invariant) that the code can't express by itself, and it should
+  be a line or two, not a paragraph explaining the whole design.
 - Room Entity <-> domain-model mapping is mandatory at the `repository` boundary; domain models must stay
   free of Room/Gson annotations.
 - Adding/removing a field on a domain model that has cloud/local backup support (`ReminderV2`, `Note`,

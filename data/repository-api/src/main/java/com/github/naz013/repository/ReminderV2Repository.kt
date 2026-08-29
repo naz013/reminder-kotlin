@@ -9,10 +9,12 @@ interface ReminderV2Repository {
   suspend fun save(reminder: ReminderV2)
 
   suspend fun getById(id: String): ReminderV2?
+  fun observeById(id: String): Flow<ReminderV2?>
   suspend fun getAll(): List<ReminderV2>
   suspend fun getAll(active: Boolean, removed: Boolean): List<ReminderV2>
   suspend fun count(active: Boolean, removed: Boolean): Int
   suspend fun getByRemovedStatus(removed: Boolean): List<ReminderV2>
+  fun observeByRemovedStatus(removed: Boolean): Flow<List<ReminderV2>>
   suspend fun getActiveInRange(
     removed: Boolean,
     from: LocalDateTime,

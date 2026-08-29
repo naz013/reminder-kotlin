@@ -1,5 +1,6 @@
 package com.github.naz013.ui.common.compose.foundation.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -54,6 +56,7 @@ fun AgendaListItem(
   modifier: Modifier = Modifier,
   statusChips: List<String> = emptyList(),
   leading: (@Composable () -> Unit)? = null,
+  isSelected: Boolean = false,
 ) {
   var menuExpanded by remember { mutableStateOf(false) }
 
@@ -63,6 +66,10 @@ fun AgendaListItem(
         .fillMaxWidth()
         .clip(MaterialTheme.shapes.medium)
         .clickable(onClick = onClick),
+    colors = CardDefaults.cardColors(
+      containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
+    ),
+    border = if (isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {
     Row(
       modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 4.dp, bottom = 12.dp),

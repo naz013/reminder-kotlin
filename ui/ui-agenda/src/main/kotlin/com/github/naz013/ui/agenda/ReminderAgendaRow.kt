@@ -32,6 +32,7 @@ fun ReminderAgendaRow(
     menuItems = if (onMenuAction != null) reminderMenuItems(item) else emptyList(),
     onMenuItemClick = { id -> onMenuAction?.invoke(AgendaMenuAction.entries[id]) },
     modifier = modifier,
+    isSelected = item.isSelected,
   )
 }
 

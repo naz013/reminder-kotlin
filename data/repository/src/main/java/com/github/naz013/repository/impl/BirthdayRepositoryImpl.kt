@@ -35,6 +35,9 @@ internal class BirthdayRepositoryImpl(
     return birthdaysDao.getById(id)?.toDomain()
   }
 
+  override fun observeById(id: String): Flow<Birthday?> =
+    birthdaysDao.observeById(id).map { it?.toDomain() }
+
   override suspend fun getByDayMonth(day: Int, month: Int): List<Birthday> {
     Logger.d(TAG, "Getting birthdays by day: $day, month: $month")
     return birthdaysDao.getAll("$day|$month").map { it.toDomain() }

@@ -12,12 +12,14 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -36,25 +38,27 @@ class PreviewBirthdayViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    // PreviewBirthdayViewModel.state runs load() in onStart on every collection - every test
-    // collects state at least once (even ones only exercising delete-dialog toggles), so a
-    // default stub avoids an unstubbed-call failure from that automatic load().
+    // PreviewBirthdayViewModel.state re-subscribes to observeById() on every fresh collection
+    // (stateInWhileSubscribed) - every test collects state at least once (even ones only
+    // exercising delete-dialog toggles), so a default stub avoids an unstubbed-call failure.
     val defaultBirthday = Birthday(uuId = "42", name = "Alice", syncState = SyncState.Synced)
-    coEvery { birthdayRepository.getById("42") } returns defaultBirthday
+    every { birthdayRepository.observeById("42") } returns flowOf(defaultBirthday)
     every { uiBirthdayPreviewAdapter.convert(any()) } returns uiBirthday()
     every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
-    viewModel =
-      PreviewBirthdayViewModel(
-        id = "42",
-        birthdayRepository = birthdayRepository,
-        dispatcherProvider = mockDispatcherProvider(),
-        analyticsEventSender = analyticsEventSender,
-        uiBirthdayPreviewAdapter = uiBirthdayPreviewAdapter,
-        deleteBirthdayUseCase = deleteBirthdayUseCase,
-        tagAssignmentRepository = tagAssignmentRepository,
-        tagChipStateAdapter = tagChipStateAdapter,
-      )
+    viewModel = createViewModel()
   }
+
+  private fun createViewModel() =
+    PreviewBirthdayViewModel(
+      id = "42",
+      birthdayRepository = birthdayRepository,
+      dispatcherProvider = mockDispatcherProvider(),
+      analyticsEventSender = analyticsEventSender,
+      uiBirthdayPreviewAdapter = uiBirthdayPreviewAdapter,
+      deleteBirthdayUseCase = deleteBirthdayUseCase,
+      tagAssignmentRepository = tagAssignmentRepository,
+      tagChipStateAdapter = tagChipStateAdapter,
+    )
 
   private fun uiBirthday(hasBirthdayToday: Boolean = false) =
     UiBirthdayPreview(
@@ -78,17 +82,31 @@ class PreviewBirthdayViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `plays confetti once when it is the contact's birthday today`() =
+  fun `plays confetti once per view model even if the birthday re-emits`() =
     runTest {
       val birthday = Birthday(uuId = "42", name = "Alice", syncState = SyncState.Synced)
-      coEvery { birthdayRepository.getById("42") } returns birthday
+      val updatedBirthday = birthday.copy(name = "Alice Updated")
+      val birthdayFlow = MutableStateFlow(birthday)
+      every { birthdayRepository.observeById("42") } returns birthdayFlow
       every { uiBirthdayPreviewAdapter.convert(birthday) } returns uiBirthday(hasBirthdayToday = true)
+      every { uiBirthdayPreviewAdapter.convert(updatedBirthday) } returns
+        uiBirthday(hasBirthdayToday = true).copy(name = "Alice Updated")
+      val freshViewModel = createViewModel()
 
-      // Each fresh collection of `state` re-runs load() in onStart, matching the screen re-entering
-      // foreground - `canShowAnimation` flips to false after the first load, so a second collection
-      // shouldn't replay the confetti.
-      assertEquals(true, viewModel.state.first().playConfetti)
-      assertEquals(false, viewModel.state.first().playConfetti)
+      var latest = PreviewBirthdayState()
+      backgroundScope.launch(Dispatchers.Unconfined) {
+        freshViewModel.state.collect { latest = it }
+      }
+      assertEquals(true, latest.playConfetti)
+
+      // Simulates the birthday being re-saved elsewhere (e.g. the Edit screen) while this pane
+      // stays open - no explicit refresh call from the view model is needed for this to show up,
+      // but `canShowAnimation` already flipped false on the first emission, so the confetti
+      // shouldn't replay.
+      birthdayFlow.value = updatedBirthday
+
+      assertEquals("Alice Updated", latest.birthday?.name)
+      assertEquals(false, latest.playConfetti)
     }
 
   @Test

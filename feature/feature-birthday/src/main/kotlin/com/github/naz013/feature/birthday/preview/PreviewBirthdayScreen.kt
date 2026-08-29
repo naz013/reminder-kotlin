@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -59,6 +60,7 @@ import com.github.naz013.ui.birthday.UiBirthdayPreview
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.tag.TagChipRow
 import com.github.naz013.ui.tag.TagChipState
 import kotlinx.coroutines.delay
@@ -130,11 +132,13 @@ internal fun PreviewBirthdayScreen(
         Modifier
           .fillMaxSize()
           .padding(padding),
+      contentAlignment = Alignment.TopCenter,
     ) {
       Column(
         modifier =
           Modifier
-            .fillMaxSize()
+            .fillMaxHeight()
+            .detailScreenContentWidth()
             .verticalScroll(rememberScrollState()),
       ) {
         BirthdayDetails(birthday = birthday, tags = state.tags)

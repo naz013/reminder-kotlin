@@ -39,9 +39,6 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
-import com.github.naz013.repository.observer.TableChangeListener
-import com.github.naz013.repository.observer.TableChangeListenerFactory
-import com.github.naz013.repository.table.Table
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
@@ -49,10 +46,11 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import io.mockk.slot
-import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -86,7 +84,6 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val toggleReminderStateUseCase = mockk<ToggleReminderStateUseCase>()
   private val togglePinnedReminderUseCase = mockk<TogglePinnedReminderUseCase>(relaxed = true)
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
-  private val tableChangeListenerFactory = mockk<TableChangeListenerFactory>(relaxed = true)
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
   private val syncReminderToCloudUseCase = mockk<SyncReminderToCloudUseCase>(relaxed = true)
@@ -120,6 +117,12 @@ class PreviewReminderViewModelTest : BaseTest() {
     every { dateTimeManager.fromGmtToLocal(any<String>()) } returns null
     every { dateTimeManager.getGmtFromDateTime(any<LocalDateTime>()) } returns ""
     coEvery { reminderV2Repository.getById(any()) } returns reminderV2()
+    // PreviewReminderViewModel's state pipeline is triggered by observeById() rather than a
+    // manual load()/refresh() call - it only cares about the Flow's emissions as a "something
+    // changed, reload" signal, not their value (load() itself still reads the current row via
+    // getById(), stubbed above), so a single-emission default is enough here; individual tests
+    // needing real reactivity build their own MutableStateFlow-backed stub.
+    every { reminderV2Repository.observeById(any()) } returns flowOf(reminderV2())
     coEvery { groupV2Repository.getById(any()) } returns null
     coEvery { noteRepository.getById(any()) } returns null
     coEvery { googleTaskRepository.getByReminderId(any()) } returns null
@@ -172,7 +175,6 @@ class PreviewReminderViewModelTest : BaseTest() {
       toggleReminderStateUseCase = toggleReminderStateUseCase,
       togglePinnedReminderUseCase = togglePinnedReminderUseCase,
       saveReminderUseCase = saveReminderUseCase,
-      tableChangeListenerFactory = tableChangeListenerFactory,
       tagAssignmentRepository = tagAssignmentRepository,
       tagChipStateAdapter = tagChipStateAdapter,
       syncReminderToCloudUseCase = syncReminderToCloudUseCase,
@@ -209,48 +211,29 @@ class PreviewReminderViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `re-collecting state after a config change reloads it from the repository`() =
+  fun `state reloads automatically when the ReminderV2 table changes externally`() =
     runTest {
-      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
+      // observeById() is a live Room Flow subscription for this ViewModel's whole lifetime, not
+      // gated by whether `state` currently has a collector - so a write from anywhere (this
+      // screen's own actions, the system notification's action buttons via a BroadcastReceiver,
+      // another screen, or a background sync) is picked up with no manual refresh() call needed.
+      val reminder = reminderV2()
+      val reminderChanged = MutableStateFlow(reminder)
+      every { reminderV2Repository.observeById("42") } returns reminderChanged
+      coEvery { reminderV2Repository.getById("42") } returns reminder
       val viewModel = createViewModel()
-      viewModel.state.first()
-      coEvery { reminderV2Repository.getById("42") } returns reminderV2().copy(summary = "Buy bread")
 
-      val state = viewModel.state.first()
+      var latest = PreviewReminderState()
+      backgroundScope.launch(Dispatchers.Unconfined) {
+        viewModel.state.collect { latest = it }
+      }
+      assertEquals("Buy milk", latest.summary)
 
-      assertEquals("Buy bread", state.summary)
-    }
+      val updatedReminder = reminder.copy(summary = "Buy bread")
+      coEvery { reminderV2Repository.getById("42") } returns updatedReminder
+      reminderChanged.value = updatedReminder
 
-  @Test
-  fun `refresh reloads state from the repository`() =
-    runTest {
-      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
-      val viewModel = createViewModel()
-      viewModel.state.first()
-      coEvery { reminderV2Repository.getById("42") } returns reminderV2().copy(summary = "Buy bread")
-
-      viewModel.refresh()
-      val state = viewModel.state.first()
-
-      assertEquals("Buy bread", state.summary)
-    }
-
-  @Test
-  fun `reloads state when the ReminderV2 table changes externally`() =
-    runTest {
-      val listener = mockk<TableChangeListener>(relaxed = true)
-      val onChanged = slot<() -> Unit>()
-      every { tableChangeListenerFactory.create(Table.ReminderV2, capture(onChanged)) } returns listener
-      coEvery { reminderV2Repository.getById("42") } returns reminderV2()
-      val viewModel = createViewModel()
-      viewModel.state.first()
-      coEvery { reminderV2Repository.getById("42") } returns reminderV2().copy(summary = "Buy bread")
-
-      onChanged.captured.invoke()
-      val state = viewModel.state.first()
-
-      assertEquals("Buy bread", state.summary)
-      verify { listener.register() }
+      assertEquals("Buy bread", latest.summary)
     }
 
   @Test

@@ -19,6 +19,9 @@ internal interface BirthdaysDao {
   @Query("SELECT * FROM Birthday WHERE uuId=:id")
   fun getById(id: String): BirthdayEntity?
 
+  @Query("SELECT * FROM Birthday WHERE uuId=:id")
+  fun observeById(id: String): Flow<BirthdayEntity?>
+
   @Query("SELECT * FROM Birthday WHERE dayMonth=:dayMonth")
   fun getAll(dayMonth: String): List<BirthdayEntity>
 

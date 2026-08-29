@@ -32,6 +32,9 @@ internal class ReminderV2RepositoryImpl(
     return dao.getById(id)?.toDomain()
   }
 
+  override fun observeById(id: String): Flow<ReminderV2?> =
+    dao.observeById(id).map { it?.toDomain() }
+
   override suspend fun getAll(): List<ReminderV2> {
     Logger.d(TAG, "Get all reminders")
     return dao.getAll().map { it.toDomain() }
@@ -50,6 +53,9 @@ internal class ReminderV2RepositoryImpl(
     Logger.d(TAG, "Get reminders by removed status: $removed")
     return dao.getByRemovedStatus(removed).map { it.toDomain() }
   }
+
+  override fun observeByRemovedStatus(removed: Boolean): Flow<List<ReminderV2>> =
+    dao.observeByRemovedStatus(removed).map { list -> list.map { it.toDomain() } }
 
   override suspend fun getActiveInRange(
     removed: Boolean,

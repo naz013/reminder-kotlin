@@ -125,7 +125,6 @@ val featureReminderModule = module {
       get(),
       get(),
       get(),
-      get(),
     )
   }
 

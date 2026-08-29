@@ -13,6 +13,9 @@ internal interface ReminderV2Dao {
   @Query("SELECT * FROM ReminderV2 WHERE uuId=:id")
   fun getById(id: String): ReminderV2Entity?
 
+  @Query("SELECT * FROM ReminderV2 WHERE uuId=:id")
+  fun observeById(id: String): Flow<ReminderV2Entity?>
+
   @Query("SELECT * FROM ReminderV2")
   fun getAll(): List<ReminderV2Entity>
 
@@ -24,6 +27,9 @@ internal interface ReminderV2Dao {
 
   @Query("SELECT * FROM ReminderV2 WHERE isRemoved=:removed")
   fun getByRemovedStatus(removed: Boolean): List<ReminderV2Entity>
+
+  @Query("SELECT * FROM ReminderV2 WHERE isRemoved=:removed")
+  fun observeByRemovedStatus(removed: Boolean): Flow<List<ReminderV2Entity>>
 
   @Query(
     """SELECT * FROM ReminderV2

@@ -171,7 +171,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val isRenderedAsDetailPane: (NavKey) -> Boolean = { key ->
     isMediumOrWiderWidth &&
       backStack.lastOrNull() == key &&
-      backStack.getOrNull(backStack.lastIndex - 1) == HomeNavKey.Main
+      backStack.getOrNull(backStack.lastIndex - 1).let { it == HomeNavKey.Main || it == AgendaNavKey.List }
   }
 
   DisposableEffect(backStack) {
@@ -313,11 +313,12 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         agendaEntries(
           backStack = backStack,
-          onOpenReminderPreview = { id -> backStack.add(ReminderPreviewNavKey.Preview(id)) },
+          selectedItemId = selectedEventId,
+          onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
           onOpenReminderEdit = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
           onOpenNewReminder = { backStack.add(BuildReminderNavKey.Main()) },
           onOpenNewTodo = { backStack.add(TodoEditNavKey.Main()) },
-          onOpenBirthdayPreview = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
+          onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
           onOpenBirthdayEdit = { id -> backStack.add(BirthdaysNavKey.Edit(id)) },
           onOpenNewBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
           onOpenArchive = { backStack.add(RemindersArchiveNavKey.List) },
@@ -491,9 +492,9 @@ private fun MutableList<NavKey>.navigateToRailDestination(key: NavKey) {
 }
 
 /**
- * Navigation for Home's two-pane detail pane: if the current top entry is itself a reminder/
- * birthday preview, replace it instead of stacking another one on top. Only ever matters in
- * two-pane mode - on Compact width the list isn't visible while a preview is showing, so this
+ * Navigation for a two-pane list's detail pane (Home, Agenda): if the current top entry is itself
+ * a reminder/birthday preview, replace it instead of stacking another one on top. Only ever matters
+ * in two-pane mode - on Compact width the list isn't visible while a preview is showing, so this
  * can't be reached with an existing preview already on top. Without it, picking a second list
  * item pushes a second `detailPane()`-tagged entry, which [ListDetailSceneStrategy] doesn't
  * support (it expects at most one entry per pane role).

@@ -45,6 +45,7 @@ data class UiAgendaReminder(
   val tags: List<UiTextElement>,
   val actions: UiReminderListActions,
   val state: UiReminderListState,
+  val isSelected: Boolean = false,
 ) : UiAgendaItem
 
 data class UiAgendaBirthday(
@@ -56,4 +57,5 @@ data class UiAgendaBirthday(
   val color: Int,
   val contrastColor: Int,
   val dateFormatted: String,
+  val isSelected: Boolean = false,
 ) : UiAgendaItem

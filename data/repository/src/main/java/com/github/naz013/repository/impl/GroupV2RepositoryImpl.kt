@@ -9,6 +9,8 @@ import com.github.naz013.repository.entity.toDomain
 import com.github.naz013.repository.entity.toEntity
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class GroupV2RepositoryImpl(
   private val dao: GroupV2Dao,
@@ -33,6 +35,9 @@ internal class GroupV2RepositoryImpl(
     Logger.d(TAG, "Get all groups")
     return dao.all().map { it.toDomain() }
   }
+
+  override fun observeAll(): Flow<List<GroupV2>> =
+    dao.observeAll().map { list -> list.map { it.toDomain() } }
 
   override suspend fun getById(id: String): GroupV2? {
     Logger.d(TAG, "Get group by id: $id")

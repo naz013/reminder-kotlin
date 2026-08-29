@@ -38,6 +38,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -79,6 +80,13 @@ class AgendaViewModelTest {
     coEvery { birthdayRepository.getAll() } returns emptyList()
     coEvery { tagRepository.getAll() } returns emptyList()
     coEvery { tagAssignmentRepository.getItemIdsForTag(any(), any()) } returns emptyList()
+    // AgendaViewModel now also observes these reactively (dataChangedSignal) purely to know when
+    // to re-run loadMerged() - it never reads their emitted values - so a single-emission stub is
+    // enough for construction to succeed; tests still drive behavior through loadMerged() directly.
+    every { reminderV2Repository.observeByRemovedStatus(any()) } returns flowOf(emptyList())
+    every { birthdayRepository.observeAll() } returns flowOf(emptyList())
+    every { groupV2Repository.observeAll() } returns flowOf(emptyList())
+    every { tagRepository.observeAll() } returns flowOf(emptyList())
     // Echoes the filtered reminders/birthdays back as bare UiAgendaItems keyed by id, so tests can
     // assert on which domain objects survived filtering without depending on real UI formatting.
     every { uiAgendaItemAdapter.convertV2(any(), any(), any()) } answers {
