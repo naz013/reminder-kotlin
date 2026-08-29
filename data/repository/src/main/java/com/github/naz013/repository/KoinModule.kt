@@ -27,8 +27,6 @@ import com.github.naz013.repository.migration.GroupV2BackfillUseCase
 import com.github.naz013.repository.migration.ReminderGroupRepository
 import com.github.naz013.repository.migration.ReminderRepository
 import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
-import com.github.naz013.repository.observer.TableChangeListenerFactory
-import com.github.naz013.repository.observer.TableChangeListenerFactoryImpl
 import com.github.naz013.repository.observer.TableChangeNotifier
 import org.koin.dsl.module
 
@@ -36,7 +34,6 @@ val repositoryModule = module {
   single { AppDb.getAppDatabase(get()) }
 
   factory { TableChangeNotifier(get()) }
-  factory { TableChangeListenerFactoryImpl(get()) as TableChangeListenerFactory }
 
   factory { BirthdayRepositoryImpl(get<AppDb>().birthdaysDao(), get()) as BirthdayRepository }
   factory { TagRepositoryImpl(get<AppDb>().tagDao(), get(), get()) as TagRepository }

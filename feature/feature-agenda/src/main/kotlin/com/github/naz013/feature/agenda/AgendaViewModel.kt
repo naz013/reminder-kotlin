@@ -39,12 +39,14 @@ import com.github.naz013.ui.agenda.UiAgendaItemAdapter
 import com.github.naz013.ui.agenda.UiAgendaReminder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -71,7 +73,6 @@ internal class AgendaViewModel(
   private val _selectedItemId = MutableStateFlow<String?>(null)
   val agendaScreenState = combine(_agendaScreenState, _selectedItemId, AgendaScreenState::withSelectedItem)
     .stateInWhileSubscribed(AgendaScreenState())
-    .onStart { refresh() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   /** Whether the initial auto-scroll-to-today has already run this ViewModel instance's
@@ -87,7 +88,14 @@ internal class AgendaViewModel(
   private val selectedSmartList = MutableStateFlow<SmartListFilter?>(null)
   private val selectedTagId = MutableStateFlow<String?>(null)
   private val selectedGroupId = MutableStateFlow<String?>(null)
-  private val refreshSignal = MutableStateFlow(0)
+
+  private val dataChangedSignal: Flow<Unit> =
+    merge(
+      reminderV2Repository.observeByRemovedStatus(removed = false).map { Unit },
+      birthdayRepository.observeAll().map { Unit },
+      groupV2Repository.observeAll().map { Unit },
+      tagRepository.observeAll().map { Unit },
+    )
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -101,7 +109,7 @@ internal class AgendaViewModel(
         ) { query, categories, smartList, tagId, groupId ->
           FilterCriteria(query, categories, smartList, tagId, groupId)
         }
-      combine(filterCriteria, refreshSignal) { criteria, _ -> criteria }
+      combine(filterCriteria, dataChangedSignal) { criteria, _ -> criteria }
         .flatMapLatest { criteria ->
           flow {
             emit(
@@ -117,12 +125,8 @@ internal class AgendaViewModel(
         }.collect { applyList(it) }
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      refreshSignal.collect { refreshHasAnyItems() }
+      dataChangedSignal.collect { refreshHasAnyItems() }
     }
-  }
-
-  private fun refresh() {
-    refreshSignal.update { it + 1 }
   }
 
   private suspend fun refreshHasAnyItems() {
@@ -290,7 +294,6 @@ internal class AgendaViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val item = reminderV2Repository.getById(id) ?: return@launch
       toggleReminderStateUseCase(item)
-      refresh()
     }
   }
 
@@ -338,7 +341,6 @@ internal class AgendaViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val item = reminderV2Repository.getById(id) ?: return@launch
       togglePinnedReminderUseCase(item)
-      refresh()
     }
   }
 
@@ -347,7 +349,6 @@ internal class AgendaViewModel(
       val fromDb = reminderV2Repository.getById(id)
       if (fromDb != null) {
         skipReminderUseCase(fromDb)
-        refresh()
       }
     }
   }
@@ -355,7 +356,6 @@ internal class AgendaViewModel(
   fun moveReminderToArchive(id: String) {
     viewModelScope.launch(dispatcherProvider.io()) {
       moveReminderToArchiveUseCase(id)
-      refresh()
     }
   }
 
@@ -364,7 +364,6 @@ internal class AgendaViewModel(
       val fromDb = reminderV2Repository.getById(id)
       if (fromDb != null) {
         deleteReminderUseCase(fromDb)
-        refresh()
       }
     }
   }
@@ -372,7 +371,6 @@ internal class AgendaViewModel(
   fun deleteBirthday(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteBirthdayUseCase(id)
-      refresh()
     }
   }
 

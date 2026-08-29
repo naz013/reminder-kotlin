@@ -9,6 +9,7 @@ interface BirthdayRepository {
   suspend fun updateSyncState(id: String, state: SyncState)
 
   suspend fun getById(id: String): Birthday?
+  fun observeById(id: String): Flow<Birthday?>
   suspend fun getByDayMonth(day: Int, month: Int): List<Birthday>
   suspend fun getIdsByState(syncStates: List<SyncState>): List<String>
   suspend fun searchByName(query: String): List<Birthday>

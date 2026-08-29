@@ -46,13 +46,10 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
-import com.github.naz013.repository.observer.TableChangeListenerFactory
-import com.github.naz013.repository.table.Table
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -87,7 +84,6 @@ internal class PreviewReminderViewModel(
   private val toggleReminderStateUseCase: ToggleReminderStateUseCase,
   private val togglePinnedReminderUseCase: TogglePinnedReminderUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
-  private val tableChangeListenerFactory: TableChangeListenerFactory,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val syncReminderToCloudUseCase: SyncReminderToCloudUseCase,
@@ -98,7 +94,6 @@ internal class PreviewReminderViewModel(
 
   private val _state = MutableStateFlow(PreviewReminderState())
   val state = _state.stateInWhileSubscribed(PreviewReminderState())
-    .onStart { load() }
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
@@ -107,14 +102,12 @@ internal class PreviewReminderViewModel(
   // app/link intent, same as GetActiveEventsForTheDayUseCase does for the Home screen.
   private var reminderAction: ReminderAction = ReminderAction.None
 
-  // The reminder can also be completed/snoozed/toggled from the system notification's action
-  // buttons, which run through a BroadcastReceiver rather than an Activity - so this screen
-  // never gets an ON_RESUME to hook into. Listen for the underlying table write directly so the
-  // status shown here stays correct even when that happens while this screen is in the foreground.
-  private val reminderTableChangeListener = tableChangeListenerFactory.create(Table.ReminderV2) { refresh() }
-
   init {
-    reminderTableChangeListener.register()
+    // Reloads on any write to this reminder's row, including from the notification action
+    // buttons' BroadcastReceiver, which has no other way to reach this screen.
+    viewModelScope.launch(dispatcherProvider.default()) {
+      reminderV2Repository.observeById(id).collect { load() }
+    }
     viewModelScope.launch(dispatcherProvider.default()) {
       tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.REMINDER)
         .map { tags -> tags.map { tagChipStateAdapter(it) } }
@@ -122,14 +115,6 @@ internal class PreviewReminderViewModel(
           _state.update { it.copy(tags = tagChips) }
         }
     }
-  }
-
-  override fun onCleared() {
-    reminderTableChangeListener.unregister()
-  }
-
-  fun refresh() {
-    load()
   }
 
   fun onCopyClicked() {
@@ -198,7 +183,6 @@ internal class PreviewReminderViewModel(
       if (!result.success) {
         event.emit(ViewModelEvent.ShowError(textProvider.getString(R.string.reminder_is_outdated)))
       }
-      load()
     }
   }
 
@@ -211,7 +195,6 @@ internal class PreviewReminderViewModel(
       withContext(dispatcherProvider.io()) {
         syncReminderToCloudUseCase(reminder)
       }
-      load()
     }
   }
 
@@ -224,7 +207,6 @@ internal class PreviewReminderViewModel(
       withContext(dispatcherProvider.io()) {
         togglePinnedReminderUseCase(reminder)
       }
-      load()
     }
   }
 
@@ -355,11 +337,8 @@ internal class PreviewReminderViewModel(
 
   private fun saveReminder(reminder: ReminderV2) {
     Logger.i(TAG, "Saving reminder, id: ${reminder.uuId}")
-    viewModelScope.launch(dispatcherProvider.main()) {
-      withContext(dispatcherProvider.io()) {
-        saveReminderUseCase(reminder)
-      }
-      load()
+    viewModelScope.launch(dispatcherProvider.io()) {
+      saveReminderUseCase(reminder)
     }
   }
 

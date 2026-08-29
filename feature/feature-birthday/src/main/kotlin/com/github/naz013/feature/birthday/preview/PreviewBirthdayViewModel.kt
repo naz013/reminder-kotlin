@@ -8,6 +8,8 @@ import com.github.naz013.ui.birthday.UiBirthdayPreviewAdapter
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -18,9 +20,7 @@ import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -35,44 +35,50 @@ internal class PreviewBirthdayViewModel(
   private val tagChipStateAdapter: TagChipStateAdapter,
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(PreviewBirthdayState())
-  val state = _state.stateInWhileSubscribed(PreviewBirthdayState())
-    .onStart { load() }
+  // Plain ViewModel-lifetime field, not part of the reactive pipeline below - the confetti
+  // animation must play at most once per ViewModel instance regardless of how many times the
+  // underlying birthday re-emits (edited elsewhere) or how many times `state` is freshly
+  // re-subscribed (e.g. the screen re-entering the foreground).
+  private var canShowAnimation = true
+
+  private val _showDeleteConfirm = MutableStateFlow(false)
+
+  // Fully derived from the Birthday/Tag tables via Room's Flow invalidation - no manual
+  // load()/refresh() call anywhere in this ViewModel. Editing this birthday from another screen
+  // (or the Edit screen popping back to this same preview pane in two-pane mode) is reflected
+  // here automatically as soon as it's saved.
+  val state = combine(
+    birthdayRepository.observeById(id),
+    tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.BIRTHDAY),
+    _showDeleteConfirm,
+  ) { birthday, tags, showDeleteConfirm ->
+    buildState(birthday, tags, showDeleteConfirm)
+  }.stateInWhileSubscribed(PreviewBirthdayState())
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
-  init {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.BIRTHDAY)
-        .map { tags -> tags.map { tagChipStateAdapter(it) } }
-        .collect { tagChips ->
-          _state.update { it.copy(tags = tagChips) }
-        }
-    }
-  }
-
   fun onSmsClicked() {
-    _state.value.birthday?.number?.also {
+    state.value.birthday?.number?.also {
       event.emit(ViewModelEvent.SendSms(it))
     }
   }
 
   fun onCallClicked() {
-    _state.value.birthday?.number?.also {
+    state.value.birthday?.number?.also {
       event.emit(ViewModelEvent.MakeCall(it))
     }
   }
 
   fun onDeleteClick() {
-    _state.update { it.copy(showDeleteConfirm = true) }
+    _showDeleteConfirm.value = true
   }
 
   fun onDeleteDismiss() {
-    _state.update { it.copy(showDeleteConfirm = false) }
+    _showDeleteConfirm.value = false
   }
 
   fun onDeleteConfirmed() {
-    _state.update { it.copy(showDeleteConfirm = false) }
+    _showDeleteConfirm.value = false
     viewModelScope.launch(dispatcherProvider.io()) {
       deleteBirthdayUseCase(id)
 
@@ -82,22 +88,29 @@ internal class PreviewBirthdayViewModel(
     }
   }
 
-  private fun load() {
-    viewModelScope.launch(dispatcherProvider.io()) {
-      val birthday = birthdayRepository.getById(id) ?: return@launch
-
-      analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY_PREVIEW))
-
-      val uiBirthday = uiBirthdayPreviewAdapter.convert(birthday)
-      val shouldPlayConfetti = uiBirthday.hasBirthdayToday && _state.value.canShowAnimation
-      _state.update {
-        it.copy(
-          birthday = uiBirthday,
-          playConfetti = shouldPlayConfetti,
-          canShowAnimation = false,
-        )
-      }
+  private suspend fun buildState(
+    birthday: Birthday?,
+    tags: List<Tag>,
+    showDeleteConfirm: Boolean,
+  ): PreviewBirthdayState {
+    val tagChips = tags.map { tagChipStateAdapter(it) }
+    if (birthday == null) {
+      return PreviewBirthdayState(showDeleteConfirm = showDeleteConfirm, tags = tagChips)
     }
+
+    analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY_PREVIEW))
+
+    val uiBirthday = uiBirthdayPreviewAdapter.convert(birthday)
+    val shouldPlayConfetti = uiBirthday.hasBirthdayToday && canShowAnimation
+    canShowAnimation = false
+
+    return PreviewBirthdayState(
+      birthday = uiBirthday,
+      showDeleteConfirm = showDeleteConfirm,
+      playConfetti = shouldPlayConfetti,
+      canShowAnimation = false,
+      tags = tagChips,
+    )
   }
 
   sealed interface ViewModelEvent {
