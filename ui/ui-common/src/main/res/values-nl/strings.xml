@@ -1246,4 +1246,5 @@
     <string name="workflow_action_remove_tag">Tag verwijderen</string>
     <string name="workflow_builder_select_tag">Selecteer een tag</string>
     <string name="workflow_builder_no_tags">Geen tags beschikbaar. Maak eerst een tag aan.</string>
+    <string name="tag_has_no_items">Nog geen items met deze tag gelabeld</string>
 </resources>

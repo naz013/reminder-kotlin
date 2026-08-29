@@ -1250,4 +1250,5 @@
     <string name="workflow_action_remove_tag">टैग हटाएं</string>
     <string name="workflow_builder_select_tag">एक टैग चुनें</string>
     <string name="workflow_builder_no_tags">कोई टैग उपलब्ध नहीं है। पहले एक टैग बनाएं।</string>
+    <string name="tag_has_no_items">इस टैग के साथ अभी तक कोई आइटम टैग नहीं किया गया है</string>
 </resources>

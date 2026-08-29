@@ -1249,4 +1249,5 @@
     <string name="workflow_action_remove_tag">Видалити тег</string>
     <string name="workflow_builder_select_tag">Виберіть тег</string>
     <string name="workflow_builder_no_tags">Немає доступних тегів. Спочатку створіть тег.</string>
+    <string name="tag_has_no_items">Поки немає елементів із цим тегом</string>
 </resources>

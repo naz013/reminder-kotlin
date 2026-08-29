@@ -1248,4 +1248,5 @@
     <string name="workflow_action_remove_tag">Retirer une étiquette</string>
     <string name="workflow_builder_select_tag">Sélectionner une étiquette</string>
     <string name="workflow_builder_no_tags">Aucune étiquette disponible. Créez d\'abord une étiquette.</string>
+    <string name="tag_has_no_items">Aucun élément associé à cette étiquette pour le moment</string>
 </resources>

@@ -1246,4 +1246,5 @@
     <string name="workflow_action_remove_tag">Fjern mærke</string>
     <string name="workflow_builder_select_tag">Vælg et mærke</string>
     <string name="workflow_builder_no_tags">Ingen mærker tilgængelige. Opret et mærke først.</string>
+    <string name="tag_has_no_items">Ingen elementer er endnu tagget med dette tag</string>
 </resources>

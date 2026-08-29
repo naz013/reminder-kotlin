@@ -45,6 +45,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppPullToRefreshBox
 import com.github.naz013.ui.googletask.GoogleTaskItemState
+import com.github.naz013.ui.googletask.GoogleTaskRow
 import com.github.naz013.ui.tag.TagFilterRow
 import com.google.android.gms.common.SignInButton
 
@@ -187,73 +188,6 @@ private fun TaskListTile(
       maxLines = 1,
       overflow = TextOverflow.Ellipsis,
     )
-  }
-}
-
-@Composable
-internal fun GoogleTaskRow(
-  task: GoogleTaskItemState,
-  onClick: () -> Unit,
-  onToggle: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  val accentColor = task.taskListColor?.let { Color(it) } ?: MaterialTheme.colorScheme.primary
-  Card(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .clickable(onClick = onClick),
-    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-  ) {
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(vertical = 8.dp, horizontal = 12.dp),
-    ) {
-      Icon(
-        painter =
-          painterResource(
-            if (task.isCompleted) R.drawable.ic_fluent_checkbox_checked else R.drawable.ic_fluent_checkbox_unchecked,
-          ),
-        contentDescription = null,
-        tint = accentColor,
-        modifier =
-          Modifier
-            .size(28.dp)
-            .clickable(onClick = onToggle),
-      )
-      Column(
-        modifier =
-          Modifier
-            .weight(1f)
-            .padding(start = 12.dp),
-      ) {
-        Text(
-          text = task.text,
-          style = MaterialTheme.typography.titleMedium,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-        )
-        if (!task.notes.isNullOrEmpty()) {
-          Text(
-            text = task.notes ?: "",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-          )
-        }
-      }
-      if (!task.dueDate.isNullOrEmpty()) {
-        Text(
-          text = task.dueDate ?: "",
-          style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-      }
-    }
   }
 }
 

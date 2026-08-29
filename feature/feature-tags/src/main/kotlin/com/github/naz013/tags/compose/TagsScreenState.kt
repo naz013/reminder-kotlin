@@ -21,3 +21,5 @@ internal data class TagState(
   val name: String,
   val color: Color,
 )
+
+internal enum class TagMenuAction { EDIT, DELETE }

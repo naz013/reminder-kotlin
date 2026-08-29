@@ -1248,4 +1248,5 @@
     <string name="workflow_action_remove_tag">Odebrat štítek</string>
     <string name="workflow_builder_select_tag">Vyberte štítek</string>
     <string name="workflow_builder_no_tags">Nejsou k dispozici žádné štítky. Nejprve vytvořte štítek.</string>
+    <string name="tag_has_no_items">Zatím žádné položky s tímto štítkem</string>
 </resources>

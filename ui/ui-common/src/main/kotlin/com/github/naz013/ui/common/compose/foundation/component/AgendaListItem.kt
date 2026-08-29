@@ -105,18 +105,20 @@ fun AgendaListItem(
           AgendaChipRow(chips = tags, modifier = Modifier.padding(top = 6.dp))
         }
       }
-      Box {
-        MenuIconButton(
-          icon = painterResource(R.drawable.ic_fluent_more_vertical),
-          contentDescription = stringResource(R.string.more_options),
-          onClick = { menuExpanded = true },
-        )
-        AppDropdownMenu(
-          expanded = menuExpanded,
-          onDismissRequest = { menuExpanded = false },
-          items = menuItems,
-          onItemClick = onMenuItemClick,
-        )
+      if (menuItems.isNotEmpty()) {
+        Box {
+          MenuIconButton(
+            icon = painterResource(R.drawable.ic_fluent_more_vertical),
+            contentDescription = stringResource(R.string.more_options),
+            onClick = { menuExpanded = true },
+          )
+          AppDropdownMenu(
+            expanded = menuExpanded,
+            onDismissRequest = { menuExpanded = false },
+            items = menuItems,
+            onItemClick = onMenuItemClick,
+          )
+        }
       }
     }
   }

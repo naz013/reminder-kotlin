@@ -11,4 +11,9 @@ sealed interface TagsNavKey : NavKey {
   data class Edit(
     val id: String? = null
   ) : TagsNavKey
+
+  @Serializable
+  data class Details(
+    val id: String
+  ) : TagsNavKey
 }
