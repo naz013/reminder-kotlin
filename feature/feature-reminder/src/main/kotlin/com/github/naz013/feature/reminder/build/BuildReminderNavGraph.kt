@@ -1,6 +1,8 @@
 package com.github.naz013.feature.reminder.build
 
 import android.os.Build
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -48,11 +50,12 @@ import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDisp
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.buildReminderEntries(
   backStack: MutableList<NavKey>,
   rememberContactPhonePicker: @Composable () -> ((onResult: (String) -> Unit) -> Unit),
 ) {
-  entry<BuildReminderNavKey.Main> { key ->
+  entry<BuildReminderNavKey.Main>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
     MainEntry(key, backStack, rememberContactPhonePicker)
   }
   entry<BuildReminderNavKey.Help> {

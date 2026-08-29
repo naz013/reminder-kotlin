@@ -164,6 +164,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
       when (key) {
         is ReminderPreviewNavKey.Preview -> key.id
         is BirthdaysNavKey.Preview -> key.id
+        is BuildReminderNavKey.Main -> key.id.takeIf { it.isNotBlank() }
+        is BirthdaysNavKey.Edit -> key.id
         else -> null
       }
     }
@@ -315,11 +317,11 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           backStack = backStack,
           selectedItemId = selectedEventId,
           onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
-          onOpenReminderEdit = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
+          onOpenReminderEdit = { id -> backStack.navigateToEditDetailPane(BuildReminderNavKey.Main(id = id)) { it is ReminderPreviewNavKey.Preview && it.id == id } },
           onOpenNewReminder = { backStack.add(BuildReminderNavKey.Main()) },
           onOpenNewTodo = { backStack.add(TodoEditNavKey.Main()) },
           onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
-          onOpenBirthdayEdit = { id -> backStack.add(BirthdaysNavKey.Edit(id)) },
+          onOpenBirthdayEdit = { id -> backStack.navigateToEditDetailPane(BirthdaysNavKey.Edit(id)) { it is BirthdaysNavKey.Preview && it.id == id } },
           onOpenNewBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
           onOpenArchive = { backStack.add(RemindersArchiveNavKey.List) },
           onOpenGroups = { backStack.add(GroupsNavKey.List) },
@@ -493,18 +495,42 @@ private fun MutableList<NavKey>.navigateToRailDestination(key: NavKey) {
 
 /**
  * Navigation for a two-pane list's detail pane (Home, Agenda): if the current top entry is itself
- * a reminder/birthday preview, replace it instead of stacking another one on top. Only ever matters
- * in two-pane mode - on Compact width the list isn't visible while a preview is showing, so this
- * can't be reached with an existing preview already on top. Without it, picking a second list
- * item pushes a second `detailPane()`-tagged entry, which [ListDetailSceneStrategy] doesn't
- * support (it expects at most one entry per pane role).
+ * a reminder/birthday preview or edit form, replace it instead of stacking another one on top.
+ * Only ever matters in two-pane mode - on Compact width the list isn't visible while a preview or
+ * edit form is showing, so this can't be reached with one already on top. Without it, picking a
+ * second list item (or its Edit action) pushes a second `detailPane()`-tagged entry, which
+ * [ListDetailSceneStrategy] doesn't support (it expects at most one entry per pane role).
  */
 private fun MutableList<NavKey>.navigateToDetailPane(key: NavKey) {
   val top = lastOrNull()
-  if (top is ReminderPreviewNavKey.Preview || top is BirthdaysNavKey.Preview) {
+  if (
+    top is ReminderPreviewNavKey.Preview ||
+    top is BirthdaysNavKey.Preview ||
+    top is BuildReminderNavKey.Main ||
+    top is BirthdaysNavKey.Edit
+  ) {
     removeLastOrNull()
   }
   add(key)
+}
+
+/**
+ * Navigation for a two-pane list's detail pane (Agenda's row menu) into an Edit screen: if the
+ * detail pane is currently showing a Preview of that very same item ([isSameItemPreview] matches
+ * the top entry), push Edit on top of it instead of replacing it - Preview stays on the backstack
+ * underneath, so the edit screen's plain single-entry back arrow naturally reveals Preview again
+ * once editing is done (mirrors Preview's own Edit button - see the matching comment in
+ * ReminderPreviewNavGraph.kt/BirthdaysNavGraph.kt). Otherwise - a different item's Preview/Edit is
+ * showing, or nothing is - swap it via [navigateToDetailPane] like any other detail-pane nav,
+ * since there's no prior preview of *this* item worth returning to.
+ */
+private fun MutableList<NavKey>.navigateToEditDetailPane(key: NavKey, isSameItemPreview: (NavKey) -> Boolean) {
+  val top = lastOrNull()
+  if (top != null && isSameItemPreview(top)) {
+    add(key)
+  } else {
+    navigateToDetailPane(key)
+  }
 }
 
 private fun navScreenSpring() =
