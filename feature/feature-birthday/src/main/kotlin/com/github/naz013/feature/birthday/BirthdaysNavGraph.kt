@@ -42,7 +42,9 @@ fun EntryProviderScope<NavKey>.birthdaysEntries(
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     PreviewEntry(key, backStack, renderAsDetailPane, adsContent, onCallClick, onSmsClick)
   }
-  entry<BirthdaysNavKey.Edit> { key -> EditEntry(key, backStack, adsContent) }
+  entry<BirthdaysNavKey.Edit>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+    EditEntry(key, backStack, adsContent)
+  }
 }
 
 @Composable
@@ -108,6 +110,10 @@ private fun PreviewEntry(
     state = state,
     renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    // Pushed on top rather than replacing Preview: ListDetailSceneStrategy's detail pane always
+    // renders the topmost detailPane()-tagged entry, so Edit shows in the pane exactly as Preview
+    // did, with Preview left underneath. That way the edit screen's plain single-entry back arrow
+    // naturally reveals Preview again afterward, in both single-pane and two-pane.
     onEditClick = { backStack.add(BirthdaysNavKey.Edit(key.id)) },
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,

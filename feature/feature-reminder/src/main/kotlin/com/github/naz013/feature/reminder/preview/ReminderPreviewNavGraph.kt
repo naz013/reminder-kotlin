@@ -135,7 +135,11 @@ private fun PreviewEntry(
     renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onToggleClick = viewModel::onToggleClick,
-    onEditClick = { navigateBeyondBackStack(listOf(BuildReminderNavKey.Main(id = key.id))) },
+    // Pushed on top rather than replacing Preview: ListDetailSceneStrategy's detail pane always
+    // renders the topmost detailPane()-tagged entry, so Edit shows in the pane exactly as Preview
+    // did, with Preview left underneath. That way the edit screen's plain single-entry back arrow
+    // naturally reveals Preview again afterward, in both single-pane and two-pane.
+    onEditClick = { backStack.add(BuildReminderNavKey.Main(id = key.id)) },
     onShareClick = viewModel::shareReminder,
     onCopyClick = viewModel::onCopyClicked,
     onPinClick = viewModel::onPinToggleClick,
