@@ -68,7 +68,9 @@ internal class AgendaViewModel(
 ) : ViewModel() {
 
   private val _agendaScreenState = MutableStateFlow(AgendaScreenState())
-  val agendaScreenState = _agendaScreenState.stateInWhileSubscribed(AgendaScreenState())
+  private val _selectedItemId = MutableStateFlow<String?>(null)
+  val agendaScreenState = combine(_agendaScreenState, _selectedItemId, AgendaScreenState::withSelectedItem)
+    .stateInWhileSubscribed(AgendaScreenState())
     .onStart { refresh() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
@@ -262,6 +264,10 @@ internal class AgendaViewModel(
 
   fun onScrolledToToday() {
     hasScrolledToToday = true
+  }
+
+  fun onSelectedItemIdChanged(id: String?) {
+    _selectedItemId.value = id
   }
 
   fun onItemClick(item: UiAgendaItem) {

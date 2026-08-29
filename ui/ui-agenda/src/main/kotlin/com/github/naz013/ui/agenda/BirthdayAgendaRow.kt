@@ -38,6 +38,7 @@ fun BirthdayAgendaRow(
     onMenuItemClick = { id -> onMenuAction?.invoke(AgendaMenuAction.entries[id]) },
     modifier = modifier,
     leading = { ColorDot(color = item.color) },
+    isSelected = item.isSelected,
   )
 }
 

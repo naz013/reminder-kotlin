@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -57,6 +58,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
@@ -146,52 +148,59 @@ internal fun PreviewReminderScreen(
       return@Scaffold
     }
 
-    LazyColumn(
+    Box(
       modifier = Modifier
         .fillMaxSize()
-        .padding(padding)
+        .padding(padding),
+      contentAlignment = Alignment.TopCenter,
     ) {
-      item { HeaderCard(state = state, onToggleClick = onToggleClick) }
+      LazyColumn(
+        modifier = Modifier
+          .fillMaxHeight()
+          .detailScreenContentWidth(),
+      ) {
+        item { HeaderCard(state = state, onToggleClick = onToggleClick) }
 
-      item { SectionHeader(text = stringResource(R.string.details)) }
-      item { DetailsCard(rows = detailRows(state)) }
+        item { SectionHeader(text = stringResource(R.string.details)) }
+        item { DetailsCard(rows = detailRows(state)) }
 
-      if (state.targetType != null) {
-        item { TargetInfoSection(state = state, onClick = onTargetActionClick) }
-      }
-
-      if (state.attachments.isNotEmpty()) {
-        item { SectionHeader(text = stringResource(R.string.builder_attachments)) }
-        items(state.attachments, key = { it.uri.toString() + it.name }) { file -> AttachmentRow(file) }
-      }
-
-      if (state.subTasks.isNotEmpty()) {
-        item {
-          SubTasksSection(
-            subTasks = state.subTasks,
-            onCheck = onSubTaskCheck,
-            onRemove = onSubTaskRemove,
-          )
+        if (state.targetType != null) {
+          item { TargetInfoSection(state = state, onClick = onTargetActionClick) }
         }
-      }
 
-      if (state.places.isNotEmpty()) {
-        item { MapSection(state = state, mapContent = mapContent) }
-      }
+        if (state.attachments.isNotEmpty()) {
+          item { SectionHeader(text = stringResource(R.string.builder_attachments)) }
+          items(state.attachments, key = { it.uri.toString() + it.name }) { file -> AttachmentRow(file) }
+        }
 
-      item { adsContent() }
+        if (state.subTasks.isNotEmpty()) {
+          item {
+            SubTasksSection(
+              subTasks = state.subTasks,
+              onCheck = onSubTaskCheck,
+              onRemove = onSubTaskRemove,
+            )
+          }
+        }
 
-      state.note?.let { note -> item { NoteRow(note = note, onClick = onNoteClick) } }
-      state.googleTask?.let { task -> item { GoogleTaskRow(task = task, onClick = onGoogleTaskClick) } }
+        if (state.places.isNotEmpty()) {
+          item { MapSection(state = state, mapContent = mapContent) }
+        }
 
-      if (state.calendarEvents.isNotEmpty()) {
-        item { SectionHeader(text = stringResource(R.string.events)) }
-        items(state.calendarEvents, key = { it.localId.ifEmpty { it.id.toString() } }) { event ->
-          CalendarEventRow(
-            event = event,
-            onOpenClick = { onCalendarOpenClick(event) },
-            onRemoveClick = { onCalendarRemoveClick(event) },
-          )
+        item { adsContent() }
+
+        state.note?.let { note -> item { NoteRow(note = note, onClick = onNoteClick) } }
+        state.googleTask?.let { task -> item { GoogleTaskRow(task = task, onClick = onGoogleTaskClick) } }
+
+        if (state.calendarEvents.isNotEmpty()) {
+          item { SectionHeader(text = stringResource(R.string.events)) }
+          items(state.calendarEvents, key = { it.localId.ifEmpty { it.id.toString() } }) { event ->
+            CalendarEventRow(
+              event = event,
+              onOpenClick = { onCalendarOpenClick(event) },
+              onRemoveClick = { onCalendarRemoveClick(event) },
+            )
+          }
         }
       }
     }
