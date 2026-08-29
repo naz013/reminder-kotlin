@@ -88,6 +88,18 @@ jobs:
         else
           echo "✓ PRO_API_KEY secret is set"
         fi
+        if [ -z "${{ secrets.FREE_GOOGLE_SIGN_IN_SERVER_CLIENT_ID }}" ]; then
+          echo "ERROR: FREE_GOOGLE_SIGN_IN_SERVER_CLIENT_ID secret is empty or not set!"
+          exit 1
+        else
+          echo "✓ FREE_GOOGLE_SIGN_IN_SERVER_CLIENT_ID secret is set"
+        fi
+        if [ -z "${{ secrets.PRO_GOOGLE_SIGN_IN_SERVER_CLIENT_ID }}" ]; then
+          echo "ERROR: PRO_GOOGLE_SIGN_IN_SERVER_CLIENT_ID secret is empty or not set!"
+          exit 1
+        else
+          echo "✓ PRO_GOOGLE_SIGN_IN_SERVER_CLIENT_ID secret is set"
+        fi
 
     - name: Decode release signing keystores
       run: |
@@ -109,6 +121,8 @@ jobs:
         echo "proApiKey=${{ secrets.PRO_API_KEY }}" >> keystore.properties
         echo "proPlacesApiKey=\"${{ secrets.PRO_PLACES_API_KEY }}\"" >> keystore.properties
         echo "freePlacesApiKey=\"${{ secrets.FREE_PLACES_API_KEY }}\"" >> keystore.properties
+        echo "freeGoogleSignInServerClientId=\"${{ secrets.FREE_GOOGLE_SIGN_IN_SERVER_CLIENT_ID }}\"" >> keystore.properties
+        echo "proGoogleSignInServerClientId=\"${{ secrets.PRO_GOOGLE_SIGN_IN_SERVER_CLIENT_ID }}\"" >> keystore.properties
         echo "reviewsProjectId=\"${{ secrets.REVIEWS_PROJECT_ID }}\"" >> keystore.properties
         echo "reviewsApiKey=\"${{ secrets.REVIEWS_API_KEY }}\"" >> keystore.properties
         echo "reviewsStorageBucket=\"${{ secrets.REVIEWS_STORAGE_BUCKET }}\"" >> keystore.properties

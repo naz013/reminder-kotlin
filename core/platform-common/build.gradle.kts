@@ -16,6 +16,10 @@ dependencies {
   implementation(libs.koin.android.ext)
 
   implementation(libs.play.services.auth)
+  implementation(libs.androidx.credentials)
+  implementation(libs.androidx.credentials.play.services.auth)
+  implementation(libs.google.id)
+  implementation(libs.kotlinx.coroutines.android)
 
   implementation(libs.threetenbp)
 

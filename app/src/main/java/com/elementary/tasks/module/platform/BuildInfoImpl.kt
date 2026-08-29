@@ -8,4 +8,5 @@ class BuildInfoImpl : BuildInfo {
   override val isDebug: Boolean = BuildConfig.DEBUG
   override val applicationId: String = BuildConfig.APPLICATION_ID
   override val buildDate: String = BuildConfig.BUILD_DATE
+  override val googleSignInServerClientId: String = BuildConfig.GOOGLE_SIGN_IN_SERVER_CLIENT_ID
 }

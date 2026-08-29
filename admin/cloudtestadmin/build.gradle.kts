@@ -16,6 +16,10 @@ extensions.configure<ApplicationExtension> {
     versionName = "1.0"
   }
 
+  buildFeatures {
+    buildConfig = true
+  }
+
   val propsFile = file("${rootProject.rootDir}/keystore.properties")
   val props = Properties()
   if (propsFile.exists() && propsFile.canRead()) {
@@ -23,6 +27,16 @@ extensions.configure<ApplicationExtension> {
     props.load(propsFile.inputStream())
   } else {
     println("> Property file does not exist")
+  }
+
+  // Shares the pro flavor's applicationId (com.cray.software.justreminderpro), so it reuses the
+  // same keystore.properties key app/build.gradle.kts reads for the pro flavor.
+  defaultConfig {
+    buildConfigField(
+      "String",
+      "GOOGLE_SIGN_IN_SERVER_CLIENT_ID",
+      props.getProperty("proGoogleSignInServerClientId", "\"\""),
+    )
   }
 
   val debugKeyStoreFile = props.getProperty("debugKeyStoreFile")

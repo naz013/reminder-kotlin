@@ -1,8 +1,6 @@
 package com.example.cloudtestadmin
 
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -56,18 +54,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.naz013.cloudapi.CloudFile
 import com.github.naz013.cloudapi.Source
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
+import com.github.naz013.common.googleauth.rememberGoogleAuthorization
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.Scope
 import org.koin.compose.koinInject
 
 /**
@@ -296,49 +291,25 @@ fun AuthenticationScreen(
   onAuthComplete: () -> Unit,
   onBackPressed: () -> Unit
 ) {
-  val context = LocalContext.current
-
   when (source) {
     Source.GoogleDrive -> {
       val googleDriveAuthManager: GoogleDriveAuthManager = koinInject()
       val googleDriveApi: com.github.naz013.cloudapi.googledrive.GoogleDriveApi = koinInject()
-      val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-      ) { result ->
-       Logger.d("CloudTestScreen", "Google Sign-In result received, resultCode=${result.resultCode}")
-
-        try {
-          val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-          val account = task.getResult(Exception::class.java)
-
-          if (account != null) {
-            val email = account.email
-            Logger.i("CloudTestScreen", "Google Sign-In successful, email=$email")
-
-            if (email != null) {
-              // Save the user name to storage
-              googleDriveAuthManager.saveUserName(email)
-              Logger.d("CloudTestScreen", "User name saved to storage")
-
-              // Re-initialize the Google Drive API
-              googleDriveApi.initialize()
-              Logger.d("CloudTestScreen", "Google Drive API initialized")
-
-              // Complete authentication
-              onAuthComplete()
-            } else {
-              Logger.e("CloudTestScreen", "Email is null after sign-in")
-              onAuthComplete()
-            }
-          } else {
-            Logger.e("CloudTestScreen", "Account is null after sign-in")
-            onAuthComplete()
-          }
-        } catch (e: Exception) {
-          Logger.e("CloudTestScreen", "Error processing Google Sign-In result: ${e.message}", e)
+      val authorization = rememberGoogleAuthorization(
+        serverClientId = BuildConfig.GOOGLE_SIGN_IN_SERVER_CLIENT_ID,
+        onResult = { email ->
+          Logger.i("CloudTestScreen", "Google authorization successful, email=$email")
+          googleDriveAuthManager.saveUserName(email)
+          Logger.d("CloudTestScreen", "User name saved to storage")
+          googleDriveApi.initialize()
+          Logger.d("CloudTestScreen", "Google Drive API initialized")
           onAuthComplete()
-        }
-      }
+        },
+        onFail = {
+          Logger.e("CloudTestScreen", "Google authorization failed")
+          onAuthComplete()
+        },
+      )
 
       Scaffold(
         topBar = {
@@ -370,26 +341,9 @@ fun AuthenticationScreen(
 
           androidx.compose.material3.Button(
             onClick = {
-              Logger.i("CloudTestScreen", "Starting Google Sign-In flow")
-
-              try {
-                val scopes = googleDriveAuthManager.getScopes().map { Scope(it) }
-                Logger.d("CloudTestScreen", "Scopes: ${scopes.map { it.scopeUri }}")
-
-                val firstScope = scopes.first()
-                val restScopes = scopes.drop(1).toTypedArray()
-
-                val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                  .requestScopes(firstScope, *restScopes)
-                  .requestEmail()
-                  .build()
-                val client = GoogleSignIn.getClient(context, signInOptions)
-
-                Logger.d("CloudTestScreen", "Launching Google Sign-In intent")
-                launcher.launch(client.signInIntent)
-              } catch (e: Exception) {
-                Logger.e("CloudTestScreen", "Error starting Google Sign-In: ${e.message}", e)
-              }
+              val scopes = googleDriveAuthManager.getScopes()
+              Logger.i("CloudTestScreen", "Starting Google authorization, scopes=$scopes")
+              authorization.authorize(scopes)
             }
           ) {
             Text("Sign in with Google")

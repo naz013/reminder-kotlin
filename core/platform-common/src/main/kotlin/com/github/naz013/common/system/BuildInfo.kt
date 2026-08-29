@@ -5,4 +5,5 @@ interface BuildInfo {
   val isDebug: Boolean
   val applicationId: String
   val buildDate: String
+  val googleSignInServerClientId: String
 }
