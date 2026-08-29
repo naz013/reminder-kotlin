@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+
+/**
+ * On Medium+ width (tablet/desktop), the banner is pinned to this fixed width and centered instead
+ * of stretching edge-to-edge across the whole window - see [InAppAlertBannerContent].
+ */
+private val IN_APP_ALERT_BANNER_MAX_WIDTH = 480.dp
 
 /** One action button on [InAppAlertBanner] - e.g. "OK", "Snooze", "Call", "SMS". */
 data class InAppAlertBannerAction(
@@ -71,12 +78,26 @@ fun InAppAlertBanner(
   }
 }
 
+/**
+ * Full width on Compact (phone) width. On Medium+ width (tablet/desktop), caps at
+ * [IN_APP_ALERT_BANNER_MAX_WIDTH] instead of stretching edge-to-edge across the whole window -
+ * paired with the [InAppAlertBanner] call site aligning this content `TopCenter` within its parent
+ * `Box`, this centers the banner horizontally once it's narrower than the window.
+ */
+@Composable
+private fun Modifier.inAppAlertBannerWidth(): Modifier =
+  if (isTabletScreen() || isDesktopScreen()) {
+    widthIn(max = IN_APP_ALERT_BANNER_MAX_WIDTH).fillMaxWidth()
+  } else {
+    fillMaxWidth()
+  }
+
 @Composable
 private fun InAppAlertBannerContent(state: InAppAlertBannerState) {
   Surface(
     modifier =
     Modifier
-      .fillMaxWidth()
+      .inAppAlertBannerWidth()
       .padding(horizontal = 12.dp, vertical = 8.dp),
     shape = MaterialTheme.shapes.large,
     color = MaterialTheme.colorScheme.surfaceContainerHigh,

@@ -22,7 +22,7 @@ firebase-bom = "34.18.0"
 
 play-services-location = "21.4.0"
 play-services-maps = "20.0.0"
-play-services-auth = "22.0.0"
+play-services-auth = "21.6.0"
 user-messaging-platform = "4.0.0"
 
 ads-mobile-sdk = "1.4.0"
