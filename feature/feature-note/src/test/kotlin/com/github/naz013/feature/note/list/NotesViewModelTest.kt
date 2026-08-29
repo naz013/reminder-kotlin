@@ -8,6 +8,7 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.note.R
@@ -86,7 +87,6 @@ class NotesViewModelTest : BaseTest() {
 
   private fun note(
     id: String = "1",
-    title: String = "Title",
     summary: String = "Summary",
     archived: Boolean = false,
     color: Int = 0,
@@ -95,8 +95,7 @@ class NotesViewModelTest : BaseTest() {
       note =
       Note(
         key = id,
-        title = title,
-        summary = summary,
+        content = NoteDocument(text = summary),
         archived = archived,
         color = color,
         syncState = SyncState.Synced,
@@ -105,20 +104,16 @@ class NotesViewModelTest : BaseTest() {
 
   private fun uiItem(
     id: String = "1",
-    title: String = "Title",
     text: String = "Summary",
     backgroundColor: Color = Color.White,
     images: List<UiNoteImage> = emptyList(),
   ) = UiNoteListItem(
     id = id,
-    title = title,
-    text = text,
+    content = NoteDocument(text = text),
     backgroundColor = backgroundColor,
     textColor = Color.Black,
     fontStyle = 0,
     fontSize = 16f,
-    titleFontStyle = 0,
-    titleFontSize = 20f,
     images = images,
   )
 
@@ -800,7 +795,7 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `applySelectedColor converts the picked index to legacy color and palette for each selected note`() =
+  fun `applySelectedColor sets the picked color index for each selected note`() =
     runTest {
       val (viewModel, state) = readyViewModel(listOf("1", "2"))
       viewModel.onNoteLongClick("1")
@@ -812,9 +807,8 @@ class NotesViewModelTest : BaseTest() {
 
       viewModel.applySelectedColor(25)
 
-      assertEquals(noteColorEngine.getLegacyColorCode(25), n1.note?.color)
-      assertEquals(noteColorEngine.getLegacyPalette(25), n1.note?.palette)
-      assertEquals(noteColorEngine.getLegacyColorCode(25), n2.note?.color)
+      assertEquals(25, n1.note?.color)
+      assertEquals(25, n2.note?.color)
       coVerify(exactly = 1) { saveNoteUseCase(n1) }
       coVerify(exactly = 1) { saveNoteUseCase(n2) }
       assertEquals(0, state().selectedCount)

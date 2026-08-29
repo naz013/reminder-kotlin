@@ -1247,4 +1247,14 @@
     <string name="workflow_builder_select_tag">Selecteer een tag</string>
     <string name="workflow_builder_no_tags">Geen tags beschikbaar. Maak eerst een tag aan.</string>
     <string name="tag_has_no_items">Nog geen items met deze tag gelabeld</string>
+    <string name="acc_select_text_format">Tekstopmaak</string>
+    <string name="acc_select_text_color">Tekstkleur</string>
+    <string name="acc_select_gradient_color">Kleurverloop voor tekst</string>
+    <string name="format_paragraph">Alinea</string>
+    <string name="gradient_start_color">Startkleur</string>
+    <string name="gradient_end_color">Eindkleur</string>
+    <string name="gradient_angle">Hoek</string>
+    <string name="text_style_section">Stijl</string>
+    <string name="text_color_mode_solid">Effen</string>
+    <string name="text_color_mode_gradient">Kleurverloop</string>
 </resources>

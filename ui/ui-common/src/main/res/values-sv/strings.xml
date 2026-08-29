@@ -1247,4 +1247,14 @@
     <string name="workflow_builder_select_tag">Välj en tagg</string>
     <string name="workflow_builder_no_tags">Inga taggar tillgängliga. Skapa en tagg först.</string>
     <string name="tag_has_no_items">Inga objekt har taggats med den här taggen än</string>
+    <string name="acc_select_text_format">Textformat</string>
+    <string name="acc_select_text_color">Textfärg</string>
+    <string name="acc_select_gradient_color">Toningsfärg för text</string>
+    <string name="format_paragraph">Stycke</string>
+    <string name="gradient_start_color">Startfärg</string>
+    <string name="gradient_end_color">Slutfärg</string>
+    <string name="gradient_angle">Vinkel</string>
+    <string name="text_style_section">Stil</string>
+    <string name="text_color_mode_solid">Enfärgad</string>
+    <string name="text_color_mode_gradient">Toning</string>
 </resources>

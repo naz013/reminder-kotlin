@@ -1250,4 +1250,14 @@
     <string name="workflow_builder_select_tag">Изберете етикет</string>
     <string name="workflow_builder_no_tags">Няма налични етикети. Първо създайте етикет.</string>
     <string name="tag_has_no_items">Все още няма елементи, маркирани с този етикет</string>
+    <string name="acc_select_text_format">Формат на текста</string>
+    <string name="acc_select_text_color">Цвят на текста</string>
+    <string name="acc_select_gradient_color">Градиентен цвят на текста</string>
+    <string name="format_paragraph">Параграф</string>
+    <string name="gradient_start_color">Начален цвят</string>
+    <string name="gradient_end_color">Краен цвят</string>
+    <string name="gradient_angle">Ъгъл</string>
+    <string name="text_style_section">Стил</string>
+    <string name="text_color_mode_solid">Плътен</string>
+    <string name="text_color_mode_gradient">Градиент</string>
 </resources>

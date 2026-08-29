@@ -163,10 +163,6 @@ class Prefs(
     get() = getInt(PrefsConstants.AUTO_BACKUP_STATE)
     set(value) = putInt(PrefsConstants.AUTO_BACKUP_STATE, value)
 
-  var notePalette: Int
-    get() = getInt(PrefsConstants.NOTE_PALETTE)
-    set(value) = putInt(PrefsConstants.NOTE_PALETTE, value)
-
   var pinCode: String
     get() = SuperUtil.decrypt(getString(PrefsConstants.PIN_CODE))
     set(value) = putString(PrefsConstants.PIN_CODE, SuperUtil.encrypt(value))
@@ -495,14 +491,6 @@ class Prefs(
   var lastNoteFontStyle: Int
     get() = getInt(PrefsConstants.LAST_NOTE_FONT_STYLE, def = FontParams.DEFAULT_FONT_STYLE)
     set(value) = putInt(PrefsConstants.LAST_NOTE_FONT_STYLE, value)
-
-  var lastNoteTitleFontSize: Int
-    get() = getInt(PrefsConstants.LAST_NOTE_TITLE_FONT_SIZE, def = FontParams.DEFAULT_TITLE_FONT_SIZE)
-    set(value) = putInt(PrefsConstants.LAST_NOTE_TITLE_FONT_SIZE, value)
-
-  var lastNoteTitleFontStyle: Int
-    get() = getInt(PrefsConstants.LAST_NOTE_TITLE_FONT_STYLE, def = FontParams.DEFAULT_FONT_STYLE)
-    set(value) = putInt(PrefsConstants.LAST_NOTE_TITLE_FONT_STYLE, value)
 
   var isNoteColorRememberingEnabled: Boolean
     get() = getBoolean(PrefsConstants.REMEMBER_NOTE_COLOR, def = true)

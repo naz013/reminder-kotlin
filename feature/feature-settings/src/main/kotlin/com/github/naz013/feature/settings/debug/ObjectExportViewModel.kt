@@ -152,15 +152,11 @@ internal class ObjectExportViewModel(
 
   private fun NoteWithImages.toSharedNote(): SharedNote {
     return SharedNote(
-      text = this.note?.summary ?: "",
-      title = this.note?.title ?: "",
-      titleFontSize = this.note?.titleFontSize ?: -1,
-      titleFontStyle = this.note?.titleFontStyle ?: -1,
+      text = this.note?.content?.text ?: "",
       id = this.note?.key ?: "",
       date = this.note?.date ?: "",
       color = this.note?.color ?: 0,
       style = this.note?.style ?: 0,
-      palette = this.note?.palette ?: 0,
       updatedAt = this.note?.updatedAt,
       opacity = this.note?.opacity ?: 100,
       fontSize = this.note?.fontSize ?: -1,
@@ -173,7 +169,6 @@ internal class ObjectExportViewModel(
       key = this.getKey(),
       date = this.getGmtTime(),
       color = this.getColor(),
-      palette = this.getPalette(),
       style = this.getStyle(),
       fontSize = this.getFontSize(),
       updatedAt = this.note?.updatedAt,

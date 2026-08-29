@@ -8,17 +8,13 @@ import com.github.naz013.ui.note.UiNoteImage
 internal data class UiNoteList(
   val id: String,
   val text: String,
-  val title: String,
   @ColorInt val backgroundColor: Int,
   @ColorInt val textColor: Int,
   val moreIcon: Drawable?,
   val typeface: Typeface?,
   val fontSize: Float,
-  val titleTypeface: Typeface?,
-  val titleFontSize: Float,
   val formattedDateTime: String,
   val images: List<UiNoteImage>,
   val colorPosition: Int,
-  val colorPalette: Int,
   val uniqueId: Int,
 )

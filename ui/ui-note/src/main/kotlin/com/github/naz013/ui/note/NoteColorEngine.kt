@@ -20,33 +20,12 @@ class NoteColorEngine(
     return if (notePreferences.isNoteColorRememberingEnabled) {
       notePreferences.lastNoteColor
     } else {
-      Random().nextInt(ThemeProvider.NOTE_COLORS)
+      Random().nextInt(COLORS.size)
     }
-  }
-
-  fun getLastPalette(): Int {
-    return notePreferences.notePalette
   }
 
   fun getLasterOpacity(): Int {
     return notePreferences.noteColorOpacity.takeIf { op -> op >= 0 } ?: 100
-  }
-
-  fun getLegacyColorCode(code: Int): Int {
-    return code % PALETTE_SIZE
-  }
-
-  fun getLegacyPalette(code: Int): Int {
-    val legacyCode = getLegacyColorCode(code)
-    return (code - legacyCode) / PALETTE_SIZE
-  }
-
-  fun getColorCode(palette: Int, code: Int): Int {
-    return palette * PALETTE_SIZE + code
-  }
-
-  fun colorsForLegacy(code: Int, palette: Int, opacity: Int): Colors {
-    return colorsFor(getColorCode(palette, code), opacity)
   }
 
   fun colorsFor(code: Int, opacity: Int): Colors {
@@ -89,7 +68,6 @@ class NoteColorEngine(
   )
 
   companion object {
-    private const val PALETTE_SIZE = 20
     private val COLORS = listOf(
       Color(0XFF86E3CE),
       Color(0XFFD0E6A5),
@@ -162,6 +140,9 @@ class NoteColorEngine(
       Color(0XFF463C52),
       Color(0XFF9D94BA),
       Color(0XFFD1D5E8),
+
+      Color.Black,
+      Color.White,
     )
   }
 }

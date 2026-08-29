@@ -9,7 +9,7 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.files.DataType
-import com.github.naz013.files.model.NoteV3Json
+import com.github.naz013.files.model.NoteV4Json
 import com.github.naz013.files.model.SettingsModel
 import com.github.naz013.files.model.TagAssignmentsSnapshotJson
 import com.github.naz013.logging.Logger
@@ -32,7 +32,7 @@ internal class CreateCloudFileUseCase(
       is TagAssignmentsSnapshotJson -> "app"
       is RecurPreset -> any.getFileNamePrefix()
       is Tag -> any.getFileNamePrefix()
-      is NoteV3Json -> any.key
+      is NoteV4Json -> any.key
       else -> throw IllegalArgumentException("Unsupported data type: ${any::class.java}")
     } + dataType.fileExtension
     Logger.d(TAG, "Created cloud file name: $name for dataType: $dataType")

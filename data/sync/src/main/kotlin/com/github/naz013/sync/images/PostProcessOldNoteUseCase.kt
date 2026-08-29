@@ -2,8 +2,10 @@ package com.github.naz013.sync.images
 
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.note.OldNote
+import com.github.naz013.domain.note.combineLegacyNoteColor
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.sync.FileCacheProvider
@@ -62,13 +64,12 @@ internal class PostProcessOldNoteUseCase(
 
   private fun createNote(oldNote: OldNote): Note {
     return Note(
-      color = oldNote.color,
-      palette = oldNote.palette,
+      color = combineLegacyNoteColor(oldNote.color, oldNote.palette),
       key = oldNote.key,
       date = oldNote.date,
       style = oldNote.style,
       uniqueId = oldNote.uniqueId,
-      summary = oldNote.summary,
+      content = NoteDocument(text = oldNote.summary),
       updatedAt = oldNote.updatedAt,
       fontSize = oldNote.fontSize,
       archived = oldNote.archived,

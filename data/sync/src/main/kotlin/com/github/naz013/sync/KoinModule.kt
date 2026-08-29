@@ -4,6 +4,7 @@ import com.github.naz013.sync.cache.SyncApiSessionCache
 import com.github.naz013.sync.images.CacheFileUseCase
 import com.github.naz013.sync.images.DownloadNoteFilesUseCase
 import com.github.naz013.sync.images.PostProcessNoteV3UseCase
+import com.github.naz013.sync.images.PostProcessNoteV4UseCase
 import com.github.naz013.sync.images.PostProcessOldNoteUseCase
 import com.github.naz013.sync.images.UploadFilesUseCase
 import com.github.naz013.sync.local.DataTypeRepositoryCallerFactory
@@ -63,7 +64,8 @@ val syncApiModule = module {
 
   single { SyncApiSessionCache() }
 
-  factory { PostProcessDownloadedFileUseCase(get(), get()) }
+  factory { PostProcessDownloadedFileUseCase(get(), get(), get()) }
+  factory { PostProcessNoteV4UseCase(get()) }
   factory { PostProcessNoteV3UseCase(get()) }
   factory { DownloadNoteFilesUseCase(get()) }
   factory { PostProcessOldNoteUseCase(get()) }

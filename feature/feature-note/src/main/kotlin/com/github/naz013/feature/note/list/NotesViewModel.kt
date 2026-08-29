@@ -263,8 +263,7 @@ internal class NotesViewModel(
       ids.forEach { id ->
         val noteWithImages = noteRepository.getById(id) ?: return@forEach
         val note = noteWithImages.note ?: return@forEach
-        note.color = noteColorEngine.getLegacyColorCode(colorIndex)
-        note.palette = noteColorEngine.getLegacyPalette(colorIndex)
+        note.color = colorIndex
         note.updatedAt = DateTimeManager.gmtDateTime
         saveNoteUseCase(noteWithImages)
       }
@@ -380,7 +379,7 @@ internal class NotesViewModel(
         return@launch
       }
       withContext(dispatcherProvider.main()) {
-        navigationEvent.emit(NavigationEvent.ShareNote(file, note.note?.summary))
+        navigationEvent.emit(NavigationEvent.ShareNote(file, note.note?.content?.text))
       }
     }
   }

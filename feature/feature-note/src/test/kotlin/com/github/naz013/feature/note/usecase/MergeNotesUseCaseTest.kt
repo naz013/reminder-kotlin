@@ -4,6 +4,7 @@ import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.note.image.NoteImageRepository
@@ -51,7 +52,7 @@ class MergeNotesUseCaseTest {
     title: String = "",
     summary: String = "",
     color: Int = 0,
-  ) = Note(key = id, title = title, summary = summary, color = color, syncState = SyncState.Synced)
+  ) = Note(key = id, content = NoteDocument.fromLegacy(title = title, summary = summary), color = color, syncState = SyncState.Synced)
 
   @Test
   fun `does nothing when fewer than two ids are given`() = runTest {
@@ -62,7 +63,7 @@ class MergeNotesUseCaseTest {
   }
 
   @Test
-  fun `merges body with second note's title inlined and first note's title-color kept`() = runTest {
+  fun `merges each note's full document text, keeping the first note's color`() = runTest {
     val first = note("id-1", title = "First title", summary = "First body", color = 5)
     val second = note("id-2", title = "Second title", summary = "Second body")
     coEvery { noteRepository.getByIds(listOf("id-1", "id-2")) } returns
@@ -73,25 +74,10 @@ class MergeNotesUseCaseTest {
     coVerify(exactly = 1) {
       noteRepository.save(
         match<Note> {
-          it.title == "First title" &&
-            it.color == 5 &&
-            it.summary == "First body\nSecond title\nSecond body"
+          it.color == 5 &&
+            it.content.text == "First title\nFirst body\nSecond title\nSecond body"
         }
       )
-    }
-  }
-
-  @Test
-  fun `skips the second note's title in the body when it is blank`() = runTest {
-    val first = note("id-1", summary = "First body")
-    val second = note("id-2", title = "", summary = "Second body")
-    coEvery { noteRepository.getByIds(listOf("id-1", "id-2")) } returns
-      listOf(NoteWithImages(first), NoteWithImages(second))
-
-    useCase(listOf("id-1", "id-2"))
-
-    coVerify(exactly = 1) {
-      noteRepository.save(match<Note> { it.summary == "First body\nSecond body" })
     }
   }
 
@@ -106,7 +92,7 @@ class MergeNotesUseCaseTest {
     useCase(listOf("id-2", "id-1"))
 
     coVerify(exactly = 1) {
-      noteRepository.save(match<Note> { it.title == "Tapped first" && it.summary == "A\nTapped second\nB" })
+      noteRepository.save(match<Note> { it.content.text == "Tapped first\nA\nTapped second\nB" })
     }
   }
 

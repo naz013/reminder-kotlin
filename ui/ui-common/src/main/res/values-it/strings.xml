@@ -1249,4 +1249,14 @@
     <string name="workflow_builder_select_tag">Seleziona un tag</string>
     <string name="workflow_builder_no_tags">Nessun tag disponibile. Crea prima un tag.</string>
     <string name="tag_has_no_items">Nessun elemento etichettato con questo tag</string>
+    <string name="acc_select_text_format">Formato testo</string>
+    <string name="acc_select_text_color">Colore testo</string>
+    <string name="acc_select_gradient_color">Colore sfumato del testo</string>
+    <string name="format_paragraph">Paragrafo</string>
+    <string name="gradient_start_color">Colore iniziale</string>
+    <string name="gradient_end_color">Colore finale</string>
+    <string name="gradient_angle">Angolo</string>
+    <string name="text_style_section">Stile</string>
+    <string name="text_color_mode_solid">Tinta unita</string>
+    <string name="text_color_mode_gradient">Sfumato</string>
 </resources>

@@ -44,6 +44,7 @@ import com.github.naz013.files.model.CalendarExportSettingsJson
 import com.github.naz013.files.model.GroupV2Json
 import com.github.naz013.files.model.LocationSettingsJson
 import com.github.naz013.files.model.NoteV3Json
+import com.github.naz013.files.model.NoteV4Json
 import com.github.naz013.files.model.NotificationSettingsOverrideJson
 import com.github.naz013.files.model.ReminderV2Json
 import com.github.naz013.files.model.RoutineExecutionJson
@@ -86,6 +87,7 @@ internal class DataConverterImpl : DataConverter {
         is Birthday -> object : TypeToken<Birthday>() {}.type
         is GroupV2Json -> object : TypeToken<GroupV2Json>() {}.type
         is RecurPreset -> object : TypeToken<RecurPreset>() {}.type
+        is NoteV4Json -> object : TypeToken<NoteV4Json>() {}.type
         is NoteV3Json -> object : TypeToken<NoteV3Json>() {}.type
         is SharedNote -> object : TypeToken<SharedNote>() {}.type
         is Reminder -> object : TypeToken<Reminder>() {}.type
@@ -157,7 +159,8 @@ private fun Any.toJson(): Any {
  * a [DataType]. Each branch is keyed on field(s) unique to that schema; [SharedNote]/[NoteV3Json]/
  * [OldNote] overlap the most (near-identical note formats), so they're ordered most-specific-first
  * and rely on `title` being present for every [NoteV3Json] (even when empty, Gson still writes it)
- * but absent from the older [OldNote] schema.
+ * but absent from the older [OldNote] schema. [NoteV4Json] is the current format (unique `spans`
+ * key) and is checked first among the note shapes.
  */
 private fun detectClass(json: JsonObject): Class<*> = when {
   json.has("recurrenceType") && json.has("actionType") -> ReminderV2Json::class.java
@@ -173,6 +176,7 @@ private fun detectClass(json: JsonObject): Class<*> = when {
   json.has("showedYear") || json.has("contactId") -> Birthday::class.java
   json.has("latitude") && json.has("longitude") -> Place::class.java
   json.has("recurObject") -> RecurPreset::class.java
+  json.has("spans") -> NoteV4Json::class.java
   json.has("text") && json.has("opacity") -> SharedNote::class.java
   json.has("images") && json.has("title") -> NoteV3Json::class.java
   json.has("images") -> OldNote::class.java

@@ -16,7 +16,7 @@ internal sealed interface TagDetailItem {
 
   data class NoteItem(val ui: UiNoteListItem) : TagDetailItem {
     override val id: String = ui.id
-    override val searchText: String = "${ui.title} ${ui.text}"
+    override val searchText: String = ui.content.text
   }
 
   data class BirthdayItem(val ui: UiBirthdayList) : TagDetailItem {

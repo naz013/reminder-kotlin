@@ -3,6 +3,8 @@ package com.github.naz013.feature.note.usecase
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.ImageFile
+import com.github.naz013.domain.note.NoteDocument
+import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.note.image.NoteImageRepository
@@ -35,7 +37,7 @@ internal class MergeNotesUseCase(
 
     val mergedNote = first.copy(
       key = mergedKey,
-      summary = mergedBody(ordered),
+      content = mergedDocument(ordered.map { it.note!!.content }),
       date = now,
       updatedAt = now,
       uniqueId = Random().nextInt(Integer.MAX_VALUE),
@@ -64,19 +66,19 @@ internal class MergeNotesUseCase(
     Logger.i(TAG, "Merged notes $orderedIds into $mergedKey")
   }
 
-  private fun mergedBody(ordered: List<NoteWithImages>): String =
-    buildString {
-      append(ordered.first().note!!.summary)
-      for (noteWithImages in ordered.drop(1)) {
-        val note = noteWithImages.note!!
-        append('\n')
-        if (note.title.isNotBlank()) {
-          append(note.title)
-          append('\n')
-        }
-        append(note.summary)
+  private fun mergedDocument(documents: List<NoteDocument>): NoteDocument {
+    val text = StringBuilder()
+    val spans = mutableListOf<NoteTextSpan>()
+    documents.forEachIndexed { index, document ->
+      if (index > 0) text.append('\n')
+      val offset = text.length
+      text.append(document.text)
+      document.spans.forEach { span ->
+        spans += span.copy(start = span.start + offset, end = span.end + offset)
       }
     }
+    return NoteDocument(text = text.toString(), spans = spans)
+  }
 
   private fun mergedImages(
     ordered: List<NoteWithImages>,

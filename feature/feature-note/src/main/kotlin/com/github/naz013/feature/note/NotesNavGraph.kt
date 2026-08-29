@@ -386,10 +386,7 @@ private fun NoteEditEntry(
 
       override fun onSpeechResult(speechText: SpeechText) {
         super.onSpeechResult(speechText)
-        viewModel.onSpeechResult(
-          text = speechText.text,
-          boldRange = speechText.newText?.let { it.startIndex..it.endIndex },
-        )
+        viewModel.onSpeechResult(text = speechText.text)
       }
     }
   }
@@ -439,7 +436,6 @@ private fun NoteEditEntry(
     state = state,
     supportsSpeech = remember { speechEngine.supportsRecognition() },
     onTextFieldValueChange = viewModel::onTextFieldValueChange,
-    onTitleFieldValueChange = viewModel::onTitleFieldValueChange,
     actions = NoteEditActions(
       onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
       onSaveClick = viewModel::onSaveClicked,
@@ -472,14 +468,12 @@ private fun NoteEditEntry(
         viewModel.collapseExpandedTab()
       },
       onReminderTabClick = { viewModel.onTabClicked(EditTab.REMINDER) },
-      onFontTabClick = { viewModel.onTabClicked(EditTab.FONT) },
       onColorSelected = viewModel::onColorSelected,
       onOpacityChanged = viewModel::onOpacityChanged,
       onReminderAttachedChanged = viewModel::onReminderAttachedChanged,
       onDateClick = viewModel::onDateClicked,
       onTimeClick = viewModel::onTimeClicked,
       onFontSizeChanged = viewModel::onFontSizeChanged,
-      onFieldFocused = viewModel::onFieldFocused,
       onImageOpen = { position -> viewModel.onImageOpen(position) },
       onImageRemove = viewModel::removeImage,
       onFontStyleSelected = viewModel::onFontStyleChanged,
@@ -491,6 +485,15 @@ private fun NoteEditEntry(
       onTagsTabClick = { viewModel.onTabClicked(EditTab.TAGS) },
       onTagToggle = viewModel::onTagToggle,
       onManageTagsClick = viewModel::onManageTagsClick,
+      onTextFormatTabClick = { viewModel.onTabClicked(EditTab.TEXT_FORMAT) },
+      onTextColorTabClick = { viewModel.onTabClicked(EditTab.TEXT_COLOR) },
+      onToggleBold = viewModel::onToggleBold,
+      onToggleItalic = viewModel::onToggleItalic,
+      onToggleUnderline = viewModel::onToggleUnderline,
+      onToggleStrikethrough = viewModel::onToggleStrikethrough,
+      onApplyLineFormat = viewModel::onApplyLineFormat,
+      onApplySolidColor = viewModel::onApplySolidColor,
+      onApplyGradient = viewModel::onApplyGradient,
     ),
   )
 }

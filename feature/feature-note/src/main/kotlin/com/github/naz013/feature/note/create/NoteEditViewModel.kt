@@ -25,6 +25,9 @@ import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
+import com.github.naz013.domain.note.NoteSpanAttribute
+import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -129,10 +132,7 @@ internal class NoteEditViewModel(
     // last-used-color default here too would make it flash before the real color appears.
     val isNewNote = id == null && !fromIntentData
     val colorCode = if (isNewNote) {
-      noteColorEngine.getColorCode(
-        noteColorEngine.getLastPalette(),
-        noteColorEngine.getLastColorCode(),
-      )
+      noteColorEngine.getLastColorCode()
     } else {
       null
     }
@@ -156,18 +156,6 @@ internal class NoteEditViewModel(
         fontStyle =
         if (notePreferences.isNoteFontStyleRememberingEnabled) {
           notePreferences.lastNoteFontStyle
-        } else {
-          FontParams.DEFAULT_FONT_STYLE
-        },
-        titleFontSize =
-        if (notePreferences.isNoteFontSizeRememberingEnabled) {
-          notePreferences.lastNoteTitleFontSize
-        } else {
-          FontParams.DEFAULT_TITLE_FONT_SIZE
-        },
-        titleFontStyle =
-        if (notePreferences.isNoteFontStyleRememberingEnabled) {
-          notePreferences.lastNoteTitleFontStyle
         } else {
           FontParams.DEFAULT_FONT_STYLE
         },
@@ -250,28 +238,80 @@ internal class NoteEditViewModel(
     _state.update { it.copy(opacity = value, noteColors = noteColorEngine.colorsFor(it.colorIndex, value)) }
   }
 
+  /** With an active selection this sets the font size for just that range; otherwise it's the
+   * whole-note default used everywhere else. */
   fun onFontSizeChanged(value: Int) {
-    if (_state.value.focusedField == NoteTextField.TITLE) {
-      notePreferences.lastNoteTitleFontSize = value
-      _state.update { it.copy(titleFontSize = value) }
+    val selection = _state.value.textFieldValue.selection
+    if (!selection.collapsed) {
+      applySingleValueAttribute(NoteSpanAttribute.FontSize(value))
     } else {
       notePreferences.lastNoteFontSize = value
       _state.update { it.copy(fontSize = value) }
     }
   }
 
+  /** With an active selection this sets the font family for just that range; otherwise it's the
+   * whole-note default used everywhere else. */
   fun onFontStyleChanged(value: Int) {
-    if (_state.value.focusedField == NoteTextField.TITLE) {
-      notePreferences.lastNoteTitleFontStyle = value
-      _state.update { it.copy(titleFontStyle = value) }
+    val selection = _state.value.textFieldValue.selection
+    if (!selection.collapsed) {
+      applySingleValueAttribute(NoteSpanAttribute.FontFamily(value))
     } else {
       notePreferences.lastNoteFontStyle = value
       _state.update { it.copy(fontStyle = value) }
     }
   }
 
-  fun onFieldFocused(field: NoteTextField) {
-    _state.update { it.copy(focusedField = field) }
+  fun onToggleBold() = toggleCharacterAttribute(NoteSpanAttribute.Bold)
+
+  fun onToggleItalic() = toggleCharacterAttribute(NoteSpanAttribute.Italic)
+
+  fun onToggleUnderline() = toggleCharacterAttribute(NoteSpanAttribute.Underline)
+
+  fun onToggleStrikethrough() = toggleCharacterAttribute(NoteSpanAttribute.Strikethrough)
+
+  fun onApplySolidColor(argb: Int) = applySingleValueAttribute(NoteSpanAttribute.SolidColor(argb))
+
+  fun onApplyGradient(colors: List<Int>, angleDegrees: Float) =
+    applySingleValueAttribute(NoteSpanAttribute.GradientColor(colors, angleDegrees))
+
+  /** Applies a block/line format (heading level or bullet) to every line touched by the current
+   * selection (just the current line if the cursor is collapsed); [attribute] `null` clears any
+   * line format on those lines ("Paragraph"). */
+  fun onApplyLineFormat(attribute: NoteSpanAttribute?) {
+    val s = _state.value
+    val text = s.textFieldValue.text
+    val selection = s.textFieldValue.selection
+    var spans = s.spans
+    for (line in linesTouched(text, selection.min, selection.max)) {
+      spans = clearAxis(spans, NoteSpanAxis.LINE_FORMAT, line.first, line.last + 1)
+      if (attribute != null) {
+        spans = spans + NoteTextSpan(line.first, line.last + 1, attribute)
+      }
+    }
+    _state.update { it.copy(spans = spans.sortedBy { span -> span.start }) }
+  }
+
+  private fun toggleCharacterAttribute(attribute: NoteSpanAttribute) {
+    val s = _state.value
+    val selection = s.textFieldValue.selection
+    if (selection.collapsed) return
+    val start = selection.min
+    val end = selection.max
+    val isActive = isAttributeActiveOverRange(s.spans, attribute, start, end)
+    val spans = if (isActive) {
+      clearAxis(s.spans, attribute.axis(), start, end)
+    } else {
+      applyAttribute(s.spans, start, end, attribute)
+    }
+    _state.update { it.copy(spans = spans) }
+  }
+
+  private fun applySingleValueAttribute(attribute: NoteSpanAttribute) {
+    val s = _state.value
+    val selection = s.textFieldValue.selection
+    if (selection.collapsed) return
+    _state.update { it.copy(spans = applyAttribute(s.spans, selection.min, selection.max, attribute)) }
   }
 
   fun onReminderAttachedChanged(value: Boolean) {
@@ -283,11 +323,9 @@ internal class NoteEditViewModel(
   }
 
   fun onTextFieldValueChange(value: TextFieldValue) {
-    _state.update { it.copy(textFieldValue = value, boldRange = null) }
-  }
-
-  fun onTitleFieldValueChange(value: TextFieldValue) {
-    _state.update { it.copy(titleFieldValue = value) }
+    val s = _state.value
+    val newSpans = shiftSpans(s.textFieldValue.text, value.text, s.spans)
+    _state.update { it.copy(textFieldValue = value, spans = newSpans) }
   }
 
   fun onSpeechStarted() {
@@ -306,15 +344,14 @@ internal class NoteEditViewModel(
     _state.update { it.copy(speechState = SpeechUiState.IDLE) }
   }
 
-  fun onSpeechResult(
-    text: String,
-    boldRange: IntRange?,
-  ) {
+  fun onSpeechResult(text: String) {
+    val s = _state.value
+    val newSpans = shiftSpans(s.textFieldValue.text, text, s.spans)
     _state.update {
       it.copy(
         speechState = SpeechUiState.STOPPED,
         textFieldValue = TextFieldValue(text = text, selection = TextRange(text.length)),
-        boldRange = boldRange,
+        spans = newSpans,
       )
     }
   }
@@ -405,10 +442,12 @@ internal class NoteEditViewModel(
   }
 
   private fun replaceText(text: String) {
+    val s = _state.value
+    val newSpans = shiftSpans(s.textFieldValue.text, text, s.spans)
     _state.update {
       it.copy(
         textFieldValue = TextFieldValue(text = text, selection = TextRange(text.length)),
-        boldRange = null,
+        spans = newSpans,
       )
     }
     _textUpdate.postValue(Event(TextUpdate(text = text)))
@@ -446,7 +485,7 @@ internal class NoteEditViewModel(
   private fun onNoteLoaded(noteWithImages: NoteWithImages) {
     viewModelScope.launch(dispatcherProvider.default()) {
       val uiNoteEdit = uiNoteEditAdapter.convert(noteWithImages)
-      val colorCode = noteColorEngine.getColorCode(uiNoteEdit.colorPalette, uiNoteEdit.colorPosition)
+      val colorCode = uiNoteEdit.colorIndex
       _state.update {
         it.copy(
           canDelete = true,
@@ -455,24 +494,17 @@ internal class NoteEditViewModel(
           noteColors = noteColorEngine.colorsFor(colorCode, uiNoteEdit.opacity),
           fontStyle = uiNoteEdit.typeface,
           fontSize = uiNoteEdit.fontSize,
-          titleFontStyle = uiNoteEdit.titleTypeface,
-          titleFontSize = uiNoteEdit.titleFontSize,
           images = uiNoteEdit.images,
           textFieldValue =
           TextFieldValue(
-            text = uiNoteEdit.text,
-            selection = TextRange(uiNoteEdit.text.length),
+            text = uiNoteEdit.document.text,
+            selection = TextRange(uiNoteEdit.document.text.length),
           ),
-          titleFieldValue =
-          TextFieldValue(
-            text = uiNoteEdit.title,
-            selection = TextRange(uiNoteEdit.title.length),
-          ),
-          boldRange = null,
+          spans = uiNoteEdit.document.spans,
           noteId = noteWithImages.getKey(),
         )
       }
-      _textUpdate.postValue(Event(TextUpdate(text = uiNoteEdit.text)))
+      _textUpdate.postValue(Event(TextUpdate(text = uiNoteEdit.document.text)))
 
       noteWithImages.getKey().also { loadLinkedReminder(it) }
     }
@@ -758,7 +790,7 @@ internal class NoteEditViewModel(
       return null
     }
     val eventDateTime = dateTimeManager.localToUtc(startTime)
-    val summary = normalizeReminderSummary(note.title.ifBlank { note.summary })
+    val summary = normalizeReminderSummary(note.content.text)
 
     return (existing ?: ReminderV2(schedule = ReminderSchedule(startDateTime = eventDateTime))).copy(
       recurrence = RecurrenceRule.Once,
@@ -782,15 +814,11 @@ internal class NoteEditViewModel(
     if (note == null) {
       note = Note(syncState = SyncState.WaitingForUpload)
     }
-    note.summary = s.textFieldValue.text.trim()
-    note.title = s.titleFieldValue.text.trim()
+    note.content = trimmedNoteDocument(s.textFieldValue.text, s.spans)
     note.date = dateTimeManager.getNowGmtDateTime()
-    note.color = noteColorEngine.getLegacyColorCode(s.colorIndex)
+    note.color = s.colorIndex
     note.style = s.fontStyle
     note.fontSize = s.fontSize
-    note.titleFontStyle = s.titleFontStyle
-    note.titleFontSize = s.titleFontSize
-    note.palette = noteColorEngine.getLegacyPalette(s.colorIndex)
     note.opacity = s.opacity
     note.syncState = SyncState.WaitingForUpload
 

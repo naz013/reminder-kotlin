@@ -1,6 +1,7 @@
 package com.github.naz013.feature.note.create
 
 import android.content.ClipData
+import com.github.naz013.domain.note.NoteSpanAttribute
 import com.github.naz013.ui.tag.TagChipState
 
 /**
@@ -20,14 +21,14 @@ internal data class NoteEditActions(
   val onImagePickFromCamera: () -> Unit = {},
   val onImagePickFromUrl: () -> Unit = {},
   val onReminderTabClick: () -> Unit = {},
-  val onFontTabClick: () -> Unit = {},
+  val onTextFormatTabClick: () -> Unit = {},
+  val onTextColorTabClick: () -> Unit = {},
   val onColorSelected: (Int) -> Unit = {},
   val onOpacityChanged: (Int) -> Unit = {},
   val onReminderAttachedChanged: (Boolean) -> Unit = {},
   val onDateClick: () -> Unit = {},
   val onTimeClick: () -> Unit = {},
   val onFontSizeChanged: (Int) -> Unit = {},
-  val onFieldFocused: (NoteTextField) -> Unit = {},
   val onImageOpen: (Int) -> Unit = {},
   val onImageRemove: (Int) -> Unit = {},
   val onFontStyleSelected: (Int) -> Unit = {},
@@ -40,4 +41,11 @@ internal data class NoteEditActions(
   val onTagsTabClick: () -> Unit = {},
   val onTagToggle: (TagChipState) -> Unit = {},
   val onManageTagsClick: () -> Unit = {},
+  val onToggleBold: () -> Unit = {},
+  val onToggleItalic: () -> Unit = {},
+  val onToggleUnderline: () -> Unit = {},
+  val onToggleStrikethrough: () -> Unit = {},
+  val onApplyLineFormat: (NoteSpanAttribute?) -> Unit = {},
+  val onApplySolidColor: (Int) -> Unit = {},
+  val onApplyGradient: (List<Int>, Float) -> Unit = { _, _ -> },
 )

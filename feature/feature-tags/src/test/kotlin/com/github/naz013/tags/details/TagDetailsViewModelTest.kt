@@ -6,6 +6,7 @@ import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -86,19 +87,16 @@ class TagDetailsViewModelTest : BaseTest() {
   )
 
   private fun noteWithImages(key: String) = NoteWithImages(
-    note = Note(key = key, title = "Note $key", summary = "Summary $key", syncState = SyncState.Synced),
+    note = Note(key = key, content = NoteDocument.fromLegacy(title = "Note $key", summary = "Summary $key"), syncState = SyncState.Synced),
   )
 
   private fun uiNoteListItem(id: String) = UiNoteListItem(
     id = id,
-    title = "Note $id",
-    text = "Summary $id",
+    content = NoteDocument.fromLegacy(title = "Note $id", summary = "Summary $id"),
     backgroundColor = Color.White,
     textColor = Color.Black,
     fontStyle = 0,
     fontSize = 14f,
-    titleFontStyle = 0,
-    titleFontSize = 16f,
     images = emptyList(),
   )
 

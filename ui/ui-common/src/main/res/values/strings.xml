@@ -1253,4 +1253,14 @@
     <string name="workflow_builder_select_tag">Select a tag</string>
     <string name="workflow_builder_no_tags">No tags available. Create a tag first.</string>
     <string name="tag_has_no_items">No items tagged with this tag yet</string>
+    <string name="acc_select_text_format">Text format</string>
+    <string name="acc_select_text_color">Text color</string>
+    <string name="acc_select_gradient_color">Gradient text color</string>
+    <string name="format_paragraph">Paragraph</string>
+    <string name="gradient_start_color">Start color</string>
+    <string name="gradient_end_color">End color</string>
+    <string name="gradient_angle">Angle</string>
+    <string name="text_style_section">Style</string>
+    <string name="text_color_mode_solid">Solid</string>
+    <string name="text_color_mode_gradient">Gradient</string>
 </resources>

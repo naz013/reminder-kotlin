@@ -80,21 +80,17 @@ internal class PreviewNoteViewModel(
             return@collect
           }
           val uiNotePreview = uiNotePreviewAdapter.convert(noteWithImages)
-          val noteColors = noteColorEngine.colorsForLegacy(
+          val noteColors = noteColorEngine.colorsFor(
             code = noteWithImages.getColor(),
-            palette = noteWithImages.getPalette(),
             opacity = noteWithImages.getOpacity(),
           )
           withContext(dispatcherProvider.main()) {
             _state.update {
               it.copy(
                 id = uiNotePreview.id,
-                title = uiNotePreview.title,
-                text = uiNotePreview.text,
-                titleTypeface = uiNotePreview.titleTypeface,
-                typeface = uiNotePreview.typeface,
-                titleTextSize = uiNotePreview.titleTextSize,
-                textSize = uiNotePreview.textSize,
+                document = uiNotePreview.document,
+                fontStyle = uiNotePreview.fontStyle,
+                fontSize = uiNotePreview.fontSize,
                 images = uiNotePreview.images,
                 isArchived = uiNotePreview.isArchived,
                 isPinned = uiNotePreview.isPinned,

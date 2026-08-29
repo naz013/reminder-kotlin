@@ -1250,4 +1250,14 @@
     <string name="workflow_builder_select_tag">Bir etiket seçin</string>
     <string name="workflow_builder_no_tags">Kullanılabilir etiket yok. Önce bir etiket oluşturun.</string>
     <string name="tag_has_no_items">Bu etiketle işaretlenmiş henüz bir öğe yok</string>
+    <string name="acc_select_text_format">Metin biçimi</string>
+    <string name="acc_select_text_color">Metin rengi</string>
+    <string name="acc_select_gradient_color">Geçişli metin rengi</string>
+    <string name="format_paragraph">Paragraf</string>
+    <string name="gradient_start_color">Başlangıç rengi</string>
+    <string name="gradient_end_color">Bitiş rengi</string>
+    <string name="gradient_angle">Açı</string>
+    <string name="text_style_section">Stil</string>
+    <string name="text_color_mode_solid">Düz</string>
+    <string name="text_color_mode_gradient">Geçişli</string>
 </resources>

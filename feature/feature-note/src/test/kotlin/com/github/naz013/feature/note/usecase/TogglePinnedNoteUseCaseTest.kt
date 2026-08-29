@@ -1,6 +1,7 @@
 package com.github.naz013.feature.note.usecase
 
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
@@ -28,7 +29,7 @@ class TogglePinnedNoteUseCaseTest {
   }
 
   private fun note(id: String, isPinned: Boolean) =
-    Note(key = id, summary = "Summary", isPinned = isPinned, version = 1L, syncState = SyncState.Synced)
+    Note(key = id, content = NoteDocument(text = "Summary"), isPinned = isPinned, version = 1L, syncState = SyncState.Synced)
 
   @Test
   fun `pins a note that was not pinned`() = runTest {

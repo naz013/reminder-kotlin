@@ -99,8 +99,8 @@ class ThemeProvider(
   }
 
   @ColorInt
-  fun getNoteLightColor(code: Int, opacity: Int, palette: Int = themePreferences.notePalette): Int {
-    return getNoteColor(code, palette).adjustAlpha(opacity)
+  fun getNoteLightColor(code: Int, opacity: Int): Int {
+    return getNoteColor(code).adjustAlpha(opacity)
   }
 
   object AppColorIndex {
@@ -125,24 +125,27 @@ class ThemeProvider(
     const val BLACK = 18
   }
 
+  /** All note colors as one flat, ordered list - `NoteColorEngine.COLORS` (ui-note) is a plain-
+   * Kotlin mirror of the same list for Compose call sites that can't reach Android resources;
+   * keep the two in sync if either changes. Ends with black/white, appended in code since they
+   * aren't part of any of the three hand-picked hex palettes below. */
   @ColorInt
-  private fun obtainPalette(palette: Int): IntArray {
+  private fun allNoteColors(): IntArray {
     val list = mutableListOf<Int>()
-    val hexArray = when (palette) {
-      0 -> context.resources.getStringArray(R.array.note_palette_one)
-      1 -> context.resources.getStringArray(R.array.note_palette_two)
-      2 -> context.resources.getStringArray(R.array.note_palette_three)
-      else -> context.resources.getStringArray(R.array.note_palette_one)
+    for (arrayRes in intArrayOf(R.array.note_palette_one, R.array.note_palette_two, R.array.note_palette_three)) {
+      for (hex in context.resources.getStringArray(arrayRes)) {
+        list.add(android.graphics.Color.parseColor(hex))
+      }
     }
-    for (hex in hexArray) {
-      list.add(android.graphics.Color.parseColor(hex))
-    }
-    return list.toTypedArray().toIntArray()
+    list.add(android.graphics.Color.BLACK)
+    list.add(android.graphics.Color.WHITE)
+    return list.toIntArray()
   }
 
   @ColorInt
-  fun getNoteColor(code: Int = AppColorIndex.RED, palette: Int = themePreferences.notePalette): Int {
-    return obtainPalette(palette)[code]
+  fun getNoteColor(code: Int = AppColorIndex.RED): Int {
+    val colors = allNoteColors()
+    return colors[code % colors.size]
   }
 
   @ColorInt
@@ -213,8 +216,6 @@ class ThemeProvider(
   }
 
   companion object {
-    const val NOTE_COLORS = 20
-
     @ColorInt
     fun getPrimaryColor(context: Context): Int {
       return ContextCompat.getColor(context, R.color.md_theme_primary)

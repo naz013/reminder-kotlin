@@ -53,8 +53,7 @@ internal class RecyclableUiNoteWidgetAdapter(
 
     val backgroundColor = themeProvider.getNoteLightColor(
       noteWithImages.getColor(),
-      noteWithImages.getOpacity(),
-      noteWithImages.getPalette()
+      noteWithImages.getOpacity()
     )
 
     val typeface = fontApi.getTypeface(noteWithImages.getStyle())!!

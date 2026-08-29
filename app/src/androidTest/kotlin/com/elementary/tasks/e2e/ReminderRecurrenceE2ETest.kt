@@ -16,6 +16,7 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
@@ -1187,7 +1188,7 @@ class ReminderRecurrenceE2ETest : KoinTest {
    *  in-memory DB instead of risking the on-device one. */
   @Test
   fun linkingAnExistingNotePersistsItsId() {
-    val note = Note(summary = "Pick up dry cleaning ${UUID.randomUUID()}", syncState = SyncState.WaitingForUpload)
+    val note = Note(content = NoteDocument(text = "Pick up dry cleaning ${UUID.randomUUID()}"), syncState = SyncState.WaitingForUpload)
     runBlocking { noteRepository.save(note) }
 
     val idsBefore = captureExistingReminderIds()

@@ -3,7 +3,9 @@ package com.github.naz013.files
 import android.content.Context
 import android.net.Uri
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.note.combineLegacyNoteColor
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.files.model.SharedNote
 import com.github.naz013.logging.Logger
@@ -41,14 +43,10 @@ class AndroidDataConverterImpl(
       note =
         Note(
           style = this.style,
-          color = this.color,
-          palette = this.palette,
+          color = combineLegacyNoteColor(this.color, this.palette),
           date = this.date,
           key = this.id,
-          summary = this.text,
-          title = this.title,
-          titleFontSize = this.titleFontSize,
-          titleFontStyle = this.titleFontStyle,
+          content = NoteDocument.fromLegacy(title = this.title, summary = this.text),
           updatedAt = this.updatedAt,
           fontSize = this.fontSize,
           archived = false,

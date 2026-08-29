@@ -40,6 +40,7 @@ internal fun DeveloperScreen(
   onClearAllTablesConfirm: () -> Unit,
   onClearAllTablesDismiss: () -> Unit,
   onInsertDemoDataClick: () -> Unit,
+  onInsertHugeFormattedNotesClick: () -> Unit,
   onInsertInsightsDemoDataClick: () -> Unit,
   onPopulateCalendarNormalDataClick: () -> Unit,
   onPopulateCalendarMassiveDataClick: () -> Unit,
@@ -111,6 +112,12 @@ internal fun DeveloperScreen(
       title = "Insert Demo Data",
       subtitle = "Adds sample reminders, birthdays and notes, useful for taking promo screenshots",
       onClick = onInsertDemoDataClick,
+    )
+    HorizontalDivider()
+    DeveloperOption(
+      title = "Insert Huge Formatted Notes",
+      subtitle = "Adds a few large notes with thousands of overlapping bold/italic/underline/font/color/gradient spans and mixed headings/bullets, to stress-test the rich-text editor and renderer",
+      onClick = onInsertHugeFormattedNotesClick,
     )
     HorizontalDivider()
     DeveloperOption(

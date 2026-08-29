@@ -8,6 +8,7 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.feature.note.UiNoteEdit
 import com.github.naz013.feature.note.UiNoteEditAdapter
 import com.github.naz013.feature.note.create.drop.DroppedContentParser
@@ -114,12 +115,8 @@ internal open class NoteEditViewModelTestSupport : BaseTest() {
 
     // Deterministic, internally-consistent fake color math - real blend/luminance computation is
     // NoteColorEngine's own concern, not this ViewModel's.
-    every { noteColorEngine.getLastPalette() } returns 0
     every { noteColorEngine.getLastColorCode() } returns 2
     every { noteColorEngine.getLasterOpacity() } returns 80
-    every { noteColorEngine.getColorCode(any(), any()) } answers { firstArg<Int>() * 100 + secondArg<Int>() }
-    every { noteColorEngine.getLegacyColorCode(any()) } answers { firstArg<Int>() % 100 }
-    every { noteColorEngine.getLegacyPalette(any()) } answers { firstArg<Int>() / 100 }
     every { noteColorEngine.colorsFor(any(), any()) } answers {
       NoteColorEngine.Colors(background = Color.White, content = Color.Black)
     }
@@ -153,24 +150,17 @@ internal open class NoteEditViewModelTestSupport : BaseTest() {
     text: String = "",
     title: String = "",
     typeface: Int = 0,
-    titleTypeface: Int = 0,
-    titleFontSize: Int = 20,
     fontSize: Int = 16,
-    colorPosition: Int = 0,
-    colorPalette: Int = 0,
+    colorIndex: Int = 0,
     opacity: Int = 100,
     images: List<com.github.naz013.ui.note.UiNoteImage> = emptyList(),
     isArchived: Boolean = false,
   ) = UiNoteEdit(
     id = id,
-    text = text,
+    document = NoteDocument.fromLegacy(title = title, summary = text),
     typeface = typeface,
-    title = title,
-    titleTypeface = titleTypeface,
-    titleFontSize = titleFontSize,
     images = images,
-    colorPosition = colorPosition,
-    colorPalette = colorPalette,
+    colorIndex = colorIndex,
     opacity = opacity,
     fontSize = fontSize,
     isArchived = isArchived,

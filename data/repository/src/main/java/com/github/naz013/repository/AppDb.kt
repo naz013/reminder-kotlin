@@ -80,6 +80,8 @@ import com.github.naz013.repository.migrations.MIGRATION_33_34
 import com.github.naz013.repository.migrations.MIGRATION_34_35
 import com.github.naz013.repository.migrations.MIGRATION_35_36
 import com.github.naz013.repository.migrations.MIGRATION_36_37
+import com.github.naz013.repository.migrations.MIGRATION_37_38
+import com.github.naz013.repository.migrations.MIGRATION_38_39
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
 import com.github.naz013.repository.migrations.MIGRATION_5_6
@@ -115,7 +117,7 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     RoutineEntity::class,
     RoutineExecutionEntity::class
   ],
-  version = 37,
+  version = 39,
   exportSchema = false
 )
 @Suppress("TooManyFunctions") // one DAO accessor per entity - inherent to this class, not a smell
@@ -189,7 +191,9 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_33_34,
             MIGRATION_34_35,
             MIGRATION_35_36,
-            MIGRATION_36_37
+            MIGRATION_36_37,
+            MIGRATION_37_38,
+            MIGRATION_38_39
           )
           .allowMainThreadQueries()
           .build()

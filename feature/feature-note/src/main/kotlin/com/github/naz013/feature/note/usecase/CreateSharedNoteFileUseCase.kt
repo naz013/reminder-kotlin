@@ -17,12 +17,11 @@ internal class CreateSharedNoteFileUseCase(
   suspend operator fun invoke(noteWithImages: NoteWithImages): File? {
     val sharedNote =
       SharedNote(
-        text = noteWithImages.note?.summary ?: "",
+        text = noteWithImages.note?.content?.text ?: "",
         id = noteWithImages.note?.key ?: "",
         date = noteWithImages.note?.date ?: "",
         color = noteWithImages.note?.color ?: 0,
         style = noteWithImages.note?.style ?: 0,
-        palette = noteWithImages.note?.palette ?: 0,
         updatedAt = noteWithImages.note?.updatedAt,
         opacity = noteWithImages.note?.opacity ?: 100,
         fontSize = noteWithImages.note?.fontSize ?: -1,

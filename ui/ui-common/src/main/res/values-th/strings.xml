@@ -1247,4 +1247,14 @@
     <string name="workflow_builder_select_tag">เลือกแท็ก</string>
     <string name="workflow_builder_no_tags">ไม่มีแท็กที่ใช้ได้ กรุณาสร้างแท็กก่อน</string>
     <string name="tag_has_no_items">ยังไม่มีรายการที่ติดแท็กนี้</string>
+    <string name="acc_select_text_format">รูปแบบข้อความ</string>
+    <string name="acc_select_text_color">สีข้อความ</string>
+    <string name="acc_select_gradient_color">สีไล่ระดับของข้อความ</string>
+    <string name="format_paragraph">ย่อหน้า</string>
+    <string name="gradient_start_color">สีเริ่มต้น</string>
+    <string name="gradient_end_color">สีสิ้นสุด</string>
+    <string name="gradient_angle">มุม</string>
+    <string name="text_style_section">สไตล์</string>
+    <string name="text_color_mode_solid">สีทึบ</string>
+    <string name="text_color_mode_gradient">ไล่ระดับสี</string>
 </resources>

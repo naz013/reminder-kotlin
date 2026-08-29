@@ -380,6 +380,7 @@ private fun DeveloperEntry(
       onClearAllTablesConfirm = viewModel::onClearAllTablesConfirm,
       onClearAllTablesDismiss = viewModel::onClearAllTablesDismiss,
       onInsertDemoDataClick = viewModel::onInsertDemoDataClick,
+      onInsertHugeFormattedNotesClick = viewModel::onInsertHugeFormattedNotesClick,
       onInsertInsightsDemoDataClick = viewModel::onInsertInsightsDemoDataClick,
       onPopulateCalendarNormalDataClick = viewModel::onPopulateCalendarNormalDataClick,
       onPopulateCalendarMassiveDataClick = viewModel::onPopulateCalendarMassiveDataClick,

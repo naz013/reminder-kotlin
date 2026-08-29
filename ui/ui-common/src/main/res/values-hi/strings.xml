@@ -1251,4 +1251,14 @@
     <string name="workflow_builder_select_tag">एक टैग चुनें</string>
     <string name="workflow_builder_no_tags">कोई टैग उपलब्ध नहीं है। पहले एक टैग बनाएं।</string>
     <string name="tag_has_no_items">इस टैग के साथ अभी तक कोई आइटम टैग नहीं किया गया है</string>
+    <string name="acc_select_text_format">टेक्स्ट प्रारूप</string>
+    <string name="acc_select_text_color">टेक्स्ट रंग</string>
+    <string name="acc_select_gradient_color">ग्रेडिएंट टेक्स्ट रंग</string>
+    <string name="format_paragraph">पैराग्राफ</string>
+    <string name="gradient_start_color">आरंभिक रंग</string>
+    <string name="gradient_end_color">अंतिम रंग</string>
+    <string name="gradient_angle">कोण</string>
+    <string name="text_style_section">शैली</string>
+    <string name="text_color_mode_solid">ठोस</string>
+    <string name="text_color_mode_gradient">ग्रेडिएंट</string>
 </resources>

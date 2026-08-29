@@ -47,7 +47,7 @@ internal class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
   @Test
   fun `onSaveClicked saves directly when there is no file-db conflict`() {
     val viewModel = buildViewModel()
-    viewModel.onTitleFieldValueChange(TextFieldValue("Title"))
+    viewModel.onTextFieldValueChange(TextFieldValue("Title"))
 
     viewModel.onSaveClicked()
 
@@ -59,8 +59,7 @@ internal class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
   @Test
   fun `saveNote creates a new note without a reminder and updates the widgets`() {
     val viewModel = buildViewModel()
-    viewModel.onTitleFieldValueChange(TextFieldValue("Groceries"))
-    viewModel.onTextFieldValueChange(TextFieldValue("Milk, eggs"))
+    viewModel.onTextFieldValueChange(TextFieldValue("Groceries\nMilk, eggs"))
 
     viewModel.saveNote()
 
@@ -75,23 +74,21 @@ internal class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
   }
 
   @Test
-  fun `saveNote persists the trimmed title and body`() {
+  fun `saveNote persists the trimmed text`() {
     val viewModel = buildViewModel()
-    viewModel.onTitleFieldValueChange(TextFieldValue("  Groceries  "))
-    viewModel.onTextFieldValueChange(TextFieldValue("  Milk  "))
+    viewModel.onTextFieldValueChange(TextFieldValue("  Groceries\nMilk  "))
     val saved = slot<NoteWithImages>()
     coEvery { saveNoteUseCase(capture(saved)) } returns Unit
 
     viewModel.saveNote()
 
-    assertEquals("Groceries", saved.captured.note?.title)
-    assertEquals("Milk", saved.captured.note?.summary)
+    assertEquals("Groceries\nMilk", saved.captured.note?.content?.text)
   }
 
   @Test
   fun `saveNote creates and activates a new reminder when the reminder switch is on`() {
     val viewModel = buildViewModel()
-    viewModel.onTitleFieldValueChange(TextFieldValue("Groceries"))
+    viewModel.onTextFieldValueChange(TextFieldValue("Groceries"))
     viewModel.onReminderAttachedChanged(true)
     viewModel.onNewDate(LocalDate.of(2026, 8, 1))
     viewModel.onNewTime(LocalTime.of(9, 0))

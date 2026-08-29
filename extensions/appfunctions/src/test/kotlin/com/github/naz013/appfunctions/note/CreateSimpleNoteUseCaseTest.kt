@@ -1,6 +1,7 @@
 package com.github.naz013.appfunctions.note
 
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.note.displayTitle
 import com.github.naz013.repository.NoteRepository
 import io.mockk.coVerify
 import io.mockk.every
@@ -21,8 +22,8 @@ class CreateSimpleNoteUseCaseTest {
 
     val result = useCase(title = "Wi-Fi password", content = "hunter2")
 
-    assertEquals("Wi-Fi password", result.title)
-    assertEquals("hunter2", result.summary)
+    assertEquals("Wi-Fi password", result.content.displayTitle())
+    assertEquals("Wi-Fi password\nhunter2", result.content.text)
     assertEquals("2026-08-01 00:00:00.000+0000", result.date)
     coVerify { noteRepository.save(result) }
   }

@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.input.pointer.pointerInput
@@ -42,19 +41,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.naz013.common.uri.UriUtil
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -68,7 +64,6 @@ import org.koin.compose.koinInject
 internal fun NoteEditScreen(
   state: NoteEditState,
   onTextFieldValueChange: (TextFieldValue) -> Unit,
-  onTitleFieldValueChange: (TextFieldValue) -> Unit,
   supportsSpeech: Boolean,
   actions: NoteEditActions,
   modifier: Modifier = Modifier,
@@ -147,47 +142,22 @@ internal fun NoteEditScreen(
       ) {
         val context = LocalContext.current
         val noteFontProvider = koinInject<NoteFontProvider>()
-        val titleFontFamily = remember(state.titleFontStyle) {
-          noteFontProvider.getTypeface(context, state.titleFontStyle)?.let { FontFamily(it) }
-            ?: FontFamily.Default
-        }
         val fontFamily = remember(state.fontStyle) {
           noteFontProvider.getTypeface(context, state.fontStyle)?.let { FontFamily(it) }
             ?: FontFamily.Default
         }
-        TextField(
-          value = state.titleFieldValue,
-          onValueChange = onTitleFieldValueChange,
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-            .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.TITLE) },
-          textStyle = MaterialTheme.typography.bodyLarge.copy(
-            color = contentColor,
-            fontSize = state.titleFontSize.sp,
-            fontFamily = titleFontFamily,
-            lineHeight = TextUnit.Unspecified,
-          ),
-          placeholder = { Text(stringResource(R.string.title)) },
-          colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = contentColor,
-            focusedTextColor = contentColor,
-            unfocusedTextColor = contentColor,
-            focusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
-            unfocusedPlaceholderColor = contentColor.copy(alpha = 0.6f),
-          ),
-        )
+        val visualTransformation = remember(state.textFieldValue.text, state.spans, state.fontSize) {
+          noteEditVisualTransformation(
+            document = NoteDocument(state.textFieldValue.text, state.spans),
+            baseFontSizeSp = state.fontSize,
+          ) { code -> noteFontProvider.getTypeface(context, code)?.let { FontFamily(it) } }
+        }
         TextField(
           value = state.textFieldValue,
           onValueChange = onTextFieldValueChange,
           modifier = Modifier
             .fillMaxWidth()
-            .onFocusChanged { if (it.isFocused) actions.onFieldFocused(NoteTextField.BODY) },
+            .padding(top = 16.dp),
           textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = contentColor,
             fontSize = state.fontSize.sp,
@@ -195,7 +165,7 @@ internal fun NoteEditScreen(
             lineHeight = TextUnit.Unspecified,
           ),
           placeholder = { Text(stringResource(R.string.note)) },
-          visualTransformation = boldRangeVisualTransformation(state.boldRange),
+          visualTransformation = visualTransformation,
           colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
@@ -389,38 +359,51 @@ private fun noteEditBarItems(
       ),
     )
 
-    val fontDescription = stringResource(R.string.acc_change_text_font_style)
+    val textFormatDescription = stringResource(R.string.acc_select_text_format)
     add(
       NoteEditBarItem(
-        id = "font",
-        contentDescription = fontDescription,
-        selected = state.expandedTab == EditTab.FONT,
-        onClick = actions.onFontTabClick,
+        id = "textFormat",
+        contentDescription = textFormatDescription,
+        selected = state.expandedTab == EditTab.TEXT_FORMAT,
+        onClick = actions.onTextFormatTabClick,
         icon = {
           Icon(
             painter = painterResource(R.drawable.ic_fluent_text),
-            contentDescription = fontDescription,
+            contentDescription = textFormatDescription,
             tint = contentColor,
           )
         },
-        bubbleContent = { FontPanel(state, contentColor, barColor, actions) },
+        bubbleContent = { TextFormatPanel(state, state.activeFormat, contentColor, barColor, actions) },
+        bubbleWidth = barMaxWidth,
       ),
     )
-  }
 
-private fun IntRange.isOutOfBoundsFor(text: CharSequence): Boolean =
-  first < 0 || last >= text.length || first > last
-
-private fun boldRangeVisualTransformation(range: IntRange?): VisualTransformation =
-  VisualTransformation { text ->
-    if (range == null || range.isOutOfBoundsFor(text)) {
-      TransformedText(text, OffsetMapping.Identity)
-    } else {
-      val annotated = AnnotatedString
-        .Builder(text)
-        .apply {
-          addStyle(SpanStyle(fontWeight = FontWeight.Bold), range.first, range.last + 1)
-        }.toAnnotatedString()
-      TransformedText(annotated, OffsetMapping.Identity)
-    }
+    val textColorDescription = stringResource(R.string.acc_select_text_color)
+    add(
+      NoteEditBarItem(
+        id = "textColor",
+        contentDescription = textColorDescription,
+        selected = state.expandedTab == EditTab.TEXT_COLOR,
+        onClick = actions.onTextColorTabClick,
+        icon = {
+          Text(
+            text = "A",
+            color = sliderColors.getOrElse(state.colorIndex) { contentColor },
+            fontWeight = FontWeight.Bold,
+            textDecoration = TextDecoration.Underline,
+            style = MaterialTheme.typography.titleMedium,
+          )
+        },
+        bubbleContent = {
+          TextColorPanel(
+            colors = state.sliderColors,
+            contentColor = contentColor,
+            onColorSelected = actions.onApplySolidColor,
+            onGradientSelected = actions.onApplyGradient,
+            hapticFeedbackEnabled = state.hapticFeedbackEnabled,
+          )
+        },
+        bubbleWidth = barMaxWidth,
+      ),
+    )
   }
