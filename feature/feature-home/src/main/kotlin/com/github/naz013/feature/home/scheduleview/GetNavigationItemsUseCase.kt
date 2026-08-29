@@ -14,6 +14,7 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RoutineRepository
+import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.icon.DrawableCatalog
@@ -31,6 +32,7 @@ class GetNavigationItemsUseCase(
   private val googleTaskRepository: GoogleTaskRepository,
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val routineRepository: RoutineRepository,
+  private val tagRepository: TagRepository,
   private val dateTimeManager: DateTimeManager,
   private val routineConfig: RoutineConfig,
   private val workflowConfig: WorkflowConfig,
@@ -63,6 +65,7 @@ class GetNavigationItemsUseCase(
     HeaderNavigationSection.BIRTHDAYS -> getBirthdayItem(scope = scope)
     HeaderNavigationSection.GOOGLE_TASKS -> getGoogleTasksItem(scope = scope)
     HeaderNavigationSection.GROUPS -> getGroupItem(scope = scope)
+    HeaderNavigationSection.TAG -> getTagItem(scope = scope)
     HeaderNavigationSection.ROUTINES -> getRoutineItem(scope = scope)
     HeaderNavigationSection.WORKFLOW -> getWorkflowItem(scope = scope)
   }
@@ -149,6 +152,18 @@ class GetNavigationItemsUseCase(
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
           subtitle = "${groupV2Repository.countAll()}",
+        )
+      }.await()
+
+  private suspend fun getTagItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.tags,
+          iconRes = DrawableCatalog.Builder.Group,
+          color = Color.Green,
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenTags,
+          subtitle = "${tagRepository.getAll().size}",
         )
       }.await()
 

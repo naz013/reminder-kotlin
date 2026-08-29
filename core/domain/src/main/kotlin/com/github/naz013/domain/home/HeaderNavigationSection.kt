@@ -2,13 +2,15 @@ package com.github.naz013.domain.home
 
 enum class HeaderNavigationSection(
   val isAlwaysVisible: Boolean = false,
+  val isDisabledByDefault: Boolean = false,
 ) {
   CALENDAR(isAlwaysVisible = true),
   AGENDA(isAlwaysVisible = true),
   NOTES,
-  BIRTHDAYS,
+  BIRTHDAYS(isDisabledByDefault = true),
   GOOGLE_TASKS,
-  GROUPS,
+  GROUPS(isDisabledByDefault = true),
+  TAG(isDisabledByDefault = true),
   ROUTINES,
   WORKFLOW,
   ;

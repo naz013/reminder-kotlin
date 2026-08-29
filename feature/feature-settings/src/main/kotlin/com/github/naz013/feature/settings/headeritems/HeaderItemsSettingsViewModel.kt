@@ -75,6 +75,8 @@ internal class HeaderItemsSettingsViewModel(
       HeaderItemRow(section, R.string.google_tasks, DrawableCatalog.Builder.GoogleTaskList, isEnabled)
     HeaderNavigationSection.GROUPS ->
       HeaderItemRow(section, R.string.groups, DrawableCatalog.Fluent.Group, isEnabled)
+    HeaderNavigationSection.TAG ->
+      HeaderItemRow(section, R.string.tags, DrawableCatalog.Builder.Group, isEnabled)
     HeaderNavigationSection.ROUTINES ->
       HeaderItemRow(section, R.string.routines, DrawableCatalog.Builder.Timer, isEnabled)
     HeaderNavigationSection.WORKFLOW ->
