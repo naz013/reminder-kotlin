@@ -273,6 +273,8 @@ class ScheduleHomeViewModel(
 
     data object OpenGroups : ViewModelEvent
 
+    data object OpenTags : ViewModelEvent
+
     data object OpenRoutines : ViewModelEvent
 
     data object OpenWorkflowGallery : ViewModelEvent

@@ -358,12 +358,19 @@ class Prefs(
     }
     set(value) = putString(PrefsConstants.HEADER_NAVIGATION_ORDER, value.joinToString(",") { it.name })
 
+  // Falls back to each section's own isDisabledByDefault only when the key has never been
+  // written - once the user (or a toggle) writes any value, including an empty one, that
+  // explicit choice is honored instead, so re-enabling every section can't un-clear itself.
   var disabledHeaderNavigationSections: Set<HeaderNavigationSection>
     get() =
-      getString(PrefsConstants.DISABLED_HEADER_NAVIGATION_SECTIONS, "")
-        .split(",")
-        .mapNotNull { name -> HeaderNavigationSection.configurable.find { it.name == name.trim() } }
-        .toSet()
+      if (!sharedPrefs().contains(PrefsConstants.DISABLED_HEADER_NAVIGATION_SECTIONS)) {
+        HeaderNavigationSection.configurable.filter { it.isDisabledByDefault }.toSet()
+      } else {
+        getString(PrefsConstants.DISABLED_HEADER_NAVIGATION_SECTIONS, "")
+          .split(",")
+          .mapNotNull { name -> HeaderNavigationSection.configurable.find { it.name == name.trim() } }
+          .toSet()
+      }
     set(value) = putString(PrefsConstants.DISABLED_HEADER_NAVIGATION_SECTIONS, value.joinToString(",") { it.name })
 
   var defaultVolume: Int

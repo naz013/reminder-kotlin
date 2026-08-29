@@ -57,6 +57,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
+        HeaderNavigationSection.TAG,
         HeaderNavigationSection.ROUTINES,
       ),
       state.configurableItems.map { it.section },
@@ -76,6 +77,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
+        HeaderNavigationSection.TAG,
       ),
       state.configurableItems.map { it.section },
     )
@@ -94,6 +96,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
+        HeaderNavigationSection.TAG,
         HeaderNavigationSection.ROUTINES,
         HeaderNavigationSection.WORKFLOW,
       ),
@@ -122,8 +125,8 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
 
   @Test
   fun `onReorder moves an item and persists the new order`() {
-    // Notes, Birthdays, Google Tasks, Groups, Routines -> move Routines (index 4) to the front
-    viewModel.onReorder(fromIndex = 4, toIndex = 0)
+    // Notes, Birthdays, Google Tasks, Groups, Tag, Routines -> move Routines (index 5) to the front
+    viewModel.onReorder(fromIndex = 5, toIndex = 0)
 
     assertEquals(
       listOf(
@@ -132,6 +135,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
+        HeaderNavigationSection.TAG,
       ),
       viewModel.state.value.configurableItems.map { it.section },
     )
@@ -144,6 +148,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.BIRTHDAYS,
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
+        HeaderNavigationSection.TAG,
         HeaderNavigationSection.WORKFLOW,
       ),
       order,
