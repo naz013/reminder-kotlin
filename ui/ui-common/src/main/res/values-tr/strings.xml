@@ -1249,4 +1249,5 @@
     <string name="workflow_action_remove_tag">Etiketi kaldır</string>
     <string name="workflow_builder_select_tag">Bir etiket seçin</string>
     <string name="workflow_builder_no_tags">Kullanılabilir etiket yok. Önce bir etiket oluşturun.</string>
+    <string name="tag_has_no_items">Bu etiketle işaretlenmiş henüz bir öğe yok</string>
 </resources>

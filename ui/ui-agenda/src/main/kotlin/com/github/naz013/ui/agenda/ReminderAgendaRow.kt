@@ -12,13 +12,14 @@ import com.github.naz013.ui.common.icon.DrawableCatalog
  * Thin domain wrapper around [AgendaListItem] for reminder/shopping items: an "Enabled" status
  * chip above the title when active, and a menu mirroring `ReminderActionResolver`'s
  * Open/Edit/Move-to-archive/Skip (active) vs Open/Edit/Delete (removed) branching, plus a
- * "Turn off" action when active.
+ * "Turn off" action when active. Pass `onMenuAction = null` (e.g. in a read-only browsing
+ * context) to render the row without the menu at all.
  */
 @Composable
 fun ReminderAgendaRow(
   item: UiAgendaReminder,
   onClick: () -> Unit,
-  onMenuAction: (AgendaMenuAction) -> Unit,
+  onMenuAction: ((AgendaMenuAction) -> Unit)?,
   modifier: Modifier = Modifier,
 ) {
   AgendaListItem(
@@ -28,8 +29,8 @@ fun ReminderAgendaRow(
     tags = item.tags.map { it.text },
     statusChips = statusChips(item),
     onClick = onClick,
-    menuItems = reminderMenuItems(item),
-    onMenuItemClick = { id -> onMenuAction(AgendaMenuAction.entries[id]) },
+    menuItems = if (onMenuAction != null) reminderMenuItems(item) else emptyList(),
+    onMenuItemClick = { id -> onMenuAction?.invoke(AgendaMenuAction.entries[id]) },
     modifier = modifier,
   )
 }

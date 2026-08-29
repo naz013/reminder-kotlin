@@ -23,9 +23,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +38,8 @@ import com.github.naz013.tags.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -41,6 +48,7 @@ internal fun TagsScreen(
   onBackClick: () -> Unit,
   onAddClick: () -> Unit,
   onTagClick: (String) -> Unit,
+  onTagMenuAction: (TagState, TagMenuAction) -> Unit,
   modifier: Modifier = Modifier
 ) {
   Scaffold(
@@ -93,7 +101,11 @@ internal fun TagsScreen(
           verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
           listState.tags.forEach { tag ->
-            TagListItem(tag = tag, onClick = { onTagClick(tag.id) })
+            TagListItem(
+              tag = tag,
+              onClick = { onTagClick(tag.id) },
+              onMenuAction = { action -> onTagMenuAction(tag, action) },
+            )
           }
         }
       }
@@ -105,6 +117,7 @@ internal fun TagsScreen(
 private fun TagListItem(
   tag: TagState,
   onClick: () -> Unit,
+  onMenuAction: (TagMenuAction) -> Unit,
   modifier: Modifier = Modifier
 ) {
   Card(
@@ -113,15 +126,41 @@ private fun TagListItem(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
   ) {
     Row(
-      modifier = Modifier.padding(16.dp),
+      modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
       Canvas(modifier = Modifier.size(20.dp)) {
         drawCircle(color = tag.color)
       }
-      Text(text = tag.name, style = MaterialTheme.typography.bodyLarge)
+      Text(text = tag.name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f, fill = false))
+      TagMenu(onMenuAction = onMenuAction)
     }
+  }
+}
+
+@Composable
+private fun TagMenu(onMenuAction: (TagMenuAction) -> Unit) {
+  var expanded by remember { mutableStateOf(false) }
+  val items = listOf(
+    PopupMenuItem(id = TagMenuAction.EDIT.ordinal, title = stringResource(R.string.edit), iconRes = R.drawable.ic_fluent_edit),
+    PopupMenuItem(id = TagMenuAction.DELETE.ordinal, title = stringResource(R.string.delete), iconRes = R.drawable.ic_fluent_delete),
+  )
+  Box {
+    MenuIconButton(
+      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      contentDescription = stringResource(R.string.more_options),
+      onClick = { expanded = true },
+    )
+    AppDropdownMenu(
+      expanded = expanded,
+      onDismissRequest = { expanded = false },
+      items = items,
+      onItemClick = { id ->
+        expanded = false
+        onMenuAction(TagMenuAction.entries[id])
+      },
+    )
   }
 }
 
@@ -162,7 +201,8 @@ private fun TagsScreenPreview() {
       ),
       onBackClick = {},
       onAddClick = {},
-      onTagClick = {}
+      onTagClick = {},
+      onTagMenuAction = { _, _ -> },
     )
   }
 }

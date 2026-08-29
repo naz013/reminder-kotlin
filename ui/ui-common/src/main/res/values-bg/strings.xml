@@ -1249,4 +1249,5 @@
     <string name="workflow_action_remove_tag">Премахване на етикет</string>
     <string name="workflow_builder_select_tag">Изберете етикет</string>
     <string name="workflow_builder_no_tags">Няма налични етикети. Първо създайте етикет.</string>
+    <string name="tag_has_no_items">Все още няма елементи, маркирани с този етикет</string>
 </resources>

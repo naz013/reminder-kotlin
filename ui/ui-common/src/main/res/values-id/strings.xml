@@ -1246,4 +1246,5 @@
     <string name="workflow_action_remove_tag">Hapus tag</string>
     <string name="workflow_builder_select_tag">Pilih tag</string>
     <string name="workflow_builder_no_tags">Tidak ada tag yang tersedia. Buat tag terlebih dahulu.</string>
+    <string name="tag_has_no_items">Belum ada item yang ditandai dengan tag ini</string>
 </resources>

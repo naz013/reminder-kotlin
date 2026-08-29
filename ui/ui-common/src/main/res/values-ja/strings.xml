@@ -1248,4 +1248,5 @@
     <string name="workflow_action_remove_tag">タグを削除</string>
     <string name="workflow_builder_select_tag">タグを選択</string>
     <string name="workflow_builder_no_tags">利用可能なタグがありません。先にタグを作成してください。</string>
+    <string name="tag_has_no_items">このタグが付いた項目はまだありません</string>
 </resources>

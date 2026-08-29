@@ -1246,4 +1246,5 @@
     <string name="workflow_action_remove_tag">ลบแท็ก</string>
     <string name="workflow_builder_select_tag">เลือกแท็ก</string>
     <string name="workflow_builder_no_tags">ไม่มีแท็กที่ใช้ได้ กรุณาสร้างแท็กก่อน</string>
+    <string name="tag_has_no_items">ยังไม่มีรายการที่ติดแท็กนี้</string>
 </resources>

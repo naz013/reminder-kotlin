@@ -18,13 +18,14 @@ private val COLOR_DOT_SIZE = 12.dp
 
 /**
  * Thin domain wrapper around [AgendaListItem] for birthdays: a colored dot as the leading slot and
- * a menu mirroring `BirthdayResolver`'s Open/Edit/Delete actions.
+ * a menu mirroring `BirthdayResolver`'s Open/Edit/Delete actions. Pass `onMenuAction = null`
+ * (e.g. in a read-only browsing context) to render the row without the menu at all.
  */
 @Composable
 fun BirthdayAgendaRow(
   item: UiAgendaBirthday,
   onClick: () -> Unit,
-  onMenuAction: (AgendaMenuAction) -> Unit,
+  onMenuAction: ((AgendaMenuAction) -> Unit)?,
   modifier: Modifier = Modifier,
 ) {
   AgendaListItem(
@@ -33,8 +34,8 @@ fun BirthdayAgendaRow(
     tertiaryText = item.remainingTimeFormatted,
     tags = listOfNotNull(item.ageFormatted.takeIf { it.isNotEmpty() }),
     onClick = onClick,
-    menuItems = birthdayMenuItems(),
-    onMenuItemClick = { id -> onMenuAction(AgendaMenuAction.entries[id]) },
+    menuItems = if (onMenuAction != null) birthdayMenuItems() else emptyList(),
+    onMenuItemClick = { id -> onMenuAction?.invoke(AgendaMenuAction.entries[id]) },
     modifier = modifier,
     leading = { ColorDot(color = item.color) },
   )

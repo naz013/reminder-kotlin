@@ -1246,4 +1246,5 @@
     <string name="workflow_action_remove_tag">Fjern tag</string>
     <string name="workflow_builder_select_tag">Velg en tag</string>
     <string name="workflow_builder_no_tags">Ingen tagger tilgjengelig. Opprett en tag først.</string>
+    <string name="tag_has_no_items">Ingen elementer er merket med denne taggen ennå</string>
 </resources>

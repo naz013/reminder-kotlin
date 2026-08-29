@@ -371,7 +371,14 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         exportEntries(backStack)
         workflowEntries(backStack)
-        tagsEntries(backStack, adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Tag) })
+        tagsEntries(
+          backStack,
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Tag) },
+          onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
+          onNotePreviewClick = { id -> backStack.add(NotesNavKey.Preview(id)) },
+          onBirthdayPreviewClick = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
+          onGoogleTaskPreviewClick = { id -> backStack.add(GoogleTasksNavKey.TaskPreview(id)) },
+        )
         insightsEntries(backStack)
         localBackupEntries(backStack)
       },

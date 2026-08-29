@@ -1248,4 +1248,5 @@
     <string name="workflow_action_remove_tag">Quitar etiqueta</string>
     <string name="workflow_builder_select_tag">Selecciona una etiqueta</string>
     <string name="workflow_builder_no_tags">No hay etiquetas disponibles. Crea una etiqueta primero.</string>
+    <string name="tag_has_no_items">Todavía no hay elementos con esta etiqueta</string>
 </resources>

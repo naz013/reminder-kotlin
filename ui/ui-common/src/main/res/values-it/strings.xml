@@ -1248,4 +1248,5 @@
     <string name="workflow_action_remove_tag">Rimuovi tag</string>
     <string name="workflow_builder_select_tag">Seleziona un tag</string>
     <string name="workflow_builder_no_tags">Nessun tag disponibile. Crea prima un tag.</string>
+    <string name="tag_has_no_items">Nessun elemento etichettato con questo tag</string>
 </resources>

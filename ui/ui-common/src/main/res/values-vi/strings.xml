@@ -1246,4 +1246,5 @@
     <string name="workflow_action_remove_tag">Xóa thẻ</string>
     <string name="workflow_builder_select_tag">Chọn một thẻ</string>
     <string name="workflow_builder_no_tags">Không có thẻ nào khả dụng. Hãy tạo thẻ trước.</string>
+    <string name="tag_has_no_items">Chưa có mục nào được gắn thẻ này</string>
 </resources>

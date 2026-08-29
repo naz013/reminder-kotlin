@@ -1246,4 +1246,5 @@
     <string name="workflow_action_remove_tag">إزالة وسم</string>
     <string name="workflow_builder_select_tag">اختر وسمًا</string>
     <string name="workflow_builder_no_tags">لا توجد وسوم متاحة. أنشئ وسمًا أولاً.</string>
+    <string name="tag_has_no_items">لا توجد عناصر مُعلّمة بهذا الوسم بعد</string>
 </resources>

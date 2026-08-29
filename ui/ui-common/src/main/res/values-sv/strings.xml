@@ -1246,4 +1246,5 @@
     <string name="workflow_action_remove_tag">Ta bort tagg</string>
     <string name="workflow_builder_select_tag">Välj en tagg</string>
     <string name="workflow_builder_no_tags">Inga taggar tillgängliga. Skapa en tagg först.</string>
+    <string name="tag_has_no_items">Inga objekt har taggats med den här taggen än</string>
 </resources>
