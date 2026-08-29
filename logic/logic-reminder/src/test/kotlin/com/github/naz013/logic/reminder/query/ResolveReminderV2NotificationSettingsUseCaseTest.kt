@@ -9,6 +9,8 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderSettingsRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -81,6 +83,7 @@ private class FakeGroupV2Repository(private val groups: Map<String, GroupV2>) : 
   override suspend fun save(group: GroupV2) = Unit
   override suspend fun saveAll(groups: List<GroupV2>) = Unit
   override suspend fun getAll(): List<GroupV2> = groups.values.toList()
+  override fun observeAll(): Flow<List<GroupV2>> = flowOf(groups.values.toList())
   override suspend fun getById(id: String): GroupV2? = groups[id]
   override suspend fun defaultGroup(isDef: Boolean): GroupV2? = groups.values.firstOrNull { it.isDefault == isDef }
   override suspend fun search(query: String): List<GroupV2> = emptyList()

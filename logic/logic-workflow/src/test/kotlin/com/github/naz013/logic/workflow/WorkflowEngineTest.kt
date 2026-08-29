@@ -1088,6 +1088,7 @@ private class FakeReminderV2Repository(
   }
 
   override suspend fun getById(id: String): ReminderV2? = reminders[id]
+  override fun observeById(id: String): Flow<ReminderV2?> = emptyFlow()
   override suspend fun getAll(): List<ReminderV2> = reminders.values.toList()
   override suspend fun getAll(active: Boolean, removed: Boolean): List<ReminderV2> =
     reminders.values.filter { it.isActive == active && it.isRemoved == removed }
@@ -1095,6 +1096,7 @@ private class FakeReminderV2Repository(
   override suspend fun count(active: Boolean, removed: Boolean): Int = getAll(active, removed).size
   override suspend fun getByRemovedStatus(removed: Boolean): List<ReminderV2> =
     reminders.values.filter { it.isRemoved == removed }
+  override fun observeByRemovedStatus(removed: Boolean): Flow<List<ReminderV2>> = emptyFlow()
   override suspend fun getActiveInRange(
     removed: Boolean,
     from: LocalDateTime,
@@ -1127,6 +1129,7 @@ private class NoOpGroupV2Repository : GroupV2Repository {
   override suspend fun save(group: GroupV2) = Unit
   override suspend fun saveAll(groups: List<GroupV2>) = Unit
   override suspend fun getAll(): List<GroupV2> = emptyList()
+  override fun observeAll(): Flow<List<GroupV2>> = emptyFlow()
   override suspend fun getById(id: String): GroupV2? = null
   override suspend fun defaultGroup(isDef: Boolean): GroupV2? = null
   override suspend fun search(query: String): List<GroupV2> = emptyList()
