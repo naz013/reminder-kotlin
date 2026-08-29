@@ -22,8 +22,11 @@ firebase-bom = "34.18.0"
 
 play-services-location = "21.4.0"
 play-services-maps = "20.0.0"
-play-services-auth = "21.6.0"
+play-services-auth = "22.0.0"
 user-messaging-platform = "4.0.0"
+
+androidx-credentials = "1.6.0"
+google-id = "1.2.0"
 
 ads-mobile-sdk = "1.4.0"
 install-referrer = "2.2"
@@ -82,9 +85,9 @@ pdfbox-android = "2.0.27.0"
 slf4j-api = "2.0.18"
 logback-android = "3.0.0"
 
-google-api-services-calendar = "v3-rev20251207-2.0.0"
+google-api-services-calendar = "v3-rev20260708-2.0.0"
 google-api-services-tasks = "v1-rev20251102-2.0.0"
-google-api-services-drive = "v3-rev20251210-2.0.0"
+google-api-services-drive = "v3-rev20260823-2.0.0"
 google-http-client-gson = "2.2.0"
 google-api-client-android = "2.9.0"
 
@@ -196,6 +199,10 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "play-services-maps" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
 user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "user-messaging-platform" }
+
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidx-credentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidx-credentials" }
+google-id = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-id" }
 
 ads-mobile-sdk = { group = "com.google.android.libraries.ads.mobile.sdk", name = "ads-mobile-sdk", version.ref = "ads-mobile-sdk" }
 install-referrer = { group = "com.android.installreferrer", name = "installreferrer", version.ref = "install-referrer" }

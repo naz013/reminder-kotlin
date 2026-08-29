@@ -84,6 +84,7 @@ extensions.configure<ApplicationExtension> {
       buildConfigField("String", "REVIEWS_APP_ID", props.getProperty("freeReviewsAppId", "\"\""))
       buildConfigField("String", "REVIEWS_API_KEY", props.getProperty("reviewsApiKey", "\"\""))
       buildConfigField("String", "REVIEWS_STORAGE_BUCKET", props.getProperty("reviewsStorageBucket", "\"\""))
+      buildConfigField("String", "GOOGLE_SIGN_IN_SERVER_CLIENT_ID", props.getProperty("freeGoogleSignInServerClientId", "\"\""))
     }
     create("pro") {
       dimension = "level"
@@ -97,6 +98,7 @@ extensions.configure<ApplicationExtension> {
       buildConfigField("String", "REVIEWS_APP_ID", props.getProperty("proReviewsAppId", "\"\""))
       buildConfigField("String", "REVIEWS_API_KEY", props.getProperty("reviewsApiKey", "\"\""))
       buildConfigField("String", "REVIEWS_STORAGE_BUCKET", props.getProperty("reviewsStorageBucket", "\"\""))
+      buildConfigField("String", "GOOGLE_SIGN_IN_SERVER_CLIENT_ID", props.getProperty("proGoogleSignInServerClientId", "\"\""))
     }
   }
   packaging {
