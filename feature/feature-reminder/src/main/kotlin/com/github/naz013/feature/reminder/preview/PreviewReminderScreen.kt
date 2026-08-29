@@ -740,16 +740,12 @@ private fun NoteRow(
       .clickable(onClick = onClick),
   ) {
     Column(modifier = Modifier.padding(12.dp)) {
-      if (note.title.isNotEmpty()) {
-        Text(text = note.title, style = MaterialTheme.typography.titleMedium)
-      }
       if (note.text.isNotEmpty()) {
         Text(
           text = note.text,
           style = MaterialTheme.typography.bodyMedium,
           maxLines = 3,
           overflow = TextOverflow.Ellipsis,
-          modifier = Modifier.padding(top = 4.dp),
         )
       }
       Text(

@@ -7,6 +7,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -92,26 +93,22 @@ class PreviewNoteViewModelTest : BaseTest() {
     color: Int = 0,
   ): NoteWithImages =
     NoteWithImages(
-      note = Note(key = id, summary = summary, archived = archived, color = color, syncState = SyncState.Synced),
+      note = Note(key = id, content = NoteDocument(text = summary), archived = archived, color = color, syncState = SyncState.Synced),
     )
 
   private fun uiPreview(
     id: String = key,
-    title: String = "Title",
     text: String = "Summary",
     images: List<UiNoteImage> = emptyList(),
     isArchived: Boolean = false,
     isPinned: Boolean = false,
   ) = UiNotePreview(
     id = id,
-    text = text,
-    title = title,
-    typeface = null,
+    document = NoteDocument(text = text),
+    fontStyle = 0,
+    fontSize = 18f,
     images = images,
     uniqueId = 1,
-    textSize = 18f,
-    titleTypeface = null,
-    titleTextSize = 20f,
     isArchived = isArchived,
     isPinned = isPinned,
   )
@@ -164,14 +161,14 @@ class PreviewNoteViewModelTest : BaseTest() {
       every { noteRepository.observeById(key) } returns flowOf(n)
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview(text = "Buy milk")
       every {
-        noteColorEngine.colorsForLegacy(any(), any(), any())
+        noteColorEngine.colorsFor(any(), any())
       } returns NoteColorEngine.Colors(background = Color.Red, content = Color.White)
       val viewModel = createViewModel()
 
       val state = viewModel.state.first()
 
       assertEquals(key, state.id)
-      assertEquals("Buy milk", state.text)
+      assertEquals("Buy milk", state.document.text)
       assertEquals(Color.Red, state.background)
       assertEquals(Color.White, state.content)
       assertEquals(false, state.isArchived)
@@ -185,20 +182,20 @@ class PreviewNoteViewModelTest : BaseTest() {
       val n = note(summary = "Buy milk")
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview(text = "Buy milk")
       every {
-        noteColorEngine.colorsForLegacy(any(), any(), any())
+        noteColorEngine.colorsFor(any(), any())
       } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
       val viewModel = createViewModel()
       var latest = PreviewNoteState(id = key)
       backgroundScope.launch(Dispatchers.Unconfined) {
         viewModel.state.collect { latest = it }
       }
-      assertEquals("", latest.text)
+      assertEquals("", latest.document.text)
 
       // Simulates an edit made elsewhere (e.g. the edit screen) writing to the DB - no explicit
       // reload call from the view model is needed for this to show up.
       noteFlow.value = n
 
-      assertEquals("Buy milk", latest.text)
+      assertEquals("Buy milk", latest.document.text)
     }
 
   @Test
@@ -208,7 +205,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       every { noteRepository.observeById(key) } returns flowOf(n)
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview()
       every {
-        noteColorEngine.colorsForLegacy(any(), any(), any())
+        noteColorEngine.colorsFor(any(), any())
       } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
       val r = reminder(id = "r1")
       coEvery { reminderV2Repository.getByNoteId(key) } returns listOf(r)
@@ -229,7 +226,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       every { noteRepository.observeById(key) } returns flowOf(n)
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview()
       every {
-        noteColorEngine.colorsForLegacy(any(), any(), any())
+        noteColorEngine.colorsFor(any(), any())
       } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
       val tag = Tag(id = "t1", name = "Work", color = 0xFF0000)
       every { tagAssignmentRepository.observeTagsForItem(key, TaggedItemType.NOTE) } returns flowOf(listOf(tag))
@@ -257,9 +254,9 @@ class PreviewNoteViewModelTest : BaseTest() {
 
       assertEquals(1, state.reminders.size)
       // The note itself wasn't found, so note-derived fields stay at their construction-time
-      // defaults (id defaults to the view model's key, title/text default to "").
+      // defaults (id defaults to the view model's key, document defaults to empty text).
       assertEquals(key, state.id)
-      assertEquals("", state.title)
+      assertEquals("", state.document.text)
     }
 
   @Test
@@ -297,7 +294,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       coEvery { noteRepository.getById(key) } returns n
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview()
       every {
-        noteColorEngine.colorsForLegacy(any(), any(), any())
+        noteColorEngine.colorsFor(any(), any())
       } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
       every { textProvider.getText(R.string.note_moved_to_archive) } returns "Moved to archive"
       val viewModel = createViewModel()
@@ -316,7 +313,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       coEvery { noteRepository.getById(key) } returns n
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview(isArchived = true)
       every {
-        noteColorEngine.colorsForLegacy(any(), any(), any())
+        noteColorEngine.colorsFor(any(), any())
       } returns NoteColorEngine.Colors(background = Color.Unspecified, content = Color.Unspecified)
       every { textProvider.getText(R.string.note_reverted_from_archive) } returns "Reverted from archive"
       val viewModel = createViewModel()
@@ -375,7 +372,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       viewModel.onShareClick()
 
       val event = viewModel.event.value?.peekContent()
-      assertEquals(PreviewNoteViewModel.ViewModelEvent.ShareNote("", file), event)
+      assertEquals(PreviewNoteViewModel.ViewModelEvent.ShareNote("Buy milk", file), event)
     }
 
   @Test
@@ -447,7 +444,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       val images = listOf(UiNoteImage(id = 1, fileName = "a.jpg"))
       every { uiNotePreviewAdapter.convert(n) } returns uiPreview(images = images)
       every {
-        noteColorEngine.colorsForLegacy(any(), any(), any())
+        noteColorEngine.colorsFor(any(), any())
       } returns NoteColorEngine.Colors(background = Color.Red, content = Color.White)
       val viewModel = createViewModel()
       viewModel.state.first()

@@ -1248,4 +1248,14 @@
     <string name="workflow_builder_select_tag">Выберите тег</string>
     <string name="workflow_builder_no_tags">Нет доступных тегов. Сначала создайте тег.</string>
     <string name="tag_has_no_items">Пока нет элементов с этим тегом</string>
+    <string name="acc_select_text_format">Формат текста</string>
+    <string name="acc_select_text_color">Цвет текста</string>
+    <string name="acc_select_gradient_color">Градиентный цвет текста</string>
+    <string name="format_paragraph">Абзац</string>
+    <string name="gradient_start_color">Начальный цвет</string>
+    <string name="gradient_end_color">Конечный цвет</string>
+    <string name="gradient_angle">Угол</string>
+    <string name="text_style_section">Стиль</string>
+    <string name="text_color_mode_solid">Сплошной</string>
+    <string name="text_color_mode_gradient">Градиент</string>
 </resources>

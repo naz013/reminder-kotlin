@@ -1249,4 +1249,14 @@
     <string name="workflow_builder_select_tag">Selectează o etichetă</string>
     <string name="workflow_builder_no_tags">Nu există etichete disponibile. Creează mai întâi o etichetă.</string>
     <string name="tag_has_no_items">Niciun element etichetat cu această etichetă încă</string>
+    <string name="acc_select_text_format">Format text</string>
+    <string name="acc_select_text_color">Culoare text</string>
+    <string name="acc_select_gradient_color">Culoare degradat text</string>
+    <string name="format_paragraph">Paragraf</string>
+    <string name="gradient_start_color">Culoare de start</string>
+    <string name="gradient_end_color">Culoare finală</string>
+    <string name="gradient_angle">Unghi</string>
+    <string name="text_style_section">Stil</string>
+    <string name="text_color_mode_solid">Uniformă</string>
+    <string name="text_color_mode_gradient">Degrade</string>
 </resources>

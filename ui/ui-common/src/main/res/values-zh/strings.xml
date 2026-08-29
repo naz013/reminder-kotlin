@@ -1250,4 +1250,14 @@
     <string name="workflow_builder_select_tag">选择标签</string>
     <string name="workflow_builder_no_tags">没有可用的标签。请先创建标签。</string>
     <string name="tag_has_no_items">还没有项目使用此标签</string>
+    <string name="acc_select_text_format">文本格式</string>
+    <string name="acc_select_text_color">文本颜色</string>
+    <string name="acc_select_gradient_color">渐变文本颜色</string>
+    <string name="format_paragraph">段落</string>
+    <string name="gradient_start_color">起始颜色</string>
+    <string name="gradient_end_color">结束颜色</string>
+    <string name="gradient_angle">角度</string>
+    <string name="text_style_section">样式</string>
+    <string name="text_color_mode_solid">纯色</string>
+    <string name="text_color_mode_gradient">渐变</string>
 </resources>

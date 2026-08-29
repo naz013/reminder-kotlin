@@ -1247,4 +1247,14 @@
     <string name="workflow_builder_select_tag">Chọn một thẻ</string>
     <string name="workflow_builder_no_tags">Không có thẻ nào khả dụng. Hãy tạo thẻ trước.</string>
     <string name="tag_has_no_items">Chưa có mục nào được gắn thẻ này</string>
+    <string name="acc_select_text_format">Định dạng văn bản</string>
+    <string name="acc_select_text_color">Màu văn bản</string>
+    <string name="acc_select_gradient_color">Màu chuyển sắc văn bản</string>
+    <string name="format_paragraph">Đoạn văn</string>
+    <string name="gradient_start_color">Màu bắt đầu</string>
+    <string name="gradient_end_color">Màu kết thúc</string>
+    <string name="gradient_angle">Góc</string>
+    <string name="text_style_section">Kiểu</string>
+    <string name="text_color_mode_solid">Đặc</string>
+    <string name="text_color_mode_gradient">Chuyển sắc</string>
 </resources>

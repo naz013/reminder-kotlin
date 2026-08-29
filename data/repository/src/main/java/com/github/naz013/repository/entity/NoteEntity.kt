@@ -2,22 +2,26 @@ package com.github.naz013.repository.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
+import com.github.naz013.domain.note.NoteTextSpan
+import com.github.naz013.domain.note.displayTitle
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.repository.converters.NoteSpansTypeConverter
 import com.google.gson.annotations.SerializedName
 import java.util.Random
 import java.util.UUID
 
 @Entity(tableName = "Note")
+@TypeConverters(NoteSpansTypeConverter::class)
 internal data class NoteEntity(
-  @SerializedName("summary")
-  val summary: String = "",
-  @SerializedName("title")
-  val title: String = "",
-  @SerializedName("titleFontSize")
-  val titleFontSize: Int = -1,
-  @SerializedName("titleFontStyle")
-  val titleFontStyle: Int = -1,
+  @SerializedName("text")
+  val text: String = "",
+  @SerializedName("spans")
+  val spans: List<NoteTextSpan> = emptyList(),
+  @SerializedName("displayTitle")
+  val displayTitle: String = "",
   @SerializedName("key")
   @PrimaryKey
   val key: String = UUID.randomUUID().toString(),
@@ -27,8 +31,6 @@ internal data class NoteEntity(
   val color: Int = 0,
   @SerializedName("style")
   val style: Int = 0,
-  @SerializedName("palette")
-  val palette: Int = 0,
   @SerializedName("uniqueId")
   val uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
   @SerializedName("updatedAt")
@@ -48,15 +50,13 @@ internal data class NoteEntity(
 ) {
 
   constructor(note: Note) : this(
-    summary = note.summary,
-    title = note.title,
-    titleFontSize = note.titleFontSize,
-    titleFontStyle = note.titleFontStyle,
+    text = note.content.text,
+    spans = note.content.spans,
+    displayTitle = note.content.displayTitle(),
     key = note.key,
     date = note.date,
     color = note.color,
     style = note.style,
-    palette = note.palette,
     uniqueId = note.uniqueId,
     updatedAt = note.updatedAt,
     opacity = note.opacity,
@@ -69,15 +69,11 @@ internal data class NoteEntity(
 
   fun toDomain(): Note {
     return Note(
-      summary = summary,
-      title = title,
-      titleFontSize = titleFontSize,
-      titleFontStyle = titleFontStyle,
+      content = NoteDocument(text = text, spans = spans),
       key = key,
       date = date,
       color = color,
       style = style,
-      palette = palette,
       uniqueId = uniqueId,
       updatedAt = updatedAt,
       opacity = opacity,

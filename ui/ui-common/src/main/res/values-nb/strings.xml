@@ -1247,4 +1247,14 @@
     <string name="workflow_builder_select_tag">Velg en tag</string>
     <string name="workflow_builder_no_tags">Ingen tagger tilgjengelig. Opprett en tag først.</string>
     <string name="tag_has_no_items">Ingen elementer er merket med denne taggen ennå</string>
+    <string name="acc_select_text_format">Tekstformat</string>
+    <string name="acc_select_text_color">Tekstfarge</string>
+    <string name="acc_select_gradient_color">Fargeovergang for tekst</string>
+    <string name="format_paragraph">Avsnitt</string>
+    <string name="gradient_start_color">Startfarge</string>
+    <string name="gradient_end_color">Sluttfarge</string>
+    <string name="gradient_angle">Vinkel</string>
+    <string name="text_style_section">Stil</string>
+    <string name="text_color_mode_solid">Ensfarget</string>
+    <string name="text_color_mode_gradient">Fargeovergang</string>
 </resources>

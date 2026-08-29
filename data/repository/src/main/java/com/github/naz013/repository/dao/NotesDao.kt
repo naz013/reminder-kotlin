@@ -23,12 +23,12 @@ internal interface NotesDao {
         SELECT *
         FROM Note
         WHERE archived = :isArchived
-        AND (:query = '' OR LOWER(summary) LIKE '%' || :query || '%')
+        AND (:query = '' OR LOWER(text) LIKE '%' || :query || '%')
         ORDER BY
           isPinned DESC,
           CASE WHEN :sortOrder = 'date_az' THEN date END ASC,
-          CASE WHEN :sortOrder = 'text_az' THEN (CASE WHEN title != '' THEN title ELSE summary END) END ASC,
-          CASE WHEN :sortOrder = 'text_za' THEN (CASE WHEN title != '' THEN title ELSE summary END) END DESC,
+          CASE WHEN :sortOrder = 'text_az' THEN displayTitle END ASC,
+          CASE WHEN :sortOrder = 'text_za' THEN displayTitle END DESC,
           CASE WHEN :sortOrder NOT IN ('date_az', 'text_az', 'text_za') THEN date END DESC
     """
   )
@@ -40,12 +40,12 @@ internal interface NotesDao {
         SELECT *
         FROM Note
         WHERE archived = :isArchived
-        AND (:query = '' OR LOWER(summary) LIKE '%' || :query || '%')
+        AND (:query = '' OR LOWER(text) LIKE '%' || :query || '%')
         ORDER BY
           isPinned DESC,
           CASE WHEN :sortOrder = 'date_az' THEN date END ASC,
-          CASE WHEN :sortOrder = 'text_az' THEN (CASE WHEN title != '' THEN title ELSE summary END) END ASC,
-          CASE WHEN :sortOrder = 'text_za' THEN (CASE WHEN title != '' THEN title ELSE summary END) END DESC,
+          CASE WHEN :sortOrder = 'text_az' THEN displayTitle END ASC,
+          CASE WHEN :sortOrder = 'text_za' THEN displayTitle END DESC,
           CASE WHEN :sortOrder NOT IN ('date_az', 'text_az', 'text_za') THEN date END DESC
     """
   )
@@ -56,7 +56,7 @@ internal interface NotesDao {
     """
         SELECT *
         FROM Note
-        WHERE LOWER(summary) LIKE '%' || :query || '%'"""
+        WHERE LOWER(text) LIKE '%' || :query || '%'"""
   )
   fun search(query: String): List<NoteEntity>
 
@@ -69,7 +69,7 @@ internal interface NotesDao {
     """
         SELECT *
         FROM Note
-        WHERE LOWER(summary) LIKE '%' || :query || '%'
+        WHERE LOWER(text) LIKE '%' || :query || '%'
         AND archived=:isArchived"""
   )
   fun searchByText(query: String, isArchived: Boolean = false): List<NoteWithImagesEntity>

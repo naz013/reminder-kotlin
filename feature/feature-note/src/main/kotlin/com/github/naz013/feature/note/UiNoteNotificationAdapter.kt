@@ -17,7 +17,6 @@ class UiNoteNotificationAdapter(
       themeProvider.getNoteLightColor(
         noteWithImages.getColor(),
         noteWithImages.getOpacity(),
-        noteWithImages.getPalette(),
       )
 
     val isDarkBg =

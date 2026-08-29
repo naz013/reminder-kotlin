@@ -1249,4 +1249,14 @@
     <string name="workflow_builder_select_tag">Vyberte štítek</string>
     <string name="workflow_builder_no_tags">Nejsou k dispozici žádné štítky. Nejprve vytvořte štítek.</string>
     <string name="tag_has_no_items">Zatím žádné položky s tímto štítkem</string>
+    <string name="acc_select_text_format">Formát textu</string>
+    <string name="acc_select_text_color">Barva textu</string>
+    <string name="acc_select_gradient_color">Přechodová barva textu</string>
+    <string name="format_paragraph">Odstavec</string>
+    <string name="gradient_start_color">Počáteční barva</string>
+    <string name="gradient_end_color">Koncová barva</string>
+    <string name="gradient_angle">Úhel</string>
+    <string name="text_style_section">Styl</string>
+    <string name="text_color_mode_solid">Plná</string>
+    <string name="text_color_mode_gradient">Přechod</string>
 </resources>

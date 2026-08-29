@@ -26,7 +26,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,24 +34,23 @@ import coil.compose.AsyncImage
 import com.github.naz013.ui.common.compose.AppTheme
 import org.koin.compose.koinInject
 
+private const val BODY_TEXT_MAX_LINES = 4
 private const val BODY_TEXT_MAX_CHARS = 500
-private const val BODY_TEXT_MAX_LINES = 3
-private const val TITLE_MAX_LINES = 1
 private const val LINE_HEIGHT_RATIO = 1.25f
 private val SECONDARY_IMAGE_SIZE = 96.dp
 private val CONTENT_PADDING_TOP = 12.dp
 private val CONTENT_PADDING_BOTTOM = 8.dp
 private val CONTENT_PADDING_HORIZONTAL = 8.dp
 private val TEXT_END_PADDING = 32.dp
-private val TEXT_BLOCK_SPACING = 8.dp
 private val THUMBNAILS_TOP_PADDING = 4.dp
 
 /**
- * Shared note card: title + body (with the note's own custom per-note font, resolved through
- * [NoteFontProvider]) + optional image thumbnails, tinted with the note's own background/text
- * color. Used by every note-rendering surface (list, preview, reminder builder/preview, widget
- * pickers) so they can't drift out of sync with each other. Overflow menus and selection
- * indicators are not built in - callers supply them via [trailingContent].
+ * Shared note card: formatted content (see [toAnnotatedString], with the note's own default
+ * per-note font resolved through [NoteFontProvider]) + optional image thumbnails, tinted with
+ * the note's own background/text color. Used by every note-rendering surface (list, preview,
+ * reminder builder/preview, widget pickers) so they can't drift out of sync with each other.
+ * Overflow menus and selection indicators are not built in - callers supply them via
+ * [trailingContent].
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -72,16 +70,10 @@ fun NoteCard(
       FontFamily(androidx.compose.ui.text.font.Typeface(it))
     }
   }
-  val titleFontFamily = remember(note.titleFontStyle) {
-    noteFontProvider.getTypeface(context, note.titleFontStyle)?.let {
-      FontFamily(androidx.compose.ui.text.font.Typeface(it))
+  val annotatedText = remember(note.content, note.fontSize) {
+    note.content.toAnnotatedString(baseFontSizeSp = note.fontSize.toInt(), maxChars = BODY_TEXT_MAX_CHARS) { code ->
+      noteFontProvider.getTypeface(context, code)?.let { FontFamily(androidx.compose.ui.text.font.Typeface(it)) }
     }
-  }
-
-  val bodyText = if (note.text.length > BODY_TEXT_MAX_CHARS) {
-    note.text.substring(0, BODY_TEXT_MAX_CHARS) + "..."
-  } else {
-    note.text
   }
 
   Card(
@@ -101,24 +93,9 @@ fun NoteCard(
           bottom = CONTENT_PADDING_BOTTOM,
         ),
       ) {
-        if (note.title.isNotEmpty()) {
+        if (annotatedText.isNotEmpty()) {
           Text(
-            text = note.title,
-            color = note.textColor,
-            fontFamily = titleFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = note.titleFontSize.sp,
-            lineHeight = note.titleFontSize.sp * LINE_HEIGHT_RATIO,
-            maxLines = TITLE_MAX_LINES,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(end = TEXT_END_PADDING),
-          )
-        }
-        if (bodyText.isNotEmpty()) {
-          Text(
-            text = bodyText,
+            text = annotatedText,
             color = note.textColor,
             fontFamily = bodyFontFamily,
             fontSize = note.fontSize.sp,
@@ -127,10 +104,7 @@ fun NoteCard(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
               .fillMaxWidth()
-              .padding(
-                top = if (note.title.isNotEmpty()) TEXT_BLOCK_SPACING else 0.dp,
-                end = TEXT_END_PADDING,
-              ),
+              .padding(end = TEXT_END_PADDING),
           )
         }
         if (note.images.isNotEmpty()) {
@@ -201,14 +175,14 @@ private fun NoteCardPreview() {
     NoteCard(
       note = UiNoteListItem(
         id = "1",
-        title = "Shopping list",
-        text = "Milk, eggs, bread, butter, cheese, tomatoes, coffee",
+        content = com.github.naz013.domain.note.NoteDocument.fromLegacy(
+          title = "Shopping list",
+          summary = "Milk, eggs, bread, butter, cheese, tomatoes, coffee",
+        ),
         backgroundColor = androidx.compose.ui.graphics.Color(0xFFFFF59D),
         textColor = androidx.compose.ui.graphics.Color.Black,
         fontStyle = 9,
         fontSize = 14f,
-        titleFontStyle = 2,
-        titleFontSize = 20f,
         images = emptyList(),
       ),
       onClick = {},

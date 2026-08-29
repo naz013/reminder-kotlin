@@ -39,7 +39,7 @@ internal class NotesAppWidgetViewModel(
       uuId = getKey(),
       text = getSummary(),
       textSize = textSize.sp,
-      backgroundColor = Color(themeProvider.getNoteLightColor(getColor(), getOpacity(), getPalette())),
+      backgroundColor = Color(themeProvider.getNoteLightColor(getColor(), getOpacity())),
       contentColor = contentColor,
       image = image
     )

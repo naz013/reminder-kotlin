@@ -3,6 +3,8 @@ package com.github.naz013.feature.note.create
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import com.github.naz013.domain.font.FontParams
+import com.github.naz013.domain.note.NoteSpanAttribute
+import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.tag.TagChipState
@@ -16,18 +18,14 @@ internal data class NoteEditState(
   val noteColors: NoteColorEngine.Colors = NoteColorEngine.Colors(Color.Unspecified, Color.Unspecified),
   val fontStyle: Int = FontParams.DEFAULT_FONT_STYLE,
   val fontSize: Int = FontParams.DEFAULT_FONT_SIZE,
-  val titleFontStyle: Int = FontParams.DEFAULT_FONT_STYLE,
-  val titleFontSize: Int = FontParams.DEFAULT_TITLE_FONT_SIZE,
   val textFieldValue: TextFieldValue = TextFieldValue(),
-  val titleFieldValue: TextFieldValue = TextFieldValue(),
-  val boldRange: IntRange? = null,
+  val spans: List<NoteTextSpan> = emptyList(),
   val images: List<UiNoteImage> = emptyList(),
   val speechState: SpeechUiState = SpeechUiState.IDLE,
   val date: LocalDate = LocalDate.now(),
   val time: LocalTime = LocalTime.now(),
   val reminderDateFormatted: String = "",
   val reminderTimeFormatted: String = "",
-  val focusedField: NoteTextField = NoteTextField.BODY,
   val expandedTab: EditTab? = null,
   val activeDialog: NoteEditDialog? = null,
   val hasCamera: Boolean = false,
@@ -41,13 +39,36 @@ internal data class NoteEditState(
   val hapticFeedbackEnabled: Boolean = true,
   val allTags: List<TagChipState> = emptyList(),
   val selectedTagIds: Set<String> = emptySet(),
+) {
+  /** What the floating bar's format/color/gradient controls should show right now - the format
+   * at the selection (or, for a collapsed cursor, at the character just before it), so
+   * continuing to type or re-selecting elsewhere keeps the toolbar honest. */
+  val activeFormat: ActiveTextFormat
+    get() {
+      val text = textFieldValue.text
+      val selection = textFieldValue.selection
+      val start = selection.min
+      val end = selection.max
+      return ActiveTextFormat(
+        bold = isAttributeActiveOverRange(spans, NoteSpanAttribute.Bold, start, end),
+        italic = isAttributeActiveOverRange(spans, NoteSpanAttribute.Italic, start, end),
+        underline = isAttributeActiveOverRange(spans, NoteSpanAttribute.Underline, start, end),
+        strikethrough = isAttributeActiveOverRange(spans, NoteSpanAttribute.Strikethrough, start, end),
+        lineFormat = activeLineFormat(text, spans, start),
+      )
+    }
+}
+
+/** The inline/line format active at the current cursor or selection - see [NoteEditState.activeFormat]. */
+internal data class ActiveTextFormat(
+  val bold: Boolean = false,
+  val italic: Boolean = false,
+  val underline: Boolean = false,
+  val strikethrough: Boolean = false,
+  val lineFormat: NoteSpanAttribute? = null,
 )
 
-internal enum class EditTab { COLOR, FONT, REMINDER, IMAGE, TAGS }
-
-/** Which of the two text fields last had focus — drives which field's font size/style
- *  [com.elementary.tasks.notes.create.FontPanel] displays and edits. */
-internal enum class NoteTextField { TITLE, BODY }
+internal enum class EditTab { COLOR, REMINDER, IMAGE, TAGS, TEXT_FORMAT, TEXT_COLOR }
 
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
 internal enum class NoteEditDialog { DELETE, SAME_NOTE }

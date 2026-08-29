@@ -5,12 +5,13 @@ import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.files.model.NoteV3Image
-import com.github.naz013.files.model.NoteV3Json
+import com.github.naz013.files.model.NoteV4Json
 import com.github.naz013.logging.Logger
 import com.github.naz013.files.DataType
 import com.github.naz013.sync.images.CachedFile
 import com.github.naz013.sync.images.NoteImageDataType
 import com.github.naz013.sync.images.UploadFilesUseCase
+import com.github.naz013.sync.images.toV4Spans
 
 internal class PreProcessUploadingFileUseCase(
   private val uploadFilesUseCase: UploadFilesUseCase
@@ -39,7 +40,7 @@ internal class PreProcessUploadingFileUseCase(
     val images = noteWithImages.images
     if (images.isEmpty()) {
       Logger.d(TAG, "No images to upload for note: ${note.key}")
-      return createNoteV3Json(note, emptyList())
+      return createNoteV4Json(note, emptyList())
     }
     val uploadedImages = uploadFilesUseCase(
       cloudFileApi = cloudFileApi,
@@ -47,22 +48,19 @@ internal class PreProcessUploadingFileUseCase(
       extension = NoteImageDataType.FILE_EXTENSION
     )
     Logger.d(TAG, "Uploaded ${uploadedImages.size} images for note: ${note.key}")
-    return createNoteV3Json(note, uploadedImages)
+    return createNoteV4Json(note, uploadedImages)
   }
 
-  private fun createNoteV3Json(note: Note, images: List<CachedFile>): NoteV3Json {
-    return NoteV3Json(
+  private fun createNoteV4Json(note: Note, images: List<CachedFile>): NoteV4Json {
+    return NoteV4Json(
       key = note.key,
-      summary = note.summary,
-      title = note.title,
-      titleFontSize = note.titleFontSize,
-      titleFontStyle = note.titleFontStyle,
+      text = note.content.text,
+      spans = note.content.toV4Spans(),
       color = note.color,
       archived = note.archived,
       isPinned = note.isPinned,
       date = note.date,
       fontSize = note.fontSize,
-      palette = note.palette,
       style = note.style,
       uniqueId = note.uniqueId,
       updatedAt = note.updatedAt,

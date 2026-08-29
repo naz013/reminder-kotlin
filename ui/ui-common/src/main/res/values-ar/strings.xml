@@ -1247,4 +1247,14 @@
     <string name="workflow_builder_select_tag">اختر وسمًا</string>
     <string name="workflow_builder_no_tags">لا توجد وسوم متاحة. أنشئ وسمًا أولاً.</string>
     <string name="tag_has_no_items">لا توجد عناصر مُعلّمة بهذا الوسم بعد</string>
+    <string name="acc_select_text_format">تنسيق النص</string>
+    <string name="acc_select_text_color">لون النص</string>
+    <string name="acc_select_gradient_color">لون نص متدرج</string>
+    <string name="format_paragraph">فقرة</string>
+    <string name="gradient_start_color">اللون الابتدائي</string>
+    <string name="gradient_end_color">اللون النهائي</string>
+    <string name="gradient_angle">الزاوية</string>
+    <string name="text_style_section">نمط</string>
+    <string name="text_color_mode_solid">خالص</string>
+    <string name="text_color_mode_gradient">متدرج</string>
 </resources>

@@ -5,7 +5,7 @@ import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.files.model.NoteV3Json
+import com.github.naz013.files.model.NoteV4Json
 import com.github.naz013.domain.sync.RemoteFileMetadata
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.RemoteFileMetadataRepository
@@ -114,11 +114,11 @@ class CreateCloudFileUseCaseTest {
   }
 
   @Test
-  fun invoke_withOldNote_shouldCreateCloudFileWithNoteKey() = runBlocking {
-    // Arrange - Old note with key field
+  fun invoke_withNote_shouldCreateCloudFileWithNoteKey() = runBlocking {
+    // Arrange - Note with key field
     val noteKey = "note-key-abc123"
-    val note = NoteV3Json(
-      summary = "Meeting notes",
+    val note = NoteV4Json(
+      text = "Meeting notes",
       key = noteKey,
       date = "2025-10-29",
       color = 0xFF0000,
@@ -268,7 +268,7 @@ class CreateCloudFileUseCaseTest {
     // Arrange - Test that different data types get correct extensions
     val reminder = reminderV2(uuId = "r1")
     val birthday = Birthday(name = "Test", uuId = "b1", syncState = SyncState.Synced)
-    val note = NoteV3Json(summary = "Test", key = "n1")
+    val note = NoteV4Json(text = "Test", key = "n1")
 
     every { getLocalUuIdUseCase(any()) } returnsMany listOf("r1", "b1", "n1")
     coEvery { remoteFileMetadataRepository.getByLocalUuId(any()) } returns null

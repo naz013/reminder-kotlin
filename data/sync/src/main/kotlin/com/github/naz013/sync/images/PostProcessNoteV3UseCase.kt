@@ -2,7 +2,9 @@ package com.github.naz013.sync.images
 
 import com.github.naz013.cloudapi.CloudFileApi
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.domain.note.combineLegacyNoteColor
 import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
@@ -32,16 +34,12 @@ internal class PostProcessNoteV3UseCase(
 
   private fun createNote(noteV3Json: NoteV3Json): Note {
     return Note(
-      color = noteV3Json.color,
-      palette = noteV3Json.palette,
+      color = combineLegacyNoteColor(noteV3Json.color, noteV3Json.palette),
       key = noteV3Json.key,
       date = noteV3Json.date,
       style = noteV3Json.style,
       uniqueId = noteV3Json.uniqueId,
-      summary = noteV3Json.summary,
-      title = noteV3Json.title,
-      titleFontSize = noteV3Json.titleFontSize,
-      titleFontStyle = noteV3Json.titleFontStyle,
+      content = NoteDocument.fromLegacy(title = noteV3Json.title, summary = noteV3Json.summary),
       updatedAt = noteV3Json.updatedAt,
       fontSize = noteV3Json.fontSize,
       archived = noteV3Json.archived,

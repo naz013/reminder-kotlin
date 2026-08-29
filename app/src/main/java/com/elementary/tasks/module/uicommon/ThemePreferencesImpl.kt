@@ -20,9 +20,4 @@ class ThemePreferencesImpl(
     get() {
       return prefs.birthdayColor
     }
-
-  override val notePalette: Int
-    get() {
-      return prefs.notePalette
-    }
 }

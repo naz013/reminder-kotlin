@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -33,7 +34,10 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
+import com.github.naz013.ui.note.NoteFontProvider
+import com.github.naz013.ui.note.toAnnotatedString
 import com.github.naz013.ui.tag.TagChipRow
+import org.koin.compose.koinInject
 
 private const val OVERFLOW_ITEM_SHARE = 0
 private const val OVERFLOW_ITEM_ARCHIVE = 1
@@ -137,34 +141,26 @@ internal fun PreviewNoteScreen(
         .fillMaxWidth()
         .verticalScroll(rememberScrollState()),
     ) {
-      if (state.title.isNotEmpty()) {
-        Text(
-          text = state.title,
-          style =
-          MaterialTheme.typography.bodyLarge.copy(
-            color = state.content,
-            fontSize = state.titleTextSize.sp,
-            fontFamily = state.titleTypeface?.let { FontFamily(it) } ?: FontFamily.Default,
-            lineHeight = TextUnit.Unspecified,
-          ),
-          modifier = Modifier.padding(start = 24.dp, top = 24.dp, end = 24.dp),
-        )
+      val context = LocalContext.current
+      val noteFontProvider = koinInject<NoteFontProvider>()
+      val bodyFontFamily = remember(state.fontStyle) {
+        noteFontProvider.getTypeface(context, state.fontStyle)?.let { FontFamily(it) } ?: FontFamily.Default
+      }
+      val annotatedText = remember(state.document, state.fontSize) {
+        state.document.toAnnotatedString(baseFontSizeSp = state.fontSize.toInt()) { code ->
+          noteFontProvider.getTypeface(context, code)?.let { FontFamily(it) }
+        }
       }
       Text(
-        text = state.text,
+        text = annotatedText,
         style =
         MaterialTheme.typography.bodyLarge.copy(
           color = state.content,
-          fontSize = state.textSize.sp,
-          fontFamily = state.typeface?.let { FontFamily(it) } ?: FontFamily.Default,
+          fontSize = state.fontSize.sp,
+          fontFamily = bodyFontFamily,
           lineHeight = TextUnit.Unspecified,
         ),
-        modifier =
-        Modifier.padding(
-          start = 24.dp,
-          top = if (state.title.isNotEmpty()) 24.dp else 16.dp,
-          end = 24.dp,
-        ),
+        modifier = Modifier.padding(start = 24.dp, top = 24.dp, end = 24.dp),
       )
 
       TagChipRow(

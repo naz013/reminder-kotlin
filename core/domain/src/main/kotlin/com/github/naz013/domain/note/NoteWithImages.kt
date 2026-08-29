@@ -13,19 +13,11 @@ data class NoteWithImages(
   }
 
   override fun getSummary(): String {
-    return note?.summary ?: ""
+    return note?.content?.text ?: ""
   }
 
   fun getTitle(): String {
-    return note?.title ?: ""
-  }
-
-  fun getTitleFontSize(): Int {
-    return note?.titleFontSize ?: FontParams.DEFAULT_TITLE_FONT_SIZE
-  }
-
-  fun getTitleFontStyle(): Int {
-    return note?.titleFontStyle ?: FontParams.DEFAULT_FONT_STYLE
+    return note?.content?.displayTitle() ?: ""
   }
 
   override fun getKey(): String {
@@ -42,10 +34,6 @@ data class NoteWithImages(
 
   override fun getOpacity(): Int {
     return note?.opacity ?: 0
-  }
-
-  override fun getPalette(): Int {
-    return note?.palette ?: 0
   }
 
   fun getFontSize(): Int {

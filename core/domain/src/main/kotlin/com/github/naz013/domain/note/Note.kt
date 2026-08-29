@@ -7,14 +7,8 @@ import java.util.Random
 import java.util.UUID
 
 data class Note(
-  @SerializedName("summary")
-  var summary: String = "",
-  @SerializedName("title")
-  var title: String = "",
-  @SerializedName("titleFontSize")
-  var titleFontSize: Int = -1,
-  @SerializedName("titleFontStyle")
-  var titleFontStyle: Int = -1,
+  @SerializedName("content")
+  var content: NoteDocument = NoteDocument(),
   @SerializedName("key")
   var key: String = UUID.randomUUID().toString(),
   @SerializedName("date")
@@ -23,8 +17,6 @@ data class Note(
   var color: Int = 0,
   @SerializedName("style")
   var style: Int = 0,
-  @SerializedName("palette")
-  var palette: Int = 0,
   @SerializedName("uniqueId")
   var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
   @SerializedName("updatedAt")

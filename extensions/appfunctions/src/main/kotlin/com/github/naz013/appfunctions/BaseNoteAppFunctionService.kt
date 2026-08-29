@@ -14,6 +14,7 @@ import com.github.naz013.appfunctions.note.CreateSimpleNoteUseCase
 import com.github.naz013.appfunctions.note.NoteFunctionResult
 import com.github.naz013.appfunctions.note.SearchNotesParams
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.domain.note.displayTitle
 import com.github.naz013.repository.NoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -54,7 +55,7 @@ abstract class BaseNoteAppFunctionService :
 
       analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_CREATE_NOTE))
 
-      NoteFunctionResult(id = note.key, title = note.title, content = note.summary)
+      NoteFunctionResult(id = note.key, title = note.content.displayTitle(), content = note.content.text)
     }
 
   /**
@@ -74,7 +75,7 @@ abstract class BaseNoteAppFunctionService :
 
       noteRepository.searchByText(params.query)
         .mapNotNull { it.note }
-        .map { NoteFunctionResult(id = it.key, title = it.title, content = it.summary) }
+        .map { NoteFunctionResult(id = it.key, title = it.content.displayTitle(), content = it.content.text) }
     }
 
   private fun requirePro() {

@@ -1249,4 +1249,14 @@
     <string name="workflow_builder_select_tag">Wybierz tag</string>
     <string name="workflow_builder_no_tags">Brak dostępnych tagów. Najpierw utwórz tag.</string>
     <string name="tag_has_no_items">Brak elementów oznaczonych tym tagiem</string>
+    <string name="acc_select_text_format">Format tekstu</string>
+    <string name="acc_select_text_color">Kolor tekstu</string>
+    <string name="acc_select_gradient_color">Gradientowy kolor tekstu</string>
+    <string name="format_paragraph">Akapit</string>
+    <string name="gradient_start_color">Kolor początkowy</string>
+    <string name="gradient_end_color">Kolor końcowy</string>
+    <string name="gradient_angle">Kąt</string>
+    <string name="text_style_section">Styl</string>
+    <string name="text_color_mode_solid">Jednolity</string>
+    <string name="text_color_mode_gradient">Gradient</string>
 </resources>

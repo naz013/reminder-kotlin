@@ -4,6 +4,8 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteSpanAttribute
+import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.note.R
@@ -22,39 +24,18 @@ import org.junit.Test
 internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
 
   @Test
-  fun `onTextFieldValueChange updates the body text and clears a pending bold range`() {
+  fun `onTextFieldValueChange updates the body text`() {
     val viewModel = buildViewModel()
-    viewModel.onSpeechResult("dictated", 0..3)
 
     viewModel.onTextFieldValueChange(TextFieldValue("edited"))
 
     val state = viewModel.state.value
     assertEquals("edited", state.textFieldValue.text)
-    assertNull(state.boldRange)
   }
 
   @Test
-  fun `onTitleFieldValueChange updates the title text`() {
+  fun `onFontSizeChanged updates the whole-note default size when nothing is selected`() {
     val viewModel = buildViewModel()
-
-    viewModel.onTitleFieldValueChange(TextFieldValue("My title"))
-
-    assertEquals("My title", viewModel.state.value.titleFieldValue.text)
-  }
-
-  @Test
-  fun `onFieldFocused switches the focused field`() {
-    val viewModel = buildViewModel()
-
-    viewModel.onFieldFocused(NoteTextField.TITLE)
-
-    assertEquals(NoteTextField.TITLE, viewModel.state.value.focusedField)
-  }
-
-  @Test
-  fun `onFontSizeChanged updates the body font size when the body is focused`() {
-    val viewModel = buildViewModel()
-    viewModel.onFieldFocused(NoteTextField.BODY)
 
     viewModel.onFontSizeChanged(28)
 
@@ -63,20 +44,22 @@ internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
   }
 
   @Test
-  fun `onFontSizeChanged updates the title font size when the title is focused`() {
+  fun `onFontSizeChanged applies a span to the current selection instead`() {
     val viewModel = buildViewModel()
-    viewModel.onFieldFocused(NoteTextField.TITLE)
+    viewModel.onTextFieldValueChange(TextFieldValue("Hello world", selection = TextRange(0, 5)))
 
-    viewModel.onFontSizeChanged(32)
+    viewModel.onFontSizeChanged(28)
 
-    assertEquals(32, viewModel.state.value.titleFontSize)
-    verify { notePreferences.lastNoteTitleFontSize = 32 }
+    assertEquals(
+      listOf(NoteTextSpan(0, 5, NoteSpanAttribute.FontSize(28))),
+      viewModel.state.value.spans,
+    )
+    verify(exactly = 0) { notePreferences.lastNoteFontSize = any() }
   }
 
   @Test
-  fun `onFontStyleChanged updates the body style when the body is focused`() {
+  fun `onFontStyleChanged updates the whole-note default style when nothing is selected`() {
     val viewModel = buildViewModel()
-    viewModel.onFieldFocused(NoteTextField.BODY)
 
     viewModel.onFontStyleChanged(7)
 
@@ -85,14 +68,37 @@ internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
   }
 
   @Test
-  fun `onFontStyleChanged updates the title style when the title is focused`() {
+  fun `onToggleBold applies bold to the current selection`() {
     val viewModel = buildViewModel()
-    viewModel.onFieldFocused(NoteTextField.TITLE)
+    viewModel.onTextFieldValueChange(TextFieldValue("Hello world", selection = TextRange(0, 5)))
 
-    viewModel.onFontStyleChanged(8)
+    viewModel.onToggleBold()
 
-    assertEquals(8, viewModel.state.value.titleFontStyle)
-    verify { notePreferences.lastNoteTitleFontStyle = 8 }
+    assertEquals(listOf(NoteTextSpan(0, 5, NoteSpanAttribute.Bold)), viewModel.state.value.spans)
+  }
+
+  @Test
+  fun `onToggleBold removes bold when the whole selection is already bold`() {
+    val viewModel = buildViewModel()
+    viewModel.onTextFieldValueChange(TextFieldValue("Hello world", selection = TextRange(0, 5)))
+    viewModel.onToggleBold()
+
+    viewModel.onToggleBold()
+
+    assertEquals(emptyList<NoteTextSpan>(), viewModel.state.value.spans)
+  }
+
+  @Test
+  fun `onApplyLineFormat sets a heading on the current line`() {
+    val viewModel = buildViewModel()
+    viewModel.onTextFieldValueChange(TextFieldValue("Shopping\nMilk"))
+
+    viewModel.onApplyLineFormat(NoteSpanAttribute.Heading1)
+
+    assertEquals(
+      listOf(NoteTextSpan(0, "Shopping".length, NoteSpanAttribute.Heading1)),
+      viewModel.state.value.spans,
+    )
   }
 
   @Test
@@ -139,9 +145,9 @@ internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
   @Test
   fun `onTabClicked collapses the same tab when clicked again`() {
     val viewModel = buildViewModel()
-    viewModel.onTabClicked(EditTab.FONT)
+    viewModel.onTabClicked(EditTab.TEXT_FORMAT)
 
-    viewModel.onTabClicked(EditTab.FONT)
+    viewModel.onTabClicked(EditTab.TEXT_FORMAT)
 
     assertNull(viewModel.state.value.expandedTab)
   }
@@ -149,7 +155,7 @@ internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
   @Test
   fun `onTabClicked switches to a different tab`() {
     val viewModel = buildViewModel()
-    viewModel.onTabClicked(EditTab.FONT)
+    viewModel.onTabClicked(EditTab.TEXT_FORMAT)
 
     viewModel.onTabClicked(EditTab.IMAGE)
 
@@ -271,16 +277,15 @@ internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
   }
 
   @Test
-  fun `onSpeechResult replaces the text, moves the cursor to the end and stores the bold range`() {
+  fun `onSpeechResult replaces the text and moves the cursor to the end`() {
     val viewModel = buildViewModel()
 
-    viewModel.onSpeechResult("hello world", 0..4)
+    viewModel.onSpeechResult("hello world")
 
     val state = viewModel.state.value
     assertEquals(SpeechUiState.STOPPED, state.speechState)
     assertEquals("hello world", state.textFieldValue.text)
     assertEquals(TextRange("hello world".length), state.textFieldValue.selection)
-    assertEquals(0..4, state.boldRange)
   }
 
   @Test

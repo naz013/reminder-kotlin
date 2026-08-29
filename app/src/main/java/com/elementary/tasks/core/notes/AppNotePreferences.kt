@@ -20,8 +20,6 @@ class AppNotePreferences(
     get() = prefs.isNoteFontStyleRememberingEnabled
   override val isNoteColorRememberingEnabled: Boolean
     get() = prefs.isNoteColorRememberingEnabled
-  override val notePalette: Int
-    get() = prefs.notePalette
 
   override var isNotesGridEnabled: Boolean
     get() = prefs.isNotesGridEnabled
@@ -35,12 +33,6 @@ class AppNotePreferences(
   override var lastNoteFontStyle: Int
     get() = prefs.lastNoteFontStyle
     set(value) { prefs.lastNoteFontStyle = value }
-  override var lastNoteTitleFontSize: Int
-    get() = prefs.lastNoteTitleFontSize
-    set(value) { prefs.lastNoteTitleFontSize = value }
-  override var lastNoteTitleFontStyle: Int
-    get() = prefs.lastNoteTitleFontStyle
-    set(value) { prefs.lastNoteTitleFontStyle = value }
   override var lastNoteColor: Int
     get() = prefs.lastNoteColor
     set(value) { prefs.lastNoteColor = value }

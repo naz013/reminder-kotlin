@@ -42,8 +42,6 @@ object PrefsConstants {
   const val LAST_NOTE_COLOR = "last_note_color"
   const val LAST_NOTE_FONT_SIZE = "last_note_font_size"
   const val LAST_NOTE_FONT_STYLE = "last_note_font_style"
-  const val LAST_NOTE_TITLE_FONT_SIZE = "last_note_title_font_size"
-  const val LAST_NOTE_TITLE_FONT_STYLE = "last_note_title_font_style"
   const val NOTE_COLOR_OPACITY = "note_color_opacity"
 
   const val DROPBOX_TOKEN = "dropbox_token"
@@ -62,7 +60,6 @@ object PrefsConstants {
   const val DO_NOT_DISTURB_TO = "do_not_disturb_to"
   const val DO_NOT_DISTURB_IGNORE = "do_not_disturb_ignore"
   const val DO_NOT_DISTURB_ACTION = "do_not_disturb_action"
-  const val NOTE_PALETTE = "note_palette"
   const val AUTO_BACKUP_STATE = "auto_backup_state"
   const val NIGHT_MODE = "night_mode"
   const val TO_BIRTHDAY_DAYS = "to_birthday_days"

@@ -7,7 +7,7 @@ import com.github.naz013.domain.Tag
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.files.model.NoteV3Json
+import com.github.naz013.files.model.NoteV4Json
 import com.github.naz013.files.model.SettingsModel
 import com.github.naz013.files.model.TagAssignmentsSnapshotJson
 import com.github.naz013.sync.images.CachedFile
@@ -25,7 +25,7 @@ internal class GetLocalUuIdUseCase {
       is RecurPreset -> any.id
       is Tag -> any.id
       is CachedFile -> any.name
-      is NoteV3Json -> any.key
+      is NoteV4Json -> any.key
       else -> throw IllegalArgumentException("Unsupported type: ${any::class.java}")
     }
   }

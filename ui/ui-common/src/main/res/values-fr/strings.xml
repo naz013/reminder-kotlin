@@ -1249,4 +1249,14 @@
     <string name="workflow_builder_select_tag">Sélectionner une étiquette</string>
     <string name="workflow_builder_no_tags">Aucune étiquette disponible. Créez d\'abord une étiquette.</string>
     <string name="tag_has_no_items">Aucun élément associé à cette étiquette pour le moment</string>
+    <string name="acc_select_text_format">Format du texte</string>
+    <string name="acc_select_text_color">Couleur du texte</string>
+    <string name="acc_select_gradient_color">Couleur dégradée du texte</string>
+    <string name="format_paragraph">Paragraphe</string>
+    <string name="gradient_start_color">Couleur de départ</string>
+    <string name="gradient_end_color">Couleur de fin</string>
+    <string name="gradient_angle">Angle</string>
+    <string name="text_style_section">Style</string>
+    <string name="text_color_mode_solid">Uni</string>
+    <string name="text_color_mode_gradient">Dégradé</string>
 </resources>

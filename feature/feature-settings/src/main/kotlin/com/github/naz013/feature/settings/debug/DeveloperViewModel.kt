@@ -9,6 +9,9 @@ import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.history.EventHistoricalRecord
 import com.github.naz013.domain.history.EventHistoricalRecordType
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
+import com.github.naz013.domain.note.NoteSpanAttribute
+import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -154,6 +157,13 @@ internal class DeveloperViewModel(
       insertDemoBirthdays()
       insertDemoNotes()
       navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("Demo data has been inserted")))
+    }
+  }
+
+  fun onInsertHugeFormattedNotesClick() {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      insertHugeFormattedNotes()
+      navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("Huge formatted notes have been inserted")))
     }
   }
 
@@ -430,8 +440,7 @@ internal class DeveloperViewModel(
     notes.forEach { demoNote ->
       noteRepository.save(
         Note(
-          title = demoNote.title,
-          summary = demoNote.summary,
+          content = NoteDocument.fromLegacy(title = demoNote.title, summary = demoNote.summary),
           color = demoNote.color,
           date = dateTimeManager.getNowGmtDateTime(),
           syncState = SyncState.Synced,
@@ -439,6 +448,120 @@ internal class DeveloperViewModel(
       )
     }
   }
+
+  /**
+   * Stress-tests the rich-text note editor/renderer: a few large notes, each with a heading,
+   * body text several dozen lines long, and inline formatting (bold/italic/underline/
+   * strikethrough/font family/font size/solid+gradient color) on nearly every word, plus
+   * interleaved heading/bullet line formats - thousands of [NoteTextSpan]s per note, far beyond
+   * anything a hand-typed note would carry, to exercise span-diffing, bullet decoration and
+   * rendering under load rather than only on small notes.
+   */
+  private suspend fun insertHugeFormattedNotes() {
+    val specs = listOf(
+      StressTestSpec("Stress Test - Mixed Formatting", StressStyle.MIXED, ThemeProvider.AppColorIndex.INDIGO, lineCount = 80),
+      StressTestSpec("Stress Test - Bullet Heavy", StressStyle.BULLET_HEAVY, ThemeProvider.AppColorIndex.TEAL, lineCount = 100),
+      StressTestSpec(
+        "Stress Test - Color & Gradient Overload",
+        StressStyle.COLOR_HEAVY,
+        ThemeProvider.AppColorIndex.DEEP_ORANGE,
+        lineCount = 70,
+      ),
+    )
+    specs.forEach { spec ->
+      val body = buildStressTestDocument(spec.lineCount, spec.style)
+      val titleSpan = NoteTextSpan(0, spec.title.length, NoteSpanAttribute.Heading1)
+      val bodyOffset = spec.title.length + 1
+      val document = NoteDocument(
+        text = "${spec.title}\n${body.text}",
+        spans = listOf(titleSpan) + body.spans.map { it.copy(start = it.start + bodyOffset, end = it.end + bodyOffset) },
+      )
+      noteRepository.save(
+        Note(
+          content = document,
+          color = spec.color,
+          date = dateTimeManager.getNowGmtDateTime(),
+          syncState = SyncState.Synced,
+        ),
+      )
+    }
+  }
+
+  private fun buildStressTestDocument(lineCount: Int, style: StressStyle): NoteDocument {
+    val text = StringBuilder()
+    val spans = mutableListOf<NoteTextSpan>()
+
+    for (lineIndex in 0 until lineCount) {
+      if (lineIndex > 0) text.append('\n')
+      val lineStart = text.length
+      val sentenceCount = 1 + lineIndex % 3
+      val lineText = (0 until sentenceCount).joinToString(" ") {
+        STRESS_TEST_SENTENCES[(lineIndex + it) % STRESS_TEST_SENTENCES.size]
+      }
+      text.append(lineText)
+
+      lineFormatFor(style, lineIndex)?.let { attribute ->
+        spans += NoteTextSpan(lineStart, lineStart + lineText.length, attribute)
+      }
+
+      var wordStart = lineStart
+      lineText.split(' ').forEachIndexed { wordIndex, word ->
+        val wordEnd = wordStart + word.length
+        inlineAttributeFor(style, lineIndex, wordIndex)?.let { attribute ->
+          spans += NoteTextSpan(wordStart, wordEnd, attribute)
+        }
+        wordStart = wordEnd + 1
+      }
+    }
+
+    return NoteDocument(text = text.toString(), spans = spans)
+  }
+
+  private fun lineFormatFor(style: StressStyle, lineIndex: Int): NoteSpanAttribute? = when (style) {
+    StressStyle.MIXED -> when {
+      lineIndex % 15 == 0 -> NoteSpanAttribute.Heading1
+      lineIndex % 10 == 0 -> NoteSpanAttribute.Heading2
+      lineIndex % 7 == 0 -> NoteSpanAttribute.Heading3
+      lineIndex % 3 == 0 -> NoteSpanAttribute.BulletItem
+      else -> null
+    }
+    StressStyle.BULLET_HEAVY -> if (lineIndex % 20 == 0) NoteSpanAttribute.Heading2 else NoteSpanAttribute.BulletItem
+    StressStyle.COLOR_HEAVY -> when {
+      lineIndex % 12 == 0 -> NoteSpanAttribute.Heading2
+      lineIndex % 4 == 0 -> NoteSpanAttribute.BulletItem
+      else -> null
+    }
+  }
+
+  private fun inlineAttributeFor(style: StressStyle, lineIndex: Int, wordIndex: Int): NoteSpanAttribute? {
+    if (style == StressStyle.COLOR_HEAVY) {
+      return when (wordIndex % 3) {
+        0 -> NoteSpanAttribute.SolidColor(STRESS_TEST_SOLID_COLORS[(lineIndex + wordIndex) % STRESS_TEST_SOLID_COLORS.size])
+        1 -> NoteSpanAttribute.GradientColor(
+          colors = STRESS_TEST_GRADIENT_COLORS[(lineIndex + wordIndex) % STRESS_TEST_GRADIENT_COLORS.size],
+          angleDegrees = ((lineIndex * 37 + wordIndex * 11) % 360).toFloat(),
+        )
+        else -> NoteSpanAttribute.Bold
+      }
+    }
+    return when (wordIndex % 8) {
+      0 -> NoteSpanAttribute.Bold
+      1 -> NoteSpanAttribute.Italic
+      2 -> NoteSpanAttribute.Underline
+      3 -> NoteSpanAttribute.Strikethrough
+      4 -> NoteSpanAttribute.FontSize(STRESS_TEST_FONT_SIZES[(lineIndex + wordIndex) % STRESS_TEST_FONT_SIZES.size])
+      5 -> NoteSpanAttribute.FontFamily(STRESS_TEST_FONT_CODES[(lineIndex + wordIndex) % STRESS_TEST_FONT_CODES.size])
+      6 -> NoteSpanAttribute.SolidColor(STRESS_TEST_SOLID_COLORS[(lineIndex + wordIndex) % STRESS_TEST_SOLID_COLORS.size])
+      else -> NoteSpanAttribute.GradientColor(
+        colors = STRESS_TEST_GRADIENT_COLORS[(lineIndex + wordIndex) % STRESS_TEST_GRADIENT_COLORS.size],
+        angleDegrees = ((lineIndex * 37 + wordIndex * 11) % 360).toFloat(),
+      )
+    }
+  }
+
+  private enum class StressStyle { MIXED, BULLET_HEAVY, COLOR_HEAVY }
+
+  private data class StressTestSpec(val title: String, val style: StressStyle, val color: Int, val lineCount: Int)
 
   /**
    * Insights reads [EventHistoricalRecord]s of type Reminder to build streaks, a weekly trend
@@ -664,6 +787,31 @@ internal class DeveloperViewModel(
     private val RECURRENCE_TEST_OPTIONS = RECURRENCE_TEST_MINUTES.map { "$it minute${if (it == 1) "" else "s"}" }
     private val RECURRENCE_TEST_TYPES =
       listOf("Once", "Countdown", "Daily", "Weekly", "Monthly", "RelativeMonthly", "Yearly", "ICalendar")
+
+    private val STRESS_TEST_SENTENCES = listOf(
+      "The quick brown fox jumps over the lazy dog near the riverbank at dawn.",
+      "Reminder apps should feel fast even when a note grows far beyond a few lines.",
+      "Every paragraph in this stress test carries its own mix of bold, italic and colored words.",
+      "Rich text rendering must stay smooth while scrolling through hundreds of formatted lines.",
+      "Span diffing has to keep up as the cursor moves through thousands of overlapping styles.",
+      "Bullet points, headings and plain paragraphs are interleaved on purpose throughout this note.",
+      "Gradients, solid colors, custom fonts and sizes all compete for the same handful of words.",
+      "This sentence exists purely to give the layout engine more text to measure and wrap.",
+    )
+    private val STRESS_TEST_SOLID_COLORS = listOf(
+      0xFFE53935.toInt(),
+      0xFF1E88E5.toInt(),
+      0xFF43A047.toInt(),
+      0xFFFB8C00.toInt(),
+      0xFF8E24AA.toInt(),
+    )
+    private val STRESS_TEST_GRADIENT_COLORS = listOf(
+      listOf(0xFFE53935.toInt(), 0xFF1E88E5.toInt()),
+      listOf(0xFF43A047.toInt(), 0xFFFDD835.toInt()),
+      listOf(0xFF8E24AA.toInt(), 0xFFFB8C00.toInt()),
+    )
+    private val STRESS_TEST_FONT_CODES = listOf(0, 9, 20)
+    private val STRESS_TEST_FONT_SIZES = listOf(12, 16, 20, 26, 32)
   }
 
   private data class DemoNote(

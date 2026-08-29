@@ -1247,4 +1247,14 @@
     <string name="workflow_builder_select_tag">Pilih tag</string>
     <string name="workflow_builder_no_tags">Tidak ada tag yang tersedia. Buat tag terlebih dahulu.</string>
     <string name="tag_has_no_items">Belum ada item yang ditandai dengan tag ini</string>
+    <string name="acc_select_text_format">Format teks</string>
+    <string name="acc_select_text_color">Warna teks</string>
+    <string name="acc_select_gradient_color">Warna teks gradien</string>
+    <string name="format_paragraph">Paragraf</string>
+    <string name="gradient_start_color">Warna awal</string>
+    <string name="gradient_end_color">Warna akhir</string>
+    <string name="gradient_angle">Sudut</string>
+    <string name="text_style_section">Gaya</string>
+    <string name="text_color_mode_solid">Padat</string>
+    <string name="text_color_mode_gradient">Gradien</string>
 </resources>

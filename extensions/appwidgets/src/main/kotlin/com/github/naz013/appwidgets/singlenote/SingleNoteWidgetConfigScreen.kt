@@ -32,6 +32,7 @@ import com.github.naz013.appwidgets.singlenote.drawable.NoteDrawableParams
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 import com.github.naz013.ui.note.CheckableNoteCard
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.note.UiNoteListItem
 import kotlin.math.roundToInt
@@ -216,14 +217,14 @@ private fun SingleNoteWidgetConfigScreenPreview() {
         notes = listOf(
           UiNoteListItem(
             id = "1",
-            title = "Shopping",
-            text = "Grocery list: milk, eggs, bread",
+            content = NoteDocument.fromLegacy(
+              title = "Shopping",
+              summary = "Grocery list: milk, eggs, bread",
+            ),
             backgroundColor = Color(0xFFFFEB3B),
             textColor = Color.Black,
             fontStyle = 0,
             fontSize = 16f,
-            titleFontStyle = 0,
-            titleFontSize = 18f,
             images = emptyList<UiNoteImage>(),
           ),
         ),

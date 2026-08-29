@@ -1245,4 +1245,14 @@
     <string name="workflow_builder_select_tag">Tag auswählen</string>
     <string name="workflow_builder_no_tags">Keine Tags verfügbar. Erstelle zuerst einen Tag.</string>
     <string name="tag_has_no_items">Diesem Tag sind noch keine Elemente zugeordnet</string>
+    <string name="acc_select_text_format">Textformat</string>
+    <string name="acc_select_text_color">Textfarbe</string>
+    <string name="acc_select_gradient_color">Verlaufsfarbe für Text</string>
+    <string name="format_paragraph">Absatz</string>
+    <string name="gradient_start_color">Startfarbe</string>
+    <string name="gradient_end_color">Endfarbe</string>
+    <string name="gradient_angle">Winkel</string>
+    <string name="text_style_section">Stil</string>
+    <string name="text_color_mode_solid">Einfarbig</string>
+    <string name="text_color_mode_gradient">Verlauf</string>
 </resources>
