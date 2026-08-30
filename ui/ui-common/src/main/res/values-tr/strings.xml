@@ -1260,4 +1260,6 @@
     <string name="text_style_section">Stil</string>
     <string name="text_color_mode_solid">Düz</string>
     <string name="text_color_mode_gradient">Geçişli</string>
+    <string name="staggered_grid_view">Kademeli ızgara görünümü</string>
+    <string name="notes_switch_layout">Not düzenini değiştir</string>
 </resources>

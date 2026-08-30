@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.notes
 
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.ui.note.ListLayoutMode
 import com.github.naz013.ui.note.NotePreferences
 
 /**
@@ -21,9 +22,11 @@ class AppNotePreferences(
   override val isNoteColorRememberingEnabled: Boolean
     get() = prefs.isNoteColorRememberingEnabled
 
-  override var isNotesGridEnabled: Boolean
-    get() = prefs.isNotesGridEnabled
-    set(value) { prefs.isNotesGridEnabled = value }
+  // Stored as the enum name (not ordinal) so reordering ListLayoutMode can't silently remap a
+  // saved preference; an unknown/empty stored value falls back to LIST.
+  override var notesLayoutMode: ListLayoutMode
+    get() = runCatching { ListLayoutMode.valueOf(prefs.notesLayoutMode) }.getOrDefault(ListLayoutMode.LIST)
+    set(value) { prefs.notesLayoutMode = value.name }
   override var noteOrder: String
     get() = prefs.noteOrder
     set(value) { prefs.noteOrder = value }

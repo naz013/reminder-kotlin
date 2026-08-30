@@ -461,9 +461,9 @@ class Prefs(
     get() = getString(PrefsConstants.NOTES_ORDER)
     set(value) = putString(PrefsConstants.NOTES_ORDER, value)
 
-  var isNotesGridEnabled: Boolean
-    get() = getBoolean(PrefsConstants.NOTES_LIST_STYLE)
-    set(value) = putBoolean(PrefsConstants.NOTES_LIST_STYLE, value)
+  var notesLayoutMode: String
+    get() = getString(PrefsConstants.NOTES_LAYOUT_MODE, def = "")
+    set(value) = putString(PrefsConstants.NOTES_LAYOUT_MODE, value)
 
   var rateCount: Int
     get() = getInt(PrefsConstants.RATE_COUNT)

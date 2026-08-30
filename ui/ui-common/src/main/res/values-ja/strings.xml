@@ -1259,4 +1259,6 @@
     <string name="text_style_section">スタイル</string>
     <string name="text_color_mode_solid">単色</string>
     <string name="text_color_mode_gradient">グラデーション</string>
+    <string name="staggered_grid_view">スタッガードグリッド表示</string>
+    <string name="notes_switch_layout">メモのレイアウトを切り替え</string>
 </resources>

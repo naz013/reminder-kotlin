@@ -128,6 +128,7 @@ object DrawableCatalog {
     val Gif = R.drawable.ic_fluent_gif
     val Globe = R.drawable.ic_fluent_globe
     val Grid = R.drawable.ic_fluent_grid
+    val GridStaggered = R.drawable.ic_fluent_grid_staggered
     val Group = R.drawable.ic_fluent_group
     val Heart = R.drawable.ic_fluent_heart
     val History = R.drawable.ic_fluent_history

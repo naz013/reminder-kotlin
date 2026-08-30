@@ -1257,4 +1257,6 @@
     <string name="text_style_section">نمط</string>
     <string name="text_color_mode_solid">خالص</string>
     <string name="text_color_mode_gradient">متدرج</string>
+    <string name="staggered_grid_view">عرض الشبكة المتدرجة</string>
+    <string name="notes_switch_layout">تبديل تخطيط الملاحظات</string>
 </resources>

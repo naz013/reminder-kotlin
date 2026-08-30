@@ -74,6 +74,7 @@ object AppIcons {
     val Gif: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Gif)
     val Globe: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Globe)
     val Grid: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Grid)
+    val GridStaggered: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.GridStaggered)
     val Group: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Group)
     val Heart: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Heart)
     val History: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.History)

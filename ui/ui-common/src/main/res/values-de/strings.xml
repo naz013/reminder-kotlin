@@ -1255,4 +1255,6 @@
     <string name="text_style_section">Stil</string>
     <string name="text_color_mode_solid">Einfarbig</string>
     <string name="text_color_mode_gradient">Verlauf</string>
+    <string name="staggered_grid_view">Gestaffelte Rasteransicht</string>
+    <string name="notes_switch_layout">Notizlayout wechseln</string>
 </resources>

@@ -1257,4 +1257,6 @@
     <string name="text_style_section">Gaya</string>
     <string name="text_color_mode_solid">Padat</string>
     <string name="text_color_mode_gradient">Gradien</string>
+    <string name="staggered_grid_view">Tampilan kisi bertingkat</string>
+    <string name="notes_switch_layout">Ganti tata letak catatan</string>
 </resources>

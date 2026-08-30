@@ -12,7 +12,7 @@ interface NotePreferences {
   val isNoteFontStyleRememberingEnabled: Boolean
   val isNoteColorRememberingEnabled: Boolean
 
-  var isNotesGridEnabled: Boolean
+  var notesLayoutMode: ListLayoutMode
   var noteOrder: String
   var lastNoteFontSize: Int
   var lastNoteFontStyle: Int

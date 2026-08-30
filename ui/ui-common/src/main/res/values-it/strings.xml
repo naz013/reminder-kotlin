@@ -1259,4 +1259,6 @@
     <string name="text_style_section">Stile</string>
     <string name="text_color_mode_solid">Tinta unita</string>
     <string name="text_color_mode_gradient">Sfumato</string>
+    <string name="staggered_grid_view">Vista griglia sfalsata</string>
+    <string name="notes_switch_layout">Cambia layout delle note</string>
 </resources>

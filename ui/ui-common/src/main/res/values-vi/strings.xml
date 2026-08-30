@@ -1257,4 +1257,6 @@
     <string name="text_style_section">Kiểu</string>
     <string name="text_color_mode_solid">Đặc</string>
     <string name="text_color_mode_gradient">Chuyển sắc</string>
+    <string name="staggered_grid_view">Chế độ lưới so le</string>
+    <string name="notes_switch_layout">Chuyển đổi bố cục ghi chú</string>
 </resources>

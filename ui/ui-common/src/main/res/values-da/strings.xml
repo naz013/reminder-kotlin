@@ -1257,4 +1257,6 @@
     <string name="text_style_section">Stil</string>
     <string name="text_color_mode_solid">Ensfarvet</string>
     <string name="text_color_mode_gradient">Farveovergang</string>
+    <string name="staggered_grid_view">Forskudt gittervisning</string>
+    <string name="notes_switch_layout">Skift notatlayout</string>
 </resources>

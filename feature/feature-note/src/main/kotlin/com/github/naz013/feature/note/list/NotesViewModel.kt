@@ -33,6 +33,7 @@ import com.github.naz013.ui.common.selection.select
 import com.github.naz013.ui.common.selection.selectedCount
 import com.github.naz013.ui.common.selection.selectedIds
 import com.github.naz013.ui.common.selection.toggleSelection
+import com.github.naz013.ui.note.ListLayoutMode
 import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.NoteNotifier
 import com.github.naz013.ui.note.NotePreferences
@@ -79,14 +80,14 @@ internal class NotesViewModel(
   private val _notesScreenState = MutableStateFlow(
     NotesScreenState(
       isArchived = isArchived,
-      isGrid = notePreferences.isNotesGridEnabled,
+      layoutMode = notePreferences.notesLayoutMode,
       sortOrder = notePreferences.noteOrder,
     ),
   )
   val notesScreenState = _notesScreenState.stateInWhileSubscribed(
     NotesScreenState(
       isArchived = isArchived,
-      isGrid = notePreferences.isNotesGridEnabled,
+      layoutMode = notePreferences.notesLayoutMode,
       sortOrder = notePreferences.noteOrder,
     )
   )
@@ -151,10 +152,9 @@ internal class NotesViewModel(
     sortOrder.value = order
   }
 
-  fun onGridToggleClick() {
-    val newValue = !_notesScreenState.value.isGrid
-    notePreferences.isNotesGridEnabled = newValue
-    _notesScreenState.update { it.copy(isGrid = newValue) }
+  fun onLayoutModeSelected(mode: ListLayoutMode) {
+    notePreferences.notesLayoutMode = mode
+    _notesScreenState.update { it.copy(layoutMode = mode) }
   }
 
   fun onAddClick() {
