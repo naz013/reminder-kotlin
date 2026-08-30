@@ -17,6 +17,7 @@ data class UiReminderList(
   val tags: List<UiTextElement>,
   val actions: UiReminderListActions,
   val state: UiReminderListState,
+  val isSelected: Boolean = false,
 ) : UiReminderEventsList()
 
 data class UiReminderListState(

@@ -55,6 +55,9 @@ import com.github.naz013.ui.tag.TagChipState
 internal fun EditBirthdayScreen(
   modifier: Modifier = Modifier,
   state: EditBirthdayState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onDeleteMenuClick: () -> Unit,
@@ -78,8 +81,8 @@ internal fun EditBirthdayScreen(
         title = { Text(stringResource(if (state.hasId) R.string.edit_birthday else R.string.add_birthday)) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             enabled = !state.isLoading,
             onClick = onBackClick,
           )

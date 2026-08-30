@@ -1262,4 +1262,6 @@
     <string name="text_color_mode_gradient">渐变</string>
     <string name="staggered_grid_view">交错网格视图</string>
     <string name="notes_switch_layout">切换笔记布局</string>
+    <string name="select_reminder_to_see_details">选择提醒事项以查看详细信息</string>
+    <string name="select_birthday_to_see_details">选择生日以查看详细信息</string>
 </resources>

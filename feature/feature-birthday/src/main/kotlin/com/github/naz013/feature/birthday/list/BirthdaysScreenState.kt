@@ -14,6 +14,13 @@ internal data class BirthdaysScreenState(
   val confirmDeleteId: String? = null,
 )
 
+internal fun BirthdaysScreenState.withSelectedItem(selectedItemId: String?): BirthdaysScreenState {
+  val ready = listState as? ListState.Ready ?: return this
+  return copy(
+    listState = ListState.Ready(ready.items.map { it.copy(isSelected = it.id == selectedItemId) }),
+  )
+}
+
 internal sealed interface ListState {
   data object Loading : ListState
   data class Ready(val items: List<UiAgendaBirthday>) : ListState

@@ -4,10 +4,12 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.feature.birthday.create.EditBirthdayScreen
@@ -20,6 +22,9 @@ import com.github.naz013.feature.birthday.preview.PreviewBirthdayScreen
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayState
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayViewModel
 import com.github.naz013.tags.TagsNavKey
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.common.Permissions
@@ -35,7 +40,16 @@ fun EntryProviderScope<NavKey>.birthdaysEntries(
   onCallClick: (String) -> Unit,
   onSmsClick: (String) -> Unit,
 ) {
-  entry<BirthdaysNavKey.List> { ListEntry(backStack) }
+  entry<BirthdaysNavKey.List>(
+    metadata = ListDetailSceneStrategy.listPane(
+      detailPlaceholder = {
+        DetailPanePlaceholder(
+          text = stringResource(R.string.select_birthday_to_see_details),
+          icon = AppIcons.Fluent.FoodCake,
+        )
+      },
+    ),
+  ) { ListEntry(backStack) }
   entry<BirthdaysNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
@@ -43,7 +57,10 @@ fun EntryProviderScope<NavKey>.birthdaysEntries(
     PreviewEntry(key, backStack, renderAsDetailPane, adsContent, onCallClick, onSmsClick)
   }
   entry<BirthdaysNavKey.Edit>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
-    EditEntry(key, backStack, adsContent)
+    // Fixed at first composition, not re-read on every recomposition - see the matching comment
+    // in ReminderPreviewNavGraph.kt.
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    EditEntry(key, backStack, renderAsDetailPane, adsContent)
   }
 }
 
@@ -53,11 +70,31 @@ private fun ListEntry(
 ) {
   val viewModel = koinViewModel<BirthdaysViewModel>()
 
+  val selectedItemId =
+    backStack.lastOrNull()?.let { key ->
+      when (key) {
+        is BirthdaysNavKey.Preview -> key.id
+        is BirthdaysNavKey.Edit -> key.id
+        else -> null
+      }
+    }
+  LaunchedEffect(selectedItemId) { viewModel.onSelectedItemIdChanged(selectedItemId) }
+
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is BirthdaysViewModel.NavigationEvent.OpenPreview -> backStack.add(BirthdaysNavKey.Preview(event.id))
-      is BirthdaysViewModel.NavigationEvent.OpenEdit -> backStack.add(BirthdaysNavKey.Edit(event.id))
-      is BirthdaysViewModel.NavigationEvent.OpenNewBirthday -> backStack.add(BirthdaysNavKey.Edit())
+      is BirthdaysViewModel.NavigationEvent.OpenPreview -> {
+        backStack.navigateToDetailPane(BirthdaysNavKey.Preview(event.id))
+      }
+
+      is BirthdaysViewModel.NavigationEvent.OpenEdit -> {
+        backStack.navigateToEditDetailPane(BirthdaysNavKey.Edit(event.id)) {
+          it is BirthdaysNavKey.Preview && it.id == event.id
+        }
+      }
+
+      is BirthdaysViewModel.NavigationEvent.OpenNewBirthday -> {
+        backStack.navigateToDetailPane(BirthdaysNavKey.Edit())
+      }
     }
   }
 
@@ -128,6 +165,7 @@ private fun PreviewEntry(
 private fun EditEntry(
   key: BirthdaysNavKey.Edit,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
   adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<EditBirthdayViewModel> { parametersOf(key) }
@@ -160,6 +198,7 @@ private fun EditEntry(
 
   EditBirthdayScreen(
     state = state,
+    renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSaveClick = {
       if (state.number.isNotEmpty()) {
@@ -190,4 +229,33 @@ private fun EditEntry(
 private fun android.content.Context.hideKeyboard() {
   val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
   (this as? android.app.Activity)?.window?.currentFocus?.windowToken?.let { imm?.hideSoftInputFromWindow(it, 0) }
+}
+
+/**
+ * Navigation for the birthdays two-pane list's detail pane: if the current top entry is itself a
+ * birthday preview or edit form, replace it instead of stacking another one on top. Mirrors
+ * `AppNavGraph.kt`'s identically-purposed private helper - kept local here since List/Preview/Edit
+ * are all registered by this same graph, unlike Agenda/Home which reach Preview/Edit through
+ * cross-feature lambdas.
+ */
+private fun MutableList<NavKey>.navigateToDetailPane(key: NavKey) {
+  val top = lastOrNull()
+  if (top is BirthdaysNavKey.Preview || top is BirthdaysNavKey.Edit) {
+    removeLastOrNull()
+  }
+  add(key)
+}
+
+/**
+ * Navigation into an Edit screen from the birthdays detail pane: if the detail pane is currently
+ * showing a Preview of that very same item ([isSameItemPreview] matches the top entry), push Edit
+ * on top of it instead of replacing it - see the matching comment in `AppNavGraph.kt`.
+ */
+private fun MutableList<NavKey>.navigateToEditDetailPane(key: NavKey, isSameItemPreview: (NavKey) -> Boolean) {
+  val top = lastOrNull()
+  if (top != null && isSameItemPreview(top)) {
+    add(key)
+  } else {
+    navigateToDetailPane(key)
+  }
 }

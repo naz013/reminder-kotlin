@@ -10,6 +10,13 @@ data class RemindersArchiveScreenState(
   val filteredReminders: List<ReminderV2> = emptyList(),
 )
 
+internal fun RemindersArchiveScreenState.withSelectedItem(selectedItemId: String?): RemindersArchiveScreenState {
+  val ready = listState as? ListState.Ready ?: return this
+  return copy(
+    listState = ListState.Ready(ready.items.map { it.copy(isSelected = it.id == selectedItemId) }),
+  )
+}
+
 sealed interface ListState {
   data object Loading : ListState
 

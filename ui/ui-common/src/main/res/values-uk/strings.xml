@@ -1262,4 +1262,6 @@
     <string name="text_color_mode_gradient">Градієнт</string>
     <string name="staggered_grid_view">Ступінчаста сітка</string>
     <string name="notes_switch_layout">Перемкнути макет нотаток</string>
+    <string name="select_reminder_to_see_details">Виберіть нагадування, щоб побачити деталі</string>
+    <string name="select_birthday_to_see_details">Виберіть день народження, щоб побачити деталі</string>
 </resources>

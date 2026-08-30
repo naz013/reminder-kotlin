@@ -18,6 +18,7 @@ import androidx.compose.material3.rememberWideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -150,12 +151,14 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
             else -> true
           }
       }
+  val railDestinations = appRailDestinations(visibleSections = visibleHeaderSections)
+  val railRootKeys = remember(railDestinations) { railDestinations.map { it.key }.toSet() }
   val persistentNavRailStrategy =
     PersistentNavRailSceneDecoratorStrategy(
-      destinations = appRailDestinations(visibleSections = visibleHeaderSections),
+      destinations = railDestinations,
       backStack = backStack,
       railState = navRailState,
-      onNavigate = { key -> backStack.navigateToRailDestination(key) },
+      onNavigate = { key -> backStack.navigateToRailDestination(key, railRootKeys) },
     )
 
   // Derived here, not in the feature modules - only this module sees every concrete NavKey type.
@@ -173,7 +176,12 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
   val isRenderedAsDetailPane: (NavKey) -> Boolean = { key ->
     isMediumOrWiderWidth &&
       backStack.lastOrNull() == key &&
-      backStack.getOrNull(backStack.lastIndex - 1).let { it == HomeNavKey.Main || it == AgendaNavKey.List }
+      backStack.getOrNull(backStack.lastIndex - 1).let {
+        it == HomeNavKey.Main ||
+          it == AgendaNavKey.List ||
+          it == RemindersArchiveNavKey.List ||
+          it == BirthdaysNavKey.List
+      }
   }
 
   DisposableEffect(backStack) {
@@ -292,6 +300,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         buildReminderEntries(
           backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           rememberContactPhonePicker = { rememberContactPhonePicker() },
         )
         todoEditEntries(
@@ -346,7 +355,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         remindersArchiveEntries(
           backStack = backStack,
-          navigateBeyondBackStack = { key -> appNavBridge.navigate(key) },
+          selectedItemId = selectedEventId,
+          onOpenEdit = { id -> backStack.navigateToDetailPane(BuildReminderNavKey.Main(id = id)) },
         )
         settingsEntries(
           backStack = backStack,
@@ -481,21 +491,30 @@ private fun headerSectionRailDestination(section: HeaderNavigationSection): AppD
 /**
  * Click behavior for a [PersistentNavRailSceneDecoratorStrategy] item: if [key] is already
  * somewhere on the backstack, pop back to it (dropping everything pushed above it, like tapping
- * an already-selected tab); otherwise push it. Keeps the single flat backstack from growing
- * unbounded as sections are revisited.
+ * an already-selected tab). Otherwise, first collapse the tab currently on top back to its own
+ * root - using [railRootKeys], the set of every rail destination's key - before pushing the new
+ * tab's root. Without this, a preview/edit screen left open in the tab being switched away from
+ * (e.g. Birthdays with a birthday preview open) stays on the backstack underneath the new tab, and
+ * resurfaces via system back after switching tabs instead of the tab's plain list. Keeps the
+ * single flat backstack from growing unbounded as sections are revisited.
  */
-private fun MutableList<NavKey>.navigateToRailDestination(key: NavKey) {
+private fun MutableList<NavKey>.navigateToRailDestination(key: NavKey, railRootKeys: Set<NavKey>) {
   val existingIndex = indexOf(key)
   if (existingIndex >= 0) {
     while (size > existingIndex + 1) removeLastOrNull()
   } else {
+    val currentRootIndex = indexOfLast { it in railRootKeys }
+    if (currentRootIndex >= 0) {
+      while (size > currentRootIndex + 1) removeLastOrNull()
+    }
     add(key)
   }
 }
 
 /**
- * Navigation for a two-pane list's detail pane (Home, Agenda): if the current top entry is itself
- * a reminder/birthday preview or edit form, replace it instead of stacking another one on top.
+ * Navigation for a two-pane list's detail pane (Home, Agenda, Reminders Archive): if the current
+ * top entry is itself a reminder/birthday preview or edit form, replace it instead of stacking
+ * another one on top.
  * Only ever matters in two-pane mode - on Compact width the list isn't visible while a preview or
  * edit form is showing, so this can't be reached with one already on top. Without it, picking a
  * second list item (or its Edit action) pushes a second `detailPane()`-tagged entry, which

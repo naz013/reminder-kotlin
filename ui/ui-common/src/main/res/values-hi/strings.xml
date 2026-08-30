@@ -1263,4 +1263,6 @@
     <string name="text_color_mode_gradient">ग्रेडिएंट</string>
     <string name="staggered_grid_view">स्तरित ग्रिड दृश्य</string>
     <string name="notes_switch_layout">नोट्स लेआउट बदलें</string>
+    <string name="select_reminder_to_see_details">विवरण देखने के लिए एक रिमाइंडर चुनें</string>
+    <string name="select_birthday_to_see_details">विवरण देखने के लिए एक जन्मदिन चुनें</string>
 </resources>
