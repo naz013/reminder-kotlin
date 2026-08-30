@@ -182,7 +182,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           it == RemindersArchiveNavKey.List ||
           it == BirthdaysNavKey.List ||
           it == GroupsNavKey.List ||
-          it == TagsNavKey.Manage
+          it == TagsNavKey.Manage ||
+          it == GoogleTasksNavKey.List
       }
   }
 
@@ -299,6 +300,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         googleTasksEntries(
           backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) }
         )
         buildReminderEntries(

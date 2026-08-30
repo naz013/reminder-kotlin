@@ -1,10 +1,14 @@
 package com.github.naz013.feature.googletask
 
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.common.Permissions
@@ -18,7 +22,9 @@ import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListScreen
 import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListState
 import com.github.naz013.feature.googletask.tasklist.EditGoogleTaskListViewModel
 import com.github.naz013.tags.TagsNavKey
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.compose.hideKeyboard
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
@@ -28,12 +34,28 @@ import com.github.naz013.ui.googletask.rememberGoogleTasksLogin
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.googleTasksEntries(
   backStack: MutableList<NavKey>,
+  isRenderedAsDetailPane: (NavKey) -> Boolean,
   adsContent: @Composable () -> Unit,
 ) {
-  entry<GoogleTasksNavKey.List> { GoogleTasksListEntry(backStack) }
-  entry<GoogleTasksNavKey.TaskList> { key -> TaskListEntry(key, backStack) }
+  entry<GoogleTasksNavKey.List>(
+    metadata = ListDetailSceneStrategy.listPane(
+      detailPlaceholder = {
+        DetailPanePlaceholder(
+          text = stringResource(R.string.select_google_task_list_to_see_details),
+          icon = AppIcons.Builder.GoogleTaskList,
+        )
+      },
+    ),
+  ) { GoogleTasksListEntry(backStack) }
+  entry<GoogleTasksNavKey.TaskList>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+    // Fixed at first composition, not re-read on every recomposition - see the matching comment
+    // in ReminderPreviewNavGraph.kt.
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    TaskListEntry(key, backStack, renderAsDetailPane)
+  }
   entry<GoogleTasksNavKey.TaskPreview> { key -> TaskPreviewEntry(key, backStack, adsContent) }
   entry<GoogleTasksNavKey.TaskEdit> { key -> TaskEditEntry(key, backStack, adsContent) }
   entry<GoogleTasksNavKey.ListEdit> { key -> ListEditEntry(key, backStack, adsContent) }
@@ -83,7 +105,7 @@ private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
     onConnectClick = { viewModel.onLoginClicked() },
     onAddListClick = { backStack.add(GoogleTasksNavKey.ListEdit()) },
     onAddTaskClick = { backStack.add(GoogleTasksNavKey.TaskEdit()) },
-    onTaskListClick = { listId -> backStack.add(GoogleTasksNavKey.TaskList(listId)) },
+    onTaskListClick = { listId -> backStack.navigateToDetailPane(GoogleTasksNavKey.TaskList(listId)) },
     onTaskClick = { id -> backStack.add(GoogleTasksNavKey.TaskPreview(id)) },
     onTaskToggle = viewModel::toggleTask,
     onRefresh = viewModel::sync,
@@ -95,6 +117,7 @@ private fun GoogleTasksListEntry(backStack: MutableList<NavKey>) {
 private fun TaskListEntry(
   key: GoogleTasksNavKey.TaskList,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
 ) {
   val viewModel = koinViewModel<TaskListViewModel> { parametersOf(key.listId) }
 
@@ -117,6 +140,7 @@ private fun TaskListEntry(
   val state by viewModel.state.collectAsState(TaskListState())
   TaskListScreen(
     state = state,
+    renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onEditListClick = { viewModel.onEditClicked() },
     onDeleteListClick = viewModel::onDeleteListClick,
@@ -276,4 +300,16 @@ private fun ListEditEntry(
     onDeleteDismiss = viewModel::onDeleteDismiss,
     adsContent = adsContent,
   )
+}
+
+/**
+ * Navigation for the Google Tasks two-pane list's detail pane: if a task list is already open in
+ * the detail pane, replace it instead of stacking another one on top - see the matching comment in
+ * `BirthdaysNavGraph.kt`.
+ */
+private fun MutableList<NavKey>.navigateToDetailPane(key: NavKey) {
+  if (lastOrNull() is GoogleTasksNavKey.TaskList) {
+    removeLastOrNull()
+  }
+  add(key)
 }

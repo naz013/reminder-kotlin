@@ -47,6 +47,9 @@ private const val MENU_ITEM_CLEAR = 2
 @Composable
 internal fun TaskListScreen(
   state: TaskListState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onEditListClick: () -> Unit,
   onDeleteListClick: () -> Unit,
@@ -67,8 +70,8 @@ internal fun TaskListScreen(
         title = { Text(state.title) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             onClick = onBackClick,
           )
         },

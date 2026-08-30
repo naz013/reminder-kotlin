@@ -1266,4 +1266,5 @@
     <string name="select_birthday_to_see_details">Изберете рожден ден, за да видите подробности</string>
     <string name="select_group_to_see_details">Изберете група, за да видите подробности</string>
     <string name="select_tag_to_see_details">Изберете етикет, за да видите подробности</string>
+    <string name="select_google_task_list_to_see_details">Изберете списък със задачи, за да видите подробности</string>
 </resources>

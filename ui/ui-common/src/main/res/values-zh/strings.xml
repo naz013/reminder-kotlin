@@ -1266,4 +1266,5 @@
     <string name="select_birthday_to_see_details">选择生日以查看详细信息</string>
     <string name="select_group_to_see_details">选择群组以查看详细信息</string>
     <string name="select_tag_to_see_details">选择标签以查看详细信息</string>
+    <string name="select_google_task_list_to_see_details">选择任务列表以查看详细信息</string>
 </resources>

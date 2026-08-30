@@ -1263,4 +1263,5 @@
     <string name="select_birthday_to_see_details">Chọn sinh nhật để xem chi tiết</string>
     <string name="select_group_to_see_details">Chọn nhóm để xem chi tiết</string>
     <string name="select_tag_to_see_details">Chọn thẻ để xem chi tiết</string>
+    <string name="select_google_task_list_to_see_details">Chọn danh sách tác vụ để xem chi tiết</string>
 </resources>
