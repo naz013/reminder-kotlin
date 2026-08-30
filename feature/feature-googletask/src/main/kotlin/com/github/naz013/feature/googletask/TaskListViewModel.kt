@@ -9,6 +9,7 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -28,8 +29,8 @@ import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,7 +53,6 @@ internal class TaskListViewModel(
 
   private val _state = MutableStateFlow(TaskListState())
   val state = _state.stateInWhileSubscribed(TaskListState())
-    .onStart { load() }
 
   val event: LiveData<Event<TaskListEvent>> field = mutableLiveEventOf()
 
@@ -65,6 +65,13 @@ internal class TaskListViewModel(
         .collect { tags ->
           _state.update { it.copy(allTags = tags) }
         }
+    }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      combine(
+        googleTaskListRepository.observeById(listId),
+        googleTaskRepository.observeAllByList(listId),
+      ) { googleTaskList, tasks -> googleTaskList to tasks }
+        .collect { (googleTaskList, tasks) -> applyTaskList(googleTaskList, tasks) }
     }
   }
 
@@ -93,31 +100,26 @@ internal class TaskListViewModel(
     _state.update { it.copy(tasks = filtered) }
   }
 
-  private fun load() {
-    viewModelScope.launch(dispatcherProvider.main()) {
-      val googleTaskList = withContext(dispatcherProvider.io()) {
-        googleTaskListRepository.getById(listId)
-      } ?: run {
-        return@launch
-      }
-      loadedTasks = withContext(dispatcherProvider.io()) {
-        googleTaskRepository.getAllByList(listId).map {
-          googleTaskItemStateAdapter.convert(it, googleTaskList)
-        }
-      }
-      val color = ThemeProvider.themedColor(contextProvider.themedContext, googleTaskList.color)
-      _state.update {
-        it.copy(
-          listId = googleTaskList.listId,
-          title = googleTaskList.title,
-          fabContainerColor = color.toColor(),
-          fabContentColor = if (color.isColorDark()) Color.White else Color.Black,
-          canDelete = !googleTaskList.isDefault(),
-          isDefaultList = googleTaskList.isDefault(),
-        )
-      }
-      applyTagFilter()
+  // Driven by googleTaskListRepository.observeById/googleTaskRepository.observeAllByList in init -
+  // no manual reload needed after sync()/clearList()/toggleTask(), the Flows re-emit on their own
+  // once the write goes through.
+  private suspend fun applyTaskList(googleTaskList: GoogleTaskList?, tasks: List<GoogleTask>) {
+    if (googleTaskList == null) return
+    loadedTasks = withContext(dispatcherProvider.default()) {
+      tasks.map { googleTaskItemStateAdapter.convert(it, googleTaskList) }
     }
+    val color = ThemeProvider.themedColor(contextProvider.themedContext, googleTaskList.color)
+    _state.update {
+      it.copy(
+        listId = googleTaskList.listId,
+        title = googleTaskList.title,
+        fabContainerColor = color.toColor(),
+        fabContentColor = if (color.isColorDark()) Color.White else Color.Black,
+        canDelete = !googleTaskList.isDefault(),
+        isDefaultList = googleTaskList.isDefault(),
+      )
+    }
+    applyTagFilter()
   }
 
   fun sync() {
@@ -140,7 +142,6 @@ internal class TaskListViewModel(
         syncGoogleTaskList(taskList)
       }
 
-      load()
       appWidgetUpdater.updateScheduleWidget()
 
       _state.update {
@@ -162,7 +163,6 @@ internal class TaskListViewModel(
         googleTasksApi.clearTaskList(_state.value.listId)
       }
 
-      load()
       appWidgetUpdater.updateScheduleWidget()
 
       _state.update {
@@ -246,7 +246,6 @@ internal class TaskListViewModel(
       }
 
       if (updated) {
-        load()
         appWidgetUpdater.updateScheduleWidget()
       } else {
         event.emit(TaskListEvent.ShowError(textProvider.getString(R.string.failed_to_update_task)))

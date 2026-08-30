@@ -14,7 +14,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -59,20 +61,22 @@ class GroupsViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { groupV2Repository.getAll() } returns emptyList()
+    every { groupV2Repository.observeAll() } returns flowOf(emptyList())
     coEvery { reminderV2Repository.countActiveByGroupId(any()) } returns 0
     every { uiGroupListAdapter.convert(any<GroupV2>(), any()) } returns uiGroupList()
 
-    viewModel =
-      GroupsViewModel(
-        dispatcherProvider = mockDispatcherProvider(),
-        groupV2Repository = groupV2Repository,
-        uiGroupListAdapter = uiGroupListAdapter,
-        deleteGroupUseCase = deleteGroupUseCase,
-        makeGroupDefaultUseCase = makeGroupDefaultUseCase,
-        reminderV2Repository = reminderV2Repository,
-      )
+    viewModel = createViewModel()
   }
+
+  private fun createViewModel(): GroupsViewModel =
+    GroupsViewModel(
+      dispatcherProvider = mockDispatcherProvider(),
+      groupV2Repository = groupV2Repository,
+      uiGroupListAdapter = uiGroupListAdapter,
+      deleteGroupUseCase = deleteGroupUseCase,
+      makeGroupDefaultUseCase = makeGroupDefaultUseCase,
+      reminderV2Repository = reminderV2Repository,
+    )
 
   @Test
   fun `loads empty state when there are no groups`() =
@@ -87,13 +91,14 @@ class GroupsViewModelTest : BaseTest() {
     runTest {
       val defaultGroup = groupV2(id = "2", title = "Zeta", isDefault = true)
       val otherGroup = groupV2(id = "1", title = "Alpha", isDefault = false)
-      coEvery { groupV2Repository.getAll() } returns listOf(otherGroup, defaultGroup)
+      every { groupV2Repository.observeAll() } returns flowOf(listOf(otherGroup, defaultGroup))
       every { uiGroupListAdapter.convert(defaultGroup, any()) } returns
         uiGroupList(id = "2", title = "Zeta", isDefault = true)
       every { uiGroupListAdapter.convert(otherGroup, any()) } returns
         uiGroupList(id = "1", title = "Alpha", isDefault = false)
+      val vm = createViewModel()
 
-      val state = viewModel.state.first()
+      val state = vm.state.first()
 
       val ready = state.listState as ListState.Ready
       assertEquals(listOf("2", "1"), ready.groups.map { it.id })
@@ -103,22 +108,30 @@ class GroupsViewModelTest : BaseTest() {
   fun `loads each group with its active reminder count`() =
     runTest {
       val group = groupV2(id = "1", title = "Work")
-      coEvery { groupV2Repository.getAll() } returns listOf(group)
+      every { groupV2Repository.observeAll() } returns flowOf(listOf(group))
       coEvery { reminderV2Repository.countActiveByGroupId("1") } returns 4
       every { uiGroupListAdapter.convert(group, 4) } returns uiGroupList(id = "1", title = "Work")
+      val vm = createViewModel()
 
-      viewModel.state.first()
+      vm.state.first()
 
       coVerify(exactly = 1) { uiGroupListAdapter.convert(group, 4) }
     }
 
   @Test
-  fun `reloads groups on each fresh state collection`() =
+  fun `state updates reactively when the groups Flow emits a new list`() =
     runTest {
-      viewModel.state.first()
-      viewModel.state.first()
+      val group = groupV2(id = "1", title = "Work")
+      val groupsFlow = MutableStateFlow<List<GroupV2>>(emptyList())
+      every { groupV2Repository.observeAll() } returns groupsFlow
+      every { uiGroupListAdapter.convert(group, any()) } returns uiGroupList(id = "1", title = "Work")
+      val vm = createViewModel()
+      assertEquals(ListState.Empty, vm.state.first().listState)
 
-      coVerify(exactly = 2) { groupV2Repository.getAll() }
+      groupsFlow.value = listOf(group)
+
+      val ready = vm.state.first().listState as ListState.Ready
+      assertEquals(listOf("1"), ready.groups.map { it.id })
     }
 
   @Test
@@ -154,7 +167,7 @@ class GroupsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onGroupMenuAction MAKE_DEFAULT delegates to use case and reloads`() =
+  fun `onGroupMenuAction MAKE_DEFAULT delegates to use case`() =
     runTest {
       viewModel.onGroupMenuAction(uiGroupList(id = "5"), GroupMenuAction.MAKE_DEFAULT)
 

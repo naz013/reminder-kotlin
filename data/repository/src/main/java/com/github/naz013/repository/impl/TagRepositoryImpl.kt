@@ -33,6 +33,9 @@ internal class TagRepositoryImpl(
     return dao.getById(id)?.toDomain()
   }
 
+  override fun observeById(id: String): Flow<Tag?> =
+    dao.observeById(id).map { it?.toDomain() }
+
   override suspend fun save(tag: Tag) {
     Logger.d(TAG, "Save tag: ${tag.id}")
     dao.insert(tag.toEntity())

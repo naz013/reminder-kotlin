@@ -109,8 +109,8 @@ class GoogleTasksViewModelTest : BaseTest() {
     super.setUp()
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
     every { googleTasksAuthManager.isAuthorized() } returns true
-    coEvery { googleTaskListRepository.getAll() } returns emptyList()
-    coEvery { googleTaskRepository.getAll() } returns emptyList()
+    every { googleTaskListRepository.observeAll() } returns flowOf(emptyList())
+    every { googleTaskRepository.observeAll() } returns flowOf(emptyList())
     every { googleTaskItemStateAdapter.convert(any(), any()) } returns uiTask()
     every { tagRepository.observeAll() } returns flowOf(emptyList())
 
@@ -133,12 +133,13 @@ class GoogleTasksViewModelTest : BaseTest() {
     runTest {
       val listA = taskList("a", isDefault = true)
       val listB = taskList("b")
-      coEvery { googleTaskListRepository.getAll() } returns listOf(listA, listB)
+      every { googleTaskListRepository.observeAll() } returns flowOf(listOf(listA, listB))
       val t1 = task("t1", listId = "a")
-      coEvery { googleTaskRepository.getAll() } returns listOf(t1)
+      every { googleTaskRepository.observeAll() } returns flowOf(listOf(t1))
       every { googleTaskItemStateAdapter.convert(t1, listA) } returns uiTask("t1")
+      val vm = buildViewModel()
 
-      val state = viewModel.state.first()
+      val state = vm.state.first()
 
       assertEquals(true, state.isLoggedIn)
       assertEquals(2, state.taskLists.size)
@@ -152,7 +153,7 @@ class GoogleTasksViewModelTest : BaseTest() {
     runTest {
       val t1 = task("t1")
       val t2 = task("t2")
-      coEvery { googleTaskRepository.getAll() } returns listOf(t1, t2)
+      every { googleTaskRepository.observeAll() } returns flowOf(listOf(t1, t2))
       every { googleTaskItemStateAdapter.convert(t1, null) } returns uiTask("t1")
       every { googleTaskItemStateAdapter.convert(t2, null) } returns uiTask("t2")
       coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.GOOGLE_TASK) } returns listOf("t1")
@@ -169,7 +170,7 @@ class GoogleTasksViewModelTest : BaseTest() {
     runTest {
       val t1 = task("t1")
       val t2 = task("t2")
-      coEvery { googleTaskRepository.getAll() } returns listOf(t1, t2)
+      every { googleTaskRepository.observeAll() } returns flowOf(listOf(t1, t2))
       every { googleTaskItemStateAdapter.convert(t1, null) } returns uiTask("t1")
       every { googleTaskItemStateAdapter.convert(t2, null) } returns uiTask("t2")
       coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.GOOGLE_TASK) } returns listOf("t1")
@@ -187,8 +188,9 @@ class GoogleTasksViewModelTest : BaseTest() {
   fun `isLoggedIn reflects the auth manager state on load`() =
     runTest {
       every { googleTasksAuthManager.isAuthorized() } returns false
+      val vm = buildViewModel()
 
-      val state = viewModel.state.first()
+      val state = vm.state.first()
 
       assertEquals(false, state.isLoggedIn)
     }
@@ -196,8 +198,6 @@ class GoogleTasksViewModelTest : BaseTest() {
   @Test
   fun `fab colors are null when there are no task lists`() =
     runTest {
-      coEvery { googleTaskListRepository.getAll() } returns emptyList()
-
       val state = viewModel.state.first()
 
       assertNull(state.fabContainerColor)
@@ -209,9 +209,10 @@ class GoogleTasksViewModelTest : BaseTest() {
     runTest {
       val listA = taskList("a")
       val listB = taskList("b")
-      coEvery { googleTaskListRepository.getAll() } returns listOf(listA, listB)
+      every { googleTaskListRepository.observeAll() } returns flowOf(listOf(listA, listB))
+      val vm = buildViewModel()
 
-      val state = viewModel.state.first()
+      val state = vm.state.first()
 
       assertNotNull(state.fabContainerColor)
     }
@@ -280,7 +281,7 @@ class GoogleTasksViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `sync triggers a full sync and reload`() =
+  fun `sync triggers a full sync`() =
     runTest {
       viewModel.sync()
 
@@ -288,7 +289,7 @@ class GoogleTasksViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `loadGoogleTasks triggers a full sync and reload`() =
+  fun `loadGoogleTasks triggers a full sync`() =
     runTest {
       viewModel.loadGoogleTasks()
 

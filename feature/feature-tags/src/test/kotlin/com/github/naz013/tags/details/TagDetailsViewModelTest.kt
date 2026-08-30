@@ -40,7 +40,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -147,8 +149,8 @@ class TagDetailsViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { tagRepository.getById("1") } returns tag()
-    coEvery { tagAssignmentRepository.getItemIdsForTag(any(), any()) } returns emptyList()
+    every { tagRepository.observeById("1") } returns flowOf(tag())
+    every { tagAssignmentRepository.observeItemIdsForTag(any(), any()) } returns flowOf(emptyList())
     coEvery { groupV2Repository.getAll() } returns emptyList()
     coEvery { reminderV2Repository.getAll(any(), any()) } returns emptyList()
     coEvery { noteRepository.getByIds(any()) } returns emptyList()
@@ -182,10 +184,10 @@ class TagDetailsViewModelTest : BaseTest() {
     val bday = birthday("b1")
     val uiBday = uiBirthdayList("b1")
 
-    coEvery { tagAssignmentRepository.getItemIdsForTag("1", TaggedItemType.REMINDER) } returns listOf("r1")
-    coEvery { tagAssignmentRepository.getItemIdsForTag("1", TaggedItemType.NOTE) } returns listOf("n1")
-    coEvery { tagAssignmentRepository.getItemIdsForTag("1", TaggedItemType.GOOGLE_TASK) } returns listOf("t1")
-    coEvery { tagAssignmentRepository.getItemIdsForTag("1", TaggedItemType.BIRTHDAY) } returns listOf("b1")
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.REMINDER) } returns flowOf(listOf("r1"))
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.NOTE) } returns flowOf(listOf("n1"))
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.GOOGLE_TASK) } returns flowOf(listOf("t1"))
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.BIRTHDAY) } returns flowOf(listOf("b1"))
     coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns listOf(reminder)
     every { uiReminderListAdapter.createV2(reminder, null) } returns uiReminder
     coEvery { noteRepository.getByIds(listOf("n1")) } returns listOf(note)
@@ -194,8 +196,9 @@ class TagDetailsViewModelTest : BaseTest() {
     every { googleTaskItemStateAdapter.convert(task, null) } returns uiTask
     coEvery { birthdayRepository.getAll() } returns listOf(bday)
     every { uiBirthdayListAdapter.convert(bday, any()) } returns uiBday
+    val vm = buildViewModel()
 
-    val state = viewModel.state.first()
+    val state = vm.state.first()
 
     assertEquals(4, state.sections.size)
     assertEquals(
@@ -206,6 +209,23 @@ class TagDetailsViewModelTest : BaseTest() {
     assertEquals(listOf(TagDetailItem.NoteItem(uiNote)), state.sections[1].items)
     assertEquals(listOf(TagDetailItem.GoogleTaskItem(uiTask)), state.sections[2].items)
     assertEquals(listOf(TagDetailItem.BirthdayItem(uiBday)), state.sections[3].items)
+  }
+
+  @Test
+  fun `sections update reactively when a reminder is attached to the tag`() = runTest {
+    val reminder = reminderV2("r1")
+    val uiReminder = uiReminderList("r1")
+    coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns listOf(reminder)
+    every { uiReminderListAdapter.createV2(reminder, null) } returns uiReminder
+    val reminderIdsFlow = MutableStateFlow<List<String>>(emptyList())
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.REMINDER) } returns reminderIdsFlow
+    val vm = buildViewModel()
+    assertTrue(vm.state.first().sections.isEmpty())
+
+    reminderIdsFlow.value = listOf("r1")
+
+    val state = vm.state.first()
+    assertEquals(listOf(TagDetailItem.ReminderItem(uiReminder)), state.sections.single().items)
   }
 
   @Test
@@ -221,16 +241,17 @@ class TagDetailsViewModelTest : BaseTest() {
     val uiReminder = uiReminderList("r1")
     val bday = birthday("b1")
     val uiBday = uiBirthdayList("b1")
-    coEvery { tagAssignmentRepository.getItemIdsForTag("1", TaggedItemType.REMINDER) } returns listOf("r1")
-    coEvery { tagAssignmentRepository.getItemIdsForTag("1", TaggedItemType.BIRTHDAY) } returns listOf("b1")
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.REMINDER) } returns flowOf(listOf("r1"))
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.BIRTHDAY) } returns flowOf(listOf("b1"))
     coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns listOf(reminder)
     every { uiReminderListAdapter.createV2(reminder, null) } returns uiReminder
     coEvery { birthdayRepository.getAll() } returns listOf(bday)
     every { uiBirthdayListAdapter.convert(bday, any()) } returns uiBday
-    viewModel.state.first()
+    val vm = buildViewModel()
+    vm.state.first()
 
-    viewModel.onTypeSelected(TagContentType.BIRTHDAY)
-    val state = viewModel.state.first()
+    vm.onTypeSelected(TagContentType.BIRTHDAY)
+    val state = vm.state.first()
 
     assertEquals(listOf(TagContentType.BIRTHDAY), state.sections.map { it.type })
     assertEquals(TagContentType.BIRTHDAY, state.selectedType)
@@ -249,13 +270,14 @@ class TagDetailsViewModelTest : BaseTest() {
   fun `search query narrows items by matching text`() = runTest {
     val reminder = reminderV2("r1")
     val uiReminder = uiReminderList("r1")
-    coEvery { tagAssignmentRepository.getItemIdsForTag("1", TaggedItemType.REMINDER) } returns listOf("r1")
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.REMINDER) } returns flowOf(listOf("r1"))
     coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns listOf(reminder)
     every { uiReminderListAdapter.createV2(reminder, null) } returns uiReminder
-    viewModel.state.first()
+    val vm = buildViewModel()
+    vm.state.first()
 
-    viewModel.onSearchQueryChange("does not match anything")
-    val state = viewModel.state.first()
+    vm.onSearchQueryChange("does not match anything")
+    val state = vm.state.first()
 
     assertTrue(state.sections.isEmpty())
   }

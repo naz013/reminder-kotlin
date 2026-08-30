@@ -11,6 +11,8 @@ interface TagRepository {
 
   suspend fun getById(id: String): Tag?
 
+  fun observeById(id: String): Flow<Tag?>
+
   suspend fun save(tag: Tag)
 
   suspend fun delete(id: String)

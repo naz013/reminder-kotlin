@@ -19,6 +19,9 @@ internal interface TagDao {
   @Query("SELECT * FROM Tag WHERE id=:id")
   fun getById(id: String): TagEntity?
 
+  @Query("SELECT * FROM Tag WHERE id=:id")
+  fun observeById(id: String): Flow<TagEntity?>
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insert(tag: TagEntity)
 

@@ -12,6 +12,8 @@ interface TagAssignmentRepository {
 
   suspend fun getItemIdsForTag(tagId: String, itemType: TaggedItemType): List<String>
 
+  fun observeItemIdsForTag(tagId: String, itemType: TaggedItemType): Flow<List<String>>
+
   suspend fun attach(itemId: String, itemType: TaggedItemType, tagId: String)
 
   suspend fun detach(itemId: String, itemType: TaggedItemType, tagId: String)

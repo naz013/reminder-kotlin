@@ -1109,6 +1109,7 @@ private class FakeReminderV2Repository(
   ): Flow<List<ReminderV2>> = emptyFlow()
   override suspend fun getByGroupId(groupId: String): List<ReminderV2> =
     reminders.values.filter { it.groupId == groupId }
+  override fun observeActiveByGroupId(groupId: String): Flow<List<ReminderV2>> = emptyFlow()
   override suspend fun countActiveByGroupId(groupId: String): Int =
     reminders.values.count { it.groupId == groupId && it.isActive && !it.isRemoved }
   override suspend fun getByNoteId(noteId: String): List<ReminderV2> = emptyList()
@@ -1131,6 +1132,7 @@ private class NoOpGroupV2Repository : GroupV2Repository {
   override suspend fun getAll(): List<GroupV2> = emptyList()
   override fun observeAll(): Flow<List<GroupV2>> = emptyFlow()
   override suspend fun getById(id: String): GroupV2? = null
+  override fun observeById(id: String): Flow<GroupV2?> = emptyFlow()
   override suspend fun defaultGroup(isDef: Boolean): GroupV2? = null
   override suspend fun search(query: String): List<GroupV2> = emptyList()
   override suspend fun delete(id: String) = Unit
@@ -1152,6 +1154,7 @@ private class FakeWorkflowRuleRepository(
   override suspend fun getEnabled(): List<WorkflowRule> = rules.filter { it.isEnabled }
   override suspend fun getById(id: String): WorkflowRule? = rules.firstOrNull { it.uuId == id }
   override suspend fun getByScope(scopeType: String, scopeId: String?): List<WorkflowRule> = emptyList()
+  override fun observeByScope(scopeType: String, scopeId: String?): Flow<List<WorkflowRule>> = emptyFlow()
   override suspend fun getByTriggerType(triggerType: String): List<WorkflowRule> =
     rules.filter {
       when (triggerType) {
@@ -1221,6 +1224,8 @@ private class FakeTagAssignmentRepository(
 
   override suspend fun getItemIdsForTag(tagId: String, itemType: TaggedItemType): List<String> =
     assignments.filter { it.tagId == tagId && it.itemType == itemType }.map { it.itemId }
+
+  override fun observeItemIdsForTag(tagId: String, itemType: TaggedItemType): Flow<List<String>> = emptyFlow()
 
   override suspend fun attach(itemId: String, itemType: TaggedItemType, tagId: String) {
     assignments.add(TagAssignment(tagId = tagId, itemId = itemId, itemType = itemType))

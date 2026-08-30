@@ -44,6 +44,9 @@ internal class GroupV2RepositoryImpl(
     return dao.getById(id)?.toDomain()
   }
 
+  override fun observeById(id: String): Flow<GroupV2?> =
+    dao.observeById(id).map { it?.toDomain() }
+
   override suspend fun defaultGroup(isDef: Boolean): GroupV2? {
     Logger.d(TAG, "Get default group")
     return dao.defaultGroup(isDef)?.toDomain()

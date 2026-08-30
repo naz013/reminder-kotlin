@@ -31,6 +31,9 @@ internal interface GroupV2Dao {
   @Query("SELECT * FROM GroupV2 WHERE uuId=:id")
   fun getById(id: String): GroupV2Entity?
 
+  @Query("SELECT * FROM GroupV2 WHERE uuId=:id")
+  fun observeById(id: String): Flow<GroupV2Entity?>
+
   @Query("DELETE FROM GroupV2 WHERE uuId=:id")
   fun delete(id: String)
 

@@ -12,6 +12,8 @@ import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.repository.WorkflowTemplateRepository
 import io.mockk.mockk
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -72,6 +74,7 @@ private class SavingWorkflowRuleRepository : WorkflowRuleRepository {
   override suspend fun getEnabled(): List<WorkflowRule> = saved.filter { it.isEnabled }
   override suspend fun getById(id: String): WorkflowRule? = saved.firstOrNull { it.uuId == id }
   override suspend fun getByScope(scopeType: String, scopeId: String?): List<WorkflowRule> = emptyList()
+  override fun observeByScope(scopeType: String, scopeId: String?): Flow<List<WorkflowRule>> = emptyFlow()
   override suspend fun getByTriggerType(triggerType: String): List<WorkflowRule> = emptyList()
   override suspend fun delete(id: String) = Unit
   override suspend fun deleteAll() = Unit

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.github.naz013.repository.entity.WorkflowRuleEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface WorkflowRuleDao {
@@ -20,6 +21,9 @@ internal interface WorkflowRuleDao {
 
   @Query("SELECT * FROM WorkflowRule WHERE scopeType=:scopeType AND (scopeId=:scopeId OR (:scopeId IS NULL AND scopeId IS NULL))")
   fun getByScope(scopeType: String, scopeId: String?): List<WorkflowRuleEntity>
+
+  @Query("SELECT * FROM WorkflowRule WHERE scopeType=:scopeType AND (scopeId=:scopeId OR (:scopeId IS NULL AND scopeId IS NULL))")
+  fun observeByScope(scopeType: String, scopeId: String?): Flow<List<WorkflowRuleEntity>>
 
   @Query("SELECT * FROM WorkflowRule WHERE triggerType=:triggerType")
   fun getByTriggerType(triggerType: String): List<WorkflowRuleEntity>

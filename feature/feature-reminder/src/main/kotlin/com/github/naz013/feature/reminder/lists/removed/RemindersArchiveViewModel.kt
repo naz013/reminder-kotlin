@@ -17,17 +17,18 @@ import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(FlowPreview::class)
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class RemindersArchiveViewModel(
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
@@ -41,7 +42,6 @@ class RemindersArchiveViewModel(
   private val _selectedItemId = MutableStateFlow<String?>(null)
   val state = combine(_state, _selectedItemId, RemindersArchiveScreenState::withSelectedItem)
     .stateInWhileSubscribed(RemindersArchiveScreenState())
-    .onStart { loadReminders() }
 
   val event: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
@@ -49,9 +49,14 @@ class RemindersArchiveViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
+      // Debounce is skipped for an empty query so the initial load (and a cleared search box)
+      // isn't held back by SEARCH_DEBOUNCE_MS - see the matching comment in BirthdaysViewModel.kt.
       searchQueryFlow
-        .debounce(SEARCH_DEBOUNCE_MS)
-        .collect { filterReminders() }
+        .debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS }
+        .flatMapLatest { query ->
+          reminderV2Repository.observeByRemovedStatus(removed = true).map { it to query }
+        }
+        .collect { (reminders, query) -> applyReminders(reminders, query) }
     }
   }
 
@@ -91,10 +96,7 @@ class RemindersArchiveViewModel(
         }
       } ?: run {
         Logger.e(TAG, "Cannot delete reminder with id = $id. Not found.")
-        return@launch
       }
-
-      loadReminders()
     }
   }
 
@@ -107,38 +109,28 @@ class RemindersArchiveViewModel(
         val toDelete = toDeleteIds.mapNotNull { reminderV2Repository.getById(it) }
         deleteAllReminderUseCase(toDelete)
       }
-      loadReminders()
       event.emit(NavigationEvent.ArchiveEmptied)
     }
   }
 
-  private fun loadReminders() {
-    viewModelScope.launch(dispatcherProvider.main()) {
-      val allReminders = withContext(dispatcherProvider.io()) {
-        reminderV2Repository.getByRemovedStatus(removed = true)
-      }
-      _state.update {
-        it.copy(allReminders = allReminders)
-      }
-      filterReminders()
-      Logger.i(TAG, "Loaded ${allReminders.size} archived reminders.")
-    }
-  }
-
-  private suspend fun filterReminders() {
+  // Driven by reminderV2Repository.observeByRemovedStatus in init - no manual reload needed after
+  // deleteReminder/deleteAll, the Flow re-emits on its own once the delete use case writes through.
+  private suspend fun applyReminders(reminders: List<ReminderV2>, query: String) {
     val filtered = withContext(dispatcherProvider.default()) {
-      filterByQuery(reminders = _state.value.allReminders, query = _state.value.searchQuery)
-    }
-    _state.update {
-      it.copy(filteredReminders = filtered)
+      filterByQuery(reminders = reminders, query = query)
     }
     val uiItems = withContext(dispatcherProvider.default()) {
       val groupsById = groupV2Repository.getAll().associateBy { it.uuId }
       filtered.map { uiReminderListAdapter.createV2(it, it.groupId?.let { id -> groupsById[id] }) }
     }
     _state.update {
-      it.copy(listState = if (uiItems.isEmpty()) ListState.Empty else ListState.Ready(uiItems))
+      it.copy(
+        allReminders = reminders,
+        filteredReminders = filtered,
+        listState = if (uiItems.isEmpty()) ListState.Empty else ListState.Ready(uiItems),
+      )
     }
+    Logger.i(TAG, "Loaded ${reminders.size} archived reminders.")
   }
 
   private fun filterByQuery(
@@ -170,6 +162,6 @@ class RemindersArchiveViewModel(
 
   companion object {
     private const val TAG = "RemindersArchiveViewModel"
-    private val SEARCH_DEBOUNCE_MS = 300L.milliseconds
+    private const val SEARCH_DEBOUNCE_MS = 300L
   }
 }
