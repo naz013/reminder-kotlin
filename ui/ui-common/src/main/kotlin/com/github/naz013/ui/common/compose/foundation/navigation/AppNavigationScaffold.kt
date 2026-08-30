@@ -1,5 +1,6 @@
 package com.github.naz013.ui.common.compose.foundation.navigation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Badge
@@ -51,6 +54,12 @@ private val RailCollapsedWidth = 96.dp
 // showing in the content pane, so the rail reads as part of the same top row instead of floating
 // below it.
 private val RailHeaderAlignmentOffset = (-36).dp
+
+// Mirrors WideNavigationRail's own internal item spacing (NavigationRailCollapsedTokens
+// .ItemVerticalSpace / 0 when expanded), which isn't exposed publicly. Needed here because the
+// items are laid out in our own scrollable Column instead of the rail's built-in (non-scrolling)
+// item layout - see the scaffold below.
+private val RailCollapsedItemSpacing = 4.dp
 
 /**
  * Top-level app navigation chrome around [content]: a bottom [NavigationBar] on Compact width, a
@@ -103,20 +112,29 @@ fun <T> AppNavigationScaffold(
           }
         },
       ) {
-        destinations.forEach { destination ->
-          val selected = destination.key == selectedKey
-          WideNavigationRailItem(
-            selected = selected,
-            onClick = { onDestinationSelected(destination.key) },
-            icon = {
-              AppDestinationIcon(
-                destination = destination,
-                selected = selected,
-              )
-            },
-            label = { Text(stringResource(destination.labelRes)) },
-            railExpanded = railExpanded,
-          )
+        // WideNavigationRail lays its content out at full intrinsic height with no scrolling of
+        // its own, so a rail with enough items to exceed the available height would otherwise
+        // clip the overflowing items. Wrapping them in our own scrollable Column - itself a single
+        // measurable to the rail - makes it scroll instead.
+        Column(
+          modifier = Modifier.verticalScroll(rememberScrollState()),
+          verticalArrangement = Arrangement.spacedBy(if (railExpanded) 0.dp else RailCollapsedItemSpacing),
+        ) {
+          destinations.forEach { destination ->
+            val selected = destination.key == selectedKey
+            WideNavigationRailItem(
+              selected = selected,
+              onClick = { onDestinationSelected(destination.key) },
+              icon = {
+                AppDestinationIcon(
+                  destination = destination,
+                  selected = selected,
+                )
+              },
+              label = { Text(stringResource(destination.labelRes)) },
+              railExpanded = railExpanded,
+            )
+          }
         }
       }
       Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
