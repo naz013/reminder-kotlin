@@ -1270,4 +1270,5 @@
     <string name="select_workflow_template_to_configure">Selecione um modelo para aplicar ou crie sua própria regra</string>
     <string name="builder_quick_start_leaving_place">Saindo de um local</string>
     <string name="builder_quick_start_leaving_place_delayed">Saindo de um local (início atrasado)</string>
+    <string name="select_settings_category_to_see_details">Selecione uma categoria para ver suas configurações</string>
 </resources>

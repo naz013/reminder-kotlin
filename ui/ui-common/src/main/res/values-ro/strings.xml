@@ -1270,4 +1270,5 @@
     <string name="select_workflow_template_to_configure">Selectați un șablon de aplicat sau creați propria regulă</string>
     <string name="builder_quick_start_leaving_place">Părăsirea unui loc</string>
     <string name="builder_quick_start_leaving_place_delayed">Părăsirea unui loc (pornire întârziată)</string>
+    <string name="select_settings_category_to_see_details">Selectați o categorie pentru a vedea setările</string>
 </resources>

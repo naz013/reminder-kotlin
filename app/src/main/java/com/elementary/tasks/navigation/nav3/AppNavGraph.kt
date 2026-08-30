@@ -185,7 +185,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           it == TagsNavKey.Manage ||
           it == GoogleTasksNavKey.List ||
           it == RoutineNavKey.List ||
-          it == WorkflowNavKey.Gallery
+          it == WorkflowNavKey.Gallery ||
+          it == SettingsNavKey.Hub
       }
   }
 
@@ -370,8 +371,13 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           backStack = backStack,
           applicationId = BuildConfig.APPLICATION_ID,
           restartActivityClass = BottomNavActivity::class.java,
-          remindersEntry = { key, entryBackStack -> RemindersCrossFeatureEntry(key, entryBackStack) },
-          birthdayEntry = { key, entryBackStack -> BirthdayCrossFeatureEntry(key, entryBackStack) },
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
+          remindersEntry = { key, entryBackStack, renderAsDetailPane ->
+            RemindersCrossFeatureEntry(key, entryBackStack, renderAsDetailPane)
+          },
+          birthdayEntry = { key, entryBackStack, renderAsDetailPane ->
+            BirthdayCrossFeatureEntry(key, entryBackStack, renderAsDetailPane)
+          },
           managePresetsEntry = { entryBackStack -> ManagePresetsCrossFeatureEntry(entryBackStack) },
           notificationCustomizationHelpEntry = { onBackClick ->
             NotificationCustomizationHelpScreen(onBackClick = onBackClick)
@@ -381,13 +387,14 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenReminderActionTest = { reminderId -> ReminderActionActivity.mockTest(context, reminderId) },
           onOpenBirthdayActionTest = { birthdayId -> BirthdayActionActivity.mockTest(context, birthdayId) },
         )
-        securityEntries(backStack)
+        securityEntries(backStack = backStack, isRenderedAsDetailPane = isRenderedAsDetailPane)
         locationEntries(
           backStack = backStack,
           onOpenPlaces = { backStack.add(PlacesNavKey.List) },
         )
         otherEntries(
           backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           onOpenTroubleshooting = { backStack.add(SettingsNavKey.Troubleshooting) },
           onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
         )

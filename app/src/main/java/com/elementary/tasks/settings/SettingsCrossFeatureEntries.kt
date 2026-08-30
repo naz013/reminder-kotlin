@@ -47,6 +47,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun RemindersCrossFeatureEntry(
   key: SettingsNavKey.Reminders,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
 ) {
   val viewModel = koinViewModel<RemindersSettingsViewModel>()
   val context = LocalContext.current
@@ -78,7 +79,7 @@ fun RemindersCrossFeatureEntry(
 
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.reminders_),
-    navigationIcon = settingsNavigationIcon(key.screenTitle),
+    navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     RemindersSettingsScreen(
@@ -141,6 +142,7 @@ fun RemindersCrossFeatureEntry(
 fun BirthdayCrossFeatureEntry(
   key: SettingsNavKey.Birthday,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
 ) {
   val viewModel = koinViewModel<BirthdaySettingsViewModel>()
   val context = LocalContext.current
@@ -167,7 +169,7 @@ fun BirthdayCrossFeatureEntry(
 
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.birthdays),
-    navigationIcon = settingsNavigationIcon(key.screenTitle),
+    navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     BirthdaySettingsScreen(

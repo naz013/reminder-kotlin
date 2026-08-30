@@ -1268,4 +1268,5 @@
     <string name="select_workflow_template_to_configure">Vælg en skabelon at anvende, eller opret din egen regel</string>
     <string name="builder_quick_start_leaving_place">Forlader et sted</string>
     <string name="builder_quick_start_leaving_place_delayed">Forlader et sted (forsinket start)</string>
+    <string name="select_settings_category_to_see_details">Vælg en kategori for at se dens indstillinger</string>
 </resources>

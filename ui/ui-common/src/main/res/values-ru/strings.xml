@@ -1269,4 +1269,5 @@
     <string name="select_workflow_template_to_configure">Выберите шаблон для применения или создайте своё правило</string>
     <string name="builder_quick_start_leaving_place">Уход с места</string>
     <string name="builder_quick_start_leaving_place_delayed">Уход с места (отложенный старт)</string>
+    <string name="select_settings_category_to_see_details">Выберите категорию, чтобы увидеть её настройки</string>
 </resources>

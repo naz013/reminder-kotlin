@@ -1271,4 +1271,5 @@
     <string name="select_workflow_template_to_configure">选择要应用的模板，或创建您自己的规则</string>
     <string name="builder_quick_start_leaving_place">离开某地</string>
     <string name="builder_quick_start_leaving_place_delayed">离开某地(延迟开始)</string>
+    <string name="select_settings_category_to_see_details">选择类别以查看其设置</string>
 </resources>

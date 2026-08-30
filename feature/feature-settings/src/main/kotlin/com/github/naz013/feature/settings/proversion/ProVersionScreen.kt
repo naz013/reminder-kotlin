@@ -41,6 +41,7 @@ internal fun ProVersionScreen(
   advantages: List<String>,
   onBackClick: () -> Unit,
   onBuyClick: () -> Unit,
+  renderAsDetailPane: Boolean = false,
 ) {
   AnimatedGradientBackground {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -53,7 +54,9 @@ internal fun ProVersionScreen(
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Spacer(modifier = Modifier.width(16.dp))
-        TooltipIconButton(contentDescription = stringResource(R.string.cd_back)) {
+        val navigationContentDescription =
+          stringResource(if (renderAsDetailPane) R.string.acc_close else R.string.cd_back)
+        TooltipIconButton(contentDescription = navigationContentDescription) {
           IconButton(
             onClick = onBackClick,
             modifier =
@@ -63,8 +66,8 @@ internal fun ProVersionScreen(
                 .background(MaterialTheme.colorScheme.background.withAlpha(0.25f)),
           ) {
             Icon(
-              painter = AppIcons.Builder.ArrowLeft,
-              contentDescription = stringResource(R.string.cd_back),
+              painter = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+              contentDescription = navigationContentDescription,
               tint = MaterialTheme.colorScheme.onSurface,
             )
           }

@@ -1271,4 +1271,5 @@
     <string name="select_workflow_template_to_configure">Uygulamak için bir şablon seçin veya kendi kuralınızı oluşturun</string>
     <string name="builder_quick_start_leaving_place">Bir yerden ayrılma</string>
     <string name="builder_quick_start_leaving_place_delayed">Bir yerden ayrılma (gecikmeli başlangıç)</string>
+    <string name="select_settings_category_to_see_details">Ayarlarını görmek için bir kategori seçin</string>
 </resources>

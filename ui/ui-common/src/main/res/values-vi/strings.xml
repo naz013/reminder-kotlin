@@ -1268,4 +1268,5 @@
     <string name="select_workflow_template_to_configure">Chọn mẫu để áp dụng, hoặc tạo quy tắc của riêng bạn</string>
     <string name="builder_quick_start_leaving_place">Rời khỏi một địa điểm</string>
     <string name="builder_quick_start_leaving_place_delayed">Rời khỏi một địa điểm (bắt đầu trễ)</string>
+    <string name="select_settings_category_to_see_details">Chọn danh mục để xem cài đặt</string>
 </resources>

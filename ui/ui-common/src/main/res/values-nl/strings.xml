@@ -1268,4 +1268,5 @@
     <string name="select_workflow_template_to_configure">Selecteer een sjabloon om toe te passen, of maak uw eigen regel</string>
     <string name="builder_quick_start_leaving_place">Een locatie verlaten</string>
     <string name="builder_quick_start_leaving_place_delayed">Een locatie verlaten (vertraagde start)</string>
+    <string name="select_settings_category_to_see_details">Selecteer een categorie om de instellingen te bekijken</string>
 </resources>
