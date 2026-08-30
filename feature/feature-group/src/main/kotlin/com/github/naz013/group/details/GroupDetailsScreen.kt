@@ -52,6 +52,9 @@ private val COLOR_DOT_SIZE = 14.dp
 internal fun GroupDetailsScreen(
   modifier: Modifier = Modifier,
   state: GroupDetailsState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onEditClick: () -> Unit,
   onDeleteClick: () -> Unit,
@@ -74,8 +77,8 @@ internal fun GroupDetailsScreen(
         },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             onClick = onBackClick,
           )
         },

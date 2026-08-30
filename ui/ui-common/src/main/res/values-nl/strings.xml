@@ -1261,4 +1261,6 @@
     <string name="notes_switch_layout">Notitielayout wisselen</string>
     <string name="select_reminder_to_see_details">Selecteer een herinnering om de details te bekijken</string>
     <string name="select_birthday_to_see_details">Selecteer een verjaardag om de details te bekijken</string>
+    <string name="select_group_to_see_details">Selecteer een groep om de details te bekijken</string>
+    <string name="select_tag_to_see_details">Selecteer een label om de details te bekijken</string>
 </resources>

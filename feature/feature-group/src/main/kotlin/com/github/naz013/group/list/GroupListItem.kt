@@ -1,5 +1,6 @@
 package com.github.naz013.group.list
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -50,6 +52,10 @@ internal fun GroupListItem(
         .fillMaxWidth()
         .clip(MaterialTheme.shapes.medium)
         .clickable(onClick = onClick),
+    colors = CardDefaults.cardColors(
+      containerColor = if (group.isSelected) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
+    ),
+    border = if (group.isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,

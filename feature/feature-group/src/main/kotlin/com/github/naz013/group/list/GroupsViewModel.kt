@@ -15,6 +15,7 @@ import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.group.UiGroupList
 import com.github.naz013.ui.group.UiGroupListAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,12 +31,18 @@ internal class GroupsViewModel(
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(GroupsScreenState())
-  val state = _state.stateInWhileSubscribed(GroupsScreenState())
+  private val _selectedItemId = MutableStateFlow<String?>(null)
+  val state = combine(_state, _selectedItemId, GroupsScreenState::withSelectedItem)
+    .stateInWhileSubscribed(GroupsScreenState())
     .onStart { loadGroups() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   fun refreshState() {
     loadGroups()
+  }
+
+  fun onSelectedItemIdChanged(id: String?) {
+    _selectedItemId.value = id
   }
 
   fun onAddClick() {

@@ -6,6 +6,13 @@ internal data class GroupsScreenState(
   val listState: ListState = ListState.Loading,
 )
 
+internal fun GroupsScreenState.withSelectedItem(selectedItemId: String?): GroupsScreenState {
+  val ready = listState as? ListState.Ready ?: return this
+  return copy(
+    listState = ListState.Ready(ready.groups.map { it.copy(isSelected = it.id == selectedItemId) }),
+  )
+}
+
 internal sealed interface ListState {
   data object Loading : ListState
 

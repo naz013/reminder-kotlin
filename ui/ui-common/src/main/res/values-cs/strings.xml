@@ -1263,4 +1263,6 @@
     <string name="notes_switch_layout">Přepnout rozložení poznámek</string>
     <string name="select_reminder_to_see_details">Vyberte připomenutí a zobrazte podrobnosti</string>
     <string name="select_birthday_to_see_details">Vyberte narozeniny a zobrazte podrobnosti</string>
+    <string name="select_group_to_see_details">Vyberte skupinu a zobrazte podrobnosti</string>
+    <string name="select_tag_to_see_details">Vyberte štítek a zobrazte podrobnosti</string>
 </resources>

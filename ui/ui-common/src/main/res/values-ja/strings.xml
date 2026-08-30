@@ -1263,4 +1263,6 @@
     <string name="notes_switch_layout">メモのレイアウトを切り替え</string>
     <string name="select_reminder_to_see_details">詳細を表示するには、リマインダーを選択してください</string>
     <string name="select_birthday_to_see_details">詳細を表示するには、誕生日を選択してください</string>
+    <string name="select_group_to_see_details">詳細を表示するには、グループを選択してください</string>
+    <string name="select_tag_to_see_details">詳細を表示するには、タグを選択してください</string>
 </resources>

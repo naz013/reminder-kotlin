@@ -1261,4 +1261,6 @@
     <string name="notes_switch_layout">تبديل تخطيط الملاحظات</string>
     <string name="select_reminder_to_see_details">اختر تذكيرًا لعرض التفاصيل</string>
     <string name="select_birthday_to_see_details">اختر عيد ميلاد لعرض التفاصيل</string>
+    <string name="select_group_to_see_details">اختر مجموعة لعرض التفاصيل</string>
+    <string name="select_tag_to_see_details">اختر وسمًا لعرض التفاصيل</string>
 </resources>

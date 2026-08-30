@@ -1262,4 +1262,6 @@
     <string name="notes_switch_layout">Переключить макет заметок</string>
     <string name="select_reminder_to_see_details">Выберите напоминание, чтобы увидеть подробности</string>
     <string name="select_birthday_to_see_details">Выберите день рождения, чтобы увидеть подробности</string>
+    <string name="select_group_to_see_details">Выберите группу, чтобы увидеть подробности</string>
+    <string name="select_tag_to_see_details">Выберите тег, чтобы увидеть подробности</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.github.naz013.tags.compose
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -123,7 +124,10 @@ private fun TagListItem(
   Card(
     modifier = modifier,
     onClick = onClick,
-    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+    colors = CardDefaults.cardColors(
+      containerColor = if (tag.isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
+    ),
+    border = if (tag.isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {
     Row(
       modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp),

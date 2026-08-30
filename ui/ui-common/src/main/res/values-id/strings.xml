@@ -1261,4 +1261,6 @@
     <string name="notes_switch_layout">Ganti tata letak catatan</string>
     <string name="select_reminder_to_see_details">Pilih pengingat untuk melihat detailnya</string>
     <string name="select_birthday_to_see_details">Pilih ulang tahun untuk melihat detailnya</string>
+    <string name="select_group_to_see_details">Pilih grup untuk melihat detailnya</string>
+    <string name="select_tag_to_see_details">Pilih label untuk melihat detailnya</string>
 </resources>
