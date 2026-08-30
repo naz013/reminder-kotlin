@@ -150,6 +150,7 @@ internal class NotesViewModel(
     notePreferences.noteOrder = order
     _notesScreenState.update { it.copy(sortOrder = order) }
     sortOrder.value = order
+    appWidgetUpdater.updateNotesWidget()
   }
 
   fun onLayoutModeSelected(mode: ListLayoutMode) {

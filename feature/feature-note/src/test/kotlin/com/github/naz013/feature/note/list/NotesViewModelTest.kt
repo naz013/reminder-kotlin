@@ -271,6 +271,16 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `onSortOrderSelected refreshes the notes widget`() =
+    runTest {
+      val viewModel = createViewModel()
+
+      viewModel.onSortOrderSelected(NoteSortProcessor.DATE_ZA)
+
+      verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
   fun `onLayoutModeSelected persists the layout mode and updates state`() =
     runTest {
       val viewModel = createViewModel()

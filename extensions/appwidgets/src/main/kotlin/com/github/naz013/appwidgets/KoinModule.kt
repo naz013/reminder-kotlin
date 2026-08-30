@@ -90,7 +90,7 @@ val appWidgetsModule = module {
   }
 
   factory { (prefs: NotesWidgetPrefsProvider) ->
-    NotesAppWidgetViewModel(prefs, get(), get())
+    NotesAppWidgetViewModel(prefs, get(), get(), get())
   }
 
   factory { (prefs: BirthdaysWidgetPrefsProvider) ->

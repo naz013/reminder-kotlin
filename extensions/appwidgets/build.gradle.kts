@@ -48,4 +48,8 @@ dependencies {
 
   debugImplementation(libs.glance.preview)
   debugImplementation(libs.glance.appwidget.preview)
+
+  testImplementation(libs.junit)
+  testImplementation(libs.mockk)
+  testImplementation(libs.kotlinx.coroutines.test)
 }
