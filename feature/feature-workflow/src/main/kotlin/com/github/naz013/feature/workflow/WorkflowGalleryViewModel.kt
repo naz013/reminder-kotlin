@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 import com.github.naz013.logic.workflow.DeleteWorkflowRuleUseCase
-import com.github.naz013.logic.workflow.GetGlobalWorkflowRulesUseCase
 import com.github.naz013.logic.workflow.GetWorkflowTemplatesUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleAsTemplateUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /** Global-scope workflow rule management: the screen behind the Home header tile and the
  * Settings "Workflow rules" row. Lists rules already applied globally and the full template
@@ -26,7 +25,6 @@ import kotlinx.coroutines.withContext
  * existing rule, or save one back as a reusable template. */
 internal class WorkflowGalleryViewModel(
   private val dispatcherProvider: DispatcherProvider,
-  private val getGlobalWorkflowRulesUseCase: GetGlobalWorkflowRulesUseCase,
   private val getWorkflowTemplatesUseCase: GetWorkflowTemplatesUseCase,
   private val applyWorkflowTemplateUseCase: ApplyWorkflowTemplateUseCase,
   private val saveWorkflowRuleAsTemplateUseCase: SaveWorkflowRuleAsTemplateUseCase,
@@ -39,7 +37,8 @@ internal class WorkflowGalleryViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      loadData()
+      workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_GLOBAL, scopeId = null)
+        .collect { rules -> applyRules(rules) }
     }
   }
 
@@ -47,14 +46,12 @@ internal class WorkflowGalleryViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val rule = workflowRuleRepository.getById(ruleId) ?: return@launch
       saveWorkflowRuleUseCase(rule.copy(isEnabled = isEnabled))
-      loadData()
     }
   }
 
   fun onDeleteRuleClick(ruleId: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteWorkflowRuleUseCase(ruleId)
-      loadData()
     }
   }
 
@@ -62,7 +59,6 @@ internal class WorkflowGalleryViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val rule = workflowRuleRepository.getById(ruleId) ?: return@launch
       saveWorkflowRuleAsTemplateUseCase(rule)
-      loadData()
     }
   }
 
@@ -70,20 +66,22 @@ internal class WorkflowGalleryViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val template = getWorkflowTemplatesUseCase().firstOrNull { it.id == templateId && it.isExecutable() } ?: return@launch
       applyWorkflowTemplateUseCase(template, WorkflowScope.Global)
-      loadData()
     }
   }
 
-  private suspend fun loadData() {
-    val globalRules = getGlobalWorkflowRulesUseCase()
+  // Driven by workflowRuleRepository.observeByScope in init - no manual reload needed, the Flow
+  // re-emits on its own once a rule save/delete goes through.
+  private suspend fun applyRules(globalRules: List<WorkflowRule>) {
     val appliedTemplateIds = globalRules.mapNotNull { it.templateId }.toSet()
     val rules = globalRules.map { it.toUi() }
     val templates = getWorkflowTemplatesUseCase()
       .filter { it.isExecutable() }
       .map { it.toUi(WorkflowScopeType.GLOBAL, appliedTemplateIds) }
       .groupBy { it.category }
-    withContext(dispatcherProvider.main()) {
-      state.update { it.copy(isLoading = false, globalRules = rules, templatesByCategory = templates) }
-    }
+    state.update { it.copy(isLoading = false, globalRules = rules, templatesByCategory = templates) }
+  }
+
+  companion object {
+    private const val SCOPE_TYPE_GLOBAL = "GLOBAL"
   }
 }

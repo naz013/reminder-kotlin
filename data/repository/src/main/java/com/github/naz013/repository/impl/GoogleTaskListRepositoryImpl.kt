@@ -7,6 +7,8 @@ import com.github.naz013.repository.dao.GoogleTaskListsDao
 import com.github.naz013.repository.entity.GoogleTaskListEntity
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class GoogleTaskListRepositoryImpl(
   private val dao: GoogleTaskListsDao,
@@ -25,10 +27,16 @@ internal class GoogleTaskListRepositoryImpl(
     return dao.getById(id)?.toDomain()
   }
 
+  override fun observeById(id: String): Flow<GoogleTaskList?> =
+    dao.observeById(id).map { it?.toDomain() }
+
   override suspend fun getAll(): List<GoogleTaskList> {
     Logger.d(TAG, "Get all task lists")
     return dao.all().map { it.toDomain() }
   }
+
+  override fun observeAll(): Flow<List<GoogleTaskList>> =
+    dao.observeAll().map { list -> list.map { it.toDomain() } }
 
   override suspend fun defaultGoogleTaskList(): GoogleTaskList? {
     Logger.d(TAG, "Get default task list")

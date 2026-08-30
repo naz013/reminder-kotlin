@@ -30,6 +30,9 @@ internal class TagAssignmentRepositoryImpl(
   override suspend fun getItemIdsForTag(tagId: String, itemType: TaggedItemType): List<String> =
     dao.getItemIdsForTag(tagId, itemType.name)
 
+  override fun observeItemIdsForTag(tagId: String, itemType: TaggedItemType): Flow<List<String>> =
+    dao.observeItemIdsForTag(tagId, itemType.name)
+
   override suspend fun attach(itemId: String, itemType: TaggedItemType, tagId: String) {
     Logger.d(TAG, "Attach tag $tagId to $itemType:$itemId")
     dao.insert(TagAssignmentEntity(tagId = tagId, itemId = itemId, itemType = itemType.name))

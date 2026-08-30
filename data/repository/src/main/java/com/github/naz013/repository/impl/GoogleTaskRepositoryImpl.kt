@@ -7,6 +7,8 @@ import com.github.naz013.repository.dao.GoogleTasksDao
 import com.github.naz013.repository.entity.GoogleTaskEntity
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class GoogleTaskRepositoryImpl(
   private val dao: GoogleTasksDao,
@@ -42,6 +44,9 @@ internal class GoogleTaskRepositoryImpl(
     return dao.all().map { it.toDomain() }
   }
 
+  override fun observeAll(): Flow<List<GoogleTask>> =
+    dao.observeAll().map { list -> list.map { it.toDomain() } }
+
   override suspend fun search(query: String): List<GoogleTask> {
     Logger.d(TAG, "Search google tasks: $query")
     return dao.search(query).map { it.toDomain() }
@@ -56,6 +61,9 @@ internal class GoogleTaskRepositoryImpl(
     Logger.d(TAG, "Get all google tasks by list: $listId")
     return dao.getAllByList(listId).map { it.toDomain() }
   }
+
+  override fun observeAllByList(listId: String): Flow<List<GoogleTask>> =
+    dao.observeAllByList(listId).map { list -> list.map { it.toDomain() } }
 
   override suspend fun getAttachedToReminder(): List<GoogleTask> {
     Logger.d(TAG, "Get all google tasks attached to reminder")

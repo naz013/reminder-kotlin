@@ -11,6 +11,7 @@ interface GroupV2Repository {
   suspend fun getAll(): List<GroupV2>
   fun observeAll(): Flow<List<GroupV2>>
   suspend fun getById(id: String): GroupV2?
+  fun observeById(id: String): Flow<GroupV2?>
   suspend fun defaultGroup(isDef: Boolean = true): GroupV2?
   suspend fun search(query: String): List<GroupV2>
 

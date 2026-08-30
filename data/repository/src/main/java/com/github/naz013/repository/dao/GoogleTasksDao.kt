@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.github.naz013.repository.entity.GoogleTaskEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface GoogleTasksDao {
@@ -35,11 +36,17 @@ internal interface GoogleTasksDao {
   @Query("SELECT * FROM GoogleTask ORDER BY status DESC, title ASC")
   fun all(): List<GoogleTaskEntity>
 
+  @Query("SELECT * FROM GoogleTask ORDER BY status DESC, title ASC")
+  fun observeAll(): Flow<List<GoogleTaskEntity>>
+
   @Query("SELECT * FROM GoogleTask WHERE listId=:listId AND status=:status ORDER BY title ASC")
   fun getAllByList(listId: String, status: String): List<GoogleTaskEntity>
 
   @Query("SELECT * FROM GoogleTask WHERE listId=:listId ORDER BY status DESC, title ASC")
   fun getAllByList(listId: String): List<GoogleTaskEntity>
+
+  @Query("SELECT * FROM GoogleTask WHERE listId=:listId ORDER BY status DESC, title ASC")
+  fun observeAllByList(listId: String): Flow<List<GoogleTaskEntity>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insert(googleTask: GoogleTaskEntity)

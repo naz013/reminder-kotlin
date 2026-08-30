@@ -3,7 +3,6 @@ package com.github.naz013.logic.reminder
 import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
 import com.github.naz013.logic.reminder.occurrence.CalculateReminderOccurrencesUseCase
 import com.github.naz013.logic.reminder.occurrence.ReminderOccurrenceCalculatorFactoryV2
-import com.github.naz013.logic.reminder.query.GetActiveRemindersV2ByGroupIdUseCase
 import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
 import com.github.naz013.logic.reminder.scheduling.EventDateTimeCalculatorV2
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
@@ -37,7 +36,6 @@ val logicReminderModule = module {
   factoryOf(::ReminderOccurrenceCalculatorFactoryV2)
   factoryOf(::CalculateReminderOccurrencesUseCase)
 
-  factoryOf(::GetActiveRemindersV2ByGroupIdUseCase)
   factoryOf(::ResolveReminderV2NotificationSettingsUseCase)
 
   factoryOf(::ActivateReminderUseCase)

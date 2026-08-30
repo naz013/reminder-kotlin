@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 import com.github.naz013.logic.workflow.DeleteWorkflowRuleUseCase
-import com.github.naz013.logic.workflow.GetWorkflowRulesForReminderUseCase
 import com.github.naz013.logic.workflow.GetWorkflowTemplatesUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleAsTemplateUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /** Reminder-scope workflow rule management, reached from a reminder preview's overflow menu. Same
  * shape as [WorkflowRulesForGroupViewModel] but scoped to one [reminderId] - the only entry point
@@ -26,7 +25,6 @@ import kotlinx.coroutines.withContext
 internal class WorkflowRulesForReminderViewModel(
   private val reminderId: String,
   private val dispatcherProvider: DispatcherProvider,
-  private val getWorkflowRulesForReminderUseCase: GetWorkflowRulesForReminderUseCase,
   private val getWorkflowTemplatesUseCase: GetWorkflowTemplatesUseCase,
   private val applyWorkflowTemplateUseCase: ApplyWorkflowTemplateUseCase,
   private val saveWorkflowRuleAsTemplateUseCase: SaveWorkflowRuleAsTemplateUseCase,
@@ -39,7 +37,8 @@ internal class WorkflowRulesForReminderViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      loadData()
+      workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_REMINDER, scopeId = reminderId)
+        .collect { rules -> applyRules(rules) }
     }
   }
 
@@ -47,14 +46,12 @@ internal class WorkflowRulesForReminderViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val rule = workflowRuleRepository.getById(ruleId) ?: return@launch
       saveWorkflowRuleUseCase(rule.copy(isEnabled = isEnabled))
-      loadData()
     }
   }
 
   fun onDeleteRuleClick(ruleId: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       deleteWorkflowRuleUseCase(ruleId)
-      loadData()
     }
   }
 
@@ -62,7 +59,6 @@ internal class WorkflowRulesForReminderViewModel(
     viewModelScope.launch(dispatcherProvider.default()) {
       val rule = workflowRuleRepository.getById(ruleId) ?: return@launch
       saveWorkflowRuleAsTemplateUseCase(rule)
-      loadData()
     }
   }
 
@@ -71,20 +67,22 @@ internal class WorkflowRulesForReminderViewModel(
       val template = getWorkflowTemplatesUseCase()
         .firstOrNull { it.id == templateId && it.isExecutable() } ?: return@launch
       applyWorkflowTemplateUseCase(template, WorkflowScope.ForReminder(reminderId))
-      loadData()
     }
   }
 
-  private suspend fun loadData() {
-    val reminderRules = getWorkflowRulesForReminderUseCase(reminderId)
+  // Driven by workflowRuleRepository.observeByScope in init - no manual reload needed, the Flow
+  // re-emits on its own once a rule save/delete goes through.
+  private suspend fun applyRules(reminderRules: List<WorkflowRule>) {
     val appliedTemplateIds = reminderRules.mapNotNull { it.templateId }.toSet()
     val rules = reminderRules.map { it.toUi() }
     val templates = getWorkflowTemplatesUseCase()
       .filter { it.isExecutable() }
       .map { it.toUi(WorkflowScopeType.REMINDER, appliedTemplateIds) }
       .groupBy { it.category }
-    withContext(dispatcherProvider.main()) {
-      state.update { it.copy(isLoading = false, rules = rules, templatesByCategory = templates) }
-    }
+    state.update { it.copy(isLoading = false, rules = rules, templatesByCategory = templates) }
+  }
+
+  companion object {
+    private const val SCOPE_TYPE_REMINDER = "REMINDER"
   }
 }

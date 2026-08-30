@@ -88,6 +88,9 @@ internal class ReminderV2RepositoryImpl(
     return dao.getByGroupId(groupId).map { it.toDomain() }
   }
 
+  override fun observeActiveByGroupId(groupId: String): Flow<List<ReminderV2>> =
+    dao.observeActiveByGroupId(groupId).map { list -> list.map { it.toDomain() } }
+
   override suspend fun countActiveByGroupId(groupId: String): Int {
     Logger.d(TAG, "Count active reminders by group id: $groupId")
     return dao.countActiveByGroupId(groupId)

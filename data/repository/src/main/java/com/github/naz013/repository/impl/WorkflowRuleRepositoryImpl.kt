@@ -9,6 +9,8 @@ import com.github.naz013.repository.entity.toDomain
 import com.github.naz013.repository.entity.toEntity
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class WorkflowRuleRepositoryImpl(
   private val dao: WorkflowRuleDao,
@@ -42,6 +44,9 @@ internal class WorkflowRuleRepositoryImpl(
     Logger.d(TAG, "Get workflow rules by scope: $scopeType/$scopeId")
     return dao.getByScope(scopeType, scopeId).map { it.toDomain() }
   }
+
+  override fun observeByScope(scopeType: String, scopeId: String?): Flow<List<WorkflowRule>> =
+    dao.observeByScope(scopeType, scopeId).map { list -> list.map { it.toDomain() } }
 
   override suspend fun getByTriggerType(triggerType: String): List<WorkflowRule> {
     Logger.d(TAG, "Get workflow rules by trigger type: $triggerType")

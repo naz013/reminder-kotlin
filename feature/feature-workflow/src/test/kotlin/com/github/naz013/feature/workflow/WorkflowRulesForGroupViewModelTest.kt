@@ -7,7 +7,6 @@ import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 import com.github.naz013.logic.workflow.DeleteWorkflowRuleUseCase
-import com.github.naz013.logic.workflow.GetWorkflowRulesForGroupUseCase
 import com.github.naz013.logic.workflow.GetWorkflowTemplatesUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleAsTemplateUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
@@ -16,14 +15,15 @@ import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
 class WorkflowRulesForGroupViewModelTest : BaseTest() {
   private val groupId = "group-1"
-  private val getWorkflowRulesForGroupUseCase = mockk<GetWorkflowRulesForGroupUseCase>()
   private val getWorkflowTemplatesUseCase = mockk<GetWorkflowTemplatesUseCase>()
   private val applyWorkflowTemplateUseCase = mockk<ApplyWorkflowTemplateUseCase>(relaxed = true)
   private val saveWorkflowRuleAsTemplateUseCase = mockk<SaveWorkflowRuleAsTemplateUseCase>(relaxed = true)
@@ -34,7 +34,7 @@ class WorkflowRulesForGroupViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { getWorkflowRulesForGroupUseCase(groupId) } returns emptyList()
+    every { workflowRuleRepository.observeByScope(any(), any()) } returns flowOf(emptyList())
     coEvery { getWorkflowTemplatesUseCase() } returns emptyList()
   }
 
@@ -42,7 +42,6 @@ class WorkflowRulesForGroupViewModelTest : BaseTest() {
     WorkflowRulesForGroupViewModel(
       groupId = groupId,
       dispatcherProvider = mockDispatcherProvider(),
-      getWorkflowRulesForGroupUseCase = getWorkflowRulesForGroupUseCase,
       getWorkflowTemplatesUseCase = getWorkflowTemplatesUseCase,
       applyWorkflowTemplateUseCase = applyWorkflowTemplateUseCase,
       saveWorkflowRuleAsTemplateUseCase = saveWorkflowRuleAsTemplateUseCase,

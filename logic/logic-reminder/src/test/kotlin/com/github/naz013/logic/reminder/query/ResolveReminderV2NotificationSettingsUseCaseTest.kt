@@ -85,6 +85,7 @@ private class FakeGroupV2Repository(private val groups: Map<String, GroupV2>) : 
   override suspend fun getAll(): List<GroupV2> = groups.values.toList()
   override fun observeAll(): Flow<List<GroupV2>> = flowOf(groups.values.toList())
   override suspend fun getById(id: String): GroupV2? = groups[id]
+  override fun observeById(id: String): Flow<GroupV2?> = flowOf(groups[id])
   override suspend fun defaultGroup(isDef: Boolean): GroupV2? = groups.values.firstOrNull { it.isDefault == isDef }
   override suspend fun search(query: String): List<GroupV2> = emptyList()
   override suspend fun delete(id: String) = Unit

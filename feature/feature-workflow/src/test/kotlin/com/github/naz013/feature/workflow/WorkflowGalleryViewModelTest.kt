@@ -9,7 +9,6 @@ import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 import com.github.naz013.logic.workflow.DeleteWorkflowRuleUseCase
-import com.github.naz013.logic.workflow.GetGlobalWorkflowRulesUseCase
 import com.github.naz013.logic.workflow.GetWorkflowTemplatesUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleAsTemplateUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
@@ -18,7 +17,9 @@ import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -26,7 +27,6 @@ import org.junit.Before
 import org.junit.Test
 
 class WorkflowGalleryViewModelTest : BaseTest() {
-  private val getGlobalWorkflowRulesUseCase = mockk<GetGlobalWorkflowRulesUseCase>()
   private val getWorkflowTemplatesUseCase = mockk<GetWorkflowTemplatesUseCase>()
   private val applyWorkflowTemplateUseCase = mockk<ApplyWorkflowTemplateUseCase>(relaxed = true)
   private val saveWorkflowRuleAsTemplateUseCase = mockk<SaveWorkflowRuleAsTemplateUseCase>(relaxed = true)
@@ -37,14 +37,13 @@ class WorkflowGalleryViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { getGlobalWorkflowRulesUseCase() } returns emptyList()
+    every { workflowRuleRepository.observeByScope(any(), any()) } returns flowOf(emptyList())
     coEvery { getWorkflowTemplatesUseCase() } returns emptyList()
   }
 
   private fun createViewModel(): WorkflowGalleryViewModel =
     WorkflowGalleryViewModel(
       dispatcherProvider = mockDispatcherProvider(),
-      getGlobalWorkflowRulesUseCase = getGlobalWorkflowRulesUseCase,
       getWorkflowTemplatesUseCase = getWorkflowTemplatesUseCase,
       applyWorkflowTemplateUseCase = applyWorkflowTemplateUseCase,
       saveWorkflowRuleAsTemplateUseCase = saveWorkflowRuleAsTemplateUseCase,
@@ -70,7 +69,7 @@ class WorkflowGalleryViewModelTest : BaseTest() {
       trigger = WorkflowTrigger.ReminderAgeExceeded(30),
       action = WorkflowAction.ArchiveReminder,
     )
-    coEvery { getGlobalWorkflowRulesUseCase() } returns listOf(rule)
+    every { workflowRuleRepository.observeByScope(any(), any()) } returns flowOf(listOf(rule))
     coEvery { getWorkflowTemplatesUseCase() } returns listOf(template)
 
     val state = createViewModel().state.value
@@ -101,7 +100,7 @@ class WorkflowGalleryViewModelTest : BaseTest() {
       trigger = WorkflowTrigger.ReminderAgeExceeded(30),
       action = WorkflowAction.ArchiveReminder,
     )
-    coEvery { getGlobalWorkflowRulesUseCase() } returns listOf(rule)
+    every { workflowRuleRepository.observeByScope(any(), any()) } returns flowOf(listOf(rule))
     coEvery { getWorkflowTemplatesUseCase() } returns listOf(template)
 
     val state = createViewModel().state.value
@@ -112,7 +111,7 @@ class WorkflowGalleryViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onRuleEnabledChange toggles the rule and reloads`() = runTest {
+  fun `onRuleEnabledChange toggles the rule`() = runTest {
     val rule = WorkflowRule(
       uuId = "rule-1",
       scope = WorkflowScope.Global,

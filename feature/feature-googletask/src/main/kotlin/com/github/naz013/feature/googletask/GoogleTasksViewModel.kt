@@ -35,8 +35,8 @@ import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,7 +61,6 @@ internal class GoogleTasksViewModel(
 
   private val _state = MutableStateFlow(GoogleTasksState())
   val state = _state.stateInWhileSubscribed(GoogleTasksState())
-    .onStart { load() }
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
@@ -75,6 +74,16 @@ internal class GoogleTasksViewModel(
         .collect { tags ->
           _state.update { it.copy(allTags = tags) }
         }
+    }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      _state.update { it.copy(isLoggedIn = googleTasksAuthManager.isAuthorized()) }
+    }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      combine(
+        googleTaskListRepository.observeAll(),
+        googleTaskRepository.observeAll(),
+      ) { lists, tasks -> lists to tasks }
+        .collect { (lists, tasks) -> applyTasks(lists, tasks) }
     }
   }
 
@@ -125,38 +134,28 @@ internal class GoogleTasksViewModel(
     event.emit(ViewModelEvent.MoveBack)
   }
 
-  private fun load() {
-    viewModelScope.launch(dispatcherProvider.main()) {
-      _state.update {
-        it.copy(isLoggedIn = googleTasksAuthManager.isAuthorized())
-      }
-      val googleTaskLists = withContext(dispatcherProvider.io()) {
-        googleTaskListRepository.getAll()
-      }
-      val map = withContext(dispatcherProvider.default()) {
-        googleTaskLists.associateBy { it.listId }
-      }
-
-      loadedTasks = withContext(dispatcherProvider.io()) {
-        googleTaskRepository.getAll().map {
-          googleTaskItemStateAdapter.convert(it, map[it.listId])
-        }
-      }
-
-      val defTaskList = withContext(dispatcherProvider.io()) {
-        googleTaskLists.firstOrNull { it.isDefault() }
-          ?: googleTaskLists.firstOrNull()
-      }
-
-      _state.update {
-        it.copy(
-          taskLists = googleTaskLists.map { list -> list.toEntry() },
-          fabContainerColor = defTaskList?.let { list -> Color(themedColor(list.color)) },
-          fabContentColor = defTaskList?.let { list -> fabContentColor(list) },
-        )
-      }
-      applyTagFilter()
+  // Driven by googleTaskListRepository.observeAll/googleTaskRepository.observeAll in init - no
+  // manual reload needed after sync()/toggleTask(), the Flows re-emit on their own once the write
+  // goes through.
+  private suspend fun applyTasks(googleTaskLists: List<GoogleTaskList>, allTasks: List<GoogleTask>) {
+    val map = withContext(dispatcherProvider.default()) {
+      googleTaskLists.associateBy { it.listId }
     }
+
+    loadedTasks = withContext(dispatcherProvider.default()) {
+      allTasks.map { googleTaskItemStateAdapter.convert(it, map[it.listId]) }
+    }
+
+    val defTaskList = googleTaskLists.firstOrNull { it.isDefault() } ?: googleTaskLists.firstOrNull()
+
+    _state.update {
+      it.copy(
+        taskLists = googleTaskLists.map { list -> list.toEntry() },
+        fabContainerColor = defTaskList?.let { list -> Color(themedColor(list.color)) },
+        fabContentColor = defTaskList?.let { list -> fabContentColor(list) },
+      )
+    }
+    applyTagFilter()
   }
 
   private fun GoogleTaskList.toEntry() = UiGoogleTaskListEntry(id = listId, title = title, color = themedColor(color))
@@ -179,7 +178,6 @@ internal class GoogleTasksViewModel(
     }
     viewModelScope.launch(dispatcherProvider.io()) {
       sync()
-      load()
       withContext(dispatcherProvider.main()) {
         _state.update {
           it.copy(isLoading = false)
@@ -217,7 +215,6 @@ internal class GoogleTasksViewModel(
       }
 
       if (updated) {
-        load()
         appWidgetUpdater.updateScheduleWidget()
       }
       _state.update {

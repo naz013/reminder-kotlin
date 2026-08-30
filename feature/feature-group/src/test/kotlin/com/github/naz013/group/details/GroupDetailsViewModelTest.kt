@@ -6,8 +6,8 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logic.group.DeleteGroupUseCase
-import com.github.naz013.logic.reminder.query.GetActiveRemindersV2ByGroupIdUseCase
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.text.UiTextElement
@@ -24,7 +24,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -33,7 +35,7 @@ import org.threeten.bp.LocalDateTime
 
 class GroupDetailsViewModelTest : BaseTest() {
   private val groupV2Repository = mockk<GroupV2Repository>()
-  private val getActiveRemindersV2ByGroupIdUseCase = mockk<GetActiveRemindersV2ByGroupIdUseCase>()
+  private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val uiReminderListAdapter = mockk<UiReminderListAdapter>()
   private val uiGroupListAdapter = mockk<UiGroupListAdapter>()
   private val deleteGroupUseCase = mockk<DeleteGroupUseCase>(relaxed = true)
@@ -89,7 +91,7 @@ class GroupDetailsViewModelTest : BaseTest() {
     id = id,
     dispatcherProvider = mockDispatcherProvider(),
     groupV2Repository = groupV2Repository,
-    getActiveRemindersV2ByGroupIdUseCase = getActiveRemindersV2ByGroupIdUseCase,
+    reminderV2Repository = reminderV2Repository,
     uiReminderListAdapter = uiReminderListAdapter,
     uiGroupListAdapter = uiGroupListAdapter,
     deleteGroupUseCase = deleteGroupUseCase,
@@ -99,9 +101,9 @@ class GroupDetailsViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
+    every { groupV2Repository.observeById("1") } returns flowOf(groupV2(id = "1"))
     coEvery { groupV2Repository.countAll() } returns 2
-    coEvery { getActiveRemindersV2ByGroupIdUseCase("1") } returns emptyList()
+    every { reminderV2Repository.observeActiveByGroupId("1") } returns flowOf(emptyList())
     every { notificationOverrideSubtitleFormatter.format(any(), any()) } returns NotificationOverrideSubtitles()
     every { uiGroupListAdapter.convert(any<GroupV2>()) } answers {
       uiGroupList(color = firstArg<GroupV2>().color * 100)
@@ -114,12 +116,13 @@ class GroupDetailsViewModelTest : BaseTest() {
   fun `load populates title, color, subtitles and reminders`() = runTest {
     val reminder = reminderV2("r1")
     val uiReminder = uiReminderList("r1")
-    coEvery { getActiveRemindersV2ByGroupIdUseCase("1") } returns listOf(reminder)
+    every { reminderV2Repository.observeActiveByGroupId("1") } returns flowOf(listOf(reminder))
     every { uiReminderListAdapter.createV2(reminder, any()) } returns uiReminder
     every { notificationOverrideSubtitleFormatter.format(any(), any()) } returns
       NotificationOverrideSubtitles(priority = "High")
+    val vm = buildViewModel()
 
-    val state = viewModel.state.first()
+    val state = vm.state.first()
 
     assertEquals(false, state.isLoading)
     assertEquals("Work", state.title)
@@ -131,19 +134,33 @@ class GroupDetailsViewModelTest : BaseTest() {
   @Test
   fun `canDelete is false when the group is the only one`() = runTest {
     coEvery { groupV2Repository.countAll() } returns 1
+    val vm = buildViewModel()
 
-    val state = viewModel.state.first()
+    val state = vm.state.first()
 
     assertEquals(false, state.canDelete)
   }
 
   @Test
   fun `canDelete is false when the group is the default group`() = runTest {
-    coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1", isDefault = true)
+    every { groupV2Repository.observeById("1") } returns flowOf(groupV2(id = "1", isDefault = true))
+    val vm = buildViewModel()
 
-    val state = viewModel.state.first()
+    val state = vm.state.first()
 
     assertEquals(false, state.canDelete)
+  }
+
+  @Test
+  fun `state updates reactively when the group Flow emits a new value`() = runTest {
+    val groupFlow = MutableStateFlow(groupV2(id = "1", title = "Work"))
+    every { groupV2Repository.observeById("1") } returns groupFlow
+    val vm = buildViewModel()
+    assertEquals("Work", vm.state.first().title)
+
+    groupFlow.value = groupV2(id = "1", title = "Personal")
+
+    assertEquals("Personal", vm.state.first().title)
   }
 
   @Test
@@ -169,9 +186,10 @@ class GroupDetailsViewModelTest : BaseTest() {
   @Test
   fun `onDeleteConfirmed does nothing when group cannot be deleted`() = runTest {
     coEvery { groupV2Repository.countAll() } returns 1
-    viewModel.state.first()
+    val vm = buildViewModel()
+    vm.state.first()
 
-    viewModel.onDeleteConfirmed()
+    vm.onDeleteConfirmed()
 
     coVerify(exactly = 0) { deleteGroupUseCase(any()) }
   }

@@ -95,7 +95,9 @@ class TaskListViewModelTest : BaseTest() {
     super.setUp()
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
     coEvery { googleTaskListRepository.getById(listId) } returns taskList()
+    every { googleTaskListRepository.observeById(listId) } returns flowOf(taskList())
     coEvery { googleTaskRepository.getAllByList(listId) } returns emptyList()
+    every { googleTaskRepository.observeAllByList(listId) } returns flowOf(emptyList())
     every { googleTaskItemStateAdapter.convert(any(), any()) } returns uiTask()
     every { tagRepository.observeAll() } returns flowOf(emptyList())
 
@@ -112,10 +114,11 @@ class TaskListViewModelTest : BaseTest() {
   fun `loads list details and tasks into state on first collection`() =
     runTest {
       val t1 = task("t1")
-      coEvery { googleTaskRepository.getAllByList(listId) } returns listOf(t1)
+      every { googleTaskRepository.observeAllByList(listId) } returns flowOf(listOf(t1))
       every { googleTaskItemStateAdapter.convert(t1, taskList()) } returns uiTask("t1")
+      val vm = buildViewModel()
 
-      val state = viewModel.state.first()
+      val state = vm.state.first()
 
       assertEquals(listId, state.listId)
       assertEquals("Work", state.title)
@@ -127,7 +130,7 @@ class TaskListViewModelTest : BaseTest() {
     runTest {
       val t1 = task("t1")
       val t2 = task("t2")
-      coEvery { googleTaskRepository.getAllByList(listId) } returns listOf(t1, t2)
+      every { googleTaskRepository.observeAllByList(listId) } returns flowOf(listOf(t1, t2))
       every { googleTaskItemStateAdapter.convert(t1, taskList()) } returns uiTask("t1")
       every { googleTaskItemStateAdapter.convert(t2, taskList()) } returns uiTask("t2")
       coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.GOOGLE_TASK) } returns listOf("t1")
@@ -145,7 +148,7 @@ class TaskListViewModelTest : BaseTest() {
     runTest {
       val t1 = task("t1")
       val t2 = task("t2")
-      coEvery { googleTaskRepository.getAllByList(listId) } returns listOf(t1, t2)
+      every { googleTaskRepository.observeAllByList(listId) } returns flowOf(listOf(t1, t2))
       every { googleTaskItemStateAdapter.convert(t1, taskList()) } returns uiTask("t1")
       every { googleTaskItemStateAdapter.convert(t2, taskList()) } returns uiTask("t2")
       coEvery { tagAssignmentRepository.getItemIdsForTag("tag1", TaggedItemType.GOOGLE_TASK) } returns listOf("t1")
@@ -162,9 +165,10 @@ class TaskListViewModelTest : BaseTest() {
   @Test
   fun `does nothing when the task list is not found`() =
     runTest {
-      coEvery { googleTaskListRepository.getById(listId) } returns null
+      every { googleTaskListRepository.observeById(listId) } returns flowOf(null)
+      val vm = buildViewModel()
 
-      val state = viewModel.state.first()
+      val state = vm.state.first()
 
       assertEquals("", state.listId)
       assertEquals("", state.title)
@@ -173,9 +177,10 @@ class TaskListViewModelTest : BaseTest() {
   @Test
   fun `marks a non-default list as deletable`() =
     runTest {
-      coEvery { googleTaskListRepository.getById(listId) } returns taskList(isDefault = false)
+      every { googleTaskListRepository.observeById(listId) } returns flowOf(taskList(isDefault = false))
+      val vm = buildViewModel()
 
-      val state = viewModel.state.first()
+      val state = vm.state.first()
 
       assertEquals(true, state.canDelete)
       assertEquals(false, state.isDefaultList)
@@ -184,9 +189,10 @@ class TaskListViewModelTest : BaseTest() {
   @Test
   fun `marks the default list as not deletable`() =
     runTest {
-      coEvery { googleTaskListRepository.getById(listId) } returns taskList(isDefault = true)
+      every { googleTaskListRepository.observeById(listId) } returns flowOf(taskList(isDefault = true))
+      val vm = buildViewModel()
 
-      val state = viewModel.state.first()
+      val state = vm.state.first()
 
       assertEquals(false, state.canDelete)
       assertEquals(true, state.isDefaultList)
@@ -282,8 +288,9 @@ class TaskListViewModelTest : BaseTest() {
   @Test
   fun `deleteGoogleTaskList promotes another list to default when deleting the default list`() =
     runTest {
-      coEvery { googleTaskListRepository.getById(listId) } returns taskList(isDefault = true)
-      viewModel.state.first()
+      every { googleTaskListRepository.observeById(listId) } returns flowOf(taskList(isDefault = true))
+      val vm = buildViewModel()
+      vm.state.first()
       val otherList = taskList(id = "other", isDefault = false)
       coEvery { googleTasksApi.deleteTaskList(listId) } returns true
       coEvery { googleTaskListRepository.delete(listId) } returns Unit
@@ -291,7 +298,7 @@ class TaskListViewModelTest : BaseTest() {
       coEvery { googleTaskListRepository.getAll() } returns listOf(otherList)
       coEvery { googleTaskListRepository.save(any()) } returns Unit
 
-      viewModel.deleteGoogleTaskList()
+      vm.deleteGoogleTaskList()
 
       coVerify(exactly = 1) { googleTaskListRepository.save(match { it.listId == "other" && it.def == 1 }) }
     }

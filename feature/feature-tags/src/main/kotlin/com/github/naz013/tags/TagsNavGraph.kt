@@ -3,15 +3,11 @@ package com.github.naz013.tags
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.tags.compose.TagEditScreen
@@ -170,18 +166,6 @@ private fun TagsDetailsEntry(
 ) {
   val viewModel = koinViewModel<TagDetailsViewModel> { parametersOf(key.id) }
   val dialogDispatcher = rememberDialogDispatcher()
-
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(viewModel, lifecycleOwner) {
-    val observer =
-      LifecycleEventObserver { _, event ->
-        if (event == Lifecycle.Event.ON_RESUME) {
-          viewModel.refreshState()
-        }
-      }
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {

@@ -10,9 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.group.create.EditGroupScreen
@@ -77,18 +74,6 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GroupsViewModel>()
 
   val dialogDispatcher = rememberDialogDispatcher()
-
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(viewModel, lifecycleOwner) {
-    val observer =
-      LifecycleEventObserver { _, event ->
-        if (event == Lifecycle.Event.ON_RESUME) {
-          viewModel.refreshState()
-        }
-      }
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -200,18 +185,6 @@ private fun GroupsDetailsEntry(
 ) {
   val viewModel = koinViewModel<GroupDetailsViewModel> { parametersOf(key.id) }
   val dialogDispatcher = rememberDialogDispatcher()
-
-  val lifecycleOwner = LocalLifecycleOwner.current
-  DisposableEffect(viewModel, lifecycleOwner) {
-    val observer =
-      LifecycleEventObserver { _, event ->
-        if (event == Lifecycle.Event.ON_RESUME) {
-          viewModel.refreshState()
-        }
-      }
-    lifecycleOwner.lifecycle.addObserver(observer)
-    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-  }
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {

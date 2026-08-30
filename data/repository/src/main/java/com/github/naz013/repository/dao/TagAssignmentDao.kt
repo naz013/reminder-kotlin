@@ -35,6 +35,9 @@ internal interface TagAssignmentDao {
   @Query("SELECT itemId FROM TagAssignment WHERE tagId=:tagId AND itemType=:itemType")
   fun getItemIdsForTag(tagId: String, itemType: String): List<String>
 
+  @Query("SELECT itemId FROM TagAssignment WHERE tagId=:tagId AND itemType=:itemType")
+  fun observeItemIdsForTag(tagId: String, itemType: String): Flow<List<String>>
+
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   fun insert(assignment: TagAssignmentEntity)
 

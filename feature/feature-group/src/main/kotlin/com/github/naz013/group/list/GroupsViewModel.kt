@@ -8,6 +8,7 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.logic.group.MakeGroupDefaultUseCase
 import com.github.naz013.repository.GroupV2Repository
@@ -16,7 +17,6 @@ import com.github.naz013.ui.group.UiGroupList
 import com.github.naz013.ui.group.UiGroupListAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,11 +34,12 @@ internal class GroupsViewModel(
   private val _selectedItemId = MutableStateFlow<String?>(null)
   val state = combine(_state, _selectedItemId, GroupsScreenState::withSelectedItem)
     .stateInWhileSubscribed(GroupsScreenState())
-    .onStart { loadGroups() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
-  fun refreshState() {
-    loadGroups()
+  init {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      groupV2Repository.observeAll().collect { groups -> applyGroups(groups) }
+    }
   }
 
   fun onSelectedItemIdChanged(id: String?) {
@@ -67,7 +68,6 @@ internal class GroupsViewModel(
       GroupMenuAction.MAKE_DEFAULT -> {
         viewModelScope.launch(dispatcherProvider.io()) {
           makeGroupDefaultUseCase(group.id)
-          loadGroups()
         }
       }
     }
@@ -81,24 +81,20 @@ internal class GroupsViewModel(
         return@launch
       }
       deleteGroupUseCase(id)
-      loadGroups()
     }
   }
 
-  private fun loadGroups() {
-    viewModelScope.launch(dispatcherProvider.io()) {
-      val groups =
-        groupV2Repository
-          .getAll()
-          .map {
-            uiGroupListAdapter.convert(it, reminderV2Repository.countActiveByGroupId(it.uuId))
-          }.sortedWith(GROUP_ORDER)
-
-      withContext(dispatcherProvider.main()) {
-        _state.update {
-          it.copy(listState = if (groups.isEmpty()) ListState.Empty else ListState.Ready(groups))
-        }
+  // Driven by groupV2Repository.observeAll() in init - no manual reload needed after
+  // deleteGroup/MAKE_DEFAULT, the Flow re-emits on its own once the use case writes through.
+  private suspend fun applyGroups(groups: List<GroupV2>) {
+    val uiGroups =
+      withContext(dispatcherProvider.io()) {
+        groups
+          .map { uiGroupListAdapter.convert(it, reminderV2Repository.countActiveByGroupId(it.uuId)) }
+          .sortedWith(GROUP_ORDER)
       }
+    _state.update {
+      it.copy(listState = if (uiGroups.isEmpty()) ListState.Empty else ListState.Ready(uiGroups))
     }
   }
 
