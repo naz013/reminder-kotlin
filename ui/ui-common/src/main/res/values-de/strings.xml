@@ -1257,4 +1257,6 @@
     <string name="text_color_mode_gradient">Verlauf</string>
     <string name="staggered_grid_view">Gestaffelte Rasteransicht</string>
     <string name="notes_switch_layout">Notizlayout wechseln</string>
+    <string name="select_reminder_to_see_details">Wählen Sie eine Erinnerung aus, um Details anzuzeigen</string>
+    <string name="select_birthday_to_see_details">Wählen Sie einen Geburtstag aus, um Details anzuzeigen</string>
 </resources>

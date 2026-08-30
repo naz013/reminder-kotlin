@@ -53,10 +53,14 @@ import org.koin.core.parameter.parametersOf
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.buildReminderEntries(
   backStack: MutableList<NavKey>,
+  isRenderedAsDetailPane: (NavKey) -> Boolean,
   rememberContactPhonePicker: @Composable () -> ((onResult: (String) -> Unit) -> Unit),
 ) {
   entry<BuildReminderNavKey.Main>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
-    MainEntry(key, backStack, rememberContactPhonePicker)
+    // Fixed at first composition, not re-read on every recomposition - see the matching comment
+    // in ReminderPreviewNavGraph.kt.
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    MainEntry(key, backStack, renderAsDetailPane, rememberContactPhonePicker)
   }
   entry<BuildReminderNavKey.Help> {
     ReminderHelpScreen(onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() })
@@ -83,6 +87,7 @@ private fun SelectApplicationEntry(backStack: MutableList<NavKey>) {
 private fun MainEntry(
   key: BuildReminderNavKey.Main,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
   rememberContactPhonePicker: @Composable () -> ((onResult: (String) -> Unit) -> Unit),
 ) {
   // Passed as the single Main key object, not 6 loose positional values: Koin's parameter
@@ -180,6 +185,7 @@ private fun MainEntry(
   }
 
   BuildReminderScreen(
+    renderAsDetailPane = renderAsDetailPane,
     isLoadingForEdit = state.isLoadingForEdit,
     builderItems = state.builderItems,
     prediction = state.prediction,

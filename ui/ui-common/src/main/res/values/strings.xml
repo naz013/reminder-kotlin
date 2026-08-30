@@ -1265,4 +1265,6 @@
     <string name="text_color_mode_gradient">Gradient</string>
     <string name="staggered_grid_view">Staggered grid view</string>
     <string name="notes_switch_layout">Switch notes layout</string>
+    <string name="select_reminder_to_see_details">Select a reminder to see its details</string>
+    <string name="select_birthday_to_see_details">Select a birthday to see its details</string>
 </resources>

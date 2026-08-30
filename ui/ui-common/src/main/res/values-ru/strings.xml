@@ -1260,4 +1260,6 @@
     <string name="text_color_mode_gradient">Градиент</string>
     <string name="staggered_grid_view">Ступенчатая сетка</string>
     <string name="notes_switch_layout">Переключить макет заметок</string>
+    <string name="select_reminder_to_see_details">Выберите напоминание, чтобы увидеть подробности</string>
+    <string name="select_birthday_to_see_details">Выберите день рождения, чтобы увидеть подробности</string>
 </resources>

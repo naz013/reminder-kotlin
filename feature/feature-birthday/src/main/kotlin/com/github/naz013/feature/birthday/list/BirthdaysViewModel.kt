@@ -45,7 +45,9 @@ internal class BirthdaysViewModel(
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(BirthdaysScreenState())
-  val state = _state.stateInWhileSubscribed(BirthdaysScreenState())
+  private val _selectedItemId = MutableStateFlow<String?>(null)
+  val state = combine(_state, _selectedItemId, BirthdaysScreenState::withSelectedItem)
+    .stateInWhileSubscribed(BirthdaysScreenState())
 
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
@@ -119,6 +121,10 @@ internal class BirthdaysViewModel(
     val updated = if (tagId != null && tagId == selectedTagId.value) null else tagId
     selectedTagId.value = updated
     _state.update { it.copy(selectedTagId = updated) }
+  }
+
+  fun onSelectedItemIdChanged(id: String?) {
+    _selectedItemId.value = id
   }
 
   fun onItemClick(item: UiAgendaBirthday) {

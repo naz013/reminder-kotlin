@@ -1261,4 +1261,6 @@
     <string name="text_color_mode_gradient">그라데이션</string>
     <string name="staggered_grid_view">계단식 그리드 보기</string>
     <string name="notes_switch_layout">메모 레이아웃 전환</string>
+    <string name="select_reminder_to_see_details">세부정보를 보려면 알림을 선택하세요</string>
+    <string name="select_birthday_to_see_details">세부정보를 보려면 생일을 선택하세요</string>
 </resources>

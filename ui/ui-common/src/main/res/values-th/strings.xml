@@ -1259,4 +1259,6 @@
     <string name="text_color_mode_gradient">ไล่ระดับสี</string>
     <string name="staggered_grid_view">มุมมองตารางแบบเหลื่อม</string>
     <string name="notes_switch_layout">สลับเค้าโครงบันทึก</string>
+    <string name="select_reminder_to_see_details">เลือกการแจ้งเตือนเพื่อดูรายละเอียด</string>
+    <string name="select_birthday_to_see_details">เลือกวันเกิดเพื่อดูรายละเอียด</string>
 </resources>

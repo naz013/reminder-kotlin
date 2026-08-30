@@ -19,6 +19,7 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -37,7 +38,9 @@ class RemindersArchiveViewModel(
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(RemindersArchiveScreenState())
-  val state = _state.stateInWhileSubscribed(RemindersArchiveScreenState())
+  private val _selectedItemId = MutableStateFlow<String?>(null)
+  val state = combine(_state, _selectedItemId, RemindersArchiveScreenState::withSelectedItem)
+    .stateInWhileSubscribed(RemindersArchiveScreenState())
     .onStart { loadReminders() }
 
   val event: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
@@ -55,6 +58,10 @@ class RemindersArchiveViewModel(
   fun onSearchQueryChange(query: String) {
     _state.update { it.copy(searchQuery = query) }
     searchQueryFlow.value = query
+  }
+
+  fun onSelectedItemIdChanged(id: String?) {
+    _selectedItemId.value = id
   }
 
   fun onItemClick(item: UiReminderList) {

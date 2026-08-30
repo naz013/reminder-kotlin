@@ -85,6 +85,9 @@ private const val OVERFLOW_ITEM_REPORT_ISSUE = 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BuildReminderScreen(
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   isLoadingForEdit: Boolean,
   builderItems: List<UiBuilderItem>,
   prediction: ReminderPrediction?,
@@ -122,8 +125,12 @@ internal fun BuildReminderScreen(
         title = {},
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = stringResource(R.string.cd_back),
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             onClick = onBackClick,
           )
         },
