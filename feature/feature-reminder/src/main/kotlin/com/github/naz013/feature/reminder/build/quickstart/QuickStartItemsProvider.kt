@@ -7,6 +7,9 @@ import com.github.naz013.feature.reminder.build.DateBuilderItem
 import com.github.naz013.feature.reminder.build.DayOfMonthBuilderItem
 import com.github.naz013.feature.reminder.build.DayOfYearBuilderItem
 import com.github.naz013.feature.reminder.build.DaysOfWeekBuilderItem
+import com.github.naz013.feature.reminder.build.LeavingCoordinatesBuilderItem
+import com.github.naz013.feature.reminder.build.LocationDelayDateBuilderItem
+import com.github.naz013.feature.reminder.build.LocationDelayTimeBuilderItem
 import com.github.naz013.feature.reminder.build.SubTasksBuilderItem
 import com.github.naz013.feature.reminder.build.SummaryBuilderItem
 import com.github.naz013.feature.reminder.build.TimeBuilderItem
@@ -97,6 +100,36 @@ internal class QuickStartItemsProvider(
                 ShopItem(summary = textProvider.getString(R.string.preset_cookies), position = 2, createTime = dateTimeManager.getNowGmtDateTime()),
               ),
             clazz = SubTasksBuilderItem::class.java,
+          ),
+        )
+
+      QuickStartOption.LEAVING_PLACE ->
+        listOfNotNull(
+          summary(),
+          biFactory.createWithValue(
+            BiType.LEAVING_COORDINATES,
+            null,
+            LeavingCoordinatesBuilderItem::class.java,
+          ),
+        )
+
+      QuickStartOption.LEAVING_PLACE_DELAYED ->
+        listOfNotNull(
+          summary(),
+          biFactory.createWithValue(
+            BiType.LEAVING_COORDINATES,
+            null,
+            LeavingCoordinatesBuilderItem::class.java,
+          ),
+          biFactory.createWithValue(
+            BiType.LOCATION_DELAY_DATE,
+            LocalDate.now(),
+            LocationDelayDateBuilderItem::class.java,
+          ),
+          biFactory.createWithValue(
+            BiType.LOCATION_DELAY_TIME,
+            LocalTime.now(),
+            LocationDelayTimeBuilderItem::class.java,
           ),
         )
     }

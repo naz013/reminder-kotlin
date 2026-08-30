@@ -1264,4 +1264,6 @@
     <string name="select_google_task_list_to_see_details">Wählen Sie eine Aufgabenliste aus, um Details anzuzeigen</string>
     <string name="select_routine_to_see_details">Wählen Sie eine Routine aus, um Details anzuzeigen</string>
     <string name="select_workflow_template_to_configure">Wählen Sie eine Vorlage zum Anwenden aus, oder erstellen Sie Ihre eigene Regel</string>
+    <string name="builder_quick_start_leaving_place">Einen Ort verlassen</string>
+    <string name="builder_quick_start_leaving_place_delayed">Einen Ort verlassen (verzögerter Start)</string>
 </resources>

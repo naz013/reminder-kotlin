@@ -1266,4 +1266,6 @@
     <string name="select_google_task_list_to_see_details">Välj en uppgiftslista för att se detaljer</string>
     <string name="select_routine_to_see_details">Välj en rutin för att se detaljer</string>
     <string name="select_workflow_template_to_configure">Välj en mall att tillämpa, eller skapa din egen regel</string>
+    <string name="builder_quick_start_leaving_place">Lämnar en plats</string>
+    <string name="builder_quick_start_leaving_place_delayed">Lämnar en plats (fördröjd start)</string>
 </resources>

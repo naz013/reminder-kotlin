@@ -157,6 +157,10 @@ private fun MainEntry(
         permissionRequester.request(event.permissions, onGranted = { viewModel.onEditPermissionsGranted() })
       }
 
+      is BuildReminderViewModel.ViewModelEvent.AskQuickStartPermissions -> {
+        permissionRequester.request(event.permissions, onGranted = { viewModel.onQuickStartPermissionsGranted() })
+      }
+
       is BuildReminderViewModel.ViewModelEvent.ShowReviewDialog -> {
         reviewsFormLauncher.showFeedbackForm(
           title = event.title,

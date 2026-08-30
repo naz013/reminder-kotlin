@@ -1268,4 +1268,6 @@
     <string name="select_google_task_list_to_see_details">Seleziona una lista attività per vedere i dettagli</string>
     <string name="select_routine_to_see_details">Seleziona una routine per vedere i dettagli</string>
     <string name="select_workflow_template_to_configure">Seleziona un modello da applicare o crea la tua regola</string>
+    <string name="builder_quick_start_leaving_place">Lasciare un luogo</string>
+    <string name="builder_quick_start_leaving_place_delayed">Lasciare un luogo (avvio ritardato)</string>
 </resources>
