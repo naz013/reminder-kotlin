@@ -1264,4 +1264,6 @@
     <string name="select_group_to_see_details">Pilih grup untuk melihat detailnya</string>
     <string name="select_tag_to_see_details">Pilih label untuk melihat detailnya</string>
     <string name="select_google_task_list_to_see_details">Pilih daftar tugas untuk melihat detailnya</string>
+    <string name="select_routine_to_see_details">Pilih rutinitas untuk melihat detailnya</string>
+    <string name="select_workflow_template_to_configure">Pilih templat untuk diterapkan, atau buat aturan Anda sendiri</string>
 </resources>

@@ -1266,4 +1266,6 @@
     <string name="select_group_to_see_details">Vyberte skupinu a zobrazte podrobnosti</string>
     <string name="select_tag_to_see_details">Vyberte štítek a zobrazte podrobnosti</string>
     <string name="select_google_task_list_to_see_details">Vyberte seznam úkolů a zobrazte podrobnosti</string>
+    <string name="select_routine_to_see_details">Vyberte rutinu a zobrazte podrobnosti</string>
+    <string name="select_workflow_template_to_configure">Vyberte šablonu k použití nebo vytvořte vlastní pravidlo</string>
 </resources>

@@ -57,6 +57,9 @@ private const val CHECK_ANIMATION_MS = 150
 @Composable
 internal fun RoutinePreviewScreen(
   state: RoutinePreviewState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onEditClick: () -> Unit,
   onPinToggleClick: () -> Unit,
@@ -83,8 +86,8 @@ internal fun RoutinePreviewScreen(
         title = { },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             onClick = onBackClick,
           )
         },

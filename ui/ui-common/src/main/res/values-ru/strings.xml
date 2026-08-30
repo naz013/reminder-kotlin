@@ -1265,4 +1265,6 @@
     <string name="select_group_to_see_details">Выберите группу, чтобы увидеть подробности</string>
     <string name="select_tag_to_see_details">Выберите тег, чтобы увидеть подробности</string>
     <string name="select_google_task_list_to_see_details">Выберите список задач, чтобы увидеть подробности</string>
+    <string name="select_routine_to_see_details">Выберите рутину, чтобы увидеть подробности</string>
+    <string name="select_workflow_template_to_configure">Выберите шаблон для применения или создайте своё правило</string>
 </resources>

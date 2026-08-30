@@ -32,6 +32,9 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionH
 internal fun WorkflowRulesForGroupScreen(
   modifier: Modifier = Modifier,
   state: WorkflowRulesForGroupState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onRuleEnabledChange: (String, Boolean) -> Unit,
   onDeleteRuleClick: (String) -> Unit,
@@ -46,8 +49,12 @@ internal fun WorkflowRulesForGroupScreen(
         title = { Text(stringResource(R.string.workflow_rules)) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(com.github.naz013.ui.common.R.string.acc_close)
+            } else {
+              null
+            },
             onClick = onBackClick,
           )
         },
