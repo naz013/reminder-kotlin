@@ -1263,4 +1263,6 @@
     <string name="notes_switch_layout">Przełącz układ notatek</string>
     <string name="select_reminder_to_see_details">Wybierz przypomnienie, aby zobaczyć szczegóły</string>
     <string name="select_birthday_to_see_details">Wybierz urodziny, aby zobaczyć szczegóły</string>
+    <string name="select_group_to_see_details">Wybierz grupę, aby zobaczyć szczegóły</string>
+    <string name="select_tag_to_see_details">Wybierz tag, aby zobaczyć szczegóły</string>
 </resources>

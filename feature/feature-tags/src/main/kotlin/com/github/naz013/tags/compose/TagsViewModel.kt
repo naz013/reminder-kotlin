@@ -14,6 +14,7 @@ import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.theme.ThemeProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,8 +27,14 @@ internal class TagsViewModel(
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TagsScreenState())
-  val state = _state.stateInWhileSubscribed(TagsScreenState())
+  private val _selectedItemId = MutableStateFlow<String?>(null)
+  val state = combine(_state, _selectedItemId, TagsScreenState::withSelectedItem)
+    .stateInWhileSubscribed(TagsScreenState())
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
+
+  fun onSelectedItemIdChanged(id: String?) {
+    _selectedItemId.value = id
+  }
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {

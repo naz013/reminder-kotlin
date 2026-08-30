@@ -14,4 +14,5 @@ data class UiGroupList(
   val canDelete: Boolean,
   val canSetAsDefault: Boolean,
   val reminderCountText: String = "",
+  val isSelected: Boolean = false,
 )

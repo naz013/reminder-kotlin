@@ -41,6 +41,9 @@ import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 internal fun EditGroupScreen(
   modifier: Modifier = Modifier,
   state: EditGroupState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onDeleteMenuClick: () -> Unit,
@@ -75,8 +78,8 @@ internal fun EditGroupScreen(
         title = { Text(stringResource(if (state.hasId) R.string.change_group else R.string.create_group)) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             enabled = !state.isLoading,
             onClick = onBackClick,
           )

@@ -1261,4 +1261,6 @@
     <string name="notes_switch_layout">Skift notatlayout</string>
     <string name="select_reminder_to_see_details">Vælg en påmindelse for at se detaljer</string>
     <string name="select_birthday_to_see_details">Vælg en fødselsdag for at se detaljer</string>
+    <string name="select_group_to_see_details">Vælg en gruppe for at se detaljer</string>
+    <string name="select_tag_to_see_details">Vælg et tag for at se detaljer</string>
 </resources>

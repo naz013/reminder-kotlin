@@ -26,6 +26,9 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorPickerCard
 internal fun TagEditScreen(
   modifier: Modifier = Modifier,
   state: TagEditState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onNameChange: (String) -> Unit,
   onColorSelected: (Int) -> Unit,
@@ -40,8 +43,8 @@ internal fun TagEditScreen(
         title = { Text(stringResource(if (state.id == null) R.string.new_tag else R.string.tags)) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             onClick = onBackClick
           )
         },

@@ -180,7 +180,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         it == HomeNavKey.Main ||
           it == AgendaNavKey.List ||
           it == RemindersArchiveNavKey.List ||
-          it == BirthdaysNavKey.List
+          it == BirthdaysNavKey.List ||
+          it == GroupsNavKey.List ||
+          it == TagsNavKey.Manage
       }
   }
 
@@ -272,6 +274,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         groupsEntries(
           backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Group) },
           onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
           onNewReminderClick = { backStack.add(BuildReminderNavKey.Main(groupUuId = it)) },
@@ -386,7 +389,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         exportEntries(backStack)
         workflowEntries(backStack)
         tagsEntries(
-          backStack,
+          backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Tag) },
           onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
           onNotePreviewClick = { id -> backStack.add(NotesNavKey.Preview(id)) },

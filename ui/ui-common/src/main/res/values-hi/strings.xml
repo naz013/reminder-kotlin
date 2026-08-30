@@ -1265,4 +1265,6 @@
     <string name="notes_switch_layout">नोट्स लेआउट बदलें</string>
     <string name="select_reminder_to_see_details">विवरण देखने के लिए एक रिमाइंडर चुनें</string>
     <string name="select_birthday_to_see_details">विवरण देखने के लिए एक जन्मदिन चुनें</string>
+    <string name="select_group_to_see_details">विवरण देखने के लिए एक समूह चुनें</string>
+    <string name="select_tag_to_see_details">विवरण देखने के लिए एक टैग चुनें</string>
 </resources>

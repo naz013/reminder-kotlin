@@ -1263,4 +1263,6 @@
     <string name="notes_switch_layout">Changer la disposition des notes</string>
     <string name="select_reminder_to_see_details">Sélectionnez un rappel pour voir les détails</string>
     <string name="select_birthday_to_see_details">Sélectionnez un anniversaire pour voir les détails</string>
+    <string name="select_group_to_see_details">Sélectionnez un groupe pour voir les détails</string>
+    <string name="select_tag_to_see_details">Sélectionnez une étiquette pour voir les détails</string>
 </resources>

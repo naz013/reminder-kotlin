@@ -1263,4 +1263,6 @@
     <string name="notes_switch_layout">메모 레이아웃 전환</string>
     <string name="select_reminder_to_see_details">세부정보를 보려면 알림을 선택하세요</string>
     <string name="select_birthday_to_see_details">세부정보를 보려면 생일을 선택하세요</string>
+    <string name="select_group_to_see_details">세부정보를 보려면 그룹을 선택하세요</string>
+    <string name="select_tag_to_see_details">세부정보를 보려면 태그를 선택하세요</string>
 </resources>
