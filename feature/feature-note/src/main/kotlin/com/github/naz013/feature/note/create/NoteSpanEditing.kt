@@ -92,6 +92,25 @@ internal fun activeLineFormat(text: String, spans: List<NoteTextSpan>, pos: Int)
   return spans.firstOrNull { it.attribute.axis() == NoteSpanAxis.LINE_FORMAT && it.start == lineStart }?.attribute
 }
 
+/** The solid text color (ARGB) covering `[start, end)` (or, for a collapsed cursor, the character
+ * immediately before [start]) - null if any part of the range is uncolored or covered by more
+ * than one distinct color, matching [isAttributeActiveOverRange]'s all-or-nothing semantics. */
+internal fun activeSolidColorArgb(spans: List<NoteTextSpan>, start: Int, end: Int): Int? {
+  val rangeStart = if (end > start) start else (start - 1).coerceAtLeast(0)
+  val rangeEnd = if (end > start) end else start
+  if (rangeEnd <= rangeStart) return null
+  var pos = rangeStart
+  var argb: Int? = null
+  while (pos < rangeEnd) {
+    val covering = spans.firstOrNull { it.attribute is NoteSpanAttribute.SolidColor && it.start <= pos && pos < it.end } ?: return null
+    val color = (covering.attribute as NoteSpanAttribute.SolidColor).argb
+    if (argb != null && argb != color) return null
+    argb = color
+    pos = covering.end
+  }
+  return argb
+}
+
 /** Applies [attribute] over `[start, end)`, first clipping/removing any existing span sharing its
  * [NoteSpanAxis] on that range (standard normalize-on-apply). */
 internal fun applyAttribute(spans: List<NoteTextSpan>, start: Int, end: Int, attribute: NoteSpanAttribute): List<NoteTextSpan> {

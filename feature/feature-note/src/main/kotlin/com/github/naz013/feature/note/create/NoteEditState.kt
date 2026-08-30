@@ -55,6 +55,7 @@ internal data class NoteEditState(
         underline = isAttributeActiveOverRange(spans, NoteSpanAttribute.Underline, start, end),
         strikethrough = isAttributeActiveOverRange(spans, NoteSpanAttribute.Strikethrough, start, end),
         lineFormat = activeLineFormat(text, spans, start),
+        solidColorArgb = activeSolidColorArgb(spans, start, end),
       )
     }
 }
@@ -66,6 +67,7 @@ internal data class ActiveTextFormat(
   val underline: Boolean = false,
   val strikethrough: Boolean = false,
   val lineFormat: NoteSpanAttribute? = null,
+  val solidColorArgb: Int? = null,
 )
 
 internal enum class EditTab { COLOR, REMINDER, IMAGE, TAGS, TEXT_FORMAT, TEXT_COLOR }

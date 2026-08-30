@@ -586,6 +586,7 @@ private fun LineFormatButton(
 @Composable
 internal fun TextColorPanel(
   colors: List<Color>,
+  activeSolidColorArgb: Int?,
   contentColor: Color,
   onColorSelected: (Int) -> Unit,
   onGradientSelected: (List<Int>, Float) -> Unit,
@@ -612,7 +613,7 @@ internal fun TextColorPanel(
     if (isGradientMode) {
       GradientColorControls(colors, contentColor, onGradientSelected, hapticFeedbackEnabled)
     } else {
-      SolidColorControls(colors, onColorSelected, hapticFeedbackEnabled)
+      SolidColorControls(colors, activeSolidColorArgb, onColorSelected, hapticFeedbackEnabled)
     }
   }
 }
@@ -641,12 +642,16 @@ private fun TextColorModeChip(
 @Composable
 private fun SolidColorControls(
   colors: List<Color>,
+  activeSolidColorArgb: Int?,
   onColorSelected: (Int) -> Unit,
   hapticFeedbackEnabled: Boolean,
 ) {
+  val selectedIndex = remember(colors, activeSolidColorArgb) {
+    activeSolidColorArgb?.let { argb -> colors.indexOfFirst { it.toArgb() == argb } } ?: -1
+  }
   ColorSlider(
     colors = colors,
-    selectedIndex = -1,
+    selectedIndex = selectedIndex,
     onColorSelected = { onColorSelected(colors[it].toArgb()) },
     selectorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
     modifier = Modifier

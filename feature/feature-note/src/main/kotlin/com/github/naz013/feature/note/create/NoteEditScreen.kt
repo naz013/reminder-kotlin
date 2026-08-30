@@ -42,9 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -134,6 +132,7 @@ internal fun NoteEditScreen(
       Column(
         modifier = Modifier
           .weight(1f)
+          .imePadding()
           .verticalScroll(rememberScrollState())
           .pointerInput(Unit) {
             detectTapGestures(onTap = { focusManager.clearFocus() })
@@ -304,7 +303,7 @@ private fun noteEditBarItems(
         onClick = actions.onImageTabClick,
         icon = {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_image),
+            painter = AppIcons.Fluent.Image,
             contentDescription = imageDescription,
             tint = contentColor,
           )
@@ -331,7 +330,7 @@ private fun noteEditBarItems(
         onClick = actions.onReminderTabClick,
         icon = {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_alert),
+            painter = AppIcons.Fluent.Alert,
             contentDescription = reminderDescription,
             tint = contentColor,
           )
@@ -368,7 +367,7 @@ private fun noteEditBarItems(
         onClick = actions.onTextFormatTabClick,
         icon = {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_text),
+            painter = AppIcons.Fluent.Text,
             contentDescription = textFormatDescription,
             tint = contentColor,
           )
@@ -386,17 +385,16 @@ private fun noteEditBarItems(
         selected = state.expandedTab == EditTab.TEXT_COLOR,
         onClick = actions.onTextColorTabClick,
         icon = {
-          Text(
-            text = "A",
-            color = sliderColors.getOrElse(state.colorIndex) { contentColor },
-            fontWeight = FontWeight.Bold,
-            textDecoration = TextDecoration.Underline,
-            style = MaterialTheme.typography.titleMedium,
+          Icon(
+            painter = AppIcons.Fluent.TextColor,
+            contentDescription = textFormatDescription,
+            tint = contentColor,
           )
         },
         bubbleContent = {
           TextColorPanel(
             colors = state.sliderColors,
+            activeSolidColorArgb = state.activeFormat.solidColorArgb,
             contentColor = contentColor,
             onColorSelected = actions.onApplySolidColor,
             onGradientSelected = actions.onApplyGradient,
