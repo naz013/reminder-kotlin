@@ -192,6 +192,7 @@ internal class BuildReminderViewModel(
 
   private var requestedNewId = false
   private var requestedPermissionsFor: Pair<Int, BuilderItem<*>>? = null
+  private var requestedQuickStartOption: QuickStartOption? = null
 
   /** For [resumeReminder], which onCleared() calls after AndroidX has already cancelled
    *  [viewModelScope]'s Job as part of clearing this ViewModel - launching there would create a
@@ -457,9 +458,34 @@ internal class BuildReminderViewModel(
   fun onQuickStartSelected(option: QuickStartOption) {
     Logger.i(TAG, "Quick start option selected: $option")
     viewModelScope.launch(dispatcherProvider.default()) {
-      builderItemsLogic.setAll(quickStartItemsProvider.itemsFor(option))
-      updateSelector()
+      val items = quickStartItemsProvider.itemsFor(option)
+
+      val permissionResult = permissionValidator(items)
+      if (permissionResult is PermissionValidator.Result.Failure) {
+        Logger.i(TAG, "Quick start requires permissions. Request for = ${permissionResult.permissions}")
+        requestedQuickStartOption = option
+        withContext(dispatcherProvider.main()) {
+          event.emit(ViewModelEvent.AskQuickStartPermissions(permissionResult.permissions))
+        }
+        return@launch
+      }
+
+      applyQuickStart(items)
     }
+  }
+
+  fun onQuickStartPermissionsGranted() {
+    Logger.i(TAG, "Quick start permissions granted")
+    val option = requestedQuickStartOption ?: return
+    requestedQuickStartOption = null
+    viewModelScope.launch(dispatcherProvider.default()) {
+      applyQuickStart(quickStartItemsProvider.itemsFor(option))
+    }
+  }
+
+  private suspend fun applyQuickStart(items: List<BuilderItem<*>>) {
+    builderItemsLogic.setAll(items)
+    updateSelector()
   }
 
   fun addItem(builderItem: BuilderItem<*>) {
@@ -1173,6 +1199,10 @@ internal class BuildReminderViewModel(
     ) : ViewModelEvent
 
     data class AskEditPermissions(
+      val permissions: List<String>,
+    ) : ViewModelEvent
+
+    data class AskQuickStartPermissions(
       val permissions: List<String>,
     ) : ViewModelEvent
 

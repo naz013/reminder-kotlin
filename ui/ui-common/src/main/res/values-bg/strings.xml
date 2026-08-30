@@ -1269,4 +1269,6 @@
     <string name="select_google_task_list_to_see_details">Изберете списък със задачи, за да видите подробности</string>
     <string name="select_routine_to_see_details">Изберете рутина, за да видите подробности</string>
     <string name="select_workflow_template_to_configure">Изберете шаблон за прилагане или създайте свое правило</string>
+    <string name="builder_quick_start_leaving_place">Напускане на място</string>
+    <string name="builder_quick_start_leaving_place_delayed">Напускане на място (забавено стартиране)</string>
 </resources>

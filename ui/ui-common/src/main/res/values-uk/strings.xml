@@ -1269,4 +1269,6 @@
     <string name="select_google_task_list_to_see_details">Виберіть список завдань, щоб побачити деталі</string>
     <string name="select_routine_to_see_details">Виберіть рутину, щоб побачити деталі</string>
     <string name="select_workflow_template_to_configure">Виберіть шаблон для застосування або створіть власне правило</string>
+    <string name="builder_quick_start_leaving_place">Залишення місця</string>
+    <string name="builder_quick_start_leaving_place_delayed">Залишення місця (відкладений старт)</string>
 </resources>

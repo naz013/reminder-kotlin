@@ -14,4 +14,6 @@ enum class QuickStartOption(val labelRes: Int) {
   EVERY_YEAR(R.string.builder_quick_start_every_year),
   COUNTDOWN_TIMER(R.string.builder_quick_start_timer),
   SHOPPING_LIST(R.string.builder_quick_start_shopping_list),
+  LEAVING_PLACE(R.string.builder_quick_start_leaving_place),
+  LEAVING_PLACE_DELAYED(R.string.builder_quick_start_leaving_place_delayed),
 }

@@ -1270,4 +1270,6 @@
     <string name="select_google_task_list_to_see_details">विवरण देखने के लिए एक कार्य सूची चुनें</string>
     <string name="select_routine_to_see_details">विवरण देखने के लिए एक रूटीन चुनें</string>
     <string name="select_workflow_template_to_configure">लागू करने के लिए एक टेम्पलेट चुनें, या अपना नियम बनाएं</string>
+    <string name="builder_quick_start_leaving_place">किसी स्थान से जाना</string>
+    <string name="builder_quick_start_leaving_place_delayed">किसी स्थान से जाना (विलंबित प्रारंभ)</string>
 </resources>

@@ -1272,4 +1272,6 @@
     <string name="select_google_task_list_to_see_details">Select a task list to see its details</string>
     <string name="select_routine_to_see_details">Select a routine to see its details</string>
     <string name="select_workflow_template_to_configure">Select a template to apply, or create your own rule</string>
+    <string name="builder_quick_start_leaving_place">Leaving a place</string>
+    <string name="builder_quick_start_leaving_place_delayed">Leaving a place (delayed start)</string>
 </resources>

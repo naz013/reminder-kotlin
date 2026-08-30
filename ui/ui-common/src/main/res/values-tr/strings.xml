@@ -1269,4 +1269,6 @@
     <string name="select_google_task_list_to_see_details">Ayrıntıları görmek için bir görev listesi seçin</string>
     <string name="select_routine_to_see_details">Ayrıntıları görmek için bir rutin seçin</string>
     <string name="select_workflow_template_to_configure">Uygulamak için bir şablon seçin veya kendi kuralınızı oluşturun</string>
+    <string name="builder_quick_start_leaving_place">Bir yerden ayrılma</string>
+    <string name="builder_quick_start_leaving_place_delayed">Bir yerden ayrılma (gecikmeli başlangıç)</string>
 </resources>
