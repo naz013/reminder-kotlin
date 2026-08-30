@@ -70,7 +70,7 @@ object PrefsConstants {
   const val INTERNAL_MESSAGE = "internal_message_json_v1"
 
   const val NOTES_ORDER = "notes_ordering"
-  const val NOTES_LIST_STYLE = "notes_style"
+  const val NOTES_LAYOUT_MODE = "notes_layout_mode"
 
   const val LAST_VERSION_CODE = "last_version_code"
 

@@ -1257,4 +1257,6 @@
     <string name="text_style_section">Stil</string>
     <string name="text_color_mode_solid">Enfärgad</string>
     <string name="text_color_mode_gradient">Toning</string>
+    <string name="staggered_grid_view">Förskjuten rutnätsvy</string>
+    <string name="notes_switch_layout">Växla anteckningslayout</string>
 </resources>

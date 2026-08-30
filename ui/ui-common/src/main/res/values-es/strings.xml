@@ -1259,4 +1259,6 @@
     <string name="text_style_section">Estilo</string>
     <string name="text_color_mode_solid">Sólido</string>
     <string name="text_color_mode_gradient">Degradado</string>
+    <string name="staggered_grid_view">Vista de cuadrícula escalonada</string>
+    <string name="notes_switch_layout">Cambiar diseño de notas</string>
 </resources>

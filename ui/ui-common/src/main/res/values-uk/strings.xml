@@ -1260,4 +1260,6 @@
     <string name="text_style_section">Стиль</string>
     <string name="text_color_mode_solid">Суцільний</string>
     <string name="text_color_mode_gradient">Градієнт</string>
+    <string name="staggered_grid_view">Ступінчаста сітка</string>
+    <string name="notes_switch_layout">Перемкнути макет нотаток</string>
 </resources>

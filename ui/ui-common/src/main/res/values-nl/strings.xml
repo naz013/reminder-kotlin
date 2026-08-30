@@ -1257,4 +1257,6 @@
     <string name="text_style_section">Stijl</string>
     <string name="text_color_mode_solid">Effen</string>
     <string name="text_color_mode_gradient">Kleurverloop</string>
+    <string name="staggered_grid_view">Gestapelde rasterweergave</string>
+    <string name="notes_switch_layout">Notitielayout wisselen</string>
 </resources>

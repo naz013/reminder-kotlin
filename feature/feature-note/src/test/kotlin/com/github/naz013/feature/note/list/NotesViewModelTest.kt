@@ -27,6 +27,7 @@ import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.note.ListLayoutMode
 import com.github.naz013.ui.note.NoteColorEngine
 import com.github.naz013.ui.note.NoteNotifier
 import com.github.naz013.ui.note.NotePreferences
@@ -75,7 +76,7 @@ class NotesViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    every { notePreferences.isNotesGridEnabled } returns false
+    every { notePreferences.notesLayoutMode } returns ListLayoutMode.LIST
     every { notePreferences.noteOrder } returns NoteSortProcessor.DATE_ZA
     // NotesViewModel's init block eagerly observes the repository's notes flow as soon as the
     // view model is constructed, independent of state collection - a default stub avoids an
@@ -161,7 +162,7 @@ class NotesViewModelTest : BaseTest() {
 
       val ready = state.listState as ListState.Ready
       assertEquals(1, ready.notes.size)
-      assertEquals(false, state.isGrid)
+      assertEquals(ListLayoutMode.LIST, state.layoutMode)
       assertEquals(NoteSortProcessor.DATE_ZA, state.sortOrder)
       assertEquals(false, state.isArchived)
     }
@@ -270,25 +271,25 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onGridToggleClick flips the grid flag and persists it`() =
+  fun `onLayoutModeSelected persists the layout mode and updates state`() =
     runTest {
       val viewModel = createViewModel()
 
-      viewModel.onGridToggleClick()
+      viewModel.onLayoutModeSelected(ListLayoutMode.STAGGERED_GRID)
 
-      verify { notePreferences.isNotesGridEnabled = true }
-      assertEquals(true, viewModel.notesScreenState.first().isGrid)
+      verify { notePreferences.notesLayoutMode = ListLayoutMode.STAGGERED_GRID }
+      assertEquals(ListLayoutMode.STAGGERED_GRID, viewModel.notesScreenState.first().layoutMode)
     }
 
   @Test
-  fun `onGridToggleClick twice restores the original flag`() =
+  fun `onLayoutModeSelected back to list restores the original mode`() =
     runTest {
       val viewModel = createViewModel()
 
-      viewModel.onGridToggleClick()
-      viewModel.onGridToggleClick()
+      viewModel.onLayoutModeSelected(ListLayoutMode.GRID)
+      viewModel.onLayoutModeSelected(ListLayoutMode.LIST)
 
-      assertEquals(false, viewModel.notesScreenState.first().isGrid)
+      assertEquals(ListLayoutMode.LIST, viewModel.notesScreenState.first().layoutMode)
     }
 
   @Test

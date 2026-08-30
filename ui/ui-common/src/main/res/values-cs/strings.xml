@@ -1259,4 +1259,6 @@
     <string name="text_style_section">Styl</string>
     <string name="text_color_mode_solid">Plná</string>
     <string name="text_color_mode_gradient">Přechod</string>
+    <string name="staggered_grid_view">Zobrazení stupňovité mřížky</string>
+    <string name="notes_switch_layout">Přepnout rozložení poznámek</string>
 </resources>

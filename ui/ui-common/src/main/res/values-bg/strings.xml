@@ -1260,4 +1260,6 @@
     <string name="text_style_section">Стил</string>
     <string name="text_color_mode_solid">Плътен</string>
     <string name="text_color_mode_gradient">Градиент</string>
+    <string name="staggered_grid_view">Стъпаловидна мрежа</string>
+    <string name="notes_switch_layout">Превключване на оформлението на бележките</string>
 </resources>
