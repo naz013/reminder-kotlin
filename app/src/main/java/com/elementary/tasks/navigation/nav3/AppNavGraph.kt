@@ -183,7 +183,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           it == BirthdaysNavKey.List ||
           it == GroupsNavKey.List ||
           it == TagsNavKey.Manage ||
-          it == GoogleTasksNavKey.List
+          it == GoogleTasksNavKey.List ||
+          it == RoutineNavKey.List ||
+          it == WorkflowNavKey.Gallery
       }
   }
 
@@ -284,6 +286,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         routineEntries(
           backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Routine) },
           onManageTagsClick = { backStack.add(TagsNavKey.Manage) },
         )
@@ -389,7 +392,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
         )
         exportEntries(backStack)
-        workflowEntries(backStack)
+        workflowEntries(backStack = backStack, isRenderedAsDetailPane = isRenderedAsDetailPane)
         tagsEntries(
           backStack = backStack,
           isRenderedAsDetailPane = isRenderedAsDetailPane,

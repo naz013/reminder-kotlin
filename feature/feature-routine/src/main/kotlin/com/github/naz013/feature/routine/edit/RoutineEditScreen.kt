@@ -87,6 +87,9 @@ private val WEEKDAY_LABELS = listOf(
 @Composable
 internal fun RoutineEditScreen(
   state: RoutineEditState,
+  // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
+  // leading icon (close vs. back), onBackClick pops the entry either way.
+  renderAsDetailPane: Boolean = false,
   onBackClick: () -> Unit,
   onTitleChange: (String) -> Unit,
   onDescriptionChange: (String) -> Unit,
@@ -113,8 +116,8 @@ internal fun RoutineEditScreen(
         title = { Text(stringResource(if (state.id == null) R.string.new_routine else R.string.routines)) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             onClick = onBackClick,
           )
         },

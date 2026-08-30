@@ -1264,4 +1264,6 @@
     <string name="select_group_to_see_details">اختر مجموعة لعرض التفاصيل</string>
     <string name="select_tag_to_see_details">اختر وسمًا لعرض التفاصيل</string>
     <string name="select_google_task_list_to_see_details">اختر قائمة مهام لعرض التفاصيل</string>
+    <string name="select_routine_to_see_details">اختر روتينًا لعرض التفاصيل</string>
+    <string name="select_workflow_template_to_configure">اختر قالبًا لتطبيقه، أو أنشئ قاعدتك الخاصة</string>
 </resources>

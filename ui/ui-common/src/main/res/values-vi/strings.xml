@@ -1264,4 +1264,6 @@
     <string name="select_group_to_see_details">Chọn nhóm để xem chi tiết</string>
     <string name="select_tag_to_see_details">Chọn thẻ để xem chi tiết</string>
     <string name="select_google_task_list_to_see_details">Chọn danh sách tác vụ để xem chi tiết</string>
+    <string name="select_routine_to_see_details">Chọn thói quen để xem chi tiết</string>
+    <string name="select_workflow_template_to_configure">Chọn mẫu để áp dụng, hoặc tạo quy tắc của riêng bạn</string>
 </resources>

@@ -1264,4 +1264,6 @@
     <string name="select_group_to_see_details">Vælg en gruppe for at se detaljer</string>
     <string name="select_tag_to_see_details">Vælg et tag for at se detaljer</string>
     <string name="select_google_task_list_to_see_details">Vælg en opgaveliste for at se detaljer</string>
+    <string name="select_routine_to_see_details">Vælg en rutine for at se detaljer</string>
+    <string name="select_workflow_template_to_configure">Vælg en skabelon at anvende, eller opret din egen regel</string>
 </resources>

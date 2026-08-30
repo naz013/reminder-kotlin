@@ -1,10 +1,14 @@
 package com.github.naz013.feature.routine
 
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.feature.routine.edit.RoutineEditScreen
@@ -19,18 +23,42 @@ import com.github.naz013.feature.routine.list.RoutinesListViewModel
 import com.github.naz013.feature.routine.preview.RoutinePreviewScreen
 import com.github.naz013.feature.routine.preview.RoutinePreviewState
 import com.github.naz013.feature.routine.preview.RoutinePreviewViewModel
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.routineEntries(
   backStack: MutableList<NavKey>,
+  isRenderedAsDetailPane: (NavKey) -> Boolean,
   adsContent: @Composable () -> Unit = {},
   onManageTagsClick: () -> Unit = {},
 ) {
-  entry<RoutineNavKey.List> { RoutinesListEntry(backStack) }
-  entry<RoutineNavKey.Edit> { key -> RoutineEditEntry(key, backStack, onManageTagsClick) }
-  entry<RoutineNavKey.Preview> { key -> RoutinePreviewEntry(key, backStack, adsContent) }
+  entry<RoutineNavKey.List>(
+    metadata = ListDetailSceneStrategy.listPane(
+      detailPlaceholder = {
+        DetailPanePlaceholder(
+          text = stringResource(R.string.select_routine_to_see_details),
+          icon = AppIcons.Builder.Timer,
+        )
+      },
+    ),
+  ) { RoutinesListEntry(backStack) }
+  entry<RoutineNavKey.Edit>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+    // Fixed at first composition, not re-read on every recomposition - see the matching comment
+    // in ReminderPreviewNavGraph.kt.
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    RoutineEditEntry(key, backStack, renderAsDetailPane, onManageTagsClick)
+  }
+  entry<RoutineNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+    // Fixed at first composition, not re-read on every recomposition - see the matching comment
+    // in ReminderPreviewNavGraph.kt.
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    RoutinePreviewEntry(key, backStack, renderAsDetailPane, adsContent)
+  }
   entry<RoutineNavKey.Execute> { key -> RoutineExecutionEntry(key, backStack, adsContent) }
 }
 
@@ -40,8 +68,14 @@ private fun RoutinesListEntry(backStack: MutableList<NavKey>) {
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is RoutinesListViewModel.NavigationEvent.OpenEdit -> backStack.add(RoutineNavKey.Edit(event.id))
-      is RoutinesListViewModel.NavigationEvent.OpenPreview -> backStack.add(RoutineNavKey.Preview(event.id))
+      is RoutinesListViewModel.NavigationEvent.OpenEdit -> {
+        backStack.navigateToDetailPane(RoutineNavKey.Edit(event.id))
+      }
+
+      is RoutinesListViewModel.NavigationEvent.OpenPreview -> {
+        backStack.navigateToDetailPane(RoutineNavKey.Preview(event.id))
+      }
+
       is RoutinesListViewModel.NavigationEvent.OpenExecute -> backStack.add(RoutineNavKey.Execute(event.id))
     }
   }
@@ -63,6 +97,7 @@ private fun RoutinesListEntry(backStack: MutableList<NavKey>) {
 private fun RoutineEditEntry(
   key: RoutineNavKey.Edit,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
   onManageTagsClick: () -> Unit,
 ) {
   val viewModel = koinViewModel<RoutineEditViewModel> { parametersOf(key.id) }
@@ -77,6 +112,7 @@ private fun RoutineEditEntry(
   val state by viewModel.state.collectAsState(RoutineEditState())
   RoutineEditScreen(
     state = state,
+    renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onTitleChange = viewModel::onTitleChange,
     onDescriptionChange = viewModel::onDescriptionChange,
@@ -101,6 +137,7 @@ private fun RoutineEditEntry(
 private fun RoutinePreviewEntry(
   key: RoutineNavKey.Preview,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
   adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<RoutinePreviewViewModel> { parametersOf(key.id) }
@@ -116,6 +153,7 @@ private fun RoutinePreviewEntry(
   val state by viewModel.state.collectAsState(RoutinePreviewState.Loading)
   RoutinePreviewScreen(
     state = state,
+    renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onEditClick = viewModel::onEditClick,
     onPinToggleClick = viewModel::onPinToggleClick,
@@ -157,4 +195,18 @@ private fun RoutineExecutionEntry(
     onCompleteStepClick = viewModel::onCompleteStepClick,
     adsContent = adsContent,
   )
+}
+
+/**
+ * Navigation for the routines two-pane list's detail pane: if the current top entry is itself a
+ * routine preview or edit form, replace it instead of stacking another one on top. Mirrors
+ * `BirthdaysNavGraph.kt`'s identically-purposed private helper - kept local here since
+ * List/Edit/Preview are all registered by this same graph.
+ */
+private fun MutableList<NavKey>.navigateToDetailPane(key: NavKey) {
+  val top = lastOrNull()
+  if (top is RoutineNavKey.Preview || top is RoutineNavKey.Edit) {
+    removeLastOrNull()
+  }
+  add(key)
 }

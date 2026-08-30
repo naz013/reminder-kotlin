@@ -1266,4 +1266,6 @@
     <string name="select_group_to_see_details">Sélectionnez un groupe pour voir les détails</string>
     <string name="select_tag_to_see_details">Sélectionnez une étiquette pour voir les détails</string>
     <string name="select_google_task_list_to_see_details">Sélectionnez une liste de tâches pour voir les détails</string>
+    <string name="select_routine_to_see_details">Sélectionnez une routine pour voir les détails</string>
+    <string name="select_workflow_template_to_configure">Sélectionnez un modèle à appliquer, ou créez votre propre règle</string>
 </resources>

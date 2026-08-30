@@ -1266,4 +1266,6 @@
     <string name="select_group_to_see_details">詳細を表示するには、グループを選択してください</string>
     <string name="select_tag_to_see_details">詳細を表示するには、タグを選択してください</string>
     <string name="select_google_task_list_to_see_details">詳細を表示するには、タスクリストを選択してください</string>
+    <string name="select_routine_to_see_details">詳細を表示するには、ルーティンを選択してください</string>
+    <string name="select_workflow_template_to_configure">適用するテンプレートを選択するか、独自のルールを作成してください</string>
 </resources>
