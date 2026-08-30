@@ -1263,4 +1263,5 @@
     <string name="select_birthday_to_see_details">Velg en bursdag for å se detaljer</string>
     <string name="select_group_to_see_details">Velg en gruppe for å se detaljer</string>
     <string name="select_tag_to_see_details">Velg en emneknagg for å se detaljer</string>
+    <string name="select_google_task_list_to_see_details">Velg en oppgaveliste for å se detaljer</string>
 </resources>

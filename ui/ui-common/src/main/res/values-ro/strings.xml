@@ -1265,4 +1265,5 @@
     <string name="select_birthday_to_see_details">Selectați o zi de naștere pentru a vedea detaliile</string>
     <string name="select_group_to_see_details">Selectați un grup pentru a vedea detaliile</string>
     <string name="select_tag_to_see_details">Selectați o etichetă pentru a vedea detaliile</string>
+    <string name="select_google_task_list_to_see_details">Selectați o listă de sarcini pentru a vedea detaliile</string>
 </resources>

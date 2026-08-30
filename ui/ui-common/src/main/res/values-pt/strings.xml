@@ -1265,4 +1265,5 @@
     <string name="select_birthday_to_see_details">Selecione um aniversário para ver os detalhes</string>
     <string name="select_group_to_see_details">Selecione um grupo para ver os detalhes</string>
     <string name="select_tag_to_see_details">Selecione um rótulo para ver os detalhes</string>
+    <string name="select_google_task_list_to_see_details">Selecione uma lista de tarefas para ver os detalhes</string>
 </resources>

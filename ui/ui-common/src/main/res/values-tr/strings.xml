@@ -1266,4 +1266,5 @@
     <string name="select_birthday_to_see_details">Ayrıntıları görmek için bir doğum günü seçin</string>
     <string name="select_group_to_see_details">Ayrıntıları görmek için bir grup seçin</string>
     <string name="select_tag_to_see_details">Ayrıntıları görmek için bir etiket seçin</string>
+    <string name="select_google_task_list_to_see_details">Ayrıntıları görmek için bir görev listesi seçin</string>
 </resources>
