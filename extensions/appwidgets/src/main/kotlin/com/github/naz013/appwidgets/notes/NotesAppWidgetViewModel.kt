@@ -10,11 +10,13 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.ui.common.isAlmostTransparent
 import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.note.NotePreferences
 
 internal class NotesAppWidgetViewModel(
   private val prefsProvider: NotesWidgetPrefsProvider,
   private val noteRepository: NoteRepository,
-  private val themeProvider: ThemeProvider
+  private val themeProvider: ThemeProvider,
+  private val notePreferences: NotePreferences
 ) {
 
   suspend fun getState(): NotesAppWidgetState {
@@ -22,7 +24,11 @@ internal class NotesAppWidgetViewModel(
     return NotesAppWidgetState(
       widgetId = prefsProvider.widgetId,
       backgroundColor = headerBackgroundColor,
-      items = noteRepository.getAll(isArchived = false).map { it.toUiNoteWidgetItem() }
+      items = noteRepository.getNotes(
+        isArchived = false,
+        query = "",
+        sortOrder = notePreferences.noteOrder
+      ).map { it.toUiNoteWidgetItem() }
     )
   }
 
