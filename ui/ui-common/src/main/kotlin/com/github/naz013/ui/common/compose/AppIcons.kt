@@ -143,6 +143,7 @@ object AppIcons {
     val ArrowDown: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.ArrowDown)
     val TextSortDescending: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.TextSortDescending)
     val TextSortAscending: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.TextSortAscending)
+    val TextColor: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.TextColor)
   }
 
   object Builder {

@@ -198,5 +198,6 @@ object DrawableCatalog {
     val ArrowDown = R.drawable.ic_fluent_arrow_down
     val TextSortDescending = R.drawable.ic_fluent_text_sort_descending
     val TextSortAscending = R.drawable.ic_fluent_text_sort_ascending
+    val TextColor = R.drawable.ic_fluent_text_color
   }
 }

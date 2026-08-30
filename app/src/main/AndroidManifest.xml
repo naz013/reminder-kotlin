@@ -102,6 +102,7 @@
             android:name=".navigation.BottomNavActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Reminder"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
