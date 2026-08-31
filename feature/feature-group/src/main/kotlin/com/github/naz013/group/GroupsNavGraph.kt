@@ -23,10 +23,13 @@ import com.github.naz013.group.list.GroupsScreenState
 import com.github.naz013.group.list.GroupsViewModel
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.hideKeyboard
 import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.ui.common.theme.ThemeProvider
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -106,8 +109,20 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
           onPositive = { viewModel.deleteGroup(event.id) }
         )
       }
+
+      is GroupsViewModel.NavigationEvent.ConfirmDeleteSelected -> {
+        dialogDispatcher.showDialog(
+          title = event.title,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.deleteSelectedGroups(event.ids) }
+        )
+      }
     }
   }
+
+  val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
+  val themeProvider = koinInject<ThemeProvider>()
 
   val state by viewModel.state.collectAsState(GroupsScreenState())
   GroupsScreen(
@@ -115,7 +130,18 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onAddClick = viewModel::onAddClick,
     onGroupClick = viewModel::onGroupClick,
+    onGroupLongClick = viewModel::onGroupLongClick,
     onGroupMenuAction = viewModel::onGroupMenuAction,
+    onSelectionCancel = viewModel::onSelectionCancel,
+    onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
+    onChangeColorClick = {
+      colorPickerDialogDispatcher.showDialog(
+        titleRes = R.string.acc_select_color,
+        colors = themeProvider.colorsForSliderThemed(),
+        selectedIndex = 0,
+        onColorSelected = viewModel::applySelectedColor,
+      )
+    },
   )
 }
 

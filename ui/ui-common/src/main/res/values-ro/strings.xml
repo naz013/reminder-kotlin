@@ -1272,4 +1272,10 @@
     <string name="builder_quick_start_leaving_place_delayed">Părăsirea unui loc (pornire întârziată)</string>
     <string name="select_settings_category_to_see_details">Selectați o categorie pentru a vedea setările</string>
     <string name="select_place_to_see_details">Selectați un loc pentru a vedea detaliile</string>
+    <string name="group_selected_count_one">%1$d grup selectat</string>
+    <string name="group_selected_count_other">%1$d grupuri selectate</string>
+    <string name="groups_delete_selected_permanently">Ștergere %1$d grupuri permanent?</string>
+    <string name="tag_selected_count_one">%1$d etichetă selectată</string>
+    <string name="tag_selected_count_other">%1$d etichete selectate</string>
+    <string name="tags_delete_selected_permanently">Ștergere %1$d etichete permanent?</string>
 </resources>

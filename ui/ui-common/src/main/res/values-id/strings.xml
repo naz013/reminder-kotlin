@@ -1270,4 +1270,10 @@
     <string name="builder_quick_start_leaving_place_delayed">Meninggalkan suatu tempat (mulai tertunda)</string>
     <string name="select_settings_category_to_see_details">Pilih kategori untuk melihat pengaturannya</string>
     <string name="select_place_to_see_details">Pilih tempat untuk melihat detailnya</string>
+    <string name="group_selected_count_one">%1$d grup dipilih</string>
+    <string name="group_selected_count_other">%1$d grup dipilih</string>
+    <string name="groups_delete_selected_permanently">Hapus %1$d grup secara permanen?</string>
+    <string name="tag_selected_count_one">%1$d label dipilih</string>
+    <string name="tag_selected_count_other">%1$d label dipilih</string>
+    <string name="tags_delete_selected_permanently">Hapus %1$d label secara permanen?</string>
 </resources>

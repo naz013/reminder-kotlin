@@ -1270,4 +1270,10 @@
     <string name="builder_quick_start_leaving_place_delayed">Een locatie verlaten (vertraagde start)</string>
     <string name="select_settings_category_to_see_details">Selecteer een categorie om de instellingen te bekijken</string>
     <string name="select_place_to_see_details">Selecteer een plaats om de details te bekijken</string>
+    <string name="group_selected_count_one">%1$d groep geselecteerd</string>
+    <string name="group_selected_count_other">%1$d groepen geselecteerd</string>
+    <string name="groups_delete_selected_permanently">%1$d groepen permanent verwijderen?</string>
+    <string name="tag_selected_count_one">%1$d label geselecteerd</string>
+    <string name="tag_selected_count_other">%1$d labels geselecteerd</string>
+    <string name="tags_delete_selected_permanently">%1$d labels permanent verwijderen?</string>
 </resources>

@@ -1,9 +1,13 @@
 package com.github.naz013.tags.compose
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -32,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +44,8 @@ import com.github.naz013.tags.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
+import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
@@ -49,31 +56,48 @@ internal fun TagsScreen(
   onBackClick: () -> Unit,
   onAddClick: () -> Unit,
   onTagClick: (String) -> Unit,
+  onTagLongClick: (String) -> Unit,
   onTagMenuAction: (TagState, TagMenuAction) -> Unit,
+  onSelectionCancel: () -> Unit,
+  onDeleteSelectedClick: () -> Unit,
+  onChangeColorClick: () -> Unit,
   modifier: Modifier = Modifier
 ) {
+  val isSelectionMode = state.selectedCount > 0
+
+  BackHandler(enabled = isSelectionMode) { onSelectionCancel() }
+
   Scaffold(
     modifier = modifier,
     topBar = {
-      TopAppBar(
-        title = { Text(stringResource(R.string.tags)) },
-        navigationIcon = {
-          MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
-            onClick = onBackClick
-          )
-        },
-        actions = {
-          MenuIconButton(
-            icon = AppIcons.Fluent.Add,
-            contentDescription = stringResource(R.string.new_tag),
-            onClick = onAddClick,
-            iconColor = MaterialTheme.colorScheme.primary,
-          )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
-      )
+      if (isSelectionMode) {
+        TagsSelectionTopBar(
+          selectedCount = state.selectedCount,
+          onCancelClick = onSelectionCancel,
+          onDeleteClick = onDeleteSelectedClick,
+          onChangeColorClick = onChangeColorClick,
+        )
+      } else {
+        TopAppBar(
+          title = { Text(stringResource(R.string.tags)) },
+          navigationIcon = {
+            MenuIconButton(
+              icon = AppIcons.Builder.ArrowLeft,
+              contentDescription = null,
+              onClick = onBackClick
+            )
+          },
+          actions = {
+            MenuIconButton(
+              icon = AppIcons.Fluent.Add,
+              contentDescription = stringResource(R.string.new_tag),
+              onClick = onAddClick,
+              iconColor = MaterialTheme.colorScheme.primary,
+            )
+          },
+          colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+        )
+      }
     },
   ) { padding ->
     when (val listState = state.listState) {
@@ -104,7 +128,9 @@ internal fun TagsScreen(
           listState.tags.forEach { tag ->
             TagListItem(
               tag = tag,
+              isSelectionMode = isSelectionMode,
               onClick = { onTagClick(tag.id) },
+              onLongClick = { onTagLongClick(tag.id) },
               onMenuAction = { action -> onTagMenuAction(tag, action) },
             )
           }
@@ -114,20 +140,59 @@ internal fun TagsScreen(
   }
 }
 
+private enum class TagsSelectionAction { CHANGE_COLOR, DELETE }
+
+@Composable
+private fun TagsSelectionTopBar(
+  selectedCount: Int,
+  onCancelClick: () -> Unit,
+  onDeleteClick: () -> Unit,
+  onChangeColorClick: () -> Unit,
+) {
+  SelectionTopBar(
+    title = pluralStringResource(R.plurals.tags_selected_count, selectedCount, selectedCount),
+    onCancelClick = onCancelClick,
+    actions = tagsSelectionMenuItems(),
+    onActionClick = { id ->
+      when (TagsSelectionAction.entries[id]) {
+        TagsSelectionAction.CHANGE_COLOR -> onChangeColorClick()
+        TagsSelectionAction.DELETE -> onDeleteClick()
+      }
+    },
+  )
+}
+
+@Composable
+private fun tagsSelectionMenuItems(): List<PopupMenuItem> =
+  listOf(
+    PopupMenuItem(
+      id = TagsSelectionAction.CHANGE_COLOR.ordinal,
+      title = stringResource(R.string.change_color),
+      iconRes = R.drawable.ic_fluent_color_background,
+    ),
+    PopupMenuItem(
+      id = TagsSelectionAction.DELETE.ordinal,
+      title = stringResource(R.string.delete),
+      iconRes = R.drawable.ic_fluent_delete,
+    ),
+  )
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TagListItem(
   tag: TagState,
+  isSelectionMode: Boolean,
   onClick: () -> Unit,
+  onLongClick: () -> Unit,
   onMenuAction: (TagMenuAction) -> Unit,
   modifier: Modifier = Modifier
 ) {
   Card(
-    modifier = modifier,
-    onClick = onClick,
+    modifier = modifier.combinedClickable(onClick = onClick, onLongClick = onLongClick),
     colors = CardDefaults.cardColors(
-      containerColor = if (tag.isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
+      containerColor = if (tag.isHighlighted) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
     ),
-    border = if (tag.isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
+    border = if (tag.isHighlighted) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {
     Row(
       modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp),
@@ -138,34 +203,40 @@ private fun TagListItem(
         drawCircle(color = tag.color)
       }
       Text(text = tag.name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f, fill = false))
-      TagMenu(onMenuAction = onMenuAction)
+      Box {
+        SelectionOverlay(
+          isSelectionMode = isSelectionMode,
+          isSelected = tag.isSelected,
+          onToggleSelected = onClick,
+        ) {
+          TagMenu(onMenuAction = onMenuAction)
+        }
+      }
     }
   }
 }
 
 @Composable
-private fun TagMenu(onMenuAction: (TagMenuAction) -> Unit) {
+private fun BoxScope.TagMenu(onMenuAction: (TagMenuAction) -> Unit) {
   var expanded by remember { mutableStateOf(false) }
   val items = listOf(
     PopupMenuItem(id = TagMenuAction.EDIT.ordinal, title = stringResource(R.string.edit), iconRes = R.drawable.ic_fluent_edit),
     PopupMenuItem(id = TagMenuAction.DELETE.ordinal, title = stringResource(R.string.delete), iconRes = R.drawable.ic_fluent_delete),
   )
-  Box {
-    MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_more_vertical),
-      contentDescription = stringResource(R.string.more_options),
-      onClick = { expanded = true },
-    )
-    AppDropdownMenu(
-      expanded = expanded,
-      onDismissRequest = { expanded = false },
-      items = items,
-      onItemClick = { id ->
-        expanded = false
-        onMenuAction(TagMenuAction.entries[id])
-      },
-    )
-  }
+  MenuIconButton(
+    icon = painterResource(R.drawable.ic_fluent_more_vertical),
+    contentDescription = stringResource(R.string.more_options),
+    onClick = { expanded = true },
+  )
+  AppDropdownMenu(
+    expanded = expanded,
+    onDismissRequest = { expanded = false },
+    items = items,
+    onItemClick = { id ->
+      expanded = false
+      onMenuAction(TagMenuAction.entries[id])
+    },
+  )
 }
 
 @Composable
@@ -206,7 +277,11 @@ private fun TagsScreenPreview() {
       onBackClick = {},
       onAddClick = {},
       onTagClick = {},
+      onTagLongClick = {},
       onTagMenuAction = { _, _ -> },
+      onSelectionCancel = {},
+      onDeleteSelectedClick = {},
+      onChangeColorClick = {},
     )
   }
 }

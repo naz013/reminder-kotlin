@@ -3,6 +3,7 @@ package com.github.naz013.group.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -11,8 +12,15 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.logic.group.MakeGroupDefaultUseCase
+import com.github.naz013.logic.group.SaveGroupUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.selection.clearSelection
+import com.github.naz013.ui.common.selection.select
+import com.github.naz013.ui.common.selection.selectedCount
+import com.github.naz013.ui.common.selection.selectedIds
+import com.github.naz013.ui.common.selection.toggleSelection
 import com.github.naz013.ui.group.UiGroupList
 import com.github.naz013.ui.group.UiGroupListAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,10 +31,12 @@ import kotlinx.coroutines.withContext
 
 internal class GroupsViewModel(
   private val dispatcherProvider: DispatcherProvider,
+  private val textProvider: TextProvider,
   private val groupV2Repository: GroupV2Repository,
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val deleteGroupUseCase: DeleteGroupUseCase,
   private val makeGroupDefaultUseCase: MakeGroupDefaultUseCase,
+  private val saveGroupUseCase: SaveGroupUseCase,
   private val reminderV2Repository: ReminderV2Repository,
 ) : ViewModel() {
 
@@ -51,7 +61,72 @@ internal class GroupsViewModel(
   }
 
   fun onGroupClick(id: String) {
-    navigationEvent.postValue(Event(NavigationEvent.OpenDetails(id)))
+    if (_state.value.selectedCount > 0) {
+      updateSelection { it.toggleSelection(id) }
+    } else {
+      navigationEvent.postValue(Event(NavigationEvent.OpenDetails(id)))
+    }
+  }
+
+  fun onGroupLongClick(id: String) {
+    updateSelection { it.select(id) }
+  }
+
+  fun onSelectionCancel() {
+    updateSelection { it.clearSelection() }
+  }
+
+  private fun updateSelection(transform: (List<UiGroupList>) -> List<UiGroupList>) {
+    _state.update { state ->
+      val listState = state.listState
+      if (listState !is ListState.Ready) return@update state
+      val groups = transform(listState.groups)
+      state.copy(listState = ListState.Ready(groups), selectedCount = groups.selectedCount())
+    }
+  }
+
+  private fun selectedGroups(): List<UiGroupList> =
+    (_state.value.listState as? ListState.Ready)?.groups.orEmpty().filter { it.isSelected }
+
+  private fun selectedIds(): Set<String> =
+    (_state.value.listState as? ListState.Ready)?.groups.orEmpty().selectedIds()
+
+  fun onDeleteSelectedClick() {
+    val selected = selectedGroups()
+    if (selected.isEmpty() || selected.any { it.isDefaultGroup }) return
+    navigationEvent.postValue(
+      Event(
+        NavigationEvent.ConfirmDeleteSelected(
+          ids = selected.map { it.id }.toSet(),
+          title = textProvider.getText(R.string.groups_delete_selected_permanently, selected.size),
+        ),
+      ),
+    )
+  }
+
+  fun deleteSelectedGroups(ids: Set<String>) {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      ids.forEach { deleteGroupUseCase(it) }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
+    }
+  }
+
+  fun applySelectedColor(colorPosition: Int) {
+    val ids = selectedIds()
+    if (ids.isEmpty()) return
+    viewModelScope.launch(dispatcherProvider.io()) {
+      ids.forEach { id ->
+        val group = groupV2Repository.getById(id) ?: return@forEach
+        saveGroupUseCase(group.copy(color = colorPosition))
+      }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
+    }
   }
 
   fun onGroupMenuAction(
@@ -111,6 +186,11 @@ internal class GroupsViewModel(
 
     data class ConfirmDelete(
       val id: String,
+    ) : NavigationEvent
+
+    data class ConfirmDeleteSelected(
+      val ids: Set<String>,
+      val title: String,
     ) : NavigationEvent
   }
 

@@ -1274,4 +1274,10 @@
     <string name="builder_quick_start_leaving_place_delayed">किसी स्थान से जाना (विलंबित प्रारंभ)</string>
     <string name="select_settings_category_to_see_details">सेटिंग्स देखने के लिए एक श्रेणी चुनें</string>
     <string name="select_place_to_see_details">विवरण देखने के लिए एक स्थान चुनें</string>
+    <string name="group_selected_count_one">%1$d समूह चयनित</string>
+    <string name="group_selected_count_other">%1$d समूह चयनित</string>
+    <string name="groups_delete_selected_permanently">%1$d समूहों को स्थायी रूप से हटाएं?</string>
+    <string name="tag_selected_count_one">%1$d टैग चयनित</string>
+    <string name="tag_selected_count_other">%1$d टैग्स चयनित</string>
+    <string name="tags_delete_selected_permanently">%1$d टैग्स को स्थायी रूप से हटाएं?</string>
 </resources>

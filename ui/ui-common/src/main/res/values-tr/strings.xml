@@ -1273,4 +1273,10 @@
     <string name="builder_quick_start_leaving_place_delayed">Bir yerden ayrılma (gecikmeli başlangıç)</string>
     <string name="select_settings_category_to_see_details">Ayarlarını görmek için bir kategori seçin</string>
     <string name="select_place_to_see_details">Ayrıntıları görmek için bir yer seçin</string>
+    <string name="group_selected_count_one">%1$d grup seçildi</string>
+    <string name="group_selected_count_other">%1$d grup seçildi</string>
+    <string name="groups_delete_selected_permanently">%1$d grup kalıcı olarak silinsin mi?</string>
+    <string name="tag_selected_count_one">%1$d etiket seçildi</string>
+    <string name="tag_selected_count_other">%1$d etiket seçildi</string>
+    <string name="tags_delete_selected_permanently">%1$d etiket kalıcı olarak silinsin mi?</string>
 </resources>

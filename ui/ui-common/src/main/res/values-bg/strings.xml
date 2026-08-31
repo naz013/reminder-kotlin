@@ -1273,4 +1273,10 @@
     <string name="builder_quick_start_leaving_place_delayed">Напускане на място (забавено стартиране)</string>
     <string name="select_settings_category_to_see_details">Изберете категория, за да видите нейните настройки</string>
     <string name="select_place_to_see_details">Изберете място, за да видите подробности</string>
+    <string name="group_selected_count_one">Избрана е %1$d група</string>
+    <string name="group_selected_count_other">Избрани са %1$d групи</string>
+    <string name="groups_delete_selected_permanently">Изтриване на %1$d групи окончателно?</string>
+    <string name="tag_selected_count_one">Избран е %1$d етикет</string>
+    <string name="tag_selected_count_other">Избрани са %1$d етикета</string>
+    <string name="tags_delete_selected_permanently">Изтриване на %1$d етикета окончателно?</string>
 </resources>

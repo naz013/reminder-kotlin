@@ -20,9 +20,12 @@ import com.github.naz013.tags.details.TagDetailsScreen
 import com.github.naz013.tags.details.TagDetailsState
 import com.github.naz013.tags.details.TagDetailsViewModel
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.ui.common.theme.ThemeProvider
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -104,8 +107,20 @@ private fun TagsManageEntry(backStack: MutableList<NavKey>) {
           onPositive = { viewModel.deleteTag(event.id) },
         )
       }
+
+      is TagsViewModel.NavigationEvent.ConfirmDeleteSelected -> {
+        dialogDispatcher.showDialog(
+          title = event.title,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.deleteSelectedTags(event.ids) },
+        )
+      }
     }
   }
+
+  val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
+  val themeProvider = koinInject<ThemeProvider>()
 
   val state by viewModel.state.collectAsState(TagsScreenState())
   TagsScreen(
@@ -113,7 +128,18 @@ private fun TagsManageEntry(backStack: MutableList<NavKey>) {
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onAddClick = viewModel::onAddClick,
     onTagClick = viewModel::onTagClick,
+    onTagLongClick = viewModel::onTagLongClick,
     onTagMenuAction = viewModel::onTagMenuAction,
+    onSelectionCancel = viewModel::onSelectionCancel,
+    onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
+    onChangeColorClick = {
+      colorPickerDialogDispatcher.showDialog(
+        titleRes = R.string.acc_select_color,
+        colors = themeProvider.colorsForSliderThemed(),
+        selectedIndex = 0,
+        onColorSelected = viewModel::applySelectedColor,
+      )
+    },
   )
 }
 

@@ -1272,4 +1272,10 @@
     <string name="builder_quick_start_leaving_place_delayed">장소 떠나기 (지연 시작)</string>
     <string name="select_settings_category_to_see_details">설정을 보려면 카테고리를 선택하세요</string>
     <string name="select_place_to_see_details">세부정보를 보려면 장소를 선택하세요</string>
+    <string name="group_selected_count_one">그룹 %1$d개 선택됨</string>
+    <string name="group_selected_count_other">그룹 %1$d개 선택됨</string>
+    <string name="groups_delete_selected_permanently">%1$d개의 그룹을 영구 삭제하시겠습니까?</string>
+    <string name="tag_selected_count_one">태그 %1$d개 선택됨</string>
+    <string name="tag_selected_count_other">태그 %1$d개 선택됨</string>
+    <string name="tags_delete_selected_permanently">%1$d개의 태그를 영구 삭제하시겠습니까?</string>
 </resources>
