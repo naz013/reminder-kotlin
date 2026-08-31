@@ -16,7 +16,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -44,21 +46,23 @@ class PlacesViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    coEvery { placeRepository.getAll() } returns emptyList()
+    every { placeRepository.observeAll() } returns flowOf(emptyList())
     every { dateTimeManager.getPlaceDateTimeFromGmt(any()) } returns null
 
-    viewModel =
-      PlacesViewModel(
-        backupTool = backupTool,
-        dispatcherProvider = mockDispatcherProvider(),
-        placeRepository = placeRepository,
-        deletePlaceUseCase = deletePlaceUseCase,
-        mapStyle = mapStyle,
-        dateTimeManager = dateTimeManager,
-        textProvider = textProvider,
-        intentFactory = intentFactory,
-      )
+    viewModel = createViewModel()
   }
+
+  private fun createViewModel() =
+    PlacesViewModel(
+      backupTool = backupTool,
+      dispatcherProvider = mockDispatcherProvider(),
+      placeRepository = placeRepository,
+      deletePlaceUseCase = deletePlaceUseCase,
+      mapStyle = mapStyle,
+      dateTimeManager = dateTimeManager,
+      textProvider = textProvider,
+      intentFactory = intentFactory,
+    )
 
   @Test
   fun `loads empty state when there are no places`() =
@@ -71,7 +75,9 @@ class PlacesViewModelTest : BaseTest() {
   @Test
   fun `loads places sorted by name on first collection`() =
     runTest {
-      coEvery { placeRepository.getAll() } returns listOf(place(id = "1", name = "Zeta"), place(id = "2", name = "Alpha"))
+      every { placeRepository.observeAll() } returns
+        flowOf(listOf(place(id = "1", name = "Zeta"), place(id = "2", name = "Alpha")))
+      viewModel = createViewModel()
 
       val state = viewModel.screenState.first()
 
@@ -80,12 +86,17 @@ class PlacesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `reloads places on each fresh state collection`() =
+  fun `state updates reactively when the places Flow emits a new list`() =
     runTest {
-      viewModel.screenState.first()
-      viewModel.screenState.first()
+      val placesFlow = MutableStateFlow<List<Place>>(emptyList())
+      every { placeRepository.observeAll() } returns placesFlow
+      viewModel = createViewModel()
+      assertEquals(ListState.Empty, viewModel.screenState.first().listState)
 
-      coVerify(atLeast = 3) { placeRepository.getAll() }
+      placesFlow.value = listOf(place(id = "1", name = "Home"))
+
+      val ready = viewModel.screenState.first().listState as ListState.Ready
+      assertEquals(listOf("1"), ready.places.map { it.id })
     }
 
   @Test
@@ -179,21 +190,21 @@ class PlacesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deletePlace delegates to the use case and reloads the list`() =
+  fun `deletePlace delegates to the use case`() =
     runTest {
       viewModel.deletePlace("1")
 
       coVerify(exactly = 1) { deletePlaceUseCase("1") }
-      coVerify(atLeast = 2) { placeRepository.getAll() }
     }
 
   @Test
   fun `formats the place date when available`() =
     runTest {
       val target = place(id = "1", name = "Home")
-      coEvery { placeRepository.getAll() } returns listOf(target)
+      every { placeRepository.observeAll() } returns flowOf(listOf(target))
       every { dateTimeManager.getPlaceDateTimeFromGmt(target.dateTime) } returns LocalDate.of(2026, 7, 24)
       every { dateTimeManager.getDate(LocalDate.of(2026, 7, 24)) } returns "24 Jul 2026"
+      viewModel = createViewModel()
 
       val state = viewModel.screenState.first()
 

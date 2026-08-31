@@ -8,6 +8,8 @@ import com.github.naz013.repository.dao.PlacesDao
 import com.github.naz013.repository.entity.PlaceEntity
 import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class PlaceRepositoryImpl(
   private val placesDao: PlacesDao,
@@ -31,6 +33,8 @@ internal class PlaceRepositoryImpl(
     Logger.d(TAG, "Get all places")
     return placesDao.getAll().map { it.toDomain() }
   }
+
+  override fun observeAll(): Flow<List<Place>> = placesDao.observeAll().map { list -> list.map { it.toDomain() } }
 
   override suspend fun searchByName(query: String): List<Place> {
     Logger.d(TAG, "Search place by name: $query")
