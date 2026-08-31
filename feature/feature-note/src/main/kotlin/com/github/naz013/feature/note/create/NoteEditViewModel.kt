@@ -310,8 +310,12 @@ internal class NoteEditViewModel(
   private fun applySingleValueAttribute(attribute: NoteSpanAttribute) {
     val s = _state.value
     val selection = s.textFieldValue.selection
-    if (selection.collapsed) return
-    _state.update { it.copy(spans = applyAttribute(s.spans, selection.min, selection.max, attribute)) }
+    val spans = if (selection.collapsed) {
+      applyAttributeAtCursor(s.spans, selection.start, attribute)
+    } else {
+      applyAttribute(s.spans, selection.min, selection.max, attribute)
+    }
+    _state.update { it.copy(spans = spans) }
   }
 
   fun onReminderAttachedChanged(value: Boolean) {
