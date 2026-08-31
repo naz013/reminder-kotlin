@@ -1,6 +1,8 @@
 package com.github.naz013.feature.reminder.build
 
 import android.os.Build
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
@@ -12,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -188,97 +191,104 @@ private fun MainEntry(
     }
   }
 
-  BuildReminderScreen(
-    renderAsDetailPane = renderAsDetailPane,
-    isLoadingForEdit = state.isLoadingForEdit,
-    builderItems = state.builderItems,
-    prediction = state.prediction,
-    canSave = state.canSave,
-    canRemove = state.canRemove,
-    canSaveAsPreset = state.canSaveAsPreset,
-    saveAsPresetChecked = state.saveAsPresetChecked,
-    presetName = state.presetName,
-    canSetOfflineOnly = state.canSetOfflineOnly,
-    offlineOnlyChecked = state.offlineOnlyChecked,
-    quickStartOptions = QuickStartOption.entries,
-    allTags = state.allTags,
-    selectedTagIds = state.selectedTagIds,
-    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
-    onSaveClick = {
-      askNotificationPermissionIfNeeded(permissionRequester) {
-        askCopySaving(dialogDispatcher, state, viewModel)
-      }
-    },
-    onDeleteClick = { deleteReminder(dialogDispatcher, state, viewModel) },
-    onHelpClick = { backStack.add(BuildReminderNavKey.Help) },
-    onReportIssueClick = viewModel::onReportAnIssueClicked,
-    onSaveAsPresetChange = viewModel::onSaveAsPresetChange,
-    onPresetNameChange = viewModel::onPresetNameChange,
-    onOfflineOnlyChange = viewModel::onOfflineOnlyChange,
-    onItemClick = { position, item -> viewModel.onItemEditedClicked(position, item) },
-    onItemRemove = { position, item -> viewModel.removeItem(position, item) },
-    onAddClick = { showSelector = true },
-    onQuickStartClick = viewModel::onQuickStartSelected,
-    onTagToggle = viewModel::onTagToggle,
-    onManageTagsClick = viewModel::onManageTagsClick,
-  )
-
-  if (showSelector) {
-    BuilderSelectorSheet(
-      tabs = selectorDialogDataHolder.getTabs(),
-      builderItems = selectorDialogDataHolder.selectorBuilderItems,
-      presets = selectorDialogDataHolder.presets,
-      recurPresets = selectorDialogDataHolder.recurPresets,
-      onDismissRequest = { showSelector = false },
-      onBuilderItemSelected = { builderItem ->
-        showSelector = false
-        viewModel.addItem(builderItem)
+  // Wrapped in a single Box so BuildReminderScreen plus the selector/editor overlays below always
+  // stack as one measurable subtree - when this entry renders as a ListDetailSceneStrategy detail
+  // pane (tablets), the AnimatedPane host doesn't lay out extra sibling composables the way plain
+  // NavDisplay does on phones, so an overlay emitted as a bare sibling (previously MapEditorScreen)
+  // silently never appears even though its state/click handling still fires.
+  Box(modifier = Modifier.fillMaxSize()) {
+    BuildReminderScreen(
+      renderAsDetailPane = renderAsDetailPane,
+      isLoadingForEdit = state.isLoadingForEdit,
+      builderItems = state.builderItems,
+      prediction = state.prediction,
+      canSave = state.canSave,
+      canRemove = state.canRemove,
+      canSaveAsPreset = state.canSaveAsPreset,
+      saveAsPresetChecked = state.saveAsPresetChecked,
+      presetName = state.presetName,
+      canSetOfflineOnly = state.canSetOfflineOnly,
+      offlineOnlyChecked = state.offlineOnlyChecked,
+      quickStartOptions = QuickStartOption.entries,
+      allTags = state.allTags,
+      selectedTagIds = state.selectedTagIds,
+      onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+      onSaveClick = {
+        askNotificationPermissionIfNeeded(permissionRequester) {
+          askCopySaving(dialogDispatcher, state, viewModel)
+        }
       },
-      onPresetSelected = { preset ->
-        showSelector = false
-        viewModel.onPresetSelected(preset)
-      },
+      onDeleteClick = { deleteReminder(dialogDispatcher, state, viewModel) },
+      onHelpClick = { backStack.add(BuildReminderNavKey.Help) },
+      onReportIssueClick = viewModel::onReportAnIssueClicked,
+      onSaveAsPresetChange = viewModel::onSaveAsPresetChange,
+      onPresetNameChange = viewModel::onPresetNameChange,
+      onOfflineOnlyChange = viewModel::onOfflineOnlyChange,
+      onItemClick = { position, item -> viewModel.onItemEditedClicked(position, item) },
+      onItemRemove = { position, item -> viewModel.removeItem(position, item) },
+      onAddClick = { showSelector = true },
+      onQuickStartClick = viewModel::onQuickStartSelected,
+      onTagToggle = viewModel::onTagToggle,
+      onManageTagsClick = viewModel::onManageTagsClick,
     )
-  }
 
-  state.editingItem?.let { (position, item) ->
-    // Arriving/Leaving coordinates use MapEditorScreen's own swipeable sheet rather than
-    // ValueEditorSheet's AppModalBottomSheet (see MapEditorScreen's kdoc).
-    if (item is ArrivingCoordinatesBuilderItem || item is LeavingCoordinatesBuilderItem) {
-      @Suppress("UNCHECKED_CAST")
-      MapEditorScreen(
-        builderItem = item as BuilderItem<Place>,
-        dateTimeManager = dateTimeManager,
-        onDismissRequest = { viewModel.onEditDialogDismissed() },
-        onValueChange = { updated -> viewModel.updateValue(position, updated) },
-      )
-    } else {
-      ValueEditorSheet(
-        builderItem = item,
-        is24HourFormat = state.is24HourFormat,
-        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
-        paramToTextAdapter = paramToTextAdapter,
-        googleCalendarApi = googleCalendarApi,
-        packageManagerWrapper = packageManagerWrapper,
-        attachmentFileAdapter = attachmentFileAdapter,
-        dateTimeManager = dateTimeManager,
-        onPickApplication = {
-          pendingApplicationPickPosition = position
-          viewModel.onEditDialogDismissed()
-          backStack.add(BuildReminderNavKey.SelectApplication)
+    if (showSelector) {
+      BuilderSelectorSheet(
+        tabs = selectorDialogDataHolder.getTabs(),
+        builderItems = selectorDialogDataHolder.selectorBuilderItems,
+        presets = selectorDialogDataHolder.presets,
+        recurPresets = selectorDialogDataHolder.recurPresets,
+        onDismissRequest = { showSelector = false },
+        onBuilderItemSelected = { builderItem ->
+          showSelector = false
+          viewModel.addItem(builderItem)
         },
-        onPickContact = { onResult ->
-          permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { pickContactPhone(onResult) })
-        },
-        onPickFiles = { onResult -> pickFiles(onResult) },
-        onDismissRequest = { viewModel.onEditDialogDismissed() },
-        onValueChange = { updated -> viewModel.updateValue(position, updated) },
-        onHelpClick = if (item.biGroup == BiGroup.ICAL) {
-          { backStack.add(BuildReminderNavKey.RecurHelp) }
-        } else {
-          null
+        onPresetSelected = { preset ->
+          showSelector = false
+          viewModel.onPresetSelected(preset)
         },
       )
+    }
+
+    state.editingItem?.let { (position, item) ->
+      // Arriving/Leaving coordinates use MapEditorScreen's own swipeable sheet rather than
+      // ValueEditorSheet's AppModalBottomSheet (see MapEditorScreen's kdoc).
+      if (item is ArrivingCoordinatesBuilderItem || item is LeavingCoordinatesBuilderItem) {
+        @Suppress("UNCHECKED_CAST")
+        MapEditorScreen(
+          builderItem = item as BuilderItem<Place>,
+          dateTimeManager = dateTimeManager,
+          onDismissRequest = { viewModel.onEditDialogDismissed() },
+          onValueChange = { updated -> viewModel.updateValue(position, updated) },
+        )
+      } else {
+        ValueEditorSheet(
+          builderItem = item,
+          is24HourFormat = state.is24HourFormat,
+          hapticFeedbackEnabled = state.hapticFeedbackEnabled,
+          paramToTextAdapter = paramToTextAdapter,
+          googleCalendarApi = googleCalendarApi,
+          packageManagerWrapper = packageManagerWrapper,
+          attachmentFileAdapter = attachmentFileAdapter,
+          dateTimeManager = dateTimeManager,
+          onPickApplication = {
+            pendingApplicationPickPosition = position
+            viewModel.onEditDialogDismissed()
+            backStack.add(BuildReminderNavKey.SelectApplication)
+          },
+          onPickContact = { onResult ->
+            permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { pickContactPhone(onResult) })
+          },
+          onPickFiles = { onResult -> pickFiles(onResult) },
+          onDismissRequest = { viewModel.onEditDialogDismissed() },
+          onValueChange = { updated -> viewModel.updateValue(position, updated) },
+          onHelpClick = if (item.biGroup == BiGroup.ICAL) {
+            { backStack.add(BuildReminderNavKey.RecurHelp) }
+          } else {
+            null
+          },
+        )
+      }
     }
   }
 }
