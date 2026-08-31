@@ -1267,4 +1267,5 @@
     <string name="builder_quick_start_leaving_place">Einen Ort verlassen</string>
     <string name="builder_quick_start_leaving_place_delayed">Einen Ort verlassen (verzögerter Start)</string>
     <string name="select_settings_category_to_see_details">Wählen Sie eine Kategorie aus, um ihre Einstellungen anzuzeigen</string>
+    <string name="select_place_to_see_details">Wählen Sie einen Ort aus, um Details anzuzeigen</string>
 </resources>

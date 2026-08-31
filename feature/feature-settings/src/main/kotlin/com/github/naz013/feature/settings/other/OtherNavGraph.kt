@@ -7,7 +7,6 @@ import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.settings.SettingsDetailPane
 import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewScreen
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewState
@@ -40,16 +40,16 @@ fun EntryProviderScope<NavKey>.otherEntries(
   onOpenTroubleshooting: () -> Unit,
   onOpenProVersion: () -> Unit,
 ) {
-  entry<OtherNavKey.Other>(metadata = ListDetailSceneStrategy.detailPane()) {
+  entry<OtherNavKey.Other>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(OtherNavKey.Other) }
     OtherEntry(backStack, renderAsDetailPane, onOpenTroubleshooting, onOpenProVersion)
   }
-  entry<OtherNavKey.Permissions> { PermissionsEntry(backStack) }
-  entry<OtherNavKey.Oss> { OssEntry(backStack) }
-  entry<OtherNavKey.PrivacyPolicy> { PrivacyPolicyEntry(backStack) }
-  entry<OtherNavKey.Terms> { TermsEntry(backStack) }
-  entry<OtherNavKey.WhatsNew> { WhatsNewEntry(backStack) }
-  entry<OtherNavKey.GeminiFunctions> { GeminiFunctionsEntry(backStack) }
+  entry<OtherNavKey.Permissions>(metadata = SettingsDetailPane) { PermissionsEntry(backStack) }
+  entry<OtherNavKey.Oss>(metadata = SettingsDetailPane) { OssEntry(backStack) }
+  entry<OtherNavKey.PrivacyPolicy>(metadata = SettingsDetailPane) { PrivacyPolicyEntry(backStack) }
+  entry<OtherNavKey.Terms>(metadata = SettingsDetailPane) { TermsEntry(backStack) }
+  entry<OtherNavKey.WhatsNew>(metadata = SettingsDetailPane) { WhatsNewEntry(backStack) }
+  entry<OtherNavKey.GeminiFunctions>(metadata = SettingsDetailPane) { GeminiFunctionsEntry(backStack) }
 }
 
 @Composable

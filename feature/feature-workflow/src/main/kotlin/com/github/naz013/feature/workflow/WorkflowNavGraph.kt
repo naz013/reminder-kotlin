@@ -19,6 +19,16 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 /**
+ * Distinct from the default `sceneKey` ([ListDetailSceneStrategy.listPane]/`detailPane` default to
+ * `Unit`, shared by every other two-pane flow in the app) so that navigating here *from* another
+ * feature's own two-pane detail screen (e.g. Settings > Reminders > Workflow rules) can't have the
+ * scene strategy's backstack scan reach past this flow's own list root and incorrectly pair with
+ * whatever unrelated list/detail entries happen to sit further down the backstack (see the matching
+ * comment on `SettingsPaneSceneKey` in `feature-settings`'s `SettingsNavGraph.kt`).
+ */
+private const val WorkflowPaneSceneKey: String = "com.github.naz013.feature.workflow.WorkflowPane"
+
+/**
  * Contributes the Workflow island's screens (Nav3 entries) into the app's single, shared
  * [androidx.navigation3.ui.NavDisplay] (see [com.elementary.tasks.navigation.nav3.AppNavGraph]).
  */
@@ -29,6 +39,7 @@ fun EntryProviderScope<NavKey>.workflowEntries(
 ) {
   entry<WorkflowNavKey.Gallery>(
     metadata = ListDetailSceneStrategy.listPane(
+      sceneKey = WorkflowPaneSceneKey,
       detailPlaceholder = {
         DetailPanePlaceholder(
           text = stringResource(R.string.select_workflow_template_to_configure),
@@ -37,19 +48,25 @@ fun EntryProviderScope<NavKey>.workflowEntries(
       },
     ),
   ) { WorkflowGalleryEntry(backStack) }
-  entry<WorkflowNavKey.RulesForGroup>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<WorkflowNavKey.RulesForGroup>(
+    metadata = ListDetailSceneStrategy.detailPane(sceneKey = WorkflowPaneSceneKey),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     WorkflowRulesForGroupEntry(key, backStack, renderAsDetailPane)
   }
-  entry<WorkflowNavKey.RulesForReminder>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<WorkflowNavKey.RulesForReminder>(
+    metadata = ListDetailSceneStrategy.detailPane(sceneKey = WorkflowPaneSceneKey),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     WorkflowRulesForReminderEntry(key, backStack, renderAsDetailPane)
   }
-  entry<WorkflowNavKey.Builder>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<WorkflowNavKey.Builder>(
+    metadata = ListDetailSceneStrategy.detailPane(sceneKey = WorkflowPaneSceneKey),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }

@@ -1270,4 +1270,5 @@
     <string name="builder_quick_start_leaving_place">Уход с места</string>
     <string name="builder_quick_start_leaving_place_delayed">Уход с места (отложенный старт)</string>
     <string name="select_settings_category_to_see_details">Выберите категорию, чтобы увидеть её настройки</string>
+    <string name="select_place_to_see_details">Выберите место, чтобы увидеть подробности</string>
 </resources>

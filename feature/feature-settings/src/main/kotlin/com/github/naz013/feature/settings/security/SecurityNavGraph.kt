@@ -2,7 +2,6 @@ package com.github.naz013.feature.settings.security
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.settings.SettingsDetailPane
 import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.feature.settings.settingsNavigationIcon
 import com.github.naz013.ui.common.R
@@ -24,13 +24,13 @@ fun EntryProviderScope<NavKey>.securityEntries(
   backStack: MutableList<NavKey>,
   isRenderedAsDetailPane: (NavKey) -> Boolean,
 ) {
-  entry<SecurityNavKey.Security>(metadata = ListDetailSceneStrategy.detailPane()) {
+  entry<SecurityNavKey.Security>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SecurityNavKey.Security) }
     SecurityEntry(backStack, renderAsDetailPane)
   }
-  entry<SecurityNavKey.AddPin> { AddPinEntry(backStack) }
-  entry<SecurityNavKey.ChangePin> { ChangePinEntry(backStack) }
-  entry<SecurityNavKey.DisablePin> { DisablePinEntry(backStack) }
+  entry<SecurityNavKey.AddPin>(metadata = SettingsDetailPane) { AddPinEntry(backStack) }
+  entry<SecurityNavKey.ChangePin>(metadata = SettingsDetailPane) { ChangePinEntry(backStack) }
+  entry<SecurityNavKey.DisablePin>(metadata = SettingsDetailPane) { DisablePinEntry(backStack) }
 }
 
 @Composable

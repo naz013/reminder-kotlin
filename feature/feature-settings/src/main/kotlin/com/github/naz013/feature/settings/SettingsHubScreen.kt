@@ -32,10 +32,29 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 private val BannerHorizontalPadding = 16.dp
 private val BannerVerticalPadding = 8.dp
 
+/**
+ * Which Hub row's destination is currently showing in the detail pane of the two-pane list-detail
+ * layout - `null` when nothing is selected (single-pane, or the placeholder is showing). Computed
+ * from the backstack in `HubEntry` (`SettingsNavGraph.kt`), not part of [SettingsHubState], since
+ * it's derived from navigation rather than the Hub's own domain state.
+ */
+internal enum class SettingsCategory {
+  General,
+  Backup,
+  Calendar,
+  Reminders,
+  Birthdays,
+  Security,
+  Notes,
+  Other,
+  Developer,
+}
+
 @Composable
 internal fun SettingsHubScreen(
   modifier: Modifier = Modifier,
   state: SettingsHubState,
+  selectedCategory: SettingsCategory? = null,
   onBuyProClick: () -> Unit,
   onUpdateClick: () -> Unit,
   onGeneralClick: () -> Unit,
@@ -117,54 +136,63 @@ internal fun SettingsHubScreen(
       SettingsItem(
         title = stringResource(R.string.general),
         icon = painterResource(R.drawable.ic_fluent_system),
+        selected = selectedCategory == SettingsCategory.General,
         dividerBottom = true,
         onClick = onGeneralClick,
       )
       SettingsItem(
         title = stringResource(R.string.backup),
         icon = AppIcons.Fluent.CloudSyncComplete,
+        selected = selectedCategory == SettingsCategory.Backup,
         dividerBottom = true,
         onClick = onBackupClick,
       )
       SettingsItem(
         title = stringResource(R.string.calendar),
         icon = painterResource(R.drawable.ic_builder_by_monthday),
+        selected = selectedCategory == SettingsCategory.Calendar,
         dividerBottom = true,
         onClick = onCalendarClick,
       )
       SettingsItem(
         title = stringResource(R.string.reminders_),
         icon = painterResource(R.drawable.ic_fluent_clock_alarm),
+        selected = selectedCategory == SettingsCategory.Reminders,
         dividerBottom = true,
         onClick = onRemindersClick,
       )
       SettingsItem(
         title = stringResource(R.string.birthdays),
         icon = painterResource(R.drawable.ic_fluent_food_cake),
+        selected = selectedCategory == SettingsCategory.Birthdays,
         dividerBottom = true,
         onClick = onBirthdaysClick,
       )
       SettingsItem(
         title = stringResource(R.string.security),
         icon = painterResource(R.drawable.ic_fluent_lock),
+        selected = selectedCategory == SettingsCategory.Security,
         dividerBottom = true,
         onClick = onSecurityClick,
       )
       SettingsItem(
         title = stringResource(R.string.notes),
         icon = painterResource(R.drawable.ic_fluent_note),
+        selected = selectedCategory == SettingsCategory.Notes,
         dividerBottom = true,
         onClick = onNotesClick,
       )
       SettingsItem(
         title = stringResource(R.string.other),
         icon = painterResource(R.drawable.ic_fluent_launcher_settings),
+        selected = selectedCategory == SettingsCategory.Other,
         dividerBottom = state.isDeveloperOptionVisible,
         onClick = onOtherClick,
       )
       if (state.isDeveloperOptionVisible) {
         SettingsItem(
           title = "Developer",
+          selected = selectedCategory == SettingsCategory.Developer,
           dividerBottom = false,
           onClick = onDeveloperClick,
         )

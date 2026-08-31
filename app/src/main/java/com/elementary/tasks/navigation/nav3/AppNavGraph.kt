@@ -186,7 +186,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           it == GoogleTasksNavKey.List ||
           it == RoutineNavKey.List ||
           it == WorkflowNavKey.Gallery ||
-          it == SettingsNavKey.Hub
+          it == SettingsNavKey.Hub ||
+          it == PlacesNavKey.List
       }
   }
 
@@ -293,6 +294,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         placesEntries(
           backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Place) },
         )
         birthdaysEntries(

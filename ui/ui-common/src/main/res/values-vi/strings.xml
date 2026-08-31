@@ -1269,4 +1269,5 @@
     <string name="builder_quick_start_leaving_place">Rời khỏi một địa điểm</string>
     <string name="builder_quick_start_leaving_place_delayed">Rời khỏi một địa điểm (bắt đầu trễ)</string>
     <string name="select_settings_category_to_see_details">Chọn danh mục để xem cài đặt</string>
+    <string name="select_place_to_see_details">Chọn địa điểm để xem chi tiết</string>
 </resources>

@@ -1271,4 +1271,5 @@
     <string name="builder_quick_start_leaving_place">장소 떠나기</string>
     <string name="builder_quick_start_leaving_place_delayed">장소 떠나기 (지연 시작)</string>
     <string name="select_settings_category_to_see_details">설정을 보려면 카테고리를 선택하세요</string>
+    <string name="select_place_to_see_details">세부정보를 보려면 장소를 선택하세요</string>
 </resources>

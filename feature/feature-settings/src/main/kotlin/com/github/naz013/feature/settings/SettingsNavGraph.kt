@@ -67,6 +67,27 @@ import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationa
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * [ListDetailSceneStrategy] pairs any [ListDetailSceneStrategy.listPane]-tagged entry with any
+ * [ListDetailSceneStrategy.detailPane]-tagged entry that ends up adjacent to it on the backstack,
+ * regardless of which feature registered either one - the default `sceneKey` (`Unit`) is shared by
+ * every other two-pane flow in the app (Home, Groups, Birthdays, ...). That's an intentional reuse
+ * mechanism for entries meant to be shared (e.g. `ReminderPreviewNavKey.Preview` pairing with
+ * whichever list pushed it), but the Settings Hub fans out into several *other* features' own
+ * two-pane roots (Workflow's Gallery, Places' List) - without a key of its own, navigating from a
+ * Settings category into one of those would let the scene strategy's backward scan reach past the
+ * whole Settings chain and incorrectly pair with `HomeNavKey.Main` (always present at the bottom of
+ * the backstack), corrupting both the shown detail content and the empty-state placeholder. Every
+ * `listPane()`/`detailPane()` tag anywhere in this module (including `SecurityNavGraph.kt`,
+ * `OtherNavGraph.kt`, `ExportNavGraph.kt`, `LocationNavGraph.kt`) must pass this same key so the
+ * whole Hub-rooted chain stays self-contained.
+ */
+internal const val SettingsPaneSceneKey: String = "com.github.naz013.feature.settings.SettingsPane"
+
+/** Shorthand for `ListDetailSceneStrategy.detailPane(sceneKey = SettingsPaneSceneKey)` - see its doc above. */
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+internal val SettingsDetailPane: Map<String, Any> = ListDetailSceneStrategy.detailPane(sceneKey = SettingsPaneSceneKey)
+
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Suppress("LongParameterList") // one slot per cross-feature screen this module can't depend on directly
 fun EntryProviderScope<NavKey>.settingsEntries(
@@ -85,6 +106,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
 ) {
   entry<SettingsNavKey.Hub>(
     metadata = ListDetailSceneStrategy.listPane(
+      sceneKey = SettingsPaneSceneKey,
       detailPlaceholder = {
         DetailPanePlaceholder(
           text = stringResource(R.string.select_settings_category_to_see_details),
@@ -93,47 +115,47 @@ fun EntryProviderScope<NavKey>.settingsEntries(
       },
     ),
   ) { HubEntry(backStack) }
-  entry<SettingsNavKey.General>(metadata = ListDetailSceneStrategy.detailPane()) {
+  entry<SettingsNavKey.General>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.General) }
     GeneralEntry(backStack, restartActivityClass, renderAsDetailPane)
   }
-  entry<SettingsNavKey.HeaderItems> { HeaderItemsEntry(backStack) }
-  entry<SettingsNavKey.Backup>(metadata = ListDetailSceneStrategy.detailPane()) {
+  entry<SettingsNavKey.HeaderItems>(metadata = SettingsDetailPane) { HeaderItemsEntry(backStack) }
+  entry<SettingsNavKey.Backup>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.Backup) }
     BackupEntry(backStack, renderAsDetailPane, onOpenLocalBackupExport, onOpenLocalBackupImport)
   }
-  entry<SettingsNavKey.Reminders>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<SettingsNavKey.Reminders>(metadata = SettingsDetailPane) { key ->
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     remindersEntry(key, backStack, renderAsDetailPane)
   }
-  entry<SettingsNavKey.Calendar>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<SettingsNavKey.Calendar>(metadata = SettingsDetailPane) { key ->
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     CalendarEntry(key, backStack, renderAsDetailPane)
   }
-  entry<SettingsNavKey.SelectHolidayCountry> { SelectHolidayCountryEntry(backStack) }
-  entry<SettingsNavKey.Birthday>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<SettingsNavKey.SelectHolidayCountry>(metadata = SettingsDetailPane) { SelectHolidayCountryEntry(backStack) }
+  entry<SettingsNavKey.Birthday>(metadata = SettingsDetailPane) { key ->
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     birthdayEntry(key, backStack, renderAsDetailPane)
   }
-  entry<SettingsNavKey.Note>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<SettingsNavKey.Note>(metadata = SettingsDetailPane) { key ->
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     NoteEntry(key, backStack, renderAsDetailPane)
   }
-  entry<SettingsNavKey.ManagePresets> { managePresetsEntry(backStack) }
-  entry<SettingsNavKey.Developer>(metadata = ListDetailSceneStrategy.detailPane()) {
+  entry<SettingsNavKey.ManagePresets>(metadata = SettingsDetailPane) { managePresetsEntry(backStack) }
+  entry<SettingsNavKey.Developer>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.Developer) }
     DeveloperEntry(backStack, renderAsDetailPane, onOpenReminderActionTest, onOpenBirthdayActionTest)
   }
-  entry<SettingsNavKey.ObjectExportTest> { ObjectExportEntry(backStack) }
-  entry<SettingsNavKey.ProVersion>(metadata = ListDetailSceneStrategy.detailPane()) {
+  entry<SettingsNavKey.ObjectExportTest>(metadata = SettingsDetailPane) { ObjectExportEntry(backStack) }
+  entry<SettingsNavKey.ProVersion>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.ProVersion) }
     ProVersionEntry(backStack, renderAsDetailPane)
   }
-  entry<SettingsNavKey.Troubleshooting>(metadata = ListDetailSceneStrategy.detailPane()) {
+  entry<SettingsNavKey.Troubleshooting>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.Troubleshooting) }
     TroubleshootingEntry(backStack, applicationId, renderAsDetailPane)
   }
-  entry<SettingsNavKey.NotificationCustomizationHelp> {
+  entry<SettingsNavKey.NotificationCustomizationHelp>(metadata = SettingsDetailPane) {
     notificationCustomizationHelpEntry { if (backStack.size > 1) backStack.removeLastOrNull() }
   }
 }
@@ -147,12 +169,33 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
 
   val state by viewModel.state.collectAsState(SettingsHubState())
 
+  // Which category (if any) is currently showing in the two-pane detail slot - the entry
+  // immediately after Hub on the backstack, mapped to the row it corresponds to. Recomputes
+  // whenever backStack's contents change, since Hub's own composition stays alive as the list
+  // pane for as long as the two-pane scene is active.
+  val selectedCategory =
+    backStack.getOrNull(backStack.indexOf(SettingsNavKey.Hub) + 1).let { activeCategory ->
+      when (activeCategory) {
+        is SettingsNavKey.General -> SettingsCategory.General
+        is SettingsNavKey.Backup -> SettingsCategory.Backup
+        is SettingsNavKey.Calendar -> SettingsCategory.Calendar
+        is SettingsNavKey.Reminders -> SettingsCategory.Reminders
+        is SettingsNavKey.Birthday -> SettingsCategory.Birthdays
+        is SecurityNavKey.Security -> SettingsCategory.Security
+        is SettingsNavKey.Note -> SettingsCategory.Notes
+        is OtherNavKey.Other -> SettingsCategory.Other
+        is SettingsNavKey.Developer -> SettingsCategory.Developer
+        else -> null
+      }
+    }
+
   SettingsScaffold(
     title = stringResource(R.string.action_settings),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsHubScreen(
       state = state,
+      selectedCategory = selectedCategory,
       onBuyProClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.ProVersion) },
       onUpdateClick = { googlePlayMarketLauncher.launchSelf() },
       onGeneralClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.General) },

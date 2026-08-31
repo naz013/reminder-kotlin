@@ -1275,4 +1275,5 @@
     <string name="builder_quick_start_leaving_place">Leaving a place</string>
     <string name="builder_quick_start_leaving_place_delayed">Leaving a place (delayed start)</string>
     <string name="select_settings_category_to_see_details">Select a category to see its settings</string>
+    <string name="select_place_to_see_details">Select a place to see its details</string>
 </resources>

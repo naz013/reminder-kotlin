@@ -1269,4 +1269,5 @@
     <string name="builder_quick_start_leaving_place">Meninggalkan suatu tempat</string>
     <string name="builder_quick_start_leaving_place_delayed">Meninggalkan suatu tempat (mulai tertunda)</string>
     <string name="select_settings_category_to_see_details">Pilih kategori untuk melihat pengaturannya</string>
+    <string name="select_place_to_see_details">Pilih tempat untuk melihat detailnya</string>
 </resources>

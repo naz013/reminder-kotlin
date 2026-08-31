@@ -1271,4 +1271,5 @@
     <string name="builder_quick_start_leaving_place">Opuszczanie miejsca</string>
     <string name="builder_quick_start_leaving_place_delayed">Opuszczanie miejsca (opóźniony start)</string>
     <string name="select_settings_category_to_see_details">Wybierz kategorię, aby zobaczyć jej ustawienia</string>
+    <string name="select_place_to_see_details">Wybierz miejsce, aby zobaczyć szczegóły</string>
 </resources>

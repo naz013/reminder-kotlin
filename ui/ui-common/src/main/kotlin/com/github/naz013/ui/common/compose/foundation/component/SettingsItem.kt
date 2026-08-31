@@ -1,5 +1,6 @@
 package com.github.naz013.ui.common.compose.foundation.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,10 @@ private val TrailingSpacing = 16.dp
  * still needs to be tappable to route to the paywall. Pass a locked-aware [onClick] that does
  * that routing. When [locked] is true and no explicit [trailing] is given, a [ProBadgeChip] is
  * shown automatically.
+ *
+ * [selected] gives the row a tonal background - for a two-pane list-detail layout (see
+ * `DetailPanePlaceholder`), pass `true` for whichever row's destination is currently showing in
+ * the detail pane, the same way a selected row is highlighted elsewhere in the app.
  */
 @Composable
 fun SettingsItem(
@@ -62,6 +67,7 @@ fun SettingsItem(
   enabled: Boolean = true,
   locked: Boolean = false,
   isLoading: Boolean = false,
+  selected: Boolean = false,
   dividerTop: Boolean = false,
   dividerBottom: Boolean = false,
   onClick: (() -> Unit)? = null,
@@ -76,6 +82,13 @@ fun SettingsItem(
     Row(
       modifier = Modifier
         .fillMaxWidth()
+        .then(
+          if (selected) {
+            Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
+          } else {
+            Modifier
+          }
+        )
         .then(
           if (onClick != null) {
             Modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick)
