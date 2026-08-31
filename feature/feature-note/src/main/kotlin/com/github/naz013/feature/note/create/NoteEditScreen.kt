@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -395,6 +396,7 @@ private fun noteEditBarItems(
           TextColorPanel(
             colors = state.sliderColors,
             activeSolidColorArgb = state.activeFormat.solidColorArgb,
+            defaultTextColorArgb = state.noteColors.content.takeIf { it.isSpecified }?.toArgb(),
             contentColor = contentColor,
             onColorSelected = actions.onApplySolidColor,
             onGradientSelected = actions.onApplyGradient,

@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -23,6 +24,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 
 private val SelectorStrokeWidth = 2.dp
 private const val UnselectedItemVerticalInset = 0.1f
+private const val SelectorContrastLuminanceThreshold = 0.5f
 
 @Composable
 fun ColorSlider(
@@ -79,8 +81,18 @@ fun ColorSlider(
           topLeft = Offset(left, 0f),
           size = Size(itemWidth, size.height),
         )
+        // selectorColor can vanish against a swatch of that exact same color (e.g. a pure
+        // black/white swatch with the usual theme-based black/white selectorColor), so fall
+        // back to a color contrasting with the swatch's own luminance in that case only -
+        // keeps the same single-ring geometry everywhere else instead of risking a second,
+        // nested ring that won't fit inside a narrow swatch on a strip with many colors.
+        val ringColor = if (color == selectorColor) {
+          if (color.luminance() > SelectorContrastLuminanceThreshold) Color.Black else Color.White
+        } else {
+          selectorColor
+        }
         drawRect(
-          color = selectorColor,
+          color = ringColor,
           topLeft = Offset(left + strokeWidthPx / 2f, strokeWidthPx / 2f),
           size = Size(itemWidth - strokeWidthPx, size.height - strokeWidthPx),
           style = Stroke(width = strokeWidthPx),

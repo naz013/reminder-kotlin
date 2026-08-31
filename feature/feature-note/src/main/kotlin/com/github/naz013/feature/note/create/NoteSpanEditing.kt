@@ -119,6 +119,19 @@ internal fun applyAttribute(spans: List<NoteTextSpan>, start: Int, end: Int, att
   return (cleared + NoteTextSpan(start, end, attribute)).sortedBy { it.start }
 }
 
+/** Sets [attribute] to take effect on whatever gets typed next at the collapsed cursor [pos],
+ * for when there's no selection to apply it to directly (e.g. picking a text color on an empty
+ * note). Works by inserting a zero-length span at [pos]: [shiftSpans]'s sticky-trailing-edge rule
+ * (a span ending exactly where new text is inserted grows to cover it) extends it as soon as a
+ * character is typed there, the same way typing right after existing styled text continues that
+ * style. Any span on the same axis already ending exactly at [pos] - including a stale pending
+ * span from an earlier call - is dropped first so only one span can grow from this point. */
+internal fun applyAttributeAtCursor(spans: List<NoteTextSpan>, pos: Int, attribute: NoteSpanAttribute): List<NoteTextSpan> {
+  val axis = attribute.axis()
+  val withoutStale = spans.filterNot { it.attribute.axis() == axis && it.end == pos }
+  return (withoutStale + NoteTextSpan(pos, pos, attribute)).sortedBy { it.start }
+}
+
 /** Removes any span on [axis] overlapping `[start, end)`, clipping spans that only partially
  * overlap rather than deleting them outright. */
 internal fun clearAxis(spans: List<NoteTextSpan>, axis: NoteSpanAxis, start: Int, end: Int): List<NoteTextSpan> {
