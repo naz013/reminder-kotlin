@@ -1273,4 +1273,7 @@
     <string name="group_selected_count_one">تم تحديد مجموعة واحدة</string>
     <string name="group_selected_count_other">تم تحديد %1$d مجموعات</string>
     <string name="groups_delete_selected_permanently">حذف %1$d مجموعات نهائيًا؟</string>
+    <string name="tag_selected_count_one">تم تحديد وسم واحد</string>
+    <string name="tag_selected_count_other">تم تحديد %1$d وسوم</string>
+    <string name="tags_delete_selected_permanently">حذف %1$d وسوم نهائيًا؟</string>
 </resources>

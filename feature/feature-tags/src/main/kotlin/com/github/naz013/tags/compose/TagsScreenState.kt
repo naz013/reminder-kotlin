@@ -1,9 +1,11 @@
 package com.github.naz013.tags.compose
 
 import androidx.compose.ui.graphics.Color
+import com.github.naz013.ui.common.selection.Selectable
 
 internal data class TagsScreenState(
-  val listState: TagsListState = TagsListState.Loading
+  val listState: TagsListState = TagsListState.Loading,
+  val selectedCount: Int = 0,
 )
 
 internal sealed interface TagsListState {
@@ -17,16 +19,20 @@ internal sealed interface TagsListState {
 }
 
 internal data class TagState(
-  val id: String,
+  override val id: String,
   val name: String,
   val color: Color,
-  val isSelected: Boolean = false,
-)
+  /** Whether this tag is currently open in the two-pane layout's detail pane. */
+  val isHighlighted: Boolean = false,
+  override val isSelected: Boolean = false,
+) : Selectable<TagState> {
+  override fun withSelected(selected: Boolean) = copy(isSelected = selected)
+}
 
 internal fun TagsScreenState.withSelectedItem(selectedItemId: String?): TagsScreenState {
   val ready = listState as? TagsListState.Ready ?: return this
   return copy(
-    listState = TagsListState.Ready(ready.tags.map { it.copy(isSelected = it.id == selectedItemId) }),
+    listState = TagsListState.Ready(ready.tags.map { it.copy(isHighlighted = it.id == selectedItemId) }),
   )
 }
 

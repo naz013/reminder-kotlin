@@ -1275,4 +1275,7 @@
     <string name="group_selected_count_one">Zaznaczono %1$d grupę</string>
     <string name="group_selected_count_other">Zaznaczono %1$d grup</string>
     <string name="groups_delete_selected_permanently">Usunąć %1$d grup na stałe?</string>
+    <string name="tag_selected_count_one">Zaznaczono %1$d tag</string>
+    <string name="tag_selected_count_other">Zaznaczono %1$d tagów</string>
+    <string name="tags_delete_selected_permanently">Usunąć %1$d tagów na stałe?</string>
 </resources>

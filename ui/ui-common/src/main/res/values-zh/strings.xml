@@ -1276,4 +1276,7 @@
     <string name="group_selected_count_one">已选择 %1$d 个群组</string>
     <string name="group_selected_count_other">已选择 %1$d 个群组</string>
     <string name="groups_delete_selected_permanently">永久删除 %1$d 个群组?</string>
+    <string name="tag_selected_count_one">已选择 %1$d 个标签</string>
+    <string name="tag_selected_count_other">已选择 %1$d 个标签</string>
+    <string name="tags_delete_selected_permanently">永久删除 %1$d 个标签?</string>
 </resources>

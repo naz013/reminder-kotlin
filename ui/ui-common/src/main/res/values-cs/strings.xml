@@ -1275,4 +1275,7 @@
     <string name="group_selected_count_one">Vybrána %1$d skupina</string>
     <string name="group_selected_count_other">Vybráno %1$d skupin</string>
     <string name="groups_delete_selected_permanently">Trvale smazat %1$d skupin?</string>
+    <string name="tag_selected_count_one">Vybrán %1$d štítek</string>
+    <string name="tag_selected_count_other">Vybráno %1$d štítků</string>
+    <string name="tags_delete_selected_permanently">Trvale smazat %1$d štítků?</string>
 </resources>

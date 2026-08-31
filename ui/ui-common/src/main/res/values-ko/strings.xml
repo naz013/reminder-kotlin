@@ -1275,4 +1275,7 @@
     <string name="group_selected_count_one">그룹 %1$d개 선택됨</string>
     <string name="group_selected_count_other">그룹 %1$d개 선택됨</string>
     <string name="groups_delete_selected_permanently">%1$d개의 그룹을 영구 삭제하시겠습니까?</string>
+    <string name="tag_selected_count_one">태그 %1$d개 선택됨</string>
+    <string name="tag_selected_count_other">태그 %1$d개 선택됨</string>
+    <string name="tags_delete_selected_permanently">%1$d개의 태그를 영구 삭제하시겠습니까?</string>
 </resources>

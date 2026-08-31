@@ -1273,4 +1273,7 @@
     <string name="group_selected_count_one">เลือก %1$d กลุ่มแล้ว</string>
     <string name="group_selected_count_other">เลือก %1$d กลุ่มแล้ว</string>
     <string name="groups_delete_selected_permanently">ลบ %1$d กลุ่มอย่างถาวร?</string>
+    <string name="tag_selected_count_one">เลือก %1$d แท็กแล้ว</string>
+    <string name="tag_selected_count_other">เลือก %1$d แท็กแล้ว</string>
+    <string name="tags_delete_selected_permanently">ลบ %1$d แท็กอย่างถาวร?</string>
 </resources>

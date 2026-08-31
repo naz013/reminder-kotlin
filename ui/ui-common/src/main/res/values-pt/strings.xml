@@ -1275,4 +1275,7 @@
     <string name="group_selected_count_one">%1$d grupo selecionado</string>
     <string name="group_selected_count_other">%1$d grupos selecionados</string>
     <string name="groups_delete_selected_permanently">Excluir %1$d grupos permanentemente?</string>
+    <string name="tag_selected_count_one">%1$d rótulo selecionado</string>
+    <string name="tag_selected_count_other">%1$d rótulos selecionados</string>
+    <string name="tags_delete_selected_permanently">Excluir %1$d rótulos permanentemente?</string>
 </resources>

@@ -1274,4 +1274,7 @@
     <string name="group_selected_count_one">Выбрана %1$d группа</string>
     <string name="group_selected_count_other">Выбрано %1$d групп</string>
     <string name="groups_delete_selected_permanently">Удалить %1$d групп навсегда?</string>
+    <string name="tag_selected_count_one">Выбран %1$d тег</string>
+    <string name="tag_selected_count_other">Выбрано %1$d тегов</string>
+    <string name="tags_delete_selected_permanently">Удалить %1$d тегов навсегда?</string>
 </resources>

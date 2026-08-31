@@ -1276,4 +1276,7 @@
     <string name="group_selected_count_one">%1$d grup seçildi</string>
     <string name="group_selected_count_other">%1$d grup seçildi</string>
     <string name="groups_delete_selected_permanently">%1$d grup kalıcı olarak silinsin mi?</string>
+    <string name="tag_selected_count_one">%1$d etiket seçildi</string>
+    <string name="tag_selected_count_other">%1$d etiket seçildi</string>
+    <string name="tags_delete_selected_permanently">%1$d etiket kalıcı olarak silinsin mi?</string>
 </resources>

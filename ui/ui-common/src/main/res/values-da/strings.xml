@@ -1273,4 +1273,7 @@
     <string name="group_selected_count_one">%1$d gruppe valgt</string>
     <string name="group_selected_count_other">%1$d grupper valgt</string>
     <string name="groups_delete_selected_permanently">Slet %1$d grupper permanent?</string>
+    <string name="tag_selected_count_one">%1$d tag valgt</string>
+    <string name="tag_selected_count_other">%1$d tags valgt</string>
+    <string name="tags_delete_selected_permanently">Slet %1$d tags permanent?</string>
 </resources>

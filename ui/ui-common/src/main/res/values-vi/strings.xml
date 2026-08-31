@@ -1273,4 +1273,7 @@
     <string name="group_selected_count_one">%1$d nhóm được chọn</string>
     <string name="group_selected_count_other">%1$d nhóm được chọn</string>
     <string name="groups_delete_selected_permanently">Xóa vĩnh viễn %1$d nhóm?</string>
+    <string name="tag_selected_count_one">%1$d thẻ được chọn</string>
+    <string name="tag_selected_count_other">%1$d thẻ được chọn</string>
+    <string name="tags_delete_selected_permanently">Xóa vĩnh viễn %1$d thẻ?</string>
 </resources>

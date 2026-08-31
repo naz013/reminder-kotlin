@@ -1273,4 +1273,7 @@
     <string name="group_selected_count_one">%1$d grupp vald</string>
     <string name="group_selected_count_other">%1$d grupper valda</string>
     <string name="groups_delete_selected_permanently">Ta bort %1$d grupper permanent?</string>
+    <string name="tag_selected_count_one">%1$d tagg vald</string>
+    <string name="tag_selected_count_other">%1$d taggar valda</string>
+    <string name="tags_delete_selected_permanently">Ta bort %1$d taggar permanent?</string>
 </resources>

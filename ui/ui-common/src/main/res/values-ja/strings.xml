@@ -1275,4 +1275,7 @@
     <string name="group_selected_count_one">%1$dグループを選択中</string>
     <string name="group_selected_count_other">%1$dグループを選択中</string>
     <string name="groups_delete_selected_permanently">%1$dグループを完全に削除しますか?</string>
+    <string name="tag_selected_count_one">%1$dタグを選択中</string>
+    <string name="tag_selected_count_other">%1$dタグを選択中</string>
+    <string name="tags_delete_selected_permanently">%1$dタグを完全に削除しますか?</string>
 </resources>

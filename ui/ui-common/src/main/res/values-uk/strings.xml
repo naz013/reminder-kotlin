@@ -1276,4 +1276,7 @@
     <string name="group_selected_count_one">Вибрано %1$d групу</string>
     <string name="group_selected_count_other">Вибрано %1$d груп</string>
     <string name="groups_delete_selected_permanently">Видалити %1$d груп назавжди?</string>
+    <string name="tag_selected_count_one">Вибрано %1$d тег</string>
+    <string name="tag_selected_count_other">Вибрано %1$d тегів</string>
+    <string name="tags_delete_selected_permanently">Видалити %1$d тегів назавжди?</string>
 </resources>

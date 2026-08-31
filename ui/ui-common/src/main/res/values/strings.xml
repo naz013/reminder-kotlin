@@ -1279,4 +1279,7 @@
     <string name="group_selected_count_one">%1$d group selected</string>
     <string name="group_selected_count_other">%1$d groups selected</string>
     <string name="groups_delete_selected_permanently">Delete %1$d groups permanently?</string>
+    <string name="tag_selected_count_one">%1$d tag selected</string>
+    <string name="tag_selected_count_other">%1$d tags selected</string>
+    <string name="tags_delete_selected_permanently">Delete %1$d tags permanently?</string>
 </resources>

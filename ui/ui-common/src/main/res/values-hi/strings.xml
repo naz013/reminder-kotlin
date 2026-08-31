@@ -1277,4 +1277,7 @@
     <string name="group_selected_count_one">%1$d समूह चयनित</string>
     <string name="group_selected_count_other">%1$d समूह चयनित</string>
     <string name="groups_delete_selected_permanently">%1$d समूहों को स्थायी रूप से हटाएं?</string>
+    <string name="tag_selected_count_one">%1$d टैग चयनित</string>
+    <string name="tag_selected_count_other">%1$d टैग्स चयनित</string>
+    <string name="tags_delete_selected_permanently">%1$d टैग्स को स्थायी रूप से हटाएं?</string>
 </resources>

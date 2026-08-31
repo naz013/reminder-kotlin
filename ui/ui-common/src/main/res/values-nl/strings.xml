@@ -1273,4 +1273,7 @@
     <string name="group_selected_count_one">%1$d groep geselecteerd</string>
     <string name="group_selected_count_other">%1$d groepen geselecteerd</string>
     <string name="groups_delete_selected_permanently">%1$d groepen permanent verwijderen?</string>
+    <string name="tag_selected_count_one">%1$d label geselecteerd</string>
+    <string name="tag_selected_count_other">%1$d labels geselecteerd</string>
+    <string name="tags_delete_selected_permanently">%1$d labels permanent verwijderen?</string>
 </resources>

@@ -29,4 +29,9 @@
         <item quantity="one">@string/group_selected_count_one</item>
         <item quantity="other">@string/group_selected_count_other</item>
     </plurals>
+
+    <plurals name="tags_selected_count" >
+        <item quantity="one">@string/tag_selected_count_one</item>
+        <item quantity="other">@string/tag_selected_count_other</item>
+    </plurals>
 </resources>

@@ -1275,4 +1275,7 @@
     <string name="group_selected_count_one">%1$d groupe sélectionné</string>
     <string name="group_selected_count_other">%1$d groupes sélectionnés</string>
     <string name="groups_delete_selected_permanently">Supprimer %1$d groupes définitivement ?</string>
+    <string name="tag_selected_count_one">%1$d étiquette sélectionnée</string>
+    <string name="tag_selected_count_other">%1$d étiquettes sélectionnées</string>
+    <string name="tags_delete_selected_permanently">Supprimer %1$d étiquettes définitivement ?</string>
 </resources>
